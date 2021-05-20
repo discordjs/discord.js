@@ -45,12 +45,12 @@ declare enum MessageButtonStyles {
   SECONDARY = 2,
   SUCCESS = 3,
   DANGER = 4,
-  LINK = 5
+  LINK = 5,
 }
 
 declare enum MessageComponentTypes {
   ACTION_ROW = 1,
-  BUTTON = 2
+  BUTTON = 2,
 }
 
 declare enum OverwriteTypes {
@@ -1203,10 +1203,10 @@ declare module 'discord.js' {
   }
 
   export class MessageActionRow extends MessageComponent {
-    constructor(data?: MessageActionRow|MessageActionRowOptions);
-    public type: "ACTION_ROW";
+    constructor(data?: MessageActionRow | MessageActionRowOptions);
+    public type: 'ACTION_ROW';
     public components: MessageComponent[];
-    public addButton(button: MessageButton|MessageButtonOptions): this;
+    public addButton(button: MessageButton | MessageButtonOptions): this;
   }
 
   export class MessageAttachment {
@@ -1228,20 +1228,20 @@ declare module 'discord.js' {
   }
 
   export class MessageButton extends MessageComponent {
-    constructor(data?: MessageButton|MessageButtonOptions);
+    constructor(data?: MessageButton | MessageButtonOptions);
     public customID: string | null;
     public disabled: boolean;
     public emoji: unknown | null;
     public label: string | null;
     public style: MessageButtonStyle | null;
-    public type: "BUTTON";
+    public type: 'BUTTON';
     public url: string | null;
     public setCustomID(customID: string): this;
     public setDisabled(disabled: boolean): this;
-    public setEmoji(emoji: unknown): this;
+    public setEmoji(emoji: EmojiIdentifierResolvable): this;
     public setLabel(label: string): this;
     public setStyle(style: MessageButtonStyle | number): this;
-    public setUrl(url: string): this;
+    public setURL(url: string): this;
   }
 
   export class MessageCollector extends Collector<Snowflake, Message> {
@@ -3186,7 +3186,7 @@ declare module 'discord.js' {
   type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
   interface MessageActionRowOptions extends MessageComponentOptions {
-    components?: Array<MessageButton|MessageButtonOptions>;
+    components?: Array<MessageButton | MessageButtonOptions>;
   }
   interface MessageActivity {
     partyID: string;
@@ -3199,7 +3199,7 @@ declare module 'discord.js' {
     emoji?: unknown;
     label?: string;
     style?: MessageButtonStyle;
-    url?: string;    
+    url?: string;
   }
 
   type MessageButtonStyle = keyof typeof MessageButtonStyles;
@@ -3211,6 +3211,7 @@ declare module 'discord.js' {
 
   interface MessageComponentOptions {
     type: MessageComponentType | number;
+    components?: Array<MessageComponent | MessageComponentOptions>;
   }
 
   type MessageComponentType = keyof typeof MessageComponentTypes;
@@ -3315,7 +3316,7 @@ declare module 'discord.js' {
     nonce?: string | number;
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions;
-    components?: Array<MessageComponent|MessageComponentOptions>;
+    components?: Array<MessageComponent | MessageComponentOptions>;
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
@@ -3367,11 +3368,11 @@ declare module 'discord.js' {
 
   type OverwriteType = 'member' | 'role';
 
-  interface PermissionFlags extends Record<PermissionString, bigint> { }
+  interface PermissionFlags extends Record<PermissionString, bigint> {}
 
-  interface PermissionObject extends Record<PermissionString, boolean> { }
+  interface PermissionObject extends Record<PermissionString, boolean> {}
 
-  interface PermissionOverwriteOption extends Partial<Record<PermissionString, boolean | null>> { }
+  interface PermissionOverwriteOption extends Partial<Record<PermissionString, boolean | null>> {}
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
@@ -3410,7 +3411,7 @@ declare module 'discord.js' {
     | 'USE_APPLICATION_COMMANDS'
     | 'REQUEST_TO_SPEAK';
 
-  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> { }
+  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
@@ -3440,16 +3441,16 @@ declare module 'discord.js' {
     partial: true;
     fetch(): Promise<T>;
   } & {
-      [K in keyof Omit<
-        T,
-        'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-      >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
-    };
+    [K in keyof Omit<
+      T,
+      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
+    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
+  };
 
   interface PartialDMChannel
     extends Partialize<
-    DMChannel,
-    'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
+      DMChannel,
+      'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
     > {
     lastMessage: null;
     lastMessageID: undefined;
@@ -3476,18 +3477,18 @@ declare module 'discord.js' {
 
   interface PartialGuildMember
     extends Partialize<
-    GuildMember,
-    | 'bannable'
-    | 'displayColor'
-    | 'displayHexColor'
-    | 'displayName'
-    | 'guild'
-    | 'kickable'
-    | 'permissions'
-    | 'roles'
-    | 'manageable'
-    | 'presence'
-    | 'voice'
+      GuildMember,
+      | 'bannable'
+      | 'displayColor'
+      | 'displayHexColor'
+      | 'displayName'
+      | 'guild'
+      | 'kickable'
+      | 'permissions'
+      | 'roles'
+      | 'manageable'
+      | 'presence'
+      | 'voice'
     > {
     readonly bannable: boolean;
     readonly displayColor: number;
@@ -3506,17 +3507,17 @@ declare module 'discord.js' {
 
   interface PartialMessage
     extends Partialize<
-    Message,
-    | 'attachments'
-    | 'channel'
-    | 'deletable'
-    | 'crosspostable'
-    | 'editable'
-    | 'mentions'
-    | 'pinnable'
-    | 'url'
-    | 'flags'
-    | 'embeds'
+      Message,
+      | 'attachments'
+      | 'channel'
+      | 'deletable'
+      | 'crosspostable'
+      | 'editable'
+      | 'mentions'
+      | 'pinnable'
+      | 'url'
+      | 'flags'
+      | 'embeds'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];
