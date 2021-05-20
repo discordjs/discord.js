@@ -261,6 +261,16 @@ declare module 'discord.js' {
     public setRTCRegion(region: string | null): Promise<this>;
   }
 
+  export class BaseMessageComponent {
+    constructor(data?: BaseMessageComponent | BaseMessageComponentOptions);
+    public type: MessageComponentType | null;
+    public setType(type: MessageComponentType | number): this;
+  }
+
+  interface BaseMessageComponentOptions {
+    type?: MessageComponentType;
+  }
+
   class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
     public broadcast: VoiceBroadcast;
   }
@@ -1226,7 +1236,7 @@ declare module 'discord.js' {
     public unpin(): Promise<Message>;
   }
 
-  export class MessageActionRow extends MessageComponent {
+  export class MessageActionRow extends BaseMessageComponent {
     constructor(data?: MessageActionRow | MessageActionRowOptions);
     public type: 'ACTION_ROW';
     public components: MessageComponent[];
@@ -1252,7 +1262,7 @@ declare module 'discord.js' {
     public toJSON(): object;
   }
 
-  export class MessageButton extends MessageComponent {
+  export class MessageButton extends BaseMessageComponent {
     constructor(data?: MessageButton | MessageButtonOptions);
     public customID: string | null;
     public disabled: boolean;
@@ -1285,12 +1295,6 @@ declare module 'discord.js' {
 
     public collect(message: Message): Snowflake;
     public dispose(message: Message): Snowflake;
-  }
-
-  export class MessageComponent {
-    constructor(data?: MessageComponent | MessageComponentOptions);
-    public type: MessageComponentType | null;
-    public setType(type: MessageComponentType | number): this;
   }
 
   export class MessageEmbed {
@@ -3209,9 +3213,9 @@ declare module 'discord.js' {
 
   type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
-  interface MessageActionRowOptions extends MessageComponentOptions {
+  interface MessageActionRowOptions extends BaseMessageComponentOptions {
     type: 'ACTION_ROW';
-    components?: (MessageComponent | object)[];
+    components?: MessageComponentResolvable[];
   }
 
   interface MessageActivity {
@@ -3219,7 +3223,7 @@ declare module 'discord.js' {
     type: number;
   }
 
-  interface MessageButtonOptions extends MessageComponentOptions {
+  interface MessageButtonOptions extends BaseMessageComponentOptions {
     customID?: string;
     disabled?: boolean;
     emoji?: APIPartialEmoji;
@@ -3235,9 +3239,11 @@ declare module 'discord.js' {
     maxProcessed?: number;
   }
 
-  interface MessageComponentOptions {
-    type?: MessageComponentType;
-  }
+  type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton;
+
+  type MessageComponentOptions = BaseMessageComponentOptions | MessageActionRowOptions | MessageButtonOptions;
+
+  type MessageComponentResolvable = MessageComponent | MessageComponentOptions;
 
   type MessageComponentType = keyof typeof MessageComponentTypes;
 
@@ -3248,7 +3254,7 @@ declare module 'discord.js' {
     flags?: BitFieldResolvable<MessageFlagsString, number>;
     allowedMentions?: MessageMentionOptions;
     attachments?: MessageAttachment[];
-    components?: MessageComponent[];
+    components?: BaseMessageComponent[];
   }
 
   interface MessageEmbedAuthor {
@@ -3341,7 +3347,7 @@ declare module 'discord.js' {
     nonce?: string | number;
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions;
-    components?: (MessageComponent | object)[];
+    components?: MessageComponentResolvable[];
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
