@@ -827,6 +827,17 @@ exports.InteractionResponseTypes = createEnum([
  */
 exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON']);
 
+/**
+ * The style of a message button
+ * PRIMARY
+ * SECONDARY
+ * SUCCESS
+ * DANGER
+ * LINK
+ * @typedef {string} MessageButtonStyle
+ */
+exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'LINK']);
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
