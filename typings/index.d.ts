@@ -25,11 +25,14 @@ declare enum InteractionResponseTypes {
   PONG = 1,
   CHANNEL_MESSAGE_WITH_SOURCE = 4,
   DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5,
+  DEFERRED_MESSAGE_UPDATE = 6,
+  UPDATE_MESSAGE = 7,
 }
 
 declare enum InteractionTypes {
   PING = 1,
   APPLICATION_COMMAND = 2,
+  BUTTON = 3,
 }
 
 declare enum InviteTargetType {
