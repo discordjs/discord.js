@@ -46,7 +46,6 @@ class MessageComponent {
         break;
       }
     }
-    console.log('Created', component);
     return component;
   }
 
