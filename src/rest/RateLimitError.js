@@ -34,6 +34,7 @@ class RateLimitError extends Error {
 
     /**
      * The route of the request relative to the HTTP endpoint
+     * @type {string}
      */
     this.route = route;
 
