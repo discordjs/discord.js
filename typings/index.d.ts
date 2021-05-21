@@ -3488,8 +3488,8 @@ declare module 'discord.js' {
     global: boolean;
   }
 
+  // tslint:disable-next-line:no-empty-interface - Merge RateLimitData interface to not have to type it again
   interface RateLimitError extends RateLimitData {}
-
   export class RateLimitError extends Error {
     constructor(data: RateLimitData);
     public name: 'RateLimitError';
