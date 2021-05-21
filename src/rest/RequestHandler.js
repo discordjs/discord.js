@@ -3,6 +3,7 @@
 const AsyncQueue = require('./AsyncQueue');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
+const RateLimitError = require('./RateLimitError');
 const {
   Events: { RATE_LIMIT, INVALID_REQUEST_WARNING },
 } = require('../util/Constants');
@@ -77,6 +78,28 @@ class RequestHandler {
     });
   }
 
+  onRateLimit(request, limit, timeout, isGlobal) {
+    if (this.manager.client.options.disableRateLimitQueue) {
+      const rateLimitData = {
+        timeout,
+        limit,
+        method: request.method,
+        path: request.path,
+        route: request.route,
+        global: isGlobal,
+      };
+      const shouldThrow =
+        typeof this.manager.client.options.disableRateLimitQueue === 'function'
+          ? this.manager.client.options.disableRateLimitQueue(rateLimitData)
+          : this.manager.client.options.disableRateLimitQueue.some(route =>
+              rateLimitData.route.startsWith(`/${route}/`),
+            );
+      if (shouldThrow) {
+        throw new RateLimitError(rateLimitData);
+      }
+    }
+  }
+
   async execute(request) {
     /*
      * After calculations have been done, pre-emptively stop further requests
@@ -90,6 +113,9 @@ class RequestHandler {
         // Set the variables based on the global rate limit
         limit = this.manager.globalLimit;
         timeout = this.manager.globalReset + this.manager.client.options.restTimeOffset - Date.now();
+
+        this.onRateLimit(request, limit, timeout, isGlobal);
+
         // If this is the first task to reach the global timeout, set the global delay
         if (!this.manager.globalDelay) {
           // The global delay function should clear the global delay state when it is resolved
@@ -100,6 +126,9 @@ class RequestHandler {
         // Set the variables based on the route-specific rate limit
         limit = this.limit;
         timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
+
+        this.onRateLimit(request, limit, timeout, isGlobal);
+
         delayPromise = Util.delayFor(timeout);
       }
 
@@ -223,8 +252,22 @@ class RequestHandler {
     if (res.status >= 400 && res.status < 500) {
       // Handle ratelimited requests
       if (res.status === 429) {
-        // A ratelimit was hit - this should never happen
+        // A ratelimit was hit - this should only happen if client is already rate limited when connecting
         this.manager.client.emit('debug', `429 hit on route ${request.route}${sublimitTimeout ? ' for sublimit' : ''}`);
+
+        const isGlobal = this.globalLimited;
+        let limit, timeout;
+        if (isGlobal) {
+          // Set the variables based on the global rate limit
+          limit = this.manager.globalLimit;
+          timeout = this.manager.globalReset + this.manager.client.options.restTimeOffset - Date.now();
+        } else {
+          // Set the variables based on the route-specific rate limit
+          limit = this.limit;
+          timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
+        }
+        this.onRateLimit(request, limit, timeout, isGlobal);
+
         // If caused by a sublimit, wait it out here so other requests on the route can be handled
         if (sublimitTimeout) {
           await Util.delayFor(sublimitTimeout);

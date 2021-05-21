@@ -461,9 +461,7 @@ declare module 'discord.js' {
     Endpoints: {
       botGateway: string;
       invite: (root: string, code: string) => string;
-      CDN: (
-        root: string,
-      ) => {
+      CDN: (root: string) => {
         Asset: (name: string) => string;
         DefaultAvatar: (id: string | number) => string;
         Emoji: (emojiID: string, format: 'png' | 'gif') => string;
@@ -2659,6 +2657,7 @@ declare module 'discord.js' {
     intents: BitFieldResolvable<IntentsString, number>;
     ws?: WebSocketOptions;
     http?: HTTPOptions;
+    disableRateLimitQueue: string[] | ((data: RateLimitData) => boolean);
   }
 
   type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -3487,6 +3486,13 @@ declare module 'discord.js' {
     path: string;
     route: string;
     global: boolean;
+  }
+
+  interface RateLimitError extends RateLimitData {}
+
+  export class RateLimitError extends Error {
+    constructor(data: RateLimitData);
+    public name: 'RateLimitError';
   }
 
   interface InvalidRequestWarningData {

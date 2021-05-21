@@ -21,6 +21,7 @@ module.exports = {
   BaseManager: require('./managers/BaseManager'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
   HTTPError: require('./rest/HTTPError'),
+  RateLimitError: require('./rest/RateLimitError'),
   MessageFlags: require('./util/MessageFlags'),
   Intents: require('./util/Intents'),
   Permissions: require('./util/Permissions'),
