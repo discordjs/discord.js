@@ -2657,7 +2657,7 @@ declare module 'discord.js' {
     intents: BitFieldResolvable<IntentsString, number>;
     ws?: WebSocketOptions;
     http?: HTTPOptions;
-    disableRateLimitQueue: string[] | ((data: RateLimitData) => boolean);
+    disableRateLimitQueue?: string[] | ((data: RateLimitData) => boolean);
   }
 
   type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
