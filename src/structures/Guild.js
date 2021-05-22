@@ -116,14 +116,6 @@ class Guild extends Base {
      * @type {number}
      */
     this.shardID = data.shardID;
-
-    if ('nsfw_level' in data) {
-      /**
-       * The nsfw level of this guild
-       * @type {NsfwLevel}
-       */
-      this.nsfwLevel = NsfwLevels[data.nsfw_level];
-    }
   }
 
   /**
@@ -176,6 +168,14 @@ class Guild extends Base {
      * @type {number}
      */
     this.memberCount = data.member_count || this.memberCount;
+
+    if ('nsfw_level' in data) {
+      /**
+       * The nsfw level of this guild
+       * @type {NsfwLevel}
+       */
+      this.nsfwLevel = NsfwLevels[data.nsfw_level];
+    }
 
     /**
      * Whether the guild is "large" (has more than large_threshold members, 50 by default)
