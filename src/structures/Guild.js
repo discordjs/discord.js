@@ -24,6 +24,7 @@ const {
   PartialTypes,
   VerificationLevels,
   ExplicitContentFilterLevels,
+  NsfwLevels,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
@@ -118,19 +119,10 @@ class Guild extends Base {
 
     if ('nsfw_level' in data) {
       /**
-       * NSFW level of a Guild
-       * * 0: DEFAULT
-       * * 1: EXPLICIT
-       * * 2: SAFE
-       * * 3: AGE_RESTRICTED
-       * @typedef {number} NsfwLevel
-       */
-
-      /**
        * The nsfw level of this guild
        * @type {NsfwLevel}
        */
-      this.nsfwLevel = data.nsfw_level;
+      this.nsfwLevel = NsfwLevels[data.nsfw_level];
     }
   }
 

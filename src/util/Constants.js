@@ -818,7 +818,15 @@ exports.InteractionResponseTypes = createEnum([
   'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE',
 ]);
 
-exports.NsfwLevel = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
+/**
+ * NSFW level of a Guild
+ * * DEFAULT
+ * * EXPLICIT
+ * * SAFE
+ * * AGE_RESTRICTED
+ * @typedef {string} NsfwLevel
+ */
+exports.NsfwLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
 
 function keyMirror(arr) {
   let tmp = Object.create(null);

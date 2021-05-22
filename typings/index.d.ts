@@ -37,6 +37,13 @@ declare enum InviteTargetType {
   EMBEDDED_APPLICATION = 2,
 }
 
+declare enum NsfwLevels {
+  DEFAULT = 0,
+  EXPLICIT = 1,
+  SAFE = 2,
+  AGE_RESTRICTED = 3,
+}
+
 declare enum OverwriteTypes {
   role = 0,
   member = 1,
@@ -648,6 +655,7 @@ declare module 'discord.js' {
     ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
     InteractionTypes: typeof InteractionTypes;
     InteractionResponseTypes: typeof InteractionResponseTypes;
+    NsfwLevels: typeof NsfwLevels;
   };
 
   export class DataResolver {
