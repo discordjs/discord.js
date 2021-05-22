@@ -818,6 +818,8 @@ exports.InteractionResponseTypes = createEnum([
   'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE',
 ]);
 
+exports.NsfwLevel = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
