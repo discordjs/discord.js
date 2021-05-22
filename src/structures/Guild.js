@@ -116,12 +116,21 @@ class Guild extends Base {
      */
     this.shardID = data.shardID;
 
-    if ('nsfw' in data) {
+    if ('nsfw_level' in data) {
       /**
-       * Whether the guild is designated as not safe for work
-       * @type {boolean}
+       * NSFW level of a Guild
+       * * 0: DEFAULT
+       * * 1: EXPLICIT
+       * * 2: SAFE
+       * * 3: AGE_RESTRICTED
+       * @typedef {number} NsfwLevel
        */
-      this.nsfw = data.nsfw;
+
+      /**
+       * The nsfw level of this guild
+       * @type {NsfwLevel}
+       */
+      this.nsfwLevel = data.nsfw_level;
     }
   }
 
