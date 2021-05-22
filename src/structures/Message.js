@@ -3,6 +3,7 @@
 const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
+const ButtonInteractionCollector = require('./ButtonInteractionCollector');
 const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
@@ -412,6 +413,51 @@ class Message extends Base {
       collector.once('end', (reactions, reason) => {
         if (options.errors && options.errors.includes(reason)) reject(reactions);
         else resolve(reactions);
+      });
+    });
+  }
+
+  /**
+   * Creates a button interaction collector.
+   * @param {CollectorFilter} filter The filter to apply
+   * @param {ButtonInteractionCollectorOptions} [options={}] Options to send to the collector
+   * @returns {ButtonInteractionCollector}
+   * @example
+   * // Create a button interaction collector
+   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
+   * const collector = message.createButtonInteractionCollector(filter, { time: 15000 });
+   * collector.on('collect', i => console.log(`Collected ${i.customID}`));
+   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+   */
+  createButtonInteractionCollector(filter, options = {}) {
+    return new ButtonInteractionCollector(this, filter, options);
+  }
+
+  /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * @typedef {ButtonInteractionCollectorOptions} AwaitButtonInteractionsOptions
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+   */
+
+  /**
+   * Similar to createButtonInteractionCollector but in promise form.
+   * Resolves with a collection of interactions that pass the specified filter.
+   * @param {CollectorFilter} filter The filter function to use
+   * @param {AwaitButtonInteractionsOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<string, ButtonInteraction>>}
+   * @example
+   * // Create a button interaction collector
+   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
+   * message.awaitButtonInteraction(filter, { time: 15000 })
+   *   .then(collected => console.log(`Collected ${collected.size} interactions`))
+   *   .catch(console.error);
+   */
+  awaitButtonInteractions(filter, options = {}) {
+    return new Promise((resolve, reject) => {
+      const collector = this.createButtonInteractionCollector(filter, options);
+      collector.once('end', (interactions, reason) => {
+        if (options.errors && options.errors.includes(reason)) reject(interactions);
+        else resolve(interactions);
       });
     });
   }
