@@ -78,8 +78,12 @@ class RequestHandler {
     });
   }
 
-  onRateLimit(request, limit, timeout, isGlobal) {
-    if (this.manager.client.options.disableRateLimitQueue) {
+  /*
+   * Determines whether the request should be queued or whether a RateLimitError should be thrown
+   */
+  async onRateLimit(request, limit, timeout, isGlobal) {
+    const { options } = this.manager.client;
+    if (options.disableRateLimitQueue) {
       const rateLimitData = {
         timeout,
         limit,
@@ -89,11 +93,9 @@ class RequestHandler {
         global: isGlobal,
       };
       const shouldThrow =
-        typeof this.manager.client.options.disableRateLimitQueue === 'function'
-          ? this.manager.client.options.disableRateLimitQueue(rateLimitData)
-          : this.manager.client.options.disableRateLimitQueue.some(route =>
-              rateLimitData.route.startsWith(`/${route}/`),
-            );
+        typeof options.disableRateLimitQueue === 'function'
+          ? await options.disableRateLimitQueue(rateLimitData)
+          : options.disableRateLimitQueue.some(route => rateLimitData.route.startsWith(`/${route}/`));
       if (shouldThrow) {
         throw new RateLimitError(rateLimitData);
       }
@@ -114,7 +116,7 @@ class RequestHandler {
         limit = this.manager.globalLimit;
         timeout = this.manager.globalReset + this.manager.client.options.restTimeOffset - Date.now();
 
-        this.onRateLimit(request, limit, timeout, isGlobal);
+        await this.onRateLimit(request, limit, timeout, isGlobal); // eslint-disable-line no-await-in-loop
 
         // If this is the first task to reach the global timeout, set the global delay
         if (!this.manager.globalDelay) {
@@ -127,7 +129,7 @@ class RequestHandler {
         limit = this.limit;
         timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
 
-        this.onRateLimit(request, limit, timeout, isGlobal);
+        await this.onRateLimit(request, limit, timeout, isGlobal); // eslint-disable-line no-await-in-loop
 
         delayPromise = Util.delayFor(timeout);
       }
@@ -266,7 +268,7 @@ class RequestHandler {
           limit = this.limit;
           timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
         }
-        this.onRateLimit(request, limit, timeout, isGlobal);
+        await this.onRateLimit(request, limit, timeout, isGlobal);
 
         // If caused by a sublimit, wait it out here so other requests on the route can be handled
         if (sublimitTimeout) {
