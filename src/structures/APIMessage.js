@@ -1,7 +1,7 @@
 'use strict';
 
+const BaseMessageComponent = require('./BaseMessageComponent');
 const MessageAttachment = require('./MessageAttachment');
-const MessageComponent = require('./MessageComponent');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
@@ -149,9 +149,10 @@ class APIMessage {
     }
     const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
 
-    const components = [];
+    let components;
     if (this.options.components) {
-      components.push(...this.options.components.map(MessageComponent.transform));
+      components = [];
+      components.push(...this.options.components.map(BaseMessageComponent.transform));
     }
 
     let username;
