@@ -5,6 +5,7 @@ const Interaction = require('./Interaction');
 const WebhookClient = require('../client/WebhookClient');
 const { Error } = require('../errors');
 const { InteractionResponseTypes } = require('../util/Constants');
+const MessageFlags = require('../util/MessageFlags');
 
 /**
  * Represents a message button interaction.
@@ -48,6 +49,7 @@ class ButtonInteraction extends Interaction {
 
   /**
    * Defers the reply to this interaction.
+   * @param {boolean} [ephemeral] Whether the reply should be ephemeral
    * @returns {Promise<void>}
    * @example
    * // Defer the reply to this interaction
@@ -55,12 +57,73 @@ class ButtonInteraction extends Interaction {
    *   .then(console.log)
    *   .catch(console.error)
    * @example
-   * // Defer to update the button to a loading state
+   * // Defer to send an ephemeral reply later
    * interaction.defer(true)
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async defer() {
+  async defer(ephemeral) {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    await this.client.api.interactions(this.id, this.token).callback.post({
+      data: {
+        type: InteractionResponseTypes.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          flags: ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
+        },
+      },
+    });
+    this.deferred = true;
+  }
+
+  /**
+   * Options for a reply to an interaction.
+   * @typedef {WebhookMessageOptions} InteractionReplyOptions
+   * @property {boolean} [ephemeral] Whether the reply should be ephemeral
+   */
+
+  /**
+   * Creates a reply to this interaction.
+   * @param {string|APIMessage|MessageAdditions} content The content for the reply
+   * @param {InteractionReplyOptions} [options] Additional options for the reply
+   * @returns {Promise<void>}
+   * @example
+   * // Reply to the interaction with an embed
+   * const embed = new MessageEmbed().setDescription('Pong!');
+   *
+   * interaction.reply(embed)
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Create an ephemeral reply
+   * interaction.reply('Pong!', { ephemeral: true })
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  async reply(content, options) {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+    const { data, files } = await apiMessage.resolveData().resolveFiles();
+
+    await this.client.api.interactions(this.id, this.token).callback.post({
+      data: {
+        type: InteractionResponseTypes.CHANNEL_MESSAGE_WITH_SOURCE,
+        data,
+      },
+      files,
+    });
+    this.replied = true;
+  }
+
+  /**
+   * Defers an update to the message to which the button was attached
+   * @returns {Promise<void>}
+   * @example
+   * // Defer to update the button to a loading state
+   * interaction.defer()
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  async deferUpdate() {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
@@ -81,7 +144,7 @@ class ButtonInteraction extends Interaction {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async reply(content, options) {
+  async update(content, options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
     const { data, files } = await apiMessage.resolveData().resolveFiles();

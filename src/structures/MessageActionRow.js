@@ -1,11 +1,11 @@
 'use strict';
 
-const MessageComponent = require('./BaseMessageComponent');
+const BaseMessageComponent = require('./BaseMessageComponent');
 
 /**
  * Represents an ActionRow containing message components.
  */
-class MessageActionRow extends MessageComponent {
+class MessageActionRow extends BaseMessageComponent {
   /**
    * @typedef {BaseMessageComponentOptions|MessageActionRowOptions|MessageButtonOptions} MessageComponentOptions
    */
@@ -29,7 +29,7 @@ class MessageActionRow extends MessageComponent {
   constructor(data = {}) {
     super({ type: 'ACTION_ROW' });
 
-    this.components = (data.components ?? []).map(MessageComponent.create);
+    this.components = (data.components ?? []).map(BaseMessageComponent.create);
   }
 
   /**
@@ -38,7 +38,7 @@ class MessageActionRow extends MessageComponent {
    * @returns {MessageEmbed}
    */
   addComponent(component) {
-    return this.addButtons({ ...component });
+    return this.addComponents({ ...component });
   }
 
   /**
@@ -47,7 +47,7 @@ class MessageActionRow extends MessageComponent {
    * @returns {MessageEmbed}
    */
   addComponents(...components) {
-    this.components.push(...components.map(MessageComponent.create));
+    this.components.push(...components.map(BaseMessageComponent.create));
     return this;
   }
 }

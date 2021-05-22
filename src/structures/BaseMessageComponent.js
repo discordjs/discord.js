@@ -12,7 +12,7 @@ class BaseMessageComponent {
    */
 
   /**
-   * @param {BaseMessageComponent|BaseMessageComponentOptions} [data={}] The options for this MessageComponent
+   * @param {BaseMessageComponent|BaseMessageComponentOptions} [data={}] The options for this component
    */
   constructor(data) {
     /**
