@@ -1020,6 +1020,13 @@ declare module 'discord.js' {
     public path: string;
   }
 
+  // tslint:disable-next-line:no-empty-interface - Merge RateLimitData into RateLimitError to not have to type it again
+  interface RateLimitError extends RateLimitData {}
+  export class RateLimitError extends Error {
+    constructor(data: RateLimitData);
+    public name: 'RateLimitError';
+  }
+
   export class Integration extends Base {
     constructor(client: Client, data: object, guild: Guild);
     public account: IntegrationAccount;
@@ -2657,7 +2664,7 @@ declare module 'discord.js' {
     intents: BitFieldResolvable<IntentsString, number>;
     ws?: WebSocketOptions;
     http?: HTTPOptions;
-    disableRateLimitQueue?: string[] | ((data: RateLimitData) => boolean);
+    disableRateLimitQueue?: string[] | ((data: RateLimitData) => boolean | Promise<boolean>);
   }
 
   type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -3486,13 +3493,6 @@ declare module 'discord.js' {
     path: string;
     route: string;
     global: boolean;
-  }
-
-  // tslint:disable-next-line:no-empty-interface - Merge RateLimitData interface to not have to type it again
-  interface RateLimitError extends RateLimitData {}
-  export class RateLimitError extends Error {
-    constructor(data: RateLimitData);
-    public name: 'RateLimitError';
   }
 
   interface InvalidRequestWarningData {
