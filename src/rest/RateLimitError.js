@@ -15,7 +15,7 @@ class RateLimitError extends Error {
     this.name = 'RateLimitError';
 
     /**
-     * HTTP error code returned from the request
+     * Time until this rate limit ends, in ms
      * @type {number}
      */
     this.timeout = timeout;
@@ -45,7 +45,7 @@ class RateLimitError extends Error {
     this.global = global;
 
     /**
-     * The rate limit of this endpoint
+     * The maximum amount of requests of this end point
      * @type {number}
      */
     this.limit = limit;

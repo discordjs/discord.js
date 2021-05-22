@@ -4,6 +4,24 @@ const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError } = require('../errors');
 
 /**
+ * Rate limit data
+ * @typedef {Object} RateLimitData
+ * @property {number} timeout Time until this rate limit ends, in ms
+ * @property {number} limit The maximum amount of requests of this end point
+ * @property {string} method The http method of this request
+ * @property {string} path The path of the request relative to the HTTP endpoint
+ * @property {string} route The route of the request relative to the HTTP endpoint
+ * @property {boolean} global Whether this is a global rate limit
+ */
+
+/**
+ * Whether this rate limit should throw an Error
+ * @typedef {Function} RateLimitQueueFilter
+ * @param {RateLimitData} rateLimitData The data of this rate limit
+ * @returns {boolean|Promise<boolean>}
+ */
+
+/**
  * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
@@ -34,6 +52,9 @@ const { Error, RangeError } = require('../errors');
  * (or 0 for never)
  * @property {number} [restGlobalRateLimit=0] How many requests to allow sending per second (0 for unlimited, 50 for
  * the standard global limit used by Discord)
+ * @property {string[]|RateLimitQueueFilter} [disableRateLimitQueue] Decides how rate limits (429) should be handled.
+ * If this option is an array containing the route of the request or a function returning true, a {@link RateLimitError}
+ *  will be thrown. Otherwise the request will be queued for later
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
