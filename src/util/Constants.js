@@ -824,7 +824,7 @@ exports.InteractionResponseTypes = createEnum([
  * * EXPLICIT
  * * SAFE
  * * AGE_RESTRICTED
- * @typedef {string} NsfwLevel
+ * @typedef {string} NSFWLevel
  */
 exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
 

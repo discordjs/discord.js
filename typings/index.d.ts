@@ -3295,14 +3295,14 @@ declare module 'discord.js' {
     | 'REPLY'
     | 'APPLICATION_COMMAND';
 
+  type NSFWLevel = keyof typeof NSFWLevels;
+
   interface OverwriteData {
     allow?: PermissionResolvable;
     deny?: PermissionResolvable;
     id: GuildMemberResolvable | RoleResolvable;
     type?: OverwriteType;
   }
-
-  type NSFWLevel = keyof typeof NSFWLevels;
 
   type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
