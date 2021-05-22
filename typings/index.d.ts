@@ -732,7 +732,7 @@ declare module 'discord.js' {
     public mfaLevel: number;
     public name: string;
     public readonly nameAcronym: string;
-    public nsfw: boolean;
+    public nsfwLevel: NsfwLevel;
     public ownerID: Snowflake;
     public readonly partnered: boolean;
     public preferredLocale: string;
@@ -3293,6 +3293,8 @@ declare module 'discord.js' {
     id: GuildMemberResolvable | RoleResolvable;
     type?: OverwriteType;
   }
+
+  type NsfwLevel = 0 | 1 | 2 | 3;
 
   type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
