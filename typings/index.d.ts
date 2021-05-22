@@ -3302,7 +3302,7 @@ declare module 'discord.js' {
     type?: OverwriteType;
   }
 
-  type NsfwLevel = 0 | 1 | 2 | 3;
+  type NsfwLevel = 'DEFAULT' | 'EXPLICIT' | 'SAFE' | 'AGE_RESTRICTED';
 
   type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
