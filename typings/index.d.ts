@@ -461,9 +461,7 @@ declare module 'discord.js' {
     Endpoints: {
       botGateway: string;
       invite: (root: string, code: string) => string;
-      CDN: (
-        root: string,
-      ) => {
+      CDN: (root: string) => {
         Asset: (name: string) => string;
         DefaultAvatar: (id: string | number) => string;
         Emoji: (emojiID: string, format: 'png' | 'gif') => string;
