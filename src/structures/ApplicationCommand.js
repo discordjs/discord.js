@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const { Error } = require('../errors');
 const { ApplicationCommandOptionTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
@@ -130,7 +131,7 @@ class ApplicationCommand extends Base {
   }
 
   /**
-   * The object returned when fetching permissions for an application command.
+   * Data for setting the permissions of an application command.
    * @typedef {object} ApplicationCommandPermissionData
    * @property {Snowflake} id The ID of the role or user
    * @property {ApplicationCommandPermissionType|number} type Whether this permission if for a role or a user
@@ -147,6 +148,7 @@ class ApplicationCommand extends Base {
 
   /**
    * Fetches the permissions for this command.
+   * <warn>This is only available for guild application commands.</warn>
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
    * // Fetch permissions for this command
@@ -155,11 +157,13 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   fetchPermissions() {
+    if (!this.guild) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
     return this.manager.fetchPermissions(this);
   }
 
   /**
    * Sets the permissions for this command.
+   * <warn>This is only available for guild application commands.</warn>
    * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
@@ -175,6 +179,7 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   setPermissions(permissions) {
+    if (!this.guild) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
     return this.manager.setPermissions(this, permissions);
   }
 

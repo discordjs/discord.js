@@ -2085,18 +2085,8 @@ declare module 'discord.js' {
     public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-    public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public setPermissions(
-      command: ApplicationCommandResolvable,
-      permissions: ApplicationCommandPermissionData[],
-    ): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(
-      permissions: GuildApplicationCommandPermissionData[],
-    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     private static transformCommand(command: ApplicationCommandData): object;
-    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 
   export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
@@ -2112,6 +2102,16 @@ declare module 'discord.js' {
   export class GuildApplicationCommandManager extends ApplicationCommandManager {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
+    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      command: ApplicationCommandResolvable,
+      permissions: ApplicationCommandPermissionData[],
+    ): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      permissions: GuildApplicationCommandPermissionData[],
+    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
