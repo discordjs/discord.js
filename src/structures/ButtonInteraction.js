@@ -161,6 +161,8 @@ class ButtonInteraction extends Interaction {
 
   /**
    * Fetches the initial reply to this interaction.
+   * * For `defer` and `reply` this is the new message
+   * * For `deferUpdate` and `update` this is the message to which the buttons are attached
    * @see Webhook#fetchMessage
    * @returns {Promise<Message|Object>}
    * @example
@@ -176,6 +178,8 @@ class ButtonInteraction extends Interaction {
 
   /**
    * Edits the initial reply to this interaction.
+   * * For `defer` and `reply` this is the new message sent
+   * * For `deferUpdate` and `update` this is the message to which the buttons are attached
    * @see Webhook#editMessage
    * @param {string|APIMessage|MessageEmbed|MessageEmbed[]} content The new content for the message
    * @param {WebhookEditMessageOptions} [options] The options to provide
@@ -193,6 +197,8 @@ class ButtonInteraction extends Interaction {
 
   /**
    * Deletes the initial reply to this interaction.
+   * * For `defer` and `reply` this is the new message
+   * * For `deferUpdate` and `update` this is the message to which the buttons are attached
    * @see Webhook#deleteMessage
    * @returns {Promise<void>}
    * @example
