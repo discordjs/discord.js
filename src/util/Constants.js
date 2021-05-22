@@ -826,7 +826,7 @@ exports.InteractionResponseTypes = createEnum([
  * * AGE_RESTRICTED
  * @typedef {string} NsfwLevel
  */
-exports.NsfwLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
+exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
 
 function keyMirror(arr) {
   let tmp = Object.create(null);

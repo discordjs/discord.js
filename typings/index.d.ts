@@ -37,7 +37,7 @@ declare enum InviteTargetType {
   EMBEDDED_APPLICATION = 2,
 }
 
-declare enum NsfwLevels {
+declare enum NSFWLevels {
   DEFAULT = 0,
   EXPLICIT = 1,
   SAFE = 2,
@@ -655,7 +655,7 @@ declare module 'discord.js' {
     ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
     InteractionTypes: typeof InteractionTypes;
     InteractionResponseTypes: typeof InteractionResponseTypes;
-    NsfwLevels: typeof NsfwLevels;
+    NSFWLevels: typeof NSFWLevels;
   };
 
   export class DataResolver {
@@ -740,7 +740,7 @@ declare module 'discord.js' {
     public mfaLevel: number;
     public name: string;
     public readonly nameAcronym: string;
-    public nsfwLevel: NsfwLevel;
+    public nsfwLevel: NSFWLevel;
     public ownerID: Snowflake;
     public readonly partnered: boolean;
     public preferredLocale: string;
@@ -3302,7 +3302,7 @@ declare module 'discord.js' {
     type?: OverwriteType;
   }
 
-  type NsfwLevel = 'DEFAULT' | 'EXPLICIT' | 'SAFE' | 'AGE_RESTRICTED';
+  type NSFWLevel = keyof typeof NSFWLevels;
 
   type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 

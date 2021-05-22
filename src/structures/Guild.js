@@ -171,10 +171,10 @@ class Guild extends Base {
 
     if ('nsfw_level' in data) {
       /**
-       * The nsfw level of this guild
+       * The NSFW level of this guild
        * @type {NsfwLevel}
        */
-      this.nsfwLevel = NsfwLevels[data.nsfw_level];
+      this.nsfwLevel = NSFWLevels[data.nsfw_level];
     }
 
     /**
