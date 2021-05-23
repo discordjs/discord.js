@@ -455,7 +455,7 @@ class Client extends BaseClient {
     } else {
       options.intents = Intents.resolve(options.intents);
     }
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount <= 1) {
+    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       options.shardCount = 1;
     }
     if (options.shards && !(options.shards === 'auto' || Array.isArray(options.shards))) {
