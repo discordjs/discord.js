@@ -7,7 +7,7 @@ const { Error, RangeError } = require('../errors');
  * Rate limit data
  * @typedef {Object} RateLimitData
  * @property {number} timeout Time until this rate limit ends, in ms
- * @property {number} limit The maximum amount of requests of this end point
+ * @property {number} limit The maximum amount of requests of this endpoint
  * @property {string} method The http method of this request
  * @property {string} path The path of the request relative to the HTTP endpoint
  * @property {string} route The route of the request relative to the HTTP endpoint
