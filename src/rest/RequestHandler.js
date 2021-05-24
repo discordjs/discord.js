@@ -255,7 +255,7 @@ class RequestHandler {
     if (res.status >= 400 && res.status < 500) {
       // Handle ratelimited requests
       if (res.status === 429) {
-        // A ratelimit was hit - this should only happen if client is already rate limited when connecting
+        // A ratelimit was hit - this should never happen
         this.manager.client.emit('debug', `429 hit on route ${request.route}${sublimitTimeout ? ' for sublimit' : ''}`);
 
         const isGlobal = this.globalLimited;
