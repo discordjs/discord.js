@@ -121,7 +121,7 @@ class CommandInteraction extends Interaction {
    */
   async reply(content, options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    this.ephemeral = ( options.ephemeral ? true : false )
+    this.ephemeral = options.ephemeral ?? false;
     const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
@@ -146,7 +146,7 @@ class CommandInteraction extends Interaction {
    *   .catch(console.error);
    */
   async fetchReply() {
-    if (this.ephemeral) throw new Error('Unable to fetch ephemeral response')
+    if (this.ephemeral) throw new Error('Unable to fetch ephemeral response');
     const raw = await this.webhook.fetchMessage('@original');
     return this.channel?.messages.add(raw) ?? raw;
   }
