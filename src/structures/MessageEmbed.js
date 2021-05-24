@@ -315,7 +315,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setAuthor(name, iconURL, url) {
-    this.author = { name: Util.verifyString(name, new RangeError('EMBED_AUTHOR_NAME')), iconURL, url };
+    this.author = { name: Util.verifyString(name, RangeError, 'EMBED_AUTHOR_NAME'), iconURL, url };
     return this;
   }
 
@@ -335,7 +335,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setDescription(description) {
-    this.description = Util.verifyString(description, new RangeError('EMBED_DESCRIPTION'));
+    this.description = Util.verifyString(description, RangeError, 'EMBED_DESCRIPTION');
     return this;
   }
 
@@ -346,7 +346,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setFooter(text, iconURL) {
-    this.footer = { text: Util.verifyString(text, new RangeError('EMBED_FOOTER_TEXT')), iconURL };
+    this.footer = { text: Util.verifyString(text, RangeError, 'EMBED_FOOTER_TEXT'), iconURL };
     return this;
   }
 
@@ -387,7 +387,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setTitle(title) {
-    this.title = Util.verifyString(title, new RangeError('EMBED_TITLE'));
+    this.title = Util.verifyString(title, RangeError, 'EMBED_TITLE');
     return this;
   }
 
@@ -441,8 +441,8 @@ class MessageEmbed {
    */
   static normalizeField(name, value, inline = false) {
     return {
-      name: Util.verifyString(name, new RangeError('EMBED_FIELD_NAME'), false),
-      value: Util.verifyString(value, new RangeError('EMBED_FIELD_VALUE'), false),
+      name: Util.verifyString(name, RangeError, 'EMBED_FIELD_NAME', false),
+      value: Util.verifyString(value, RangeError, 'EMBED_FIELD_VALUE', false),
       inline,
     };
   }
