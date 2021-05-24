@@ -32,6 +32,12 @@ class CommandInteraction extends Interaction {
      * @type {boolean}
      */
     this.deferred = false;
+    
+    /**
+     * Whether the reply to this interaction is ephemeral
+     * @type {boolean}
+     */
+    this.ephemeral = false;
 
     /**
      * The options passed to the command.
@@ -115,6 +121,7 @@ class CommandInteraction extends Interaction {
    */
   async reply(content, options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    this.ephemeral = ( options.ephemeral ? true : false )
     const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
@@ -139,6 +146,7 @@ class CommandInteraction extends Interaction {
    *   .catch(console.error);
    */
   async fetchReply() {
+    if (this.ephemeral) throw new Error('Unable to fetch ephemeral response')
     const raw = await this.webhook.fetchMessage('@original');
     return this.channel?.messages.add(raw) ?? raw;
   }
