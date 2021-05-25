@@ -456,6 +456,7 @@ class Client extends BaseClient {
       options.intents = Intents.resolve(options.intents);
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
+      console.warn('WARN: shardCount is set to an invalid integer. ');
       options.shardCount = 1;
     }
     if (options.shards && !(options.shards === 'auto' || Array.isArray(options.shards))) {
