@@ -114,11 +114,11 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a button interacion.
+   * Indicates whether this interaction is a component interacion.
    * @returns {boolean}
    */
-  isButton() {
-    return InteractionTypes[this.type] === InteractionTypes.BUTTON;
+  isComponent() {
+    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT;
   }
 }
 

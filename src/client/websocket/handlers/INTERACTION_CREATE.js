@@ -15,9 +15,9 @@ module.exports = (client, { d: data }) => {
     }
     case InteractionTypes.MESSAGE_COMPONENT: {
       if (!Structures) Structures = require('../../../util/Structures');
-      const ButtonInteraction = Structures.get('ButtonInteraction');
+      const ComponentInteraction = Structures.get('ComponentInteraction');
 
-      interaction = new ButtonInteraction(client, data);
+      interaction = new ComponentInteraction(client, data);
       break;
     }
     default:

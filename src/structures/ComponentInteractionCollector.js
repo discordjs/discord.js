@@ -5,9 +5,9 @@ const Collection = require('../util/Collection');
 const { Events } = require('../util/Constants');
 
 /**
- * @typedef {CollectorOptions} ButtonInteractionCollectorOptions
+ * @typedef {CollectorOptions} ComponentInteractionCollectorOptions
  * @property {number} max The maximum total amount of interactions to collect
- * @property {number} maxButtons The maximum number of buttons to collect
+ * @property {number} maxComponents The maximum number of buttons to collect
  * @property {number} maxUsers The maximum number of users to interact
  */
 
@@ -17,11 +17,11 @@ const { Events } = require('../util/Constants');
  * channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
  * @extends {Collector}
  */
-class ButtonInteractionCollector extends Collector {
+class ComponentInteractionCollector extends Collector {
   /**
    * @param {Message} message The message upon which to collect button interactions
    * @param {CollectorFilter} filter The filter to apply to this collector
-   * @param {ButtonInteractionCollectorOptions} [options={}] The options to apply to this collector
+   * @param {ComponentInteractionCollectorOptions} [options={}] The options to apply to this collector
    */
   constructor(message, filter, options = {}) {
     super(message.client, filter, options);
@@ -78,8 +78,8 @@ class ButtonInteractionCollector extends Collector {
   collect(interaction) {
     /**
      * Emitted whenever a reaction is collected.
-     * @event ButtonInteractionCollector#collect
-     * @param {ButtonInteraction} interaction The reaction that was collected
+     * @event ComponentInteractionCollector#collect
+     * @param {ComponentInteraction} interaction The reaction that was collected
      */
     if (!interaction.isButton()) return null;
 
@@ -100,7 +100,7 @@ class ButtonInteractionCollector extends Collector {
 
   get endReason() {
     if (this.options.max && this.total >= this.options.max) return 'limit';
-    if (this.options.maxButtons && this.collected.size >= this.options.maxButtons) return 'buttonLimit';
+    if (this.options.maxComponents && this.collected.size >= this.options.maxComponents) return 'componentLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
     return null;
   }
@@ -142,4 +142,4 @@ class ButtonInteractionCollector extends Collector {
   }
 }
 
-module.exports = ButtonInteractionCollector;
+module.exports = ComponentInteractionCollector;

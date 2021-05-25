@@ -3,8 +3,8 @@
 const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
-const ButtonInteractionCollector = require('./ButtonInteractionCollector');
 const ClientApplication = require('./ClientApplication');
+const ComponentInteractionCollector = require('./ComponentInteractionCollector');
 const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
@@ -420,41 +420,41 @@ class Message extends Base {
   /**
    * Creates a button interaction collector.
    * @param {CollectorFilter} filter The filter to apply
-   * @param {ButtonInteractionCollectorOptions} [options={}] Options to send to the collector
-   * @returns {ButtonInteractionCollector}
+   * @param {ComponentInteractionCollectorOptions} [options={}] Options to send to the collector
+   * @returns {ComponentInteractionCollector}
    * @example
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = message.createButtonInteractionCollector(filter, { time: 15000 });
+   * const collector = message.createComponentInteractionCollector(filter, { time: 15000 });
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createButtonInteractionCollector(filter, options = {}) {
-    return new ButtonInteractionCollector(this, filter, options);
+  createComponentInteractionCollector(filter, options = {}) {
+    return new ComponentInteractionCollector(this, filter, options);
   }
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {ButtonInteractionCollectorOptions} AwaitButtonInteractionsOptions
+   * @typedef {ComponentInteractionCollectorOptions} AwaitComponentInteractionsOptions
    * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
    */
 
   /**
-   * Similar to createButtonInteractionCollector but in promise form.
+   * Similar to createComponentInteractionCollector but in promise form.
    * Resolves with a collection of interactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
-   * @param {AwaitButtonInteractionsOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, ButtonInteraction>>}
+   * @param {AwaitComponentInteractionsOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<string, ComponentInteraction>>}
    * @example
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitButtonInteraction(filter, { time: 15000 })
+   * message.awaitComponentInteraction(filter, { time: 15000 })
    *   .then(collected => console.log(`Collected ${collected.size} interactions`))
    *   .catch(console.error);
    */
-  awaitButtonInteractions(filter, options = {}) {
+  awaitComponentInteractions(filter, options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createButtonInteractionCollector(filter, options);
+      const collector = this.createComponentInteractionCollector(filter, options);
       collector.once('end', (interactions, reason) => {
         if (options.errors && options.errors.includes(reason)) reject(interactions);
         else resolve(interactions);

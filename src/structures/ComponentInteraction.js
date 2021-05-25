@@ -11,7 +11,7 @@ const MessageFlags = require('../util/MessageFlags');
  * Represents a message button interaction.
  * @extends {Interaction}
  */
-class ButtonInteraction extends Interaction {
+class ComponentInteraction extends Interaction {
   // eslint-disable-next-line no-useless-constructor
   constructor(client, data) {
     super(client, data);
@@ -230,4 +230,4 @@ class ButtonInteraction extends Interaction {
   }
 }
 
-module.exports = ButtonInteraction;
+module.exports = ComponentInteraction;
