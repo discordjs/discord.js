@@ -48,12 +48,14 @@ class Client extends BaseClient {
       }
     }
 
-    if (this.options.shardCount === DefaultOptions.shardCount) {
+    if (this.options.shardCount !== DefaultOptions.shardCount) {
       if ('SHARD_COUNT' in data) {
         this.options.shardCount = Number(data.SHARD_COUNT);
       } else if (Array.isArray(this.options.shards)) {
         this.options.shardCount = this.options.shards.length;
       }
+    } else {
+      this.options.shardCount = DefaultOptions.shardCount;
     }
 
     const typeofShards = typeof this.options.shards;
@@ -456,8 +458,7 @@ class Client extends BaseClient {
       options.intents = Intents.resolve(options.intents);
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
-      console.warn('WARN: shardCount is set to an invalid integer. ');
-      options.shardCount = 1;
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
     }
     if (options.shards && !(options.shards === 'auto' || Array.isArray(options.shards))) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shards', "'auto', a number or array of numbers");
