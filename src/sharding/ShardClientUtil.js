@@ -108,7 +108,7 @@ class ShardClientUtil {
    */
   fetchClientValues(prop, shard) {
     return new Promise((resolve, reject) => {
-      const parent = this.parentPort || process;
+      const parent = this.parentPort || process.parentPort;
 
       const listener = message => {
         if (!message || message._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
