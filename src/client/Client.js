@@ -54,8 +54,7 @@ class Client extends BaseClient {
       } else if (Array.isArray(this.options.shards)) {
         this.options.shardCount = this.options.shards.length;
       }
-    } else {
-      this.options.shardCount = DefaultOptions.shardCount;
+      if (typeof this.options.shardCount === 'undefined') this.options.shardCount = DefaultOptions.shardCount;
     }
 
     const typeofShards = typeof this.options.shards;
