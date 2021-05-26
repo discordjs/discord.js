@@ -83,8 +83,8 @@
     "npm": ">=7.0.0"
   },
   "lint-staged": {
-    "*.{mjs,js,ts}": "eslint --fix --ext mjs,js,ts",
-    "*.{json,yml,yaml}": "prettier --write"
+    "*.{mjs,js}": "eslint --fix --ext mjs,js,ts",
+    "*.{ts,json,yml,yaml}": "prettier --write"
   },
   "commitlint": {
     "extends": [
