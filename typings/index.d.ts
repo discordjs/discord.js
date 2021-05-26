@@ -2471,7 +2471,7 @@ declare module 'discord.js' {
     description: string;
     required?: boolean;
     choices?: ApplicationCommandOptionChoice[];
-    options?: ApplicationCommandOptionData[];
+    options?: this[];
   }
 
   interface ApplicationCommandOption extends ApplicationCommandOptionData {
