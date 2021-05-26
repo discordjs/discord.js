@@ -44,7 +44,7 @@ class MessageButton extends BaseMessageComponent {
 
     /**
      * Emoji for this button
-     * @type {Emoji|string}
+     * @type {?Emoji|string}
      */
     this.emoji = data.emoji ?? null;
 

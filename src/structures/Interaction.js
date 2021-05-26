@@ -114,7 +114,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a component interacion.
+   * Indicates whether this interaction is a component interaction.
    * @returns {boolean}
    */
   isComponent() {

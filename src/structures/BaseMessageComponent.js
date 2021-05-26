@@ -23,7 +23,7 @@ class BaseMessageComponent {
   }
 
   /**
-   * Sets the type of this component;
+   * Sets the type of this component
    * @param {MessageComponentType} type The type of this component
    * @returns {BaseMessageComponent}
    */

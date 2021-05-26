@@ -126,7 +126,7 @@ class Message extends Base {
     this.embeds = (data.embeds || []).map(e => new Embed(e, true));
 
     /**
-     * A list of component in the message e.g. ActionRows, Buttons
+     * A list of components in the message e.g. ActionRows, Buttons
      * @type {MessageComponent[]}
      */
     this.components = (data.components || []).map(BaseMessageComponent.create);

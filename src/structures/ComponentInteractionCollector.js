@@ -81,7 +81,7 @@ class ComponentInteractionCollector extends Collector {
      * @event ComponentInteractionCollector#collect
      * @param {ComponentInteraction} interaction The reaction that was collected
      */
-    if (!interaction.isButton()) return null;
+    if (!interaction.isComponent()) return null;
 
     if (interaction.message.id !== this.message.id) return null;
 
