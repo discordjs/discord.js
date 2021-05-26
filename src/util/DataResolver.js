@@ -5,7 +5,6 @@ const path = require('path');
 const stream = require('stream');
 const fetch = require('node-fetch');
 const { Error: DiscordError, TypeError } = require('../errors');
-const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
 
 /**
@@ -56,6 +55,7 @@ class DataResolver {
    * @returns {string}
    */
   static resolveGuildTemplateCode(data) {
+    const GuildTemplate = require('../structures/GuildTemplate');
     return this.resolveCode(data, GuildTemplate.GUILD_TEMPLATES_PATTERN);
   }
 

@@ -17,7 +17,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        uses: icrawl/action-eslint@v1
+        run: npm run lint
 
   typings:
     name: TSLint

@@ -51,15 +51,18 @@ class GuildEmojiRoleManager {
    * @returns {Promise<GuildEmoji>}
    */
   add(roleOrRoles) {
-    if (roleOrRoles instanceof Collection) return this.add(roleOrRoles.keyArray());
-    if (!Array.isArray(roleOrRoles)) return this.add([roleOrRoles]);
-    roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
+    if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roleOrRoles = [roleOrRoles];
 
-    if (roleOrRoles.includes(null)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true));
+    const resolvedRoles = [];
+    for (const role of roleOrRoles.values()) {
+      const resolvedRole = this.guild.roles.resolveID(role);
+      if (!resolvedRole) {
+        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
+      }
+      resolvedRoles.push(resolvedRole);
     }
 
-    const newRoles = [...new Set(roleOrRoles.concat(...this._roles.values()))];
+    const newRoles = [...new Set(resolvedRoles.concat(...this._roles.values()))];
     return this.set(newRoles);
   }
 
@@ -69,15 +72,18 @@ class GuildEmojiRoleManager {
    * @returns {Promise<GuildEmoji>}
    */
   remove(roleOrRoles) {
-    if (roleOrRoles instanceof Collection) return this.remove(roleOrRoles.keyArray());
-    if (!Array.isArray(roleOrRoles)) return this.remove([roleOrRoles]);
-    roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
+    if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roleOrRoles = [roleOrRoles];
 
-    if (roleOrRoles.includes(null)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true));
+    const resolvedRoles = [];
+    for (const role of roleOrRoles.values()) {
+      const resolvedRole = this.guild.roles.resolveID(role);
+      if (!resolvedRole) {
+        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
+      }
+      resolvedRoles.push(resolvedRole);
     }
 
-    const newRoles = this._roles.keyArray().filter(role => !roleOrRoles.includes(role));
+    const newRoles = this._roles.keyArray().filter(role => !resolvedRoles.includes(role.id));
     return this.set(newRoles);
   }
 

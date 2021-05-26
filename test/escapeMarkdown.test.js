@@ -1,6 +1,7 @@
 'use strict';
 
-/* eslint-disable max-len, no-undef */
+/* eslint-env jest */
+/* eslint-disable max-len */
 
 const Util = require('../src/util/Util');
 const testString = "`_Behold!_`\n||___~~***```js\n`use strict`;\nrequire('discord.js');```***~~___||";

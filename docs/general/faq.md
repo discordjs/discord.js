@@ -2,10 +2,6 @@
 
 These questions are some of the most frequently asked.
 
-## No matter what, I get `SyntaxError: Block-scoped declarations (let, const, function, class) not yet supported outside strict mode`‽
-
-Update to Node.js 14.0.0 or newer.
-
 ## How do I get voice working?
 
 - Install FFMPEG.
@@ -15,9 +11,9 @@ Update to Node.js 14.0.0 or newer.
 ## How do I install FFMPEG?
 
 - **npm:** `npm install ffmpeg-static`
-- **Ubuntu 16.04:** `sudo apt install ffmpeg`
-- **Ubuntu 14.04:** `sudo apt-get install libav-tools`
-- **Windows:** `npm install ffmpeg-static` or see the [FFMPEG section of AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md#download-ffmpeg).
+- **Ubuntu 20.04:** `sudo apt install ffmpeg`
+- **Ubuntu 18.04:** `sudo apt install ffmpeg`
+- **Windows:** `npm install ffmpeg-static` or see [WikiHow](https://www.wikihow.com/Install-FFmpeg-on-Windows).
 
 ## How do I set up @discordjs/opus?
 
@@ -26,5 +22,5 @@ Update to Node.js 14.0.0 or newer.
   Then, running `npm install @discordjs/opus` in your bot's directory should successfully build it. Woo!
 
 Other questions can be found at the [official Discord.js guide](https://discordjs.guide/popular-topics/faq.html)
-If you have issues not listed here or on the guide, feel free to ask in the [official Discord.js server](https://discord.gg/bRCvFy9).
+If you have issues not listed here or on the guide, feel free to ask in the [official Discord.js server](https://discord.gg/djs).
 Always make sure to read the [documentation](https://discord.js.org/#/docs/main/stable/general/welcome).
