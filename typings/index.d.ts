@@ -415,6 +415,7 @@ declare module 'discord.js' {
     public commandID: string;
     public commandName: string;
     public deferred: boolean;
+    public ephemeral: boolean;
     public options: CommandInteractionOption[];
     public replied: boolean;
     public webhook: WebhookClient;
