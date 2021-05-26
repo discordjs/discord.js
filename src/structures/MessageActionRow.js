@@ -7,19 +7,7 @@ const BaseMessageComponent = require('./BaseMessageComponent');
  */
 class MessageActionRow extends BaseMessageComponent {
   /**
-   * @typedef {BaseMessageComponentOptions|MessageActionRowOptions|MessageButtonOptions} MessageComponentOptions
-   */
-
-  /**
-   * @typedef {BaseMessageComponent|MessageActionRow|MessageButton} MessageComponent
-   */
-
-  /**
-   * @typedef {MessageComponentOptions|MessageComponent} MessageComponentResolvable
-   */
-
-  /**
-   * @typedef {Object} MessageActionRowOptions
+   * @typedef {BaseMessageComponentOptions} MessageActionRowOptions
    * @property {MessageComponent[]|MessageComponentOptions[]} [components] The components to place in this ActionRow
    */
 

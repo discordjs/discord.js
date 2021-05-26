@@ -5,7 +5,7 @@ const { MessageButtonStyles } = require('../util/Constants.js');
 const Util = require('../util/Util');
 class MessageButton extends BaseMessageComponent {
   /**
-   * @typedef {Object} MessageButtonOptions
+   * @typedef {BaseMessageComponentOptions} MessageButtonOptions
    * @property {string} [label] The text to be displayed on this button
    * @property {string} [customID] A unique string to be sent in the interaction when clicked
    * @property {MessageButtonStyle} [style] The style of this button
