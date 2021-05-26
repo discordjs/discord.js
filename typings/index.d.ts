@@ -418,7 +418,7 @@ declare module 'discord.js' {
     public options: CommandInteractionOption[];
     public replied: boolean;
     public webhook: WebhookClient;
-    public defer(ephemeral?: boolean): Promise<void>;
+    public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
       content: string | APIMessage | WebhookEditMessageOptions | MessageAdditions,
@@ -3072,6 +3072,10 @@ declare module 'discord.js' {
   interface IntegrationAccount {
     id: string;
     name: string;
+  }
+
+  interface InteractionDeferOptions {
+    ephemeral?: boolean;
   }
 
   interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL'> {
