@@ -3268,7 +3268,15 @@ declare module 'discord.js' {
 
   type MessageResolvable = Message | Snowflake;
 
-  type MessageTarget = TextChannel | NewsChannel | DMChannel | User | GuildMember | Webhook | WebhookClient;
+  type MessageTarget =
+    | Interaction
+    | TextChannel
+    | NewsChannel
+    | DMChannel
+    | User
+    | GuildMember
+    | Webhook
+    | WebhookClient;
 
   type MessageType =
     | 'DEFAULT'
