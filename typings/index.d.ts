@@ -737,6 +737,8 @@ declare module 'discord.js' {
     ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
     InteractionTypes: typeof InteractionTypes;
     InteractionResponseTypes: typeof InteractionResponseTypes;
+    MessageComponentTypes: typeof MessageComponentTypes;
+    MessageButtonStyles: typeof MessageButtonStyles;
     NSFWLevels: typeof NSFWLevels;
   };
 
