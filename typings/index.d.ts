@@ -2034,7 +2034,7 @@ declare module 'discord.js' {
     private _patch(data: object): void;
     public fetch(): Promise<Widget>;
     public id: string;
-    public instant_invite: string | null;
+    public instantInvite: string | null;
     public channels: Collection<string, WidgetChannel>;
     public members: Collection<string, WidgetMember>;
     public presence_count: number;
