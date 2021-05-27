@@ -2033,7 +2033,7 @@ declare module 'discord.js' {
     constructor(client: Client, data: object);
     private _patch(data: object): void;
     public fetch(): Promise<Widget>;
-    public id: string;
+    public id: Snowflake;
     public instantInvite: string | null;
     public channels: Collection<Snowflake, WidgetChannel>;
     public members: Collection<string, WidgetMember>;
