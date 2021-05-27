@@ -105,8 +105,8 @@ class BaseMessageComponent {
       disabled,
       emoji,
       label,
-      style: MessageButtonStyles[style],
-      type: MessageComponentTypes[type],
+      style: typeof style === 'string' ? MessageButtonStyles[style] : style,
+      type: typeof type === 'string' ? MessageComponentTypes[type] : type,
       url,
     };
   }
