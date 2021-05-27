@@ -2037,7 +2037,7 @@ declare module 'discord.js' {
     public instantInvite: string | null;
     public channels: Collection<string, WidgetChannel>;
     public members: Collection<string, WidgetMember>;
-    public presence_count: number;
+    public presenceCount: number;
   }
 
   //#endregion
