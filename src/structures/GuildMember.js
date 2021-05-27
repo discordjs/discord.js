@@ -1,7 +1,6 @@
 'use strict';
 
 const Base = require('./Base');
-const Role = require('./Role');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
@@ -283,34 +282,8 @@ class GuildMember extends Base {
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  async edit(data, reason) {
-    if (data.channel) {
-      const voiceChannelID = this.guild.channels.resolveID(data.channel);
-      const voiceChannel = this.guild.channels.cache.get(voiceChannelID);
-      if (!voiceChannelID || (voiceChannel && voiceChannel?.type !== 'voice')) {
-        throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
-      }
-      data.channel_id = voiceChannelID;
-      data.channel = undefined;
-    } else if (data.channel === null) {
-      data.channel_id = null;
-      data.channel = undefined;
-    }
-    if (data.roles) data.roles = data.roles.map(role => (role instanceof Role ? role.id : role));
-    let endpoint = this.client.api.guilds(this.guild.id);
-    if (this.user.id === this.client.user.id) {
-      const keys = Object.keys(data);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;
-      else endpoint = endpoint.members(this.id);
-    } else {
-      endpoint = endpoint.members(this.id);
-    }
-    await endpoint.patch({ data, reason });
-
-    const clone = this._clone();
-    data.user = this.user;
-    clone._patch(data);
-    return clone;
+  edit(data, reason) {
+    return this.guild.members.edit(this, data, reason);
   }
 
   /**
@@ -345,11 +318,7 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    */
   kick(reason) {
-    return this.client.api
-      .guilds(this.guild.id)
-      .members(this.user.id)
-      .delete({ reason })
-      .then(() => this);
+    return this.guild.members.kick(this, reason);
   }
 
   /**

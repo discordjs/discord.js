@@ -51,19 +51,25 @@ class TextBasedChannel {
   }
 
   /**
-   * Options provided when sending or editing a message.
-   * @typedef {Object} MessageOptions
+   * Base options provided when sending.
+   * @typedef {Object} BaseMessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
    * @property {string} [content=''] The content for the message
-   * @property {MessageEmbed|Object} [embed] An embed for the message
-   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * @property {FileOptions[]|BufferResolvable[]} [files] Files to send with the message
+   * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
+   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
-   * @property {MessageResolvable} [replyTo] The message to reply to (must be in the same channel and not system)
+   */
+
+  /**
+   * Options provided when sending or editing a message.
+   * @typedef {BaseMessageOptions} MessageOptions
+   * @property {MessageEmbed|Object} [embed] An embed for the message
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
+   * @property {ReplyOptions} [reply] The options for replying to a message
    */
 
   /**
@@ -72,7 +78,7 @@ class TextBasedChannel {
    * @property {MessageMentionTypes[]} [parse] Types of mentions to be parsed
    * @property {Snowflake[]} [users] Snowflakes of Users to be parsed as mentions
    * @property {Snowflake[]} [roles] Snowflakes of Roles to be parsed as mentions
-   * @property {boolean} [repliedUser] Whether the author of the Message being replied to should be pinged
+   * @property {boolean} [repliedUser=true] Whether the author of the Message being replied to should be pinged
    */
 
   /**
@@ -96,6 +102,14 @@ class TextBasedChannel {
    * @property {string} [char='\n'] Character to split the message with
    * @property {string} [prepend=''] Text to prepend to every piece except the first
    * @property {string} [append=''] Text to append to every piece except the last
+   */
+
+  /**
+   * Options for sending a message with a reply.
+   * @typedef {Object} ReplyOptions
+   * @param {MessageResolvable} messageReference The message to reply to (must be in the same channel and not system)
+   * @param {boolean} [failIfNotExists=true] Whether to error if the referenced message
+   * does not exist (creates a standard message in this case when false)
    */
 
   /**

@@ -48,6 +48,7 @@ class VoiceReceiver extends EventEmitter {
     const stream = this.packets.makeStream(user.id, end);
     if (mode === 'pcm') {
       const decoder = new prism.opus.Decoder({ channels: 2, rate: 48000, frameSize: 960 });
+      decoder.once('close', () => stream.destroy());
       stream.pipe(decoder);
       return decoder;
     }

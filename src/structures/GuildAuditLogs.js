@@ -329,7 +329,7 @@ class GuildAuditLogsEntry {
 
     /**
      * An entry in the audit log representing a specific change.
-     * @typedef {object} AuditLogChange
+     * @typedef {Object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * @property {*} [old] The old value of the change, e.g. for nicknames, the old nickname
      * @property {*} [new] The new value of the change, e.g. for nicknames, the new nickname
