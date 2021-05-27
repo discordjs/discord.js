@@ -138,6 +138,6 @@ class CommandInteraction extends Interaction {
   followUp() {}
 }
 
-InteractionResponses.applyToClass(CommandInteraction);
+InteractionResponses.applyToClass(CommandInteraction, ['deferUpdate', 'update']);
 
 module.exports = CommandInteraction;

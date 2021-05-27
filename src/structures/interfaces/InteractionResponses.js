@@ -168,8 +168,53 @@ class InteractionResponses {
     return this.channel?.messages.add(raw) ?? raw;
   }
 
+  /**
+   * Defers an update to the message to which the button was attached
+   * @returns {Promise<void>}
+   * @example
+   * // Defer to update the button to a loading state
+   * interaction.defer()
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  async deferUpdate() {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    await this.client.api.interactions(this.id, this.token).callback.post({
+      data: {
+        type: InteractionResponseTypes.DEFERRED_MESSAGE_UPDATE,
+      },
+    });
+    this.deferred = true;
+  }
+
+  /**
+   * Updates the message to which the button was attached
+   * @param {string|APIMessage|MessageAdditions} content The content for the reply
+   * @param {WebhookEditMessageOptions} [options] Additional options for the reply
+   * @returns {Promise<void>}
+   * @example
+   * // Remove the buttons from the message   *
+   * interaction.reply("A button was clicked", { components: [] })
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  async update(content, options) {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+    const { data, files } = await apiMessage.resolveData().resolveFiles();
+
+    await this.client.api.interactions(this.id, this.token).callback.post({
+      data: {
+        type: InteractionResponseTypes.UPDATE_MESSAGE,
+        data,
+      },
+      files,
+    });
+    this.replied = true;
+  }
+
   static applyToClass(structure, ignore = []) {
-    const props = ['defer', 'reply', 'fetchReply', 'editReply', 'deleteReply', 'followUp'];
+    const props = ['defer', 'reply', 'fetchReply', 'editReply', 'deleteReply', 'followUp', 'deferUpdate', 'update'];
     for (const prop of props) {
       if (ignore.includes(prop)) continue;
       Object.defineProperty(

@@ -1,11 +1,8 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Interaction = require('./Interaction');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const WebhookClient = require('../client/WebhookClient');
-const { Error } = require('../errors');
-const { InteractionResponseTypes } = require('../util/Constants');
 
 /**
  * Represents a message button interaction.
@@ -47,51 +44,6 @@ class ComponentInteraction extends Interaction {
     this.webhook = new WebhookClient(this.applicationID, this.token, this.client.options);
   }
 
-  /**
-   * Defers an update to the message to which the button was attached
-   * @returns {Promise<void>}
-   * @example
-   * // Defer to update the button to a loading state
-   * interaction.defer()
-   *   .then(console.log)
-   *   .catch(console.error);
-   */
-  async deferUpdate() {
-    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
-        type: InteractionResponseTypes.DEFERRED_MESSAGE_UPDATE,
-      },
-    });
-    this.deferred = true;
-  }
-
-  /**
-   * Updates the message to which the button was attached
-   * @param {string|APIMessage|MessageAdditions} content The content for the reply
-   * @param {WebhookEditMessageOptions} [options] Additional options for the reply
-   * @returns {Promise<void>}
-   * @example
-   * // Remove the buttons from the message   *
-   * interaction.reply("A button was clicked", { components: [] })
-   *   .then(console.log)
-   *   .catch(console.error);
-   */
-  async update(content, options) {
-    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
-    const { data, files } = await apiMessage.resolveData().resolveFiles();
-
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
-        type: InteractionResponseTypes.UPDATE_MESSAGE,
-        data,
-      },
-      files,
-    });
-    this.replied = true;
-  }
-
   // These are here only for documentation purposes - they are implemented by InteractionResponses
   /* eslint-disable no-empty-function */
   defer() {}
@@ -100,6 +52,8 @@ class ComponentInteraction extends Interaction {
   editReply() {}
   deleteReply() {}
   followUp() {}
+  deferUpdate() {}
+  update() {}
 }
 
 InteractionResponses.applyToClass(ComponentInteraction);
