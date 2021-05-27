@@ -23,11 +23,7 @@ class Widget extends Base {
   _patch(data) {
     /**
      * The id of the guild.
-<<<<<<< HEAD
      * @type {Snowflake}
-=======
-     * @type {string}
->>>>>>> 490e52e6f6544a7a42c8a354dc8d5a837945f528
      */
     this.id = data.id;
 
