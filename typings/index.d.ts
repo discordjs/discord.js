@@ -2035,7 +2035,7 @@ declare module 'discord.js' {
     public fetch(): Promise<Widget>;
     public id: string;
     public instantInvite: string | null;
-    public channels: Collection<string, WidgetChannel>;
+    public channels: Collection<Snowflake, WidgetChannel>;
     public members: Collection<string, WidgetMember>;
     public presenceCount: number;
   }
