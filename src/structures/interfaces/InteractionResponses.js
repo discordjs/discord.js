@@ -191,7 +191,7 @@ class InteractionResponses {
    * Updates the message to which the button was attached
    * @param {string|APIMessage|MessageAdditions} content The content for the reply
    * @param {WebhookEditMessageOptions} [options] Additional options for the reply
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|Object>}
    * @example
    * // Remove the buttons from the message   *
    * interaction.reply("A button was clicked", { components: [] })

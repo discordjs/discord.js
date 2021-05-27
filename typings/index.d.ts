@@ -341,6 +341,11 @@ declare module 'discord.js' {
     public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
     public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
     public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
+    public deferUpdate(): Promise<void>;
+    public update(
+      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+    ): Promise<Message | RawMessage>;
+    public update(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
   }
 
   export class CategoryChannel extends GuildChannel {
