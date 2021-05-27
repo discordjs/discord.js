@@ -3683,7 +3683,7 @@ declare module 'discord.js' {
     self_deaf?: boolean;
     self_mute?: boolean;
     suppress?: boolean;
-    channel_id?: string;
+    channel_id?: Snowflake;
     avatar_url: string;
     activity?: {
       name: string;
