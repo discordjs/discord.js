@@ -3691,7 +3691,7 @@ declare module 'discord.js' {
   }
 
   interface WidgetChannel {
-    id: string;
+    id: Snowflake;
     name: string;
     position: number;
   }
