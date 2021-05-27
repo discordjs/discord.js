@@ -37,6 +37,13 @@ declare enum InviteTargetType {
   EMBEDDED_APPLICATION = 2,
 }
 
+declare enum NSFWLevels {
+  DEFAULT = 0,
+  EXPLICIT = 1,
+  SAFE = 2,
+  AGE_RESTRICTED = 3,
+}
+
 declare enum OverwriteTypes {
   role = 0,
   member = 1,
@@ -647,6 +654,7 @@ declare module 'discord.js' {
     ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
     InteractionTypes: typeof InteractionTypes;
     InteractionResponseTypes: typeof InteractionResponseTypes;
+    NSFWLevels: typeof NSFWLevels;
   };
 
   export class DataResolver {
@@ -731,7 +739,7 @@ declare module 'discord.js' {
     public mfaLevel: number;
     public name: string;
     public readonly nameAcronym: string;
-    public nsfw: boolean;
+    public nsfwLevel: NSFWLevel;
     public ownerID: Snowflake;
     public readonly partnered: boolean;
     public preferredLocale: string;
@@ -3298,6 +3306,8 @@ declare module 'discord.js' {
     | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
     | 'REPLY'
     | 'APPLICATION_COMMAND';
+
+  type NSFWLevel = keyof typeof NSFWLevels;
 
   interface OverwriteData {
     allow?: PermissionResolvable;
