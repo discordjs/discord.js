@@ -5,32 +5,25 @@ const Collection = require('../util/Collection');
 const { Events } = require('../util/Constants');
 
 /**
- * @typedef {CollectorOptions} ComponentInteractionCollectorOptions
- * @property {number} max The maximum total amount of interactions to collect
- * @property {number} maxComponents The maximum number of buttons to collect
- * @property {number} maxUsers The maximum number of users to interact
- */
-
-/**
  * Collects interaction on message buttons.
  * Will automatically stop if the message (`'messageDelete'`),
  * channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
  * @extends {Collector}
  */
-class ComponentInteractionCollector extends Collector {
+class ChannelComponentInteractionCollector extends Collector {
   /**
-   * @param {Message} message The message upon which to collect button interactions
+   * @param {TextChannel|DMChannel|NewsChannel} channel The channel from which to collect button interactions
    * @param {CollectorFilter} filter The filter to apply to this collector
    * @param {ComponentInteractionCollectorOptions} [options={}] The options to apply to this collector
    */
-  constructor(message, filter, options = {}) {
-    super(message.client, filter, options);
+  constructor(channel, filter, options = {}) {
+    super(channel.client, filter, options);
 
     /**
      * The message upon which to collect button interactions
-     * @type {Message}
+     * @type {TextChannel|DMChannel|NewsChannel}
      */
-    this.message = message;
+    this.channel = channel;
 
     /**
      * The users which have interacted to buttons on this message
@@ -47,17 +40,14 @@ class ComponentInteractionCollector extends Collector {
     this.empty = this.empty.bind(this);
     this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
     this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
-    this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
 
     this.client.incrementMaxListeners();
     this.client.on(Events.INTERACTION_CREATE, this.handleCollect);
-    this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
     this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
     this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
 
     this.once('end', () => {
       this.client.removeListener(Events.INTERACTION_CREATE, this.handleCollect);
-      this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
       this.client.decrementMaxListeners();
@@ -78,12 +68,12 @@ class ComponentInteractionCollector extends Collector {
   collect(interaction) {
     /**
      * Emitted whenever a reaction is collected.
-     * @event ComponentInteractionCollector#collect
+     * @event TextChannelComponentInteractionCollector#collect
      * @param {ComponentInteraction} interaction The reaction that was collected
      */
     if (!interaction.isComponent()) return null;
 
-    if (interaction.message.id !== this.message.id) return null;
+    if (interaction.channel.id !== this.channel.id) return null;
 
     return interaction.id;
   }
@@ -103,18 +93,6 @@ class ComponentInteractionCollector extends Collector {
     if (this.options.maxComponents && this.collected.size >= this.options.maxComponents) return 'componentLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
     return null;
-  }
-
-  /**
-   * Handles checking if the message has been deleted, and if so, stops the collector with the reason 'messageDelete'.
-   * @private
-   * @param {Message} message The message that was deleted
-   * @returns {void}
-   */
-  _handleMessageDeletion(message) {
-    if (message.id === this.message.id) {
-      this.stop('messageDelete');
-    }
   }
 
   /**
@@ -142,4 +120,4 @@ class ComponentInteractionCollector extends Collector {
   }
 }
 
-module.exports = ComponentInteractionCollector;
+module.exports = ChannelComponentInteractionCollector;

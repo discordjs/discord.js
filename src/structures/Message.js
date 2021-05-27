@@ -4,8 +4,8 @@ const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
-const ComponentInteractionCollector = require('./ComponentInteractionCollector');
 const MessageAttachment = require('./MessageAttachment');
+const MessageComponentInteractionCollector = require('./MessageComponentInteractionCollector');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
@@ -421,7 +421,7 @@ class Message extends Base {
    * Creates a button interaction collector.
    * @param {CollectorFilter} filter The filter to apply
    * @param {ComponentInteractionCollectorOptions} [options={}] Options to send to the collector
-   * @returns {ComponentInteractionCollector}
+   * @returns {MessageComponentInteractionCollector}
    * @example
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
@@ -430,7 +430,7 @@ class Message extends Base {
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createComponentInteractionCollector(filter, options = {}) {
-    return new ComponentInteractionCollector(this, filter, options);
+    return new MessageComponentInteractionCollector(this, filter, options);
   }
 
   /**
@@ -440,15 +440,15 @@ class Message extends Base {
    */
 
   /**
-   * Similar to createComponentInteractionCollector but in promise form.
+   * Similar to createMessageComponentInteractionCollector but in promise form.
    * Resolves with a collection of interactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
-   * @param {AwaitComponentInteractionsOptions} [options={}] Optional options to pass to the internal collector
+   * @param {AwaitComponentInteractionOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, ComponentInteraction>>}
    * @example
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitComponentInteraction(filter, { time: 15000 })
+   * message.awaitComponentInteractions(filter, { time: 15000 })
    *   .then(collected => console.log(`Collected ${collected.size} interactions`))
    *   .catch(console.error);
    */
