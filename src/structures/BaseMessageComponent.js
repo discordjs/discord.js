@@ -9,7 +9,7 @@ class BaseMessageComponent {
   /**
    * Options for a BaseMessageComponent
    * @typedef {Object} BaseMessageComponentOptions
-   * @property {MessageComponentType} type The type of this component
+   * @property {MessageComponentTypeResolvable} type The type of this component
    */
 
   /**
@@ -53,6 +53,12 @@ class BaseMessageComponent {
     return this;
   }
 
+  /**
+   * Constructs a MessageComponent based on the type of the incoming data
+   * @param {MessageComponentOptions} data Data for a MessageComponent
+   * @returns {MessageComponent}
+   * @private
+   */
   static create(data) {
     let component;
     let type = data.type;
@@ -77,7 +83,8 @@ class BaseMessageComponent {
   /**
    * Resolves the type of a MessageComponent
    * @param {MessageComponentTypeResolvable} type The type to resolve
-   * @returns {any}
+   * @returns {MessageComponentType}
+   * @private
    */
   static resolveType(type) {
     return typeof type === 'string' ? type : MessageComponentTypes[type];

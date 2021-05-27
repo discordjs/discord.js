@@ -8,7 +8,7 @@ class MessageButton extends BaseMessageComponent {
    * @typedef {BaseMessageComponentOptions} MessageButtonOptions
    * @property {string} [label] The text to be displayed on this button
    * @property {string} [customID] A unique string to be sent in the interaction when clicked
-   * @property {MessageButtonStyle} [style] The style of this button
+   * @property {MessageButtonStyleResolvable} [style] The style of this button
    * @property {Emoji} [emoji] The emoji to be displayed to the left of the text
    * @property {string} [url] Optional URL for link-style buttons
    * @property {boolean} [disabled=false] Disables the button to prevent interactions
@@ -103,7 +103,7 @@ class MessageButton extends BaseMessageComponent {
 
   /**
    * Sets the style of this button
-   * @param {MessageButtonStyle} style The style of this button
+   * @param {MessageButtonStyleResolvable} style The style of this button
    * @returns {MessageButton}
    */
   setStyle(style) {
@@ -121,6 +121,12 @@ class MessageButton extends BaseMessageComponent {
     return this;
   }
 
+  /**
+   * Resolves the style of a MessageButton
+   * @param {MessageButtonStyleResolvable} style The style to resolve
+   * @returns {MessageButtonStyle}
+   * @private
+   */
   static resolveStyle(style) {
     return typeof style === 'string' ? style : MessageButtonStyles[style];
   }
