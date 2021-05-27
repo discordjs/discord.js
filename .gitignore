@@ -1,0 +1,22 @@
+# Packages
+node_modules/
+yarn.lock
+
+# Log files
+logs/
+*.log
+
+# Authentication
+test/auth.json
+test/auth.js
+docs/deploy/deploy_key
+docs/deploy/deploy_key.pub
+deploy/deploy_key
+deploy/deploy_key.pub
+
+# Miscellaneous
+.tmp/
+.vscode/
+.idea/
+docs/docs.json
+typings/index.js
