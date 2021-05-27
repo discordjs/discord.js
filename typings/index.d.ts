@@ -329,6 +329,7 @@ declare module 'discord.js' {
     public replied: boolean;
     public webhook: WebhookClient;
     public defer(ephemeral?: boolean): Promise<void>;
+    public deferUpdate(): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
       content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
@@ -341,7 +342,6 @@ declare module 'discord.js' {
     public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
     public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
     public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
-    public deferUpdate(): Promise<void>;
     public update(
       content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
     ): Promise<Message | RawMessage>;
