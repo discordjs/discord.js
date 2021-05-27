@@ -41,7 +41,7 @@ class Widget extends Base {
 
     /**
      * The list of channels in the guild.
-     * @type {Collection<string, WidgetChannel>}
+     * @type {Collection<Snowflake, WidgetChannel>}
      */
     this.channels = new Collection();
     for (const channel of data.channels) {
