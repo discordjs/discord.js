@@ -143,7 +143,7 @@ class RequestHandler {
         });
       }
 
-      // Determine whether RateLimitError should be thrown
+      // Determine whether a RateLimitError should be thrown
       await this.onRateLimit(request, limit, timeout, isGlobal); // eslint-disable-line no-await-in-loop
 
       if (isGlobal) {
