@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseMessageComponent = require('./BaseMessageComponent');
+const { MessageComponentTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 class MessageSelectMenu extends BaseMessageComponent {
@@ -31,7 +32,7 @@ class MessageSelectMenu extends BaseMessageComponent {
     this.setup(data);
   }
 
-  super(data) {
+  setup(data) {
     /**
      * A unique string to be sent in the interaction when clicked
      * @type {?string}
@@ -84,7 +85,8 @@ class MessageSelectMenu extends BaseMessageComponent {
   }
 
   /**
-   * Sets the minimum number of selection required for this select menu
+   * Sets the minimum number of selections required for this select menu
+   * <info>This will default the maxValues to the number of options, unless manually set</info>
    * @param {number} minValues Number of selections to be required
    * @returns {MessageSelectMenu}
    */
@@ -143,8 +145,9 @@ class MessageSelectMenu extends BaseMessageComponent {
       custom_id: this.customID,
       placeholder: this.placeholder,
       min_values: this.minValues,
-      max_values: this.maxValues,
+      max_values: this.maxValues ?? this.minValues ? this.options.length : undefined,
       options: this.options,
+      type: typeof this.type === 'string' ? MessageComponentTypes[this.type] : this.type,
     };
   }
 

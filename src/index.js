@@ -97,6 +97,7 @@ module.exports = {
   MessageEmbed: require('./structures/MessageEmbed'),
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
+  MessageSelectMenu: require('./structures/MessageSelectMenu'),
   NewsChannel: require('./structures/NewsChannel'),
   OAuth2Guild: require('./structures/OAuth2Guild'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
