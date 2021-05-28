@@ -215,10 +215,18 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Extra information about the overwrite
+   * @typedef {Object} GuildChannelOverwriteOptions
+   * @property {string} [reason] Reason for creating/editing this overwrite
+   * @property {number} [type] The type of overwrite, either `0` for a role or `1` for a member. Use this to bypass
+   * automatic resolution of type that results in an error for uncached structure
+   */
+
+  /**
    * Updates permission overwrites for a user or role in this channel, or creates an entry if not already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
+   * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
    * @returns {Promise<GuildChannel>}
    * @example
    * // Update or Create permission overwrites for a message author
@@ -228,15 +236,14 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  async updateOverwrite(userOrRole, options, reason) {
-    userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
-
-    const existing = this.permissionOverwrites.get(userOrRole.id);
+  async updateOverwrite(userOrRole, options, overwriteOptions = {}) {
+    const userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
+    const { reason } = overwriteOptions;
+    const existing = this.permissionOverwrites.get(userOrRoleID);
     if (existing) {
       await existing.update(options, reason);
     } else {
-      await this.createOverwrite(userOrRole, options, reason);
+      await this.createOverwrite(userOrRole, options, overwriteOptions);
     }
     return this;
   }
@@ -245,7 +252,7 @@ class GuildChannel extends Channel {
    * Creates permission overwrites for a user or role in this channel, or replaces them if already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
+   * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create or Replace permission overwrites for a message author
@@ -255,19 +262,23 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  createOverwrite(userOrRole, options, reason) {
-    userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
-
-    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
+  createOverwrite(userOrRole, options, overwriteOptions = {}) {
+    let userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
+    let { type, reason } = overwriteOptions;
+    if (typeof type !== 'number') {
+      userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
+      if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
+      userOrRoleID = userOrRole.id;
+      type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
+    }
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
 
     return this.client.api
       .channels(this.id)
-      .permissions(userOrRole.id)
+      .permissions(userOrRoleID)
       .put({
         data: {
-          id: userOrRole.id,
+          id: userOrRoleID,
           type,
           allow,
           deny,
@@ -473,6 +484,14 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Data that can be resolved to an Application. This can be:
+   * * An Application
+   * * An Activity with associated Application
+   * * A Snowflake
+   * @typedef {Application|Snowflake} ApplicationResolvable
+   */
+
+  /**
    * Creates an invite to this guild channel.
    * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
@@ -480,6 +499,11 @@ class GuildChannel extends Channel {
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
    * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
+   * @param {UserResolvable} [options.targetUser] The user whose stream to display for this invite,
+   * required if `targetType` is 1, the user must be streaming in the channel
+   * @param {ApplicationResolvable} [options.targetApplication] The embedded application to open for this invite,
+   * required if `targetType` is 2, the application must have the `EMBEDDED` flag
+   * @param {InviteTargetType} [options.targetType] The type of the target for this voice channel invite
    * @param {string} [options.reason] Reason for creating this
    * @returns {Promise<Invite>}
    * @example
@@ -488,7 +512,16 @@ class GuildChannel extends Channel {
    *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
    *   .catch(console.error);
    */
-  createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
+  createInvite({
+    temporary = false,
+    maxAge = 86400,
+    maxUses = 0,
+    unique,
+    targetUser,
+    targetApplication,
+    targetType,
+    reason,
+  } = {}) {
     return this.client.api
       .channels(this.id)
       .invites.post({
@@ -497,6 +530,9 @@ class GuildChannel extends Channel {
           max_age: maxAge,
           max_uses: maxUses,
           unique,
+          target_user_id: this.client.users.resolveID(targetUser),
+          target_application_id: targetApplication?.id ?? targetApplication?.applicationID ?? targetApplication,
+          target_type: targetType,
         },
         reason,
       })

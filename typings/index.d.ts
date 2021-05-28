@@ -32,6 +32,18 @@ declare enum InteractionTypes {
   APPLICATION_COMMAND = 2,
 }
 
+declare enum InviteTargetType {
+  STREAM = 1,
+  EMBEDDED_APPLICATION = 2,
+}
+
+declare enum NSFWLevels {
+  DEFAULT = 0,
+  EXPLICIT = 1,
+  SAFE = 2,
+  AGE_RESTRICTED = 3,
+}
+
 declare enum OverwriteTypes {
   role = 0,
   member = 1,
@@ -153,7 +165,7 @@ declare module 'discord.js' {
     public icon: string | null;
     public id: Snowflake;
     public name: string | null;
-    public coverImage(options?: ImageURLOptions): string | null;
+    public coverURL(options?: ImageURLOptions): string | null;
     public fetchAssets(): Promise<ApplicationAsset[]>;
     public iconURL(options?: ImageURLOptions): string | null;
     public toJSON(): object;
@@ -177,6 +189,8 @@ declare module 'discord.js' {
     public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommandPermissions[]>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): object;
   }
+
+  type ApplicationResolvable = Application | Activity | Snowflake;
 
   export class ApplicationFlags extends BitField<ApplicationFlagsString> {
     public static FLAGS: Record<ApplicationFlagsString, number>;
@@ -426,13 +440,17 @@ declare module 'discord.js' {
     public options: CommandInteractionOption[];
     public replied: boolean;
     public webhook: WebhookClient;
-    public defer(ephemeral?: boolean): Promise<void>;
+    public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
-      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+      content: string | APIMessage | WebhookEditMessageOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
     public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
+    public followUp(
+      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
+    ): Promise<Message | RawMessage>;
+    public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
     public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
     public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
     private transformOption(option: object, resolved: object): CommandInteractionOption;
@@ -465,9 +483,7 @@ declare module 'discord.js' {
     Endpoints: {
       botGateway: string;
       invite: (root: string, code: string) => string;
-      CDN: (
-        root: string,
-      ) => {
+      CDN: (root: string) => {
         Asset: (name: string) => string;
         DefaultAvatar: (id: string | number) => string;
         Emoji: (emojiID: string, format: 'png' | 'gif') => string;
@@ -565,14 +581,15 @@ declare module 'discord.js' {
       DEFAULT: 0x000000;
       WHITE: 0xffffff;
       AQUA: 0x1abc9c;
-      GREEN: 0x2ecc71;
+      GREEN: 0x57f287;
       BLUE: 0x3498db;
-      YELLOW: 0xffff00;
+      YELLOW: 0xfee75c;
       PURPLE: 0x9b59b6;
       LUMINOUS_VIVID_PINK: 0xe91e63;
+      FUCHSIA: 0xeb459e;
       GOLD: 0xf1c40f;
       ORANGE: 0xe67e22;
-      RED: 0xe74c3c;
+      RED: 0xed4245;
       GREY: 0x95a5a6;
       NAVY: 0x34495e;
       DARK_AQUA: 0x11806a;
@@ -587,7 +604,7 @@ declare module 'discord.js' {
       DARKER_GREY: 0x7f8c8d;
       LIGHT_GREY: 0xbcc0c0;
       DARK_NAVY: 0x2c3e50;
-      BLURPLE: 0x7289da;
+      BLURPLE: 0x5865f2;
       GREYPLE: 0x99aab5;
       DARK_BUT_NOT_BLACK: 0x2c2f33;
       NOT_QUITE_BLACK: 0x23272a;
@@ -652,6 +669,7 @@ declare module 'discord.js' {
     ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
     InteractionTypes: typeof InteractionTypes;
     InteractionResponseTypes: typeof InteractionResponseTypes;
+    NSFWLevels: typeof NSFWLevels;
   };
 
   export class DataResolver {
@@ -729,7 +747,7 @@ declare module 'discord.js' {
     public memberCount: number;
     public members: GuildMemberManager;
     public mfaLevel: number;
-    public nsfw: boolean;
+    public nsfwLevel: NSFWLevel;
     public ownerID: Snowflake;
     public preferredLocale: string;
     public premiumSubscriptionCount: number | null;
@@ -878,8 +896,8 @@ declare module 'discord.js' {
     public createInvite(options?: InviteOptions): Promise<Invite>;
     public createOverwrite(
       userOrRole: RoleResolvable | UserResolvable,
-      options: PermissionOverwriteOption,
-      reason?: string,
+      options: PermissionOverwriteOptions,
+      overwriteOptions?: GuildChannelOverwriteOptions,
     ): Promise<this>;
     public edit(data: ChannelData, reason?: string): Promise<this>;
     public equals(channel: GuildChannel): boolean;
@@ -900,8 +918,8 @@ declare module 'discord.js' {
     public setTopic(topic: string | null, reason?: string): Promise<this>;
     public updateOverwrite(
       userOrRole: RoleResolvable | UserResolvable,
-      options: PermissionOverwriteOption,
-      reason?: string,
+      options: PermissionOverwriteOptions,
+      overwriteOptions?: GuildChannelOverwriteOptions,
     ): Promise<this>;
     public isText(): this is TextChannel | NewsChannel;
   }
@@ -1037,6 +1055,13 @@ declare module 'discord.js' {
 
   export class IntegrationApplication extends Application {
     public bot: User | null;
+    public termsOfServiceURL: string | null;
+    public privacyPolicyURL: string | null;
+    public rpcOrigins: string[];
+    public summary: string | null;
+    public hook: boolean | null;
+    public cover: string | null;
+    public verifyKey: string | null;
   }
 
   export class Intents extends BitField<IntentsString> {
@@ -1080,8 +1105,9 @@ declare module 'discord.js' {
     public maxUses: number | null;
     public memberCount: number;
     public presenceCount: number;
+    public targetApplication: IntegrationApplication | null;
     public targetUser: User | null;
-    public targetUserType: TargetUser | null;
+    public targetType: InviteTargetType | null;
     public temporary: boolean | null;
     public readonly url: string;
     public uses: number | null;
@@ -1339,11 +1365,11 @@ declare module 'discord.js' {
     public deny: Readonly<Permissions>;
     public id: Snowflake;
     public type: OverwriteType;
-    public update(options: PermissionOverwriteOption, reason?: string): Promise<PermissionOverwrites>;
+    public update(options: PermissionOverwriteOptions, reason?: string): Promise<PermissionOverwrites>;
     public delete(reason?: string): Promise<PermissionOverwrites>;
     public toJSON(): object;
     public static resolveOverwriteOptions(
-      options: PermissionOverwriteOption,
+      options: PermissionOverwriteOptions,
       initialPermissions: { allow?: PermissionResolvable; deny?: PermissionResolvable },
     ): ResolvedOverwriteOptions;
     public static resolve(overwrite: OverwriteResolvable, guild: Guild): RawOverwrite;
@@ -2073,18 +2099,8 @@ declare module 'discord.js' {
     public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-    public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public setPermissions(
-      command: ApplicationCommandResolvable,
-      permissions: ApplicationCommandPermissionData[],
-    ): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(
-      permissions: GuildApplicationCommandPermissionData[],
-    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     private static transformCommand(command: ApplicationCommandData): object;
-    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 
   export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
@@ -2100,6 +2116,16 @@ declare module 'discord.js' {
   export class GuildApplicationCommandManager extends ApplicationCommandManager {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
+    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      command: ApplicationCommandResolvable,
+      permissions: ApplicationCommandPermissionData[],
+    ): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      permissions: GuildApplicationCommandPermissionData[],
+    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
@@ -2110,10 +2136,11 @@ declare module 'discord.js' {
     public create(name: string, options?: GuildCreateChannelOptions & { type?: 'text' }): Promise<TextChannel>;
     public create(name: string, options: GuildCreateChannelOptions & { type: 'news' }): Promise<NewsChannel>;
     public create(name: string, options: GuildCreateChannelOptions & { type: 'store' }): Promise<StoreChannel>;
+    public create(name: string, options: GuildCreateChannelOptions & { type: 'stage' }): Promise<StageChannel>;
     public create(
       name: string,
       options: GuildCreateChannelOptions,
-    ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel>;
+    ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>;
   }
 
   export class GuildEmojiManager extends BaseGuildEmojiManager {
@@ -2154,10 +2181,12 @@ declare module 'discord.js' {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
+    public edit(user: UserResolvable, data: GuildMemberEditData, reason?: string): Promise<void>;
     public fetch(
       options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable }),
     ): Promise<GuildMember>;
     public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
+    public kick(user: UserResolvable, reason?: string): Promise<GuildMember | User | Snowflake>;
     public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
     public prune(options?: GuildPruneMembersOptions): Promise<number>;
     public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
@@ -2202,7 +2231,7 @@ declare module 'discord.js' {
     public cache: Collection<Snowflake, Message>;
     public crosspost(message: MessageResolvable): Promise<Message>;
     public delete(message: MessageResolvable): Promise<void>;
-    public edit(message: MessageResolvable, options: MessageEditOptions): Promise<Message>;
+    public edit(message: MessageResolvable, options: APIMessage | MessageEditOptions): Promise<Message>;
     public fetch(message: Snowflake, cache?: boolean, force?: boolean): Promise<Message>;
     public fetch(
       options?: ChannelLogsQueryOptions,
@@ -2459,7 +2488,7 @@ declare module 'discord.js' {
     description: string;
     required?: boolean;
     choices?: ApplicationCommandOptionChoice[];
-    options?: ApplicationCommandOption[];
+    options?: this[];
   }
 
   interface ApplicationCommandOption extends ApplicationCommandOptionData {
@@ -2685,6 +2714,7 @@ declare module 'discord.js' {
     | 'YELLOW'
     | 'PURPLE'
     | 'LUMINOUS_VIVID_PINK'
+    | 'FUCHSIA'
     | 'GOLD'
     | 'ORANGE'
     | 'RED'
@@ -2806,6 +2836,7 @@ declare module 'discord.js' {
     cache: boolean;
   }
 
+<<<<<<< HEAD
   interface FetchGuildOptions {
     guild: GuildResolvable;
     cache?: boolean;
@@ -2816,6 +2847,11 @@ declare module 'discord.js' {
     before?: Snowflake;
     after?: Snowflake;
     limit?: number;
+=======
+  interface GuildChannelOverwriteOptions {
+    reason?: string;
+    type?: number;
+>>>>>>> main
   }
 
   interface FetchMemberOptions {
@@ -3068,6 +3104,10 @@ declare module 'discord.js' {
     name: string;
   }
 
+  interface InteractionDeferOptions {
+    ephemeral?: boolean;
+  }
+
   interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL'> {
     ephemeral?: boolean;
   }
@@ -3106,6 +3146,9 @@ declare module 'discord.js' {
     maxUses?: number;
     unique?: boolean;
     reason?: string;
+    targetApplication?: ApplicationResolvable;
+    targetUser?: UserResolvable;
+    targetType?: InviteTargetType;
   }
 
   type InviteResolvable = string;
@@ -3255,7 +3298,15 @@ declare module 'discord.js' {
 
   type MessageResolvable = Message | Snowflake;
 
-  type MessageTarget = TextChannel | NewsChannel | DMChannel | User | GuildMember | Webhook | WebhookClient;
+  type MessageTarget =
+    | Interaction
+    | TextChannel
+    | NewsChannel
+    | DMChannel
+    | User
+    | GuildMember
+    | Webhook
+    | WebhookClient;
 
   type MessageType =
     | 'DEFAULT'
@@ -3278,6 +3329,8 @@ declare module 'discord.js' {
     | 'REPLY'
     | 'APPLICATION_COMMAND';
 
+  type NSFWLevel = keyof typeof NSFWLevels;
+
   interface OverwriteData {
     allow?: PermissionResolvable;
     deny?: PermissionResolvable;
@@ -3293,7 +3346,7 @@ declare module 'discord.js' {
 
   interface PermissionObject extends Record<PermissionString, boolean> {}
 
-  interface PermissionOverwriteOption extends Partial<Record<PermissionString, boolean | null>> {}
+  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> {}
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
@@ -3335,12 +3388,6 @@ declare module 'discord.js' {
   interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
-
-  interface PermissionOverwriteOptions {
-    allow: PermissionResolvable;
-    deny: PermissionResolvable;
-    id: UserResolvable | RoleResolvable;
-  }
 
   type PremiumTier = 0 | 1 | 2 | 3;
 
@@ -3588,8 +3635,6 @@ declare module 'discord.js' {
   type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
   type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND'>;
-
-  type TargetUser = number;
 
   interface TypingData {
     user: User | PartialUser;

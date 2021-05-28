@@ -3,6 +3,7 @@
 const BaseManager = require('./BaseManager');
 const { Error, TypeError, RangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
+const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
@@ -150,6 +151,47 @@ class GuildMemberManager extends BaseManager {
   }
 
   /**
+   * Edits a member of the guild.
+   * <info>The user must be a member of the guild</info>
+   * @param {UserResolvable} user The member to edit
+   * @param {GuildMemberEditData} data The data to edit the member with
+   * @param {string} [reason] Reason for editing this user
+   * @returns {Promise<GuildMember>}
+   */
+  async edit(user, data, reason) {
+    const id = this.client.users.resolveID(user);
+    if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+
+    // Clone the data object for immutability
+    const _data = { ...data };
+    if (_data.channel) {
+      _data.channel = this.guild.channels.resolve(_data.channel);
+      if (!_data.channel || _data.channel.type !== 'voice') {
+        throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
+      }
+      _data.channel_id = _data.channel.id;
+      _data.channel = undefined;
+    } else if (_data.channel === null) {
+      _data.channel_id = null;
+      _data.channel = undefined;
+    }
+    if (_data.roles) _data.roles = _data.roles.map(role => (role instanceof Role ? role.id : role));
+    let endpoint = this.client.api.guilds(this.guild.id);
+    if (id === this.client.user.id) {
+      const keys = Object.keys(_data);
+      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;
+      else endpoint = endpoint.members(id);
+    } else {
+      endpoint = endpoint.members(id);
+    }
+    const d = await endpoint.patch({ data: _data, reason });
+
+    const clone = this.cache.get(id)?._clone();
+    clone?._patch(d);
+    return clone ?? this.add(d, false);
+  }
+
+  /**
    * Prunes members from the guild based on how long they have been inactive.
    * <info>It's recommended to set options.count to `false` for large guilds.</info>
    * @param {Object} [options] Prune options
@@ -205,6 +247,29 @@ class GuildMemberManager extends BaseManager {
         reason,
       })
       .then(data => data.pruned);
+  }
+
+  /**
+   * Kicks a user from the guild.
+   * <info>The user must be a member of the guild</info>
+   * @param {UserResolvable} user The member to kick
+   * @param {string} [reason] Reason for kicking
+   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
+   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
+   * be resolved, the user ID will be the result.
+   * @example
+   * // Kick a user by ID (or with a user/guild member object)
+   * guild.members.kick('84484653687267328')
+   *   .then(user => console.log(`Kicked ${user.username || user.id || user} from ${guild.name}`))
+   *   .catch(console.error);
+   */
+  async kick(user, reason) {
+    const id = this.client.users.resolveID(user);
+    if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'user', 'UserResolvable'));
+
+    await this.client.api.guilds(this.guild.id).members(id).delete({ reason });
+
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? id;
   }
 
   /**

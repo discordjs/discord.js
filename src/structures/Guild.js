@@ -24,6 +24,7 @@ const {
   PartialTypes,
   VerificationLevels,
   ExplicitContentFilterLevels,
+  NSFWLevels,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
@@ -104,14 +105,6 @@ class Guild extends BaseGuild {
      * @type {number}
      */
     this.shardID = data.shardID;
-
-    if ('nsfw' in data) {
-      /**
-       * Whether the guild is designated as not safe for work
-       * @type {boolean}
-       */
-      this.nsfw = data.nsfw;
-    }
   }
 
   /**
@@ -158,6 +151,14 @@ class Guild extends BaseGuild {
      * @type {number}
      */
     this.memberCount = data.member_count || this.memberCount;
+
+    if ('nsfw_level' in data) {
+      /**
+       * The NSFW level of this guild
+       * @type {NSFWLevel}
+       */
+      this.nsfwLevel = NSFWLevels[data.nsfw_level];
+    }
 
     /**
      * Whether the guild is "large" (has more than large_threshold members, 50 by default)
@@ -472,8 +473,8 @@ class Guild extends BaseGuild {
    */
 
   /**
-   * Fetches the owner of the guild
-   * If the member object isn't needed, use {@link Guild#ownerID} instead
+   * Fetches the owner of the guild.
+   * If the member object isn't needed, use {@link Guild#ownerID} instead.
    * @param {FetchOwnerOptions} [options] The options for fetching the member
    * @returns {Promise<GuildMember>}
    */

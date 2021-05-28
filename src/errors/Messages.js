@@ -37,9 +37,6 @@ const Messages = {
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
-  EMBED_FIELD_NAME: 'MessageEmbed field names may not be empty.',
-  EMBED_FIELD_VALUE: 'MessageEmbed field values may not be empty.',
-
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
   USER_NO_DMCHANNEL: 'No DM Channel exists!',
@@ -111,6 +108,9 @@ const Messages = {
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
 
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
+
+  GLOBAL_COMMAND_PERMISSIONS:
+    "Permissions for global commands may only be fetched or modified from a guild's application command manager.",
 
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
 };

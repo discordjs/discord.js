@@ -62,8 +62,14 @@ class CommandInteraction extends Interaction {
   }
 
   /**
+   * Options for deferring the reply to a {@link CommandInteraction}.
+   * @typedef {InteractionDeferOptions}
+   * @property {boolean} [ephemeral] Whether the reply should be ephemeral
+   */
+
+  /**
    * Defers the reply to this interaction.
-   * @param {boolean} [ephemeral] Whether the reply should be ephemeral
+   * @param {InteractionDeferOptions} [options] Options for deferring the reply to this interaction
    * @returns {Promise<void>}
    * @example
    * // Defer the reply to this interaction
@@ -72,11 +78,11 @@ class CommandInteraction extends Interaction {
    *   .catch(console.error)
    * @example
    * // Defer to send an ephemeral reply later
-   * interaction.defer(true)
+   * interaction.defer({ ephemeral: true })
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async defer(ephemeral) {
+  async defer({ ephemeral } = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
@@ -91,8 +97,9 @@ class CommandInteraction extends Interaction {
 
   /**
    * Options for a reply to an interaction.
-   * @typedef {WebhookMessageOptions} InteractionReplyOptions
+   * @typedef {BaseMessageOptions} InteractionReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
+   * @property {MessageEmbed[]|Object[]} [embeds] An array of embeds for the message
    */
 
   /**
@@ -146,7 +153,7 @@ class CommandInteraction extends Interaction {
   /**
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|APIMessage|MessageEmbed|MessageEmbed[]} content The new content for the message
+   * @param {string|APIMessage|MessageAdditions} content The new content for the message
    * @param {WebhookEditMessageOptions} [options] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
@@ -186,6 +193,24 @@ class CommandInteraction extends Interaction {
    * @property {GuildChannel|Object} [channel] The resolved channel
    * @property {Role|Object} [role] The resolved role
    */
+
+  /**
+   * Send a follow-up message to this interaction.
+   * @param {string|APIMessage|MessageAdditions} content The content for the reply
+   * @param {InteractionReplyOptions} [options] Additional options for the reply
+   * @returns {Promise<Message|Object>}
+   */
+  async followUp(content, options) {
+    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+    const { data, files } = await apiMessage.resolveData().resolveFiles();
+
+    const raw = await this.client.api.webhooks(this.applicationID, this.token).post({
+      data,
+      files,
+    });
+
+    return this.channel?.messages.add(raw) ?? raw;
+  }
 
   /**
    * Transforms an option received from the API.

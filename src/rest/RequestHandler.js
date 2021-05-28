@@ -1,6 +1,6 @@
 'use strict';
 
-const AsyncQueue = require('./AsyncQueue');
+const { AsyncQueue } = require('@sapphire/async-queue');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const {

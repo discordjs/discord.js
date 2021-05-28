@@ -494,11 +494,8 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
-    if (!options && typeof content === 'object' && !Array.isArray(content)) {
-      options = content;
-      content = undefined;
-    }
-    return this.channel.messages.edit(this.id, { content, ...options });
+    options = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+    return this.channel.messages.edit(this.id, options);
   }
 
   /**
@@ -558,6 +555,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async react(emoji) {
+    emoji = this.client.emojis.resolveIdentifier(emoji);
     await this.channel.messages.react(this.id, emoji);
     return this.client.actions.MessageReactionAdd.handle({
       user: this.client.user,
@@ -583,17 +581,9 @@ class Message extends Base {
 
   /**
    * Options provided when sending a message as an inline reply.
-   * @typedef {Object} ReplyMessageOptions
-   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {string} [nonce=''] The nonce for the message
-   * @property {string} [content=''] The content for the message
+   * @typedef {BaseMessageOptions} ReplyMessageOptions
    * @property {MessageEmbed|Object} [embed] An embed for the message
    * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
-   * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * @property {FileOptions[]|BufferResolvable[]} [files] Files to send with the message
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
-   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
-   * it exceeds the character limit. If an object is provided, these are the options for splitting the message
    * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
    */
