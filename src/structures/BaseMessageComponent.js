@@ -1,6 +1,6 @@
 'use strict';
 
-const { MessageComponentTypes, MessageButtonStyles } = require('../util/Constants');
+const { MessageComponentTypes } = require('../util/Constants');
 
 /**
  * Represents an interactive component of a Message. It should not be necessary to construct this directly.
@@ -96,27 +96,6 @@ class BaseMessageComponent {
    */
   static resolveType(type) {
     return typeof type === 'string' ? type : MessageComponentTypes[type];
-  }
-
-  /**
-   * Transforms a MessageComponent object into something that can be used with the API.
-   * @param {MessageComponentResolvable} component The component to transform
-   * @returns {Object}
-   * @private
-   */
-  static transform(component) {
-    const { type, components, label, customID, style, emoji, url, disabled } = component;
-
-    return {
-      components: components?.map(BaseMessageComponent.transform),
-      custom_id: customID,
-      disabled,
-      emoji,
-      label,
-      style: typeof style === 'string' ? MessageButtonStyles[style] : style,
-      type: typeof type === 'string' ? MessageComponentTypes[type] : type,
-      url,
-    };
   }
 }
 

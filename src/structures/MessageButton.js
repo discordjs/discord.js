@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseMessageComponent = require('./BaseMessageComponent');
-const { MessageButtonStyles } = require('../util/Constants.js');
+const { MessageButtonStyles, MessageComponentTypes } = require('../util/Constants.js');
 const Util = require('../util/Util');
 class MessageButton extends BaseMessageComponent {
   /**
@@ -119,6 +119,22 @@ class MessageButton extends BaseMessageComponent {
   setURL(url) {
     this.url = Util.resolveString(url);
     return this;
+  }
+
+  /**
+   * Transforms the button to a plain object.
+   * @returns {Object} The raw data of this button
+   */
+  toJSON() {
+    return {
+      custom_id: this.customID,
+      disabled: this.disabled,
+      emoji: this.emoji,
+      label: this.label,
+      style: typeof this.style === 'string' ? MessageButtonStyles[this.style] : this.style,
+      type: typeof this.type === 'string' ? MessageComponentTypes[this.type] : this.type,
+      url: this.url,
+    };
   }
 
   /**

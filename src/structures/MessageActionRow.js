@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseMessageComponent = require('./BaseMessageComponent');
+const { MessageComponentTypes } = require('../util/Constants');
 
 /**
  * Represents an ActionRow containing message components.
@@ -37,6 +38,17 @@ class MessageActionRow extends BaseMessageComponent {
   addComponents(...components) {
     this.components.push(...components.map(BaseMessageComponent.create));
     return this;
+  }
+
+  /**
+   * Transforms the action row to a plain object.
+   * @returns {Object} The raw data of this action row
+   */
+  toJSON() {
+    return {
+      components: this.components.map(c => BaseMessageComponent.create(c).toJSON()),
+      type: typeof this.type === 'string' ? MessageComponentTypes[this.type] : this.type,
+    };
   }
 }
 

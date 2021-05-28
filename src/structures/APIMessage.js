@@ -155,7 +155,7 @@ class APIMessage {
     let components;
     if (this.options.components) {
       components = [];
-      components.push(...this.options.components.map(BaseMessageComponent.transform));
+      components.push(...this.options.components.map(c => BaseMessageComponent.create(c).toJSON()));
     }
 
     let username;
