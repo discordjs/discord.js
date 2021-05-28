@@ -2229,18 +2229,18 @@ declare module 'discord.js' {
     ): Promise<GuildChannel>;
     public upsert(
       userOrRole: RoleResolvable | UserResolvable,
-      options: PermissionOverwriteOption,
+      options: PermissionOverwriteOptions,
       overwriteOptions?: GuildChannelOverwriteOptions,
       existing?: PermissionOverwrites,
     ): Promise<GuildChannel>;
     public create(
       userOrRole: RoleResolvable | UserResolvable,
-      options: PermissionOverwriteOption,
+      options: PermissionOverwriteOptions,
       overwriteOptions?: GuildChannelOverwriteOptions,
     ): Promise<GuildChannel>;
     public edit(
       userOrRole: RoleResolvable | UserResolvable,
-      options: PermissionOverwriteOption,
+      options: PermissionOverwriteOptions,
       overwriteOptions?: GuildChannelOverwriteOptions,
     ): Promise<GuildChannel>;
     public delete(
