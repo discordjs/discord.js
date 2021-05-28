@@ -37,6 +37,13 @@ declare enum InviteTargetType {
   EMBEDDED_APPLICATION = 2,
 }
 
+declare enum NSFWLevels {
+  DEFAULT = 0,
+  EXPLICIT = 1,
+  SAFE = 2,
+  AGE_RESTRICTED = 3,
+}
+
 declare enum OverwriteTypes {
   role = 0,
   member = 1,
@@ -418,13 +425,17 @@ declare module 'discord.js' {
     public options: CommandInteractionOption[];
     public replied: boolean;
     public webhook: WebhookClient;
-    public defer(ephemeral?: boolean): Promise<void>;
+    public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
-      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+      content: string | APIMessage | WebhookEditMessageOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
     public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
+    public followUp(
+      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
+    ): Promise<Message | RawMessage>;
+    public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
     public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
     public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
     private transformOption(option: object, resolved: object): CommandInteractionOption;
@@ -457,9 +468,7 @@ declare module 'discord.js' {
     Endpoints: {
       botGateway: string;
       invite: (root: string, code: string) => string;
-      CDN: (
-        root: string,
-      ) => {
+      CDN: (root: string) => {
         Asset: (name: string) => string;
         DefaultAvatar: (id: string | number) => string;
         Emoji: (emojiID: string, format: 'png' | 'gif') => string;
@@ -557,14 +566,15 @@ declare module 'discord.js' {
       DEFAULT: 0x000000;
       WHITE: 0xffffff;
       AQUA: 0x1abc9c;
-      GREEN: 0x2ecc71;
+      GREEN: 0x57f287;
       BLUE: 0x3498db;
-      YELLOW: 0xffff00;
+      YELLOW: 0xfee75c;
       PURPLE: 0x9b59b6;
       LUMINOUS_VIVID_PINK: 0xe91e63;
+      FUCHSIA: 0xeb459e;
       GOLD: 0xf1c40f;
       ORANGE: 0xe67e22;
-      RED: 0xe74c3c;
+      RED: 0xed4245;
       GREY: 0x95a5a6;
       NAVY: 0x34495e;
       DARK_AQUA: 0x11806a;
@@ -579,7 +589,7 @@ declare module 'discord.js' {
       DARKER_GREY: 0x7f8c8d;
       LIGHT_GREY: 0xbcc0c0;
       DARK_NAVY: 0x2c3e50;
-      BLURPLE: 0x7289da;
+      BLURPLE: 0x5865f2;
       GREYPLE: 0x99aab5;
       DARK_BUT_NOT_BLACK: 0x2c2f33;
       NOT_QUITE_BLACK: 0x23272a;
@@ -644,6 +654,7 @@ declare module 'discord.js' {
     ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
     InteractionTypes: typeof InteractionTypes;
     InteractionResponseTypes: typeof InteractionResponseTypes;
+    NSFWLevels: typeof NSFWLevels;
   };
 
   export class DataResolver {
@@ -728,7 +739,7 @@ declare module 'discord.js' {
     public mfaLevel: number;
     public name: string;
     public readonly nameAcronym: string;
-    public nsfw: boolean;
+    public nsfwLevel: NSFWLevel;
     public ownerID: Snowflake;
     public readonly partnered: boolean;
     public preferredLocale: string;
@@ -1332,11 +1343,11 @@ declare module 'discord.js' {
     public deny: Readonly<Permissions>;
     public id: Snowflake;
     public type: OverwriteType;
-    public edit(options: PermissionOverwriteOption, reason?: string): Promise<PermissionOverwrites>;
+    public edit(options: PermissionOverwriteOptions, reason?: string): Promise<PermissionOverwrites>;
     public delete(reason?: string): Promise<PermissionOverwrites>;
     public toJSON(): object;
     public static resolveOverwriteOptions(
-      options: PermissionOverwriteOption,
+      options: PermissionOverwriteOptions,
       initialPermissions: { allow?: PermissionResolvable; deny?: PermissionResolvable },
     ): ResolvedOverwriteOptions;
     public static resolve(overwrite: OverwriteResolvable, guild: Guild): RawOverwrite;
@@ -2066,18 +2077,8 @@ declare module 'discord.js' {
     public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-    public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public setPermissions(
-      command: ApplicationCommandResolvable,
-      permissions: ApplicationCommandPermissionData[],
-    ): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(
-      permissions: GuildApplicationCommandPermissionData[],
-    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     private static transformCommand(command: ApplicationCommandData): object;
-    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 
   export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
@@ -2093,6 +2094,16 @@ declare module 'discord.js' {
   export class GuildApplicationCommandManager extends ApplicationCommandManager {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
+    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      command: ApplicationCommandResolvable,
+      permissions: ApplicationCommandPermissionData[],
+    ): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      permissions: GuildApplicationCommandPermissionData[],
+    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
@@ -2482,7 +2493,7 @@ declare module 'discord.js' {
     description: string;
     required?: boolean;
     choices?: ApplicationCommandOptionChoice[];
-    options?: ApplicationCommandOption[];
+    options?: this[];
   }
 
   interface ApplicationCommandOption extends ApplicationCommandOptionData {
@@ -2708,6 +2719,7 @@ declare module 'discord.js' {
     | 'YELLOW'
     | 'PURPLE'
     | 'LUMINOUS_VIVID_PINK'
+    | 'FUCHSIA'
     | 'GOLD'
     | 'ORANGE'
     | 'RED'
@@ -3089,6 +3101,10 @@ declare module 'discord.js' {
     name: string;
   }
 
+  interface InteractionDeferOptions {
+    ephemeral?: boolean;
+  }
+
   interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL'> {
     ephemeral?: boolean;
   }
@@ -3279,7 +3295,15 @@ declare module 'discord.js' {
 
   type MessageResolvable = Message | Snowflake;
 
-  type MessageTarget = TextChannel | NewsChannel | DMChannel | User | GuildMember | Webhook | WebhookClient;
+  type MessageTarget =
+    | Interaction
+    | TextChannel
+    | NewsChannel
+    | DMChannel
+    | User
+    | GuildMember
+    | Webhook
+    | WebhookClient;
 
   type MessageType =
     | 'DEFAULT'
@@ -3302,6 +3326,8 @@ declare module 'discord.js' {
     | 'REPLY'
     | 'APPLICATION_COMMAND';
 
+  type NSFWLevel = keyof typeof NSFWLevels;
+
   interface OverwriteData {
     allow?: PermissionResolvable;
     deny?: PermissionResolvable;
@@ -3317,7 +3343,7 @@ declare module 'discord.js' {
 
   interface PermissionObject extends Record<PermissionString, boolean> {}
 
-  interface PermissionOverwriteOption extends Partial<Record<PermissionString, boolean | null>> {}
+  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> {}
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
@@ -3361,12 +3387,6 @@ declare module 'discord.js' {
   interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
-
-  interface PermissionOverwriteOptions {
-    allow: PermissionResolvable;
-    deny: PermissionResolvable;
-    id: UserResolvable | RoleResolvable;
-  }
 
   type PremiumTier = 0 | 1 | 2 | 3;
 

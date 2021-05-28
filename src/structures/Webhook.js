@@ -88,19 +88,10 @@ class Webhook {
 
   /**
    * Options that can be passed into send.
-   * @typedef {Object} WebhookMessageOptions
+   * @typedef {BaseMessageOptions} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
-   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
-   * @property {StringResolvable} [content] The content for the message
-   * @property {string} [nonce=''] The nonce for the message
    * @property {MessageEmbed[]|Object[]} [embeds] An array of embeds for the message
-   * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
-   * @property {FileOptions[]|string[]} [files] Files to send with the message
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
-   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
-   * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
   /**
