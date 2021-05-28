@@ -2117,6 +2117,10 @@ declare module 'discord.js' {
     public setPermissions(
       permissions: GuildApplicationCommandPermissionData[],
     ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public addPermissions(
+      command: ApplicationCommandResolvable,
+      permissions: ApplicationCommandPermissionData[],
+    ): Promise<ApplicationCommandPermissions[]>;
     private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 

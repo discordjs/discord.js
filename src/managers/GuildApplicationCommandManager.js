@@ -120,6 +120,41 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
   }
 
   /**
+   * Add permissions to a command.
+   * @param {ApplicationCommandResolvable} command The command to edit the permissions for
+   * @param {ApplicationCommandPermissionData[]} permissions The permissions to add to this command
+   * @returns {Promise<ApplicationCommandPermissions[]>}
+   * @example
+   * // Block the @everyone role from command permissions
+   * guild.commands.addPermissions('123456789012345678', [
+   *   {
+   *     id: guild.roles.everyone.id,
+   *     type: 'ROLE',
+   *     permission: false
+   *   },
+   * ])
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  async addPermissions(command, permissions) {
+    const id = this.resolveID(command);
+    if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+
+    const perms = await this.fetchPermissions(id);
+    for (const perm of perms) {
+      if (!permissions.find(x => x.id === perm.id)) {
+        permissions.push(perm);
+      }
+    }
+
+    const data = await this.commandPath(id).permissions.put({
+      data: { permissions: permissions.map(perm => this.constructor.transformPermissions(perm)) },
+    });
+
+    return data.permissions.map(perm => this.constructor.transformPermissions(perm, true));
+  }
+
+  /**
    * Transforms an {@link ApplicationCommandPermissionData} object into something that can be used with the API.
    * @param {ApplicationCommandPermissionData} permissions The permissions to transform
    * @param {boolean} [received] Whether these permissions have been received from Discord
