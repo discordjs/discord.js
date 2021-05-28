@@ -290,7 +290,7 @@ class Message extends Base {
     if ('tts' in data) this.tts = data.tts;
     if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
     else this.embeds = this.embeds.slice();
-    if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.clien));
+    if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
     else this.components = this.components.slice();
 
     if ('attachments' in data) {
