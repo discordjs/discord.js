@@ -322,33 +322,6 @@ declare module 'discord.js' {
     public static resolve(bit?: BitFieldResolvable<any, number | bigint>): number | bigint;
   }
 
-  export class ComponentInteraction extends Interaction {
-    public customID: string;
-    public deferred: boolean;
-    public message: Message | RawMessage;
-    public replied: boolean;
-    public webhook: WebhookClient;
-    public defer(ephemeral?: boolean): Promise<void>;
-    public deferUpdate(): Promise<void>;
-    public deleteReply(): Promise<void>;
-    public editReply(
-      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
-    ): Promise<Message | RawMessage>;
-    public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
-    public fetchReply(): Promise<Message | RawMessage>;
-    public followUp(
-      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
-    ): Promise<Message | RawMessage>;
-    public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
-    public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
-    public update(
-      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
-    ): Promise<Message | RawMessage>;
-    public update(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
-    public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
-  }
-
   export class CategoryChannel extends GuildChannel {
     public readonly children: Collection<Snowflake, GuildChannel>;
     public type: 'category';
@@ -367,24 +340,6 @@ declare module 'discord.js' {
     public fetch(force?: boolean): Promise<Channel>;
     public isText(): this is TextChannel | DMChannel | NewsChannel;
     public toString(): string;
-  }
-
-  export class ChannelComponentInteractionCollector extends Collector<Snowflake, ComponentInteraction> {
-    constructor(
-      channel: TextChannel | DMChannel | NewsChannel,
-      filter: CollectorFilter<[ComponentInteraction]>,
-      options?: ComponentInteractionCollectorOptions,
-    );
-    private _handleChannelDeletion(channel: GuildChannel): void;
-    private _handleGuildDeletion(guild: Guild): void;
-
-    public channel: Channel;
-    public readonly endReason: string | null;
-    public options: ComponentInteractionCollectorOptions;
-    public received: number;
-
-    public collect(interaction: ComponentInteraction): Snowflake;
-    public dispose(interaction: ComponentInteraction): Snowflake;
   }
 
   export class Client extends BaseClient {
@@ -1187,7 +1142,7 @@ declare module 'discord.js' {
     public user: User;
     public version: number;
     public isCommand(): this is CommandInteraction;
-    public isComponent(): this is ComponentInteraction;
+    public isMessageComponent(): this is MessageComponentInteraction;
   }
 
   export class Invite extends Base {
@@ -1264,9 +1219,9 @@ declare module 'discord.js' {
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: ReactionCollectorOptions,
     ): ReactionCollector;
-    public createComponentInteractionCollector(
-      filter: CollectorFilter<[ComponentInteraction]>,
-      options?: AwaitComponentInteractionsOptions,
+    public createMessageComponentInteractionCollector(
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      options?: AwaitMessageComponentInteractionsOptions,
     ): MessageComponentInteractionCollector;
     public delete(): Promise<Message>;
     public edit(
@@ -1366,11 +1321,38 @@ declare module 'discord.js' {
     public dispose(message: Message): Snowflake;
   }
 
+  export class MessageComponentInteraction extends Interaction {
+    public customID: string;
+    public deferred: boolean;
+    public message: Message | RawMessage;
+    public replied: boolean;
+    public webhook: WebhookClient;
+    public defer(ephemeral?: boolean): Promise<void>;
+    public deferUpdate(): Promise<void>;
+    public deleteReply(): Promise<void>;
+    public editReply(
+      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+    ): Promise<Message | RawMessage>;
+    public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public fetchReply(): Promise<Message | RawMessage>;
+    public followUp(
+      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
+    ): Promise<Message | RawMessage>;
+    public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
+    public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
+    public update(
+      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+    ): Promise<Message | RawMessage>;
+    public update(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
+  }
+
   export class MessageComponentInteractionCollector extends Collector<Snowflake, Interaction> {
     constructor(
       message: Message,
-      filter: CollectorFilter<[ComponentInteraction]>,
-      options?: ComponentInteractionCollectorOptions,
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      options?: MessageComponentInteractionCollectorOptions,
     );
     private _handleMessageDeletion(message: Message): void;
     private _handleChannelDeletion(channel: GuildChannel): void;
@@ -1378,11 +1360,11 @@ declare module 'discord.js' {
 
     public message: Message;
     public readonly endReason: string | null;
-    public options: ComponentInteractionCollectorOptions;
+    public options: MessageComponentInteractionCollectorOptions;
     public received: number;
 
-    public collect(interaction: ComponentInteractionCollectorOptions): Snowflake;
-    public dispose(interaction: ComponentInteractionCollectorOptions): Snowflake;
+    public collect(interaction: MessageComponentInteractionCollectorOptions): Snowflake;
+    public dispose(interaction: MessageComponentInteractionCollectorOptions): Snowflake;
   }
 
   export class MessageEmbed {
@@ -2466,10 +2448,10 @@ declare module 'discord.js' {
     readonly lastPinAt: Date | null;
     typing: boolean;
     typingCount: number;
-    awaitComponentInteractions(
-      filter: CollectorFilter<[ComponentInteraction]>,
-      options?: AwaitComponentInteractionsOptions,
-    ): Promise<Collection<Snowflake, ComponentInteraction>>;
+    awaitMessageComponentInteractions(
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      options?: AwaitMessageComponentInteractionsOptions,
+    ): Promise<Collection<Snowflake, MessageComponentInteraction>>;
     awaitMessages(
       filter: CollectorFilter<[Message]>,
       options?: AwaitMessagesOptions,
@@ -2478,10 +2460,10 @@ declare module 'discord.js' {
       messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
       filterOld?: boolean,
     ): Promise<Collection<Snowflake, Message>>;
-    createComponentInteractionCollector(
-      filter: CollectorFilter<[ComponentInteraction]>,
-      options?: ComponentInteractionCollectorOptions,
-    ): ChannelComponentInteractionCollector;
+    createMessageComponentInteractionCollector(
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      options?: MessageComponentInteractionCollectorOptions,
+    ): MessageComponentInteractionCollector;
     createMessageCollector(filter: CollectorFilter<[Message]>, options?: MessageCollectorOptions): MessageCollector;
     startTyping(count?: number): Promise<void>;
     stopTyping(force?: boolean): void;
@@ -2688,7 +2670,7 @@ declare module 'discord.js' {
     new?: any;
   }
 
-  interface AwaitComponentInteractionsOptions extends ComponentInteractionCollectorOptions {
+  interface AwaitMessageComponentInteractionsOptions extends MessageComponentInteractionCollectorOptions {
     errors?: string[];
   }
 
@@ -2909,12 +2891,6 @@ declare module 'discord.js' {
     member?: GuildMember | RawInteractionDataResolvedGuildMember;
     channel?: GuildChannel | RawInteractionDataResolvedChannel;
     role?: Role | RawRole;
-  }
-
-  interface ComponentInteractionCollectorOptions extends CollectorOptions {
-    max?: number;
-    maxComponents?: number;
-    maxUsers?: number;
   }
 
   interface CrosspostedChannel {
@@ -3377,6 +3353,12 @@ declare module 'discord.js' {
   }
 
   type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton;
+
+  interface MessageComponentInteractionCollectorOptions extends CollectorOptions {
+    max?: number;
+    maxComponents?: number;
+    maxUsers?: number;
+  }
 
   type MessageComponentOptions = BaseMessageComponentOptions | MessageActionRowOptions | MessageButtonOptions;
 

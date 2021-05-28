@@ -6,22 +6,22 @@ const WebhookClient = require('../client/WebhookClient');
 const { MessageComponentTypes } = require('../util/Constants');
 
 /**
- * Represents a message button interaction.
+ * Represents a message component interaction.
  * @extends {Interaction}
  */
-class ComponentInteraction extends Interaction {
+class MessageComponentInteraction extends Interaction {
   // eslint-disable-next-line no-useless-constructor
   constructor(client, data) {
     super(client, data);
 
     /**
-     * The message to which the button was attached
+     * The message to which the component was attached
      * @type {?Message|Object}
      */
     this.message = data.message ? this.channel?.messages.add(data.message) ?? data.message : null;
 
     /**
-     * The custom ID of the button which was clicked
+     * The custom ID of the bucomponenttton which was clicked
      * @type {string}
      */
     this.customID = data.data.custom_id;
@@ -30,7 +30,7 @@ class ComponentInteraction extends Interaction {
      * The type of component that was interacted with
      * @type {string}
      */
-    this.componentType = ComponentInteraction.resolveType(data.data.component_type);
+    this.componentType = MessageComponentInteraction.resolveType(data.data.component_type);
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -73,6 +73,6 @@ class ComponentInteraction extends Interaction {
   update() {}
 }
 
-InteractionResponses.applyToClass(ComponentInteraction);
+InteractionResponses.applyToClass(MessageComponentInteraction);
 
-module.exports = ComponentInteraction;
+module.exports = MessageComponentInteraction;

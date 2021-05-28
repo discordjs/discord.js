@@ -15,9 +15,9 @@ module.exports = (client, { d: data }) => {
     }
     case InteractionTypes.MESSAGE_COMPONENT: {
       if (!Structures) Structures = require('../../../util/Structures');
-      const ComponentInteraction = Structures.get('ComponentInteraction');
+      const MessageComponentInteraction = Structures.get('MessageComponentInteraction');
 
-      interaction = new ComponentInteraction(client, data);
+      interaction = new MessageComponentInteraction(client, data);
       break;
     }
     default:

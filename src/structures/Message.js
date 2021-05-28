@@ -418,24 +418,24 @@ class Message extends Base {
   }
 
   /**
-   * Creates a button interaction collector.
+   * Creates a message component interaction collector.
    * @param {CollectorFilter} filter The filter to apply
-   * @param {ComponentInteractionCollectorOptions} [options={}] Options to send to the collector
+   * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
    * @returns {MessageComponentInteractionCollector}
    * @example
-   * // Create a button interaction collector
+   * // Create a message component interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = message.createComponentInteractionCollector(filter, { time: 15000 });
+   * const collector = message.createMessageComponentInteractionCollector(filter, { time: 15000 });
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createComponentInteractionCollector(filter, options = {}) {
+  createMessageComponentInteractionCollector(filter, options = {}) {
     return new MessageComponentInteractionCollector(this, filter, options);
   }
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {ComponentInteractionCollectorOptions} AwaitComponentInteractionsOptions
+   * @typedef {MessageComponentInteractionCollectorOptions} AwaitMessageComponentInteractionsOptions
    * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
    */
 
@@ -443,18 +443,18 @@ class Message extends Base {
    * Similar to createMessageComponentInteractionCollector but in promise form.
    * Resolves with a collection of interactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
-   * @param {AwaitComponentInteractionOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, ComponentInteraction>>}
+   * @param {AwaitMessageComponentInteractionsOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<string, MessageComponentInteraction>>}
    * @example
-   * // Create a button interaction collector
+   * // Create a message component interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitComponentInteractions(filter, { time: 15000 })
+   * message.awaitMessageComponentInteractions(filter, { time: 15000 })
    *   .then(collected => console.log(`Collected ${collected.size} interactions`))
    *   .catch(console.error);
    */
-  awaitComponentInteractions(filter, options = {}) {
+  awaitMessageComponentInteractions(filter, options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createComponentInteractionCollector(filter, options);
+      const collector = this.createMessageComponentInteractionCollector(filter, options);
       collector.once('end', (interactions, reason) => {
         if (options.errors && options.errors.includes(reason)) reject(interactions);
         else resolve(interactions);
