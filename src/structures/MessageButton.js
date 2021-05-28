@@ -73,8 +73,8 @@ class MessageButton extends BaseMessageComponent {
 
   /**
    * Sets the interactive status of the button
-   * @param {boolean} disabled Whether this emoji should be disabled
-   * @returns {MessageEmbed}
+   * @param {boolean} disabled Whether this button should be disabled
+   * @returns {MessageButton}
    */
   setDisabled(disabled) {
     this.disabled = disabled;
