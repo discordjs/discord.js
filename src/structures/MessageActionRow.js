@@ -23,7 +23,7 @@ class MessageActionRow extends BaseMessageComponent {
   /**
    * Adds a component to the row (max 5).
    * @param {MessageComponent|MessageComponentOptions} component The component to add
-   * @returns {MessageEmbed}
+   * @returns {MessageActionRow}
    */
   addComponent(component) {
     return this.addComponents({ ...component });
@@ -32,7 +32,7 @@ class MessageActionRow extends BaseMessageComponent {
   /**
    * Adds components to the row (max 5).
    * @param {...(MessageComponent[]|MessageComponentOptions[])} components The components to add
-   * @returns {MessageEmbed}
+   * @returns {MessageActionRow}
    */
   addComponents(...components) {
     this.components.push(...components.map(BaseMessageComponent.create));
