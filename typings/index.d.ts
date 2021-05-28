@@ -3326,7 +3326,6 @@ declare module 'discord.js' {
   type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
   interface MessageActionRowOptions extends BaseMessageComponentOptions {
-    type: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
     components?: MessageComponentResolvable[];
   }
 
@@ -3341,7 +3340,6 @@ declare module 'discord.js' {
     emoji?: RawEmoji;
     label?: string;
     style: MessageButtonStyleResolvable;
-    type: 'BUTTON' | MessageComponentTypes.BUTTON;
     url?: string;
   }
 
