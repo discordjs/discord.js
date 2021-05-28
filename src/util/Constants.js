@@ -946,7 +946,7 @@ exports.InteractionResponseTypes = createEnum([
  * * BUTTON
  * @typedef {string} MessageComponentType
  */
-exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON']);
+exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU']);
 
 /**
  * The style of a message button

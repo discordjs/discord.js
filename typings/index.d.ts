@@ -82,6 +82,7 @@ declare enum MessageButtonStyles {
 declare enum MessageComponentTypes {
   ACTION_ROW = 1,
   BUTTON = 2,
+  SELECT_MENU = 3,
 }
 
 declare enum MFALevels {
@@ -1529,6 +1530,16 @@ declare module 'discord.js' {
     public remove(): Promise<MessageReaction>;
     public fetch(): Promise<MessageReaction>;
     public toJSON(): unknown;
+  }
+
+  class MessageSelectMenu extends BaseMessageComponent {
+    constructor(data?: MessageSelectMenu | MessageSelectMenuOptions);
+    public customID: string | null;
+    public maxValues: number | null;
+    public minValues: number | null;
+    public options: MessageSelectOption[];
+    public placeholder: string | null;
+    public type: 'SELECT_MENU';
   }
 
   export class NewsChannel extends TextBasedChannel(GuildChannel) {
@@ -3605,15 +3616,18 @@ declare module 'discord.js' {
     maxProcessed?: number;
   }
 
-  type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton;
-
+  type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton | MessageSelectMenu;
   interface MessageComponentInteractionCollectorOptions extends CollectorOptions {
     max?: number;
     maxComponents?: number;
     maxUsers?: number;
   }
 
-  type MessageComponentOptions = BaseMessageComponentOptions | MessageActionRowOptions | MessageButtonOptions;
+  type MessageComponentOptions =
+    | BaseMessageComponentOptions
+    | MessageActionRowOptions
+    | MessageButtonOptions
+    | MessageSelectMenuOptions;
 
   type MessageComponentType = keyof typeof MessageComponentTypes;
 
@@ -3749,6 +3763,23 @@ declare module 'discord.js' {
   }
 
   type MessageResolvable = Message | Snowflake;
+
+  interface MessageSelectMenuOptions extends BaseMessageComponentOptions {
+    customID?: string;
+    maxValues?: number;
+    minValues?: number;
+    options?: MessageSelectOption[];
+    placeholder?: string;
+    type: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
+  }
+
+  interface MessageSelectOption {
+    default?: boolean;
+    description?: string;
+    emoji?: RawEmoji;
+    label: string;
+    value: string;
+  }
 
   type MessageTarget =
     | Interaction
