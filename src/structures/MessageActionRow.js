@@ -23,15 +23,6 @@ class MessageActionRow extends BaseMessageComponent {
   }
 
   /**
-   * Adds a component to the row (max 5).
-   * @param {MessageComponent|MessageComponentOptions} component The component to add
-   * @returns {MessageActionRow}
-   */
-  addComponent(component) {
-    return this.addComponents({ ...component });
-  }
-
-  /**
    * Adds components to the row (max 5).
    * @param {...(MessageComponent[]|MessageComponentOptions[])} components The components to add
    * @returns {MessageActionRow}
@@ -48,7 +39,7 @@ class MessageActionRow extends BaseMessageComponent {
   toJSON() {
     return {
       components: this.components.map(c => c.toJSON()),
-      type: typeof this.type === 'string' ? MessageComponentTypes[this.type] : this.type,
+      type: MessageComponentTypes[this.type],
     };
   }
 }

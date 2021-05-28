@@ -11,7 +11,6 @@ const { MessageComponentTypes } = require('../util/Constants');
  * @implements {InteractionResponses}
  */
 class MessageComponentInteraction extends Interaction {
-  // eslint-disable-next-line no-useless-constructor
   constructor(client, data) {
     super(client, data);
 

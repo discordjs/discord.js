@@ -19,7 +19,8 @@ const { Events } = require('../util/Constants');
  */
 class MessageComponentInteractionCollector extends Collector {
   /**
-   * @param {Message|Channel} source The source from which to collect message component interactions
+   * @param {Message|TextChannel|DMChannel|NewsChannel} source
+   * The source from which to collect message component interactions
    * @param {CollectorFilter} filter The filter to apply to this collector
    * @param {MessageComponentInteractionCollectorOptions} [options={}] The options to apply to this collector
    */
@@ -27,10 +28,16 @@ class MessageComponentInteractionCollector extends Collector {
     super(source.client, filter, options);
 
     /**
-     * The source from which to collect message component interactions
-     * @type {Message|Channel}
+     * The message from which to collect message component interactions, if provided
+     * @type {Message}
      */
-    this.source = source;
+    this.message = source instanceof require('./Message') ? source : null;
+
+    /**
+     * The source channel from which to collect message component interactions
+     * @type {TextChannel|DMChannel|NewsChannel}
+     */
+    this.channel = this.message ? this.message.channel : source;
 
     /**
      * The users which have interacted to buttons on this collector
@@ -52,14 +59,16 @@ class MessageComponentInteractionCollector extends Collector {
     this.client.incrementMaxListeners();
     this.client.on(Events.INTERACTION_CREATE, this.handleCollect);
 
-    if (this.source instanceof require('./Message')) this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+    if (this.message) this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
 
     this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
     this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
 
     this.once('end', () => {
       this.client.removeListener(Events.INTERACTION_CREATE, this.handleCollect);
-      this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+
+      if (this.message) this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
       this.client.decrementMaxListeners();
@@ -85,13 +94,11 @@ class MessageComponentInteractionCollector extends Collector {
      */
     if (!interaction.isMessageComponent()) return null;
 
-    if (this.source instanceof require('./Message')) {
-      return interaction.message.id === this.source.id ? interaction.id : null;
-    } else if (this.source instanceof require('./Channel')) {
-      return interaction.channel.id === this.source.id ? interaction.id : null;
+    if (this.message) {
+      return interaction.message.id === this.message.id ? interaction.id : null;
     }
 
-    return null;
+    return interaction.channel.id === this.channel.id ? interaction.id : null;
   }
 
   /**
@@ -107,7 +114,11 @@ class MessageComponentInteractionCollector extends Collector {
      */
     if (!interaction.isMessageComponent()) return null;
 
-    return interaction.message.id === this.message.id ? interaction.id : null;
+    if (this.message) {
+      return interaction.message.id === this.message.id ? interaction.id : null;
+    }
+
+    return interaction.channel.id === this.channel.id ? interaction.id : null;
   }
 
   /**

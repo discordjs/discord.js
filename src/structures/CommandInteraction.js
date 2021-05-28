@@ -9,6 +9,7 @@ const { ApplicationCommandOptionTypes } = require('../util/Constants');
 /**
  * Represents a command interaction.
  * @extends {Interaction}
+ * @implements {InteractionResponses}
  */
 class CommandInteraction extends Interaction {
   constructor(client, data) {

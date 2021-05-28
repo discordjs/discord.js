@@ -5,6 +5,7 @@ const { MessageComponentTypes, Events } = require('../util/Constants');
 
 /**
  * Represents an interactive component of a Message. It should not be necessary to construct this directly.
+ * See {@link MessageComponent}
  */
 class BaseMessageComponent {
   /**

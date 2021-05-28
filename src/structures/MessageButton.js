@@ -4,6 +4,10 @@ const BaseMessageComponent = require('./BaseMessageComponent');
 const { MessageButtonStyles, MessageComponentTypes } = require('../util/Constants.js');
 const Util = require('../util/Util');
 
+/**
+ * Represents a Button message component.
+ * @extends {BaseMessageComponent}
+ */
 class MessageButton extends BaseMessageComponent {
   /**
    * @typedef {BaseMessageComponentOptions} MessageButtonOptions
@@ -132,8 +136,8 @@ class MessageButton extends BaseMessageComponent {
       disabled: this.disabled,
       emoji: this.emoji,
       label: this.label,
-      style: typeof this.style === 'string' ? MessageButtonStyles[this.style] : this.style,
-      type: typeof this.type === 'string' ? MessageComponentTypes[this.type] : this.type,
+      style: MessageButtonStyles[this.style],
+      type: MessageComponentTypes[this.type],
       url: this.url,
     };
   }
