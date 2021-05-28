@@ -3784,7 +3784,7 @@ declare module 'discord.js' {
   interface MessageSelectOption {
     default?: boolean;
     description?: string;
-    emoji?: RawEmoji;
+    emoji?: Emoji | RawEmoji;
     label: string;
     value: string;
   }
