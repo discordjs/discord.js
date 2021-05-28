@@ -2836,7 +2836,6 @@ declare module 'discord.js' {
     cache: boolean;
   }
 
-<<<<<<< HEAD
   interface FetchGuildOptions {
     guild: GuildResolvable;
     cache?: boolean;
@@ -2847,11 +2846,6 @@ declare module 'discord.js' {
     before?: Snowflake;
     after?: Snowflake;
     limit?: number;
-=======
-  interface GuildChannelOverwriteOptions {
-    reason?: string;
-    type?: number;
->>>>>>> main
   }
 
   interface FetchMemberOptions {
@@ -2949,6 +2943,11 @@ declare module 'discord.js' {
   }
 
   type GuildBanResolvable = GuildBan | UserResolvable;
+
+  interface GuildChannelOverwriteOptions {
+    reason?: string;
+    type?: number;
+  }
 
   type GuildChannelResolvable = Snowflake | GuildChannel;
 
