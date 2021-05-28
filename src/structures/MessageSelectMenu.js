@@ -135,6 +135,20 @@ class MessageSelectMenu extends BaseMessageComponent {
   }
 
   /**
+   * Transforms this select menu to a plain object
+   * @returns {Object} The raw data of this select menu
+   */
+  toJSON() {
+    return {
+      custom_id: this.customID,
+      placeholder: this.placeholder,
+      min_values: this.minValues,
+      max_values: this.maxValues,
+      options: this.options,
+    };
+  }
+
+  /**
    * Normalizes option input and resolves strings.
    * @param {MessageSelectOption} option The select menu option to normalize
    * @returns {MessageSelectOption}
