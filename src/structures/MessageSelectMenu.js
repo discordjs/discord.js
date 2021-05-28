@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseMessageComponent = require('./BaseMessageComponent');
+const Util = require('../util/Util');
 
 class MessageSelectMenu extends BaseMessageComponent {
   /**
@@ -60,6 +61,101 @@ class MessageSelectMenu extends BaseMessageComponent {
      * @type {MessageSelectOption[]}
      */
     this.options = data.options ?? [];
+  }
+
+  /**
+   * Sets the custom ID of this select menu
+   * @param {string} customID A unique string to be sent in the interaction when clicked
+   * @returns {MessageSelectMenu}
+   */
+  setCustomID(customID) {
+    this.customID = Util.resolveString(customID);
+    return this;
+  }
+
+  /**
+   * Sets the maximum number of selection allowed for this select menu
+   * @param {number} maxValues Number of selections to be allowed
+   * @returns {MessageSelectMenu}
+   */
+  setMaxValues(maxValues) {
+    this.maxValues = maxValues;
+    return this;
+  }
+
+  /**
+   * Sets the minimum number of selection required for this select menu
+   * @param {number} minValues Number of selections to be required
+   * @returns {MessageSelectMenu}
+   */
+  setMinValues(minValues) {
+    this.minValues = minValues;
+    return this;
+  }
+
+  /**
+   * Sets the placeholder of this select menu
+   * @param {string} placeholder Custom placeholder text to display when nothing is selected
+   * @returns {MessageSelectMenu}
+   */
+  setPlaceholder(placeholder) {
+    this.placeholder = Util.resolveString(placeholder);
+    return this;
+  }
+
+  /**
+   * Adds an option to the select menu (max 25)
+   * @param {MessageSelectOption} option The option to add
+   * @returns {MessageSelectMenu}
+   */
+  addOption(option) {
+    return this.addOptions({ ...option });
+  }
+
+  /**
+   * Adds options to the select menu (max 5).
+   * @param {...(MessageSelectOption[]|MessageSelectOption[])} options The options to add
+   * @returns {MessageSelectMenu}
+   */
+  addOptions(...options) {
+    this.options.push(...this.constructor.normalizeOptions(options));
+    return this;
+  }
+
+  /**
+   * Removes, replaces, and inserts options in the select menu (max 25).
+   * @param {number} index The index to start at
+   * @param {number} deleteCount The number of options to remove
+   * @param {...MessageSelectOption|MessageSelectOption[]} [options] The replacing option objects
+   * @returns {MessageSelectMenu}
+   */
+  spliceFields(index, deleteCount, ...options) {
+    this.fields.splice(index, deleteCount, ...this.constructor.normalizeOptions(...options));
+    return this;
+  }
+
+  /**
+   * Normalizes option input and resolves strings.
+   * @param {MessageSelectOption} option The select menu option to normalize
+   * @returns {MessageSelectOption}
+   */
+  static normalizeOption(option) {
+    let { label, value, description, emoji } = option;
+
+    label = Util.resolveString(label);
+    value = Util.resolveString(value);
+    description = typeof description !== 'undefined' ? Util.resolveString(description) : undefined;
+
+    return { label, value, description, emoji, default: option.default };
+  }
+
+  /**
+   * Normalizes option input and resolves strings.
+   * @param {...MessageSelectOption|MessageSelectOption[]} options The select menu options to normalize
+   * @returns {MessageSelectOption[]}
+   */
+  static normalizeOptions(...options) {
+    return options.flat(2).map(option => this.normalizeOption(option));
   }
 }
 
