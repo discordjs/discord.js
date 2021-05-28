@@ -5,6 +5,7 @@ const { MessageComponentTypes } = require('../util/Constants');
 
 /**
  * Represents an ActionRow containing message components.
+ * @extends {BaseMessageComponent}
  */
 class MessageActionRow extends BaseMessageComponent {
   /**

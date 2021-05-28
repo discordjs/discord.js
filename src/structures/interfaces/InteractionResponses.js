@@ -173,7 +173,7 @@ class InteractionResponses {
    * @returns {Promise<void>}
    * @example
    * // Defer to update the button to a loading state
-   * interaction.defer()
+   * interaction.deferUpdate()
    *   .then(console.log)
    *   .catch(console.error);
    */
@@ -188,13 +188,13 @@ class InteractionResponses {
   }
 
   /**
-   * Updates the message to which the button was attached
+   * Updates the original message whose button was pressed
    * @param {string|APIMessage|MessageAdditions} content The content for the reply
    * @param {WebhookEditMessageOptions} [options] Additional options for the reply
    * @returns {Promise<Message|Object>}
    * @example
-   * // Remove the buttons from the message   *
-   * interaction.reply("A button was clicked", { components: [] })
+   * // Remove the buttons from the message
+   * interaction.update("A button was clicked", { components: [] })
    *   .then(console.log)
    *   .catch(console.error);
    */

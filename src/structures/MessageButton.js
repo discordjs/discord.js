@@ -3,6 +3,7 @@
 const BaseMessageComponent = require('./BaseMessageComponent');
 const { MessageButtonStyles, MessageComponentTypes } = require('../util/Constants.js');
 const Util = require('../util/Util');
+
 class MessageButton extends BaseMessageComponent {
   /**
    * @typedef {BaseMessageComponentOptions} MessageButtonOptions

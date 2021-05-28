@@ -33,7 +33,7 @@ class MessageComponentInteractionCollector extends Collector {
     this.source = source;
 
     /**
-     * The users which have interacted to buttons on this message
+     * The users which have interacted to buttons on this collector
      * @type {Collection}
      */
     this.users = new Collection();
@@ -111,7 +111,7 @@ class MessageComponentInteractionCollector extends Collector {
   }
 
   /**
-   * Empties this reaction collector.
+   * Empties this message component collector.
    */
   empty() {
     this.total = 0;

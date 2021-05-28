@@ -1301,8 +1301,8 @@ declare module 'discord.js' {
     public setLabel(label: string): this;
     public setStyle(style: MessageButtonStyleResolvable): this;
     public setURL(url: string): this;
-    private static resolveStyle(style: MessageButtonStyleResolvable): MessageButtonStyle;
     public toJSON(): object;
+    private static resolveStyle(style: MessageButtonStyleResolvable): MessageButtonStyle;
   }
 
   export class MessageCollector extends Collector<Snowflake, Message> {
@@ -1352,7 +1352,7 @@ declare module 'discord.js' {
 
   export class MessageComponentInteractionCollector extends Collector<Snowflake, Interaction> {
     constructor(
-      message: Message,
+      source: Channel | Message,
       filter: CollectorFilter<[MessageComponentInteraction]>,
       options?: MessageComponentInteractionCollectorOptions,
     );
@@ -1360,13 +1360,13 @@ declare module 'discord.js' {
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
 
-    public message: Message;
+    public source: Channel | Message;
     public readonly endReason: string | null;
     public options: MessageComponentInteractionCollectorOptions;
-    public received: number;
+    public total: number;
 
-    public collect(interaction: MessageComponentInteractionCollectorOptions): Snowflake;
-    public dispose(interaction: MessageComponentInteractionCollectorOptions): Snowflake;
+    public collect(interaction: Interaction): Snowflake;
+    public dispose(interaction: Interaction): Snowflake;
   }
 
   export class MessageEmbed {
