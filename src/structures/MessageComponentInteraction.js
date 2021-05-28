@@ -21,7 +21,7 @@ class MessageComponentInteraction extends Interaction {
     this.message = data.message ? this.channel?.messages.add(data.message) ?? data.message : null;
 
     /**
-     * The custom ID of the bucomponenttton which was clicked
+     * The custom ID of the component which was clicked
      * @type {string}
      */
     this.customID = data.data.custom_id;
