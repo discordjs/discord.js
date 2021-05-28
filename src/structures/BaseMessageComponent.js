@@ -25,11 +25,19 @@ class BaseMessageComponent {
    */
 
   /**
-   * Data that resolves to give a MessageComponent object. This can be:
+   * Data that can be resolved to give a MessageComponent object. This can be:
    * * A MessageComponentOptions object
    * * A MessageActionRow
    * * A MessageButton
    * @typedef {MessageComponentOptions|MessageComponent} MessageComponentResolvable
+   */
+
+  /**
+   * Data that can be resolved to a MessageComponentType. This can be:
+   * * {@link MessageComponentType}
+   * * string
+   * * number
+   * @typedef {string|number|MessageComponentType} MessageComponentTypeResolvable
    */
 
   /**

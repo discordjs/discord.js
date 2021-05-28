@@ -291,7 +291,7 @@ declare module 'discord.js' {
     public type: MessageComponentType | null;
     public setType(type: MessageComponentTypeResolvable): this;
     private static create(data: MessageComponentOptions): MessageComponent;
-    private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
+    public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
     private static transform(component: MessageComponentResolvable): object;
   }
 
@@ -346,6 +346,7 @@ declare module 'discord.js' {
       content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
     ): Promise<Message | RawMessage>;
     public update(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
   export class CategoryChannel extends GuildChannel {

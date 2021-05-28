@@ -122,6 +122,14 @@ class MessageButton extends BaseMessageComponent {
   }
 
   /**
+   * Data that can be resolved to a MessageButtonStyle. This can be
+   * * {@link MessageButtonStyle}
+   * * string
+   * * number
+   * @typedef {string|number|MessageButtonStyle} MessageButtonStyleResolvable
+   */
+
+  /**
    * Resolves the style of a MessageButton
    * @param {MessageButtonStyleResolvable} style The style to resolve
    * @returns {MessageButtonStyle}

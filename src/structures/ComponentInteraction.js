@@ -3,6 +3,7 @@
 const Interaction = require('./Interaction');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const WebhookClient = require('../client/WebhookClient');
+const { MessageComponentTypes } = require('../util/Constants');
 
 /**
  * Represents a message button interaction.
@@ -26,6 +27,12 @@ class ComponentInteraction extends Interaction {
     this.customID = data.data.custom_id;
 
     /**
+     * The type of component that was interacted with
+     * @type {string}
+     */
+    this.componentType = ComponentInteraction.resolveType(data.data.component_type);
+
+    /**
      * Whether the reply to this interaction has been deferred
      * @type {boolean}
      */
@@ -42,6 +49,16 @@ class ComponentInteraction extends Interaction {
      * @type {WebhookClient}
      */
     this.webhook = new WebhookClient(this.applicationID, this.token, this.client.options);
+  }
+
+  /**
+   * Resolves the type of a MessageComponent
+   * @param {MessageComponentTypeResolvable} type The type to resolve
+   * @returns {MessageComponentType}
+   * @private
+   */
+  static resolveType(type) {
+    return typeof type === 'string' ? type : MessageComponentTypes[type];
   }
 
   // These are here only for documentation purposes - they are implemented by InteractionResponses
