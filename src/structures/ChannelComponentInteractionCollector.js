@@ -67,15 +67,31 @@ class ChannelComponentInteractionCollector extends Collector {
    */
   collect(interaction) {
     /**
-     * Emitted whenever a reaction is collected.
-     * @event TextChannelComponentInteractionCollector#collect
-     * @param {ComponentInteraction} interaction The reaction that was collected
+     * Emitted whenever a interaction is collected.
+     * @event ChannelComponentInteractionCollector#collect
+     * @param {Interaction} interaction The interaction that was collected
      */
     if (!interaction.isComponent()) return null;
 
     if (interaction.channel.id !== this.channel.id) return null;
 
     return interaction.id;
+  }
+
+  /**
+   * Handles an interaction for possible disposal.
+   * @param {Interaction} interaction The interaction that could be disposed of
+   * @returns {?Snowflake}
+   */
+  dispose(interaction) {
+    /**
+     * Emitted whenever an interaction is disposed of.
+     * @event ChannelComponentInteractionCollector#dispose
+     * @param {Interaction} interaction The interaction that was disposed of
+     */
+    if (!interaction.isComponent()) return null;
+
+    return interaction.channel.id === this.channel.id ? interaction.id : null;
   }
 
   /**

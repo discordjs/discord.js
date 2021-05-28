@@ -368,6 +368,24 @@ declare module 'discord.js' {
     public toString(): string;
   }
 
+  export class ChannelComponentInteractionCollector extends Collector<Snowflake, ComponentInteraction> {
+    constructor(
+      channel: TextChannel | DMChannel | NewsChannel,
+      filter: CollectorFilter<[ComponentInteraction]>,
+      options?: ComponentInteractionCollectorOptions,
+    );
+    private _handleChannelDeletion(channel: GuildChannel): void;
+    private _handleGuildDeletion(guild: Guild): void;
+
+    public channel: Channel;
+    public readonly endReason: string | null;
+    public options: ComponentInteractionCollectorOptions;
+    public received: number;
+
+    public collect(interaction: ComponentInteraction): Snowflake;
+    public dispose(interaction: ComponentInteraction): Snowflake;
+  }
+
   export class Client extends BaseClient {
     constructor(options: ClientOptions);
     private actions: unknown;
@@ -1245,6 +1263,10 @@ declare module 'discord.js' {
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: ReactionCollectorOptions,
     ): ReactionCollector;
+    public createComponentInteractionCollector(
+      filter: CollectorFilter<[ComponentInteraction]>,
+      options?: AwaitComponentInteractionsOptions,
+    ): MessageComponentInteractionCollector;
     public delete(): Promise<Message>;
     public edit(
       content: string | null | MessageEditOptions | MessageEmbed | APIMessage | MessageAttachment | MessageAttachment[],
@@ -1341,6 +1363,25 @@ declare module 'discord.js' {
 
     public collect(message: Message): Snowflake;
     public dispose(message: Message): Snowflake;
+  }
+
+  export class MessageComponentInteractionCollector extends Collector<Snowflake, Interaction> {
+    constructor(
+      message: Message,
+      filter: CollectorFilter<[ComponentInteraction]>,
+      options?: ComponentInteractionCollectorOptions,
+    );
+    private _handleMessageDeletion(message: Message): void;
+    private _handleChannelDeletion(channel: GuildChannel): void;
+    private _handleGuildDeletion(guild: Guild): void;
+
+    public message: Message;
+    public readonly endReason: string | null;
+    public options: ComponentInteractionCollectorOptions;
+    public received: number;
+
+    public collect(interaction: ComponentInteractionCollectorOptions): Snowflake;
+    public dispose(interaction: ComponentInteractionCollectorOptions): Snowflake;
   }
 
   export class MessageEmbed {
@@ -2424,6 +2465,10 @@ declare module 'discord.js' {
     readonly lastPinAt: Date | null;
     typing: boolean;
     typingCount: number;
+    awaitComponentInteractions(
+      filter: CollectorFilter<[ComponentInteraction]>,
+      options?: AwaitComponentInteractionsOptions,
+    ): Promise<Collection<Snowflake, ComponentInteraction>>;
     awaitMessages(
       filter: CollectorFilter<[Message]>,
       options?: AwaitMessagesOptions,
@@ -2432,6 +2477,10 @@ declare module 'discord.js' {
       messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
       filterOld?: boolean,
     ): Promise<Collection<Snowflake, Message>>;
+    createComponentInteractionCollector(
+      filter: CollectorFilter<[ComponentInteraction]>,
+      options?: ComponentInteractionCollectorOptions,
+    ): ChannelComponentInteractionCollector;
     createMessageCollector(filter: CollectorFilter<[Message]>, options?: MessageCollectorOptions): MessageCollector;
     startTyping(count?: number): Promise<void>;
     stopTyping(force?: boolean): void;
@@ -2636,6 +2685,10 @@ declare module 'discord.js' {
     key: string;
     old?: any;
     new?: any;
+  }
+
+  interface AwaitComponentInteractionsOptions extends ComponentInteractionCollectorOptions {
+    errors?: string[];
   }
 
   interface AwaitMessagesOptions extends MessageCollectorOptions {
@@ -2855,6 +2908,12 @@ declare module 'discord.js' {
     member?: GuildMember | RawInteractionDataResolvedGuildMember;
     channel?: GuildChannel | RawInteractionDataResolvedChannel;
     role?: Role | RawRole;
+  }
+
+  interface ComponentInteractionCollectorOptions extends CollectorOptions {
+    max?: number;
+    maxComponents?: number;
+    maxUsers?: number;
   }
 
   interface CrosspostedChannel {
