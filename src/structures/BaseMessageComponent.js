@@ -1,6 +1,7 @@
 'use strict';
 
-const { MessageComponentTypes } = require('../util/Constants');
+const { TypeError } = require('../errors');
+const { MessageComponentTypes, Events } = require('../util/Constants');
 
 /**
  * Represents an interactive component of a Message. It should not be necessary to construct this directly.
@@ -64,10 +65,12 @@ class BaseMessageComponent {
   /**
    * Constructs a MessageComponent based on the type of the incoming data
    * @param {MessageComponentOptions} data Data for a MessageComponent
-   * @returns {MessageComponent}
+   * @param {Client|WebhookClient} [client] Client constructing this component
+   * @param {boolean} [skipValidation=false] Whether or not to validate the component type
+   * @returns {?MessageComponent}
    * @private
    */
-  static create(data) {
+  static create(data, client, skipValidation = false) {
     let component;
     let type = data.type;
 
@@ -84,6 +87,12 @@ class BaseMessageComponent {
         component = new MessageButton(data);
         break;
       }
+      default:
+        if (client) {
+          client.emit(Events.DEBUG, `[BaseMessageComponent] Received component with unknown type: ${data.type}`);
+        } else if (!skipValidation) {
+          throw new TypeError('INVALID_TYPE', 'data.type', 'valid MessageComponentType');
+        }
     }
     return component;
   }

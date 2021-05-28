@@ -129,7 +129,7 @@ class Message extends Base {
      * A list of components in the message e.g. ActionRows, Buttons
      * @type {MessageComponent[]}
      */
-    this.components = (data.components || []).map(BaseMessageComponent.create);
+    this.components = (data.components || []).map(c => BaseMessageComponent.create(c, this.client));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -290,7 +290,7 @@ class Message extends Base {
     if ('tts' in data) this.tts = data.tts;
     if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
     else this.embeds = this.embeds.slice();
-    if ('components' in data) this.components = data.components.map(BaseMessageComponent.create);
+    if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.clien));
     else this.components = this.components.slice();
 
     if ('attachments' in data) {

@@ -18,7 +18,7 @@ class MessageActionRow extends BaseMessageComponent {
   constructor(data = {}) {
     super({ type: 'ACTION_ROW' });
 
-    this.components = (data.components ?? []).map(BaseMessageComponent.create);
+    this.components = (data.components ?? []).map(c => BaseMessageComponent.create(c, null, true));
   }
 
   /**
@@ -36,7 +36,7 @@ class MessageActionRow extends BaseMessageComponent {
    * @returns {MessageActionRow}
    */
   addComponents(...components) {
-    this.components.push(...components.map(BaseMessageComponent.create));
+    this.components.push(...components.map(c => BaseMessageComponent.create(c, null, true)));
     return this;
   }
 
@@ -46,7 +46,7 @@ class MessageActionRow extends BaseMessageComponent {
    */
   toJSON() {
     return {
-      components: this.components.map(c => BaseMessageComponent.create(c).toJSON()),
+      components: this.components.map(c => c.toJSON()),
       type: typeof this.type === 'string' ? MessageComponentTypes[this.type] : this.type,
     };
   }
