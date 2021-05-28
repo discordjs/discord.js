@@ -157,15 +157,7 @@ class InteractionResponses {
    * @returns {Promise<Message|Object>}
    */
   async followUp(content, options) {
-    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
-    const { data, files } = await apiMessage.resolveData().resolveFiles();
-
-    const raw = await this.client.api.webhooks(this.applicationID, this.token).post({
-      data,
-      files,
-    });
-
-    return this.channel?.messages.add(raw) ?? raw;
+    await this.webhook.send(content, options);
   }
 
   /**
