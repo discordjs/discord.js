@@ -944,6 +944,7 @@ exports.InteractionResponseTypes = createEnum([
  * The type of a message component
  * * ACTION_ROW
  * * BUTTON
+ * * SELECT_MENU
  * @typedef {string} MessageComponentType
  */
 exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU']);
