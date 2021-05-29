@@ -593,6 +593,11 @@ class Message extends Base {
    * @param {StringResolvable|APIMessage} [content=''] The content for the message
    * @param {ReplyMessageOptions|MessageAdditions} [options] The additional options to provide
    * @returns {Promise<Message|Message[]>}
+   * @example
+   * // Reply to a message
+   * message.reply('This is a reply!')
+   *   .then(() => console.log(`Replied to message "${message.content}"`))
+   *   .catch(console.error);
    */
   reply(content, options) {
     return this.channel.send(
