@@ -187,6 +187,10 @@ declare module 'discord.js' {
     public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetchPermissions(): Promise<ApplicationCommandPermissions[]>;
     public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommandPermissions[]>;
+    public addPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommandPermissions[]>;
+    public removePermissions(
+      userOrRole: UserResolvable | RoleResolvable | UserResolvable[] | RoleResolvable[],
+    ): Promise<ApplicationCommandPermissions[]>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): object;
   }
 
@@ -2121,6 +2125,10 @@ declare module 'discord.js' {
       command: ApplicationCommandResolvable,
       permissions: ApplicationCommandPermissionData[],
     ): Promise<ApplicationCommandPermissions[]>;
+    public removePermissions(
+      command: ApplicationCommandResolvable,
+      userOrRole: UserResolvable | RoleResolvable | UserResolvable[] | RoleResolvable[],
+    ): Promise<ApplicationCommandPermissionData[]>;
     private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 

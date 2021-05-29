@@ -184,6 +184,50 @@ class ApplicationCommand extends Base {
   }
 
   /**
+   * Add permissions to a command.
+   * <warn>This is only available for guild application commands.</warn>
+   * @param {ApplicationCommandPermissionData[]} permissions The permissions to add to this command
+   * @returns {Promise<ApplicationCommandPermissions[]>}
+   * @example
+   * // Add permissions to this command
+   * command.addPermissions([
+   *   {
+   *     id: '876543210987654321',
+   *     type: 'USER',
+   *     permission: false,
+   *   },
+   * ])
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  addPermissions(permissions) {
+    if (!this.guild) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
+    return this.manager.addPermissions(this, permissions);
+  }
+
+  /**
+   * Remove permissions from a command.
+   * <warn>This is only available for guild application commands.</warn>
+   * @param {UserResolvable | RoleResolvable | UserResolvable[] | RoleResolvable[]} userOrRole The user(s) and role(s)
+   * to remove from the command permissions
+   * @returns {Promise<ApplicationCommandPermissions[]>}
+   * @example
+   * // Remove a single permission from this command
+   * command.removePermissions('876543210987654321')
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Remove multiple permissions from this command
+   * command.removePermissions(['876543210987654321', '765432109876543219'])
+   *  .then(console.log)
+   *  .catch(console.error);
+   */
+  removePermissions(userOrRole) {
+    if (!this.guild) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
+    return this.manager.removePermissions(this, userOrRole);
+  }
+
+  /**
    * An option for an application command or subcommand.
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option

@@ -1,6 +1,7 @@
 'use strict';
 
 const ApplicationCommandManager = require('./ApplicationCommandManager');
+const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
 const { ApplicationCommandPermissionTypes } = require('../util/Constants');
 
@@ -140,11 +141,57 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
     const id = this.resolveID(command);
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    const perms = await this.fetchPermissions(id);
+    const perms = await this.fetchPermissions(id).catch(() => []);
     for (const perm of perms) {
       if (!permissions.find(x => x.id === perm.id)) {
         permissions.push(perm);
       }
+    }
+
+    const data = await this.commandPath(id).permissions.put({
+      data: { permissions: permissions.map(perm => this.constructor.transformPermissions(perm)) },
+    });
+
+    return data.permissions.map(perm => this.constructor.transformPermissions(perm, true));
+  }
+
+  /**
+   * Remove permissions from a command.
+   * @param {ApplicationCommandResolvable} command The command to edit the permissions for
+   * @param {UserResolvable | RoleResolvable | UserResolvable[] | RoleResolvable[]} userOrRole The user(s) and role(s)
+   * to remove from the command permissions
+   * @returns {Promise<ApplicationCommandPermissions[]>}
+   * @example
+   * // Remove a user permission from this command
+   * guild.commands.addPermissions('123456789012345678', '876543210123456789')
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Remove multiple roles from this command
+   * guild.commands.removePermissions('123456789012345678', [ '876543210123456789', '765432101234567890' ])
+   *    .then(console.log)
+   *    .catch(console.error);
+   */
+  async removePermissions(command, userOrRole) {
+    const id = this.resolveID(command);
+    if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+
+    let permissions = await this.fetchPermissions(id).catch(() => []);
+    if (Array.isArray(userOrRole)) {
+      userOrRole = userOrRole.map(x => {
+        if (typeof x === 'string') return x;
+        if (x instanceof Role) return x.id;
+        return this.client.users.resolveID(x);
+      });
+
+      permissions = permissions.filter(perm => !userOrRole.includes(perm.id));
+    } else {
+      if (typeof userOrRole !== 'string') {
+        if (userOrRole instanceof Role) userOrRole = userOrRole.id;
+        userOrRole = this.client.users.resolveID(userOrRole);
+      }
+
+      permissions = permissions.filter(perm => perm.id !== userOrRole);
     }
 
     const data = await this.commandPath(id).permissions.put({
