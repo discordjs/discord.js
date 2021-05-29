@@ -2109,6 +2109,7 @@ declare module 'discord.js' {
   }
 
   export class WelcomeScreen extends Base {
+    public enabled: boolean;
     public guild: Guild;
     public description: string | null;
     public welcomeChannels: Collection<Snowflake, WelcomeChannel>;

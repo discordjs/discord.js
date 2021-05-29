@@ -35,6 +35,14 @@ class WelcomeScreen extends Base {
       this.welcomeChannels.set(welcomeChannel.channelID, welcomeChannel);
     }
   }
+
+  /**
+   * Whether the welcome screen is enabled on the guild or not
+   * @type {boolean}
+   */
+  get enabled() {
+    return this.guild.features.includes('WELCOME_SCREEN_ENABLED');
+  }
 }
 
 module.exports = WelcomeScreen;
