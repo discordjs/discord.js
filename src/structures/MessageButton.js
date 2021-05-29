@@ -92,7 +92,7 @@ class MessageButton extends BaseMessageComponent {
    * @returns {MessageButton}
    */
   setEmoji(emoji) {
-    emoji = Util.parseEmoji(emoji);
+    this.emoji = Util.parseEmoji(emoji);
     this.emoji = emoji;
     return this;
   }
