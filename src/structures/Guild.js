@@ -97,12 +97,6 @@ class Guild extends BaseGuild {
      */
     this.deleted = false;
 
-    /**
-     * The welcome screen for this guild
-     * @type {?WelcomeScreen}
-     */
-    this.welcomeScreen = null;
-
     if (!data) return;
     if (data.unavailable) {
       /**
@@ -339,10 +333,6 @@ class Guild extends BaseGuild {
       this.approximatePresenceCount = data.approximate_presence_count;
     } else if (typeof this.approximatePresenceCount === 'undefined') {
       this.approximatePresenceCount = null;
-    }
-
-    if (typeof data.welcome_screen !== 'undefined') {
-      this.welcomeScreen = new WelcomeScreen(this, data.welcome_screen);
     }
 
     /**
