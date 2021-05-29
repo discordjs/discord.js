@@ -152,11 +152,7 @@ class APIMessage {
     }
     const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
 
-    let components;
-    if (this.options.components) {
-      components = [];
-      components.push(...this.options.components.map(c => BaseMessageComponent.create(c).toJSON()));
-    }
+    let components = this.options.components?.map(c => BaseMessageComponent.create(c).toJSON());
 
     let username;
     let avatarURL;
