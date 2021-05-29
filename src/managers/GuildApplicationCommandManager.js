@@ -145,13 +145,14 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
       return [];
     });
 
+    const newPermissions = [...permissions];
     for (const perm of perms) {
-      if (!permissions.find(x => x.id === perm.id)) {
-        permissions.push(perm);
+      if (!newPermissions.find(x => x.id === perm.id)) {
+        newPermissions.push(perm);
       }
     }
 
-    return this.setPermissions(id, permissions);
+    return this.setPermissions(id, newPermissions);
   }
 
   /**
@@ -181,13 +182,18 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
     });
 
     if (Array.isArray(userOrRole)) {
-      userOrRole = userOrRole.map(x => this.client.users.resolveID(x) ?? this.guild.roles.resolveID(x));
+      userOrRole = userOrRole
+        .map(x => this.client.users.resolveID(x) ?? this.guild.roles.resolveID(x))
+        .filter(x => !!x);
       permissions = permissions.filter(perm => !userOrRole.includes(perm.id));
     } else {
       if (typeof userOrRole !== 'string') {
         userOrRole = this.client.users.resolveID(userOrRole) ?? this.guild.roles.resolveID(userOrRole);
       }
-      permissions = permissions.filter(perm => perm.id !== userOrRole);
+
+      if (userOrRole) {
+        permissions = permissions.filter(perm => perm.id !== userOrRole);
+      }
     }
 
     return this.setPermissions(id, permissions);
