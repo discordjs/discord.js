@@ -35,7 +35,7 @@ class HTTPError extends Error {
     /**
      * The HTTP data that was sent to Discord
      * @typedef {Object} HTTPErrorData
-     * @property {*} jsonData The JSON data that was sent
+     * @property {*} json The JSON data that was sent
      * @property {HTTPAttachmentData[]} files The files that were sent with this request, if any
      */
 
@@ -51,7 +51,7 @@ class HTTPError extends Error {
      * @type {HTTPErrorData}
      */
     this.requestData = {
-      jsonData: request.options.data,
+      json: request.options.data,
       files: request.options.files ?? [],
     };
   }

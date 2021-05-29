@@ -40,7 +40,7 @@ class DiscordAPIError extends Error {
      * @type {HTTPErrorData}
      */
     this.requestData = {
-      jsonData: request.options.data,
+      json: request.options.data,
       files: request.options.files ?? [],
     };
   }

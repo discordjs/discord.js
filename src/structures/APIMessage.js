@@ -125,6 +125,7 @@ class APIMessage {
    */
   resolveData() {
     if (this.data) return this;
+    const isWebhook = this.isWebhook;
 
     const content = this.makeContent();
     const tts = Boolean(this.options.tts);
@@ -139,7 +140,7 @@ class APIMessage {
     }
 
     const embedLikes = [];
-    if (this.isInteraction || this.isWebhook) {
+    if (this.isInteraction || isWebhook) {
       if (this.options.embeds) {
         embedLikes.push(...this.options.embeds);
       }
@@ -150,7 +151,7 @@ class APIMessage {
 
     let username;
     let avatarURL;
-    if (this.isWebhook) {
+    if (isWebhook) {
       username = this.options.username || this.target.name;
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
     }
@@ -192,7 +193,7 @@ class APIMessage {
       tts,
       nonce,
       embed: this.options.embed === null ? null : embeds[0],
-      embeds,
+      embeds: isWebhook ? embeds : undefined,
       username,
       avatar_url: avatarURL,
       allowed_mentions:
