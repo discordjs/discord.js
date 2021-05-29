@@ -1,7 +1,6 @@
 'use strict';
 
 const ApplicationCommandManager = require('./ApplicationCommandManager');
-const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
 const { ApplicationCommandPermissionTypes } = require('../util/Constants');
 
@@ -126,10 +125,10 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
    * @param {ApplicationCommandPermissionData[]} permissions The permissions to add to this command
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
-   * // Block the @everyone role from command permissions
+   * // Block a role from the command permissions
    * guild.commands.addPermissions('123456789012345678', [
    *   {
-   *     id: guild.roles.everyone.id,
+   *     id: '876543211234567890',
    *     type: 'ROLE',
    *     permission: false
    *   },
@@ -141,18 +140,18 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
     const id = this.resolveID(command);
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    const perms = await this.fetchPermissions(id).catch(() => []);
+    const perms = await this.fetchPermissions(id).catch(err => {
+      if (err.httpStatus !== 404) throw err;
+      return [];
+    });
+
     for (const perm of perms) {
       if (!permissions.find(x => x.id === perm.id)) {
         permissions.push(perm);
       }
     }
 
-    const data = await this.commandPath(id).permissions.put({
-      data: { permissions: permissions.map(perm => this.constructor.transformPermissions(perm)) },
-    });
-
-    return data.permissions.map(perm => this.constructor.transformPermissions(perm, true));
+    return this.setPermissions(id, permissions);
   }
 
   /**
@@ -176,29 +175,22 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
     const id = this.resolveID(command);
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    let permissions = await this.fetchPermissions(id).catch(() => []);
-    if (Array.isArray(userOrRole)) {
-      userOrRole = userOrRole.map(x => {
-        if (typeof x === 'string') return x;
-        if (x instanceof Role) return x.id;
-        return this.client.users.resolveID(x);
-      });
+    let permissions = await this.fetchPermissions(id).catch(err => {
+      if (err.httpStatus !== 404) throw err;
+      return [];
+    });
 
+    if (Array.isArray(userOrRole)) {
+      userOrRole = userOrRole.map(x => this.client.users.resolveID(x) ?? this.guild.roles.resolveID(x));
       permissions = permissions.filter(perm => !userOrRole.includes(perm.id));
     } else {
       if (typeof userOrRole !== 'string') {
-        if (userOrRole instanceof Role) userOrRole = userOrRole.id;
-        userOrRole = this.client.users.resolveID(userOrRole);
+        userOrRole = this.client.users.resolveID(userOrRole) ?? this.guild.roles.resolveID(userOrRole);
       }
-
       permissions = permissions.filter(perm => perm.id !== userOrRole);
     }
 
-    const data = await this.commandPath(id).permissions.put({
-      data: { permissions: permissions.map(perm => this.constructor.transformPermissions(perm)) },
-    });
-
-    return data.permissions.map(perm => this.constructor.transformPermissions(perm, true));
+    return this.setPermissions(id, permissions);
   }
 
   /**
