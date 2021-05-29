@@ -3648,16 +3648,16 @@ declare module 'discord.js' {
     partial: true;
     fetch(): Promise<T>;
   } & {
-      [K in keyof Omit<
-        T,
-        'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-      >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
-    };
+    [K in keyof Omit<
+      T,
+      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
+    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
+  };
 
   interface PartialDMChannel
     extends Partialize<
-    DMChannel,
-    'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
+      DMChannel,
+      'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
     > {
     lastMessage: null;
     lastMessageID: undefined;
@@ -3679,18 +3679,18 @@ declare module 'discord.js' {
 
   interface PartialGuildMember
     extends Partialize<
-    GuildMember,
-    | 'bannable'
-    | 'displayColor'
-    | 'displayHexColor'
-    | 'displayName'
-    | 'guild'
-    | 'kickable'
-    | 'permissions'
-    | 'roles'
-    | 'manageable'
-    | 'presence'
-    | 'voice'
+      GuildMember,
+      | 'bannable'
+      | 'displayColor'
+      | 'displayHexColor'
+      | 'displayName'
+      | 'guild'
+      | 'kickable'
+      | 'permissions'
+      | 'roles'
+      | 'manageable'
+      | 'presence'
+      | 'voice'
     > {
     readonly bannable: boolean;
     readonly displayColor: number;
@@ -3709,17 +3709,17 @@ declare module 'discord.js' {
 
   interface PartialMessage
     extends Partialize<
-    Message,
-    | 'attachments'
-    | 'channel'
-    | 'deletable'
-    | 'crosspostable'
-    | 'editable'
-    | 'mentions'
-    | 'pinnable'
-    | 'url'
-    | 'flags'
-    | 'embeds'
+      Message,
+      | 'attachments'
+      | 'channel'
+      | 'deletable'
+      | 'crosspostable'
+      | 'editable'
+      | 'mentions'
+      | 'pinnable'
+      | 'url'
+      | 'flags'
+      | 'embeds'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];
