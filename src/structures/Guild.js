@@ -932,7 +932,7 @@ class Guild extends BaseGuild {
    * Welcome channel data
    * @typedef {Object} WelcomeChannelData
    * @property {string} description The description to show for this welcome channel
-   * @property {GuildChannelResolvable} channel The channel to link for this welcome channel
+   * @property {GuildTextChannelResolvable} channel The channel to link for this welcome channel
    * @property {EmojiIdentifierResolvable} [emoji] The emoji to display for this welcome channel
    */
 

@@ -2711,6 +2711,7 @@ declare module 'discord.js' {
     position?: number;
   }
 
+  type GuildTextChannelResolvable = TextChannel | NewsChannel | Snowflake;
   type ChannelResolvable = Channel | Snowflake;
 
   interface ChannelWebhookCreateOptions {
