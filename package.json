@@ -3,16 +3,17 @@
   "version": "13.0.0-dev",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index.js",
+  "module": "./src/index.mjs",
   "types": "./typings/index.d.ts",
   "exports": {
     ".": [
       {
         "require": "./src/index.js",
-        "import": "./esm/discord.mjs"
+        "import": "./src/index.mjs"
       },
       "./src/index.js"
     ],
-    "./esm": "./esm/discord.mjs"
+    "./esm": "./src/index.mjs"
   },
   "scripts": {
     "test": "npm run lint && npm run docs:test && npm run lint:typings",
@@ -23,7 +24,7 @@
     "lint:fix": "eslint src --fix",
     "lint:typings": "tslint typings/index.d.ts",
     "prettier": "prettier --write src/**/*.js typings/**/*.ts",
-    "prepublishOnly": "npm run test",
+    "prepublishOnly": "npm run test && gen-esm-wrapper ./src/index.js ./src/index.mjs",
     "prepare": "is-ci || husky install",
     "changelog": "conventional-changelog -p angular -i RELEASE_CHANGELOG.md -s"
   },
@@ -70,6 +71,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-prettier": "^3.4.0",
+    "gen-esm-wrapper": "^1.1.1",
     "husky": "^6.0.0",
     "is-ci": "^3.0.0",
     "jest": "^27.0.3",
