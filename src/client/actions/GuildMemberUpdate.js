@@ -27,7 +27,7 @@ class GuildMemberUpdateAction extends Action {
          * @param {GuildMember} oldMember The member before the update
          * @param {GuildMember} newMember The member after the update
          */
-        if (shard.status === Status.READY) client.emit(Events.GUILD_MEMBER_UPDATE, old, member);
+        if (shard.status === Status.READY && !member.equals(old)) client.emit(Events.GUILD_MEMBER_UPDATE, old, member);
       } else {
         const newMember = guild.members.add(data);
         /**
