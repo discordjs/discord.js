@@ -146,9 +146,9 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
       return [];
     });
 
-    const newPermissions = [...permissions];
+    const newPermissions = permissions.slice();
     for (const perm of perms) {
-      if (!newPermissions.find(x => x.id === perm.id)) {
+      if (!newPermissions.some(x => x.id === perm.id)) {
         newPermissions.push(perm);
       }
     }
@@ -183,14 +183,14 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
     });
 
     if (Array.isArray(userOrRole)) {
-      userOrRole = userOrRole.map(x => {
+      const ids = userOrRole.map(x => {
         if (!this.client.users.resolveID(x) && !this.guild.roles.resolveID(x)) {
           throw new TypeError('INVALID_ELEMENT', 'Array', 'userOrRole', x);
         }
         return this.client.users.resolveID(x) ?? this.guild.roles.resolveID(x);
       });
 
-      permissions = permissions.filter(perm => !userOrRole.includes(perm.id));
+      permissions = permissions.filter(perm => !ids.includes(perm.id));
     } else {
       if (typeof userOrRole !== 'string') {
         userOrRole = this.client.users.resolveID(userOrRole) && !this.guild.roles.resolveID(userOrRole);
