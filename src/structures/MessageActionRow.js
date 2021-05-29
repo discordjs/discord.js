@@ -28,7 +28,7 @@ class MessageActionRow extends BaseMessageComponent {
    * @returns {MessageActionRow}
    */
   addComponents(...components) {
-    this.components.push(...components.map(c => BaseMessageComponent.create(c, null, true)));
+    this.components.push(...components.flat(2).map(c => BaseMessageComponent.create(c, null, true)));
     return this;
   }
 
