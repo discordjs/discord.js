@@ -2296,6 +2296,14 @@ export const Constants: {
         size: AllowedImageSize,
         dynamic: boolean,
       ) => string;
+      GuildMemberAvatar: (
+        guildId: Snowflake,
+        memberId: Snowflake,
+        hash: string,
+        format?: DynamicImageFormat,
+        size?: AllowedImageSize,
+        dynamic?: boolean,
+      ) => string;
       Icon: (
         guildId: Snowflake,
         hash: string,
