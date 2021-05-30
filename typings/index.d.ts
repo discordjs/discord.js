@@ -292,7 +292,6 @@ declare module 'discord.js' {
     public setType(type: MessageComponentTypeResolvable): this;
     private static create(data: MessageComponentOptions): MessageComponent;
     private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
-    private static transform(component: MessageComponentResolvable): object;
   }
 
   class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
@@ -1178,7 +1177,7 @@ declare module 'discord.js' {
     public author: User;
     public channel: TextChannel | DMChannel | NewsChannel;
     public readonly cleanContent: string;
-    public components: MessageComponent[];
+    public components: MessageActionRow[];
     public content: string;
     public readonly createdAt: Date;
     public createdTimestamp: number;
@@ -1258,8 +1257,8 @@ declare module 'discord.js' {
   export class MessageActionRow extends BaseMessageComponent {
     constructor(data?: MessageActionRow | MessageActionRowOptions);
     public type: 'ACTION_ROW';
-    public components: MessageComponent[];
-    public addComponents(...components: MessageComponentOptions[] | MessageComponentOptions[][]): this;
+    public components: MessageActionRowComponent[];
+    public addComponents(...components: MessageActionRowComponent[] | MessageActionRowComponent[][]): this;
     public toJSON(): object;
   }
 
@@ -3325,8 +3324,12 @@ declare module 'discord.js' {
 
   type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
+  type MessageActionRowComponent = MessageButton;
+
+  type MessageActionRowComponentOptions = MessageButtonOptions;
+
   interface MessageActionRowOptions extends BaseMessageComponentOptions {
-    components?: MessageComponentResolvable[];
+    components?: MessageActionRowComponent[] | MessageActionRowComponentOptions[];
   }
 
   interface MessageActivity {
@@ -3362,8 +3365,6 @@ declare module 'discord.js' {
 
   type MessageComponentOptions = BaseMessageComponentOptions | MessageActionRowOptions | MessageButtonOptions;
 
-  type MessageComponentResolvable = MessageComponent | MessageComponentOptions;
-
   type MessageComponentType = keyof typeof MessageComponentTypes;
 
   type MessageComponentTypeResolvable = MessageComponentType | MessageComponentTypes;
@@ -3376,7 +3377,7 @@ declare module 'discord.js' {
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     flags?: BitFieldResolvable<MessageFlagsString, number>;
     allowedMentions?: MessageMentionOptions;
-    components?: MessageComponentResolvable[];
+    components?: MessageActionRow[] | MessageActionRowOptions[];
   }
 
   interface MessageEmbedAuthor {
@@ -3469,7 +3470,7 @@ declare module 'discord.js' {
     nonce?: string | number;
     content?: string;
     embed?: MessageEmbed | MessageEmbedOptions;
-    components?: MessageComponentResolvable[];
+    components?: MessageActionRow[] | MessageActionRowOptions[];
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
