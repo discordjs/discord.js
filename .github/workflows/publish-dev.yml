@@ -21,7 +21,7 @@ jobs:
 
       - name: Publish
         run: |
-          npm version --git-tag-version=false $(cat package.json | grep -oP '"version": "\K[^"]+(?=")').$(git rev-parse --verify HEAD)
+          npm version --git-tag-version=false $(jq --raw-output '.version' package.json).$(git rev-parse --verify HEAD)
           npm publish --tag dev || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
