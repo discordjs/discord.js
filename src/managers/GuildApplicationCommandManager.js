@@ -192,7 +192,7 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
       permissions = permissions.filter(perm => !ids.includes(perm.id));
     } else {
       if (typeof userOrRole !== 'string') {
-        userOrRole = this.client.users.resolveID(userOrRole) && !this.guild.roles.resolveID(userOrRole);
+        userOrRole = this.client.users.resolveID(userOrRole) ?? this.guild.roles.resolveID(userOrRole);
         if (!userOrRole) {
           throw new TypeError('INVALID_TYPE', 'userOrRole', 'UserResolvable or RoleResolvable');
         }
