@@ -164,7 +164,7 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
    * // Remove a user permission from this command
-   * guild.commands.addPermissions('123456789012345678', '876543210123456789')
+   * guild.commands.removePermissions('123456789012345678', '876543210123456789')
    *   .then(console.log)
    *   .catch(console.error);
    * @example
