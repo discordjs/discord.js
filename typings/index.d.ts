@@ -3591,9 +3591,12 @@ declare module 'discord.js' {
 
   type MembershipState = keyof typeof MembershipStates;
 
+  
   type MessageActionRowComponent = MessageButton;
 
-  type MessageActionRowComponentOptions = MessageButtonOptions;
+  type MessageActionRowComponent = MessageButton | MessageSelectMenu;
+
+  type MessageActionRowComponentOptions = MessageButtonOptions | MessageSelectMenuOptions;
 
   type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
 
@@ -3605,6 +3608,8 @@ declare module 'discord.js' {
     partyID: string;
     type: number;
   }
+
+  type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
   interface MessageButtonOptions extends BaseMessageComponentOptions {
     customID?: string;
@@ -3625,6 +3630,7 @@ declare module 'discord.js' {
   }
 
   type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton | MessageSelectMenu;
+
   interface MessageComponentInteractionCollectorOptions extends CollectorOptions {
     max?: number;
     maxComponents?: number;
