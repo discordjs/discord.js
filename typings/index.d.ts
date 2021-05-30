@@ -2138,7 +2138,7 @@ declare module 'discord.js' {
     public removePermissions(
       command: ApplicationCommandResolvable,
       userOrRole: UserResolvable | RoleResolvable | UserResolvable[] | RoleResolvable[],
-    ): Promise<ApplicationCommandPermissionData[]>;
+    ): Promise<ApplicationCommandPermissions[]>;
     private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 
