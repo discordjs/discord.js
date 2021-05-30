@@ -208,7 +208,7 @@ class ApplicationCommand extends Base {
   /**
    * Remove permissions from a command.
    * <warn>This is only available for guild application commands.</warn>
-   * @param {UserResolvable | RoleResolvable | UserResolvable[] | RoleResolvable[]} userOrRole The user(s) and role(s)
+   * @param {UserResolvable|RoleResolvable|UserResolvable[]|RoleResolvable[]} userOrRole The user(s) and role(s)
    * to remove from the command permissions
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
