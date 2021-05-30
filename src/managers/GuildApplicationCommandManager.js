@@ -184,10 +184,9 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
 
     if (Array.isArray(userOrRole)) {
       const ids = userOrRole.map(x => {
-        if (!this.client.users.resolveID(x) && !this.guild.roles.resolveID(x)) {
-          throw new TypeError('INVALID_ELEMENT', 'Array', 'userOrRole', x);
-        }
-        return this.client.users.resolveID(x) ?? this.guild.roles.resolveID(x);
+        const resolved = this.client.users.resolveID(x) ?? this.guild.roles.resolveID(x);
+        if (resolved) return resolved;
+        throw new TypeError('INVALID_ELEMENT', 'Array', 'userOrRole', x);
       });
 
       permissions = permissions.filter(perm => !ids.includes(perm.id));
