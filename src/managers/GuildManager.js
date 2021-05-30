@@ -6,7 +6,9 @@ const GuildChannel = require('../structures/GuildChannel');
 const GuildEmoji = require('../structures/GuildEmoji');
 const GuildMember = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
+const OAuth2Guild = require('../structures/OAuth2Guild');
 const Role = require('../structures/Role');
+const Collection = require('../util/Collection');
 const {
   ChannelTypes,
   Events,
@@ -231,25 +233,41 @@ class GuildManager extends BaseManager {
   }
 
   /**
-   * Obtains a guild from Discord, or the guild cache if it's already available.
-   * @param {Snowflake} id ID of the guild
-   * @param {boolean} [cache=true] Whether to cache the new guild object if it isn't already
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
-   * @returns {Promise<Guild>}
-   * @example
-   * // Fetch a guild by its id
-   * client.guilds.fetch('222078108977594368')
-   *   .then(guild => console.log(guild.name))
-   *   .catch(console.error);
+   * Options used to fetch a single guild.
+   * @typedef {Object} FetchGuildOptions
+   * @property {GuildResolvable} guild The guild to fetch
+   * @property {boolean} [cache=true] Whether or not to cache the fetched guild
+   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
-  async fetch(id, cache = true, force = false) {
-    if (!force) {
-      const existing = this.cache.get(id);
-      if (existing) return existing;
+
+  /**
+   * Options used to fetch multiple guilds.
+   * @typedef {Object} FetchGuildsOptions
+   * @property {Snowflake} [before] Get guilds before this guild ID
+   * @property {Snowflake} [after] Get guilds after this guild ID
+   * @property {number} [limit=100] Maximum number of guilds to request (1-100)
+   */
+
+  /**
+   * Obtains one or multiple guilds from Discord, or the guild cache if it's already available.
+   * @param {GuildResolvable|FetchGuildOptions|FetchGuildsOptions} [options] ID of the guild or options
+   * @returns {Promise<Guild|Collection<Snowflake, OAuth2Guild>>}
+   */
+  async fetch(options = {}) {
+    const id = this.resolveID(options) ?? this.resolveID(options.guild);
+
+    if (id) {
+      if (!options.force) {
+        const existing = this.cache.get(id);
+        if (existing) return existing;
+      }
+
+      const data = await this.client.api.guilds(id).get({ query: { with_counts: true } });
+      return this.add(data, options.cache);
     }
 
-    const data = await this.client.api.guilds(id).get({ query: { with_counts: true } });
-    return this.add(data, cache);
+    const data = await this.client.api.users('@me').guilds.get({ query: options });
+    return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
   }
 }
 
