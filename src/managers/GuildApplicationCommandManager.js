@@ -159,7 +159,7 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
   /**
    * Remove permissions from a command.
    * @param {ApplicationCommandResolvable} command The command to edit the permissions for
-   * @param {UserResolvable | RoleResolvable | UserResolvable[] | RoleResolvable[]} userOrRole The user(s) and role(s)
+   * @param {UserResolvable|RoleResolvable|UserResolvable[]|RoleResolvable[]} userOrRole The user(s) and role(s)
    * to remove from the command permissions
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
