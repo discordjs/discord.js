@@ -2604,7 +2604,7 @@ declare module 'discord.js' {
     channelCreate: [channel: GuildChannel];
     channelDelete: [channel: DMChannel | GuildChannel];
     channelPinsUpdate: [channel: Channel | PartialDMChannel, date: Date];
-    channelUpdate: [oldChannel: Channel, newChannel: Channel];
+    channelUpdate: [oldChannel: DMChannel | GuildChannel, newChannel: DMChannel | GuildChannel];
     debug: [message: string];
     warn: [message: string];
     emojiCreate: [emoji: GuildEmoji];
