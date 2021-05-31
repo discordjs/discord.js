@@ -1346,7 +1346,7 @@ declare module 'discord.js' {
 
   export class MessageComponentInteractionCollector extends Collector<Snowflake, Interaction> {
     constructor(
-      source: Channel | Message,
+      source: Message | TextChannel | NewsChannel | DMChannel,
       filter: CollectorFilter<[MessageComponentInteraction]>,
       options?: MessageComponentInteractionCollectorOptions,
     );
@@ -1354,8 +1354,9 @@ declare module 'discord.js' {
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
 
-    public source: Channel | Message;
+    public channel: TextChannel | NewsChannel | DMChannel;
     public readonly endReason: string | null;
+    public message: Message | null;
     public options: MessageComponentInteractionCollectorOptions;
     public total: number;
     public users: Collection<Snowflake, User>;

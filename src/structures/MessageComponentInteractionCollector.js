@@ -29,7 +29,7 @@ class MessageComponentInteractionCollector extends Collector {
 
     /**
      * The message from which to collect message component interactions, if provided
-     * @type {Message}
+     * @type {?Message}
      */
     this.message = source instanceof require('./Message') ? source : null;
 
