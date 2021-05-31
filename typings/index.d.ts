@@ -3184,12 +3184,13 @@ declare module 'discord.js' {
   }
 
   interface MessageEditOptions {
+    attachments?: MessageAttachment[];
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions | null;
     code?: string | boolean;
+    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     flags?: BitFieldResolvable<MessageFlagsString, number>;
     allowedMentions?: MessageMentionOptions;
-    attachments?: MessageAttachment[];
   }
 
   interface MessageEmbedAuthor {
