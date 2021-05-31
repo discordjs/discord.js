@@ -98,9 +98,9 @@ class Webhook {
    * Options that can be passed into editMessage.
    * @typedef {Object} WebhookEditMessageOptions
    * @property {MessageEmbed[]|Object[]} [embeds] See {@link WebhookMessageOptions#embeds}
-   * @property {StringResolvable} [content] See {@link WebhookMessageOptions#content}
-   * @property {FileOptions[]|string[]} [files] See {@link WebhookMessageOptions#files}
-   * @property {MessageMentionOptions} [allowedMentions] See {@link WebhookMessageOptions#allowedMentions}
+   * @property {StringResolvable} [content] See {@link BaseMessageOptions#content}
+   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] See {@link BaseMessageOptions#files}
+   * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
    */
 
   /**
@@ -243,7 +243,7 @@ class Webhook {
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
    * @param {StringResolvable|APIMessage} [content] The new content for the message
-   * @param {WebhookEditMessageOptions|MessageEmbed|MessageEmbed[]} [options] The options to provide
+   * @param {WebhookEditMessageOptions|MessageAdditions} [options] The options to provide
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
