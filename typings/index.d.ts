@@ -2603,8 +2603,8 @@ declare module 'discord.js' {
     applicationCommandUpdate: [oldCommand: ApplicationCommand | null, newCommand: ApplicationCommand];
     channelCreate: [channel: GuildChannel];
     channelDelete: [channel: DMChannel | GuildChannel];
-    channelPinsUpdate: [channel: Channel | PartialDMChannel, date: Date];
-    channelUpdate: [oldChannel: Channel, newChannel: Channel];
+    channelPinsUpdate: [channel: TextChannel | NewsChannel | DMChannel | PartialDMChannel, date: Date];
+    channelUpdate: [oldChannel: DMChannel | GuildChannel, newChannel: DMChannel | GuildChannel];
     debug: [message: string];
     warn: [message: string];
     emojiCreate: [emoji: GuildEmoji];
@@ -2646,7 +2646,7 @@ declare module 'discord.js' {
     roleCreate: [role: Role];
     roleDelete: [role: Role];
     roleUpdate: [oldRole: Role, newRole: Role];
-    typingStart: [channel: Channel | PartialDMChannel, user: User | PartialUser];
+    typingStart: [channel: TextChannel | NewsChannel | DMChannel | PartialDMChannel, user: User | PartialUser];
     userUpdate: [oldUser: User | PartialUser, newUser: User];
     voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
     webhookUpdate: [channel: TextChannel];
