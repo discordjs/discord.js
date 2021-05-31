@@ -250,6 +250,7 @@ class CommandInteraction extends Interaction {
    * @param {Object[]} options The received options
    * @param {Object} resolved The resolved interaction data
    * @returns {Collection<string, CommandInteractionOption>}
+   * @private
    */
   _createOptionsCollection(options, resolved) {
     const optionsCollection = new Collection();
