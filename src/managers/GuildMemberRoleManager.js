@@ -22,23 +22,13 @@ class GuildMemberRoleManager {
   }
 
   /**
-   * The filtered collection of roles of the member
-   * @type {Collection<Snowflake, Role>}
-   * @private
-   * @readonly
-   */
-  get _roles() {
-    const everyone = this.guild.roles.everyone;
-    return this.guild.roles.cache.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
-  }
-
-  /**
    * The roles of this member
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
   get cache() {
-    return this._roles;
+    const everyone = this.guild.roles.everyone;
+    return this.guild.roles.cache.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
   }
 
   /**
@@ -47,7 +37,7 @@ class GuildMemberRoleManager {
    * @readonly
    */
   get hoist() {
-    const hoistedRoles = this._roles.filter(role => role.hoist);
+    const hoistedRoles = this.cache.filter(role => role.hoist);
     if (!hoistedRoles.size) return null;
     return hoistedRoles.reduce((prev, role) => (!prev || role.comparePositionTo(prev) > 0 ? role : prev));
   }
@@ -58,7 +48,7 @@ class GuildMemberRoleManager {
    * @readonly
    */
   get color() {
-    const coloredRoles = this._roles.filter(role => role.color);
+    const coloredRoles = this.cache.filter(role => role.color);
     if (!coloredRoles.size) return null;
     return coloredRoles.reduce((prev, role) => (!prev || role.comparePositionTo(prev) > 0 ? role : prev));
   }
@@ -69,7 +59,7 @@ class GuildMemberRoleManager {
    * @readonly
    */
   get highest() {
-    return this._roles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev), this._roles.first());
+    return this.cache.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev), this.cache.first());
   }
 
   /**
@@ -107,7 +97,7 @@ class GuildMemberRoleManager {
         resolvedRoles.push(resolvedRole);
       }
 
-      const newRoles = [...new Set(resolvedRoles.concat(...this._roles.values()))];
+      const newRoles = [...new Set(resolvedRoles.concat(...this.cache.values()))];
       return this.set(newRoles, reason);
     } else {
       roleOrRoles = this.guild.roles.resolveID(roleOrRoles);
@@ -118,7 +108,7 @@ class GuildMemberRoleManager {
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles].put({ reason });
 
       const clone = this.member._clone();
-      clone._roles = [...this._roles.keys(), roleOrRoles];
+      clone._roles = [...this.cache.keys(), roleOrRoles];
       return clone;
     }
   }
@@ -138,7 +128,7 @@ class GuildMemberRoleManager {
         resolvedRoles.push(resolvedRole);
       }
 
-      const newRoles = this._roles.filter(role => !resolvedRoles.includes(role.id));
+      const newRoles = this.cache.filter(role => !resolvedRoles.includes(role.id));
       return this.set(newRoles, reason);
     } else {
       roleOrRoles = this.guild.roles.resolveID(roleOrRoles);
@@ -149,7 +139,7 @@ class GuildMemberRoleManager {
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles].delete({ reason });
 
       const clone = this.member._clone();
-      const newRoles = this._roles.filter(role => role.id !== roleOrRoles);
+      const newRoles = this.cache.filter(role => role.id !== roleOrRoles);
       clone._roles = [...newRoles.keys()];
       return clone;
     }
@@ -177,7 +167,7 @@ class GuildMemberRoleManager {
 
   clone() {
     const clone = new this.constructor(this.member);
-    clone.member._roles = [...this._roles.keyArray()];
+    clone.member._roles = [...this.cache.keyArray()];
     return clone;
   }
 
