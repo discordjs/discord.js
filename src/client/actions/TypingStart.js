@@ -40,7 +40,7 @@ class TypingStart extends Action {
         /**
          * Emitted whenever a user starts typing in a channel.
          * @event Client#typingStart
-         * @param {Channel} channel The channel the user started typing in
+         * @param {DMChannel|TextChannel|NewsChannel} channel The channel the user started typing in
          * @param {User} user The user that started typing
          */
         this.client.emit(Events.TYPING_START, channel, user);
