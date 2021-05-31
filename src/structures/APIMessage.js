@@ -81,7 +81,8 @@ class APIMessage {
    */
   get isInteraction() {
     const Interaction = require('./Interaction');
-    return this.target instanceof Interaction;
+    const InteractionWebhook = require('./InteractionWebhook');
+    return this.target instanceof Interaction || this.target instanceof InteractionWebhook;
   }
 
   /**
@@ -372,10 +373,15 @@ class APIMessage {
    */
   static create(target, content, options, extra = {}) {
     const Interaction = require('./Interaction');
+    const InteractionWebhook = require('./InteractionWebhook');
     const Webhook = require('./Webhook');
     const WebhookClient = require('../client/WebhookClient');
 
-    const isWebhook = target instanceof Interaction || target instanceof Webhook || target instanceof WebhookClient;
+    const isWebhook =
+      target instanceof Interaction ||
+      target instanceof InteractionWebhook ||
+      target instanceof Webhook ||
+      target instanceof WebhookClient;
     const transformed = this.transformOptions(content, options, extra, isWebhook);
     return new this(target, transformed);
   }
@@ -385,7 +391,7 @@ module.exports = APIMessage;
 
 /**
  * A target for a message.
- * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction} MessageTarget
+ * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook} MessageTarget
  */
 
 /**
