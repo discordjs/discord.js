@@ -289,7 +289,6 @@ declare module 'discord.js' {
   export class BaseMessageComponent {
     constructor(data?: BaseMessageComponent | BaseMessageComponentOptions);
     public type: MessageComponentType | null;
-    public setType(type: MessageComponentTypeResolvable): this;
     private static create(data: MessageComponentOptions): MessageComponent;
     private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
@@ -1258,7 +1257,14 @@ declare module 'discord.js' {
     constructor(data?: MessageActionRow | MessageActionRowOptions);
     public type: 'ACTION_ROW';
     public components: MessageActionRowComponent[];
-    public addComponents(...components: MessageActionRowComponent[] | MessageActionRowComponent[][]): this;
+    public addComponents(
+      ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
+    ): this;
+    public spliceComponents(
+      index: number,
+      deleteCount: number,
+      ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
+    ): this;
     public toJSON(): object;
   }
 
@@ -3329,8 +3335,10 @@ declare module 'discord.js' {
 
   type MessageActionRowComponentOptions = MessageButtonOptions;
 
+  type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
+
   interface MessageActionRowOptions extends BaseMessageComponentOptions {
-    components?: MessageActionRowComponent[] | MessageActionRowComponentOptions[];
+    components?: MessageActionRowComponentResolvable[];
   }
 
   interface MessageActivity {

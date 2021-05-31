@@ -126,8 +126,8 @@ class Message extends Base {
     this.embeds = (data.embeds || []).map(e => new Embed(e, true));
 
     /**
-     * A list of components in the message e.g. ActionRows, Buttons
-     * @type {MessageComponent[]}
+     * A list of MessageActionRows in the message
+     * @type {MessageActionRow[]}
      */
     this.components = (data.components || []).map(c => BaseMessageComponent.create(c, this.client));
 

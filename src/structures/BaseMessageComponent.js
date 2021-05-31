@@ -27,14 +27,6 @@ class BaseMessageComponent {
    */
 
   /**
-   * Data that can be resolved to give a MessageComponent object. This can be:
-   * * A MessageComponentOptions object
-   * * A MessageActionRow
-   * * A MessageButton
-   * @typedef {MessageComponentOptions|MessageComponent} MessageComponentResolvable
-   */
-
-  /**
    * Data that can be resolved to a MessageComponentType. This can be:
    * * {@link MessageComponentType}
    * * string
@@ -51,16 +43,6 @@ class BaseMessageComponent {
      * @type {?MessageComponentType}
      */
     this.type = 'type' in data ? BaseMessageComponent.resolveType(data.type) : null;
-  }
-
-  /**
-   * Sets the type of this component
-   * @param {MessageComponentTypeResolvable} type The type of this component
-   * @returns {BaseMessageComponent}
-   */
-  setType(type) {
-    this.type = BaseMessageComponent.resolveType(type);
-    return this;
   }
 
   /**

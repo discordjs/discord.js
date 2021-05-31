@@ -9,8 +9,28 @@ const { MessageComponentTypes } = require('../util/Constants');
  */
 class MessageActionRow extends BaseMessageComponent {
   /**
+   * Components that can be placed in a MessageActionRow
+   * * MessageButton
+   * @typedef {MessageButton} MessageActionRowComponent
+   */
+
+  /**
+   * Options for components that can be placed in a MessageActionRow
+   * * MessageButtonOptions
+   * @typedef {MessageButtonOptions} MessageActionRowComponentOptions
+   */
+
+  /**
+   * Data that can be resolved into a components that can be placed in a MessageActionRow
+   * * MessageActionRowComponent
+   * * MessageActionRowComponentOptions
+   * @typedef {MessageActionRowComponent|MessageActionRowComponentOptions} MessageActionRowComponentResolvable
+   */
+
+  /**
    * @typedef {BaseMessageComponentOptions} MessageActionRowOptions
-   * @property {MessageComponent[]|MessageComponentOptions[]} [components] The components to place in this ActionRow
+   * @property {MessageActionRowComponentResolvable[]} [components]
+   * The components to place in this ActionRow
    */
 
   /**
@@ -24,11 +44,27 @@ class MessageActionRow extends BaseMessageComponent {
 
   /**
    * Adds components to the row (max 5).
-   * @param {...(MessageComponent[]|MessageComponentOptions[])} components The components to add
+   * @param {...MessageActionRowComponentResolvable[]} components The components to add
    * @returns {MessageActionRow}
    */
   addComponents(...components) {
     this.components.push(...components.flat(2).map(c => BaseMessageComponent.create(c, null, true)));
+    return this;
+  }
+
+  /**
+   * Removes, replaces, and inserts components in the action row (max 25).
+   * @param {number} index The index to start at
+   * @param {number} deleteCount The number of components to remove
+   * @param {...MessageActionRowComponentResolvable[]} [components] The replacing components
+   * @returns {MessageSelectMenu}
+   */
+  spliceComponents(index, deleteCount, ...components) {
+    this.components.splice(
+      index,
+      deleteCount,
+      ...components.flat(2).map(c => BaseMessageComponent.create(c, null, true)),
+    );
     return this;
   }
 
