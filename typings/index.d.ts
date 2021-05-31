@@ -194,6 +194,7 @@ declare module 'discord.js' {
     public removePermissions(
       userOrRole: UserResolvable | RoleResolvable | UserResolvable[] | RoleResolvable[],
     ): Promise<ApplicationCommandPermissions[]>;
+    public hasPermission(userOrRole: UserResolvable | RoleResolvable): Promise<boolean>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): object;
   }
 
@@ -2159,7 +2160,11 @@ declare module 'discord.js' {
       command: ApplicationCommandResolvable,
       userOrRole: UserResolvable | RoleResolvable | UserResolvable[] | RoleResolvable[],
     ): Promise<ApplicationCommandPermissions[]>;
-    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object
+    public hasPermission(
+      command: ApplicationCommandResolvable,
+      userOrRole: UserResolvable | RoleResolvable,
+    ): Promise<boolean>;
+    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {

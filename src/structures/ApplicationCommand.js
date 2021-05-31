@@ -228,6 +228,23 @@ class ApplicationCommand extends Base {
   }
 
   /**
+   * Check if this command can be used by a user or role
+   * <warn>This is only available for guild application commands.</warn>
+   * @param {UserResolvable|RoleResolvable} userOrRole The user or role that you want to check if has permission to use
+   * this command.
+   * @returns {Promise<boolean>}
+   * @example
+   * // Check if a user has permission to use this command
+   * command.hasPermission('876543210123456789')
+   *  .then(console.log)
+   *  .catch(console.error);
+   */
+  hasPermission(userOrRole) {
+    if (!this.guild) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
+    return this.manager.hasPermission(this, userOrRole);
+  }
+
+  /**
    * An option for an application command or subcommand.
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option

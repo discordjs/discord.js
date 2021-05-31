@@ -204,6 +204,36 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
   }
 
   /**
+   * Check whether a command can be used by a user or role
+   * @param {ApplicationCommandResolvable} command The command to verify the permissions
+   * @param {UserResolvable|RoleResolvable} userOrRole The user or role that you want to check if has permission to use
+   * this command.
+   * @returns {Promise<boolean>}
+   * @example
+   * // Check whether a user has permission to use a command
+   * guild.commands.hasPermission('123456789012345678', '876543210123456789')
+   *  .then(console.log)
+   *  .catch(console.error);
+   */
+  async hasPermission(command, userOrRole) {
+    const id = this.resolveID(command);
+    if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+
+    const permissions = await this.fetchPermissions(id).catch(err => {
+      if (err.httpStatus !== 404) throw err;
+      return [];
+    });
+
+    if (typeof userOrRole !== 'string') {
+      userOrRole = this.client.users.resolveID(userOrRole) ?? this.guild.roles.resolveID(userOrRole);
+      if (!userOrRole) {
+        throw new TypeError('INVALID_TYPE', 'userOrRole', 'UserResolvable or RoleResolvable');
+      }
+    }
+    return !!permissions.find(perm => perm.id === userOrRole)?.permission;
+  }
+
+  /**
    * Transforms an {@link ApplicationCommandPermissionData} object into something that can be used with the API.
    * @param {ApplicationCommandPermissionData} permissions The permissions to transform
    * @param {boolean} [received] Whether these permissions have been received from Discord
