@@ -92,7 +92,8 @@ class MessageButton extends BaseMessageComponent {
    * @returns {MessageButton}
    */
   setEmoji(emoji) {
-    this.emoji = Util.parseEmoji(`${emoji}`);
+    if (/^\d{17,19}$/.test(emoji)) this.emoji = { id: emoji };
+    else this.emoji = Util.parseEmoji(`${emoji}`);
     return this;
   }
 
