@@ -2346,7 +2346,7 @@ declare module 'discord.js' {
     edit(options: WebhookEditData): Promise<Webhook>;
     editMessage(
       message: MessageResolvable | '@original',
-      content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
+      content: APIMessageContentResolvable | APIMessage | MessageAdditions,
       options?: WebhookEditMessageOptions,
     ): Promise<Message | RawMessage>;
     editMessage(
