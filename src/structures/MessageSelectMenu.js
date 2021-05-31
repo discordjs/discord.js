@@ -131,8 +131,8 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @param {...MessageSelectOption|MessageSelectOption[]} [options] The replacing option objects
    * @returns {MessageSelectMenu}
    */
-  spliceFields(index, deleteCount, ...options) {
-    this.fields.splice(index, deleteCount, ...this.constructor.normalizeOptions(...options));
+  spliceOptions(index, deleteCount, ...options) {
+    this.options.splice(index, deleteCount, ...this.constructor.normalizeOptions(...options));
     return this;
   }
 
@@ -161,6 +161,7 @@ class MessageSelectMenu extends BaseMessageComponent {
 
     label = Util.resolveString(label);
     value = Util.resolveString(value);
+    emoji = /^\d{17,19}$/.test(emoji) ? { id: value } : Util.parseEmoji(emoji);
     description = typeof description !== 'undefined' ? Util.resolveString(description) : undefined;
 
     return { label, value, description, emoji, default: option.default };

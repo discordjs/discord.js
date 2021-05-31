@@ -1547,6 +1547,11 @@ declare module 'discord.js' {
     public setMaxValues(maxValues: number): this;
     public setMinValues(minValues: number): this;
     public setPlaceholder(placeholder: string): this;
+    public spliceOptions(
+      index: number,
+      deleteCount: number,
+      ...options: MessageSelectOption[] | MessageSelectOption[][]
+    ): this;
     public toJSON(): object;
   }
 
@@ -3784,7 +3789,6 @@ declare module 'discord.js' {
     minValues?: number;
     options?: MessageSelectOption[];
     placeholder?: string;
-    type: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
   }
 
   interface MessageSelectOption {
