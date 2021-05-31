@@ -245,7 +245,7 @@ declare module 'discord.js' {
 
   export class BaseGuildEmoji extends Emoji {
     constructor(client: Client, data: unknown, guild: Guild);
-    private _roles: string[];
+    private _roles: Snowflake[];
 
     public available: boolean | null;
     public readonly createdAt: Date;
