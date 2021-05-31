@@ -24,11 +24,12 @@
     "lint:typings": "tslint typings/index.d.ts",
     "prettier": "prettier --write src/**/*.js typings/**/*.ts",
     "prepublishOnly": "npm run test",
-    "prepare": "is-ci || husky install"
+    "prepare": "is-ci || husky install",
+    "changelog": "conventional-changelog -p angular -i RELEASE_CHANGELOG.md -s"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/discordjs/discord.js.git"
+    "url": "https://github.com/discordjs/discord.js.git"
   },
   "keywords": [
     "discord",
@@ -62,6 +63,7 @@
     "@commitlint/config-angular": "^12.1.4",
     "@discordjs/docgen": "^0.10.0",
     "@types/node": "^12.12.6",
+    "conventional-changelog-cli": "^2.1.1",
     "cross-env": "^7.0.3",
     "dtslint": "^4.1.0",
     "eslint": "^7.27.0",
@@ -79,48 +81,5 @@
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=7.0.0"
-  },
-  "lint-staged": {
-    "*.{mjs,js}": "eslint --fix --ext mjs,js,ts",
-    "*.{ts,json,yml,yaml}": "prettier --write"
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-angular"
-    ],
-    "rules": {
-      "scope-case": [
-        2,
-        "always",
-        "pascal-case"
-      ],
-      "type-enum": [
-        2,
-        "always",
-        [
-          "chore",
-          "build",
-          "ci",
-          "docs",
-          "feat",
-          "fix",
-          "perf",
-          "refactor",
-          "revert",
-          "style",
-          "test",
-          "types",
-          "workflow",
-          "wip"
-        ]
-      ]
-    }
-  },
-  "prettier": {
-    "singleQuote": true,
-    "printWidth": 120,
-    "trailingComma": "all",
-    "endOfLine": "lf",
-    "arrowParens": "avoid"
   }
 }
