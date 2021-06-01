@@ -1361,6 +1361,7 @@ declare module 'discord.js' {
     private _handleGuildDeletion(guild: Guild): void;
 
     public channel: TextChannel | NewsChannel | DMChannel;
+    public empty(): void;
     public readonly endReason: string | null;
     public message: Message | null;
     public options: MessageComponentInteractionCollectorOptions;
@@ -1369,6 +1370,20 @@ declare module 'discord.js' {
 
     public collect(interaction: Interaction): Snowflake;
     public dispose(interaction: Interaction): Snowflake;
+    
+    public on(event: 'collect' | 'dispose', listener: (interaction: Interaction) => Awaited<void>): this;
+    public on(
+      event: 'end',
+      listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaited<void>,
+    ): this;
+    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
+
+    public once(event: 'collect' | 'dispose', listener: (interaction: Interaction) => Awaited<void>): this;
+    public once(
+      event: 'end',
+      listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaited<void>,
+    ): this;
+    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
   }
 
   export class MessageEmbed {
