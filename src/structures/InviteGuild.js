@@ -1,13 +1,13 @@
 'use strict';
 
-const Guild = require('./Guild');
+const BaseGuild = require('./BaseGuild');
 const WelcomeScreen = require('./WelcomeScreen');
 
 /**
  * Represents a guild received from an invite, including welcome screen data if available.
- * @extends {Guild}
+ * @extends {BaseGuild}
  */
-class InviteGuild extends Guild {
+class InviteGuild extends BaseGuild {
   constructor(client, data) {
     super(client, data);
     this.welcomeScreen =
