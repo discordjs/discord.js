@@ -1189,7 +1189,7 @@ declare module 'discord.js' {
   }
 
   export class InviteGuild extends Guild {
-    constructor(client: Client, data: object);
+    constructor(client: Client, data: unknown);
     public welcomeScreen: WelcomeScreen | null;
   }
 
@@ -2104,7 +2104,7 @@ declare module 'discord.js' {
   }
 
   export class WelcomeChannel extends Base {
-    private _emoji: object;
+    private _emoji: unknown;
     public channelID: Snowflake;
     public guild: Guild | InviteGuild;
     public description: string;
@@ -3651,7 +3651,7 @@ declare module 'discord.js' {
     [K in keyof Omit<
       T,
       'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
+    >]: T[K] extends (...args: any) => void ? T[K] : T[K] | null;
   };
 
   interface PartialDMChannel
