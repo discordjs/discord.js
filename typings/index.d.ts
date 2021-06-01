@@ -1265,7 +1265,7 @@ declare module 'discord.js' {
       deleteCount: number,
       ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
     ): this;
-    public toJSON(): object;
+    public toJSON(): unknown;
   }
 
   export class MessageAttachment {
@@ -1301,7 +1301,7 @@ declare module 'discord.js' {
     public setLabel(label: string): this;
     public setStyle(style: MessageButtonStyleResolvable): this;
     public setURL(url: string): this;
-    public toJSON(): object;
+    public toJSON(): unknown;
     private static resolveStyle(style: MessageButtonStyleResolvable): MessageButtonStyle;
   }
 
