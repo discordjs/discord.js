@@ -479,7 +479,9 @@ class Message extends Base {
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
-   * @property {MessageAttachment[]} [attachments] The new attachments of the message (can only be removed, not added)
+   * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
+   * all attachments will be kept if omitted
+   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to add to the message
    */
 
   /**
@@ -593,6 +595,11 @@ class Message extends Base {
    * @param {StringResolvable|APIMessage} [content=''] The content for the message
    * @param {ReplyMessageOptions|MessageAdditions} [options] The additional options to provide
    * @returns {Promise<Message|Message[]>}
+   * @example
+   * // Reply to a message
+   * message.reply('This is a reply!')
+   *   .then(() => console.log(`Replied to message "${message.content}"`))
+   *   .catch(console.error);
    */
   reply(content, options) {
     return this.channel.send(

@@ -63,7 +63,7 @@ class CommandInteraction extends Interaction {
 
   /**
    * Options for deferring the reply to a {@link CommandInteraction}.
-   * @typedef {InteractionDeferOptions}
+   * @typedef {Object} InteractionDeferOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    */
 

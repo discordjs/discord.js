@@ -74,16 +74,16 @@ class GuildEmojiRoleManager {
   remove(roleOrRoles) {
     if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roleOrRoles = [roleOrRoles];
 
-    const resolvedRoles = [];
+    const resolvedRoleIDs = [];
     for (const role of roleOrRoles.values()) {
-      const resolvedRole = this.guild.roles.resolveID(role);
-      if (!resolvedRole) {
+      const roleID = this.guild.roles.resolveID(role);
+      if (!roleID) {
         return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
       }
-      resolvedRoles.push(resolvedRole);
+      resolvedRoleIDs.push(roleID);
     }
 
-    const newRoles = this._roles.keyArray().filter(role => !resolvedRoles.includes(role.id));
+    const newRoles = this._roles.keyArray().filter(id => !resolvedRoleIDs.includes(id));
     return this.set(newRoles);
   }
 

@@ -379,11 +379,11 @@ class Util {
    * - `YELLOW`
    * - `PURPLE`
    * - `LUMINOUS_VIVID_PINK`
+   * - `FUCHSIA`
    * - `GOLD`
    * - `ORANGE`
    * - `RED`
    * - `GREY`
-   * - `DARKER_GREY`
    * - `NAVY`
    * - `DARK_AQUA`
    * - `DARK_GREEN`
@@ -394,6 +394,7 @@ class Util {
    * - `DARK_ORANGE`
    * - `DARK_RED`
    * - `DARK_GREY`
+   * - `DARKER_GREY`
    * - `LIGHT_GREY`
    * - `DARK_NAVY`
    * - `BLURPLE`
