@@ -27,22 +27,12 @@ class GuildEmojiRoleManager {
   }
 
   /**
-   * The filtered collection of roles of the guild emoji
-   * @type {Collection<Snowflake, Role>}
-   * @private
-   * @readonly
-   */
-  get _roles() {
-    return this.guild.roles.cache.filter(role => this.emoji._roles.includes(role.id));
-  }
-
-  /**
    * The cache of roles belonging to this emoji
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
   get cache() {
-    return this._roles;
+    return this.guild.roles.cache.filter(role => this.emoji._roles.includes(role.id));
   }
 
   /**
@@ -62,7 +52,7 @@ class GuildEmojiRoleManager {
       resolvedRoles.push(resolvedRole);
     }
 
-    const newRoles = [...new Set(resolvedRoles.concat(...this._roles.values()))];
+    const newRoles = [...new Set(resolvedRoles.concat(...this.cache.values()))];
     return this.set(newRoles);
   }
 
@@ -83,7 +73,7 @@ class GuildEmojiRoleManager {
       resolvedRoleIDs.push(roleID);
     }
 
-    const newRoles = this._roles.keyArray().filter(id => !resolvedRoleIDs.includes(id));
+    const newRoles = this.cache.keyArray().filter(id => !resolvedRoleIDs.includes(id));
     return this.set(newRoles);
   }
 
@@ -108,7 +98,7 @@ class GuildEmojiRoleManager {
 
   clone() {
     const clone = new this.constructor(this.emoji);
-    clone._patch(this._roles.keyArray().slice());
+    clone._patch(this.cache.keyArray().slice());
     return clone;
   }
 
