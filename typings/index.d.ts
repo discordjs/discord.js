@@ -2486,7 +2486,7 @@ declare module 'discord.js' {
     RESOURCE_OVERLOADED: 130000;
   }
 
-  type APIMessageContentResolvable = string | number | boolean | bigint | symbol | readonly string[];
+  type APIMessageContentResolvable = string | number | boolean | bigint | readonly string[];
 
   interface ApplicationAsset {
     name: string;
