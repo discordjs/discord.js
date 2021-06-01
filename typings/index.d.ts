@@ -750,7 +750,7 @@ declare module 'discord.js' {
   }
 
   export class Emoji extends Base {
-    constructor(client: Client, emoji: object);
+    constructor(client: Client, emoji: unknown);
     public animated: boolean | null;
     public readonly createdAt: Date | null;
     public readonly createdTimestamp: number | null;
@@ -3581,11 +3581,11 @@ declare module 'discord.js' {
 
   type OverwriteType = 'member' | 'role';
 
-  interface PermissionFlags extends Record<PermissionString, bigint> { }
+  interface PermissionFlags extends Record<PermissionString, bigint> {}
 
-  interface PermissionObject extends Record<PermissionString, boolean> { }
+  interface PermissionObject extends Record<PermissionString, boolean> {}
 
-  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> { }
+  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> {}
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
@@ -3624,7 +3624,7 @@ declare module 'discord.js' {
     | 'USE_APPLICATION_COMMANDS'
     | 'REQUEST_TO_SPEAK';
 
-  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> { }
+  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
