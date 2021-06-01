@@ -2376,11 +2376,11 @@ declare module 'discord.js' {
     send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<(Message | RawMessage)[]>;
     send(options: WebhookMessageOptions | APIMessage): Promise<Message | RawMessage | (Message | RawMessage)[]>;
     send(
-      content: string,
+      content: string | null,
       options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message | RawMessage>;
     send(
-      content: string,
+      content: string | null,
       options: WebhookMessageOptions & { split: true | SplitOptions },
     ): Promise<(Message | RawMessage)[]>;
     send(
