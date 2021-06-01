@@ -47,7 +47,7 @@ class MessageActionRow extends BaseMessageComponent {
   }
 
   /**
-   * Adds components to the row (max 5).
+   * Adds components to the row.
    * @param {...MessageActionRowComponentResolvable[]} components The components to add
    * @returns {MessageActionRow}
    */
