@@ -448,16 +448,16 @@ declare module 'discord.js' {
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
-      content: string | APIMessage | WebhookEditMessageOptions | MessageAdditions,
+      content: string | null | APIMessage | WebhookEditMessageOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
-    public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public editReply(content: string | null, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
     public followUp(
       content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
-    public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
-    public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
+    public followUp(content: string | null, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(content: string | null | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
+    public reply(content: string | null, options?: InteractionReplyOptions): Promise<void>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
   }
 
@@ -1185,7 +1185,7 @@ declare module 'discord.js' {
     ): ReactionCollector;
     public delete(): Promise<Message>;
     public edit(
-      content: string | MessageEditOptions | MessageEmbed | APIMessage,
+      content: string | null | MessageEditOptions | MessageEmbed | APIMessage,
     ): Promise<Message>;
     public edit(content: string | null, options: MessageEditOptions | MessageEmbed): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
@@ -1197,19 +1197,19 @@ declare module 'discord.js' {
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
     public reply(
-      content: string | (ReplyMessageOptions & { split?: false }) | MessageAdditions,
+      content: string | null | (ReplyMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     public reply(options: ReplyMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
     public reply(options: ReplyMessageOptions | APIMessage): Promise<Message | Message[]>;
     public reply(
-      content: string,
+      content: string | null,
       options: (ReplyMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     public reply(
-      content: string,
+      content: string | null,
       options: ReplyMessageOptions & { split: true | SplitOptions },
     ): Promise<Message[]>;
-    public reply(content: string, options: ReplyMessageOptions): Promise<Message | Message[]>;
+    public reply(content: string | null, options: ReplyMessageOptions): Promise<Message | Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): unknown;
     public toString(): string;
