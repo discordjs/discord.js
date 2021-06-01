@@ -457,7 +457,7 @@ declare module 'discord.js' {
     public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
     public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
-    private _createOptionsCollection(options: object[], resolved: object): Collection<string, CommandInteractionOption>;
+    private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
   }
 
   type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
