@@ -1185,7 +1185,7 @@ declare module 'discord.js' {
     ): ReactionCollector;
     public delete(): Promise<Message>;
     public edit(
-      content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
+      content: string | MessageEditOptions | MessageEmbed | APIMessage,
     ): Promise<Message>;
     public edit(content: string | null, options: MessageEditOptions | MessageEmbed): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
@@ -1197,7 +1197,7 @@ declare module 'discord.js' {
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
     public reply(
-      content: APIMessageContentResolvable | (ReplyMessageOptions & { split?: false }) | MessageAdditions,
+      content: string | (ReplyMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     public reply(options: ReplyMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
     public reply(options: ReplyMessageOptions | APIMessage): Promise<Message | Message[]>;
@@ -1966,13 +1966,13 @@ declare module 'discord.js' {
     public token: string;
     public editMessage(
       message: MessageResolvable,
-      content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
+      content: string | APIMessage | MessageEmbed | MessageEmbed[],
       options?: WebhookEditMessageOptions,
     ): Promise<RawMessage>;
     public editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
     public send(
-      content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+      content: string | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<RawMessage>;
     public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<RawMessage[]>;
     public send(options: WebhookMessageOptions | APIMessage): Promise<RawMessage | RawMessage[]>;
@@ -2362,7 +2362,7 @@ declare module 'discord.js' {
     edit(options: WebhookEditData): Promise<Webhook>;
     editMessage(
       message: MessageResolvable | '@original',
-      content: APIMessageContentResolvable | APIMessage | MessageAdditions,
+      content: string | APIMessage | MessageAdditions,
       options?: WebhookEditMessageOptions,
     ): Promise<Message | RawMessage>;
     editMessage(
@@ -2371,7 +2371,7 @@ declare module 'discord.js' {
     ): Promise<Message | RawMessage>;
     fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | RawMessage>;
     send(
-      content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+      content: string | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message | RawMessage>;
     send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<(Message | RawMessage)[]>;
     send(options: WebhookMessageOptions | APIMessage): Promise<Message | RawMessage | (Message | RawMessage)[]>;
@@ -2484,8 +2484,6 @@ declare module 'discord.js' {
     REACTION_BLOCKED: 90001;
     RESOURCE_OVERLOADED: 130000;
   }
-
-  type APIMessageContentResolvable = string | number | boolean | bigint | readonly string[];
 
   interface ApplicationAsset {
     name: string;
