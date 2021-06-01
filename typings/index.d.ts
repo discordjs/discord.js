@@ -69,7 +69,6 @@ declare module 'discord.js' {
     APIMessage as RawMessage,
     APIOverwrite as RawOverwrite,
     APIRole as RawRole,
-    Snowflake,
   } from 'discord-api-types/v8';
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
@@ -77,8 +76,6 @@ declare module 'discord.js' {
   import * as WebSocket from 'ws';
 
   export const version: string;
-
-  export { Snowflake };
 
   //#region Classes
 
@@ -3614,6 +3611,8 @@ declare module 'discord.js' {
     token?: string;
     execArgv?: string[];
   }
+
+  type Snowflake = `${bigint}`;
 
   interface SplitOptions {
     maxLength?: number;
