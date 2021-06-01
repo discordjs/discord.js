@@ -1966,7 +1966,7 @@ declare module 'discord.js' {
     public token: string;
     public editMessage(
       message: MessageResolvable,
-      content: string | APIMessage | MessageEmbed | MessageEmbed[],
+      content: string | null | APIMessage | MessageEmbed | MessageEmbed[],
       options?: WebhookEditMessageOptions,
     ): Promise<RawMessage>;
     public editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<RawMessage>;
@@ -2362,7 +2362,7 @@ declare module 'discord.js' {
     edit(options: WebhookEditData): Promise<Webhook>;
     editMessage(
       message: MessageResolvable | '@original',
-      content: string | APIMessage | MessageAdditions,
+      content: string | null | APIMessage | MessageAdditions,
       options?: WebhookEditMessageOptions,
     ): Promise<Message | RawMessage>;
     editMessage(
