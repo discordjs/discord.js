@@ -1,6 +1,5 @@
 'use strict';
 
-const WebhookClient = require('../../client/WebhookClient');
 const { InteractionResponseTypes } = require('../../util/Constants');
 const MessageFlags = require('../../util/MessageFlags');
 const APIMessage = require('../APIMessage');
@@ -10,26 +9,6 @@ const APIMessage = require('../APIMessage');
  * @interface
  */
 class InteractionResponses {
-  constructor() {
-    /**
-     * Whether the reply to this interaction has been deferred
-     * @type {boolean}
-     */
-    this.deferred = false;
-
-    /**
-     * Whether this interaction has already been replied to
-     * @type {boolean}
-     */
-    this.replied = false;
-
-    /**
-     * An associated webhook client, can be used to create deferred replies
-     * @type {WebhookClient}
-     */
-    this.webhook = new WebhookClient(this.applicationID, this.token, this.client.options);
-  }
-
   /**
    * Options for deferring the reply to a {@link CommandInteraction}.
    * @typedef {InteractionDeferOptions}
