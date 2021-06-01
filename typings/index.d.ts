@@ -135,7 +135,7 @@ declare module 'discord.js' {
     ): APIMessage;
     public static create(
       target: MessageTarget,
-      content: string,
+      content: string | null,
       options: MessageOptions | WebhookMessageOptions | MessageAdditions,
       extra?: MessageOptions | WebhookMessageOptions,
     ): APIMessage;
@@ -144,13 +144,13 @@ declare module 'discord.js' {
     ): [MessageEmbed[], MessageAttachment[]];
     public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
     public static transformOptions(
-      content: string,
+      content: string | null,
       options?: undefined,
       extra?: MessageOptions | WebhookMessageOptions,
       isWebhook?: boolean,
     ): MessageOptions | WebhookMessageOptions;
     public static transformOptions(
-      content: string,
+      content: string | null,
       options: MessageOptions | WebhookMessageOptions | MessageAdditions,
       extra?: MessageOptions | WebhookMessageOptions,
       isWebhook?: boolean,
