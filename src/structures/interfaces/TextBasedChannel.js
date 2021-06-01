@@ -114,7 +114,7 @@ class TextBasedChannel {
 
   /**
    * Sends a message to this channel.
-   * @param {StringResolvable|APIMessage} [content=''] The content to send
+   * @param {string|APIMessage} [content=''] The content to send
    * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example

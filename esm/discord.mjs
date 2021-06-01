@@ -49,7 +49,7 @@ export const {
   escapeMarkdown,
   fetchRecommendedShards,
   resolveColor,
-  resolveString,
+  verifyString,
   splitMessage,
   Application,
   ApplicationCommand,
