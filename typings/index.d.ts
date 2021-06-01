@@ -1370,7 +1370,6 @@ declare module 'discord.js' {
 
     public collect(interaction: Interaction): Snowflake;
     public dispose(interaction: Interaction): Snowflake;
-    
     public on(event: 'collect' | 'dispose', listener: (interaction: Interaction) => Awaited<void>): this;
     public on(
       event: 'end',
