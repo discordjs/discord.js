@@ -39,6 +39,10 @@ class MessageActionRow extends BaseMessageComponent {
   constructor(data = {}) {
     super({ type: 'ACTION_ROW' });
 
+    /**
+     * The components in this MessageActionRow
+     * @type {MessageActionRowComponent[]}
+     */
     this.components = (data.components ?? []).map(c => BaseMessageComponent.create(c, null, true));
   }
 
@@ -53,7 +57,7 @@ class MessageActionRow extends BaseMessageComponent {
   }
 
   /**
-   * Removes, replaces, and inserts components in the action row (max 25).
+   * Removes, replaces, and inserts components in the action row.
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of components to remove
    * @param {...MessageActionRowComponentResolvable[]} [components] The replacing components
