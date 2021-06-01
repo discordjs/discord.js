@@ -78,6 +78,8 @@ declare module 'discord.js' {
 
   export const version: string;
 
+  export { Snowflake };
+
   //#region Classes
 
   export class Activity {
