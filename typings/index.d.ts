@@ -1977,14 +1977,14 @@ declare module 'discord.js' {
     public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<RawMessage[]>;
     public send(options: WebhookMessageOptions | APIMessage): Promise<RawMessage | RawMessage[]>;
     public send(
-      content: string,
+      content: string | null,
       options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<RawMessage>;
     public send(
-      content: string,
+      content: string | null,
       options: WebhookMessageOptions & { split: true | SplitOptions },
     ): Promise<RawMessage[]>;
-    public send(content: string, options: WebhookMessageOptions): Promise<RawMessage | RawMessage[]>;
+    public send(content: string | null, options: WebhookMessageOptions): Promise<RawMessage | RawMessage[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2324,9 +2324,9 @@ declare module 'discord.js' {
     send(content: string | (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
     send(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
     send(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
-    send(content: string, options: (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
-    send(content: string, options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(content: string, options: MessageOptions): Promise<Message | Message[]>;
+    send(content: string | null, options: (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
+    send(content: string | null, options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+    send(content: string | null, options: MessageOptions): Promise<Message | Message[]>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -2384,7 +2384,7 @@ declare module 'discord.js' {
       options: WebhookMessageOptions & { split: true | SplitOptions },
     ): Promise<(Message | RawMessage)[]>;
     send(
-      content: string,
+      content: string | null,
       options: WebhookMessageOptions,
     ): Promise<Message | RawMessage | (Message | RawMessage)[]>;
     sendSlackMessage(body: unknown): Promise<boolean>;
