@@ -1791,7 +1791,6 @@ declare module 'discord.js' {
       reason?: string,
     ): Promise<{ id: Snowflake; position: number }[]>;
     public static splitMessage(text: string, options?: SplitOptions): string[];
-    public static str2ab(str: string): ArrayBuffer;
   }
 
   class VoiceBroadcast extends EventEmitter {
