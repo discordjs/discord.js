@@ -16,6 +16,13 @@ class CommandInteraction extends Interaction {
     super(client, data);
 
     /**
+     * The channel this interaction was sent in
+     * @type {?TextChannel|NewsChannel|DMChannel}
+     * @name CommandInteraction#channel
+     * @readonly
+     */
+
+    /**
      * The ID of the invoked application command
      * @type {Snowflake}
      */
