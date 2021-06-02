@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: Install Node v14
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v2
         with:
           node-version: 14
 
