@@ -28,7 +28,8 @@ class ApplicationCommandManager extends BaseManager {
   /**
    * The APIRouter path to the commands
    * @param {Snowflake} [options.id] ID of the application command
-   * @param {Snowflake} [options.guildID] ID of the guild to use in the path, for uncached guilds
+   * @param {Snowflake} [options.guildID] ID of the guild to use in the path,
+   * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Object}
    * @private
    */
@@ -95,7 +96,8 @@ class ApplicationCommandManager extends BaseManager {
   /**
    * Creates an application command.
    * @param {ApplicationCommandData} command The command
-   * @param {Snowflake} [guildID] ID of a guild to create this command in, for when the guild is not cached
+   * @param {Snowflake} [guildID] ID of the guild to create this command in,
+   * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Create a new command
@@ -116,7 +118,8 @@ class ApplicationCommandManager extends BaseManager {
   /**
    * Sets all the commands for this application or guild.
    * @param {ApplicationCommandData[]} commands The commands
-   * @param {Snowflake} [guildID] ID of a guild to create the commands in, for when the guild is not cached
+   * @param {Snowflake} [guildID] ID of the guild to create the commands in,
+   * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<Collection<Snowflake, ApplicationCommand>>}
    * @example
    * // Set all commands to just this one
@@ -145,7 +148,8 @@ class ApplicationCommandManager extends BaseManager {
    * Edits an application command.
    * @param {ApplicationCommandResolvable} command The command to edit
    * @param {ApplicationCommandData} data The data to update the command with
-   * @param {Snowflake} [guildID] ID of the guild where the command registered, for when the guild is not cached
+   * @param {Snowflake} [guildID] ID of the guild where the command registered,
+   * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit an existing command
@@ -166,7 +170,8 @@ class ApplicationCommandManager extends BaseManager {
   /**
    * Deletes an application command.
    * @param {ApplicationCommandResolvable} command The command to delete
-   * @param {Snowflake} [guildID] ID of the guild where the command is registered, for when the guild is not cached
+   * @param {Snowflake} [guildID] ID of the guild where the command is registered,
+   * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<?ApplicationCommand>}
    * @example
    * // Delete a command
@@ -206,7 +211,7 @@ class ApplicationCommandManager extends BaseManager {
    * To fetch all permissions for an uncached guild use `fetchPermissions(undefined, '123456789012345678')`</warn>
    * @param {ApplicationCommandResolvable} [command] The command to get the permissions from
    * @param {Snowflake} [guildID] ID of the guild to get the permissions for,
-   * for global commands and when the guild is not cached
+   * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
    * @example
    * // Fetch permissions for one command
@@ -255,7 +260,7 @@ class ApplicationCommandManager extends BaseManager {
    * permissions for, or an array of guild application command permissions to set the permissions of all commands
    * @param {ApplicationCommandPermissionData[]} [permissions] The new permissions for the command
    * @param {Snowflake} [guildID] ID of the guild to get the permissions for,
-   * for global commands and when the guild is not cached
+   * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
    * @example
    * // Set the permissions for one command

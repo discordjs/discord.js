@@ -147,7 +147,8 @@ class ApplicationCommand extends Base {
 
   /**
    * Fetches the permissions for this command.
-   * <warn>You must specify guildID on global commands and commands on uncached guilds, otherwise it is ignored.</warn>
+   * <warn>You must specify guildID if this command is handled by a {@link ApplicationCommandManager},
+   * including commands fetched for arbitrary guilds from it, otherwise it is ignored.</warn>
    * @param {Snowflake} [guildID] ID for the guild to fetch permissions for if this is a global command
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
@@ -162,7 +163,8 @@ class ApplicationCommand extends Base {
 
   /**
    * Sets the permissions for this command.
-   * <warn>You must specify guildID on global commands and commands on uncached guilds, otherwise it is ignored.</warn>
+   * <warn>You must specify guildID if this command is handled by a {@link ApplicationCommandManager},
+   * including commands fetched for arbitrary guilds from it, otherwise it is ignored.</warn>
    * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
    * @param {Snowflake} [guildID] ID for the guild to fetch permissions for if this is a global command
    * @returns {Promise<ApplicationCommandPermissions[]>}
