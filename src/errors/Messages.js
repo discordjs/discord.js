@@ -109,7 +109,8 @@ const Messages = {
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
 
   GLOBAL_COMMAND_PERMISSIONS:
-    "Permissions for global commands may only be fetched or modified from a guild's application command manager.",
+    'Permissions for global commands may only be fetched or modified by providing a guildID' +
+    "or from a guild's application command manager.",
 
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
 };
