@@ -261,6 +261,7 @@ class CommandInteraction extends Interaction {
    */
   _createOptionsCollection(options, resolved) {
     const optionsCollection = new Collection();
+    if (typeof options === 'undefined') return optionsCollection;
     for (const option of options) {
       optionsCollection.set(option.name, this.transformOption(option, resolved));
     }
