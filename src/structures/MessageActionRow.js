@@ -52,7 +52,7 @@ class MessageActionRow extends BaseMessageComponent {
    * @returns {MessageActionRow}
    */
   addComponents(...components) {
-    this.components.push(...components.flat(2).map(c => BaseMessageComponent.create(c, null, true)));
+    this.components.push(...components.flat(Infinity).map(c => BaseMessageComponent.create(c, null, true)));
     return this;
   }
 
@@ -67,7 +67,7 @@ class MessageActionRow extends BaseMessageComponent {
     this.components.splice(
       index,
       deleteCount,
-      ...components.flat(2).map(c => BaseMessageComponent.create(c, null, true)),
+      ...components.flat(Infinity).map(c => BaseMessageComponent.create(c, null, true)),
     );
     return this;
   }
