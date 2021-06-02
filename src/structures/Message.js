@@ -592,7 +592,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
-   * @param {StringResolvable|APIMessage} [content=''] The content for the message
+   * @param {string|APIMessage} [content=''] The content for the message
    * @param {ReplyMessageOptions|MessageAdditions} [options] The additional options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
