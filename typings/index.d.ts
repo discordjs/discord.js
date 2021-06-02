@@ -437,6 +437,7 @@ declare module 'discord.js' {
 
   export class CommandInteraction extends Interaction {
     public readonly command: ApplicationCommand | null;
+    public channel: TextChannel | DMChannel | NewsChannel;
     public commandID: string;
     public commandName: string;
     public deferred: boolean;
