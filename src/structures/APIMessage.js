@@ -125,7 +125,9 @@ class APIMessage {
    */
   resolveData() {
     if (this.data) return this;
+    const isInteraction = this.isInteraction;
     const isWebhook = this.isWebhook;
+    const isWebhookLike = isInteraction || isWebhook;
 
     const content = this.makeContent();
     const tts = Boolean(this.options.tts);
@@ -140,7 +142,7 @@ class APIMessage {
     }
 
     const embedLikes = [];
-    if (this.isInteraction || isWebhook) {
+    if (isWebhookLike) {
       if (this.options.embeds) {
         embedLikes.push(...this.options.embeds);
       }
@@ -160,7 +162,7 @@ class APIMessage {
     if (this.isMessage) {
       // eslint-disable-next-line eqeqeq
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
-    } else if (this.isInteraction && this.options.ephemeral) {
+    } else if (isInteraction && this.options.ephemeral) {
       flags = MessageFlags.FLAGS.EPHEMERAL;
     }
 
@@ -192,8 +194,8 @@ class APIMessage {
       content,
       tts,
       nonce,
-      embed: this.options.embed === null ? null : embeds[0],
-      embeds: isWebhook ? embeds : undefined,
+      embed: !isWebhookLike ? (this.options.embed === null ? null : embeds[0]) : undefined,
+      embeds: isWebhookLike ? embeds : undefined,
       username,
       avatar_url: avatarURL,
       allowed_mentions:
