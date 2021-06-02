@@ -44,7 +44,7 @@ class MessageButton extends BaseMessageComponent {
 
     /**
      * The style of this button
-     * @type {MessageButtonStyle}
+     * @type {?MessageButtonStyle}
      */
     this.style = data.style ? MessageButton.resolveStyle(data.style) : null;
 
