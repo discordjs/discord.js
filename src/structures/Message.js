@@ -129,7 +129,7 @@ class Message extends Base {
      * A list of MessageActionRows in the message
      * @type {MessageActionRow[]}
      */
-    this.components = (data.components || []).map(c => BaseMessageComponent.create(c, this.client));
+    this.components = (data.components ?? []).map(c => BaseMessageComponent.create(c, this.client));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
