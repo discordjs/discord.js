@@ -1184,9 +1184,7 @@ declare module 'discord.js' {
       options?: ReactionCollectorOptions,
     ): ReactionCollector;
     public delete(): Promise<Message>;
-    public edit(
-      content: string | null | MessageEditOptions | MessageEmbed | APIMessage,
-    ): Promise<Message>;
+    public edit(content: string | null | MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
     public edit(content: string | null, options: MessageEditOptions | MessageEmbed): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
     public fetchReference(): Promise<Message>;
@@ -1971,9 +1969,7 @@ declare module 'discord.js' {
     ): Promise<RawMessage>;
     public editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
-    public send(
-      content: string | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<RawMessage>;
+    public send(content: string | (WebhookMessageOptions & { split?: false }) | MessageAdditions): Promise<RawMessage>;
     public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<RawMessage[]>;
     public send(options: WebhookMessageOptions | APIMessage): Promise<RawMessage | RawMessage[]>;
     public send(
@@ -2761,7 +2757,7 @@ declare module 'discord.js' {
     name: string;
     type: ApplicationCommandOptionType;
     value?: string | number | boolean;
-    options?: CommandInteractionOption[];
+    options?: Collection<string, CommandInteractionOption>;
     user?: User;
     member?: GuildMember | RawInteractionDataResolvedGuildMember;
     channel?: GuildChannel | RawInteractionDataResolvedChannel;
