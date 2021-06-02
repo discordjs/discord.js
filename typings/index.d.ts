@@ -441,7 +441,7 @@ declare module 'discord.js' {
     public commandID: string;
     public commandName: string;
     public deferred: boolean;
-    public options: CommandInteractionOption[];
+    public options: Collection<string, CommandInteractionOption>;
     public replied: boolean;
     public webhook: WebhookClient;
     public defer(options?: InteractionDeferOptions): Promise<void>;
@@ -458,6 +458,7 @@ declare module 'discord.js' {
     public reply(content: string | null | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
     public reply(content: string | null, options?: InteractionReplyOptions): Promise<void>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
+    private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
   }
 
   type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
