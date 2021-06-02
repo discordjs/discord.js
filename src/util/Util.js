@@ -63,10 +63,22 @@ class Util {
    */
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
     text = Util.resolveString(text);
-    if (text.length <= maxLength) return [text];
-    if (Array.isArray(char)) char = char.find(splitChar => text.includes(splitChar));
-    const splitText = text.split(char);
-    if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
+    const hasElemLongerThanMaxLength = (arr, len) => arr.some(elem => elem.length > len);
+    let splitText = [text];
+    if (hasElemLongerThanMaxLength(splitText, maxLength)) return splitText;
+    if (Array.isArray(char) && hasElemLongerThanMaxLength(splitText, maxLength)) {
+      while (char.length > 0 && hasElemLongerThanMaxLength(splitText, maxLength)) {
+        const currentChar = char.shift();
+        if (currentChar instanceof RegExp) {
+          splitText = splitText.map(chunk => chunk.match(currentChar));
+        } else {
+          splitText = splitText.map(chunk => chunk.split(currentChar));
+        }
+      }
+    } else {
+      splitText = text.split(char);
+    }
+    if (hasElemLongerThanMaxLength(splitText, maxLength)) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [];
     let msg = '';
     for (const chunk of splitText) {
