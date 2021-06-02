@@ -2,6 +2,7 @@
 
 const BaseManager = require('./BaseManager');
 const { Error, TypeError, RangeError } = require('../errors');
+const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const GuildMember = require('../structures/GuildMember');
 const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
@@ -166,7 +167,7 @@ class GuildMemberManager extends BaseManager {
     const _data = { ...data };
     if (_data.channel) {
       _data.channel = this.guild.channels.resolve(_data.channel);
-      if (!_data.channel || _data.channel.type !== 'voice') {
+      if (!(_data.channel instanceof BaseGuildVoiceChannel)) {
         throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
       }
       _data.channel_id = _data.channel.id;
