@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseMessageComponent = require('./BaseMessageComponent');
+const { RangeError } = require('../errors');
 const { MessageButtonStyles, MessageComponentTypes } = require('../util/Constants.js');
 const Util = require('../util/Util');
 
@@ -72,7 +73,7 @@ class MessageButton extends BaseMessageComponent {
    * @returns {MessageButton}
    */
   setCustomID(customID) {
-    this.customID = Util.resolveString(customID);
+    this.customID = Util.verifyString(customID, RangeError, 'BUTTON_CUSTOM_ID');
     return this;
   }
 
@@ -103,7 +104,7 @@ class MessageButton extends BaseMessageComponent {
    * @returns {MessageButton}
    */
   setLabel(label) {
-    this.label = Util.resolveString(label);
+    this.label = Util.verifyString(label, RangeError, 'BUTTON_LABEL');
     return this;
   }
 
@@ -123,7 +124,7 @@ class MessageButton extends BaseMessageComponent {
    * @returns {MessageButton}
    */
   setURL(url) {
-    this.url = Util.resolveString(url);
+    this.url = Util.verifyString(url, RangeError, 'BUTTON_URL');
     return this;
   }
 
