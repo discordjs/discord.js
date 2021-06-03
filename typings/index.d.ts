@@ -438,7 +438,7 @@ declare module 'discord.js' {
   export class CommandInteraction extends Interaction {
     public readonly command: ApplicationCommand | null;
     public channel: TextChannel | DMChannel | NewsChannel;
-    public commandID: string;
+    public commandID: Snowflake;
     public commandName: string;
     public deferred: boolean;
     public options: Collection<string, CommandInteractionOption>;
@@ -1758,7 +1758,7 @@ declare module 'discord.js' {
     public static removeMentions(str: string): string;
     public static cloneObject(obj: unknown): unknown;
     public static delayFor(ms: number): Promise<void>;
-    public static discordSort<K, V extends { rawPosition: number; id: string }>(
+    public static discordSort<K, V extends { rawPosition: number; id: Snowflake }>(
       collection: Collection<K, V>,
     ): Collection<K, V>;
     public static escapeMarkdown(text: string, options?: EscapeMarkdownOptions): string;
@@ -1777,7 +1777,7 @@ declare module 'discord.js' {
     public static makePlainError(err: Error): { name: string; message: string; stack: string };
     public static mergeDefault(def: unknown, given: unknown): unknown;
     public static moveElementInArray(array: any[], element: any, newIndex: number, offset?: boolean): number;
-    public static parseEmoji(text: string): { animated: boolean; name: string; id: string | null } | null;
+    public static parseEmoji(text: string): { animated: boolean; name: string; id: Snowflake | null } | null;
     public static resolveColor(color: ColorResolvable): number;
     public static verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
     public static setPosition<T extends Channel | Role>(
@@ -1958,7 +1958,7 @@ declare module 'discord.js' {
   }
 
   export class WebhookClient extends WebhookMixin(BaseClient) {
-    constructor(id: string, token: string, options?: WebhookClientOptions);
+    constructor(id: Snowflake, token: string, options?: WebhookClientOptions);
     public client: this;
     public options: WebhookClientOptions;
     public token: string;
@@ -3101,7 +3101,7 @@ declare module 'discord.js' {
   }
 
   interface IntegrationData {
-    id: string;
+    id: Snowflake;
     type: string;
   }
 
@@ -3111,7 +3111,7 @@ declare module 'discord.js' {
   }
 
   interface IntegrationAccount {
-    id: string;
+    id: string | Snowflake;
     name: string;
   }
 
@@ -3422,7 +3422,7 @@ declare module 'discord.js' {
     readonly createdAt: Date;
     readonly createdTimestamp: number;
     deleted: boolean;
-    id: string;
+    id: Snowflake;
     partial: true;
     fetch(): Promise<T>;
   } & {
