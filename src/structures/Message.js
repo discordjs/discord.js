@@ -235,7 +235,7 @@ class Message extends Base {
 
     /**
      * Partial data of the interaction that a message is a reply to
-     * @typedef {object} MessageInteraction
+     * @typedef {Object} MessageInteraction
      * @property {Snowflake} id The ID of the interaction
      * @property {InteractionType} type The type of the interaction
      * @property {string} commandName The name of the interaction's application command
