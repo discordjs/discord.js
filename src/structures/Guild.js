@@ -128,6 +128,14 @@ class Guild extends BaseGuild {
     this.features = data.features;
     this.available = !data.unavailable;
 
+    if ('application_command_count' in data) {
+      /**
+       * The approximate number of slash commands in this guild
+       * @type {?number}
+       */
+      this.applicationCommandCount = data.application_command_count;
+    }
+
     /**
      * The hash of the guild invite splash image
      * @type {?string}
