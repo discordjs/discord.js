@@ -3086,7 +3086,7 @@ declare module 'discord.js' {
   }
 
   interface HTTPAttachmentData {
-    attachment: string;
+    attachment: string | Buffer | Stream;
     name: string;
     file: Buffer | Stream;
   }
