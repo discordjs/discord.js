@@ -1180,7 +1180,7 @@ declare module 'discord.js' {
     public awaitReactions(
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: AwaitReactionsOptions,
-    ): Promise<Collection<Snowflake, MessageReaction>>;
+    ): Promise<Collection<Snowflake | string, MessageReaction>>;
     public createReactionCollector(
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: ReactionCollectorOptions,
@@ -2271,7 +2271,7 @@ declare module 'discord.js' {
     constructor(client: Client, iterable?: Iterable<any>);
   }
 
-  export class ReactionManager extends BaseManager<string | Snowflake, MessageReaction, MessageReactionResolvable> {
+  export class ReactionManager extends BaseManager<Snowflake | string, MessageReaction, MessageReactionResolvable> {
     constructor(message: Message, iterable?: Iterable<any>);
     public message: Message;
     public removeAll(): Promise<Message>;
