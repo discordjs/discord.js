@@ -1186,8 +1186,13 @@ declare module 'discord.js' {
       options?: ReactionCollectorOptions,
     ): ReactionCollector;
     public delete(): Promise<Message>;
-    public edit(content: string | null | MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
-    public edit(content: string | null, options: MessageEditOptions | MessageEmbed): Promise<Message>;
+    public edit(
+      content: string | null | MessageEditOptions | MessageEmbed | APIMessage | MessageAttachment | MessageAttachment[],
+    ): Promise<Message>;
+    public edit(
+      content: string | null,
+      options: MessageEditOptions | MessageEmbed | MessageAttachment | MessageAttachment[],
+    ): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
     public fetchReference(): Promise<Message>;
     public fetchWebhook(): Promise<Webhook>;
@@ -3208,7 +3213,7 @@ declare module 'discord.js' {
 
   interface MessageEditOptions {
     attachments?: MessageAttachment[];
-    content?: string;
+    content?: string | null;
     embed?: MessageEmbed | MessageEmbedOptions | null;
     code?: string | boolean;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
