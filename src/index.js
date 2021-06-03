@@ -57,7 +57,7 @@ module.exports = {
   escapeMarkdown: Util.escapeMarkdown,
   fetchRecommendedShards: Util.fetchRecommendedShards,
   resolveColor: Util.resolveColor,
-  resolveString: Util.resolveString,
+  verifyString: Util.verifyString,
   splitMessage: Util.splitMessage,
 
   // Structures
@@ -66,6 +66,7 @@ module.exports = {
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
   APIMessage: require('./structures/APIMessage'),
+  BaseGuild: require('./structures/BaseGuild'),
   BaseGuildEmoji: require('./structures/BaseGuildEmoji'),
   BaseGuildVoiceChannel: require('./structures/BaseGuildVoiceChannel'),
   CategoryChannel: require('./structures/CategoryChannel'),
@@ -98,6 +99,7 @@ module.exports = {
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
   NewsChannel: require('./structures/NewsChannel'),
+  OAuth2Guild: require('./structures/OAuth2Guild'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
   ClientPresence: require('./structures/ClientPresence'),

@@ -92,7 +92,7 @@ class APIMessage {
     if (this.options.content === null) {
       content = '';
     } else if (typeof this.options.content !== 'undefined') {
-      content = Util.resolveString(this.options.content);
+      content = Util.verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', false);
     }
 
     if (typeof content !== 'string') return content;
@@ -322,7 +322,7 @@ class APIMessage {
   /**
    * Transforms the user-level arguments into a final options object. Passing a transformed options object alone into
    * this method will keep it the same, allowing for the reuse of the final options object.
-   * @param {StringResolvable} [content] Content to send
+   * @param {string} [content] Content to send
    * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] Extra options to add onto transformed options
    * @param {boolean} [isWebhook=false] Whether or not to use WebhookMessageOptions as the result
@@ -358,7 +358,7 @@ class APIMessage {
   /**
    * Creates an `APIMessage` from user-level arguments.
    * @param {MessageTarget} target Target to send to
-   * @param {StringResolvable} [content] Content to send
+   * @param {string} [content] Content to send
    * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto transformed options
    * @returns {MessageOptions|WebhookMessageOptions}

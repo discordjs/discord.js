@@ -100,7 +100,7 @@ class PermissionOverwrites extends Base {
    */
 
   /**
-   * @typedef {object} ResolvedOverwriteOptions
+   * @typedef {Object} ResolvedOverwriteOptions
    * @property {Permissions} allow The allowed permissions
    * @property {Permissions} deny The denied permissions
    */
