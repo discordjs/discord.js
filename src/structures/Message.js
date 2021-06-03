@@ -486,8 +486,8 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {string|APIMessage} [content] The new content for the message
-   * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
+   * @param {string|APIMessage|null} [content] The new content for the message
+   * @param {MessageEditOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
