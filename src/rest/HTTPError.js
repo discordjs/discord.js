@@ -42,8 +42,9 @@ class HTTPError extends Error {
     /**
      * The attachment data that is sent to Discord
      * @typedef {Object} HTTPAttachmentData
+     * @property {string|Buffer|Stream} attachment The source of this attachment data
      * @property {string} name The file name
-     * @property {Buffer} file The file buffer
+     * @property {Buffer|Stream} file The file buffer
      */
 
     /**

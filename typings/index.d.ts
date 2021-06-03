@@ -703,13 +703,14 @@ declare module 'discord.js' {
   }
 
   export class DiscordAPIError extends Error {
-    constructor(path: string, error: unknown, method: string, httpStatus: number);
+    constructor(error: unknown, status: number, request: unknown);
     private static flattenErrors(obj: unknown, key: string): string[];
 
     public code: number;
     public method: string;
     public path: string;
     public httpStatus: number;
+    public requestData: HTTPErrorData;
   }
 
   export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
@@ -1045,11 +1046,12 @@ declare module 'discord.js' {
   }
 
   export class HTTPError extends Error {
-    constructor(message: string, name: string, code: number, method: string, path: string);
+    constructor(message: string, name: string, code: number, request: unknown);
     public code: number;
     public method: string;
     public name: string;
     public path: string;
+    public requestData: HTTPErrorData;
   }
 
   export class Integration extends Base {
@@ -3081,6 +3083,17 @@ declare module 'discord.js' {
     query: string;
     limit?: number;
     cache?: boolean;
+  }
+
+  interface HTTPAttachmentData {
+    attachment: string | Buffer | Stream;
+    name: string;
+    file: Buffer | Stream;
+  }
+
+  interface HTTPErrorData {
+    json: unknown;
+    files: HTTPAttachmentData[];
   }
 
   interface HTTPOptions {
