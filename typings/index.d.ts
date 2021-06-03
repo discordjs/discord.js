@@ -3085,14 +3085,14 @@ declare module 'discord.js' {
     cache?: boolean;
   }
 
-  interface HTTPErrorData {
-    json: any;
-    files: HTTPAttachmentData[]
-  }
-
   interface HTTPAttachmentData {
     name: string;
     file: Buffer
+  }
+
+  interface HTTPErrorData {
+    json: any;
+    files: HTTPAttachmentData[]
   }
 
   interface HTTPOptions {
