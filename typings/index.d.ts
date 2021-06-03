@@ -744,7 +744,7 @@ declare module 'discord.js' {
     public readonly afkChannel: VoiceChannel | null;
     public afkChannelID: Snowflake | null;
     public afkTimeout: number;
-    public applicationCommandCount?: number;
+    public applicationCommandCount: number;
     public applicationID: Snowflake | null;
     public approximateMemberCount: number | null;
     public approximatePresenceCount: number | null;
