@@ -1,6 +1,6 @@
 'use strict';
 
-const Base = require('./Base');
+const BaseGuild = require('./BaseGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
@@ -9,6 +9,8 @@ const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
 const Webhook = require('./Webhook');
 const { Error, TypeError } = require('../errors');
+const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
+const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
@@ -22,9 +24,9 @@ const {
   PartialTypes,
   VerificationLevels,
   ExplicitContentFilterLevels,
+  NSFWLevels,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
 const Util = require('../util/Util');
 
@@ -32,15 +34,17 @@ const Util = require('../util/Util');
  * Represents a guild (or a server) on Discord.
  * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
  * check this with `guild.available`.</info>
- * @extends {Base}
+ * @extends {BaseGuild}
  */
-class Guild extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {Object} data The data for the guild
-   */
+class Guild extends BaseGuild {
   constructor(client, data) {
-    super(client);
+    super(client, data);
+
+    /**
+     * A manager of the application commands belonging to this guild
+     * @type {GuildApplicationCommandManager}
+     */
+    this.commands = new GuildApplicationCommandManager(this);
 
     /**
      * A manager of the members belonging to this guild
@@ -53,6 +57,12 @@ class Guild extends Base {
      * @type {GuildChannelManager}
      */
     this.channels = new GuildChannelManager(this);
+
+    /**
+     * A manager of the bans belonging to this guild
+     * @type {GuildBanManager}
+     */
+    this.bans = new GuildBanManager(this);
 
     /**
      * A manager of the roles belonging to this guild
@@ -85,12 +95,6 @@ class Guild extends Base {
        * @type {boolean}
        */
       this.available = false;
-
-      /**
-       * The Unique ID of the guild, useful for comparisons
-       * @type {Snowflake}
-       */
-      this.id = data.id;
     } else {
       this._patch(data);
       if (!data.channels) this.available = false;
@@ -101,14 +105,6 @@ class Guild extends Base {
      * @type {number}
      */
     this.shardID = data.shardID;
-
-    if ('nsfw' in data) {
-      /**
-       * Whether the guild is designated as not safe for work
-       * @type {boolean}
-       */
-      this.nsfw = data.nsfw;
-    }
   }
 
   /**
@@ -126,17 +122,11 @@ class Guild extends Base {
    * @private
    */
   _patch(data) {
-    /**
-     * The name of the guild
-     * @type {string}
-     */
+    this.id = data.id;
     this.name = data.name;
-
-    /**
-     * The hash of the guild icon
-     * @type {?string}
-     */
     this.icon = data.icon;
+    this.features = data.features;
+    this.available = !data.unavailable;
 
     /**
      * The hash of the guild invite splash image
@@ -161,6 +151,14 @@ class Guild extends Base {
      * @type {number}
      */
     this.memberCount = data.member_count || this.memberCount;
+
+    if ('nsfw_level' in data) {
+      /**
+       * The NSFW level of this guild
+       * @type {NSFWLevel}
+       */
+      this.nsfwLevel = NSFWLevels[data.nsfw_level];
+    }
 
     /**
      * Whether the guild is "large" (has more than large_threshold members, 50 by default)
@@ -188,12 +186,6 @@ class Guild extends Base {
      * * WELCOME_SCREEN_ENABLED
      * @typedef {string} Features
      */
-
-    /**
-     * An array of guild features available to the guild
-     * @type {Features[]}
-     */
-    this.features = data.features;
 
     /**
      * The ID of the application that created this guild (if applicable)
@@ -363,10 +355,6 @@ class Guild extends Base {
      */
     this.banner = data.banner;
 
-    this.id = data.id;
-    this.available = !data.unavailable;
-    this.features = data.features || this.features || [];
-
     /**
      * The ID of the rules channel for the guild
      * @type {?Snowflake}
@@ -449,70 +437,12 @@ class Guild extends Base {
   }
 
   /**
-   * The timestamp the guild was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return SnowflakeUtil.deconstruct(this.id).timestamp;
-  }
-
-  /**
-   * The time the guild was created at
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
    * The time the client user joined the guild
    * @type {Date}
    * @readonly
    */
   get joinedAt() {
     return new Date(this.joinedTimestamp);
-  }
-
-  /**
-   * If this guild is partnered
-   * @type {boolean}
-   * @readonly
-   */
-  get partnered() {
-    return this.features.includes('PARTNERED');
-  }
-
-  /**
-   * If this guild is verified
-   * @type {boolean}
-   * @readonly
-   */
-  get verified() {
-    return this.features.includes('VERIFIED');
-  }
-
-  /**
-   * The URL to this guild's icon.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
-   * @returns {?string}
-   */
-  iconURL({ format, size, dynamic } = {}) {
-    if (!this.icon) return null;
-    return this.client.rest.cdn.Icon(this.id, this.icon, format, size, dynamic);
-  }
-
-  /**
-   * The acronym that shows up in place of a guild icon.
-   * @type {string}
-   * @readonly
-   */
-  get nameAcronym() {
-    return this.name
-      .replace(/'s /g, ' ')
-      .replace(/\w+/g, e => e[0])
-      .replace(/\s/g, '');
   }
 
   /**
@@ -543,8 +473,8 @@ class Guild extends Base {
    */
 
   /**
-   * Fetches the owner of the guild
-   * If the member object isn't needed, use {@link Guild#ownerID} instead
+   * Fetches the owner of the guild.
+   * If the member object isn't needed, use {@link Guild#ownerID} instead.
    * @param {FetchOwnerOptions} [options] The options for fetching the member
    * @returns {Promise<GuildMember>}
    */
@@ -609,64 +539,6 @@ class Guild extends Base {
         ? this.members.add({ user: { id: this.client.user.id } }, true)
         : null)
     );
-  }
-
-  /**
-   * Fetches this guild.
-   * @returns {Promise<Guild>}
-   */
-  fetch() {
-    return this.client.api
-      .guilds(this.id)
-      .get({ query: { with_counts: true } })
-      .then(data => {
-        this._patch(data);
-        return this;
-      });
-  }
-
-  /**
-   * An object containing information about a guild member's ban.
-   * @typedef {Object} BanInfo
-   * @property {User} user User that was banned
-   * @property {?string} reason Reason the user was banned
-   */
-
-  /**
-   * Fetches information on a banned user from this guild.
-   * @param {UserResolvable} user The User to fetch the ban info of
-   * @returns {Promise<BanInfo>}
-   */
-  fetchBan(user) {
-    const id = this.client.users.resolveID(user);
-    if (!id) throw new Error('FETCH_BAN_RESOLVE_ID');
-    return this.client.api
-      .guilds(this.id)
-      .bans(id)
-      .get()
-      .then(ban => ({
-        reason: ban.reason,
-        user: this.client.users.add(ban.user),
-      }));
-  }
-
-  /**
-   * Fetches a collection of banned users in this guild.
-   * @returns {Promise<Collection<Snowflake, BanInfo>>}
-   */
-  fetchBans() {
-    return this.client.api
-      .guilds(this.id)
-      .bans.get()
-      .then(bans =>
-        bans.reduce((collection, ban) => {
-          collection.set(ban.user.id, {
-            reason: ban.reason,
-            user: this.client.users.add(ban.user),
-          });
-          return collection;
-        }, new Collection()),
-      );
   }
 
   /**
@@ -922,15 +794,16 @@ class Guild extends Base {
     if (this.members.cache.has(user)) return this.members.cache.get(user);
     options.access_token = options.accessToken;
     if (options.roles) {
-      const roles = [];
-      for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
-        let roleID = this.roles.resolveID(role);
-        if (!roleID) {
-          throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
-        }
-        roles.push(roleID);
+      if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
+        throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
       }
-      options.roles = roles;
+      const resolvedRoles = [];
+      for (const role of options.roles.values()) {
+        const resolvedRole = this.roles.resolveID(role);
+        if (!role) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
+        resolvedRoles.push(resolvedRole);
+      }
+      options.roles = resolvedRoles;
     }
     const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
     // Data is an empty buffer if the member is already part of the guild.
@@ -1435,17 +1308,6 @@ class Guild extends Base {
         (this.features.length === guild.features.length &&
           this.features.every((feat, i) => feat === guild.features[i])))
     );
-  }
-
-  /**
-   * When concatenated with a string, this automatically returns the guild's name instead of the Guild object.
-   * @returns {string}
-   * @example
-   * // Logs: Hello from My Guild!
-   * console.log(`Hello from ${guild}!`);
-   */
-  toString() {
-    return this.name;
   }
 
   toJSON() {

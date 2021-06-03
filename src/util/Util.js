@@ -57,12 +57,12 @@ class Util {
 
   /**
    * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
-   * @param {StringResolvable} text Content to split
+   * @param {string} text Content to split
    * @param {SplitOptions} [options] Options controlling the behavior of the split
    * @returns {string[]}
    */
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
-    text = Util.resolveString(text);
+    text = Util.verifyString(text, RangeError, 'MESSAGE_CONTENT_TYPE', false);
     if (text.length <= maxLength) return [text];
     const splitText = text.split(char);
     if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
@@ -347,22 +347,22 @@ class Util {
   }
 
   /**
-   * Data that can be resolved to give a string. This can be:
-   * * A string
-   * * An array (joined with a new line delimiter to give a string)
-   * * Any value
-   * @typedef {string|Array|*} StringResolvable
-   */
-
-  /**
-   * Resolves a StringResolvable to a string.
-   * @param {StringResolvable} data The string resolvable to resolve
+   * Verifies the provided data is a string, otherwise throws provided error.
+   * @param {string} data The string resolvable to resolve
+   * @param {Function} [error] The Error constructor to instantiate. Defaults to Error
+   * @param {string} [errorMessage] The error message to throw with. Defaults to "Expected string, got <data> instead."
+   * @param {boolean} [allowEmpty=true] Whether an empty string should be allowed
    * @returns {string}
    */
-  static resolveString(data) {
-    if (typeof data === 'string') return data;
-    if (Array.isArray(data)) return data.join('\n');
-    return String(data);
+  static verifyString(
+    data,
+    error = Error,
+    errorMessage = `Expected a string, got ${data} instead.`,
+    allowEmpty = true,
+  ) {
+    if (typeof data !== 'string') throw new error(errorMessage);
+    if (!allowEmpty && data.length === 0) throw new error(errorMessage);
+    return data;
   }
 
   /**
@@ -379,11 +379,11 @@ class Util {
    * - `YELLOW`
    * - `PURPLE`
    * - `LUMINOUS_VIVID_PINK`
+   * - `FUCHSIA`
    * - `GOLD`
    * - `ORANGE`
    * - `RED`
    * - `GREY`
-   * - `DARKER_GREY`
    * - `NAVY`
    * - `DARK_AQUA`
    * - `DARK_GREEN`
@@ -394,6 +394,7 @@ class Util {
    * - `DARK_ORANGE`
    * - `DARK_RED`
    * - `DARK_GREY`
+   * - `DARKER_GREY`
    * - `LIGHT_GREY`
    * - `DARK_NAVY`
    * - `BLURPLE`

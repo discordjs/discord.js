@@ -74,6 +74,16 @@ class APIMessage {
   }
 
   /**
+   * Whether or not the target is an interaction
+   * @type {boolean}
+   * @readonly
+   */
+  get isInteraction() {
+    const Interaction = require('./Interaction');
+    return this.target instanceof Interaction;
+  }
+
+  /**
    * Makes the content of this message.
    * @returns {?(string|string[])}
    */
@@ -82,7 +92,7 @@ class APIMessage {
     if (this.options.content === null) {
       content = '';
     } else if (typeof this.options.content !== 'undefined') {
-      content = Util.resolveString(this.options.content);
+      content = Util.verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', false);
     }
 
     if (typeof content !== 'string') return content;
@@ -129,7 +139,7 @@ class APIMessage {
     }
 
     const embedLikes = [];
-    if (this.isWebhook) {
+    if (this.isInteraction || this.isWebhook) {
       if (this.options.embeds) {
         embedLikes.push(...this.options.embeds);
       }
@@ -149,6 +159,8 @@ class APIMessage {
     if (this.isMessage) {
       // eslint-disable-next-line eqeqeq
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
+    } else if (this.isInteraction && this.options.ephemeral) {
+      flags = MessageFlags.FLAGS.EPHEMERAL;
     }
 
     let allowedMentions =
@@ -163,12 +175,15 @@ class APIMessage {
     }
 
     let message_reference;
-    if (typeof this.options.replyTo !== 'undefined') {
+    if (typeof this.options.reply === 'object') {
       const message_id = this.isMessage
-        ? this.target.channel.messages.resolveID(this.options.replyTo)
-        : this.target.messages.resolveID(this.options.replyTo);
+        ? this.target.channel.messages.resolveID(this.options.reply.messageReference)
+        : this.target.messages.resolveID(this.options.reply.messageReference);
       if (message_id) {
-        message_reference = { message_id };
+        message_reference = {
+          message_id,
+          fail_if_not_exists: this.options.reply.failIfNotExists ?? true,
+        };
       }
     }
 
@@ -184,6 +199,7 @@ class APIMessage {
         typeof content === 'undefined' && typeof message_reference === 'undefined' ? undefined : allowedMentions,
       flags,
       message_reference,
+      attachments: this.options.attachments,
     };
     return this;
   }
@@ -196,7 +212,7 @@ class APIMessage {
     if (this.files) return this;
 
     const embedLikes = [];
-    if (this.isWebhook) {
+    if (this.isInteraction || this.isWebhook) {
       if (this.options.embeds) {
         embedLikes.push(...this.options.embeds);
       }
@@ -306,7 +322,7 @@ class APIMessage {
   /**
    * Transforms the user-level arguments into a final options object. Passing a transformed options object alone into
    * this method will keep it the same, allowing for the reuse of the final options object.
-   * @param {StringResolvable} [content] Content to send
+   * @param {string} [content] Content to send
    * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] Extra options to add onto transformed options
    * @param {boolean} [isWebhook=false] Whether or not to use WebhookMessageOptions as the result
@@ -342,16 +358,17 @@ class APIMessage {
   /**
    * Creates an `APIMessage` from user-level arguments.
    * @param {MessageTarget} target Target to send to
-   * @param {StringResolvable} [content] Content to send
+   * @param {string} [content] Content to send
    * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto transformed options
    * @returns {MessageOptions|WebhookMessageOptions}
    */
   static create(target, content, options, extra = {}) {
+    const Interaction = require('./Interaction');
     const Webhook = require('./Webhook');
     const WebhookClient = require('../client/WebhookClient');
 
-    const isWebhook = target instanceof Webhook || target instanceof WebhookClient;
+    const isWebhook = target instanceof Interaction || target instanceof Webhook || target instanceof WebhookClient;
     const transformed = this.transformOptions(content, options, extra, isWebhook);
     return new this(target, transformed);
   }
@@ -361,7 +378,7 @@ module.exports = APIMessage;
 
 /**
  * A target for a message.
- * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient} MessageTarget
+ * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction} MessageTarget
  */
 
 /**
