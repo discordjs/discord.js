@@ -3091,7 +3091,7 @@ declare module 'discord.js' {
   }
 
   interface HTTPErrorData {
-    json: any;
+    json: unknown;
     files: HTTPAttachmentData[];
   }
 
