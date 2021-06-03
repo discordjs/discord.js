@@ -703,7 +703,7 @@ declare module 'discord.js' {
   }
 
   export class DiscordAPIError extends Error {
-    constructor(path: string, error: unknown, method: string, httpStatus: number);
+    constructor(error: unknown, status: number, request: HTTPRequest);
     private static flattenErrors(obj: unknown, key: string): string[];
 
     public code: number;
@@ -1046,7 +1046,7 @@ declare module 'discord.js' {
   }
 
   export class HTTPError extends Error {
-    constructor(message: string, name: string, code: number, method: string, path: string);
+    constructor(message: string, name: string, code: number, request: HTTPRequest);
     public code: number;
     public method: string;
     public name: string;
@@ -3093,6 +3093,10 @@ declare module 'discord.js' {
   interface HTTPErrorData {
     json: unknown;
     files: HTTPAttachmentData[];
+  }
+
+  interface HTTPRequest {
+    options: HTTPErrorData;
   }
 
   interface HTTPOptions {
