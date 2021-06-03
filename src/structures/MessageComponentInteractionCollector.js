@@ -145,7 +145,7 @@ class MessageComponentInteractionCollector extends Collector {
    * @returns {void}
    */
   _handleMessageDeletion(message) {
-    if (message.id === this.message.id) {
+    if (message.id === this.message?.id) {
       this.stop('messageDelete');
     }
   }
@@ -157,7 +157,7 @@ class MessageComponentInteractionCollector extends Collector {
    * @returns {void}
    */
   _handleChannelDeletion(channel) {
-    if (channel.id === this.message.channel.id) {
+    if (channel.id === this.channel.id) {
       this.stop('channelDelete');
     }
   }
@@ -169,7 +169,7 @@ class MessageComponentInteractionCollector extends Collector {
    * @returns {void}
    */
   _handleGuildDeletion(guild) {
-    if (this.message.guild && guild.id === this.message.guild.id) {
+    if (guild.id === this.channel.guild?.id) {
       this.stop('guildDelete');
     }
   }
