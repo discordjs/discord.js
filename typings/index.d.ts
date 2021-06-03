@@ -710,7 +710,7 @@ declare module 'discord.js' {
     public method: string;
     public path: string;
     public httpStatus: number;
-    public requestData: HTTPErrorData
+    public requestData: HTTPErrorData;
   }
 
   export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
@@ -1051,7 +1051,7 @@ declare module 'discord.js' {
     public method: string;
     public name: string;
     public path: string;
-    public requestData: HTTPErrorData
+    public requestData: HTTPErrorData;
   }
 
   export class Integration extends Base {
@@ -3087,12 +3087,12 @@ declare module 'discord.js' {
 
   interface HTTPAttachmentData {
     name: string;
-    file: Buffer
+    file: Buffer;
   }
 
   interface HTTPErrorData {
     json: any;
-    files: HTTPAttachmentData[]
+    files: HTTPAttachmentData[];
   }
 
   interface HTTPOptions {
