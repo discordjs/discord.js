@@ -4,6 +4,7 @@ const APIMessage = require('./APIMessage');
 const Interaction = require('./Interaction');
 const WebhookClient = require('../client/WebhookClient');
 const { Error } = require('../errors');
+const Collection = require('../util/Collection');
 const { ApplicationCommandOptionTypes, InteractionResponseTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 
@@ -14,6 +15,13 @@ const MessageFlags = require('../util/MessageFlags');
 class CommandInteraction extends Interaction {
   constructor(client, data) {
     super(client, data);
+
+    /**
+     * The channel this interaction was sent in
+     * @type {?TextChannel|NewsChannel|DMChannel}
+     * @name CommandInteraction#channel
+     * @readonly
+     */
 
     /**
      * The ID of the invoked application command
@@ -35,9 +43,9 @@ class CommandInteraction extends Interaction {
 
     /**
      * The options passed to the command.
-     * @type {CommandInteractionOption[]}
+     * @type {Collection<string, CommandInteractionOption>}
      */
-    this.options = data.data.options?.map(o => this.transformOption(o, data.data.resolved)) ?? [];
+    this.options = this._createOptionsCollection(data.data.options, data.data.resolved);
 
     /**
      * Whether this interaction has already been replied to
@@ -187,7 +195,8 @@ class CommandInteraction extends Interaction {
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string|number|boolean} [value] The value of the option
-   * @property {CommandInteractionOption[]} [options] Additional options if this option is a subcommand (group)
+   * @property {Collection<string, CommandInteractionOption>} [options] Additional options if this option is a
+   * subcommand (group)
    * @property {User} [user] The resolved user
    * @property {GuildMember|Object} [member] The resolved member
    * @property {GuildChannel|Object} [channel] The resolved channel
@@ -226,7 +235,7 @@ class CommandInteraction extends Interaction {
     };
 
     if ('value' in option) result.value = option.value;
-    if ('options' in option) result.options = option.options.map(o => this.transformOption(o, resolved));
+    if ('options' in option) result.options = this._createOptionsCollection(option.options, resolved);
 
     const user = resolved?.users?.[option.value];
     if (user) result.user = this.client.users.add(user);
@@ -241,6 +250,22 @@ class CommandInteraction extends Interaction {
     if (role) result.role = this.guild?.roles.add(role) ?? role;
 
     return result;
+  }
+
+  /**
+   * Creates a collection of options from the received options array.
+   * @param {Object[]} options The received options
+   * @param {Object} resolved The resolved interaction data
+   * @returns {Collection<string, CommandInteractionOption>}
+   * @private
+   */
+  _createOptionsCollection(options, resolved) {
+    const optionsCollection = new Collection();
+    if (typeof options === 'undefined') return optionsCollection;
+    for (const option of options) {
+      optionsCollection.set(option.name, this.transformOption(option, resolved));
+    }
+    return optionsCollection;
   }
 }
 

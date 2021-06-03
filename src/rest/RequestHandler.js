@@ -143,7 +143,7 @@ class RequestHandler {
     } catch (error) {
       // Retry the specified number of times for request abortions
       if (request.retries === this.manager.client.options.retryLimit) {
-        throw new HTTPError(error.message, error.constructor.name, error.status, request.method, request.path);
+        throw new HTTPError(error.message, error.constructor.name, error.status, request);
       }
 
       request.retries++;
@@ -237,17 +237,17 @@ class RequestHandler {
       try {
         data = await parseResponse(res);
       } catch (err) {
-        throw new HTTPError(err.message, err.constructor.name, err.status, request.method, request.path);
+        throw new HTTPError(err.message, err.constructor.name, err.status, request);
       }
 
-      throw new DiscordAPIError(request.path, data, request.method, res.status);
+      throw new DiscordAPIError(data, res.status, request);
     }
 
     // Handle 5xx responses
     if (res.status >= 500 && res.status < 600) {
       // Retry the specified number of times for possible serverside issues
       if (request.retries === this.manager.client.options.retryLimit) {
-        throw new HTTPError(res.statusText, res.constructor.name, res.status, request.method, request.path);
+        throw new HTTPError(res.statusText, res.constructor.name, res.status, request);
       }
 
       request.retries++;

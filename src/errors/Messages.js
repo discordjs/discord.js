@@ -37,6 +37,13 @@ const Messages = {
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
+  EMBED_TITLE: 'MessageEmbed title must be a string.',
+  EMBED_FIELD_NAME: 'MessageEmbed field names must be non-empty strings.',
+  EMBED_FIELD_VALUE: 'MessageEmbed field values must be non-empty strings.',
+  EMBED_FOOTER_TEXT: 'MessageEmbed footer text must be a string.',
+  EMBED_DESCRIPTION: 'MessageEmbed description must be a string.',
+  EMBED_AUTHOR_NAME: 'MessageEmbed author name must be a string.',
+
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
   USER_NO_DMCHANNEL: 'No DM Channel exists!',
@@ -72,6 +79,7 @@ const Messages = {
 
   MESSAGE_BULK_DELETE_TYPE: 'The messages must be an Array, Collection, or number.',
   MESSAGE_NONCE_TYPE: 'Message nonce must be an integer or a string.',
+  MESSAGE_CONTENT_TYPE: 'Message content must be a non-empty string.',
 
   TYPING_COUNT: 'Count must be at least 1',
 

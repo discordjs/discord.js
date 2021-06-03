@@ -235,7 +235,7 @@ class Message extends Base {
 
     /**
      * Partial data of the interaction that a message is a reply to
-     * @typedef {object} MessageInteraction
+     * @typedef {Object} MessageInteraction
      * @property {Snowflake} id The ID of the interaction
      * @property {InteractionType} type The type of the interaction
      * @property {string} commandName The name of the interaction's application command
@@ -474,7 +474,7 @@ class Message extends Base {
   /**
    * Options that can be passed into {@link Message#edit}.
    * @typedef {Object} MessageEditOptions
-   * @property {string} [content] Content to be edited
+   * @property {?string} [content] Content to be edited
    * @property {MessageEmbed|Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
@@ -486,8 +486,8 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {StringResolvable|APIMessage} [content] The new content for the message
-   * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
+   * @param {?string|APIMessage} [content] The new content for the message
+   * @param {MessageEditOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -592,7 +592,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
-   * @param {StringResolvable|APIMessage} [content=''] The content for the message
+   * @param {string|APIMessage} [content=''] The content for the message
    * @param {ReplyMessageOptions|MessageAdditions} [options] The additional options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
