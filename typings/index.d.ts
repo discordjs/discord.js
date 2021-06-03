@@ -299,7 +299,7 @@ declare module 'discord.js' {
     public type: 'category';
   }
 
-   type CategoryChannelResolvable = Snowflake | CategoryChannel;
+  type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
   export class Channel extends Base {
     constructor(client: Client, data?: unknown);
@@ -402,7 +402,7 @@ declare module 'discord.js' {
     public broadcasts: VoiceBroadcast[];
 
     private joinChannel(channel: VoiceChannel | StageChannel): Promise<VoiceConnection>;
-    
+
     public createBroadcast(): VoiceBroadcast;
   }
 
@@ -3040,7 +3040,6 @@ declare module 'discord.js' {
     preferredLocale?: string;
     description?: string | null;
     features?: GuildFeatures[];
-  }
   }
 
   interface GuildEmojiCreateOptions {
