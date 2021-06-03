@@ -600,7 +600,7 @@ class WebSocketShard extends EventEmitter {
       shard: [this.id, Number(client.options.shardCount)],
     };
 
-    this.debug(`[IDENTIFY] Shard ${this.id}/${client.options.shardCount}`);
+    this.debug(`[IDENTIFY] Shard ${this.id}/${client.options.shardCount} with intents: ${d.intents}`);
     this.send({ op: OPCodes.IDENTIFY, d }, true);
   }
 
