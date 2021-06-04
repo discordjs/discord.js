@@ -2664,6 +2664,7 @@ declare module 'discord.js' {
     shardReady: [shardID: number, unavailableGuilds: Set<Snowflake> | undefined];
     shardReconnecting: [shardID: number];
     shardResume: [shardID: number, replayedEvents: number];
+    stageInstanceCreate: [stageInstance: StageInstance];
   }
 
   interface ClientOptions {
@@ -3859,7 +3860,8 @@ declare module 'discord.js' {
     | 'VOICE_STATE_UPDATE'
     | 'VOICE_SERVER_UPDATE'
     | 'WEBHOOKS_UPDATE'
-    | 'INTERACTION_CREATE';
+    | 'INTERACTION_CREATE'
+    | 'STAGE_INSTANCE_CREATE';
 
   //#endregion
 }
