@@ -5,7 +5,7 @@ const { MessageComponentTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
- * Represents a SelectMenu message components
+ * Represents a select menu message component
  * @extends {BaseMessageComponent}
  */
 class MessageSelectMenu extends BaseMessageComponent {
@@ -79,7 +79,7 @@ class MessageSelectMenu extends BaseMessageComponent {
   }
 
   /**
-   * Sets the maximum number of selection allowed for this select menu
+   * Sets the maximum number of selections allowed for this select menu
    * @param {number} maxValues Number of selections to be allowed
    * @returns {MessageSelectMenu}
    */

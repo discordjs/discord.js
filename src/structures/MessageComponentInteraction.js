@@ -57,7 +57,7 @@ class MessageComponentInteraction extends Interaction {
     this.webhook = new InteractionWebhook(this.client, this.applicationID, this.token);
 
     /**
-     * The values selected in a MessageSelectMenu interaction
+     * The values selected, if the component which was interacted with was a select menu
      * @type {string[]}
      */
     this.values = this.componentType === 'SELECT_MENU' ? data.data.values : null;
