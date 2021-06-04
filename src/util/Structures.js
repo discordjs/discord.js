@@ -113,6 +113,7 @@ const structures = {
   User: require('../structures/User'),
   CommandInteraction: require('../structures/CommandInteraction'),
   ButtonInteraction: require('../structures/ButtonInteraction'),
+  StageInstance: require('../structures/StageInstance'),
 };
 
 module.exports = Structures;

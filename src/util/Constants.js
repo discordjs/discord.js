@@ -279,6 +279,7 @@ exports.Events = {
   SHARD_RESUME: 'shardResume',
   INVALIDATED: 'invalidated',
   RAW: 'raw',
+  STAGE_INSTANCE_CREATE: 'stageInstanceCreate',
 };
 
 exports.ShardEvents = {
@@ -388,6 +389,7 @@ exports.WSEvents = keyMirror([
   'VOICE_SERVER_UPDATE',
   'WEBHOOKS_UPDATE',
   'INTERACTION_CREATE',
+  'STAGE_INSTANCE_CREATE',
 ]);
 
 /**
