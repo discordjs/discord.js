@@ -1541,7 +1541,6 @@ declare module 'discord.js' {
     public options: MessageSelectOption[];
     public placeholder: string | null;
     public type: 'SELECT_MENU';
-    public addOption(option: MessageSelectOption): this;
     public addOptions(options: MessageSelectOption[] | MessageSelectOption[][]): this;
     public setCustomID(customID: string): this;
     public setMaxValues(maxValues: number): this;
@@ -3794,7 +3793,7 @@ declare module 'discord.js' {
   interface MessageSelectOption {
     default?: boolean;
     description?: string;
-    emoji?: Emoji | RawEmoji;
+    emoji?: GuildEmoji | RawEmoji;
     label: string;
     value: string;
   }
