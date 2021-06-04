@@ -4,22 +4,26 @@ const BaseMessageComponent = require('./BaseMessageComponent');
 const { MessageComponentTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
+/**
+ * Represents a SelectMenu message components
+ * @extends {BaseMessageComponent}
+ */
 class MessageSelectMenu extends BaseMessageComponent {
   /**
    * @typedef {BaseMessageComponentOptions} MessageSelectMenuOptions
-   * @property {?string} [customID] A unique string to be sent in the interaction when clicked
-   * @property {?string} [placeholder] Custom placeholder text to display when nothing is selected
-   * @property {?number} [minValues] The minimum number of selections required
-   * @property {?number} [maxValues] The maximum number of selections allowed
-   * @property {?MessageSelectOption[]} [options] Options for the select menu
+   * @property {string} [customID] A unique string to be sent in the interaction when clicked
+   * @property {string} [placeholder] Custom placeholder text to display when nothing is selected
+   * @property {number} [minValues] The minimum number of selections required
+   * @property {number} [maxValues] The maximum number of selections allowed
+   * @property {MessageSelectOption[]} [options] Options for the select menu
    */
 
   /**
    * @typedef {Object} MessageSelectOption
    * @property {string} label The text to be displayed on this option
    * @property {string} value The value to be sent for this option
-   * @property {?string} [description] Optional description to show for this option
-   * @property {?Emoji} [emoji] Emoji to display for this option
+   * @property {string} [description] Optional description to show for this option
+   * @property {Emoji} [emoji] Emoji to display for this option
    * @property {boolean} [default] Render this option as the default selection
    */
 
@@ -106,16 +110,7 @@ class MessageSelectMenu extends BaseMessageComponent {
   }
 
   /**
-   * Adds an option to the select menu (max 25)
-   * @param {MessageSelectOption} option The option to add
-   * @returns {MessageSelectMenu}
-   */
-  addOption(option) {
-    return this.addOptions({ ...option });
-  }
-
-  /**
-   * Adds options to the select menu (max 5).
+   * Adds options to the select menu.
    * @param {...(MessageSelectOption[]|MessageSelectOption[])} options The options to add
    * @returns {MessageSelectMenu}
    */
@@ -125,7 +120,7 @@ class MessageSelectMenu extends BaseMessageComponent {
   }
 
   /**
-   * Removes, replaces, and inserts options in the select menu (max 25).
+   * Removes, replaces, and inserts options in the select menu.
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of options to remove
    * @param {...MessageSelectOption|MessageSelectOption[]} [options] The replacing option objects
@@ -161,14 +156,14 @@ class MessageSelectMenu extends BaseMessageComponent {
 
     label = Util.resolveString(label);
     value = Util.resolveString(value);
-    emoji = /^\d{17,19}$/.test(emoji) ? { id: value } : Util.parseEmoji(emoji);
+    emoji = /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
     description = typeof description !== 'undefined' ? Util.resolveString(description) : undefined;
 
     return { label, value, description, emoji, default: option.default };
   }
 
   /**
-   * Normalizes option input and resolves strings.
+   * Normalizes option input and resolves strings and emojis.
    * @param {...MessageSelectOption|MessageSelectOption[]} options The select menu options to normalize
    * @returns {MessageSelectOption[]}
    */
