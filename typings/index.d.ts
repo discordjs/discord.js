@@ -1374,17 +1374,23 @@ declare module 'discord.js' {
 
     public collect(interaction: Interaction): Snowflake;
     public dispose(interaction: Interaction): Snowflake;
-    public on(event: 'collect' | 'dispose', listener: (interaction: Interaction) => Awaited<void>): this;
+    public on(
+      event: 'collect' | 'dispose',
+      listener: (interaction: MessageComponentInteraction) => Awaited<void>,
+    ): this;
     public on(
       event: 'end',
-      listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaited<void>,
+      listener: (collected: Collection<Snowflake, MessageComponentInteraction>, reason: string) => Awaited<void>,
     ): this;
     public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
 
-    public once(event: 'collect' | 'dispose', listener: (interaction: Interaction) => Awaited<void>): this;
+    public once(
+      event: 'collect' | 'dispose',
+      listener: (interaction: MessageComponentInteraction) => Awaited<void>,
+    ): this;
     public once(
       event: 'end',
-      listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaited<void>,
+      listener: (collected: Collection<Snowflake, MessageComponentInteraction>, reason: string) => Awaited<void>,
     ): this;
     public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
   }
