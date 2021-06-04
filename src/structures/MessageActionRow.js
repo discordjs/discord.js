@@ -23,7 +23,7 @@ class MessageActionRow extends BaseMessageComponent {
    */
 
   /**
-   * Data that can be resolved into a components that can be placed in an action row
+   * Data that can be resolved into components that can be placed in an action row
    * * MessageActionRowComponent
    * * MessageActionRowComponentOptions
    * @typedef {MessageActionRowComponent|MessageActionRowComponentOptions} MessageActionRowComponentResolvable
