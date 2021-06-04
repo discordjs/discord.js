@@ -66,7 +66,7 @@ class Util {
     const hasElemLongerThanMaxLength = (arr, len) => arr.some(elem => elem.length > len);
     let splitText = [text];
     if (!hasElemLongerThanMaxLength(splitText, maxLength)) return splitText;
-    if (Array.isArray(char) && hasElemLongerThanMaxLength(splitText, maxLength)) {
+    if (Array.isArray(char)) {
       while (char.length > 0 && hasElemLongerThanMaxLength(splitText, maxLength)) {
         const currentChar = char.shift();
         if (currentChar instanceof RegExp) {
