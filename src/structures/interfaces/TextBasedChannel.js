@@ -6,6 +6,7 @@ const APIMessage = require('../APIMessage');
 const SnowflakeUtil = require('../../util/SnowflakeUtil');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
+const MessageComponentInteractionCollector = require('../MessageComponentInteractionCollector');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -316,6 +317,45 @@ class TextBasedChannel {
   }
 
   /**
+   * Creates a button interaction collector.
+   * @param {CollectorFilter} filter The filter to apply
+   * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
+   * @returns {MessageComponentInteractionCollector}
+   * @example
+   * // Create a button interaction collector
+   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
+   * const collector = channel.createMessageComponentInteractionCollector(filter, { time: 15000 });
+   * collector.on('collect', i => console.log(`Collected ${i.customID}`));
+   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+   */
+  createMessageComponentInteractionCollector(filter, options = {}) {
+    return new MessageComponentInteractionCollector(this, filter, options);
+  }
+
+  /**
+   * Similar to createMessageComponentInteractionCollector but in promise form.
+   * Resolves with a collection of interactions that pass the specified filter.
+   * @param {CollectorFilter} filter The filter function to use
+   * @param {AwaitMessageComponentInteractionsOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<string, MessageComponentInteraction>>}
+   * @example
+   * // Create a button interaction collector
+   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
+   * channel.awaitMessageComponentInteractions(filter, { time: 15000 })
+   *   .then(collected => console.log(`Collected ${collected.size} interactions`))
+   *   .catch(console.error);
+   */
+  awaitMessageComponentInteractions(filter, options = {}) {
+    return new Promise((resolve, reject) => {
+      const collector = this.createMessageComponentInteractionCollector(filter, options);
+      collector.once('end', (interactions, reason) => {
+        if (options.errors && options.errors.includes(reason)) reject(interactions);
+        else resolve(interactions);
+      });
+    });
+  }
+
+  /**
    * Bulk deletes given messages that are newer than two weeks.
    * @param {Collection<Snowflake, Message>|MessageResolvable[]|number} messages
    * Messages or number of messages to delete
@@ -379,6 +419,8 @@ class TextBasedChannel {
         'typingCount',
         'createMessageCollector',
         'awaitMessages',
+        'createMessageComponentInteractionCollector',
+        'awaitMessageComponentInteractions',
       );
     }
     for (const prop of props) {

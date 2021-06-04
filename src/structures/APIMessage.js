@@ -1,5 +1,6 @@
 'use strict';
 
+const BaseMessageComponent = require('./BaseMessageComponent');
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
@@ -151,6 +152,8 @@ class APIMessage {
     }
     const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
 
+    const components = this.options.components?.map(c => BaseMessageComponent.create(c).toJSON());
+
     let username;
     let avatarURL;
     if (isWebhook) {
@@ -196,6 +199,7 @@ class APIMessage {
       nonce,
       embed: !isWebhookLike ? (this.options.embed === null ? null : embeds[0]) : undefined,
       embeds: isWebhookLike ? embeds : undefined,
+      components,
       username,
       avatar_url: avatarURL,
       allowed_mentions:

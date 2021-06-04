@@ -799,15 +799,18 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * The type of an {@link Interaction} object:
  * * PING
  * * APPLICATION_COMMAND
+ * * MESSAGE_COMPONENT
  * @typedef {string} InteractionType
  */
-exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND']);
+exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND', 'MESSAGE_COMPONENT']);
 
 /**
  * The type of an interaction response:
  * * PONG
  * * CHANNEL_MESSAGE_WITH_SOURCE
  * * DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+ * * DEFERRED_MESSAGE_UPDATE
+ * * UPDATE_MESSAGE
  * @typedef {string} InteractionResponseType
  */
 exports.InteractionResponseTypes = createEnum([
@@ -817,7 +820,28 @@ exports.InteractionResponseTypes = createEnum([
   null,
   'CHANNEL_MESSAGE_WITH_SOURCE',
   'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE',
+  'DEFERRED_MESSAGE_UPDATE',
+  'UPDATE_MESSAGE',
 ]);
+
+/**
+ * The type of a message component
+ * ACTION_ROW
+ * BUTTON
+ * @typedef {string} MessageComponentType
+ */
+exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON']);
+
+/**
+ * The style of a message button
+ * PRIMARY
+ * SECONDARY
+ * SUCCESS
+ * DANGER
+ * LINK
+ * @typedef {string} MessageButtonStyle
+ */
+exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'LINK']);
 
 /**
  * NSFW level of a Guild

@@ -44,6 +44,10 @@ const Messages = {
   EMBED_DESCRIPTION: 'MessageEmbed description must be a string.',
   EMBED_AUTHOR_NAME: 'MessageEmbed author name must be a string.',
 
+  BUTTON_LABEL: 'MessageButton label must be a string',
+  BUTTON_URL: 'MessageButton url must be a string',
+  BUTTON_CUSTOM_ID: 'MessageButton customID must be a string',
+
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
   USER_NO_DMCHANNEL: 'No DM Channel exists!',

@@ -2,8 +2,10 @@
 
 const APIMessage = require('./APIMessage');
 const Base = require('./Base');
+const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
+const MessageComponentInteractionCollector = require('./MessageComponentInteractionCollector');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
@@ -122,6 +124,12 @@ class Message extends Base {
      * @type {MessageEmbed[]}
      */
     this.embeds = (data.embeds || []).map(e => new Embed(e, true));
+
+    /**
+     * A list of MessageActionRows in the message
+     * @type {MessageActionRow[]}
+     */
+    this.components = (data.components ?? []).map(c => BaseMessageComponent.create(c, this.client));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -282,6 +290,8 @@ class Message extends Base {
     if ('tts' in data) this.tts = data.tts;
     if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
     else this.embeds = this.embeds.slice();
+    if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
+    else this.components = this.components.slice();
 
     if ('attachments' in data) {
       this.attachments = new Collection();
@@ -408,6 +418,51 @@ class Message extends Base {
   }
 
   /**
+   * Creates a message component interaction collector.
+   * @param {CollectorFilter} filter The filter to apply
+   * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
+   * @returns {MessageComponentInteractionCollector}
+   * @example
+   * // Create a message component interaction collector
+   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
+   * const collector = message.createMessageComponentInteractionCollector(filter, { time: 15000 });
+   * collector.on('collect', i => console.log(`Collected ${i.customID}`));
+   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+   */
+  createMessageComponentInteractionCollector(filter, options = {}) {
+    return new MessageComponentInteractionCollector(this, filter, options);
+  }
+
+  /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * @typedef {MessageComponentInteractionCollectorOptions} AwaitMessageComponentInteractionsOptions
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+   */
+
+  /**
+   * Similar to createMessageComponentInteractionCollector but in promise form.
+   * Resolves with a collection of interactions that pass the specified filter.
+   * @param {CollectorFilter} filter The filter function to use
+   * @param {AwaitMessageComponentInteractionsOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<string, MessageComponentInteraction>>}
+   * @example
+   * // Create a message component interaction collector
+   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
+   * message.awaitMessageComponentInteractions(filter, { time: 15000 })
+   *   .then(collected => console.log(`Collected ${collected.size} interactions`))
+   *   .catch(console.error);
+   */
+  awaitMessageComponentInteractions(filter, options = {}) {
+    return new Promise((resolve, reject) => {
+      const collector = this.createMessageComponentInteractionCollector(filter, options);
+      collector.once('end', (interactions, reason) => {
+        if (options.errors && options.errors.includes(reason)) reject(interactions);
+        else resolve(interactions);
+      });
+    });
+  }
+
+  /**
    * Whether the message is editable by the client user
    * @type {boolean}
    * @readonly
@@ -486,7 +541,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {?string|APIMessage} [content] The new content for the message
+   * @param {?(string|APIMessage)} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
