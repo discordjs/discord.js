@@ -1205,6 +1205,10 @@ declare module 'discord.js' {
     public webhookID: Snowflake | null;
     public flags: Readonly<MessageFlags>;
     public reference: MessageReference | null;
+    public awaitMessageComponentInteractions(
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      options?: AwaitMessageComponentInteractionsOptions,
+    ): Promise<Collection<Snowflake, MessageComponentInteraction>>;
     public awaitReactions(
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: AwaitReactionsOptions,
