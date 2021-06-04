@@ -837,11 +837,11 @@ exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON']);
  * PRIMARY
  * SECONDARY
  * SUCCESS
- * DANGER
+ * DESTRUCTIVE
  * LINK
  * @typedef {string} MessageButtonStyle
  */
-exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'LINK']);
+exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS', 'DESTRUCTIVE', 'LINK']);
 
 /**
  * NSFW level of a Guild

@@ -44,7 +44,7 @@ declare enum MessageButtonStyles {
   PRIMARY = 1,
   SECONDARY = 2,
   SUCCESS = 3,
-  DANGER = 4,
+  DESTRUCTIVE = 4,
   LINK = 5,
 }
 
