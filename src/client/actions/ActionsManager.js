@@ -38,6 +38,7 @@ class ActionsManager {
     this.register(require('./GuildIntegrationsUpdate'));
     this.register(require('./WebhooksUpdate'));
     this.register(require('./TypingStart'));
+    this.register(require('./StageInstanceCreate'));
   }
 
   register(Action) {

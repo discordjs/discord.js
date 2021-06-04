@@ -346,6 +346,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * VOICE_SERVER_UPDATE
  * * WEBHOOKS_UPDATE
  * * INTERACTION_CREATE
+ * * STAGE_INSTANCE_CREATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([

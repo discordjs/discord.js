@@ -70,6 +70,11 @@ declare enum OverwriteTypes {
   member = 1,
 }
 
+declare enum PrivacyLevels {
+  PUBLIC = 1,
+  GUILD_ONLY = 2,
+}
+
 declare enum StickerFormatTypes {
   PNG = 1,
   APNG = 2,
@@ -576,6 +581,7 @@ declare module 'discord.js' {
       SHARD_RESUME: 'shardResume';
       INVALIDATED: 'invalidated';
       RAW: 'raw';
+      STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
     };
     ShardEvents: {
       CLOSE: 'close';
@@ -668,6 +674,7 @@ declare module 'discord.js' {
     MessageButtonStyles: typeof MessageButtonStyles;
     MFALevels: typeof MFALevels;
     NSFWLevels: typeof NSFWLevels;
+    PrivacyLevels: typeof PrivacyLevels;
   };
 
   export class DataResolver {
@@ -1683,6 +1690,16 @@ declare module 'discord.js' {
   export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
     public type: 'stage';
+  }
+
+  export class StageInstance extends Base {
+    constructor(client: Client, data: unknown);
+    public id: Snowflake;
+    public guildID: Snowflake;
+    public channelID: Snowflake;
+    public topic: string;
+    public privacyLevel: PrivacyLevel;
+    public discoverableDisabled: boolean;
   }
 
   export class StoreChannel extends GuildChannel {
@@ -3610,6 +3627,8 @@ declare module 'discord.js' {
   type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
   type PresenceStatus = PresenceStatusData | 'offline';
+
+  type PrivacyLevel = keyof typeof PrivacyLevels;
 
   interface RateLimitData {
     timeout: number;
