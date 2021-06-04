@@ -1354,7 +1354,7 @@ declare module 'discord.js' {
     public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
-  export class MessageComponentInteractionCollector extends Collector<Snowflake, Interaction> {
+  export class MessageComponentInteractionCollector extends Collector<Snowflake, MessageComponentInteraction> {
     constructor(
       source: Message | TextChannel | NewsChannel | DMChannel,
       filter: CollectorFilter<[MessageComponentInteraction]>,
