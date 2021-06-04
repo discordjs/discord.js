@@ -851,7 +851,7 @@ exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS
 exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
 
 /**
- * NSFW level of a Guild
+ * NSFW level of a Guild:
  * * DEFAULT
  * * EXPLICIT
  * * SAFE
@@ -859,6 +859,14 @@ exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
  * @typedef {string} NSFWLevel
  */
 exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
+
+/**
+ * Privacy level of a {@link StageInstance} object:
+ * * PUBLIC
+ * * GUILD_ONLY
+ * @typedef {string} PrivacyLevel
+ */
+exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 
 function keyMirror(arr) {
   let tmp = Object.create(null);

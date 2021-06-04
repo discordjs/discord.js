@@ -21,6 +21,7 @@
  * * **`User`**
  * * **`CommandInteraction`**
  * * **`ButtonInteraction`**
+ * * **`StageInstance`**
  * @typedef {string} ExtendableStructure
  */
 
