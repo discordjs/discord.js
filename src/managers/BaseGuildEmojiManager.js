@@ -37,6 +37,7 @@ class BaseGuildEmojiManager extends BaseManager {
     if (emoji instanceof ReactionEmoji) return super.resolve(emoji.id);
     if (typeof emoji === 'string') {
       const res = parseEmoji(emoji);
+      // Check for custom emojis with both name and id (filtering out global ones with just id)
       if (res?.name.length) {
         return super.resolve(res.id);
       }
@@ -53,6 +54,7 @@ class BaseGuildEmojiManager extends BaseManager {
     if (emoji instanceof ReactionEmoji) return emoji.id;
     if (typeof emoji === 'string') {
       const res = parseEmoji(emoji);
+      // Check for custom emojis with both name and id (filtering out global ones with just id)
       if (res?.name.length) {
         return super.resolveID(res.id);
       }
