@@ -280,6 +280,7 @@ exports.Events = {
   INVALIDATED: 'invalidated',
   RAW: 'raw',
   STAGE_INSTANCE_CREATE: 'stageInstanceCreate',
+  STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate',
 };
 
 exports.ShardEvents = {
@@ -347,6 +348,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * WEBHOOKS_UPDATE
  * * INTERACTION_CREATE
  * * STAGE_INSTANCE_CREATE
+ * * STAGE_INSTANCE_UPDATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
@@ -391,6 +393,7 @@ exports.WSEvents = keyMirror([
   'WEBHOOKS_UPDATE',
   'INTERACTION_CREATE',
   'STAGE_INSTANCE_CREATE',
+  'STAGE_INSTANCE_UPDATE',
 ]);
 
 /**

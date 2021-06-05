@@ -582,6 +582,7 @@ declare module 'discord.js' {
       INVALIDATED: 'invalidated';
       RAW: 'raw';
       STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
+      STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate';
     };
     ShardEvents: {
       CLOSE: 'close';
@@ -1693,7 +1694,7 @@ declare module 'discord.js' {
   }
 
   export class StageInstance extends Base {
-    constructor(client: Client, data: unknown);
+    constructor(guild: Guild, data: unknown);
     public id: Snowflake;
     public guildID: Snowflake;
     public channelID: Snowflake;
@@ -2665,6 +2666,7 @@ declare module 'discord.js' {
     shardReconnecting: [shardID: number];
     shardResume: [shardID: number, replayedEvents: number];
     stageInstanceCreate: [stageInstance: StageInstance];
+    stageInstanceUpdate: [oldStageInstance: StageInstance, newStageInstance: StageInstance];
   }
 
   interface ClientOptions {
@@ -3861,7 +3863,8 @@ declare module 'discord.js' {
     | 'VOICE_SERVER_UPDATE'
     | 'WEBHOOKS_UPDATE'
     | 'INTERACTION_CREATE'
-    | 'STAGE_INSTANCE_CREATE';
+    | 'STAGE_INSTANCE_CREATE'
+    | 'STAGE_INSTANCE_UPDATE';
 
   //#endregion
 }

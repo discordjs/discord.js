@@ -39,6 +39,7 @@ class ActionsManager {
     this.register(require('./WebhooksUpdate'));
     this.register(require('./TypingStart'));
     this.register(require('./StageInstanceCreate'));
+    this.register(require('./StageInstanceUpdate'));
   }
 
   register(Action) {

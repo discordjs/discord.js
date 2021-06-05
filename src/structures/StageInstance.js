@@ -8,8 +8,8 @@ const { PrivacyLevels } = require('../util/Constants');
  * @extends {Base}
  */
 class StageInstance extends Base {
-  constructor(client, data) {
-    super(client);
+  constructor(guild, data) {
+    super(guild.client);
 
     /**
      * The ID of this stage instance
