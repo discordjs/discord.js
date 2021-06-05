@@ -1328,6 +1328,7 @@ declare module 'discord.js' {
   }
 
   export class MessageComponentInteraction extends Interaction {
+    public componentType: MessageComponentType;
     public customID: string;
     public deferred: boolean;
     public message: Message | RawMessage;

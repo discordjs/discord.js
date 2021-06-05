@@ -826,19 +826,19 @@ exports.InteractionResponseTypes = createEnum([
 
 /**
  * The type of a message component
- * ACTION_ROW
- * BUTTON
+ * * ACTION_ROW
+ * * BUTTON
  * @typedef {string} MessageComponentType
  */
 exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON']);
 
 /**
  * The style of a message button
- * PRIMARY
- * SECONDARY
- * SUCCESS
- * DANGER
- * LINK
+ * * PRIMARY
+ * * SECONDARY
+ * * SUCCESS
+ * * DANGER
+ * * LINK
  * @typedef {string} MessageButtonStyle
  */
 exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'LINK']);
