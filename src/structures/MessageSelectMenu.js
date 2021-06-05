@@ -74,7 +74,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @returns {MessageSelectMenu}
    */
   setCustomID(customID) {
-    this.customID = Util.resolveString(customID);
+    this.customID = Util.verifyString(customID, RangeError, 'SELECT_MENU_CUSTOM_ID');
     return this;
   }
 
@@ -105,7 +105,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @returns {MessageSelectMenu}
    */
   setPlaceholder(placeholder) {
-    this.placeholder = Util.resolveString(placeholder);
+    this.placeholder = Util.verifyString(placeholder, RangeError, 'SELECT_MENU_PLACEHOLDER');
     return this;
   }
 
@@ -154,10 +154,13 @@ class MessageSelectMenu extends BaseMessageComponent {
   static normalizeOption(option) {
     let { label, value, description, emoji } = option;
 
-    label = Util.resolveString(label);
-    value = Util.resolveString(value);
-    emoji = /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
-    description = typeof description !== 'undefined' ? Util.resolveString(description) : undefined;
+    label = Util.verifyString(label, RangeError, 'SELECT_OPTION_LABEL');
+    value = Util.verifyString(value, RangeError, 'SELECT_OPTION_VALUE');
+    emoji = /^\d{17,19}$/.test(emoji) ? { id: value } : Util.parseEmoji(emoji);
+    description =
+      typeof description !== 'undefined'
+        ? Util.verifyString(description, RangeError, 'SELECT_OPTION_DESCRIPTION', true)
+        : undefined;
 
     return { label, value, description, emoji, default: option.default };
   }
