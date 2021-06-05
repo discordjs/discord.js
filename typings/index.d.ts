@@ -827,7 +827,7 @@ declare module 'discord.js' {
     public delete(): Promise<Guild>;
     public discoverySplashURL(options?: StaticImageURLOptions): string | null;
     public edit(data: GuildEditData, reason?: string): Promise<Guild>;
-    public editWelcomeScreen(data?: WelcomeChannelData): Promise<WelcomeScreen>;
+    public editWelcomeScreen(data: WelcomeScreenEditData): Promise<WelcomeScreen>;
     public equals(guild: Guild): boolean;
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;

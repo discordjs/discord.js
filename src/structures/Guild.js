@@ -936,7 +936,7 @@ class Guild extends BaseGuild {
 
   /**
    * Updates the guild's welcome screen
-   * @param {WelcomeScreenEditData} [data] Data to edit the welcome screen with
+   * @param {WelcomeScreenEditData} data Data to edit the welcome screen with
    * @returns {Promise<WelcomeScreen>}
    * @example
    * guild.editWelcomeScreen({
@@ -950,24 +950,25 @@ class Guild extends BaseGuild {
    *   ],
    * })
    */
-  async editWelcomeScreen({ enabled, description, welcomeChannels } = {}) {
-    const welcome_channels = welcomeChannels?.map(data => {
-      const emoji = this.emojis.resolve(data.emoji);
+  async editWelcomeScreen(data) {
+    const { enabled, description, welcomeChannels } = data;
+    const welcome_channels = welcomeChannels?.map(welcomeChannelData => {
+      const emoji = this.emojis.resolve(welcomeChannelData.emoji);
       return {
         emoji_id: emoji?.id ?? null,
         emoji_name: emoji?.name ?? emoji,
-        channel_id: this.channels.resolveID(data.channel),
+        channel_id: this.channels.resolveID(welcomeChannelData.channel),
       };
     });
 
-    const data = await this.client.api.guilds(this.id, 'welcome-screen').patch({
-      data: {
+    const patchData = await this.client.api.guilds(this.id, 'welcome-screen').patch({
+      patchData: {
         welcome_channels,
         description,
         enabled,
       },
     });
-    return new WelcomeScreen(this, data);
+    return new WelcomeScreen(this, patchData);
   }
 
   /**
