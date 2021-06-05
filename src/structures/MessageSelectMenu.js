@@ -149,7 +149,7 @@ class MessageSelectMenu extends BaseMessageComponent {
       custom_id: this.customID,
       placeholder: this.placeholder,
       min_values: this.minValues,
-      max_values: this.maxValues ?? this.minValues ? this.options.length : undefined,
+      max_values: this.maxValues ?? (this.minValues ? this.options.length : undefined),
       options: this.options,
       type: typeof this.type === 'string' ? MessageComponentTypes[this.type] : this.type,
     };
