@@ -227,17 +227,23 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
+   * Options for {@link ShardingManager#broadcastEval} and {@link ShardClientUtil#broadcastEval}.
+   * @typedef {Object} BroadcastEvalOptions
+   * @property {number} [shard] Shard to run script on, all if undefined
+   * @property {*} [context={}] The JSON-stringifiable values to call the function with
+   */
+
+  /**
    * Evaluates a script on all shards, or a given shard, in the context of the {@link Client}s.
    * @param {string|Function} script JavaScript to run on each shard
-   * @param {number} [shard] Shard to run script on, all if undefined
-   * @param {Object} [parameterList={}] The JSON-stringifiable parameters to call the function with
+   * @param {BroadcastEvalOptions} [options={}] The options for the broadcast
    * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
    */
-  broadcastEval(script, shard, parameterList = {}) {
+  broadcastEval(script, options = {}) {
     return this._performOnShards(
       'eval',
-      [typeof script === 'function' ? `(${script})(this, ${JSON.stringify(parameterList)})` : script],
-      shard,
+      [typeof script === 'function' ? `(${script})(this, ${JSON.stringify(options.context ?? {})})` : script],
+      options.shard,
     );
   }
 
