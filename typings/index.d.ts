@@ -1333,7 +1333,7 @@ declare module 'discord.js' {
     public message: Message | RawMessage;
     public replied: boolean;
     public webhook: WebhookClient;
-    public defer(ephemeral?: boolean): Promise<void>;
+    public defer(options?: InteractionDeferOptions): Promise<void>;
     public deferUpdate(): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
