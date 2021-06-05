@@ -93,9 +93,8 @@ class InteractionResponses {
    *   .then(reply => console.log(`Replied with ${reply.content}`))
    *   .catch(console.error);
    */
-  async fetchReply() {
-    const raw = await this.webhook.fetchMessage('@original');
-    return this.channel?.messages.add(raw) ?? raw;
+  fetchReply() {
+    return this.webhook.fetchMessage('@original');
   }
 
   /**
@@ -110,9 +109,8 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async editReply(content, options) {
-    const raw = await this.webhook.editMessage('@original', content, options);
-    return this.channel?.messages.add(raw) ?? raw;
+  editReply(content, options) {
+    return this.webhook.editMessage('@original', content, options);
   }
 
   /**
@@ -135,16 +133,8 @@ class InteractionResponses {
    * @param {InteractionReplyOptions} [options] Additional options for the reply
    * @returns {Promise<Message|Object>}
    */
-  async followUp(content, options) {
-    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
-    const { data, files } = await apiMessage.resolveData().resolveFiles();
-
-    const raw = await this.client.api.webhooks(this.applicationID, this.token).post({
-      data,
-      files,
-    });
-
-    return this.channel?.messages.add(raw) ?? raw;
+  followUp(content, options) {
+    return this.webhook.send(content, options);
   }
 
   /**
