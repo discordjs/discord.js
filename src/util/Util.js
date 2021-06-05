@@ -360,6 +360,7 @@ class Util {
     errorMessage = `Expected a string, got ${data} instead.`,
     allowEmpty = true,
   ) {
+    data = data.toLocaleString();
     if (typeof data !== 'string') throw new error(errorMessage);
     if (!allowEmpty && data.length === 0) throw new error(errorMessage);
     return data;
