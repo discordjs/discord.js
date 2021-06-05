@@ -6,9 +6,9 @@ const { Events } = require('../../util/Constants');
 class StageInstanceCreateAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = this.getChannel(data);
-    if (channel) {
-      const stageInstance = channel.instances.add(data);
+    const guild = client.guilds.cache.get(data.guild_id);
+    if (guild) {
+      const stageInstance = guild.stageInstances.add(data);
 
       /**
        * Emitted whenever a stage instance is created.

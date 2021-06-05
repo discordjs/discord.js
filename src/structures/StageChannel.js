@@ -1,7 +1,6 @@
 'use strict';
 
 const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
-const StageInstanceManager = require('../managers/StageInstanceManager');
 
 /**
  * Represents a guild stage channel on Discord.
@@ -18,15 +17,6 @@ class StageChannel extends BaseGuildVoiceChannel {
        */
       this.topic = data.topic;
     }
-  }
-
-  /**
-   * A manager for the instances belonging to this stage channel
-   * @type {StageInstanceManager}
-   * @readonly
-   */
-  get instances() {
-    return new StageInstanceManager(this.client);
   }
 
   /**
