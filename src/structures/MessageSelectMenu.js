@@ -16,6 +16,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @property {number} [minValues] The minimum number of selections required
    * @property {number} [maxValues] The maximum number of selections allowed
    * @property {MessageSelectOption[]} [options] Options for the select menu
+   * @property {boolean} [disabled=false] Disables the select menu to prevent interactions
    */
 
   /**
@@ -75,6 +76,12 @@ class MessageSelectMenu extends BaseMessageComponent {
      * @type {MessageSelectOption[]}
      */
     this.options = this.constructor.normalizeOptions(data.options ?? []);
+
+    /**
+     * Whether this select menu is currently disabled
+     * @type {?boolean}
+     */
+    this.disabled = data.disabled ?? false;
   }
 
   /**
@@ -84,6 +91,16 @@ class MessageSelectMenu extends BaseMessageComponent {
    */
   setCustomID(customID) {
     this.customID = Util.verifyString(customID, RangeError, 'SELECT_MENU_CUSTOM_ID');
+    return this;
+  }
+
+  /**
+   * Sets the interactive status of the select menu
+   * @param {boolean} disabled Whether this select menu should be disabled
+   * @returns {MessageSelectMenu}
+   */
+  setDisabled(disabled) {
+    this.disabled = disabled;
     return this;
   }
 
@@ -147,6 +164,7 @@ class MessageSelectMenu extends BaseMessageComponent {
   toJSON() {
     return {
       custom_id: this.customID,
+      disabled: this.disabled,
       placeholder: this.placeholder,
       min_values: this.minValues,
       max_values: this.maxValues ?? (this.minValues ? this.options.length : undefined),

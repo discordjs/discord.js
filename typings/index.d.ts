@@ -1536,6 +1536,7 @@ declare module 'discord.js' {
   class MessageSelectMenu extends BaseMessageComponent {
     constructor(data?: MessageSelectMenu | MessageSelectMenuOptions);
     public customID: string | null;
+    public disabled: boolean;
     public maxValues: number | null;
     public minValues: number | null;
     public options: MessageSelectOption[];
@@ -1543,6 +1544,7 @@ declare module 'discord.js' {
     public type: 'SELECT_MENU';
     public addOptions(options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
     public setCustomID(customID: string): this;
+    public setDisabled(disabled: boolean): this;
     public setMaxValues(maxValues: number): this;
     public setMinValues(minValues: number): this;
     public setPlaceholder(placeholder: string): this;
@@ -3784,6 +3786,7 @@ declare module 'discord.js' {
 
   interface MessageSelectMenuOptions extends BaseMessageComponentOptions {
     customID?: string;
+    disabled?: boolean;
     maxValues?: number;
     minValues?: number;
     options?: MessageSelectOptionData[];
