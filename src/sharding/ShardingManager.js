@@ -230,7 +230,7 @@ class ShardingManager extends EventEmitter {
    * Options for {@link ShardingManager#broadcastEval} and {@link ShardClientUtil#broadcastEval}.
    * @typedef {Object} BroadcastEvalOptions
    * @property {number} [shard] Shard to run script on, all if undefined
-   * @property {*} [context={}] The JSON-stringifiable values to call the function with
+   * @property {*} [context={}] The JSON-serializable values to call the script with
    */
 
   /**
