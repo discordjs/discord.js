@@ -1694,7 +1694,7 @@ declare module 'discord.js' {
   }
 
   export class StageInstance extends Base {
-    constructor(guild: Guild, data: unknown);
+    constructor(client: Client, data: unknown);
     public id: Snowflake;
     public guildID: Snowflake;
     public channelID: Snowflake;

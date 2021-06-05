@@ -13,7 +13,7 @@ class StageInstanceUpdateAction extends Action {
 
       const oldStageInstance = guild.stageInstances.cache.has(data.id)
         ? guild.stageInstances.cache.get(data.id)._clone()
-        : new StageInstance(guild, data);
+        : new StageInstance(client, data);
 
       const newStageInstance = guild.stageInstances.add(data);
 
