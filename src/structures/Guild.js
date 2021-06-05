@@ -176,10 +176,13 @@ class Guild extends BaseGuild {
      * * FEATURABLE
      * * INVITE_SPLASH
      * * MEMBER_VERIFICATION_GATE_ENABLED
+     * * MONETIZATION_ENABLED
+     * * MORE_STICKERS
      * * NEWS
      * * PARTNERED
      * * PREVIEW_ENABLED
      * * RELAY_ENABLED
+     * * TICKETED_EVENTS_ENABLED
      * * VANITY_URL
      * * VERIFIED
      * * VIP_REGIONS
