@@ -228,12 +228,17 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Evaluates a script on all shards, or a given shard, in the context of the {@link Client}s.
-   * @param {string} script JavaScript to run on each shard
-   * @param {number} [shard] Shard to run on, all if undefined
+   * @param {string|Function} script JavaScript to run on each shard
+   * @param {number} [shard] Shard to run script on, all if undefined
+   * @param {Object} [parameterList={}] The JSON-stringifiable parameters to call the function with
    * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
    */
-  broadcastEval(script, shard) {
-    return this._performOnShards('eval', [script], shard);
+  broadcastEval(script, shard, parameterList = {}) {
+    return this._performOnShards(
+      'eval',
+      [typeof script === 'function' ? `(${script})(this, ${JSON.stringify(parameterList)})` : script],
+      shard,
+    );
   }
 
   /**
