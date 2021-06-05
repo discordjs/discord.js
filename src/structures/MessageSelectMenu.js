@@ -22,8 +22,17 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @typedef {Object} MessageSelectOption
    * @property {string} label The text to be displayed on this option
    * @property {string} value The value to be sent for this option
+   * @property {?string} description Optional description to show for this option
+   * @property {?RawEmoji} emoji Emoji to display for this option
+   * @property {boolean} default Render this option as the default selection
+   */
+
+  /**
+   * @typedef {Object} MessageSelectOptionData
+   * @property {string} label The text to be displayed on this option
+   * @property {string} value The value to be sent for this option
    * @property {string} [description] Optional description to show for this option
-   * @property {Emoji} [emoji] Emoji to display for this option
+   * @property {EmojiIdentifierResolvable} [emoji] Emoji to display for this option
    * @property {boolean} [default] Render this option as the default selection
    */
 
@@ -65,7 +74,7 @@ class MessageSelectMenu extends BaseMessageComponent {
      * Options for the select menu
      * @type {MessageSelectOption[]}
      */
-    this.options = data.options ?? [];
+    this.options = this.constructor.normalizeOptions(data.options ?? []);
   }
 
   /**
@@ -148,7 +157,7 @@ class MessageSelectMenu extends BaseMessageComponent {
 
   /**
    * Normalizes option input and resolves strings.
-   * @param {MessageSelectOption} option The select menu option to normalize
+   * @param {MessageSelectOptionData} option The select menu option to normalize
    * @returns {MessageSelectOption}
    */
   static normalizeOption(option) {
@@ -156,18 +165,15 @@ class MessageSelectMenu extends BaseMessageComponent {
 
     label = Util.verifyString(label, RangeError, 'SELECT_OPTION_LABEL');
     value = Util.verifyString(value, RangeError, 'SELECT_OPTION_VALUE');
-    emoji = /^\d{17,19}$/.test(emoji) ? { id: value } : Util.parseEmoji(emoji);
-    description =
-      typeof description !== 'undefined'
-        ? Util.verifyString(description, RangeError, 'SELECT_OPTION_DESCRIPTION', true)
-        : undefined;
+    emoji = emoji ? Util.resolvePartialEmoji(emoji) : null;
+    description = description ? Util.verifyString(description, RangeError, 'SELECT_OPTION_DESCRIPTION', true) : null;
 
-    return { label, value, description, emoji, default: option.default };
+    return { label, value, description, emoji, default: option.default ?? false };
   }
 
   /**
    * Normalizes option input and resolves strings and emojis.
-   * @param {...MessageSelectOption|MessageSelectOption[]} options The select menu options to normalize
+   * @param {...MessageSelectOptionData|MessageSelectOption[]} options The select menu options to normalize
    * @returns {MessageSelectOption[]}
    */
   static normalizeOptions(...options) {

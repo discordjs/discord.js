@@ -1541,7 +1541,7 @@ declare module 'discord.js' {
     public options: MessageSelectOption[];
     public placeholder: string | null;
     public type: 'SELECT_MENU';
-    public addOptions(options: MessageSelectOption[] | MessageSelectOption[][]): this;
+    public addOptions(options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
     public setCustomID(customID: string): this;
     public setMaxValues(maxValues: number): this;
     public setMinValues(minValues: number): this;
@@ -1549,7 +1549,7 @@ declare module 'discord.js' {
     public spliceOptions(
       index: number,
       deleteCount: number,
-      ...options: MessageSelectOption[] | MessageSelectOption[][]
+      ...options: MessageSelectOptionData[] | MessageSelectOptionData[][]
     ): this;
     public toJSON(): object;
   }
@@ -3786,14 +3786,22 @@ declare module 'discord.js' {
     customID?: string;
     maxValues?: number;
     minValues?: number;
-    options?: MessageSelectOption[];
+    options?: MessageSelectOptionData[];
     placeholder?: string;
   }
 
   interface MessageSelectOption {
+    default: boolean;
+    description: string | null;
+    emoji: RawEmoji | null;
+    label: string;
+    value: string;
+  }
+
+  interface MessageSelectOptionData {
     default?: boolean;
     description?: string;
-    emoji?: GuildEmoji | RawEmoji;
+    emoji?: EmojiIdentifierResolvable;
     label: string;
     value: string;
   }
