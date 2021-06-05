@@ -768,6 +768,7 @@ declare module 'discord.js' {
     public readonly shard: WebSocketShard;
     public shardID: number;
     public splash: string | null;
+    public stageInstances: StageInstanceManager;
     public readonly systemChannel: TextChannel | null;
     public systemChannelFlags: Readonly<SystemChannelFlags>;
     public systemChannelID: Snowflake | null;
