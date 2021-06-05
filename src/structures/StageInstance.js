@@ -17,6 +17,10 @@ class StageInstance extends Base {
      */
     this.id = data.id;
 
+    this._patch(data);
+  }
+
+  _patch(data) {
     /**
      * The guild ID of the associated stage channel
      * @type {Snowflake}
