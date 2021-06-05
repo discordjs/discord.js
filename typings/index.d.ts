@@ -1697,8 +1697,8 @@ declare module 'discord.js' {
     public parentPort: any | null;
     public broadcastEval(script: string, { shard: undefined }: BroadcastEvalOptions): Promise<any[]>;
     public broadcastEval(script: string, { shard: number }: BroadcastEvalOptions): Promise<any>;
-    public broadcastEval<T, P>(fn: (client: Client, parameterList: P) => T, { shard: undefined, context: P }: BroadcastEvalOptions): Promise<T[]>;
-    public broadcastEval<T, P>(fn: (client: Client, parameterList: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T[]>;
+    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }: BroadcastEvalOptions): Promise<T[]>;
+    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T[]>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
     public respawnAll(options?: { shardDelay?: number; respawnDelay?: number; timeout?: number }): Promise<void>;
@@ -1723,8 +1723,8 @@ declare module 'discord.js' {
     public broadcast(message: any): Promise<Shard[]>;
     public broadcastEval(script: string, { shard: undefined }: BroadcastEvalOptions): Promise<any[]>;
     public broadcastEval(script: string, { shard: number }: BroadcastEvalOptions): Promise<any>;
-    public broadcastEval<T, P>(fn: (client: Client, parameterList: P) => T, { shard: undefined, context: P }: BroadcastEvalOptions): Promise<T[]>;
-    public broadcastEval<T, P>(fn: (client: Client, parameterList: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T[]>;
+    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }: BroadcastEvalOptions): Promise<T[]>;
+    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T[]>;
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
