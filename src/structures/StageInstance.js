@@ -17,6 +17,12 @@ class StageInstance extends Base {
      */
     this.id = data.id;
 
+    /**
+     * Whether the stage instance has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     this._patch(data);
   }
 

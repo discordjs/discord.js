@@ -281,6 +281,7 @@ exports.Events = {
   RAW: 'raw',
   STAGE_INSTANCE_CREATE: 'stageInstanceCreate',
   STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate',
+  STAGE_INSTANCE_DELETE: 'stageInstanceDelete',
 };
 
 exports.ShardEvents = {
@@ -349,6 +350,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * INTERACTION_CREATE
  * * STAGE_INSTANCE_CREATE
  * * STAGE_INSTANCE_UPDATE
+ * * STAGE_INSTANCE_DELETE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
@@ -394,6 +396,7 @@ exports.WSEvents = keyMirror([
   'INTERACTION_CREATE',
   'STAGE_INSTANCE_CREATE',
   'STAGE_INSTANCE_UPDATE',
+  'STAGE_INSTANCE_DELETE',
 ]);
 
 /**

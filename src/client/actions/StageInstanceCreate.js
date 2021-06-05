@@ -7,6 +7,7 @@ class StageInstanceCreateAction extends Action {
   handle(data) {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
+
     if (guild) {
       const stageInstance = guild.stageInstances.add(data);
 
@@ -16,6 +17,7 @@ class StageInstanceCreateAction extends Action {
        * @param {StageInstance} stageInstance The created stage instance
        */
       client.emit(Events.STAGE_INSTANCE_CREATE, stageInstance);
+
       return { stageInstance };
     }
 

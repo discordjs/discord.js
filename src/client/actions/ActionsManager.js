@@ -40,6 +40,7 @@ class ActionsManager {
     this.register(require('./TypingStart'));
     this.register(require('./StageInstanceCreate'));
     this.register(require('./StageInstanceUpdate'));
+    this.register(require('./StageInstanceDelete'));
   }
 
   register(Action) {
