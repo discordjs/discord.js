@@ -1697,8 +1697,8 @@ declare module 'discord.js' {
     public parentPort: any | null;
     public broadcastEval(script: string): Promise<any[]>;
     public broadcastEval(script: string, shard: number): Promise<any>;
-    public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
-    public broadcastEval<T>(fn: (client: Client) => T, shard: number): Promise<T>;
+    public broadcastEval<T, P>(fn: (client: Client, parameterList: P) => T, shard: undefined, parameterList: P): Promise<T[]>;
+    public broadcastEval<T, P>(fn: (client: Client, parameterList: P) => T, shard: number, parameterList: P): Promise<T>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
     public respawnAll(options?: { shardDelay?: number; respawnDelay?: number; timeout?: number }): Promise<void>;
@@ -1723,6 +1723,8 @@ declare module 'discord.js' {
     public broadcast(message: any): Promise<Shard[]>;
     public broadcastEval(script: string): Promise<any[]>;
     public broadcastEval(script: string, shard: number): Promise<any>;
+    public broadcastEval<T, P>(fn: (client: Client, parameterList: P) => T, shard: undefined, parameterList: P): Promise<T[]>;
+    public broadcastEval<T, P>(fn: (client: Client, parameterList: P) => T, shard: number, parameterList: P): Promise<T>;
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
