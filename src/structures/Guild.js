@@ -950,7 +950,7 @@ class Guild extends BaseGuild {
    *   ],
    * })
    */
-  editWelcomeScreen({ enabled, description, welcomeChannels } = {}) {
+  async editWelcomeScreen({ enabled, description, welcomeChannels } = {}) {
     const welcome_channels = welcomeChannels?.map(data => {
       const emoji = this.emojis.resolve(data.emoji);
       return {
@@ -960,16 +960,14 @@ class Guild extends BaseGuild {
       };
     });
 
-    return this.client.api
-      .guilds(this.id, 'welcome-screen')
-      .patch({
-        data: {
-          welcome_channels,
-          description,
-          enabled,
-        },
-      })
-      .then(data => new WelcomeScreen(this, data));
+    const data = await this.client.api.guilds(this.id, 'welcome-screen').patch({
+      data: {
+        welcome_channels,
+        description,
+        enabled,
+      },
+    });
+    return new WelcomeScreen(this, data);
   }
 
   /**
