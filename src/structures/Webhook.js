@@ -98,7 +98,7 @@ class Webhook {
    * Options that can be passed into editMessage.
    * @typedef {Object} WebhookEditMessageOptions
    * @property {MessageEmbed[]|Object[]} [embeds] See {@link WebhookMessageOptions#embeds}
-   * @property {string} [content] See {@link BaseMessageOptions#content}
+   * @property {?string} [content] See {@link BaseMessageOptions#content}
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] See {@link BaseMessageOptions#files}
    * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
    */
@@ -242,14 +242,14 @@ class Webhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|APIMessage} [content] The new content for the message
+   * @param {?(string|APIMessage)} [content] The new content for the message
    * @param {WebhookEditMessageOptions|MessageAdditions} [options] The options to provide
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async editMessage(message, content, options) {
     const { data, files } = await (
-      content.resolveData?.() ?? APIMessage.create(this, content, options).resolveData()
+      content?.resolveData?.() ?? APIMessage.create(this, content, options).resolveData()
     ).resolveFiles();
     const d = await this.client.api
       .webhooks(this.id, this.token)
