@@ -2502,9 +2502,6 @@ declare module 'discord.js' {
     ): Promise<Message | RawMessage>;
     fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | RawMessage>;
     send(
-      content: string | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message | RawMessage>;
-    send(
       options: string | APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
     ): Promise<(Message | RawMessage)[]>;
     send(
