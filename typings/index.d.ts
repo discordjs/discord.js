@@ -471,13 +471,13 @@ declare module 'discord.js' {
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
-      options: string | null | APIMessage | WebhookEditMessageOptions | MessageAdditions,
+      options: string | APIMessage | WebhookEditMessageOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
     public followUp(
       options: string | APIMessage | InteractionReplyOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
-    public reply(options: string | null | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
+    public reply(options: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
     private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
   }
