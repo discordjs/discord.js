@@ -174,7 +174,7 @@ class MessageSelectMenu extends BaseMessageComponent {
   }
 
   /**
-   * Normalizes option input and resolves strings.
+   * Normalizes option input and resolves strings and emojis.
    * @param {MessageSelectOptionData} option The select menu option to normalize
    * @returns {MessageSelectOption}
    */
