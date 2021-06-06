@@ -958,6 +958,7 @@ class Guild extends BaseGuild {
         emoji_id: emoji?.id ?? null,
         emoji_name: emoji?.name ?? emoji,
         channel_id: this.channels.resolveID(welcomeChannelData.channel),
+        description: welcomeChannelData.description,
       };
     });
 
