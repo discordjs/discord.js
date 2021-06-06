@@ -74,6 +74,37 @@ class StageInstanceManager extends BaseManager {
     const data = await this.client.api('stage-instances', channelID).get();
     return this.add(data, options.cache);
   }
+
+  /**
+   * Options used to update an existing stage instance.
+   * @typedef {Object} UpdateStageInstanceOptions
+   * @property {StageChannel|Snowflake} channel The stage channel whose instance is to be updated
+   * @property {string} topic The new topic of the stage instance
+   * @property {PrivacyLevel|number} privacyLevel The new privacy level of the stage instance
+   */
+
+  /**
+   * Updates an existing stage instance.
+   * @param {UpdateStageInstanceOptions} options The options to update the stage instance
+   * @returns {Promise<StageInstance>}
+   */
+  async update(options) {
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    let { channel, topic, privacyLevel } = options;
+    const channelID = this.guild.channels.resolveID(channel);
+    if (!channelID) throw new Error('STAGE_CHANNEL_RESOLVE');
+
+    if (privacyLevel) privacyLevel = typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
+
+    const data = await this.client.api('stage-instances', channelID).patch({
+      data: {
+        topic,
+        privacy_level: privacyLevel,
+      },
+    });
+
+    return this.add(data);
+  }
 }
 
 module.exports = StageInstanceManager;

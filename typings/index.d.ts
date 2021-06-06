@@ -2291,6 +2291,7 @@ declare module 'discord.js' {
     public guild: Guild;
     public create(options: CreateStageInstanceOptions): Promise<StageInstance>;
     public fetch(options: FetchStageInstanceOptions): Promise<StageInstance>;
+    public update(options: UpdateStageInstanceOptions): Promise<StageInstance>;
   }
 
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
@@ -3786,6 +3787,12 @@ declare module 'discord.js' {
     lastTimestamp: Date;
     elapsedTime: number;
     timeout: NodeJS.Timeout;
+  }
+
+  interface UpdateStageInstanceOptions {
+    channel: StageChannel | Snowflake;
+    topic?: string;
+    privacyLevel?: PrivacyLevel | number;
   }
 
   type UserFlagsString =
