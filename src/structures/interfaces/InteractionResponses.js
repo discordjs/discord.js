@@ -52,8 +52,7 @@ class InteractionResponses {
 
   /**
    * Creates a reply to this interaction.
-   * @param {string|APIMessage|MessageAdditions} content The content for the reply
-   * @param {InteractionReplyOptions} [options] Additional options for the reply
+   * @param {string|APIMessage|MessageAdditions|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
    * // Reply to the interaction with an embed
@@ -64,13 +63,18 @@ class InteractionResponses {
    *   .catch(console.error);
    * @example
    * // Create an ephemeral reply
-   * interaction.reply('Pong!', { ephemeral: true })
+   * interaction.reply({ content: 'Pong!', ephemeral: true })
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async reply(content, options) {
+  async reply(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+
+    let apiMessage;
+    if (options instanceof APIMessage) apiMessage = options;
+    else if (typeof options === 'string') apiMessage = APIMessage.create(this, options);
+    else apiMessage = APIMessage.create(this, options.content, options);
+
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
     await this.client.api.interactions(this.id, this.token).callback.post({
@@ -100,8 +104,7 @@ class InteractionResponses {
   /**
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|APIMessage|MessageAdditions} content The new content for the message
-   * @param {WebhookEditMessageOptions} [options] The options to provide
+   * @param {string|APIMessage|MessageAdditions|WebhookEditMessageOptions} options The new options for the message
    * @returns {Promise<Message|Object>}
    * @example
    * // Edit the reply to this interaction
@@ -109,8 +112,12 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  editReply(content, options) {
-    return this.webhook.editMessage('@original', content, options);
+  editReply(options) {
+    if (typeof options === 'string' || options instanceof APIMessage) {
+      return this.webhook.editMessage('@original', options);
+    } else {
+      return this.webhook.editMessage('@original', options.content, options);
+    }
   }
 
   /**
@@ -129,12 +136,12 @@ class InteractionResponses {
 
   /**
    * Send a follow-up message to this interaction.
-   * @param {string|APIMessage|MessageAdditions} content The content for the reply
-   * @param {InteractionReplyOptions} [options] Additional options for the reply
+   * @param {string|APIMessage|MessageAdditions|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<Message|Object>}
    */
-  followUp(content, options) {
-    return this.webhook.send(content, options);
+  followUp(options) {
+    if (typeof options === 'string' || options instanceof APIMessage) return this.webhook.send(options);
+    else return this.webhook.send(options.content, options);
   }
 
   /**
@@ -158,8 +165,7 @@ class InteractionResponses {
 
   /**
    * Updates the original message whose button was pressed
-   * @param {string|APIMessage|MessageAdditions} content The content for the reply
-   * @param {WebhookEditMessageOptions} [options] Additional options for the reply
+   * @param {string|APIMessage|MessageAdditions|WebhookEditMessageOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
    * // Remove the buttons from the message
@@ -167,9 +173,14 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async update(content, options) {
+  async update(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+
+    let apiMessage;
+    if (options instanceof APIMessage) apiMessage = options;
+    else if (typeof options === 'string') apiMessage = APIMessage.create(this, options);
+    else apiMessage = APIMessage.create(this, options.content, options);
+
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
     await this.client.api.interactions(this.id, this.token).callback.post({

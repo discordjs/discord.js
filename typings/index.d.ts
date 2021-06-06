@@ -471,16 +471,13 @@ declare module 'discord.js' {
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
-      content: string | null | APIMessage | WebhookEditMessageOptions | MessageAdditions,
+      options: string | null | APIMessage | WebhookEditMessageOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
-    public editReply(content: string | null, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
     public followUp(
-      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
+      options: string | APIMessage | InteractionReplyOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
-    public followUp(content: string | null, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(content: string | null | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
-    public reply(content: string | null, options?: InteractionReplyOptions): Promise<void>;
+    public reply(options: string | null | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
     private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
   }
@@ -1362,20 +1359,16 @@ declare module 'discord.js' {
     public deferUpdate(): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
-      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+      options: string | APIMessage | WebhookEditMessageOptions | MessageEmbed,
     ): Promise<Message | RawMessage>;
-    public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
     public followUp(
-      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
+      options: string | APIMessage | InteractionReplyOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
-    public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
-    public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
+    public reply(options: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
     public update(
-      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed,
     ): Promise<Message | RawMessage>;
-    public update(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
