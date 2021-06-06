@@ -1195,7 +1195,7 @@ declare module 'discord.js' {
     private patch(data: unknown): Message;
 
     public activity: MessageActivity | null;
-    public application: ClientApplication | null;
+    public applicationID: Snowflake | null;
     public attachments: Collection<Snowflake, MessageAttachment>;
     public author: User;
     public channel: TextChannel | DMChannel | NewsChannel;
@@ -1211,6 +1211,7 @@ declare module 'discord.js' {
     public readonly editedAt: Date | null;
     public editedTimestamp: number | null;
     public embeds: MessageEmbed[];
+    public groupActivityApplication: ClientApplication | null;
     public readonly guild: Guild | null;
     public id: Snowflake;
     public interaction: MessageInteraction | null;
