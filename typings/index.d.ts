@@ -802,7 +802,6 @@ declare module 'discord.js' {
     public presences: PresenceManager;
     public readonly publicUpdatesChannel: TextChannel | null;
     public publicUpdatesChannelID: Snowflake | null;
-    public region: string;
     public roles: RoleManager;
     public readonly rulesChannel: TextChannel | null;
     public rulesChannelID: Snowflake | null;
@@ -856,7 +855,6 @@ declare module 'discord.js' {
     public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
     public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;
     public setPublicUpdatesChannel(publicUpdatesChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
-    public setRegion(region: string, reason?: string): Promise<Guild>;
     public setRolePositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
     public setRulesChannel(rulesChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
     public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
@@ -3180,7 +3178,6 @@ declare module 'discord.js' {
     defaultMessageNotifications?: DefaultMessageNotifications | number;
     explicitContentFilter?: ExplicitContentFilterLevel | number;
     icon?: BufferResolvable | Base64Resolvable | null;
-    region?: string;
     roles?: PartialRoleData[];
     systemChannelFlags?: SystemChannelFlagsResolvable;
     systemChannelID?: number;
@@ -3194,7 +3191,6 @@ declare module 'discord.js' {
 
   interface GuildEditData {
     name?: string;
-    region?: string;
     verificationLevel?: VerificationLevel | number;
     explicitContentFilter?: ExplicitContentFilterLevel | number;
     defaultMessageNotifications?: DefaultMessageNotifications | number;

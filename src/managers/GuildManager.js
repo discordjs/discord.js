@@ -140,7 +140,6 @@ class GuildManager extends BaseManager {
    * for the guild
    * @param {ExplicitContentFilterLevel} [options.explicitContentFilter] The explicit content filter level for the guild
    * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
-   * @param {string} [options.region] The region for the server, defaults to the closest one available
    * @param {PartialRoleData[]} [options.roles] The roles for this guild,
    * the first element of this array is used to change properties of the guild's everyone role.
    * @param {number} [options.systemChannelID] The ID of the system channel
@@ -157,7 +156,6 @@ class GuildManager extends BaseManager {
       defaultMessageNotifications,
       explicitContentFilter,
       icon = null,
-      region,
       roles = [],
       systemChannelID,
       systemChannelFlags,
@@ -195,7 +193,6 @@ class GuildManager extends BaseManager {
         .post({
           data: {
             name,
-            region,
             icon,
             verification_level: verificationLevel,
             default_message_notifications: defaultMessageNotifications,
