@@ -230,7 +230,7 @@ class ShardingManager extends EventEmitter {
    * Options for {@link ShardingManager#broadcastEval} and {@link ShardClientUtil#broadcastEval}.
    * @typedef {Object} BroadcastEvalOptions
    * @property {number} [shard] Shard to run script on, all if undefined
-   * @property {*} [context={}] The JSON-serializable values to call the script with
+   * @property {*} [context] The JSON-serializable values to call the script with
    */
 
   /**
@@ -242,7 +242,7 @@ class ShardingManager extends EventEmitter {
   broadcastEval(script, options = {}) {
     return this._performOnShards(
       'eval',
-      [typeof script === 'function' ? `(${script})(this, ${JSON.stringify(options.context ?? {})})` : script],
+      [typeof script === 'function' ? `(${script})(this, ${JSON.stringify(options.context)})` : script],
       options.shard,
     );
   }
