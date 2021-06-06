@@ -103,6 +103,5 @@ export const {
   VoiceRegion,
   VoiceState,
   Webhook,
-  WebSocket,
-  Widget
+  WebSocket
 } = Discord;
