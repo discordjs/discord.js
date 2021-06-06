@@ -2292,7 +2292,7 @@ declare module 'discord.js' {
     public create(options: CreateStageInstanceOptions): Promise<StageInstance>;
     public fetch(options: FetchStageInstanceOptions): Promise<StageInstance>;
     public update(options: UpdateStageInstanceOptions): Promise<StageInstance>;
-    public delete(channel: StageChannel | Snowflake): Promise<StageInstance>;
+    public delete(channel: StageChannel | Snowflake): Promise<void>;
   }
 
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {

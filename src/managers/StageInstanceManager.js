@@ -109,19 +109,13 @@ class StageInstanceManager extends BaseManager {
   /**
    * Deletes an existing stage instance.
    * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be deleted
-   * @returns {Promise<StageInstance>}
+   * @returns {Promise<void>}
    */
   async delete(channel) {
     const channelID = this.guild.channels.resolveID(channel);
     if (!channelID) throw new Error('STAGE_CHANNEL_RESOLVE');
 
-    const data = await this.client.api('stage-instances', channelID).delete();
-
-    const stageInstance =
-      this.guild.stageInstances.cache.get(data.id)?._clone() ?? new StageInstance(this.client, data);
-
-    stageInstance.deleted = true;
-    return stageInstance;
+    await this.client.api('stage-instances', channelID).delete();
   }
 }
 
