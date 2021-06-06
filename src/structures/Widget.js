@@ -50,6 +50,7 @@ class Widget extends Base {
 
     /**
      * The list of members in the guild.
+     * These strings are just arbitrary numbers, they aren't Snowflakes.
      * @type {Collection<string, WidgetMember>}
      */
     this.members = new Collection();
