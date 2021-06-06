@@ -5,7 +5,7 @@ const MessageCollector = require('../MessageCollector');
 const APIMessage = require('../APIMessage');
 const SnowflakeUtil = require('../../util/SnowflakeUtil');
 const Collection = require('../../util/Collection');
-const { RangeError, TypeError } = require('../../errors');
+const { RangeError, TypeError, Error } = require('../../errors');
 const MessageComponentInteractionCollector = require('../MessageComponentInteractionCollector');
 
 /**
@@ -333,24 +333,25 @@ class TextBasedChannel {
   }
 
   /**
-   * Similar to createMessageComponentInteractionCollector but in promise form.
-   * Resolves with a collection of interactions that pass the specified filter.
+   * Collects a single component interaction that passes the filter.
+   * The Promise will reject if the time expires.
    * @param {CollectorFilter} filter The filter function to use
-   * @param {AwaitMessageComponentInteractionsOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, MessageComponentInteraction>>}
+   * @param {number} [time] Time to wait for an interaction before rejecting
+   * @returns {Promise<MessageComponentInteraction>}
    * @example
-   * // Create a button interaction collector
+   * // Collect a button interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * channel.awaitMessageComponentInteractions(filter, { time: 15000 })
-   *   .then(collected => console.log(`Collected ${collected.size} interactions`))
+   * channel.awaitMessageComponentInteraction(filter, 15000)
+   *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteractions(filter, options = {}) {
+  awaitMessageComponentInteraction(filter, time) {
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector(filter, options);
-      collector.once('end', (interactions, reason) => {
-        if (options.errors && options.errors.includes(reason)) reject(interactions);
-        else resolve(interactions);
+      const collector = this.createMessageComponentInteractionCollector(filter, { max: 1, time });
+      collector.once('end', interactions => {
+        const interaction = interactions.first();
+        if (!interaction) reject(new Error('INTERACTION_COLLECTOR_TIMEOUT'));
+        else resolve(interaction);
       });
     });
   }
