@@ -45,7 +45,7 @@ class StageInstanceManager extends BaseManager {
       },
     });
 
-    return this.client.actions.StageInstanceCreate.handle(data).stageInstance;
+    return this.add(data);
   }
 
   /**
