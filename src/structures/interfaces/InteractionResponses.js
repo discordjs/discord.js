@@ -1,5 +1,6 @@
 'use strict';
 
+const { Error } = require('../../errors');
 const { InteractionResponseTypes } = require('../../util/Constants');
 const MessageFlags = require('../../util/MessageFlags');
 const APIMessage = require('../APIMessage');

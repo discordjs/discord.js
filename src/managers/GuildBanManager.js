@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
+const { TypeError, Error } = require('../errors');
 const GuildBan = require('../structures/GuildBan');
 const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
