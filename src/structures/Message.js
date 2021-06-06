@@ -2,15 +2,18 @@
 
 const APIMessage = require('./APIMessage');
 const Base = require('./Base');
+const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
+const MessageComponentInteractionCollector = require('./MessageComponentInteractionCollector');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
-const { Error, TypeError } = require('../errors');
+const Sticker = require('./Sticker');
+const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const Collection = require('../util/Collection');
-const { MessageTypes, SystemMessageTypes } = require('../util/Constants');
+const { InteractionTypes, MessageTypes, SystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
@@ -123,6 +126,12 @@ class Message extends Base {
     this.embeds = (data.embeds || []).map(e => new Embed(e, true));
 
     /**
+     * A list of MessageActionRows in the message
+     * @type {MessageActionRow[]}
+     */
+    this.components = (data.components ?? []).map(c => BaseMessageComponent.create(c, this.client));
+
+    /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
      * @type {Collection<Snowflake, MessageAttachment>}
      */
@@ -130,6 +139,17 @@ class Message extends Base {
     if (data.attachments) {
       for (const attachment of data.attachments) {
         this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
+      }
+    }
+
+    /**
+     * A collection of stickers in the message
+     * @type {Collection<Snowflake, Sticker>}
+     */
+    this.stickers = new Collection();
+    if (data.stickers) {
+      for (const sticker of data.stickers) {
+        this.stickers.set(sticker.id, new Sticker(this.client, sticker));
       }
     }
 
@@ -220,6 +240,30 @@ class Message extends Base {
     if (data.referenced_message) {
       this.channel.messages.add(data.referenced_message);
     }
+
+    /**
+     * Partial data of the interaction that a message is a reply to
+     * @typedef {Object} MessageInteraction
+     * @property {Snowflake} id The ID of the interaction
+     * @property {InteractionType} type The type of the interaction
+     * @property {string} commandName The name of the interaction's application command
+     * @property {User} user The user that invoked the interaction
+     */
+
+    if (data.interaction) {
+      /**
+       * Partial data of the interaction that this message is a reply to
+       * @type {?MessageInteraction}
+       */
+      this.interaction = {
+        id: data.interaction.id,
+        type: InteractionTypes[data.interaction.type],
+        commandName: data.interaction.name,
+        user: this.client.users.add(data.interaction.user),
+      };
+    } else if (!this.interaction) {
+      this.interaction = null;
+    }
   }
 
   /**
@@ -246,6 +290,8 @@ class Message extends Base {
     if ('tts' in data) this.tts = data.tts;
     if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
     else this.embeds = this.embeds.slice();
+    if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
+    else this.components = this.components.slice();
 
     if ('attachments' in data) {
       this.attachments = new Collection();
@@ -372,6 +418,51 @@ class Message extends Base {
   }
 
   /**
+   * Creates a message component interaction collector.
+   * @param {CollectorFilter} filter The filter to apply
+   * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
+   * @returns {MessageComponentInteractionCollector}
+   * @example
+   * // Create a message component interaction collector
+   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
+   * const collector = message.createMessageComponentInteractionCollector(filter, { time: 15000 });
+   * collector.on('collect', i => console.log(`Collected ${i.customID}`));
+   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+   */
+  createMessageComponentInteractionCollector(filter, options = {}) {
+    return new MessageComponentInteractionCollector(this, filter, options);
+  }
+
+  /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * @typedef {MessageComponentInteractionCollectorOptions} AwaitMessageComponentInteractionsOptions
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+   */
+
+  /**
+   * Similar to createMessageComponentInteractionCollector but in promise form.
+   * Resolves with a collection of interactions that pass the specified filter.
+   * @param {CollectorFilter} filter The filter function to use
+   * @param {AwaitMessageComponentInteractionsOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<string, MessageComponentInteraction>>}
+   * @example
+   * // Create a message component interaction collector
+   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
+   * message.awaitMessageComponentInteractions(filter, { time: 15000 })
+   *   .then(collected => console.log(`Collected ${collected.size} interactions`))
+   *   .catch(console.error);
+   */
+  awaitMessageComponentInteractions(filter, options = {}) {
+    return new Promise((resolve, reject) => {
+      const collector = this.createMessageComponentInteractionCollector(filter, options);
+      collector.once('end', (interactions, reason) => {
+        if (options.errors && options.errors.includes(reason)) reject(interactions);
+        else resolve(interactions);
+      });
+    });
+  }
+
+  /**
    * Whether the message is editable by the client user
    * @type {boolean}
    * @readonly
@@ -406,15 +497,16 @@ class Message extends Base {
   }
 
   /**
-   * The Message this crosspost/reply/pin-add references, if cached
-   * @type {?Message}
-   * @readonly
+   * Fetches the Message this crosspost/reply/pin-add references, if available to the client
+   * @returns {Promise<Message>}
    */
-  get referencedMessage() {
-    if (!this.reference) return null;
-    const referenceChannel = this.client.channels.resolve(this.reference.channelID);
-    if (!referenceChannel) return null;
-    return referenceChannel.messages.resolve(this.reference.messageID);
+  async fetchReference() {
+    if (!this.reference) throw new Error('MESSAGE_REFERENCE_MISSING');
+    const { channelID, messageID } = this.reference;
+    const channel = this.client.channels.resolve(channelID);
+    if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
+    const message = await channel.messages.fetch(messageID);
+    return message;
   }
 
   /**
@@ -435,19 +527,22 @@ class Message extends Base {
   }
 
   /**
-   * Options that can be passed into editMessage.
+   * Options that can be passed into {@link Message#edit}.
    * @typedef {Object} MessageEditOptions
-   * @property {string} [content] Content to be edited
+   * @property {?string} [content] Content to be edited
    * @property {MessageEmbed|Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
+   * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
+   * all attachments will be kept if omitted
+   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to add to the message
    */
 
   /**
    * Edits the content of the message.
-   * @param {StringResolvable|APIMessage} [content] The new content for the message
-   * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
+   * @param {?(string|APIMessage)} [content] The new content for the message
+   * @param {MessageEditOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -456,13 +551,8 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
-    const { data } =
-      content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
-    return this.client.api.channels[this.channel.id].messages[this.id].patch({ data }).then(d => {
-      const clone = this._clone();
-      clone._patch(d);
-      return clone;
-    });
+    options = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+    return this.channel.messages.edit(this.id, options);
   }
 
   /**
@@ -476,47 +566,34 @@ class Message extends Base {
    *     .catch(console.error);
    * }
    */
-  async crosspost() {
-    await this.client.api.channels(this.channel.id).messages(this.id).crosspost.post();
-    return this;
+  crosspost() {
+    return this.channel.messages.crosspost(this.id);
   }
 
   /**
    * Pins this message to the channel's pinned messages.
-   * @param {Object} [options] Options for pinning
-   * @param {string} [options.reason] Reason for pinning
    * @returns {Promise<Message>}
    * @example
-   * // Pin a message with a reason
-   * message.pin({ reason: 'important' })
+   * // Pin a message
+   * message.pin()
    *   .then(console.log)
    *   .catch(console.error)
    */
-  pin(options) {
-    return this.client.api
-      .channels(this.channel.id)
-      .pins(this.id)
-      .put(options)
-      .then(() => this);
+  pin() {
+    return this.channel.messages.pin(this.id).then(() => this);
   }
 
   /**
    * Unpins this message from the channel's pinned messages.
-   * @param {Object} [options] Options for unpinning
-   * @param {string} [options.reason] Reason for unpinning
    * @returns {Promise<Message>}
    * @example
-   * // Unpin a message with a reason
-   * message.unpin({ reason: 'no longer relevant' })
+   * // Unpin a message
+   * message.unpin()
    *   .then(console.log)
    *   .catch(console.error)
    */
-  unpin(options) {
-    return this.client.api
-      .channels(this.channel.id)
-      .pins(this.id)
-      .delete(options)
-      .then(() => this);
+  unpin() {
+    return this.channel.messages.unpin(this.id).then(() => this);
   }
 
   /**
@@ -534,24 +611,15 @@ class Message extends Base {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  react(emoji) {
+  async react(emoji) {
     emoji = this.client.emojis.resolveIdentifier(emoji);
-    if (!emoji) throw new TypeError('EMOJI_TYPE');
-
-    return this.client.api
-      .channels(this.channel.id)
-      .messages(this.id)
-      .reactions(emoji, '@me')
-      .put()
-      .then(
-        () =>
-          this.client.actions.MessageReactionAdd.handle({
-            user: this.client.user,
-            channel: this.channel,
-            message: this,
-            emoji: Util.parseEmoji(emoji),
-          }).reaction,
-      );
+    await this.channel.messages.react(this.id, emoji);
+    return this.client.actions.MessageReactionAdd.handle({
+      user: this.client.user,
+      channel: this.channel,
+      message: this,
+      emoji: Util.parseEmoji(emoji),
+    }).reaction;
   }
 
   /**
@@ -569,18 +637,34 @@ class Message extends Base {
   }
 
   /**
+   * Options provided when sending a message as an inline reply.
+   * @typedef {BaseMessageOptions} ReplyMessageOptions
+   * @property {MessageEmbed|Object} [embed] An embed for the message
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
+   * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
+   * does not exist (creates a standard message in this case when false)
+   */
+
+  /**
    * Send an inline reply to this message.
-   * @param {StringResolvable|APIMessage} [content=''] The content for the message
-   * @param {MessageOptions|MessageAdditions} [options] The additional options to provide
-   * @param {MessageResolvable} [options.replyTo=this] The message to reply to
+   * @param {string|APIMessage} [content=''] The content for the message
+   * @param {ReplyMessageOptions|MessageAdditions} [options] The additional options to provide
    * @returns {Promise<Message|Message[]>}
+   * @example
+   * // Reply to a message
+   * message.reply('This is a reply!')
+   *   .then(() => console.log(`Replied to message "${message.content}"`))
+   *   .catch(console.error);
    */
   reply(content, options) {
     return this.channel.send(
       content instanceof APIMessage
         ? content
         : APIMessage.transformOptions(content, options, {
-            replyTo: this,
+            reply: {
+              messageReference: this,
+              failIfNotExists: options?.failIfNotExists ?? content?.failIfNotExists ?? true,
+            },
           }),
     );
   }
@@ -618,6 +702,14 @@ class Message extends Base {
     }
 
     return this.edit({ flags });
+  }
+
+  /**
+   * Removes the attachments from this message.
+   * @returns {Promise<Message>}
+   */
+  removeAttachments() {
+    return this.edit({ attachments: [] });
   }
 
   /**

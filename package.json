@@ -1,18 +1,13 @@
 {
   "name": "discord.js",
-  "version": "12.5.0",
+  "version": "13.0.0-dev",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index.js",
+  "module": "./src/index.mjs",
   "types": "./typings/index.d.ts",
   "exports": {
-    ".": [
-      {
-        "require": "./src/index.js",
-        "import": "./esm/discord.mjs"
-      },
-      "./src/index.js"
-    ],
-    "./esm": "./esm/discord.mjs"
+    "require": "./src/index.js",
+    "import": "./src/index.mjs"
   },
   "scripts": {
     "test": "npm run lint && npm run docs:test && npm run lint:typings",
@@ -23,11 +18,13 @@
     "lint:fix": "eslint src --fix",
     "lint:typings": "tslint typings/index.d.ts",
     "prettier": "prettier --write src/**/*.js typings/**/*.ts",
-    "prepublishOnly": "npm run test"
+    "prepublishOnly": "npm run test && gen-esm-wrapper ./src/index.js ./src/index.mjs",
+    "prepare": "is-ci || husky install",
+    "changelog": "conventional-changelog -p angular -i RELEASE_CHANGELOG.md -s"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/discordjs/discord.js.git"
+    "url": "https://github.com/discordjs/discord.js.git"
   },
   "keywords": [
     "discord",
@@ -37,7 +34,7 @@
     "node",
     "discordapp"
   ],
-  "author": "Amish Shah <amishshah.2k@gmail.com>",
+  "author": "Amish Shah <amish@shah.gg>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/discordjs/discord.js/issues"
@@ -47,83 +44,38 @@
   "dependencies": {
     "@discordjs/collection": "^0.1.6",
     "@discordjs/form-data": "^3.0.1",
+    "@sapphire/async-queue": "^1.1.2",
+    "@types/ws": "^7.4.4",
     "abort-controller": "^3.0.0",
+    "discord-api-types": "^0.18.1",
     "node-fetch": "^2.6.1",
-    "prism-media": "^1.2.2",
+    "prism-media": "^1.2.9",
     "tweetnacl": "^1.0.3",
-    "ws": "^7.3.1"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-angular": "^11.0.0",
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-angular": "^12.1.4",
+    "@discordjs/docgen": "^0.10.0",
     "@types/node": "^12.12.6",
-    "@types/ws": "^7.2.7",
-    "cross-env": "^7.0.2",
-    "discord-api-types": "^0.18.0",
-    "discord.js-docgen": "git+https://github.com/discordjs/docgen.git",
-    "dtslint": "^4.0.4",
-    "eslint": "^7.11.0",
-    "eslint-config-prettier": "^6.13.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-prettier": "^3.1.4",
-    "husky": "^4.3.0",
-    "jest": "^26.6.0",
-    "json-filter-loader": "^1.0.0",
-    "lint-staged": "^10.4.2",
-    "prettier": "^2.1.2",
+    "conventional-changelog-cli": "^2.1.1",
+    "cross-env": "^7.0.3",
+    "dtslint": "^4.1.0",
+    "eslint": "^7.27.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-prettier": "^3.4.0",
+    "gen-esm-wrapper": "^1.1.1",
+    "husky": "^6.0.0",
+    "is-ci": "^3.0.0",
+    "jest": "^27.0.3",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.0",
     "tslint": "^6.1.3",
-    "typescript": "^4.2.4"
+    "typescript": "^4.3.2"
   },
   "engines": {
-    "node": ">=14.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "lint-staged": {
-    "*.js": "eslint --fix",
-    "*.ts": "prettier --write"
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-angular"
-    ],
-    "rules": {
-      "scope-case": [
-        2,
-        "always",
-        "pascal-case"
-      ],
-      "type-enum": [
-        2,
-        "always",
-        [
-          "chore",
-          "build",
-          "ci",
-          "docs",
-          "feat",
-          "fix",
-          "perf",
-          "refactor",
-          "revert",
-          "style",
-          "test",
-          "types",
-          "workflow",
-          "wip"
-        ]
-      ]
-    }
-  },
-  "prettier": {
-    "singleQuote": true,
-    "printWidth": 120,
-    "trailingComma": "all",
-    "endOfLine": "lf",
-    "arrowParens": "avoid"
+    "node": ">=14.0.0",
+    "npm": ">=7.0.0"
   }
 }

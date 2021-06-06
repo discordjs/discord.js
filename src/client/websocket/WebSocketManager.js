@@ -68,7 +68,7 @@ class WebSocketManager extends EventEmitter {
 
     /**
      * An array of queued events before this WebSocketManager became ready
-     * @type {object[]}
+     * @type {Object[]}
      * @private
      * @name WebSocketManager#packetQueue
      */

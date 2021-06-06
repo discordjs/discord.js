@@ -37,8 +37,16 @@ const Messages = {
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
-  EMBED_FIELD_NAME: 'MessageEmbed field names may not be empty.',
-  EMBED_FIELD_VALUE: 'MessageEmbed field values may not be empty.',
+  EMBED_TITLE: 'MessageEmbed title must be a string.',
+  EMBED_FIELD_NAME: 'MessageEmbed field names must be non-empty strings.',
+  EMBED_FIELD_VALUE: 'MessageEmbed field values must be non-empty strings.',
+  EMBED_FOOTER_TEXT: 'MessageEmbed footer text must be a string.',
+  EMBED_DESCRIPTION: 'MessageEmbed description must be a string.',
+  EMBED_AUTHOR_NAME: 'MessageEmbed author name must be a string.',
+
+  BUTTON_LABEL: 'MessageButton label must be a string',
+  BUTTON_URL: 'MessageButton url must be a string',
+  BUTTON_CUSTOM_ID: 'MessageButton customID must be a string',
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
@@ -75,6 +83,7 @@ const Messages = {
 
   MESSAGE_BULK_DELETE_TYPE: 'The messages must be an Array, Collection, or number.',
   MESSAGE_NONCE_TYPE: 'Message nonce must be an integer or a string.',
+  MESSAGE_CONTENT_TYPE: 'Message content must be a non-empty string.',
 
   TYPING_COUNT: 'Count must be at least 1',
 
@@ -96,6 +105,7 @@ const Messages = {
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
+  MESSAGE_REFERENCE_MISSING: 'The message does not reference another message',
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
@@ -110,6 +120,11 @@ const Messages = {
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
 
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
+
+  GLOBAL_COMMAND_PERMISSIONS:
+    "Permissions for global commands may only be fetched or modified from a guild's application command manager.",
+
+  INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

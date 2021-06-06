@@ -31,10 +31,10 @@ class UserFlags extends BitField {}
  * * `HOUSE_BALANCE`
  * * `EARLY_SUPPORTER`
  * * `TEAM_USER`
- * * `SYSTEM`
  * * `BUGHUNTER_LEVEL_2`
  * * `VERIFIED_BOT`
  * * `EARLY_VERIFIED_BOT_DEVELOPER`
+ * * `DISCORD_CERTIFIED_MODERATOR`
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/user#user-object-user-flags}
  */
@@ -48,10 +48,10 @@ UserFlags.FLAGS = {
   HOUSE_BALANCE: 1 << 8,
   EARLY_SUPPORTER: 1 << 9,
   TEAM_USER: 1 << 10,
-  SYSTEM: 1 << 12,
   BUGHUNTER_LEVEL_2: 1 << 14,
   VERIFIED_BOT: 1 << 16,
   EARLY_VERIFIED_BOT_DEVELOPER: 1 << 17,
+  DISCORD_CERTIFIED_MODERATOR: 1 << 18,
 };
 
 module.exports = UserFlags;

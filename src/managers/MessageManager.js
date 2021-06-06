@@ -2,6 +2,7 @@
 
 const BaseManager = require('./BaseManager');
 const { TypeError } = require('../errors');
+const APIMessage = require('../structures/APIMessage');
 const Message = require('../structures/Message');
 const Collection = require('../util/Collection');
 const LimitedCollection = require('../util/LimitedCollection');
@@ -112,6 +113,83 @@ class MessageManager extends BaseManager {
    * @param {MessageResolvable} message The message resolvable to resolve
    * @returns {?Snowflake}
    */
+
+  /**
+   * Edits a message, even if it's not cached.
+   * @param {MessageResolvable} message The message to edit
+   * @param {MessageEditOptions|APIMessage} [options] The options to provide
+   * @returns {Promise<Message>}
+   */
+  async edit(message, options) {
+    message = this.resolveID(message);
+    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+
+    const { data, files } = await (options instanceof APIMessage ? options : APIMessage.create(this, options))
+      .resolveData()
+      .resolveFiles();
+    const d = await this.client.api.channels[this.channel.id].messages[message].patch({ data, files });
+
+    if (this.cache.has(message)) {
+      const clone = this.cache.get(message)._clone();
+      clone._patch(d);
+      return clone;
+    }
+    return this.add(d);
+  }
+
+  /**
+   * Publishes a message in an announcement channel to all channels following it, even if it's not cached.
+   * @param {MessageResolvable} message The message to publish
+   * @returns {Promise<Message>}
+   */
+  async crosspost(message) {
+    message = this.resolveID(message);
+    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+
+    const data = await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
+    return this.cache.get(data.id) || this.add(data);
+  }
+
+  /**
+   * Pins a message to the channel's pinned messages, even if it's not cached.
+   * @param {MessageResolvable} message The message to pin
+   * @returns {Promise<void>}
+   */
+  async pin(message) {
+    message = this.resolveID(message);
+    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+
+    await this.client.api.channels(this.channel.id).pins(message).put();
+  }
+
+  /**
+   * Unins a message from the channel's pinned messages, even if it's not cached.
+   * @param {MessageResolvable} message The message to unpin
+   * @returns {Promise<void>}
+   */
+  async unpin(message) {
+    message = this.resolveID(message);
+    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+
+    await this.client.api.channels(this.channel.id).pins(message).delete();
+  }
+
+  /**
+   * Adds a reaction to a message, even if it's not cached.
+   * @param {MessageResolvable} message The messag to react to
+   * @param {EmojiIdentifierResolvable} emoji The emoji to react with
+   * @returns {Promise<void>}
+   */
+  async react(message, emoji) {
+    message = this.resolveID(message);
+    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+
+    emoji = this.client.emojis.resolveIdentifier(emoji);
+    if (!emoji) throw new TypeError('EMOJI_TYPE', 'emoji', 'EmojiIdentifierResolvable');
+
+    // eslint-disable-next-line newline-per-chained-call
+    await this.client.api.channels(this.channel.id).messages(message).reactions(emoji, '@me').put();
+  }
 
   /**
    * Deletes a message, even if it's not cached.
