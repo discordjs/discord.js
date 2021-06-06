@@ -1244,11 +1244,7 @@ declare module 'discord.js' {
     ): MessageComponentInteractionCollector;
     public delete(): Promise<Message>;
     public edit(
-      content: string | null | MessageEditOptions | MessageEmbed | APIMessage | MessageAttachment | MessageAttachment[],
-    ): Promise<Message>;
-    public edit(
-      content: string | null,
-      options: MessageEditOptions | MessageEmbed | MessageAttachment | MessageAttachment[],
+      content: string | MessageEditOptions | MessageEmbed | APIMessage | MessageAttachment | MessageAttachment[],
     ): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
     public fetchReference(): Promise<Message>;
@@ -1258,20 +1254,8 @@ declare module 'discord.js' {
     public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
-    public reply(
-      content: string | null | (ReplyMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(options: ReplyMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    public reply(options: ReplyMessageOptions | APIMessage): Promise<Message | Message[]>;
-    public reply(
-      content: string | null,
-      options: (ReplyMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(
-      content: string | null,
-      options: ReplyMessageOptions & { split: true | SplitOptions },
-    ): Promise<Message[]>;
-    public reply(content: string | null, options: ReplyMessageOptions): Promise<Message | Message[]>;
+    public reply(options: string | (ReplyMessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
+    public reply(options: string | (ReplyMessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): unknown;
     public toString(): string;

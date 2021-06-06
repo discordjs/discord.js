@@ -541,8 +541,8 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {?(string|APIMessage)} [content] The new content for the message
-   * @param {MessageEditOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options] The options to provide
+   * @param {string|APIMessage|MessageEditOptions|MessageEmbed
+   * |MessageAttachment|MessageAttachment[]} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -550,9 +550,18 @@ class Message extends Base {
    *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
    */
-  edit(content, options) {
-    options = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
-    return this.channel.messages.edit(this.id, options);
+  edit(options) {
+    let data;
+
+    if (options instanceof APIMessage) {
+      data = options.resolveData();
+    } else if (typeof options === 'string') {
+      data = APIMessage.create(this, options);
+    } else {
+      data = APIMessage.create(this, null, options).resolveData();
+    }
+
+    return this.channel.messages.edit(this.id, data);
   }
 
   /**
@@ -647,8 +656,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
-   * @param {string|APIMessage} [content=''] The content for the message
-   * @param {ReplyMessageOptions|MessageAdditions} [options] The additional options to provide
+   * @param {string|APIMessage|ReplyMessageOptions|MessageAdditions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message
@@ -656,17 +664,28 @@ class Message extends Base {
    *   .then(() => console.log(`Replied to message "${message.content}"`))
    *   .catch(console.error);
    */
-  reply(content, options) {
-    return this.channel.send(
-      content instanceof APIMessage
-        ? content
-        : APIMessage.transformOptions(content, options, {
-            reply: {
-              messageReference: this,
-              failIfNotExists: options?.failIfNotExists ?? content?.failIfNotExists ?? true,
-            },
-          }),
-    );
+  reply(options) {
+    let data;
+
+    if (options instanceof APIMessage) {
+      data = options;
+    } else if (typeof options === 'string') {
+      data = APIMessage.transformOptions(options, null, {
+        reply: {
+          messageReference: this,
+          failIfNotExists: options?.failIfNotExists ?? true,
+        },
+      });
+    } else {
+      data = APIMessage.transformOptions(null, options, {
+        reply: {
+          messageReference: this,
+          failIfNotExists: options?.failIfNotExists ?? true,
+        },
+      });
+    }
+
+    return this.channel.send(data);
   }
 
   /**
