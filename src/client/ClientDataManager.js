@@ -76,6 +76,9 @@ class ClientDataManager {
           case Constants.ChannelTypes.STORE:
             channel = new StoreChannel(guild, data);
             break;
+          default:
+            // console.warn('Unexpected data type:', data.type); // could be 13 for example
+            channel = new TextChannel(guild, data);
         }
 
         guild.channels.set(channel.id, channel);
