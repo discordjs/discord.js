@@ -2290,6 +2290,7 @@ declare module 'discord.js' {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public create(options: CreateStageInstanceOptions): Promise<StageInstance>;
+    public fetch(options: FetchStageInstanceOptions): Promise<StageInstance>;
   }
 
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
@@ -2904,6 +2905,12 @@ declare module 'discord.js' {
     withPresences?: boolean;
     time?: number;
     nonce?: string;
+    force?: boolean;
+  }
+
+  interface FetchStageInstanceOptions {
+    channel: StageChannel | Snowflake;
+    cache?: boolean;
     force?: boolean;
   }
 
