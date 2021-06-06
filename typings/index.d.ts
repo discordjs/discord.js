@@ -2111,23 +2111,15 @@ declare module 'discord.js' {
     public token: string;
     public editMessage(
       message: MessageResolvable,
-      content: string | null | APIMessage | MessageEmbed | MessageEmbed[],
-      options?: WebhookEditMessageOptions,
+      options: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
     ): Promise<RawMessage>;
-    public editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
-    public send(content: string | (WebhookMessageOptions & { split?: false }) | MessageAdditions): Promise<RawMessage>;
-    public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<RawMessage[]>;
-    public send(options: WebhookMessageOptions | APIMessage): Promise<RawMessage | RawMessage[]>;
     public send(
-      content: string | null,
-      options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+      content: string | APIMessage | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<RawMessage>;
     public send(
-      content: string | null,
-      options: WebhookMessageOptions & { split: true | SplitOptions },
+      options: string | APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
     ): Promise<RawMessage[]>;
-    public send(content: string | null, options: WebhookMessageOptions): Promise<RawMessage | RawMessage[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2506,31 +2498,18 @@ declare module 'discord.js' {
     deleteMessage(message: MessageResolvable | '@original'): Promise<void>;
     editMessage(
       message: MessageResolvable | '@original',
-      content: string | null | APIMessage | MessageAdditions,
-      options?: WebhookEditMessageOptions,
-    ): Promise<Message | RawMessage>;
-    editMessage(
-      message: MessageResolvable | '@original',
-      options: WebhookEditMessageOptions,
+      options: string | APIMessage | WebhookEditMessageOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
     fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | RawMessage>;
     send(
       content: string | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message | RawMessage>;
-    send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<(Message | RawMessage)[]>;
-    send(options: WebhookMessageOptions | APIMessage): Promise<Message | RawMessage | (Message | RawMessage)[]>;
     send(
-      content: string | null,
-      options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message | RawMessage>;
-    send(
-      content: string | null,
-      options: WebhookMessageOptions & { split: true | SplitOptions },
+      options: string | APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
     ): Promise<(Message | RawMessage)[]>;
     send(
-      content: string | null,
-      options: WebhookMessageOptions,
-    ): Promise<Message | RawMessage | (Message | RawMessage)[]>;
+      options: string | APIMessage | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<Message | RawMessage>;
   }
 
   interface WebhookFields extends PartialWebhookFields {
