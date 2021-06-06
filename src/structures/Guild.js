@@ -956,7 +956,7 @@ class Guild extends BaseGuild {
       const emoji = this.emojis.resolve(welcomeChannelData.emoji);
       return {
         emoji_id: emoji?.id ?? null,
-        emoji_name: emoji?.name ?? emoji,
+        emoji_name: emoji?.name ?? welcomeChannelData.emoji,
         channel_id: this.channels.resolveID(welcomeChannelData.channel),
         description: welcomeChannelData.description,
       };
