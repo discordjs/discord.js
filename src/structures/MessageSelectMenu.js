@@ -195,7 +195,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @returns {MessageSelectOption[]}
    */
   static normalizeOptions(...options) {
-    return options.flat(2).map(option => this.normalizeOption(option));
+    return options.flat(Infinity).map(option => this.normalizeOption(option));
   }
 }
 
