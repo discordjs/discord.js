@@ -70,7 +70,6 @@ class Widget extends Base {
    */
   async fetch() {
     const data = await this.client.api.guilds(this.id, 'widget.json').get();
-    if (data.code) throw new Error('WIDGET_DISABLED');
     this._patch(data);
     return this;
   }
