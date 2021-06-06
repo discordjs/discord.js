@@ -962,7 +962,7 @@ class Guild extends BaseGuild {
     });
 
     const patchData = await this.client.api.guilds(this.id, 'welcome-screen').patch({
-      patchData: {
+      data: {
         welcome_channels,
         description,
         enabled,
