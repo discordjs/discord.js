@@ -79,7 +79,7 @@ class StageInstance extends Base {
    * @returns {Promise<StageInstance>}
    */
   update(options) {
-    return this.guild.stageInstances.update(this.id, options);
+    return this.guild.stageInstances.update(this.channelID, options);
   }
 }
 
