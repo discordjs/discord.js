@@ -40,7 +40,7 @@ client.on('message', ({ channel }) => {
   const embed = new MessageEmbed();
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send(embed));
-  assertIsMessage(channel.send({ embed: embed, files: [attachment] }));
+  assertIsMessage(channel.send({ embed, files: [attachment] }));
 
   assertIsMessageArray(channel.send({ split: true }));
 
