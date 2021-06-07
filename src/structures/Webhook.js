@@ -132,7 +132,7 @@ class Webhook {
    * @example
    * // Send an embed with a local image inside
    * webhook.send({
-   * content: 'This is an embed',
+   *   content: 'This is an embed',
    *   embeds: [{
    *     thumbnail: {
    *          url: 'attachment://file.jpg'
