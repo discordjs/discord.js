@@ -52,7 +52,7 @@ class InteractionResponses {
 
   /**
    * Creates a reply to this interaction.
-   * @param {string|APIMessage|MessageAdditions|InteractionReplyOptions} options The options for the reply
+   * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
    * // Reply to the interaction with an embed
@@ -104,7 +104,7 @@ class InteractionResponses {
   /**
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|APIMessage|MessageAdditions|WebhookEditMessageOptions} options The new options for the message
+   * @param {string|APIMessage|WebhookEditMessageOptions} options The new options for the message
    * @returns {Promise<Message|Object>}
    * @example
    * // Edit the reply to this interaction
@@ -136,7 +136,7 @@ class InteractionResponses {
 
   /**
    * Send a follow-up message to this interaction.
-   * @param {string|APIMessage|MessageAdditions|InteractionReplyOptions} options The options for the reply
+   * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<Message|Object>}
    */
   followUp(options) {
@@ -164,7 +164,7 @@ class InteractionResponses {
 
   /**
    * Updates the original message whose button was pressed
-   * @param {string|APIMessage|MessageAdditions|WebhookEditMessageOptions} options The options for the reply
+   * @param {string|APIMessage|WebhookEditMessageOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
    * // Remove the buttons from the message

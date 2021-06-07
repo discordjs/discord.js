@@ -105,7 +105,7 @@ class Webhook {
 
   /**
    * Sends a message with this webhook.
-   * @param {string|APIMessage|WebhookMessageOptions|MessageAdditions} options The options to provide
+   * @param {string|APIMessage|WebhookMessageOptions} options The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a basic message
@@ -242,7 +242,7 @@ class Webhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|APIMessage|WebhookEditMessageOptions|MessageAdditions} options The options to provide
+   * @param {string|APIMessage|WebhookEditMessageOptions} options The options to provide
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
