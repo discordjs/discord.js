@@ -255,7 +255,7 @@ class Client extends BaseClient {
     const code = DataResolver.resolveInviteCode(invite);
     return this.api
       .invites(code)
-      .get({ query: { with_counts: true } })
+      .get({ query: { with_counts: true, with_expiration: true } })
       .then(data => new Invite(this, data));
   }
 
