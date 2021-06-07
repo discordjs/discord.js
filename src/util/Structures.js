@@ -24,6 +24,7 @@
  * * **`CommandInteraction`**
  * * **`ButtonInteraction`**
  * * **`StageInstance`**
+ * * **`SelectMenuInteraction`**
  * @typedef {string} ExtendableStructure
  */
 
@@ -118,6 +119,7 @@ const structures = {
   User: require('../structures/User'),
   CommandInteraction: require('../structures/CommandInteraction'),
   ButtonInteraction: require('../structures/ButtonInteraction'),
+  SelectMenuInteraction: require('../structures/SelectMenuInteraction'),
   StageInstance: require('../structures/StageInstance'),
 };
 

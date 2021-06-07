@@ -114,7 +114,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a component interaction.
+   * Indicates whether this interaction is a message component interaction.
    * @returns {boolean}
    */
   isMessageComponent() {
@@ -127,6 +127,14 @@ class Interaction extends Base {
    */
   isButton() {
     return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && this.componentType === 'BUTTON';
+  }
+
+  /**
+   * Indicates whether this interaction is a select menu interaction.
+   * @returns {boolean}
+   */
+  isSelectMenu() {
+    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && this.componentType === 'SELECT_MENU';
   }
 }
 

@@ -21,6 +21,9 @@ class InteractionCreateAction extends Action {
           case MessageComponentTypes.BUTTON:
             InteractionType = Structures.get('ButtonInteraction');
             break;
+          case MessageComponentTypes.SELECT_MENU:
+            InteractionType = Structures.get('SelectMenuInteraction');
+            break;
           default:
             client.emit(
               Events.DEBUG,
