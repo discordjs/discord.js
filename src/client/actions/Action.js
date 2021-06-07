@@ -100,10 +100,6 @@ class GenericAction {
     }
     return this.getUser(data);
   }
-
-  getStageInstance(data, channel) {
-    return channel.guild.stageInstances.add(data, channel);
-  }
 }
 
 module.exports = GenericAction;

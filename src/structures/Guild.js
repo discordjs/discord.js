@@ -413,7 +413,7 @@ class Guild extends BaseGuild {
       this.stageInstances.cache.clear();
       for (const stageInstance of data.stage_instances) {
         const channel = this.channels.cache.get(stageInstance.channel_id);
-        this.stageInstances.add(stageInstance, channel);
+        this.stageInstances.add(stageInstance, true, channel);
       }
     }
 

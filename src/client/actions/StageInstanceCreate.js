@@ -9,7 +9,7 @@ class StageInstanceCreateAction extends Action {
     const channel = this.getChannel(data);
 
     if (channel) {
-      const stageInstance = channel.guild.stageInstances.add(data, channel);
+      const stageInstance = channel.guild.stageInstances.add(data, true, channel);
 
       /**
        * Emitted whenever a stage instance is created.
