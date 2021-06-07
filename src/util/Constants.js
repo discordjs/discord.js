@@ -52,7 +52,7 @@ const { Error, RangeError } = require('../errors');
  * (or 0 for never)
  * @property {number} [restGlobalRateLimit=0] How many requests to allow sending per second (0 for unlimited, 50 for
  * the standard global limit used by Discord)
- * @property {string[]|RateLimitQueueFilter} [disableRateLimitQueue] Decides how rate limits and pre-emptive throttles
+ * @property {string[]|RateLimitQueueFilter} [rejectOnRateLimit] Decides how rate limits and pre-emptive throttles
  * should be handled. If this option is an array containing the prefix of the request route (e.g. /channels to match any
  * route starting with /channels, such as /channels/222197033908436994/messages) or a function returning true, a
  * {@link RateLimitError} will be thrown. Otherwise the request will be queued for later

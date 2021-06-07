@@ -83,22 +83,22 @@ class RequestHandler {
    */
   async onRateLimit(request, limit, timeout, isGlobal) {
     const { options } = this.manager.client;
-    if (options.disableRateLimitQueue) {
-      const rateLimitData = {
-        timeout,
-        limit,
-        method: request.method,
-        path: request.path,
-        route: request.route,
-        global: isGlobal,
-      };
-      const shouldThrow =
-        typeof options.disableRateLimitQueue === 'function'
-          ? await options.disableRateLimitQueue(rateLimitData)
-          : options.disableRateLimitQueue.some(route => rateLimitData.route.startsWith(route.toLowerCase()));
-      if (shouldThrow) {
-        throw new RateLimitError(rateLimitData);
-      }
+    if (!options.rejectOnRateLimit) return;
+
+    const rateLimitData = {
+      timeout,
+      limit,
+      method: request.method,
+      path: request.path,
+      route: request.route,
+      global: isGlobal,
+    };
+    const shouldThrow =
+      typeof options.rejectOnRateLimit === 'function'
+        ? await options.rejectOnRateLimit(rateLimitData)
+        : options.rejectOnRateLimit.some(route => rateLimitData.route.startsWith(route.toLowerCase()));
+    if (shouldThrow) {
+      throw new RateLimitError(rateLimitData);
     }
   }
 

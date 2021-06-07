@@ -493,10 +493,10 @@ class Client extends BaseClient {
       throw new TypeError('CLIENT_INVALID_OPTION', 'retryLimit', 'a number');
     }
     if (
-      typeof options.disableRateLimitQueue !== 'undefined' &&
-      !(typeof options.disableRateLimitQueue === 'function' || Array.isArray(options.disableRateLimitQueue))
+      typeof options.rejectOnRateLimit !== 'undefined' &&
+      !(typeof options.rejectOnRateLimit === 'function' || Array.isArray(options.rejectOnRateLimit))
     ) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'disableRateLimitQueue', 'an array or a function');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'rejectOnRateLimit', 'an array or a function');
     }
   }
 }
