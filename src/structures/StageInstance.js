@@ -81,6 +81,15 @@ class StageInstance extends Base {
   update(options) {
     return this.guild.stageInstances.update(this.channelID, options);
   }
+
+  /**
+   * Deletes this stage instance.
+   * @returns {Promise<StageInstance>}
+   */
+  async delete() {
+    await this.guild.stageInstances.delete(this.channelID);
+    return this;
+  }
 }
 
 module.exports = StageInstance;

@@ -1708,6 +1708,7 @@ declare module 'discord.js' {
     public channel: StageChannel;
     public readonly guild: Guild | null;
     public update(options: UpdateStageInstanceOptions): Promise<StageInstance>;
+    public delete(): Promise<StageInstance>;
   }
 
   export class StoreChannel extends GuildChannel {
