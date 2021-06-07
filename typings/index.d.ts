@@ -1707,6 +1707,7 @@ declare module 'discord.js' {
     public discoverableDisabled: boolean;
     public channel: StageChannel;
     public readonly guild: Guild | null;
+    public update(options: UpdateStageInstanceOptions): Promise<StageInstance>;
   }
 
   export class StoreChannel extends GuildChannel {
@@ -2294,7 +2295,7 @@ declare module 'discord.js' {
     public guild: Guild;
     public create(options: CreateStageInstanceOptions): Promise<StageInstance>;
     public fetch(options: FetchStageInstanceOptions): Promise<StageInstance>;
-    public update(options: UpdateStageInstanceOptions): Promise<StageInstance>;
+    public update(channel: StageChannel | Snowflake, options: UpdateStageInstanceOptions): Promise<StageInstance>;
     public delete(channel: StageChannel | Snowflake): Promise<void>;
   }
 
@@ -3794,7 +3795,6 @@ declare module 'discord.js' {
   }
 
   interface UpdateStageInstanceOptions {
-    channel: StageChannel | Snowflake;
     topic?: string;
     privacyLevel?: PrivacyLevel | number;
   }

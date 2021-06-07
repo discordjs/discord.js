@@ -72,6 +72,15 @@ class StageInstance extends Base {
   get guild() {
     return this.channel.guild || null;
   }
+
+  /**
+   * Updates this stage instance.
+   * @param {UpdateStageInstanceOptions} options The options to update the stage instance
+   * @returns {Promise<StageInstance>}
+   */
+  update(options) {
+    return this.guild.stageInstances.update(this.id, options);
+  }
 }
 
 module.exports = StageInstance;
