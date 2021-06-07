@@ -1120,23 +1120,12 @@ declare module 'discord.js' {
   export class InteractionWebhook extends PartialWebhookMixin() {
     constructor(client: Client, id: Snowflake, token: string);
     public token: string;
-    public send(content: string | (InteractionReplyOptions & { split?: false })): Promise<Message | RawMessage>;
-    public send(options: InteractionReplyOptions & { split: true | SplitOptions }): Promise<(Message | RawMessage)[]>;
     public send(
-      options: InteractionReplyOptions | APIMessage,
-    ): Promise<Message | RawMessage | (Message | RawMessage)[]>;
-    public send(
-      content: string | null,
-      options: InteractionReplyOptions & { split?: false },
+      options: string | APIMessage | (InteractionReplyOptions & { split?: false }),
     ): Promise<Message | RawMessage>;
     public send(
-      content: string | null,
-      options: InteractionReplyOptions & { split: true | SplitOptions },
+      options: string | APIMessage | (InteractionReplyOptions & { split: true | SplitOptions }),
     ): Promise<(Message | RawMessage)[]>;
-    public send(
-      content: string | null,
-      options: InteractionReplyOptions,
-    ): Promise<Message | RawMessage | (Message | RawMessage)[]>;
   }
 
   export class Invite extends Base {
@@ -2085,7 +2074,7 @@ declare module 'discord.js' {
       options: string | APIMessage | WebhookEditMessageOptions,
     ): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
-    public send(content: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
+    public send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
     public send(
       options: string | APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
     ): Promise<RawMessage[]>;
