@@ -112,11 +112,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   editReply(options) {
-    if (typeof options === 'string' || options instanceof APIMessage) {
-      return this.webhook.editMessage('@original', options);
-    } else {
-      return this.webhook.editMessage('@original', options);
-    }
+    return this.webhook.editMessage('@original', options);
   }
 
   /**
