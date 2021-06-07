@@ -14,6 +14,7 @@ const Messages = {
   WS_CLOSE_REQUESTED: 'WebSocket closed due to user request.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
+  MANAGER_DESTROYED: 'Manager was destroyed.',
 
   BITFIELD_INVALID: bit => `Invalid bitfield flag or number: ${bit}.`,
 

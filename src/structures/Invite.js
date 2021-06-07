@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const IntegrationApplication = require('./IntegrationApplication');
+const { Error } = require('../errors');
 const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
