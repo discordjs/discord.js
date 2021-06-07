@@ -63,6 +63,8 @@ class TextBasedChannel {
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
+   * @property {MessageActionRow[]} [components] Action rows containing interactive components for the message
+   * (buttons, select menus)
    */
 
   /**
