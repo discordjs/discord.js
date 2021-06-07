@@ -73,7 +73,7 @@ class InteractionResponses {
     let apiMessage;
     if (options instanceof APIMessage) apiMessage = options;
     else if (typeof options === 'string') apiMessage = APIMessage.create(this, options);
-    else apiMessage = APIMessage.create(this, null, options);
+    else apiMessage = APIMessage.create(this, options);
 
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
@@ -116,7 +116,7 @@ class InteractionResponses {
     if (typeof options === 'string' || options instanceof APIMessage) {
       return this.webhook.editMessage('@original', options);
     } else {
-      return this.webhook.editMessage('@original', null, options);
+      return this.webhook.editMessage('@original', options);
     }
   }
 
@@ -178,7 +178,7 @@ class InteractionResponses {
     let apiMessage;
     if (options instanceof APIMessage) apiMessage = options;
     else if (typeof options === 'string') apiMessage = APIMessage.create(this, options);
-    else apiMessage = APIMessage.create(this, null, options);
+    else apiMessage = APIMessage.create(this, options);
 
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
