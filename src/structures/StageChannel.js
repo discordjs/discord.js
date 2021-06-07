@@ -20,6 +20,15 @@ class StageChannel extends BaseGuildVoiceChannel {
   }
 
   /**
+   * The instance of this stage channel, if it exists
+   * @type {StageInstance|undefined}
+   * @readonly
+   */
+  get instance() {
+    return this.guild.stageInstances.cache.find(stageInstance => stageInstance.channelID === this.id);
+  }
+
+  /**
    * Sets the RTC region of the channel.
    * @name StageChannel#setRTCRegion
    * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel

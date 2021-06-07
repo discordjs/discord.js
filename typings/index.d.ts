@@ -1693,6 +1693,7 @@ declare module 'discord.js' {
   export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
     public type: 'stage';
+    public readonly instance: StageInstance | null;
   }
 
   export class StageInstance extends Base {
