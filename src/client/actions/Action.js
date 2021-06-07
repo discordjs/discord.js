@@ -101,9 +101,8 @@ class GenericAction {
     return this.getUser(data);
   }
 
-  getStageInstance(data) {
-    const guild = this.client.guilds.cache.get(data?.guild_id);
-    return guild?.stageInstances.add(data);
+  getStageInstance(data, channel) {
+    return channel.guild.stageInstances.add(data, channel);
   }
 }
 

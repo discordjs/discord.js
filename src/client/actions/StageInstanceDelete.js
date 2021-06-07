@@ -8,12 +8,12 @@ class StageInstanceDeleteAction extends Action {
     let stageInstance;
 
     const client = this.client;
-    const guild = client.guilds.cache.get(data.guild_id);
+    const channel = this.getChannel(data);
 
-    if (guild) {
-      stageInstance = this.getStageInstance(data);
+    if (channel) {
+      stageInstance = this.getStageInstance(data, channel);
       if (stageInstance) {
-        guild.stageInstances.cache.delete(stageInstance.id);
+        channel.guild.stageInstances.cache.delete(stageInstance.id);
         stageInstance.deleted = true;
 
         /**
