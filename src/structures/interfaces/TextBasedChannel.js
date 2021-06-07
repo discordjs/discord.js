@@ -167,10 +167,8 @@ class TextBasedChannel {
 
     if (options instanceof APIMessage) {
       apiMessage = options.resolveData();
-    } else if (typeof options === 'string') {
-      apiMessage = APIMessage.create(this, options);
     } else {
-      apiMessage = APIMessage.create(this, null, options).resolveData();
+      apiMessage = APIMessage.create(this, options).resolveData();
       if (Array.isArray(apiMessage.data.content)) {
         return Promise.all(apiMessage.split().map(this.send.bind(this)));
       }

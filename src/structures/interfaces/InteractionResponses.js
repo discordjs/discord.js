@@ -140,8 +140,7 @@ class InteractionResponses {
    * @returns {Promise<Message|Object>}
    */
   followUp(options) {
-    if (typeof options === 'string' || options instanceof APIMessage) return this.webhook.send(options);
-    else return this.webhook.send(null, options);
+    return this.webhook.send(options);
   }
 
   /**

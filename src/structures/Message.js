@@ -551,17 +551,12 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(options) {
-    let data;
+    let apiMessage;
 
-    if (options instanceof APIMessage) {
-      data = options.resolveData();
-    } else if (typeof options === 'string') {
-      data = APIMessage.create(this, options);
-    } else {
-      data = APIMessage.create(this, null, options).resolveData();
-    }
+    if (options instanceof APIMessage) apiMessage = options.resolveData();
+    else apiMessage = APIMessage.create(this, options).resolveData();
 
-    return this.channel.messages.edit(this.id, data);
+    return this.channel.messages.edit(this.id, apiMessage);
   }
 
   /**
@@ -669,22 +664,14 @@ class Message extends Base {
 
     if (options instanceof APIMessage) {
       data = options;
-    } else if (typeof options === 'string') {
-      data = APIMessage.transformOptions(options, null, {
-        reply: {
-          messageReference: this,
-          failIfNotExists: options?.failIfNotExists ?? true,
-        },
-      });
     } else {
-      data = APIMessage.transformOptions(null, options, {
+      data = APIMessage.transformOptions(options, {
         reply: {
           messageReference: this,
           failIfNotExists: options?.failIfNotExists ?? true,
         },
       });
     }
-
     return this.channel.send(data);
   }
 
