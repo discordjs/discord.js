@@ -551,12 +551,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(options) {
-    let apiMessage;
-
-    if (options instanceof APIMessage) apiMessage = options.resolveData();
-    else apiMessage = APIMessage.create(this, options).resolveData();
-
-    return this.channel.messages.edit(this.id, apiMessage);
+    return this.channel.messages.edit(this.id, options);
   }
 
   /**
