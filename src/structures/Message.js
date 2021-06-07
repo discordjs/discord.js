@@ -665,7 +665,7 @@ class Message extends Base {
     if (options instanceof APIMessage) {
       data = options;
     } else {
-      data = APIMessage.transformOptions(options, {
+      data = APIMessage.create(this, options, {
         reply: {
           messageReference: this,
           failIfNotExists: options?.failIfNotExists ?? true,
