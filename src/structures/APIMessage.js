@@ -1,7 +1,6 @@
 'use strict';
 
 const BaseMessageComponent = require('./BaseMessageComponent');
-const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
@@ -309,81 +308,15 @@ class APIMessage {
   }
 
   /**
-   * Partitions embeds and attachments.
-   * @param {Array<MessageEmbed|MessageAttachment>} items Items to partition
-   * @returns {Array<MessageEmbed[], MessageAttachment[]>}
-   */
-  static partitionMessageAdditions(items) {
-    const embeds = [];
-    const files = [];
-    for (const item of items) {
-      if (item instanceof MessageEmbed) {
-        embeds.push(item);
-      } else if (item instanceof MessageAttachment) {
-        files.push(item);
-      }
-    }
-
-    return [embeds, files];
-  }
-
-  /**
-   * Transforms the user-level arguments into a final options object. Passing a transformed options object alone into
-   * this method will keep it the same, allowing for the reuse of the final options object.
-   * @param {string} [content] Content to send
-   * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
-   * @param {MessageOptions|WebhookMessageOptions} [extra={}] Extra options to add onto transformed options
-   * @param {boolean} [isWebhook=false] Whether or not to use WebhookMessageOptions as the result
-   * @returns {MessageOptions|WebhookMessageOptions}
-   */
-  static transformOptions(content, options, extra = {}, isWebhook = false) {
-    if (!options && typeof content === 'object' && !Array.isArray(content)) {
-      options = content;
-      content = undefined;
-    }
-
-    if (!options) {
-      options = {};
-    } else if (options instanceof MessageEmbed) {
-      return isWebhook ? { content, embeds: [options], ...extra } : { content, embed: options, ...extra };
-    } else if (options instanceof MessageAttachment) {
-      return { content, files: [options], ...extra };
-    }
-
-    if (Array.isArray(options)) {
-      const [embeds, files] = this.partitionMessageAdditions(options);
-      return isWebhook ? { content, embeds, files, ...extra } : { content, embed: embeds[0], files, ...extra };
-    } else if (Array.isArray(content)) {
-      const [embeds, files] = this.partitionMessageAdditions(content);
-      if (embeds.length || files.length) {
-        return isWebhook ? { embeds, files, ...extra } : { embed: embeds[0], files, ...extra };
-      }
-    }
-
-    return { content, ...options, ...extra };
-  }
-
-  /**
    * Creates an `APIMessage` from user-level arguments.
    * @param {MessageTarget} target Target to send to
-   * @param {string} [content] Content to send
-   * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
-   * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto transformed options
+   * @param {MessageOptions|WebhookMessageOptions} options Options to use
+   * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto specified options
    * @returns {MessageOptions|WebhookMessageOptions}
    */
-  static create(target, content, options, extra = {}) {
-    const Interaction = require('./Interaction');
-    const InteractionWebhook = require('./InteractionWebhook');
-    const Webhook = require('./Webhook');
-    const WebhookClient = require('../client/WebhookClient');
-
-    const isWebhook =
-      target instanceof Interaction ||
-      target instanceof InteractionWebhook ||
-      target instanceof Webhook ||
-      target instanceof WebhookClient;
-    const transformed = this.transformOptions(content, options, extra, isWebhook);
-    return new this(target, transformed);
+  static create(target, options, extra = {}) {
+    if (typeof options === 'string') return new this(target, { content: options, ...extra });
+    else return new this(target, { ...options, ...extra });
   }
 }
 
@@ -392,9 +325,4 @@ module.exports = APIMessage;
 /**
  * A target for a message.
  * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook} MessageTarget
- */
-
-/**
- * Additional items that can be sent with a message.
- * @typedef {MessageEmbed|MessageAttachment|Array<MessageEmbed|MessageAttachment>} MessageAdditions
  */
