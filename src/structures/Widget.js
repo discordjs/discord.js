@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const WidgetMember = require('./WidgetMember');
 const Collection = require('../util/Collection');
 
 /**
@@ -55,7 +56,7 @@ class Widget extends Base {
      */
     this.members = new Collection();
     for (const member of data.members) {
-      this.members.set(member.id, member);
+      this.members.set(member.id, new WidgetMember(member));
     }
 
     /**

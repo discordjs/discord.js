@@ -3672,22 +3672,8 @@ declare module 'discord.js' {
     $device?: string;
   }
 
-  interface WidgetMember {
-    id: string;
-    username: string;
-    discriminator: string;
-    avatar: null;
-    status: PresenceStatus;
-    deaf?: boolean;
-    mute?: boolean;
-    self_deaf?: boolean;
-    self_mute?: boolean;
-    suppress?: boolean;
-    channel_id?: Snowflake;
-    avatar_url: string;
-    activity?: {
-      name: string;
-    };
+  interface WidgetActivity {
+    name: string;
   }
 
   interface WidgetChannel {
