@@ -1696,7 +1696,7 @@ declare module 'discord.js' {
   }
 
   export class StageInstance extends Base {
-    constructor(client: Client, data: unknown);
+    constructor(client: Client, data: unknown, channel: StageChannel);
     public id: Snowflake;
     public deleted: boolean;
     public guildID: Snowflake;
@@ -1704,6 +1704,8 @@ declare module 'discord.js' {
     public topic: string;
     public privacyLevel: PrivacyLevel;
     public discoverableDisabled: boolean;
+    public channel: StageChannel;
+    public readonly guild: Guild | null;
   }
 
   export class StoreChannel extends GuildChannel {

@@ -17,6 +17,16 @@ class StageInstanceManager extends BaseManager {
   }
 
   /**
+   * The cache of this Manager
+   * @type {Collection<Snowflake, StageInstance>}
+   * @name StageInstanceManager#cache
+   */
+
+  add(data, channel, cache) {
+    return super.add(data, cache, { extras: [channel] });
+  }
+
+  /**
    * Options used to create a stage instance.
    * @typedef {Object} CreateStageInstanceOptions
    * @property {StageChannel|Snowflake} channel The stage channel whose instance is to be created
