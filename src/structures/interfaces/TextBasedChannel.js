@@ -160,7 +160,7 @@ class TextBasedChannel {
     const GuildMember = require('../GuildMember');
 
     if (this instanceof User || this instanceof GuildMember) {
-      return this.createDM().then(dm => dm.send(null, options));
+      return this.createDM().then(dm => dm.send(options));
     }
 
     let apiMessage;
