@@ -49,6 +49,8 @@ const Messages = {
   BUTTON_URL: 'MessageButton url must be a string',
   BUTTON_CUSTOM_ID: 'MessageButton customID must be a string',
 
+  INTERACTION_COLLECTOR_TIMEOUT: 'Collector timed out without receiving any interactions',
+
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
   USER_NO_DMCHANNEL: 'No DM Channel exists!',

@@ -1231,10 +1231,10 @@ declare module 'discord.js' {
     public webhookID: Snowflake | null;
     public flags: Readonly<MessageFlags>;
     public reference: MessageReference | null;
-    public awaitMessageComponentInteractions(
+    public awaitMessageComponentInteraction(
       filter: CollectorFilter<[MessageComponentInteraction]>,
-      options?: AwaitMessageComponentInteractionsOptions,
-    ): Promise<Collection<Snowflake, MessageComponentInteraction>>;
+      time?: number,
+    ): Promise<MessageComponentInteraction>;
     public awaitReactions(
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: AwaitReactionsOptions,
@@ -1245,7 +1245,7 @@ declare module 'discord.js' {
     ): ReactionCollector;
     public createMessageComponentInteractionCollector(
       filter: CollectorFilter<[MessageComponentInteraction]>,
-      options?: AwaitMessageComponentInteractionsOptions,
+      options?: MessageComponentInteractionCollectorOptions,
     ): MessageComponentInteractionCollector;
     public delete(): Promise<Message>;
     public edit(
@@ -2503,10 +2503,10 @@ declare module 'discord.js' {
     readonly lastPinAt: Date | null;
     typing: boolean;
     typingCount: number;
-    awaitMessageComponentInteractions(
+    awaitMessageComponentInteraction(
       filter: CollectorFilter<[MessageComponentInteraction]>,
-      options?: AwaitMessageComponentInteractionsOptions,
-    ): Promise<Collection<Snowflake, MessageComponentInteraction>>;
+      time?: number,
+    ): Promise<MessageComponentInteraction>;
     awaitMessages(
       filter: CollectorFilter<[Message]>,
       options?: AwaitMessagesOptions,
@@ -2727,10 +2727,6 @@ declare module 'discord.js' {
     key: string;
     old?: any;
     new?: any;
-  }
-
-  interface AwaitMessageComponentInteractionsOptions extends MessageComponentInteractionCollectorOptions {
-    errors?: string[];
   }
 
   interface AwaitMessagesOptions extends MessageCollectorOptions {
