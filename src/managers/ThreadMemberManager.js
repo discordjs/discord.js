@@ -72,7 +72,7 @@ class ThreadMemberManager extends BaseManager {
    * @param {string} [reason] The reason for removing this member from the thread
    * @returns {Promise<Snowflake>}
    */
-  kick(id, reason) {
+  remove(id, reason) {
     return this.client.api
       .channels(this.thread.id, 'thread-members', id)
       .delete({ reason })

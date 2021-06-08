@@ -68,18 +68,24 @@ class ThreadManager extends BaseManager {
    */
 
   /**
-   * Creates a new thread in the channel.
-   * @param {string} name The name of the new Thread
-   * @param {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
-   * @param {Object} [options] Options
-   * @param {MessageResolvable} [options.startMessage] The message to start a public or news thread from,
+   * Options for creating a thread
+   * @typedef {Object} ThreadCreateOptions
+   * @property {string} name The name of the new Thread
+   * @property {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
+   * @property {MessageResolvable} [startMessage] The message to start a public or news thread from,
    * creates a private thread if not provided
-   * @param {string} [options.reason] Reason for creating the thread
+   * @param {string} [reason] Reason for creating the thread
+   */
+
+  /**
+   * Creates a new thread in the channel.
+   * @param {ThreadCreateOptions} [options] Options
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Create a new public thread
    * channel.threads
-   *   .create('food-talk', {
+   *   .create({
+   *     name: 'food-talk'
    *     autoArchiveDuration: 60,
    *     startMessage: channel.lastMessageId,
    *     reason: 'Needed a separate thread for food',
@@ -87,11 +93,12 @@ class ThreadManager extends BaseManager {
    *   .then(console.log)
    *   .catch(console.error);
    * // Create a new private thread
-   * channel.threads.create('mod-talk', { autoArchiveDuration: 60, reason: 'Needed a separate thread for moderation' })
+   * channel.threads
+   *   .create({ name: 'mod-talk', autoArchiveDuration: 60, reason: 'Needed a separate thread for moderation' })
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async create(name, autoArchiveDuration, { startMessage, reason } = {}) {
+  async create({ name, autoArchiveDuration, startMessage, reason } = {}) {
     let path = this.client.api.channels(this.channel.id);
     if (startMessage) {
       startMessage = this.channel.messages.resolveID(startMessage);
@@ -113,7 +120,7 @@ class ThreadManager extends BaseManager {
    * The options for fetching multiple threads, the properties are mutually exclusive
    * @typedef {Object} FetchThreadsOptions
    * @property {FetchArchivedThreadOptions} [archived] The options used to fetch archived threads
-   * @property {boolean} [active] When true, fetches active threads, if archived is set, this is overriden!
+   * @property {boolean} [active] When true, fetches active threads. If archived is set, this is ignored!
    */
 
   /**
@@ -123,7 +130,7 @@ class ThreadManager extends BaseManager {
    * If an Object, fetches the specified threads.
    * @param {BaseFetchOptions} [cacheOptions] Additional options for this fetch
    * only applies when fetching a single thread
-   * @returns {Promise<?ThreadChannel>}
+   * @returns {Promise<?ThreadChannel|FetchedThreads>}
    * @example
    * // Fetch a thread by its id
    * channel.threads.fetch('831955138126104859')
@@ -171,7 +178,7 @@ class ThreadManager extends BaseManager {
    * Obtains a set of archived threads from Discord, requires `READ_MESSAGE_HISTORY` in the parent channel.
    * @param {FetchArchivedThreadOptions} [options] The options to use when fetch archived threads
    * @param {boolean} [cache=true] Whether to cache the new thread objects if they aren't already
-   * @returns {Promise<?FetchedThreads>}
+   * @returns {Promise<FetchedThreads>}
    */
   async fetchArchived({ type = 'public', fetchAll = false, before, limit } = {}, cache = true) {
     let path = this.client.api.channels(this.channel.id);
@@ -201,7 +208,7 @@ class ThreadManager extends BaseManager {
   /**
    * Obtains the accessible active threads from Discord, requires `READ_MESSAGE_HISTORY` in the parent channel.
    * @param {boolean} [cache=true] Whether to cache the new thread objects if they aren't already
-   * @returns {Promise<?FetchedThreads>}
+   * @returns {Promise<FetchedThreads>}
    */
   async fetchActive(cache = true) {
     const raw = await this.client.api.channels(this.channel.id).threads.active.get();

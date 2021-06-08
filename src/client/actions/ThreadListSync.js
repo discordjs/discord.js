@@ -8,7 +8,7 @@ class ThreadListSyncAction extends Action {
   handle(data) {
     const client = this.client;
 
-    let guild = client.guilds.cache.get(data.guild_id);
+    const guild = client.guilds.cache.get(data.guild_id);
     if (guild) {
       if (!data.channels_ids) {
         guild.channels.cache.forEach(channel => {
@@ -37,7 +37,7 @@ class ThreadListSyncAction extends Action {
       /**
        * Emitted whenever the client user gains access to a text or news channel
        * @event Client#threadListSync
-       * @param {Collection<Snwoflake, ThreadChannel>} threads The threads that were synced
+       * @param {Collection<Snowflake, ThreadChannel>} threads The threads that were synced
        */
       client.emit(Events.THREAD_LIST_SYNC, syncedThreads);
 
@@ -50,13 +50,11 @@ class ThreadListSyncAction extends Action {
   }
 
   removeStale(channel) {
-    if (channel.threads) {
-      channel.threads.cache.forEach(thread => {
-        if (!thread.archived) {
-          this.client.channels.remove(thread.id);
-        }
-      });
-    }
+    channel.threads?.cache.forEach(thread => {
+      if (!thread.archived) {
+        this.client.channels.remove(thread.id);
+      }
+    });
   }
 }
 

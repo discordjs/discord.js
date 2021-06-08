@@ -1884,13 +1884,13 @@ declare module 'discord.js' {
     public readonly archivedAt: Date;
     public archiveTimestamp: number | null;
     public autoArchiveDuration: ThreadAutoArchiveDuration;
-    public readonly deletable: boolean;
     public readonly editable: boolean;
     public guild: Guild;
     public readonly guildMembers: Collection<Snowflake, GuildMember>;
     public readonly joinable: boolean;
     public locked: boolean;
     public readonly manageable: boolean;
+    public readonly sendable: boolean;
     public memberCount: number | null;
     public messageCount: number | null;
     public messages: MessageManager;
@@ -1902,7 +1902,7 @@ declare module 'discord.js' {
     public rateLimitPerUser: number;
     public type: ThreadChannelType;
     public readonly unarchivable: boolean;
-    public addMember(member: UserResolvable, reason?: string): Promise<Snowflake>;
+    public addMember(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
     public delete(reason?: string): Promise<ThreadChannel>;
     public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
     public join(): Promise<ThreadChannel>;
@@ -1929,7 +1929,7 @@ declare module 'discord.js' {
     public readonly manageable: boolean;
     public thread: ThreadChannel;
     public readonly user: User | null;
-    public kick(reason?: string): Promise<ThreadMember>;
+    public remove(reason?: string): Promise<ThreadMember>;
   }
 
   export class ThreadMemberFlags extends BitField<ThreadMemberFlagsString> {
@@ -2343,6 +2343,7 @@ declare module 'discord.js' {
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
+    public readonly channelCountWithoutThreads: number;
     public guild: Guild;
     public create(name: string, options: GuildChannelCreateOptions & { type: 'voice' }): Promise<VoiceChannel>;
     public create(name: string, options: GuildChannelCreateOptions & { type: 'category' }): Promise<CategoryChannel>;
@@ -2507,11 +2508,12 @@ declare module 'discord.js' {
   export class ThreadManager extends BaseManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
     constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<any>);
     public channel: TextChannel | NewsChannel;
-    public create(
-      name: string,
-      autoArchiveDuration: ThreadAutoArchiveDuration,
-      options?: { startMessage?: MessageResolvable; reason?: string },
-    ): Promise<ThreadChannel>;
+    public create(options: {
+      name: string;
+      autoArchiveDuration: ThreadAutoArchiveDuration;
+      startMessage?: MessageResolvable;
+      reason?: string;
+    }): Promise<ThreadChannel>;
     public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
     public fetch(
       options?: { archived?: FetchArchivedThreadOptions; active?: boolean },
@@ -2525,7 +2527,7 @@ declare module 'discord.js' {
     constructor(thread: ThreadChannel, iterable?: Iterable<any>);
     public thread: ThreadChannel;
     public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
-    public kick(id: Snowflake, reason?: string): Promise<Snowflake>;
+    public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
   }
 
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {

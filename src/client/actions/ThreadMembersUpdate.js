@@ -11,17 +11,14 @@ class ThreadMembersUpdateAction extends Action {
       const old = thread.members.cache.clone();
       thread.memberCount = data.member_count;
 
-      if (data.added_members) {
-        data.added_members.forEach(rawMember => {
-          thread.members.add(rawMember);
-        });
-      }
+      data.added_members?.forEach(rawMember => {
+        thread.members.add(rawMember);
+      });
 
-      if (data.removed_member_ids) {
-        data.removed_member_ids.forEach(memberId => {
-          thread.members.cache.delete(memberId);
-        });
-      }
+      data.removed_member_ids?.forEach(memberId => {
+        thread.members.cache.delete(memberId);
+      });
+
       /**
        * Emitted whenever members are added or removed from a thread. Requires `GUILD_MEMBERS` privileged intent
        * @event Client#threadMembersUpdate

@@ -4,14 +4,9 @@ const Action = require('./Action');
 const { Events } = require('../../util/Constants');
 
 class ThreadDeleteAction extends Action {
-  constructor(client) {
-    super(client);
-    this.deleted = new Map();
-  }
-
   handle(data) {
     const client = this.client;
-    let thread = client.channels.cache.get(data.id);
+    const thread = client.channels.cache.get(data.id);
 
     if (thread) {
       client.channels.remove(thread.id);
@@ -19,6 +14,7 @@ class ThreadDeleteAction extends Action {
       for (const message of thread.messages.cache.values()) {
         message.deleted = true;
       }
+
       /**
        * Emitted whenever a thread is deleted.
        * @event Client#threadDelete

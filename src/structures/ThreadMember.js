@@ -43,12 +43,12 @@ class ThreadMember extends Base {
      * The flags for this thread member
      * @type {ThreadMemberFlags}
      */
-    this.flags = new ThreadMemberFlags(data.flags);
+    this.flags = new ThreadMemberFlags(data.flags).freeze();
   }
 
   /**
    * The guild member that this thread member instance represents
-   * @type {GuildMember}
+   * @type {?GuildMember}
    * @readonly
    */
   get guildMember() {
@@ -66,7 +66,7 @@ class ThreadMember extends Base {
 
   /**
    * The user that this thread member instance represents
-   * @type {User}
+   * @type {?User}
    * @readonly
    */
   get user() {
@@ -87,8 +87,8 @@ class ThreadMember extends Base {
    * @param {string} [reason] Reason for removing the member
    * @returns {ThreadMember}
    */
-  kick(reason) {
-    return this.thread.members.kick(this.id, reason).then(() => this);
+  remove(reason) {
+    return this.thread.members.remove(this.id, reason).then(() => this);
   }
 }
 

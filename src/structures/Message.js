@@ -107,7 +107,7 @@ class Message extends Base {
        * @type {?ThreadChannel}
        */
       this.thread = this.client.channels.add(data.thread);
-    } else if (!(this.thread instanceof require('./ThreadChannel'))) {
+    } else if (!this.thread) {
       this.thread = null;
     }
 
@@ -304,6 +304,7 @@ class Message extends Base {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
+    if ('thread' in data) this.thread = this.client.channels.add(data.thread);
     if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
     else this.embeds = this.embeds.slice();
     if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
@@ -695,7 +696,7 @@ class Message extends Base {
    * @returns {Promise<ThreadChannel>}
    */
   startThread(name, autoArchiveDuration, reason) {
-    if (this.channel.type !== 'text' && this.channel.type !== 'news') {
+    if (!['text', 'news'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
     return this.channel.threads.create(name, autoArchiveDuration, { startMessage: this, reason });

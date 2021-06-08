@@ -111,14 +111,14 @@ class ThreadChannel extends Channel {
      * The approximate count of messages in this thread
      * <info> This value will not count above 50 even when there are more than 50 messages
      * If you need an approximate value higher than this, use ThreadChannel#messages.cache.size</info>
-     * @type {?number}
+     * @type {number}
      */
     this.messageCount = data.message_count;
 
     /**
      * The approximate count of users in this thread
      * <info> This value will not count above 50 even when there are more than 50 members</info>
-     * @type {?number}
+     * @type {number}
      */
     this.memberCount = data.member_count;
 
@@ -162,7 +162,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<Snowflake>}
    */
   addMember(member, reason) {
-    const id = this.client.users.resolveID(member);
+    const id = member === '@me' ? member : this.client.users.resolveID(member);
     if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'member', 'UserResolvable'));
     return this.client.api
       .channels(this.id, 'thread-members', id)
@@ -175,10 +175,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   join() {
-    return this.client.api
-      .channels(this.id, 'thread-members', '@me')
-      .put()
-      .then(() => this);
+    return this.addMember('@me').then(() => this);
   }
 
   /**
@@ -186,10 +183,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   leave() {
-    return this.client.api
-      .channels(this.id, 'thread-members', '@me')
-      .delete()
-      .then(() => this);
+    return this.members.remove('@me').then(() => this);
   }
 
   /**
@@ -306,15 +300,6 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Whether the thread is deletable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get deletable() {
-    return this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_THREADS, false);
-  }
-
-  /**
    * Whether the thread is editable by the client user (name, archived, autoArchiveDuration)
    * @type {boolean}
    * @readonly
@@ -331,6 +316,29 @@ class ThreadChannel extends Channel {
   get joinable() {
     return (
       !this.archived &&
+      this.permissionsFor(this.client.user)?.has(
+        this.type === 'private_thread' ? Permissions.FLAGS.MANAGE_THREADS : Permissions.FLAGS.VIEW_CHANNEL,
+      )
+    );
+  }
+
+  /**
+   * Whether the thread is manageable by the client user, for deleting or editing rateLimitPerUser or locked.
+   * @type {boolean}
+   * @readonly
+   */
+  get manageable() {
+    return this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_THREADS);
+  }
+
+  /**
+   * Whether the client user can send messages in this thread
+   * @type {boolean}
+   * @readonly
+   */
+  get sendable() {
+    return (
+      !this.archived &&
       this.permissionsFor(this.client.user)?.any([
         Permissions.FLAGS.SEND_MESSAGES,
         this.type === 'private_thread' ? Permissions.FLAGS.USE_PRIVATE_THREADS : Permissions.FLAGS.USE_PUBLIC_THREADS,
@@ -339,27 +347,12 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Whether the thread is manageable by the client user (rateLimitPerUser, locked)
-   * @type {boolean}
-   * @readonly
-   */
-  get manageable() {
-    return this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_THREADS, false);
-  }
-
-  /**
    * Whether the thread is unarchivable by the client user
    * @type {boolean}
    * @readonly
    */
   get unarchivable() {
-    return (
-      this.archived &&
-      (this.locked
-        ? this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_THREADS, false)
-        : this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES, false) &&
-          this.members.has(this.client.user.id))
-    );
+    return this.archived && (this.locked ? this.manageable : this.sendable);
   }
 
   /**
