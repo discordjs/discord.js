@@ -65,6 +65,7 @@ class MessageEmbed {
      * @type {?string}
      */
     this.url = 'url' in data ? data.url : null;
+    this.url = this.url.split(" ").join("%20");
 
     /**
      * The color of this embed
