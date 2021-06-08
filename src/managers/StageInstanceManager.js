@@ -22,10 +22,6 @@ class StageInstanceManager extends BaseManager {
    * @name StageInstanceManager#cache
    */
 
-  add(data, cache) {
-    return super.add(data, cache);
-  }
-
   /**
    * Options used to create a stage instance.
    * @typedef {Object} CreateStageInstanceOptions
