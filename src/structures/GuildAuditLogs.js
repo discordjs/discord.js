@@ -1,6 +1,5 @@
 'use strict';
 
-const Channel = require('./Channel');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const Collection = require('../util/Collection');
@@ -486,16 +485,12 @@ class GuildAuditLogsEntry {
     } else if (targetType === Targets.CHANNEL) {
       this.target =
         guild.channels.cache.get(data.target_id) ||
-        Channel.create(
-          guild.client,
-          this.changes.reduce(
-            (o, c) => {
-              o[c.key] = c.new || c.old;
-              return o;
-            },
-            { id: data.target_id },
-          ),
-          guild,
+        this.changes.reduce(
+          (o, c) => {
+            o[c.key] = c.new || c.old;
+            return o;
+          },
+          { id: data.target_id },
         );
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) || { id: data.target_id };
