@@ -1329,6 +1329,23 @@ class Guild extends BaseGuild {
   }
 
   /**
+   * The voice state adapter for this guild that can be used with @discordjs/voice to play audio in voice
+   * and stage channels.
+   * @type {Function}
+   * @readonly
+   * @example
+   * const { joinVoiceChannel } = require('@discordjs/voice');
+   * const voiceConnection = joinVoiceChannel({
+   *  channelId: channel.id,
+   *  guildId: channel.guild.id,
+   *  adapterCreator: channel.guild.voiceAdapterCreator,
+   * });
+   */
+  get voiceAdapterCreator() {
+    // TODO
+  }
+
+  /**
    * Creates a collection of this guild's roles, sorted by their position and IDs.
    * @returns {Collection<Snowflake, Role>}
    * @private

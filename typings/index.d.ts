@@ -91,6 +91,7 @@ declare module 'discord.js' {
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
   import { Readable, Stream, Writable } from 'stream';
+  import { DiscordGatewayAdapterCreator } from '@discordjs/voice';
   import * as WebSocket from 'ws';
 
   export const version: string;
@@ -866,6 +867,7 @@ declare module 'discord.js' {
     public setWidget(widget: GuildWidgetData, reason?: string): Promise<Guild>;
     public splashURL(options?: ImageURLOptions): string | null;
     public toJSON(): unknown;
+    public readonly voiceAdapterCreator: DiscordGatewayAdapterCreator;
   }
 
   export class GuildAuditLogs {
