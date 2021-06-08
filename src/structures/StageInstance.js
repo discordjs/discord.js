@@ -88,7 +88,9 @@ class StageInstance extends Base {
    */
   async delete() {
     await this.guild.stageInstances.delete(this.channelID);
-    return this;
+    const clone = this._clone();
+    clone.deleted = true;
+    return clone;
   }
 }
 
