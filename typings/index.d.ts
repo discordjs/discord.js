@@ -2413,7 +2413,7 @@ declare module 'discord.js' {
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
     readonly lastMessage: Message | null;
-    send(options: string | (MessageOptions & { split?: false })): Promise<Message>;
+    send(options: string | APIMessage | (MessageOptions & { split?: false })): Promise<Message>;
     send(options: APIMessage (MessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
   }
 
