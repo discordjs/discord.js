@@ -865,6 +865,7 @@ declare module 'discord.js' {
       | Webhook
       | Message
       | Integration
+      | StageInstance
       | { id: Snowflake }
       | null;
     public targetType: GuildAuditLogsTarget;
@@ -2977,6 +2978,9 @@ declare module 'discord.js' {
     INTEGRATION_CREATE?: number;
     INTEGRATION_UPDATE?: number;
     INTEGRATION_DELETE?: number;
+    STAGE_INSTANCE_CREATE?: number;
+    STAGE_INSTANCE_UPDATE?: number;
+    STAGE_INSTANCE_DELETE?: number;
   }
 
   type GuildAuditLogsActionType = 'CREATE' | 'DELETE' | 'UPDATE' | 'ALL';
@@ -3001,6 +3005,7 @@ declare module 'discord.js' {
     EMOJI?: string;
     MESSAGE?: string;
     INTEGRATION?: string;
+    STAGE_INSTANCE?: string;
     UNKNOWN?: string;
   }
 
