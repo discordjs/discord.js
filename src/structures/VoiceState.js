@@ -101,16 +101,6 @@ class VoiceState extends Base {
   }
 
   /**
-   * If this is a voice state of the client user, then this will refer to the active VoiceConnection for this guild
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get connection() {
-    if (this.id !== this.client.user.id) return null;
-    return this.client.voice.connections.get(this.guild.id) || null;
-  }
-
-  /**
    * Whether this member is either self-deafened or server-deafened
    * @type {?boolean}
    * @readonly
