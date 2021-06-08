@@ -348,7 +348,7 @@ class Shard extends EventEmitter {
       // Shard is requesting an eval broadcast
       if (message._sEval) {
         const resp = { _sEval: message._sEval, _sEvalShard: message._sEvalShard };
-        this.manager.broadcastEval(message._sEval, { shard: message._sEvalShard }).then(
+        this.manager.broadcastEvalRaw(message._sEval, { shard: message._sEvalShard }).then(
           results => this.send({ ...resp, _result: results }),
           err => this.send({ ...resp, _error: Util.makePlainError(err) }),
         );

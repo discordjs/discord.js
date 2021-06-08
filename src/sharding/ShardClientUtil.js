@@ -127,11 +127,11 @@ class ShardClientUtil {
 
   /**
    * Evaluates a script or function on all shards, or a given shard, in the context of the {@link Client}s.
-   * @param {string|Function} script JavaScript to run on each shard
+   * @param {Function} script JavaScript to run on each shard
    * @param {BroadcastEvalOptions} [options={}] The options for the broadcast
    * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
    * @example
-   * client.shard.broadcastEval('this.guilds.cache.size')
+   * client.shard.broadcastEval(client => client.guilds.cache.size)
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    * @see {@link ShardingManager#broadcastEval}
@@ -139,7 +139,7 @@ class ShardClientUtil {
   broadcastEval(script, options = {}) {
     return new Promise((resolve, reject) => {
       const parent = this.parentPort || process;
-      script = typeof script === 'function' ? `(${script})(this, ${JSON.stringify(options.context)})` : script;
+      script = `(${script})(this, ${JSON.stringify(options.context)})`;
 
       const listener = message => {
         if (!message || message._sEval !== script || message._sEvalShard !== options.shard) return;
