@@ -25,6 +25,7 @@ const {
   VerificationLevels,
   ExplicitContentFilterLevels,
   NSFWLevels,
+  Status,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
@@ -1342,7 +1343,19 @@ class Guild extends BaseGuild {
    * });
    */
   get voiceAdapterCreator() {
-    // TODO
+    return methods => {
+      this.client.voice.adapters.set(this.id, methods);
+      return {
+        sendPayload(data) {
+          if (this.shard.status !== Status.READY) return false;
+          this.shard.send(data);
+          return true;
+        },
+        destroy() {
+          this.client.voice.adapters.delete(this.id);
+        },
+      };
+    };
   }
 
   /**

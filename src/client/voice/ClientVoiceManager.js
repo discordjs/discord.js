@@ -1,5 +1,7 @@
 'use strict';
 
+const { Events } = require('../../util/Constants');
+
 /**
  * Manages voice connections for the client
  */
@@ -12,17 +14,26 @@ class ClientVoiceManager {
      * @name ClientVoiceManager#client
      */
     Object.defineProperty(this, 'client', { value: client });
+
+    this.adapters = new Map();
+
+    client.on(Events.SHARD_DISCONNECT, (_, shardID) => {
+      for (const [guildID, adapter] of this.adapters.entries()) {
+        if (client.guilds.cache.get(guildID)?.shardID === shardID) {
+          adapter.destroy();
+        }
+      }
+    });
   }
 
-  onVoiceServer({ guild_id, token, endpoint }) {
-    this.client.emit('debug', `[VOICE] voiceServer guild: ${guild_id} token: ${token} endpoint: ${endpoint}`);
+  onVoiceServer(payload) {
+    this.adapters.get(payload.guild_id)?.onVoiceServerUpdate(payload);
   }
 
-  onVoiceStateUpdate({ guild_id, session_id, channel_id }) {
-    this.client.emit(
-      'debug',
-      `[VOICE] voiceState: guild: ${guild_id} session_id: ${session_id} channel_id: ${channel_id}`,
-    );
+  onVoiceStateUpdate(payload) {
+    if (payload.guild_id && payload.session_id && payload.user_id === this.client.user?.id) {
+      this.adapters.get(payload.guild_id)?.onVoiceStateUpdate(payload);
+    }
   }
 }
 
