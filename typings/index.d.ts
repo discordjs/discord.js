@@ -150,7 +150,6 @@ declare module 'discord.js' {
     ): APIMessage;
     public static create(
       target: MessageTarget,
-      content: string | null,
       options: MessageOptions | WebhookMessageOptions,
       extra?: MessageOptions | WebhookMessageOptions,
     ): APIMessage;
