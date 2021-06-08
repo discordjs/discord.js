@@ -462,6 +462,7 @@ declare module 'discord.js' {
   export class CommandInteraction extends Interaction {
     public readonly command: ApplicationCommand | null;
     public channel: TextChannel | DMChannel | NewsChannel;
+    public channelID: Snowflake;
     public commandID: Snowflake;
     public commandName: string;
     public deferred: boolean;
