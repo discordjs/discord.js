@@ -1346,12 +1346,12 @@ class Guild extends BaseGuild {
     return methods => {
       this.client.voice.adapters.set(this.id, methods);
       return {
-        sendPayload(data) {
+        sendPayload: data => {
           if (this.shard.status !== Status.READY) return false;
           this.shard.send(data);
           return true;
         },
-        destroy() {
+        destroy: () => {
           this.client.voice.adapters.delete(this.id);
         },
       };

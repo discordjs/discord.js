@@ -15,6 +15,11 @@ class ClientVoiceManager {
      */
     Object.defineProperty(this, 'client', { value: client });
 
+    /**
+     * Maps guild IDs to voice adapters created for use with @discordjs/voice.
+     * @type {Map<Snowflake, Object>}
+     * @readonly
+     */
     this.adapters = new Map();
 
     client.on(Events.SHARD_DISCONNECT, (_, shardID) => {
