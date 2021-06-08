@@ -49,8 +49,6 @@
     "abort-controller": "^3.0.0",
     "discord-api-types": "^0.18.1",
     "node-fetch": "^2.6.1",
-    "prism-media": "^1.2.9",
-    "tweetnacl": "^1.0.3",
     "ws": "^7.4.6"
   },
   "devDependencies": {
