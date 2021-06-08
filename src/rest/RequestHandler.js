@@ -143,9 +143,6 @@ class RequestHandler {
         });
       }
 
-      // Determine whether a RateLimitError should be thrown
-      await this.onRateLimit(request, limit, timeout, isGlobal); // eslint-disable-line no-await-in-loop
-
       if (isGlobal) {
         // If this is the first task to reach the global timeout, set the global delay
         if (!this.manager.globalDelay) {
@@ -156,6 +153,9 @@ class RequestHandler {
       } else {
         delayPromise = Util.delayFor(timeout);
       }
+
+      // Determine whether a RateLimitError should be thrown
+      await this.onRateLimit(request, limit, timeout, isGlobal); // eslint-disable-line no-await-in-loop
 
       // Wait for the timeout to expire in order to avoid an actual 429
       await delayPromise; // eslint-disable-line no-await-in-loop
