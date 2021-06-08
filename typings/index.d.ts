@@ -91,7 +91,7 @@ declare module 'discord.js' {
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
   import { Readable, Stream, Writable } from 'stream';
-  import { DiscordGatewayAdapterCreator } from '@discordjs/voice';
+  import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '@discordjs/voice';
   import * as WebSocket from 'ws';
 
   export const version: string;
@@ -415,6 +415,7 @@ declare module 'discord.js' {
   export class ClientVoiceManager {
     constructor(client: Client);
     public readonly client: Client;
+    public adapters: Map<Snowflake, DiscordGatewayAdapterLibraryMethods>;
   }
 
   export abstract class Collector<K, V> extends EventEmitter {
@@ -804,6 +805,7 @@ declare module 'discord.js' {
     public vanityURLCode: string | null;
     public vanityURLUses: number | null;
     public verificationLevel: VerificationLevel;
+    public readonly voiceAdapterCreator: DiscordGatewayAdapterCreator;
     public readonly voiceStates: VoiceStateManager;
     public readonly widgetChannel: TextChannel | null;
     public widgetChannelID: Snowflake | null;
@@ -855,7 +857,6 @@ declare module 'discord.js' {
     public setWidget(widget: GuildWidgetData, reason?: string): Promise<Guild>;
     public splashURL(options?: ImageURLOptions): string | null;
     public toJSON(): unknown;
-    public readonly voiceAdapterCreator: DiscordGatewayAdapterCreator;
   }
 
   export class GuildAuditLogs {
