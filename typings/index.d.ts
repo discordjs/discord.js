@@ -150,7 +150,7 @@ declare module 'discord.js' {
     ): APIMessage;
     public static create(
       target: MessageTarget,
-      options: MessageOptions | WebhookMessageOptions,
+      options: string | MessageOptions | WebhookMessageOptions,
       extra?: MessageOptions | WebhookMessageOptions,
     ): APIMessage;
     public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
