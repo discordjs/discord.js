@@ -18,7 +18,6 @@ class ClientVoiceManager {
     /**
      * Maps guild IDs to voice adapters created for use with @discordjs/voice.
      * @type {Map<Snowflake, Object>}
-     * @readonly
      */
     this.adapters = new Map();
 
