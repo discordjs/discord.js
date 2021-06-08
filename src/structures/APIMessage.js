@@ -310,7 +310,7 @@ class APIMessage {
   /**
    * Creates an `APIMessage` from user-level arguments.
    * @param {MessageTarget} target Target to send to
-   * @param {MessageOptions|WebhookMessageOptions} options Options to use
+   * @param {string|MessageOptions|WebhookMessageOptions} options Options or content to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto specified options
    * @returns {MessageOptions|WebhookMessageOptions}
    */
