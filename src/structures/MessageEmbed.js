@@ -65,7 +65,6 @@ class MessageEmbed {
      * @type {?string}
      */
     this.url = 'url' in data ? data.url : null;
-    this.url = this.url.split(" ").join("%20");
 
     /**
      * The color of this embed
@@ -133,7 +132,7 @@ class MessageEmbed {
      */
     this.image = data.image
       ? {
-          url: data.image.url,
+          url: data.image.url.split(" ").join("%20"),
           proxyURL: data.image.proxyURL || data.image.proxy_url,
           height: data.image.height,
           width: data.image.width,
@@ -218,7 +217,7 @@ class MessageEmbed {
     this.footer = data.footer
       ? {
           text: data.footer.text,
-          iconURL: data.footer.iconURL || data.footer.icon_url,
+          iconURL: data.footer.iconURL.split(" ").join("%20") || data.footer.icon_url.split(" ").join("%20"),
           proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
         }
       : null;
@@ -412,23 +411,23 @@ class MessageEmbed {
       title: this.title,
       type: 'rich',
       description: this.description,
-      url: this.url,
+      url: this.url.split(" ").join("%20"),
       timestamp: this.timestamp ? new Date(this.timestamp) : null,
       color: this.color,
       fields: this.fields,
-      thumbnail: this.thumbnail,
+      thumbnail: this.thumbnail.split(" ").join("%20"),
       image: this.image,
       author: this.author
         ? {
             name: this.author.name,
-            url: this.author.url,
+            url: this.author.url.split(" ").join("%20"),
             icon_url: this.author.iconURL,
           }
         : null,
       footer: this.footer
         ? {
             text: this.footer.text,
-            icon_url: this.footer.iconURL,
+            icon_url: this.footer.iconURL.split(" ").join("%20"),
           }
         : null,
     };
