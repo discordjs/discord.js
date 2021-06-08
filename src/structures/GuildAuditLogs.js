@@ -188,19 +188,16 @@ class GuildAuditLogs {
   /**
    * The target of an entry. It can be one of:
    * * A guild
-   * * A channel
    * * A user
    * * A role
+   * * An emoji
    * * An invite
    * * A webhook
-   * * An emoji
-   * * A message
    * * An integration
    * * A stage instance
    * * An object with an id key if target was deleted
    * * An object where the keys represent either the new value or the old value
-   * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance)}
-   * AuditLogEntryTarget
+   * @typedef {?(Object|Guild|User|Role|GuildEmoji|Invite|Webhook|Integration|StageInstance)} AuditLogEntryTarget
    */
 
   /**
