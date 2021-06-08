@@ -313,6 +313,7 @@ declare module 'discord.js' {
     public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
+    public fetchWidget(id: Snowflake): Promise<Widget>;
     public generateInvite(options?: InviteGenerationOptions): string;
     public login(token?: string): Promise<string>;
     public sweepMessages(lifetime?: number): number;
@@ -2034,10 +2035,27 @@ declare module 'discord.js' {
     private _patch(data: object): void;
     public fetch(): Promise<Widget>;
     public id: Snowflake;
-    public instantInvite: string | null;
+    public instantInvite?: string;
     public channels: Collection<Snowflake, WidgetChannel>;
     public members: Collection<string, WidgetMember>;
     public presenceCount: number;
+  }
+
+  export class WidgetMember extends Base {
+    constructor(client: Client, data: object);
+    public id: string;
+    public username: string;
+    public discriminator: string;
+    public avatar?: string;
+    public status: PresenceStatus;
+    public deaf?: boolean;
+    public mute?: boolean;
+    public selfDeaf?: boolean;
+    public selfMute?: boolean;
+    public suppress?: boolean;
+    public channelID?: Snowflake;
+    public avatarURL: string;
+    public activity?: WidgetActivity;
   }
 
   //#endregion

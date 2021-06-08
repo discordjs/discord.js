@@ -12,14 +12,6 @@ class WidgetMember extends Base {
    */
   constructor(client, data) {
     super(client);
-    this._patch(data);
-  }
-  /**
-   * Builds the WidgetMember with the provided data.
-   * @param {*} data The raw data of the WidgetMember
-   * @private
-   */
-  _patch(data) {
     /**
      * The id of the user. It's an arbitrary number.
      * @type {string}
