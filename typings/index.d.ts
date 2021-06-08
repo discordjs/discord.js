@@ -144,12 +144,6 @@ declare module 'discord.js' {
 
     public static create(
       target: MessageTarget,
-      content: string | null,
-      options?: undefined,
-      extra?: MessageOptions | WebhookMessageOptions,
-    ): APIMessage;
-    public static create(
-      target: MessageTarget,
       options: string | MessageOptions | WebhookMessageOptions,
       extra?: MessageOptions | WebhookMessageOptions,
     ): APIMessage;
@@ -2414,7 +2408,7 @@ declare module 'discord.js' {
     lastMessageID: Snowflake | null;
     readonly lastMessage: Message | null;
     send(options: string | APIMessage | (MessageOptions & { split?: false })): Promise<Message>;
-    send(options: APIMessage (MessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
+    send(options: APIMessage | (MessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
