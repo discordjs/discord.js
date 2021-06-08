@@ -129,22 +129,28 @@ class GuildManager extends BaseManager {
   }
 
   /**
+   * Options used to create a guild.
+   * @typedef {Object} GuildCreateOptions
+   * @param {number} [afkChannelID] The ID of the AFK channel
+   * @param {number} [afkTimeout] The AFK timeout in seconds
+   * @param {PartialChannelData[]} [channels] The channels for this guild
+   * @param {DefaultMessageNotifications} [defaultMessageNotifications] The default message notifications
+   * for the guild
+   * @param {ExplicitContentFilterLevel} [explicitContentFilter] The explicit content filter level for the guild
+   * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @param {string} [region] The region for the server, defaults to the closest one available
+   * @param {PartialRoleData[]} [roles] The roles for this guild,
+   * the first element of this array is used to change properties of the guild's everyone role.
+   * @param {number} [systemChannelID] The ID of the system channel
+   * @param {SystemChannelFlagsResolvable} [systemChannelFlags] The flags of the system channel
+   * @param {VerificationLevel} [verificationLevel] The verification level for the guild
+   */
+
+  /**
    * Creates a guild.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {string} name The name of the guild
-   * @param {Object} [options] Options for the creating
-   * @param {number} [options.afkChannelID] The ID of the AFK channel
-   * @param {number} [options.afkTimeout] The AFK timeout in seconds
-   * @param {PartialChannelData[]} [options.channels] The channels for this guild
-   * @param {DefaultMessageNotifications} [options.defaultMessageNotifications] The default message notifications
-   * for the guild
-   * @param {ExplicitContentFilterLevel} [options.explicitContentFilter] The explicit content filter level for the guild
-   * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
-   * @param {PartialRoleData[]} [options.roles] The roles for this guild,
-   * the first element of this array is used to change properties of the guild's everyone role.
-   * @param {number} [options.systemChannelID] The ID of the system channel
-   * @param {SystemChannelFlagsResolvable} [options.systemChannelFlags] The flags of the system channel
-   * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
+   * @param {GuildCreateOptions} [options] Options for creating the guild
    * @returns {Promise<Guild>} The guild that was created
    */
   async create(
