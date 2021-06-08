@@ -440,30 +440,25 @@ class Message extends Base {
   }
 
   /**
-   * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {MessageComponentInteractionCollectorOptions} AwaitMessageComponentInteractionsOptions
-   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
-   */
-
-  /**
-   * Similar to createMessageComponentInteractionCollector but in promise form.
-   * Resolves with a collection of interactions that pass the specified filter.
+   * Collects a single component interaction that passes the filter.
+   * The Promise will reject if the time expires.
    * @param {CollectorFilter} filter The filter function to use
-   * @param {AwaitMessageComponentInteractionsOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, MessageComponentInteraction>>}
+   * @param {number} [time] Time to wait for an interaction before rejecting
+   * @returns {Promise<MessageComponentInteraction>}
    * @example
-   * // Create a message component interaction collector
+   * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitMessageComponentInteractions(filter, { time: 15000 })
-   *   .then(collected => console.log(`Collected ${collected.size} interactions`))
+   * message.awaitMessageComponentInteraction(filter, 15000)
+   *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteractions(filter, options = {}) {
+  awaitMessageComponentInteraction(filter, time) {
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector(filter, options);
-      collector.once('end', (interactions, reason) => {
-        if (options.errors && options.errors.includes(reason)) reject(interactions);
-        else resolve(interactions);
+      const collector = this.createMessageComponentInteractionCollector(filter, { max: 1, time });
+      collector.once('end', interactions => {
+        const interaction = interactions.first();
+        if (!interaction) reject(new Error('INTERACTION_COLLECTOR_TIMEOUT'));
+        else resolve(interaction);
       });
     });
   }
