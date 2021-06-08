@@ -249,10 +249,10 @@ class Webhook {
   async editMessage(message, options) {
     let apiMessage;
 
-    if (options instanceof APIMessage) apiMessage = options.resolveData();
-    else apiMessage = APIMessage.create(this, options).resolveData();
+    if (options instanceof APIMessage) apiMessage = options;
+    else apiMessage = APIMessage.create(this, options);
 
-    const { data, files } = await apiMessage.resolveFiles();
+    const { data, files } = await apiMessage.resolveData().resolveFiles();
 
     const d = await this.client.api
       .webhooks(this.id, this.token)
