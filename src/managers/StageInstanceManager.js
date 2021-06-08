@@ -22,8 +22,8 @@ class StageInstanceManager extends BaseManager {
    * @name StageInstanceManager#cache
    */
 
-  add(data, cache, channel) {
-    return super.add(data, cache, { extras: [channel] });
+  add(data, cache) {
+    return super.add(data, cache);
   }
 
   /**

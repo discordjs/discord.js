@@ -1705,7 +1705,7 @@ declare module 'discord.js' {
     public topic: string;
     public privacyLevel: PrivacyLevel;
     public discoverableDisabled: boolean;
-    public channel: StageChannel;
+    public readonly channel: StageChannel | null;
     public readonly guild: Guild | null;
     public update(options: UpdateStageInstanceOptions): Promise<StageInstance>;
     public delete(): Promise<StageInstance>;

@@ -8,7 +8,7 @@ const { PrivacyLevels } = require('../util/Constants');
  * @extends {Base}
  */
 class StageInstance extends Base {
-  constructor(client, data, channel) {
+  constructor(client, data) {
     super(client);
 
     /**
@@ -16,12 +16,6 @@ class StageInstance extends Base {
      * @type {Snowflake}
      */
     this.id = data.id;
-
-    /**
-     * The stage channel associated with this instance
-     * @type {StageChannel}
-     */
-    this.channel = channel;
 
     /**
      * Whether the stage instance has been deleted
@@ -62,6 +56,15 @@ class StageInstance extends Base {
      * @type {boolean}
      */
     this.discoverableDisabled = data.discoverable_disabled;
+  }
+
+  /**
+   * The stage channel associated with this instance
+   * @type {?StageChannel}
+   * @readonly
+   */
+  get channel() {
+    return this.client.channels.cache.get(this.channelID) || null;
   }
 
   /**
