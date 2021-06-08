@@ -1219,7 +1219,7 @@ declare module 'discord.js' {
     public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
-    public reply(options: string | (ReplyMessageOptions & { split?: false })): Promise<Message>;
+    public reply(options: string | APIMessage | (ReplyMessageOptions & { split?: false })): Promise<Message>;
     public reply(options: APIMessage | (ReplyMessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): unknown;
