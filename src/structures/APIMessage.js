@@ -144,11 +144,10 @@ class APIMessage {
     }
 
     const embedLikes = [];
-    if (isWebhookLike) {
-      if (this.options.embeds) {
-        embedLikes.push(...this.options.embeds);
-      }
-    } else if (this.options.embed) {
+    if (this.options.embeds) {
+      embedLikes.push(...this.options.embeds);
+    }
+    else if (this.options.embed) {
       embedLikes.push(this.options.embed);
     }
     const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
