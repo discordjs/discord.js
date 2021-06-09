@@ -158,7 +158,7 @@ class TextChannel extends GuildChannel {
   createMessageCollector() {}
   awaitMessages() {}
   createMessageComponentInteractionCollector() {}
-  awaitMessageComponentInteractions() {}
+  awaitMessageComponentInteraction() {}
   bulkDelete() {}
 }
 

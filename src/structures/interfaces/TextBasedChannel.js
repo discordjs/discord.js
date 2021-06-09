@@ -423,7 +423,7 @@ class TextBasedChannel {
         'createMessageCollector',
         'awaitMessages',
         'createMessageComponentInteractionCollector',
-        'awaitMessageComponentInteractions',
+        'awaitMessageComponentInteraction',
       );
     }
     for (const prop of props) {

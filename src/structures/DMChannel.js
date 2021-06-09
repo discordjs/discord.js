@@ -92,7 +92,7 @@ class DMChannel extends Channel {
   createMessageCollector() {}
   awaitMessages() {}
   createMessageComponentInteractionCollector() {}
-  awaitMessageComponentInteractions() {}
+  awaitMessageComponentInteraction() {}
   // Doesn't work on DM channels; bulkDelete() {}
 }
 
