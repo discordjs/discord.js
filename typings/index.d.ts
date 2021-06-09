@@ -1711,6 +1711,8 @@ declare module 'discord.js' {
     public update(options: UpdateStageInstanceOptions): Promise<StageInstance>;
     public delete(): Promise<StageInstance>;
     public setTopic(topic: string): Promise<StageInstance>;
+    public readonly createdTimestamp: number;
+    public readonly createdAt: Date;
   }
 
   export class StoreChannel extends GuildChannel {

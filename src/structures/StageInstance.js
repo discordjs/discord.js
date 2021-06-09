@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const { PrivacyLevels } = require('../util/Constants');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents a stage instance.
@@ -103,6 +104,24 @@ class StageInstance extends Base {
    */
   setTopic(topic) {
     return this.guild.stageInstances.update(this.channelID, { topic });
+  }
+
+  /**
+   * The timestamp this stage instances was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time this stage instance was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 }
 
