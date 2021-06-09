@@ -2069,7 +2069,7 @@ declare module 'discord.js' {
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
     public send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
     public send(
-      options: string | APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
+      options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
     ): Promise<RawMessage[]>;
   }
 
