@@ -3352,7 +3352,7 @@ declare module 'discord.js' {
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     flags?: BitFieldResolvable<MessageFlagsString, number>;
     allowedMentions?: MessageMentionOptions;
-    components?: MessageActionRow[] | MessageActionRowOptions[];
+    components?: MessageActionRow[] | MessageActionRowOptions[] | MessageActionRowComponentResolvable[][];
   }
 
   interface MessageEmbedAuthor {
@@ -3445,7 +3445,7 @@ declare module 'discord.js' {
     nonce?: string | number;
     content?: string;
     embed?: MessageEmbed | MessageEmbedOptions;
-    components?: MessageActionRow[] | MessageActionRowOptions[];
+    components?: MessageActionRow[] | MessageActionRowOptions[] | MessageActionRowComponentResolvable[][];
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;

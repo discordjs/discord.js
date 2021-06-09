@@ -101,8 +101,8 @@ class Webhook {
    * @property {string} [content] See {@link BaseMessageOptions#content}
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] See {@link BaseMessageOptions#files}
    * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
-   * @property {MessageActionRow[]} [components] Action rows containing interactive components for the message
-   * (buttons, select menus)
+   * @property {MessageActionRow[]|MessageActionRowOptions[]|MessageActionRowComponentResolvable[][]} [components]
+   * Action rows containing interactive components for the message (buttons, select menus)
    */
 
   /**
