@@ -3602,9 +3602,6 @@ declare module 'discord.js' {
 
   type MembershipState = keyof typeof MembershipStates;
 
-  
-  type MessageActionRowComponent = MessageButton;
-
   type MessageActionRowComponent = MessageButton | MessageSelectMenu;
 
   type MessageActionRowComponentOptions = MessageButtonOptions | MessageSelectMenuOptions;
