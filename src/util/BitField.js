@@ -38,11 +38,9 @@ class BitField {
   /**
    * Checks whether the bitfield has a bit, or multiple bits.
    * @param {BitFieldResolvable} bit Bit(s) to check for
-   * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {boolean}
    */
-  has(bit, ...hasParams) {
-    if (Array.isArray(bit)) return bit.every(p => this.has(p, ...hasParams));
+  has(bit) {
     bit = this.constructor.resolve(bit);
     return (this.bitfield & bit) === bit;
   }
