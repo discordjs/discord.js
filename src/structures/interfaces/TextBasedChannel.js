@@ -143,7 +143,8 @@ class TextBasedChannel {
    *   .catch(console.error);
    * @example
    * // Send an embed with a local image inside
-   * channel.send('This is an embed', {
+   * channel.send({
+   *   content: 'This is an embed',
    *   embed: {
    *     thumbnail: {
    *          url: 'attachment://file.jpg'
