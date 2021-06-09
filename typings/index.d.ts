@@ -1117,7 +1117,7 @@ declare module 'discord.js' {
       options: string | APIMessage | (InteractionReplyOptions & { split?: false }),
     ): Promise<Message | RawMessage>;
     public send(
-      options: string | APIMessage | (InteractionReplyOptions & { split: true | SplitOptions }),
+      options: APIMessage | (InteractionReplyOptions & { split: true | SplitOptions }),
     ): Promise<(Message | RawMessage)[]>;
   }
 
