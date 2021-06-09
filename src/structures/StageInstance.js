@@ -84,7 +84,7 @@ class StageInstance extends Base {
    * @example
    * // Update a stage instance
    * stageInstance.update({ topic: 'new topic' })
-   *  .then(s => console.log(s))
+   *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error)
    */
   update(options) {
@@ -97,7 +97,7 @@ class StageInstance extends Base {
    * @example
    * // Delete a stage instance
    * stageInstance.delete()
-   *  .then(s => console.log(s))
+   *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error);
    */
   async delete() {
@@ -114,7 +114,7 @@ class StageInstance extends Base {
    * @example
    * // Set topic of a stage instance
    * stageInstance.setTopic('new topic')
-   *  .then(s => console.log(`Set the topic to: ${s.topic}`))
+   *  .then(stageInstance => console.log(`Set the topic to: ${stageInstance.topic}`))
    *  .catch(console.error);
    */
   setTopic(topic) {

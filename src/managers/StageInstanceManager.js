@@ -41,7 +41,7 @@ class StageInstanceManager extends BaseManager {
    *  topic: 'A very creative topic',
    *  privacyLevel: 'GUILD_ONLY'
    * })
-   *  .then(s => console.log(s))
+   *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error);
    */
   async create(options) {
@@ -72,7 +72,7 @@ class StageInstanceManager extends BaseManager {
    * @example
    * // Fetch a stage instance
    * guild.stageInstances.fetch('1234567890123456789')
-   *  .then(s => console.log(s))
+   *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error);
    */
   async fetch(channel, cache = true, force = false) {
@@ -103,7 +103,7 @@ class StageInstanceManager extends BaseManager {
    * @example
    * // Update a stage instance
    * guild.stageInstances.update('1234567890123456789', { topic: 'new topic' })
-   *  .then(s => console.log(s))
+   *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error);
    */
   async update(channel, options) {
