@@ -270,14 +270,12 @@ class Util {
   /**
    * Resolves a partial emoji object from an {@link EmojiIdentifierResolvable}, without checking a Client.
    * @param {EmojiIdentifierResolvable} emoji Emoji identifier to resolve
-   * @returns {Object} Object with possible `animated`, `name`, and `id` properties
+   * @returns {?RawEmoji}
    * @private
    */
   static resolvePartialEmoji(emoji) {
-    if (typeof emoji === 'undefined') return null;
-    if (typeof emoji === 'string') {
-      return emoji.length ? (/^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji)) : null;
-    }
+    if (!emoji) return null;
+    if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
     const { id, name, animated } = emoji;
     if (!id && !name) return null;
     return { id, name, animated };

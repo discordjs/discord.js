@@ -1893,7 +1893,7 @@ declare module 'discord.js' {
     public static moveElementInArray(array: any[], element: any, newIndex: number, offset?: boolean): number;
     public static parseEmoji(text: string): { animated: boolean; name: string; id: Snowflake | null } | null;
     public static resolveColor(color: ColorResolvable): number;
-    public static resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<RawEmoji>;
+    public static resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<RawEmoji> | null;
     public static verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
     public static setPosition<T extends Channel | Role>(
       item: T,
