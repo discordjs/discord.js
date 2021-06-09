@@ -128,29 +128,33 @@ class ShardClientUtil {
 
   /**
    * Evaluates a script or function on all shards, or a given shard, in the context of the {@link Client}s.
-   * @param {string|Function} script JavaScript to run on each shard
-   * @param {number} [shard] Shard to run script on, all if undefined
+   * @param {Function} script JavaScript to run on each shard
+   * @param {BroadcastEvalOptions} [options={}] The options for the broadcast
    * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
    * @example
-   * client.shard.broadcastEval('this.guilds.cache.size')
+   * client.shard.broadcastEval(client => client.guilds.cache.size)
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    * @see {@link ShardingManager#broadcastEval}
    */
-  broadcastEval(script, shard) {
+  broadcastEval(script, options = {}) {
     return new Promise((resolve, reject) => {
       const parent = this.parentPort || process;
-      script = typeof script === 'function' ? `(${script})(this)` : script;
+      if (typeof script !== 'function') {
+        reject(new TypeError('SHARDING_INVALID_EVAL_BROADCAST'));
+        return;
+      }
+      script = `(${script})(this, ${JSON.stringify(options.context)})`;
 
       const listener = message => {
-        if (!message || message._sEval !== script || message._sEvalShard !== shard) return;
+        if (!message || message._sEval !== script || message._sEvalShard !== options.shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
       };
       parent.on('message', listener);
 
-      this.send({ _sEval: script, _sEvalShard: shard }).catch(err => {
+      this.send({ _sEval: script, _sEvalShard: options.shard }).catch(err => {
         parent.removeListener('message', listener);
         reject(err);
       });
