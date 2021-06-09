@@ -538,8 +538,8 @@ class Message extends Base {
    * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to add to the message
-   * @property {MessageActionRow[]} [components] Action rows containing interactive components for the message
-   * (buttons, select menus)
+   * @property {MessageActionRow[]|MessageActionRowOptions[]|MessageActionRowComponentResolvable[][]} [components]
+   * Action rows containing interactive components for the message (buttons, select menus)
    */
 
   /**

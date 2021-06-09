@@ -268,6 +268,20 @@ class Util {
   }
 
   /**
+   * Resolves a partial emoji object from an {@link EmojiIdentifierResolvable}, without checking a Client.
+   * @param {EmojiIdentifierResolvable} emoji Emoji identifier to resolve
+   * @returns {?RawEmoji}
+   * @private
+   */
+  static resolvePartialEmoji(emoji) {
+    if (!emoji) return null;
+    if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
+    const { id, name, animated } = emoji;
+    if (!id && !name) return null;
+    return { id, name, animated };
+  }
+
+  /**
    * Shallow-copies an object with its class/prototype intact.
    * @param {Object} obj Object to clone
    * @returns {Object}

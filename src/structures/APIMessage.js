@@ -3,6 +3,7 @@
 const BaseMessageComponent = require('./BaseMessageComponent');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
+const { MessageComponentTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
 const Util = require('../util/Util');
@@ -152,7 +153,11 @@ class APIMessage {
     }
     const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
 
-    const components = this.options.components?.map(c => BaseMessageComponent.create(c).toJSON());
+    const components = this.options.components?.map(c =>
+      BaseMessageComponent.create(
+        Array.isArray(c) ? { type: MessageComponentTypes.ACTION_ROW, components: c } : c,
+      ).toJSON(),
+    );
 
     let username;
     let avatarURL;

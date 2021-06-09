@@ -70,6 +70,7 @@ module.exports = {
   BaseGuildEmoji: require('./structures/BaseGuildEmoji'),
   BaseGuildVoiceChannel: require('./structures/BaseGuildVoiceChannel'),
   BaseMessageComponent: require('./structures/BaseMessageComponent'),
+  ButtonInteraction: require('./structures/ButtonInteraction'),
   CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
   ClientApplication: require('./structures/ClientApplication'),

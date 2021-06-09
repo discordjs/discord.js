@@ -21,13 +21,13 @@ class MessageComponentInteraction extends Interaction {
     this.message = data.message ? this.channel?.messages.add(data.message) ?? data.message : null;
 
     /**
-     * The custom ID of the component which was clicked
+     * The custom ID of the component which was interacted with
      * @type {string}
      */
     this.customID = data.data.custom_id;
 
     /**
-     * The type of component that was interacted with
+     * The type of component which was interacted with
      * @type {string}
      */
     this.componentType = MessageComponentInteraction.resolveType(data.data.component_type);

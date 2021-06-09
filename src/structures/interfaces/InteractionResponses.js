@@ -11,13 +11,13 @@ const APIMessage = require('../APIMessage');
  */
 class InteractionResponses {
   /**
-   * Options for deferring the reply to a {@link CommandInteraction}.
+   * Options for deferring the reply to an {@link Interaction}.
    * @typedef {Object} InteractionDeferOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    */
 
   /**
-   * Options for a reply to an interaction.
+   * Options for a reply to an {@link Interaction}.
    * @typedef {BaseMessageOptions} InteractionReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {MessageEmbed[]|Object[]} [embeds] An array of embeds for the message
@@ -140,10 +140,10 @@ class InteractionResponses {
   }
 
   /**
-   * Defers an update to the message to which the button was attached
+   * Defers an update to the message to which the component was attached
    * @returns {Promise<void>}
    * @example
-   * // Defer to update the button to a loading state
+   * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
    *   .then(console.log)
    *   .catch(console.error);
@@ -163,7 +163,7 @@ class InteractionResponses {
    * @param {string|APIMessage|WebhookEditMessageOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
-   * // Remove the buttons from the message
+   * // Remove the components from the message
    * interaction.update("A button was clicked", { components: [] })
    *   .then(console.log)
    *   .catch(console.error);

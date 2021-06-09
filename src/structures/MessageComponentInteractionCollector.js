@@ -40,7 +40,7 @@ class MessageComponentInteractionCollector extends Collector {
     this.channel = this.message ? this.message.channel : source;
 
     /**
-     * The users which have interacted to buttons on this collector
+     * The users which have interacted to components on this collector
      * @type {Collection}
      */
     this.users = new Collection();
