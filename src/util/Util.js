@@ -64,6 +64,7 @@ class Util {
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
     text = Util.verifyString(text, RangeError, 'MESSAGE_CONTENT_TYPE', false);
     if (text.length > maxLength) return [text];
+    let splitText = [text];
     if (Array.isArray(char)) {
       while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
         const currentChar = char.shift();
