@@ -240,6 +240,7 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
    */
   broadcastEval(script, options = {}) {
+    if (typeof script !== 'function') throw new TypeError('SHARDING_INVALID_EVAL_BROADCAST');
     return this._performOnShards('eval', [`(${script})(this, ${JSON.stringify(options.context)})`], options.shard);
   }
 

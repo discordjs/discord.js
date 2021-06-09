@@ -139,6 +139,10 @@ class ShardClientUtil {
   broadcastEval(script, options = {}) {
     return new Promise((resolve, reject) => {
       const parent = this.parentPort || process;
+      if (typeof script !== 'function') {
+        reject(new TypeError('SHARDING_INVALID_EVAL_BROADCAST'));
+        return;
+      }
       script = `(${script})(this, ${JSON.stringify(options.context)})`;
 
       const listener = message => {
