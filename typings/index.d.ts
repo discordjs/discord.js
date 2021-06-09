@@ -1695,7 +1695,7 @@ declare module 'discord.js' {
     public readonly ids: number[];
     public mode: ShardingManagerMode;
     public parentPort: any | null;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }: BroadcastEvalOptions): Promise<T[]>;
+    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }?: BroadcastEvalOptions): Promise<T[]>;
     public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
@@ -1719,7 +1719,7 @@ declare module 'discord.js' {
     public totalShards: number | 'auto';
     public shardList: number[] | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }: BroadcastEvalOptions): Promise<T[]>;
+    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }?: BroadcastEvalOptions): Promise<T[]>;
     public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T>;
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
