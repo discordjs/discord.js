@@ -164,7 +164,10 @@ class InteractionResponses {
    * @returns {Promise<void>}
    * @example
    * // Remove the components from the message
-   * interaction.update("A button was clicked", { components: [] })
+   * interaction.update({
+   *   content: "A button was clicked",
+   *   components: []
+   * })
    *   .then(console.log)
    *   .catch(console.error);
    */
