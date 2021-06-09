@@ -121,8 +121,8 @@ class GuildBanManager extends BaseManager {
   /**
    * Options used to ban a user from a guild.
    * @typedef {Object} BanOptions
-   * @param {number} [days=0] Number of days of messages to delete, must be between 0 and 7, inclusive
-   * @param {string} [reason] The reason for the ban
+   * @property {number} [days=0] Number of days of messages to delete, must be between 0 and 7, inclusive
+   * @property {string} [reason] The reason for the ban
    */
 
   /**
