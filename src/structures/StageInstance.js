@@ -81,6 +81,11 @@ class StageInstance extends Base {
    * Updates this stage instance.
    * @param {UpdateStageInstanceOptions} options The options to update the stage instance
    * @returns {Promise<StageInstance>}
+   * @example
+   * // Update a stage instance
+   * stageInstance.update({ topic: 'new topic' })
+   *  .then(s => console.log(s))
+   *  .catch(console.error)
    */
   update(options) {
     return this.guild.stageInstances.update(this.channelID, options);
@@ -89,6 +94,11 @@ class StageInstance extends Base {
   /**
    * Deletes this stage instance.
    * @returns {Promise<StageInstance>}
+   * @example
+   * // Delete a stage instance
+   * stageInstance.delete()
+   *  .then(s => console.log(s))
+   *  .catch(console.error);
    */
   async delete() {
     await this.guild.stageInstances.delete(this.channelID);
@@ -101,6 +111,11 @@ class StageInstance extends Base {
    * Sets the topic of this stage instance.
    * @param {string} topic The topic for the stage instance
    * @returns {Promise<StageInstance>}
+   * @example
+   * // Set topic of a stage instance
+   * stageInstance.setTopic('new topic')
+   *  .then(s => console.log(`Set the topic to: ${s.topic}`))
+   *  .catch(console.error);
    */
   setTopic(topic) {
     return this.guild.stageInstances.update(this.channelID, { topic });

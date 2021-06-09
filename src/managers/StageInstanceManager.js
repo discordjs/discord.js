@@ -34,6 +34,15 @@ class StageInstanceManager extends BaseManager {
    * Creates a new stage instance.
    * @param {CreateStageInstanceOptions} options The options to create the stage instance
    * @returns {Promise<StageInstance>}
+   * @example
+   * // Create a stage instance
+   * guild.stageInstances.create({
+   *  channel: '1234567890123456789',
+   *  topic: 'A very creative topic',
+   *  privacyLevel: 'GUILD_ONLY'
+   * })
+   *  .then(s => console.log(s))
+   *  .catch(console.error);
    */
   async create(options) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
@@ -60,6 +69,11 @@ class StageInstanceManager extends BaseManager {
    * @param {boolean} [cache=true] Whether or not to cache the fetched stage instance
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<StageInstance>}
+   * @example
+   * // Fetch a stage instance
+   * guild.stageInstances.fetch('1234567890123456789')
+   *  .then(s => console.log(s))
+   *  .catch(console.error);
    */
   async fetch(channel, cache = true, force = false) {
     const channelID = this.guild.channels.resolveID(channel);
@@ -86,6 +100,11 @@ class StageInstanceManager extends BaseManager {
    * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be updated
    * @param {UpdateStageInstanceOptions} options The options to update the stage instance
    * @returns {Promise<StageInstance>}
+   * @example
+   * // Update a stage instance
+   * guild.stageInstances.update('1234567890123456789', { topic: 'new topic' })
+   *  .then(s => console.log(s))
+   *  .catch(console.error);
    */
   async update(channel, options) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
