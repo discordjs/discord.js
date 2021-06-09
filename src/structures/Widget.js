@@ -9,13 +9,14 @@ const Collection = require('../util/Collection');
  */
 class Widget extends Base {
   /**
-   * @param {Client} client - The instantiating client
-   * @param {Object} data - The raw data
+   * @param {Client} client The instantiating client
+   * @param {Object} data The raw data
    */
   constructor(client, data) {
     super(client);
     this._patch(data);
   }
+
   /**
    * Builds the widget with the provided data.
    * @param {*} data The raw data of the widget
