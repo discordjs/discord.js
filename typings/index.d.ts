@@ -294,6 +294,10 @@ declare module 'discord.js' {
     public static resolve(bit?: BitFieldResolvable<any, number | bigint>): number | bigint;
   }
 
+  export class ButtonInteraction extends MessageComponentInteraction {
+    public componentType: 'BUTTON';
+  }
+
   export class CategoryChannel extends GuildChannel {
     public readonly children: Collection<Snowflake, GuildChannel>;
     public type: 'category';
@@ -1114,6 +1118,7 @@ declare module 'discord.js' {
     public type: InteractionType;
     public user: User;
     public version: number;
+    public isButton(): this is ButtonInteraction;
     public isCommand(): this is CommandInteraction;
     public isMessageComponent(): this is MessageComponentInteraction;
   }
@@ -1267,7 +1272,7 @@ declare module 'discord.js' {
     constructor(data?: MessageButton | MessageButtonOptions);
     public customID: string | null;
     public disabled: boolean;
-    public emoji: string | RawEmoji | null;
+    public emoji: RawEmoji | null;
     public label: string | null;
     public style: MessageButtonStyle | null;
     public type: 'BUTTON';
@@ -1888,6 +1893,7 @@ declare module 'discord.js' {
     public static moveElementInArray(array: any[], element: any, newIndex: number, offset?: boolean): number;
     public static parseEmoji(text: string): { animated: boolean; name: string; id: Snowflake | null } | null;
     public static resolveColor(color: ColorResolvable): number;
+    public static resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<RawEmoji>;
     public static verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
     public static setPosition<T extends Channel | Role>(
       item: T,
@@ -3309,7 +3315,7 @@ declare module 'discord.js' {
   interface MessageButtonOptions extends BaseMessageComponentOptions {
     customID?: string;
     disabled?: boolean;
-    emoji?: RawEmoji;
+    emoji?: EmojiIdentifierResolvable;
     label?: string;
     style: MessageButtonStyleResolvable;
     url?: string;

@@ -6,7 +6,7 @@ const { MessageButtonStyles, MessageComponentTypes } = require('../util/Constant
 const Util = require('../util/Util');
 
 /**
- * Represents a Button message component.
+ * Represents a button message component.
  * @extends {BaseMessageComponent}
  */
 class MessageButton extends BaseMessageComponent {
@@ -15,7 +15,7 @@ class MessageButton extends BaseMessageComponent {
    * @property {string} [label] The text to be displayed on this button
    * @property {string} [customID] A unique string to be sent in the interaction when clicked
    * @property {MessageButtonStyleResolvable} [style] The style of this button
-   * @property {Emoji} [emoji] The emoji to be displayed to the left of the text
+   * @property {EmojiIdentifierResolvable} [emoji] The emoji to be displayed to the left of the text
    * @property {string} [url] Optional URL for link-style buttons
    * @property {boolean} [disabled=false] Disables the button to prevent interactions
    */
@@ -50,9 +50,9 @@ class MessageButton extends BaseMessageComponent {
 
     /**
      * Emoji for this button
-     * @type {?Emoji|string}
+     * @type {?RawEmoji}
      */
-    this.emoji = data.emoji ?? null;
+    this.emoji = data.emoji ? Util.resolvePartialEmoji(data.emoji) : null;
 
     /**
      * The URL this button links to, if it is a Link style button
@@ -93,8 +93,7 @@ class MessageButton extends BaseMessageComponent {
    * @returns {MessageButton}
    */
   setEmoji(emoji) {
-    if (/^\d{17,19}$/.test(emoji)) this.emoji = { id: emoji };
-    else this.emoji = Util.parseEmoji(`${emoji}`);
+    this.emoji = Util.resolvePartialEmoji(emoji);
     return this;
   }
 
@@ -119,7 +118,8 @@ class MessageButton extends BaseMessageComponent {
   }
 
   /**
-   * Sets the URL of this button. MessageButton#style should be LINK
+   * Sets the URL of this button.
+   * <note>MessageButton#style must be LINK when setting a URL</note>
    * @param {string} url The URL of this button
    * @returns {MessageButton}
    */
@@ -146,14 +146,14 @@ class MessageButton extends BaseMessageComponent {
 
   /**
    * Data that can be resolved to a MessageButtonStyle. This can be
-   * * {@link MessageButtonStyle}
+   * * MessageButtonStyle
    * * string
    * * number
    * @typedef {string|number|MessageButtonStyle} MessageButtonStyleResolvable
    */
 
   /**
-   * Resolves the style of a MessageButton
+   * Resolves the style of a button
    * @param {MessageButtonStyleResolvable} style The style to resolve
    * @returns {MessageButtonStyle}
    * @private

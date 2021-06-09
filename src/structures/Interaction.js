@@ -120,6 +120,14 @@ class Interaction extends Base {
   isMessageComponent() {
     return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT;
   }
+
+  /**
+   * Indicates whether this interaction is a button interaction.
+   * @returns {boolean}
+   */
+  isButton() {
+    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && this.componentType === 'BUTTON';
+  }
 }
 
 module.exports = Interaction;
