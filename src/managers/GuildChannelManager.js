@@ -3,6 +3,7 @@
 const BaseManager = require('./BaseManager');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
+const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
 
 /**
@@ -116,6 +117,36 @@ class GuildChannelManager extends BaseManager {
       reason,
     });
     return this.client.actions.ChannelCreate.handle(data).channel;
+  }
+
+  /**
+   * Obtains one or more guild channels from Discord, or the channel cache if they're already available.
+   * @param {Snowflake} [id] ID of the channel
+   * @param {boolean} [cache=true] Whether to cache the new channel objects if it weren't already
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @returns {Promise<?GuildChannel|Collection<Snowflake, GuildChannel>>}
+   * @example
+   * // Fetch all channels from the guild
+   * message.guild.channels.fetch()
+   *   .then(channels => console.log(`There are ${channels.size} channels.`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch a single channel
+   * message.guild.channels.fetch('222197033908436994')
+   *   .then(channel => console.log(`The channel name is: ${channel.name}`))
+   *   .catch(console.error);
+   */
+  async fetch(id, cache = true, force = false) {
+    if (id && !force) {
+      const existing = this.cache.get(id);
+      if (existing) return existing;
+    }
+
+    // We cannot fetch a single guild channel, as of this commit's date, Discord API throws with 404
+    const data = await this.client.api.guilds(this.guild.id).channels.get();
+    const channels = new Collection();
+    for (const channel of data) channels.set(channel.id, this.client.channels.add(channel, this.guild, cache));
+    return id ? channels.get(id) ?? null : channels;
   }
 }
 
