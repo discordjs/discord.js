@@ -3,7 +3,7 @@
 const https = require('https');
 const FormData = require('@discordjs/form-data');
 const AbortController = require('abort-controller');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch').default;
 const { UserAgent } = require('../util/Constants');
 
 if (https.Agent) var agent = new https.Agent({ keepAlive: true });
