@@ -117,8 +117,7 @@ class TextBasedChannel {
 
   /**
    * Sends a message to this channel.
-   * @param {string|APIMessage} [content=''] The content to send
-   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
+   * @param {string|APIMessage|MessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a basic message
@@ -158,20 +157,20 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async send(content, options) {
+  async send(options) {
     const User = require('../User');
     const GuildMember = require('../GuildMember');
 
     if (this instanceof User || this instanceof GuildMember) {
-      return this.createDM().then(dm => dm.send(content, options));
+      return this.createDM().then(dm => dm.send(options));
     }
 
     let apiMessage;
 
-    if (content instanceof APIMessage) {
-      apiMessage = content.resolveData();
+    if (options instanceof APIMessage) {
+      apiMessage = options.resolveData();
     } else {
-      apiMessage = APIMessage.create(this, content, options).resolveData();
+      apiMessage = APIMessage.create(this, options).resolveData();
       if (Array.isArray(apiMessage.data.content)) {
         return Promise.all(apiMessage.split().map(this.send.bind(this)));
       }
