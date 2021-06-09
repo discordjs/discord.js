@@ -7,6 +7,7 @@ labels: 's: unverified, type: bug'
 assignees: ''
 ---
 <!-- Use Discord for questions: https://discord.gg/bRCvFy9 -->
+<!-- If you are reporting a voice issue, please post your issue at https://github.com/discordjs/voice/issues -->
 
 **Please describe the problem you are having in as much detail as possible:**
 
