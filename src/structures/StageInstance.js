@@ -95,6 +95,15 @@ class StageInstance extends Base {
     clone.deleted = true;
     return clone;
   }
+
+  /**
+   * Sets the topic of this stage instance.
+   * @param {string} topic The topic for the stage instance
+   * @returns {Promise<StageInstance>}
+   */
+  setTopic(topic) {
+    return this.guild.stageInstances.update(this.channelID, { topic });
+  }
 }
 
 module.exports = StageInstance;

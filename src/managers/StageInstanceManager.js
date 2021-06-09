@@ -55,37 +55,30 @@ class StageInstanceManager extends BaseManager {
   }
 
   /**
-   * Options used to fetch a stage instance.
-   * @typedef {Object} FetchStageInstanceOptions
-   * @property {StageChannel|Snowflake} channel The stage channel whose instance is to be fetched
-   * @property {boolean} [cache=true] Whether or not to cache the fetched stage instance
-   * @property {boolean} [force=false] Whether to skip the cache check and request the API
-   */
-
-  /**
    * Fetches the stage instance associated with a stage channel, if it exists.
-   * @param {FetchStageInstanceOptions} options The options to fetch the stage instance
+   * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be fetched
+   * @param {boolean} [cache=true] Whether or not to cache the fetched stage instance
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<StageInstance>}
    */
-  async fetch(options) {
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    const channelID = this.guild.channels.resolveID(options.channel);
+  async fetch(channel, cache = true, force = false) {
+    const channelID = this.guild.channels.resolveID(channel);
     if (!channelID) throw new Error('STAGE_CHANNEL_RESOLVE');
 
-    if (!options.force) {
+    if (!force) {
       const existing = this.cache.find(stageInstance => stageInstance.channelID === channelID);
       if (existing) return existing;
     }
 
     const data = await this.client.api('stage-instances', channelID).get();
-    return this.add(data, options.cache);
+    return this.add(data, cache);
   }
 
   /**
    * Options used to update an existing stage instance.
    * @typedef {Object} UpdateStageInstanceOptions
-   * @property {string} topic The new topic of the stage instance
-   * @property {PrivacyLevel|number} privacyLevel The new privacy level of the stage instance
+   * @property {string} [topic] The new topic of the stage instance
+   * @property {PrivacyLevel|number} [privacyLevel] The new privacy level of the stage instance
    */
 
   /**

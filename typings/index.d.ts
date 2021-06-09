@@ -1710,6 +1710,7 @@ declare module 'discord.js' {
     public readonly guild: Guild | null;
     public update(options: UpdateStageInstanceOptions): Promise<StageInstance>;
     public delete(): Promise<StageInstance>;
+    public setTopic(topic: string): Promise<StageInstance>;
   }
 
   export class StoreChannel extends GuildChannel {
@@ -2296,7 +2297,7 @@ declare module 'discord.js' {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public create(options: CreateStageInstanceOptions): Promise<StageInstance>;
-    public fetch(options: FetchStageInstanceOptions): Promise<StageInstance>;
+    public fetch(channel: StageChannel | Snowflake, cache?: boolean, force?: boolean): Promise<StageInstance>;
     public update(channel: StageChannel | Snowflake, options: UpdateStageInstanceOptions): Promise<StageInstance>;
     public delete(channel: StageChannel | Snowflake): Promise<void>;
   }
@@ -2797,7 +2798,7 @@ declare module 'discord.js' {
   interface CreateStageInstanceOptions {
     channel: StageChannel | Snowflake;
     topic: string;
-    privacyLevel: PrivacyLevel | number;
+    privacyLevel?: PrivacyLevel | number;
   }
 
   interface CrosspostedChannel {
@@ -2913,12 +2914,6 @@ declare module 'discord.js' {
     withPresences?: boolean;
     time?: number;
     nonce?: string;
-    force?: boolean;
-  }
-
-  interface FetchStageInstanceOptions {
-    channel: StageChannel | Snowflake;
-    cache?: boolean;
     force?: boolean;
   }
 
