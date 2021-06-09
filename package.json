@@ -49,14 +49,13 @@
     "abort-controller": "^3.0.0",
     "discord-api-types": "^0.18.1",
     "node-fetch": "^2.6.1",
-    "prism-media": "^1.2.9",
-    "tweetnacl": "^1.0.3",
     "ws": "^7.4.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-angular": "^12.1.4",
     "@discordjs/docgen": "^0.10.0",
+    "@discordjs/voice": "^0.3.0",
     "@types/node": "^12.12.6",
     "conventional-changelog-cli": "^2.1.1",
     "cross-env": "^7.0.3",

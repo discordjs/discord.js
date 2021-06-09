@@ -55,29 +55,12 @@ const Messages = {
 
   USER_NO_DMCHANNEL: 'No DM Channel exists!',
 
-  VOICE_INVALID_HEARTBEAT: 'Tried to set voice heartbeat but no valid interval was specified.',
-  VOICE_USER_MISSING: "Couldn't resolve the user to create stream.",
-  VOICE_JOIN_CHANNEL: (full = false) =>
-    `You do not have permission to join this voice channel${full ? '; it is full.' : '.'}`,
-  VOICE_CONNECTION_TIMEOUT: 'Connection not established within 15 seconds.',
-  VOICE_TOKEN_ABSENT: 'Token not provided from voice server packet.',
-  VOICE_SESSION_ABSENT: 'Session ID not supplied.',
-  VOICE_INVALID_ENDPOINT: 'Invalid endpoint received.',
-  VOICE_CONNECTION_ATTEMPTS_EXCEEDED: attempts => `Too many connection attempts (${attempts}).`,
-  VOICE_JOIN_SOCKET_CLOSED: 'Tried to send join packet, but the WebSocket is not open.',
-  VOICE_PLAY_INTERFACE_NO_BROADCAST: 'A broadcast cannot be played in this context.',
-  VOICE_PLAY_INTERFACE_BAD_TYPE: 'Unknown stream type',
-  VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
   VOICE_NOT_STAGE_CHANNEL: 'You are only allowed to do this in stage channels.',
 
   VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
   VOICE_STATE_NOT_OWN:
     'You cannot self-deafen/mute/request to speak on VoiceStates that do not belong to the ClientUser.',
   VOICE_STATE_INVALID_TYPE: name => `${name} must be a boolean.`,
-
-  UDP_SEND_FAIL: 'Tried to send a UDP packet, but there is no socket available.',
-  UDP_ADDRESS_MALFORMED: 'Malformed UDP address or port.',
-  UDP_CONNECTION_EXISTS: 'There is already an existing UDP connection.',
 
   REQ_RESOURCE_TYPE: 'The resource must be a string, Buffer or a valid file stream.',
 

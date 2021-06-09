@@ -25,6 +25,7 @@ const {
   VerificationLevels,
   ExplicitContentFilterLevels,
   NSFWLevels,
+  Status,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
@@ -1326,6 +1327,35 @@ class Guild extends BaseGuild {
     json.discoverySplashURL = this.discoverySplashURL();
     json.bannerURL = this.bannerURL();
     return json;
+  }
+
+  /**
+   * The voice state adapter for this guild that can be used with @discordjs/voice to play audio in voice
+   * and stage channels.
+   * @type {Function}
+   * @readonly
+   * @example
+   * const { joinVoiceChannel } = require('@discordjs/voice');
+   * const voiceConnection = joinVoiceChannel({
+   *  channelId: channel.id,
+   *  guildId: channel.guild.id,
+   *  adapterCreator: channel.guild.voiceAdapterCreator,
+   * });
+   */
+  get voiceAdapterCreator() {
+    return methods => {
+      this.client.voice.adapters.set(this.id, methods);
+      return {
+        sendPayload: data => {
+          if (this.shard.status !== Status.READY) return false;
+          this.shard.send(data);
+          return true;
+        },
+        destroy: () => {
+          this.client.voice.adapters.delete(this.id);
+        },
+      };
+    };
   }
 
   /**

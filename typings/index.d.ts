@@ -91,6 +91,7 @@ declare module 'discord.js' {
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
   import { Readable, Stream, Writable } from 'stream';
+  import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '@discordjs/voice';
   import * as WebSocket from 'ws';
 
   export const version: string;
@@ -259,8 +260,6 @@ declare module 'discord.js' {
     public rtcRegion: string | null;
     public bitrate: number;
     public userLimit: number;
-    public join(): Promise<VoiceConnection>;
-    public leave(): void;
     public setRTCRegion(region: string | null): Promise<this>;
   }
 
@@ -269,10 +268,6 @@ declare module 'discord.js' {
     public type: MessageComponentType | null;
     private static create(data: MessageComponentOptions): MessageComponent;
     private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
-  }
-
-  class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
-    public broadcast: VoiceBroadcast;
   }
 
   export class BitField<S extends string, N extends number | bigint = number> {
@@ -402,12 +397,7 @@ declare module 'discord.js' {
   export class ClientVoiceManager {
     constructor(client: Client);
     public readonly client: Client;
-    public connections: Collection<Snowflake, VoiceConnection>;
-    public broadcasts: VoiceBroadcast[];
-
-    private joinChannel(channel: VoiceChannel | StageChannel): Promise<VoiceConnection>;
-
-    public createBroadcast(): VoiceBroadcast;
+    public adapters: Map<Snowflake, DiscordGatewayAdapterLibraryMethods>;
   }
 
   export abstract class Collector<K, V> extends EventEmitter {
@@ -791,6 +781,7 @@ declare module 'discord.js' {
     public vanityURLCode: string | null;
     public vanityURLUses: number | null;
     public verificationLevel: VerificationLevel;
+    public readonly voiceAdapterCreator: DiscordGatewayAdapterCreator;
     public readonly voiceStates: VoiceStateManager;
     public readonly widgetChannel: TextChannel | null;
     public widgetChannelID: Snowflake | null;
@@ -1733,40 +1724,6 @@ declare module 'discord.js' {
     public type: 'store';
   }
 
-  class StreamDispatcher extends VolumeMixin(Writable) {
-    constructor(player: unknown, options?: StreamOptions, streams?: unknown);
-    public readonly bitrateEditable: boolean;
-    public broadcast: VoiceBroadcast | null;
-    public readonly paused: boolean;
-    public pausedSince: number | null;
-    public readonly pausedTime: number;
-    public player: unknown;
-    public readonly streamTime: number;
-    public readonly totalStreamTime: number;
-
-    public pause(silence?: boolean): void;
-    public resume(): void;
-    public setBitrate(value: number | 'auto'): boolean;
-    public setFEC(enabled: boolean): boolean;
-    public setPLP(value: number): boolean;
-
-    public on(event: 'close' | 'drain' | 'finish' | 'start', listener: () => Awaited<void>): this;
-    public on(event: 'debug', listener: (info: string) => Awaited<void>): this;
-    public on(event: 'error', listener: (err: Error) => Awaited<void>): this;
-    public on(event: 'pipe' | 'unpipe', listener: (src: Readable) => Awaited<void>): this;
-    public on(event: 'speaking', listener: (speaking: boolean) => Awaited<void>): this;
-    public on(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => Awaited<void>): this;
-    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
-
-    public once(event: 'close' | 'drain' | 'finish' | 'start', listener: () => Awaited<void>): this;
-    public once(event: 'debug', listener: (info: string) => Awaited<void>): this;
-    public once(event: 'error', listener: (err: Error) => Awaited<void>): this;
-    public once(event: 'pipe' | 'unpipe', listener: (src: Readable) => Awaited<void>): this;
-    public once(event: 'speaking', listener: (speaking: boolean) => Awaited<void>): this;
-    public once(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => Awaited<void>): this;
-    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
-  }
-
   export class Structures {
     public static get<K extends keyof Extendable>(structure: K): Extendable[K];
     public static get(structure: string): (...args: any[]) => void;
@@ -1906,98 +1863,12 @@ declare module 'discord.js' {
     public static splitMessage(text: string, options?: SplitOptions): string[];
   }
 
-  class VoiceBroadcast extends EventEmitter {
-    constructor(client: Client);
-    public client: Client;
-    public subscribers: StreamDispatcher[];
-    public readonly dispatcher: BroadcastDispatcher | null;
-    public play(input: string | Readable, options?: StreamOptions): BroadcastDispatcher;
-    public end(): void;
-
-    public on(event: 'end', listener: () => Awaited<void>): this;
-    public on(event: 'subscribe' | 'unsubscribe', listener: (dispatcher: StreamDispatcher) => Awaited<void>): this;
-    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
-
-    public once(event: 'end', listener: () => Awaited<void>): this;
-    public once(event: 'subscribe' | 'unsubscribe', listener: (dispatcher: StreamDispatcher) => Awaited<void>): this;
-    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
-  }
-
   export class VoiceChannel extends BaseGuildVoiceChannel {
     public readonly editable: boolean;
     public readonly speakable: boolean;
     public type: 'voice';
     public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
     public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
-  }
-
-  class VoiceConnection extends EventEmitter {
-    constructor(voiceManager: ClientVoiceManager, channel: VoiceChannel);
-    private authentication: unknown;
-    private sockets: unknown;
-    private ssrcMap: Map<number, boolean>;
-    private _speaking: Map<Snowflake, Readonly<Speaking>>;
-    private _disconnect(): void;
-    private authenticate(): void;
-    private authenticateFailed(reason: string): void;
-    private checkAuthenticated(): void;
-    private cleanup(): void;
-    private connect(): void;
-    private onReady(data: unknown): void;
-    private onSessionDescription(mode: string, secret: string): void;
-    private onSpeaking(data: unknown): void;
-    private reconnect(token: string, endpoint: string): void;
-    private sendVoiceStateUpdate(options: unknown): Promise<Shard>;
-    private setSessionID(sessionID: string): void;
-    private setTokenAndEndpoint(token: string, endpoint: string): void;
-    private updateChannel(channel: VoiceChannel | StageChannel): void;
-
-    public channel: VoiceChannel | StageChannel;
-    public readonly client: Client;
-    public readonly dispatcher: StreamDispatcher | null;
-    public player: unknown;
-    public receiver: VoiceReceiver;
-    public speaking: Readonly<Speaking>;
-    public status: VoiceStatus;
-    public readonly voice: VoiceState | null;
-    public voiceManager: ClientVoiceManager;
-    public disconnect(): void;
-    public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
-    public setSpeaking(value: BitFieldResolvable<SpeakingString, number>): void;
-
-    public on(
-      event: 'authenticated' | 'closing' | 'newSession' | 'ready' | 'reconnecting',
-      listener: () => Awaited<void>,
-    ): this;
-    public on(event: 'debug', listener: (message: string) => Awaited<void>): this;
-    public on(event: 'error' | 'failed' | 'disconnect', listener: (error: Error) => Awaited<void>): this;
-    public on(event: 'speaking', listener: (user: User, speaking: Readonly<Speaking>) => Awaited<void>): this;
-    public on(event: 'warn', listener: (warning: string | Error) => Awaited<void>): this;
-    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
-
-    public once(
-      event: 'authenticated' | 'closing' | 'newSession' | 'ready' | 'reconnecting',
-      listener: () => Awaited<void>,
-    ): this;
-    public once(event: 'debug', listener: (message: string) => Awaited<void>): this;
-    public once(event: 'error' | 'failed' | 'disconnect', listener: (error: Error) => Awaited<void>): this;
-    public once(event: 'speaking', listener: (user: User, speaking: Readonly<Speaking>) => Awaited<void>): this;
-    public once(event: 'warn', listener: (warning: string | Error) => Awaited<void>): this;
-    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
-  }
-
-  class VoiceReceiver extends EventEmitter {
-    constructor(connection: VoiceConnection);
-    public createStream(
-      user: UserResolvable,
-      options?: { mode?: 'opus' | 'pcm'; end?: 'silence' | 'manual' },
-    ): Readable;
-
-    public on(event: 'debug', listener: (error: Error | string) => Awaited<void>): this;
-    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
-
-    public once(event: 'debug', listener: (error: Error | string) => Awaited<void>): this;
-    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
   }
 
   export class VoiceRegion {
@@ -2015,7 +1886,6 @@ declare module 'discord.js' {
     constructor(guild: Guild, data: unknown);
     public readonly channel: VoiceChannel | StageChannel | null;
     public channelID: Snowflake | null;
-    public readonly connection: VoiceConnection | null;
     public readonly deaf: boolean | null;
     public guild: Guild;
     public id: Snowflake;
@@ -2030,14 +1900,11 @@ declare module 'discord.js' {
     public selfVideo: boolean;
     public suppress: boolean;
     public requestToSpeakTimestamp: number | null;
-    public readonly speaking: boolean | null;
 
     public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
     public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
     public kick(reason?: string): Promise<GuildMember>;
     public setChannel(channel: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
-    public setSelfDeaf(deaf: boolean): Promise<boolean>;
-    public setSelfMute(mute: boolean): Promise<boolean>;
     public setRequestToSpeak(request: boolean): Promise<void>;
     public setSuppressed(suppressed: boolean): Promise<void>;
   }
