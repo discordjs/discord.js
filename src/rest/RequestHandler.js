@@ -3,6 +3,7 @@
 const { AsyncQueue } = require('@sapphire/async-queue');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
+const RateLimitError = require('./RateLimitError');
 const {
   Events: { RATE_LIMIT, INVALID_REQUEST_WARNING },
 } = require('../util/Constants');
@@ -77,6 +78,30 @@ class RequestHandler {
     });
   }
 
+  /*
+   * Determines whether the request should be queued or whether a RateLimitError should be thrown
+   */
+  async onRateLimit(request, limit, timeout, isGlobal) {
+    const { options } = this.manager.client;
+    if (!options.rejectOnRateLimit) return;
+
+    const rateLimitData = {
+      timeout,
+      limit,
+      method: request.method,
+      path: request.path,
+      route: request.route,
+      global: isGlobal,
+    };
+    const shouldThrow =
+      typeof options.rejectOnRateLimit === 'function'
+        ? await options.rejectOnRateLimit(rateLimitData)
+        : options.rejectOnRateLimit.some(route => rateLimitData.route.startsWith(route.toLowerCase()));
+    if (shouldThrow) {
+      throw new RateLimitError(rateLimitData);
+    }
+  }
+
   async execute(request) {
     /*
      * After calculations have been done, pre-emptively stop further requests
@@ -90,17 +115,10 @@ class RequestHandler {
         // Set the variables based on the global rate limit
         limit = this.manager.globalLimit;
         timeout = this.manager.globalReset + this.manager.client.options.restTimeOffset - Date.now();
-        // If this is the first task to reach the global timeout, set the global delay
-        if (!this.manager.globalDelay) {
-          // The global delay function should clear the global delay state when it is resolved
-          this.manager.globalDelay = this.globalDelayFor(timeout);
-        }
-        delayPromise = this.manager.globalDelay;
       } else {
         // Set the variables based on the route-specific rate limit
         limit = this.limit;
         timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
-        delayPromise = Util.delayFor(timeout);
       }
 
       if (this.manager.client.listenerCount(RATE_LIMIT)) {
@@ -124,6 +142,20 @@ class RequestHandler {
           global: isGlobal,
         });
       }
+
+      if (isGlobal) {
+        // If this is the first task to reach the global timeout, set the global delay
+        if (!this.manager.globalDelay) {
+          // The global delay function should clear the global delay state when it is resolved
+          this.manager.globalDelay = this.globalDelayFor(timeout);
+        }
+        delayPromise = this.manager.globalDelay;
+      } else {
+        delayPromise = Util.delayFor(timeout);
+      }
+
+      // Determine whether a RateLimitError should be thrown
+      await this.onRateLimit(request, limit, timeout, isGlobal); // eslint-disable-line no-await-in-loop
 
       // Wait for the timeout to expire in order to avoid an actual 429
       await delayPromise; // eslint-disable-line no-await-in-loop
@@ -225,6 +257,20 @@ class RequestHandler {
       if (res.status === 429) {
         // A ratelimit was hit - this should never happen
         this.manager.client.emit('debug', `429 hit on route ${request.route}${sublimitTimeout ? ' for sublimit' : ''}`);
+
+        const isGlobal = this.globalLimited;
+        let limit, timeout;
+        if (isGlobal) {
+          // Set the variables based on the global rate limit
+          limit = this.manager.globalLimit;
+          timeout = this.manager.globalReset + this.manager.client.options.restTimeOffset - Date.now();
+        } else {
+          // Set the variables based on the route-specific rate limit
+          limit = this.limit;
+          timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
+        }
+        await this.onRateLimit(request, limit, timeout, isGlobal);
+
         // If caused by a sublimit, wait it out here so other requests on the route can be handled
         if (sublimitTimeout) {
           await Util.delayFor(sublimitTimeout);
