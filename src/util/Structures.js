@@ -20,7 +20,6 @@
  * * **`Role`**
  * * **`User`**
  * * **`CommandInteraction`**
- * * **`MessageComponentInteraction`**
  * * **`ButtonInteraction`**
  * @typedef {string} ExtendableStructure
  */

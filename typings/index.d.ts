@@ -1653,8 +1653,14 @@ declare module 'discord.js' {
     public readonly ids: number[];
     public mode: ShardingManagerMode;
     public parentPort: any | null;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }?: BroadcastEvalOptions): Promise<T[]>;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: undefined, context: P }?: BroadcastEvalOptions,
+    ): Promise<T[]>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: number, context: P }: BroadcastEvalOptions,
+    ): Promise<T>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
     public respawnAll(options?: { shardDelay?: number; respawnDelay?: number; timeout?: number }): Promise<void>;
@@ -1677,8 +1683,14 @@ declare module 'discord.js' {
     public totalShards: number | 'auto';
     public shardList: number[] | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }?: BroadcastEvalOptions): Promise<T[]>;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: undefined, context: P }?: BroadcastEvalOptions,
+    ): Promise<T[]>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: number, context: P }: BroadcastEvalOptions,
+    ): Promise<T>;
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
@@ -1946,9 +1958,7 @@ declare module 'discord.js' {
     ): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
     public send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
-    public send(
-      options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
-    ): Promise<RawMessage[]>;
+    public send(options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions })): Promise<RawMessage[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2125,8 +2135,18 @@ declare module 'discord.js' {
       name: string,
       options: GuildCreateChannelOptions,
     ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>;
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel | null>;
-    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>>;
+    public fetch(
+      id: Snowflake,
+      cache?: boolean,
+      force?: boolean,
+    ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel | null>;
+    public fetch(
+      id?: Snowflake,
+      cache?: boolean,
+      force?: boolean,
+    ): Promise<
+      Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>
+    >;
   }
 
   export class GuildEmojiManager extends BaseGuildEmojiManager {
@@ -2806,6 +2826,7 @@ declare module 'discord.js' {
     Role: typeof Role;
     User: typeof User;
     CommandInteraction: typeof CommandInteraction;
+    ButtonInteraction: typeof ButtonInteraction;
   }
 
   interface FetchBanOptions {
