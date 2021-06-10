@@ -53,6 +53,11 @@ declare enum MessageComponentTypes {
   BUTTON = 2,
 }
 
+declare enum MFALevels {
+  NONE = 0,
+  ELEVATED = 1,
+}
+
 declare enum NSFWLevels {
   DEFAULT = 0,
   EXPLICIT = 1,
@@ -681,6 +686,7 @@ declare module 'discord.js' {
     InteractionResponseTypes: typeof InteractionResponseTypes;
     MessageComponentTypes: typeof MessageComponentTypes;
     MessageButtonStyles: typeof MessageButtonStyles;
+    MFALevels: typeof MFALevels;
     NSFWLevels: typeof NSFWLevels;
   };
 
@@ -759,7 +765,7 @@ declare module 'discord.js' {
     public readonly me: GuildMember | null;
     public memberCount: number;
     public members: GuildMemberManager;
-    public mfaLevel: number;
+    public mfaLevel: MFALevel;
     public nsfwLevel: NSFWLevel;
     public ownerID: Snowflake;
     public preferredLocale: string;
@@ -1655,8 +1661,14 @@ declare module 'discord.js' {
     public readonly ids: number[];
     public mode: ShardingManagerMode;
     public parentPort: any | null;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }?: BroadcastEvalOptions): Promise<T[]>;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: undefined, context: P }?: BroadcastEvalOptions,
+    ): Promise<T[]>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: number, context: P }: BroadcastEvalOptions,
+    ): Promise<T>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
     public respawnAll(options?: { shardDelay?: number; respawnDelay?: number; timeout?: number }): Promise<void>;
@@ -1679,8 +1691,14 @@ declare module 'discord.js' {
     public totalShards: number | 'auto';
     public shardList: number[] | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: undefined, context: P }?: BroadcastEvalOptions): Promise<T[]>;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, { shard: number, context: P }: BroadcastEvalOptions): Promise<T>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: undefined, context: P }?: BroadcastEvalOptions,
+    ): Promise<T[]>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: number, context: P }: BroadcastEvalOptions,
+    ): Promise<T>;
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
@@ -1948,9 +1966,7 @@ declare module 'discord.js' {
     ): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
     public send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
-    public send(
-      options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
-    ): Promise<RawMessage[]>;
+    public send(options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions })): Promise<RawMessage[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2127,8 +2143,18 @@ declare module 'discord.js' {
       name: string,
       options: GuildCreateChannelOptions,
     ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>;
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel | null>;
-    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>>;
+    public fetch(
+      id: Snowflake,
+      cache?: boolean,
+      force?: boolean,
+    ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel | null>;
+    public fetch(
+      id?: Snowflake,
+      cache?: boolean,
+      force?: boolean,
+    ): Promise<
+      Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>
+    >;
   }
 
   export class GuildEmojiManager extends BaseGuildEmojiManager {
@@ -3369,6 +3395,8 @@ declare module 'discord.js' {
     | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
     | 'REPLY'
     | 'APPLICATION_COMMAND';
+
+  type MFALevel = keyof typeof MFALevels;
 
   type NSFWLevel = keyof typeof NSFWLevels;
 

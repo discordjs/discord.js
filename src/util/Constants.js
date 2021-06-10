@@ -864,6 +864,14 @@ exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON']);
 exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'LINK']);
 
 /**
+ * The required MFA level for a guild
+ * * NONE
+ * * ELEVATED
+ * @typedef {string} MFALevel
+ */
+exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
+
+/**
  * NSFW level of a Guild
  * * DEFAULT
  * * EXPLICIT
