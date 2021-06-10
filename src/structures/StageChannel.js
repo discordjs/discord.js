@@ -10,11 +10,13 @@ class StageChannel extends BaseGuildVoiceChannel {
   _patch(data) {
     super._patch(data);
 
-    /**
-     * The topic of the stage channel
-     * @type {?string}
-     */
-    this.topic = data.topic;
+    if ('topic' in data) {
+      /**
+       * The topic of the stage channel
+       * @type {?string}
+       */
+      this.topic = data.topic;
+    }
   }
 
   /**
