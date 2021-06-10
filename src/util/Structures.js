@@ -112,7 +112,6 @@ const structures = {
   Role: require('../structures/Role'),
   User: require('../structures/User'),
   CommandInteraction: require('../structures/CommandInteraction'),
-  MessageComponentInteraction: require('../structures/MessageComponentInteraction'),
   ButtonInteraction: require('../structures/ButtonInteraction'),
 };
 
