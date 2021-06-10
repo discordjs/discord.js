@@ -161,7 +161,7 @@ class ClientUser extends Structures.get('User') {
    * client.user.setActivity('discord.js', { type: 'WATCHING' });
    */
   setActivity(name, options = {}) {
-    if (!name) return this.setPresence({ activities: null, shardID: options.shardID });
+    if (!name) return this.setPresence({ activities: [], shardID: options.shardID });
 
     const activity = Object.assign({}, options, typeof name === 'object' ? name : { name });
     return this.setPresence({ activities: [activity], shardID: activity.shardID });
