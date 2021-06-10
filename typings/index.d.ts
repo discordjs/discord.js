@@ -3750,7 +3750,7 @@ declare module 'discord.js' {
     'content' | 'embeds' | 'files' | 'allowedMentions' | 'components'
   >;
 
-  interface WebhookMessageOptions extends Omit<MessageOptions, 'embed' | 'reply'> {
+  interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
     username?: string;
     avatarURL?: string;
   }
