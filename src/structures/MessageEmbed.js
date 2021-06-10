@@ -44,8 +44,6 @@ class MessageEmbed {
      * * `gifv` - a gifv embed
      * * `article` - an article embed
      * * `link` - a link embed
-     * <warn>Discord advises that "Embed types should be considered deprecated
-     * and might be removed in a future API version."</warn>
      * @type {string}
      * @deprecated
      */
