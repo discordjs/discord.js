@@ -1674,16 +1674,8 @@ declare module 'discord.js' {
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
-    public respawnAll(options?: {
-      shardDelay?: number;
-      respawnDelay?: number;
-      timeout?: number;
-    }): Promise<Collection<number, Shard>>;
-    public spawn(options?: {
-      amount?: number | 'auto';
-      delay?: number;
-      timeout?: number;
-    }): Promise<Collection<number, Shard>>;
+    public respawnAll(options?: ShardRespawnOptions): Promise<Collection<number, Shard>>;
+    public spawn(options?: ShardSpawnOptions): Promise<Collection<number, Shard>>;
 
     public on(event: 'shardCreate', listener: (shard: Shard) => Awaited<void>): this;
 
@@ -3658,6 +3650,18 @@ declare module 'discord.js' {
     shardArgs?: string[];
     token?: string;
     execArgv?: string[];
+  }
+
+  interface ShardRespawnOptions {
+    shardDelay?: number;
+    respawnDelay?: number;
+    timeout?: number;
+  }
+
+  interface ShardSpawnOptions {
+    amount?: number | 'auto';
+    delay?: number;
+    timeout?: number;
   }
 
   type Snowflake = APISnowflake;
