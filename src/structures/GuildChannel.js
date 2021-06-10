@@ -73,10 +73,8 @@ class GuildChannel extends Channel {
        * @type {Collection<Snowflake, PermissionOverwrites>}
        */
       this.permissionOverwrites = new Collection();
-      if (data.permission_overwrites) {
-        for (const overwrite of data.permission_overwrites) {
-          this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
-        }
+      for (const overwrite of data.permission_overwrites) {
+        this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
       }
     }
   }
