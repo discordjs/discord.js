@@ -35,11 +35,7 @@ class ClientPresence extends Presence {
       since: typeof since === 'number' && !Number.isNaN(since) ? since : null,
       status: status || this.status,
     };
-    if (activities === null) {
-      data.activities = null;
-      return data;
-    }
-    if (activities && activities.length) {
+    if (activities?.length) {
       for (const [i, activity] of activities.entries()) {
         if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', `activities[${i}].name`, 'string');
         if (!activity.type) activity.type = 0;
@@ -50,8 +46,14 @@ class ClientPresence extends Presence {
           url: activity.url,
         });
       }
-    } else if ((status || afk || since) && this.activities.length) {
-      data.activities.push(...this.activities);
+    } else if (!activities && (status || afk || since) && this.activities.length) {
+      data.activities.push(
+        ...this.activities.map(a => ({
+          name: a.name,
+          type: ActivityTypes.indexOf(a.type),
+          url: a.url ?? undefined,
+        })),
+      );
     }
 
     return data;
