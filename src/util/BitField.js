@@ -52,8 +52,7 @@ class BitField {
    * @returns {string[]}
    */
   missing(bits, ...hasParams) {
-    if (!Array.isArray(bits)) bits = new this.constructor(bits).toArray(false);
-    return bits.filter(p => !this.has(p, ...hasParams));
+    return new this.constructor(bits).remove(this).toArray(...hasParams);
   }
 
   /**
