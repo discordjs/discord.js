@@ -329,11 +329,16 @@ class Util {
   }
 
   /**
+   * Options used to make an error object.
+   * @typedef {Object} MakeErrorOptions
+   * @property {string} name Error type
+   * @property {string} message Message for the error
+   * @property {string} stack Stack for the error
+   */
+
+  /**
    * Makes an Error from a plain info object.
-   * @param {Object} obj Error info
-   * @param {string} obj.name Error type
-   * @param {string} obj.message Message for the error
-   * @param {string} obj.stack Stack for the error
+   * @param {MakeErrorOptions} obj Error info
    * @returns {Error}
    * @private
    */
@@ -347,7 +352,7 @@ class Util {
   /**
    * Makes a plain error info object from an Error.
    * @param {Error} err Error to get info from
-   * @returns {Object}
+   * @returns {MakeErrorOptions}
    * @private
    */
   static makePlainError(err) {

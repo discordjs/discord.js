@@ -83,7 +83,7 @@ class MessageComponentInteractionCollector extends Collector {
   /**
    * Handles an incoming interaction for possible collection.
    * @param {Interaction} interaction The interaction to possibly collect
-   * @returns {?Snowflake|string}
+   * @returns {?(Snowflake|string)}
    * @private
    */
   collect(interaction) {
