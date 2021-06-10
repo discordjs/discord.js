@@ -147,9 +147,7 @@ class APIMessage {
     if (this.options.embeds) {
       embedLikes.push(...this.options.embeds);
     }
-    else if (this.options.embed) {
-      embedLikes.push(this.options.embed);
-    }
+
     const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
 
     const components = this.options.components?.map(c =>
@@ -221,6 +219,22 @@ class APIMessage {
    */
   async resolveFiles() {
     if (this.files) return this;
+    
+    const embedLikes = [];
+
+    if (this.options.embeds) {
+      embedLikes.push(...this.options.embeds);
+    }
+
+    const fileLikes = [];
+    if (this.options.files) {
+      fileLikes.push(...this.options.files);
+    }
+    for (const embed of embedLikes) {
+      if (embed.files) {
+        fileLikes.push(...embed.files);
+      }
+    }
 
     this.files = await Promise.all(this.options.files?.map(file => this.constructor.resolveFile(file)) ?? []);
     return this;
@@ -300,10 +314,9 @@ class APIMessage {
    * @returns {MessageOptions|WebhookMessageOptions}
    */
   static create(target, options, extra = {}) {
-    return new this(
-      target,
-      typeof options !== 'object' || options === null ? { content: options, ...extra } : { ...options, ...extra },
-    );
+    if (typeof options !== 'object' || options === null) return new this(target, { content: options, ...extra });
+    if (options.embed) options.embeds = [options.embed];
+    return new this(target, { ...options, ...extra });
   }
 }
 
