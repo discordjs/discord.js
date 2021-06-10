@@ -162,7 +162,7 @@ class MessageMentions {
   }
 
   /**
-   * Options used to check a mention.
+   * Options used to check for a mention.
    * @typedef {Object} MessageMentionsHasOptions
    * @property {boolean} [ignoreDirect=false] - Whether to ignore direct mentions to the item
    * @property {boolean} [ignoreRoles=false] - Whether to ignore role mentions to a guild member
