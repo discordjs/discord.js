@@ -25,6 +25,7 @@ const {
   ExplicitContentFilterLevels,
   NSFWLevels,
   Status,
+  MFALevels,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
@@ -260,10 +261,10 @@ class Guild extends BaseGuild {
     this.explicitContentFilter = ExplicitContentFilterLevels[data.explicit_content_filter];
 
     /**
-     * The required MFA level for the guild
-     * @type {number}
+     * The required MFA level for this guild
+     * @type {MFALevel}
      */
-    this.mfaLevel = data.mfa_level;
+    this.mfaLevel = MFALevels[data.mfa_level];
 
     /**
      * The timestamp the client user joined the guild at

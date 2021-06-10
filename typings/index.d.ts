@@ -53,6 +53,11 @@ declare enum MessageComponentTypes {
   BUTTON = 2,
 }
 
+declare enum MFALevels {
+  NONE = 0,
+  ELEVATED = 1,
+}
+
 declare enum NSFWLevels {
   DEFAULT = 0,
   EXPLICIT = 1,
@@ -681,6 +686,7 @@ declare module 'discord.js' {
     InteractionResponseTypes: typeof InteractionResponseTypes;
     MessageComponentTypes: typeof MessageComponentTypes;
     MessageButtonStyles: typeof MessageButtonStyles;
+    MFALevels: typeof MFALevels;
     NSFWLevels: typeof NSFWLevels;
   };
 
@@ -759,7 +765,7 @@ declare module 'discord.js' {
     public readonly me: GuildMember | null;
     public memberCount: number;
     public members: GuildMemberManager;
-    public mfaLevel: number;
+    public mfaLevel: MFALevel;
     public nsfwLevel: NSFWLevel;
     public ownerID: Snowflake;
     public preferredLocale: string;
@@ -3387,6 +3393,8 @@ declare module 'discord.js' {
     | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
     | 'REPLY'
     | 'APPLICATION_COMMAND';
+
+  type MFALevel = keyof typeof MFALevels;
 
   type NSFWLevel = keyof typeof NSFWLevels;
 
