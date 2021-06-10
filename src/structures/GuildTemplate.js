@@ -136,10 +136,15 @@ class GuildTemplate extends Base {
   }
 
   /**
-   * Updates the metadata on this template.
-   * @param {Object} options Options for the template
-   * @param {string} [options.name] The name of this template
-   * @param {string} [options.description] The description of this template
+   * Options used to edit a guild template.
+   * @typedef {Object} EditGuildTemplateOptions
+   * @property {string} [name] The name of this template
+   * @property {string} [description] The description of this template
+   */
+
+  /**
+   * Updates the metadata of this template.
+   * @param {EditGuildTemplateOptions} [options] Options for editing the template
    * @returns {Promise<GuildTemplate>}
    */
   edit({ name, description } = {}) {

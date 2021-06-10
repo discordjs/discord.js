@@ -1009,7 +1009,7 @@ declare module 'discord.js' {
     public unSynced: boolean | null;
     public createGuild(name: string, icon?: BufferResolvable | Base64Resolvable): Promise<Guild>;
     public delete(): Promise<GuildTemplate>;
-    public edit(options?: { name?: string; description?: string }): Promise<GuildTemplate>;
+    public edit(options?: EditGuildTemplateOptions): Promise<GuildTemplate>;
     public sync(): Promise<GuildTemplate>;
     public static GUILD_TEMPLATES_PATTERN: RegExp;
   }
@@ -2773,6 +2773,11 @@ declare module 'discord.js' {
   }
 
   type DefaultMessageNotifications = 'ALL' | 'MENTIONS';
+
+  interface EditGuildTemplateOptions {
+    name?: string;
+    description?: string;
+  }
 
   interface EmbedField {
     name: string;
