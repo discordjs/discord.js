@@ -320,8 +320,10 @@ class APIMessage {
    * @returns {MessageOptions|WebhookMessageOptions}
    */
   static create(target, options, extra = {}) {
-    if (typeof options !== 'object' || options === null) return new this(target, { content: options, ...extra });
-    else return new this(target, { ...options, ...extra });
+    return new this(
+      target,
+      typeof options !== 'object' || options === null ? { content: options, ...extra } : { ...options, ...extra },
+    );
   }
 }
 
