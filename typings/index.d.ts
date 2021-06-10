@@ -1375,6 +1375,7 @@ declare module 'discord.js' {
     public thumbnail: MessageEmbedThumbnail | null;
     public timestamp: number | null;
     public title: string | null;
+    /** @deprecated */
     public type: string;
     public url: string | null;
     public readonly video: MessageEmbedVideo | null;
