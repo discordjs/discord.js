@@ -2,6 +2,7 @@
 
 const APIMessage = require('./APIMessage');
 const Channel = require('./Channel');
+const { Error } = require('../errors');
 const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
@@ -29,7 +30,7 @@ class Webhook {
     this.name = data.name;
 
     /**
-     * The token for the webhook
+     * The token for the webhook, unavailable for follower webhooks and webhooks owned by another application.
      * @name Webhook#token
      * @type {?string}
      */
@@ -149,6 +150,8 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(options) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
     let apiMessage;
 
     if (options instanceof APIMessage) {
@@ -194,6 +197,8 @@ class Webhook {
    * }).catch(console.error);
    */
   sendSlackMessage(body) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
     return this.client.api
       .webhooks(this.id, this.token)
       .slack.post({
@@ -237,6 +242,8 @@ class Webhook {
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async fetchMessage(message, cache = true) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
     const data = await this.client.api.webhooks(this.id, this.token).messages(message).get();
     return this.client.channels?.cache.get(data.channel_id)?.messages.add(data, cache) ?? data;
   }
@@ -249,6 +256,8 @@ class Webhook {
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async editMessage(message, options) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
     let apiMessage;
 
     if (options instanceof APIMessage) apiMessage = options;
@@ -287,6 +296,8 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async deleteMessage(message) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
     await this.client.api
       .webhooks(this.id, this.token)
       .messages(typeof message === 'string' ? message : message.id)

@@ -290,7 +290,7 @@ class Client extends BaseClient {
     return this.api
       .webhooks(id, token)
       .get()
-      .then(data => new Webhook(this, data));
+      .then(data => new Webhook(this, { token, ...data }));
   }
 
   /**
