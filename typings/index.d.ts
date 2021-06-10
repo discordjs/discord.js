@@ -3212,6 +3212,7 @@ declare module 'discord.js' {
     User: typeof User;
     CommandInteraction: typeof CommandInteraction;
     ButtonInteraction: typeof ButtonInteraction;
+    SelectMenuInteraction: typeof SelectMenuInteraction;
   }
 
   interface FetchApplicationCommandOptions extends BaseFetchOptions {
