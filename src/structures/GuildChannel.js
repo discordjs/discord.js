@@ -539,7 +539,7 @@ class GuildChannel extends Channel {
    */
 
   /**
-   * Options used to create an invite to a guild.
+   * Options used to create an invite to a guild channel.
    * @typedef {Object} InviteOptions
    * @property {boolean} [temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
