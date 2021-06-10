@@ -30,6 +30,18 @@ class User extends Base {
     this.system = null;
     this.flags = null;
 
+    /**
+     * The ID of the last message sent by the user, if one was sent
+     * @type {?Snowflake}
+     */
+    this.lastMessageID = null;
+
+    /**
+     * The ID of the channel for the last message sent by the user, if one was sent
+     * @type {?Snowflake}
+     */
+    this.lastMessageChannelID = null;
+
     this._patch(data);
   }
 
@@ -87,18 +99,6 @@ class User extends Base {
        */
       this.flags = new UserFlags(data.public_flags);
     }
-
-    /**
-     * The ID of the last message sent by the user, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageID = null;
-
-    /**
-     * The ID of the channel for the last message sent by the user, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageChannelID = null;
   }
 
   /**
