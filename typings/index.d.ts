@@ -1394,14 +1394,7 @@ declare module 'discord.js' {
     public readonly client: Client;
     public everyone: boolean;
     public readonly guild: Guild;
-    public has(
-      data: UserResolvable | RoleResolvable | ChannelResolvable,
-      options?: {
-        ignoreDirect?: boolean;
-        ignoreRoles?: boolean;
-        ignoreEveryone?: boolean;
-      },
-    ): boolean;
+    public has(data: UserResolvable | RoleResolvable | ChannelResolvable, options?: MessageMentionsHasOptions): boolean;
     public readonly members: Collection<Snowflake, GuildMember> | null;
     public roles: Collection<Snowflake, Role>;
     public users: Collection<Snowflake, User>;
@@ -3326,6 +3319,12 @@ declare module 'discord.js' {
     type: InteractionType;
     commandName: string;
     user: User;
+  }
+
+  interface MessageMentionsHasOptions {
+    ignoreDirect?: boolean;
+    ignoreRoles?: boolean;
+    ignoreEveryone?: boolean;
   }
 
   interface MessageMentionOptions {

@@ -606,22 +606,15 @@ class GuildChannel extends Channel {
     return invites;
   }
 
-  /* eslint-disable max-len */
+  /**
+   * Options used to clone a guild channel.
+   * @typedef {GuildCreateChannelOptions} GuildChannelCloneOptions
+   * @property {string} [name=this.name] Name of the new channel
+   */
+
   /**
    * Clones this channel.
-   * @param {Object} [options] The options
-   * @param {string} [options.name=this.name] Name of the new channel
-   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.permissionOverwrites=this.permissionOverwrites]
-   * Permission overwrites of the new channel
-   * @param {string} [options.type=this.type] Type of the new channel
-   * @param {string} [options.topic=this.topic] Topic of the new channel (only text)
-   * @param {boolean} [options.nsfw=this.nsfw] Whether the new channel is nsfw (only text)
-   * @param {number} [options.bitrate=this.bitrate] Bitrate of the new channel in bits (only voice)
-   * @param {number} [options.userLimit=this.userLimit] Maximum amount of users allowed in the new channel (only voice)
-   * @param {number} [options.rateLimitPerUser=this.rateLimitPerUser] Ratelimit per user for the new channel (only text)
-   * @param {number} [options.position=this.position] Position of the new channel
-   * @param {ChannelResolvable} [options.parent=this.parent] Parent of the new channel
-   * @param {string} [options.reason] Reason for cloning this channel
+   * @param {GuildChannelCloneOptions} [options] The options for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
@@ -639,7 +632,6 @@ class GuildChannel extends Channel {
       ...options,
     });
   }
-  /* eslint-enable max-len */
 
   /**
    * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
