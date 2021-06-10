@@ -573,23 +573,20 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
-    Util.mergeDefault(
-      {
-        name: this.name,
-        permissionOverwrites: this.permissionOverwrites,
-        topic: this.topic,
-        type: this.type,
-        nsfw: this.nsfw,
-        parent: this.parent,
-        bitrate: this.bitrate,
-        userLimit: this.userLimit,
-        rateLimitPerUser: this.rateLimitPerUser,
-        position: this.position,
-        reason: null,
-      },
-      options,
-    );
-    return this.guild.channels.create(options.name, options);
+    return this.guild.channels.create(options.name, {
+      name: this.name,
+      permissionOverwrites: this.permissionOverwrites,
+      topic: this.topic,
+      type: this.type,
+      nsfw: this.nsfw,
+      parent: this.parent,
+      bitrate: this.bitrate,
+      userLimit: this.userLimit,
+      rateLimitPerUser: this.rateLimitPerUser,
+      position: this.position,
+      reason: null,
+      ...options,
+    });
   }
   /* eslint-enable max-len */
 
