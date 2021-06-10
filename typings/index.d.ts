@@ -1191,7 +1191,7 @@ declare module 'discord.js' {
     public static INVITES_PATTERN: RegExp;
   }
 
-  export class InviteGuild extends BaseGuild {
+  export class InviteGuild extends AnonymousGuild {
     constructor(client: Client, data: unknown);
     public welcomeScreen: WelcomeScreen | null;
   }
