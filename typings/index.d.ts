@@ -424,7 +424,7 @@ declare module 'discord.js' {
     public handleCollect(...args: any[]): void;
     public handleDispose(...args: any[]): void;
     public stop(reason?: string): void;
-    public resetTimer(options?: { time?: number; idle?: number }): void;
+    public resetTimer(options?: CollectorResetTimerOptions): void;
     public [Symbol.asyncIterator](): AsyncIterableIterator<V>;
     public toJSON(): unknown;
 
@@ -1572,7 +1572,7 @@ declare module 'discord.js' {
     public setMentionable(mentionable: boolean, reason?: string): Promise<Role>;
     public setName(name: string, reason?: string): Promise<Role>;
     public setPermissions(permissions: PermissionResolvable, reason?: string): Promise<Role>;
-    public setPosition(position: number, options?: { relative?: boolean; reason?: string }): Promise<Role>;
+    public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
     public toJSON(): unknown;
     public toString(): string;
 
@@ -2705,6 +2705,11 @@ declare module 'discord.js' {
     dispose?: boolean;
   }
 
+  interface CollectorResetTimerOptions {
+    time?: number;
+    idle?: number;
+  }
+
   type ColorResolvable =
     | 'DEFAULT'
     | 'WHITE'
@@ -3667,6 +3672,11 @@ declare module 'discord.js' {
 
   interface SetParentOptions {
     lockPermissions?: boolean;
+    reason?: string;
+  }
+
+  interface SetRolePositionOptions {
+    relative?: boolean;
     reason?: string;
   }
 

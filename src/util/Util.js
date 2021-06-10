@@ -91,18 +91,23 @@ class Util {
   }
 
   /**
+   * Options used to escape markdown.
+   * @typedef {Object} EscapeMarkdownOptions
+   * @property {boolean} [codeBlock=true] Whether to escape code blocks or not
+   * @property {boolean} [inlineCode=true] Whether to escape inline code or not
+   * @property {boolean} [bold=true] Whether to escape bolds or not
+   * @property {boolean} [italic=true] Whether to escape italics or not
+   * @property {boolean} [underline=true] Whether to escape underlines or not
+   * @property {boolean} [strikethrough=true] Whether to escape strikethroughs or not
+   * @property {boolean} [spoiler=true] Whether to escape spoilers or not
+   * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks or not
+   * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code or not
+   */
+
+  /**
    * Escapes any Discord-flavour markdown in a string.
    * @param {string} text Content to escape
-   * @param {Object} [options={}] What types of markdown to escape
-   * @param {boolean} [options.codeBlock=true] Whether to escape code blocks or not
-   * @param {boolean} [options.inlineCode=true] Whether to escape inline code or not
-   * @param {boolean} [options.bold=true] Whether to escape bolds or not
-   * @param {boolean} [options.italic=true] Whether to escape italics or not
-   * @param {boolean} [options.underline=true] Whether to escape underlines or not
-   * @param {boolean} [options.strikethrough=true] Whether to escape strikethroughs or not
-   * @param {boolean} [options.spoiler=true] Whether to escape spoilers or not
-   * @param {boolean} [options.codeBlockContent=true] Whether to escape text inside code blocks or not
-   * @param {boolean} [options.inlineCodeContent=true] Whether to escape text inside inline code or not
+   * @param {EscapeMarkdownOptions} [options={}] Options for escaping the markdown
    * @returns {string}
    */
   static escapeMarkdown(

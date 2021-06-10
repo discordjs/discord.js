@@ -323,11 +323,16 @@ class Role extends Base {
   }
 
   /**
-   * Sets the position of the role.
-   * @param {number} position The position of the role
-   * @param {Object} [options] Options for setting position
-   * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {string} [options.reason] Reason for changing the position
+   * Options used to set position of a role.
+   * @typedef {Object} SetRolePositionOptions
+   * @property {boolean} [relative=false] Whether to change the position relative to its current value or not
+   * @property {string} [reason] The reason for changing the position
+   */
+
+  /**
+   * Sets the new position of the role.
+   * @param {number} position The new position for the role
+   * @param {SetRolePositionOptions} [options] Options for setting the position
    * @returns {Promise<Role>}
    * @example
    * // Set the position of the role
