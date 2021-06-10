@@ -573,7 +573,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
-    options = {
+    return this.guild.channels.create(options.name, {
       name: this.name,
       permissionOverwrites: this.permissionOverwrites,
       topic: this.topic,
@@ -586,8 +586,7 @@ class GuildChannel extends Channel {
       position: this.position,
       reason: null,
       ...options,
-    };
-    return this.guild.channels.create(options.name, options);
+    });
   }
   /* eslint-enable max-len */
 
