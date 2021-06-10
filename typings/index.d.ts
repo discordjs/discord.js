@@ -3240,7 +3240,6 @@ declare module 'discord.js' {
   interface MessageEditOptions {
     attachments?: MessageAttachment[];
     content?: string | null;
-    embed?: MessageEmbed | MessageEmbedOptions | null;
     embeds?: (MessageEmbed | MessageEmbedOptions)[] | null;
     code?: string | boolean;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
@@ -3337,7 +3336,6 @@ declare module 'discord.js' {
     tts?: boolean;
     nonce?: string | number;
     content?: string;
-    embed?: MessageEmbed | MessageEmbedOptions;
     embeds?: (MessageEmbed | MessageEmbedOptions)[];
     components?: MessageActionRow[] | MessageActionRowOptions[] | MessageActionRowComponentResolvable[][];
     allowedMentions?: MessageMentionOptions;
