@@ -1030,7 +1030,7 @@ declare module 'discord.js' {
   }
 
   // tslint:disable-next-line:no-empty-interface - Merge RateLimitData into RateLimitError to not have to type it again
-  interface RateLimitError extends RateLimitData {}
+  interface RateLimitError extends RateLimitData { }
   export class RateLimitError extends Error {
     constructor(data: RateLimitData);
     public name: 'RateLimitError';
@@ -1674,8 +1674,8 @@ declare module 'discord.js' {
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
-    public respawnAll(options?: ShardRespawnOptions): Promise<Collection<number, Shard>>;
-    public spawn(options?: ShardSpawnOptions): Promise<Collection<number, Shard>>;
+    public respawnAll(options?: MultipleShardRespawnOptions): Promise<Collection<number, Shard>>;
+    public spawn(options?: MultipleShardSpawnOptions): Promise<Collection<number, Shard>>;
 
     public on(event: 'shardCreate', listener: (shard: Shard) => Awaited<void>): this;
 
@@ -2268,9 +2268,9 @@ declare module 'discord.js' {
     public guild: Guild;
     public readonly premiumSubscriberRole: Role | null;
     public botRoleFor(user: UserResolvable): Role | null;
-    public create(options?: RoleData & { reason?: string }): Promise<Role>;
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Role | null>;
     public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Role>>;
+    public create(options?: CreateRoleOptions): Promise<Role>;
   }
 
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
@@ -2757,6 +2757,10 @@ declare module 'discord.js' {
     member?: GuildMember | RawInteractionDataResolvedGuildMember;
     channel?: GuildChannel | RawInteractionDataResolvedChannel;
     role?: Role | RawRole;
+  }
+
+  interface CreateRoleOptions extends RoleData {
+    reason?: string;
   }
 
   interface CrosspostedChannel {
@@ -3390,6 +3394,18 @@ declare module 'discord.js' {
 
   type MFALevel = keyof typeof MFALevels;
 
+  interface MultipleShardRespawnOptions {
+    shardDelay?: number;
+    respawnDelay?: number;
+    timeout?: number;
+  }
+
+  interface MultipleShardSpawnOptions {
+    amount?: number | 'auto';
+    delay?: number;
+    timeout?: number;
+  }
+
   type NSFWLevel = keyof typeof NSFWLevels;
 
   interface OverwriteData {
@@ -3403,11 +3419,11 @@ declare module 'discord.js' {
 
   type OverwriteType = 'member' | 'role';
 
-  interface PermissionFlags extends Record<PermissionString, bigint> {}
+  interface PermissionFlags extends Record<PermissionString, bigint> { }
 
-  interface PermissionObject extends Record<PermissionString, boolean> {}
+  interface PermissionObject extends Record<PermissionString, boolean> { }
 
-  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> {}
+  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> { }
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
@@ -3446,7 +3462,7 @@ declare module 'discord.js' {
     | 'USE_APPLICATION_COMMANDS'
     | 'REQUEST_TO_SPEAK';
 
-  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
+  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> { }
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
@@ -3470,16 +3486,16 @@ declare module 'discord.js' {
     partial: true;
     fetch(): Promise<T>;
   } & {
-    [K in keyof Omit<
-      T,
-      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-    >]: T[K] extends (...args: any) => void ? T[K] : T[K] | null;
-  };
+      [K in keyof Omit<
+        T,
+        'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
+      >]: T[K] extends (...args: any) => void ? T[K] : T[K] | null;
+    };
 
   interface PartialDMChannel
     extends Partialize<
-      DMChannel,
-      'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
+    DMChannel,
+    'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
     > {
     lastMessage: null;
     lastMessageID: undefined;
@@ -3506,18 +3522,18 @@ declare module 'discord.js' {
 
   interface PartialGuildMember
     extends Partialize<
-      GuildMember,
-      | 'bannable'
-      | 'displayColor'
-      | 'displayHexColor'
-      | 'displayName'
-      | 'guild'
-      | 'kickable'
-      | 'permissions'
-      | 'roles'
-      | 'manageable'
-      | 'presence'
-      | 'voice'
+    GuildMember,
+    | 'bannable'
+    | 'displayColor'
+    | 'displayHexColor'
+    | 'displayName'
+    | 'guild'
+    | 'kickable'
+    | 'permissions'
+    | 'roles'
+    | 'manageable'
+    | 'presence'
+    | 'voice'
     > {
     readonly bannable: boolean;
     readonly displayColor: number;
@@ -3536,17 +3552,17 @@ declare module 'discord.js' {
 
   interface PartialMessage
     extends Partialize<
-      Message,
-      | 'attachments'
-      | 'channel'
-      | 'deletable'
-      | 'crosspostable'
-      | 'editable'
-      | 'mentions'
-      | 'pinnable'
-      | 'url'
-      | 'flags'
-      | 'embeds'
+    Message,
+    | 'attachments'
+    | 'channel'
+    | 'deletable'
+    | 'crosspostable'
+    | 'editable'
+    | 'mentions'
+    | 'pinnable'
+    | 'url'
+    | 'flags'
+    | 'embeds'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];
@@ -3650,18 +3666,6 @@ declare module 'discord.js' {
     shardArgs?: string[];
     token?: string;
     execArgv?: string[];
-  }
-
-  interface ShardRespawnOptions {
-    shardDelay?: number;
-    respawnDelay?: number;
-    timeout?: number;
-  }
-
-  interface ShardSpawnOptions {
-    amount?: number | 'auto';
-    delay?: number;
-    timeout?: number;
   }
 
   type Snowflake = APISnowflake;
