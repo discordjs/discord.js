@@ -129,7 +129,6 @@ class APIMessage {
     if (this.data) return this;
     const isInteraction = this.isInteraction;
     const isWebhook = this.isWebhook;
-    const isWebhookLike = isInteraction || isWebhook;
 
     const content = this.makeContent();
     const tts = Boolean(this.options.tts);
@@ -199,8 +198,7 @@ class APIMessage {
       content,
       tts,
       nonce,
-      embed: !isWebhookLike ? (this.options.embed === null ? null : embeds[0]) : undefined,
-      embeds: isWebhookLike ? embeds : undefined,
+      embeds,
       components,
       username,
       avatar_url: avatarURL,
