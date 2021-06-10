@@ -910,7 +910,7 @@ declare module 'discord.js' {
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
     public setName(name: string, reason?: string): Promise<this>;
     public setParent(channel: CategoryChannel | Snowflake | null, options?: SetParentOptions): Promise<this>;
-    public setPosition(position: number, options?: { relative?: boolean; reason?: string }): Promise<this>;
+    public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
     public setTopic(topic: string | null, reason?: string): Promise<this>;
     public updateOverwrite(
       userOrRole: RoleResolvable | UserResolvable,
@@ -1643,7 +1643,7 @@ declare module 'discord.js' {
     ): Promise<T>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
-    public respawnAll(options?: { shardDelay?: number; respawnDelay?: number; timeout?: number }): Promise<void>;
+    public respawnAll(options?: MultipleShardRespawnOptions): Promise<void>;
     public send(message: any): Promise<void>;
 
     public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
@@ -2257,7 +2257,7 @@ declare module 'discord.js' {
   export class ReactionUserManager extends BaseManager<Snowflake, User, UserResolvable> {
     constructor(client: Client, iterable: Iterable<any> | undefined, reaction: MessageReaction);
     public reaction: MessageReaction;
-    public fetch(options?: { limit?: number; after?: Snowflake }): Promise<Collection<Snowflake, User>>;
+    public fetch(options?: FetchReactionUsersOptions): Promise<Collection<Snowflake, User>>;
     public remove(user?: UserResolvable): Promise<MessageReaction>;
   }
 
@@ -2875,6 +2875,11 @@ declare module 'discord.js' {
   }
 
   type FetchOwnerOptions = Omit<FetchMemberOptions, 'user'>;
+
+  interface FetchReactionUsersOptions {
+    limit?: number;
+    after?: Snowflake;
+  }
 
   interface FileOptions {
     attachment: BufferResolvable | Stream;
@@ -3649,6 +3654,11 @@ declare module 'discord.js' {
     botID?: Snowflake;
     integrationID?: Snowflake;
     premiumSubscriberRole?: true;
+  }
+
+  interface SetChannelPositionOptions {
+    relative?: boolean;
+    reason?: string;
   }
 
   interface SetParentOptions {
