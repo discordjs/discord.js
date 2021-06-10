@@ -70,7 +70,7 @@ class TextBasedChannel {
   /**
    * Options provided when sending or editing a message.
    * @typedef {BaseMessageOptions} MessageOptions
-   * @property {MessageEmbed|Object} [embed] An embed for the message
+   * @property {MessageEmbed[]|Object[]} [embeds] The embeds for the message
    * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {ReplyOptions} [reply] The options for replying to a message
    */
