@@ -23,7 +23,7 @@ class ChannelManager extends BaseManager {
     const existing = this.cache.get(data.id);
     if (existing) {
       if (existing._patch && cache) existing._patch(data);
-      if (guild) guild.channels.add(existing);
+      if (guild) guild.channels?.add(existing);
       return existing;
     }
 
