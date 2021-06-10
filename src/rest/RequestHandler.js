@@ -5,7 +5,7 @@ const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const RateLimitError = require('./RateLimitError');
 const {
-  Events: { RATE_LIMIT, INVALID_REQUEST_WARNING },
+  Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING },
 } = require('../util/Constants');
 const Util = require('../util/Util');
 
@@ -255,9 +255,6 @@ class RequestHandler {
     if (res.status >= 400 && res.status < 500) {
       // Handle ratelimited requests
       if (res.status === 429) {
-        // A ratelimit was hit - this should never happen
-        this.manager.client.emit('debug', `429 hit on route ${request.route}${sublimitTimeout ? ' for sublimit' : ''}`);
-
         const isGlobal = this.globalLimited;
         let limit, timeout;
         if (isGlobal) {
@@ -269,6 +266,19 @@ class RequestHandler {
           limit = this.limit;
           timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
         }
+
+        this.manager.client.emit(
+          DEBUG,
+          `Hit a 429 while executing a request.
+    Global  : ${isGlobal}
+    Method  : ${request.method}
+    Path    : ${request.path}
+    Route   : ${request.route}
+    Limit   : ${limit}
+    Timeout : ${timeout}ms
+    Sublimit: ${sublimitTimeout ? `${sublimitTimeout}ms` : 'None'}`,
+        );
+
         await this.onRateLimit(request, limit, timeout, isGlobal);
 
         // If caused by a sublimit, wait it out here so other requests on the route can be handled
