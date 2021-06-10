@@ -276,7 +276,7 @@ class RequestHandler {
     Route   : ${request.route}
     Limit   : ${limit}
     Timeout : ${timeout}ms
-    Sublimit: ${sublimitTimeout ? `${sublimitTimeout}ms` : false}`,
+    Sublimit: ${sublimitTimeout ? `${sublimitTimeout}ms` : 'None'}`,
         );
 
         await this.onRateLimit(request, limit, timeout, isGlobal);
