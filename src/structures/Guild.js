@@ -6,7 +6,6 @@ const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
-const VoiceRegion = require('./VoiceRegion');
 const Webhook = require('./Webhook');
 const { Error, TypeError } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
@@ -140,12 +139,6 @@ class Guild extends BaseGuild {
      * @type {?string}
      */
     this.discoverySplash = data.discovery_splash;
-
-    /**
-     * The region the guild is located in
-     * @type {string}
-     */
-    this.region = data.region;
 
     /**
      * The full amount of members in this guild
@@ -701,21 +694,6 @@ class Guild extends BaseGuild {
   }
 
   /**
-   * Fetches available voice regions.
-   * @returns {Promise<Collection<string, VoiceRegion>>}
-   */
-  fetchVoiceRegions() {
-    return this.client.api
-      .guilds(this.id)
-      .regions.get()
-      .then(res => {
-        const regions = new Collection();
-        for (const region of res) regions.set(region.id, new VoiceRegion(region));
-        return regions;
-      });
-  }
-
-  /**
    * Data for the Guild Widget object
    * @typedef {Object} GuildWidget
    * @property {boolean} enabled Whether the widget is enabled
@@ -818,7 +796,6 @@ class Guild extends BaseGuild {
    * The data for editing a guild.
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
-   * @property {string} [region] The region of the guild
    * @property {VerificationLevel|number} [verificationLevel] The verification level of the guild
    * @property {ExplicitContentFilterLevel|number} [explicitContentFilter] The level of the explicit content filter
    * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
@@ -844,18 +821,16 @@ class Guild extends BaseGuild {
    * @param {string} [reason] Reason for editing this guild
    * @returns {Promise<Guild>}
    * @example
-   * // Set the guild name and region
+   * // Set the guild name
    * guild.edit({
    *   name: 'Discord Guild',
-   *   region: 'london',
    * })
-   *   .then(updated => console.log(`New guild name ${updated} in region ${updated.region}`))
+   *   .then(updated => console.log(`New guild name ${updated}`))
    *   .catch(console.error);
    */
   edit(data, reason) {
     const _data = {};
     if (data.name) _data.name = data.name;
-    if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') {
       _data.verification_level =
         typeof data.verificationLevel === 'number'
@@ -953,21 +928,6 @@ class Guild extends BaseGuild {
    */
   setName(name, reason) {
     return this.edit({ name }, reason);
-  }
-
-  /**
-   * Edits the region of the guild.
-   * @param {string} region The new region of the guild
-   * @param {string} [reason] Reason for changing the guild's region
-   * @returns {Promise<Guild>}
-   * @example
-   * // Edit the guild region
-   * guild.setRegion('london')
-   *  .then(updated => console.log(`Updated guild region to ${updated.region}`))
-   *  .catch(console.error);
-   */
-  setRegion(region, reason) {
-    return this.edit({ region }, reason);
   }
 
   /**
@@ -1301,7 +1261,6 @@ class Guild extends BaseGuild {
       this.available === guild.available &&
       this.splash === guild.splash &&
       this.discoverySplash === guild.discoverySplash &&
-      this.region === guild.region &&
       this.name === guild.name &&
       this.memberCount === guild.memberCount &&
       this.large === guild.large &&
