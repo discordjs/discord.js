@@ -1553,7 +1553,7 @@ declare module 'discord.js' {
       deleteCount: number,
       ...options: MessageSelectOptionData[] | MessageSelectOptionData[][]
     ): this;
-    public toJSON(): object;
+    public toJSON(): unknown;
   }
 
   export class NewsChannel extends TextBasedChannel(GuildChannel) {
