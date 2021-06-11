@@ -262,7 +262,6 @@ exports.Events = {
   GUILD_MEMBER_REMOVE: 'guildMemberRemove',
   GUILD_MEMBER_UPDATE: 'guildMemberUpdate',
   GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable',
-  GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
   GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
   GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate',
   GUILD_ROLE_CREATE: 'roleCreate',
