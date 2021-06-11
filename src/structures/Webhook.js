@@ -158,9 +158,10 @@ class Webhook {
       apiMessage = options.resolveData();
     } else {
       apiMessage = APIMessage.create(this, options).resolveData();
-      if (Array.isArray(apiMessage.data.content)) {
-        return Promise.all(apiMessage.split().map(this.send.bind(this)));
-      }
+    }
+
+    if (Array.isArray(apiMessage.data.content)) {
+      return Promise.all(apiMessage.split().map(this.send.bind(this)));
     }
 
     const { data, files } = await apiMessage.resolveFiles();
