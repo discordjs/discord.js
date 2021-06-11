@@ -4,7 +4,7 @@ const AnonymousGuild = require('./AnonymousGuild');
 const WelcomeScreen = require('./WelcomeScreen');
 
 /**
- * Represents a guild received from an invite, including welcome screen data if available.
+ * Represents a guild received from an invite, includes welcome screen data if available.
  * @extends {AnonymousGuild}
  */
 class InviteGuild extends AnonymousGuild {

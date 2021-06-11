@@ -22,7 +22,7 @@ class Invite extends Base {
     const Guild = require('./Guild');
     /**
      * The guild the invite is for including welcome screen data if present
-     * @type {?Guild|InviteGuild}
+     * @type {?(Guild|InviteGuild)}
      */
     this.guild = null;
     if (data.guild) {
