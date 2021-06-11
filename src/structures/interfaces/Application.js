@@ -62,7 +62,7 @@ class Application extends Base {
 
   /**
    * A link to the application's icon.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string} URL to the icon
    */
   iconURL({ format, size } = {}) {
@@ -72,7 +72,7 @@ class Application extends Base {
 
   /**
    * A link to this application's cover image.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string} URL to the cover image
    */
   coverURL({ format, size } = {}) {

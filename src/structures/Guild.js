@@ -426,7 +426,7 @@ class Guild extends BaseGuild {
 
   /**
    * The URL to this guild's banner.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   bannerURL({ format, size } = {}) {
@@ -445,7 +445,7 @@ class Guild extends BaseGuild {
 
   /**
    * The URL to this guild's invite splash image.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   splashURL({ format, size } = {}) {
@@ -455,7 +455,7 @@ class Guild extends BaseGuild {
 
   /**
    * The URL to this guild's discovery splash image.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   discoverySplashURL({ format, size } = {}) {
