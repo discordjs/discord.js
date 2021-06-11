@@ -223,26 +223,7 @@ class APIMessage {
   async resolveFiles() {
     if (this.files) return this;
 
-    const embedLikes = [];
-    if (this.isInteraction || this.isWebhook) {
-      if (this.options.embeds) {
-        embedLikes.push(...this.options.embeds);
-      }
-    } else if (this.options.embed) {
-      embedLikes.push(this.options.embed);
-    }
-
-    const fileLikes = [];
-    if (this.options.files) {
-      fileLikes.push(...this.options.files);
-    }
-    for (const embed of embedLikes) {
-      if (embed.files) {
-        fileLikes.push(...embed.files);
-      }
-    }
-
-    this.files = await Promise.all(fileLikes.map(f => this.constructor.resolveFile(f)));
+    this.files = await Promise.all(this.options.files?.map(file => this.constructor.resolveFile(file)) ?? []);
     return this;
   }
 

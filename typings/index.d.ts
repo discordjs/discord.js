@@ -1366,7 +1366,6 @@ declare module 'discord.js' {
     public readonly createdAt: Date | null;
     public description: string | null;
     public fields: EmbedField[];
-    public files: (MessageAttachment | string | FileOptions)[];
     public footer: MessageEmbedFooter | null;
     public readonly hexColor: string | null;
     public image: MessageEmbedImage | null;
@@ -1381,7 +1380,6 @@ declare module 'discord.js' {
     public readonly video: MessageEmbedVideo | null;
     public addField(name: string, value: string, inline?: boolean): this;
     public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
-    public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
     public setAuthor(name: string, iconURL?: string, url?: string): this;
     public setColor(color: ColorResolvable): this;
     public setDescription(description: string): this;
@@ -3277,7 +3275,6 @@ declare module 'discord.js' {
     timestamp?: Date | number;
     color?: ColorResolvable;
     fields?: EmbedFieldData[];
-    files?: (MessageAttachment | string | FileOptions)[];
     author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string };
     thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
     image?: Partial<MessageEmbedImage> & { proxy_url?: string };
