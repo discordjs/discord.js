@@ -22,7 +22,7 @@ class ThreadMemberFlags extends BitField {}
  */
 
 /**
- * Numeric thread member flags. All available properties:
+ * Numeric thread member flags. There are currently no bitflags relevant to bts for this.
  * @type {Object}
  */
 ThreadMemberFlags.FLAGS = {};
