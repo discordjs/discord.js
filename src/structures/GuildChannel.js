@@ -172,12 +172,20 @@ class GuildChannel extends Channel {
     const overwrites = this.overwritesFor(member, true, roles);
 
     return permissions
-      .remove(overwrites.everyone ? overwrites.everyone.deny : 0n)
-      .add(overwrites.everyone ? overwrites.everyone.allow : 0n)
-      .remove(overwrites.roles.length > 0n ? overwrites.roles.map(role => role.deny) : 0n)
-      .add(overwrites.roles.length > 0n ? overwrites.roles.map(role => role.allow) : 0n)
-      .remove(overwrites.member ? overwrites.member.deny : 0n)
-      .add(overwrites.member ? overwrites.member.allow : 0n)
+      .remove(overwrites.everyone ? overwrites.everyone.deny : Permissions.defaultBit)
+      .add(overwrites.everyone ? overwrites.everyone.allow : Permissions.defaultBit)
+      .remove(
+        overwrites.roles.length > Permissions.defaultBit
+          ? overwrites.roles.map(role => role.deny)
+          : Permissions.defaultBit,
+      )
+      .add(
+        overwrites.roles.length > Permissions.defaultBit
+          ? overwrites.roles.map(role => role.allow)
+          : Permissions.defaultBit,
+      )
+      .remove(overwrites.member ? overwrites.member.deny : Permissions.defaultBit)
+      .add(overwrites.member ? overwrites.member.allow : Permissions.defaultBit)
       .freeze();
   }
 
@@ -194,10 +202,10 @@ class GuildChannel extends Channel {
     const roleOverwrites = this.permissionOverwrites.get(role.id);
 
     return role.permissions
-      .remove(everyoneOverwrites ? everyoneOverwrites.deny : 0n)
-      .add(everyoneOverwrites ? everyoneOverwrites.allow : 0n)
-      .remove(roleOverwrites ? roleOverwrites.deny : 0n)
-      .add(roleOverwrites ? roleOverwrites.allow : 0n)
+      .remove(everyoneOverwrites ? everyoneOverwrites.deny : Permissions.defaultBit)
+      .add(everyoneOverwrites ? everyoneOverwrites.allow : Permissions.defaultBit)
+      .remove(roleOverwrites ? roleOverwrites.deny : Permissions.defaultBit)
+      .add(roleOverwrites ? roleOverwrites.allow : Permissions.defaultBit)
       .freeze();
   }
 
