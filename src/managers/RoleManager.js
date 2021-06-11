@@ -33,8 +33,7 @@ class RoleManager extends BaseManager {
   /**
    * Obtains a role from Discord, or the role cache if they're already available.
    * @param {Snowflake} [id] ID of the role
-   * @param {boolean} [cache=true] Whether to cache the new role object(s) if they weren't already
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Role|Collection<Snowflake, Role>>}
    * @example
    * // Fetch all roles from the guild
@@ -47,7 +46,7 @@ class RoleManager extends BaseManager {
    *   .then(role => console.log(`The role color is: ${role.color}`))
    *   .catch(console.error);
    */
-  async fetch(id, cache = true, force = false) {
+  async fetch(id, { cache = true, force = false } = {}) {
     if (id && !force) {
       const existing = this.cache.get(id);
       if (existing) return existing;

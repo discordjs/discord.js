@@ -69,8 +69,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   /**
    * Obtains one or more emojis from Discord, or the emoji cache if they're already available.
    * @param {Snowflake} [id] ID of the emoji
-   * @param {boolean} [cache=true] Whether to cache the new emoji objects if it weren't already
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<GuildEmoji|Collection<Snowflake, GuildEmoji>>}
    * @example
    * // Fetch all emojis from the guild
@@ -83,7 +82,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    *   .then(emoji => console.log(`The emoji name is: ${emoji.name}`))
    *   .catch(console.error);
    */
-  async fetch(id, cache = true, force = false) {
+  async fetch(id, { cache = true, force = false } = {}) {
     if (id) {
       if (!force) {
         const existing = this.cache.get(id);

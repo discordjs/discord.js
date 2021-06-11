@@ -67,10 +67,8 @@ class GuildMemberManager extends BaseManager {
 
   /**
    * Options used to fetch a single member from a guild.
-   * @typedef {Object} FetchMemberOptions
+   * @typedef {BaseFetchOptions} FetchMemberOptions
    * @property {UserResolvable} user The user to fetch
-   * @property {boolean} [cache=true] Whether or not to cache the fetched member
-   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**

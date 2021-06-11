@@ -2107,7 +2107,7 @@ declare module 'discord.js' {
 
   export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResolvable> {
     constructor(client: Client, iterable: Iterable<any>);
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Channel | null>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Channel | null>;
   }
 
   export class GuildApplicationCommandManager extends ApplicationCommandManager {
@@ -2145,13 +2145,11 @@ declare module 'discord.js' {
     ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>;
     public fetch(
       id: Snowflake,
-      cache?: boolean,
-      force?: boolean,
+      options?: BaseFetchOptions,
     ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel | null>;
     public fetch(
       id?: Snowflake,
-      cache?: boolean,
-      force?: boolean,
+      options?: BaseFetchOptions,
     ): Promise<
       Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>
     >;
@@ -2165,8 +2163,8 @@ declare module 'discord.js' {
       name: string,
       options?: GuildEmojiCreateOptions,
     ): Promise<GuildEmoji>;
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<GuildEmoji>;
-    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, GuildEmoji>>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildEmoji>;
+    public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildEmoji>>;
   }
 
   export class GuildEmojiRoleManager {
@@ -2246,11 +2244,10 @@ declare module 'discord.js' {
     public crosspost(message: MessageResolvable): Promise<Message>;
     public delete(message: MessageResolvable): Promise<void>;
     public edit(message: MessageResolvable, options: APIMessage | MessageEditOptions): Promise<Message>;
-    public fetch(message: Snowflake, cache?: boolean, force?: boolean): Promise<Message>;
+    public fetch(message: Snowflake, options?: BaseFetchOptions): Promise<Message>;
     public fetch(
       options?: ChannelLogsQueryOptions,
-      cache?: boolean,
-      force?: boolean,
+      cacheOptions?: BaseFetchOptions,
     ): Promise<Collection<Snowflake, Message>>;
     public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
     public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
@@ -2283,13 +2280,13 @@ declare module 'discord.js' {
     public readonly premiumSubscriberRole: Role | null;
     public botRoleFor(user: UserResolvable): Role | null;
     public create(options?: RoleData & { reason?: string }): Promise<Role>;
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Role | null>;
-    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, Role>>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Role | null>;
+    public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Role>>;
   }
 
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<User>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<User>;
   }
 
   export class VoiceStateManager extends BaseManager<Snowflake, VoiceState, typeof VoiceState> {
@@ -2852,20 +2849,16 @@ declare module 'discord.js' {
     guildID?: Snowflake;
   }
 
-  interface FetchBanOptions {
+  interface FetchBanOptions extends BaseFetchOptions {
     user: UserResolvable;
-    cache?: boolean;
-    force?: boolean;
   }
 
   interface FetchBansOptions {
     cache: boolean;
   }
 
-  interface FetchGuildOptions {
+  interface FetchGuildOptions extends BaseFetchOptions {
     guild: GuildResolvable;
-    cache?: boolean;
-    force?: boolean;
   }
 
   interface FetchGuildsOptions {
@@ -2874,10 +2867,8 @@ declare module 'discord.js' {
     limit?: number;
   }
 
-  interface FetchMemberOptions {
+  interface FetchMemberOptions extends BaseFetchOptions {
     user: UserResolvable;
-    cache?: boolean;
-    force?: boolean;
   }
 
   interface FetchMembersOptions {

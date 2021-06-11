@@ -49,10 +49,8 @@ class GuildBanManager extends BaseManager {
 
   /**
    * Options used to fetch a single ban from a guild.
-   * @typedef {Object} FetchBanOptions
+   * @typedef {BaseFetchOptions} FetchBanOptions
    * @property {UserResolvable} user The ban to fetch
-   * @property {boolean} [cache=true] Whether or not to cache the fetched ban
-   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**
