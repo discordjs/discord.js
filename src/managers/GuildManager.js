@@ -133,13 +133,13 @@ class GuildManager extends BaseManager {
    * @typedef {Object} GuildCreateOptions
    * @property {number} [afkChannelID] The ID of the AFK channel
    * @property {number} [afkTimeout] The AFK timeout in seconds
-   * @property {PartialChannelData[]} [channels] The channels for this guild
+   * @property {PartialChannelData[]} [channels=[]] The channels for this guild
    * @property {DefaultMessageNotifications} [defaultMessageNotifications] The default message notifications
    * for the guild
    * @property {ExplicitContentFilterLevel} [explicitContentFilter] The explicit content filter level for the guild
    * @property {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
    * @property {string} [region] The region for the server, defaults to the closest one available
-   * @property {PartialRoleData[]} [roles] The roles for this guild,
+   * @property {PartialRoleData[]} [roles=[]] The roles for this guild,
    * the first element of this array is used to change properties of the guild's everyone role.
    * @property {number} [systemChannelID] The ID of the system channel
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The flags of the system channel
