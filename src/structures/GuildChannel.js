@@ -95,13 +95,33 @@ class GuildChannel extends Channel {
    */
   get permissionsLocked() {
     if (!this.parent) return null;
-    if (this.permissionOverwrites.size !== this.parent.permissionOverwrites.size) return false;
-    return this.permissionOverwrites.every((value, key) => {
-      const testVal = this.parent.permissionOverwrites.get(key);
+
+    // Get all overwrites
+    const overwriteIds = new Set([...this.permissionOverwrites.keys(), ...this.parent.permissionOverwrites.keys()]);
+
+    // Compare all overwrites
+    return [...overwriteIds].every(key => {
+      const channelVal = this.permissionOverwrites.get(key);
+      const parentVal = this.parent.permissionOverwrites.get(key);
+
+      // Handle empty overwrite
+      if (
+        (channelVal === undefined &&
+          parentVal.deny.bitfield === Permissions.defaultBit &&
+          parentVal.allow.bitfield === Permissions.defaultBit) ||
+        (parentVal === undefined &&
+          channelVal.deny.bitfield === Permissions.defaultBit &&
+          channelVal.allow.bitfield === Permissions.defaultBit)
+      ) {
+        return true;
+      }
+
+      // Compare overwrites
       return (
-        testVal !== undefined &&
-        testVal.deny.bitfield === value.deny.bitfield &&
-        testVal.allow.bitfield === value.allow.bitfield
+        channelVal !== undefined &&
+        parentVal !== undefined &&
+        channelVal.deny.bitfield === parentVal.deny.bitfield &&
+        channelVal.allow.bitfield === parentVal.allow.bitfield
       );
     });
   }
