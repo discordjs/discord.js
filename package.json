@@ -5,6 +5,10 @@
   "main": "./src/index.js",
   "module": "./src/index.mjs",
   "types": "./typings/index.d.ts",
+  "files": [
+    "src",
+    "typings"
+  ],
   "exports": {
     "require": "./src/index.js",
     "import": "./src/index.mjs"
