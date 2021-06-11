@@ -582,8 +582,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
-    return this.guild.channels.create(options.name, {
-      name: this.name,
+    return this.guild.channels.create(options.name ?? this.name, {
       permissionOverwrites: this.permissionOverwrites,
       topic: this.topic,
       type: this.type,
