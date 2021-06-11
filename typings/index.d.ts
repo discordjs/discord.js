@@ -3256,7 +3256,7 @@ declare module 'discord.js' {
   interface MessageEditOptions {
     attachments?: MessageAttachment[];
     content?: string | null;
-    embed?: MessageEmbed | MessageEmbedOptions | null;
+    embeds?: (MessageEmbed | MessageEmbedOptions)[] | null;
     code?: string | boolean;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     flags?: BitFieldResolvable<MessageFlagsString, number>;
@@ -3352,7 +3352,7 @@ declare module 'discord.js' {
     tts?: boolean;
     nonce?: string | number;
     content?: string;
-    embed?: MessageEmbed | MessageEmbedOptions;
+    embeds?: (MessageEmbed | MessageEmbedOptions)[];
     components?: MessageActionRow[] | MessageActionRowOptions[] | MessageActionRowComponentResolvable[][];
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
@@ -3754,10 +3754,9 @@ declare module 'discord.js' {
     'content' | 'embeds' | 'files' | 'allowedMentions' | 'components'
   >;
 
-  interface WebhookMessageOptions extends Omit<MessageOptions, 'embed' | 'reply'> {
+  interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
     username?: string;
     avatarURL?: string;
-    embeds?: (MessageEmbed | unknown)[];
   }
 
   type WebhookTypes = 'Incoming' | 'Channel Follower';
