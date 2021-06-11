@@ -229,7 +229,7 @@ class ThreadChannel extends Channel {
 
   /**
    * Sets whether the thread is archived.
-   * @param {boolean} archived Whether the thread is archived
+   * @param {boolean} [archived=true] Whether the thread is archived
    * @param {string} [reason] Reason for archiving or unarchiving
    * @returns {Promise<ThreadChannel>}
    * @example
@@ -238,7 +238,7 @@ class ThreadChannel extends Channel {
    *   .then(newThread => console.log(`Thread is now ${newThread.archived ? 'archived' : 'active'}`))
    *   .catch(console.error);
    */
-  setArchived(archived, reason) {
+  setArchived(archived = true, reason) {
     return this.edit({ archived }, reason);
   }
 
@@ -261,7 +261,7 @@ class ThreadChannel extends Channel {
 
   /**
    * Sets whether the thread can be archived by anyone or just mods.
-   * @param {boolean} locked Whether the thread is locked
+   * @param {boolean} [locked=true] Whether the thread is locked
    * @param {string} [reason] Reason for archiving or unarchiving
    * @returns {Promise<ThreadChannel>}
    * @example
@@ -270,7 +270,7 @@ class ThreadChannel extends Channel {
    *   .then(newThread => console.log(`Thread is now ${newThread.locked ? 'locked' : 'unlocked'}`))
    *   .catch(console.error);
    */
-  setLocked(locked, reason) {
+  setLocked(locked = true, reason) {
     return this.edit({ locked }, reason);
   }
 
