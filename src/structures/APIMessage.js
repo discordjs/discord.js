@@ -147,8 +147,6 @@ class APIMessage {
       embedLikes.push(...this.options.embeds);
     }
 
-    const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
-
     const components = this.options.components?.map(c =>
       BaseMessageComponent.create(
         Array.isArray(c) ? { type: MessageComponentTypes.ACTION_ROW, components: c } : c,
@@ -217,7 +215,7 @@ class APIMessage {
    */
   async resolveFiles() {
     if (this.files) return this;
-    
+
     const embedLikes = [];
 
     if (this.options.embeds) {
