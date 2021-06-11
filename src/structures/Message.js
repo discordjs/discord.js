@@ -690,7 +690,7 @@ class Message extends Base {
   /**
    * Create a new public thread from this message
    * @see ThreadManager#create
-   * @param {string} name The name ofthe new Thread
+   * @param {string} name The name of the new Thread
    * @param {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
    * @param {string} [reason] Reason for creating the thread
    * @returns {Promise<ThreadChannel>}

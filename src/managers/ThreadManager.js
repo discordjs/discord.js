@@ -130,7 +130,7 @@ class ThreadManager extends BaseManager {
    * If an Object, fetches the specified threads.
    * @param {BaseFetchOptions} [cacheOptions] Additional options for this fetch
    * only applies when fetching a single thread
-   * @returns {Promise<?ThreadChannel|FetchedThreads>}
+   * @returns {Promise<?(ThreadChannel|FetchedThreads)>}
    * @example
    * // Fetch a thread by its id
    * channel.threads.fetch('831955138126104859')
