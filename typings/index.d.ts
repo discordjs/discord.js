@@ -2833,6 +2833,7 @@ declare module 'discord.js' {
     Role: typeof Role;
     User: typeof User;
     CommandInteraction: typeof CommandInteraction;
+    ButtonInteraction: typeof ButtonInteraction;
   }
 
   interface FetchBanOptions {
