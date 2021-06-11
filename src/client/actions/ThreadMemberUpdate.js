@@ -6,6 +6,7 @@ const { Events } = require('../../util/Constants');
 class ThreadMemberUpdateAction extends Action {
   handle(data) {
     const client = this.client;
+    // Discord sends the thread id as id in this object
     const thread = client.channels.cache.get(data.id);
     if (thread) {
       const member = thread.members.cache.get(data.user_id);
