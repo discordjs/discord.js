@@ -25,7 +25,6 @@ module.exports = {
   MessageFlags: require('./util/MessageFlags'),
   Intents: require('./util/Intents'),
   Permissions: require('./util/Permissions'),
-  Speaking: require('./util/Speaking'),
   SnowflakeUtil: require('./util/SnowflakeUtil'),
   Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),

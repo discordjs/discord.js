@@ -536,7 +536,6 @@ declare module 'discord.js' {
       GUILD_MEMBER_REMOVE: 'guildMemberRemove';
       GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
       GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable';
-      GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking';
       GUILD_MEMBERS_CHUNK: 'guildMembersChunk';
       GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
       GUILD_ROLE_CREATE: 'roleCreate';
@@ -563,8 +562,6 @@ declare module 'discord.js' {
       PRESENCE_UPDATE: 'presenceUpdate';
       VOICE_SERVER_UPDATE: 'voiceServerUpdate';
       VOICE_STATE_UPDATE: 'voiceStateUpdate';
-      VOICE_BROADCAST_SUBSCRIBE: 'subscribe';
-      VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe';
       TYPING_START: 'typingStart';
       WEBHOOKS_UPDATE: 'webhookUpdate';
       INTERACTION_CREATE: 'interaction';
@@ -647,24 +644,6 @@ declare module 'discord.js' {
       HEARTBEAT_ACK: 11;
     };
     APIErrors: APIErrors;
-    VoiceStatus: {
-      CONNECTED: 0;
-      CONNECTING: 1;
-      AUTHENTICATING: 2;
-      RECONNECTING: 3;
-      DISCONNECTED: 4;
-    };
-    VoiceOPCodes: {
-      IDENTIFY: 0;
-      SELECT_PROTOCOL: 1;
-      READY: 2;
-      HEARTBEAT: 3;
-      SESSION_DESCRIPTION: 4;
-      SPEAKING: 5;
-      HELLO: 8;
-      CLIENT_CONNECT: 12;
-      CLIENT_DISCONNECT: 13;
-    };
     ChannelTypes: typeof ChannelTypes;
     ClientApplicationAssetTypes: {
       SMALL: 1;
@@ -738,7 +717,6 @@ declare module 'discord.js' {
     constructor(client: Client, data: unknown);
     private _sortedRoles(): Collection<Snowflake, Role>;
     private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannel>;
-    private _memberSpeakUpdate(user: Snowflake, speaking: boolean): void;
 
     public readonly afkChannel: VoiceChannel | null;
     public afkChannelID: Snowflake | null;
@@ -1721,11 +1699,6 @@ declare module 'discord.js' {
     public static readonly EPOCH: number;
   }
 
-  export class Speaking extends BitField<SpeakingString> {
-    public static FLAGS: Record<SpeakingString, number>;
-    public static resolve(bit?: BitFieldResolvable<SpeakingString, number>): number;
-  }
-
   export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
     public type: 'stage';
@@ -2631,7 +2604,6 @@ declare module 'discord.js' {
       guild: Guild,
       data: { count: number; index: number; nonce: string | undefined },
     ];
-    guildMemberSpeaking: [member: GuildMember | PartialGuildMember, speaking: Readonly<Speaking>];
     guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
     guildUpdate: [oldGuild: Guild, newGuild: Guild];
     inviteCreate: [invite: Invite];
@@ -3677,20 +3649,6 @@ declare module 'discord.js' {
     public readonly url: string;
   }
 
-  interface StreamOptions {
-    type?: StreamType;
-    seek?: number;
-    volume?: number | boolean;
-    plp?: number;
-    fec?: boolean;
-    bitrate?: number | 'auto';
-    highWaterMark?: number;
-  }
-
-  type SpeakingString = 'SPEAKING' | 'SOUNDSHARE' | 'PRIORITY_SPEAKING';
-
-  type StreamType = 'unknown' | 'converted' | 'opus' | 'ogg/opus' | 'webm/opus';
-
   type SystemChannelFlagsString =
     | 'SUPPRESS_JOIN_NOTIFICATIONS'
     | 'SUPPRESS_PREMIUM_SUBSCRIPTIONS'
@@ -3731,8 +3689,6 @@ declare module 'discord.js' {
   }
 
   type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
-
-  type VoiceStatus = number;
 
   type WebhookClientOptions = Pick<
     ClientOptions,

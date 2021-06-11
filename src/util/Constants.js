@@ -203,23 +203,6 @@ exports.Status = {
   RESUMING: 8,
 };
 
-/**
- * The current status of a voice connection. Here are the available statuses:
- * * CONNECTED: 0
- * * CONNECTING: 1
- * * AUTHENTICATING: 2
- * * RECONNECTING: 3
- * * DISCONNECTED: 4
- * @typedef {number} VoiceStatus
- */
-exports.VoiceStatus = {
-  CONNECTED: 0,
-  CONNECTING: 1,
-  AUTHENTICATING: 2,
-  RECONNECTING: 3,
-  DISCONNECTED: 4,
-};
-
 exports.OPCodes = {
   DISPATCH: 0,
   HEARTBEAT: 1,
@@ -233,18 +216,6 @@ exports.OPCodes = {
   INVALID_SESSION: 9,
   HELLO: 10,
   HEARTBEAT_ACK: 11,
-};
-
-exports.VoiceOPCodes = {
-  IDENTIFY: 0,
-  SELECT_PROTOCOL: 1,
-  READY: 2,
-  HEARTBEAT: 3,
-  SESSION_DESCRIPTION: 4,
-  SPEAKING: 5,
-  HELLO: 8,
-  CLIENT_CONNECT: 12,
-  CLIENT_DISCONNECT: 13,
 };
 
 exports.Events = {
@@ -262,7 +233,6 @@ exports.Events = {
   GUILD_MEMBER_REMOVE: 'guildMemberRemove',
   GUILD_MEMBER_UPDATE: 'guildMemberUpdate',
   GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable',
-  GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
   GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
   GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate',
   GUILD_ROLE_CREATE: 'roleCreate',
@@ -291,8 +261,6 @@ exports.Events = {
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_SERVER_UPDATE: 'voiceServerUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
-  VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
-  VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
   WEBHOOKS_UPDATE: 'webhookUpdate',
   INTERACTION_CREATE: 'interaction',
