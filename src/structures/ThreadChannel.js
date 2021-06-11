@@ -318,6 +318,7 @@ class ThreadChannel extends Channel {
       !this.archived &&
       this.permissionsFor(this.client.user)?.has(
         this.type === 'private_thread' ? Permissions.FLAGS.MANAGE_THREADS : Permissions.FLAGS.VIEW_CHANNEL,
+        false,
       )
     );
   }
@@ -328,7 +329,7 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get manageable() {
-    return this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_THREADS);
+    return this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_THREADS, false);
   }
 
   /**
@@ -339,10 +340,13 @@ class ThreadChannel extends Channel {
   get sendable() {
     return (
       !this.archived &&
-      this.permissionsFor(this.client.user)?.any([
-        Permissions.FLAGS.SEND_MESSAGES,
-        this.type === 'private_thread' ? Permissions.FLAGS.USE_PRIVATE_THREADS : Permissions.FLAGS.USE_PUBLIC_THREADS,
-      ])
+      this.permissionsFor(this.client.user)?.any(
+        [
+          Permissions.FLAGS.SEND_MESSAGES,
+          this.type === 'private_thread' ? Permissions.FLAGS.USE_PRIVATE_THREADS : Permissions.FLAGS.USE_PUBLIC_THREADS,
+        ],
+        false,
+      )
     );
   }
 
