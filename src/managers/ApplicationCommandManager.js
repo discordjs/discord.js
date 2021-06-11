@@ -248,7 +248,7 @@ class ApplicationCommandManager extends BaseManager {
   /**
    * Data used for overwriting the permissions for all application commands in a guild.
    * @typedef {Object} GuildApplicationCommandPermissionData
-   * @prop {Snowflake} command The ID of the command
+   * @prop {Snowflake} id The ID of the command
    * @prop {ApplicationCommandPermissionData[]} permissions The permissions for this command
    */
 
@@ -289,10 +289,10 @@ class ApplicationCommandManager extends BaseManager {
    *   .catch(console.error);
    */
   async setPermissions(command, permissions, guildID) {
-    if (!this.guild && !guildID) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
     const id = this.resolveID(command);
 
     if (id) {
+      if (!this.guild && !guildID) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
       const data = await this.commandPath({ id, guildID }).permissions.put({
         data: { permissions: permissions.map(perm => this.constructor.transformPermissions(perm)) },
       });
@@ -303,6 +303,8 @@ class ApplicationCommandManager extends BaseManager {
       guildID = permissions;
       permissions = undefined;
     }
+
+    if (!this.guild && !guildID) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
 
     const data = await this.commandPath({ guildID }).permissions.put({
       data: command.map(perm => ({
