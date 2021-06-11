@@ -287,7 +287,7 @@ declare module 'discord.js' {
     public remove(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
     public serialize(...hasParam: readonly unknown[]): Record<S, boolean>;
     public toArray(...hasParam: readonly unknown[]): S[];
-    public toJSON(): N extends number ? number : string; // TODO https://github.com/discordjs/discord.js/pull/4879
+    public toJSON(): N extends number ? number : string;
     public valueOf(): N;
     public [Symbol.iterator](): IterableIterator<S>;
     public static FLAGS: unknown;
