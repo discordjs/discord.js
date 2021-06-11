@@ -127,11 +127,16 @@ class TextChannel extends GuildChannel {
   }
 
   /**
+   * Options used to create a {@link Webhook} for {@link TextChannel} and {@link NewsChannel}.
+   * @typedef {Object} ChannelWebhookCreateOptions
+   * @property {BufferResolvable|Base64Resolvable} [avatar] Avatar for the webhook
+   * @property {string} [reason] Reason for creating the webhook
+   */
+
+  /**
    * Creates a webhook for the channel.
    * @param {string} name The name of the webhook
-   * @param {Object} [options] Options for creating the webhook
-   * @param {BufferResolvable|Base64Resolvable} [options.avatar] Avatar for the webhook
-   * @param {string} [options.reason] Reason for creating the webhook
+   * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
    * // Create a webhook for the current channel

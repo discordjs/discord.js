@@ -26,7 +26,7 @@ class PartialGroupDMChannel extends Channel {
 
   /**
    * The URL to this channel's icon.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   iconURL({ format, size } = {}) {
