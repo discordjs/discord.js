@@ -27,8 +27,9 @@ class ThreadListSyncAction extends Action {
         syncedThreads.set(thread.id, thread);
       });
 
-      Object.entries(data.members).forEach(([threadID, rawMember]) => {
-        const thread = client.channels.cache.get(threadID);
+      Object.values(data.members).forEach(rawMember => {
+        // Discord sends the thread id as id in this object
+        const thread = client.channels.cache.get(rawMember.id);
         if (thread) {
           thread.members.add(rawMember);
         }
