@@ -5,7 +5,6 @@ const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Role = require('./Role');
 const { Error, TypeError } = require('../errors');
-const BitField = require('../util/BitField');
 const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
 const { OverwriteTypes } = require('../util/Constants');
@@ -108,11 +107,11 @@ class GuildChannel extends Channel {
       // Handle empty overwrite
       if (
         (channelVal === undefined &&
-          parentVal.deny.bitfield === BitField.defaultBit &&
-          parentVal.allow.bitfield === BitField.defaultBit) ||
+          parentVal.deny.bitfield === Permissions.defaultBit &&
+          parentVal.allow.bitfield === Permissions.defaultBit) ||
         (parentVal === undefined &&
-          channelVal.deny.bitfield === BitField.defaultBit &&
-          channelVal.allow.bitfield === BitField.defaultBit)
+          channelVal.deny.bitfield === Permissions.defaultBit &&
+          channelVal.allow.bitfield === Permissions.defaultBit)
       ) {
         return true;
       }
