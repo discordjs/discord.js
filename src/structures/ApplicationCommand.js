@@ -134,7 +134,7 @@ class ApplicationCommand extends Base {
    * Data for setting the permissions of an application command.
    * @typedef {Object} ApplicationCommandPermissionData
    * @property {Snowflake} id The ID of the role or user
-   * @property {ApplicationCommandPermissionType|number} type Whether this permission if for a role or a user
+   * @property {ApplicationCommandPermissionType|number} type Whether this permission is for a role or a user
    * @property {boolean} permission Whether the role or user has the permission to use this command
    */
 
@@ -142,7 +142,7 @@ class ApplicationCommand extends Base {
    * The object returned when fetching permissions for an application command.
    * @typedef {Object} ApplicationCommandPermissions
    * @property {Snowflake} id The ID of the role or user
-   * @property {ApplicationCommandPermissionType} type Whether this permission if for a role or a user
+   * @property {ApplicationCommandPermissionType} type Whether this permission is for a role or a user
    * @property {boolean} permission Whether the role or user has the permission to use this command
    */
 

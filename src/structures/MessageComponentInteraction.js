@@ -1,8 +1,8 @@
 'use strict';
 
 const Interaction = require('./Interaction');
+const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
-const WebhookClient = require('../client/WebhookClient');
 const { MessageComponentTypes } = require('../util/Constants');
 
 /**
@@ -21,13 +21,13 @@ class MessageComponentInteraction extends Interaction {
     this.message = data.message ? this.channel?.messages.add(data.message) ?? data.message : null;
 
     /**
-     * The custom ID of the component which was clicked
+     * The custom ID of the component which was interacted with
      * @type {string}
      */
     this.customID = data.data.custom_id;
 
     /**
-     * The type of component that was interacted with
+     * The type of component which was interacted with
      * @type {string}
      */
     this.componentType = MessageComponentInteraction.resolveType(data.data.component_type);
@@ -45,10 +45,10 @@ class MessageComponentInteraction extends Interaction {
     this.replied = false;
 
     /**
-     * An associated webhook client, can be used to create deferred replies
-     * @type {WebhookClient}
+     * An associated interaction webhook, can be used to further interact with this interaction
+     * @type {InteractionWebhook}
      */
-    this.webhook = new WebhookClient(this.applicationID, this.token, this.client.options);
+    this.webhook = new InteractionWebhook(this.client, this.applicationID, this.token);
   }
 
   /**

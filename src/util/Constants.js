@@ -4,6 +4,24 @@ const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError } = require('../errors');
 
 /**
+ * Rate limit data
+ * @typedef {Object} RateLimitData
+ * @property {number} timeout Time until this rate limit ends, in ms
+ * @property {number} limit The maximum amount of requests of this endpoint
+ * @property {string} method The http method of this request
+ * @property {string} path The path of the request relative to the HTTP endpoint
+ * @property {string} route The route of the request relative to the HTTP endpoint
+ * @property {boolean} global Whether this is a global rate limit
+ */
+
+/**
+ * Whether this rate limit should throw an Error
+ * @typedef {Function} RateLimitQueueFilter
+ * @param {RateLimitData} rateLimitData The data of this rate limit
+ * @returns {boolean|Promise<boolean>}
+ */
+
+/**
  * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
@@ -34,6 +52,10 @@ const { Error, RangeError } = require('../errors');
  * (or 0 for never)
  * @property {number} [restGlobalRateLimit=0] How many requests to allow sending per second (0 for unlimited, 50 for
  * the standard global limit used by Discord)
+ * @property {string[]|RateLimitQueueFilter} [rejectOnRateLimit] Decides how rate limits and pre-emptive throttles
+ * should be handled. If this option is an array containing the prefix of the request route (e.g. /channels to match any
+ * route starting with /channels, such as /channels/222197033908436994/messages) or a function returning true, a
+ * {@link RateLimitError} will be thrown. Otherwise the request will be queued for later
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
@@ -236,7 +258,6 @@ exports.Events = {
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
   GUILD_UNAVAILABLE: 'guildUnavailable',
-  GUILD_AVAILABLE: 'guildAvailable',
   GUILD_MEMBER_ADD: 'guildMemberAdd',
   GUILD_MEMBER_REMOVE: 'guildMemberRemove',
   GUILD_MEMBER_UPDATE: 'guildMemberUpdate',
@@ -273,7 +294,6 @@ exports.Events = {
   VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
   VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
-  TYPING_STOP: 'typingStop',
   WEBHOOKS_UPDATE: 'webhookUpdate',
   INTERACTION_CREATE: 'interaction',
   ERROR: 'error',
@@ -602,6 +622,8 @@ exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
  * * MAXIMUM_CHANNELS
  * * MAXIMUM_ATTACHMENTS
  * * MAXIMUM_INVITES
+ * * MAXIMUM_ANIMATED_EMOJIS
+ * * MAXIMUM_SERVER_MEMBERS
  * * GUILD_ALREADY_HAS_TEMPLATE
  * * UNAUTHORIZED
  * * ACCOUNT_VERIFICATION_REQUIRED
@@ -671,6 +693,8 @@ exports.APIErrors = {
   MAXIMUM_CHANNELS: 30013,
   MAXIMUM_ATTACHMENTS: 30015,
   MAXIMUM_INVITES: 30016,
+  MAXIMUM_ANIMATED_EMOJIS: 30018,
+  MAXIMUM_SERVER_MEMBERS: 30019,
   GUILD_ALREADY_HAS_TEMPLATE: 30031,
   UNAUTHORIZED: 40001,
   ACCOUNT_VERIFICATION_REQUIRED: 40002,
@@ -826,22 +850,30 @@ exports.InteractionResponseTypes = createEnum([
 
 /**
  * The type of a message component
- * ACTION_ROW
- * BUTTON
+ * * ACTION_ROW
+ * * BUTTON
  * @typedef {string} MessageComponentType
  */
 exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON']);
 
 /**
  * The style of a message button
- * PRIMARY
- * SECONDARY
- * SUCCESS
- * DANGER
- * LINK
+ * * PRIMARY
+ * * SECONDARY
+ * * SUCCESS
+ * * DANGER
+ * * LINK
  * @typedef {string} MessageButtonStyle
  */
 exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'LINK']);
+
+/**
+ * The required MFA level for a guild
+ * * NONE
+ * * ELEVATED
+ * @typedef {string} MFALevel
+ */
+exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
 
 /**
  * NSFW level of a Guild

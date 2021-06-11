@@ -1,25 +1,27 @@
 'use strict';
 
-const { Events, InteractionTypes } = require('../../../util/Constants');
-let Structures;
+const { Events, InteractionTypes, MessageComponentTypes } = require('../../../util/Constants');
+const Structures = require('../../../util/Structures');
 
 module.exports = (client, { d: data }) => {
-  let interaction;
+  let InteractionType;
   switch (data.type) {
-    case InteractionTypes.APPLICATION_COMMAND: {
-      if (!Structures) Structures = require('../../../util/Structures');
-      const CommandInteraction = Structures.get('CommandInteraction');
-
-      interaction = new CommandInteraction(client, data);
+    case InteractionTypes.APPLICATION_COMMAND:
+      InteractionType = Structures.get('CommandInteraction');
       break;
-    }
-    case InteractionTypes.MESSAGE_COMPONENT: {
-      if (!Structures) Structures = require('../../../util/Structures');
-      const MessageComponentInteraction = Structures.get('MessageComponentInteraction');
-
-      interaction = new MessageComponentInteraction(client, data);
+    case InteractionTypes.MESSAGE_COMPONENT:
+      switch (data.data.component_type) {
+        case MessageComponentTypes.BUTTON:
+          InteractionType = Structures.get('ButtonInteraction');
+          break;
+        default:
+          client.emit(
+            Events.DEBUG,
+            `[INTERACTION] Received component interaction with unknown type: ${data.data.component_type}`,
+          );
+          return;
+      }
       break;
-    }
     default:
       client.emit(Events.DEBUG, `[INTERACTION] Received interaction with unknown type: ${data.type}`);
       return;
@@ -30,5 +32,5 @@ module.exports = (client, { d: data }) => {
    * @event Client#interaction
    * @param {Interaction} interaction The interaction which was created
    */
-  client.emit(Events.INTERACTION_CREATE, interaction);
+  client.emit(Events.INTERACTION_CREATE, new InteractionType(client, data));
 };

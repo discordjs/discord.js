@@ -67,30 +67,6 @@ class BaseGuildVoiceChannel extends GuildChannel {
   }
 
   /**
-   * Attempts to join this voice-based channel.
-   * @returns {Promise<VoiceConnection>}
-   * @example
-   * // Join a voice-based channel
-   * channel.join()
-   *   .then(connection => console.log('Connected!'))
-   *   .catch(console.error);
-   */
-  join() {
-    return this.client.voice.joinChannel(this);
-  }
-
-  /**
-   * Leaves this voice-based channel.
-   * @example
-   * // Leave a voice-based channel
-   * channel.leave();
-   */
-  leave() {
-    const connection = this.client.voice.connections.get(this.guild.id);
-    if (connection?.channel.id === this.id) connection.disconnect();
-  }
-
-  /**
    * Sets the RTC region of the channel.
    * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
    * @returns {Promise<BaseGuildVoiceChannel>}

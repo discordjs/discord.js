@@ -3,7 +3,7 @@
 const EventEmitter = require('events');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
-const { Error: DJSError } = require('../../errors');
+const { Error } = require('../../errors');
 const Collection = require('../../util/Collection');
 const { Events, ShardEvents, Status, WSCodes, WSEvents } = require('../../util/Constants');
 const Util = require('../../util/Util');
@@ -130,7 +130,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   async connect() {
-    const invalidToken = new DJSError(WSCodes[4004]);
+    const invalidToken = new Error(WSCodes[4004]);
     const {
       url: gatewayURL,
       shards: recommendedShards,
@@ -255,7 +255,7 @@ class WebSocketManager extends EventEmitter {
       await shard.connect();
     } catch (error) {
       if (error && error.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
-        throw new DJSError(WSCodes[error.code]);
+        throw new Error(WSCodes[error.code]);
         // Undefined if session is invalid, error event for regular closes
       } else if (!error || error.code) {
         this.debug('Failed to connect to the gateway, requeueing...', shard);

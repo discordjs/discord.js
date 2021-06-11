@@ -192,7 +192,13 @@ class Message extends Base {
      * Supplemental application information for group activities
      * @type {?ClientApplication}
      */
-    this.application = data.application ? new ClientApplication(this.client, data.application) : null;
+    this.groupActivityApplication = data.application ? new ClientApplication(this.client, data.application) : null;
+
+    /**
+     * ID of the application of the interaction that sent this message, if any
+     * @type {?Snowflake}
+     */
+    this.applicationID = data.application_id ?? null;
 
     /**
      * Group activity
@@ -434,30 +440,25 @@ class Message extends Base {
   }
 
   /**
-   * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {MessageComponentInteractionCollectorOptions} AwaitMessageComponentInteractionsOptions
-   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
-   */
-
-  /**
-   * Similar to createMessageComponentInteractionCollector but in promise form.
-   * Resolves with a collection of interactions that pass the specified filter.
+   * Collects a single component interaction that passes the filter.
+   * The Promise will reject if the time expires.
    * @param {CollectorFilter} filter The filter function to use
-   * @param {AwaitMessageComponentInteractionsOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, MessageComponentInteraction>>}
+   * @param {number} [time] Time to wait for an interaction before rejecting
+   * @returns {Promise<MessageComponentInteraction>}
    * @example
-   * // Create a message component interaction collector
+   * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitMessageComponentInteractions(filter, { time: 15000 })
-   *   .then(collected => console.log(`Collected ${collected.size} interactions`))
+   * message.awaitMessageComponentInteraction(filter, 15000)
+   *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteractions(filter, options = {}) {
+  awaitMessageComponentInteraction(filter, time) {
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector(filter, options);
-      collector.once('end', (interactions, reason) => {
-        if (options.errors && options.errors.includes(reason)) reject(interactions);
-        else resolve(interactions);
+      const collector = this.createMessageComponentInteractionCollector(filter, { max: 1, time });
+      collector.once('end', interactions => {
+        const interaction = interactions.first();
+        if (!interaction) reject(new Error('INTERACTION_COLLECTOR_TIMEOUT'));
+        else resolve(interaction);
       });
     });
   }
@@ -537,12 +538,13 @@ class Message extends Base {
    * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to add to the message
+   * @property {MessageActionRow[]|MessageActionRowOptions[]|MessageActionRowComponentResolvable[][]} [components]
+   * Action rows containing interactive components for the message (buttons, select menus)
    */
 
   /**
    * Edits the content of the message.
-   * @param {?(string|APIMessage)} [content] The new content for the message
-   * @param {MessageEditOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options] The options to provide
+   * @param {string|APIMessage|MessageEditOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -550,8 +552,7 @@ class Message extends Base {
    *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
    */
-  edit(content, options) {
-    options = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+  edit(options) {
     return this.channel.messages.edit(this.id, options);
   }
 
@@ -647,8 +648,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
-   * @param {string|APIMessage} [content=''] The content for the message
-   * @param {ReplyMessageOptions|MessageAdditions} [options] The additional options to provide
+   * @param {string|APIMessage|ReplyMessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message
@@ -656,17 +656,20 @@ class Message extends Base {
    *   .then(() => console.log(`Replied to message "${message.content}"`))
    *   .catch(console.error);
    */
-  reply(content, options) {
-    return this.channel.send(
-      content instanceof APIMessage
-        ? content
-        : APIMessage.transformOptions(content, options, {
-            reply: {
-              messageReference: this,
-              failIfNotExists: options?.failIfNotExists ?? content?.failIfNotExists ?? true,
-            },
-          }),
-    );
+  reply(options) {
+    let data;
+
+    if (options instanceof APIMessage) {
+      data = options;
+    } else {
+      data = APIMessage.create(this, options, {
+        reply: {
+          messageReference: this,
+          failIfNotExists: options?.failIfNotExists ?? true,
+        },
+      });
+    }
+    return this.channel.send(data);
   }
 
   /**
@@ -759,7 +762,7 @@ class Message extends Base {
     return super.toJSON({
       channel: 'channelID',
       author: 'authorID',
-      application: 'applicationID',
+      groupActivityApplication: 'groupActivityApplicationID',
       guild: 'guildID',
       cleanContent: true,
       member: false,
