@@ -15,11 +15,16 @@ deploy/
 docs/
 
 # NPM ignore
+.commitlintrc.json
+.lintstagedrc.json
+.prettierrc.json
 .eslintrc.json
 .gitattributes
 .gitignore
 .travis.yml
 .github/
+.husky/
+jsdoc.json
 test/
 tsconfig.json
 tslint.json
