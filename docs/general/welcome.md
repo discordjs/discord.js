@@ -21,7 +21,6 @@
 
 - [About](#about)
 - [Installation](#installation)
-  - [Audio engines](#audio-engines)
   - [Optional packages](#optional-packages)
 - [Example Usage](#example-usage)
 - [Links](#links)
