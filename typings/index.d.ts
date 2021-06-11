@@ -189,8 +189,11 @@ declare module 'discord.js' {
     public options: ApplicationCommandOption[];
     public delete(): Promise<ApplicationCommand>;
     public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
-    public fetchPermissions(): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommandPermissions[]>;
+    public fetchPermissions(guildID?: Snowflake): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      permissions: ApplicationCommandPermissionData[],
+      guildID?: Snowflake,
+    ): Promise<ApplicationCommandPermissions[]>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
   }
 
@@ -2059,14 +2062,42 @@ declare module 'discord.js' {
     ApplicationCommandResolvable
   > {
     constructor(client: Client, iterable?: Iterable<any>);
-    private readonly commandPath: unknown;
-    public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
-    public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
-    public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<ApplicationCommand>;
-    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
+    private commandPath({ id, guildID }: { id?: Snowflake; guildID?: Snowflake }): unknown;
+    public create(command: ApplicationCommandData, guildID?: Snowflake): Promise<ApplicationCommand>;
+    public delete(command: ApplicationCommandResolvable, guildID?: Snowflake): Promise<ApplicationCommand | null>;
+    public edit(
+      command: ApplicationCommandResolvable,
+      data: ApplicationCommandData,
+      guildID?: Snowflake,
+    ): Promise<ApplicationCommand>;
+    public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommand>;
+    public fetch(
+      id?: Snowflake,
+      options?: FetchApplicationCommandOptions,
+    ): Promise<Collection<Snowflake, ApplicationCommand>>;
+    public fetchPermissions(
+      command: undefined,
+      guildID: Snowflake,
+    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public fetchPermissions(
+      command: ApplicationCommandResolvable,
+      guildID: Snowflake,
+    ): Promise<ApplicationCommandPermissions[]>;
+    public set(
+      commands: ApplicationCommandData[],
+      guildID?: Snowflake,
+    ): Promise<Collection<Snowflake, ApplicationCommand>>;
+    public setPermissions(
+      command: ApplicationCommandResolvable,
+      permissions: ApplicationCommandPermissionData[],
+      guildID: Snowflake,
+    ): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      permissions: GuildApplicationCommandPermissionData[],
+      guildID: Snowflake,
+    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     private static transformCommand(command: ApplicationCommandData): unknown;
+    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): unknown;
   }
 
   export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
@@ -2082,8 +2113,14 @@ declare module 'discord.js' {
   export class GuildApplicationCommandManager extends ApplicationCommandManager {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
-    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
+    public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
+    public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
+    public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
+    public fetchPermissions(command: undefined): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
+    public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
     public setPermissions(
       command: ApplicationCommandResolvable,
       permissions: ApplicationCommandPermissionData[],
@@ -2091,7 +2128,6 @@ declare module 'discord.js' {
     public setPermissions(
       permissions: GuildApplicationCommandPermissionData[],
     ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): unknown;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
@@ -2516,6 +2552,11 @@ declare module 'discord.js' {
 
   type Base64String = string;
 
+  interface BaseFetchOptions {
+    cache?: boolean;
+    force?: boolean;
+  }
+
   interface BaseMessageComponentOptions {
     type?: MessageComponentType | MessageComponentTypes;
   }
@@ -2805,6 +2846,10 @@ declare module 'discord.js' {
     User: typeof User;
     CommandInteraction: typeof CommandInteraction;
     ButtonInteraction: typeof ButtonInteraction;
+  }
+
+  interface FetchApplicationCommandOptions extends BaseFetchOptions {
+    guildID?: Snowflake;
   }
 
   interface FetchBanOptions {

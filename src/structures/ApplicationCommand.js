@@ -1,7 +1,6 @@
 'use strict';
 
 const Base = require('./Base');
-const { Error } = require('../errors');
 const { ApplicationCommandOptionTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
@@ -148,7 +147,9 @@ class ApplicationCommand extends Base {
 
   /**
    * Fetches the permissions for this command.
-   * <warn>This is only available for guild application commands.</warn>
+   * <warn>You must specify guildID if this command is handled by a {@link ApplicationCommandManager},
+   * including commands fetched for arbitrary guilds from it, otherwise it is ignored.</warn>
+   * @param {Snowflake} [guildID] ID for the guild to fetch permissions for if this is a global command
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
    * // Fetch permissions for this command
@@ -156,15 +157,16 @@ class ApplicationCommand extends Base {
    *   .then(perms => console.log(`Fetched permissions for ${perms.length} users`))
    *   .catch(console.error);
    */
-  fetchPermissions() {
-    if (!this.guild) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
-    return this.manager.fetchPermissions(this);
+  fetchPermissions(guildID) {
+    return this.manager.fetchPermissions(this, guildID);
   }
 
   /**
    * Sets the permissions for this command.
-   * <warn>This is only available for guild application commands.</warn>
+   * <warn>You must specify guildID if this command is handled by a {@link ApplicationCommandManager},
+   * including commands fetched for arbitrary guilds from it, otherwise it is ignored.</warn>
    * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
+   * @param {Snowflake} [guildID] ID for the guild to fetch permissions for if this is a global command
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
    * // Set the permissions for this command
@@ -178,9 +180,8 @@ class ApplicationCommand extends Base {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  setPermissions(permissions) {
-    if (!this.guild) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
-    return this.manager.setPermissions(this, permissions);
+  setPermissions(permissions, guildID) {
+    return this.manager.setPermissions(this, permissions, guildID);
   }
 
   /**
