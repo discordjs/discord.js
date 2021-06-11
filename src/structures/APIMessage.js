@@ -203,7 +203,7 @@ class APIMessage {
       tts,
       nonce,
       embed: this.options.embed === null ? null : embeds[0],
-      embeds,
+      embeds: this.options.embeds ? embeds : undefined,
       username,
       avatar_url: avatarURL,
       allowed_mentions: typeof content === 'undefined' ? undefined : allowedMentions,
