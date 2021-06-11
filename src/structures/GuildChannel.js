@@ -368,6 +368,8 @@ class GuildChannel extends Channel {
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites for the channel
    * @property {number} [rateLimitPerUser] The ratelimit per user for the channel in seconds
+   * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
+   * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
    */
 
@@ -428,6 +430,7 @@ class GuildChannel extends Channel {
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
+        default_auto_archive_duration: data.defaultAutoArchiveDuration,
         permission_overwrites,
       },
       reason,

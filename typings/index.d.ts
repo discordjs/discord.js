@@ -1532,12 +1532,17 @@ declare module 'discord.js' {
 
   export class NewsChannel extends TextBasedChannel(GuildChannel) {
     constructor(guild: Guild, data?: unknown);
+    public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
     public messages: MessageManager;
     public nsfw: boolean;
     public threads: ThreadManager;
     public topic: string | null;
     public type: 'news';
     public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
+    public setDefaultAutoArchiveDuration(
+      defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
+      reason?: string,
+    ): Promise<NewsChannel>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
     public setType(type: Pick<typeof ChannelType, 'text' | 'news'>, reason?: string): Promise<GuildChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -1865,6 +1870,7 @@ declare module 'discord.js' {
 
   export class TextChannel extends TextBasedChannel(GuildChannel) {
     constructor(guild: Guild, data?: unknown);
+    public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
     public messages: MessageManager;
     public nsfw: boolean;
     public type: 'text';
@@ -1872,6 +1878,10 @@ declare module 'discord.js' {
     public threads: ThreadManager;
     public topic: string | null;
     public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
+    public setDefaultAutoArchiveDuration(
+      defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
+      reason?: string,
+    ): Promise<TextChannel>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
     public setType(type: Pick<typeof ChannelType, 'text' | 'news'>, reason?: string): Promise<GuildChannel>;
@@ -2700,6 +2710,7 @@ declare module 'discord.js' {
     MAXIMUM_ANIMATED_EMOJIS: 30018;
     MAXIMUM_SERVER_MEMBERS: 30019;
     GUILD_ALREADY_HAS_TEMPLATE: 30031;
+    MAXIMUM_THREAD_PARICIPANTS: 30033;
     MAXIMUM_NON_GUILD_MEMBERS_BANS: 30035;
     MAXIMUM_BAN_FETCHES: 30037;
     UNAUTHORIZED: 40001;
@@ -2751,6 +2762,10 @@ declare module 'discord.js' {
     REACTION_BLOCKED: 90001;
     RESOURCE_OVERLOADED: 130000;
     STAGE_ALREADY_OPEN: 150006;
+    MESSAGE_ALREADY_HAS_THREAD: 160004;
+    THREAD_LOCKED: 160005;
+    MAXIMUM_ACTIVE_THREADS: 160006;
+    MAXIMUM_ACTIVE_ANNOUCEMENT_THREAD: 160007;
   }
 
   interface ApplicationAsset {
@@ -2873,6 +2888,7 @@ declare module 'discord.js' {
     rateLimitPerUser?: number;
     lockPermissions?: boolean;
     permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+    defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
     rtcRegion?: string | null;
   }
 
