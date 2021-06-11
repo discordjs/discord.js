@@ -15,7 +15,7 @@ class ThreadMemberUpdateAction extends Action {
       }
       const old = member._update(data);
       /**
-       * Emitted whenever the client users thread member is updated.
+       * Emitted whenever the client user's thread member is updated.
        * @event Client#threadMemberUpdate
        * @param {ThreadMember} oldMember The member before the update
        * @param {ThreadMember} newMember The member after the update

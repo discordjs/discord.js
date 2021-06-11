@@ -23,7 +23,7 @@ class GuildChannelManager extends BaseManager {
 
   /**
    * The number of channels in this managers cache excluding thread channels
-   * that do not count towards a guilds maximum channels restriction.
+   * that do not count towards a guild's maximum channels restriction.
    * @type {number}
    * @readonly
    */

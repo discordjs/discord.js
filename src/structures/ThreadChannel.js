@@ -127,7 +127,7 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * A collection of the guild member objects for each of this threads members
+   * A collection of the guild member objects for each of this thread's members
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -277,7 +277,7 @@ class ThreadChannel extends Channel {
   /**
    * Sets a new name for the thread.
    * @param {string} name The new name for the thread
-   * @param {string} [reason] Reason for changing the threads' name
+   * @param {string} [reason] Reason for changing the thread's name
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Set a new thread name
