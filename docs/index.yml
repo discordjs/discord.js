@@ -2,11 +2,3 @@
   files:
     - name: Welcome
       path: welcome.md
-    - name: FAQ
-      path: faq.md
-- name: Topics
-  files:
-    - name: Voice
-      path: voice.md
-    - name: Partials
-      path: partials.md
