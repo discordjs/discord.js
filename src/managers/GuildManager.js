@@ -233,10 +233,8 @@ class GuildManager extends BaseManager {
 
   /**
    * Options used to fetch a single guild.
-   * @typedef {Object} FetchGuildOptions
+   * @typedef {BaseFetchOptions} FetchGuildOptions
    * @property {GuildResolvable} guild The guild to fetch
-   * @property {boolean} [cache=true] Whether or not to cache the fetched guild
-   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**
