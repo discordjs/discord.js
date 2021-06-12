@@ -36,8 +36,8 @@ class GuildChannel extends Channel {
      */
     this.guild = guild;
 
-    this.parentID = null;
-    this.permissionOverwrites = new Collection();
+    this.parentID = this.parentID ?? null;
+    this.permissionOverwrites = this.permissionOverwrites ?? new Collection();
   }
 
   _patch(data) {
