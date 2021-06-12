@@ -214,7 +214,7 @@ class ApplicationCommand extends Base {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
       description: option.description,
-      required: option.required,
+      required: option.required ?? false,
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),
     };
