@@ -1295,7 +1295,7 @@ declare module 'discord.js' {
     public fetchReply(): Promise<Message | RawMessage>;
     public followUp(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
     public reply(options: string | APIMessage | InteractionReplyOptions): Promise<void>;
-    public update(content: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public update(content: string | APIMessage | WebhookEditMessageOptions): Promise<void>;
     public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
