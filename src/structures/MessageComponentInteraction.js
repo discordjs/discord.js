@@ -16,9 +16,9 @@ class MessageComponentInteraction extends Interaction {
 
     /**
      * The message to which the component was attached
-     * @type {?Message|Object}
+     * @type {Message|Object}
      */
-    this.message = data.message ? this.channel?.messages.add(data.message) ?? data.message : null;
+    this.message = this.channel?.messages.add(data.message) ?? data.message;
 
     /**
      * The custom ID of the component which was interacted with

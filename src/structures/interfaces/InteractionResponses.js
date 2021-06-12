@@ -24,9 +24,9 @@ class InteractionResponses {
    */
 
   /**
-   * Defers the reply to this interaction.
+   * Defers the reply to this interaction. Resolves to the sent Message if not ephemeral.
    * @param {InteractionDeferOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|void>}
    * @example
    * // Defer the reply to this interaction
    * interaction.defer()
@@ -49,12 +49,14 @@ class InteractionResponses {
       },
     });
     this.deferred = true;
+
+    return ephemeral ? undefined : this.fetchReply();
   }
 
   /**
-   * Creates a reply to this interaction.
+   * Creates a reply to this interaction. Resolves to the sent Message if not ephemeral.
    * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|void>}
    * @example
    * // Reply to the interaction with an embed
    * const embed = new MessageEmbed().setDescription('Pong!');
@@ -85,6 +87,8 @@ class InteractionResponses {
       files,
     });
     this.replied = true;
+
+    return options.ephemeral ? undefined : this.fetchReply();
   }
 
   /**
@@ -140,8 +144,9 @@ class InteractionResponses {
   }
 
   /**
-   * Defers an update to the message to which the component was attached
-   * @returns {Promise<void>}
+   * Defers an update to the message to which the component was attached.
+   * Resolves to that message, if it was not ephemeral.
+   * @returns {Promise<Message|void>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
@@ -156,12 +161,17 @@ class InteractionResponses {
       },
     });
     this.deferred = true;
+
+    return (this.message.flags & MessageFlags.FLAGS.EPHEMERAL) === MessageFlags.FLAGS.EPHEMERAL
+      ? undefined
+      : this.fetchReply();
   }
 
   /**
-   * Updates the original message whose button was pressed
+   * Updates the original message whose button was pressed.
+   * Resolves to that message, if it was not ephemeral.
    * @param {string|APIMessage|WebhookEditMessageOptions} options The options for the reply
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|void>}
    * @example
    * // Remove the components from the message
    * interaction.update({
@@ -188,6 +198,10 @@ class InteractionResponses {
       files,
     });
     this.replied = true;
+
+    return (this.message.flags & MessageFlags.FLAGS.EPHEMERAL) === MessageFlags.FLAGS.EPHEMERAL
+      ? undefined
+      : this.fetchReply();
   }
 
   static applyToClass(structure, ignore = []) {

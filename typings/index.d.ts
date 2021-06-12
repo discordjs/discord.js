@@ -491,12 +491,16 @@ declare module 'discord.js' {
     public options: Collection<string, CommandInteractionOption>;
     public replied: boolean;
     public webhook: InteractionWebhook;
-    public defer(options?: InteractionDeferOptions): Promise<void>;
+    public defer(options?: InteractionDeferOptions & { ephemeral: true }): Promise<void>;
+    public defer(options?: InteractionDeferOptions & { ephemeral?: false }): Promise<Message | RawMessage>;
     public deleteReply(): Promise<void>;
     public editReply(options: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
     public followUp(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(options: string | APIMessage | InteractionReplyOptions): Promise<void>;
+    public reply(options: string | APIMessage | (InteractionReplyOptions & { ephemeral: true })): Promise<void>;
+    public reply(
+      options: string | APIMessage | (InteractionReplyOptions & { ephemeral?: false }),
+    ): Promise<Message | RawMessage>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
     private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
   }
@@ -1337,14 +1341,18 @@ declare module 'discord.js' {
     public message: Message | RawMessage;
     public replied: boolean;
     public webhook: InteractionWebhook;
-    public defer(options?: InteractionDeferOptions): Promise<void>;
-    public deferUpdate(): Promise<void>;
+    public defer(options?: InteractionDeferOptions & { ephemeral: true }): Promise<void>;
+    public defer(options?: InteractionDeferOptions & { ephemeral?: false }): Promise<Message | RawMessage>;
+    public deferUpdate(): Promise<Message | RawMessage | void>;
     public deleteReply(): Promise<void>;
     public editReply(options: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
     public followUp(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(options: string | APIMessage | InteractionReplyOptions): Promise<void>;
-    public update(content: string | APIMessage | WebhookEditMessageOptions): Promise<void>;
+    public reply(options: string | APIMessage | (InteractionReplyOptions & { ephemeral: true })): Promise<void>;
+    public reply(
+      options: string | APIMessage | (InteractionReplyOptions & { ephemeral?: false }),
+    ): Promise<Message | RawMessage>;
+    public update(content: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage | void>;
     public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
