@@ -2485,7 +2485,7 @@ declare module 'discord.js' {
     type: ApplicationCommandOptionType | ApplicationCommandOptionTypes;
     name: string;
     description: string;
-    required?: boolean;
+    required: boolean;
     choices?: ApplicationCommandOptionChoice[];
     options?: this[];
   }
