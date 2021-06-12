@@ -66,8 +66,7 @@ class StageInstanceManager extends BaseManager {
   /**
    * Fetches the stage instance associated with a stage channel, if it exists.
    * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be fetched
-   * @param {boolean} [cache=true] Whether or not to cache the fetched stage instance
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<StageInstance>}
    * @example
    * // Fetch a stage instance
@@ -75,7 +74,7 @@ class StageInstanceManager extends BaseManager {
    *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error);
    */
-  async fetch(channel, cache = true, force = false) {
+  async fetch(channel, { cache = true, force = false } = {}) {
     const channelID = this.guild.channels.resolveID(channel);
     if (!channelID) throw new Error('STAGE_CHANNEL_RESOLVE');
 
