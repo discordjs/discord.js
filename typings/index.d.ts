@@ -2990,7 +2990,7 @@ declare module 'discord.js' {
   }
 
   interface GuildCreateOptions {
-    afkChannelID?: Snowflake;
+    afkChannelID?: Snowflake | number;
     afkTimeout?: number;
     channels?: PartialChannelData[];
     defaultMessageNotifications?: DefaultMessageNotifications | number;
@@ -2998,7 +2998,7 @@ declare module 'discord.js' {
     icon?: BufferResolvable | Base64Resolvable | null;
     roles?: PartialRoleData[];
     systemChannelFlags?: SystemChannelFlagsResolvable;
-    systemChannelID?: Snowflake;
+    systemChannelID?: Snowflake | number;
     verificationLevel?: VerificationLevel | number;
   }
 
@@ -3527,11 +3527,11 @@ declare module 'discord.js' {
   }
 
   interface PartialChannelData {
-    id?: Snowflake;
+    id?: Snowflake | number;
     name: string;
     topic?: string;
     type?: ChannelType;
-    parentID?: Snowflake;
+    parentID?: Snowflake | number;
     permissionOverwrites?: PartialOverwriteData[];
   }
 
@@ -3593,14 +3593,14 @@ declare module 'discord.js' {
   }
 
   interface PartialOverwriteData {
-    id: Snowflake;
+    id: Snowflake | number;
     type?: OverwriteType;
     allow?: PermissionResolvable;
     deny?: PermissionResolvable;
   }
 
   interface PartialRoleData extends RoleData {
-    id?: Snowflake;
+    id?: Snowflake | number;
   }
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
