@@ -537,12 +537,15 @@ declare module 'discord.js' {
     public options: Collection<string, CommandInteractionOption>;
     public replied: boolean;
     public webhook: InteractionWebhook;
-    public defer(options?: InteractionDeferOptions): Promise<void>;
+    public defer(options?: InteractionDeferOptions & { fetchReply?: false }): Promise<void>;
+    public defer(options?: InteractionDeferOptions & { fetchReply: true }): Promise<Message | RawMessage>;
     public deleteReply(): Promise<void>;
     public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
     public fetchReply(): Promise<Message | APIMessage>;
-    public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
-    public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
+    public reply(options: string | MessagePayload | (InteractionReplyOptions & { fetchReply?: false })): Promise<void>;
+    public reply(
+      options: string | MessagePayload | (InteractionReplyOptions & { fetchReply: true }),
+    ): Promise<Message | APIMessage>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
     private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
   }
@@ -1395,14 +1398,22 @@ declare module 'discord.js' {
     public message: Message | APIMessage;
     public replied: boolean;
     public webhook: InteractionWebhook;
-    public defer(options?: InteractionDeferOptions): Promise<void>;
-    public deferUpdate(): Promise<void>;
+    public defer(options?: InteractionDeferOptions & { fetchReply?: false }): Promise<void>;
+    public defer(options?: InteractionDeferOptions & { fetchReply: true }): Promise<Message | RawMessage>;
+    public deferUpdate(options?: InteractionDeferUpdateOptions & { fetchReply?: false }): Promise<void>;
+    public deferUpdate(options?: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message | RawMessage>;
     public deleteReply(): Promise<void>;
     public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
     public fetchReply(): Promise<Message | APIMessage>;
     public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
-    public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-    public update(content: string | MessagePayload | WebhookEditMessageOptions): Promise<void>;
+    public reply(options: string | MessagePayload | (InteractionReplyOptions & { fetchReply?: false })): Promise<void>;
+    public reply(
+      options: string | MessagePayload | (InteractionReplyOptions & { fetchReply: true }),
+    ): Promise<Message | APIMessage>;
+    public update(content: string | MessagePayload | (InteractionUpdateOptions & { fetchReply?: false })): Promise<void>;
+    public update(
+      content: string | MessagePayload | (InteractionUpdateOptions & { fetchReply: true }),
+    ): Promise<Message | APIMessage>;
     public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
@@ -3531,15 +3542,21 @@ declare module 'discord.js' {
 
   interface InteractionDeferOptions {
     ephemeral?: boolean;
+    fetchReply?: boolean;
   }
+
+  interface InteractionDeferUpdateOptions extends Omit<InteractionDeferOptions, 'ephemeral'> {}
 
   interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL'> {
     ephemeral?: boolean;
+    fetchReply?: boolean;
   }
 
   type InteractionResponseType = keyof typeof InteractionResponseTypes;
 
   type InteractionType = keyof typeof InteractionTypes;
+
+  interface InteractionUpdateOptions extends Omit<InteractionReplyOptions, 'ephemeral'> {}
 
   type IntentsString =
     | 'GUILDS'

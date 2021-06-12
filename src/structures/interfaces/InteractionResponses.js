@@ -25,7 +25,7 @@ class InteractionResponses {
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|void>}
    * @example
    * // Defer the reply to this interaction
    * interaction.defer()
@@ -37,18 +37,21 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async defer({ ephemeral } = {}) {
+  async defer(options = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    this.ephemeral = ephemeral ?? false;
+    if (options.fetchReply && options.ephemeral) throw new Error('INTERACTION_FETCH_EPHEMERAL');
+    this.ephemeral = options.ephemeral ?? false;
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          flags: ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
+          flags: options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
         },
       },
     });
     this.deferred = true;
+
+    return options.fetchReply ? this.fetchReply() : undefined;
   }
 
   /**
@@ -70,6 +73,7 @@ class InteractionResponses {
    */
   async reply(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (options.fetchReply && options.ephemeral) throw new Error('INTERACTION_FETCH_EPHEMERAL');
     this.ephemeral = options.ephemeral ?? false;
 
     let messagePayload;
@@ -86,6 +90,8 @@ class InteractionResponses {
       files,
     });
     this.replied = true;
+
+    return options.fetchReply ? this.fetchReply() : undefined;
   }
 
   /**
@@ -146,28 +152,34 @@ class InteractionResponses {
   }
 
   /**
-   * Defers an update to the message to which the component was attached
-   * @returns {Promise<void>}
+   * Defers an update to the message to which the component was attached.
+   * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
+   * @returns {Promise<Message|void>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async deferUpdate() {
+  async deferUpdate(options = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (options.fetchReply && (this.message.flags & MessageFlags.FLAGS.EPHEMERAL) === MessageFlags.FLAGS.EPHEMERAL) {
+      throw new Error('INTERACTION_FETCH_EPHEMERAL');
+    }
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.DEFERRED_MESSAGE_UPDATE,
       },
     });
     this.deferred = true;
+
+    return options.fetchReply ? this.fetchReply() : undefined;
   }
 
   /**
-   * Updates the original message whose button was pressed
+   * Updates the original message whose button was pressed.
    * @param {string|MessagePayload|WebhookEditMessageOptions} options The options for the reply
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|void>}
    * @example
    * // Remove the components from the message
    * interaction.update({
@@ -179,6 +191,9 @@ class InteractionResponses {
    */
   async update(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (options.fetchReply && (this.message.flags & MessageFlags.FLAGS.EPHEMERAL) === MessageFlags.FLAGS.EPHEMERAL) {
+      throw new Error('INTERACTION_FETCH_EPHEMERAL');
+    }
 
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
@@ -194,6 +209,8 @@ class InteractionResponses {
       files,
     });
     this.replied = true;
+
+    return options.fetchReply ? this.fetchReply() : undefined;
   }
 
   static applyToClass(structure, ignore = []) {
