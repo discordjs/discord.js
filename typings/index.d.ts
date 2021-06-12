@@ -2119,7 +2119,7 @@ declare module 'discord.js' {
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
     public fetchPermissions(
-      command?: ApplicationCommand | null,
+      command?: ApplicationCommandResolvable | null,
     ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
