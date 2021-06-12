@@ -1343,7 +1343,7 @@ declare module 'discord.js' {
     public webhook: InteractionWebhook;
     public defer(options?: InteractionDeferOptions & { ephemeral: true }): Promise<void>;
     public defer(options?: InteractionDeferOptions & { ephemeral?: false }): Promise<Message | RawMessage>;
-    public deferUpdate(): Promise<Message | RawMessage | void>;
+    public deferUpdate(): Promise<Message | RawMessage | undefined>;
     public deleteReply(): Promise<void>;
     public editReply(options: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
@@ -1352,7 +1352,7 @@ declare module 'discord.js' {
     public reply(
       options: string | APIMessage | (InteractionReplyOptions & { ephemeral?: false }),
     ): Promise<Message | RawMessage>;
-    public update(content: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage | void>;
+    public update(content: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage | undefined>;
     public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
