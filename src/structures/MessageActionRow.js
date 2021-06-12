@@ -63,7 +63,7 @@ class MessageActionRow extends BaseMessageComponent {
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of components to remove
    * @param {...MessageActionRowComponentResolvable[]} [components] The replacing components
-   * @returns {MessageSelectMenu}
+   * @returns {MessageActionRow}
    */
   spliceComponents(index, deleteCount, ...components) {
     this.components.splice(
