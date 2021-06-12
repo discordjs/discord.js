@@ -109,7 +109,7 @@ class ThreadChannel extends Channel {
 
     /**
      * The approximate count of messages in this thread
-     * <info> This value will not count above 50 even when there are more than 50 messages
+     * <info>This value will not count above 50 even when there are more than 50 messages
      * If you need an approximate value higher than this, use ThreadChannel#messages.cache.size</info>
      * @type {number}
      */
@@ -117,7 +117,7 @@ class ThreadChannel extends Channel {
 
     /**
      * The approximate count of users in this thread
-     * <info> This value will not count above 50 even when there are more than 50 members</info>
+     * <info>This value will not count above 50 even when there are more than 50 members</info>
      * @type {number}
      */
     this.memberCount = data.member_count;

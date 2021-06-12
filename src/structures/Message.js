@@ -699,7 +699,7 @@ class Message extends Base {
     if (!['text', 'news'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
-    return this.channel.threads.create(name, autoArchiveDuration, { startMessage: this, reason });
+    return this.channel.threads.create({ name, autoArchiveDuration, startMessage: this, reason });
   }
 
   /**

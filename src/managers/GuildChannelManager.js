@@ -30,7 +30,7 @@ class GuildChannelManager extends BaseManager {
   get channelCountWithoutThreads() {
     return this.cache.reduce((acc, channel) => {
       if (ThreadChannelTypes.includes(channel.type)) return acc;
-      return acc++;
+      return ++acc;
     }, 0);
   }
 
