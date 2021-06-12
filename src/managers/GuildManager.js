@@ -188,6 +188,8 @@ class GuildManager extends BaseManager {
       if (role.color) role.color = resolveColor(role.color);
       if (role.permissions) role.permissions = Permissions.resolve(role.permissions).toString();
     }
+    if (systemChannelFlags) SystemChannelFlags.resolve(systemChannelFlags);
+
     return new Promise((resolve, reject) =>
       this.client.api.guilds
         .post({
@@ -202,7 +204,7 @@ class GuildManager extends BaseManager {
             afk_channel_id: afkChannelID,
             afk_timeout: afkTimeout,
             system_channel_id: systemChannelID,
-            system_channel_flags: SystemChannelFlags.resolve(systemChannelFlags),
+            system_channel_flags: systemChannelFlags,
           },
         })
         .then(data => {
