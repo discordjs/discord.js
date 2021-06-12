@@ -232,7 +232,7 @@ class RequestHandler {
          */
 
         /**
-         * Emitted periodically when the process sends invalid messages to let users avoid the
+         * Emitted periodically when the process sends invalid requests to let users avoid the
          * 10k invalid requests in 10 minutes threshold that causes a ban
          * @event Client#invalidRequestWarning
          * @param {InvalidRequestWarningData} invalidRequestWarningData Object containing the invalid request info

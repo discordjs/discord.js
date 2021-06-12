@@ -199,7 +199,7 @@ class GuildMemberManager extends BaseManager {
    * Options used for pruning guild members.
    * @typedef {Object} GuildPruneMembersOptions
    * @property {number} [days=7] Number of days of inactivity required to kick
-   * @property {boolean} [dry=false] Get number of users that will be kicked, without actually kicking them
+   * @property {boolean} [dry=false] Get the number of users that will be kicked, without actually kicking them
    * @property {boolean} [count=true] Whether or not to return the number of users that have been kicked.
    * @property {RoleResolvable[]} [roles] Array of roles to bypass the "...and no roles" constraint when pruning
    * @property {string} [reason] Reason for this prune
