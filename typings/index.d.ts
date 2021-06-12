@@ -248,7 +248,7 @@ declare module 'discord.js' {
   }
 
   export class BaseGuildEmoji extends Emoji {
-    constructor(client: Client, data: unknown, guild: Guild);
+    constructor(client: Client, data: unknown, guild: Guild | GuildPreview);
     public available: boolean | null;
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
@@ -922,6 +922,7 @@ declare module 'discord.js' {
   }
 
   export class GuildEmoji extends BaseGuildEmoji {
+    constructor(client: Client, data: unknown, guild: Guild);
     private _roles: Snowflake[];
 
     public readonly deletable: boolean;
