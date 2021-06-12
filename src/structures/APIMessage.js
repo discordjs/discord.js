@@ -142,11 +142,6 @@ class APIMessage {
       }
     }
 
-    const embedLikes = [];
-    if (this.options.embeds) {
-      embedLikes.push(...this.options.embeds);
-    }
-
     const components = this.options.components?.map(c =>
       BaseMessageComponent.create(
         Array.isArray(c) ? { type: MessageComponentTypes.ACTION_ROW, components: c } : c,
@@ -215,22 +210,6 @@ class APIMessage {
    */
   async resolveFiles() {
     if (this.files) return this;
-
-    const embedLikes = [];
-
-    if (this.options.embeds) {
-      embedLikes.push(...this.options.embeds);
-    }
-
-    const fileLikes = [];
-    if (this.options.files) {
-      fileLikes.push(...this.options.files);
-    }
-    for (const embed of embedLikes) {
-      if (embed.files) {
-        fileLikes.push(...embed.files);
-      }
-    }
 
     this.files = await Promise.all(this.options.files?.map(file => this.constructor.resolveFile(file)) ?? []);
     return this;
