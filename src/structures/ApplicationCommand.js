@@ -210,11 +210,13 @@ class ApplicationCommand extends Base {
    * @private
    */
   static transformOption(option, received) {
+    const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
     return {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
       description: option.description,
-      required: option.required ?? false,
+      required:
+        option.required ?? (stringType === 'SUB_COMMAND' || stringType === 'SUB_COMMAND_GROUP') ? undefined : false,
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),
     };
