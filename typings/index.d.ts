@@ -1,3 +1,12 @@
+declare enum ActivityTypes {
+  PLAYING = 0,
+  STREAMING = 1,
+  LISTENING = 2,
+  WATCHING = 3,
+  CUSTOM = 4,
+  COMPETING = 5,
+}
+
 declare enum ChannelType {
   text = 0,
   dm = 1,
@@ -21,6 +30,17 @@ declare enum ChannelTypes {
   STAGE = 13,
 }
 
+declare enum DefaultMessageNotificationLevels {
+  ALL_MESSAGES = 0,
+  ONLY_MENTIONS = 1,
+}
+
+declare enum ExplicitContentFilterLevels {
+  DISABLED = 0,
+  MEMBERS_WITHOUT_ROLES = 1,
+  ALL_MEMBERS = 2,
+}
+
 declare enum InteractionResponseTypes {
   PONG = 1,
   CHANNEL_MESSAGE_WITH_SOURCE = 4,
@@ -38,6 +58,11 @@ declare enum InteractionTypes {
 declare enum InviteTargetType {
   STREAM = 1,
   EMBEDDED_APPLICATION = 2,
+}
+
+declare enum MembershipStates {
+  INVITED = 1,
+  ACCEPTED = 2,
 }
 
 declare enum MessageButtonStyles {
@@ -79,6 +104,19 @@ declare enum StickerFormatTypes {
   PNG = 1,
   APNG = 2,
   LOTTIE = 3,
+}
+
+declare enum VerificationLevels {
+  NONE = 0,
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
+  VERY_HIGH = 4,
+}
+
+declare enum WebhookTypes {
+  Incoming = 1,
+  'Channel Follower' = 2,
 }
 
 type Awaited<T> = T | Promise<T>;
@@ -662,13 +700,13 @@ declare module 'discord.js' {
     InviteScopes: InviteScope[];
     MessageTypes: MessageType[];
     SystemMessageTypes: SystemMessageType[];
-    ActivityTypes: ActivityType[];
+    ActivityTypes: typeof ActivityTypes;
     StickerFormatTypes: typeof StickerFormatTypes;
     OverwriteTypes: typeof OverwriteTypes;
-    ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
-    DefaultMessageNotifications: DefaultMessageNotifications[];
-    VerificationLevels: VerificationLevel[];
-    MembershipStates: 'INVITED' | 'ACCEPTED';
+    ExplicitContentFilterLevels: typeof ExplicitContentFilterLevels;
+    DefaultMessageNotificationLevels: typeof DefaultMessageNotificationLevels;
+    VerificationLevels: typeof VerificationLevels;
+    MembershipStates: typeof MembershipStates;
     ApplicationCommandOptionTypes: typeof ApplicationCommandOptionTypes;
     ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
     InteractionTypes: typeof InteractionTypes;
@@ -678,6 +716,7 @@ declare module 'discord.js' {
     MFALevels: typeof MFALevels;
     NSFWLevels: typeof NSFWLevels;
     PrivacyLevels: typeof PrivacyLevels;
+    WebhookTypes: typeof WebhookTypes;
   };
 
   export class DataResolver {
@@ -740,7 +779,7 @@ declare module 'discord.js' {
     public bans: GuildBanManager;
     public channels: GuildChannelManager;
     public commands: GuildApplicationCommandManager;
-    public defaultMessageNotifications: DefaultMessageNotifications | number;
+    public defaultMessageNotifications: DefaultMessageNotificationLevel | number;
     public deleted: boolean;
     public description: string | null;
     public discoverySplash: string | null;
@@ -805,7 +844,7 @@ declare module 'discord.js' {
     public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
     public setDefaultMessageNotifications(
-      defaultMessageNotifications: DefaultMessageNotifications | number,
+      defaultMessageNotifications: DefaultMessageNotificationLevel | number,
       reason?: string,
     ): Promise<Guild>;
     public setDiscoverySplash(discoverySplash: Base64Resolvable | null, reason?: string): Promise<Guild>;
@@ -1043,7 +1082,7 @@ declare module 'discord.js' {
   }
 
   // tslint:disable-next-line:no-empty-interface - Merge RateLimitData into RateLimitError to not have to type it again
-  interface RateLimitError extends RateLimitData {}
+  interface RateLimitError extends RateLimitData { }
   export class RateLimitError extends Error {
     constructor(data: RateLimitData);
     public name: 'RateLimitError';
@@ -1762,7 +1801,7 @@ declare module 'discord.js' {
     public team: Team;
     public readonly id: Snowflake;
     public permissions: string[];
-    public membershipState: MembershipStates;
+    public membershipState: MembershipState;
     public user: User;
 
     public toString(): string;
@@ -1931,7 +1970,7 @@ declare module 'discord.js' {
     public sourceGuild: Guild | unknown | null;
     public sourceChannel: Channel | unknown | null;
     public token: string | null;
-    public type: WebhookTypes;
+    public type: WebhookType;
   }
 
   export class WebhookClient extends WebhookMixin(BaseClient) {
@@ -2437,7 +2476,7 @@ declare module 'discord.js' {
 
   type ActivityPlatform = 'desktop' | 'samsung' | 'xbox';
 
-  type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS' | 'COMPETING';
+  type ActivityType = keyof typeof ActivityTypes;
 
   interface AddGuildMemberOptions {
     accessToken: string;
@@ -2852,7 +2891,7 @@ declare module 'discord.js' {
     binary: string;
   }
 
-  type DefaultMessageNotifications = 'ALL' | 'MENTIONS';
+  type DefaultMessageNotificationLevel = keyof typeof DefaultMessageNotificationLevels;
 
   interface EditGuildTemplateOptions {
     name?: string;
@@ -2894,7 +2933,7 @@ declare module 'discord.js' {
     codeBlockContent?: boolean;
   }
 
-  type ExplicitContentFilterLevel = 'DISABLED' | 'MEMBERS_WITHOUT_ROLES' | 'ALL_MEMBERS';
+  type ExplicitContentFilterLevel = keyof typeof ExplicitContentFilterLevels;
 
   interface Extendable {
     GuildEmoji: typeof GuildEmoji;
@@ -3072,7 +3111,7 @@ declare module 'discord.js' {
     afkChannelID?: Snowflake | number;
     afkTimeout?: number;
     channels?: PartialChannelData[];
-    defaultMessageNotifications?: DefaultMessageNotifications | number;
+    defaultMessageNotifications?: DefaultMessageNotificationLevel | number;
     explicitContentFilter?: ExplicitContentFilterLevel | number;
     icon?: BufferResolvable | Base64Resolvable | null;
     roles?: PartialRoleData[];
@@ -3090,7 +3129,7 @@ declare module 'discord.js' {
     name?: string;
     verificationLevel?: VerificationLevel | number;
     explicitContentFilter?: ExplicitContentFilterLevel | number;
-    defaultMessageNotifications?: DefaultMessageNotifications | number;
+    defaultMessageNotifications?: DefaultMessageNotificationLevel | number;
     afkChannel?: ChannelResolvable;
     systemChannel?: ChannelResolvable;
     systemChannelFlags?: SystemChannelFlagsResolvable;
@@ -3281,7 +3320,7 @@ declare module 'discord.js' {
     stack: string;
   }
 
-  type MembershipStates = 'INVITED' | 'ACCEPTED';
+  type MembershipState = keyof typeof MembershipStates;
 
   type MessageActionRowComponent = MessageButton;
 
@@ -3518,11 +3557,11 @@ declare module 'discord.js' {
 
   type OverwriteType = 'member' | 'role';
 
-  interface PermissionFlags extends Record<PermissionString, bigint> {}
+  interface PermissionFlags extends Record<PermissionString, bigint> { }
 
-  interface PermissionObject extends Record<PermissionString, boolean> {}
+  interface PermissionObject extends Record<PermissionString, boolean> { }
 
-  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> {}
+  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> { }
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
@@ -3561,7 +3600,7 @@ declare module 'discord.js' {
     | 'USE_APPLICATION_COMMANDS'
     | 'REQUEST_TO_SPEAK';
 
-  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
+  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> { }
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
@@ -3585,16 +3624,16 @@ declare module 'discord.js' {
     partial: true;
     fetch(): Promise<T>;
   } & {
-    [K in keyof Omit<
-      T,
-      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-    >]: T[K] extends (...args: any) => void ? T[K] : T[K] | null;
-  };
+      [K in keyof Omit<
+        T,
+        'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
+      >]: T[K] extends (...args: any) => void ? T[K] : T[K] | null;
+    };
 
   interface PartialDMChannel
     extends Partialize<
-      DMChannel,
-      'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
+    DMChannel,
+    'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
     > {
     lastMessage: null;
     lastMessageID: undefined;
@@ -3616,18 +3655,18 @@ declare module 'discord.js' {
 
   interface PartialGuildMember
     extends Partialize<
-      GuildMember,
-      | 'bannable'
-      | 'displayColor'
-      | 'displayHexColor'
-      | 'displayName'
-      | 'guild'
-      | 'kickable'
-      | 'permissions'
-      | 'roles'
-      | 'manageable'
-      | 'presence'
-      | 'voice'
+    GuildMember,
+    | 'bannable'
+    | 'displayColor'
+    | 'displayHexColor'
+    | 'displayName'
+    | 'guild'
+    | 'kickable'
+    | 'permissions'
+    | 'roles'
+    | 'manageable'
+    | 'presence'
+    | 'voice'
     > {
     readonly bannable: boolean;
     readonly displayColor: number;
@@ -3646,17 +3685,17 @@ declare module 'discord.js' {
 
   interface PartialMessage
     extends Partialize<
-      Message,
-      | 'attachments'
-      | 'channel'
-      | 'deletable'
-      | 'crosspostable'
-      | 'editable'
-      | 'mentions'
-      | 'pinnable'
-      | 'url'
-      | 'flags'
-      | 'embeds'
+    Message,
+    | 'attachments'
+    | 'channel'
+    | 'deletable'
+    | 'crosspostable'
+    | 'editable'
+    | 'mentions'
+    | 'pinnable'
+    | 'url'
+    | 'flags'
+    | 'embeds'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];
@@ -3857,7 +3896,7 @@ declare module 'discord.js' {
     uses: number | null;
   }
 
-  type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
+  type VerificationLevel = keyof typeof VerificationLevels;
 
   type WebhookClientOptions = Pick<
     ClientOptions,
@@ -3880,7 +3919,7 @@ declare module 'discord.js' {
     avatarURL?: string;
   }
 
-  type WebhookTypes = 'Incoming' | 'Channel Follower';
+  type WebhookType = keyof typeof WebhookTypes;
 
   interface WebSocketOptions {
     large_threshold?: number;

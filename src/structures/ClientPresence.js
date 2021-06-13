@@ -41,7 +41,7 @@ class ClientPresence extends Presence {
         if (!activity.type) activity.type = 0;
 
         data.activities.push({
-          type: typeof activity.type === 'number' ? activity.type : ActivityTypes.indexOf(activity.type),
+          type: typeof activity.type === 'number' ? activity.type : ActivityTypes[activity.type],
           name: activity.name,
           url: activity.url,
         });
@@ -50,7 +50,7 @@ class ClientPresence extends Presence {
       data.activities.push(
         ...this.activities.map(a => ({
           name: a.name,
-          type: ActivityTypes.indexOf(a.type),
+          type: ActivityTypes[a.type],
           url: a.url ?? undefined,
         })),
       );

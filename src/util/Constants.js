@@ -488,17 +488,17 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(
 );
 
 /**
- * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
+ * <info>Bots cannot set a `CUSTOM` activity type, it is only for custom statuses received from users</info>
  * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
  * * STREAMING
  * * LISTENING
  * * WATCHING
- * * CUSTOM_STATUS
+ * * CUSTOM
  * * COMPETING
  * @typedef {string} ActivityType
  */
-exports.ActivityTypes = ['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM_STATUS', 'COMPETING'];
+exports.ActivityTypes = createEnum(['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM', 'COMPETING']);
 
 exports.ChannelTypes = createEnum([
   'TEXT',
@@ -559,7 +559,7 @@ exports.Colors = {
  * * ALL_MEMBERS
  * @typedef {string} ExplicitContentFilterLevel
  */
-exports.ExplicitContentFilterLevels = ['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL_MEMBERS'];
+exports.ExplicitContentFilterLevels = createEnum(['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL_MEMBERS']);
 
 /**
  * The value set for the verification levels for a guild:
@@ -570,7 +570,7 @@ exports.ExplicitContentFilterLevels = ['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL
  * * VERY_HIGH
  * @typedef {string} VerificationLevel
  */
-exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
+exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH']);
 
 /**
  * An error encountered while performing an API request. Here are the potential errors:
@@ -720,35 +720,25 @@ exports.APIErrors = {
  * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
  * * ALL
  * * MENTIONS
- * @typedef {string} DefaultMessageNotifications
+ * @typedef {string} DefaultMessageNotificationLevel
  */
-exports.DefaultMessageNotifications = ['ALL', 'MENTIONS'];
+exports.DefaultMessageNotificationLevels = createEnum(['ALL', 'MENTIONS']);
 
 /**
  * The value set for a team members's membership state:
  * * INVITED
  * * ACCEPTED
- * @typedef {string} MembershipStates
+ * @typedef {string} MembershipState
  */
-exports.MembershipStates = [
-  // They start at 1
-  null,
-  'INVITED',
-  'ACCEPTED',
-];
+exports.MembershipStates = createEnum([null, 'INVITED', 'ACCEPTED']);
 
 /**
  * The value set for a webhook's type:
  * * Incoming
  * * Channel Follower
- * @typedef {string} WebhookTypes
+ * @typedef {string} WebhookType
  */
-exports.WebhookTypes = [
-  // They start at 1
-  null,
-  'Incoming',
-  'Channel Follower',
-];
+exports.WebhookTypes = createEnum([null, 'Incoming', 'Channel Follower']);
 
 /**
  * The value set for a sticker's type:

@@ -13,7 +13,7 @@ const {
   ChannelTypes,
   Events,
   VerificationLevels,
-  DefaultMessageNotifications,
+  DefaultMessageNotificationLevels,
   ExplicitContentFilterLevels,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -168,14 +168,21 @@ class GuildManager extends BaseManager {
     } = {},
   ) {
     icon = await DataResolver.resolveImage(icon);
-    if (typeof verificationLevel !== 'undefined' && typeof verificationLevel !== 'number') {
-      verificationLevel = VerificationLevels.indexOf(verificationLevel);
+    if (verificationLevel) {
+      verificationLevel =
+        typeof verificationLevel === 'number' ? verificationLevel : VerificationLevels[verificationLevel];
     }
-    if (typeof defaultMessageNotifications !== 'undefined' && typeof defaultMessageNotifications !== 'number') {
-      defaultMessageNotifications = DefaultMessageNotifications.indexOf(defaultMessageNotifications);
+    if (defaultMessageNotifications) {
+      defaultMessageNotifications =
+        typeof defaultMessageNotifications === 'number'
+          ? defaultMessageNotifications
+          : DefaultMessageNotificationLevels[defaultMessageNotifications];
     }
-    if (typeof explicitContentFilter !== 'undefined' && typeof explicitContentFilter !== 'number') {
-      explicitContentFilter = ExplicitContentFilterLevels.indexOf(explicitContentFilter);
+    if (explicitContentFilter) {
+      explicitContentFilter =
+        typeof explicitContentFilter === 'number'
+          ? explicitContentFilter
+          : ExplicitContentFilterLevels[explicitContentFilter];
     }
     for (const channel of channels) {
       if (channel.type) channel.type = ChannelTypes[channel.type.toUpperCase()];
