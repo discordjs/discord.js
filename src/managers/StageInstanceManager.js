@@ -5,6 +5,10 @@ const { TypeError, Error } = require('../errors');
 const StageInstance = require('../structures/StageInstance');
 const { PrivacyLevels } = require('../util/Constants');
 
+/**
+ * Manages API methods for {@link StageInstance} objects and holds their cache.
+ * @extends {BaseManager}
+ */
 class StageInstanceManager extends BaseManager {
   constructor(guild, iterable) {
     super(guild.client, iterable, StageInstance);
