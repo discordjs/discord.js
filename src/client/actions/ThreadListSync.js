@@ -9,45 +9,43 @@ class ThreadListSyncAction extends Action {
     const client = this.client;
 
     const guild = client.guilds.cache.get(data.guild_id);
-    if (guild) {
-      if (!data.channels_ids) {
-        guild.channels.cache.forEach(channel => {
-          this.removeStale(channel);
-        });
-      } else {
-        data.channel_ids.forEach(id => {
-          const channel = client.channels.resolve(id);
-          if (channel) this.removeStale(channel);
-        });
-      }
+    if (!guild) return {};
 
-      const syncedThreads = new Collection();
-      data.threads.forEach(rawThread => {
-        const thread = client.channels.add(rawThread);
-        syncedThreads.set(thread.id, thread);
+    if (!data.channels_ids) {
+      guild.channels.cache.forEach(channel => {
+        this.removeStale(channel);
       });
-
-      Object.values(data.members).forEach(rawMember => {
-        // Discord sends the thread id as id in this object
-        const thread = client.channels.cache.get(rawMember.id);
-        if (thread) {
-          thread.members.add(rawMember);
-        }
+    } else {
+      data.channel_ids.forEach(id => {
+        const channel = client.channels.resolve(id);
+        if (channel) this.removeStale(channel);
       });
-
-      /**
-       * Emitted whenever the client user gains access to a text or news channel that contains threads
-       * @event Client#threadListSync
-       * @param {Collection<Snowflake, ThreadChannel>} threads The threads that were synced
-       */
-      client.emit(Events.THREAD_LIST_SYNC, syncedThreads);
-
-      return {
-        syncedThreads,
-      };
     }
 
-    return {};
+    const syncedThreads = new Collection();
+    data.threads.forEach(rawThread => {
+      const thread = client.channels.add(rawThread);
+      syncedThreads.set(thread.id, thread);
+    });
+
+    Object.values(data.members).forEach(rawMember => {
+      // Discord sends the thread id as id in this object
+      const thread = client.channels.cache.get(rawMember.id);
+      if (thread) {
+        thread.members.add(rawMember);
+      }
+    });
+
+    /**
+     * Emitted whenever the client user gains access to a text or news channel that contains threads
+     * @event Client#threadListSync
+     * @param {Collection<Snowflake, ThreadChannel>} threads The threads that were synced
+     */
+    client.emit(Events.THREAD_LIST_SYNC, syncedThreads);
+
+    return {
+      syncedThreads,
+    };
   }
 
   removeStale(channel) {
