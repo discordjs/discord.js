@@ -23,6 +23,14 @@ class GuildEmoji extends BaseGuildEmoji {
      * @type {?User}
      */
     this.author = null;
+
+    /**
+     * Array of role ids this emoji is active for
+     * @name GuildEmoji#_roles
+     * @type {Snowflake[]}
+     * @private
+     */
+    Object.defineProperty(this, '_roles', { value: [], writable: true });
   }
 
   /**
@@ -39,7 +47,9 @@ class GuildEmoji extends BaseGuildEmoji {
 
   _patch(data) {
     super._patch(data);
-    if (typeof data.user !== 'undefined') this.author = this.client.users.add(data.user);
+
+    if (data.user) this.author = this.client.users.add(data.user);
+    if (data.roles) this._roles = data.roles;
   }
 
   /**
