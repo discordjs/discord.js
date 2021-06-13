@@ -4,7 +4,6 @@ const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
-const Collection = require('../util/Collection');
 const Permissions = require('../util/Permissions');
 
 /**
@@ -132,9 +131,7 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get guildMembers() {
-    const members = new Collection();
-    this.members.cache.forEach(member => members.set(member.id, member.guildMember));
-    return members;
+    return this.members.cache.mapValues(member => member.guildMember);
   }
 
   /**
@@ -152,7 +149,7 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get parent() {
-    return this.guild.channels.cache.get(this.parentID) ?? null;
+    return this.guild.channels.resolve(this.parentID);
   }
 
   /**
