@@ -65,7 +65,7 @@ class StageInstance extends Base {
    * @readonly
    */
   get channel() {
-    return this.client.channels.cache.get(this.channelID) ?? null;
+    return this.client.channels.resolve(this.channelID);
   }
 
   /**
@@ -74,7 +74,7 @@ class StageInstance extends Base {
    * @readonly
    */
   get guild() {
-    return this.channel?.guild ?? null;
+    return this.client.guilds.resolve(this.guildID);
   }
 
   /**
