@@ -163,7 +163,7 @@ class Message extends Base {
      * The timestamp the message was last edited at (if applicable)
      * @type {?number}
      */
-    this.editedTimestamp = 'edited_timestamp' in data ? new Date(data.edited_timestamp).getTime() : null;
+    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
      * A manager of the reactions belonging to this message
@@ -290,7 +290,7 @@ class Message extends Base {
   patch(data) {
     const clone = this._clone();
 
-    if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+    if (data.edited_timestamp !== null) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
