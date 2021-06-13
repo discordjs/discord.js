@@ -61,7 +61,7 @@ class GuildChannelManager extends BaseManager {
 
   /**
    * Options used to create a new channel in a guild.
-   * @typedef {Object} GuildCreateChannelOptions
+   * @typedef {Object} GuildChannelCreateOptions
    * @property {string} [type='text'] The type of the new channel, either `text`, `voice`, `category`, `news`,
    * `store`, or `stage`
    * @property {string} [topic] The topic for the new channel
@@ -79,7 +79,7 @@ class GuildChannelManager extends BaseManager {
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {GuildCreateChannelOptions} [options={}] Options for creating the new channel
+   * @param {GuildChannelCreateOptions} [options={}] Options for creating the new channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create a new text channel

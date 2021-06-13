@@ -892,7 +892,7 @@ declare module 'discord.js' {
     public type: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown'>;
     public readonly viewable: boolean;
     public clone(options?: GuildChannelCloneOptions): Promise<this>;
-    public createInvite(options?: InviteOptions): Promise<Invite>;
+    public createInvite(options?: CreateInviteOptions): Promise<Invite>;
     public createOverwrite(
       userOrRole: RoleResolvable | UserResolvable,
       options: PermissionOverwriteOptions,
@@ -2115,15 +2115,15 @@ declare module 'discord.js' {
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
-    public create(name: string, options: GuildCreateChannelOptions & { type: 'voice' }): Promise<VoiceChannel>;
-    public create(name: string, options: GuildCreateChannelOptions & { type: 'category' }): Promise<CategoryChannel>;
-    public create(name: string, options?: GuildCreateChannelOptions & { type?: 'text' }): Promise<TextChannel>;
-    public create(name: string, options: GuildCreateChannelOptions & { type: 'news' }): Promise<NewsChannel>;
-    public create(name: string, options: GuildCreateChannelOptions & { type: 'store' }): Promise<StoreChannel>;
-    public create(name: string, options: GuildCreateChannelOptions & { type: 'stage' }): Promise<StageChannel>;
+    public create(name: string, options: GuildChannelCreateOptions & { type: 'voice' }): Promise<VoiceChannel>;
+    public create(name: string, options: GuildChannelCreateOptions & { type: 'category' }): Promise<CategoryChannel>;
+    public create(name: string, options?: GuildChannelCreateOptions & { type?: 'text' }): Promise<TextChannel>;
+    public create(name: string, options: GuildChannelCreateOptions & { type: 'news' }): Promise<NewsChannel>;
+    public create(name: string, options: GuildChannelCreateOptions & { type: 'store' }): Promise<StoreChannel>;
+    public create(name: string, options: GuildChannelCreateOptions & { type: 'stage' }): Promise<StageChannel>;
     public create(
       name: string,
-      options: GuildCreateChannelOptions,
+      options: GuildChannelCreateOptions,
     ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>;
     public fetch(
       id: Snowflake,
@@ -2969,7 +2969,7 @@ declare module 'discord.js' {
 
   type GuildChannelResolvable = Snowflake | GuildChannel;
 
-  interface GuildCreateChannelOptions {
+  interface GuildChannelCreateOptions {
     permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
     topic?: string;
     type?: Exclude<
@@ -2985,7 +2985,7 @@ declare module 'discord.js' {
     reason?: string;
   }
 
-  interface GuildChannelCloneOptions extends GuildCreateChannelOptions {
+  interface GuildChannelCloneOptions extends GuildChannelCreateOptions {
     name?: string;
   }
 
@@ -3170,7 +3170,7 @@ declare module 'discord.js' {
     additionalScopes?: InviteScope[];
   }
 
-  interface InviteOptions {
+  interface CreateInviteOptions {
     temporary?: boolean;
     maxAge?: number;
     maxUses?: number;

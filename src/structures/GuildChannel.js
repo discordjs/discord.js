@@ -540,7 +540,7 @@ class GuildChannel extends Channel {
 
   /**
    * Options used to create an invite to a guild channel.
-   * @typedef {Object} InviteOptions
+   * @typedef {Object} CreateInviteOptions
    * @property {boolean} [temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @property {number} [maxAge=86400] How long the invite should last (in seconds, 0 for forever)
@@ -556,7 +556,7 @@ class GuildChannel extends Channel {
 
   /**
    * Creates an invite to this guild channel.
-   * @param {InviteOptions} [options={}] The options for creating the invite
+   * @param {CreateInviteOptions} [options={}] The options for creating the invite
    * @returns {Promise<Invite>}
    * @example
    * // Create an invite to a channel
@@ -608,7 +608,7 @@ class GuildChannel extends Channel {
 
   /**
    * Options used to clone a guild channel.
-   * @typedef {GuildCreateChannelOptions} GuildChannelCloneOptions
+   * @typedef {GuildChannelCreateOptions} GuildChannelCloneOptions
    * @property {string} [name=this.name] Name of the new channel
    */
 
