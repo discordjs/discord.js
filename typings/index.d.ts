@@ -3844,13 +3844,15 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
     public description: string;
-    public format: StickerFormatTypes;
+    public format: StickerFormatType;
     public id: Snowflake;
     public name: string;
     public packID: Snowflake;
     public tags: string[];
     public readonly url: string;
   }
+
+  type StickerFormatType = keyof typeof StickerFormatTypes;
 
   type SystemChannelFlagsString =
     | 'SUPPRESS_JOIN_NOTIFICATIONS'

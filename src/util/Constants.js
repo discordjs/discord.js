@@ -745,7 +745,7 @@ exports.WebhookTypes = createEnum([null, 'Incoming', 'Channel Follower']);
  * * PNG
  * * APNG
  * * LOTTIE
- * @typedef {string} StickerFormatTypes
+ * @typedef {string} StickerFormatType
  */
 exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE']);
 

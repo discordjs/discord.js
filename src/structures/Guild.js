@@ -856,7 +856,7 @@ class Guild extends BaseGuild {
   edit(data, reason) {
     const _data = {};
     if (data.name) _data.name = data.name;
-    if (data.verificationLevel) {
+    if (typeof data.verificationLevel !== 'undefined') {
       _data.verification_level =
         typeof data.verificationLevel === 'number'
           ? data.verificationLevel
@@ -874,13 +874,13 @@ class Guild extends BaseGuild {
     if (data.splash) _data.splash = data.splash;
     if (data.discoverySplash) _data.discovery_splash = data.discoverySplash;
     if (data.banner) _data.banner = data.banner;
-    if (data.explicitContentFilter) {
+    if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter =
         typeof data.explicitContentFilter === 'number'
           ? data.explicitContentFilter
           : ExplicitContentFilterLevels[data.explicitContentFilter];
     }
-    if (data.defaultMessageNotifications) {
+    if (typeof data.defaultMessageNotifications !== 'undefined') {
       _data.default_message_notifications =
         typeof data.defaultMessageNotifications === 'number'
           ? data.defaultMessageNotifications
