@@ -717,12 +717,12 @@ exports.APIErrors = {
 };
 
 /**
- * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
- * * ALL
- * * MENTIONS
+ * The value set for a guild's default message notifications, e.g. `ALL_MESSAGES`. Here are the available types:
+ * * ALL_MESSAGES
+ * * ONLY_MENTIONS
  * @typedef {string} DefaultMessageNotificationLevel
  */
-exports.DefaultMessageNotificationLevels = createEnum(['ALL', 'MENTIONS']);
+exports.DefaultMessageNotificationLevels = createEnum(['ALL_MESSAGES', 'ONLY_MENTIONS']);
 
 /**
  * The value set for a team members's membership state:
