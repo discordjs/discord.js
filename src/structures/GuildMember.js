@@ -385,7 +385,6 @@ class GuildMember extends Base {
       guild: 'guildID',
       user: 'userID',
       displayName: true,
-      speaking: false,
       lastMessage: false,
       lastMessageID: false,
       roles: true,

@@ -64,8 +64,20 @@ class Util {
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
     text = Util.verifyString(text, RangeError, 'MESSAGE_CONTENT_TYPE', false);
     if (text.length <= maxLength) return [text];
-    const splitText = text.split(char);
-    if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
+    let splitText = [text];
+    if (Array.isArray(char)) {
+      while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
+        const currentChar = char.shift();
+        if (currentChar instanceof RegExp) {
+          splitText = splitText.map(chunk => chunk.match(currentChar));
+        } else {
+          splitText = splitText.map(chunk => chunk.split(currentChar));
+        }
+      }
+    } else {
+      splitText = text.split(char);
+    }
+    if (splitText.some(elem => elem.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [];
     let msg = '';
     for (const chunk of splitText) {
@@ -265,6 +277,20 @@ class Util {
     const m = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
     if (!m) return null;
     return { animated: Boolean(m[1]), name: m[2], id: m[3] || null };
+  }
+
+  /**
+   * Resolves a partial emoji object from an {@link EmojiIdentifierResolvable}, without checking a Client.
+   * @param {EmojiIdentifierResolvable} emoji Emoji identifier to resolve
+   * @returns {?RawEmoji}
+   * @private
+   */
+  static resolvePartialEmoji(emoji) {
+    if (!emoji) return null;
+    if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
+    const { id, name, animated } = emoji;
+    if (!id && !name) return null;
+    return { id, name, animated };
   }
 
   /**

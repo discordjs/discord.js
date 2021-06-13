@@ -27,7 +27,7 @@ class ClientApplication extends Application {
      * The flags this application has
      * @type {ApplicationFlags}
      */
-    this.flags = 'flags' in data ? new ApplicationFlags(data.flags) : this.flags;
+    this.flags = 'flags' in data ? new ApplicationFlags(data.flags).freeze() : this.flags;
 
     /**
      * The hash of the application's cover image

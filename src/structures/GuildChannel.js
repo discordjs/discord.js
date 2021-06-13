@@ -34,35 +34,44 @@ class GuildChannel extends Channel {
      * @type {Guild}
      */
     this.guild = guild;
+
+    this.parentID = this.parentID ?? null;
+    this.permissionOverwrites = this.permissionOverwrites ?? new Collection();
   }
 
   _patch(data) {
     super._patch(data);
 
-    /**
-     * The name of the guild channel
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the guild channel
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The raw position of the channel from discord
-     * @type {number}
-     */
-    this.rawPosition = data.position;
+    if ('position' in data) {
+      /**
+       * The raw position of the channel from discord
+       * @type {number}
+       */
+      this.rawPosition = data.position;
+    }
 
-    /**
-     * The ID of the category parent of this channel
-     * @type {?Snowflake}
-     */
-    this.parentID = data.parent_id || null;
+    if ('parent_id' in data) {
+      /**
+       * The ID of the category parent of this channel
+       * @type {?Snowflake}
+       */
+      this.parentID = data.parent_id;
+    }
 
     /**
      * A manager of permission overwrites that belong to this channel
      * @type {PermissionOverwriteManager}
      */
     this.permissionOverwrites = new PermissionOverwriteManager(this);
-    if (data.permission_overwrites) {
+    if ('permission_overwrites' in data) {
       for (const overwrite of data.permission_overwrites) {
         this.permissionOverwrites.add(overwrite);
       }
@@ -85,13 +94,33 @@ class GuildChannel extends Channel {
    */
   get permissionsLocked() {
     if (!this.parent) return null;
-    if (this.permissionOverwrites.size !== this.parent.permissionOverwrites.size) return false;
-    return this.permissionOverwrites.every((value, key) => {
-      const testVal = this.parent.permissionOverwrites.get(key);
+
+    // Get all overwrites
+    const overwriteIds = new Set([...this.permissionOverwrites.keys(), ...this.parent.permissionOverwrites.keys()]);
+
+    // Compare all overwrites
+    return [...overwriteIds].every(key => {
+      const channelVal = this.permissionOverwrites.get(key);
+      const parentVal = this.parent.permissionOverwrites.get(key);
+
+      // Handle empty overwrite
+      if (
+        (channelVal === undefined &&
+          parentVal.deny.bitfield === Permissions.defaultBit &&
+          parentVal.allow.bitfield === Permissions.defaultBit) ||
+        (parentVal === undefined &&
+          channelVal.deny.bitfield === Permissions.defaultBit &&
+          channelVal.allow.bitfield === Permissions.defaultBit)
+      ) {
+        return true;
+      }
+
+      // Compare overwrites
       return (
-        testVal !== undefined &&
-        testVal.deny.bitfield === value.deny.bitfield &&
-        testVal.allow.bitfield === value.allow.bitfield
+        channelVal !== undefined &&
+        parentVal !== undefined &&
+        channelVal.deny.bitfield === parentVal.deny.bitfield &&
+        channelVal.allow.bitfield === parentVal.allow.bitfield
       );
     });
   }
@@ -162,12 +191,20 @@ class GuildChannel extends Channel {
     const overwrites = this.overwritesFor(member, true, roles);
 
     return permissions
-      .remove(overwrites.everyone ? overwrites.everyone.deny : 0n)
-      .add(overwrites.everyone ? overwrites.everyone.allow : 0n)
-      .remove(overwrites.roles.length > 0n ? overwrites.roles.map(role => role.deny) : 0n)
-      .add(overwrites.roles.length > 0n ? overwrites.roles.map(role => role.allow) : 0n)
-      .remove(overwrites.member ? overwrites.member.deny : 0n)
-      .add(overwrites.member ? overwrites.member.allow : 0n)
+      .remove(overwrites.everyone ? overwrites.everyone.deny : Permissions.defaultBit)
+      .add(overwrites.everyone ? overwrites.everyone.allow : Permissions.defaultBit)
+      .remove(
+        overwrites.roles.length > Permissions.defaultBit
+          ? overwrites.roles.map(role => role.deny)
+          : Permissions.defaultBit,
+      )
+      .add(
+        overwrites.roles.length > Permissions.defaultBit
+          ? overwrites.roles.map(role => role.allow)
+          : Permissions.defaultBit,
+      )
+      .remove(overwrites.member ? overwrites.member.deny : Permissions.defaultBit)
+      .add(overwrites.member ? overwrites.member.allow : Permissions.defaultBit)
       .freeze();
   }
 
@@ -184,10 +221,10 @@ class GuildChannel extends Channel {
     const roleOverwrites = this.permissionOverwrites.get(role.id);
 
     return role.permissions
-      .remove(everyoneOverwrites ? everyoneOverwrites.deny : 0n)
-      .add(everyoneOverwrites ? everyoneOverwrites.allow : 0n)
-      .remove(roleOverwrites ? roleOverwrites.deny : 0n)
-      .add(roleOverwrites ? roleOverwrites.allow : 0n)
+      .remove(everyoneOverwrites ? everyoneOverwrites.deny : Permissions.defaultBit)
+      .add(everyoneOverwrites ? everyoneOverwrites.allow : Permissions.defaultBit)
+      .remove(roleOverwrites ? roleOverwrites.deny : Permissions.defaultBit)
+      .add(roleOverwrites ? roleOverwrites.allow : Permissions.defaultBit)
       .freeze();
   }
 
@@ -476,23 +513,19 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
-    Util.mergeDefault(
-      {
-        name: this.name,
-        permissionOverwrites: this.permissionOverwrites,
-        topic: this.topic,
-        type: this.type,
-        nsfw: this.nsfw,
-        parent: this.parent,
-        bitrate: this.bitrate,
-        userLimit: this.userLimit,
-        rateLimitPerUser: this.rateLimitPerUser,
-        position: this.position,
-        reason: null,
-      },
-      options,
-    );
-    return this.guild.channels.create(options.name, options);
+    return this.guild.channels.create(options.name ?? this.name, {
+      permissionOverwrites: this.permissionOverwrites,
+      topic: this.topic,
+      type: this.type,
+      nsfw: this.nsfw,
+      parent: this.parent,
+      bitrate: this.bitrate,
+      userLimit: this.userLimit,
+      rateLimitPerUser: this.rateLimitPerUser,
+      position: this.position,
+      reason: null,
+      ...options,
+    });
   }
   /* eslint-enable max-len */
 

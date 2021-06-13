@@ -93,7 +93,7 @@ class GuildPreview extends Base {
 
   /**
    * The URL to this guild's splash.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   splashURL({ format, size } = {}) {
@@ -103,7 +103,7 @@ class GuildPreview extends Base {
 
   /**
    * The URL to this guild's discovery splash.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   discoverySplashURL({ format, size } = {}) {

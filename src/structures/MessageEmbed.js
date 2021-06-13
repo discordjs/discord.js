@@ -1,5 +1,6 @@
 'use strict';
 
+const { RangeError } = require('../errors');
 const Util = require('../util/Util');
 
 /**
@@ -22,7 +23,6 @@ class MessageEmbed {
    * @property {Date|number} [timestamp] The timestamp of this embed
    * @property {ColorResolvable} [color] The color of this embed
    * @property {EmbedFieldData[]} [fields] The fields of this embed
-   * @property {Array<FileOptions|string|MessageAttachment>} [files] The files of this embed
    * @property {Partial<MessageEmbedAuthor>} [author] The author of this embed
    * @property {Partial<MessageEmbedThumbnail>} [thumbnail] The thumbnail of this embed
    * @property {Partial<MessageEmbedImage>} [image] The image of this embed
@@ -44,6 +44,7 @@ class MessageEmbed {
      * * `article` - an article embed
      * * `link` - a link embed
      * @type {string}
+     * @deprecated
      */
     this.type = data.type || 'rich';
 
@@ -220,12 +221,6 @@ class MessageEmbed {
           proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
         }
       : null;
-
-    /**
-     * The files of this embed
-     * @type {Array<FileOptions|string|MessageAttachment>}
-     */
-    this.files = data.files || [];
   }
 
   /**
@@ -293,17 +288,6 @@ class MessageEmbed {
    */
   spliceFields(index, deleteCount, ...fields) {
     this.fields.splice(index, deleteCount, ...this.constructor.normalizeFields(...fields));
-    return this;
-  }
-
-  /**
-   * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
-   * setting an embed image or author/footer icons. Multiple files can be attached.
-   * @param {Array<FileOptions|string|MessageAttachment>} files Files to attach
-   * @returns {MessageEmbed}
-   */
-  attachFiles(files) {
-    this.files = this.files.concat(files);
     return this;
   }
 

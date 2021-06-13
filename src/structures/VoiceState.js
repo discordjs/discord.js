@@ -101,16 +101,6 @@ class VoiceState extends Base {
   }
 
   /**
-   * If this is a voice state of the client user, then this will refer to the active VoiceConnection for this guild
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get connection() {
-    if (this.id !== this.client.user.id) return null;
-    return this.client.voice.connections.get(this.guild.id) || null;
-  }
-
-  /**
    * Whether this member is either self-deafened or server-deafened
    * @type {?boolean}
    * @readonly
@@ -126,16 +116,6 @@ class VoiceState extends Base {
    */
   get mute() {
     return this.serverMute || this.selfMute;
-  }
-
-  /**
-   * Whether this member is currently speaking. A boolean if the information is available (aka
-   * the bot is connected to any voice channel or stage channel in the guild), otherwise this is `null`
-   * @type {?boolean}
-   * @readonly
-   */
-  get speaking() {
-    return this.channel && this.channel.connection ? Boolean(this.channel.connection._speaking.get(this.id)) : null;
   }
 
   /**
@@ -178,34 +158,6 @@ class VoiceState extends Base {
     return this.member
       ? this.member.edit({ channel }, reason)
       : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
-  }
-
-  /**
-   * Self-mutes/unmutes the bot for this voice state.
-   * @param {boolean} mute Whether or not the bot should be self-muted
-   * @returns {Promise<boolean>} true if the voice state was successfully updated, otherwise false
-   */
-  async setSelfMute(mute) {
-    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
-    if (typeof mute !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'mute');
-    if (!this.connection) return false;
-    this.selfMute = mute;
-    await this.connection.sendVoiceStateUpdate();
-    return true;
-  }
-
-  /**
-   * Self-deafens/undeafens the bot for this voice state.
-   * @param {boolean} deaf Whether or not the bot should be self-deafened
-   * @returns {Promise<boolean>} true if the voice state was successfully updated, otherwise false
-   */
-  async setSelfDeaf(deaf) {
-    if (this.id !== this.client.user.id) return new Error('VOICE_STATE_NOT_OWN');
-    if (typeof deaf !== 'boolean') return new TypeError('VOICE_STATE_INVALID_TYPE', 'deaf');
-    if (!this.connection) return false;
-    this.selfDeaf = deaf;
-    await this.connection.sendVoiceStateUpdate();
-    return true;
   }
 
   /**

@@ -168,8 +168,8 @@ class PermissionOverwrites extends Base {
       return {
         id: overwrite.id,
         type: OverwriteTypes[overwrite.type],
-        allow: Permissions.resolve(overwrite.allow).toString(),
-        deny: Permissions.resolve(overwrite.deny).toString(),
+        allow: Permissions.resolve(overwrite.allow ?? Permissions.defaultBit).toString(),
+        deny: Permissions.resolve(overwrite.deny ?? Permissions.defaultBit).toString(),
       };
     }
 
@@ -180,8 +180,8 @@ class PermissionOverwrites extends Base {
     return {
       id: userOrRole.id,
       type,
-      allow: Permissions.resolve(overwrite.allow).toString(),
-      deny: Permissions.resolve(overwrite.deny).toString(),
+      allow: Permissions.resolve(overwrite.allow ?? Permissions.defaultBit).toString(),
+      deny: Permissions.resolve(overwrite.deny ?? Permissions.defaultBit).toString(),
     };
   }
 }

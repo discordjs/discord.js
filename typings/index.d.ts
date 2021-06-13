@@ -25,16 +25,37 @@ declare enum InteractionResponseTypes {
   PONG = 1,
   CHANNEL_MESSAGE_WITH_SOURCE = 4,
   DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5,
+  DEFERRED_MESSAGE_UPDATE = 6,
+  UPDATE_MESSAGE = 7,
 }
 
 declare enum InteractionTypes {
   PING = 1,
   APPLICATION_COMMAND = 2,
+  MESSAGE_COMPONENT = 3,
 }
 
 declare enum InviteTargetType {
   STREAM = 1,
   EMBEDDED_APPLICATION = 2,
+}
+
+declare enum MessageButtonStyles {
+  PRIMARY = 1,
+  SECONDARY = 2,
+  SUCCESS = 3,
+  DANGER = 4,
+  LINK = 5,
+}
+
+declare enum MessageComponentTypes {
+  ACTION_ROW = 1,
+  BUTTON = 2,
+}
+
+declare enum MFALevels {
+  NONE = 0,
+  ELEVATED = 1,
 }
 
 declare enum NSFWLevels {
@@ -61,19 +82,21 @@ declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
   import {
-    ApplicationCommandOptionType as ApplicationCommandOptionTypes,
-    ApplicationCommandPermissionType as ApplicationCommandPermissionTypes,
     APIInteractionDataResolvedChannel as RawInteractionDataResolvedChannel,
     APIInteractionDataResolvedGuildMember as RawInteractionDataResolvedGuildMember,
     APIInteractionGuildMember as RawInteractionGuildMember,
     APIMessage as RawMessage,
     APIOverwrite as RawOverwrite,
+    APIPartialEmoji as RawEmoji,
     APIRole as RawRole,
     Snowflake as APISnowflake,
+    ApplicationCommandOptionType as ApplicationCommandOptionTypes,
+    ApplicationCommandPermissionType as ApplicationCommandPermissionTypes,
   } from 'discord-api-types/v8';
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
   import { Readable, Stream, Writable } from 'stream';
+  import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '@discordjs/voice';
   import * as WebSocket from 'ws';
 
   export const version: string;
@@ -127,32 +150,10 @@ declare module 'discord.js' {
 
     public static create(
       target: MessageTarget,
-      content: string | null,
-      options?: undefined,
+      options: string | MessageOptions | WebhookMessageOptions,
       extra?: MessageOptions | WebhookMessageOptions,
     ): APIMessage;
-    public static create(
-      target: MessageTarget,
-      content: string | null,
-      options: MessageOptions | WebhookMessageOptions | MessageAdditions,
-      extra?: MessageOptions | WebhookMessageOptions,
-    ): APIMessage;
-    public static partitionMessageAdditions(
-      items: readonly (MessageEmbed | MessageAttachment)[],
-    ): [MessageEmbed[], MessageAttachment[]];
     public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
-    public static transformOptions(
-      content: string | null,
-      options?: undefined,
-      extra?: MessageOptions | WebhookMessageOptions,
-      isWebhook?: boolean,
-    ): MessageOptions | WebhookMessageOptions;
-    public static transformOptions(
-      content: string | null,
-      options: MessageOptions | WebhookMessageOptions | MessageAdditions,
-      extra?: MessageOptions | WebhookMessageOptions,
-      isWebhook?: boolean,
-    ): MessageOptions | WebhookMessageOptions;
 
     public makeContent(): string | string[] | undefined;
     public resolveData(): this;
@@ -168,9 +169,9 @@ declare module 'discord.js' {
     public icon: string | null;
     public id: Snowflake;
     public name: string | null;
-    public coverURL(options?: ImageURLOptions): string | null;
+    public coverURL(options?: StaticImageURLOptions): string | null;
     public fetchAssets(): Promise<ApplicationAsset[]>;
-    public iconURL(options?: ImageURLOptions): string | null;
+    public iconURL(options?: StaticImageURLOptions): string | null;
     public toJSON(): unknown;
     public toString(): string | null;
   }
@@ -188,8 +189,11 @@ declare module 'discord.js' {
     public options: ApplicationCommandOption[];
     public delete(): Promise<ApplicationCommand>;
     public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
-    public fetchPermissions(): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommandPermissions[]>;
+    public fetchPermissions(guildID?: Snowflake): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      permissions: ApplicationCommandPermissionData[],
+      guildID?: Snowflake,
+    ): Promise<ApplicationCommandPermissions[]>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
   }
 
@@ -239,7 +243,7 @@ declare module 'discord.js' {
     public readonly partnered: boolean;
     public readonly verified: boolean;
     public fetch(): Promise<Guild>;
-    public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
+    public iconURL(options?: ImageURLOptions): string | null;
     public toString(): string;
   }
 
@@ -264,13 +268,14 @@ declare module 'discord.js' {
     public rtcRegion: string | null;
     public bitrate: number;
     public userLimit: number;
-    public join(): Promise<VoiceConnection>;
-    public leave(): void;
     public setRTCRegion(region: string | null): Promise<this>;
   }
 
-  class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
-    public broadcast: VoiceBroadcast;
+  export class BaseMessageComponent {
+    constructor(data?: BaseMessageComponent | BaseMessageComponentOptions);
+    public type: MessageComponentType | null;
+    private static create(data: MessageComponentOptions): MessageComponent;
+    private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
   export class BitField<S extends string, N extends number | bigint = number> {
@@ -285,11 +290,15 @@ declare module 'discord.js' {
     public remove(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
     public serialize(...hasParam: readonly unknown[]): Record<S, boolean>;
     public toArray(...hasParam: readonly unknown[]): S[];
-    public toJSON(): number;
-    public valueOf(): number;
+    public toJSON(): N extends number ? number : string;
+    public valueOf(): N;
     public [Symbol.iterator](): IterableIterator<S>;
     public static FLAGS: unknown;
     public static resolve(bit?: BitFieldResolvable<any, number | bigint>): number | bigint;
+  }
+
+  export class ButtonInteraction extends MessageComponentInteraction {
+    public componentType: 'BUTTON';
   }
 
   export class CategoryChannel extends GuildChannel {
@@ -396,12 +405,7 @@ declare module 'discord.js' {
   export class ClientVoiceManager {
     constructor(client: Client);
     public readonly client: Client;
-    public connections: Collection<Snowflake, VoiceConnection>;
-    public broadcasts: VoiceBroadcast[];
-
-    private joinChannel(channel: VoiceChannel | StageChannel): Promise<VoiceConnection>;
-
-    public createBroadcast(): VoiceBroadcast;
+    public adapters: Map<Snowflake, DiscordGatewayAdapterLibraryMethods>;
   }
 
   export abstract class Collector<K, V> extends EventEmitter {
@@ -438,25 +442,19 @@ declare module 'discord.js' {
   export class CommandInteraction extends Interaction {
     public readonly command: ApplicationCommand | null;
     public channel: TextChannel | DMChannel | NewsChannel;
-    public commandID: string;
+    public channelID: Snowflake;
+    public commandID: Snowflake;
     public commandName: string;
     public deferred: boolean;
     public options: Collection<string, CommandInteractionOption>;
     public replied: boolean;
-    public webhook: WebhookClient;
+    public webhook: InteractionWebhook;
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
-    public editReply(
-      content: string | null | APIMessage | WebhookEditMessageOptions | MessageAdditions,
-    ): Promise<Message | RawMessage>;
-    public editReply(content: string | null, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public editReply(options: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
-    public followUp(
-      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
-    ): Promise<Message | RawMessage>;
-    public followUp(content: string | null, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(content: string | null | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
-    public reply(content: string | null, options?: InteractionReplyOptions): Promise<void>;
+    public followUp(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(options: string | APIMessage | InteractionReplyOptions): Promise<void>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
     private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
   }
@@ -528,7 +526,6 @@ declare module 'discord.js' {
       RATE_LIMIT: 'rateLimit';
       INVALID_REQUEST_WARNING: 'invalidRequestWarning';
       CLIENT_READY: 'ready';
-      RESUMED: 'resumed';
       APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
       APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
       APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate';
@@ -542,7 +539,6 @@ declare module 'discord.js' {
       GUILD_MEMBER_REMOVE: 'guildMemberRemove';
       GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
       GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable';
-      GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking';
       GUILD_MEMBERS_CHUNK: 'guildMembersChunk';
       GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
       GUILD_ROLE_CREATE: 'roleCreate';
@@ -564,15 +560,14 @@ declare module 'discord.js' {
       MESSAGE_REACTION_ADD: 'messageReactionAdd';
       MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
       MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
+      MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji';
       USER_UPDATE: 'userUpdate';
       PRESENCE_UPDATE: 'presenceUpdate';
+      VOICE_SERVER_UPDATE: 'voiceServerUpdate';
       VOICE_STATE_UPDATE: 'voiceStateUpdate';
-      VOICE_BROADCAST_SUBSCRIBE: 'subscribe';
-      VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe';
       TYPING_START: 'typingStart';
       WEBHOOKS_UPDATE: 'webhookUpdate';
       INTERACTION_CREATE: 'interaction';
-      RECONNECTING: 'reconnecting';
       ERROR: 'error';
       WARN: 'warn';
       DEBUG: 'debug';
@@ -652,24 +647,6 @@ declare module 'discord.js' {
       HEARTBEAT_ACK: 11;
     };
     APIErrors: APIErrors;
-    VoiceStatus: {
-      CONNECTED: 0;
-      CONNECTING: 1;
-      AUTHENTICATING: 2;
-      RECONNECTING: 3;
-      DISCONNECTED: 4;
-    };
-    VoiceOPCodes: {
-      IDENTIFY: 0;
-      SELECT_PROTOCOL: 1;
-      READY: 2;
-      HEARTBEAT: 3;
-      SESSION_DESCRIPTION: 4;
-      SPEAKING: 5;
-      HELLO: 8;
-      CLIENT_CONNECT: 12;
-      CLIENT_DISCONNECT: 13;
-    };
     ChannelTypes: typeof ChannelTypes;
     ClientApplicationAssetTypes: {
       SMALL: 1;
@@ -689,6 +666,9 @@ declare module 'discord.js' {
     ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
     InteractionTypes: typeof InteractionTypes;
     InteractionResponseTypes: typeof InteractionResponseTypes;
+    MessageComponentTypes: typeof MessageComponentTypes;
+    MessageButtonStyles: typeof MessageButtonStyles;
+    MFALevels: typeof MFALevels;
     NSFWLevels: typeof NSFWLevels;
   };
 
@@ -703,13 +683,14 @@ declare module 'discord.js' {
   }
 
   export class DiscordAPIError extends Error {
-    constructor(path: string, error: unknown, method: string, httpStatus: number);
+    constructor(error: unknown, status: number, request: unknown);
     private static flattenErrors(obj: unknown, key: string): string[];
 
     public code: number;
     public method: string;
     public path: string;
     public httpStatus: number;
+    public requestData: HTTPErrorData;
   }
 
   export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
@@ -739,7 +720,6 @@ declare module 'discord.js' {
     constructor(client: Client, data: unknown);
     private _sortedRoles(): Collection<Snowflake, Role>;
     private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannel>;
-    private _memberSpeakUpdate(user: Snowflake, speaking: boolean): void;
 
     public readonly afkChannel: VoiceChannel | null;
     public afkChannelID: Snowflake | null;
@@ -766,7 +746,7 @@ declare module 'discord.js' {
     public readonly me: GuildMember | null;
     public memberCount: number;
     public members: GuildMemberManager;
-    public mfaLevel: number;
+    public mfaLevel: MFALevel;
     public nsfwLevel: NSFWLevel;
     public ownerID: Snowflake;
     public preferredLocale: string;
@@ -775,7 +755,6 @@ declare module 'discord.js' {
     public presences: PresenceManager;
     public readonly publicUpdatesChannel: TextChannel | null;
     public publicUpdatesChannelID: Snowflake | null;
-    public region: string;
     public roles: RoleManager;
     public readonly rulesChannel: TextChannel | null;
     public rulesChannelID: Snowflake | null;
@@ -788,16 +767,17 @@ declare module 'discord.js' {
     public vanityURLCode: string | null;
     public vanityURLUses: number | null;
     public verificationLevel: VerificationLevel;
+    public readonly voiceAdapterCreator: DiscordGatewayAdapterCreator;
     public readonly voiceStates: VoiceStateManager;
     public readonly widgetChannel: TextChannel | null;
     public widgetChannelID: Snowflake | null;
     public widgetEnabled: boolean | null;
     public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
-    public bannerURL(options?: ImageURLOptions): string | null;
+    public bannerURL(options?: StaticImageURLOptions): string | null;
     public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
     public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
     public delete(): Promise<Guild>;
-    public discoverySplashURL(options?: ImageURLOptions): string | null;
+    public discoverySplashURL(options?: StaticImageURLOptions): string | null;
     public edit(data: GuildEditData, reason?: string): Promise<Guild>;
     public equals(guild: Guild): boolean;
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
@@ -829,7 +809,6 @@ declare module 'discord.js' {
     public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
     public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;
     public setPublicUpdatesChannel(publicUpdatesChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
-    public setRegion(region: string, reason?: string): Promise<Guild>;
     public setRolePositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
     public setRulesChannel(rulesChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
     public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
@@ -837,7 +816,7 @@ declare module 'discord.js' {
     public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
     public setVerificationLevel(verificationLevel: VerificationLevel | number, reason?: string): Promise<Guild>;
     public setWidget(widget: GuildWidgetData, reason?: string): Promise<Guild>;
-    public splashURL(options?: ImageURLOptions): string | null;
+    public splashURL(options?: StaticImageURLOptions): string | null;
     public toJSON(): unknown;
   }
 
@@ -992,9 +971,9 @@ declare module 'discord.js' {
     public id: Snowflake;
     public name: string;
     public splash: string | null;
-    public discoverySplashURL(options?: ImageURLOptions): string | null;
-    public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
-    public splashURL(options?: ImageURLOptions): string | null;
+    public discoverySplashURL(options?: StaticImageURLOptions): string | null;
+    public iconURL(options?: ImageURLOptions): string | null;
+    public splashURL(options?: StaticImageURLOptions): string | null;
     public fetch(): Promise<GuildPreview>;
     public toJSON(): unknown;
     public toString(): string;
@@ -1031,11 +1010,19 @@ declare module 'discord.js' {
   }
 
   export class HTTPError extends Error {
-    constructor(message: string, name: string, code: number, method: string, path: string);
+    constructor(message: string, name: string, code: number, request: unknown);
     public code: number;
     public method: string;
     public name: string;
     public path: string;
+    public requestData: HTTPErrorData;
+  }
+
+  // tslint:disable-next-line:no-empty-interface - Merge RateLimitData into RateLimitError to not have to type it again
+  interface RateLimitError extends RateLimitData {}
+  export class RateLimitError extends Error {
+    constructor(data: RateLimitData);
+    public name: 'RateLimitError';
   }
 
   export class Integration extends Base {
@@ -1093,7 +1080,20 @@ declare module 'discord.js' {
     public type: InteractionType;
     public user: User;
     public version: number;
+    public isButton(): this is ButtonInteraction;
     public isCommand(): this is CommandInteraction;
+    public isMessageComponent(): this is MessageComponentInteraction;
+  }
+
+  export class InteractionWebhook extends PartialWebhookMixin() {
+    constructor(client: Client, id: Snowflake, token: string);
+    public token: string;
+    public send(
+      options: string | APIMessage | (InteractionReplyOptions & { split?: false }),
+    ): Promise<Message | RawMessage>;
+    public send(
+      options: APIMessage | (InteractionReplyOptions & { split: true | SplitOptions }),
+    ): Promise<(Message | RawMessage)[]>;
   }
 
   export class Invite extends Base {
@@ -1128,11 +1128,12 @@ declare module 'discord.js' {
     private patch(data: unknown): Message;
 
     public activity: MessageActivity | null;
-    public application: ClientApplication | null;
+    public applicationID: Snowflake | null;
     public attachments: Collection<Snowflake, MessageAttachment>;
     public author: User;
     public channel: TextChannel | DMChannel | NewsChannel;
     public readonly cleanContent: string;
+    public components: MessageActionRow[];
     public content: string;
     public readonly createdAt: Date;
     public createdTimestamp: number;
@@ -1143,6 +1144,7 @@ declare module 'discord.js' {
     public readonly editedAt: Date | null;
     public editedTimestamp: number | null;
     public embeds: MessageEmbed[];
+    public groupActivityApplication: ClientApplication | null;
     public readonly guild: Guild | null;
     public id: Snowflake;
     public interaction: MessageInteraction | null;
@@ -1161,19 +1163,24 @@ declare module 'discord.js' {
     public webhookID: Snowflake | null;
     public flags: Readonly<MessageFlags>;
     public reference: MessageReference | null;
+    public awaitMessageComponentInteraction(
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      time?: number,
+    ): Promise<MessageComponentInteraction>;
     public awaitReactions(
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: AwaitReactionsOptions,
-    ): Promise<Collection<Snowflake, MessageReaction>>;
+    ): Promise<Collection<Snowflake | string, MessageReaction>>;
     public createReactionCollector(
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: ReactionCollectorOptions,
     ): ReactionCollector;
+    public createMessageComponentInteractionCollector(
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      options?: MessageComponentInteractionCollectorOptions,
+    ): MessageComponentInteractionCollector;
     public delete(): Promise<Message>;
-    public edit(
-      content: string | null | MessageEditOptions | MessageEmbed | APIMessage,
-    ): Promise<Message>;
-    public edit(content: string | null, options: MessageEditOptions | MessageEmbed): Promise<Message>;
+    public edit(content: string | MessageEditOptions | APIMessage): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
     public fetchReference(): Promise<Message>;
     public fetchWebhook(): Promise<Webhook>;
@@ -1182,24 +1189,27 @@ declare module 'discord.js' {
     public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
-    public reply(
-      content: string | null | (ReplyMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(options: ReplyMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    public reply(options: ReplyMessageOptions | APIMessage): Promise<Message | Message[]>;
-    public reply(
-      content: string | null,
-      options: (ReplyMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(
-      content: string | null,
-      options: ReplyMessageOptions & { split: true | SplitOptions },
-    ): Promise<Message[]>;
-    public reply(content: string | null, options: ReplyMessageOptions): Promise<Message | Message[]>;
+    public reply(options: string | APIMessage | (ReplyMessageOptions & { split?: false })): Promise<Message>;
+    public reply(options: APIMessage | (ReplyMessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): unknown;
     public toString(): string;
     public unpin(): Promise<Message>;
+  }
+
+  export class MessageActionRow extends BaseMessageComponent {
+    constructor(data?: MessageActionRow | MessageActionRowOptions);
+    public type: 'ACTION_ROW';
+    public components: MessageActionRowComponent[];
+    public addComponents(
+      ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
+    ): this;
+    public spliceComponents(
+      index: number,
+      deleteCount: number,
+      ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
+    ): this;
+    public toJSON(): unknown;
   }
 
   export class MessageAttachment {
@@ -1220,6 +1230,25 @@ declare module 'discord.js' {
     public toJSON(): unknown;
   }
 
+  export class MessageButton extends BaseMessageComponent {
+    constructor(data?: MessageButton | MessageButtonOptions);
+    public customID: string | null;
+    public disabled: boolean;
+    public emoji: RawEmoji | null;
+    public label: string | null;
+    public style: MessageButtonStyle | null;
+    public type: 'BUTTON';
+    public url: string | null;
+    public setCustomID(customID: string): this;
+    public setDisabled(disabled: boolean): this;
+    public setEmoji(emoji: EmojiIdentifierResolvable): this;
+    public setLabel(label: string): this;
+    public setStyle(style: MessageButtonStyleResolvable): this;
+    public setURL(url: string): this;
+    public toJSON(): unknown;
+    private static resolveStyle(style: MessageButtonStyleResolvable): MessageButtonStyle;
+  }
+
   export class MessageCollector extends Collector<Snowflake, Message> {
     constructor(
       channel: TextChannel | DMChannel,
@@ -1238,6 +1267,65 @@ declare module 'discord.js' {
     public dispose(message: Message): Snowflake;
   }
 
+  export class MessageComponentInteraction extends Interaction {
+    public componentType: MessageComponentType;
+    public customID: string;
+    public deferred: boolean;
+    public message: Message | RawMessage;
+    public replied: boolean;
+    public webhook: InteractionWebhook;
+    public defer(options?: InteractionDeferOptions): Promise<void>;
+    public deferUpdate(): Promise<void>;
+    public deleteReply(): Promise<void>;
+    public editReply(options: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public fetchReply(): Promise<Message | RawMessage>;
+    public followUp(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(options: string | APIMessage | InteractionReplyOptions): Promise<void>;
+    public update(content: string | APIMessage | WebhookEditMessageOptions): Promise<void>;
+    public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
+  }
+
+  export class MessageComponentInteractionCollector extends Collector<Snowflake, MessageComponentInteraction> {
+    constructor(
+      source: Message | TextChannel | NewsChannel | DMChannel,
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      options?: MessageComponentInteractionCollectorOptions,
+    );
+    private _handleMessageDeletion(message: Message): void;
+    private _handleChannelDeletion(channel: GuildChannel): void;
+    private _handleGuildDeletion(guild: Guild): void;
+
+    public channel: TextChannel | NewsChannel | DMChannel;
+    public empty(): void;
+    public readonly endReason: string | null;
+    public message: Message | null;
+    public options: MessageComponentInteractionCollectorOptions;
+    public total: number;
+    public users: Collection<Snowflake, User>;
+
+    public collect(interaction: Interaction): Snowflake;
+    public dispose(interaction: Interaction): Snowflake;
+    public on(
+      event: 'collect' | 'dispose',
+      listener: (interaction: MessageComponentInteraction) => Awaited<void>,
+    ): this;
+    public on(
+      event: 'end',
+      listener: (collected: Collection<Snowflake, MessageComponentInteraction>, reason: string) => Awaited<void>,
+    ): this;
+    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
+
+    public once(
+      event: 'collect' | 'dispose',
+      listener: (interaction: MessageComponentInteraction) => Awaited<void>,
+    ): this;
+    public once(
+      event: 'end',
+      listener: (collected: Collection<Snowflake, MessageComponentInteraction>, reason: string) => Awaited<void>,
+    ): this;
+    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  }
+
   export class MessageEmbed {
     constructor(data?: MessageEmbed | MessageEmbedOptions);
     public author: MessageEmbedAuthor | null;
@@ -1245,7 +1333,6 @@ declare module 'discord.js' {
     public readonly createdAt: Date | null;
     public description: string | null;
     public fields: EmbedField[];
-    public files: (MessageAttachment | string | FileOptions)[];
     public footer: MessageEmbedFooter | null;
     public readonly hexColor: string | null;
     public image: MessageEmbedImage | null;
@@ -1254,12 +1341,12 @@ declare module 'discord.js' {
     public thumbnail: MessageEmbedThumbnail | null;
     public timestamp: number | null;
     public title: string | null;
+    /** @deprecated */
     public type: string;
     public url: string | null;
     public readonly video: MessageEmbedVideo | null;
     public addField(name: string, value: string, inline?: boolean): this;
     public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
-    public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
     public setAuthor(name: string, iconURL?: string, url?: string): this;
     public setColor(color: ColorResolvable): this;
     public setDescription(description: string): this;
@@ -1338,10 +1425,7 @@ declare module 'discord.js' {
     public nsfw: boolean;
     public topic: string | null;
     public type: 'news';
-    public createWebhook(
-      name: string,
-      options?: { avatar?: BufferResolvable | Base64Resolvable; reason?: string },
-    ): Promise<Webhook>;
+    public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
     public setType(type: Pick<typeof ChannelType, 'text' | 'news'>, reason?: string): Promise<GuildChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -1357,7 +1441,7 @@ declare module 'discord.js' {
     constructor(client: Client, data: unknown);
     public name: string;
     public icon: string | null;
-    public iconURL(options?: ImageURLOptions): string | null;
+    public iconURL(options?: StaticImageURLOptions): string | null;
   }
 
   export class PermissionOverwrites extends Base {
@@ -1451,8 +1535,8 @@ declare module 'discord.js' {
     public largeText: string | null;
     public smallImage: Snowflake | null;
     public smallText: string | null;
-    public largeImageURL(options?: ImageURLOptions): string | null;
-    public smallImageURL(options?: ImageURLOptions): string | null;
+    public largeImageURL(options?: StaticImageURLOptions): string | null;
+    public smallImageURL(options?: StaticImageURLOptions): string | null;
   }
 
   export class Role extends Base {
@@ -1538,10 +1622,14 @@ declare module 'discord.js' {
     public readonly ids: number[];
     public mode: ShardingManagerMode;
     public parentPort: any | null;
-    public broadcastEval(script: string): Promise<any[]>;
-    public broadcastEval(script: string, shard: number): Promise<any>;
-    public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
-    public broadcastEval<T>(fn: (client: Client) => T, shard: number): Promise<T>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: undefined, context: P }?: BroadcastEvalOptions,
+    ): Promise<T[]>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: number, context: P }: BroadcastEvalOptions,
+    ): Promise<T>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
     public respawnAll(options?: { shardDelay?: number; respawnDelay?: number; timeout?: number }): Promise<void>;
@@ -1564,8 +1652,14 @@ declare module 'discord.js' {
     public totalShards: number | 'auto';
     public shardList: number[] | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
-    public broadcastEval(script: string): Promise<any[]>;
-    public broadcastEval(script: string, shard: number): Promise<any>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: undefined, context: P }?: BroadcastEvalOptions,
+    ): Promise<T[]>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: P) => T,
+      { shard: number, context: P }: BroadcastEvalOptions,
+    ): Promise<T>;
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
@@ -1591,11 +1685,6 @@ declare module 'discord.js' {
     public static readonly EPOCH: number;
   }
 
-  export class Speaking extends BitField<SpeakingString> {
-    public static FLAGS: Record<SpeakingString, number>;
-    public static resolve(bit?: BitFieldResolvable<SpeakingString, number>): number;
-  }
-
   export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
     public type: 'stage';
@@ -1605,40 +1694,6 @@ declare module 'discord.js' {
     constructor(guild: Guild, data?: unknown);
     public nsfw: boolean;
     public type: 'store';
-  }
-
-  class StreamDispatcher extends VolumeMixin(Writable) {
-    constructor(player: unknown, options?: StreamOptions, streams?: unknown);
-    public readonly bitrateEditable: boolean;
-    public broadcast: VoiceBroadcast | null;
-    public readonly paused: boolean;
-    public pausedSince: number | null;
-    public readonly pausedTime: number;
-    public player: unknown;
-    public readonly streamTime: number;
-    public readonly totalStreamTime: number;
-
-    public pause(silence?: boolean): void;
-    public resume(): void;
-    public setBitrate(value: number | 'auto'): boolean;
-    public setFEC(enabled: boolean): boolean;
-    public setPLP(value: number): boolean;
-
-    public on(event: 'close' | 'drain' | 'finish' | 'start', listener: () => Awaited<void>): this;
-    public on(event: 'debug', listener: (info: string) => Awaited<void>): this;
-    public on(event: 'error', listener: (err: Error) => Awaited<void>): this;
-    public on(event: 'pipe' | 'unpipe', listener: (src: Readable) => Awaited<void>): this;
-    public on(event: 'speaking', listener: (speaking: boolean) => Awaited<void>): this;
-    public on(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => Awaited<void>): this;
-    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
-
-    public once(event: 'close' | 'drain' | 'finish' | 'start', listener: () => Awaited<void>): this;
-    public once(event: 'debug', listener: (info: string) => Awaited<void>): this;
-    public once(event: 'error', listener: (err: Error) => Awaited<void>): this;
-    public once(event: 'pipe' | 'unpipe', listener: (src: Readable) => Awaited<void>): this;
-    public once(event: 'speaking', listener: (speaking: boolean) => Awaited<void>): this;
-    public once(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => Awaited<void>): this;
-    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
   }
 
   export class Structures {
@@ -1671,7 +1726,7 @@ declare module 'discord.js' {
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
 
-    public iconURL(options?: ImageURLOptions): string;
+    public iconURL(options?: StaticImageURLOptions): string;
     public toJSON(): unknown;
     public toString(): string;
   }
@@ -1694,10 +1749,7 @@ declare module 'discord.js' {
     public type: 'text';
     public rateLimitPerUser: number;
     public topic: string | null;
-    public createWebhook(
-      name: string,
-      options?: { avatar?: BufferResolvable | Base64Resolvable; reason?: string },
-    ): Promise<Webhook>;
+    public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
     public setType(type: Pick<typeof ChannelType, 'text' | 'news'>, reason?: string): Promise<GuildChannel>;
@@ -1721,10 +1773,10 @@ declare module 'discord.js' {
     public system: boolean | null;
     public readonly tag: string;
     public username: string;
-    public avatarURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
+    public avatarURL(options?: ImageURLOptions): string | null;
     public createDM(): Promise<DMChannel>;
     public deleteDM(): Promise<DMChannel>;
-    public displayAvatarURL(options?: ImageURLOptions & { dynamic?: boolean }): string;
+    public displayAvatarURL(options?: ImageURLOptions): string;
     public equals(user: User): boolean;
     public fetch(force?: boolean): Promise<User>;
     public fetchFlags(force?: boolean): Promise<UserFlags>;
@@ -1746,7 +1798,7 @@ declare module 'discord.js' {
     public static removeMentions(str: string): string;
     public static cloneObject(obj: unknown): unknown;
     public static delayFor(ms: number): Promise<void>;
-    public static discordSort<K, V extends { rawPosition: number; id: string }>(
+    public static discordSort<K, V extends { rawPosition: number; id: Snowflake }>(
       collection: Collection<K, V>,
     ): Collection<K, V>;
     public static escapeMarkdown(text: string, options?: EscapeMarkdownOptions): string;
@@ -1765,8 +1817,9 @@ declare module 'discord.js' {
     public static makePlainError(err: Error): { name: string; message: string; stack: string };
     public static mergeDefault(def: unknown, given: unknown): unknown;
     public static moveElementInArray(array: any[], element: any, newIndex: number, offset?: boolean): number;
-    public static parseEmoji(text: string): { animated: boolean; name: string; id: string | null } | null;
+    public static parseEmoji(text: string): { animated: boolean; name: string; id: Snowflake | null } | null;
     public static resolveColor(color: ColorResolvable): number;
+    public static resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<RawEmoji> | null;
     public static verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
     public static setPosition<T extends Channel | Role>(
       item: T,
@@ -1779,98 +1832,12 @@ declare module 'discord.js' {
     public static splitMessage(text: string, options?: SplitOptions): string[];
   }
 
-  class VoiceBroadcast extends EventEmitter {
-    constructor(client: Client);
-    public client: Client;
-    public subscribers: StreamDispatcher[];
-    public readonly dispatcher: BroadcastDispatcher | null;
-    public play(input: string | Readable, options?: StreamOptions): BroadcastDispatcher;
-    public end(): void;
-
-    public on(event: 'end', listener: () => Awaited<void>): this;
-    public on(event: 'subscribe' | 'unsubscribe', listener: (dispatcher: StreamDispatcher) => Awaited<void>): this;
-    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
-
-    public once(event: 'end', listener: () => Awaited<void>): this;
-    public once(event: 'subscribe' | 'unsubscribe', listener: (dispatcher: StreamDispatcher) => Awaited<void>): this;
-    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
-  }
-
   export class VoiceChannel extends BaseGuildVoiceChannel {
     public readonly editable: boolean;
     public readonly speakable: boolean;
     public type: 'voice';
     public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
     public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
-  }
-
-  class VoiceConnection extends EventEmitter {
-    constructor(voiceManager: ClientVoiceManager, channel: VoiceChannel);
-    private authentication: unknown;
-    private sockets: unknown;
-    private ssrcMap: Map<number, boolean>;
-    private _speaking: Map<Snowflake, Readonly<Speaking>>;
-    private _disconnect(): void;
-    private authenticate(): void;
-    private authenticateFailed(reason: string): void;
-    private checkAuthenticated(): void;
-    private cleanup(): void;
-    private connect(): void;
-    private onReady(data: unknown): void;
-    private onSessionDescription(mode: string, secret: string): void;
-    private onSpeaking(data: unknown): void;
-    private reconnect(token: string, endpoint: string): void;
-    private sendVoiceStateUpdate(options: unknown): Promise<Shard>;
-    private setSessionID(sessionID: string): void;
-    private setTokenAndEndpoint(token: string, endpoint: string): void;
-    private updateChannel(channel: VoiceChannel | StageChannel): void;
-
-    public channel: VoiceChannel | StageChannel;
-    public readonly client: Client;
-    public readonly dispatcher: StreamDispatcher | null;
-    public player: unknown;
-    public receiver: VoiceReceiver;
-    public speaking: Readonly<Speaking>;
-    public status: VoiceStatus;
-    public readonly voice: VoiceState | null;
-    public voiceManager: ClientVoiceManager;
-    public disconnect(): void;
-    public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
-    public setSpeaking(value: BitFieldResolvable<SpeakingString, number>): void;
-
-    public on(
-      event: 'authenticated' | 'closing' | 'newSession' | 'ready' | 'reconnecting',
-      listener: () => Awaited<void>,
-    ): this;
-    public on(event: 'debug', listener: (message: string) => Awaited<void>): this;
-    public on(event: 'error' | 'failed' | 'disconnect', listener: (error: Error) => Awaited<void>): this;
-    public on(event: 'speaking', listener: (user: User, speaking: Readonly<Speaking>) => Awaited<void>): this;
-    public on(event: 'warn', listener: (warning: string | Error) => Awaited<void>): this;
-    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
-
-    public once(
-      event: 'authenticated' | 'closing' | 'newSession' | 'ready' | 'reconnecting',
-      listener: () => Awaited<void>,
-    ): this;
-    public once(event: 'debug', listener: (message: string) => Awaited<void>): this;
-    public once(event: 'error' | 'failed' | 'disconnect', listener: (error: Error) => Awaited<void>): this;
-    public once(event: 'speaking', listener: (user: User, speaking: Readonly<Speaking>) => Awaited<void>): this;
-    public once(event: 'warn', listener: (warning: string | Error) => Awaited<void>): this;
-    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
-  }
-
-  class VoiceReceiver extends EventEmitter {
-    constructor(connection: VoiceConnection);
-    public createStream(
-      user: UserResolvable,
-      options?: { mode?: 'opus' | 'pcm'; end?: 'silence' | 'manual' },
-    ): Readable;
-
-    public on(event: 'debug', listener: (error: Error | string) => Awaited<void>): this;
-    public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
-
-    public once(event: 'debug', listener: (error: Error | string) => Awaited<void>): this;
-    public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
   }
 
   export class VoiceRegion {
@@ -1888,7 +1855,6 @@ declare module 'discord.js' {
     constructor(guild: Guild, data: unknown);
     public readonly channel: VoiceChannel | StageChannel | null;
     public channelID: Snowflake | null;
-    public readonly connection: VoiceConnection | null;
     public readonly deaf: boolean | null;
     public guild: Guild;
     public id: Snowflake;
@@ -1903,14 +1869,11 @@ declare module 'discord.js' {
     public selfVideo: boolean;
     public suppress: boolean;
     public requestToSpeakTimestamp: number | null;
-    public readonly speaking: boolean | null;
 
     public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
     public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
     public kick(reason?: string): Promise<GuildMember>;
     public setChannel(channel: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
-    public setSelfDeaf(deaf: boolean): Promise<boolean>;
-    public setSelfMute(mute: boolean): Promise<boolean>;
     public setRequestToSpeak(request: boolean): Promise<void>;
     public setSuppressed(suppressed: boolean): Promise<void>;
   }
@@ -1933,7 +1896,7 @@ declare module 'discord.js' {
   export class Webhook extends WebhookMixin() {
     constructor(client: Client, data?: unknown);
     public avatar: string;
-    public avatarURL(options?: ImageURLOptions): string | null;
+    public avatarURL(options?: StaticImageURLOptions): string | null;
     public channelID: Snowflake;
     public client: Client;
     public guildID: Snowflake;
@@ -1946,31 +1909,17 @@ declare module 'discord.js' {
   }
 
   export class WebhookClient extends WebhookMixin(BaseClient) {
-    constructor(id: string, token: string, options?: WebhookClientOptions);
+    constructor(id: Snowflake, token: string, options?: WebhookClientOptions);
     public client: this;
     public options: WebhookClientOptions;
     public token: string;
     public editMessage(
       message: MessageResolvable,
-      content: string | null | APIMessage | MessageEmbed | MessageEmbed[],
-      options?: WebhookEditMessageOptions,
+      options: string | APIMessage | WebhookEditMessageOptions,
     ): Promise<RawMessage>;
-    public editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
-    public send(
-      content: string | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<RawMessage>;
-    public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<RawMessage[]>;
-    public send(options: WebhookMessageOptions | APIMessage): Promise<RawMessage | RawMessage[]>;
-    public send(
-      content: string | null,
-      options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<RawMessage>;
-    public send(
-      content: string | null,
-      options: WebhookMessageOptions & { split: true | SplitOptions },
-    ): Promise<RawMessage[]>;
-    public send(content: string | null, options: WebhookMessageOptions): Promise<RawMessage | RawMessage[]>;
+    public send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
+    public send(options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions })): Promise<RawMessage[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2099,14 +2048,42 @@ declare module 'discord.js' {
     ApplicationCommandResolvable
   > {
     constructor(client: Client, iterable?: Iterable<any>);
-    private readonly commandPath: unknown;
-    public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
-    public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
-    public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<ApplicationCommand>;
-    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
+    private commandPath({ id, guildID }: { id?: Snowflake; guildID?: Snowflake }): unknown;
+    public create(command: ApplicationCommandData, guildID?: Snowflake): Promise<ApplicationCommand>;
+    public delete(command: ApplicationCommandResolvable, guildID?: Snowflake): Promise<ApplicationCommand | null>;
+    public edit(
+      command: ApplicationCommandResolvable,
+      data: ApplicationCommandData,
+      guildID?: Snowflake,
+    ): Promise<ApplicationCommand>;
+    public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommand>;
+    public fetch(
+      id?: Snowflake,
+      options?: FetchApplicationCommandOptions,
+    ): Promise<Collection<Snowflake, ApplicationCommand>>;
+    public fetchPermissions(
+      command: undefined,
+      guildID: Snowflake,
+    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public fetchPermissions(
+      command: ApplicationCommandResolvable,
+      guildID: Snowflake,
+    ): Promise<ApplicationCommandPermissions[]>;
+    public set(
+      commands: ApplicationCommandData[],
+      guildID?: Snowflake,
+    ): Promise<Collection<Snowflake, ApplicationCommand>>;
+    public setPermissions(
+      command: ApplicationCommandResolvable,
+      permissions: ApplicationCommandPermissionData[],
+      guildID: Snowflake,
+    ): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      permissions: GuildApplicationCommandPermissionData[],
+      guildID: Snowflake,
+    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     private static transformCommand(command: ApplicationCommandData): unknown;
+    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): unknown;
   }
 
   export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
@@ -2116,14 +2093,20 @@ declare module 'discord.js' {
 
   export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResolvable> {
     constructor(client: Client, iterable: Iterable<any>);
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Channel | null>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Channel | null>;
   }
 
   export class GuildApplicationCommandManager extends ApplicationCommandManager {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
-    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
+    public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
+    public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
+    public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
+    public fetchPermissions(command: undefined): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
+    public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
     public setPermissions(
       command: ApplicationCommandResolvable,
       permissions: ApplicationCommandPermissionData[],
@@ -2131,7 +2114,6 @@ declare module 'discord.js' {
     public setPermissions(
       permissions: GuildApplicationCommandPermissionData[],
     ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): unknown;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
@@ -2147,6 +2129,16 @@ declare module 'discord.js' {
       name: string,
       options: GuildCreateChannelOptions,
     ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>;
+    public fetch(
+      id: Snowflake,
+      options?: BaseFetchOptions,
+    ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel | null>;
+    public fetch(
+      id?: Snowflake,
+      options?: BaseFetchOptions,
+    ): Promise<
+      Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>
+    >;
   }
 
   export class GuildEmojiManager extends BaseGuildEmojiManager {
@@ -2157,8 +2149,8 @@ declare module 'discord.js' {
       name: string,
       options?: GuildEmojiCreateOptions,
     ): Promise<GuildEmoji>;
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<GuildEmoji>;
-    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, GuildEmoji>>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildEmoji>;
+    public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildEmoji>>;
   }
 
   export class GuildEmojiRoleManager {
@@ -2238,11 +2230,10 @@ declare module 'discord.js' {
     public crosspost(message: MessageResolvable): Promise<Message>;
     public delete(message: MessageResolvable): Promise<void>;
     public edit(message: MessageResolvable, options: APIMessage | MessageEditOptions): Promise<Message>;
-    public fetch(message: Snowflake, cache?: boolean, force?: boolean): Promise<Message>;
+    public fetch(message: Snowflake, options?: BaseFetchOptions): Promise<Message>;
     public fetch(
       options?: ChannelLogsQueryOptions,
-      cache?: boolean,
-      force?: boolean,
+      cacheOptions?: BaseFetchOptions,
     ): Promise<Collection<Snowflake, Message>>;
     public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
     public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
@@ -2282,7 +2273,7 @@ declare module 'discord.js' {
     constructor(client: Client, iterable?: Iterable<any>);
   }
 
-  export class ReactionManager extends BaseManager<string | Snowflake, MessageReaction, MessageReactionResolvable> {
+  export class ReactionManager extends BaseManager<Snowflake | string, MessageReaction, MessageReactionResolvable> {
     constructor(message: Message, iterable?: Iterable<any>);
     public message: Message;
     public removeAll(): Promise<Message>;
@@ -2303,13 +2294,13 @@ declare module 'discord.js' {
     public readonly premiumSubscriberRole: Role | null;
     public botRoleFor(user: UserResolvable): Role | null;
     public create(options?: RoleData & { reason?: string }): Promise<Role>;
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Role | null>;
-    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, Role>>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Role | null>;
+    public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Role>>;
   }
 
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<User>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<User>;
   }
 
   export class VoiceStateManager extends BaseManager<Snowflake, VoiceState, typeof VoiceState> {
@@ -2335,12 +2326,8 @@ declare module 'discord.js' {
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
     readonly lastMessage: Message | null;
-    send(content: string | (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
-    send(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
-    send(content: string | null, options: (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
-    send(content: string | null, options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(content: string | null, options: MessageOptions): Promise<Message | Message[]>;
+    send(options: string | APIMessage | (MessageOptions & { split?: false })): Promise<Message>;
+    send(options: APIMessage | (MessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -2349,6 +2336,10 @@ declare module 'discord.js' {
     readonly lastPinAt: Date | null;
     typing: boolean;
     typingCount: number;
+    awaitMessageComponentInteraction(
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      time?: number,
+    ): Promise<MessageComponentInteraction>;
     awaitMessages(
       filter: CollectorFilter<[Message]>,
       options?: AwaitMessagesOptions,
@@ -2357,51 +2348,41 @@ declare module 'discord.js' {
       messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
       filterOld?: boolean,
     ): Promise<Collection<Snowflake, Message>>;
+    createMessageComponentInteractionCollector(
+      filter: CollectorFilter<[MessageComponentInteraction]>,
+      options?: MessageComponentInteractionCollectorOptions,
+    ): MessageComponentInteractionCollector;
     createMessageCollector(filter: CollectorFilter<[Message]>, options?: MessageCollectorOptions): MessageCollector;
     startTyping(count?: number): Promise<void>;
     stopTyping(force?: boolean): void;
   }
 
+  function PartialWebhookMixin<T>(Base?: Constructable<T>): Constructable<T & PartialWebhookFields>;
   function WebhookMixin<T>(Base?: Constructable<T>): Constructable<T & WebhookFields>;
 
   function VolumeMixin<T>(base: Constructable<T>): Constructable<T & VolumeInterface>;
 
-  interface WebhookFields {
+  interface PartialWebhookFields {
     id: Snowflake;
-    readonly createdAt: Date;
-    readonly createdTimestamp: number;
     readonly url: string;
-    delete(reason?: string): Promise<void>;
     deleteMessage(message: MessageResolvable | '@original'): Promise<void>;
-    edit(options: WebhookEditData): Promise<Webhook>;
     editMessage(
       message: MessageResolvable | '@original',
-      content: string | null | APIMessage | MessageAdditions,
-      options?: WebhookEditMessageOptions,
-    ): Promise<Message | RawMessage>;
-    editMessage(
-      message: MessageResolvable | '@original',
-      options: WebhookEditMessageOptions,
+      options: string | APIMessage | WebhookEditMessageOptions,
     ): Promise<Message | RawMessage>;
     fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | RawMessage>;
     send(
-      content: string | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message | RawMessage>;
-    send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<(Message | RawMessage)[]>;
-    send(options: WebhookMessageOptions | APIMessage): Promise<Message | RawMessage | (Message | RawMessage)[]>;
-    send(
-      content: string | null,
-      options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message | RawMessage>;
-    send(
-      content: string | null,
-      options: WebhookMessageOptions & { split: true | SplitOptions },
+      options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
     ): Promise<(Message | RawMessage)[]>;
-    send(
-      content: string | null,
-      options: WebhookMessageOptions,
-    ): Promise<Message | RawMessage | (Message | RawMessage)[]>;
-    sendSlackMessage(body: unknown): Promise<boolean>;
+    send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<Message | RawMessage>;
+  }
+
+  interface WebhookFields extends PartialWebhookFields {
+    readonly createdAt: Date;
+    readonly createdTimestamp: number;
+    delete(reason?: string): Promise<void>;
+    edit(options: WebhookEditData, reason?: string): Promise<Webhook>;
+    sendSlackMessage(body: object): Promise<boolean>;
   }
 
   //#endregion
@@ -2462,6 +2443,8 @@ declare module 'discord.js' {
     MAXIMUM_CHANNELS: 30013;
     MAXIMUM_ATTACHMENTS: 30015;
     MAXIMUM_INVITES: 30016;
+    MAXIMUM_ANIMATED_EMOJIS: 30018;
+    MAXIMUM_SERVER_MEMBERS: 30019;
     GUILD_ALREADY_HAS_TEMPLATE: 30031;
     UNAUTHORIZED: 40001;
     ACCOUNT_VERIFICATION_REQUIRED: 40002;
@@ -2580,11 +2563,25 @@ declare module 'discord.js' {
 
   type Base64String = string;
 
+  interface BaseFetchOptions {
+    cache?: boolean;
+    force?: boolean;
+  }
+
+  interface BaseMessageComponentOptions {
+    type?: MessageComponentType | MessageComponentTypes;
+  }
+
   type BitFieldResolvable<T extends string, N extends number | bigint> =
     | RecursiveReadonlyArray<T | N | Readonly<BitField<T, N>>>
     | T
     | N
     | Readonly<BitField<T, N>>;
+
+  interface BroadcastEvalOptions<T = unknown> {
+    shard?: number;
+    context?: T;
+  }
 
   type BufferResolvable = Buffer | string;
 
@@ -2625,6 +2622,11 @@ declare module 'discord.js' {
 
   type ChannelResolvable = Channel | Snowflake;
 
+  interface ChannelWebhookCreateOptions {
+    avatar?: BufferResolvable | Base64Resolvable;
+    reason?: string;
+  }
+
   interface ClientEvents {
     applicationCommandCreate: [command: ApplicationCommand];
     applicationCommandDelete: [command: ApplicationCommand];
@@ -2653,7 +2655,6 @@ declare module 'discord.js' {
       guild: Guild,
       data: { count: number; index: number; nonce: string | undefined },
     ];
-    guildMemberSpeaking: [member: GuildMember | PartialGuildMember, speaking: Readonly<Speaking>];
     guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
     guildUpdate: [oldGuild: Guild, newGuild: Guild];
     inviteCreate: [invite: Invite];
@@ -2705,6 +2706,7 @@ declare module 'discord.js' {
     intents: BitFieldResolvable<IntentsString, number>;
     ws?: WebSocketOptions;
     http?: HTTPOptions;
+    rejectOnRateLimit?: string[] | ((data: RateLimitData) => boolean | Promise<boolean>);
   }
 
   type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -2775,7 +2777,7 @@ declare module 'discord.js' {
     name: string;
     type: ApplicationCommandOptionType;
     value?: string | number | boolean;
-    options?: CommandInteractionOption[];
+    options?: Collection<string, CommandInteractionOption>;
     user?: User;
     member?: GuildMember | RawInteractionDataResolvedGuildMember;
     channel?: GuildChannel | RawInteractionDataResolvedChannel;
@@ -2854,22 +2856,23 @@ declare module 'discord.js' {
     Role: typeof Role;
     User: typeof User;
     CommandInteraction: typeof CommandInteraction;
+    ButtonInteraction: typeof ButtonInteraction;
   }
 
-  interface FetchBanOptions {
+  interface FetchApplicationCommandOptions extends BaseFetchOptions {
+    guildID?: Snowflake;
+  }
+
+  interface FetchBanOptions extends BaseFetchOptions {
     user: UserResolvable;
-    cache?: boolean;
-    force?: boolean;
   }
 
   interface FetchBansOptions {
     cache: boolean;
   }
 
-  interface FetchGuildOptions {
+  interface FetchGuildOptions extends BaseFetchOptions {
     guild: GuildResolvable;
-    cache?: boolean;
-    force?: boolean;
   }
 
   interface FetchGuildsOptions {
@@ -2878,10 +2881,8 @@ declare module 'discord.js' {
     limit?: number;
   }
 
-  interface FetchMemberOptions {
+  interface FetchMemberOptions extends BaseFetchOptions {
     user: UserResolvable;
-    cache?: boolean;
-    force?: boolean;
   }
 
   interface FetchMembersOptions {
@@ -3013,7 +3014,6 @@ declare module 'discord.js' {
     defaultMessageNotifications?: DefaultMessageNotifications | number;
     explicitContentFilter?: ExplicitContentFilterLevel | number;
     icon?: BufferResolvable | Base64Resolvable | null;
-    region?: string;
     roles?: PartialRoleData[];
     systemChannelFlags?: SystemChannelFlagsResolvable;
     systemChannelID?: number;
@@ -3027,7 +3027,6 @@ declare module 'discord.js' {
 
   interface GuildEditData {
     name?: string;
-    region?: string;
     verificationLevel?: VerificationLevel | number;
     explicitContentFilter?: ExplicitContentFilterLevel | number;
     defaultMessageNotifications?: DefaultMessageNotifications | number;
@@ -3066,10 +3065,13 @@ declare module 'discord.js' {
     | 'FEATURABLE'
     | 'INVITE_SPLASH'
     | 'MEMBER_VERIFICATION_GATE_ENABLED'
+    | 'MONETIZATION_ENABLED'
+    | 'MORE_STICKERS'
     | 'NEWS'
     | 'PARTNERED'
     | 'PREVIEW_ENABLED'
     | 'RELAY_ENABLED'
+    | 'TICKETED_EVENTS_ENABLED'
     | 'VANITY_URL'
     | 'VERIFIED'
     | 'VIP_REGIONS'
@@ -3106,6 +3108,17 @@ declare module 'discord.js' {
     cache?: boolean;
   }
 
+  interface HTTPAttachmentData {
+    attachment: string | Buffer | Stream;
+    name: string;
+    file: Buffer | Stream;
+  }
+
+  interface HTTPErrorData {
+    json: unknown;
+    files: HTTPAttachmentData[];
+  }
+
   interface HTTPOptions {
     api?: string;
     version?: number;
@@ -3118,13 +3131,12 @@ declare module 'discord.js' {
 
   type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 
-  interface ImageURLOptions {
-    format?: AllowedImageFormat;
-    size?: ImageSize;
+  interface ImageURLOptions extends StaticImageURLOptions {
+    dynamic?: boolean;
   }
 
   interface IntegrationData {
-    id: string;
+    id: Snowflake;
     type: string;
   }
 
@@ -3134,7 +3146,7 @@ declare module 'discord.js' {
   }
 
   interface IntegrationAccount {
-    id: string;
+    id: string | Snowflake;
     name: string;
   }
 
@@ -3204,26 +3216,62 @@ declare module 'discord.js' {
 
   type MembershipStates = 'INVITED' | 'ACCEPTED';
 
-  type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
+  type MessageActionRowComponent = MessageButton;
+
+  type MessageActionRowComponentOptions = MessageButtonOptions;
+
+  type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
+
+  interface MessageActionRowOptions extends BaseMessageComponentOptions {
+    components?: MessageActionRowComponentResolvable[];
+  }
 
   interface MessageActivity {
     partyID: string;
     type: number;
   }
 
+  interface MessageButtonOptions extends BaseMessageComponentOptions {
+    customID?: string;
+    disabled?: boolean;
+    emoji?: EmojiIdentifierResolvable;
+    label?: string;
+    style: MessageButtonStyleResolvable;
+    url?: string;
+  }
+
+  type MessageButtonStyle = keyof typeof MessageButtonStyles;
+
+  type MessageButtonStyleResolvable = MessageButtonStyle | MessageButtonStyles;
+
   interface MessageCollectorOptions extends CollectorOptions {
     max?: number;
     maxProcessed?: number;
   }
 
+  type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton;
+
+  interface MessageComponentInteractionCollectorOptions extends CollectorOptions {
+    max?: number;
+    maxComponents?: number;
+    maxUsers?: number;
+  }
+
+  type MessageComponentOptions = BaseMessageComponentOptions | MessageActionRowOptions | MessageButtonOptions;
+
+  type MessageComponentType = keyof typeof MessageComponentTypes;
+
+  type MessageComponentTypeResolvable = MessageComponentType | MessageComponentTypes;
+
   interface MessageEditOptions {
     attachments?: MessageAttachment[];
-    content?: string;
-    embed?: MessageEmbed | MessageEmbedOptions | null;
+    content?: string | null;
+    embeds?: (MessageEmbed | MessageEmbedOptions)[] | null;
     code?: string | boolean;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     flags?: BitFieldResolvable<MessageFlagsString, number>;
     allowedMentions?: MessageMentionOptions;
+    components?: MessageActionRow[] | MessageActionRowOptions[] | MessageActionRowComponentResolvable[][];
   }
 
   interface MessageEmbedAuthor {
@@ -3253,7 +3301,6 @@ declare module 'discord.js' {
     timestamp?: Date | number;
     color?: ColorResolvable;
     fields?: EmbedFieldData[];
-    files?: (MessageAttachment | string | FileOptions)[];
     author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string };
     thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
     image?: Partial<MessageEmbedImage> & { proxy_url?: string };
@@ -3315,7 +3362,8 @@ declare module 'discord.js' {
     tts?: boolean;
     nonce?: string | number;
     content?: string;
-    embed?: MessageEmbed | MessageEmbedOptions;
+    embeds?: (MessageEmbed | MessageEmbedOptions)[];
+    components?: MessageActionRow[] | MessageActionRowOptions[] | MessageActionRowComponentResolvable[][];
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
@@ -3340,6 +3388,7 @@ declare module 'discord.js' {
 
   type MessageTarget =
     | Interaction
+    | InteractionWebhook
     | TextChannel
     | NewsChannel
     | DMChannel
@@ -3368,6 +3417,8 @@ declare module 'discord.js' {
     | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
     | 'REPLY'
     | 'APPLICATION_COMMAND';
+
+  type MFALevel = keyof typeof MFALevels;
 
   type NSFWLevel = keyof typeof NSFWLevels;
 
@@ -3447,7 +3498,7 @@ declare module 'discord.js' {
     readonly createdAt: Date;
     readonly createdTimestamp: number;
     deleted: boolean;
-    id: string;
+    id: Snowflake;
     partial: true;
     fetch(): Promise<T>;
   } & {
@@ -3632,9 +3683,14 @@ declare module 'discord.js' {
 
   interface SplitOptions {
     maxLength?: number;
-    char?: string;
+    char?: string | string[] | RegExp | RegExp[];
     prepend?: string;
     append?: string;
+  }
+
+  interface StaticImageURLOptions {
+    format?: AllowedImageFormat;
+    size?: ImageSize;
   }
 
   type Status = number;
@@ -3652,20 +3708,6 @@ declare module 'discord.js' {
     public tags: string[];
     public readonly url: string;
   }
-
-  interface StreamOptions {
-    type?: StreamType;
-    seek?: number;
-    volume?: number | boolean;
-    plp?: number;
-    fec?: boolean;
-    bitrate?: number | 'auto';
-    highWaterMark?: number;
-  }
-
-  type SpeakingString = 'SPEAKING' | 'SOUNDSHARE' | 'PRIORITY_SPEAKING';
-
-  type StreamType = 'unknown' | 'converted' | 'opus' | 'ogg/opus' | 'webm/opus';
 
   type SystemChannelFlagsString =
     | 'SUPPRESS_JOIN_NOTIFICATIONS'
@@ -3708,8 +3750,6 @@ declare module 'discord.js' {
 
   type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
 
-  type VoiceStatus = number;
-
   type WebhookClientOptions = Pick<
     ClientOptions,
     'allowedMentions' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http'
@@ -3719,15 +3759,16 @@ declare module 'discord.js' {
     name?: string;
     avatar?: BufferResolvable;
     channel?: ChannelResolvable;
-    reason?: string;
   }
 
-  type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'content' | 'embeds' | 'files' | 'allowedMentions'>;
+  type WebhookEditMessageOptions = Pick<
+    WebhookMessageOptions,
+    'content' | 'embeds' | 'files' | 'allowedMentions' | 'components'
+  >;
 
-  interface WebhookMessageOptions extends Omit<MessageOptions, 'embed' | 'reply'> {
+  interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
     username?: string;
     avatarURL?: string;
-    embeds?: (MessageEmbed | unknown)[];
   }
 
   type WebhookTypes = 'Incoming' | 'Channel Follower';

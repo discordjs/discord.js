@@ -112,6 +112,22 @@ class Interaction extends Base {
   isCommand() {
     return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND;
   }
+
+  /**
+   * Indicates whether this interaction is a component interaction.
+   * @returns {boolean}
+   */
+  isMessageComponent() {
+    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT;
+  }
+
+  /**
+   * Indicates whether this interaction is a button interaction.
+   * @returns {boolean}
+   */
+  isButton() {
+    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && this.componentType === 'BUTTON';
+  }
 }
 
 module.exports = Interaction;

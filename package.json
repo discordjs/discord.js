@@ -3,16 +3,15 @@
   "version": "13.0.0-dev",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index.js",
+  "module": "./src/index.mjs",
   "types": "./typings/index.d.ts",
+  "files": [
+    "src",
+    "typings"
+  ],
   "exports": {
-    ".": [
-      {
-        "require": "./src/index.js",
-        "import": "./esm/discord.mjs"
-      },
-      "./src/index.js"
-    ],
-    "./esm": "./esm/discord.mjs"
+    "require": "./src/index.js",
+    "import": "./src/index.mjs"
   },
   "scripts": {
     "test": "npm run lint && npm run docs:test && npm run lint:typings",
@@ -23,7 +22,7 @@
     "lint:fix": "eslint src --fix",
     "lint:typings": "tslint typings/index.d.ts",
     "prettier": "prettier --write src/**/*.js typings/**/*.ts",
-    "prepublishOnly": "npm run test",
+    "prepublishOnly": "npm run test && gen-esm-wrapper ./src/index.js ./src/index.mjs",
     "prepare": "is-ci || husky install",
     "changelog": "conventional-changelog -p angular -i RELEASE_CHANGELOG.md -s"
   },
@@ -54,14 +53,13 @@
     "abort-controller": "^3.0.0",
     "discord-api-types": "^0.18.1",
     "node-fetch": "^2.6.1",
-    "prism-media": "^1.2.9",
-    "tweetnacl": "^1.0.3",
     "ws": "^7.4.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-angular": "^12.1.4",
     "@discordjs/docgen": "^0.10.0",
+    "@discordjs/voice": "^0.3.0",
     "@types/node": "^12.12.6",
     "conventional-changelog-cli": "^2.1.1",
     "cross-env": "^7.0.3",
@@ -70,6 +68,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-prettier": "^3.4.0",
+    "gen-esm-wrapper": "^1.1.1",
     "husky": "^6.0.0",
     "is-ci": "^3.0.0",
     "jest": "^27.0.3",

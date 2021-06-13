@@ -140,7 +140,6 @@ class GuildManager extends BaseManager {
    * for the guild
    * @param {ExplicitContentFilterLevel} [options.explicitContentFilter] The explicit content filter level for the guild
    * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
-   * @param {string} [options.region] The region for the server, defaults to the closest one available
    * @param {PartialRoleData[]} [options.roles] The roles for this guild,
    * the first element of this array is used to change properties of the guild's everyone role.
    * @param {number} [options.systemChannelID] The ID of the system channel
@@ -157,7 +156,6 @@ class GuildManager extends BaseManager {
       defaultMessageNotifications,
       explicitContentFilter,
       icon = null,
-      region,
       roles = [],
       systemChannelID,
       systemChannelFlags,
@@ -190,12 +188,13 @@ class GuildManager extends BaseManager {
       if (role.color) role.color = resolveColor(role.color);
       if (role.permissions) role.permissions = Permissions.resolve(role.permissions).toString();
     }
+    if (systemChannelFlags) systemChannelFlags = SystemChannelFlags.resolve(systemChannelFlags);
+
     return new Promise((resolve, reject) =>
       this.client.api.guilds
         .post({
           data: {
             name,
-            region,
             icon,
             verification_level: verificationLevel,
             default_message_notifications: defaultMessageNotifications,
@@ -205,7 +204,7 @@ class GuildManager extends BaseManager {
             afk_channel_id: afkChannelID,
             afk_timeout: afkTimeout,
             system_channel_id: systemChannelID,
-            system_channel_flags: SystemChannelFlags.resolve(systemChannelFlags),
+            system_channel_flags: systemChannelFlags,
           },
         })
         .then(data => {
@@ -234,10 +233,8 @@ class GuildManager extends BaseManager {
 
   /**
    * Options used to fetch a single guild.
-   * @typedef {Object} FetchGuildOptions
+   * @typedef {BaseFetchOptions} FetchGuildOptions
    * @property {GuildResolvable} guild The guild to fetch
-   * @property {boolean} [cache=true] Whether or not to cache the fetched guild
-   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**

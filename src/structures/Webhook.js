@@ -2,6 +2,7 @@
 
 const APIMessage = require('./APIMessage');
 const Channel = require('./Channel');
+const { Error } = require('../errors');
 const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
@@ -29,7 +30,7 @@ class Webhook {
     this.name = data.name;
 
     /**
-     * The token for the webhook
+     * The token for the webhook, unavailable for follower webhooks and webhooks owned by another application.
      * @name Webhook#token
      * @type {?string}
      */
@@ -101,12 +102,13 @@ class Webhook {
    * @property {string} [content] See {@link BaseMessageOptions#content}
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] See {@link BaseMessageOptions#files}
    * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
+   * @property {MessageActionRow[]|MessageActionRowOptions[]|MessageActionRowComponentResolvable[][]} [components]
+   * Action rows containing interactive components for the message (buttons, select menus)
    */
 
   /**
    * Sends a message with this webhook.
-   * @param {string|APIMessage} [content=''] The content to send
-   * @param {WebhookMessageOptions|MessageAdditions} [options={}] The options to provide
+   * @param {string|APIMessage|WebhookMessageOptions} options The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a basic message
@@ -132,7 +134,8 @@ class Webhook {
    *   .catch(console.error);
    * @example
    * // Send an embed with a local image inside
-   * webhook.send('This is an embed', {
+   * webhook.send({
+   *   content: 'This is an embed',
    *   embeds: [{
    *     thumbnail: {
    *          url: 'attachment://file.jpg'
@@ -146,16 +149,19 @@ class Webhook {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async send(content, options) {
+  async send(options) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
     let apiMessage;
 
-    if (content instanceof APIMessage) {
-      apiMessage = content.resolveData();
+    if (options instanceof APIMessage) {
+      apiMessage = options.resolveData();
     } else {
-      apiMessage = APIMessage.create(this, content, options).resolveData();
-      if (Array.isArray(apiMessage.data.content)) {
-        return Promise.all(apiMessage.split().map(this.send.bind(this)));
-      }
+      apiMessage = APIMessage.create(this, options).resolveData();
+    }
+
+    if (Array.isArray(apiMessage.data.content)) {
+      return Promise.all(apiMessage.split().map(this.send.bind(this)));
     }
 
     const { data, files } = await apiMessage.resolveFiles();
@@ -192,6 +198,8 @@ class Webhook {
    * }).catch(console.error);
    */
   sendSlackMessage(body) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
     return this.client.api
       .webhooks(this.id, this.token)
       .slack.post({
@@ -203,12 +211,17 @@ class Webhook {
   }
 
   /**
-   * Edits the webhook.
-   * @param {Object} options Options
-   * @param {string} [options.name=this.name] New name for this webhook
-   * @param {BufferResolvable} [options.avatar] New avatar for this webhook
-   * @param {ChannelResolvable} [options.channel] New channel for this webhook
-   * @param {string} [reason] Reason for editing this webhook
+   * Options used to edit a {@link Webhook}.
+   * @typedef {Object} WebhookEditData
+   * @property {string} [name=this.name] The new name for the webhook
+   * @property {BufferResolvable} [avatar] The new avatar for the webhook
+   * @property {ChannelResolvable} [channel] The new channel for the webhook
+   */
+
+  /**
+   * Edits this webhook.
+   * @param {WebhookEditData} options Options for editing the webhook
+   * @param {string} [reason] Reason for editing the webhook
    * @returns {Promise<Webhook>}
    */
   async edit({ name = this.name, avatar, channel }, reason) {
@@ -235,6 +248,8 @@ class Webhook {
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async fetchMessage(message, cache = true) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
     const data = await this.client.api.webhooks(this.id, this.token).messages(message).get();
     return this.client.channels?.cache.get(data.channel_id)?.messages.add(data, cache) ?? data;
   }
@@ -242,15 +257,20 @@ class Webhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|APIMessage} [content] The new content for the message
-   * @param {WebhookEditMessageOptions|MessageAdditions} [options] The options to provide
+   * @param {string|APIMessage|WebhookEditMessageOptions} options The options to provide
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
-  async editMessage(message, content, options) {
-    const { data, files } = await (
-      content.resolveData?.() ?? APIMessage.create(this, content, options).resolveData()
-    ).resolveFiles();
+  async editMessage(message, options) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
+    let apiMessage;
+
+    if (options instanceof APIMessage) apiMessage = options;
+    else apiMessage = APIMessage.create(this, options);
+
+    const { data, files } = await apiMessage.resolveData().resolveFiles();
+
     const d = await this.client.api
       .webhooks(this.id, this.token)
       .messages(typeof message === 'string' ? message : message.id)
@@ -282,6 +302,8 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async deleteMessage(message) {
+    if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
+
     await this.client.api
       .webhooks(this.id, this.token)
       .messages(typeof message === 'string' ? message : message.id)
@@ -317,7 +339,7 @@ class Webhook {
 
   /**
    * A link to the webhook's avatar.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   avatarURL({ format, size } = {}) {
@@ -325,7 +347,7 @@ class Webhook {
     return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
   }
 
-  static applyToClass(structure) {
+  static applyToClass(structure, ignore = []) {
     for (const prop of [
       'send',
       'sendSlackMessage',
@@ -338,6 +360,7 @@ class Webhook {
       'createdAt',
       'url',
     ]) {
+      if (ignore.includes(prop)) continue;
       Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(Webhook.prototype, prop));
     }
   }

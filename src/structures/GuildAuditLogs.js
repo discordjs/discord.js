@@ -79,7 +79,7 @@ const Targets = {
  * * INTEGRATION_CREATE: 80
  * * INTEGRATION_UPDATE: 81
  * * INTEGRATION_DELETE: 82
- * @typedef {?number|string} AuditLogAction
+ * @typedef {?(number|string)} AuditLogAction
  */
 
 /**
@@ -179,15 +179,17 @@ class GuildAuditLogs {
   /**
    * The target of an entry. It can be one of:
    * * A guild
+   * * A channel
    * * A user
    * * A role
-   * * An emoji
    * * An invite
    * * A webhook
+   * * An emoji
+   * * A message
    * * An integration
    * * An object with an id key if target was deleted
    * * An object where the keys represent either the new value or the old value
-   * @typedef {?Object|Guild|User|Role|GuildEmoji|Invite|Webhook|Integration} AuditLogEntryTarget
+   * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration)} AuditLogEntryTarget
    */
 
   /**
@@ -349,7 +351,7 @@ class GuildAuditLogsEntry {
 
     /**
      * Any extra data from the entry
-     * @type {?Object|Role|GuildMember}
+     * @type {?(Object|Role|GuildMember)}
      */
     this.extra = null;
     switch (data.action_type) {
@@ -480,8 +482,18 @@ class GuildAuditLogsEntry {
           ),
           guild,
         );
+    } else if (targetType === Targets.CHANNEL) {
+      this.target =
+        guild.channels.cache.get(data.target_id) ||
+        this.changes.reduce(
+          (o, c) => {
+            o[c.key] = c.new || c.old;
+            return o;
+          },
+          { id: data.target_id },
+        );
     } else if (data.target_id) {
-      this.target = guild[`${targetType.toLowerCase()}s`].cache.get(data.target_id) || { id: data.target_id };
+      this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) || { id: data.target_id };
     }
   }
 
