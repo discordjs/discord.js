@@ -59,14 +59,14 @@ class MessageComponentInteraction extends Interaction {
 
   /**
    * The component which was interacted with
-   * @type {?MessageActionRowComponent}
+   * @type {?MessageActionRowComponent|Object}
    * @readonly
    */
   get component() {
     return this.message.components
       .map(row => row.components)
       .flat()
-      .find(component => component.customID === this.customID);
+      .find(component => (component.customID ?? component.custom_id) === this.customID);
   }
 
   /**
