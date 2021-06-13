@@ -168,9 +168,8 @@ class GuildManager extends BaseManager {
     } = {},
   ) {
     icon = await DataResolver.resolveImage(icon);
-    if (verificationLevel) {
-      verificationLevel =
-        typeof verificationLevel === 'number' ? verificationLevel : VerificationLevels[verificationLevel];
+    if (typeof verificationLevel === 'string') {
+      verificationLevel = VerificationLevels[verificationLevel];
     }
     if (defaultMessageNotifications) {
       defaultMessageNotifications =
