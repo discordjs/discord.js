@@ -77,6 +77,13 @@
     "tslint": "^6.1.3",
     "typescript": "^4.3.2"
   },
+  "optionalDependencies": {
+    "zlib-sync": "^0.1.7",
+    "discord/erlpack": "^0.1.3",
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.5",
+    "@discordjs/voice": "^0.3.1"
+  },
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=7.0.0"
