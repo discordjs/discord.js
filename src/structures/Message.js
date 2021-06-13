@@ -290,7 +290,7 @@ class Message extends Base {
   patch(data) {
     const clone = this._clone();
 
-    if (data.edited_timestamp !== null) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+    if (data.edited_timestamp) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
