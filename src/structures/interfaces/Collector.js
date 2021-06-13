@@ -194,10 +194,16 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Resets the collectors timeout and idle timer.
-   * @param {Object} [options] Options
-   * @param {number} [options.time] How long to run the collector for in milliseconds
-   * @param {number} [options.idle] How long to stop the collector after inactivity in milliseconds
+   * Options used to reset timeout and idle timer of a {@link Collector}.
+   * @typedef {Object} CollectorResetTimerOptions
+   * @property {number} [time] How long to run the collector for (in milliseconds)
+   * @property {number} [idle] How long to wait to stop the collector after inactivity (in milliseconds)
+   */
+
+  /**
+   * Resets the collector's timeout and idle timer.
+   * @param {CollectorResetTimerOptions} [options] Options for reseting
+
    */
   resetTimer({ time, idle } = {}) {
     if (this._timeout) {

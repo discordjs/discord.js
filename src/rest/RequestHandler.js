@@ -125,13 +125,7 @@ class RequestHandler {
         /**
          * Emitted when the client hits a rate limit while making a request
          * @event Client#rateLimit
-         * @param {Object} rateLimitInfo Object containing the rate limit info
-         * @param {number} rateLimitInfo.timeout Timeout in ms
-         * @param {number} rateLimitInfo.limit Number of requests that can be made to this endpoint
-         * @param {string} rateLimitInfo.method HTTP method used for request that triggered this event
-         * @param {string} rateLimitInfo.path Path used for request that triggered this event
-         * @param {string} rateLimitInfo.route Route used for request that triggered this event
-         * @param {boolean} rateLimitInfo.global Whether the rate limit that was reached was the global limit
+         * @param {RateLimitData} rateLimitData Object containing the rate limit info
          */
         this.manager.client.emit(RATE_LIMIT, {
           timeout,
@@ -232,11 +226,16 @@ class RequestHandler {
         invalidCount % this.manager.client.options.invalidRequestWarningInterval === 0;
       if (emitInvalid) {
         /**
-         * Emitted periodically when the process sends invalid messages to let users avoid the
+         * @typedef {Object} InvalidRequestWarningData
+         * @property {number} count Number of invalid requests that have been made in the window
+         * @property {number} remainingTime Time in ms remaining before the count resets
+         */
+
+        /**
+         * Emitted periodically when the process sends invalid requests to let users avoid the
          * 10k invalid requests in 10 minutes threshold that causes a ban
          * @event Client#invalidRequestWarning
-         * @param {number} invalidRequestWarningInfo.count Number of invalid requests that have been made in the window
-         * @param {number} invalidRequestWarningInfo.remainingTime Time in ms remaining before the count resets
+         * @param {InvalidRequestWarningData} invalidRequestWarningData Object containing the invalid request info
          */
         this.manager.client.emit(INVALID_REQUEST_WARNING, {
           count: invalidCount,

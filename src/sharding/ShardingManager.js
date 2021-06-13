@@ -25,7 +25,7 @@ class ShardingManager extends EventEmitter {
    */
 
   /**
-   * The options to spawn shards with for a {@link ShardingManager},
+   * The options to spawn shards with for a {@link ShardingManager}.
    * @typedef {Object} ShardingManagerOptions
    * @property {string|number} [totalShards='auto'] Number of total shards of all shard managers or "auto"
    * @property {string|number[]} [shardList='auto'] List of shards to spawn or "auto"
@@ -165,11 +165,16 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
+   * Option used to spawn multiple shards.
+   * @typedef {Object} MultipleShardSpawnOptions
+   * @property {number|string} [amount=this.totalShards] Number of shards to spawn
+   * @property {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
+   * @property {number} [timeout=30000] The amount in milliseconds to wait until the {@link Client} has become ready
+   */
+
+  /**
    * Spawns multiple shards.
-   * @param {Object} [options] Options for spawning shards
-   * @param {number|string} [options.amount=this.totalShards] Number of shards to spawn
-   * @param {number} [options.delay=5500] How long to wait in between spawning each shard (in milliseconds)
-   * @param {number} [options.timeout=30000] The amount in milliseconds to wait until the {@link Client} has become
+   * @param {MultipleShardSpawnOptions} [options] Options for spawning shards
    * @returns {Promise<Collection<number, Shard>>}
    */
   async spawn({ amount = this.totalShards, delay = 5500, timeout = 30000 } = {}) {
@@ -282,13 +287,18 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Kills all running shards and respawns them.
-   * @param {Object} [options] Options for respawning shards
-   * @param {number} [options.shardDelay=5000] How long to wait between shards (in milliseconds)
-   * @param {number} [options.respawnDelay=500] How long to wait between killing a shard's process and restarting it
+   * Options used to respawn all shards.
+   * @typedef {Object} MultipleShardRespawnOptions
+   * @property {number} [shardDelay=5000] How long to wait between shards (in milliseconds)
+   * @property {number} [respawnDelay=500] How long to wait between killing a shard's process and restarting it
    * (in milliseconds)
-   * @param {number} [options.timeout=30000] The amount in milliseconds to wait for a shard to become ready before
-   * continuing to another. (-1 or Infinity for no wait)
+   * @property {number} [timeout=30000] The amount in milliseconds to wait for a shard to become ready before
+   * continuing to another (`-1` or `Infinity` for no wait)
+   */
+
+  /**
+   * Kills all running shards and respawns them.
+   * @param {MultipleShardRespawnOptions} [options] Options for respawning shards
    * @returns {Promise<Collection<string, Shard>>}
    */
   async respawnAll({ shardDelay = 5000, respawnDelay = 500, timeout = 30000 } = {}) {

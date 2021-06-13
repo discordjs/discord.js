@@ -82,7 +82,7 @@ class ReactionCollector extends Collector {
    * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
    * @param {User} user The user that added the reaction
-   * @returns {?Snowflake|string}
+   * @returns {?(Snowflake|string)}
    * @private
    */
   collect(reaction, user) {
@@ -113,7 +113,7 @@ class ReactionCollector extends Collector {
    * Handles a reaction deletion for possible disposal.
    * @param {MessageReaction} reaction The reaction to possibly dispose of
    * @param {User} user The user that removed the reaction
-   * @returns {?Snowflake|string}
+   * @returns {?(Snowflake|string)}
    */
   dispose(reaction, user) {
     /**

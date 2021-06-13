@@ -25,10 +25,15 @@ class ReactionUserManager extends BaseManager {
    */
 
   /**
+   * Options used to fetch users who gave a reaction.
+   * @typedef {Object} FetchReactionUsersOptions
+   * @property {number} [limit=100] The maximum amount of users to fetch, defaults to `100`
+   * @property {Snowflake} [after] Limit fetching users to those with an id greater than the supplied id
+   */
+
+  /**
    * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
-   * @param {Object} [options] Options for fetching the users
-   * @param {number} [options.limit=100] The maximum amount of users to fetch, defaults to 100
-   * @param {Snowflake} [options.after] Limit fetching users to those with an id greater than the supplied id
+   * @param {FetchReactionUsersOptions} [options] Options for fetching the users
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   async fetch({ limit = 100, after } = {}) {
