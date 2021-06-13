@@ -1141,7 +1141,7 @@ class Guild extends BaseGuild {
       id: this.client.channels.resolveID(r.channel),
       position: r.position,
       lock_permissions: r.lockPermissions,
-      parent_id: this.channels.resolveID(r.parent),
+      parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveID(r.parent) : undefined,
     }));
 
     return this.client.api

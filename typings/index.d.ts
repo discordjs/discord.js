@@ -2605,7 +2605,7 @@ declare module 'discord.js' {
   interface ChannelPosition {
     channel: ChannelResolvable;
     lockPermissions?: boolean;
-    parent?: CategoryChannelResolvable;
+    parent?: CategoryChannelResolvable | null;
     position?: number;
   }
 
