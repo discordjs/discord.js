@@ -1388,6 +1388,7 @@ declare module 'discord.js' {
 
   export class MessageComponentInteraction extends Interaction {
     public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | null;
+    public readonly component: MessageActionRowComponent | null;
     public componentType: MessageComponentType;
     public customID: string;
     public deferred: boolean;

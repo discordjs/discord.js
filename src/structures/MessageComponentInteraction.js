@@ -58,6 +58,18 @@ class MessageComponentInteraction extends Interaction {
   }
 
   /**
+   * The component which was interacted with
+   * @type {?MessageActionRowComponent}
+   * @readonly
+   */
+  get component() {
+    return this.message.components
+      .map(row => row.components)
+      .flat()
+      .find(component => component.customID === this.customID);
+  }
+
+  /**
    * Resolves the type of a MessageComponent
    * @param {MessageComponentTypeResolvable} type The type to resolve
    * @returns {MessageComponentType}
