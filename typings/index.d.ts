@@ -2492,7 +2492,6 @@ declare module 'discord.js' {
 
   interface ApplicationCommandOption extends ApplicationCommandOptionData {
     type: ApplicationCommandOptionType;
-    required: boolean;
   }
 
   interface ApplicationCommandOptionChoice {
