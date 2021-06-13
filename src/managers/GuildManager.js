@@ -171,17 +171,11 @@ class GuildManager extends BaseManager {
     if (typeof verificationLevel === 'string') {
       verificationLevel = VerificationLevels[verificationLevel];
     }
-    if (defaultMessageNotifications) {
-      defaultMessageNotifications =
-        typeof defaultMessageNotifications === 'number'
-          ? defaultMessageNotifications
-          : DefaultMessageNotificationLevels[defaultMessageNotifications];
+    if (typeof defaultMessageNotifications === 'string') {
+      defaultMessageNotifications = DefaultMessageNotificationLevels[defaultMessageNotifications];
     }
-    if (explicitContentFilter) {
-      explicitContentFilter =
-        typeof explicitContentFilter === 'number'
-          ? explicitContentFilter
-          : ExplicitContentFilterLevels[explicitContentFilter];
+    if (typeof explicitContentFilter === 'string') {
+      explicitContentFilter = ExplicitContentFilterLevels[explicitContentFilter];
     }
     for (const channel of channels) {
       if (channel.type) channel.type = ChannelTypes[channel.type.toUpperCase()];
