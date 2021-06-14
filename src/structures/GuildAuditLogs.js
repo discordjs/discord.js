@@ -381,7 +381,7 @@ class GuildAuditLogsEntry {
       case Actions.MESSAGE_DELETE:
       case Actions.MESSAGE_BULK_DELETE:
         this.extra = {
-          channel: guild.channels.cache.get(data.options.channel_id) || { id: data.options.channel_id },
+          channel: guild.channels.cache.get(data.options.channel_id) ?? { id: data.options.channel_id },
           count: Number(data.options.count),
         };
         break;
@@ -389,7 +389,7 @@ class GuildAuditLogsEntry {
       case Actions.MESSAGE_PIN:
       case Actions.MESSAGE_UNPIN:
         this.extra = {
-          channel: guild.client.channels.cache.get(data.options.channel_id) || { id: data.options.channel_id },
+          channel: guild.client.channels.cache.get(data.options.channel_id) ?? { id: data.options.channel_id },
           messageID: data.options.message_id,
         };
         break;
@@ -405,7 +405,7 @@ class GuildAuditLogsEntry {
       case Actions.CHANNEL_OVERWRITE_DELETE:
         switch (Number(data.options.type)) {
           case OverwriteTypes.role:
-            this.extra = guild.roles.cache.get(data.options.id) || {
+            this.extra = guild.roles.cache.get(data.options.id) ?? {
               id: data.options.id,
               name: data.options.role_name,
               type: OverwriteTypes[OverwriteTypes.role],
@@ -413,7 +413,7 @@ class GuildAuditLogsEntry {
             break;
 
           case OverwriteTypes.member:
-            this.extra = guild.members.cache.get(data.options.id) || {
+            this.extra = guild.members.cache.get(data.options.id) ?? {
               id: data.options.id,
               type: OverwriteTypes[OverwriteTypes.member],
             };
