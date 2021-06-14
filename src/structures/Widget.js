@@ -57,7 +57,7 @@ class Widget extends Base {
      */
     this.members = new Collection();
     for (const member of data.members) {
-      this.members.set(parseInt(member.id), new WidgetMember(this.client, member));
+      this.members.set(member.id, new WidgetMember(this.client, member));
     }
 
     /**

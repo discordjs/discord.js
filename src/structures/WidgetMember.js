@@ -21,9 +21,9 @@ class WidgetMember extends Base {
 
     /**
      * The id of the user. It's an arbitrary number.
-     * @type {number}
+     * @type {string}
      */
-    this.id = parseInt(data.id);
+    this.id = data.id;
 
     /**
      * The username of the member.
