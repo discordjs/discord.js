@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const IntegrationApplication = require('./IntegrationApplication');
+const StageInstanceInvite = require('./StageInstanceInvite');
 const { Error } = require('../errors');
 const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
@@ -112,6 +113,9 @@ class Invite extends Base {
     this.createdTimestamp = 'created_at' in data ? new Date(data.created_at).getTime() : null;
 
     this._expiresTimestamp = 'expires_at' in data ? new Date(data.expires_at).getTime() : null;
+
+    this.stageInstance =
+      'stage_instance' in data ? new StageInstanceInvite(this.client, data.stage_instance, this.guild) : null;
   }
 
   /**
