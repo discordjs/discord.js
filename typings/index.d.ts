@@ -1708,7 +1708,7 @@ declare module 'discord.js' {
     public discoverableDisabled: boolean;
     public readonly channel: StageChannel | null;
     public readonly guild: Guild | null;
-    public update(options: UpdateStageInstanceOptions): Promise<StageInstance>;
+    public edit(options: StageInstanceEditOptions): Promise<StageInstance>;
     public delete(): Promise<StageInstance>;
     public setTopic(topic: string): Promise<StageInstance>;
     public readonly createdTimestamp: number;
@@ -2300,7 +2300,7 @@ declare module 'discord.js' {
     public guild: Guild;
     public create(options: CreateStageInstanceOptions): Promise<StageInstance>;
     public fetch(channel: StageChannel | Snowflake, options?: BaseFetchOptions): Promise<StageInstance>;
-    public update(channel: StageChannel | Snowflake, options: UpdateStageInstanceOptions): Promise<StageInstance>;
+    public edit(channel: StageChannel | Snowflake, options: StageInstanceEditOptions): Promise<StageInstance>;
     public delete(channel: StageChannel | Snowflake): Promise<void>;
   }
 
@@ -3797,7 +3797,7 @@ declare module 'discord.js' {
     timeout: NodeJS.Timeout;
   }
 
-  interface UpdateStageInstanceOptions {
+  interface StageInstanceEditOptions {
     topic?: string;
     privacyLevel?: PrivacyLevel | number;
   }

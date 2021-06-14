@@ -78,17 +78,17 @@ class StageInstance extends Base {
   }
 
   /**
-   * Updates this stage instance.
-   * @param {UpdateStageInstanceOptions} options The options to update the stage instance
+   * Edits this stage instance.
+   * @param {StageInstanceEditOptions} options The options to edit the stage instance
    * @returns {Promise<StageInstance>}
    * @example
-   * // Update a stage instance
-   * stageInstance.update({ topic: 'new topic' })
+   * // edit a stage instance
+   * stageInstance.edit({ topic: 'new topic' })
    *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error)
    */
-  update(options) {
-    return this.guild.stageInstances.update(this.channelID, options);
+  edit(options) {
+    return this.guild.stageInstances.edit(this.channelID, options);
   }
 
   /**
@@ -118,7 +118,7 @@ class StageInstance extends Base {
    *  .catch(console.error);
    */
   setTopic(topic) {
-    return this.guild.stageInstances.update(this.channelID, { topic });
+    return this.guild.stageInstances.edit(this.channelID, { topic });
   }
 
   /**
