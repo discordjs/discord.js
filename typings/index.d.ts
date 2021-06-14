@@ -1304,7 +1304,7 @@ declare module 'discord.js' {
     public reply(options: string | APIMessage | (ReplyMessageOptions & { split?: false })): Promise<Message>;
     public reply(options: APIMessage | (ReplyMessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
     public startThread(
-      name: 'string',
+      name: string,
       autoArchiveDuration: ThreadAutoArchiveDuration,
       reason?: string,
     ): Promise<ThreadChannel>;
