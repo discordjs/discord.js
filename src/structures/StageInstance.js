@@ -82,7 +82,7 @@ class StageInstance extends Base {
    * @param {StageInstanceEditOptions} options The options to edit the stage instance
    * @returns {Promise<StageInstance>}
    * @example
-   * // edit a stage instance
+   * // Edit a stage instance
    * stageInstance.edit({ topic: 'new topic' })
    *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error)

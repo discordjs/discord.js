@@ -104,7 +104,7 @@ class StageInstanceManager extends BaseManager {
    * @param {StageInstanceEditOptions} options The options to edit the stage instance
    * @returns {Promise<StageInstance>}
    * @example
-   * // edit a stage instance
+   * // Edit a stage instance
    * guild.stageInstances.edit('1234567890123456789', { topic: 'new topic' })
    *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error);
