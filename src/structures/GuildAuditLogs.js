@@ -428,7 +428,7 @@ class GuildAuditLogsEntry {
       case Actions.STAGE_INSTANCE_DELETE:
       case Actions.STAGE_INSTANCE_UPDATE:
         this.extra = {
-          channel: guild.client.channels.cache.get(data.options?.channel_id) || { id: data.options?.channel_id },
+          channel: guild.client.channels.cache.get(data.options?.channel_id) ?? { id: data.options?.channel_id },
         };
         break;
 
@@ -517,7 +517,7 @@ class GuildAuditLogsEntry {
         );
     } else if (targetType === Targets.STAGE_INSTANCE) {
       this.target =
-        guild.stageInstances.cache.get(data.target_id) ||
+        guild.stageInstances.cache.get(data.target_id) ??
         new StageInstance(
           guild.client,
           this.changes.reduce(
