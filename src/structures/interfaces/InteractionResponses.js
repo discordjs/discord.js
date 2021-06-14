@@ -163,7 +163,7 @@ class InteractionResponses {
    */
   async deferUpdate(options = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    if (options.fetchReply && (this.message.flags & MessageFlags.FLAGS.EPHEMERAL) === MessageFlags.FLAGS.EPHEMERAL) {
+    if (options.fetchReply && new MessageFlags(this.message.flags).has(MessageFlags.FLAGS.EPHEMERAL)) {
       throw new Error('INTERACTION_FETCH_EPHEMERAL');
     }
     await this.client.api.interactions(this.id, this.token).callback.post({
@@ -191,7 +191,7 @@ class InteractionResponses {
    */
   async update(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    if (options.fetchReply && (this.message.flags & MessageFlags.FLAGS.EPHEMERAL) === MessageFlags.FLAGS.EPHEMERAL) {
+    if (options.fetchReply && new MessageFlags(this.message.flags).has(MessageFlags.FLAGS.EPHEMERAL)) {
       throw new Error('INTERACTION_FETCH_EPHEMERAL');
     }
 
