@@ -70,6 +70,11 @@ declare enum OverwriteTypes {
   member = 1,
 }
 
+declare enum PrivacyLevels {
+  PUBLIC = 1,
+  GUILD_ONLY = 2,
+}
+
 declare enum StickerFormatTypes {
   PNG = 1,
   APNG = 2,
@@ -576,6 +581,9 @@ declare module 'discord.js' {
       SHARD_RESUME: 'shardResume';
       INVALIDATED: 'invalidated';
       RAW: 'raw';
+      STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
+      STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate';
+      STAGE_INSTANCE_DELETE: 'stageInstanceDelete';
     };
     ShardEvents: {
       CLOSE: 'close';
@@ -668,6 +676,7 @@ declare module 'discord.js' {
     MessageButtonStyles: typeof MessageButtonStyles;
     MFALevels: typeof MFALevels;
     NSFWLevels: typeof NSFWLevels;
+    PrivacyLevels: typeof PrivacyLevels;
   };
 
   export class DataResolver {
@@ -759,6 +768,7 @@ declare module 'discord.js' {
     public readonly shard: WebSocketShard;
     public shardID: number;
     public splash: string | null;
+    public stageInstances: StageInstanceManager;
     public readonly systemChannel: TextChannel | null;
     public systemChannelFlags: Readonly<SystemChannelFlags>;
     public systemChannelID: Snowflake | null;
@@ -855,6 +865,7 @@ declare module 'discord.js' {
       | Webhook
       | Message
       | Integration
+      | StageInstance
       | { id: Snowflake }
       | null;
     public targetType: GuildAuditLogsTarget;
@@ -1683,6 +1694,25 @@ declare module 'discord.js' {
   export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
     public type: 'stage';
+    public readonly instance: StageInstance | null;
+  }
+
+  export class StageInstance extends Base {
+    constructor(client: Client, data: unknown, channel: StageChannel);
+    public id: Snowflake;
+    public deleted: boolean;
+    public guildID: Snowflake;
+    public channelID: Snowflake;
+    public topic: string;
+    public privacyLevel: PrivacyLevel;
+    public discoverableDisabled: boolean;
+    public readonly channel: StageChannel | null;
+    public readonly guild: Guild | null;
+    public edit(options: StageInstanceEditOptions): Promise<StageInstance>;
+    public delete(): Promise<StageInstance>;
+    public setTopic(topic: string): Promise<StageInstance>;
+    public readonly createdTimestamp: number;
+    public readonly createdAt: Date;
   }
 
   export class StoreChannel extends GuildChannel {
@@ -2265,6 +2295,15 @@ declare module 'discord.js' {
     public create(options?: CreateRoleOptions): Promise<Role>;
   }
 
+  export class StageInstanceManager extends BaseManager<Snowflake, StageInstance, StageInstanceResolvable> {
+    constructor(guild: Guild, iterable?: Iterable<any>);
+    public guild: Guild;
+    public create(options: CreateStageInstanceOptions): Promise<StageInstance>;
+    public fetch(channel: StageChannel | Snowflake, options?: BaseFetchOptions): Promise<StageInstance>;
+    public edit(channel: StageChannel | Snowflake, options: StageInstanceEditOptions): Promise<StageInstance>;
+    public delete(channel: StageChannel | Snowflake): Promise<void>;
+  }
+
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<User>;
@@ -2647,6 +2686,9 @@ declare module 'discord.js' {
     shardReady: [shardID: number, unavailableGuilds: Set<Snowflake> | undefined];
     shardReconnecting: [shardID: number];
     shardResume: [shardID: number, replayedEvents: number];
+    stageInstanceCreate: [stageInstance: StageInstance];
+    stageInstanceUpdate: [oldStageInstance: StageInstance | null, newStageInstance: StageInstance];
+    stageInstanceDelete: [stageInstance: StageInstance];
   }
 
   interface ClientOptions {
@@ -2753,6 +2795,12 @@ declare module 'discord.js' {
 
   interface CreateRoleOptions extends RoleData {
     reason?: string;
+  }
+
+  interface CreateStageInstanceOptions {
+    channel: StageChannel | Snowflake;
+    topic: string;
+    privacyLevel?: PrivacyLevel | number;
   }
 
   interface CrosspostedChannel {
@@ -2927,6 +2975,9 @@ declare module 'discord.js' {
     INTEGRATION_CREATE?: number;
     INTEGRATION_UPDATE?: number;
     INTEGRATION_DELETE?: number;
+    STAGE_INSTANCE_CREATE?: number;
+    STAGE_INSTANCE_UPDATE?: number;
+    STAGE_INSTANCE_DELETE?: number;
   }
 
   type GuildAuditLogsActionType = 'CREATE' | 'DELETE' | 'UPDATE' | 'ALL';
@@ -2951,6 +3002,7 @@ declare module 'discord.js' {
     EMOJI?: string;
     MESSAGE?: string;
     INTEGRATION?: string;
+    STAGE_INSTANCE?: string;
     UNKNOWN?: string;
   }
 
@@ -3611,6 +3663,8 @@ declare module 'discord.js' {
 
   type PresenceStatus = PresenceStatusData | 'offline';
 
+  type PrivacyLevel = keyof typeof PrivacyLevels;
+
   interface RateLimitData {
     timeout: number;
     limit: number;
@@ -3708,6 +3762,8 @@ declare module 'discord.js' {
     size?: ImageSize;
   }
 
+  type StageInstanceResolvable = StageInstance | Snowflake;
+
   type Status = number;
 
   export class Sticker extends Base {
@@ -3739,6 +3795,11 @@ declare module 'discord.js' {
     lastTimestamp: Date;
     elapsedTime: number;
     timeout: NodeJS.Timeout;
+  }
+
+  interface StageInstanceEditOptions {
+    topic?: string;
+    privacyLevel?: PrivacyLevel | number;
   }
 
   type UserFlagsString =
@@ -3840,7 +3901,10 @@ declare module 'discord.js' {
     | 'VOICE_STATE_UPDATE'
     | 'VOICE_SERVER_UPDATE'
     | 'WEBHOOKS_UPDATE'
-    | 'INTERACTION_CREATE';
+    | 'INTERACTION_CREATE'
+    | 'STAGE_INSTANCE_CREATE'
+    | 'STAGE_INSTANCE_UPDATE'
+    | 'STAGE_INSTANCE_DELETE';
 
   //#endregion
 }

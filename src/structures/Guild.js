@@ -15,6 +15,7 @@ const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
 const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
+const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const Collection = require('../util/Collection');
 const {
@@ -82,6 +83,12 @@ class Guild extends BaseGuild {
      * @type {VoiceStateManager}
      */
     this.voiceStates = new VoiceStateManager(this);
+
+    /**
+     * A manager of the stage instances of this guild
+     * @type {StageInstanceManager}
+     */
+    this.stageInstances = new StageInstanceManager(this);
 
     /**
      * Whether the bot has been removed from the guild
@@ -399,6 +406,13 @@ class Guild extends BaseGuild {
     if (data.presences) {
       for (const presence of data.presences) {
         this.presences.add(Object.assign(presence, { guild: this }));
+      }
+    }
+
+    if (data.stage_instances) {
+      this.stageInstances.cache.clear();
+      for (const stageInstance of data.stage_instances) {
+        this.stageInstances.add(stageInstance);
       }
     }
 

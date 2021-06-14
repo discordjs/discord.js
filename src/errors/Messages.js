@@ -87,6 +87,7 @@ const Messages = {
   GUILD_OWNED: 'Guild is owned by the client.',
   GUILD_MEMBERS_TIMEOUT: "Members didn't arrive in time.",
   GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
+  STAGE_CHANNEL_RESOLVE: 'Could not resolve channel to a stage channel.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,

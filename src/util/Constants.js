@@ -279,6 +279,9 @@ exports.Events = {
   SHARD_RESUME: 'shardResume',
   INVALIDATED: 'invalidated',
   RAW: 'raw',
+  STAGE_INSTANCE_CREATE: 'stageInstanceCreate',
+  STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate',
+  STAGE_INSTANCE_DELETE: 'stageInstanceDelete',
 };
 
 exports.ShardEvents = {
@@ -345,6 +348,9 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * VOICE_SERVER_UPDATE
  * * WEBHOOKS_UPDATE
  * * INTERACTION_CREATE
+ * * STAGE_INSTANCE_CREATE
+ * * STAGE_INSTANCE_UPDATE
+ * * STAGE_INSTANCE_DELETE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
@@ -388,6 +394,9 @@ exports.WSEvents = keyMirror([
   'VOICE_SERVER_UPDATE',
   'WEBHOOKS_UPDATE',
   'INTERACTION_CREATE',
+  'STAGE_INSTANCE_CREATE',
+  'STAGE_INSTANCE_UPDATE',
+  'STAGE_INSTANCE_DELETE',
 ]);
 
 /**
@@ -849,7 +858,7 @@ exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS
 exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
 
 /**
- * NSFW level of a Guild
+ * NSFW level of a Guild:
  * * DEFAULT
  * * EXPLICIT
  * * SAFE
@@ -857,6 +866,14 @@ exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
  * @typedef {string} NSFWLevel
  */
 exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
+
+/**
+ * Privacy level of a {@link StageInstance} object:
+ * * PUBLIC
+ * * GUILD_ONLY
+ * @typedef {string} PrivacyLevel
+ */
+exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 
 function keyMirror(arr) {
   let tmp = Object.create(null);
