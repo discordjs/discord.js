@@ -17,13 +17,13 @@ class IntegrationApplication extends Application {
     this.bot = data.bot ? this.client.users.add(data.bot) : this.bot ?? null;
 
     /**
-     * The url of the app's terms of service
+     * The url of the application's terms of service
      * @type {?string}
      */
     this.termsOfServiceURL = data.terms_of_service_url ?? this.termsOfServiceURL ?? null;
 
     /**
-     * The url of the app's privacy policy
+     * The url of the application's privacy policy
      * @type {?string}
      */
     this.privacyPolicyURL = data.privacy_policy_url ?? this.privacyPolicyURL ?? null;
@@ -35,7 +35,7 @@ class IntegrationApplication extends Application {
     this.rpcOrigins = data.rpc_origins ?? this.rpcOrigins ?? [];
 
     /**
-     * The application summary
+     * The application's summary
      * @type {?string}
      */
     this.summary = data.summary ?? this.summary ?? null;
