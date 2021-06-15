@@ -146,11 +146,13 @@ class TextBasedChannel {
    * // Send an embed with a local image inside
    * channel.send({
    *   content: 'This is an embed',
-   *   embed: {
-   *     thumbnail: {
-   *       url: 'attachment://file.jpg'
+   *   embeds: [
+   *     {
+   *       thumbnail: {
+   *         url: 'attachment://file.jpg'
+   *       }
    *     }
-   *   },
+   *   ],
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg'
