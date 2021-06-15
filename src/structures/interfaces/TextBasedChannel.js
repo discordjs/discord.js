@@ -342,22 +342,22 @@ class TextBasedChannel {
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
    * @param {CollectorFilter} filter The filter function to use
-   * @param {number} [time] Time to wait for an interaction before rejecting
+   * @param {AwaitMessageComponentInteractionOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
-   * // Collect a button interaction
+   * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * channel.awaitMessageComponentInteraction(filter, 15000)
+   * channel.awaitMessageComponentInteraction(filter, { time: 15000 })
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteraction(filter, time) {
+  awaitMessageComponentInteraction(filter, { time } = {}) {
     return new Promise((resolve, reject) => {
       const collector = this.createMessageComponentInteractionCollector(filter, { max: 1, time });
-      collector.once('end', interactions => {
+      collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
-        if (!interaction) reject(new Error('INTERACTION_COLLECTOR_TIMEOUT'));
-        else resolve(interaction);
+        if (interaction) resolve(interaction);
+        else reject(new Error('INTERACTION_COLLECTOR_ERROR', reason));
       });
     });
   }

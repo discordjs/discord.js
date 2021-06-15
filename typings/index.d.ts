@@ -1189,7 +1189,7 @@ declare module 'discord.js' {
     public reference: MessageReference | null;
     public awaitMessageComponentInteraction(
       filter: CollectorFilter<[MessageComponentInteraction]>,
-      time?: number,
+      options?: AwaitMessageComponentInteractionOptions,
     ): Promise<MessageComponentInteraction>;
     public awaitReactions(
       filter: CollectorFilter<[MessageReaction, User]>,
@@ -2373,7 +2373,7 @@ declare module 'discord.js' {
     typingCount: number;
     awaitMessageComponentInteraction(
       filter: CollectorFilter<[MessageComponentInteraction]>,
-      time?: number,
+      options?: AwaitMessageComponentInteractionOptions,
     ): Promise<MessageComponentInteraction>;
     awaitMessages(
       filter: CollectorFilter<[Message]>,
@@ -2579,6 +2579,10 @@ declare module 'discord.js' {
     key: string;
     old?: any;
     new?: any;
+  }
+
+  interface AwaitMessageComponentInteractionOptions {
+    time?: number;
   }
 
   interface AwaitMessagesOptions extends MessageCollectorOptions {
