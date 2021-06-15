@@ -162,13 +162,18 @@ class MessageMentions {
   }
 
   /**
+   * Options used to check for a mention.
+   * @typedef {Object} MessageMentionsHasOptions
+   * @property {boolean} [ignoreDirect=false] Whether to ignore direct mentions to the item
+   * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to a guild member
+   * @property {boolean} [ignoreEveryone=false] Whether to ignore everyone/here mentions
+   */
+
+  /**
    * Checks if a user, guild member, role, or channel is mentioned.
-   * Takes into account user mentions, role mentions, and @everyone/@here mentions.
-   * @param {UserResolvable|RoleResolvable|ChannelResolvable} data User/Role/Channel to check
-   * @param {Object} [options] Options
-   * @param {boolean} [options.ignoreDirect=false] - Whether to ignore direct mentions to the item
-   * @param {boolean} [options.ignoreRoles=false] - Whether to ignore role mentions to a guild member
-   * @param {boolean} [options.ignoreEveryone=false] - Whether to ignore everyone/here mentions
+   * Takes into account user mentions, role mentions, and `@everyone`/`@here` mentions.
+   * @param {UserResolvable|RoleResolvable|ChannelResolvable} data The User/Role/Channel to check for
+   * @param {MessageMentionsHasOptions} [options] The options for the check
    * @returns {boolean}
    */
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {

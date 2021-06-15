@@ -125,6 +125,8 @@ module.exports = {
   VoiceRegion: require('./structures/VoiceRegion'),
   VoiceState: require('./structures/VoiceState'),
   Webhook: require('./structures/Webhook'),
+  Widget: require('./structures/Widget'),
+  WidgetMember: require('./structures/WidgetMember'),
 
   WebSocket: require('./WebSocket'),
 };

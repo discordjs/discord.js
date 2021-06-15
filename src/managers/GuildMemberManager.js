@@ -137,16 +137,16 @@ class GuildMemberManager extends BaseManager {
   }
 
   /**
-   * Options for searching for guild members.
+   * Options used for searching guild members.
    * @typedef {Object} GuildSearchMembersOptions
    * @property {string} query Filter members whose username or nickname start with this query
-   * @property {number} [limit] Maximum number of members to search
-   * @property {boolean} [cache] Whether or not to cache the fetched member(s)
+   * @property {number} [limit=1] Maximum number of members to search
+   * @property {boolean} [cache=true] Whether or not to cache the fetched member(s)
    */
 
   /**
-   * Search for members in the guild based on a query.
-   * @param {GuildSearchMembersOptions} options Search options
+   * Searches for members in the guild based on a query.
+   * @param {GuildSearchMembersOptions} options Options for searching members
    * @returns {Promise<Collection<Snowflake, GuildMember>>}
    */
   async search({ query, limit = 1, cache = true } = {}) {
@@ -196,19 +196,19 @@ class GuildMemberManager extends BaseManager {
   }
 
   /**
-   * Options for pruning guild members.
+   * Options used for pruning guild members.
    * @typedef {Object} GuildPruneMembersOptions
-   * @property {number} [days] Number of days of inactivity required to kick
-   * @property {boolean} [dry] Get number of users that will be kicked, without actually kicking them
-   * @property {boolean} [count] Whether or not to return the number of users that have been kicked.
+   * @property {number} [days=7] Number of days of inactivity required to kick
+   * @property {boolean} [dry=false] Get the number of users that will be kicked, without actually kicking them
+   * @property {boolean} [count=true] Whether or not to return the number of users that have been kicked.
    * @property {RoleResolvable[]} [roles] Array of roles to bypass the "...and no roles" constraint when pruning
    * @property {string} [reason] Reason for this prune
    */
 
   /**
    * Prunes members from the guild based on how long they have been inactive.
-   * <info>It's recommended to set options.count to `false` for large guilds.</info>
-   * @param {GuildPruneMembersOptions} [options] Prune options
+   * <info>It's recommended to set `options.count` to `false` for large guilds.</info>
+   * @param {GuildPruneMembersOptions} [options] Options for pruning
    * @returns {Promise<number|null>} The number of members that were/will be kicked
    * @example
    * // See how many members will be pruned

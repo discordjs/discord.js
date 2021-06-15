@@ -13,13 +13,14 @@ class GuildPreviewEmoji extends BaseGuildEmoji {
    * @name GuildPreviewEmoji#guild
    */
 
-  /**
-   * Set of roles this emoji is active for
-   * @type {Set<Snowflake>}
-   * @readonly
-   */
-  get roles() {
-    return new Set(this._roles);
+  constructor(client, data, guild) {
+    super(client, data, guild);
+
+    /**
+     * The roles this emoji is active for
+     * @type {Snowflake[]}
+     */
+    this.roles = data.roles;
   }
 }
 

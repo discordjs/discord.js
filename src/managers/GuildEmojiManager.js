@@ -25,12 +25,17 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   }
 
   /**
+   * Options used for creating an emoji in a guild.
+   * @typedef {Object} GuildEmojiCreateOptions
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to limit the emoji to
+   * @property {string} [reason] The reason for creating the emoji
+   */
+
+  /**
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
    * @param {string} name The name for the emoji
-   * @param {Object} [options] Options
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [options.roles] Roles to limit the emoji to
-   * @param {string} [options.reason] Reason for creating the emoji
+   * @param {GuildEmojiCreateOptions} [options] Options for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
    * // Create a new emoji from a url

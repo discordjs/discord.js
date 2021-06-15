@@ -15,6 +15,7 @@ const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
 const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
+const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const Collection = require('../util/Collection');
 const {
@@ -82,6 +83,12 @@ class Guild extends BaseGuild {
      * @type {VoiceStateManager}
      */
     this.voiceStates = new VoiceStateManager(this);
+
+    /**
+     * A manager of the stage instances of this guild
+     * @type {StageInstanceManager}
+     */
+    this.stageInstances = new StageInstanceManager(this);
 
     /**
      * Whether the bot has been removed from the guild
@@ -399,6 +406,13 @@ class Guild extends BaseGuild {
     if (data.presences) {
       for (const presence of data.presences) {
         this.presences.add(Object.assign(presence, { guild: this }));
+      }
+    }
+
+    if (data.stage_instances) {
+      this.stageInstances.cache.clear();
+      for (const stageInstance of data.stage_instances) {
+        this.stageInstances.add(stageInstance);
       }
     }
 
@@ -728,12 +742,17 @@ class Guild extends BaseGuild {
   }
 
   /**
+   * Options used to fetch audit logs.
+   * @typedef {Object} GuildAuditLogsFetchOptions
+   * @property {Snowflake|GuildAuditLogsEntry} [before] Only return entries before this entry
+   * @property {number} [limit] The number of entries to return
+   * @property {UserResolvable} [user] Only return entries for actions made by this user
+   * @property {AuditLogAction|number} [type] Only return entries for this action type
+   */
+
+  /**
    * Fetches audit logs for this guild.
-   * @param {Object} [options={}] Options for fetching audit logs
-   * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
-   * @param {number} [options.limit] Limit number of entries
-   * @param {UserResolvable} [options.user] Only show entries involving this user
-   * @param {AuditLogAction|number} [options.type] Only show entries involving this action type
+   * @param {GuildAuditLogsFetchOptions} [options={}] Options for fetching audit logs
    * @returns {Promise<GuildAuditLogs>}
    * @example
    * // Output audit log entries
@@ -759,16 +778,21 @@ class Guild extends BaseGuild {
   }
 
   /**
-   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
-   * @param {UserResolvable} user User to add to the guild
-   * @param {Object} options Options for the addition
-   * @param {string} options.accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
+   * Options used to add a user to a guild using OAuth2.
+   * @typedef {Object} AddGuildMemberOptions
+   * @property {string} accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
    * bot's application
-   * @param {string} [options.nick] Nickname to give the member (requires `MANAGE_NICKNAMES`)
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [options.roles] Roles to add to the member
+   * @property {string} [nick] The nickname to give to the member (requires `MANAGE_NICKNAMES`)
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to add to the member
    * (requires `MANAGE_ROLES`)
-   * @param {boolean} [options.mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
-   * @param {boolean} [options.deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
+   * @property {boolean} [mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
+   * @property {boolean} [deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
+   */
+
+  /**
+   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
+   * @param {UserResolvable} user The user to add to the guild
+   * @param {AddGuildMemberOptions} options Options for adding the user to the guild
    * @returns {Promise<GuildMember>}
    */
   async addMember(user, options) {
@@ -1141,7 +1165,7 @@ class Guild extends BaseGuild {
       id: this.client.channels.resolveID(r.channel),
       position: r.position,
       lock_permissions: r.lockPermissions,
-      parent_id: this.channels.resolveID(r.parent),
+      parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveID(r.parent) : undefined,
     }));
 
     return this.client.api

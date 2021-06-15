@@ -355,11 +355,16 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Sets the category parent of this channel.
-   * @param {?CategoryChannel|Snowflake} channel Parent channel
-   * @param {Object} [options={}] Options to pass
-   * @param {boolean} [options.lockPermissions=true] Lock the permissions to what the parent's permissions are
-   * @param {string} [options.reason] Reason for modifying the parent of this channel
+   * Options used to set parent of a channel.
+   * @typedef {Object} SetParentOptions
+   * @property {boolean} [lockPermissions=true] Whether to lock the permissions to what the parent's permissions are
+   * @property {string} [reason] The reason for modifying the parent of the channel
+   */
+
+  /**
+   * Sets the parent of this channel.
+   * @param {?(CategoryChannel|Snowflake)} channel The category channel to set as parent
+   * @param {SetParentOptions} [options={}] The options for setting the parent
    * @returns {Promise<GuildChannel>}
    * @example
    * // Add a parent to a channel
@@ -394,11 +399,16 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Options used to set position of a channel.
+   * @typedef {Object} SetChannelPositionOptions
+   * @param {boolean} [relative=false] Whether or not to change the position relative to its current value
+   * @param {string} [reason] The reason for changing the position
+   */
+
+  /**
    * Sets a new position for the guild channel.
    * @param {number} position The new position for the guild channel
-   * @param {Object} [options] Options for setting position
-   * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {string} [options.reason] Reason for changing the position
+   * @param {SetChannelPositionOptions} [options] Options for setting position
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel position
@@ -432,19 +442,24 @@ class GuildChannel extends Channel {
    */
 
   /**
-   * Creates an invite to this guild channel.
-   * @param {Object} [options={}] Options for the invite
-   * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
+   * Options used to create an invite to a guild channel.
+   * @typedef {Object} CreateInviteOptions
+   * @property {boolean} [temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
-   * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
-   * @param {number} [options.maxUses=0] Maximum number of uses
-   * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
-   * @param {UserResolvable} [options.targetUser] The user whose stream to display for this invite,
+   * @property {number} [maxAge=86400] How long the invite should last (in seconds, 0 for forever)
+   * @property {number} [maxUses=0] Maximum number of uses
+   * @property {boolean} [unique=false] Create a unique invite, or use an existing one with similar settings
+   * @property {UserResolvable} [targetUser] The user whose stream to display for this invite,
    * required if `targetType` is 1, the user must be streaming in the channel
-   * @param {ApplicationResolvable} [options.targetApplication] The embedded application to open for this invite,
+   * @property {ApplicationResolvable} [targetApplication] The embedded application to open for this invite,
    * required if `targetType` is 2, the application must have the `EMBEDDED` flag
-   * @param {InviteTargetType} [options.targetType] The type of the target for this voice channel invite
-   * @param {string} [options.reason] Reason for creating this
+   * @property {InviteTargetType} [targetType] The type of the target for this voice channel invite
+   * @property {string} [reason] The reason for creating the invite
+   */
+
+  /**
+   * Creates an invite to this guild channel.
+   * @param {CreateInviteOptions} [options={}] The options for creating the invite
    * @returns {Promise<Invite>}
    * @example
    * // Create an invite to a channel
@@ -494,22 +509,15 @@ class GuildChannel extends Channel {
     return invites;
   }
 
-  /* eslint-disable max-len */
+  /**
+   * Options used to clone a guild channel.
+   * @typedef {GuildChannelCreateOptions} GuildChannelCloneOptions
+   * @property {string} [name=this.name] Name of the new channel
+   */
+
   /**
    * Clones this channel.
-   * @param {Object} [options] The options
-   * @param {string} [options.name=this.name] Name of the new channel
-   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.permissionOverwrites=this.permissionOverwrites]
-   * Permission overwrites of the new channel
-   * @param {string} [options.type=this.type] Type of the new channel
-   * @param {string} [options.topic=this.topic] Topic of the new channel (only text)
-   * @param {boolean} [options.nsfw=this.nsfw] Whether the new channel is nsfw (only text)
-   * @param {number} [options.bitrate=this.bitrate] Bitrate of the new channel in bits (only voice)
-   * @param {number} [options.userLimit=this.userLimit] Maximum amount of users allowed in the new channel (only voice)
-   * @param {number} [options.rateLimitPerUser=this.rateLimitPerUser] Ratelimit per user for the new channel (only text)
-   * @param {number} [options.position=this.position] Position of the new channel
-   * @param {ChannelResolvable} [options.parent=this.parent] Parent of the new channel
-   * @param {string} [options.reason] Reason for cloning this channel
+   * @param {GuildChannelCloneOptions} [options] The options for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
@@ -527,7 +535,6 @@ class GuildChannel extends Channel {
       ...options,
     });
   }
-  /* eslint-enable max-len */
 
   /**
    * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.

@@ -50,7 +50,7 @@ class GuildManager extends BaseManager {
   /**
    * Partial data for a Role.
    * @typedef {Object} PartialRoleData
-   * @property {number} [id] The ID for this role, used to set channel overrides,
+   * @property {Snowflake|number} [id] The ID for this role, used to set channel overrides,
    * this is a placeholder and will be replaced by the API after consumption
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
@@ -63,7 +63,7 @@ class GuildManager extends BaseManager {
   /**
    * Partial overwrite data.
    * @typedef {Object} PartialOverwriteData
-   * @property {number|Snowflake} id The Role or User ID for this overwrite
+   * @property {Snowflake|number} id The Role or User ID for this overwrite
    * @property {string} [type] The type of this overwrite
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
@@ -72,16 +72,16 @@ class GuildManager extends BaseManager {
   /**
    * Partial data for a Channel.
    * @typedef {Object} PartialChannelData
-   * @property {number} [id] The ID for this channel, used to set its parent,
+   * @property {Snowflake|number} [id] The ID for this channel, used to set its parent,
    * this is a placeholder and will be replaced by the API after consumption
-   * @property {number} [parentID] The parent ID for this channel
+   * @property {Snowflake|number} [parentID] The parent ID for this channel
    * @property {string} [type] The type of the channel
    * @property {string} name The name of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
-   * @property {PartialOverwriteData} [permissionOverwrites]
+   * @property {PartialOverwriteData[]} [permissionOverwrites]
    * Overwrites of the channel
    * @property {number} [rateLimitPerUser] The rate limit per user of the channel in seconds
    */
@@ -129,22 +129,27 @@ class GuildManager extends BaseManager {
   }
 
   /**
+   * Options used to create a guild.
+   * @typedef {Object} GuildCreateOptions
+   * @property {Snowflake|number} [afkChannelID] The ID of the AFK channel
+   * @property {number} [afkTimeout] The AFK timeout in seconds
+   * @property {PartialChannelData[]} [channels=[]] The channels for this guild
+   * @property {DefaultMessageNotifications} [defaultMessageNotifications] The default message notifications
+   * for the guild
+   * @property {ExplicitContentFilterLevel} [explicitContentFilter] The explicit content filter level for the guild
+   * @property {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @property {PartialRoleData[]} [roles=[]] The roles for this guild,
+   * the first element of this array is used to change properties of the guild's everyone role.
+   * @property {Snowflake|number} [systemChannelID] The ID of the system channel
+   * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The flags of the system channel
+   * @property {VerificationLevel} [verificationLevel] The verification level for the guild
+   */
+
+  /**
    * Creates a guild.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {string} name The name of the guild
-   * @param {Object} [options] Options for the creating
-   * @param {number} [options.afkChannelID] The ID of the AFK channel
-   * @param {number} [options.afkTimeout] The AFK timeout in seconds
-   * @param {PartialChannelData[]} [options.channels] The channels for this guild
-   * @param {DefaultMessageNotifications} [options.defaultMessageNotifications] The default message notifications
-   * for the guild
-   * @param {ExplicitContentFilterLevel} [options.explicitContentFilter] The explicit content filter level for the guild
-   * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
-   * @param {PartialRoleData[]} [options.roles] The roles for this guild,
-   * the first element of this array is used to change properties of the guild's everyone role.
-   * @param {number} [options.systemChannelID] The ID of the system channel
-   * @param {SystemChannelFlagsResolvable} [options.systemChannelFlags] The flags of the system channel
-   * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
+   * @param {GuildCreateOptions} [options] Options for creating the guild
    * @returns {Promise<Guild>} The guild that was created
    */
   async create(
