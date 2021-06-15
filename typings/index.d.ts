@@ -350,6 +350,7 @@ declare module 'discord.js' {
     public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
+    public fetchWidget(id: Snowflake): Promise<Widget>;
     public generateInvite(options?: InviteGenerationOptions): string;
     public login(token?: string): Promise<string>;
     public sweepMessages(lifetime?: number): number;
@@ -2026,6 +2027,34 @@ declare module 'discord.js' {
     public once(event: 'close', listener: (event: CloseEvent) => Awaited<void>): this;
     public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaited<void>): this;
     public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  }
+
+  export class Widget extends Base {
+    constructor(client: Client, data: object);
+    private _patch(data: object): void;
+    public fetch(): Promise<Widget>;
+    public id: Snowflake;
+    public instantInvite?: string;
+    public channels: Collection<Snowflake, WidgetChannel>;
+    public members: Collection<string, WidgetMember>;
+    public presenceCount: number;
+  }
+
+  export class WidgetMember extends Base {
+    constructor(client: Client, data: object);
+    public id: string;
+    public username: string;
+    public discriminator: string;
+    public avatar?: string;
+    public status: PresenceStatus;
+    public deaf?: boolean;
+    public mute?: boolean;
+    public selfDeaf?: boolean;
+    public selfMute?: boolean;
+    public suppress?: boolean;
+    public channelID?: Snowflake;
+    public avatarURL: string;
+    public activity?: WidgetActivity;
   }
 
   //#endregion
@@ -3859,6 +3888,16 @@ declare module 'discord.js' {
     $os?: string;
     $browser?: string;
     $device?: string;
+  }
+
+  interface WidgetActivity {
+    name: string;
+  }
+
+  interface WidgetChannel {
+    id: Snowflake;
+    name: string;
+    position: number;
   }
 
   type WSEventType =
