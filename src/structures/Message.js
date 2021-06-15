@@ -26,7 +26,7 @@ const Util = require('../util/Util');
 class Message extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the message
+   * @param {APIMessageRaw} data The data for the message
    * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
@@ -283,7 +283,7 @@ class Message extends Base {
 
   /**
    * Updates the message and returns the old message.
-   * @param {Object} data Raw Discord message update data
+   * @param {APIMessageRaw} data Raw Discord message update data
    * @returns {Message}
    * @private
    */
@@ -531,7 +531,7 @@ class Message extends Base {
    * Options that can be passed into {@link Message#edit}.
    * @typedef {Object} MessageEditOptions
    * @property {?string} [content] Content to be edited
-   * @property {MessageEmbed|Object} [embed] An embed to be added/edited
+   * @property {MessageEmbed|APIEmbed} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
@@ -640,8 +640,7 @@ class Message extends Base {
   /**
    * Options provided when sending a message as an inline reply.
    * @typedef {BaseMessageOptions} ReplyMessageOptions
-   * @property {MessageEmbed|Object} [embed] An embed for the message
-   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
+   * @property {MessageEmbed|APIEmbed} [embed] An embed for the message
    * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
    */
@@ -720,7 +719,7 @@ class Message extends Base {
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    * @param {Message} message The message to compare it to
-   * @param {Object} rawData Raw data passed through the WebSocket about this message
+   * @param {APIMessageRaw} rawData Raw data passed through the WebSocket about this message
    * @returns {boolean}
    */
   equals(message, rawData) {

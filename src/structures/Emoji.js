@@ -5,7 +5,7 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents raw emoji data from the API
- * @typedef {Object} RawEmoji
+ * @typedef {APIEmoji} RawEmoji
  * @property {?Snowflake} id ID of this emoji
  * @property {?string} name Name of this emoji
  * @property {?boolean} animated Whether this emoji is animated

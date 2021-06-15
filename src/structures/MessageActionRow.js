@@ -74,7 +74,7 @@ class MessageActionRow extends BaseMessageComponent {
 
   /**
    * Transforms the action row to a plain object.
-   * @returns {Object} The raw data of this action row
+   * @returns {APIComponent} The raw data of this action row
    */
   toJSON() {
     return {

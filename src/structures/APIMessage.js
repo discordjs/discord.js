@@ -31,13 +31,13 @@ class APIMessage {
 
     /**
      * Data sendable to the API
-     * @type {?Object}
+     * @type {?APIMessageRaw}
      */
     this.data = null;
 
     /**
      * Files sendable to the API
-     * @type {?Object[]}
+     * @type {?APIAttachment[]}
      */
     this.files = null;
   }
@@ -249,7 +249,7 @@ class APIMessage {
   /**
    * Resolves a single file into an object sendable to the API.
    * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
-   * @returns {Object}
+   * @returns {APIAttachment}
    */
   static async resolveFile(fileLike) {
     let attachment;

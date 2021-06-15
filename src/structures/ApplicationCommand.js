@@ -206,13 +206,13 @@ class ApplicationCommand extends Base {
    * Transforms an {@link ApplicationCommandOptionData} object into something that can be used with the API.
    * @param {ApplicationCommandOptionData} option The option to transform
    * @param {boolean} [received] Whether this option has been received from Discord
-   * @returns {Object}
+   * @returns {APIApplicationCommandOption}
    * @private
    */
   static transformOption(option, received) {
     const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
     return {
-      type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
+      type: typeof option.type === 'number' && !received ? option.type : stringType,
       name: option.name,
       description: option.description,
       required:

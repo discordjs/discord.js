@@ -83,15 +83,15 @@ class CommandInteraction extends Interaction {
    * @property {Collection<string, CommandInteractionOption>} [options] Additional options if this option is a
    * subcommand (group)
    * @property {User} [user] The resolved user
-   * @property {GuildMember|Object} [member] The resolved member
-   * @property {GuildChannel|Object} [channel] The resolved channel
-   * @property {Role|Object} [role] The resolved role
+   * @property {GuildMember|APIGuildMember} [member] The resolved member
+   * @property {GuildChannel|APIChannel} [channel] The resolved channel
+   * @property {Role|APIRole} [role] The resolved role
    */
 
   /**
    * Transforms an option received from the API.
-   * @param {Object} option The received option
-   * @param {Object} resolved The resolved interaction data
+   * @param {APIApplicationCommandOption} option The received option
+   * @param {APIApplicationCommandOptionResolved} resolved The resolved interaction data
    * @returns {CommandInteractionOption}
    * @private
    */
@@ -121,8 +121,8 @@ class CommandInteraction extends Interaction {
 
   /**
    * Creates a collection of options from the received options array.
-   * @param {Object[]} options The received options
-   * @param {Object} resolved The resolved interaction data
+   * @param {APIApplicationCommandOption[]} options The received options
+   * @param {APIApplicationCommandOptionResolved} resolved The resolved interaction data
    * @returns {Collection<string, CommandInteractionOption>}
    * @private
    */

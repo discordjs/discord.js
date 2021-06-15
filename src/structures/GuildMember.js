@@ -15,7 +15,7 @@ let Structures;
 class GuildMember extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the guild member
+   * @param {APIGuildMember} data The data for the guild member
    * @param {Guild} guild The guild the member is part of
    */
   constructor(client, data, guild) {

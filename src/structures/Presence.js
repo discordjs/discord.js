@@ -35,7 +35,7 @@ const Util = require('../util/Util');
 class Presence {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} [data={}] The data for the presence
+   * @param {APIPresence} [data={}] The data for the presence
    */
   constructor(client, data = {}) {
     /**

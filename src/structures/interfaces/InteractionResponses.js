@@ -20,7 +20,7 @@ class InteractionResponses {
    * Options for a reply to an {@link Interaction}.
    * @typedef {BaseMessageOptions} InteractionReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
-   * @property {MessageEmbed[]|Object[]} [embeds] An array of embeds for the message
+   * @property {MessageEmbed[]|APIEmbed[]} [embeds] An array of embeds for the message
    */
 
   /**
@@ -90,7 +90,7 @@ class InteractionResponses {
   /**
    * Fetches the initial reply to this interaction.
    * @see Webhook#fetchMessage
-   * @returns {Promise<Message|Object>}
+   * @returns {Promise<Message|APIMessageRaw>}
    * @example
    * // Fetch the reply to this interaction
    * interaction.fetchReply()
@@ -105,7 +105,7 @@ class InteractionResponses {
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
    * @param {string|APIMessage|WebhookEditMessageOptions} options The new options for the message
-   * @returns {Promise<Message|Object>}
+   * @returns {Promise<Message|APIMessageRaw>}
    * @example
    * // Edit the reply to this interaction
    * interaction.editReply('New content')
@@ -133,7 +133,7 @@ class InteractionResponses {
   /**
    * Send a follow-up message to this interaction.
    * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|Object>}
+   * @returns {Promise<Message|APIMessageRaw>}
    */
   followUp(options) {
     return this.webhook.send(options);

@@ -9,7 +9,7 @@ const Base = require('./Base');
 class GuildBan extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the ban
+   * @param {APIBanData} data The data for the ban
    * @param {Guild} guild The guild in which the ban is
    */
   constructor(client, data, guild) {

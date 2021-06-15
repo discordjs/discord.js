@@ -273,7 +273,7 @@ class Util {
    * * A URL-encoded UTF-8 emoji (no ID)
    * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
    * @param {string} text Emoji string to parse
-   * @returns {Object} Object with `animated`, `name`, and `id` properties
+   * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
    * @private
    */
   static parseEmoji(text) {
@@ -483,7 +483,7 @@ class Util {
    * @param {Collection<string, Channel|Role>} sorted A collection of the objects sorted properly
    * @param {APIRouter} route Route to call PATCH on
    * @param {string} [reason] Reason for the change
-   * @returns {Promise<Object[]>} Updated item list, with `id` and `position` properties
+   * @returns {Promise<(Channel|Role)[]>} Updated item list, with `id` and `position` properties
    * @private
    */
   static setPosition(item, position, relative, sorted, route, reason) {
