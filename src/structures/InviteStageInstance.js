@@ -3,7 +3,7 @@
 const Base = require('./Base');
 const Collection = require('../util/Collection');
 
-class StageInstanceInvite extends Base {
+class InviteStageInstance extends Base {
   constructor(client, data, guild) {
     super(client);
 
@@ -28,4 +28,4 @@ class StageInstanceInvite extends Base {
   }
 }
 
-module.exports = StageInstanceInvite;
+module.exports = InviteStageInstance;
