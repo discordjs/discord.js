@@ -87,7 +87,7 @@ class ThreadManager extends BaseManager {
    *   .create({
    *     name: 'food-talk'
    *     autoArchiveDuration: 60,
-   *     startMessage: channel.lastMessageId,
+   *     startMessage: channel.lastMessageID,
    *     reason: 'Needed a separate thread for food',
    *   })
    *   .then(console.log)
