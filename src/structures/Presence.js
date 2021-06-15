@@ -275,7 +275,7 @@ class Activity {
   equals(activity) {
     return (
       this === activity ||
-      (activity && 
+      (activity &&
         this.name === activity.name &&
         this.type === activity.type &&
         this.url === activity.url &&
