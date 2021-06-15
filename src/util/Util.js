@@ -483,7 +483,7 @@ class Util {
    * @param {Collection<string, Channel|Role>} sorted A collection of the objects sorted properly
    * @param {APIRouter} route Route to call PATCH on
    * @param {string} [reason] Reason for the change
-   * @returns {Promise<(Channel|Role)[]>} Updated item list, with `id` and `position` properties
+   * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
   static setPosition(item, position, relative, sorted, route, reason) {
