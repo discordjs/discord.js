@@ -4,10 +4,12 @@ const Base = require('./Base');
 const Collection = require('../util/Collection');
 
 class InviteStageInstance extends Base {
-  constructor(client, data, guild) {
+  constructor(client, data, guildID, channelID) {
     super(client);
 
-    this.guild = guild;
+    this.guildID = guildID;
+
+    this.channelID = channelID;
 
     this.members = new Collection();
 
@@ -25,6 +27,14 @@ class InviteStageInstance extends Base {
       const member = this.guild.members.add(rawMember);
       this.members.set(member.id, member);
     }
+  }
+
+  get guild() {
+    return this.client.guilds.resolve(this.guildID);
+  }
+
+  get channel() {
+    return this.client.channels.resolve(this.channelID);
   }
 }
 
