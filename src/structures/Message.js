@@ -646,6 +646,8 @@ class Message extends Base {
   /**
    * Options provided when sending a message as an inline reply.
    * @typedef {BaseMessageOptions} ReplyMessageOptions
+   * @property {MessageEmbed[]|Object[]} [embeds] The embeds for the message 
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details) 
    * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
    */
