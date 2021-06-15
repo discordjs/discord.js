@@ -1082,7 +1082,7 @@ declare module 'discord.js' {
   }
 
   // tslint:disable-next-line:no-empty-interface - Merge RateLimitData into RateLimitError to not have to type it again
-  interface RateLimitError extends RateLimitData { }
+  interface RateLimitError extends RateLimitData {}
   export class RateLimitError extends Error {
     constructor(data: RateLimitData);
     public name: 'RateLimitError';
@@ -3557,11 +3557,11 @@ declare module 'discord.js' {
 
   type OverwriteType = 'member' | 'role';
 
-  interface PermissionFlags extends Record<PermissionString, bigint> { }
+  interface PermissionFlags extends Record<PermissionString, bigint> {}
 
-  interface PermissionObject extends Record<PermissionString, boolean> { }
+  interface PermissionObject extends Record<PermissionString, boolean> {}
 
-  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> { }
+  interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> {}
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
@@ -3600,7 +3600,7 @@ declare module 'discord.js' {
     | 'USE_APPLICATION_COMMANDS'
     | 'REQUEST_TO_SPEAK';
 
-  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> { }
+  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
@@ -3624,16 +3624,16 @@ declare module 'discord.js' {
     partial: true;
     fetch(): Promise<T>;
   } & {
-      [K in keyof Omit<
-        T,
-        'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-      >]: T[K] extends (...args: any) => void ? T[K] : T[K] | null;
-    };
+    [K in keyof Omit<
+      T,
+      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
+    >]: T[K] extends (...args: any) => void ? T[K] : T[K] | null;
+  };
 
   interface PartialDMChannel
     extends Partialize<
-    DMChannel,
-    'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
+      DMChannel,
+      'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
     > {
     lastMessage: null;
     lastMessageID: undefined;
@@ -3655,18 +3655,18 @@ declare module 'discord.js' {
 
   interface PartialGuildMember
     extends Partialize<
-    GuildMember,
-    | 'bannable'
-    | 'displayColor'
-    | 'displayHexColor'
-    | 'displayName'
-    | 'guild'
-    | 'kickable'
-    | 'permissions'
-    | 'roles'
-    | 'manageable'
-    | 'presence'
-    | 'voice'
+      GuildMember,
+      | 'bannable'
+      | 'displayColor'
+      | 'displayHexColor'
+      | 'displayName'
+      | 'guild'
+      | 'kickable'
+      | 'permissions'
+      | 'roles'
+      | 'manageable'
+      | 'presence'
+      | 'voice'
     > {
     readonly bannable: boolean;
     readonly displayColor: number;
@@ -3685,17 +3685,17 @@ declare module 'discord.js' {
 
   interface PartialMessage
     extends Partialize<
-    Message,
-    | 'attachments'
-    | 'channel'
-    | 'deletable'
-    | 'crosspostable'
-    | 'editable'
-    | 'mentions'
-    | 'pinnable'
-    | 'url'
-    | 'flags'
-    | 'embeds'
+      Message,
+      | 'attachments'
+      | 'channel'
+      | 'deletable'
+      | 'crosspostable'
+      | 'editable'
+      | 'mentions'
+      | 'pinnable'
+      | 'url'
+      | 'flags'
+      | 'embeds'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];
