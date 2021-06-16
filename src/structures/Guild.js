@@ -130,6 +130,7 @@ class Guild extends AnonymousGuild {
    * @private
    */
   _patch(data) {
+    super._patch(data);
     this.id = data.id;
     this.name = data.name;
     this.icon = data.icon;
@@ -396,7 +397,6 @@ class Guild extends AnonymousGuild {
         emojis: data.emojis,
       });
     }
-    super._patch(data);
   }
 
   /**
