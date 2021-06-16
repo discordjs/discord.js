@@ -95,6 +95,13 @@ declare enum OverwriteTypes {
   member = 1,
 }
 
+declare enum PremiumTiers {
+  NONE = 0,
+  TIER_1 = 1,
+  TIER_2 = 2,
+  TIER_3 = 3,
+}
+
 declare enum PrivacyLevels {
   PUBLIC = 1,
   GUILD_ONLY = 2,
@@ -717,6 +724,7 @@ declare module 'discord.js' {
     NSFWLevels: typeof NSFWLevels;
     PrivacyLevels: typeof PrivacyLevels;
     WebhookTypes: typeof WebhookTypes;
+    PremiumTiers: typeof PremiumTiers;
   };
 
   export class DataResolver {
@@ -3604,7 +3612,7 @@ declare module 'discord.js' {
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
-  type PremiumTier = 0 | 1 | 2 | 3;
+  type PremiumTier = keyof typeof PremiumTiers;
 
   interface PresenceData {
     status?: PresenceStatusData;

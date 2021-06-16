@@ -27,6 +27,7 @@ const {
   NSFWLevels,
   Status,
   MFALevels,
+  PremiumTiers,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
@@ -217,19 +218,10 @@ class Guild extends BaseGuild {
     this.systemChannelID = data.system_channel_id;
 
     /**
-     * The type of premium tier:
-     * * 0: NONE
-     * * 1: TIER_1
-     * * 2: TIER_2
-     * * 3: TIER_3
-     * @typedef {number} PremiumTier
-     */
-
-    /**
-     * The premium tier on this guild
+     * The premium tier of this guild
      * @type {PremiumTier}
      */
-    this.premiumTier = data.premium_tier;
+    this.premiumTier = PremiumTiers[data.premium_tier];
 
     if (typeof data.premium_subscription_count !== 'undefined') {
       /**

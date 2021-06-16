@@ -865,6 +865,16 @@ exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED'
  */
 exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 
+/**
+ * The premium tier (Server Boost level) of a guild:
+ * * NONE
+ * * TIER_1
+ * * TIER_2
+ * * TIER_3
+ * @typedef {string} PremiumTier
+ */
+exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
