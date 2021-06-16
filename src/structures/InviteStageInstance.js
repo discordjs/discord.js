@@ -4,7 +4,7 @@ const Base = require('./Base');
 const Collection = require('../util/Collection');
 
 /**
- * Represents the data about a public {@link StageInstance} in an {@link Invite}
+ * Represents the data about a public {@link StageInstance} in an {@link Invite}.
  * @extends {Base}
  */
 class InviteStageInstance extends Base {
