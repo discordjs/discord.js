@@ -4,7 +4,7 @@ const Base = require('./Base');
 const Collection = require('../util/Collection');
 
 class InviteStageInstance extends Base {
-  constructor(client, data, guildID, channelID) {
+  constructor(client, data, channelID, guildID) {
     super(client);
 
     /**
