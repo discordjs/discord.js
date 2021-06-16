@@ -4,7 +4,7 @@ const BaseGuild = require('./BaseGuild');
 const { VerificationLevels, NSFWLevels } = require('../util/Constants');
 
 /**
- * Bundles common attributes between guild classes
+ * Bundles common attributes and methods between {@link Guild} and {@link InviteGuild}
  * @abstract
  */
 class AnonymousGuild extends BaseGuild {
