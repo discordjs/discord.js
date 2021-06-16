@@ -57,6 +57,7 @@ client.on('message', message => {
 });
 
 client.login('token');
+to login with the bot
 ```
 
 ## Links
