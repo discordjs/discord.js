@@ -188,7 +188,7 @@ class ThreadManager extends BaseManager {
     let timestamp;
     let id;
     if (typeof before !== 'undefined') {
-      if (before instanceof ThreadChannel || /[0-9]{16,19}/g.test(String(before))) {
+      if (before instanceof ThreadChannel || /^\d{16,19}$/.test(String(before))) {
         id = this.resolveID(before);
         timestamp = this.resolve(before)?.archivedAt.toISOString();
       } else {
