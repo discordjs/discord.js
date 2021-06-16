@@ -38,8 +38,11 @@ class UserManager extends BaseManager {
    */
   resolve(user) {
     if (user instanceof GuildMember) return user.user;
-    else if (user instanceof Message) return user.author;
-    else if (typeof user === 'string') user = user.match(USERS_PATTERN)[1];
+    if (user instanceof Message) return user.author;
+    if (typeof user === 'string') {
+      const userId = user.match(USERS_PATTERN)[1];
+      if (userId !== null) user = userId;
+    }
     return super.resolve(user);
   }
 
@@ -51,7 +54,10 @@ class UserManager extends BaseManager {
   resolveID(user) {
     if (user instanceof GuildMember) return user.user.id;
     if (user instanceof Message) return user.author.id;
-    else if (typeof user === 'string') return user.match(USERS_PATTERN)[1];
+    if (typeof user === 'string') {
+      const userId = user.match(USERS_PATTERN)[1];
+      if (userId !== null) user = userId;
+    }
     return super.resolveID(user);
   }
 
