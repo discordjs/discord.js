@@ -47,6 +47,7 @@ class InviteStageInstance extends Base {
      */
     this.speakerCount = data.speaker_count;
 
+    this.members.clear();
     for (const rawMember of data.members) {
       const member = this.guild.members.add(rawMember);
       this.members.set(member.id, member);
