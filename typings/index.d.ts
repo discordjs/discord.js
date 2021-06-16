@@ -3891,7 +3891,7 @@ declare module 'discord.js' {
     | 'EARLY_VERIFIED_BOT_DEVELOPER'
     | 'DISCORD_CERTIFIED_MODERATOR';
 
-  type UserResolvable = User | Snowflake | Message | GuildMember | string;
+  type UserResolvable = User | Snowflake | Message | GuildMember | `<@${bigint}>` | `<@!${bigint}>`;
 
   interface Vanity {
     code: string | null;
