@@ -3488,7 +3488,8 @@ declare module 'discord.js' {
     | Snowflake
     | `${string}:${Snowflake}`
     | `<:${string}:${Snowflake}>`
-    | `<a:${string}:${Snowflake}>`;
+    | `<a:${string}:${Snowflake}>`
+    | string;
 
   interface MessageReference {
     channelID: Snowflake;
