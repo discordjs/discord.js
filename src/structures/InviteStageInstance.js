@@ -7,20 +7,44 @@ class InviteStageInstance extends Base {
   constructor(client, data, guildID, channelID) {
     super(client);
 
-    this.guildID = guildID;
-
+    /**
+     * The ID of the stage channel this invite is for
+     * @type {Snowflake}
+     */
     this.channelID = channelID;
 
+    /**
+     * The guild ID of the stage channel
+     * @type {Snowflake}
+     */
+    this.guildID = guildID;
+
+    /**
+     * The members speaking in the stage channel
+     * @type {Collection<Snowflake, GuildMember>}
+     */
     this.members = new Collection();
 
     this._patch(data);
   }
 
   _patch(data) {
+    /**
+     * The topic of the stage instance
+     * @type {string}
+     */
     this.topic = data.topic;
 
+    /**
+     * The number of users in the stage channel
+     * @type {number}
+     */
     this.participantCount = data.participant_count;
 
+    /**
+     * The number of users speaking in the stage channel
+     * @type {number}
+     */
     this.speakerCount = data.speaker_count;
 
     for (const rawMember of data.members) {
@@ -29,12 +53,22 @@ class InviteStageInstance extends Base {
     }
   }
 
-  get guild() {
-    return this.client.guilds.resolve(this.guildID);
-  }
-
+  /**
+   * The stage channel this invite is for
+   * @type {?StageChannel}
+   * @readonly
+   */
   get channel() {
     return this.client.channels.resolve(this.channelID);
+  }
+
+  /**
+   * The guild of the stage channel this invite is for
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.client.guilds.resolve(this.guildID);
   }
 }
 
