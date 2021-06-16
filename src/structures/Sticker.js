@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const { StickerFormatTypes } = require('../util/Constants');
+const { StickerFormatTypes, StickerTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -18,16 +18,16 @@ class Sticker extends Base {
     this.id = sticker.id;
 
     /**
-     * The ID of the sticker's image
-     * @type {string}
-     */
-    this.asset = sticker.asset;
-
-    /**
      * The description of the sticker
      * @type {string}
      */
     this.description = sticker.description;
+
+    /**
+     * The type of the sticker
+     * @type {StickerType}
+     */
+    this.type = StickerTypes[sticker.type];
 
     /**
      * The format of the sticker
@@ -42,16 +42,40 @@ class Sticker extends Base {
     this.name = sticker.name;
 
     /**
-     * The ID of the pack the sticker is from
-     * @type {Snowflake}
+     * The ID of the pack the sticker is from, for standard stickers
+     * @type {?Snowflake}
      */
-    this.packID = sticker.pack_id;
+    this.packID = sticker.pack_id ?? null;
 
     /**
      * An array of tags for the sticker, if any
      * @type {string[]}
      */
     this.tags = sticker.tags?.split(', ') ?? [];
+
+    /**
+     * Whether or not the guild sticker is available
+     * @type {?boolean}
+     */
+    this.available = sticker.available ?? null;
+
+    /**
+     * The ID of the guild that owns this sticker
+     * @type {?Snowflake}
+     */
+    this.guildID = sticker.guild_id ?? null;
+
+    /**
+     * The user that uploaded the guild sticker
+     * @type {?User}
+     */
+    this.user = sticker.user ? this.client.users.add(sticker.user) : null;
+
+    /**
+     * The standard sticker's sort order within its pack
+     * @type {?number}
+     */
+    this.sortValue = sticker.sort_value ?? null;
   }
 
   /**
@@ -73,15 +97,21 @@ class Sticker extends Base {
   }
 
   /**
+   * The guild that owns this sticker
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return (this.guildID && this.client.guilds.cache.get(this.guildID)) ?? null;
+  }
+
+  /**
    * A link to the sticker
-   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.
-   * Lottie json files must be converted in order to be displayed in Discord.</info>
+   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.</info>
    * @type {string}
    */
   get url() {
-    return `${this.client.options.http.cdn}/stickers/${this.id}/${this.asset}.${
-      this.format === 'LOTTIE' ? 'json' : 'png'
-    }`;
+    return `${this.client.options.http.cdn}/stickers/${this.id}.${this.format === 'LOTTIE' ? 'json' : 'png'}`;
   }
 }
 

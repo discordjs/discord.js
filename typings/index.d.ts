@@ -100,6 +100,11 @@ declare enum PrivacyLevels {
   GUILD_ONLY = 2,
 }
 
+declare enum StickerTypes {
+  STANDARD = 1,
+  GUILD = 2,
+}
+
 declare enum StickerFormatTypes {
   PNG = 1,
   APNG = 2,
@@ -701,6 +706,7 @@ declare module 'discord.js' {
     MessageTypes: MessageType[];
     SystemMessageTypes: SystemMessageType[];
     ActivityTypes: typeof ActivityTypes;
+    StickerTypes: typeof StickerTypes;
     StickerFormatTypes: typeof StickerFormatTypes;
     OverwriteTypes: typeof OverwriteTypes;
     ExplicitContentFilterLevels: typeof ExplicitContentFilterLevels;
@@ -3840,17 +3846,24 @@ declare module 'discord.js' {
 
   export class Sticker extends Base {
     constructor(client: Client, data: unknown);
-    public asset: string;
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
+    public available: boolean | null;
     public description: string;
     public format: StickerFormatType;
+    public readonly guild: Guild | null;
+    public guildID: Snowflake | null;
     public id: Snowflake;
     public name: string;
-    public packID: Snowflake;
+    public packID: Snowflake | null;
+    public sortValue: number | null;
     public tags: string[];
+    public type: StickerType;
+    public user: User | null;
     public readonly url: string;
   }
+
+  type StickerType = keyof typeof StickerTypes;
 
   type StickerFormatType = keyof typeof StickerFormatTypes;
 
