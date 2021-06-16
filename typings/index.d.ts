@@ -286,7 +286,7 @@ declare module 'discord.js' {
     public toJSON(...props: { [key: string]: boolean | string }[]): unknown;
   }
 
-  export class BaseGuild extends Base {
+  export abstract class BaseGuild extends Base {
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
     public features: GuildFeatures[];
