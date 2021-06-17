@@ -561,7 +561,7 @@ declare module 'discord.js' {
           format: AllowedImageFormat,
           size: number,
         ) => string;
-        StickerBanner: (bannerID: Snowflake, format: AllowedImageFormat, size: number) => string;
+        StickerPackBanner: (bannerID: Snowflake, format: AllowedImageFormat, size: number) => string;
         TeamIcon: (teamID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       };
     };
