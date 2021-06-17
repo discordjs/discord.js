@@ -117,6 +117,14 @@ class Sticker extends Base {
   get url() {
     return `${this.client.options.http.cdn}/stickers/${this.id}.${this.format === 'LOTTIE' ? 'json' : 'png'}`;
   }
+
+  /**
+   * Fetches the pack this sticker is part of from Discord, if this is a Nitro sticker.
+   * @returns {Promise<?StickerPack>}
+   */
+  async fetchPack() {
+    return (this.packID && (await this.client.fetchNitroStickerPacks()).get(this.packID)) ?? null;
+  }
 }
 
 module.exports = Sticker;

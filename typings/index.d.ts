@@ -1767,19 +1767,20 @@ declare module 'discord.js' {
     constructor(client: Client, data: unknown);
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
-    public available: boolean | null;
+    public available: ?boolean;
     public description: string;
     public format: StickerFormatType;
-    public readonly guild: Guild | null;
-    public guildID: Snowflake | null;
+    public readonly guild: ?Guild;
+    public guildID: ?Snowflake;
     public id: Snowflake;
     public name: string;
-    public packID: Snowflake | null;
-    public sortValue: number | null;
+    public packID: ?Snowflake;
+    public sortValue: ?number;
     public tags: string[];
     public type: StickerType;
-    public user: User | null;
+    public user: ?User;
     public readonly url: string;
+    public fetchPack(): Promise<?StickerPack>;
   }
 
   export class StickerPack extends Base {
