@@ -106,7 +106,7 @@ class Sticker extends Base {
    * @readonly
    */
   get guild() {
-    return (this.guildID && this.client.guilds.cache.get(this.guildID)) ?? null;
+    return this.client.guilds.resolve(this.guildID);
   }
 
   /**
