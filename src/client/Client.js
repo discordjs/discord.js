@@ -13,6 +13,7 @@ const ShardClientUtil = require('../sharding/ShardClientUtil');
 const GuildPreview = require('../structures/GuildPreview');
 const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
+const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
@@ -308,6 +309,20 @@ class Client extends BaseClient {
       for (const region of res) regions.set(region.id, new VoiceRegion(region));
       return regions;
     });
+  }
+
+  /**
+   * Obtains the list of sticker packs available to Nitro subscribers from Discord.
+   * @returns {Promise<Collection<Snowflake, StickerPack>>}
+   * @example
+   * client.fetchNitroStickerPacks()
+   *   .then(packs => console.log(`Available sticker packs are: ${packs.map(pack => pack.name).join(', ')}`))
+   *   .catch(console.error);
+   */
+  fetchNitroStickerPacks() {
+    return this.api('sticker-packs')
+      .get()
+      .then(res => new Collection(res.sticker_packs.map(p => [p.id, new StickerPack(this, p)])));
   }
 
   /**

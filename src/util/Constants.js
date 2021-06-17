@@ -169,6 +169,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
       AppAsset: (clientID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/app-assets/${clientID}/${hash}`, { size, format }),
+      StickerBanner: (bannerID, format = 'webp', size) =>
+        makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerID}`, { size, format }),
       GDMIcon: (channelID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
       Splash: (guildID, hash, format = 'webp', size) =>

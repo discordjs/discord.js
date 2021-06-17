@@ -392,6 +392,7 @@ declare module 'discord.js' {
     public fetchInvite(invite: InviteResolvable): Promise<Invite>;
     public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
+    public fetchNitroStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
     public fetchWidget(id: Snowflake): Promise<Widget>;
     public generateInvite(options?: InviteGenerationOptions): string;
@@ -560,6 +561,7 @@ declare module 'discord.js' {
           format: AllowedImageFormat,
           size: number,
         ) => string;
+        StickerBanner: (bannerID: Snowflake, format: AllowedImageFormat, size: number) => string;
         TeamIcon: (teamID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       };
     };
@@ -1759,6 +1761,40 @@ declare module 'discord.js' {
     public setTopic(topic: string): Promise<StageInstance>;
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
+  }
+
+  export class Sticker extends Base {
+    constructor(client: Client, data: unknown);
+    public readonly createdTimestamp: number;
+    public readonly createdAt: Date;
+    public available: boolean | null;
+    public description: string;
+    public format: StickerFormatType;
+    public readonly guild: Guild | null;
+    public guildID: Snowflake | null;
+    public id: Snowflake;
+    public name: string;
+    public packID: Snowflake | null;
+    public sortValue: number | null;
+    public tags: string[];
+    public type: StickerType;
+    public user: User | null;
+    public readonly url: string;
+  }
+
+  export class StickerPack extends Base {
+    constructor(client: Client, data: unknown);
+    public readonly createdTimestamp: number;
+    public readonly createdAt: Date;
+    public bannerID: Snowflake;
+    public readonly coverSticker: Sticker;
+    public coverStickerID: Snowflake;
+    public description: string;
+    public id: Snowflake;
+    public name: string;
+    public skuID: Snowflake;
+    public stickers: Collection<Snowflake, Sticker>;
+    public bannerURL(options?: StaticImageURLOptions): string;
   }
 
   export class StoreChannel extends GuildChannel {
@@ -3844,28 +3880,9 @@ declare module 'discord.js' {
 
   type Status = number;
 
-  export class Sticker extends Base {
-    constructor(client: Client, data: unknown);
-    public readonly createdTimestamp: number;
-    public readonly createdAt: Date;
-    public available: boolean | null;
-    public description: string;
-    public format: StickerFormatType;
-    public readonly guild: Guild | null;
-    public guildID: Snowflake | null;
-    public id: Snowflake;
-    public name: string;
-    public packID: Snowflake | null;
-    public sortValue: number | null;
-    public tags: string[];
-    public type: StickerType;
-    public user: User | null;
-    public readonly url: string;
-  }
+  type StickerFormatType = keyof typeof StickerFormatTypes;
 
   type StickerType = keyof typeof StickerTypes;
-
-  type StickerFormatType = keyof typeof StickerFormatTypes;
 
   type SystemChannelFlagsString =
     | 'SUPPRESS_JOIN_NOTIFICATIONS'

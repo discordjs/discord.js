@@ -9,6 +9,10 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
  * @extends {Base}
  */
 class Sticker extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} sticker The data for the sticker
+   */
   constructor(client, sticker) {
     super(client);
     /**
