@@ -100,15 +100,15 @@ declare enum PrivacyLevels {
   GUILD_ONLY = 2,
 }
 
-declare enum StickerTypes {
-  STANDARD = 1,
-  GUILD = 2,
-}
-
 declare enum StickerFormatTypes {
   PNG = 1,
   APNG = 2,
   LOTTIE = 3,
+}
+
+declare enum StickerTypes {
+  STANDARD = 1,
+  GUILD = 2,
 }
 
 declare enum VerificationLevels {
