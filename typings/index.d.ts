@@ -1192,6 +1192,19 @@ declare module 'discord.js' {
     public toJSON(): unknown;
     public toString(): string;
     public static INVITES_PATTERN: RegExp;
+    public stageInstance: InviteStageInstance | null;
+  }
+
+  export class InviteStageInstance extends Base {
+    constructor(client: Client, data: unknown, channelID: Snowflake, guildID: Snowflake);
+    public channelID: Snowflake;
+    public guildID: Snowflake;
+    public members: Collection<Snowflake, GuildMember>;
+    public topic: string;
+    public participantCount: number;
+    public speakerCount: number;
+    public readonly channel: StageChannel | null;
+    public readonly guild: Guild | null;
   }
 
   export class Message extends Base {
