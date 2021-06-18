@@ -13,6 +13,7 @@ const ShardClientUtil = require('../sharding/ShardClientUtil');
 const GuildPreview = require('../structures/GuildPreview');
 const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
+const Sticker = require('../structures/Sticker');
 const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
@@ -309,6 +310,22 @@ class Client extends BaseClient {
       for (const region of res) regions.set(region.id, new VoiceRegion(region));
       return regions;
     });
+  }
+
+  /**
+   * Obtains a sticker from Discord.
+   * @param {Snowflake} id ID of the sticker
+   * @returns {Promise<Sticker>}
+   * @example
+   * client.fetchSticker('id')
+   *   .then(sticker => console.log(`Obtained sticker with name: ${sticker.name}`))
+   *   .catch(console.error);
+   */
+  fetchSticker(id) {
+    return this.api
+      .stickers(id)
+      .get()
+      .then(data => new Sticker(this, data));
   }
 
   /**
