@@ -537,7 +537,7 @@ class Message extends Base {
    * Options that can be passed into {@link Message#edit}.
    * @typedef {Object} MessageEditOptions
    * @property {?string} [content] Content to be edited
-   * @property {MessageEmbed|Object} [embed] An embed to be added/edited
+   * @property {MessageEmbed[]|Object[]} [embeds] Embeds to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
@@ -646,7 +646,7 @@ class Message extends Base {
   /**
    * Options provided when sending a message as an inline reply.
    * @typedef {BaseMessageOptions} ReplyMessageOptions
-   * @property {MessageEmbed|Object} [embed] An embed for the message
+   * @property {MessageEmbed[]|Object[]} [embeds] The embeds for the message
    * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
