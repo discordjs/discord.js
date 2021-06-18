@@ -93,7 +93,7 @@ class VoiceState extends Base {
 
   /**
    * The channel that the member is connected to
-   * @type {?VoiceChannel|StageChannel}
+   * @type {?(VoiceChannel|StageChannel)}
    * @readonly
    */
   get channel() {

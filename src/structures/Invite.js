@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const IntegrationApplication = require('./IntegrationApplication');
+const InviteStageInstance = require('./InviteStageInstance');
 const { Error } = require('../errors');
 const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
@@ -112,6 +113,15 @@ class Invite extends Base {
     this.createdTimestamp = 'created_at' in data ? new Date(data.created_at).getTime() : null;
 
     this._expiresTimestamp = 'expires_at' in data ? new Date(data.expires_at).getTime() : null;
+
+    /**
+     * The stage instance data if there is a public {@link StageInstance} in the stage channel this invite is for
+     * @type {?InviteStageInstance}
+     */
+    this.stageInstance =
+      'stage_instance' in data
+        ? new InviteStageInstance(this.client, data.stage_instance, this.channel.id, this.guild.id)
+        : null;
   }
 
   /**
