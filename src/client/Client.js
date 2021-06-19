@@ -322,7 +322,8 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchSticker(id) {
-    return new Sticker(this, await this.api.stickers(id).get());
+    const data = await this.api.stickers(id).get();
+    return new Sticker(this, data);
   }
 
   /**
@@ -334,9 +335,8 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchNitroStickerPacks() {
-    return new Collection(
-      (await this.api('sticker-packs').get()).sticker_packs.map(p => [p.id, new StickerPack(this, p)]),
-    );
+    const data = await this.api('sticker-packs').get();
+    return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
   }
 
   /**
