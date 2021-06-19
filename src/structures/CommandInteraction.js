@@ -80,8 +80,6 @@ class CommandInteraction extends Interaction {
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string|number|boolean} [value] The value of the option
-   * @property {Collection<string, CommandInteractionOption>} [options] Additional options if this option is a
-   * subcommand (group)
    * @property {User} [user] The resolved user
    * @property {GuildMember|Object} [member] The resolved member
    * @property {GuildChannel|Object} [channel] The resolved channel
@@ -101,8 +99,8 @@ class CommandInteraction extends Interaction {
       type: ApplicationCommandOptionTypes[option.type],
     };
 
-    if ('value' in option) result.value = option.value;
-    if ('options' in option) result.options = this._createOptionsCollection(option.options, resolved);
+    if (!('value' in option)) return
+    result.value = option.value;
 
     const user = resolved?.users?.[option.value];
     if (user) result.user = this.client.users.add(user);
@@ -128,6 +126,22 @@ class CommandInteraction extends Interaction {
    */
   _createOptionsCollection(options, resolved) {
     const optionsCollection = new Collection();
+
+    if (options?.[0].type === 2) {
+      /**
+			 * @type {string}
+			 */
+      this.group = options[0].name
+      options = options[0].options
+		}
+    if (options?.[0].type === 1) {
+      /**
+			 * @type {string}
+			 */
+      this.subcommand = options[0].name
+      options = options[0].options
+		}
+
     if (typeof options === 'undefined') return optionsCollection;
     for (const option of options) {
       optionsCollection.set(option.name, this.transformOption(option, resolved));
