@@ -321,11 +321,8 @@ class Client extends BaseClient {
    *   .then(sticker => console.log(`Obtained sticker with name: ${sticker.name}`))
    *   .catch(console.error);
    */
-  fetchSticker(id) {
-    return this.api
-      .stickers(id)
-      .get()
-      .then(data => new Sticker(this, data));
+  async fetchSticker(id) {
+    return new Sticker(this, await this.api.stickers(id).get());
   }
 
   /**
@@ -336,10 +333,10 @@ class Client extends BaseClient {
    *   .then(packs => console.log(`Available sticker packs are: ${packs.map(pack => pack.name).join(', ')}`))
    *   .catch(console.error);
    */
-  fetchNitroStickerPacks() {
-    return this.api('sticker-packs')
-      .get()
-      .then(res => new Collection(res.sticker_packs.map(p => [p.id, new StickerPack(this, p)])));
+  async fetchNitroStickerPacks() {
+    return new Collection(
+      (await this.api('sticker-packs').get()).sticker_packs.map(p => [p.id, new StickerPack(this, p)]),
+    );
   }
 
   /**
