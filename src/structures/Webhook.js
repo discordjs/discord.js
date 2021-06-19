@@ -50,7 +50,7 @@ class Webhook {
 
     /**
      * The type of the webhook
-     * @type {WebhookTypes}
+     * @type {WebhookType}
      */
     this.type = WebhookTypes[data.type];
 

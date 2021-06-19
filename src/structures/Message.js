@@ -163,7 +163,7 @@ class Message extends Base {
      * The timestamp the message was last edited at (if applicable)
      * @type {?number}
      */
-    this.editedTimestamp = 'edited_timestamp' in data ? new Date(data.edited_timestamp).getTime() : null;
+    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
      * A manager of the reactions belonging to this message
@@ -290,7 +290,7 @@ class Message extends Base {
   patch(data) {
     const clone = this._clone();
 
-    if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+    if (data.edited_timestamp) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
@@ -440,25 +440,31 @@ class Message extends Base {
   }
 
   /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * @typedef {Object} AwaitMessageComponentInteractionOptions
+   * @property {number} [time] Time to wait for an interaction before rejecting
+   */
+
+  /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
    * @param {CollectorFilter} filter The filter function to use
-   * @param {number} [time] Time to wait for an interaction before rejecting
+   * @param {AwaitMessageComponentInteractionOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitMessageComponentInteraction(filter, 15000)
+   * message.awaitMessageComponentInteraction(filter, { time: 15000 })
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteraction(filter, time) {
+  awaitMessageComponentInteraction(filter, { time } = {}) {
     return new Promise((resolve, reject) => {
       const collector = this.createMessageComponentInteractionCollector(filter, { max: 1, time });
-      collector.once('end', interactions => {
+      collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
-        if (!interaction) reject(new Error('INTERACTION_COLLECTOR_TIMEOUT'));
-        else resolve(interaction);
+        if (interaction) resolve(interaction);
+        else reject(new Error('INTERACTION_COLLECTOR_ERROR', reason));
       });
     });
   }
@@ -531,7 +537,7 @@ class Message extends Base {
    * Options that can be passed into {@link Message#edit}.
    * @typedef {Object} MessageEditOptions
    * @property {?string} [content] Content to be edited
-   * @property {MessageEmbed|APIEmbed} [embed] An embed to be added/edited
+   * @property {MessageEmbed[]|APIEmbed[]} [embeds] Embeds to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
@@ -640,7 +646,8 @@ class Message extends Base {
   /**
    * Options provided when sending a message as an inline reply.
    * @typedef {BaseMessageOptions} ReplyMessageOptions
-   * @property {MessageEmbed|APIEmbed} [embed] An embed for the message
+   * @property {MessageEmbed[]|APIEmbed[]} [embeds] The embeds for the message
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
    */

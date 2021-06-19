@@ -1,3 +1,12 @@
+declare enum ActivityTypes {
+  PLAYING = 0,
+  STREAMING = 1,
+  LISTENING = 2,
+  WATCHING = 3,
+  CUSTOM = 4,
+  COMPETING = 5,
+}
+
 declare enum ChannelType {
   text = 0,
   dm = 1,
@@ -21,6 +30,17 @@ declare enum ChannelTypes {
   STAGE = 13,
 }
 
+declare enum DefaultMessageNotificationLevels {
+  ALL_MESSAGES = 0,
+  ONLY_MENTIONS = 1,
+}
+
+declare enum ExplicitContentFilterLevels {
+  DISABLED = 0,
+  MEMBERS_WITHOUT_ROLES = 1,
+  ALL_MEMBERS = 2,
+}
+
 declare enum InteractionResponseTypes {
   PONG = 1,
   CHANNEL_MESSAGE_WITH_SOURCE = 4,
@@ -38,6 +58,11 @@ declare enum InteractionTypes {
 declare enum InviteTargetType {
   STREAM = 1,
   EMBEDDED_APPLICATION = 2,
+}
+
+declare enum MembershipStates {
+  INVITED = 1,
+  ACCEPTED = 2,
 }
 
 declare enum MessageButtonStyles {
@@ -70,6 +95,13 @@ declare enum OverwriteTypes {
   member = 1,
 }
 
+declare enum PremiumTiers {
+  NONE = 0,
+  TIER_1 = 1,
+  TIER_2 = 2,
+  TIER_3 = 3,
+}
+
 declare enum PrivacyLevels {
   PUBLIC = 1,
   GUILD_ONLY = 2,
@@ -79,6 +111,19 @@ declare enum StickerFormatTypes {
   PNG = 1,
   APNG = 2,
   LOTTIE = 3,
+}
+
+declare enum VerificationLevels {
+  NONE = 0,
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
+  VERY_HIGH = 4,
+}
+
+declare enum WebhookTypes {
+  Incoming = 1,
+  'Channel Follower' = 2,
 }
 
 type Awaited<T> = T | Promise<T>;
@@ -350,6 +395,7 @@ declare module 'discord.js' {
     public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
+    public fetchWidget(id: Snowflake): Promise<Widget>;
     public generateInvite(options?: InviteGenerationOptions): string;
     public login(token?: string): Promise<string>;
     public sweepMessages(lifetime?: number): number;
@@ -661,13 +707,13 @@ declare module 'discord.js' {
     InviteScopes: InviteScope[];
     MessageTypes: MessageType[];
     SystemMessageTypes: SystemMessageType[];
-    ActivityTypes: ActivityType[];
+    ActivityTypes: typeof ActivityTypes;
     StickerFormatTypes: typeof StickerFormatTypes;
     OverwriteTypes: typeof OverwriteTypes;
-    ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
-    DefaultMessageNotifications: DefaultMessageNotifications[];
-    VerificationLevels: VerificationLevel[];
-    MembershipStates: 'INVITED' | 'ACCEPTED';
+    ExplicitContentFilterLevels: typeof ExplicitContentFilterLevels;
+    DefaultMessageNotificationLevels: typeof DefaultMessageNotificationLevels;
+    VerificationLevels: typeof VerificationLevels;
+    MembershipStates: typeof MembershipStates;
     ApplicationCommandOptionTypes: typeof ApplicationCommandOptionTypes;
     ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
     InteractionTypes: typeof InteractionTypes;
@@ -677,6 +723,8 @@ declare module 'discord.js' {
     MFALevels: typeof MFALevels;
     NSFWLevels: typeof NSFWLevels;
     PrivacyLevels: typeof PrivacyLevels;
+    WebhookTypes: typeof WebhookTypes;
+    PremiumTiers: typeof PremiumTiers;
   };
 
   export class DataResolver {
@@ -739,7 +787,7 @@ declare module 'discord.js' {
     public bans: GuildBanManager;
     public channels: GuildChannelManager;
     public commands: GuildApplicationCommandManager;
-    public defaultMessageNotifications: DefaultMessageNotifications | number;
+    public defaultMessageNotifications: DefaultMessageNotificationLevel | number;
     public deleted: boolean;
     public description: string | null;
     public discoverySplash: string | null;
@@ -804,7 +852,7 @@ declare module 'discord.js' {
     public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
     public setDefaultMessageNotifications(
-      defaultMessageNotifications: DefaultMessageNotifications | number,
+      defaultMessageNotifications: DefaultMessageNotificationLevel | number,
       reason?: string,
     ): Promise<Guild>;
     public setDiscoverySplash(discoverySplash: Base64Resolvable | null, reason?: string): Promise<Guild>;
@@ -1144,6 +1192,19 @@ declare module 'discord.js' {
     public toJSON(): unknown;
     public toString(): string;
     public static INVITES_PATTERN: RegExp;
+    public stageInstance: InviteStageInstance | null;
+  }
+
+  export class InviteStageInstance extends Base {
+    constructor(client: Client, data: unknown, channelID: Snowflake, guildID: Snowflake);
+    public channelID: Snowflake;
+    public guildID: Snowflake;
+    public members: Collection<Snowflake, GuildMember>;
+    public topic: string;
+    public participantCount: number;
+    public speakerCount: number;
+    public readonly channel: StageChannel | null;
+    public readonly guild: Guild | null;
   }
 
   export class Message extends Base {
@@ -1188,7 +1249,7 @@ declare module 'discord.js' {
     public reference: MessageReference | null;
     public awaitMessageComponentInteraction(
       filter: CollectorFilter<[MessageComponentInteraction]>,
-      time?: number,
+      options?: AwaitMessageComponentInteractionOptions,
     ): Promise<MessageComponentInteraction>;
     public awaitReactions(
       filter: CollectorFilter<[MessageReaction, User]>,
@@ -1761,7 +1822,7 @@ declare module 'discord.js' {
     public team: Team;
     public readonly id: Snowflake;
     public permissions: string[];
-    public membershipState: MembershipStates;
+    public membershipState: MembershipState;
     public user: User;
 
     public toString(): string;
@@ -1930,7 +1991,7 @@ declare module 'discord.js' {
     public sourceGuild: Guild | unknown | null;
     public sourceChannel: Channel | unknown | null;
     public token: string | null;
-    public type: WebhookTypes;
+    public type: WebhookType;
   }
 
   export class WebhookClient extends WebhookMixin(BaseClient) {
@@ -2026,6 +2087,34 @@ declare module 'discord.js' {
     public once(event: 'close', listener: (event: CloseEvent) => Awaited<void>): this;
     public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaited<void>): this;
     public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  }
+
+  export class Widget extends Base {
+    constructor(client: Client, data: object);
+    private _patch(data: object): void;
+    public fetch(): Promise<Widget>;
+    public id: Snowflake;
+    public instantInvite?: string;
+    public channels: Collection<Snowflake, WidgetChannel>;
+    public members: Collection<string, WidgetMember>;
+    public presenceCount: number;
+  }
+
+  export class WidgetMember extends Base {
+    constructor(client: Client, data: object);
+    public id: string;
+    public username: string;
+    public discriminator: string;
+    public avatar?: string;
+    public status: PresenceStatus;
+    public deaf?: boolean;
+    public mute?: boolean;
+    public selfDeaf?: boolean;
+    public selfMute?: boolean;
+    public suppress?: boolean;
+    public channelID?: Snowflake;
+    public avatarURL: string;
+    public activity?: WidgetActivity;
   }
 
   //#endregion
@@ -2344,7 +2433,7 @@ declare module 'discord.js' {
     typingCount: number;
     awaitMessageComponentInteraction(
       filter: CollectorFilter<[MessageComponentInteraction]>,
-      time?: number,
+      options?: AwaitMessageComponentInteractionOptions,
     ): Promise<MessageComponentInteraction>;
     awaitMessages(
       filter: CollectorFilter<[Message]>,
@@ -2408,7 +2497,7 @@ declare module 'discord.js' {
 
   type ActivityPlatform = 'desktop' | 'samsung' | 'xbox';
 
-  type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS' | 'COMPETING';
+  type ActivityType = keyof typeof ActivityTypes;
 
   interface AddGuildMemberOptions {
     accessToken: string;
@@ -2550,6 +2639,10 @@ declare module 'discord.js' {
     key: string;
     old?: any;
     new?: any;
+  }
+
+  interface AwaitMessageComponentInteractionOptions {
+    time?: number;
   }
 
   interface AwaitMessagesOptions extends MessageCollectorOptions {
@@ -2819,7 +2912,7 @@ declare module 'discord.js' {
     binary: string;
   }
 
-  type DefaultMessageNotifications = 'ALL' | 'MENTIONS';
+  type DefaultMessageNotificationLevel = keyof typeof DefaultMessageNotificationLevels;
 
   interface EditGuildTemplateOptions {
     name?: string;
@@ -2861,7 +2954,7 @@ declare module 'discord.js' {
     codeBlockContent?: boolean;
   }
 
-  type ExplicitContentFilterLevel = 'DISABLED' | 'MEMBERS_WITHOUT_ROLES' | 'ALL_MEMBERS';
+  type ExplicitContentFilterLevel = keyof typeof ExplicitContentFilterLevels;
 
   interface Extendable {
     GuildEmoji: typeof GuildEmoji;
@@ -3039,7 +3132,7 @@ declare module 'discord.js' {
     afkChannelID?: Snowflake | number;
     afkTimeout?: number;
     channels?: PartialChannelData[];
-    defaultMessageNotifications?: DefaultMessageNotifications | number;
+    defaultMessageNotifications?: DefaultMessageNotificationLevel | number;
     explicitContentFilter?: ExplicitContentFilterLevel | number;
     icon?: BufferResolvable | Base64Resolvable | null;
     roles?: PartialRoleData[];
@@ -3057,7 +3150,7 @@ declare module 'discord.js' {
     name?: string;
     verificationLevel?: VerificationLevel | number;
     explicitContentFilter?: ExplicitContentFilterLevel | number;
-    defaultMessageNotifications?: DefaultMessageNotifications | number;
+    defaultMessageNotifications?: DefaultMessageNotificationLevel | number;
     afkChannel?: ChannelResolvable;
     systemChannel?: ChannelResolvable;
     systemChannelFlags?: SystemChannelFlagsResolvable;
@@ -3248,7 +3341,7 @@ declare module 'discord.js' {
     stack: string;
   }
 
-  type MembershipStates = 'INVITED' | 'ACCEPTED';
+  type MembershipState = keyof typeof MembershipStates;
 
   type MessageActionRowComponent = MessageButton;
 
@@ -3416,7 +3509,8 @@ declare module 'discord.js' {
     | Snowflake
     | `${string}:${Snowflake}`
     | `<:${string}:${Snowflake}>`
-    | `<a:${string}:${Snowflake}>`;
+    | `<a:${string}:${Snowflake}>`
+    | string;
 
   interface MessageReference {
     channelID: Snowflake;
@@ -3532,7 +3626,7 @@ declare module 'discord.js' {
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
-  type PremiumTier = 0 | 1 | 2 | 3;
+  type PremiumTier = keyof typeof PremiumTiers;
 
   interface PresenceData {
     status?: PresenceStatusData;
@@ -3772,13 +3866,15 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
     public description: string;
-    public format: StickerFormatTypes;
+    public format: StickerFormatType;
     public id: Snowflake;
     public name: string;
     public packID: Snowflake;
     public tags: string[];
     public readonly url: string;
   }
+
+  type StickerFormatType = keyof typeof StickerFormatTypes;
 
   type SystemChannelFlagsString =
     | 'SUPPRESS_JOIN_NOTIFICATIONS'
@@ -3824,7 +3920,7 @@ declare module 'discord.js' {
     uses: number | null;
   }
 
-  type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
+  type VerificationLevel = keyof typeof VerificationLevels;
 
   type WebhookClientOptions = Pick<
     ClientOptions,
@@ -3847,7 +3943,7 @@ declare module 'discord.js' {
     avatarURL?: string;
   }
 
-  type WebhookTypes = 'Incoming' | 'Channel Follower';
+  type WebhookType = keyof typeof WebhookTypes;
 
   interface WebSocketOptions {
     large_threshold?: number;
@@ -3859,6 +3955,16 @@ declare module 'discord.js' {
     $os?: string;
     $browser?: string;
     $device?: string;
+  }
+
+  interface WidgetActivity {
+    name: string;
+  }
+
+  interface WidgetChannel {
+    id: Snowflake;
+    name: string;
+    position: number;
   }
 
   type WSEventType =

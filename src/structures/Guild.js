@@ -20,13 +20,14 @@ const VoiceStateManager = require('../managers/VoiceStateManager');
 const Collection = require('../util/Collection');
 const {
   ChannelTypes,
-  DefaultMessageNotifications,
+  DefaultMessageNotificationLevels,
   PartialTypes,
   VerificationLevels,
   ExplicitContentFilterLevels,
   NSFWLevels,
   Status,
   MFALevels,
+  PremiumTiers,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
@@ -217,19 +218,10 @@ class Guild extends BaseGuild {
     this.systemChannelID = data.system_channel_id;
 
     /**
-     * The type of premium tier:
-     * * 0: NONE
-     * * 1: TIER_1
-     * * 2: TIER_2
-     * * 3: TIER_3
-     * @typedef {number} PremiumTier
-     */
-
-    /**
-     * The premium tier on this guild
+     * The premium tier of this guild
      * @type {PremiumTier}
      */
-    this.premiumTier = data.premium_tier;
+    this.premiumTier = PremiumTiers[data.premium_tier];
 
     if (typeof data.premium_subscription_count !== 'undefined') {
       /**
@@ -280,11 +272,10 @@ class Guild extends BaseGuild {
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
     /**
-     * The value set for the guild's default message notifications
-     * @type {DefaultMessageNotifications|number}
+     * The default message notification level of the guild
+     * @type {DefaultMessageNotificationLevel}
      */
-    this.defaultMessageNotifications =
-      DefaultMessageNotifications[data.default_message_notifications] || data.default_message_notifications;
+    this.defaultMessageNotifications = DefaultMessageNotificationLevels[data.default_message_notifications];
 
     /**
      * The value set for the guild's system channel flags
@@ -831,7 +822,8 @@ class Guild extends BaseGuild {
    * @property {Base64Resolvable} [splash] The invite splash image of the guild
    * @property {Base64Resolvable} [discoverySplash] The discovery splash image of the guild
    * @property {Base64Resolvable} [banner] The banner of the guild
-   * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
+   * @property {DefaultMessageNotificationLevel|number} [defaultMessageNotifications] The default message notification
+   * level of the guild
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {ChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
@@ -859,8 +851,8 @@ class Guild extends BaseGuild {
     if (typeof data.verificationLevel !== 'undefined') {
       _data.verification_level =
         typeof data.verificationLevel === 'number'
-          ? Number(data.verificationLevel)
-          : VerificationLevels.indexOf(data.verificationLevel);
+          ? data.verificationLevel
+          : VerificationLevels[data.verificationLevel];
     }
     if (typeof data.afkChannel !== 'undefined') {
       _data.afk_channel_id = this.client.channels.resolveID(data.afkChannel);
@@ -878,13 +870,13 @@ class Guild extends BaseGuild {
       _data.explicit_content_filter =
         typeof data.explicitContentFilter === 'number'
           ? data.explicitContentFilter
-          : ExplicitContentFilterLevels.indexOf(data.explicitContentFilter);
+          : ExplicitContentFilterLevels[data.explicitContentFilter];
     }
     if (typeof data.defaultMessageNotifications !== 'undefined') {
       _data.default_message_notifications =
-        typeof data.defaultMessageNotifications === 'string'
-          ? DefaultMessageNotifications.indexOf(data.defaultMessageNotifications)
-          : data.defaultMessageNotifications;
+        typeof data.defaultMessageNotifications === 'number'
+          ? data.defaultMessageNotifications
+          : DefaultMessageNotificationLevels[data.defaultMessageNotifications];
     }
     if (typeof data.systemChannelFlags !== 'undefined') {
       _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
@@ -921,7 +913,7 @@ class Guild extends BaseGuild {
   /* eslint-disable max-len */
   /**
    * Edits the setting of the default message notifications of the guild.
-   * @param {DefaultMessageNotifications|number} defaultMessageNotifications The new setting for the default message notifications
+   * @param {DefaultMessageNotificationLevel|number} defaultMessageNotifications The new default message notification level of the guild
    * @param {string} [reason] Reason for changing the setting of the default message notifications
    * @returns {Promise<Guild>}
    */
