@@ -370,7 +370,7 @@ declare module 'discord.js' {
   }
 
   export class Client extends BaseClient {
-    constructor(options: ClientOptions);
+    constructor(options?: ClientOptions);
     private actions: unknown;
     private _eval(script: string): any;
     private _validateOptions(options: ClientOptions): void;
