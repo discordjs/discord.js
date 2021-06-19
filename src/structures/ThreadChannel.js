@@ -136,11 +136,11 @@ class ThreadChannel extends Channel {
 
   /**
    * The time the thread was last archived or unarchived at
-   * @type {Date}
+   * @type {?Date}
    * @readonly
    */
   get archivedAt() {
-    return new Date(this.archiveTimestamp);
+    return this.archiveTimestamp ? new Date(this.archiveTimestamp) : null;
   }
 
   /**

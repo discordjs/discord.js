@@ -86,12 +86,10 @@ class ThreadMemberManager extends BaseManager {
    */
   async fetch(cache = true) {
     const raw = await this.client.api.channels(this.thread.id, 'thread-members').get();
-    const members = new Collection();
-    raw.forEach(rawMember => {
+    return raw.reduce((col, rawMember) => {
       const member = this.add(rawMember, cache);
-      members.set(member.id, member);
-    });
-    return members;
+      return col.set(member.id, member);
+    }, new Collection());
   }
 }
 

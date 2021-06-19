@@ -190,7 +190,7 @@ class ThreadManager extends BaseManager {
     if (typeof before !== 'undefined') {
       if (before instanceof ThreadChannel || /^\d{16,19}$/.test(String(before))) {
         id = this.resolveID(before);
-        timestamp = this.resolve(before)?.archivedAt.toISOString();
+        timestamp = this.resolve(before)?.archivedAt?.toISOString();
       } else {
         try {
           timestamp = new Date(before).toISOString();
@@ -216,11 +216,10 @@ class ThreadManager extends BaseManager {
   }
 
   _mapThreads(rawThreads, cache) {
-    const threads = new Collection();
-    rawThreads.threads.forEach(raw => {
+    const threads = rawThreads.threads.reduce((col, raw) => {
       const thread = this.client.channels.add(raw, null, cache);
-      threads.set(thread.id, thread);
-    });
+      return col.set(thread.id, thread);
+    }, new Collection());
     rawThreads.members.forEach(rawMember => this.client.channels.cache.get(rawMember.id)?.members.add(rawMember));
     return {
       threads,

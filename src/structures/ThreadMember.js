@@ -52,7 +52,7 @@ class ThreadMember extends Base {
    * @readonly
    */
   get guildMember() {
-    return this.thread.guild.members.cache.get(this.id) ?? null;
+    return this.thread.guild.members.resolve(this.id);
   }
 
   /**
@@ -70,7 +70,7 @@ class ThreadMember extends Base {
    * @readonly
    */
   get user() {
-    return this.client.users.cache.get(this.id) ?? null;
+    return this.client.users.resolve(this.id);
   }
 
   /**
