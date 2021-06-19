@@ -20,9 +20,9 @@ class Emoji extends Base {
     super(client);
     /**
      * Whether this emoji is animated
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.animated = emoji.animated;
+    this.animated = emoji.animated ?? null;
 
     /**
      * The name of this emoji
