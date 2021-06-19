@@ -99,7 +99,7 @@ class CommandInteraction extends Interaction {
       type: ApplicationCommandOptionTypes[option.type],
     };
 
-    if (!('value' in option)) return
+    if (!('value' in option)) return result
     result.value = option.value;
 
     const user = resolved?.users?.[option.value];
@@ -129,18 +129,18 @@ class CommandInteraction extends Interaction {
 
     if (options?.[0].type === 2) {
       /**
-			 * @type {string}
-			 */
+       * @type {string}
+       */
       this.group = options[0].name
       options = options[0].options
-		}
+    }
     if (options?.[0].type === 1) {
       /**
-			 * @type {string}
-			 */
+       * @type {string}
+       */
       this.subcommand = options[0].name
       options = options[0].options
-		}
+    }
 
     if (typeof options === 'undefined') return optionsCollection;
     for (const option of options) {
