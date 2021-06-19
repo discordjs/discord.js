@@ -85,3 +85,8 @@ class MessageActionRow extends BaseMessageComponent {
 }
 
 module.exports = MessageActionRow;
+
+/**
+ * @external APIComponent
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object}
+ */

@@ -424,3 +424,8 @@ class Role extends Base {
 }
 
 module.exports = Role;
+
+/**
+ * @external APIRole
+ * @see {@link https://discord.com/developers/docs/topics/permissions#role-object}
+ */

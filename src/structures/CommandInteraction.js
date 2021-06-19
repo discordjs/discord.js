@@ -148,3 +148,9 @@ class CommandInteraction extends Interaction {
 InteractionResponses.applyToClass(CommandInteraction, ['deferUpdate', 'update']);
 
 module.exports = CommandInteraction;
+
+/* eslint-disable max-len */
+/**
+ * @external APIApplicationCommandOptionResolved
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-applicationcommandinteractiondataresolved}
+ */

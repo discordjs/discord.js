@@ -196,7 +196,7 @@ class Webhook {
    *     'ts': Date.now() / 1000
    *   }]
    * }).catch(console.error);
-   * @see https://api.slack.com/messaging/webhooks
+   * @see {@link https://api.slack.com/messaging/webhooks}
    */
   sendSlackMessage(body) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');

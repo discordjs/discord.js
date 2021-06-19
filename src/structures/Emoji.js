@@ -110,3 +110,8 @@ class Emoji extends Base {
 }
 
 module.exports = Emoji;
+
+/**
+ * @external APIEmoji
+ * @see {@link https://discord.com/developers/docs/resources/emoji#emoji-object}
+ */

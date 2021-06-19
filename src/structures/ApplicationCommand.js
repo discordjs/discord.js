@@ -224,3 +224,13 @@ class ApplicationCommand extends Base {
 }
 
 module.exports = ApplicationCommand;
+
+/**
+ * @external APIApplicationCommand
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommand}
+ */
+
+/**
+ * @external APIApplicationCommandOption
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoption}
+ */

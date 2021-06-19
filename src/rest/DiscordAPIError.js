@@ -75,3 +75,8 @@ class DiscordAPIError extends Error {
 }
 
 module.exports = DiscordAPIError;
+
+/**
+ * @external APIError
+ * @see {@link https://discord.com/developers/docs/reference#error-messages}
+ */

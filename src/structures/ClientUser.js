@@ -178,3 +178,8 @@ class ClientUser extends Structures.get('User') {
 }
 
 module.exports = ClientUser;
+
+/**
+ * @external APIModifyClientData
+ * @see {@link https://discord.com/developers/docs/resources/user#modify-current-user-json-params}
+ */

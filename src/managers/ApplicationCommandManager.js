@@ -342,3 +342,8 @@ class ApplicationCommandManager extends BaseManager {
 }
 
 module.exports = ApplicationCommandManager;
+
+/**
+ * @external APIApplicationCommandPermissions
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommandpermissions}
+ */

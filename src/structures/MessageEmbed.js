@@ -457,3 +457,8 @@ class MessageEmbed {
 }
 
 module.exports = MessageEmbed;
+
+/**
+ * @external APIEmbed
+ * @see {@link https://discord.com/developers/docs/resources/channel#embed-object}
+ */

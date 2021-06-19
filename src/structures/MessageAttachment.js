@@ -102,3 +102,8 @@ class MessageAttachment {
 }
 
 module.exports = MessageAttachment;
+
+/**
+ * @external APIAttachment
+ * @see {@link https://discord.com/developers/docs/resources/channel#attachment-object}
+ */

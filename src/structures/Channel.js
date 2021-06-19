@@ -165,3 +165,8 @@ class Channel extends Base {
 }
 
 module.exports = Channel;
+
+/**
+ * @external APIChannel
+ * @see {@link https://discord.com/developers/docs/resources/channel#channel-object}
+ */

@@ -302,3 +302,8 @@ module.exports = APIMessage;
  * A target for a message.
  * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook} MessageTarget
  */
+
+/**
+ * @external APIMessageRaw
+ * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
+ */
