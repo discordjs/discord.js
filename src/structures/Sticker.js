@@ -123,7 +123,7 @@ class Sticker extends Base {
    * @returns {Promise<?StickerPack>}
    */
   async fetchPack() {
-    return (this.packID && (await this.client.fetchNitroStickerPacks()).get(this.packID)) ?? null;
+    return (this.packID && (await this.client.fetchPremiumStickerPacks()).get(this.packID)) ?? null;
   }
 }
 

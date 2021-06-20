@@ -330,11 +330,11 @@ class Client extends BaseClient {
    * Obtains the list of sticker packs available to Nitro subscribers from Discord.
    * @returns {Promise<Collection<Snowflake, StickerPack>>}
    * @example
-   * client.fetchNitroStickerPacks()
+   * client.fetchPremiumStickerPacks()
    *   .then(packs => console.log(`Available sticker packs are: ${packs.map(pack => pack.name).join(', ')}`))
    *   .catch(console.error);
    */
-  async fetchNitroStickerPacks() {
+  async fetchPremiumStickerPacks() {
     const data = await this.api('sticker-packs').get();
     return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
   }

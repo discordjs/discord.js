@@ -393,7 +393,7 @@ declare module 'discord.js' {
     public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchSticker(id: Snowflake): Promise<Sticker>;
-    public fetchNitroStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
+    public fetchPremiumStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
     public fetchWidget(id: Snowflake): Promise<Widget>;
     public generateInvite(options?: InviteGenerationOptions): string;
