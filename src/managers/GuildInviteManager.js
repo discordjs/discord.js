@@ -105,14 +105,14 @@ class GuildInviteManager extends BaseManager {
     if (!options) return this._fetchMany();
     const code = DataResolver.resolveInviteCode(options);
     if (code) return this._fetchSingle({ code, cache: true });
-    if (options.code) {
-      options.code = DataResolver.resolveInviteCode(options);
-    }
     if (!options.code) {
       if ('cache' in options) return this._fetchMany(options.cache);
       return Promise.reject(new Error('INVITE_RESOLVE_CODE'));
     }
-    return this._fetchSingle(options);
+    return this._fetchSingle({
+      ...options,
+      code: DataResolver.resolveInviteCode(options.code),
+    });
   }
 
   async _fetchSingle({ code, cache, force = false }) {
