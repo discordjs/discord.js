@@ -75,6 +75,16 @@ class APIMessage {
   }
 
   /**
+   * Wether or not the target is a message manager
+   * @type {boolean}
+   * @readonly
+   */
+  get isMessageManager() {
+    const MessageManager = require('../managers/MessageManager');
+    return this.target instanceof MessageManager;
+  }
+
+  /**
    * Whether or not the target is an interaction
    * @type {boolean}
    * @readonly
@@ -156,9 +166,9 @@ class APIMessage {
     }
 
     let flags;
-    if (this.isMessage) {
+    if (this.isMessage || this.isMessageManager) {
       // eslint-disable-next-line eqeqeq
-      flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
+      flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags?.bitfield;
     } else if (isInteraction && this.options.ephemeral) {
       flags = MessageFlags.FLAGS.EPHEMERAL;
     }
@@ -300,5 +310,6 @@ module.exports = APIMessage;
 
 /**
  * A target for a message.
- * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook} MessageTarget
+ * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook|
+ * Message|MessageManager} MessageTarget
  */
