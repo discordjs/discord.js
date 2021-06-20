@@ -123,7 +123,7 @@ class GuildInviteManager extends BaseManager {
 
     const invites = await this._fetchMany(cache);
     const invite = invites.get(code);
-    if (!invite) throw new Error('UNKNOWN_INVITE');
+    if (!invite) throw new Error('INVITE_NOT_FOUND');
     return invite;
   }
 

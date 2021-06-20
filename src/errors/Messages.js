@@ -109,7 +109,7 @@ const Messages = {
 
   INVITE_RESOLVE_CODE: `Couldn't resolve the code to fetch the invite.`,
 
-  UNKNOWN_INVITE: `Unknown invite.`,
+  INVITE_NOT_FOUND: `Could not find the requested invite.`,
 
   DELETE_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot delete them",
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
