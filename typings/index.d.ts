@@ -471,7 +471,7 @@ declare module 'discord.js' {
   }
 
   export abstract class Collector<K, V> extends EventEmitter {
-    constructor(client: Client, filter: CollectorFilter<[V]>, options?: CollectorOptions);
+    constructor(client: Client, options?: CollectorOptions<[V]>);
     private _timeout: NodeJS.Timeout | null;
     private _idletimeout: NodeJS.Timeout | null;
 
@@ -479,9 +479,8 @@ declare module 'discord.js' {
     public collected: Collection<K, V>;
     public ended: boolean;
     public abstract endReason: string | null;
-    public filter: CollectorFilter<[V]>;
     public readonly next: Promise<V>;
-    public options: CollectorOptions;
+    public options: CollectorOptions<[V]>;
     public checkEnd(): void;
     public handleCollect(...args: any[]): void;
     public handleDispose(...args: any[]): void;
@@ -1260,19 +1259,11 @@ declare module 'discord.js' {
     public flags: Readonly<MessageFlags>;
     public reference: MessageReference | null;
     public awaitMessageComponentInteraction(
-      filter: CollectorFilter<[MessageComponentInteraction]>,
       options?: AwaitMessageComponentInteractionOptions,
     ): Promise<MessageComponentInteraction>;
-    public awaitReactions(
-      filter: CollectorFilter<[MessageReaction, User]>,
-      options?: AwaitReactionsOptions,
-    ): Promise<Collection<Snowflake | string, MessageReaction>>;
-    public createReactionCollector(
-      filter: CollectorFilter<[MessageReaction, User]>,
-      options?: ReactionCollectorOptions,
-    ): ReactionCollector;
+    public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
+    public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
     public createMessageComponentInteractionCollector(
-      filter: CollectorFilter<[MessageComponentInteraction]>,
       options?: MessageComponentInteractionCollectorOptions,
     ): MessageComponentInteractionCollector;
     public delete(): Promise<Message>;
@@ -1346,11 +1337,7 @@ declare module 'discord.js' {
   }
 
   export class MessageCollector extends Collector<Snowflake, Message> {
-    constructor(
-      channel: TextChannel | DMChannel,
-      filter: CollectorFilter<[Message]>,
-      options?: MessageCollectorOptions,
-    );
+    constructor(channel: TextChannel | DMChannel, options?: MessageCollectorOptions);
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
 
@@ -1384,7 +1371,6 @@ declare module 'discord.js' {
   export class MessageComponentInteractionCollector extends Collector<Snowflake, MessageComponentInteraction> {
     constructor(
       source: Message | TextChannel | NewsChannel | DMChannel,
-      filter: CollectorFilter<[MessageComponentInteraction]>,
       options?: MessageComponentInteractionCollectorOptions,
     );
     private _handleMessageDeletion(message: Message): void;
@@ -1577,7 +1563,7 @@ declare module 'discord.js' {
   }
 
   export class ReactionCollector extends Collector<Snowflake | string, MessageReaction> {
-    constructor(message: Message, filter: CollectorFilter<[MessageReaction, User]>, options?: ReactionCollectorOptions);
+    constructor(message: Message, options?: ReactionCollectorOptions);
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
     private _handleMessageDeletion(message: Message): void;
@@ -2460,22 +2446,17 @@ declare module 'discord.js' {
     typing: boolean;
     typingCount: number;
     awaitMessageComponentInteraction(
-      filter: CollectorFilter<[MessageComponentInteraction]>,
       options?: AwaitMessageComponentInteractionOptions,
     ): Promise<MessageComponentInteraction>;
-    awaitMessages(
-      filter: CollectorFilter<[Message]>,
-      options?: AwaitMessagesOptions,
-    ): Promise<Collection<Snowflake, Message>>;
+    awaitMessages(options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
     bulkDelete(
       messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
       filterOld?: boolean,
     ): Promise<Collection<Snowflake, Message>>;
     createMessageComponentInteractionCollector(
-      filter: CollectorFilter<[MessageComponentInteraction]>,
       options?: MessageComponentInteractionCollectorOptions,
     ): MessageComponentInteractionCollector;
-    createMessageCollector(filter: CollectorFilter<[Message]>, options?: MessageCollectorOptions): MessageCollector;
+    createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
     startTyping(count?: number): Promise<void>;
     stopTyping(force?: boolean): void;
   }
@@ -2672,6 +2653,7 @@ declare module 'discord.js' {
   }
 
   interface AwaitMessageComponentInteractionOptions {
+    filter?: CollectorFilter<[MessageComponentInteraction]>;
     time?: number;
   }
 
@@ -2859,7 +2841,8 @@ declare module 'discord.js' {
 
   type CollectorFilter<T extends any[]> = (...args: T) => boolean | Promise<boolean>;
 
-  interface CollectorOptions {
+  interface CollectorOptions<T extends any[]> {
+    filter?: CollectorFilter<T>;
     time?: number;
     idle?: number;
     dispose?: boolean;
@@ -3402,14 +3385,14 @@ declare module 'discord.js' {
 
   type MessageButtonStyleResolvable = MessageButtonStyle | MessageButtonStyles;
 
-  interface MessageCollectorOptions extends CollectorOptions {
+  interface MessageCollectorOptions extends CollectorOptions<[Message]> {
     max?: number;
     maxProcessed?: number;
   }
 
   type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton;
 
-  interface MessageComponentInteractionCollectorOptions extends CollectorOptions {
+  interface MessageComponentInteractionCollectorOptions extends CollectorOptions<[MessageComponentInteraction]> {
     max?: number;
     maxComponents?: number;
     maxUsers?: number;
@@ -3804,7 +3787,7 @@ declare module 'discord.js' {
     remainingTime: number;
   }
 
-  interface ReactionCollectorOptions extends CollectorOptions {
+  interface ReactionCollectorOptions extends CollectorOptions<[MessageReaction, User]> {
     max?: number;
     maxEmojis?: number;
     maxUsers?: number;

@@ -21,11 +21,10 @@ class MessageComponentInteractionCollector extends Collector {
   /**
    * @param {Message|TextChannel|DMChannel|NewsChannel} source
    * The source from which to collect message component interactions
-   * @param {CollectorFilter} filter The filter to apply to this collector
    * @param {MessageComponentInteractionCollectorOptions} [options={}] The options to apply to this collector
    */
-  constructor(source, filter, options = {}) {
-    super(source.client, filter, options);
+  constructor(source, options = {}) {
+    super(source.client, options);
 
     /**
      * The message from which to collect message component interactions, if provided

@@ -1,7 +1,6 @@
 'use strict';
 
 const EventEmitter = require('events');
-const { TypeError } = require('../../errors');
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
 
@@ -16,6 +15,7 @@ const Util = require('../../util/Util');
 /**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
+ * @property {CollectorFilter} [filter] The filter applied to this collector
  * @property {number} [time] How long to run the collector for in milliseconds
  * @property {number} [idle] How long to stop the collector after inactivity in milliseconds
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
@@ -26,7 +26,7 @@ const Util = require('../../util/Util');
  * @abstract
  */
 class Collector extends EventEmitter {
-  constructor(client, filter, options = {}) {
+  constructor(client, options = {}) {
     super();
 
     /**
@@ -36,12 +36,6 @@ class Collector extends EventEmitter {
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
-
-    /**
-     * The filter applied to this collector
-     * @type {CollectorFilter}
-     */
-    this.filter = filter;
 
     /**
      * The options of this collector
@@ -75,10 +69,6 @@ class Collector extends EventEmitter {
      */
     this._idletimeout = null;
 
-    if (typeof filter !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'filter', 'function');
-    }
-
     this.handleCollect = this.handleCollect.bind(this);
     this.handleDispose = this.handleDispose.bind(this);
 
@@ -94,7 +84,7 @@ class Collector extends EventEmitter {
   async handleCollect(...args) {
     const collect = this.collect(...args);
 
-    if (collect && (await this.filter(...args, this.collected))) {
+    if (collect && (!this.options.filter || (await this.options.filter(...args, this.collected)))) {
       this.collected.set(collect, args[0]);
 
       /**
@@ -121,7 +111,7 @@ class Collector extends EventEmitter {
     if (!this.options.dispose) return;
 
     const dispose = this.dispose(...args);
-    if (!dispose || !this.filter(...args) || !this.collected.has(dispose)) return;
+    if (!dispose || (this.options.filter && !this.options.filter(...args)) || !this.collected.has(dispose)) return;
     this.collected.delete(dispose);
 
     /**
