@@ -180,7 +180,14 @@ class Message extends Base {
      * All valid mentions that the message contains
      * @type {MessageMentions}
      */
-    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone, data.mention_channels);
+    this.mentions = new Mentions(
+      this,
+      data.mentions,
+      data.mention_roles,
+      data.mention_everyone,
+      data.mention_channels,
+      data.referenced_message?.author,
+    );
 
     /**
      * ID of the webhook that sent the message, if applicable
@@ -314,6 +321,7 @@ class Message extends Base {
       'mention_roles' in data ? data.mention_roles : this.mentions.roles,
       'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
       'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
+      data.referenced_message?.author,
     );
 
     this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();

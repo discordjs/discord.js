@@ -140,6 +140,7 @@ declare module 'discord.js' {
     APIPartialEmoji as RawEmoji,
     APIRole as RawRole,
     Snowflake as APISnowflake,
+    APIUser,
     ApplicationCommandOptionType as ApplicationCommandOptionTypes,
     ApplicationCommandPermissionType as ApplicationCommandPermissionTypes,
   } from 'discord-api-types/v8';
@@ -1467,9 +1468,10 @@ declare module 'discord.js' {
   export class MessageMentions {
     constructor(
       message: Message,
-      users: unknown[] | Collection<Snowflake, User>,
+      users: APIUser[] | Collection<Snowflake, User>,
       roles: Snowflake[] | Collection<Snowflake, Role>,
       everyone: boolean,
+      repliedUser?: APIUser,
     );
     private _channels: Collection<Snowflake, Channel> | null;
     private readonly _content: string;
@@ -1481,6 +1483,7 @@ declare module 'discord.js' {
     public readonly guild: Guild;
     public has(data: UserResolvable | RoleResolvable | ChannelResolvable, options?: MessageMentionsHasOptions): boolean;
     public readonly members: Collection<Snowflake, GuildMember> | null;
+    public repliedUser: User | null;
     public roles: Collection<Snowflake, Role>;
     public users: Collection<Snowflake, User>;
     public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
