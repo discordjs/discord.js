@@ -133,7 +133,7 @@ class GuildInviteManager extends BaseManager {
   }
 
   /**
-   * Create a invite to the guild from a random channel.
+   * Create a invite to the guild from the first available channel.
    * @param {CreateInviteOptions|ChannelResolvable} [options=null] The options for creating the invite
    * @param {ChannelResolvable} [channel=null] The options for creating the invite
    * @returns {Promise<Invite?>}
