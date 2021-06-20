@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const { InteractionTypes } = require('../util/Constants');
+const { InteractionTypes, MessageComponentTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -126,7 +126,10 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isButton() {
-    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && this.componentType === 'BUTTON';
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.BUTTON
+    );
   }
 
   /**
@@ -134,7 +137,10 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isSelectMenu() {
-    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && this.componentType === 'SELECT_MENU';
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.SELECT_MENU
+    );
   }
 }
 
