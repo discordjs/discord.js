@@ -59,7 +59,7 @@ class MessageComponentInteraction extends Interaction {
 
   /**
    * The component which was interacted with
-   * @type {?MessageActionRowComponent|Object}
+   * @type {?(MessageActionRowComponent|Object)}
    * @readonly
    */
   get component() {
