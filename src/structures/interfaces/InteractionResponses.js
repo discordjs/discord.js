@@ -116,6 +116,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   editReply(options) {
+    if (!this.deferred && !this.replied) throw new Error('INTERACTION_NO_RESPONSE');
     return this.webhook.editMessage('@original', options);
   }
 
