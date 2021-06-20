@@ -795,7 +795,7 @@ declare module 'discord.js' {
     public approximatePresenceCount: number | null;
     public available: boolean;
     public bans: GuildBanManager;
-    public invites: GuildInvitesManager;
+    public invites: GuildInviteManager;
     public channels: GuildChannelManager;
     public commands: GuildApplicationCommandManager;
     public defaultMessageNotifications: DefaultMessageNotificationLevel | number;
@@ -2341,7 +2341,7 @@ declare module 'discord.js' {
     public remove(user: UserResolvable, reason?: string): Promise<User>;
   }
 
-  export class GuildInvitesManager extends BaseManager<Snowflake, Invite, InviteResolvable> {
+  export class GuildInviteManager extends BaseManager<Snowflake, Invite, InviteResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public create(options?: InviteOptions, channel?: ChannelResolvable): Promise<Invite>;
