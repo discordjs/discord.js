@@ -59,6 +59,12 @@ class CommandInteraction extends Interaction {
     this.replied = false;
 
     /**
+     * Whether the reply to this interaction is ephemeral
+     * @type {?boolean}
+     */
+    this.ephemeral = null;
+
+    /**
      * An associated interaction webhook, can be used to further interact with this interaction
      * @type {InteractionWebhook}
      */
