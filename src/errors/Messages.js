@@ -81,6 +81,8 @@ const Messages = {
 
   PRUNE_DAYS_TYPE: 'Days must be a number',
 
+  GUILD_CHANNEL_INVITE: 'Could not find a available channel to create a invite.',
+
   GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
   GUILD_VOICE_CHANNEL_RESOLVE: 'Could not resolve channel to a guild voice channel.',
   GUILD_CHANNEL_ORPHAN: 'Could not find a parent to this guild channel.',
@@ -104,6 +106,10 @@ const Messages = {
   REACTION_RESOLVE_USER: "Couldn't resolve the user ID to remove from the reaction.",
 
   VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
+
+  INVITE_RESOLVE_CODE: `Couldn't resolve the code to fetch the invite.`,
+
+  UNKNOWN_INVITE: `Unknown invite.`,
 
   DELETE_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot delete them",
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
