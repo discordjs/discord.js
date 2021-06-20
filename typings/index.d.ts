@@ -554,6 +554,7 @@ declare module 'discord.js' {
         ) => string;
         AppIcon: (userID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
         AppAsset: (userID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+        StickerPackBanner: (bannerID: Snowflake, format: AllowedImageFormat, size: number) => string;
         GDMIcon: (userID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
         Splash: (guildID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
         DiscoverySplash: (
@@ -562,8 +563,8 @@ declare module 'discord.js' {
           format: AllowedImageFormat,
           size: number,
         ) => string;
-        StickerPackBanner: (bannerID: Snowflake, format: AllowedImageFormat, size: number) => string;
         TeamIcon: (teamID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+        Sticker: (stickerID: Snowflake, stickerFormat: StickerFormatType) => string;
       };
     };
     WSCodes: {

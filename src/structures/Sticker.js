@@ -115,7 +115,7 @@ class Sticker extends Base {
    * @type {string}
    */
   get url() {
-    return `${this.client.options.http.cdn}/stickers/${this.id}.${this.format === 'LOTTIE' ? 'json' : 'png'}`;
+    return this.client.rest.cdn.Sticker(this.id, this.format);
   }
 
   /**

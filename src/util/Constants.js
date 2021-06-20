@@ -179,6 +179,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/discovery-splashes/${guildID}/${hash}`, { size, format }),
       TeamIcon: (teamID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
+      Sticker: (stickerID, stickerFormat) =>
+        `${root}/stickers/${stickerID}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
     };
   },
   invite: (root, code) => `${root}/${code}`,
