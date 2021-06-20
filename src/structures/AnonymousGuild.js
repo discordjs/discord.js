@@ -8,9 +8,9 @@ const { VerificationLevels, NSFWLevels } = require('../util/Constants');
  * @abstract
  */
 class AnonymousGuild extends BaseGuild {
-  constructor(client, data) {
+  constructor(client, data, immediatePatch = true) {
     super(client, data);
-    this._patch(data);
+    if (immediatePatch) this._patch(data);
   }
 
   _patch(data) {

@@ -41,7 +41,7 @@ const Util = require('../util/Util');
  */
 class Guild extends AnonymousGuild {
   constructor(client, data) {
-    super(client, data);
+    super(client, data, false);
 
     /**
      * A manager of the application commands belonging to this guild
