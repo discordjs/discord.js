@@ -188,7 +188,7 @@ declare module 'discord.js' {
   }
 
   export abstract class AnonymousGuild extends BaseGuild {
-    constructor(client: Client, data: unknown, immediatPatch?: boolean);
+    constructor(client: Client, data: unknown, immediatePatch?: boolean);
     public banner: string | null;
     public description: string | null;
     public nsfwLevel: NSFWLevel;
