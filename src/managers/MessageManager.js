@@ -131,8 +131,9 @@ class MessageManager extends BaseManager {
       .resolveFiles();
     const d = await this.client.api.channels[this.channel.id].messages[messageID].patch({ data, files });
 
-    if (this.cache.has(messageID)) {
-      const clone = this.cache.get(messageID)._clone();
+    const existing = this.cache.get(messageID);
+    if (existing) {
+      const clone = existing._clone();
       clone._patch(d);
       return clone;
     }
