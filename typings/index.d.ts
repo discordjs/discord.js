@@ -3971,7 +3971,7 @@ declare module 'discord.js' {
 
   interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
     username?: string;
-    avatarURL?: string;
+    avatarURL?: string | null;
   }
 
   type WebhookType = keyof typeof WebhookTypes;
