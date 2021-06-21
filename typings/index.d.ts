@@ -1181,9 +1181,7 @@ declare module 'discord.js' {
   export class InteractionWebhook extends PartialWebhookMixin() {
     constructor(client: Client, id: Snowflake, token: string);
     public token: string;
-    public send(
-      options: string | APIMessage | (InteractionReplyOptions & { split?: false }),
-    ): Promise<Message | RawMessage>;
+    public send(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
     public send(
       options: APIMessage | (InteractionReplyOptions & { split: true | SplitOptions }),
     ): Promise<(Message | RawMessage)[]>;
@@ -1301,7 +1299,7 @@ declare module 'discord.js' {
     public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
-    public reply(options: string | APIMessage | (ReplyMessageOptions & { split?: false })): Promise<Message>;
+    public reply(options: string | APIMessage | ReplyMessageOptions): Promise<Message>;
     public reply(options: APIMessage | (ReplyMessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
     public startThread(
       name: string,
@@ -2109,7 +2107,7 @@ declare module 'discord.js' {
       options: string | APIMessage | WebhookEditMessageOptions,
     ): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
-    public send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
+    public send(options: string | APIMessage | WebhookMessageOptions): Promise<RawMessage>;
     public send(options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions })): Promise<RawMessage[]>;
   }
 
@@ -2570,7 +2568,7 @@ declare module 'discord.js' {
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
     readonly lastMessage: Message | null;
-    send(options: string | APIMessage | (MessageOptions & { split?: false })): Promise<Message>;
+    send(options: string | APIMessage | MessageOptions): Promise<Message>;
     send(options: APIMessage | (MessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
   }
 
@@ -2618,7 +2616,7 @@ declare module 'discord.js' {
     send(
       options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
     ): Promise<(Message | RawMessage)[]>;
-    send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<Message | RawMessage>;
+    send(options: string | APIMessage | WebhookMessageOptions): Promise<Message | RawMessage>;
   }
 
   interface WebhookFields extends PartialWebhookFields {
