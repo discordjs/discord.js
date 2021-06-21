@@ -11,14 +11,14 @@ class ThreadListSyncAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
     if (!guild) return {};
 
-    if (!data.channels_ids) {
-      guild.channels.cache.forEach(channel => {
-        this.removeStale(channel);
-      });
-    } else {
+    if (data.channels_ids) {
       data.channel_ids.forEach(id => {
         const channel = client.channels.resolve(id);
         if (channel) this.removeStale(channel);
+      });
+    } else {
+      guild.channels.cache.forEach(channel => {
+        this.removeStale(channel);
       });
     }
 

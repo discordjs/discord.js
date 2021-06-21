@@ -101,8 +101,9 @@ class ThreadManager extends BaseManager {
   async create({ name, autoArchiveDuration, startMessage, reason } = {}) {
     let path = this.client.api.channels(this.channel.id);
     if (startMessage) {
-      startMessage = this.channel.messages.resolveID(startMessage);
-      path = path.messages(startMessage);
+      const startMessageID = this.channel.messages.resolveID(startMessage);
+      if (!startMessageID) throw new TypeError('INVALID_TYPE', 'startMessage', 'MessageResolvable');
+      path = path.messages(startMessageID);
     }
 
     const data = await path.threads.post({
@@ -120,7 +121,7 @@ class ThreadManager extends BaseManager {
    * The options for fetching multiple threads, the properties are mutually exclusive
    * @typedef {Object} FetchThreadsOptions
    * @property {FetchArchivedThreadOptions} [archived] The options used to fetch archived threads
-   * @property {boolean} [active] When true, fetches active threads. If archived is set, this is ignored!
+   * @property {boolean} [active] When true, fetches active threads. <warn>If `archived` is set, this is ignored!</warn>
    */
 
   /**
@@ -220,7 +221,7 @@ class ThreadManager extends BaseManager {
       const thread = this.client.channels.add(raw, null, cache);
       return col.set(thread.id, thread);
     }, new Collection());
-    rawThreads.members.forEach(rawMember => this.client.channels.cache.get(rawMember.id)?.members.add(rawMember));
+    rawThreads.members.forEach(rawMember => threads.get(rawMember.id)?.members.add(rawMember));
     return {
       threads,
       hasMore: rawThreads.has_more,

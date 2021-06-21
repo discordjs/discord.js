@@ -26,7 +26,7 @@ class ThreadMemberManager extends BaseManager {
 
   add(data, cache = true) {
     const existing = this.cache.get(data.user_id);
-    if (existing && existing._patch && cache) existing._patch(data);
+    if (cache) existing?._patch(data);
     if (existing) return existing;
 
     const member = new ThreadMember(this.thread, data);
@@ -80,7 +80,7 @@ class ThreadMemberManager extends BaseManager {
   }
 
   /**
-   * Fetches member(s) for the thread from Discord, requires `GUILD_MEMBERS` gateway intent.
+   * Fetches member(s) for the thread from Discord, requires access to the `GUILD_MEMBERS` gateway intent.
    * @param {boolean} [cache=true] Whether or not to cache the fetched members
    * @returns {Promise<Collection<Snowflake, ThreadMember>>}
    */

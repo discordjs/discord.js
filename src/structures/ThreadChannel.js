@@ -121,7 +121,7 @@ class ThreadChannel extends Channel {
      */
     this.memberCount = data.member_count;
 
-    if (data.member && this.client.user?.id) this.members.add({ user_id: this.client.user.id, ...data.member });
+    if (data.member && this.client.user) this.members.add({ user_id: this.client.user.id, ...data.member });
     if (data.messages) for (const message of data.messages) this.messages.add(message);
   }
 
@@ -189,7 +189,7 @@ class ThreadChannel extends Channel {
    * @returns {?Readonly<Permissions>}
    */
   permissionsFor(memberOrRole) {
-    return this.parent?.permissionsFor(memberOrRole);
+    return this.parent?.permissionsFor(memberOrRole) ?? null;
   }
 
   /**

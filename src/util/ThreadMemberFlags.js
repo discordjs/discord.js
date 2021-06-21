@@ -23,7 +23,7 @@ class ThreadMemberFlags extends BitField {}
 
 /**
  * Numeric thread member flags. There are currently no bitflags relevant to bots for this.
- * @type {Object}
+ * @type {Object<string, number>}
  */
 ThreadMemberFlags.FLAGS = {};
 
