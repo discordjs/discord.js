@@ -2,7 +2,7 @@
 
 const { Error, TypeError } = require('../errors');
 const Collection = require('../util/Collection');
-const { ApplicationCommandPermissionTypes } = require('../util/Constants');
+const { ApplicationCommandPermissionTypes, APIErrors } = require('../util/Constants');
 
 /**
  * Manages API methods for permissions of Application Commands.
@@ -122,7 +122,7 @@ class ApplicationCommandPermissionsManager {
    * <warn>One of `command` AND `permissions`, OR `fullPermissions` is required.
    * `fullPermissions` is not a valid option when passing to a manager where `commandID` is non-null</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} SetApplicationCommandPermissionsOptions
-   * @param {ApplicationCommandPermissionsData[]} [permissions] The new permissions for the command
+   * @param {ApplicationCommandPermissionData[]} [permissions] The new permissions for the command
    * @param {GuildApplicationCommandPermissionData[]} [fullPermissions] The new permissions for all commands
    * in a guild <warn>When this parameter is set, permissions and command are ignored</warn>
    */
@@ -162,7 +162,7 @@ class ApplicationCommandPermissionsManager {
 
     if (commandID) {
       if (!Array.isArray(permissions)) {
-        throw new TypeError('INVALID_TYPE', 'permissions', 'Array of ApplicationCommandPermissionsData', true);
+        throw new TypeError('INVALID_TYPE', 'permissions', 'Array of ApplicationCommandPermissionData', true);
       }
       const data = await this.permissionsPath(guildID, commandID).put({
         data: { permissions: permissions.map(perm => this.constructor.transformPermissions(perm)) },
@@ -199,7 +199,7 @@ class ApplicationCommandPermissionsManager {
    * Options used to add permissions to a command
    * <warn>The `command` parameter is not optional when the managers `commandID` is `null`</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} AddApplicationCommandPermissionsOptions
-   * @param {ApplicationCommandPermissionsData[]} permissions The permissions to add to the command
+   * @param {ApplicationCommandPermissionData[]} permissions The permissions to add to the command
    */
 
   /**
@@ -222,14 +222,14 @@ class ApplicationCommandPermissionsManager {
     const { guildID, commandID } = this._validateOptions(guild, command);
     if (!commandID) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
     if (!Array.isArray(permissions)) {
-      throw new TypeError('INVALID_TYPE', 'permissions', 'Array of ApplicationCommandPermissionsData', true);
+      throw new TypeError('INVALID_TYPE', 'permissions', 'Array of ApplicationCommandPermissionData', true);
     }
 
     let existing = [];
     try {
       existing = await this.fetch({ guild: guildID, command: commandID });
     } catch (error) {
-      if (error.code !== 404) throw error;
+      if (error.code !== APIErrors.UNKNOWN_APPLICATION_COMMAND_PERMISSIONS) throw error;
     }
 
     const newPermissions = permissions.slice();
@@ -277,7 +277,7 @@ class ApplicationCommandPermissionsManager {
     try {
       existing = await this.fetch({ guild: guildID, command: commandID });
     } catch (error) {
-      if (error.code !== 404) throw error;
+      if (error.code !== APIErrors.UNKNOWN_APPLICATION_COMMAND_PERMISSIONS) throw error;
     }
 
     if (!users && !roles) throw new TypeError('INVALID_TYPE', 'users OR roles', 'Array or Resolvable', true);
@@ -351,9 +351,10 @@ class ApplicationCommandPermissionsManager {
     try {
       existing = await this.fetch({ guild: guildID, command: commandID });
     } catch (error) {
-      if (error.code !== 404) throw error;
+      if (error.code !== APIErrors.UNKNOWN_APPLICATION_COMMAND_PERMISSIONS) throw error;
     }
 
+    if (!permissionID) throw new TypeError('INVALID_TYPE', 'permissionsID', 'UserResolvable or RoleResolvable');
     let resolvedID = permissionID;
     if (typeof permissionID !== 'string') {
       resolvedID = this.client.users.resolveID(permissionID);
@@ -370,7 +371,7 @@ class ApplicationCommandPermissionsManager {
 
   _validateOptions(guild, command) {
     const guildID = this.guildID ?? this.client.guilds.resolveID(guild);
-    if (!guildID) return Promise.reject(new Error('GLOBAL_COMMAND_PERMISSIONS'));
+    if (!guildID) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
     let commandID = this.commandID;
     if (command && !commandID) {
       commandID = this.manager.resolveID?.(command);
@@ -381,7 +382,7 @@ class ApplicationCommandPermissionsManager {
         commandID = this.client.application?.commands.resolveID(command);
       }
       if (!commandID) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable', true));
+        throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable', true);
       }
     }
     return { guildID, commandID };

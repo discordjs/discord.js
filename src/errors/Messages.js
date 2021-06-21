@@ -119,7 +119,7 @@ const Messages = {
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
 
   GLOBAL_COMMAND_PERMISSIONS:
-    'Permissions for global commands may only be fetched or modified by providing a guildID' +
+    'Permissions for global commands may only be fetched or modified by providing a GuildResolvable ' +
     "or from a guild's application command manager.",
   GUILD_UNCACHED_ROLE_RESOLVE: 'Cannot resolve roles from an arbitrary guild, provide an ID instead',
 
