@@ -113,6 +113,8 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   editReply(options) {
+    this.replied = true;
+    
     return this.webhook.editMessage('@original', options);
   }
 
