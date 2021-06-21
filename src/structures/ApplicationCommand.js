@@ -127,7 +127,7 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   edit(data) {
-    return this.manager.edit(this, data);
+    return this.manager.edit(this, data, this.guildID ?? undefined);
   }
 
   /**
@@ -140,7 +140,7 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   delete() {
-    return this.manager.delete(this);
+    return this.manager.delete(this, this.guildID ?? undefined);
   }
 
   /**
