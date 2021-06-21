@@ -248,24 +248,26 @@ declare module 'discord.js' {
     public toString(): string | null;
   }
 
-  export class ApplicationCommand extends Base {
-    constructor(client: Client, data: unknown, guild?: Guild);
+  export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
+    constructor(client: Client, data: unknown, guild?: Guild, guildID?: Snowflake);
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
     public defaultPermission: boolean;
     public description: string;
     public guild: Guild | null;
+    public guildID: Snowflake | null;
     public readonly manager: ApplicationCommandManager;
     public id: Snowflake;
     public name: string;
     public options: ApplicationCommandOption[];
-    public delete(): Promise<ApplicationCommand>;
-    public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
-    public fetchPermissions(guildID?: Snowflake): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(
-      permissions: ApplicationCommandPermissionData[],
-      guildID?: Snowflake,
-    ): Promise<ApplicationCommandPermissions[]>;
+    public permissions: ApplicationCommandPermissionsManager<
+      PermissionsFetchType,
+      PermissionsFetchType,
+      Guild | null,
+      Snowflake
+    >;
+    public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
+    public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
   }
 
@@ -512,7 +514,7 @@ declare module 'discord.js' {
   }
 
   export class CommandInteraction extends Interaction {
-    public readonly command: ApplicationCommand | null;
+    public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
     public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | null;
     public channelID: Snowflake;
     public commandID: Snowflake;
@@ -2292,47 +2294,85 @@ declare module 'discord.js' {
     public valueOf(): Collection<K, Holds>;
   }
 
-  export class ApplicationCommandManager extends BaseManager<
-    Snowflake,
-    ApplicationCommand,
-    ApplicationCommandResolvable
-  > {
+  export class ApplicationCommandManager<
+    ApplicationCommandType = ApplicationCommand<{ guild: GuildResolvable }>,
+  > extends BaseManager<Snowflake, ApplicationCommandType, ApplicationCommandResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
+    public permissions: ApplicationCommandPermissionsManager<
+      { guild: GuildResolvable; command?: ApplicationCommandResolvable },
+      { guild: GuildResolvable; command: ApplicationCommandResolvable },
+      null,
+      null
+    >;
     private commandPath({ id, guildID }: { id?: Snowflake; guildID?: Snowflake }): unknown;
-    public create(command: ApplicationCommandData, guildID?: Snowflake): Promise<ApplicationCommand>;
-    public delete(command: ApplicationCommandResolvable, guildID?: Snowflake): Promise<ApplicationCommand | null>;
+    public create(command: ApplicationCommandData, guildID: Snowflake): Promise<ApplicationCommand>;
+    public create(command: ApplicationCommandData, guildID?: Snowflake): Promise<ApplicationCommandType>;
+    public delete(command: ApplicationCommandResolvable, guildID?: Snowflake): Promise<ApplicationCommandType | null>;
+    public edit(
+      command: ApplicationCommandResolvable,
+      data: ApplicationCommandData,
+      guildID: Snowflake,
+    ): Promise<ApplicationCommand>;
     public edit(
       command: ApplicationCommandResolvable,
       data: ApplicationCommandData,
       guildID?: Snowflake,
+    ): Promise<ApplicationCommandType>;
+    public fetch(
+      id: Snowflake,
+      options: FetchApplicationCommandOptions & { guild: GuildResolvable },
     ): Promise<ApplicationCommand>;
-    public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommand>;
+    public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommandType>;
     public fetch(
       id?: Snowflake,
       options?: FetchApplicationCommandOptions,
-    ): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public fetchPermissions(
-      command: undefined,
-      guildID: Snowflake,
-    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-    public fetchPermissions(
-      command: ApplicationCommandResolvable,
-      guildID: Snowflake,
-    ): Promise<ApplicationCommandPermissions[]>;
+    ): Promise<Collection<Snowflake, ApplicationCommandType>>;
     public set(
       commands: ApplicationCommandData[],
       guildID?: Snowflake,
     ): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public setPermissions(
-      command: ApplicationCommandResolvable,
-      permissions: ApplicationCommandPermissionData[],
-      guildID: Snowflake,
-    ): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(
-      permissions: GuildApplicationCommandPermissionData[],
-      guildID: Snowflake,
-    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public set(
+      commands: ApplicationCommandData[],
+      guildID?: Snowflake,
+    ): Promise<Collection<Snowflake, ApplicationCommandType>>;
     private static transformCommand(command: ApplicationCommandData): unknown;
+  }
+
+  export class ApplicationCommandPermissionsManager<BaseOptions, FetchSingleOptions, GuildType, CommandIDType> {
+    constructor(public manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand);
+    public client: Client;
+    public commandID: CommandIDType;
+    public guild: GuildType;
+    public guildID: Snowflake | null;
+    public add(
+      options: BaseOptions & { permissions: ApplicationCommandPermissionData[] },
+    ): Promise<ApplicationCommandPermissions[]>;
+    public has(options: BaseOptions & { permissionsID: UserResolvable | RoleResolvable }): Promise<boolean>;
+    public fetch(options: FetchSingleOptions): Promise<ApplicationCommandPermissions[]>;
+    public fetch(options: BaseOptions): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    public remove(
+      options:
+        | (BaseOptions & {
+            users: UserResolvable | UserResolvable[];
+            roles?: RoleResolvable | RoleResolvable[];
+          })
+        | (BaseOptions & {
+            users?: UserResolvable | UserResolvable[];
+            roles: RoleResolvable | RoleResolvable[];
+          }),
+    ): Promise<ApplicationCommandPermissions[]>;
+    public set(
+      options: BaseOptions & {
+        command: ApplicationCommandResolvable;
+        permissions: ApplicationCommandPermissionData[];
+      },
+    ): Promise<ApplicationCommandPermissions[]>;
+    public set(
+      options: BaseOptions & {
+        fullPermissions: GuildApplicationCommandPermissionData[];
+      },
+    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    private permissionsPath(guildID: Snowflake, commandID: Snowflake): unknown;
     private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): unknown;
   }
 
@@ -2346,9 +2386,15 @@ declare module 'discord.js' {
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Channel | null>;
   }
 
-  export class GuildApplicationCommandManager extends ApplicationCommandManager {
+  export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
+    public permissions: ApplicationCommandPermissionsManager<
+      { command?: ApplicationCommandResolvable },
+      { command: ApplicationCommandResolvable },
+      Guild,
+      null
+    >;
     public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
     public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
     public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;

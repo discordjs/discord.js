@@ -121,6 +121,7 @@ const Messages = {
   GLOBAL_COMMAND_PERMISSIONS:
     'Permissions for global commands may only be fetched or modified by providing a guildID' +
     "or from a guild's application command manager.",
+  GUILD_UNCACHED_ROLE_RESOLVE: 'Cannot resolve roles from an arbitrary guild, provide an ID instead',
 
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
   INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
