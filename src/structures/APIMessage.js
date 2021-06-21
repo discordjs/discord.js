@@ -36,8 +36,15 @@ class APIMessage {
     this.data = null;
 
     /**
+     * @typedef {Object} MessageFile
+     * @property {Buffer|string|Stream} attachment The original attachment that generated this file
+     * @property {string} name The name of this file
+     * @property {Buffer|Stream} file The file to be sent to the API
+     */
+
+    /**
      * Files sendable to the API
-     * @type {?APIAttachment[]}
+     * @type {?MessageFile[]}
      */
     this.files = null;
   }
@@ -249,7 +256,7 @@ class APIMessage {
   /**
    * Resolves a single file into an object sendable to the API.
    * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
-   * @returns {APIAttachment}
+   * @returns {MessageFile}
    */
   static async resolveFile(fileLike) {
     let attachment;
