@@ -114,9 +114,7 @@ class InteractionResponses {
    */
   async editReply(options) {
     const message = await this.webhook.editMessage('@original', options);
-    
     this.replied = true;
-      
     return message;
   }
 
