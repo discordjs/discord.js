@@ -8,6 +8,7 @@ const Permissions = require('../util/Permissions');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
+ * @extends {Base}
  */
 class PermissionOverwrites extends Base {
   constructor(client, data, channel) {

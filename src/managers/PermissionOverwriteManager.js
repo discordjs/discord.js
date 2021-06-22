@@ -68,6 +68,7 @@ class PermissionOverwriteManager extends BaseManager {
    * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
    * @param {PermissionOverwrites} [existing] The existing overwrites to merge with this update
    * @returns {Promise<GuildChannel>}
+   * @private
    */
   async upsert(userOrRole, options, overwriteOptions = {}, existing) {
     let userOrRoleID = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
@@ -129,7 +130,7 @@ class PermissionOverwriteManager extends BaseManager {
   }
 
   /**
-   * Deletes permission overwrites for a user or role in this channel
+   * Deletes permission overwrites for a user or role in this channel.
    * @param {UserResolvable|RoleResolvable} userOrRole The user or role to delete
    * @param {string} [reason] The reason for deleting the overwrite
    * @returns {GuildChannel}

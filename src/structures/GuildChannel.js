@@ -36,7 +36,11 @@ class GuildChannel extends Channel {
     this.guild = guild;
 
     this.parentID = this.parentID ?? null;
-    this.permissionOverwrites = this.permissionOverwrites ?? new Collection();
+    /**
+     * A manager of permission overwrites that belong to this channel
+     * @type {PermissionOverwriteManager}
+     */
+    this.permissionOverwrites = new PermissionOverwriteManager(this);
   }
 
   _patch(data) {
@@ -66,11 +70,6 @@ class GuildChannel extends Channel {
       this.parentID = data.parent_id;
     }
 
-    /**
-     * A manager of permission overwrites that belong to this channel
-     * @type {PermissionOverwriteManager}
-     */
-    this.permissionOverwrites = new PermissionOverwriteManager(this);
     if ('permission_overwrites' in data) {
       for (const overwrite of data.permission_overwrites) {
         this.permissionOverwrites.add(overwrite);

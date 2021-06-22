@@ -2281,13 +2281,17 @@ declare module 'discord.js' {
     public unpin(message: MessageResolvable): Promise<void>;
   }
 
-  export class PermissionOverwriteManager extends BaseManager<Snowflake, PermissionOverwrites, PermissionOverwriteResolvable> {
+  export class PermissionOverwriteManager extends BaseManager<
+    Snowflake,
+    PermissionOverwrites,
+    PermissionOverwriteResolvable
+  > {
     constructor(client: Client, iterable?: Iterable<any>);
     public set(
       overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
       reason?: string,
     ): Promise<GuildChannel>;
-    public upsert(
+    private upsert(
       userOrRole: RoleResolvable | UserResolvable,
       options: PermissionOverwriteOptions,
       overwriteOptions?: GuildChannelOverwriteOptions,
@@ -2303,10 +2307,7 @@ declare module 'discord.js' {
       options: PermissionOverwriteOptions,
       overwriteOptions?: GuildChannelOverwriteOptions,
     ): Promise<GuildChannel>;
-    public delete(
-      userOrRole: RoleResolvable | UserResolvable,
-      reason?: string,
-    ): Promise<GuildChannel>;
+    public delete(userOrRole: RoleResolvable | UserResolvable, reason?: string): Promise<GuildChannel>;
   }
 
   export class PresenceManager extends BaseManager<Snowflake, Presence, PresenceResolvable> {
