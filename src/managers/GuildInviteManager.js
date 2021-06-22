@@ -2,7 +2,6 @@
 
 const BaseManager = require('./BaseManager');
 const { Error } = require('../errors');
-const GuildChannel = require('../structures/GuildChannel');
 const Invite = require('../structures/Invite');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
@@ -133,9 +132,14 @@ class GuildInviteManager extends BaseManager {
   }
 
   /**
+   * @typedef {Object} CreateChannelInviteOptions
+   * @property {GuildChannel} [channel] The optional channel to define where to create the invite.
+   * @extends {CreateInviteOptions}
+   */
+
+  /**
    * Create a invite to the guild from the provided or the first available channel.
-   * @param {CreateInviteOptions|ChannelResolvable} [options=null] The options for creating the invite
-   * @param {ChannelResolvable} [channel=null] The options for creating the invite
+   * @param {CreateChannelInviteOptions} [options={}] The options for creating the invite from a optional channel.
    * @returns {Promise<Invite?>}
    * @example
    * // Create an invite to a random allowed channel
@@ -144,21 +148,19 @@ class GuildInviteManager extends BaseManager {
    *   .catch(console.error);
    * @example
    * // Create an invite to a selected channel
-   * guild.invites.create('599942732013764608')
+   * guild.invites.create({ channel: '599942732013764608' })
    *   .then(console.log)
    *   .catch(console.error);
    */
-  create(options = null, channel = null) {
-    if (!channel && (options instanceof GuildChannel || typeof options === 'string')) {
-      channel = options;
-      options = null;
-    }
-    if (!channel) {
+  create(options = {}) {
+    let channel;
+
+    if (!options.channel) {
       channel = this.guild.channels.cache.find(c => c.permissionsFor(this.guild.me).has('CREATE_INSTANT_INVITE'));
       if (!channel) return Promise.reject(new Error('GUILD_CHANNEL_INVITE'));
     }
 
-    channel = this.guild.channels.resolve(channel);
+    channel = this.guild.channels.resolve(options.channel);
     if (!channel) return Promise.reject(new Error('GUILD_CHANNEL_RESOLVE'));
 
     return channel.createInvite(options);
