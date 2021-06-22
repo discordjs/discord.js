@@ -20,7 +20,6 @@ class InteractionResponses {
    * Options for a reply to an {@link Interaction}.
    * @typedef {BaseMessageOptions} InteractionReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
-   * @property {MessageEmbed[]|APIEmbed[]} [embeds] An array of embeds for the message
    */
 
   /**

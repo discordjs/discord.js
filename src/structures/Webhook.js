@@ -92,7 +92,6 @@ class Webhook {
    * @typedef {BaseMessageOptions} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
-   * @property {MessageEmbed[]|APIEmbed[]} [embeds] An array of embeds for the message
    */
 
   /**

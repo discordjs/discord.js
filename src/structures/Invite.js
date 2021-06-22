@@ -19,11 +19,16 @@ class Invite extends Base {
   }
 
   _patch(data) {
+    const InviteGuild = require('./InviteGuild');
+    const Guild = require('./Guild');
     /**
-     * The guild the invite is for
-     * @type {?Guild}
+     * The guild the invite is for including welcome screen data if present
+     * @type {?(Guild|InviteGuild)}
      */
-    this.guild = data.guild ? this.client.guilds.add(data.guild, false) : null;
+    this.guild = null;
+    if (data.guild) {
+      this.guild = data.guild instanceof Guild ? data.guild : new InviteGuild(this.client, data.guild);
+    }
 
     /**
      * The code for this invite
