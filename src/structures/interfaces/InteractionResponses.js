@@ -112,13 +112,12 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  editReply(options) {
-    return this.webhook.editMessage('@original', options)
-      .then((message) => {
-        this.replied = true;
-        
-        return message;
-      });
+  async editReply(options) {
+    const message = await this.webhook.editMessage('@original', options);
+    
+    this.replied = true;
+      
+    return message;
   }
 
   /**
