@@ -1,8 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events, InteractionTypes, MessageComponentTypes } = require('../../../util/Constants');
-const Structures = require('../../../util/Structures');
+const { Events, InteractionTypes, MessageComponentTypes } = require('../../util/Constants');
+const Structures = require('../../util/Structures');
 
 class InteractionCreateAction extends Action {
   handle(data) {
