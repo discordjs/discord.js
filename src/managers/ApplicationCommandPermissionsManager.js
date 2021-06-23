@@ -264,7 +264,7 @@ class ApplicationCommandPermissionsManager {
    * @example
    * // Remove multiple roles from this command
    * guild.commands.permissions.remove({
-   *   command: '123456789012345678', roles: [ '876543210123456789', '765432101234567890' ]
+   *   command: '123456789012345678', roles: ['876543210123456789', '765432101234567890']
    * })
    *    .then(console.log)
    *    .catch(console.error);
