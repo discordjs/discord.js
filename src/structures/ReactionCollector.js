@@ -101,7 +101,7 @@ class ReactionCollector extends Collector {
      * @param {MessageReaction} reaction The reaction that was added
      * @param {User} user The user that added the reaction
      */
-    if (reaction.count === 1 && (!this.options.filter || this.options.filter(reaction, user, this.collected))) {
+    if (reaction.count === 1 && this.filter(reaction, user, this.collected)) {
       this.emit('create', reaction, user);
     }
 

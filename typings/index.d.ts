@@ -479,6 +479,7 @@ declare module 'discord.js' {
     public collected: Collection<K, V>;
     public ended: boolean;
     public abstract endReason: string | null;
+    public filter: CollectorFilter<[V]>;
     public readonly next: Promise<V>;
     public options: CollectorOptions<[V]>;
     public checkEnd(): void;

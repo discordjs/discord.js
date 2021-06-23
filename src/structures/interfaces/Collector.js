@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
+const { TypeError } = require('../../errors');
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
 
@@ -38,6 +39,13 @@ class Collector extends EventEmitter {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
+     * The filter applied to this collector
+     * @type {CollectorFilter}
+     * @returns {boolean|Promise<boolean>}
+     */
+    this.filter = options.filter ?? (() => true);
+
+    /**
      * The options of this collector
      * @type {CollectorOptions}
      */
@@ -69,6 +77,10 @@ class Collector extends EventEmitter {
      */
     this._idletimeout = null;
 
+    if (typeof this.filter !== 'function') {
+      throw new TypeError('INVALID_TYPE', 'filter', 'function');
+    }
+
     this.handleCollect = this.handleCollect.bind(this);
     this.handleDispose = this.handleDispose.bind(this);
 
@@ -84,7 +96,7 @@ class Collector extends EventEmitter {
   async handleCollect(...args) {
     const collect = this.collect(...args);
 
-    if (collect && (!this.options.filter || (await this.options.filter(...args, this.collected)))) {
+    if (collect && (await this.filter(...args, this.collected))) {
       this.collected.set(collect, args[0]);
 
       /**
@@ -111,7 +123,7 @@ class Collector extends EventEmitter {
     if (!this.options.dispose) return;
 
     const dispose = this.dispose(...args);
-    if (!dispose || (this.options.filter && !this.options.filter(...args)) || !this.collected.has(dispose)) return;
+    if (!dispose || !this.filter(...args) || !this.collected.has(dispose)) return;
     this.collected.delete(dispose);
 
     /**
