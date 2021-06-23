@@ -17,7 +17,7 @@ class ThreadListSyncAction extends Action {
         if (channel) this.removeStale(channel);
       }
     } else {
-      for (const [, channel] of guild.channels.cache) {
+      for (const channel of guild.channels.cache.values()) {
         this.removeStale(channel);
       }
     }
