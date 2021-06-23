@@ -217,11 +217,12 @@ class ThreadManager extends BaseManager {
   }
 
   _mapThreads(rawThreads, cache) {
-    const threads = rawThreads.threads.reduce((col, raw) => {
+    const threads = rawThreads.threads.reduce((coll, raw) => {
       const thread = this.client.channels.add(raw, null, cache);
-      return col.set(thread.id, thread);
+      return coll.set(thread.id, thread);
     }, new Collection());
-    rawThreads.members.forEach(rawMember => threads.get(rawMember.id)?.members.add(rawMember));
+    // Discord sends the thread id as id in this object
+    for (const rawMember of rawThreads.members) threads.get(rawMember.id)?.members.add(rawMember);
     return {
       threads,
       hasMore: rawThreads.has_more,

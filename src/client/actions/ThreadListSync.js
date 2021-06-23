@@ -12,29 +12,28 @@ class ThreadListSyncAction extends Action {
     if (!guild) return {};
 
     if (data.channels_ids) {
-      data.channel_ids.forEach(id => {
+      for (const id of data.channel_ids) {
         const channel = client.channels.resolve(id);
         if (channel) this.removeStale(channel);
-      });
+      }
     } else {
-      guild.channels.cache.forEach(channel => {
+      for (const [, channel] of guild.channels.cache) {
         this.removeStale(channel);
-      });
+      }
     }
 
-    const syncedThreads = new Collection();
-    data.threads.forEach(rawThread => {
+    const syncedThreads = data.threads.reduce((coll, rawThread) => {
       const thread = client.channels.add(rawThread);
-      syncedThreads.set(thread.id, thread);
-    });
+      return coll.set(thread.id, thread);
+    }, new Collection());
 
-    Object.values(data.members).forEach(rawMember => {
+    for (const rawMember of Object.values(data.members)) {
       // Discord sends the thread id as id in this object
       const thread = client.channels.cache.get(rawMember.id);
       if (thread) {
         thread.members.add(rawMember);
       }
-    });
+    }
 
     /**
      * Emitted whenever the client user gains access to a text or news channel that contains threads
