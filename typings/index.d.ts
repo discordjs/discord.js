@@ -1303,7 +1303,7 @@ declare module 'discord.js' {
   }
 
   export class MessageBuilder {
-    constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+    constructor(target: MessageTarget, options?: MessageOptions | WebhookMessageOptions);
     public data: unknown | null;
     public readonly isUser: boolean;
     public readonly isWebhook: boolean;

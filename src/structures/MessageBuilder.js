@@ -14,9 +14,9 @@ const Util = require('../util/Util');
 class MessageBuilder {
   /**
    * @param {MessageTarget} target - The target for this message to be sent to
-   * @param {MessageOptions|WebhookMessageOptions} options - Options passed in from send
+   * @param {MessageOptions|WebhookMessageOptions} [options={}] - Options passed in from send
    */
-  constructor(target, options) {
+  constructor(target, options = {}) {
     /**
      * The target for this message to be sent to
      * @type {MessageTarget}
@@ -90,7 +90,9 @@ class MessageBuilder {
    * @returns {?(string|string[])}
    */
   makeContent() {
-    let { content } = this.setContent(this.options.content);
+    let {
+      options: { content },
+    } = this.setContent(this.options.content);
     if (typeof content !== 'string') return content;
 
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
@@ -127,7 +129,9 @@ class MessageBuilder {
     const content = this.makeContent();
     const tts = Boolean(this.options.tts);
 
-    const { nonce } = this.setNonce(this.options.nonce);
+    const {
+      options: { nonce },
+    } = this.setNonce(this.options.nonce);
 
     const components = this.options.components?.map(c =>
       BaseMessageComponent.create(
@@ -240,7 +244,7 @@ class MessageBuilder {
    * @returns {MessageBuilder}
    */
   addComponents(components) {
-    this.options.components = (this.options.components ?? []).push(...components);
+    this.options.components = [...(this.options.components ?? []), ...components];
     return this;
   }
 
@@ -250,7 +254,7 @@ class MessageBuilder {
    * @returns {MessageBuilder}
    */
   addEmbeds(embeds) {
-    this.options.embeds = (this.options.embeds ?? []).push(...embeds);
+    this.options.embeds = [...(this.options.embeds ?? []), ...embeds];
     return this;
   }
 
@@ -260,7 +264,7 @@ class MessageBuilder {
    * @returns {MessageBuilder}
    */
   addFiles(files) {
-    this.options.files = (this.options.files ?? []).push(...files);
+    this.options.files = [...(this.options.files ?? []), ...files];
     return this;
   }
 
