@@ -404,7 +404,7 @@ class MessageBuilder {
    * Removes, replaces and inserts embeds for this message (max 10).
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of embeds to remove
-   * @param  {MessageEmbed[]|MessageEmbedOptions[]} embeds The replacing embed objects
+   * @param {MessageEmbed[]|MessageEmbedOptions[]} embeds The replacing embed objects
    * @returns {MessageBuilder}
    */
   spliceEmbeds(index, deleteCount, embeds) {
