@@ -1,7 +1,5 @@
 'use strict';
 
-const Util = require('./util/Util');
-
 module.exports = {
   // "Root" classes (starting points)
   BaseClient: require('./client/BaseClient'),
@@ -29,7 +27,7 @@ module.exports = {
   Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
   UserFlags: require('./util/UserFlags'),
-  Util: Util,
+  Util: require('./util/Util'),
   version: require('../package.json').version,
 
   // Managers
@@ -50,14 +48,6 @@ module.exports = {
   PresenceManager: require('./managers/PresenceManager'),
   RoleManager: require('./managers/RoleManager'),
   UserManager: require('./managers/UserManager'),
-
-  // Shortcuts to Util methods
-  discordSort: Util.discordSort,
-  escapeMarkdown: Util.escapeMarkdown,
-  fetchRecommendedShards: Util.fetchRecommendedShards,
-  resolveColor: Util.resolveColor,
-  verifyString: Util.verifyString,
-  splitMessage: Util.splitMessage,
 
   // Structures
   Application: require('./structures/interfaces/Application'),

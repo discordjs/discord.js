@@ -120,16 +120,20 @@ class MessageManager extends BaseManager {
    * @returns {Promise<Message>}
    */
   async edit(message, options) {
-    message = this.resolveID(message);
-    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    const messageID = this.resolveID(message);
+    if (!messageID) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    const { data, files } = await (options instanceof APIMessage ? options : APIMessage.create(this, options))
+    const { data, files } = await (options instanceof APIMessage
+      ? options
+      : APIMessage.create(message instanceof Message ? message : this, options)
+    )
       .resolveData()
       .resolveFiles();
-    const d = await this.client.api.channels[this.channel.id].messages[message].patch({ data, files });
+    const d = await this.client.api.channels[this.channel.id].messages[messageID].patch({ data, files });
 
-    if (this.cache.has(message)) {
-      const clone = this.cache.get(message)._clone();
+    const existing = this.cache.get(messageID);
+    if (existing) {
+      const clone = existing._clone();
       clone._patch(d);
       return clone;
     }

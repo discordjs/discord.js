@@ -205,6 +205,7 @@ declare module 'discord.js' {
     public readonly isUser: boolean;
     public readonly isWebhook: boolean;
     public readonly isMessage: boolean;
+    public readonly isMessageManager: boolean;
     public readonly isInteraction: boolean;
     public files: unknown[] | null;
     public options: MessageOptions | WebhookMessageOptions;
@@ -508,6 +509,7 @@ declare module 'discord.js' {
     public commandID: Snowflake;
     public commandName: string;
     public deferred: boolean;
+    public ephemeral: boolean | null;
     public options: Collection<string, CommandInteractionOption>;
     public replied: boolean;
     public webhook: InteractionWebhook;
@@ -1367,6 +1369,7 @@ declare module 'discord.js' {
     public componentType: MessageComponentType;
     public customID: string;
     public deferred: boolean;
+    public ephemeral: boolean | null;
     public message: Message | RawMessage;
     public replied: boolean;
     public webhook: InteractionWebhook;
@@ -3560,7 +3563,9 @@ declare module 'discord.js' {
     | User
     | GuildMember
     | Webhook
-    | WebhookClient;
+    | WebhookClient
+    | Message
+    | MessageManager;
 
   type MessageType =
     | 'DEFAULT'
