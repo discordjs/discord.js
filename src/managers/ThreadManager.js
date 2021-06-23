@@ -222,7 +222,7 @@ class ThreadManager extends BaseManager {
       return coll.set(thread.id, thread);
     }, new Collection());
     // Discord sends the thread id as id in this object
-    for (const rawMember of rawThreads.members) threads.get(rawMember.id)?.members.add(rawMember);
+    for (const rawMember of rawThreads.members) threads.get(rawMember.id)?.members._add(rawMember);
     return {
       threads,
       hasMore: rawThreads.has_more,

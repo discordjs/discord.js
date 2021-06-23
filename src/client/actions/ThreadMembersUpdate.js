@@ -12,7 +12,7 @@ class ThreadMembersUpdateAction extends Action {
       thread.memberCount = data.member_count;
 
       data.added_members?.forEach(rawMember => {
-        thread.members.add(rawMember);
+        thread.members._add(rawMember);
       });
 
       data.removed_member_ids?.forEach(memberId => {

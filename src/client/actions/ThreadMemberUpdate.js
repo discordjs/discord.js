@@ -11,7 +11,7 @@ class ThreadMemberUpdateAction extends Action {
     if (thread) {
       const member = thread.members.cache.get(data.user_id);
       if (!member) {
-        const newMember = thread.members.add(data);
+        const newMember = thread.members._add(data);
         return { newMember };
       }
       const old = member._update(data);

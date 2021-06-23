@@ -121,7 +121,7 @@ class ThreadChannel extends Channel {
      */
     this.memberCount = data.member_count;
 
-    if (data.member && this.client.user) this.members.add({ user_id: this.client.user.id, ...data.member });
+    if (data.member && this.client.user) this.members._add({ user_id: this.client.user.id, ...data.member });
     if (data.messages) for (const message of data.messages) this.messages.add(message);
   }
 
@@ -153,26 +153,11 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Adds a member to this thread.
-   * @param {UserResolvable} member The member to add
-   * @param {string} [reason] The reason for adding this member
-   * @returns {Promise<Snowflake>}
-   */
-  addMember(member, reason) {
-    const id = member === '@me' ? member : this.client.users.resolveID(member);
-    if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'member', 'UserResolvable'));
-    return this.client.api
-      .channels(this.id, 'thread-members', id)
-      .put({ reason })
-      .then(() => id);
-  }
-
-  /**
    * Makes the client user join the thread.
    * @returns {Promise<ThreadChannel>}
    */
   join() {
-    return this.addMember('@me').then(() => this);
+    return this.members.add('@me').then(() => this);
   }
 
   /**

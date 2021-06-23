@@ -1912,7 +1912,6 @@ declare module 'discord.js' {
     public rateLimitPerUser: number;
     public type: ThreadChannelType;
     public readonly unarchivable: boolean;
-    public addMember(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
     public delete(reason?: string): Promise<ThreadChannel>;
     public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
     public join(): Promise<ThreadChannel>;
@@ -2533,9 +2532,11 @@ declare module 'discord.js' {
     public fetchActive(cache?: boolean): Promise<FetchedThreads>;
   }
 
-  export class ThreadMemberManager extends BaseManager<Snowflake, ThreadMember, ThreadMemberResolvable> {
+  export class ThreadMemberManager extends Omit<BaseManager<Snowflake, ThreadMember, ThreadMemberResolvable>, 'add'> {
     constructor(thread: ThreadChannel, iterable?: Iterable<any>);
     public thread: ThreadChannel;
+    public _add(data: any, cache?: boolean): ThreadMember;
+    public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
     public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
     public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
   }

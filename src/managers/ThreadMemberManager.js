@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
+const { TypeError } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
 const Collection = require('../util/Collection');
 
@@ -24,7 +25,7 @@ class ThreadMemberManager extends BaseManager {
    * @name ThreadMemberManager#cache
    */
 
-  add(data, cache = true) {
+  _add(data, cache = true) {
     const existing = this.cache.get(data.user_id);
     if (cache) existing?._patch(data);
     if (existing) return existing;
@@ -67,8 +68,23 @@ class ThreadMemberManager extends BaseManager {
   }
 
   /**
+   * Adds a member to the thread.
+   * @param {UserResolvable|'@me'} member The member to add
+   * @param {string} [reason] The reason for adding this member
+   * @returns {Promise<Snowflake>}
+   */
+  add(member, reason) {
+    const id = member === '@me' ? member : this.client.users.resolveID(member);
+    if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'member', 'UserResolvable'));
+    return this.client.api
+      .channels(this.id, 'thread-members', id)
+      .put({ reason })
+      .then(() => id);
+  }
+
+  /**
    * Remove a user from the thread.
-   * @param {Snowflake} id The id of the member to remove
+   * @param {Snowflake|'@me'} id The id of the member to remove
    * @param {string} [reason] The reason for removing this member from the thread
    * @returns {Promise<Snowflake>}
    */
