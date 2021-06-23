@@ -7,6 +7,8 @@ const Structures = require('../../util/Structures');
 class InteractionCreateAction extends Action {
   handle(data) {
     const client = this.client;
+
+    // Resolve and cache partial channels for Interaction#channel getter
     this.getChannel(data);
 
     let InteractionType;
