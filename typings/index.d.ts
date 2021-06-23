@@ -205,6 +205,7 @@ declare module 'discord.js' {
     public readonly isUser: boolean;
     public readonly isWebhook: boolean;
     public readonly isMessage: boolean;
+    public readonly isMessageManager: boolean;
     public readonly isInteraction: boolean;
     public files: unknown[] | null;
     public options: MessageOptions | WebhookMessageOptions;
@@ -3560,7 +3561,9 @@ declare module 'discord.js' {
     | User
     | GuildMember
     | Webhook
-    | WebhookClient;
+    | WebhookClient
+    | Message
+    | MessageManager;
 
   type MessageType =
     | 'DEFAULT'
