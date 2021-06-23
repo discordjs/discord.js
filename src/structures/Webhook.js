@@ -1,7 +1,7 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Channel = require('./Channel');
+const MessageBuilder = require('./MessageBuilder');
 const { Error } = require('../errors');
 const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -107,7 +107,7 @@ class Webhook {
 
   /**
    * Sends a message with this webhook.
-   * @param {string|APIMessage|WebhookMessageOptions} options The options to provide
+   * @param {string|MessageBuilder|WebhookMessageOptions} options The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a basic message
@@ -153,10 +153,10 @@ class Webhook {
 
     let apiMessage;
 
-    if (options instanceof APIMessage) {
+    if (options instanceof MessageBuilder) {
       apiMessage = options.resolveData();
     } else {
-      apiMessage = APIMessage.create(this, options).resolveData();
+      apiMessage = MessageBuilder.create(this, options).resolveData();
     }
 
     if (Array.isArray(apiMessage.data.content)) {
@@ -256,7 +256,7 @@ class Webhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|APIMessage|WebhookEditMessageOptions} options The options to provide
+   * @param {string|MessageBuilder|WebhookEditMessageOptions} options The options to provide
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
@@ -265,8 +265,8 @@ class Webhook {
 
     let apiMessage;
 
-    if (options instanceof APIMessage) apiMessage = options;
-    else apiMessage = APIMessage.create(this, options);
+    if (options instanceof MessageBuilder) apiMessage = options;
+    else apiMessage = MessageBuilder.create(this, options);
 
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 

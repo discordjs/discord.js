@@ -2,7 +2,7 @@
 
 /* eslint-disable import/order */
 const MessageCollector = require('../MessageCollector');
-const APIMessage = require('../APIMessage');
+const MessageBuilder = require('../MessageBuilder');
 const SnowflakeUtil = require('../../util/SnowflakeUtil');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError, Error } = require('../../errors');
@@ -118,7 +118,7 @@ class TextBasedChannel {
 
   /**
    * Sends a message to this channel.
-   * @param {string|APIMessage|MessageOptions} options The options to provide
+   * @param {string|MessageBuilder|MessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a basic message
@@ -171,10 +171,10 @@ class TextBasedChannel {
 
     let apiMessage;
 
-    if (options instanceof APIMessage) {
+    if (options instanceof MessageBuilder) {
       apiMessage = options.resolveData();
     } else {
-      apiMessage = APIMessage.create(this, options).resolveData();
+      apiMessage = MessageBuilder.create(this, options).resolveData();
     }
 
     if (Array.isArray(apiMessage.data.content)) {

@@ -199,30 +199,6 @@ declare module 'discord.js' {
     public splashURL(options?: StaticImageURLOptions): string | null;
   }
 
-  export class APIMessage {
-    constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
-    public data: unknown | null;
-    public readonly isUser: boolean;
-    public readonly isWebhook: boolean;
-    public readonly isMessage: boolean;
-    public readonly isInteraction: boolean;
-    public files: unknown[] | null;
-    public options: MessageOptions | WebhookMessageOptions;
-    public target: MessageTarget;
-
-    public static create(
-      target: MessageTarget,
-      options: string | MessageOptions | WebhookMessageOptions,
-      extra?: MessageOptions | WebhookMessageOptions,
-    ): APIMessage;
-    public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
-
-    public makeContent(): string | string[] | undefined;
-    public resolveData(): this;
-    public resolveFiles(): Promise<this>;
-    public split(): APIMessage[];
-  }
-
   export abstract class Application {
     constructor(client: Client, data: unknown);
     public readonly createdAt: Date;
@@ -513,10 +489,10 @@ declare module 'discord.js' {
     public webhook: InteractionWebhook;
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
-    public editReply(options: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public editReply(options: string | MessageBuilder | WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
-    public followUp(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(options: string | APIMessage | InteractionReplyOptions): Promise<void>;
+    public followUp(options: string | MessageBuilder | InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(options: string | MessageBuilder | InteractionReplyOptions): Promise<void>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
     private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
   }
@@ -1167,10 +1143,10 @@ declare module 'discord.js' {
     constructor(client: Client, id: Snowflake, token: string);
     public token: string;
     public send(
-      options: string | APIMessage | (InteractionReplyOptions & { split?: false }),
+      options: string | MessageBuilder | (InteractionReplyOptions & { split?: false }),
     ): Promise<Message | RawMessage>;
     public send(
-      options: APIMessage | (InteractionReplyOptions & { split: true | SplitOptions }),
+      options: MessageBuilder | (InteractionReplyOptions & { split: true | SplitOptions }),
     ): Promise<(Message | RawMessage)[]>;
   }
 
@@ -1276,7 +1252,7 @@ declare module 'discord.js' {
       options?: MessageComponentInteractionCollectorOptions,
     ): MessageComponentInteractionCollector;
     public delete(): Promise<Message>;
-    public edit(content: string | MessageEditOptions | APIMessage): Promise<Message>;
+    public edit(content: string | MessageEditOptions | MessageBuilder): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
     public fetchReference(): Promise<Message>;
     public fetchWebhook(): Promise<Webhook>;
@@ -1285,8 +1261,8 @@ declare module 'discord.js' {
     public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
-    public reply(options: string | APIMessage | (ReplyMessageOptions & { split?: false })): Promise<Message>;
-    public reply(options: APIMessage | (ReplyMessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
+    public reply(options: string | MessageBuilder | (ReplyMessageOptions & { split?: false })): Promise<Message>;
+    public reply(options: MessageBuilder | (ReplyMessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): unknown;
     public toString(): string;
@@ -1324,6 +1300,30 @@ declare module 'discord.js' {
     public setFile(attachment: BufferResolvable | Stream, name?: string): this;
     public setName(name: string): this;
     public toJSON(): unknown;
+  }
+
+  export class MessageBuilder {
+    constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+    public data: unknown | null;
+    public readonly isUser: boolean;
+    public readonly isWebhook: boolean;
+    public readonly isMessage: boolean;
+    public readonly isInteraction: boolean;
+    public files: unknown[] | null;
+    public options: MessageOptions | WebhookMessageOptions;
+    public target: MessageTarget;
+
+    public static create(
+      target: MessageTarget,
+      options: string | MessageOptions | WebhookMessageOptions,
+      extra?: MessageOptions | WebhookMessageOptions,
+    ): MessageBuilder;
+    public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
+
+    public makeContent(): string | string[] | undefined;
+    public resolveData(): this;
+    public resolveFiles(): Promise<this>;
+    public split(): MessageBuilder[];
   }
 
   export class MessageButton extends BaseMessageComponent {
@@ -1373,11 +1373,11 @@ declare module 'discord.js' {
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deferUpdate(): Promise<void>;
     public deleteReply(): Promise<void>;
-    public editReply(options: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public editReply(options: string | MessageBuilder | WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
-    public followUp(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(options: string | APIMessage | InteractionReplyOptions): Promise<void>;
-    public update(content: string | APIMessage | WebhookEditMessageOptions): Promise<void>;
+    public followUp(options: string | MessageBuilder | InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(options: string | MessageBuilder | InteractionReplyOptions): Promise<void>;
+    public update(content: string | MessageBuilder | WebhookEditMessageOptions): Promise<void>;
     public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
@@ -2013,11 +2013,13 @@ declare module 'discord.js' {
     public token: string;
     public editMessage(
       message: MessageResolvable,
-      options: string | APIMessage | WebhookEditMessageOptions,
+      options: string | MessageBuilder | WebhookEditMessageOptions,
     ): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
-    public send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
-    public send(options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions })): Promise<RawMessage[]>;
+    public send(options: string | MessageBuilder | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
+    public send(
+      options: MessageBuilder | (WebhookMessageOptions & { split: true | SplitOptions }),
+    ): Promise<RawMessage[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2371,7 +2373,7 @@ declare module 'discord.js' {
     public cache: Collection<Snowflake, Message>;
     public crosspost(message: MessageResolvable): Promise<Message>;
     public delete(message: MessageResolvable): Promise<void>;
-    public edit(message: MessageResolvable, options: APIMessage | MessageEditOptions): Promise<Message>;
+    public edit(message: MessageResolvable, options: MessageBuilder | MessageEditOptions): Promise<Message>;
     public fetch(message: Snowflake, options?: BaseFetchOptions): Promise<Message>;
     public fetch(
       options?: ChannelLogsQueryOptions,
@@ -2449,8 +2451,8 @@ declare module 'discord.js' {
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
     readonly lastMessage: Message | null;
-    send(options: string | APIMessage | (MessageOptions & { split?: false })): Promise<Message>;
-    send(options: APIMessage | (MessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
+    send(options: string | MessageBuilder | (MessageOptions & { split?: false })): Promise<Message>;
+    send(options: MessageBuilder | (MessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -2491,13 +2493,13 @@ declare module 'discord.js' {
     deleteMessage(message: MessageResolvable | '@original'): Promise<void>;
     editMessage(
       message: MessageResolvable | '@original',
-      options: string | APIMessage | WebhookEditMessageOptions,
+      options: string | MessageBuilder | WebhookEditMessageOptions,
     ): Promise<Message | RawMessage>;
     fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | RawMessage>;
     send(
-      options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
+      options: MessageBuilder | (WebhookMessageOptions & { split: true | SplitOptions }),
     ): Promise<(Message | RawMessage)[]>;
-    send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<Message | RawMessage>;
+    send(options: string | MessageBuilder | (WebhookMessageOptions & { split?: false })): Promise<Message | RawMessage>;
   }
 
   interface WebhookFields extends PartialWebhookFields {

@@ -11,7 +11,7 @@ const Util = require('../util/Util');
 /**
  * Represents a message to be sent to the API.
  */
-class APIMessage {
+class MessageBuilder {
   /**
    * @param {MessageTarget} target - The target for this message to be sent to
    * @param {MessageOptions|WebhookMessageOptions} options - Options passed in from send
@@ -123,7 +123,7 @@ class APIMessage {
 
   /**
    * Resolves data.
-   * @returns {APIMessage}
+   * @returns {MessageBuilder}
    */
   resolveData() {
     if (this.data) return this;
@@ -206,7 +206,7 @@ class APIMessage {
 
   /**
    * Resolves files.
-   * @returns {Promise<APIMessage>}
+   * @returns {Promise<MessageBuilder>}
    */
   async resolveFiles() {
     if (this.files) return this;
@@ -216,8 +216,8 @@ class APIMessage {
   }
 
   /**
-   * Converts this APIMessage into an array of APIMessages for each split content
-   * @returns {APIMessage[]}
+   * Converts this MessageBuilder into an array of MessageBuilders for each split content
+   * @returns {MessageBuilder[]}
    */
   split() {
     if (!this.data) this.resolveData();
@@ -238,7 +238,7 @@ class APIMessage {
         opt = { content: this.data.content[i], tts: this.data.tts, allowedMentions: this.options.allowedMentions };
       }
 
-      const apiMessage = new APIMessage(this.target, opt);
+      const apiMessage = new MessageBuilder(this.target, opt);
       apiMessage.data = data;
       apiMessages.push(apiMessage);
     }
@@ -282,7 +282,7 @@ class APIMessage {
   }
 
   /**
-   * Creates an `APIMessage` from user-level arguments.
+   * Creates a `MessageBuilder` from user-level arguments.
    * @param {MessageTarget} target Target to send to
    * @param {string|MessageOptions|WebhookMessageOptions} options Options or content to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto specified options
@@ -296,7 +296,7 @@ class APIMessage {
   }
 }
 
-module.exports = APIMessage;
+module.exports = MessageBuilder;
 
 /**
  * A target for a message.

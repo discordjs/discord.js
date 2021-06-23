@@ -3,7 +3,7 @@
 const { Error } = require('../../errors');
 const { InteractionResponseTypes } = require('../../util/Constants');
 const MessageFlags = require('../../util/MessageFlags');
-const APIMessage = require('../APIMessage');
+const MessageBuilder = require('../MessageBuilder');
 
 /**
  * Interface for classes that support shared interaction response types.
@@ -52,7 +52,7 @@ class InteractionResponses {
 
   /**
    * Creates a reply to this interaction.
-   * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
+   * @param {string|MessageBuilder|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
    * // Reply to the interaction with an embed
@@ -71,8 +71,8 @@ class InteractionResponses {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
 
     let apiMessage;
-    if (options instanceof APIMessage) apiMessage = options;
-    else apiMessage = APIMessage.create(this, options);
+    if (options instanceof MessageBuilder) apiMessage = options;
+    else apiMessage = MessageBuilder.create(this, options);
 
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
@@ -103,7 +103,7 @@ class InteractionResponses {
   /**
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|APIMessage|WebhookEditMessageOptions} options The new options for the message
+   * @param {string|MessageBuilder|WebhookEditMessageOptions} options The new options for the message
    * @returns {Promise<Message|Object>}
    * @example
    * // Edit the reply to this interaction
@@ -131,7 +131,7 @@ class InteractionResponses {
 
   /**
    * Send a follow-up message to this interaction.
-   * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
+   * @param {string|MessageBuilder|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<Message|Object>}
    */
   followUp(options) {
@@ -159,7 +159,7 @@ class InteractionResponses {
 
   /**
    * Updates the original message whose button was pressed
-   * @param {string|APIMessage|WebhookEditMessageOptions} options The options for the reply
+   * @param {string|MessageBuilder|WebhookEditMessageOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
    * // Remove the components from the message
@@ -174,8 +174,8 @@ class InteractionResponses {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
 
     let apiMessage;
-    if (options instanceof APIMessage) apiMessage = options;
-    else apiMessage = APIMessage.create(this, options);
+    if (options instanceof MessageBuilder) apiMessage = options;
+    else apiMessage = MessageBuilder.create(this, options);
 
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 

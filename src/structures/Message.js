@@ -1,10 +1,10 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
+const MessageBuilder = require('./MessageBuilder');
 const MessageComponentInteractionCollector = require('./MessageComponentInteractionCollector');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
@@ -550,7 +550,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {string|APIMessage|MessageEditOptions} options The options to provide
+   * @param {string|MessageBuilder|MessageEditOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -652,7 +652,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
-   * @param {string|APIMessage|ReplyMessageOptions} options The options to provide
+   * @param {string|MessageBuilder|ReplyMessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message
@@ -663,10 +663,10 @@ class Message extends Base {
   reply(options) {
     let data;
 
-    if (options instanceof APIMessage) {
+    if (options instanceof MessageBuilder) {
       data = options;
     } else {
-      data = APIMessage.create(this, options, {
+      data = MessageBuilder.create(this, options, {
         reply: {
           messageReference: this,
           failIfNotExists: options?.failIfNotExists ?? true,

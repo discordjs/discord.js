@@ -2,8 +2,8 @@
 
 const BaseManager = require('./BaseManager');
 const { TypeError } = require('../errors');
-const APIMessage = require('../structures/APIMessage');
 const Message = require('../structures/Message');
+const MessageBuilder = require('../structures/MessageBuilder');
 const Collection = require('../util/Collection');
 const LimitedCollection = require('../util/LimitedCollection');
 
@@ -116,14 +116,14 @@ class MessageManager extends BaseManager {
   /**
    * Edits a message, even if it's not cached.
    * @param {MessageResolvable} message The message to edit
-   * @param {MessageEditOptions|APIMessage} [options] The options to provide
+   * @param {MessageEditOptions|MessageBuilder} [options] The options to provide
    * @returns {Promise<Message>}
    */
   async edit(message, options) {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    const { data, files } = await (options instanceof APIMessage ? options : APIMessage.create(this, options))
+    const { data, files } = await (options instanceof MessageBuilder ? options : MessageBuilder.create(this, options))
       .resolveData()
       .resolveFiles();
     const d = await this.client.api.channels[this.channel.id].messages[message].patch({ data, files });

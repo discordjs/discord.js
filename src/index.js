@@ -64,7 +64,7 @@ module.exports = {
   ApplicationCommand: require('./structures/ApplicationCommand'),
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
-  APIMessage: require('./structures/APIMessage'),
+  MessageBuilder: require('./structures/MessageBuilder'),
   BaseGuild: require('./structures/BaseGuild'),
   BaseGuildEmoji: require('./structures/BaseGuildEmoji'),
   BaseGuildVoiceChannel: require('./structures/BaseGuildVoiceChannel'),
