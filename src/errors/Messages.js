@@ -115,6 +115,9 @@ const Messages = {
     "or from a guild's application command manager.",
 
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
+
+  TARGET_NOT_WEBHOOK: 'Cannot set username/avatarURL property if target is not a Webhook',
+  TARGET_NOT_INTERACTION: 'Cannot set the ephemeral flag if target is not an Interaction',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
