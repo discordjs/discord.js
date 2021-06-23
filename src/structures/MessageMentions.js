@@ -130,7 +130,7 @@ class MessageMentions {
      * The author of the message that this message is a reply to
      * @type {?User}
      */
-    this.repliedUser = repliedUser ? this.client.users.add(repliedUser) : this.repliedUser ?? null;
+    this.repliedUser = repliedUser ? this.client.users.add(repliedUser) : null;
   }
 
   /**
