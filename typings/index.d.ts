@@ -1331,7 +1331,9 @@ declare module 'discord.js' {
     public setAllowedMentions(options: MessageMentionOptions): this;
     public setAvatarURL(avatar: string): this;
     public setCode(code: string | boolean): this;
-    public setContent(contentL: string): this;
+    public setContent(content: string | null): this;
+    public setEphemeral(ephemeral: boolean): this;
+    public setNonce(nonce: string | number): this;
     public setReply(options: ReplyOptions): this;
     public setSplitOptions(options: boolean | SplitOptions): this;
     public setTTS(tts: boolean): this;

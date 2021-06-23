@@ -2,7 +2,7 @@
 
 const BaseMessageComponent = require('./BaseMessageComponent');
 const MessageEmbed = require('./MessageEmbed');
-const { RangeError } = require('../errors');
+const { Error, RangeError } = require('../errors');
 const { MessageComponentTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
@@ -90,13 +90,7 @@ class MessageBuilder {
    * @returns {?(string|string[])}
    */
   makeContent() {
-    let content;
-    if (this.options.content === null) {
-      content = '';
-    } else if (typeof this.options.content !== 'undefined') {
-      content = Util.verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', false);
-    }
-
+    let { content } = this.setContent(this.options.content);
     if (typeof content !== 'string') return content;
 
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
@@ -133,14 +127,7 @@ class MessageBuilder {
     const content = this.makeContent();
     const tts = Boolean(this.options.tts);
 
-    let nonce;
-    if (typeof this.options.nonce !== 'undefined') {
-      nonce = this.options.nonce;
-      // eslint-disable-next-line max-len
-      if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
-        throw new RangeError('MESSAGE_NONCE_TYPE');
-      }
-    }
+    const { nonce } = this.setNonce(this.options.nonce);
 
     const components = this.options.components?.map(c =>
       BaseMessageComponent.create(
@@ -294,6 +281,7 @@ class MessageBuilder {
    * @returns {MessageBuilder}
    */
   setAvatarURL(avatar) {
+    if (!this.isWebhook) throw new Error('TARGET_NOT_WEBHOOK');
     this.options.avatarURL = avatar;
     return this;
   }
@@ -310,11 +298,42 @@ class MessageBuilder {
 
   /**
    * Set the content for this message
-   * @param {string} content The content for the message
+   * @param {string|null} content The content for the message
    * @returns {MessageBuilder}
    */
   setContent(content) {
-    this.options.content = content;
+    if (content === null) {
+      this.options.content = '';
+    } else if (typeof this.options.content !== 'undefined') {
+      this.options.content = Util.verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', false);
+    }
+    return this;
+  }
+
+  /**
+   * Set this message to be ephemeral
+   * @param {boolean} ephemeral Whether this message should be ephemeral
+   * @returns {MessageBuilder}
+   */
+  setEphemeral(ephemeral) {
+    if (!this.isInteraction) throw new Error('TARGET_NOT_INTERACTION');
+    this.options.ephemeral = ephemeral;
+    return this;
+  }
+
+  /**
+   * Set the nonce for this message
+   * @param {string | number} nonce The nonce to be used
+   * @returns {MessageBuilder}
+   */
+  setNonce(nonce) {
+    if (typeof nonce !== 'undefined') {
+      if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
+        throw new RangeError('MESSAGE_NONCE_TYPE');
+      } else {
+        this.options.nonce = nonce;
+      }
+    }
     return this;
   }
 
@@ -355,6 +374,7 @@ class MessageBuilder {
    * @returns {MessageBuilder}
    */
   setUsername(username) {
+    if (!this.isWebhook) throw new Error('TARGET_NOT_WEBHOOK');
     this.options.username = username;
     return this;
   }
@@ -368,7 +388,9 @@ class MessageBuilder {
    * @returns {MessageBuilder}
    */
   spliceComponents(index, deleteCount, components) {
-    this.options.components?.splice(index, deleteCount, ...components);
+    const _components = this.options.components ?? [];
+    _components.splice(index, deleteCount, ...components);
+    this.options.components = _components;
     return this;
   }
 
@@ -380,7 +402,9 @@ class MessageBuilder {
    * @returns {MessageBuilder}
    */
   spliceEmbeds(index, deleteCount, embeds) {
-    this.options.embeds?.splice(index, deleteCount, ...embeds);
+    const _embeds = this.options.embeds ?? [];
+    _embeds.splice(index, deleteCount, ...embeds);
+    this.options.embeds = _embeds;
     return this;
   }
 
@@ -392,7 +416,9 @@ class MessageBuilder {
    * @returns {MessageBuilder}
    */
   spliceFiles(index, deleteCount, files) {
-    this.options.files?.splice(index, deleteCount, ...files);
+    const _files = this.options.files ?? [];
+    _files.splice(index, deleteCount, ...files);
+    this.options.files = _files;
     return this;
   }
 
