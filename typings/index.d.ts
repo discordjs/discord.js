@@ -3030,7 +3030,7 @@ declare module 'discord.js' {
   }
 
   interface FetchInviteOptions extends BaseFetchOptions {
-    code: string;
+    code: string
   }
 
   interface FetchInvitesOptions {

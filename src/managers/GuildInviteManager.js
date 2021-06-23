@@ -174,7 +174,10 @@ class GuildInviteManager extends BaseManager {
    */
   delete(invite, reason) {
     const code = DataResolver.resolveInviteCode(invite);
-    return this.client.api.invites(code).delete({ reason }).then(() => this);
+    return this.client.api
+      .invites(code)
+      .delete({ reason })
+      .then(() => this);
   }
 }
 
