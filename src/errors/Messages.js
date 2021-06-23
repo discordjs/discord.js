@@ -115,6 +115,8 @@ const Messages = {
     "or from a guild's application command manager.",
 
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
+  INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
+  INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

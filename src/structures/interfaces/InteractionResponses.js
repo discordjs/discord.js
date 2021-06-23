@@ -39,6 +39,7 @@ class InteractionResponses {
    */
   async defer({ ephemeral } = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    this.ephemeral = ephemeral ?? false;
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
@@ -69,6 +70,7 @@ class InteractionResponses {
    */
   async reply(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    this.ephemeral = options.ephemeral ?? false;
 
     let apiMessage;
     if (options instanceof APIMessage) apiMessage = options;
@@ -97,6 +99,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   fetchReply() {
+    if (this.ephemeral) throw new Error('INTERACTION_EPHEMERAL_REPLIED');
     return this.webhook.fetchMessage('@original');
   }
 
@@ -112,6 +115,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   editReply(options) {
+    if (!this.deferred && !this.replied) throw new Error('INTERACTION_NOT_REPLIED');
     return this.webhook.editMessage('@original', options);
   }
 
@@ -126,6 +130,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deleteReply() {
+    if (this.ephemeral) throw new Error('INTERACTION_EPHEMERAL_REPLIED');
     await this.webhook.deleteMessage('@original');
   }
 
