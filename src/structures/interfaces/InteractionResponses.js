@@ -114,9 +114,11 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  editReply(options) {
+  async editReply(options) {
     if (!this.deferred && !this.replied) throw new Error('INTERACTION_NOT_REPLIED');
-    return this.webhook.editMessage('@original', options);
+    const message = await this.webhook.editMessage('@original', options);
+    this.replied = true;
+    return message;
   }
 
   /**
