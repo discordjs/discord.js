@@ -132,9 +132,8 @@ class GuildInviteManager extends BaseManager {
   }
 
   /**
-   * @typedef {Object} CreateChannelInviteOptions
+   * @typedef {CreateInviteOptions} CreateChannelInviteOptions
    * @property {GuildChannel} [channel] The optional channel to define where to create the invite.
-   * @extends {CreateInviteOptions}
    */
 
   /**
