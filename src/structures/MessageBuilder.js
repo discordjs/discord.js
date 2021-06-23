@@ -247,6 +247,156 @@ class MessageBuilder {
   }
 
   /**
+   * Add components to this message
+   * @param {MessageActionRow[]|MessageActionRowOptions[]|(MessageActionRowComponentResolvable[])[]} components
+   * Action rows containing interactive components for the message (buttons, select menus)
+   * @returns {MessageBuilder}
+   */
+  addComponents(components) {
+    this.options.components = (this.options.components ?? []).push(...components);
+    return this;
+  }
+
+  /**
+   * Add embeds to this message (max 10).
+   * @param {MessageEmbed[]|MessageEmbedOptions[]} embeds The embeds for the message
+   * @returns {MessageBuilder}
+   */
+  addEmbeds(embeds) {
+    this.options.embeds = (this.options.embeds ?? []).push(...embeds);
+    return this;
+  }
+
+  /**
+   * Adds file attachments to this message
+   * @param {FileOptions[]|BufferResolvable[]|MessageAttachment[]} files Files to send with the message
+   * @returns {MessageBuilder}
+   */
+  addFiles(files) {
+    this.options.files = (this.options.files ?? []).push(...files);
+    return this;
+  }
+
+  /**
+   * Set the mentions that should be parsed for this message
+   * @param {MessageMentionOptions} options Which mentions should be parsed from the message content
+   * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
+   * @returns {MessageBuilder}
+   */
+  setAllowedMentions(options) {
+    this.options.allowedMentions = options;
+    return this;
+  }
+
+  /**
+   * For webhooks, set the avatar override for this message
+   * @param {string} avatar The avatar URL to be used
+   * @returns {MessageBuilder}
+   */
+  setAvatarURL(avatar) {
+    this.options.avatarURL = avatar;
+    return this;
+  }
+
+  /**
+   * Set this message to be wrapped in a codeblock, with optional language formatting
+   * @param {string|boolean} code Language for optional codeblock formatting to apply
+   * @returns {MessageBuilder}
+   */
+  setCode(code) {
+    this.options.code = code;
+    return this;
+  }
+
+  /**
+   * Set the content for this message
+   * @param {string} content The content for the message
+   * @returns {MessageBuilder}
+   */
+  setContent(content) {
+    this.options.content = content;
+    return this;
+  }
+
+  /**
+   * Set this message to be a reply to another message
+   * @param {ReplyOptions} options The options for replying to a message
+   * @returns {MessageBuilder}
+   */
+  setReply(options) {
+    this.options.reply = options;
+    return this;
+  }
+
+  /**
+   * Sets whether or not the message should be split into multiple messages if
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message
+   * @param {boolean|SplitOptions} options Boolean, or ptions to split the message by
+   * @returns {MessageBuilder}
+   */
+  setSplitOptions(options) {
+    this.options.split = options;
+    return this;
+  }
+
+  /**
+   * Sets whether or not the message should be spoken aloud
+   * @param {boolean} tts Whether or not the message should be spoken aloud
+   * @returns {MessageBuilder}
+   */
+  setTTS(tts) {
+    this.options.tts = tts;
+    return this;
+  }
+
+  /**
+   * For webhooks, set the username override for this message
+   * @param {string} username The username to be used
+   * @returns {MessageBuilder}
+   */
+  setUsername(username) {
+    this.options.username = username;
+    return this;
+  }
+
+  /**
+   * Removes, replaces and inserts components for this message
+   * @param {number} index The index to start at
+   * @param {number} deleteCount The number of components to remove
+   * @param {MessageActionRow[]|MessageActionRowOptions[]|(MessageActionRowComponentResolvable[])[]} components
+   * Action rows containing interactive components for the message (buttons, select menus)
+   * @returns {MessageBuilder}
+   */
+  spliceComponents(index, deleteCount, components) {
+    this.options.components?.splice(index, deleteCount, ...components);
+    return this;
+  }
+
+  /**
+   * Removes, replaces and inserts embeds for this message (max 10).
+   * @param {number} index The index to start at
+   * @param {number} deleteCount The number of embeds to remove
+   * @param  {MessageEmbed[]|MessageEmbedOptions[]} embeds The replacing embed objects
+   * @returns {MessageBuilder}
+   */
+  spliceEmbeds(index, deleteCount, embeds) {
+    this.options.embeds?.splice(index, deleteCount, ...embeds);
+    return this;
+  }
+
+  /**
+   * Remove, replaces and inserts file attachments for this message.
+   * @param {number} index The index to start at
+   * @param {number} deleteCount The number of files to remove
+   * @param {FileOptions[]|BufferResolvable[]|MessageAttachment[]} files The replacing file objects
+   * @returns {MessageBuilder}
+   */
+  spliceFiles(index, deleteCount, files) {
+    this.options.files?.splice(index, deleteCount, ...files);
+    return this;
+  }
+
+  /**
    * Resolves a single file into an object sendable to the API.
    * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
    * @returns {Object}

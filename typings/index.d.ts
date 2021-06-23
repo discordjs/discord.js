@@ -1320,9 +1320,33 @@ declare module 'discord.js' {
     ): MessageBuilder;
     public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
 
+    public addComponents(
+      components: (MessageActionRow | MessageActionRowOptions | MessageActionRowComponentResolvable[])[],
+    ): this;
+    public addEmbeds(embeds: (MessageEmbed | MessageEmbedOptions)[]): this;
+    public addFiles(files: (FileOptions | BufferResolvable | Stream | MessageAttachment)[]): this;
     public makeContent(): string | string[] | undefined;
     public resolveData(): this;
     public resolveFiles(): Promise<this>;
+    public setAllowedMentions(options: MessageMentionOptions): this;
+    public setAvatarURL(avatar: string): this;
+    public setCode(code: string | boolean): this;
+    public setContent(contentL: string): this;
+    public setReply(options: ReplyOptions): this;
+    public setSplitOptions(options: boolean | SplitOptions): this;
+    public setTTS(tts: boolean): this;
+    public setUsername(username: string): this;
+    public spliceComponents(
+      index: number,
+      deleteCount: number,
+      components: MessageActionRow[] | MessageActionRowOptions[] | MessageActionRowComponentResolvable[][],
+    ): this;
+    public spliceEmbeds(index: number, deleteCount: number, embeds: (MessageEmbed | MessageEmbedOptions)[]): this;
+    public spliceFiles(
+      index: number,
+      deleteCount: number,
+      files: (FileOptions | BufferResolvable | Stream | MessageAttachment)[],
+    ): this;
     public split(): MessageBuilder[];
   }
 
