@@ -237,9 +237,10 @@ class MessageBuilder {
     return apiMessages;
   }
 
+  // eslint-disable-next-line valid-jsdoc
   /**
    * Add components to this message
-   * @param {MessageActionRow[]|MessageActionRowOptions[]|(MessageActionRowComponentResolvable[])[]} components
+   * @param {MessageActionRow|MessageActionRowOptions|MessageActionRowComponentResolvable[][]} components
    * Action rows containing interactive components for the message (buttons, select menus)
    * @returns {MessageBuilder}
    */
@@ -383,11 +384,12 @@ class MessageBuilder {
     return this;
   }
 
+  // eslint-disable-next-line valid-jsdoc
   /**
    * Removes, replaces and inserts components for this message
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of components to remove
-   * @param {MessageActionRow[]|MessageActionRowOptions[]|(MessageActionRowComponentResolvable[])[]} components
+   * @param {MessageActionRow[]|MessageActionRowOptions[]|MessageActionRowComponentResolvable[][]} components
    * Action rows containing interactive components for the message (buttons, select menus)
    * @returns {MessageBuilder}
    */
