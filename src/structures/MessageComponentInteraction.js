@@ -63,9 +63,11 @@ class MessageComponentInteraction extends Interaction {
    * @readonly
    */
   get component() {
-    return this.message.components
-      .flatMap(row => row.components)
-      .find(component => (component.customID ?? component.custom_id) === this.customID) ?? null;
+    return (
+      this.message.components
+        .flatMap(row => row.components)
+        .find(component => (component.customID ?? component.custom_id) === this.customID) ?? null
+    );
   }
 
   /**
