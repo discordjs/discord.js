@@ -549,7 +549,6 @@ class Message extends Base {
    * @typedef {Object} MessageEditOptions
    * @property {?string} [content] Content to be edited
    * @property {MessageEmbed[]|APIEmbed[]} [embeds] Embeds to be added/edited
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
    * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
