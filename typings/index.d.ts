@@ -4147,7 +4147,7 @@ declare module 'discord.js' {
     name?: string;
     archived?: boolean;
     autoArchiveDuration?: ThreadAutoArchiveDuration;
-    rateLimitPeruser?: number;
+    rateLimitPerUser?: number;
     locked?: boolean;
   }
 

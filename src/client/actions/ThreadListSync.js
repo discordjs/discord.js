@@ -11,7 +11,7 @@ class ThreadListSyncAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
     if (!guild) return {};
 
-    if (data.channels_ids) {
+    if (data.channel_ids) {
       for (const id of data.channel_ids) {
         const channel = client.channels.resolve(id);
         if (channel) this.removeStale(channel);
