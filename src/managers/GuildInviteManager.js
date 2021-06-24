@@ -5,6 +5,7 @@ const { Error } = require('../errors');
 const Invite = require('../structures/Invite');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
+const Permissions = require('../util/Permissions');
 
 /**
  * Manages API methods for GuildInvites and stores their cache.
@@ -161,7 +162,9 @@ class GuildInviteManager extends BaseManager {
       channel = this.guild.channels.resolve(options.channel);
       if (!channel) return Promise.reject(new Error('GUILD_CHANNEL_RESOLVE'));
     } else {
-      channel = this.guild.channels.cache.find(c => c.permissionsFor(this.guild.me).has('CREATE_INSTANT_INVITE'));
+      channel = this.guild.channels.cache.find(c =>
+        c.permissionsFor(this.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE),
+      );
       if (!channel) return Promise.reject(new Error('GUILD_CHANNEL_INVITE'));
     }
 
