@@ -169,14 +169,12 @@ class GuildInviteManager extends BaseManager {
    * Deletes a invite.
    * @param {InviteResolvable} invite The invite to delete
    * @param {string} [reason] Reason for deleting the invite
-   * @returns {Promise<Invite>}
+   * @returns {Promise<void>}
    */
-  delete(invite, reason) {
+  async delete(invite, reason) {
     const code = DataResolver.resolveInviteCode(invite);
-    return this.client.api
-      .invites(code)
-      .delete({ reason })
-      .then(() => this);
+
+    await this.client.api.invites(code).delete({ reason });
   }
 }
 
