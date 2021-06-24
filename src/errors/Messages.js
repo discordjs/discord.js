@@ -50,6 +50,12 @@ const Messages = {
   BUTTON_URL: 'MessageButton url must be a string',
   BUTTON_CUSTOM_ID: 'MessageButton customID must be a string',
 
+  SELECT_MENU_CUSTOM_ID: 'MessageSelectMenu customID must be a string',
+  SELECT_MENU_PLACEHOLDER: 'MessageSelectMenu placeholder must be a string',
+  SELECT_OPTION_LABEL: 'MessageSelectOption label must be a string',
+  SELECT_OPTION_VALUE: 'MessageSelectOption value must be a string',
+  SELECT_OPTION_DESCRIPTION: 'MessageSelectOption description must be a string',
+
   INTERACTION_COLLECTOR_ERROR: reason => `Collector received no interactions before ending with reason: ${reason}`,
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,

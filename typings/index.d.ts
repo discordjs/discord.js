@@ -82,6 +82,7 @@ declare enum MessageButtonStyles {
 declare enum MessageComponentTypes {
   ACTION_ROW = 1,
   BUTTON = 2,
+  SELECT_MENU = 3,
 }
 
 declare enum MFALevels {
@@ -1176,6 +1177,7 @@ declare module 'discord.js' {
     public isButton(): this is ButtonInteraction;
     public isCommand(): this is CommandInteraction;
     public isMessageComponent(): this is MessageComponentInteraction;
+    public isSelectMenu(): this is SelectMenuInteraction;
   }
 
   export class InteractionWebhook extends PartialWebhookMixin() {
@@ -1531,6 +1533,29 @@ declare module 'discord.js' {
     public toJSON(): unknown;
   }
 
+  class MessageSelectMenu extends BaseMessageComponent {
+    constructor(data?: MessageSelectMenu | MessageSelectMenuOptions);
+    public customID: string | null;
+    public disabled: boolean;
+    public maxValues: number | null;
+    public minValues: number | null;
+    public options: MessageSelectOption[];
+    public placeholder: string | null;
+    public type: 'SELECT_MENU';
+    public addOptions(options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
+    public setCustomID(customID: string): this;
+    public setDisabled(disabled: boolean): this;
+    public setMaxValues(maxValues: number): this;
+    public setMinValues(minValues: number): this;
+    public setPlaceholder(placeholder: string): this;
+    public spliceOptions(
+      index: number,
+      deleteCount: number,
+      ...options: MessageSelectOptionData[] | MessageSelectOptionData[][]
+    ): this;
+    public toJSON(): unknown;
+  }
+
   export class NewsChannel extends TextBasedChannel(GuildChannel) {
     constructor(guild: Guild, data?: unknown);
     public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
@@ -1691,6 +1716,11 @@ declare module 'discord.js' {
     public toString(): string;
 
     public static comparePositions(role1: Role, role2: Role): number;
+  }
+
+  export class SelectMenuInteraction extends MessageComponentInteraction {
+    public componentType: 'SELECT_MENU';
+    public values: string[] | null;
   }
 
   export class Shard extends EventEmitter {
@@ -3182,6 +3212,7 @@ declare module 'discord.js' {
     User: typeof User;
     CommandInteraction: typeof CommandInteraction;
     ButtonInteraction: typeof ButtonInteraction;
+    SelectMenuInteraction: typeof SelectMenuInteraction;
   }
 
   interface FetchApplicationCommandOptions extends BaseFetchOptions {
@@ -3572,9 +3603,9 @@ declare module 'discord.js' {
 
   type MembershipState = keyof typeof MembershipStates;
 
-  type MessageActionRowComponent = MessageButton;
+  type MessageActionRowComponent = MessageButton | MessageSelectMenu;
 
-  type MessageActionRowComponentOptions = MessageButtonOptions;
+  type MessageActionRowComponentOptions = MessageButtonOptions | MessageSelectMenuOptions;
 
   type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
 
@@ -3586,6 +3617,8 @@ declare module 'discord.js' {
     partyID: string;
     type: number;
   }
+
+  type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
   interface MessageButtonOptions extends BaseMessageComponentOptions {
     customID?: string;
@@ -3605,7 +3638,7 @@ declare module 'discord.js' {
     maxProcessed?: number;
   }
 
-  type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton;
+  type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton | MessageSelectMenu;
 
   interface MessageComponentInteractionCollectorOptions extends CollectorOptions {
     max?: number;
@@ -3613,7 +3646,11 @@ declare module 'discord.js' {
     maxUsers?: number;
   }
 
-  type MessageComponentOptions = BaseMessageComponentOptions | MessageActionRowOptions | MessageButtonOptions;
+  type MessageComponentOptions =
+    | BaseMessageComponentOptions
+    | MessageActionRowOptions
+    | MessageButtonOptions
+    | MessageSelectMenuOptions;
 
   type MessageComponentType = keyof typeof MessageComponentTypes;
 
@@ -3749,6 +3786,31 @@ declare module 'discord.js' {
   }
 
   type MessageResolvable = Message | Snowflake;
+
+  interface MessageSelectMenuOptions extends BaseMessageComponentOptions {
+    customID?: string;
+    disabled?: boolean;
+    maxValues?: number;
+    minValues?: number;
+    options?: MessageSelectOptionData[];
+    placeholder?: string;
+  }
+
+  interface MessageSelectOption {
+    default: boolean;
+    description: string | null;
+    emoji: RawEmoji | null;
+    label: string;
+    value: string;
+  }
+
+  interface MessageSelectOptionData {
+    default?: boolean;
+    description?: string;
+    emoji?: EmojiIdentifierResolvable;
+    label: string;
+    value: string;
+  }
 
   type MessageTarget =
     | Interaction
