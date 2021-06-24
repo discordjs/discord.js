@@ -137,7 +137,7 @@ class MessageSelectMenu extends BaseMessageComponent {
 
   /**
    * Adds options to the select menu.
-   * @param {...(MessageSelectOption[]|MessageSelectOption[])} options The options to add
+   * @param {...MessageSelectOptionData|MessageSelectOptionData[]} options The options to add
    * @returns {MessageSelectMenu}
    */
   addOptions(...options) {
@@ -149,7 +149,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * Removes, replaces, and inserts options in the select menu.
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of options to remove
-   * @param {...MessageSelectOption|MessageSelectOption[]} [options] The replacing option objects
+   * @param {...MessageSelectOptionData|MessageSelectOptionData[]} [options] The replacing option objects
    * @returns {MessageSelectMenu}
    */
   spliceOptions(index, deleteCount, ...options) {
@@ -191,7 +191,7 @@ class MessageSelectMenu extends BaseMessageComponent {
 
   /**
    * Normalizes option input and resolves strings and emojis.
-   * @param {...MessageSelectOptionData|MessageSelectOption[]} options The select menu options to normalize
+   * @param {...MessageSelectOptionData|MessageSelectOptionData[]} options The select menu options to normalize
    * @returns {MessageSelectOption[]}
    */
   static normalizeOptions(...options) {
