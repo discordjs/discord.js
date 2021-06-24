@@ -1857,7 +1857,7 @@ declare module 'discord.js' {
   export class User extends PartialTextBasedChannel(Base) {
     constructor(client: Client, data: unknown);
     public avatar: string | null;
-    public bot: boolean;
+    public bot: boolean | null;
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
     public discriminator: string;

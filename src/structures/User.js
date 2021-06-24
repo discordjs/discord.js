@@ -62,7 +62,7 @@ class User extends Base {
     if ('bot' in data) {
       /**
        * Whether or not the user is a bot
-       * @type {boolean}
+       * @type {?boolean}
        */
       this.bot = Boolean(data.bot);
     } else if (!this.partial) {
