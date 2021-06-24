@@ -14,21 +14,25 @@ class ApplicationCommandPermissionsManager {
      * @type {ApplicationCommandManager|ApplicationCommand}
      */
     this.manager = manager;
+
     /**
      * The guild that this manager acts on
      * @type {?Guild}
      */
     this.guild = manager.guild ?? null;
+
     /**
      * The id of the guild that this manager acts on
      * @type {?Snowflake}
      */
     this.guildID = manager.guildID ?? manager.guild?.id ?? null;
+
     /**
      * The id of the command this manager acts on
      * @type {?Snowflake}
      */
     this.commandID = manager.id ?? null;
+
     /**
      * The client that instantiated this Manager
      * @name ApplicationCommandPermissionsManager#client
@@ -46,8 +50,7 @@ class ApplicationCommandPermissionsManager {
    * @private
    */
   permissionsPath(guildID, commandID) {
-    let path = this.client.api.applications(this.client.application.id).guilds(guildID);
-    return (commandID ? path.commands(commandID) : path.commands).permissions;
+    return this.client.api.applications(this.client.application.id).guilds(guildID).commands(commandID).permissions;
   }
 
   /**
@@ -113,8 +116,8 @@ class ApplicationCommandPermissionsManager {
   /**
    * Data used for overwriting the permissions for all application commands in a guild.
    * @typedef {Object} GuildApplicationCommandPermissionData
-   * @prop {Snowflake} id The ID of the command
-   * @prop {ApplicationCommandPermissionData[]} permissions The permissions for this command
+   * @property {Snowflake} id The ID of the command
+   * @property {ApplicationCommandPermissionData[]} permissions The permissions for this command
    */
 
   /**
@@ -273,13 +276,6 @@ class ApplicationCommandPermissionsManager {
     const { guildID, commandID } = this._validateOptions(guild, command);
     if (!commandID) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    let existing = [];
-    try {
-      existing = await this.fetch({ guild: guildID, command: commandID });
-    } catch (error) {
-      if (error.code !== APIErrors.UNKNOWN_APPLICATION_COMMAND_PERMISSIONS) throw error;
-    }
-
     if (!users && !roles) throw new TypeError('INVALID_TYPE', 'users OR roles', 'Array or Resolvable', true);
 
     let resolvedIDs = [];
@@ -320,6 +316,14 @@ class ApplicationCommandPermissionsManager {
         resolvedIDs.push(roleID);
       }
     }
+
+    let existing = [];
+    try {
+      existing = await this.fetch({ guild: guildID, command: commandID });
+    } catch (error) {
+      if (error.code !== APIErrors.UNKNOWN_APPLICATION_COMMAND_PERMISSIONS) throw error;
+    }
+
     const permissions = existing.filter(perm => !resolvedIDs.includes(perm.id));
 
     return this.set({ guild: guildID, command: commandID, permissions });
@@ -347,13 +351,6 @@ class ApplicationCommandPermissionsManager {
     const { guildID, commandID } = this._validateOptions(guild, command);
     if (!commandID) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    let existing = [];
-    try {
-      existing = await this.fetch({ guild: guildID, command: commandID });
-    } catch (error) {
-      if (error.code !== APIErrors.UNKNOWN_APPLICATION_COMMAND_PERMISSIONS) throw error;
-    }
-
     if (!permissionID) throw new TypeError('INVALID_TYPE', 'permissionsID', 'UserResolvable or RoleResolvable');
     let resolvedID = permissionID;
     if (typeof permissionID !== 'string') {
@@ -366,6 +363,14 @@ class ApplicationCommandPermissionsManager {
         throw new TypeError('INVALID_TYPE', 'permissionID', 'UserResolvable or RoleResolvable');
       }
     }
+
+    let existing = [];
+    try {
+      existing = await this.fetch({ guild: guildID, command: commandID });
+    } catch (error) {
+      if (error.code !== APIErrors.UNKNOWN_APPLICATION_COMMAND_PERMISSIONS) throw error;
+    }
+
     return existing.some(perm => perm.id === resolvedID);
   }
 

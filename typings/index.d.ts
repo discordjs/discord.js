@@ -2339,11 +2339,12 @@ declare module 'discord.js' {
   }
 
   export class ApplicationCommandPermissionsManager<BaseOptions, FetchSingleOptions, GuildType, CommandIDType> {
-    constructor(public manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand);
+    constructor(manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand);
     public client: Client;
     public commandID: CommandIDType;
     public guild: GuildType;
     public guildID: Snowflake | null;
+    public manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand;
     public add(
       options: BaseOptions & { permissions: ApplicationCommandPermissionData[] },
     ): Promise<ApplicationCommandPermissions[]>;
