@@ -91,6 +91,7 @@ class Collector extends EventEmitter {
   /**
    * Call this to handle an event as a collectable element. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
+   * @returns {Promise<void>}
    * @emits Collector#collect
    */
   async handleCollect(...args) {
@@ -117,13 +118,14 @@ class Collector extends EventEmitter {
   /**
    * Call this to remove an element from the collection. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
+   * @returns {Promise<void>}
    * @emits Collector#dispose
    */
-  handleDispose(...args) {
+  async handleDispose(...args) {
     if (!this.options.dispose) return;
 
     const dispose = this.dispose(...args);
-    if (!dispose || !this.filter(...args) || !this.collected.has(dispose)) return;
+    if (!dispose || !(await this.filter(...args)) || !this.collected.has(dispose)) return;
     this.collected.delete(dispose);
 
     /**

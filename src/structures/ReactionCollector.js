@@ -81,10 +81,10 @@ class ReactionCollector extends Collector {
    * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
    * @param {User} user The user that added the reaction
-   * @returns {?(Snowflake|string)}
+   * @returns {Promise<Snowflake|string>}
    * @private
    */
-  collect(reaction, user) {
+  async collect(reaction, user) {
     /**
      * Emitted whenever a reaction is collected.
      * @event ReactionCollector#collect
@@ -101,7 +101,7 @@ class ReactionCollector extends Collector {
      * @param {MessageReaction} reaction The reaction that was added
      * @param {User} user The user that added the reaction
      */
-    if (reaction.count === 1 && this.filter(reaction, user, this.collected)) {
+    if (reaction.count === 1 && (await this.filter(reaction, user, this.collected))) {
       this.emit('create', reaction, user);
     }
 

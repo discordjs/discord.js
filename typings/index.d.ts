@@ -483,8 +483,8 @@ declare module 'discord.js' {
     public readonly next: Promise<V>;
     public options: CollectorOptions<[V]>;
     public checkEnd(): void;
-    public handleCollect(...args: any[]): void;
-    public handleDispose(...args: any[]): void;
+    public handleCollect(...args: any[]): Promise<void>;
+    public handleDispose(...args: any[]): Promise<void>;
     public stop(reason?: string): void;
     public resetTimer(options?: CollectorResetTimerOptions): void;
     public [Symbol.asyncIterator](): AsyncIterableIterator<V>;
@@ -1577,7 +1577,7 @@ declare module 'discord.js' {
 
     public static key(reaction: MessageReaction): Snowflake | string;
 
-    public collect(reaction: MessageReaction): Snowflake | string;
+    public collect(reaction: MessageReaction): Promise<Snowflake | string>;
     public dispose(reaction: MessageReaction, user: User): Snowflake | string;
     public empty(): void;
 
