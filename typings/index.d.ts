@@ -209,7 +209,7 @@ declare module 'discord.js' {
     public splashURL(options?: StaticImageURLOptions): string | null;
   }
 
-  export class APIMessage {
+  export class MessagePayload {
     constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
     public data: unknown | null;
     public readonly isUser: boolean;
@@ -225,7 +225,7 @@ declare module 'discord.js' {
       target: MessageTarget,
       options: string | MessageOptions | WebhookMessageOptions,
       extra?: MessageOptions | WebhookMessageOptions,
-    ): APIMessage;
+    ): MessagePayload;
     public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
 
     public makeContent(): string | undefined;
@@ -524,10 +524,10 @@ declare module 'discord.js' {
     public webhook: InteractionWebhook;
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
-    public editReply(options: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
-    public followUp(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(options: string | APIMessage | InteractionReplyOptions): Promise<void>;
+    public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
     private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
     private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
   }
@@ -1185,7 +1185,7 @@ declare module 'discord.js' {
   export class InteractionWebhook extends PartialWebhookMixin() {
     constructor(client: Client, id: Snowflake, token: string);
     public token: string;
-    public send(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
+    public send(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | RawMessage>;
   }
 
   export class Invite extends Base {
@@ -1283,7 +1283,7 @@ declare module 'discord.js' {
       options?: MessageComponentInteractionCollectorOptions,
     ): MessageComponentInteractionCollector;
     public delete(): Promise<Message>;
-    public edit(content: string | MessageEditOptions | APIMessage): Promise<Message>;
+    public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
     public fetchReference(): Promise<Message>;
     public fetchWebhook(): Promise<Webhook>;
@@ -1292,7 +1292,7 @@ declare module 'discord.js' {
     public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
-    public reply(options: string | APIMessage | ReplyMessageOptions): Promise<Message>;
+    public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message>;
     public startThread(
       name: string,
       autoArchiveDuration: ThreadAutoArchiveDuration,
@@ -1383,11 +1383,11 @@ declare module 'discord.js' {
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deferUpdate(): Promise<void>;
     public deleteReply(): Promise<void>;
-    public editReply(options: string | APIMessage | WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
-    public followUp(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(options: string | APIMessage | InteractionReplyOptions): Promise<void>;
-    public update(content: string | APIMessage | WebhookEditMessageOptions): Promise<void>;
+    public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
+    public update(content: string | MessagePayload | WebhookEditMessageOptions): Promise<void>;
     public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
   }
 
@@ -2122,10 +2122,10 @@ declare module 'discord.js' {
     public token: string;
     public editMessage(
       message: MessageResolvable,
-      options: string | APIMessage | WebhookEditMessageOptions,
+      options: string | MessagePayload | WebhookEditMessageOptions,
     ): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
-    public send(options: string | APIMessage | WebhookMessageOptions): Promise<RawMessage>;
+    public send(options: string | MessagePayload | WebhookMessageOptions): Promise<RawMessage>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2480,7 +2480,7 @@ declare module 'discord.js' {
     public cache: Collection<Snowflake, Message>;
     public crosspost(message: MessageResolvable): Promise<Message>;
     public delete(message: MessageResolvable): Promise<void>;
-    public edit(message: MessageResolvable, options: APIMessage | MessageEditOptions): Promise<Message>;
+    public edit(message: MessageResolvable, options: MessagePayload | MessageEditOptions): Promise<Message>;
     public fetch(message: Snowflake, options?: BaseFetchOptions): Promise<Message>;
     public fetch(
       options?: ChannelLogsQueryOptions,
@@ -2587,7 +2587,7 @@ declare module 'discord.js' {
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
     readonly lastMessage: Message | null;
-    send(options: string | APIMessage | MessageOptions): Promise<Message>;
+    send(options: string | MessagePayload | MessageOptions): Promise<Message>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -2623,10 +2623,10 @@ declare module 'discord.js' {
     deleteMessage(message: MessageResolvable | '@original'): Promise<void>;
     editMessage(
       message: MessageResolvable | '@original',
-      options: string | APIMessage | WebhookEditMessageOptions,
+      options: string | MessagePayload | WebhookEditMessageOptions,
     ): Promise<Message | RawMessage>;
     fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | RawMessage>;
-    send(options: string | APIMessage | WebhookMessageOptions): Promise<Message | RawMessage>;
+    send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message | RawMessage>;
   }
 
   interface WebhookFields extends PartialWebhookFields {

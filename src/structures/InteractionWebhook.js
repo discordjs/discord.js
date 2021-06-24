@@ -28,7 +28,7 @@ class InteractionWebhook {
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
    * Sends a message with this webhook.
-   * @param {string|APIMessage|InteractionReplyOptions} options The content for the reply
+   * @param {string|MessagePayload|InteractionReplyOptions} options The content for the reply
    * @returns {Promise<Message|APIMessageRaw>}
    */
   send() {}

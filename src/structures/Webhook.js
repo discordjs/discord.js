@@ -1,7 +1,7 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Channel = require('./Channel');
+const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -109,7 +109,7 @@ class Webhook {
 
   /**
    * Sends a message with this webhook.
-   * @param {string|APIMessage|WebhookMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookMessageOptions} options The options to provide
    * @returns {Promise<Message|APIMessageRaw>}
    * @example
    * // Send a basic message
@@ -160,10 +160,10 @@ class Webhook {
 
     let apiMessage;
 
-    if (options instanceof APIMessage) {
+    if (options instanceof MessagePayload) {
       apiMessage = options.resolveData();
     } else {
-      apiMessage = APIMessage.create(this, options).resolveData();
+      apiMessage = MessagePayload.create(this, options).resolveData();
     }
 
     const { data, files } = await apiMessage.resolveFiles();
@@ -260,7 +260,7 @@ class Webhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|APIMessage|WebhookEditMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
    * @returns {Promise<Message|APIMessageRaw>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
@@ -269,8 +269,8 @@ class Webhook {
 
     let apiMessage;
 
-    if (options instanceof APIMessage) apiMessage = options;
-    else apiMessage = APIMessage.create(this, options);
+    if (options instanceof MessagePayload) apiMessage = options;
+    else apiMessage = MessagePayload.create(this, options);
 
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
