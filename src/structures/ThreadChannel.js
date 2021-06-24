@@ -14,7 +14,7 @@ const Permissions = require('../util/Permissions');
 class ThreadChannel extends Channel {
   /**
    * @param {Guild} guild The guild the thread channel is part of
-   * @param {Object} data The data for the thread channel
+   * @param {APIChannel} data The data for the thread channel
    */
   constructor(guild, data) {
     super(guild.client, data, false);
@@ -179,7 +179,7 @@ class ThreadChannel extends Channel {
 
   /**
    * Edits the thread.
-   * @param {Object} data The new data for the thread
+   * @param {APIChannel} data The new data for the thread
    * @param {string} [data.name] The new name for the trhead
    * @param {boolean} [data.archived] Whether the thread is archived
    * @param {number} [data.autoArchiveDuration] How long in minutes before the thread is automatically archived,
