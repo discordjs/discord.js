@@ -3026,7 +3026,7 @@ declare module 'discord.js' {
   }
 
   interface CreateChannelInviteOptions extends CreateInviteOptions {
-    channel: GuildChannel;
+    channel: GuildChannelResolvable;
   }
 
   interface FetchInviteOptions extends BaseFetchOptions {
