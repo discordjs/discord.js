@@ -4,6 +4,7 @@ const BaseManager = require('./BaseManager');
 const { TypeError } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Collection = require('../util/Collection');
+const { ChannelTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for ThreadChannels and stores their cache.
@@ -68,12 +69,15 @@ class ThreadManager extends BaseManager {
    */
 
   /**
-   * Options for creating a thread
+   * Options for creating a thread <warn>Only one of `startMessage` or `type` can be defined.
+   * If `startMessage` is defined, `type` is automatically defined and cannot be changed.</warn>
    * @typedef {Object} ThreadCreateOptions
    * @property {string} name The name of the new Thread
    * @property {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
    * @property {MessageResolvable} [startMessage] The message to start a public or news thread from,
    * creates a private thread if not provided
+   * @property {ThreadChannelType|number} [type] The type of thread to create
+   * <warn>When creating threads in a `news` channel this is always `news_thread`</warn>
    * @param {string} [reason] Reason for creating the thread
    */
 
@@ -98,18 +102,25 @@ class ThreadManager extends BaseManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async create({ name, autoArchiveDuration, startMessage, reason } = {}) {
+  async create({ name, autoArchiveDuration, startMessage, type, reason } = {}) {
     let path = this.client.api.channels(this.channel.id);
+    if (type && typeof type !== 'string' && typeof type !== 'number') {
+      throw new TypeError('INVALID_TYPE', 'type', 'ThreadChannelType or Number');
+    }
+    let resolvedType = this.channel.type === 'news' ? ChannelTypes.NEWS_THREAD : ChannelTypes.PUBLIC_THREAD;
     if (startMessage) {
       const startMessageID = this.channel.messages.resolveID(startMessage);
       if (!startMessageID) throw new TypeError('INVALID_TYPE', 'startMessage', 'MessageResolvable');
       path = path.messages(startMessageID);
+    } else if (this.channel.type !== 'news') {
+      resolvedType = typeof type === 'string' ? ChannelTypes[type.toUpperCase()] : type;
     }
 
     const data = await path.threads.post({
       data: {
         name,
         auto_archive_duration: autoArchiveDuration,
+        type: resolvedType,
       },
       reason,
     });
