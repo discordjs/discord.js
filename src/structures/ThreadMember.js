@@ -10,7 +10,7 @@ const ThreadMemberFlags = require('../util/ThreadMemberFlags');
 class ThreadMember extends Base {
   /**
    * @param {ThreadChannel} thread The thread that this member is associated with
-   * @param {Object} data The data for the thread member
+   * @param {APIThreadMember} data The data for the thread member
    */
   constructor(thread, data) {
     super(thread.client);
@@ -93,3 +93,8 @@ class ThreadMember extends Base {
 }
 
 module.exports = ThreadMember;
+
+/**
+ * @external APIThreadMember
+ * @see {@link https://discord.com/developers/docs/resources/channel#thread-member-object}
+ */
