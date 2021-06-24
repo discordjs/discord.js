@@ -139,7 +139,7 @@ class GuildInviteManager extends BaseManager {
   /**
    * Create a invite to the guild from the provided or the first available channel.
    * @param {CreateChannelInviteOptions} [options={}] The options for creating the invite from a optional channel.
-   * @returns {Promise<Invite?>}
+   * @returns {Promise<Invite>}
    * @example
    * // Create an invite to a random allowed channel
    * guild.invites.create()
