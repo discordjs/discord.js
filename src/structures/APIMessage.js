@@ -31,13 +31,20 @@ class APIMessage {
 
     /**
      * Data sendable to the API
-     * @type {?Object}
+     * @type {?APIMessageRaw}
      */
     this.data = null;
 
     /**
+     * @typedef {Object} MessageFile
+     * @property {Buffer|string|Stream} attachment The original attachment that generated this file
+     * @property {string} name The name of this file
+     * @property {Buffer|Stream} file The file to be sent to the API
+     */
+
+    /**
      * Files sendable to the API
-     * @type {?Object[]}
+     * @type {?MessageFile[]}
      */
     this.files = null;
   }
@@ -259,7 +266,7 @@ class APIMessage {
   /**
    * Resolves a single file into an object sendable to the API.
    * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
-   * @returns {Object}
+   * @returns {MessageFile}
    */
   static async resolveFile(fileLike) {
     let attachment;
@@ -312,4 +319,9 @@ module.exports = APIMessage;
  * A target for a message.
  * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
+ */
+
+/**
+ * @external APIMessageRaw
+ * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
  */

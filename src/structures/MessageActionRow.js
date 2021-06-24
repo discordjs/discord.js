@@ -74,7 +74,7 @@ class MessageActionRow extends BaseMessageComponent {
 
   /**
    * Transforms the action row to a plain object.
-   * @returns {Object} The raw data of this action row
+   * @returns {APIMessageComponent} The raw data of this action row
    */
   toJSON() {
     return {
@@ -85,3 +85,8 @@ class MessageActionRow extends BaseMessageComponent {
 }
 
 module.exports = MessageActionRow;
+
+/**
+ * @external APIMessageComponent
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object}
+ */

@@ -47,7 +47,7 @@ class DiscordAPIError extends Error {
 
   /**
    * Flattens an errors object returned from the API into an array.
-   * @param {Object} obj Discord errors object
+   * @param {APIError} obj Discord errors object
    * @param {string} [key] Used internally to determine key names of nested fields
    * @returns {string[]}
    * @private
@@ -75,3 +75,8 @@ class DiscordAPIError extends Error {
 }
 
 module.exports = DiscordAPIError;
+
+/**
+ * @external APIError
+ * @see {@link https://discord.com/developers/docs/reference#error-messages}
+ */

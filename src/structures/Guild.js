@@ -1389,3 +1389,8 @@ class Guild extends AnonymousGuild {
 }
 
 module.exports = Guild;
+
+/**
+ * @external APIGuild
+ * @see {@link https://discord.com/developers/docs/resources/guild#guild-object}
+ */
