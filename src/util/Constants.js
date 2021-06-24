@@ -91,13 +91,13 @@ exports.DefaultOptions = {
       $browser: 'discord.js',
       $device: 'discord.js',
     },
-    version: 8,
+    version: 9,
   },
 
   /**
    * HTTP options
    * @typedef {Object} HTTPOptions
-   * @property {number} [version=8] API version to use
+   * @property {number} [version=9] API version to use
    * @property {string} [api='https://discord.com/api'] Base url of the API
    * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
    * @property {string} [invite='https://discord.gg'] Base url of invites
@@ -105,7 +105,7 @@ exports.DefaultOptions = {
    * @property {Object} [headers] Additional headers to send for all API requests
    */
   http: {
-    version: 8,
+    version: 9,
     api: 'https://discord.com/api',
     cdn: 'https://cdn.discordapp.com',
     invite: 'https://discord.gg',
@@ -262,6 +262,12 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji',
+  THREAD_CREATE: 'threadCreate',
+  THREAD_DELETE: 'threadDelete',
+  THREAD_UPDATE: 'threadUpdate',
+  THREAD_LIST_SYNC: 'threadListSync',
+  THREAD_MEMBER_UPDATE: 'threadMemberUpdate',
+  THREAD_MEMBERS_UPDATE: 'threadMembersUpdate',
   USER_UPDATE: 'userUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_SERVER_UPDATE: 'voiceServerUpdate',
@@ -341,6 +347,12 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * MESSAGE_REACTION_REMOVE
  * * MESSAGE_REACTION_REMOVE_ALL
  * * MESSAGE_REACTION_REMOVE_EMOJI
+ * * THREAD_CREATE
+ * * THREAD_UPDATE
+ * * THREAD_DELETE
+ * * THREAD_LIST_SYNC
+ * * THREAD_MEMBER_UPDATE
+ * * THREAD_MEMBERS_UPDATE
  * * USER_UPDATE
  * * PRESENCE_UPDATE
  * * TYPING_START
@@ -387,6 +399,12 @@ exports.WSEvents = keyMirror([
   'MESSAGE_REACTION_REMOVE',
   'MESSAGE_REACTION_REMOVE_ALL',
   'MESSAGE_REACTION_REMOVE_EMOJI',
+  'THREAD_CREATE',
+  'THREAD_UPDATE',
+  'THREAD_DELETE',
+  'THREAD_LIST_SYNC',
+  'THREAD_MEMBER_UPDATE',
+  'THREAD_MEMBERS_UPDATE',
   'USER_UPDATE',
   'PRESENCE_UPDATE',
   'TYPING_START',
@@ -448,8 +466,11 @@ exports.InviteScopes = [
  * * GUILD_DISCOVERY_REQUALIFIED
  * * GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING
  * * GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING
+ * * THREAD_CREATED
  * * REPLY
  * * APPLICATION_COMMAND
+ * * THREAD_STARTER_MESSAGE
+ * * GUILD_INVITE_REMINDER
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -471,9 +492,11 @@ exports.MessageTypes = [
   'GUILD_DISCOVERY_REQUALIFIED',
   'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING',
   'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING',
-  null,
+  'THREAD_CREATED',
   'REPLY',
   'APPLICATION_COMMAND',
+  'THREAD_STARTER_MESSAGE',
+  'GUILD_INVITE_REMINDER',
 ];
 
 /**
@@ -509,10 +532,22 @@ exports.ChannelTypes = createEnum([
   'NEWS',
   // 6
   'STORE',
-  ...Array(6).fill(null),
-  // 13
+  ...Array(3).fill(null),
+  // 10
+  'NEWS_THREAD',
+  'PUBLIC_THREAD',
+  'PRIVATE_THREAD',
   'STAGE',
 ]);
+
+/**
+ * The types of channels that are threads. The available types are:
+ * * news_thread
+ * * public_thread
+ * * private_thread
+ * @typedef {string} ThreadChannelType
+ */
+exports.ThreadChannelTypes = ['news_thread', 'public_thread', 'private_thread'];
 
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
@@ -629,6 +664,7 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * MAXIMUM_ANIMATED_EMOJIS
  * * MAXIMUM_SERVER_MEMBERS
  * * GUILD_ALREADY_HAS_TEMPLATE
+ * * MAXIMUM_THREAD_PARTICIPANTS
  * * MAXIMUM_NON_GUILD_MEMBERS_BANS
  * * MAXIMUM_BAN_FETCHES
  * * UNAUTHORIZED
@@ -672,11 +708,18 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * PAYMENT_SOURCE_REQUIRED
  * * CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL
  * * INVALID_STICKER_SENT
+ * * INVALID_OPERATION_ON_ARCHIVED_THREAD
+ * * INVALID_THREAD_NOTIFICATION_SETTINGS
+ * * PARAMETER_EARLIER_THAN_CREATION
  * * TWO_FACTOR_REQUIRED
  * * NO_USERS_WITH_DISCORDTAG_EXIST
  * * REACTION_BLOCKED
  * * RESOURCE_OVERLOADED
  * * STAGE_ALREADY_OPEN
+ * * MESSAGE_ALREADY_HAS_THREAD
+ * * THREAD_LOCKED
+ * * MAXIMUM_ACTIVE_THREADS
+ * * MAXIMUM_ACTIVE_ANNOUCEMENT_THREAD
  * @typedef {string} APIError
  */
 exports.APIErrors = {
@@ -735,6 +778,7 @@ exports.APIErrors = {
   MAXIMUM_ANIMATED_EMOJIS: 30018,
   MAXIMUM_SERVER_MEMBERS: 30019,
   GUILD_ALREADY_HAS_TEMPLATE: 30031,
+  MAXIMUM_THREAD_PARTICIPANTS: 30033,
   MAXIMUM_NON_GUILD_MEMBERS_BANS: 30035,
   MAXIMUM_BAN_FETCHES: 30037,
   UNAUTHORIZED: 40001,
@@ -778,11 +822,18 @@ exports.APIErrors = {
   PAYMENT_SOURCE_REQUIRED: 50070,
   CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: 50074,
   INVALID_STICKER_SENT: 50081,
+  INVALID_OPERATION_ON_ARCHIVED_THREAD: 50083,
+  INVALID_THREAD_NOTIFICATION_SETTINGS: 50084,
+  PARAMETER_EARLIER_THAN_CREATION: 50085,
   TWO_FACTOR_REQUIRED: 60003,
   NO_USERS_WITH_DISCORDTAG_EXIST: 80004,
   REACTION_BLOCKED: 90001,
   RESOURCE_OVERLOADED: 130000,
   STAGE_ALREADY_OPEN: 150006,
+  MESSAGE_ALREADY_HAS_THREAD: 160004,
+  THREAD_LOCKED: 160005,
+  MAXIMUM_ACTIVE_THREADS: 160006,
+  MAXIMUM_ACTIVE_ANNOUCEMENT_THREAD: 160007,
 };
 
 /**

@@ -92,6 +92,8 @@ const Messages = {
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
+  MESSAGE_THREAD_PARENT: 'The message was not sent in a guild text or news channel',
+
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
   WEBHOOK_TOKEN_UNAVAILABLE: 'This action requires a webhook token, but none is available.',
   MESSAGE_REFERENCE_MISSING: 'The message does not reference another message',

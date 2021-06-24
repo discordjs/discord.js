@@ -4,7 +4,7 @@ const BaseManager = require('./BaseManager');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const Collection = require('../util/Collection');
-const { ChannelTypes } = require('../util/Constants');
+const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for GuildChannels and stores their cache.
@@ -19,6 +19,19 @@ class GuildChannelManager extends BaseManager {
      * @type {Guild}
      */
     this.guild = guild;
+  }
+
+  /**
+   * The number of channels in this managers cache excluding thread channels
+   * that do not count towards a guild's maximum channels restriction.
+   * @type {number}
+   * @readonly
+   */
+  get channelCountWithoutThreads() {
+    return this.cache.reduce((acc, channel) => {
+      if (ThreadChannelTypes.includes(channel.type)) return acc;
+      return ++acc;
+    }, 0);
   }
 
   /**

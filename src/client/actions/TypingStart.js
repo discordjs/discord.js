@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
-const textBasedChannelTypes = ['dm', 'text', 'news'];
+const textBasedChannelTypes = ['dm', 'text', 'news', 'news_thread', 'public_thread', 'private_thread'];
 
 class TypingStart extends Action {
   handle(data) {

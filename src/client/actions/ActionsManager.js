@@ -34,6 +34,11 @@ class ActionsManager {
     this.register(require('./GuildEmojiDelete'));
     this.register(require('./GuildEmojiUpdate'));
     this.register(require('./GuildEmojisUpdate'));
+    this.register(require('./ThreadCreate'));
+    this.register(require('./ThreadDelete'));
+    this.register(require('./ThreadListSync'));
+    this.register(require('./ThreadMemberUpdate'));
+    this.register(require('./ThreadMembersUpdate'));
     this.register(require('./GuildRolesPositionUpdate'));
     this.register(require('./GuildChannelsPositionUpdate'));
     this.register(require('./GuildIntegrationsUpdate'));

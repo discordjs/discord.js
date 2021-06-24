@@ -101,6 +101,16 @@ class Message extends Base {
       this.pinned = null;
     }
 
+    if ('thread' in data) {
+      /**
+       * The thread started by this message
+       * @type {?ThreadChannel}
+       */
+      this.thread = this.client.channels.add(data.thread);
+    } else if (!this.thread) {
+      this.thread = null;
+    }
+
     if ('tts' in data) {
       /**
        * Whether or not the message was Text-To-Speech
@@ -224,7 +234,7 @@ class Message extends Base {
     this.flags = new MessageFlags(data.flags).freeze();
 
     /**
-     * Reference data sent in a crossposted message or inline reply.
+     * Reference data sent in a message that contains IDs identifying the referenced message
      * @typedef {Object} MessageReference
      * @property {string} channelID ID of the channel the message was referenced
      * @property {?string} guildID ID of the guild the message was referenced
@@ -294,6 +304,7 @@ class Message extends Base {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
+    if ('thread' in data) this.thread = this.client.channels.add(data.thread);
     if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
     else this.embeds = this.embeds.slice();
     if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
@@ -674,6 +685,21 @@ class Message extends Base {
       });
     }
     return this.channel.send(data);
+  }
+
+  /**
+   * Create a new public thread from this message
+   * @see ThreadManager#create
+   * @param {string} name The name of the new Thread
+   * @param {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
+   * @param {string} [reason] Reason for creating the thread
+   * @returns {Promise<ThreadChannel>}
+   */
+  startThread(name, autoArchiveDuration, reason) {
+    if (!['text', 'news'].includes(this.channel.type)) {
+      return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
+    }
+    return this.channel.threads.create({ name, autoArchiveDuration, startMessage: this, reason });
   }
 
   /**
