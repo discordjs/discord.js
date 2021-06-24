@@ -157,13 +157,13 @@ class GuildInviteManager extends BaseManager {
   create(options = {}) {
     let channel;
 
-    if (!options.channel) {
+    if (options.channel) {
+      channel = this.guild.channels.resolve(options.channel);
+      if (!channel) return Promise.reject(new Error('GUILD_CHANNEL_RESOLVE'));
+    } else {
       channel = this.guild.channels.cache.find(c => c.permissionsFor(this.guild.me).has('CREATE_INSTANT_INVITE'));
       if (!channel) return Promise.reject(new Error('GUILD_CHANNEL_INVITE'));
     }
-
-    channel = this.guild.channels.resolve(options.channel);
-    if (!channel) return Promise.reject(new Error('GUILD_CHANNEL_RESOLVE'));
 
     return channel.createInvite(options);
   }
