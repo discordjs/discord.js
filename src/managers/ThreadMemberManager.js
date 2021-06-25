@@ -77,7 +77,7 @@ class ThreadMemberManager extends BaseManager {
     const id = member === '@me' ? member : this.client.users.resolveID(member);
     if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'member', 'UserResolvable'));
     return this.client.api
-      .channels(this.id, 'thread-members', id)
+      .channels(this.thread.id, 'thread-members', id)
       .put({ reason })
       .then(() => id);
   }
