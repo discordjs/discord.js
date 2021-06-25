@@ -38,7 +38,7 @@ class Client extends BaseClient {
     let data = process.env;
     try {
       // Test if worker threads module is present and used
-      data = require('worker_threads').workerData || data;
+      data = require('worker_threads').workerData ?? data;
     } catch {
       // Do nothing
     }
