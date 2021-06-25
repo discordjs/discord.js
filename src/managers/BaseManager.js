@@ -42,7 +42,7 @@ class BaseManager {
   }
 
   add(data, cache = true, { id, extras = [] } = {}) {
-    const existing = this.cache.get(id || data.id);
+    const existing = this.cache.get(id ?? data.id);
     if (cache) existing?._patch(data);
     if (existing) return existing;
 

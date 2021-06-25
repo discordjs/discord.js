@@ -34,7 +34,7 @@ class GenericAction {
   getChannel(data) {
     const id = data.channel_id ?? data.id;
     return (
-      data.channel ||
+      data.channel ??
       this.getPayload(
         {
           id,
@@ -51,7 +51,7 @@ class GenericAction {
   getMessage(data, channel, cache) {
     const id = data.message_id ?? data.id;
     return (
-      data.message ||
+      data.message ??
       this.getPayload(
         {
           id,
