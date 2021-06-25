@@ -1790,8 +1790,8 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
     public bannerID: Snowflake;
-    public readonly coverSticker: Sticker;
-    public coverStickerID: Snowflake;
+    public readonly coverSticker: ?Sticker;
+    public coverStickerID: ?Snowflake;
     public description: string;
     public id: Snowflake;
     public name: string;

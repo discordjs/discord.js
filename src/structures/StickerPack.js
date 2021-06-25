@@ -42,9 +42,9 @@ class StickerPack extends Base {
 
     /**
      * The ID of a sticker in the pack which is shown as the pack's icon
-     * @type {Snowflake}
+     * @type {?Snowflake}
      */
-    this.coverStickerID = pack.cover_sticker_id;
+    this.coverStickerID = pack.cover_sticker_id ?? null;
 
     /**
      * The description of the sticker pack
@@ -79,11 +79,11 @@ class StickerPack extends Base {
 
   /**
    * The sticker which is shown as the pack's icon
-   * @type {Sticker}
+   * @type {?Sticker}
    * @readonly
    */
   get coverSticker() {
-    return this.stickers.get(this.coverStickerID);
+    return this.coverStickerID && this.stickers.get(this.coverStickerID);
   }
 
   /**
