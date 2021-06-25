@@ -8,7 +8,7 @@ const Util = require('../util/Util');
  * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
-  constructor(message, users, roles, everyone, crosspostedChannels) {
+  constructor(message, users, roles, everyone, crosspostedChannels, repliedUser) {
     /**
      * The client the message is from
      * @type {Client}
@@ -125,6 +125,12 @@ class MessageMentions {
     } else {
       this.crosspostedChannels = new Collection();
     }
+
+    /**
+     * The author of the message that this message is a reply to
+     * @type {?User}
+     */
+    this.repliedUser = repliedUser ? this.client.users.add(repliedUser) : null;
   }
 
   /**
