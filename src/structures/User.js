@@ -59,13 +59,13 @@ class User extends Base {
       this.username = null;
     }
 
-    if ('bot' in data || typeof this.bot === 'boolean') {
+    if ('bot' in data) {
       /**
        * Whether or not the user is a bot
        * @type {?boolean}
        */
-      this.bot = Boolean(data.bot ?? this.bot);
-    } else if (!this.partial) {
+      this.bot = Boolean(data.bot);
+    } else if (!this.partial && typeof this.bot !== 'boolean') {
       this.bot = false;
     }
 
@@ -89,13 +89,13 @@ class User extends Base {
       this.avatar = null;
     }
 
-    if ('system' in data || typeof this.system === 'boolean') {
+    if ('system' in data) {
       /**
        * Whether the user is an Official Discord System user (part of the urgent message system)
        * @type {?boolean}
        */
-      this.system = Boolean(data.system ?? this.system);
-    } else if (!this.partial) {
+      this.system = Boolean(data.system);
+    } else if (!this.partial && typeof this.system !== 'boolean') {
       this.system = false;
     }
 
