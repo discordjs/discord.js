@@ -85,7 +85,7 @@ class GuildMember extends Base {
     if ('nick' in data) this.nickname = data.nick;
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if ('premium_since' in data) {
-      this.premiumSinceTimestamp = data.premium_since === null ? null : new Date(data.premium_since).getTime();
+      this.premiumSinceTimestamp = data.premium_since ? new Date(data.premium_since).getTime() : null;
     }
     if ('roles' in data) this._roles = data.roles;
     this.pending = data.pending ?? false;
@@ -121,8 +121,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get lastMessage() {
-    const channel = this.guild.channels.cache.get(this.lastMessageChannelID);
-    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
+    return this.guild.channels.cache.get(this.lastMessageChannelID)?.messages.cache.get(this.lastMessageID) ?? null;
   }
 
   /**
@@ -133,7 +132,7 @@ class GuildMember extends Base {
   get voice() {
     if (!Structures) Structures = require('../util/Structures');
     const VoiceState = Structures.get('VoiceState');
-    return this.guild.voiceStates.cache.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
+    return this.guild.voiceStates.cache.get(this.id) ?? new VoiceState(this.guild, { user_id: this.id });
   }
 
   /**
@@ -163,7 +162,7 @@ class GuildMember extends Base {
     if (!Structures) Structures = require('../util/Structures');
     const Presence = Structures.get('Presence');
     return (
-      this.guild.presences.cache.get(this.id) ||
+      this.guild.presences.cache.get(this.id) ??
       new Presence(this.client, {
         user: {
           id: this.id,
@@ -179,8 +178,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayColor() {
-    const role = this.roles.color;
-    return (role && role.color) || 0;
+    return this.roles.color?.color ?? 0;
   }
 
   /**
@@ -189,8 +187,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayHexColor() {
-    const role = this.roles.color;
-    return (role && role.hexColor) || '#000000';
+    return this.roles.color?.hexColor ?? '#000000';
   }
 
   /**
@@ -208,7 +205,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayName() {
-    return this.nickname || this.user.username;
+    return this.nickname ?? this.user.username;
   }
 
   /**

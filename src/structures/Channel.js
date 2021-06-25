@@ -29,7 +29,7 @@ class Channel extends Base {
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
-    this.type = type ? type.toLowerCase() : 'unknown';
+    this.type = type?.toLowerCase() ?? 'unknown';
 
     /**
      * Whether the channel has been deleted
@@ -122,7 +122,7 @@ class Channel extends Base {
         channel = new PartialGroupDMChannel(client, data);
       }
     } else {
-      guild = guild || client.guilds.cache.get(data.guild_id);
+      guild = guild ?? client.guilds.cache.get(data.guild_id);
       if (guild) {
         switch (data.type) {
           case ChannelTypes.TEXT: {

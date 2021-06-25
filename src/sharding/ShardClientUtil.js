@@ -109,10 +109,10 @@ class ShardClientUtil {
    */
   fetchClientValues(prop, shard) {
     return new Promise((resolve, reject) => {
-      const parent = this.parentPort || process;
+      const parent = this.parentPort ?? process;
 
       const listener = message => {
-        if (!message || message._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
+        if (message?._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
@@ -139,7 +139,7 @@ class ShardClientUtil {
    */
   broadcastEval(script, options = {}) {
     return new Promise((resolve, reject) => {
-      const parent = this.parentPort || process;
+      const parent = this.parentPort ?? process;
       if (typeof script !== 'function') {
         reject(new TypeError('SHARDING_INVALID_EVAL_BROADCAST'));
         return;
@@ -147,7 +147,7 @@ class ShardClientUtil {
       script = `(${script})(this, ${JSON.stringify(options.context)})`;
 
       const listener = message => {
-        if (!message || message._sEval !== script || message._sEvalShard !== options.shard) return;
+        if (message?._sEval !== script || message._sEvalShard !== options.shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));

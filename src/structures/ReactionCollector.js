@@ -183,7 +183,7 @@ class ReactionCollector extends Collector {
    * @returns {void}
    */
   _handleGuildDeletion(guild) {
-    if (this.message.guild && guild.id === this.message.guild.id) {
+    if (guild.id === this.message.guild?.id) {
       this.stop('guildDelete');
     }
   }
@@ -194,7 +194,7 @@ class ReactionCollector extends Collector {
    * @returns {Snowflake|string}
    */
   static key(reaction) {
-    return reaction.emoji.id || reaction.emoji.name;
+    return reaction.emoji.id ?? reaction.emoji.name;
   }
 }
 

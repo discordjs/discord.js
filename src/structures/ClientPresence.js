@@ -10,7 +10,7 @@ class ClientPresence extends Presence {
    * @param {APIPresence} [data={}] The data for the client presence
    */
   constructor(client, data = {}) {
-    super(client, Object.assign(data, { status: data.status || 'online', user: { id: null } }));
+    super(client, Object.assign(data, { status: data.status ?? 'online', user: { id: null } }));
   }
 
   set(presence) {
@@ -31,9 +31,9 @@ class ClientPresence extends Presence {
   _parse({ status, since, afk, activities }) {
     const data = {
       activities: [],
-      afk: typeof afk === 'boolean' ? afk : false,
+      afk: afk ?? false,
       since: typeof since === 'number' && !Number.isNaN(since) ? since : null,
-      status: status || this.status,
+      status: status ?? this.status,
     };
     if (activities?.length) {
       for (const [i, activity] of activities.entries()) {

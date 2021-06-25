@@ -147,7 +147,7 @@ class MessagePayload {
     let username;
     let avatarURL;
     if (isWebhook) {
-      username = this.options.username || this.target.name;
+      username = this.options.username ?? this.target.name;
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
     }
 
@@ -239,7 +239,7 @@ class MessagePayload {
       name = findName(attachment);
     } else {
       attachment = fileLike.attachment;
-      name = fileLike.name || findName(attachment);
+      name = fileLike.name ?? findName(attachment);
     }
 
     const resource = await DataResolver.resolveFile(attachment);

@@ -36,7 +36,7 @@ class MessageComponentInteractionCollector extends Collector {
      * The source channel from which to collect message component interactions
      * @type {TextChannel|DMChannel|NewsChannel}
      */
-    this.channel = this.message ? this.message.channel : source;
+    this.channel = this.message?.channel ?? source;
 
     /**
      * The users which have interacted to components on this collector

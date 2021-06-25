@@ -34,7 +34,7 @@ class Webhook {
      * @name Webhook#token
      * @type {?string}
      */
-    Object.defineProperty(this, 'token', { value: data.token || null, writable: true, configurable: true });
+    Object.defineProperty(this, 'token', { value: data.token ?? null, writable: true, configurable: true });
 
     /**
      * The avatar for the webhook
@@ -176,9 +176,8 @@ class Webhook {
         auth: false,
       })
       .then(d => {
-        const channel = this.client.channels ? this.client.channels.cache.get(d.channel_id) : undefined;
-        if (!channel) return d;
-        return channel.messages.add(d, false);
+        const channel = this.client.channels?.cache.get(d.channel_id);
+        return channel ? channel.messages.add(d, false) : d;
       });
   }
 

@@ -197,7 +197,7 @@ class ThreadChannel extends Channel {
   async edit(data, reason) {
     const newData = await this.client.api.channels(this.id).patch({
       data: {
-        name: (data.name || this.name).trim(),
+        name: (data.name ?? this.name).trim(),
         archived: data.archived,
         auto_archive_duration: data.autoArchiveDuration,
         rate_limit_per_user: data.rateLimitPerUser,

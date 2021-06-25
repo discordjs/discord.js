@@ -188,7 +188,7 @@ class Client extends BaseClient {
    * @readonly
    */
   get readyTimestamp() {
-    return this.readyAt ? this.readyAt.getTime() : null;
+    return this.readyAt?.getTime() ?? null;
   }
 
   /**
@@ -341,7 +341,7 @@ class Client extends BaseClient {
       channels++;
 
       messages += channel.messages.cache.sweep(
-        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs,
+        message => now - (message.editedTimestamp ?? message.createdTimestamp) > lifetimeMs,
       );
     }
 

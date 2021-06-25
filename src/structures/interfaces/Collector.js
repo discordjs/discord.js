@@ -212,11 +212,11 @@ class Collector extends EventEmitter {
   resetTimer({ time, idle } = {}) {
     if (this._timeout) {
       this.client.clearTimeout(this._timeout);
-      this._timeout = this.client.setTimeout(() => this.stop('time'), time || this.options.time);
+      this._timeout = this.client.setTimeout(() => this.stop('time'), time ?? this.options.time);
     }
     if (this._idletimeout) {
       this.client.clearTimeout(this._idletimeout);
-      this._idletimeout = this.client.setTimeout(() => this.stop('idle'), idle || this.options.idle);
+      this._idletimeout = this.client.setTimeout(() => this.stop('idle'), idle ?? this.options.idle);
     }
   }
 

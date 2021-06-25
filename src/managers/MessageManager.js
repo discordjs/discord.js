@@ -150,7 +150,7 @@ class MessageManager extends BaseManager {
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     const data = await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
-    return this.cache.get(data.id) || this.add(data);
+    return this.cache.get(data.id) ?? this.add(data);
   }
 
   /**

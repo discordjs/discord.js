@@ -67,7 +67,7 @@ class BaseGuildEmojiManager extends BaseManager {
     if (emoji instanceof ReactionEmoji) return emoji.identifier;
     if (typeof emoji === 'string') {
       const res = parseEmoji(emoji);
-      if (res && res.name.length) {
+      if (res?.name.length) {
         emoji = `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
       }
       if (!emoji.includes('%')) return encodeURIComponent(emoji);

@@ -22,10 +22,10 @@ class ChannelManager extends BaseManager {
   add(data, guild, cache = true) {
     const existing = this.cache.get(data.id);
     if (existing) {
-      if (existing._patch && cache) existing._patch(data);
-      if (guild) guild.channels?.add(existing);
-      if (ThreadChannelTypes.includes(existing.type) && typeof existing.parent?.threads !== 'undefined') {
-        existing.parent.threads.add(existing);
+      if (cache) existing._patch(data);
+      guild?.channels?.add(existing);
+      if (ThreadChannelTypes.includes(existing.type)) {
+        existing.parent?.threads.add(existing);
       }
       return existing;
     }

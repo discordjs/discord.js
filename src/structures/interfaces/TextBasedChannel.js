@@ -39,7 +39,7 @@ class TextBasedChannel {
    * @readonly
    */
   get lastMessage() {
-    return this.messages.cache.get(this.lastMessageID) || null;
+    return this.messages.cache.get(this.lastMessageID) ?? null;
   }
 
   /**
@@ -185,7 +185,7 @@ class TextBasedChannel {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (this.client.user._typing.has(this.id)) {
       const entry = this.client.user._typing.get(this.id);
-      entry.count = count || entry.count + 1;
+      entry.count = count ?? entry.count + 1;
       return entry.promise;
     }
 
@@ -193,7 +193,7 @@ class TextBasedChannel {
     entry.promise = new Promise((resolve, reject) => {
       const endpoint = this.client.api.channels[this.id].typing;
       Object.assign(entry, {
-        count: count || 1,
+        count: count ?? 1,
         interval: this.client.setInterval(() => {
           endpoint.post().catch(error => {
             this.client.clearInterval(entry.interval);
@@ -252,8 +252,7 @@ class TextBasedChannel {
    * @readonly
    */
   get typingCount() {
-    if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
-    return 0;
+    return this.client.user._typing.get(this.id)?.count ?? 0;
   }
 
   /**
@@ -294,7 +293,7 @@ class TextBasedChannel {
     return new Promise((resolve, reject) => {
       const collector = this.createMessageCollector(options);
       collector.once('end', (collection, reason) => {
-        if (options.errors && options.errors.includes(reason)) {
+        if (options.errors?.includes(reason)) {
           reject(collection);
         } else {
           resolve(collection);
@@ -355,7 +354,7 @@ class TextBasedChannel {
    */
   async bulkDelete(messages, filterOld = false) {
     if (Array.isArray(messages) || messages instanceof Collection) {
-      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
+      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id ?? m);
       if (filterOld) {
         messageIDs = messageIDs.filter(id => Date.now() - SnowflakeUtil.deconstruct(id).timestamp < 1209600000);
       }

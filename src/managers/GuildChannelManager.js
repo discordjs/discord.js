@@ -112,8 +112,18 @@ class GuildChannelManager extends BaseManager {
    * })
    */
   async create(name, options = {}) {
-    let { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } =
-      options;
+    let {
+      type,
+      topic,
+      nsfw,
+      bitrate,
+      userLimit,
+      parent,
+      permissionOverwrites,
+      position,
+      rateLimitPerUser,
+      reason,
+    } = options;
     if (parent) parent = this.client.channels.resolveID(parent);
     if (permissionOverwrites) {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
