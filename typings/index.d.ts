@@ -2702,9 +2702,10 @@ declare module 'discord.js' {
   }
 
   type BitFieldResolvable<T extends string, N extends number | bigint> =
-    | RecursiveReadonlyArray<T | N | Readonly<BitField<T, N>>>
+    | RecursiveReadonlyArray<T | N | `${bigint}` | Readonly<BitField<T, N>>>
     | T
     | N
+    | `${bigint}`
     | Readonly<BitField<T, N>>;
 
   type BufferResolvable = Buffer | string;
@@ -3616,7 +3617,7 @@ declare module 'discord.js' {
 
   interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> {}
 
-  type PermissionResolvable = BitFieldResolvable<PermissionString, string, bigint>;
+  type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
   type PermissionString =
     | 'CREATE_INSTANT_INVITE'
