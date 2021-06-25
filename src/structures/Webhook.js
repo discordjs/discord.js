@@ -232,7 +232,7 @@ class Webhook {
    * @returns {Promise<Webhook>}
    */
   async edit({ name = this.name, avatar, channel }, reason) {
-    if (avatar && typeof avatar === 'string' && !avatar.startsWith('data:')) {
+    if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await DataResolver.resolveImage(avatar);
     }
     if (channel) channel = channel instanceof Channel ? channel.id : channel;
