@@ -3641,7 +3641,7 @@ declare module 'discord.js' {
     | 'MANAGE_NICKNAMES'
     | 'MANAGE_ROLES'
     | 'MANAGE_WEBHOOKS'
-    | 'MANAGE_EMOJIS'
+    | 'MANAGE_EMOJIS_AND_STICKERS'
     | 'USE_APPLICATION_COMMANDS'
     | 'REQUEST_TO_SPEAK';
 
