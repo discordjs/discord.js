@@ -54,7 +54,7 @@ class StickerPack extends Base {
 
     /**
      * The ID of the sticker pack's banner image
-     * @type {?Snowflake}
+     * @type {Snowflake}
      */
     this.bannerID = pack.banner_asset_id;
   }
@@ -89,7 +89,7 @@ class StickerPack extends Base {
   /**
    * The URL to this sticker pack's banner.
    * @param {StaticImageURLOptions} [options={}] Options for the Image URL
-   * @returns {?string}
+   * @returns {string}
    */
   bannerURL({ format, size } = {}) {
     return this.client.rest.cdn.StickerPackBanner(this.bannerID, format, size);
