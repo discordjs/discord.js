@@ -78,7 +78,7 @@ class Collector extends EventEmitter {
     this._idletimeout = null;
 
     if (typeof this.filter !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'filter', 'function');
+      throw new TypeError('INVALID_TYPE', 'options.filter', 'function');
     }
 
     this.handleCollect = this.handleCollect.bind(this);
