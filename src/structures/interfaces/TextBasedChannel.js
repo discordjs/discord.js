@@ -343,7 +343,7 @@ class TextBasedChannel {
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * channel.awaitMessageComponentInteraction(filter, { time: 15000 })
+   * channel.awaitMessageComponentInteraction({ filter, time: 15000 })
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
