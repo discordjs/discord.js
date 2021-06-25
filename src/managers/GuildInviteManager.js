@@ -87,17 +87,17 @@ class GuildInviteManager extends BaseManager {
    *   .catch(console.error);
    * @example
    * // Fetch a single invite
-   * guild.invites.fetch('DrzKVU3')
+   * guild.invites.fetch('bRCvFy9')
    *   .then(console.log)
    *   .catch(console.error);
    * @example
    * // Fetch a single invite without checking cache
-   * guild.invites.fetch({ code: 'DrzKVU3', force: true })
+   * guild.invites.fetch({ code: 'bRCvFy9', force: true })
    *   .then(console.log)
    *   .catch(console.error)
    * @example
    * // Fetch a single invite without caching
-   * guild.invites.fetch({ code: 'DrzKVU3', cache: false })
+   * guild.invites.fetch({ code: 'bRCvFy9', cache: false })
    *   .then(console.log)
    *   .catch(console.error);
    */
