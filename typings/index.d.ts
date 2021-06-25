@@ -1857,7 +1857,7 @@ declare module 'discord.js' {
   export class User extends PartialTextBasedChannel(Base) {
     constructor(client: Client, data: unknown);
     public avatar: string | null;
-    public bot: boolean | null;
+    public bot: boolean;
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
     public discriminator: string;
@@ -1868,7 +1868,7 @@ declare module 'discord.js' {
     public lastMessageID: Snowflake | null;
     public readonly partial: false;
     public readonly presence: Presence;
-    public system: boolean | null;
+    public system: boolean;
     public readonly tag: string;
     public username: string;
     public avatarURL(options?: ImageURLOptions): string | null;
@@ -3777,9 +3777,9 @@ declare module 'discord.js' {
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
   interface PartialUser extends Omit<Partialize<User, 'bot' | 'flags' | 'system' | 'tag' | 'username'>, 'deleted'> {
-    bot: User['bot'];
+    bot: null;
     flags: User['flags'];
-    system: User['system'];
+    system: null;
     readonly tag: null;
     username: null;
   }
