@@ -139,10 +139,12 @@ declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
   import {
+    APIActionRowComponent as RawActionRowComponent,
     APIInteractionDataResolvedChannel as RawInteractionDataResolvedChannel,
     APIInteractionDataResolvedGuildMember as RawInteractionDataResolvedGuildMember,
     APIInteractionGuildMember as RawInteractionGuildMember,
     APIMessage as RawMessage,
+    APIMessageComponent as RawMessageComponent,
     APIOverwrite as RawOverwrite,
     APIPartialEmoji as RawEmoji,
     APIRole as RawRole,
@@ -1389,6 +1391,7 @@ declare module 'discord.js' {
 
   export class MessageComponentInteraction extends Interaction {
     public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | null;
+    public readonly component: MessageActionRowComponent | Exclude<RawMessageComponent, RawActionRowComponent> | null;
     public componentType: MessageComponentType;
     public customID: string;
     public deferred: boolean;
