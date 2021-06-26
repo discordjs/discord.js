@@ -1756,13 +1756,16 @@ declare module 'discord.js' {
     public readonly ids: number[];
     public mode: ShardingManagerMode;
     public parentPort: any | null;
-    public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
-    public broadcastEval<T>(fn: (client: Client) => T, options: { shard: number }): Promise<T>;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, options: { context: P }): Promise<T[]>;
+    public broadcastEval<T>(fn: (client: Client) => T): Promise<Serialized<T>[]>;
+    public broadcastEval<T>(fn: (client: Client) => T, options: { shard: number }): Promise<Serialized<T>>;
     public broadcastEval<T, P>(
-      fn: (client: Client, context: P) => T,
+      fn: (client: Client, context: Serialized<P>) => T,
+      options: { context: P },
+    ): Promise<Serialized<T>[]>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: Serialized<P>) => T,
       options: { context: P; shard: number },
-    ): Promise<T>;
+    ): Promise<Serialized<T>>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
     public respawnAll(options?: MultipleShardRespawnOptions): Promise<void>;
@@ -1785,13 +1788,16 @@ declare module 'discord.js' {
     public totalShards: number | 'auto';
     public shardList: number[] | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
-    public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
-    public broadcastEval<T>(fn: (client: Client) => T, options: { shard: number }): Promise<T>;
-    public broadcastEval<T, P>(fn: (client: Client, context: P) => T, options: { context: P }): Promise<T[]>;
+    public broadcastEval<T>(fn: (client: Client) => T): Promise<Serialized<T>[]>;
+    public broadcastEval<T>(fn: (client: Client) => T, options: { shard: number }): Promise<Serialized<T>>;
     public broadcastEval<T, P>(
-      fn: (client: Client, context: P) => T,
+      fn: (client: Client, context: Serialized<P>) => T,
+      options: { context: P },
+    ): Promise<Serialized<T>[]>;
+    public broadcastEval<T, P>(
+      fn: (client: Client, context: Serialized<P>) => T,
       options: { context: P; shard: number },
-    ): Promise<T>;
+    ): Promise<Serialized<T>>;
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
@@ -4320,6 +4326,18 @@ declare module 'discord.js' {
     | 'STAGE_INSTANCE_CREATE'
     | 'STAGE_INSTANCE_UPDATE'
     | 'STAGE_INSTANCE_DELETE';
+
+  type Serialized<T> = T extends symbol | bigint | (() => unknown)
+    ? never
+    : T extends number | string | boolean | undefined
+    ? T
+    : T extends { toJSON(): infer R }
+    ? R
+    : T extends ReadonlyArray<infer V>
+    ? Serialized<V>[]
+    : T extends ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
+    ? {}
+    : { [K in keyof T]: Serialized<T[K]> };
 
   //#endregion
 }

@@ -1,6 +1,15 @@
 /// <reference path="index.d.ts" />
 
-import { Client, Intents, Message, MessageAttachment, MessageEmbed } from 'discord.js';
+import {
+  Client,
+  Collection,
+  Intents,
+  Message,
+  MessageAttachment,
+  MessageEmbed,
+  Permissions,
+  Serialized,
+} from 'discord.js';
 
 const client: Client = new Client({
   intents: Intents.NON_PRIVILEGED,
@@ -48,3 +57,32 @@ client.on('message', ({ channel }) => {
 });
 
 client.login('absolutely-valid-token');
+
+declare const assertType: <T>(value: T) => asserts value is T;
+declare const serialize: <T>(value: T) => Serialized<T>;
+
+assertType<undefined>(serialize(undefined));
+assertType<null>(serialize(null));
+assertType<number[]>(serialize([1, 2, 3]));
+assertType<{}>(serialize(new Set([1, 2, 3])));
+assertType<{}>(
+  serialize(
+    new Map([
+      [1, '2'],
+      [2, '4'],
+    ]),
+  ),
+);
+assertType<string>(serialize(new Permissions(Permissions.FLAGS.ATTACH_FILES)));
+assertType<number>(serialize(new Intents(Intents.FLAGS.GUILDS)));
+assertType<unknown>(
+  serialize(
+    new Collection([
+      [1, '2'],
+      [2, '4'],
+    ]),
+  ),
+);
+assertType<never>(serialize(Symbol('a')));
+assertType<never>(serialize(() => {}));
+assertType<never>(serialize(BigInt(42)));
