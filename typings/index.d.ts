@@ -480,8 +480,8 @@ declare module 'discord.js' {
     public adapters: Map<Snowflake, DiscordGatewayAdapterLibraryMethods>;
   }
 
-  export abstract class Collector<K, V> extends EventEmitter {
-    constructor(client: Client, options?: CollectorOptions<[V]>);
+  export abstract class Collector<K, V, F extends any[] = []> extends EventEmitter {
+    constructor(client: Client, options?: CollectorOptions<[V, ...F]>);
     private _timeout: NodeJS.Timeout | null;
     private _idletimeout: NodeJS.Timeout | null;
 
@@ -489,9 +489,9 @@ declare module 'discord.js' {
     public collected: Collection<K, V>;
     public ended: boolean;
     public abstract endReason: string | null;
-    public filter: CollectorFilter<[V]>;
+    public filter: CollectorFilter<[V, ...F]>;
     public readonly next: Promise<V>;
-    public options: CollectorOptions<[V]>;
+    public options: CollectorOptions<[V, ...F]>;
     public checkEnd(): void;
     public handleCollect(...args: any[]): Promise<void>;
     public handleDispose(...args: any[]): Promise<void>;
@@ -501,8 +501,8 @@ declare module 'discord.js' {
     public toJSON(): unknown;
 
     protected listener: (...args: any[]) => void;
-    public abstract collect(...args: any[]): K;
-    public abstract dispose(...args: any[]): K;
+    public abstract collect(...args: any[]): K | null | Promise<K | null>;
+    public abstract dispose(...args: any[]): K | null;
 
     public on(event: 'collect' | 'dispose', listener: (...args: any[]) => Awaited<void>): this;
     public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaited<void>): this;
@@ -1366,8 +1366,8 @@ declare module 'discord.js' {
     public options: MessageCollectorOptions;
     public received: number;
 
-    public collect(message: Message): Snowflake;
-    public dispose(message: Message): Snowflake;
+    public collect(message: Message): Snowflake | null;
+    public dispose(message: Message): Snowflake | null;
   }
 
   export class MessageComponentInteraction extends Interaction {
@@ -1408,8 +1408,8 @@ declare module 'discord.js' {
     public total: number;
     public users: Collection<Snowflake, User>;
 
-    public collect(interaction: Interaction): Snowflake;
-    public dispose(interaction: Interaction): Snowflake;
+    public collect(interaction: Interaction): Snowflake | null;
+    public dispose(interaction: Interaction): Snowflake | null;
     public on(
       event: 'collect' | 'dispose',
       listener: (interaction: MessageComponentInteraction) => Awaited<void>,
@@ -1616,7 +1616,7 @@ declare module 'discord.js' {
     public equals(presence: Presence): boolean;
   }
 
-  export class ReactionCollector extends Collector<Snowflake | string, MessageReaction> {
+  export class ReactionCollector extends Collector<Snowflake | string, MessageReaction, [User]> {
     constructor(message: Message, options?: ReactionCollectorOptions);
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
@@ -1630,8 +1630,8 @@ declare module 'discord.js' {
 
     public static key(reaction: MessageReaction): Snowflake | string;
 
-    public collect(reaction: MessageReaction): Promise<Snowflake | string>;
-    public dispose(reaction: MessageReaction, user: User): Snowflake | string;
+    public collect(reaction: MessageReaction, user: User): Promise<Snowflake | string | null>;
+    public dispose(reaction: MessageReaction, user: User): Snowflake | string | null;
     public empty(): void;
 
     public on(event: 'collect' | 'dispose' | 'remove', listener: (reaction: MessageReaction, user: User) => void): this;
