@@ -399,18 +399,17 @@ class Message extends Base {
 
   /**
    * Creates a reaction collector.
-   * @param {CollectorFilter} filter The filter to apply
    * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID';
-   * const collector = message.createReactionCollector(filter, { time: 15000 });
+   * const collector = message.createReactionCollector({ filter, time: 15000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createReactionCollector(filter, options = {}) {
-    return new ReactionCollector(this, filter, options);
+  createReactionCollector(options = {}) {
+    return new ReactionCollector(this, options);
   }
 
   /**
@@ -422,19 +421,18 @@ class Message extends Base {
   /**
    * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
-   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
-   * message.awaitReactions(filter, { time: 15000 })
+   * message.awaitReactions({ filter, time: 15000 })
    *   .then(collected => console.log(`Collected ${collected.size} reactions`))
    *   .catch(console.error);
    */
-  awaitReactions(filter, options = {}) {
+  awaitReactions(options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createReactionCollector(filter, options);
+      const collector = this.createReactionCollector(options);
       collector.once('end', (reactions, reason) => {
         if (options.errors && options.errors.includes(reason)) reject(reactions);
         else resolve(reactions);
@@ -444,42 +442,41 @@ class Message extends Base {
 
   /**
    * Creates a message component interaction collector.
-   * @param {CollectorFilter} filter The filter to apply
    * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
    * @returns {MessageComponentInteractionCollector}
    * @example
    * // Create a message component interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = message.createMessageComponentInteractionCollector(filter, { time: 15000 });
+   * const collector = message.createMessageComponentInteractionCollector({ filter, time: 15000 });
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createMessageComponentInteractionCollector(filter, options = {}) {
-    return new MessageComponentInteractionCollector(this, filter, options);
+  createMessageComponentInteractionCollector(options = {}) {
+    return new MessageComponentInteractionCollector(this, options);
   }
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
    * @typedef {Object} AwaitMessageComponentInteractionOptions
+   * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
    */
 
   /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
-   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitMessageComponentInteractionOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitMessageComponentInteraction(filter, { time: 15000 })
+   * message.awaitMessageComponentInteraction({ filter, time: 15000 })
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteraction(filter, { time } = {}) {
+  awaitMessageComponentInteraction(options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector(filter, { max: 1, time });
+      const collector = this.createMessageComponentInteractionCollector({ ...options, max: 1 });
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
