@@ -3,8 +3,8 @@
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
+const InteractionCollector = require('./InteractionCollector');
 const MessageAttachment = require('./MessageAttachment');
-const MessageComponentInteractionCollector = require('./MessageComponentInteractionCollector');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
@@ -440,9 +440,17 @@ class Message extends Base {
   }
 
   /**
+   * @typedef {CollectorOptions} MessageComponentCollectorOptions
+   * @property {MessageComponentType} [componentType] The type of component to listen for
+   * @property {number} [max] The maximum total amount of interactions to collect
+   * @property {number} [maxComponents] The maximum number of components to collect
+   * @property {number} [maxUsers] The maximum number of users to interact
+   */
+
+  /**
    * Creates a message component interaction collector.
-   * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
-   * @returns {MessageComponentInteractionCollector}
+   * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
+   * @returns {InteractionCollector}
    * @example
    * // Create a message component interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
@@ -450,21 +458,26 @@ class Message extends Base {
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createMessageComponentInteractionCollector(options = {}) {
-    return new MessageComponentInteractionCollector(this, options);
+  createMessageComponentCollector(options = {}) {
+    return new InteractionCollector(this.client, {
+      ...options,
+      interactionType: InteractionTypes.MESSAGE_COMPONENT,
+      message: this,
+    });
   }
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {Object} AwaitMessageComponentInteractionOptions
+   * @typedef {Object} AwaitMessageComponentOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
+   * @property {MessageComponentType} [componentType] The type of component interaction to collect
    */
 
   /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
-   * @param {AwaitMessageComponentInteractionOptions} [options={}] Options to pass to the internal collector
+   * @param {AwaitMessageComponentOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
@@ -473,9 +486,15 @@ class Message extends Base {
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteraction(options = {}) {
+  awaitMessageComponent(options = {}) {
+    const _options = {
+      ...options,
+      interactionType: InteractionTypes.MESSAGE_COMPONENT,
+      max: 1,
+      message: this,
+    };
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector({ ...options, max: 1 });
+      const collector = this.createMessageComponentCollector(_options);
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);

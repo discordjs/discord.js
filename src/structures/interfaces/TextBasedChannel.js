@@ -5,8 +5,9 @@ const MessageCollector = require('../MessageCollector');
 const MessagePayload = require('../MessagePayload');
 const SnowflakeUtil = require('../../util/SnowflakeUtil');
 const Collection = require('../../util/Collection');
+const { InteractionTypes } = require('../../util/Constants');
 const { RangeError, TypeError, Error } = require('../../errors');
-const MessageComponentInteractionCollector = require('../MessageComponentInteractionCollector');
+const InteractionCollector = require('../InteractionCollector');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -304,8 +305,8 @@ class TextBasedChannel {
 
   /**
    * Creates a button interaction collector.
-   * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
-   * @returns {MessageComponentInteractionCollector}
+   * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
+   * @returns {InteractionCollector}
    * @example
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
@@ -313,14 +314,18 @@ class TextBasedChannel {
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createMessageComponentInteractionCollector(options = {}) {
-    return new MessageComponentInteractionCollector(this, options);
+  createMessageComponentCollector(options = {}) {
+    return new InteractionCollector(this.client, {
+      ...options,
+      interactionType: InteractionTypes.MESSAGE_COMPONENT,
+      channel: this,
+    });
   }
 
   /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
-   * @param {AwaitMessageComponentInteractionOptions} [options={}] Options to pass to the internal collector
+   * @param {AwaitMessageComponentOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
@@ -329,9 +334,14 @@ class TextBasedChannel {
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteraction(options = {}) {
+  awaitMessageComponent(options = {}) {
+    const _options = {
+      ...options,
+      channel: this,
+      interactionType: InteractionTypes.MESSAGE_COMPONENT,
+    };
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector({ ...options, max: 1 });
+      const collector = this.createMessageComponentCollector(_options);
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
@@ -404,8 +414,8 @@ class TextBasedChannel {
         'typingCount',
         'createMessageCollector',
         'awaitMessages',
-        'createMessageComponentInteractionCollector',
-        'awaitMessageComponentInteraction',
+        'createMessageComponentCollector',
+        'awaitMessageComponent',
       );
     }
     for (const prop of props) {
