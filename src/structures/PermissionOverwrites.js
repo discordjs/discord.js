@@ -118,9 +118,7 @@ class PermissionOverwrites {
   /**
    * Resolves bitfield permissions overwrites from an object.
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {Object} initialPermissions The initial permissions
-   * @param {PermissionResolvable} initialPermissions.allow Initial allowed permissions
-   * @param {PermissionResolvable} initialPermissions.deny Initial denied permissions
+   * @param {ResolvedOverwriteOptions} initialPermissions The initial permissions
    * @returns {ResolvedOverwriteOptions}
    */
   static resolveOverwriteOptions(options, { allow, deny } = {}) {

@@ -20,7 +20,6 @@ class InteractionResponses {
    * Options for a reply to an {@link Interaction}.
    * @typedef {BaseMessageOptions} InteractionReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
-   * @property {MessageEmbed[]|Object[]} [embeds] An array of embeds for the message
    */
 
   /**
@@ -40,6 +39,7 @@ class InteractionResponses {
    */
   async defer({ ephemeral } = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    this.ephemeral = ephemeral ?? false;
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
@@ -70,6 +70,7 @@ class InteractionResponses {
    */
   async reply(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    this.ephemeral = options.ephemeral ?? false;
 
     let apiMessage;
     if (options instanceof APIMessage) apiMessage = options;
@@ -90,7 +91,7 @@ class InteractionResponses {
   /**
    * Fetches the initial reply to this interaction.
    * @see Webhook#fetchMessage
-   * @returns {Promise<Message|Object>}
+   * @returns {Promise<Message|APIMessageRaw>}
    * @example
    * // Fetch the reply to this interaction
    * interaction.fetchReply()
@@ -98,6 +99,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   fetchReply() {
+    if (this.ephemeral) throw new Error('INTERACTION_EPHEMERAL_REPLIED');
     return this.webhook.fetchMessage('@original');
   }
 
@@ -105,15 +107,18 @@ class InteractionResponses {
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
    * @param {string|APIMessage|WebhookEditMessageOptions} options The new options for the message
-   * @returns {Promise<Message|Object>}
+   * @returns {Promise<Message|APIMessageRaw>}
    * @example
    * // Edit the reply to this interaction
    * interaction.editReply('New content')
    *   .then(console.log)
    *   .catch(console.error);
    */
-  editReply(options) {
-    return this.webhook.editMessage('@original', options);
+  async editReply(options) {
+    if (!this.deferred && !this.replied) throw new Error('INTERACTION_NOT_REPLIED');
+    const message = await this.webhook.editMessage('@original', options);
+    this.replied = true;
+    return message;
   }
 
   /**
@@ -127,13 +132,14 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deleteReply() {
+    if (this.ephemeral) throw new Error('INTERACTION_EPHEMERAL_REPLIED');
     await this.webhook.deleteMessage('@original');
   }
 
   /**
    * Send a follow-up message to this interaction.
    * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|Object>}
+   * @returns {Promise<Message|APIMessageRaw>}
    */
   followUp(options) {
     return this.webhook.send(options);

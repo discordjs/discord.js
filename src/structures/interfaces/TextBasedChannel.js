@@ -57,6 +57,8 @@ class TextBasedChannel {
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
    * @property {string} [content=''] The content for the message
+   * @property {MessageEmbed[]|APIEmbed[]} [embeds] The embeds for the message
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to send with the message
@@ -70,8 +72,6 @@ class TextBasedChannel {
   /**
    * Options provided when sending or editing a message.
    * @typedef {BaseMessageOptions} MessageOptions
-   * @property {MessageEmbed[]|Object[]} [embeds] The embeds for the message
-   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {ReplyOptions} [reply] The options for replying to a message
    */
 
@@ -275,18 +275,17 @@ class TextBasedChannel {
 
   /**
    * Creates a Message Collector.
-   * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
    * const filter = m => m.content.includes('discord');
-   * const collector = channel.createMessageCollector(filter, { time: 15000 });
+   * const collector = channel.createMessageCollector({ filter, time: 15000 });
    * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createMessageCollector(filter, options = {}) {
-    return new MessageCollector(this, filter, options);
+  createMessageCollector(options = {}) {
+    return new MessageCollector(this, options);
   }
 
   /**
@@ -298,20 +297,19 @@ class TextBasedChannel {
   /**
    * Similar to createMessageCollector but in promise form.
    * Resolves with a collection of messages that pass the specified filter.
-   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Await !vote messages
    * const filter = m => m.content.startsWith('!vote');
    * // Errors: ['time'] treats ending because of the time limit as an error
-   * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
+   * channel.awaitMessages({ filter, max: 4, time: 60000, errors: ['time'] })
    *   .then(collected => console.log(collected.size))
    *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
-  awaitMessages(filter, options = {}) {
+  awaitMessages(options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageCollector(filter, options);
+      const collector = this.createMessageCollector(options);
       collector.once('end', (collection, reason) => {
         if (options.errors && options.errors.includes(reason)) {
           reject(collection);
@@ -324,36 +322,34 @@ class TextBasedChannel {
 
   /**
    * Creates a button interaction collector.
-   * @param {CollectorFilter} filter The filter to apply
    * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
    * @returns {MessageComponentInteractionCollector}
    * @example
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = channel.createMessageComponentInteractionCollector(filter, { time: 15000 });
+   * const collector = channel.createMessageComponentInteractionCollector({ filter, time: 15000 });
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createMessageComponentInteractionCollector(filter, options = {}) {
-    return new MessageComponentInteractionCollector(this, filter, options);
+  createMessageComponentInteractionCollector(options = {}) {
+    return new MessageComponentInteractionCollector(this, options);
   }
 
   /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
-   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitMessageComponentInteractionOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * channel.awaitMessageComponentInteraction(filter, { time: 15000 })
+   * channel.awaitMessageComponentInteraction({ filter, time: 15000 })
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteraction(filter, { time } = {}) {
+  awaitMessageComponentInteraction(options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector(filter, { max: 1, time });
+      const collector = this.createMessageComponentInteractionCollector({ ...options, max: 1 });
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);

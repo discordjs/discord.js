@@ -206,7 +206,7 @@ class ApplicationCommand extends Base {
    * Transforms an {@link ApplicationCommandOptionData} object into something that can be used with the API.
    * @param {ApplicationCommandOptionData} option The option to transform
    * @param {boolean} [received] Whether this option has been received from Discord
-   * @returns {Object}
+   * @returns {APIApplicationCommandOption}
    * @private
    */
   static transformOption(option, received) {
@@ -224,3 +224,13 @@ class ApplicationCommand extends Base {
 }
 
 module.exports = ApplicationCommand;
+
+/**
+ * @external APIApplicationCommand
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommand}
+ */
+
+/**
+ * @external APIApplicationCommandOption
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoption}
+ */

@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const { InteractionTypes } = require('../util/Constants');
+const { InteractionTypes, MessageComponentTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -58,7 +58,7 @@ class Interaction extends Base {
 
     /**
      * If this interaction was sent in a guild, the member which sent it
-     * @type {?GuildMember|Object}
+     * @type {?GuildMember|APIGuildMember}
      */
     this.member = data.member ? this.guild?.members.add(data.member) ?? data.member : null;
 
@@ -114,7 +114,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a component interaction.
+   * Indicates whether this interaction is a message component interaction.
    * @returns {boolean}
    */
   isMessageComponent() {
@@ -126,7 +126,21 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isButton() {
-    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && this.componentType === 'BUTTON';
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.BUTTON
+    );
+  }
+
+  /**
+   * Indicates whether this interaction is a select menu interaction.
+   * @returns {boolean}
+   */
+  isSelectMenu() {
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.SELECT_MENU
+    );
   }
 }
 

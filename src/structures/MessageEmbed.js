@@ -387,7 +387,7 @@ class MessageEmbed {
 
   /**
    * Transforms the embed to a plain object.
-   * @returns {Object} The raw data of this embed
+   * @returns {APIEmbed} The raw data of this embed
    */
   toJSON() {
     return {
@@ -457,3 +457,8 @@ class MessageEmbed {
 }
 
 module.exports = MessageEmbed;
+
+/**
+ * @external APIEmbed
+ * @see {@link https://discord.com/developers/docs/resources/channel#embed-object}
+ */

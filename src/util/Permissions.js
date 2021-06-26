@@ -25,6 +25,16 @@ class Permissions extends BitField {
    */
 
   /**
+   * Gets all given bits that are missing from the bitfield.
+   * @param {BitFieldResolvable} bits Bit(s) to check for
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {string[]}
+   */
+  missing(bits, checkAdmin = true) {
+    return checkAdmin && this.has(this.constructor.FLAGS.ADMINISTRATOR) ? [] : super.missing(bits, checkAdmin);
+  }
+
+  /**
    * Checks whether the bitfield has a permission, or any of multiple permissions.
    * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
@@ -80,6 +90,9 @@ class Permissions extends BitField {
  * * `MANAGE_EMOJIS`
  * * `USE_APPLICATION_COMMANDS`
  * * `REQUEST_TO_SPEAK`
+ * * `MANAGE_THREADS`
+ * * `USE_PUBLIC_THREADS`
+ * * `USE_PRIVATE_THREADS`
  * @type {Object<string, bigint>}
  * @see {@link https://discord.com/developers/docs/topics/permissions}
  */
@@ -117,6 +130,9 @@ Permissions.FLAGS = {
   MANAGE_EMOJIS: 1n << 30n,
   USE_APPLICATION_COMMANDS: 1n << 31n,
   REQUEST_TO_SPEAK: 1n << 32n,
+  MANAGE_THREADS: 1n << 34n,
+  USE_PUBLIC_THREADS: 1n << 35n,
+  USE_PRIVATE_THREADS: 1n << 36n,
 };
 
 /**

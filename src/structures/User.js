@@ -16,7 +16,7 @@ let Structures;
 class User extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the user
+   * @param {APIUser} data The data for the user
    */
   constructor(client, data) {
     super(client);
@@ -333,3 +333,8 @@ class User extends Base {
 TextBasedChannel.applyToClass(User);
 
 module.exports = User;
+
+/**
+ * @external APIUser
+ * @see {@link https://discord.com/developers/docs/resources/user#user-object}
+ */

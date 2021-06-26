@@ -1,7 +1,5 @@
 'use strict';
 
-const Util = require('./util/Util');
-
 module.exports = {
   // "Root" classes (starting points)
   BaseClient: require('./client/BaseClient'),
@@ -28,8 +26,9 @@ module.exports = {
   SnowflakeUtil: require('./util/SnowflakeUtil'),
   Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
+  ThreadMemberFlags: require('./util/ThreadMemberFlags'),
   UserFlags: require('./util/UserFlags'),
-  Util: Util,
+  Util: require('./util/Util'),
   version: require('../package.json').version,
 
   // Managers
@@ -49,15 +48,9 @@ module.exports = {
   MessageManager: require('./managers/MessageManager'),
   PresenceManager: require('./managers/PresenceManager'),
   RoleManager: require('./managers/RoleManager'),
+  ThreadManager: require('./managers/ThreadManager'),
+  ThreadMemberManager: require('./managers/ThreadMemberManager'),
   UserManager: require('./managers/UserManager'),
-
-  // Shortcuts to Util methods
-  discordSort: Util.discordSort,
-  escapeMarkdown: Util.escapeMarkdown,
-  fetchRecommendedShards: Util.fetchRecommendedShards,
-  resolveColor: Util.resolveColor,
-  verifyString: Util.verifyString,
-  splitMessage: Util.splitMessage,
 
   // Structures
   Application: require('./structures/interfaces/Application'),
@@ -104,6 +97,7 @@ module.exports = {
   MessageEmbed: require('./structures/MessageEmbed'),
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
+  MessageSelectMenu: require('./structures/MessageSelectMenu'),
   NewsChannel: require('./structures/NewsChannel'),
   OAuth2Guild: require('./structures/OAuth2Guild'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
@@ -113,12 +107,15 @@ module.exports = {
   ReactionEmoji: require('./structures/ReactionEmoji'),
   RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
   Role: require('./structures/Role'),
+  SelectMenuInteraction: require('./structures/SelectMenuInteraction'),
   Sticker: require('./structures/Sticker'),
   StoreChannel: require('./structures/StoreChannel'),
   StageChannel: require('./structures/StageChannel'),
   Team: require('./structures/Team'),
   TeamMember: require('./structures/TeamMember'),
   TextChannel: require('./structures/TextChannel'),
+  ThreadChannel: require('./structures/ThreadChannel'),
+  ThreadMember: require('./structures/ThreadMember'),
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
   VoiceRegion: require('./structures/VoiceRegion'),

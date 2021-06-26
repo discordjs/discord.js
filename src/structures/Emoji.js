@@ -5,7 +5,7 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents raw emoji data from the API
- * @typedef {Object} RawEmoji
+ * @typedef {APIEmoji} RawEmoji
  * @property {?Snowflake} id ID of this emoji
  * @property {?string} name Name of this emoji
  * @property {?boolean} animated Whether this emoji is animated
@@ -20,9 +20,9 @@ class Emoji extends Base {
     super(client);
     /**
      * Whether this emoji is animated
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.animated = emoji.animated;
+    this.animated = emoji.animated ?? null;
 
     /**
      * The name of this emoji
@@ -110,3 +110,8 @@ class Emoji extends Base {
 }
 
 module.exports = Emoji;
+
+/**
+ * @external APIEmoji
+ * @see {@link https://discord.com/developers/docs/resources/emoji#emoji-object}
+ */

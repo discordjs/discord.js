@@ -11,7 +11,7 @@ const DataResolver = require('../util/DataResolver');
 class GuildTemplate extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The raw data for the template
+   * @param {APIGuildTemplate} data The raw data for the template
    */
   constructor(client, data) {
     super(client);
@@ -20,7 +20,7 @@ class GuildTemplate extends Base {
 
   /**
    * Builds or updates the template with the provided data.
-   * @param {Object} data The raw data for the template
+   * @param {APIGuildTemplate} data The raw data for the template
    * @returns {GuildTemplate}
    * @private
    */
@@ -81,8 +81,7 @@ class GuildTemplate extends Base {
 
     /**
      * The data of the guild that this template would create
-     * @type {Object}
-     * @see {@link https://discord.com/developers/docs/resources/guild#guild-resource}
+     * @type {APIGuild}
      */
     this.serializedGuild = data.serialized_source_guild;
 
@@ -234,3 +233,9 @@ class GuildTemplate extends Base {
 GuildTemplate.GUILD_TEMPLATES_PATTERN = /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/gi;
 
 module.exports = GuildTemplate;
+
+/* eslint-disable max-len */
+/**
+ * @external APIGuildTemplate
+ * @see {@link https://discord.com/developers/docs/resources/guild-template#guild-template-object-guild-template-structure}
+ */

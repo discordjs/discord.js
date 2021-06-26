@@ -50,6 +50,12 @@ const Messages = {
   BUTTON_URL: 'MessageButton url must be a string',
   BUTTON_CUSTOM_ID: 'MessageButton customID must be a string',
 
+  SELECT_MENU_CUSTOM_ID: 'MessageSelectMenu customID must be a string',
+  SELECT_MENU_PLACEHOLDER: 'MessageSelectMenu placeholder must be a string',
+  SELECT_OPTION_LABEL: 'MessageSelectOption label must be a string',
+  SELECT_OPTION_VALUE: 'MessageSelectOption value must be a string',
+  SELECT_OPTION_DESCRIPTION: 'MessageSelectOption description must be a string',
+
   INTERACTION_COLLECTOR_ERROR: reason => `Collector received no interactions before ending with reason: ${reason}`,
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
@@ -92,6 +98,8 @@ const Messages = {
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
+  MESSAGE_THREAD_PARENT: 'The message was not sent in a guild text or news channel',
+
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
   WEBHOOK_TOKEN_UNAVAILABLE: 'This action requires a webhook token, but none is available.',
   MESSAGE_REFERENCE_MISSING: 'The message does not reference another message',
@@ -115,6 +123,8 @@ const Messages = {
     "or from a guild's application command manager.",
 
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
+  INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
+  INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

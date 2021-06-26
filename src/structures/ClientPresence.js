@@ -7,7 +7,7 @@ const { ActivityTypes, OPCodes } = require('../util/Constants');
 class ClientPresence extends Presence {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} [data={}] The data for the client presence
+   * @param {APIPresence} [data={}] The data for the client presence
    */
   constructor(client, data = {}) {
     super(client, Object.assign(data, { status: data.status || 'online', user: { id: null } }));

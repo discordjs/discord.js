@@ -11,17 +11,19 @@ class MessageActionRow extends BaseMessageComponent {
   /**
    * Components that can be placed in an action row
    * * MessageButton
-   * @typedef {MessageButton} MessageActionRowComponent
+   * * MessageSelectMenu
+   * @typedef {MessageButton|MessageSelectMenu} MessageActionRowComponent
    */
 
   /**
    * Options for components that can be placed in an action row
    * * MessageButtonOptions
-   * @typedef {MessageButtonOptions} MessageActionRowComponentOptions
+   * * MessageSelectMenuOptions
+   * @typedef {MessageButtonOptions|MessageSelectMenuOptions} MessageActionRowComponentOptions
    */
 
   /**
-   * Data that can be resolved into a components that can be placed in an action row
+   * Data that can be resolved into components that can be placed in an action row
    * * MessageActionRowComponent
    * * MessageActionRowComponentOptions
    * @typedef {MessageActionRowComponent|MessageActionRowComponentOptions} MessageActionRowComponentResolvable
@@ -61,7 +63,7 @@ class MessageActionRow extends BaseMessageComponent {
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of components to remove
    * @param {...MessageActionRowComponentResolvable[]} [components] The replacing components
-   * @returns {MessageSelectMenu}
+   * @returns {MessageActionRow}
    */
   spliceComponents(index, deleteCount, ...components) {
     this.components.splice(
@@ -74,7 +76,7 @@ class MessageActionRow extends BaseMessageComponent {
 
   /**
    * Transforms the action row to a plain object.
-   * @returns {Object} The raw data of this action row
+   * @returns {APIMessageComponent} The raw data of this action row
    */
   toJSON() {
     return {
@@ -85,3 +87,8 @@ class MessageActionRow extends BaseMessageComponent {
 }
 
 module.exports = MessageActionRow;
+
+/**
+ * @external APIMessageComponent
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object}
+ */

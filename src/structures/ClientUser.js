@@ -48,7 +48,7 @@ class ClientUser extends Structures.get('User') {
 
   /**
    * Edits the logged in client.
-   * @param {Object} data The new data
+   * @param {APIModifyClientData} data The new data
    * @param {string} [data.username] The new username
    * @param {BufferResolvable|Base64Resolvable} [data.avatar] The new avatar
    */
@@ -143,8 +143,7 @@ class ClientUser extends Structures.get('User') {
 
   /**
    * Options for setting an activity.
-   * @typedef ActivityOptions
-   * @type {Object}
+   * @typedef {Object} ActivityOptions
    * @property {string} [name] Name of the activity
    * @property {string} [url] Twitch / YouTube stream URL
    * @property {ActivityType|number} [type] Type of the activity
@@ -179,3 +178,8 @@ class ClientUser extends Structures.get('User') {
 }
 
 module.exports = ClientUser;
+
+/**
+ * @external APIModifyClientData
+ * @see {@link https://discord.com/developers/docs/resources/user#modify-current-user-json-params}
+ */

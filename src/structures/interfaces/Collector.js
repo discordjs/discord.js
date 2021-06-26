@@ -16,6 +16,7 @@ const Util = require('../../util/Util');
 /**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
+ * @property {CollectorFilter} [filter] The filter applied to this collector
  * @property {number} [time] How long to run the collector for in milliseconds
  * @property {number} [idle] How long to stop the collector after inactivity in milliseconds
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
@@ -26,7 +27,7 @@ const Util = require('../../util/Util');
  * @abstract
  */
 class Collector extends EventEmitter {
-  constructor(client, filter, options = {}) {
+  constructor(client, options = {}) {
     super();
 
     /**
@@ -40,8 +41,9 @@ class Collector extends EventEmitter {
     /**
      * The filter applied to this collector
      * @type {CollectorFilter}
+     * @returns {boolean|Promise<boolean>}
      */
-    this.filter = filter;
+    this.filter = options.filter ?? (() => true);
 
     /**
      * The options of this collector
@@ -75,8 +77,8 @@ class Collector extends EventEmitter {
      */
     this._idletimeout = null;
 
-    if (typeof filter !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'filter', 'function');
+    if (typeof this.filter !== 'function') {
+      throw new TypeError('INVALID_TYPE', 'options.filter', 'function');
     }
 
     this.handleCollect = this.handleCollect.bind(this);
@@ -89,6 +91,7 @@ class Collector extends EventEmitter {
   /**
    * Call this to handle an event as a collectable element. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
+   * @returns {Promise<void>}
    * @emits Collector#collect
    */
   async handleCollect(...args) {
@@ -115,13 +118,14 @@ class Collector extends EventEmitter {
   /**
    * Call this to remove an element from the collection. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
+   * @returns {Promise<void>}
    * @emits Collector#dispose
    */
-  handleDispose(...args) {
+  async handleDispose(...args) {
     if (!this.options.dispose) return;
 
     const dispose = this.dispose(...args);
-    if (!dispose || !this.filter(...args) || !this.collected.has(dispose)) return;
+    if (!dispose || !(await this.filter(...args)) || !this.collected.has(dispose)) return;
     this.collected.delete(dispose);
 
     /**

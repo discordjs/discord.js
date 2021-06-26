@@ -10,7 +10,7 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
  * @abstract
  */
 class Channel extends Base {
-  constructor(client, data) {
+  constructor(client, data, immediatePatch = true) {
     super(client);
 
     const type = ChannelTypes[data.type];
@@ -22,6 +22,9 @@ class Channel extends Base {
      * * `category` - a guild category channel
      * * `news` - a guild news channel
      * * `store` - a guild store channel
+     * * 'news_thread` - a guild news channels' public thread channel
+     * * `public_thread` - a guild text channels' public thread channel
+     * * `private_thread` - a guild text channels' private thread channel
      * * `stage` - a guild stage channel
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
@@ -34,7 +37,7 @@ class Channel extends Base {
      */
     this.deleted = false;
 
-    if (data) this._patch(data);
+    if (data && immediatePatch) this._patch(data);
   }
 
   _patch(data) {
@@ -152,8 +155,16 @@ class Channel extends Base {
             channel = new StageChannel(guild, data);
             break;
           }
+          case ChannelTypes.NEWS_THREAD:
+          case ChannelTypes.PUBLIC_THREAD:
+          case ChannelTypes.PRIVATE_THREAD: {
+            const ThreadChannel = Structures.get('ThreadChannel');
+            channel = new ThreadChannel(guild, data);
+            channel.parent?.threads.cache.set(channel.id, channel);
+            break;
+          }
         }
-        if (channel) guild.channels.cache.set(channel.id, channel);
+        if (channel) guild.channels?.cache.set(channel.id, channel);
       }
     }
     return channel;
@@ -165,3 +176,8 @@ class Channel extends Base {
 }
 
 module.exports = Channel;
+
+/**
+ * @external APIChannel
+ * @see {@link https://discord.com/developers/docs/resources/channel#channel-object}
+ */

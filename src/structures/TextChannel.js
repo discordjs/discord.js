@@ -4,6 +4,7 @@ const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
+const ThreadManager = require('../managers/ThreadManager');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 
@@ -15,7 +16,7 @@ const DataResolver = require('../util/DataResolver');
 class TextChannel extends GuildChannel {
   /**
    * @param {Guild} guild The guild the text channel is part of
-   * @param {Object} data The data for the text channel
+   * @param {APIChannel} data The data for the text channel
    */
   constructor(guild, data) {
     super(guild, data);
@@ -24,6 +25,12 @@ class TextChannel extends GuildChannel {
      * @type {MessageManager}
      */
     this.messages = new MessageManager(this);
+
+    /**
+     * A manager of the threads belonging to this channel
+     * @type {ThreadManager}
+     */
+    this.threads = new ThreadManager(this);
 
     /**
      * If the guild considers this channel NSFW
@@ -73,9 +80,27 @@ class TextChannel extends GuildChannel {
       this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
     }
 
+    if ('default_auto_archive_duration' in data) {
+      /**
+       * The default auto archive duration for newly created threads in this channel
+       * @type {?ThreadAutoArchiveDuration}
+       */
+      this.defaultAutoArchiveDuration = data.default_auto_archive_duration;
+    }
+
     if ('messages' in data) {
       for (const message of data.messages) this.messages.add(message);
     }
+  }
+
+  /**
+   * Sets the default auto archive duration for all newly created threads in this channel.
+   * @param {ThreadAutoArchiveDuration} defaultAutoArchiveDuration The new default auto archive duration
+   * @param {string} [reason] Reason for changing the channel's default auto archive duration
+   * @returns {Promise<TextChannel>}
+   */
+  setDefaultAutoArchiveDuration(defaultAutoArchiveDuration, reason) {
+    return this.edit({ defaultAutoArchiveDuration }, reason);
   }
 
   /**

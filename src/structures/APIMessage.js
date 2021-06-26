@@ -31,13 +31,20 @@ class APIMessage {
 
     /**
      * Data sendable to the API
-     * @type {?Object}
+     * @type {?APIMessageRaw}
      */
     this.data = null;
 
     /**
+     * @typedef {Object} MessageFile
+     * @property {Buffer|string|Stream} attachment The original attachment that generated this file
+     * @property {string} name The name of this file
+     * @property {Buffer|Stream} file The file to be sent to the API
+     */
+
+    /**
      * Files sendable to the API
-     * @type {?Object[]}
+     * @type {?MessageFile[]}
      */
     this.files = null;
   }
@@ -72,6 +79,16 @@ class APIMessage {
   get isMessage() {
     const Message = require('./Message');
     return this.target instanceof Message;
+  }
+
+  /**
+   * Wether or not the target is a message manager
+   * @type {boolean}
+   * @readonly
+   */
+  get isMessageManager() {
+    const MessageManager = require('../managers/MessageManager');
+    return this.target instanceof MessageManager;
   }
 
   /**
@@ -156,9 +173,9 @@ class APIMessage {
     }
 
     let flags;
-    if (this.isMessage) {
+    if (this.isMessage || this.isMessageManager) {
       // eslint-disable-next-line eqeqeq
-      flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
+      flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags?.bitfield;
     } else if (isInteraction && this.options.ephemeral) {
       flags = MessageFlags.FLAGS.EPHEMERAL;
     }
@@ -249,7 +266,7 @@ class APIMessage {
   /**
    * Resolves a single file into an object sendable to the API.
    * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
-   * @returns {Object}
+   * @returns {MessageFile}
    */
   static async resolveFile(fileLike) {
     let attachment;
@@ -300,5 +317,11 @@ module.exports = APIMessage;
 
 /**
  * A target for a message.
- * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook} MessageTarget
+ * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook|
+ * Message|MessageManager} MessageTarget
+ */
+
+/**
+ * @external APIMessageRaw
+ * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
  */
