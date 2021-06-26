@@ -2975,6 +2975,9 @@ declare module 'discord.js' {
     new?: any;
   }
 
+  interface AwaitMessageComponentOptions<T extends MessageComponentInteraction>
+    extends Omit<MessageComponentCollectorOptions<T>, 'max' | 'maxComponents' | 'maxUsers'> {}
+
   interface AwaitMessagesOptions extends MessageCollectorOptions {
     errors?: string[];
   }
@@ -3668,12 +3671,6 @@ declare module 'discord.js' {
     message?: Message;
   }
 
-  interface MessageComponentCollectorOptions<T extends MessageComponentInteraction>
-    extends Omit<InteractionCollectorOptions<T>, 'channel' | 'message' | 'guild' | 'interactionType'> {}
-
-  interface AwaitMessageComponentOptions<T extends MessageComponentInteraction>
-    extends Omit<MessageComponentCollectorOptions<T>, 'max' | 'maxComponents' | 'maxUsers'> {}
-
   interface InteractionDeferOptions {
     ephemeral?: boolean;
     fetchReply?: boolean;
@@ -3788,6 +3785,9 @@ declare module 'discord.js' {
   }
 
   type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton | MessageSelectMenu;
+
+  interface MessageComponentCollectorOptions<T extends MessageComponentInteraction>
+    extends Omit<InteractionCollectorOptions<T>, 'channel' | 'message' | 'guild' | 'interactionType'> {}
 
   type MessageComponentOptions =
     | BaseMessageComponentOptions
