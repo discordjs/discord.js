@@ -83,7 +83,7 @@ class User extends Base {
     } else if (typeof this.avatar !== 'string') {
       this.avatar = null;
     }
-    
+
     if ('banner' in data) {
       /**
        * The ID of the user's banner
