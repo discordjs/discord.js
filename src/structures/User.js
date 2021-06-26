@@ -192,6 +192,16 @@ class User extends Base {
   }
 
   /**
+   * A link to the user's banner.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  bannerURL({ format, size, dynamic } = {}) {
+    if (!this.banner) return null;
+    return this.client.rest.cdn.Banner(this.id, this.banner, format, size, dynamic);
+  }
+
+  /**
    * The Discord "tag" (e.g. `hydrabolt#0001`) for this user
    * @type {?string}
    * @readonly

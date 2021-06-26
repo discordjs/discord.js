@@ -570,7 +570,7 @@ declare module 'discord.js' {
           format: 'default' | AllowedImageFormat,
           size: number,
         ) => string;
-        Banner: (guildID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+        Banner: (id: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
         Icon: (
           userID: Snowflake | number,
           hash: string,
