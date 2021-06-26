@@ -25,7 +25,7 @@ class ChannelManager extends BaseManager {
       if (cache) existing._patch(data);
       guild?.channels?.add(existing);
       if (ThreadChannelTypes.includes(existing.type)) {
-        existing.parent?.threads.add(existing);
+        existing.parent?.threads?.add(existing);
       }
       return existing;
     }

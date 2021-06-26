@@ -139,7 +139,7 @@ class Message extends Base {
      * A list of MessageActionRows in the message
      * @type {MessageActionRow[]}
      */
-    this.components = data.components.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -323,7 +323,7 @@ class Message extends Base {
     }
 
     this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? this.embeds.slice();
-    this.components = data.components.map(c => BaseMessageComponent.create(c, this.client)) ?? this.components.slice();
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? this.components.slice();
 
     this.mentions = new Mentions(
       this,
@@ -331,7 +331,7 @@ class Message extends Base {
       data.mention_roles ?? this.mentions.roles,
       data.mention_everyone ?? this.mentions.everyone,
       data.mention_channels ?? this.mentions.crosspostedChannels,
-      data.referenced_message.author ?? this.mentions.repliedUser,
+      data.referenced_message?.author ?? this.mentions.repliedUser,
     );
 
     this.flags = new MessageFlags(data.flags ?? 0).freeze();
