@@ -281,7 +281,7 @@ class User extends Base {
   }
 
   /**
-   * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, and bot flags.
+   * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, banner, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
    * @param {User} user User to compare with
    * @returns {boolean}
@@ -292,7 +292,8 @@ class User extends Base {
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
-      this.avatar === user.avatar;
+      this.avatar === user.avatar &&
+      this.banner === user.banner;
 
     return equal;
   }
@@ -342,6 +343,7 @@ class User extends Base {
     );
     json.avatarURL = this.avatarURL();
     json.displayAvatarURL = this.displayAvatarURL();
+    json.bannerURL = this.bannerURL();
     return json;
   }
 
