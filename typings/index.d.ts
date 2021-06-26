@@ -228,10 +228,9 @@ declare module 'discord.js' {
     ): APIMessage;
     public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
 
-    public makeContent(): string | string[] | undefined;
+    public makeContent(): string | undefined;
     public resolveData(): this;
     public resolveFiles(): Promise<this>;
-    public split(): APIMessage[];
   }
 
   export abstract class Application {
@@ -1186,12 +1185,7 @@ declare module 'discord.js' {
   export class InteractionWebhook extends PartialWebhookMixin() {
     constructor(client: Client, id: Snowflake, token: string);
     public token: string;
-    public send(
-      options: string | APIMessage | (InteractionReplyOptions & { split?: false }),
-    ): Promise<Message | RawMessage>;
-    public send(
-      options: APIMessage | (InteractionReplyOptions & { split: true | SplitOptions }),
-    ): Promise<(Message | RawMessage)[]>;
+    public send(options: string | APIMessage | InteractionReplyOptions): Promise<Message | RawMessage>;
   }
 
   export class Invite extends Base {
@@ -1298,8 +1292,7 @@ declare module 'discord.js' {
     public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
-    public reply(options: string | APIMessage | (ReplyMessageOptions & { split?: false })): Promise<Message>;
-    public reply(options: APIMessage | (ReplyMessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
+    public reply(options: string | APIMessage | ReplyMessageOptions): Promise<Message>;
     public startThread(
       name: string,
       autoArchiveDuration: ThreadAutoArchiveDuration,
@@ -2132,8 +2125,7 @@ declare module 'discord.js' {
       options: string | APIMessage | WebhookEditMessageOptions,
     ): Promise<RawMessage>;
     public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
-    public send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<RawMessage>;
-    public send(options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions })): Promise<RawMessage[]>;
+    public send(options: string | APIMessage | WebhookMessageOptions): Promise<RawMessage>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2595,8 +2587,7 @@ declare module 'discord.js' {
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
     readonly lastMessage: Message | null;
-    send(options: string | APIMessage | (MessageOptions & { split?: false })): Promise<Message>;
-    send(options: APIMessage | (MessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
+    send(options: string | APIMessage | MessageOptions): Promise<Message>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -2635,10 +2626,7 @@ declare module 'discord.js' {
       options: string | APIMessage | WebhookEditMessageOptions,
     ): Promise<Message | RawMessage>;
     fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | RawMessage>;
-    send(
-      options: APIMessage | (WebhookMessageOptions & { split: true | SplitOptions }),
-    ): Promise<(Message | RawMessage)[]>;
-    send(options: string | APIMessage | (WebhookMessageOptions & { split?: false })): Promise<Message | RawMessage>;
+    send(options: string | APIMessage | WebhookMessageOptions): Promise<Message | RawMessage>;
   }
 
   interface WebhookFields extends PartialWebhookFields {
@@ -3652,7 +3640,6 @@ declare module 'discord.js' {
     attachments?: MessageAttachment[];
     content?: string | null;
     embeds?: (MessageEmbed | MessageEmbedOptions)[] | null;
-    code?: string | boolean;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     flags?: BitFieldResolvable<MessageFlagsString, number>;
     allowedMentions?: MessageMentionOptions;
@@ -3753,13 +3740,11 @@ declare module 'discord.js' {
   interface MessageOptions {
     tts?: boolean;
     nonce?: string | number;
-    content?: string;
+    content?: string | null;
     embeds?: (MessageEmbed | MessageEmbedOptions)[];
     components?: MessageActionRow[] | MessageActionRowOptions[] | MessageActionRowComponentResolvable[][];
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
-    code?: string | boolean;
-    split?: boolean | SplitOptions;
     reply?: ReplyOptions;
   }
 

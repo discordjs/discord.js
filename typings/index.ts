@@ -27,9 +27,8 @@ client.on('messageReactionRemoveAll', async message => {
   console.log(`messageReactionRemoveAll - content: ${message.content}`);
 });
 
-// These are to check that stuff is the right type
+// This is to check that stuff is the right type
 declare const assertIsMessage: (m: Promise<Message>) => void;
-declare const assertIsMessageArray: (m: Promise<Message[]>) => void;
 
 client.on('message', ({ channel }) => {
   assertIsMessage(channel.send('string'));
@@ -41,8 +40,6 @@ client.on('message', ({ channel }) => {
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
   assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));
-
-  assertIsMessageArray(channel.send({ split: true }));
 
   // @ts-expect-error
   channel.send();
