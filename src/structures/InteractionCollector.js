@@ -53,13 +53,19 @@ class InteractionCollector extends Collector {
      * The the type of interaction to collect
      * @type {?InteractionType}
      */
-    this.interactionType = InteractionTypes[options.interactionType] ?? null;
+    this.interactionType =
+      typeof options.interactionType === 'number'
+        ? InteractionTypes[options.interactionType]
+        : options.interactionType ?? null;
 
     /**
      * The the type of compoonent to collect
      * @type {?MessageComponentType}
      */
-    this.componentType = MessageComponentTypes[options.componentType] ?? null;
+    this.componentType =
+      typeof options.componentType === 'number'
+        ? MessageComponentTypes[options.componentType]
+        : options.componentType ?? null;
 
     /**
      * The users which have interacted to components on this collector
