@@ -2566,7 +2566,9 @@ declare module 'discord.js' {
     public fetchActive(cache?: boolean): Promise<FetchedThreads>;
   }
 
-  export class ThreadMemberManager extends Omit<BaseManager<Snowflake, ThreadMember, ThreadMemberResolvable>, 'add'> {
+  export interface ThreadMemberManager
+    extends Omit<BaseManager<Snowflake, ThreadMember, ThreadMemberResolvable>, 'add'> {}
+  export class ThreadMemberManager {
     constructor(thread: ThreadChannel, iterable?: Iterable<any>);
     public thread: ThreadChannel;
     public _add(data: any, cache?: boolean): ThreadMember;
