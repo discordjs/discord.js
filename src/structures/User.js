@@ -83,6 +83,16 @@ class User extends Base {
     } else if (typeof this.avatar !== 'string') {
       this.avatar = null;
     }
+    
+    if ('banner' in data) {
+      /**
+       * The ID of the user's banner
+       * @type {?string}
+       */
+      this.banner = data.banner;
+    } else if (typeof this.banner !== 'string') {
+      this.banner = null;
+    }
 
     if ('system' in data) {
       /**
