@@ -158,21 +158,21 @@ class Webhook {
   async send(options) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
-    let apiMessage;
+    let messagePayload;
 
     if (options instanceof MessagePayload) {
-      apiMessage = options.resolveData();
+      messagePayload = options.resolveData();
     } else {
-      apiMessage = MessagePayload.create(this, options).resolveData();
+      messagePayload = MessagePayload.create(this, options).resolveData();
     }
 
-    const { data, files } = await apiMessage.resolveFiles();
+    const { data, files } = await messagePayload.resolveFiles();
     return this.client.api
       .webhooks(this.id, this.token)
       .post({
         data,
         files,
-        query: { thread_id: apiMessage.options.threadID, wait: true },
+        query: { thread_id: messagePayload.options.threadID, wait: true },
         auth: false,
       })
       .then(d => {
@@ -267,12 +267,12 @@ class Webhook {
   async editMessage(message, options) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
-    let apiMessage;
+    let messagePayload;
 
-    if (options instanceof MessagePayload) apiMessage = options;
-    else apiMessage = MessagePayload.create(this, options);
+    if (options instanceof MessagePayload) messagePayload = options;
+    else messagePayload = MessagePayload.create(this, options);
 
-    const { data, files } = await apiMessage.resolveData().resolveFiles();
+    const { data, files } = await messagePayload.resolveData().resolveFiles();
 
     const d = await this.client.api
       .webhooks(this.id, this.token)

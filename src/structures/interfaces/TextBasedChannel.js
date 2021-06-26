@@ -156,15 +156,15 @@ class TextBasedChannel {
       return this.createDM().then(dm => dm.send(options));
     }
 
-    let apiMessage;
+    let messagePayload;
 
     if (options instanceof MessagePayload) {
-      apiMessage = options.resolveData();
+      messagePayload = options.resolveData();
     } else {
-      apiMessage = MessagePayload.create(this, options).resolveData();
+      messagePayload = MessagePayload.create(this, options).resolveData();
     }
 
-    const { data, files } = await apiMessage.resolveFiles();
+    const { data, files } = await messagePayload.resolveFiles();
     return this.client.api.channels[this.id].messages
       .post({ data, files })
       .then(d => this.client.actions.MessageCreate.handle(d).message);
