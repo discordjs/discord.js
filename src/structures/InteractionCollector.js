@@ -3,12 +3,18 @@
 const Collector = require('./interfaces/Collector');
 const Collection = require('../util/Collection');
 const { Events } = require('../util/Constants');
+const { InteractionTypes, MessageComponentTypes } = require('../util/Constants');
 
 /**
- * @typedef {CollectorOptions} MessageComponentInteractionCollectorOptions
- * @property {number} max The maximum total amount of interactions to collect
- * @property {number} maxComponents The maximum number of components to collect
- * @property {number} maxUsers The maximum number of users to interact
+ * @typedef {CollectorOptions} InteractionCollectorOptions
+ * @property {TextChannel|DMChannel|NewsChannel} [channel] The channel to listen to interactions from
+ * @property {MessageComponentType} [componentType] The type of component to listen for
+ * @property {Guild} [guild] The guild to listen to interactions from
+ * @property {InteractionType} [interactionType] The type of interaction to listen for
+ * @property {number} [max] The maximum total amount of interactions to collect
+ * @property {number} [maxComponents] The maximum number of components to collect
+ * @property {number} [maxUsers] The maximum number of users to interact
+ * @property {Message} [message] The message to listen to interactions from
  */
 
 /**
@@ -17,26 +23,43 @@ const { Events } = require('../util/Constants');
  * channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
  * @extends {Collector}
  */
-class MessageComponentInteractionCollector extends Collector {
+class InteractionCollector extends Collector {
   /**
-   * @param {Message|TextChannel|DMChannel|NewsChannel} source
-   * The source from which to collect message component interactions
-   * @param {MessageComponentInteractionCollectorOptions} [options={}] The options to apply to this collector
+   * @param {Client} client The client on which to collect message component interactions
+   * @param {InteractionCollectorOptions} [options={}] The options to apply to this collector
    */
-  constructor(source, options = {}) {
-    super(source.client, options);
+  constructor(client, options = {}) {
+    super(client, options);
 
     /**
-     * The message from which to collect message component interactions, if provided
+     * The message from which to collect interactions, if provided
      * @type {?Message}
      */
-    this.message = source instanceof require('./Message') ? source : null;
+    this.message = options.message ?? null;
 
     /**
-     * The source channel from which to collect message component interactions
-     * @type {TextChannel|DMChannel|NewsChannel}
+     * The channel from which to collect interactions, if provided
+     * @type {?TextChannel|DMChannel|NewsChannel}
      */
-    this.channel = this.message?.channel ?? source;
+    this.channel = this.message ? this.message.channel : options.channel ?? null;
+
+    /**
+     * The guild from which to collect interactions, if provided
+     * @type {?Guild}
+     */
+    this.guild = this.channel && this.channel.guild ? this.channel.guild : options.guild ?? null;
+
+    /**
+     * The the type of interaction to collect
+     * @type {?InteractionType}
+     */
+    this.interactionType = InteractionTypes[options.interactionType] ?? null;
+
+    /**
+     * The the type of compoonent to collect
+     * @type {?MessageComponentType}
+     */
+    this.componentType = MessageComponentTypes[options.componentType] ?? null;
 
     /**
      * The users which have interacted to components on this collector
@@ -51,23 +74,26 @@ class MessageComponentInteractionCollector extends Collector {
     this.total = 0;
 
     this.empty = this.empty.bind(this);
-    this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
-    this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
-    this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
+
+    if (this.message) {
+      this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
+      this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+    }
+    if (this.channel) {
+      this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
+      this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+    }
+    if (this.guild) {
+      this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
+      this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
+    }
 
     this.client.incrementMaxListeners();
     this.client.on(Events.INTERACTION_CREATE, this.handleCollect);
 
-    if (this.message) this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
-
-    this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
-    this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
-
     this.once('end', () => {
       this.client.removeListener(Events.INTERACTION_CREATE, this.handleCollect);
-
-      if (this.message) this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
-
+      this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
       this.client.decrementMaxListeners();
@@ -91,13 +117,13 @@ class MessageComponentInteractionCollector extends Collector {
      * @event MessageComponentInteractionCollector#collect
      * @param {Interaction} interaction The interaction that was collected
      */
-    if (!interaction.isMessageComponent()) return null;
+    if (this.interactionType && interaction.type !== this.interactionType) return null;
+    if (this.componentType && interaction.componentType !== this.componentType) return null;
+    if (this.message && interaction.message.id !== this.message.id) return null;
+    if (this.channel && interaction.channelID !== this.channel.id) return null;
+    if (this.guild && interaction.guildID !== this.guild.id) return null;
 
-    if (this.message) {
-      return interaction.message.id === this.message.id ? interaction.id : null;
-    }
-
-    return interaction.channel.id === this.channel.id ? interaction.id : null;
+    return interaction.id;
   }
 
   /**
@@ -111,13 +137,13 @@ class MessageComponentInteractionCollector extends Collector {
      * @event MessageComponentInteractionCollector#dispose
      * @param {Interaction} interaction The interaction that was disposed of
      */
-    if (!interaction.isMessageComponent()) return null;
+    if (this.type && interaction.type !== this.type) return null;
+    if (this.componentType && interaction.componentType !== this.componentType) return null;
+    if (this.message && interaction.message.id !== this.message.id) return null;
+    if (this.channel && interaction.channelID !== this.channel.id) return null;
+    if (this.guild && interaction.guildID !== this.guild.id) return null;
 
-    if (this.message) {
-      return interaction.message.id === this.message.id ? interaction.id : null;
-    }
-
-    return interaction.channel.id === this.channel.id ? interaction.id : null;
+    return interaction.id;
   }
 
   /**
@@ -156,7 +182,7 @@ class MessageComponentInteractionCollector extends Collector {
    * @returns {void}
    */
   _handleChannelDeletion(channel) {
-    if (channel.id === this.channel.id) {
+    if (channel.id === this.channel?.id) {
       this.stop('channelDelete');
     }
   }
@@ -168,10 +194,10 @@ class MessageComponentInteractionCollector extends Collector {
    * @returns {void}
    */
   _handleGuildDeletion(guild) {
-    if (guild.id === this.channel.guild?.id) {
+    if (guild.id === this.guild?.id) {
       this.stop('guildDelete');
     }
   }
 }
 
-module.exports = MessageComponentInteractionCollector;
+module.exports = InteractionCollector;
