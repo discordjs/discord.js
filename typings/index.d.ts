@@ -569,13 +569,21 @@ declare module 'discord.js' {
           hash: string,
           format: 'default' | AllowedImageFormat,
           size: number,
+          dynamic: boolean,
         ) => string;
-        Banner: (id: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+        Banner: (
+          id: Snowflake | number,
+          hash: string,
+          format: AllowedImageFormat,
+          size: number,
+          dynamic: boolean,
+        ) => string;
         Icon: (
           userID: Snowflake | number,
           hash: string,
           format: 'default' | AllowedImageFormat,
           size: number,
+          dynamic: boolean,
         ) => string;
         AppIcon: (userID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
         AppAsset: (userID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
