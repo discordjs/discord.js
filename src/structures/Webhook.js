@@ -110,7 +110,7 @@ class Webhook {
   /**
    * Sends a message with this webhook.
    * @param {string|MessagePayload|WebhookMessageOptions} options The options to provide
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @returns {Promise<Message|APIMessage>}
    * @example
    * // Send a basic message
    * webhook.send('hello!')
@@ -247,7 +247,7 @@ class Webhook {
    * Gets a message that was sent by this webhook.
    * @param {Snowflake|'@original'} message The ID of the message to fetch
    * @param {boolean} [cache=true] Whether to cache the message
-   * @returns {Promise<Message|APIMessageRaw>} Returns the raw message data if the webhook was instantiated as a
+   * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async fetchMessage(message, cache = true) {
@@ -261,7 +261,7 @@ class Webhook {
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
    * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
-   * @returns {Promise<Message|APIMessageRaw>} Returns the raw message data if the webhook was instantiated as a
+   * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async editMessage(message, options) {

@@ -91,7 +91,7 @@ class InteractionResponses {
   /**
    * Fetches the initial reply to this interaction.
    * @see Webhook#fetchMessage
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @returns {Promise<Message|APIMessage>}
    * @example
    * // Fetch the reply to this interaction
    * interaction.fetchReply()
@@ -107,7 +107,7 @@ class InteractionResponses {
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
    * @param {string|MessagePayload|WebhookEditMessageOptions} options The new options for the message
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @returns {Promise<Message|APIMessage>}
    * @example
    * // Edit the reply to this interaction
    * interaction.editReply('New content')
@@ -139,7 +139,7 @@ class InteractionResponses {
   /**
    * Send a follow-up message to this interaction.
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @returns {Promise<Message|APIMessage>}
    */
   followUp(options) {
     return this.webhook.send(options);

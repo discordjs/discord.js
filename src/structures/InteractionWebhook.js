@@ -29,7 +29,7 @@ class InteractionWebhook {
   /**
    * Sends a message with this webhook.
    * @param {string|MessagePayload|InteractionReplyOptions} options The content for the reply
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @returns {Promise<Message|APIMessage>}
    */
   send() {}
   fetchMessage() {}

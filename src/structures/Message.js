@@ -26,7 +26,7 @@ const Util = require('../util/Util');
 class Message extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {APIMessageRaw} data The data for the message
+   * @param {APIMessage} data The data for the message
    * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
@@ -300,7 +300,7 @@ class Message extends Base {
 
   /**
    * Updates the message and returns the old message.
-   * @param {APIMessageRaw} data Raw Discord message update data
+   * @param {APIMessage} data Raw Discord message update data
    * @returns {Message}
    * @private
    */
@@ -754,7 +754,7 @@ class Message extends Base {
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    * @param {Message} message The message to compare it to
-   * @param {APIMessageRaw} rawData Raw data passed through the WebSocket about this message
+   * @param {APIMessage} rawData Raw data passed through the WebSocket about this message
    * @returns {boolean}
    */
   equals(message, rawData) {

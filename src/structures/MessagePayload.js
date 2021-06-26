@@ -31,7 +31,7 @@ class MessagePayload {
 
     /**
      * Data sendable to the API
-     * @type {?APIMessageRaw}
+     * @type {?APIMessage}
      */
     this.data = null;
 
@@ -270,6 +270,6 @@ module.exports = MessagePayload;
  */
 
 /**
- * @external APIMessageRaw
+ * @external APIMessage
  * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
  */
