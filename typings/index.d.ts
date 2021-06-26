@@ -3637,9 +3637,9 @@ declare module 'discord.js' {
 
   interface InteractionCollectorOptions<T extends Interaction> extends CollectorOptions<[T]> {
     channel?: TextChannel | DMChannel | NewsChannel | ThreadChannel;
-    componentType?: MessageComponentType;
+    componentType?: MessageComponentType | MessageComponentTypes;
     guild?: Guild;
-    interactionType?: InteractionType;
+    interactionType?: InteractionType | InteractionTypes;
     max?: number;
     maxComponents?: number;
     maxUsers?: number;
