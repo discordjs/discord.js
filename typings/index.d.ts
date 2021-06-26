@@ -1809,6 +1809,11 @@ declare module 'discord.js' {
     public static readonly EPOCH: number;
   }
 
+  export class Speaking extends Bitfield<SpeakingString> {
+    public static FLAGS: Record<SpeakingString, number>;
+    public static resolve(bit?: BitFieldResolvable<SpeakingString, number>): number;
+  }
+
   export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
     public type: 'stage';
@@ -2072,6 +2077,7 @@ declare module 'discord.js' {
     public serverDeaf: boolean | null;
     public serverMute: boolean | null;
     public sessionID: string | null;
+    public readonly speaking: boolean | null;
     public streaming: boolean;
     public selfVideo: boolean;
     public suppress: boolean;
@@ -2953,6 +2959,7 @@ declare module 'discord.js' {
       guild: Guild,
       data: { count: number; index: number; nonce: string | undefined },
     ];
+    guildMemberSpeaking: [member: GuildMember, speaking: Readonly<Speaking>];
     guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
     guildUpdate: [oldGuild: Guild, newGuild: Guild];
     inviteCreate: [invite: Invite];
@@ -4128,6 +4135,8 @@ declare module 'discord.js' {
     prepend?: string;
     append?: string;
   }
+
+  type SpeakingString = 'SPEAKING' | 'SOUNDSHARE' | 'PRIORITY_SPEAKING';
 
   interface StaticImageURLOptions {
     format?: AllowedImageFormat;
