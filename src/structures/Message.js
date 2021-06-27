@@ -332,7 +332,7 @@ class Message extends Base {
       'mention_roles' in data ? data.mention_roles : this.mentions.roles,
       'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
       'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
-      'referenced_message' in data ? data.referenced_message?.author ?? null : this.mentions.repliedUser,
+      data.referenced_message ? data.referenced_message.author : this.mentions.repliedUser,
     );
 
     this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
