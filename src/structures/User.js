@@ -27,7 +27,10 @@ class User extends Base {
      */
     this.id = data.id;
 
+    this.bot = null;
+
     this.system = null;
+
     this.flags = null;
 
     /**
@@ -56,12 +59,14 @@ class User extends Base {
       this.username = null;
     }
 
-    if ('bot' in data || typeof this.bot !== 'boolean') {
+    if ('bot' in data) {
       /**
        * Whether or not the user is a bot
-       * @type {boolean}
+       * @type {?boolean}
        */
       this.bot = Boolean(data.bot);
+    } else if (!this.partial && typeof this.bot !== 'boolean') {
+      this.bot = false;
     }
 
     if ('discriminator' in data) {
@@ -90,6 +95,8 @@ class User extends Base {
        * @type {?boolean}
        */
       this.system = Boolean(data.system);
+    } else if (!this.partial && typeof this.system !== 'boolean') {
+      this.system = false;
     }
 
     if ('public_flags' in data) {

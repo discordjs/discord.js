@@ -1977,7 +1977,7 @@ declare module 'discord.js' {
     public lastMessageID: Snowflake | null;
     public readonly partial: false;
     public readonly presence: Presence;
-    public system: boolean | null;
+    public system: boolean;
     public readonly tag: string;
     public username: string;
     public avatarURL(options?: ImageURLOptions): string | null;
@@ -4024,9 +4024,9 @@ declare module 'discord.js' {
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
   interface PartialUser extends Omit<Partialize<User, 'bot' | 'flags' | 'system' | 'tag' | 'username'>, 'deleted'> {
-    bot: User['bot'];
+    bot: null;
     flags: User['flags'];
-    system: User['system'];
+    system: null;
     readonly tag: null;
     username: null;
   }
