@@ -1486,7 +1486,7 @@ declare module 'discord.js' {
       users: APIUser[] | Collection<Snowflake, User>,
       roles: Snowflake[] | Collection<Snowflake, Role>,
       everyone: boolean,
-      repliedUser?: APIUser | User | null,
+      repliedUser?: APIUser | User,
     );
     private _channels: Collection<Snowflake, Channel> | null;
     private readonly _content: string;
