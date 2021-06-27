@@ -11,7 +11,7 @@ const Util = require('../util/Util');
 /**
  * Represents a message to be sent to the API.
  */
-class APIMessage {
+class MessagePayload {
   /**
    * @param {MessageTarget} target - The target for this message to be sent to
    * @param {MessageOptions|WebhookMessageOptions} options - Options passed in from send
@@ -31,7 +31,7 @@ class APIMessage {
 
     /**
      * Data sendable to the API
-     * @type {?APIMessageRaw}
+     * @type {?APIMessage}
      */
     this.data = null;
 
@@ -119,7 +119,7 @@ class APIMessage {
 
   /**
    * Resolves data.
-   * @returns {APIMessage}
+   * @returns {MessagePayload}
    */
   resolveData() {
     if (this.data) return this;
@@ -202,7 +202,7 @@ class APIMessage {
 
   /**
    * Resolves files.
-   * @returns {Promise<APIMessage>}
+   * @returns {Promise<MessagePayload>}
    */
   async resolveFiles() {
     if (this.files) return this;
@@ -247,7 +247,7 @@ class APIMessage {
   }
 
   /**
-   * Creates an `APIMessage` from user-level arguments.
+   * Creates a `MessagePayload` from user-level arguments.
    * @param {MessageTarget} target Target to send to
    * @param {string|MessageOptions|WebhookMessageOptions} options Options or content to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto specified options
@@ -261,7 +261,7 @@ class APIMessage {
   }
 }
 
-module.exports = APIMessage;
+module.exports = MessagePayload;
 
 /**
  * A target for a message.
@@ -270,6 +270,6 @@ module.exports = APIMessage;
  */
 
 /**
- * @external APIMessageRaw
+ * @external APIMessage
  * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
  */

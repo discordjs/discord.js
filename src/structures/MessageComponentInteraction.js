@@ -16,7 +16,7 @@ class MessageComponentInteraction extends Interaction {
 
     /**
      * The message to which the component was attached
-     * @type {?(Message|APIMessageRaw)}
+     * @type {?(Message|APIMessage)}
      */
     this.message = data.message ? this.channel?.messages.add(data.message) ?? data.message : null;
 

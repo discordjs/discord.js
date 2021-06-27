@@ -3,7 +3,7 @@
 const { Error } = require('../../errors');
 const { InteractionResponseTypes } = require('../../util/Constants');
 const MessageFlags = require('../../util/MessageFlags');
-const APIMessage = require('../APIMessage');
+const MessagePayload = require('../MessagePayload');
 
 /**
  * Interface for classes that support shared interaction response types.
@@ -53,7 +53,7 @@ class InteractionResponses {
 
   /**
    * Creates a reply to this interaction.
-   * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
+   * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
    * // Reply to the interaction with an embed
@@ -72,11 +72,11 @@ class InteractionResponses {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     this.ephemeral = options.ephemeral ?? false;
 
-    let apiMessage;
-    if (options instanceof APIMessage) apiMessage = options;
-    else apiMessage = APIMessage.create(this, options);
+    let messagePayload;
+    if (options instanceof MessagePayload) messagePayload = options;
+    else messagePayload = MessagePayload.create(this, options);
 
-    const { data, files } = await apiMessage.resolveData().resolveFiles();
+    const { data, files } = await messagePayload.resolveData().resolveFiles();
 
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
@@ -91,7 +91,7 @@ class InteractionResponses {
   /**
    * Fetches the initial reply to this interaction.
    * @see Webhook#fetchMessage
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @returns {Promise<Message|APIMessage>}
    * @example
    * // Fetch the reply to this interaction
    * interaction.fetchReply()
@@ -106,8 +106,8 @@ class InteractionResponses {
   /**
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|APIMessage|WebhookEditMessageOptions} options The new options for the message
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @param {string|MessagePayload|WebhookEditMessageOptions} options The new options for the message
+   * @returns {Promise<Message|APIMessage>}
    * @example
    * // Edit the reply to this interaction
    * interaction.editReply('New content')
@@ -138,8 +138,8 @@ class InteractionResponses {
 
   /**
    * Send a follow-up message to this interaction.
-   * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
+   * @returns {Promise<Message|APIMessage>}
    */
   followUp(options) {
     return this.webhook.send(options);
@@ -166,7 +166,7 @@ class InteractionResponses {
 
   /**
    * Updates the original message whose button was pressed
-   * @param {string|APIMessage|WebhookEditMessageOptions} options The options for the reply
+   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
    * // Remove the components from the message
@@ -180,11 +180,11 @@ class InteractionResponses {
   async update(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
 
-    let apiMessage;
-    if (options instanceof APIMessage) apiMessage = options;
-    else apiMessage = APIMessage.create(this, options);
+    let messagePayload;
+    if (options instanceof MessagePayload) messagePayload = options;
+    else messagePayload = MessagePayload.create(this, options);
 
-    const { data, files } = await apiMessage.resolveData().resolveFiles();
+    const { data, files } = await messagePayload.resolveData().resolveFiles();
 
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {

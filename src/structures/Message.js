@@ -1,6 +1,5 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
@@ -8,6 +7,7 @@ const MessageAttachment = require('./MessageAttachment');
 const MessageComponentInteractionCollector = require('./MessageComponentInteractionCollector');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
+const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
 const Sticker = require('./Sticker');
 const { Error } = require('../errors');
@@ -26,7 +26,7 @@ const Util = require('../util/Util');
 class Message extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {APIMessageRaw} data The data for the message
+   * @param {APIMessage} data The data for the message
    * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
@@ -300,7 +300,7 @@ class Message extends Base {
 
   /**
    * Updates the message and returns the old message.
-   * @param {APIMessageRaw} data Raw Discord message update data
+   * @param {APIMessage} data Raw Discord message update data
    * @returns {Message}
    * @private
    */
@@ -565,7 +565,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {string|APIMessage|MessageEditOptions} options The options to provide
+   * @param {string|MessagePayload|MessageEditOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -667,7 +667,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
-   * @param {string|APIMessage|ReplyMessageOptions} options The options to provide
+   * @param {string|MessagePayload|ReplyMessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message
@@ -678,10 +678,10 @@ class Message extends Base {
   reply(options) {
     let data;
 
-    if (options instanceof APIMessage) {
+    if (options instanceof MessagePayload) {
       data = options;
     } else {
-      data = APIMessage.create(this, options, {
+      data = MessagePayload.create(this, options, {
         reply: {
           messageReference: this,
           failIfNotExists: options?.failIfNotExists ?? true,
@@ -754,7 +754,7 @@ class Message extends Base {
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    * @param {Message} message The message to compare it to
-   * @param {APIMessageRaw} rawData Raw data passed through the WebSocket about this message
+   * @param {APIMessage} rawData Raw data passed through the WebSocket about this message
    * @returns {boolean}
    */
   equals(message, rawData) {
