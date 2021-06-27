@@ -294,7 +294,7 @@ class GuildChannel extends Channel {
     let userOrRoleID = this.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
     let { type, reason } = overwriteOptions;
     if (typeof type !== 'number') {
-      userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
+      userOrRole = this.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
       userOrRoleID = userOrRole.id;
       type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;

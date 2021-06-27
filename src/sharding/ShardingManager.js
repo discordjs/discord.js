@@ -70,7 +70,7 @@ class ShardingManager extends EventEmitter {
      * List of shards this sharding manager spawns
      * @type {string|number[]}
      */
-    this.shardList = options.shardList || 'auto';
+    this.shardList = options.shardList ?? 'auto';
     if (this.shardList !== 'auto') {
       if (!Array.isArray(this.shardList)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array.');

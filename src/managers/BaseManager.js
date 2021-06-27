@@ -17,7 +17,7 @@ class BaseManager {
      * @private
      * @readonly
      */
-    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
+    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) ?? holds });
 
     /**
      * The client that instantiated this Manager

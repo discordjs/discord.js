@@ -290,7 +290,7 @@ class Util {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (!text.includes(':')) return { animated: false, name: text, id: null };
     const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
-    return match && { animated: Boolean(match[1]), name: match[2], id: match[3] || null };
+    return match && { animated: Boolean(match[1]), name: match[2], id: match[3] ?? null };
   }
 
   /**
@@ -459,7 +459,7 @@ class Util {
     if (typeof color === 'string') {
       if (color === 'RANDOM') return Math.floor(Math.random() * (0xffffff + 1));
       if (color === 'DEFAULT') return 0;
-      color = Colors[color] || parseInt(color.replace('#', ''), 16);
+      color = Colors[color] ?? parseInt(color.replace('#', ''), 16);
     } else if (Array.isArray(color)) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }

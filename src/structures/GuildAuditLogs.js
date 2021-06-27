@@ -490,7 +490,7 @@ class GuildAuditLogsEntry {
       // Discord sends a channel id for the MESSAGE_BULK_DELETE action type.
       this.target =
         data.action_type === Actions.MESSAGE_BULK_DELETE
-          ? guild.channels.cache.get(data.target_id) || { id: data.target_id }
+          ? guild.channels.cache.get(data.target_id) ?? { id: data.target_id }
           : guild.client.users.cache.get(data.target_id);
     } else if (targetType === Targets.INTEGRATION) {
       this.target =
