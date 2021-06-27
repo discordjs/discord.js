@@ -141,7 +141,7 @@ class User extends Base {
    * @readonly
    */
   get lastMessage() {
-    return this.client.channels.cache.get(this.lastMessageChannelID)?.messages.cache.get(this.lastMessageID) ?? null;
+    return this.client.channels.resolve(this.lastMessageChannelID)?.messages.resolve(this.lastMessageID) ?? null;
   }
 
   /**
@@ -202,8 +202,7 @@ class User extends Base {
    * @returns {boolean}
    */
   typingIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    return channel._typing.has(this.id);
+    return this.client.channels.resolve(channel)._typing.has(this.id);
   }
 
   /**

@@ -85,17 +85,11 @@ class Presence {
      */
     this.status = data.status ?? this.status ?? 'offline';
 
-    if (data.activities) {
-      /**
-       * The activities of this presence
-       * @type {Activity[]}
-       */
-      this.activities = data.activities.map(activity => new Activity(this, activity));
-    } else if (data.activity ?? data.game) {
-      this.activities = [new Activity(this, data.game ?? data.activity)];
-    } else {
-      this.activities = [];
-    }
+    /**
+     * The activities of this presence
+     * @type {Activity[]}
+     */
+    this.activities = data.activities?.map(activity => new Activity(this, activity)) ?? [];
 
     /**
      * The devices this presence is on

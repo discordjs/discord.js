@@ -175,10 +175,7 @@ class Webhook {
         query: { thread_id: messagePayload.options.threadID, wait: true },
         auth: false,
       })
-      .then(d => {
-        const channel = this.client.channels?.cache.get(d.channel_id);
-        return channel?.messages.add(d, false) ?? d;
-      });
+      .then(d => this.client.channels?.cache.get(d.channel_id)?.messages.add(d, false) ?? d);
   }
 
   /**

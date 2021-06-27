@@ -85,7 +85,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get parent() {
-    return this.guild.channels.cache.get(this.parentID) ?? null;
+    return this.guild.channels.resolve(this.parentID) ?? null;
   }
 
   /**
@@ -145,8 +145,7 @@ class GuildChannel extends Channel {
     const member = this.guild.members.resolve(memberOrRole);
     if (member) return this.memberPermissions(member);
     const role = this.guild.roles.resolve(memberOrRole);
-    if (role) return this.rolePermissions(role);
-    return null;
+    return role && this.rolePermissions(role);
   }
 
   overwritesFor(member, verified = false, roles = null) {

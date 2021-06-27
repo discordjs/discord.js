@@ -456,7 +456,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get afkChannel() {
-    return this.client.channels.cache.get(this.afkChannelID) ?? null;
+    return this.client.channels.resolve(this.afkChannelID) ?? null;
   }
 
   /**
@@ -465,7 +465,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get systemChannel() {
-    return this.client.channels.cache.get(this.systemChannelID) ?? null;
+    return this.client.channels.resolve(this.systemChannelID) ?? null;
   }
 
   /**
@@ -474,7 +474,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get widgetChannel() {
-    return this.client.channels.cache.get(this.widgetChannelID) ?? null;
+    return this.client.channels.resolve(this.widgetChannelID) ?? null;
   }
 
   /**
@@ -483,7 +483,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get rulesChannel() {
-    return this.client.channels.cache.get(this.rulesChannelID) ?? null;
+    return this.client.channels.resolve(this.rulesChannelID) ?? null;
   }
 
   /**
@@ -492,7 +492,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get publicUpdatesChannel() {
-    return this.client.channels.cache.get(this.publicUpdatesChannelID) ?? null;
+    return this.client.channels.resolve(this.publicUpdatesChannelID) ?? null;
   }
 
   /**
@@ -502,7 +502,7 @@ class Guild extends AnonymousGuild {
    */
   get me() {
     return (
-      this.members.cache.get(this.client.user.id) ||
+      this.members.resolve(this.client.user.id) ??
       (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)
         ? this.members.add({ user: { id: this.client.user.id } }, true)
         : null)

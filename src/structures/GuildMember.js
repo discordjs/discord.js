@@ -121,7 +121,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get lastMessage() {
-    return this.guild.channels.cache.get(this.lastMessageChannelID)?.messages.cache.get(this.lastMessageID) ?? null;
+    return this.guild.channels.resolve(this.lastMessageChannelID)?.messages.resolve(this.lastMessageID) ?? null;
   }
 
   /**
