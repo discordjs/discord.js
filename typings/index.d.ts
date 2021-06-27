@@ -2296,12 +2296,14 @@ declare module 'discord.js' {
 
   export class ApplicationCommandManager<
     ApplicationCommandType = ApplicationCommand<{ guild: GuildResolvable }>,
+    PermissionsOptionsExtras = { guild: GuildResolvable },
+    PermissionsGuildType = null,
   > extends BaseManager<Snowflake, ApplicationCommandType, ApplicationCommandResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public permissions: ApplicationCommandPermissionsManager<
-      { guild: GuildResolvable; command?: ApplicationCommandResolvable },
-      { guild: GuildResolvable; command: ApplicationCommandResolvable },
-      null,
+      { command?: ApplicationCommandResolvable } & PermissionsOptionsExtras,
+      { command: ApplicationCommandResolvable } & PermissionsOptionsExtras,
+      PermissionsGuildType,
       null
     >;
     private commandPath({ id, guildID }: { id?: Snowflake; guildID?: Snowflake }): unknown;
@@ -2387,15 +2389,9 @@ declare module 'discord.js' {
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Channel | null>;
   }
 
-  export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand> {
+  export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand, {}, Guild> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
-    public permissions: ApplicationCommandPermissionsManager<
-      { command?: ApplicationCommandResolvable },
-      { command: ApplicationCommandResolvable },
-      Guild,
-      null
-    >;
     public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
     public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
     public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
