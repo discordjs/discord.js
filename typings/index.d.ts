@@ -1185,7 +1185,7 @@ declare module 'discord.js' {
   export class InteractionWebhook extends PartialWebhookMixin() {
     constructor(client: Client, id: Snowflake, token: string);
     public token: string;
-    public send(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | RawMessage>;
+    public send(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
   }
 
   export class Invite extends Base {
@@ -1372,7 +1372,7 @@ declare module 'discord.js' {
 
   export class MessageComponentInteraction extends Interaction {
     public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | null;
-    public readonly component: MessageActionRowComponent | Exclude<RawMessageComponent, RawActionRowComponent> | null;
+    public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent> | null;
     public componentType: MessageComponentType;
     public customID: string;
     public deferred: boolean;
@@ -2123,9 +2123,9 @@ declare module 'discord.js' {
     public editMessage(
       message: MessageResolvable,
       options: string | MessagePayload | WebhookEditMessageOptions,
-    ): Promise<RawMessage>;
-    public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
-    public send(options: string | MessagePayload | WebhookMessageOptions): Promise<RawMessage>;
+    ): Promise<APIMessage>;
+    public fetchMessage(message: Snowflake, cache?: boolean): Promise<APIMessage>;
+    public send(options: string | MessagePayload | WebhookMessageOptions): Promise<APIMessage>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2624,9 +2624,9 @@ declare module 'discord.js' {
     editMessage(
       message: MessageResolvable | '@original',
       options: string | MessagePayload | WebhookEditMessageOptions,
-    ): Promise<Message | RawMessage>;
-    fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | RawMessage>;
-    send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message | RawMessage>;
+    ): Promise<Message | APIMessage>;
+    fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | APIMessage>;
+    send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message | APIMessage>;
   }
 
   interface WebhookFields extends PartialWebhookFields {
