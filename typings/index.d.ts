@@ -2375,7 +2375,7 @@ declare module 'discord.js' {
         fullPermissions: GuildApplicationCommandPermissionData[];
       },
     ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-    private permissionsPath(guildID: Snowflake, commandID: Snowflake): unknown;
+    private permissionsPath(guildID: Snowflake, commandID?: Snowflake): unknown;
     private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): unknown;
   }
 
