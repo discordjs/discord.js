@@ -152,6 +152,25 @@ declare enum WebhookTypes {
 
 type Awaited<T> = T | Promise<T>;
 
+declare module '@discordjs/voice' {
+  import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v8';
+
+  export interface DiscordGatewayAdapterLibraryMethods {
+    onVoiceServerUpdate(data: GatewayVoiceServerUpdateDispatchData): void;
+    onVoiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): void;
+    destroy(): void;
+  }
+
+  export interface DiscordGatewayAdapterImplementerMethods {
+    sendPayload(payload: any): boolean;
+    destroy(): void;
+  }
+
+  export type DiscordGatewayAdapterCreator = (
+    methods: DiscordGatewayAdapterLibraryMethods,
+  ) => DiscordGatewayAdapterImplementerMethods;
+}
+
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
