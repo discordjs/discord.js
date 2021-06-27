@@ -50,7 +50,7 @@
     "@sapphire/async-queue": "^1.1.2",
     "@types/ws": "^7.4.4",
     "abort-controller": "^3.0.0",
-    "discord-api-types": "^0.18.1",
+    "discord-api-types": "^0.19.0-next.f393ba520d7d6d2aacaca7b3ca5d355fab614f6e",
     "node-fetch": "^2.6.1",
     "ws": "^7.4.6"
   },
