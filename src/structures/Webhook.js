@@ -293,10 +293,10 @@ class Webhook {
   /**
    * Deletes the webhook.
    * @param {string} [reason] Reason for deleting this webhook
-   * @returns {Promise}
+   * @returns {Promise<void>}
    */
-  delete(reason) {
-    return this.client.api.webhooks(this.id, this.token).delete({ reason });
+  async delete(reason) {
+    await this.client.api.webhooks(this.id, this.token).delete({ reason });
   }
 
   /**
