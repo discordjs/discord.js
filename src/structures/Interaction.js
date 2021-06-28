@@ -110,7 +110,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   inGuild() {
-    return this.guild && this.guildID && this.member;
+    return this.guildID && this.member;
   }
 
   /**

@@ -537,7 +537,6 @@ declare module 'discord.js' {
     public options: Collection<string, CommandInteractionOption>;
     public replied: boolean;
     public webhook: InteractionWebhook;
-    public inGuild(): boolean;
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
