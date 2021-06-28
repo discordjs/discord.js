@@ -118,7 +118,7 @@ class Webhook {
    *   .catch(console.error);
    * @example
    * // Send a basic message in a thread
-   * webhook.send('hello!', { threadID: '836856309672348295' })
+   * webhook.send({ content: 'hello!', threadID: '836856309672348295' })
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
    * @example
