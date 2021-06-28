@@ -1,5 +1,6 @@
 'use strict';
 
+const GuildChannel = require('./GuildChannel');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
@@ -78,6 +79,14 @@ class CommandInteraction extends Interaction {
   get command() {
     const id = this.commandID;
     return this.guild?.commands.cache.get(id) ?? this.client.application.commands.cache.get(id) ?? null;
+  }
+
+  /**
+   * Indicates whether this interaction is received from a guild.
+   * @returns {boolean}
+   */
+  inGuild() {
+    return this.guild && this.guildID && this.member && this.channel instanceof GuildChannel;
   }
 
   /**
