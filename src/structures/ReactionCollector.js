@@ -81,7 +81,7 @@ class ReactionCollector extends Collector {
    * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
    * @param {User} user The user that added the reaction
-   * @returns {Promise<Snowflake|string>}
+   * @returns {Promise<?(Snowflake|string)>}
    * @private
    */
   async collect(reaction, user) {
