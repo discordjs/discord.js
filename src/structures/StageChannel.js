@@ -29,6 +29,15 @@ class StageChannel extends BaseGuildVoiceChannel {
   }
 
   /**
+   * Creates an instance of this stage channel.
+   * @param {StageInstanceCreateOptions} options The options to create the stage instance
+   * @returns {Promise<StageInstance>}
+   */
+  createStageInstance(options) {
+    return this.guild.stageInstances.create(this.id, options);
+  }
+
+  /**
    * Sets the RTC region of the channel.
    * @name StageChannel#setRTCRegion
    * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel

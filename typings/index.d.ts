@@ -1828,6 +1828,7 @@ declare module 'discord.js' {
     public topic: string | null;
     public type: 'stage';
     public readonly instance: StageInstance | null;
+    public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
   }
 
   export class StageInstance extends Base {
@@ -2539,7 +2540,7 @@ declare module 'discord.js' {
   export class StageInstanceManager extends BaseManager<Snowflake, StageInstance, StageInstanceResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
-    public create(options: CreateStageInstanceOptions): Promise<StageInstance>;
+    public create(channel: StageChannel | Snowflake, options: StageInstanceCreateOptions): Promise<StageInstance>;
     public fetch(channel: StageChannel | Snowflake, options?: BaseFetchOptions): Promise<StageInstance>;
     public edit(channel: StageChannel | Snowflake, options: StageInstanceEditOptions): Promise<StageInstance>;
     public delete(channel: StageChannel | Snowflake): Promise<void>;
@@ -3120,8 +3121,7 @@ declare module 'discord.js' {
     reason?: string;
   }
 
-  interface CreateStageInstanceOptions {
-    channel: StageChannel | Snowflake;
+  interface StageInstanceCreateOptions {
     topic: string;
     privacyLevel?: PrivacyLevel | number;
   }
