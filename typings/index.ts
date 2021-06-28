@@ -9,6 +9,8 @@ import {
   MessageEmbed,
   Permissions,
   Serialized,
+  ShardClientUtil,
+  ShardingManager,
 } from 'discord.js';
 
 const client: Client = new Client({
@@ -58,6 +60,7 @@ client.on('message', ({ channel }) => {
 
 client.login('absolutely-valid-token');
 
+// Test type transformation:
 declare const assertType: <T>(value: T) => asserts value is T;
 declare const serialize: <T>(value: T) => Serialized<T>;
 
@@ -86,3 +89,12 @@ assertType<unknown>(
 assertType<never>(serialize(Symbol('a')));
 assertType<never>(serialize(() => {}));
 assertType<never>(serialize(BigInt(42)));
+
+// Test type return of broadcastEval:
+declare const shardClientUtil: ShardClientUtil;
+declare const shardingManager: ShardingManager;
+
+assertType<Promise<number[]>>(shardingManager.broadcastEval(() => 1));
+assertType<Promise<number[]>>(shardClientUtil.broadcastEval(() => 1));
+assertType<Promise<number[]>>(shardingManager.broadcastEval(async () => 1));
+assertType<Promise<number[]>>(shardClientUtil.broadcastEval(async () => 1));

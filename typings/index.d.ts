@@ -133,7 +133,7 @@ declare enum WebhookTypes {
   'Channel Follower' = 2,
 }
 
-type Awaited<T> = T | Promise<T>;
+type Awaited<T> = T | PromiseLike<T>;
 
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
@@ -1756,14 +1756,14 @@ declare module 'discord.js' {
     public readonly ids: number[];
     public mode: ShardingManagerMode;
     public parentPort: any | null;
-    public broadcastEval<T>(fn: (client: Client) => T): Promise<Serialized<T>[]>;
-    public broadcastEval<T>(fn: (client: Client) => T, options: { shard: number }): Promise<Serialized<T>>;
+    public broadcastEval<T>(fn: (client: Client) => Awaited<T>): Promise<Serialized<T>[]>;
+    public broadcastEval<T>(fn: (client: Client) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
     public broadcastEval<T, P>(
-      fn: (client: Client, context: Serialized<P>) => T,
+      fn: (client: Client, context: Serialized<P>) => Awaited<T>,
       options: { context: P },
     ): Promise<Serialized<T>[]>;
     public broadcastEval<T, P>(
-      fn: (client: Client, context: Serialized<P>) => T,
+      fn: (client: Client, context: Serialized<P>) => Awaited<T>,
       options: { context: P; shard: number },
     ): Promise<Serialized<T>>;
     public fetchClientValues(prop: string): Promise<any[]>;
@@ -1788,14 +1788,14 @@ declare module 'discord.js' {
     public totalShards: number | 'auto';
     public shardList: number[] | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
-    public broadcastEval<T>(fn: (client: Client) => T): Promise<Serialized<T>[]>;
-    public broadcastEval<T>(fn: (client: Client) => T, options: { shard: number }): Promise<Serialized<T>>;
+    public broadcastEval<T>(fn: (client: Client) => Awaited<T>): Promise<Serialized<T>[]>;
+    public broadcastEval<T>(fn: (client: Client) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
     public broadcastEval<T, P>(
-      fn: (client: Client, context: Serialized<P>) => T,
+      fn: (client: Client, context: Serialized<P>) => Awaited<T>,
       options: { context: P },
     ): Promise<Serialized<T>[]>;
     public broadcastEval<T, P>(
-      fn: (client: Client, context: Serialized<P>) => T,
+      fn: (client: Client, context: Serialized<P>) => Awaited<T>,
       options: { context: P; shard: number },
     ): Promise<Serialized<T>>;
     public createShard(id: number): Shard;
