@@ -3103,7 +3103,7 @@ declare module 'discord.js' {
     | 'RANDOM'
     | [number, number, number]
     | number
-    | string;
+    | `#${string}`;
 
   interface CommandInteractionOption {
     name: string;
