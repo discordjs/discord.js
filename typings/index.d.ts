@@ -365,7 +365,7 @@ declare module 'discord.js' {
     public valueOf(): N;
     public [Symbol.iterator](): IterableIterator<S>;
     public static FLAGS: unknown;
-    public static resolve(bit?: BitFieldResolvable<any, number | bigint>): number | bigint;
+    public static resolve(bit?: BitFieldResolvable<S, N>): number | bigint;
   }
 
   export class ButtonInteraction extends MessageComponentInteraction {
@@ -2874,9 +2874,10 @@ declare module 'discord.js' {
   }
 
   type BitFieldResolvable<T extends string, N extends number | bigint> =
-    | RecursiveReadonlyArray<T | N | Readonly<BitField<T, N>>>
+    | RecursiveReadonlyArray<T | N | `${bigint}` | Readonly<BitField<T, N>>>
     | T
     | N
+    | `${bigint}`
     | Readonly<BitField<T, N>>;
 
   type BufferResolvable = Buffer | string;
