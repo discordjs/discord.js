@@ -17,6 +17,17 @@ class CategoryChannel extends GuildChannel {
   }
 
   /**
+   * When concatenated with a string, this automatically returns the channel's name instead of the Category object.
+   * @returns {string}
+   * @example
+   * // Logs: Hello from General chit-chat !
+   * console.log(`Hello from ${category}!`);
+   */
+  toString() {
+    return this.name;
+  }
+
+  /**
    * Sets the category parent of this channel.
    * <warn>It is not currently possible to set the parent of a CategoryChannel.</warn>
    * @method setParent
