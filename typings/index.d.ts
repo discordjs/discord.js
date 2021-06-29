@@ -1951,8 +1951,8 @@ declare module 'discord.js' {
   export class ThreadChannel extends TextBasedChannel(Channel) {
     constructor(guild: Guild, data?: object);
     public archived: boolean;
-    public readonly archivedAt: Date | null;
-    public archiveTimestamp: number | null;
+    public readonly archivedAt: Date;
+    public archiveTimestamp: number;
     public autoArchiveDuration: ThreadAutoArchiveDuration;
     public readonly editable: boolean;
     public guild: Guild;

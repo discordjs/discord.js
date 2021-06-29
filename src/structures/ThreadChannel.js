@@ -99,12 +99,11 @@ class ThreadChannel extends Channel {
     this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
 
     /**
-     * The timestamp the thread was last archived or unarchived at
-     * @type {?number}
+     * The timestamp when the thread's archive status was last changed
+     * <info>If the thread was never archived or unarchived, this is set when it's created</info>
+     * @type {number}
      */
-    this.archiveTimestamp = data.thread_metadata.archive_timestamp
-      ? new Date(data.thread_metadata.archive_timestamp).getTime()
-      : null;
+    this.archiveTimestamp = new Date(data.thread_metadata.archive_timestamp).getTime();
 
     /**
      * The approximate count of messages in this thread
@@ -135,12 +134,13 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * The time the thread was last archived or unarchived at
-   * @type {?Date}
+   * The time when the thread's archive status was last changed
+   * <info>If the thread was never archived or unarchived, this is set when it's created</info>
+   * @type {Date}
    * @readonly
    */
   get archivedAt() {
-    return this.archiveTimestamp ? new Date(this.archiveTimestamp) : null;
+    return new Date(this.archiveTimestamp);
   }
 
   /**
