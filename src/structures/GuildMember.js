@@ -256,13 +256,13 @@ class GuildMember extends Base {
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
-   * @param {ChannelResolvable} channel The guild channel to use as context
+   * @param {GuildChannelResolvable} channel The guild channel to use as context
    * @returns {Readonly<Permissions>}
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);
     if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
-    return channel.memberPermissions(this);
+    return channel.permissionsFor(this);
   }
 
   /**

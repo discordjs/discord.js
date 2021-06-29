@@ -1063,7 +1063,7 @@ declare module 'discord.js' {
     public deleteDM(): Promise<DMChannel>;
     public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
     public kick(reason?: string): Promise<GuildMember>;
-    public permissionsIn(channel: ChannelResolvable): Readonly<Permissions>;
+    public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;
     public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
     public toJSON(): unknown;
     public toString(): string;
@@ -2381,7 +2381,11 @@ declare module 'discord.js' {
     ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
   }
 
-  export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
+  export class GuildChannelManager extends BaseManager<
+    Snowflake,
+    GuildChannel | ThreadChannel,
+    GuildChannelResolvable
+  > {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public readonly channelCountWithoutThreads: number;
     public guild: Guild;
@@ -3353,7 +3357,7 @@ declare module 'discord.js' {
     type?: number;
   }
 
-  type GuildChannelResolvable = Snowflake | GuildChannel;
+  type GuildChannelResolvable = Snowflake | GuildChannel | ThreadChannel;
 
   interface GuildChannelCreateOptions {
     permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
