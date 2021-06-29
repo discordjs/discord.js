@@ -1082,7 +1082,7 @@ declare module 'discord.js' {
     public deleteDM(): Promise<DMChannel>;
     public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
     public kick(reason?: string): Promise<GuildMember>;
-    public permissionsIn(channel: ChannelResolvable): Readonly<Permissions>;
+    public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;
     public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
     public toJSON(): unknown;
     public toString(): string;
@@ -2400,7 +2400,11 @@ declare module 'discord.js' {
     ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
   }
 
-  export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
+  export class GuildChannelManager extends BaseManager<
+    Snowflake,
+    GuildChannel | ThreadChannel,
+    GuildChannelResolvable
+  > {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public readonly channelCountWithoutThreads: number;
     public guild: Guild;
@@ -2740,6 +2744,7 @@ declare module 'discord.js' {
     ANNOUNCEMENT_EDIT_LIMIT_EXCEEDED: 20022;
     CHANNEL_HIT_WRITE_RATELIMIT: 20028;
     CONTENT_NOT_ALLOWED: 20031;
+    GUILD_PREMIUM_LEVEL_TOO_LOW: 20035;
     MAXIMUM_GUILDS: 30001;
     MAXIMUM_FRIENDS: 30002;
     MAXIMUM_PINS: 30003;
@@ -3372,7 +3377,7 @@ declare module 'discord.js' {
     type?: number;
   }
 
-  type GuildChannelResolvable = Snowflake | GuildChannel;
+  type GuildChannelResolvable = Snowflake | GuildChannel | ThreadChannel;
 
   interface GuildChannelCreateOptions {
     permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
@@ -3466,7 +3471,10 @@ declare module 'discord.js' {
     | 'NEWS'
     | 'PARTNERED'
     | 'PREVIEW_ENABLED'
+    | 'PRIVATE_THREADS'
     | 'RELAY_ENABLED'
+    | 'SEVEN_DAY_THREAD_ARCHIVE'
+    | 'THREE_DAY_THREAD_ARCHIVE'
     | 'TICKETED_EVENTS_ENABLED'
     | 'VANITY_URL'
     | 'VERIFIED'
