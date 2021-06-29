@@ -63,8 +63,8 @@ class ThreadManager extends BaseManager {
    * A number that is allowed to be the duration in minutes before a thread is automatically archived. This can be:
    * * `60` (1 hour)
    * * `1440` (1 day)
-   * * `4320` (3 days)
-   * * `10080` (7 days)
+   * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
+   * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
    * @typedef {number} ThreadAutoArchiveDuration
    */
 
@@ -76,8 +76,8 @@ class ThreadManager extends BaseManager {
    * @property {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
    * @property {MessageResolvable} [startMessage] The message to start a public or news thread from,
    * creates a private thread if not provided
-   * @property {ThreadChannelType|number} [type] The type of thread to create
-   * <warn>When creating threads in a `news` channel this is always `news_thread`</warn>
+   * @property {ThreadChannelType|number} [type='public_thread'] The type of thread to create
+   * <warn>When creating threads in a `news` channel this is ignored and is always `news_thread`</warn>
    * @param {string} [reason] Reason for creating the thread
    */
 
@@ -113,7 +113,7 @@ class ThreadManager extends BaseManager {
       if (!startMessageID) throw new TypeError('INVALID_TYPE', 'startMessage', 'MessageResolvable');
       path = path.messages(startMessageID);
     } else if (this.channel.type !== 'news') {
-      resolvedType = typeof type === 'string' ? ChannelTypes[type.toUpperCase()] : type;
+      resolvedType = typeof type === 'string' ? ChannelTypes[type.toUpperCase()] : type ?? resolvedType;
     }
 
     const data = await path.threads.post({
