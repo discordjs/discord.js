@@ -50,75 +50,91 @@ class ThreadChannel extends Channel {
      */
     this.name = data.name;
 
-    /**
-     * The ID of the parent channel to this thread
-     * @type {Snowflake}
-     */
-    this.parentID = data.parent_id;
+    if ('parent_id' in data) {
+      /**
+       * The ID of the parent channel to this thread
+       * @type {Snowflake}
+       */
+      this.parentID = data.parent_id;
+    }
 
-    /**
-     * Whether the thread is locked
-     * @type {boolean}
-     */
-    this.locked = data.thread_metadata.locked ?? false;
+    if ('thread_metadata' in data) {
+      /**
+       * Whether the thread is locked
+       * @type {boolean}
+       */
+      this.locked = data.thread_metadata.locked ?? false;
 
-    /**
-     * Whether the thread is active (false) or archived (true)
-     * @type {boolean}
-     */
-    this.archived = data.thread_metadata.archived;
+      /**
+       * Whether the thread is active (false) or archived (true)
+       * @type {boolean}
+       */
+      this.archived = data.thread_metadata.archived;
 
-    /**
-     * The id of the member that created this thread
-     * @type {?Snowflake}
-     */
-    this.ownerID = data.owner_id;
+      /**
+       * How long in minutes after recent activity before the thread is automatically archived
+       * @type {number}
+       */
+      this.autoArchiveDuration = data.thread_metadata.auto_archive_duration;
 
-    /**
-     * How long in minutes after recent activity before the thread is automatically archived
-     * @type {number}
-     */
-    this.autoArchiveDuration = data.thread_metadata.auto_archive_duration;
+      /**
+       * The timestamp when the thread's archive status was last changed
+       * <info>If the thread was never archived or unarchived, this is set when it's created</info>
+       * @type {number}
+       */
+      this.archiveTimestamp = new Date(data.thread_metadata.archive_timestamp).getTime();
+    }
 
-    /**
-     * The ID of the last message sent in this thread, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageID = data.last_message_id;
+    if ('owner_id' in data) {
+      /**
+       * The id of the member that created this thread
+       * @type {?Snowflake}
+       */
+      this.ownerID = data.owner_id;
+    }
 
-    /**
-     * The timestamp when the last pinned message was pinned, if there was one
-     * @type {?number}
-     */
-    this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+    if ('last_message_id' in data) {
+      /**
+       * The ID of the last message sent in this thread, if one was sent
+       * @type {?Snowflake}
+       */
+      this.lastMessageID = data.last_message_id;
+    }
 
-    /**
-     * The ratelimit per user for this thread in seconds
-     * @type {number}
-     */
-    this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
+    if ('last_pin_timestamp' in data) {
+      /**
+       * The timestamp when the last pinned message was pinned, if there was one
+       * @type {?number}
+       */
+      this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+    }
 
-    /**
-     * The timestamp when the thread's archive status was last changed
-     * <info>If the thread was never archived or unarchived, this is set when it's created</info>
-     * @type {number}
-     */
-    this.archiveTimestamp = new Date(data.thread_metadata.archive_timestamp).getTime();
+    if ('rate_limit_per_user' in data) {
+      /**
+       * The ratelimit per user for this thread in seconds
+       * @type {number}
+       */
+      this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
+    }
 
-    /**
-     * The approximate count of messages in this thread
-     * <info>This value will not count above 50 even when there are more than 50 messages
-     * If you need an approximate value higher than this, use ThreadChannel#messages.cache.size</info>
-     * @type {number}
-     */
-    this.messageCount = data.message_count;
+    if ('message_count' in data) {
+      /**
+       * The approximate count of messages in this thread
+       * <info>This value will not count above 50 even when there are more than 50 messages
+       * If you need an approximate value higher than this, use ThreadChannel#messages.cache.size</info>
+       * @type {number}
+       */
+      this.messageCount = data.message_count;
+    }
 
-    /**
-     * The approximate count of users in this thread
-     * <info>This value will not count above 50 even when there are more than 50 members</info>
-     * @type {number}
-     */
-    this.memberCount = data.member_count;
+    if ('member_count' in data) {
+      /**
+       * The approximate count of users in this thread
+       * <info>This value will not count above 50 even when there are more than 50 members</info>
+       * @type {number}
+       */
+      this.memberCount = data.member_count;
+    }
 
     if (data.member && this.client.user) this.members._add({ user_id: this.client.user.id, ...data.member });
     if (data.messages) for (const message of data.messages) this.messages.add(message);
