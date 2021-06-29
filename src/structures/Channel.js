@@ -22,9 +22,9 @@ class Channel extends Base {
      * * `category` - a guild category channel
      * * `news` - a guild news channel
      * * `store` - a guild store channel
-     * * `news_thread` - a guild news channels' public thread channel
-     * * `public_thread` - a guild text channels' public thread channel
-     * * `private_thread` - a guild text channels' private thread channel
+     * * `news_thread` - a guild news channel's public thread channel
+     * * `public_thread` - a guild text channel's public thread channel
+     * * `private_thread` - a guild text channel's private thread channel
      * * `stage` - a guild stage channel
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
