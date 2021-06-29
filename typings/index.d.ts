@@ -2625,6 +2625,7 @@ declare module 'discord.js' {
       name: string;
       autoArchiveDuration: ThreadAutoArchiveDuration;
       startMessage?: MessageResolvable;
+      type?: ThreadChannelType | number;
       reason?: string;
     }): Promise<ThreadChannel>;
     public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
