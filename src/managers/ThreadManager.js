@@ -78,7 +78,7 @@ class ThreadManager extends BaseManager {
    * creates a private thread if not provided
    * @property {ThreadChannelType|number} [type='public_thread'] The type of thread to create
    * <warn>When creating threads in a `news` channel this is ignored and is always `news_thread`</warn>
-   * @param {string} [reason] Reason for creating the thread
+   * @property {string} [reason] Reason for creating the thread
    */
 
   /**
