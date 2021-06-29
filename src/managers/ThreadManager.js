@@ -74,8 +74,7 @@ class ThreadManager extends BaseManager {
    * @typedef {Object} ThreadCreateOptions
    * @property {string} name The name of the new Thread
    * @property {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
-   * @property {MessageResolvable} [startMessage] The message to start a public or news thread from,
-   * creates a private thread if not provided
+   * @property {MessageResolvable} [startMessage] The message to start a thread from
    * @property {ThreadChannelType|number} [type='public_thread'] The type of thread to create
    * <warn>When creating threads in a `news` channel this is ignored and is always `news_thread`</warn>
    * @param {string} [reason] Reason for creating the thread
@@ -186,7 +185,7 @@ class ThreadManager extends BaseManager {
 
   /**
    * The data returned from a thread fetch that returns multiple threads.
-   * @typedef {FetchedThreads}
+   * @typedef {Object} FetchedThreads
    * @property {Collection<Snowflake, ThreadChannel>} threads The threads fetched, with any members returned
    * @property {?boolean} hasMore Whether there are potentially additional threads that require a subsequent call
    */
