@@ -1770,7 +1770,7 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
     public available: ?boolean;
-    public description: string;
+    public description: ?string;
     public format: StickerFormatType;
     public readonly guild: ?Guild;
     public guildID: ?Snowflake;
@@ -1778,11 +1778,13 @@ declare module 'discord.js' {
     public name: string;
     public packID: ?Snowflake;
     public sortValue: ?number;
-    public tags: string[];
-    public type: StickerType;
+    public tags: ?string[];
+    public type: ?StickerType;
     public user: ?User;
     public readonly url: string;
+    public fetch(): Promise<?Sticker>;
     public fetchPack(): Promise<?StickerPack>;
+    public fetchUser(): Promise<?User>;
   }
 
   export class StickerPack extends Base {

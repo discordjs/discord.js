@@ -15,6 +15,11 @@ class Sticker extends Base {
    */
   constructor(client, sticker) {
     super(client);
+
+    this._patch(sticker);
+  }
+
+  _patch(sticker) {
     /**
      * The ID of the sticker
      * @type {Snowflake}
@@ -23,15 +28,15 @@ class Sticker extends Base {
 
     /**
      * The description of the sticker
-     * @type {string}
+     * @type {?string}
      */
-    this.description = sticker.description;
+    this.description = sticker.description ?? null;
 
     /**
      * The type of the sticker
-     * @type {StickerType}
+     * @type {?StickerType}
      */
-    this.type = StickerTypes[sticker.type];
+    this.type = StickerTypes[sticker.type] ?? null;
 
     /**
      * The format of the sticker
@@ -52,10 +57,10 @@ class Sticker extends Base {
     this.packID = sticker.pack_id ?? null;
 
     /**
-     * An array of tags for the sticker, if any
+     * An array of tags for the sticker
      * @type {string[]}
      */
-    this.tags = sticker.tags?.split(', ') ?? [];
+    this.tags = sticker.tags?.split(', ') ?? null;
 
     /**
      * Whether or not the guild sticker is available
@@ -101,6 +106,15 @@ class Sticker extends Base {
   }
 
   /**
+   * Whether this sticker is partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return 'username' in this;
+  }
+
+  /**
    * The guild that owns this sticker
    * @type {?Guild}
    * @readonly
@@ -119,11 +133,34 @@ class Sticker extends Base {
   }
 
   /**
+   * Fetches this sticker.
+   * @returns {Promise<?Sticker>}
+   */
+  async fetch() {
+    const data = await this.client.api.stickers(this.id).get();
+    this._patch(data);
+    return this;
+  }
+
+  /**
    * Fetches the pack this sticker is part of from Discord, if this is a Nitro sticker.
    * @returns {Promise<?StickerPack>}
    */
   async fetchPack() {
     return (this.packID && (await this.client.fetchPremiumStickerPacks()).get(this.packID)) ?? null;
+  }
+
+  /**
+   * Fetches the user who uploaded this sticker, if this is a guild sticker.
+   * @returns {Promise<?User>}
+   */
+  async fetchUser() {
+    if (this.partial) await this.fetch();
+    if (!this.guildID) throw new Error('NOT_GUILD_STICKER');
+
+    const data = await this.client.api.guilds(this.guildID).stickers(this.id).get();
+    this._patch(data);
+    return this.user;
   }
 }
 
