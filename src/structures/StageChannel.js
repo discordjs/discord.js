@@ -33,7 +33,7 @@ class StageChannel extends BaseGuildVoiceChannel {
    * @param {StageInstanceCreateOptions} options The options to create the stage instance
    * @returns {Promise<StageInstance>}
    */
-  createStageInstance(options) {
+  createInstance(options) {
     return this.guild.stageInstances.create(this.id, options);
   }
 

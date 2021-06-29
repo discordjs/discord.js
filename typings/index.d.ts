@@ -1828,7 +1828,7 @@ declare module 'discord.js' {
     public topic: string | null;
     public type: 'stage';
     public readonly instance: StageInstance | null;
-    public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
+    public createInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
   }
 
   export class StageInstance extends Base {
