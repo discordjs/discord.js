@@ -399,7 +399,7 @@ declare module 'discord.js' {
     public valueOf(): N;
     public [Symbol.iterator](): IterableIterator<S>;
     public static FLAGS: unknown;
-    public static resolve(bit?: BitFieldResolvable<S, N>): number | bigint;
+    public static resolve(bit?: BitFieldResolvable<any, number | bigint>): number | bigint;
   }
 
   export class ButtonInteraction extends MessageComponentInteraction {
