@@ -234,8 +234,6 @@ class Activity {
      */
     this.assets = data.assets ? new RichPresenceAssets(this, data.assets) : null;
 
-    this.syncID = data.sync_id;
-
     /**
      * Flags that describe the activity
      * @type {Readonly<ActivityFlags>}
