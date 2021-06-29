@@ -100,6 +100,8 @@ class ThreadChannel extends Channel {
 
     /**
      * The timestamp when the thread's archive status was last changed
+     * <info>If the thread was never archived or unarchived,
+     * this is the same as {@link ThreadChannel#createdTimestamp}</info>
      * @type {number}
      */
     this.archiveTimestamp = new Date(data.thread_metadata.archive_timestamp).getTime();
@@ -134,6 +136,7 @@ class ThreadChannel extends Channel {
 
   /**
    * The time when the thread's archive status was last changed
+   * <info>If the thread was never archived or unarchived, this is the same as {@link ThreadChannel#createdAt}</info>
    * @type {Date}
    * @readonly
    */
