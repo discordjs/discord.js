@@ -59,7 +59,7 @@ class GuildChannelManager extends BaseManager {
   /**
    * Resolves a GuildChannelResolvable to a Channel object.
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?GuildChannel|ThreadChannel}
+   * @returns {?(GuildChannel|ThreadChannel)}
    */
   resolve(channel) {
     if (channel instanceof ThreadChannel) return super.resolve(channel.id);
