@@ -34,7 +34,7 @@ class Message extends Base {
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|NewsChannel}
+     * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
      */
     this.channel = channel;
 
