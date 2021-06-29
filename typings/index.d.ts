@@ -558,7 +558,7 @@ declare module 'discord.js' {
     public options: Collection<string, CommandInteractionOption>;
     public replied: boolean;
     public webhook: InteractionWebhook;
-    public defer(options?: InteractionDeferOptions & { fetchReply: true }): Promise<Message | RawMessage>;
+    public defer(options?: InteractionDeferOptions & { fetchReply: true }): Promise<Message | APIMessage>;
     public defer(options?: InteractionDeferOptions): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
@@ -1420,9 +1420,9 @@ declare module 'discord.js' {
     public message: Message | APIMessage;
     public replied: boolean;
     public webhook: InteractionWebhook;
-    public defer(options?: InteractionDeferOptions & { fetchReply: true }): Promise<Message | RawMessage>;
+    public defer(options?: InteractionDeferOptions & { fetchReply: true }): Promise<Message | APIMessage>;
     public defer(options?: InteractionDeferOptions): Promise<void>;
-    public deferUpdate(options?: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message | RawMessage>;
+    public deferUpdate(options?: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
     public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
