@@ -91,14 +91,19 @@ class ThreadManager extends BaseManager {
    *   .create({
    *     name: 'food-talk'
    *     autoArchiveDuration: 60,
-   *     startMessage: channel.lastMessageID,
    *     reason: 'Needed a separate thread for food',
    *   })
    *   .then(console.log)
    *   .catch(console.error);
+   * @example
    * // Create a new private thread
    * channel.threads
-   *   .create({ name: 'mod-talk', autoArchiveDuration: 60, reason: 'Needed a separate thread for moderation' })
+   *   .create({
+   *      name: 'mod-talk',
+   *      autoArchiveDuration: 60,
+   *      type: 'private_thread',
+   *      reason: 'Needed a separate thread for moderation'
+   *    })
    *   .then(console.log)
    *   .catch(console.error);
    */
