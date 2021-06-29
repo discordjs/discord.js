@@ -89,7 +89,7 @@ class ThreadManager extends BaseManager {
    * // Create a new public thread
    * channel.threads
    *   .create({
-   *     name: 'food-talk'
+   *     name: 'food-talk',
    *     autoArchiveDuration: 60,
    *     reason: 'Needed a separate thread for food',
    *   })
@@ -102,7 +102,7 @@ class ThreadManager extends BaseManager {
    *      name: 'mod-talk',
    *      autoArchiveDuration: 60,
    *      type: 'private_thread',
-   *      reason: 'Needed a separate thread for moderation'
+   *      reason: 'Needed a separate thread for moderation',
    *    })
    *   .then(console.log)
    *   .catch(console.error);
