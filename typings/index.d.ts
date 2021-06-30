@@ -172,7 +172,21 @@ declare module '@discordjs/voice' {
 }
 
 declare module 'discord.js' {
+  import {
+    blockQuote,
+    bold,
+    codeBlock,
+    inlineCode,
+    italic,
+    quote,
+    strikethrough,
+    time,
+    TimestampStyles,
+    TimestampStylesString,
+    underscore,
+  } from '@discordjs/builders';
   import BaseCollection from '@discordjs/collection';
+  import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '@discordjs/voice';
   import { ChildProcess } from 'child_process';
   import {
     APIActionRowComponent,
@@ -189,8 +203,7 @@ declare module 'discord.js' {
   } from 'discord-api-types/v8';
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
-  import { Readable, Stream, Writable } from 'stream';
-  import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '@discordjs/voice';
+  import { Stream } from 'stream';
   import * as WebSocket from 'ws';
 
   export const version: string;
@@ -2093,6 +2106,22 @@ declare module 'discord.js' {
       reason?: string,
     ): Promise<{ id: Snowflake; position: number }[]>;
     public static splitMessage(text: string, options?: SplitOptions): string[];
+  }
+
+  export namespace Formatters {
+    export {
+      blockQuote,
+      bold,
+      codeBlock,
+      inlineCode,
+      italic,
+      quote,
+      strikethrough,
+      time,
+      TimestampStyles,
+      TimestampStylesString,
+      underscore,
+    };
   }
 
   export class VoiceChannel extends BaseGuildVoiceChannel {
