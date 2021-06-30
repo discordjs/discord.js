@@ -35,7 +35,7 @@ class StageInstanceManager extends BaseManager {
 
   /**
    * Creates a new stage instance.
-   * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be created
+   * @param {StageChannel|Snowflake} channel The stage channel to associate the created instance to
    * @param {StageInstanceCreateOptions} options The options to create the stage instance
    * @returns {Promise<StageInstance>}
    * @example

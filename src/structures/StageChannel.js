@@ -29,7 +29,7 @@ class StageChannel extends BaseGuildVoiceChannel {
   }
 
   /**
-   * Creates an instance of this stage channel.
+   * Creates an instance associated to this stage channel.
    * @param {StageInstanceCreateOptions} options The options to create the stage instance
    * @returns {Promise<StageInstance>}
    */
