@@ -2477,16 +2477,7 @@ declare module 'discord.js' {
     public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-    public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public setPermissions(
-      command: ApplicationCommandResolvable,
-      permissions: ApplicationCommandPermissionData[],
-    ): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(
-      permissions: GuildApplicationCommandPermissionData[],
-    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
   }
 
   export class GuildChannelManager extends BaseManager<
