@@ -118,8 +118,8 @@ class GuildChannel extends Channel {
 
       // Compare overwrites
       return (
-        channelVal &&
-        parentVal &&
+        typeof channelVal !== 'undefined' &&
+        typeof parentVal !== 'undefined' &&
         channelVal.deny.bitfield === parentVal.deny.bitfield &&
         channelVal.allow.bitfield === parentVal.allow.bitfield
       );
