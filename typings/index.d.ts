@@ -2010,7 +2010,7 @@ declare module 'discord.js' {
       autoArchiveDuration: ThreadAutoArchiveDuration,
       reason?: string,
     ): Promise<ThreadChannel>;
-    public setLocked(locked: boolean, reason?: string): Promise<ThreadChannel>;
+    public setLocked(locked?: boolean, reason?: string): Promise<ThreadChannel>;
     public setName(name: string, reason?: string): Promise<ThreadChannel>;
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<ThreadChannel>;
   }
