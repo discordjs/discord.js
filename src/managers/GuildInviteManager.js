@@ -1,11 +1,10 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const { Error } = require('../errors');
+const { TypeError, Error } = require('../errors');
 const Invite = require('../structures/Invite');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
-const Permissions = require('../util/Permissions');
 
 /**
  * Manages API methods for GuildInvites and stores their cache.
@@ -136,39 +135,38 @@ class GuildInviteManager extends BaseManager {
   }
 
   /**
-   * @typedef {CreateInviteOptions} CreateChannelInviteOptions
-   * @property {GuildChannelResolvable} [channel] The optional channel to define where to create the invite.
-   */
-
-  /**
-   * Create a invite to the guild from the provided or the first available channel.
-   * @param {CreateChannelInviteOptions} [options={}] The options for creating the invite from a optional channel.
+   * Create a invite to the guild from the provided channel.
+   * @param {GuildChannelResolvable} channel The options for creating the invite from a channel.
+   * @param {CreateInviteOptions} [options={}] The options for creating the invite from a channel.
    * @returns {Promise<Invite>}
    * @example
-   * // Create an invite to a random allowed channel
-   * guild.invites.create()
-   *   .then(invite => console.log(`Created an invite with a code of ${invite.code} from ${invite.channel}`))
-   *   .catch(console.error);
-   * @example
    * // Create an invite to a selected channel
-   * guild.invites.create({ channel: '599942732013764608' })
+   * guild.invites.create('599942732013764608')
    *   .then(console.log)
    *   .catch(console.error);
    */
-  create(options = {}) {
-    let channel;
+  async create(
+    channel,
+    { temporary = false, maxAge = 86400, maxUses = 0, unique, targetUser, targetApplication, targetType, reason } = {},
+  ) {
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
 
-    if (options.channel) {
-      channel = this.guild.channels.resolve(options.channel);
-      if (!channel) return Promise.reject(new Error('GUILD_CHANNEL_RESOLVE'));
-    } else {
-      channel = this.guild.channels.cache.find(c =>
-        c.permissionsFor(this.guild.me).has(Permissions.FLAGS.CREATE_INSTANT_INVITE),
-      );
-      if (!channel) return Promise.reject(new Error('GUILD_CHANNEL_INVITE'));
-    }
+    const id = this.guild.channels.resolveID(channel);
+    if (!id) throw new Error('GUILD_CHANNEL_RESOLVE');
 
-    return channel.createInvite(options);
+    const invite = await this.client.api.channels(id).invites.post({
+      data: {
+        temporary,
+        max_age: maxAge,
+        max_uses: maxUses,
+        unique,
+        target_user_id: this.client.users.resolveID(targetUser),
+        target_application_id: targetApplication?.id ?? targetApplication?.applicationID ?? targetApplication,
+        target_type: targetType,
+      },
+      reason,
+    });
+    return new Invite(this.client, invite);
   }
 
   /**

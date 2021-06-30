@@ -564,31 +564,8 @@ class GuildChannel extends Channel {
    *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
    *   .catch(console.error);
    */
-  createInvite({
-    temporary = false,
-    maxAge = 86400,
-    maxUses = 0,
-    unique,
-    targetUser,
-    targetApplication,
-    targetType,
-    reason,
-  } = {}) {
-    return this.client.api
-      .channels(this.id)
-      .invites.post({
-        data: {
-          temporary,
-          max_age: maxAge,
-          max_uses: maxUses,
-          unique,
-          target_user_id: this.client.users.resolveID(targetUser),
-          target_application_id: targetApplication?.id ?? targetApplication?.applicationID ?? targetApplication,
-          target_type: targetType,
-        },
-        reason,
-      })
-      .then(invite => new Invite(this.client, invite));
+  createInvite(options) {
+    return this.guild.invites.create(this.id, options);
   }
 
   /**

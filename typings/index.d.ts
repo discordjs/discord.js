@@ -2343,7 +2343,7 @@ declare module 'discord.js' {
   export class GuildInviteManager extends BaseManager<Snowflake, Invite, InviteResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
-    public create(options?: CreateChannelInviteOptions): Promise<Invite>;
+    public create(channel: GuildChannelResolvable, options?: CreateInviteOptions): Promise<Invite>;
     public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
     public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
     public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
@@ -3023,11 +3023,7 @@ declare module 'discord.js' {
   interface FetchBansOptions {
     cache: boolean;
   }
-
-  interface CreateChannelInviteOptions extends CreateInviteOptions {
-    channel: GuildChannelResolvable;
-  }
-
+  
   interface FetchInviteOptions extends BaseFetchOptions {
     code: string;
   }
