@@ -1141,8 +1141,6 @@ declare module 'discord.js' {
     public roles: Snowflake[];
   }
 
-  type HexColorString = `#${string}`;
-
   export class HTTPError extends Error {
     constructor(message: string, name: string, code: number, request: unknown);
     public code: number;
@@ -3558,6 +3556,8 @@ declare module 'discord.js' {
   }
 
   type GuildTemplateResolvable = string;
+
+  type HexColorString = `#${string}`;
 
   interface HTTPAttachmentData {
     attachment: string | Buffer | Stream;
