@@ -2650,6 +2650,7 @@ declare module 'discord.js' {
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Role | null>;
     public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Role>>;
     public create(options?: CreateRoleOptions): Promise<Role>;
+    public edit(role: RoleResolvable, options: RoleData, reason?: string): Promise<Role>;
   }
 
   export class StageInstanceManager extends BaseManager<Snowflake, StageInstance, StageInstanceResolvable> {
@@ -4230,7 +4231,7 @@ declare module 'discord.js' {
     position: number;
   }
 
-  type RoleResolvable = Role | string;
+  type RoleResolvable = Role | Snowflake;
 
   interface RoleTagData {
     botID?: Snowflake;

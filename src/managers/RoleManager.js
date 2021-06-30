@@ -184,7 +184,7 @@ class RoleManager extends BaseManager {
       mentionable: data.mentionable,
     };
 
-    const d = this.client.api.guilds[this.guild.id].roles[id].patch({ data: _data, reason });
+    const d = this.client.api.guilds(this.guild.id).roles(id).patch({ data: _data, reason });
 
     const clone = this.cache.get(id)?._clone();
     clone?._patch(d);
