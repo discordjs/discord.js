@@ -2110,8 +2110,6 @@ declare module 'discord.js' {
 
   export namespace Formatters {
     export {
-      TimestampStyles,
-      TimestampStylesString,
       blockQuote,
       bold,
       codeBlock,
@@ -2120,6 +2118,8 @@ declare module 'discord.js' {
       quote,
       strikethrough,
       time,
+      TimestampStyles,
+      TimestampStylesString,
       underscore,
     };
   }

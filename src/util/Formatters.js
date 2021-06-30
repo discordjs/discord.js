@@ -1,7 +1,6 @@
 'use strict';
 
 const {
-  TimestampStyles,
   blockQuote,
   bold,
   codeBlock,
@@ -10,10 +9,10 @@ const {
   quote,
   strikethrough,
   time,
+  TimestampStyles,
   underscore,
 } = require('@discordjs/builders');
 
-exports.TimestampStyles = TimestampStyles;
 exports.blockQuote = blockQuote;
 exports.bold = bold;
 exports.codeBlock = codeBlock;
@@ -22,4 +21,5 @@ exports.italic = italic;
 exports.quote = quote;
 exports.strikethrough = strikethrough;
 exports.time = time;
+exports.TimestampStyles = TimestampStyles;
 exports.underscore = underscore;
