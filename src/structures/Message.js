@@ -27,14 +27,14 @@ class Message extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {APIMessage} data The data for the message
-   * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
+   * @param {TextChannel|DMChannel|NewsChannel|ThreadChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|NewsChannel}
+     * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
      */
     this.channel = channel;
 
