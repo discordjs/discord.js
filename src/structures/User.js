@@ -141,8 +141,7 @@ class User extends Base {
    * @readonly
    */
   get lastMessage() {
-    const channel = this.client.channels.cache.get(this.lastMessageChannelID);
-    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
+    return this.client.channels.resolve(this.lastMessageChannelID)?.messages.resolve(this.lastMessageID) ?? null;
   }
 
   /**
@@ -185,7 +184,7 @@ class User extends Base {
    * @returns {string}
    */
   displayAvatarURL(options) {
-    return this.avatarURL(options) || this.defaultAvatarURL;
+    return this.avatarURL(options) ?? this.defaultAvatarURL;
   }
 
   /**
@@ -203,8 +202,7 @@ class User extends Base {
    * @returns {boolean}
    */
   typingIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    return channel._typing.has(this.id);
+    return this.client.channels.resolve(channel)._typing.has(this.id);
   }
 
   /**
@@ -223,8 +221,7 @@ class User extends Base {
    * @returns {number}
    */
   typingDurationIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
+    return this.client.channels.resolve(channel)._typing.get(this.id)?.elapsedTime ?? -1;
   }
 
   /**
@@ -233,7 +230,7 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.cache.find(c => c.type === 'dm' && c.recipient.id === this.id) || null;
+    return this.client.channels.cache.find(c => c.type === 'dm' && c.recipient.id === this.id) ?? null;
   }
 
   /**

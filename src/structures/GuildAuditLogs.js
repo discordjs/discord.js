@@ -332,7 +332,7 @@ class GuildAuditLogsEntry {
      * The reason of this entry
      * @type {?string}
      */
-    this.reason = data.reason || null;
+    this.reason = data.reason ?? null;
 
     /**
      * The user that executed this entry
@@ -354,9 +354,9 @@ class GuildAuditLogsEntry {
 
     /**
      * Specific property changes
-     * @type {AuditLogChange[]}
+     * @type {?(AuditLogChange[])}
      */
-    this.changes = data.changes ? data.changes.map(c => ({ key: c.key, old: c.old_value, new: c.new_value })) : null;
+    this.changes = data.changes?.map(c => ({ key: c.key, old: c.old_value, new: c.new_value })) ?? null;
 
     /**
      * The ID of this entry
@@ -443,7 +443,7 @@ class GuildAuditLogsEntry {
     this.target = null;
     if (targetType === Targets.UNKNOWN) {
       this.target = this.changes.reduce((o, c) => {
-        o[c.key] = c.new || c.old;
+        o[c.key] = c.new ?? c.old;
         return o;
       }, {});
       this.target.id = data.target_id;
@@ -456,12 +456,12 @@ class GuildAuditLogsEntry {
       this.target = guild.client.guilds.cache.get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
       this.target =
-        logs.webhooks.get(data.target_id) ||
+        logs.webhooks.get(data.target_id) ??
         new Webhook(
           guild.client,
           this.changes.reduce(
             (o, c) => {
-              o[c.key] = c.new || c.old;
+              o[c.key] = c.new ?? c.old;
               return o;
             },
             {
@@ -473,13 +473,14 @@ class GuildAuditLogsEntry {
     } else if (targetType === Targets.INVITE) {
       this.target = guild.members.fetch(guild.client.user.id).then(me => {
         if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
-          const change = this.changes.find(c => c.key === 'code');
+          let change = this.changes.find(c => c.key === 'code');
+          change = change.new ?? change.old;
           return guild.fetchInvites().then(invites => {
-            this.target = invites.find(i => i.code === (change.new || change.old));
+            this.target = invites.find(i => i.code === change);
           });
         } else {
           this.target = this.changes.reduce((o, c) => {
-            o[c.key] = c.new || c.old;
+            o[c.key] = c.new ?? c.old;
             return o;
           }, {});
           return this.target;
@@ -489,16 +490,16 @@ class GuildAuditLogsEntry {
       // Discord sends a channel id for the MESSAGE_BULK_DELETE action type.
       this.target =
         data.action_type === Actions.MESSAGE_BULK_DELETE
-          ? guild.channels.cache.get(data.target_id) || { id: data.target_id }
+          ? guild.channels.cache.get(data.target_id) ?? { id: data.target_id }
           : guild.client.users.cache.get(data.target_id);
     } else if (targetType === Targets.INTEGRATION) {
       this.target =
-        logs.integrations.get(data.target_id) ||
+        logs.integrations.get(data.target_id) ??
         new Integration(
           guild.client,
           this.changes.reduce(
             (o, c) => {
-              o[c.key] = c.new || c.old;
+              o[c.key] = c.new ?? c.old;
               return o;
             },
             { id: data.target_id },
@@ -507,10 +508,10 @@ class GuildAuditLogsEntry {
         );
     } else if (targetType === Targets.CHANNEL) {
       this.target =
-        guild.channels.cache.get(data.target_id) ||
+        guild.channels.cache.get(data.target_id) ??
         this.changes.reduce(
           (o, c) => {
-            o[c.key] = c.new || c.old;
+            o[c.key] = c.new ?? c.old;
             return o;
           },
           { id: data.target_id },
@@ -522,7 +523,7 @@ class GuildAuditLogsEntry {
           guild.client,
           this.changes.reduce(
             (o, c) => {
-              o[c.key] = c.new || c.old;
+              o[c.key] = c.new ?? c.old;
               return o;
             },
             {
@@ -533,7 +534,7 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (data.target_id) {
-      this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) || { id: data.target_id };
+      this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
     }
   }
 

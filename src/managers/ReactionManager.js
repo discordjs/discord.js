@@ -19,7 +19,7 @@ class ReactionManager extends BaseManager {
   }
 
   add(data, cache) {
-    return super.add(data, cache, { id: data.emoji.id || data.emoji.name, extras: [this.message] });
+    return super.add(data, cache, { id: data.emoji.id ?? data.emoji.name, extras: [this.message] });
   }
 
   /**

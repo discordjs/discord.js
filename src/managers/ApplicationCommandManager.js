@@ -41,7 +41,7 @@ class ApplicationCommandManager extends BaseManager {
    */
   commandPath({ id, guildID } = {}) {
     let path = this.client.api.applications(this.client.application.id);
-    if (this.guild || guildID) path = path.guilds(this.guild?.id ?? guildID);
+    if (this.guild ?? guildID) path = path.guilds(this.guild?.id ?? guildID);
     return id ? path.commands(id) : path.commands;
   }
 
@@ -84,9 +84,7 @@ class ApplicationCommandManager extends BaseManager {
   async fetch(id, { guildID, cache = true, force = false } = {}) {
     if (typeof id === 'object') {
       ({ guildID, cache = true, force = false } = id);
-      id = undefined;
-    }
-    if (id) {
+    } else if (id) {
       if (!force) {
         const existing = this.cache.get(id);
         if (existing) return existing;

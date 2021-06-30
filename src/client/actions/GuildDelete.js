@@ -53,7 +53,7 @@ class GuildDeleteAction extends Action {
       this.deleted.set(guild.id, guild);
       this.scheduleForDeletion(guild.id);
     } else {
-      guild = this.deleted.get(data.id) || null;
+      guild = this.deleted.get(data.id) ?? null;
     }
 
     return { guild };

@@ -133,13 +133,13 @@ class Message extends Base {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = (data.embeds || []).map(e => new Embed(e, true));
+    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? [];
 
     /**
      * A list of MessageActionRows in the message
      * @type {MessageActionRow[]}
      */
-    this.components = (data.components ?? []).map(c => BaseMessageComponent.create(c, this.client));
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -180,7 +180,7 @@ class Message extends Base {
      * @type {ReactionManager}
      */
     this.reactions = new ReactionManager(this);
-    if (data.reactions && data.reactions.length > 0) {
+    if (data.reactions?.length > 0) {
       for (const reaction of data.reactions) {
         this.reactions.add(reaction);
       }
@@ -203,7 +203,7 @@ class Message extends Base {
      * ID of the webhook that sent the message, if applicable
      * @type {?Snowflake}
      */
-    this.webhookID = data.webhook_id || null;
+    this.webhookID = data.webhook_id ?? null;
 
     /**
      * Supplemental application information for group activities
@@ -312,10 +312,6 @@ class Message extends Base {
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
     if ('thread' in data) this.thread = this.client.channels.add(data.thread);
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
-    else this.embeds = this.embeds.slice();
-    if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
-    else this.components = this.components.slice();
 
     if ('attachments' in data) {
       this.attachments = new Collection();
@@ -326,16 +322,19 @@ class Message extends Base {
       this.attachments = new Collection(this.attachments);
     }
 
+    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? this.embeds.slice();
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? this.components.slice();
+
     this.mentions = new Mentions(
       this,
-      'mentions' in data ? data.mentions : this.mentions.users,
-      'mention_roles' in data ? data.mention_roles : this.mentions.roles,
-      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
-      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
+      data.mentions ?? this.mentions.users,
+      data.mention_roles ?? this.mentions.roles,
+      data.mention_everyone ?? this.mentions.everyone,
+      data.mention_channels ?? this.mentions.crosspostedChannels,
       data.referenced_message?.author ?? this.mentions.repliedUser,
     );
 
-    this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
+    this.flags = new MessageFlags(data.flags ?? 0).freeze();
 
     return clone;
   }
@@ -347,7 +346,7 @@ class Message extends Base {
    * @readonly
    */
   get member() {
-    return this.guild ? this.guild.members.resolve(this.author) || null : null;
+    return this.guild?.members.resolve(this.author) ?? null;
   }
 
   /**
@@ -374,7 +373,7 @@ class Message extends Base {
    * @readonly
    */
   get guild() {
-    return this.channel.guild || null;
+    return this.channel.guild ?? null;
   }
 
   /**
@@ -434,7 +433,7 @@ class Message extends Base {
     return new Promise((resolve, reject) => {
       const collector = this.createReactionCollector(options);
       collector.once('end', (reactions, reason) => {
-        if (options.errors && options.errors.includes(reason)) reject(reactions);
+        if (options.errors?.includes(reason)) reject(reactions);
         else resolve(reactions);
       });
     });

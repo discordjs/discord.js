@@ -215,11 +215,11 @@ class Role extends Base {
     return this.client.api.guilds[this.guild.id].roles[this.id]
       .patch({
         data: {
-          name: data.name || this.name,
-          color: data.color !== null ? Util.resolveColor(data.color || this.color) : null,
-          hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
+          name: data.name ?? this.name,
+          color: data.color !== null ? Util.resolveColor(data.color ?? this.color) : null,
+          hoist: data.hoist ?? this.hoist,
           permissions: typeof data.permissions !== 'undefined' ? new Permissions(data.permissions) : this.permissions,
-          mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
+          mentionable: data.mentionable ?? this.mentionable,
         },
         reason,
       })

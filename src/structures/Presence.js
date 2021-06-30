@@ -55,7 +55,7 @@ class Presence {
      * The guild of this presence
      * @type {?Guild}
      */
-    this.guild = data.guild || null;
+    this.guild = data.guild ?? null;
 
     this.patch(data);
   }
@@ -66,7 +66,7 @@ class Presence {
    * @readonly
    */
   get user() {
-    return this.client.users.cache.get(this.userID) || null;
+    return this.client.users.resolve(this.userID);
   }
 
   /**
@@ -75,7 +75,7 @@ class Presence {
    * @readonly
    */
   get member() {
-    return this.guild.members.cache.get(this.userID) || null;
+    return this.guild.members.resolve(this.userID);
   }
 
   patch(data) {
@@ -83,19 +83,13 @@ class Presence {
      * The status of this presence
      * @type {PresenceStatus}
      */
-    this.status = data.status || this.status || 'offline';
+    this.status = data.status ?? this.status ?? 'offline';
 
-    if (data.activities) {
-      /**
-       * The activities of this presence
-       * @type {Activity[]}
-       */
-      this.activities = data.activities.map(activity => new Activity(this, activity));
-    } else if (data.activity || data.game) {
-      this.activities = [new Activity(this, data.game || data.activity)];
-    } else {
-      this.activities = [];
-    }
+    /**
+     * The activities of this presence
+     * @type {Activity[]}
+     */
+    this.activities = data.activities?.map(activity => new Activity(this, activity)) ?? [];
 
     /**
      * The devices this presence is on
@@ -104,14 +98,14 @@ class Presence {
      * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
      * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
      */
-    this.clientStatus = data.client_status || null;
+    this.clientStatus = data.client_status ?? null;
 
     return this;
   }
 
   _clone() {
     const clone = Object.assign(Object.create(this), this);
-    if (this.activities) clone.activities = this.activities.map(activity => activity._clone());
+    clone.activities = this.activities.map(activity => activity._clone());
     return clone;
   }
 
@@ -127,9 +121,9 @@ class Presence {
         this.status === presence.status &&
         this.activities.length === presence.activities.length &&
         this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
-        this.clientStatus.web === presence.clientStatus.web &&
-        this.clientStatus.mobile === presence.clientStatus.mobile &&
-        this.clientStatus.desktop === presence.clientStatus.desktop)
+        this.clientStatus?.web === presence.clientStatus?.web &&
+        this.clientStatus?.mobile === presence.clientStatus?.mobile &&
+        this.clientStatus?.desktop === presence.clientStatus?.desktop)
     );
   }
 
@@ -175,25 +169,25 @@ class Activity {
      * If the activity is being streamed, a link to the stream
      * @type {?string}
      */
-    this.url = data.url || null;
+    this.url = data.url ?? null;
 
     /**
      * Details about the activity
      * @type {?string}
      */
-    this.details = data.details || null;
+    this.details = data.details ?? null;
 
     /**
      * State of the activity
      * @type {?string}
      */
-    this.state = data.state || null;
+    this.state = data.state ?? null;
 
     /**
      * Application ID associated with this activity
      * @type {?Snowflake}
      */
-    this.applicationID = data.application_id || null;
+    this.applicationID = data.application_id ?? null;
 
     /**
      * Timestamps for the activity
@@ -226,7 +220,7 @@ class Activity {
      * @property {?string} id ID of the party
      * @property {number[]} size Size of the party as `[current, max]`
      */
-    this.party = data.party || null;
+    this.party = data.party ?? null;
 
     /**
      * Assets for rich presence
@@ -315,25 +309,25 @@ class RichPresenceAssets {
      * Hover text for the large image
      * @type {?string}
      */
-    this.largeText = assets.large_text || null;
+    this.largeText = assets.large_text ?? null;
 
     /**
      * Hover text for the small image
      * @type {?string}
      */
-    this.smallText = assets.small_text || null;
+    this.smallText = assets.small_text ?? null;
 
     /**
      * ID of the large image asset
      * @type {?Snowflake}
      */
-    this.largeImage = assets.large_image || null;
+    this.largeImage = assets.large_image ?? null;
 
     /**
      * ID of the small image asset
      * @type {?Snowflake}
      */
-    this.smallImage = assets.small_image || null;
+    this.smallImage = assets.small_image ?? null;
   }
 
   /**
@@ -342,11 +336,13 @@ class RichPresenceAssets {
    * @returns {?string} The small image URL
    */
   smallImageURL({ format, size } = {}) {
-    if (!this.smallImage) return null;
-    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationID, this.smallImage, {
-      format,
-      size,
-    });
+    return (
+      this.smallImage &&
+      this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationID, this.smallImage, {
+        format,
+        size,
+      })
+    );
   }
 
   /**

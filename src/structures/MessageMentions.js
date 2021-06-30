@@ -117,7 +117,7 @@ class MessageMentions {
           this.crosspostedChannels.set(d.id, {
             channelID: d.id,
             guildID: d.guild_id,
-            type: type ? type.toLowerCase() : 'unknown',
+            type: type?.toLowerCase() ?? 'unknown',
             name: d.name,
           });
         }
@@ -191,11 +191,9 @@ class MessageMentions {
 
     if (!ignoreDirect) {
       const id =
-        this.client.users.resolveID(data) ||
-        (this.guild && this.guild.roles.resolveID(data)) ||
-        this.client.channels.resolveID(data);
+        this.guild?.roles.resolveID(data) ?? this.client.channels.resolveID(data) ?? this.client.users.resolveID(data);
 
-      return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
+      return typeof id === 'string' && (this.users.has(id) || this.channels.has(id) || this.roles.has(id));
     }
 
     return false;

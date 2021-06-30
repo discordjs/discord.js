@@ -85,7 +85,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get parent() {
-    return this.guild.channels.cache.get(this.parentID) || null;
+    return this.guild.channels.resolve(this.parentID);
   }
 
   /**
@@ -106,10 +106,10 @@ class GuildChannel extends Channel {
 
       // Handle empty overwrite
       if (
-        (channelVal === undefined &&
+        (!channelVal &&
           parentVal.deny.bitfield === Permissions.defaultBit &&
           parentVal.allow.bitfield === Permissions.defaultBit) ||
-        (parentVal === undefined &&
+        (!parentVal &&
           channelVal.deny.bitfield === Permissions.defaultBit &&
           channelVal.allow.bitfield === Permissions.defaultBit)
       ) {
@@ -118,8 +118,8 @@ class GuildChannel extends Channel {
 
       // Compare overwrites
       return (
-        channelVal !== undefined &&
-        parentVal !== undefined &&
+        typeof channelVal !== 'undefined' &&
+        typeof parentVal !== 'undefined' &&
         channelVal.deny.bitfield === parentVal.deny.bitfield &&
         channelVal.allow.bitfield === parentVal.allow.bitfield
       );
@@ -145,15 +145,14 @@ class GuildChannel extends Channel {
     const member = this.guild.members.resolve(memberOrRole);
     if (member) return this.memberPermissions(member);
     const role = this.guild.roles.resolve(memberOrRole);
-    if (role) return this.rolePermissions(role);
-    return null;
+    return role && this.rolePermissions(role);
   }
 
   overwritesFor(member, verified = false, roles = null) {
     if (!verified) member = this.guild.members.resolve(member);
     if (!member) return [];
 
-    roles = roles || member.roles.cache;
+    if (!roles) roles = member.roles.cache;
     const roleOverwrites = [];
     let memberOverwrites;
     let everyoneOverwrites;
@@ -192,20 +191,12 @@ class GuildChannel extends Channel {
     const overwrites = this.overwritesFor(member, true, roles);
 
     return permissions
-      .remove(overwrites.everyone ? overwrites.everyone.deny : Permissions.defaultBit)
-      .add(overwrites.everyone ? overwrites.everyone.allow : Permissions.defaultBit)
-      .remove(
-        overwrites.roles.length > Permissions.defaultBit
-          ? overwrites.roles.map(role => role.deny)
-          : Permissions.defaultBit,
-      )
-      .add(
-        overwrites.roles.length > Permissions.defaultBit
-          ? overwrites.roles.map(role => role.allow)
-          : Permissions.defaultBit,
-      )
-      .remove(overwrites.member ? overwrites.member.deny : Permissions.defaultBit)
-      .add(overwrites.member ? overwrites.member.allow : Permissions.defaultBit)
+      .remove(overwrites.everyone?.deny ?? Permissions.defaultBit)
+      .add(overwrites.everyone?.allow ?? Permissions.defaultBit)
+      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.deny) : Permissions.defaultBit)
+      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allow) : Permissions.defaultBit)
+      .remove(overwrites.member?.deny ?? Permissions.defaultBit)
+      .add(overwrites.member?.allow ?? Permissions.defaultBit)
       .freeze();
   }
 
@@ -222,10 +213,10 @@ class GuildChannel extends Channel {
     const roleOverwrites = this.permissionOverwrites.get(role.id);
 
     return role.permissions
-      .remove(everyoneOverwrites ? everyoneOverwrites.deny : Permissions.defaultBit)
-      .add(everyoneOverwrites ? everyoneOverwrites.allow : Permissions.defaultBit)
-      .remove(roleOverwrites ? roleOverwrites.deny : Permissions.defaultBit)
-      .add(roleOverwrites ? roleOverwrites.allow : Permissions.defaultBit)
+      .remove(everyoneOverwrites?.deny ?? Permissions.defaultBit)
+      .add(everyoneOverwrites?.allow ?? Permissions.defaultBit)
+      .remove(roleOverwrites?.deny ?? Permissions.defaultBit)
+      .add(roleOverwrites?.allow ?? Permissions.defaultBit)
       .freeze();
   }
 
@@ -274,7 +265,7 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   async updateOverwrite(userOrRole, options, overwriteOptions = {}) {
-    const userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
+    const userOrRoleID = this.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
     const { reason } = overwriteOptions;
     const existing = this.permissionOverwrites.get(userOrRoleID);
     if (existing) {
@@ -300,10 +291,10 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   createOverwrite(userOrRole, options, overwriteOptions = {}) {
-    let userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
+    let userOrRoleID = this.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
     let { type, reason } = overwriteOptions;
     if (typeof type !== 'number') {
-      userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
+      userOrRole = this.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
       userOrRoleID = userOrRole.id;
       type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
@@ -410,7 +401,7 @@ class GuildChannel extends Channel {
     if (data.lockPermissions) {
       if (data.parentID) {
         const newParent = this.guild.channels.resolve(data.parentID);
-        if (newParent && newParent.type === 'category') {
+        if (newParent?.type === 'category') {
           permission_overwrites = newParent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
         }
       } else if (this.parent) {
@@ -420,13 +411,13 @@ class GuildChannel extends Channel {
 
     const newData = await this.client.api.channels(this.id).patch({
       data: {
-        name: (data.name || this.name).trim(),
+        name: (data.name ?? this.name).trim(),
         type: ChannelTypes[data.type?.toUpperCase()],
         topic: data.topic,
         nsfw: data.nsfw,
-        bitrate: data.bitrate || this.bitrate,
-        user_limit: typeof data.userLimit !== 'undefined' ? data.userLimit : this.userLimit,
-        rtc_region: typeof data.rtcRegion !== 'undefined' ? data.rtcRegion : this.rtcRegion,
+        bitrate: data.bitrate ?? this.bitrate,
+        user_limit: data.userLimit ?? this.userLimit,
+        rtc_region: data.rtcRegion ?? this.rtcRegion,
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
@@ -476,7 +467,7 @@ class GuildChannel extends Channel {
     return this.edit(
       {
         // eslint-disable-next-line no-prototype-builtins
-        parentID: channel !== null ? (channel.hasOwnProperty('id') ? channel.id : channel) : null,
+        parentID: channel?.id ?? channel ?? null,
         lockPermissions,
       },
       reason,

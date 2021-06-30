@@ -114,7 +114,7 @@ class MessageCollector extends Collector {
    * @returns {void}
    */
   _handleGuildDeletion(guild) {
-    if (this.channel.guild && guild.id === this.channel.guild.id) {
+    if (guild.id === this.channel.guild?.id) {
       this.stop('guildDelete');
     }
   }

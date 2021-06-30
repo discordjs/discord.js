@@ -17,7 +17,7 @@ class BaseManager {
      * @private
      * @readonly
      */
-    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
+    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) ?? holds });
 
     /**
      * The client that instantiated this Manager
@@ -42,12 +42,12 @@ class BaseManager {
   }
 
   add(data, cache = true, { id, extras = [] } = {}) {
-    const existing = this.cache.get(id || data.id);
-    if (existing && existing._patch && cache) existing._patch(data);
+    const existing = this.cache.get(id ?? data.id);
+    if (cache) existing?._patch(data);
     if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
-    if (cache) this.cache.set(id || entry.id, entry);
+    if (cache) this.cache.set(id ?? entry.id, entry);
     return entry;
   }
 
@@ -58,7 +58,7 @@ class BaseManager {
    */
   resolve(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance;
-    if (typeof idOrInstance === 'string') return this.cache.get(idOrInstance) || null;
+    if (typeof idOrInstance === 'string') return this.cache.get(idOrInstance) ?? null;
     return null;
   }
 
