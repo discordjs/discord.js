@@ -2358,6 +2358,12 @@ declare module 'discord.js' {
       thisArg: This,
     ): Collection<K, T>;
     public toJSON(): unknown;
+    public each(Fn: Function);
+    public set(key: K, value: V);
+    public get(key: K);
+    public find(Fn: Function);
+    public has(value: V);
+    public size: number;
   }
 
   //#endregion
