@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const { ChannelTypes } = require('../util/Constants');
+const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -115,7 +115,7 @@ class Channel extends Base {
    * @returns {boolean}
    */
   isThread() {
-    return ['news_thread', 'public_thread', 'private_thread'].includes(this.type);
+    return ThreadChannelTypes.includes(this.type);
   }
 
   static create(client, data, guild) {
