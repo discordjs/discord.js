@@ -80,21 +80,23 @@ class InteractionCollector extends Collector {
     this.total = 0;
 
     this.empty = this.empty.bind(this);
+    this.client.incrementMaxListeners();
 
     if (this.message) {
       this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
       this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
     }
+
     if (this.channel) {
       this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
       this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
     }
+
     if (this.guild) {
       this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
       this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
     }
 
-    this.client.incrementMaxListeners();
     this.client.on(Events.INTERACTION_CREATE, this.handleCollect);
 
     this.once('end', () => {

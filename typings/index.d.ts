@@ -1232,7 +1232,6 @@ declare module 'discord.js' {
 
     public channel: TextChannel | NewsChannel | DMChannel | null;
     public componentType: MessageComponentType | null;
-    public empty(): void;
     public readonly endReason: string | null;
     public guild: Guild | null;
     public interactionType: InteractionType | null;
@@ -1242,6 +1241,7 @@ declare module 'discord.js' {
     public users: Collection<Snowflake, User>;
 
     public collect(interaction: Interaction): Snowflake;
+    public empty(): void;
     public dispose(interaction: Interaction): Snowflake;
     public on(event: 'collect' | 'dispose', listener: (interaction: T) => Awaited<void>): this;
     public on(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaited<void>): this;
