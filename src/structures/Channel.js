@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const { ChannelTypes } = require('../util/Constants');
+const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -108,6 +108,14 @@ class Channel extends Base {
    */
   isText() {
     return 'messages' in this;
+  }
+
+  /**
+   * Indicates whether this channel is a thread channel.
+   * @returns {boolean}
+   */
+  isThread() {
+    return ThreadChannelTypes.includes(this.type);
   }
 
   static create(client, data, guild) {
