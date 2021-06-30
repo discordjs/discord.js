@@ -11,7 +11,7 @@ const Util = require('../util/Util');
 /**
  * Represents a message to be sent to the API.
  */
-class APIMessage {
+class MessagePayload {
   /**
    * @param {MessageTarget} target - The target for this message to be sent to
    * @param {MessageOptions|WebhookMessageOptions} options - Options passed in from send
@@ -31,7 +31,7 @@ class APIMessage {
 
     /**
      * Data sendable to the API
-     * @type {?APIMessageRaw}
+     * @type {?APIMessage}
      */
     this.data = null;
 
@@ -104,7 +104,7 @@ class APIMessage {
 
   /**
    * Makes the content of this message.
-   * @returns {?(string|string[])}
+   * @returns {?string}
    */
   makeContent() {
     let content;
@@ -114,33 +114,12 @@ class APIMessage {
       content = Util.verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', false);
     }
 
-    if (typeof content !== 'string') return content;
-
-    const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
-    const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
-    const splitOptions = isSplit ? { ...this.options.split } : undefined;
-
-    if (content) {
-      if (isCode) {
-        const codeName = typeof this.options.code === 'string' ? this.options.code : '';
-        content = `\`\`\`${codeName}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
-        if (isSplit) {
-          splitOptions.prepend = `${splitOptions.prepend || ''}\`\`\`${codeName}\n`;
-          splitOptions.append = `\n\`\`\`${splitOptions.append || ''}`;
-        }
-      }
-
-      if (isSplit) {
-        content = Util.splitMessage(content, splitOptions);
-      }
-    }
-
     return content;
   }
 
   /**
    * Resolves data.
-   * @returns {APIMessage}
+   * @returns {MessagePayload}
    */
   resolveData() {
     if (this.data) return this;
@@ -168,7 +147,7 @@ class APIMessage {
     let username;
     let avatarURL;
     if (isWebhook) {
-      username = this.options.username || this.target.name;
+      username = this.options.username ?? this.target.name;
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
     }
 
@@ -223,44 +202,13 @@ class APIMessage {
 
   /**
    * Resolves files.
-   * @returns {Promise<APIMessage>}
+   * @returns {Promise<MessagePayload>}
    */
   async resolveFiles() {
     if (this.files) return this;
 
     this.files = await Promise.all(this.options.files?.map(file => this.constructor.resolveFile(file)) ?? []);
     return this;
-  }
-
-  /**
-   * Converts this APIMessage into an array of APIMessages for each split content
-   * @returns {APIMessage[]}
-   */
-  split() {
-    if (!this.data) this.resolveData();
-
-    if (!Array.isArray(this.data.content)) return [this];
-
-    const apiMessages = [];
-
-    for (let i = 0; i < this.data.content.length; i++) {
-      let data;
-      let opt;
-
-      if (i === this.data.content.length - 1) {
-        data = { ...this.data, content: this.data.content[i] };
-        opt = { ...this.options, content: this.data.content[i] };
-      } else {
-        data = { content: this.data.content[i], tts: this.data.tts, allowed_mentions: this.options.allowedMentions };
-        opt = { content: this.data.content[i], tts: this.data.tts, allowedMentions: this.options.allowedMentions };
-      }
-
-      const apiMessage = new APIMessage(this.target, opt);
-      apiMessage.data = data;
-      apiMessages.push(apiMessage);
-    }
-
-    return apiMessages;
   }
 
   /**
@@ -291,7 +239,7 @@ class APIMessage {
       name = findName(attachment);
     } else {
       attachment = fileLike.attachment;
-      name = fileLike.name || findName(attachment);
+      name = fileLike.name ?? findName(attachment);
     }
 
     const resource = await DataResolver.resolveFile(attachment);
@@ -299,7 +247,7 @@ class APIMessage {
   }
 
   /**
-   * Creates an `APIMessage` from user-level arguments.
+   * Creates a `MessagePayload` from user-level arguments.
    * @param {MessageTarget} target Target to send to
    * @param {string|MessageOptions|WebhookMessageOptions} options Options or content to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto specified options
@@ -313,7 +261,7 @@ class APIMessage {
   }
 }
 
-module.exports = APIMessage;
+module.exports = MessagePayload;
 
 /**
  * A target for a message.
@@ -322,6 +270,6 @@ module.exports = APIMessage;
  */
 
 /**
- * @external APIMessageRaw
+ * @external APIMessage
  * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
  */

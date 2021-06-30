@@ -68,7 +68,7 @@ class GuildMemberRoleManager {
    * @readonly
    */
   get premiumSubscriberRole() {
-    return this.cache.find(role => role.tags && role.tags.premiumSubscriberRole) || null;
+    return this.cache.find(role => role.tags?.premiumSubscriberRole) ?? null;
   }
 
   /**
@@ -79,7 +79,7 @@ class GuildMemberRoleManager {
    */
   get botRole() {
     if (!this.member.user.bot) return null;
-    return this.cache.find(role => role.tags && role.tags.botID === this.member.user.id) || null;
+    return this.cache.find(role => role.tags?.botID === this.member.user.id) ?? null;
   }
 
   /**

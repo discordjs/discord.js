@@ -81,7 +81,7 @@ class ReactionCollector extends Collector {
    * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
    * @param {User} user The user that added the reaction
-   * @returns {Promise<Snowflake|string>}
+   * @returns {Promise<?(Snowflake|string)>}
    * @private
    */
   async collect(reaction, user) {
@@ -183,7 +183,7 @@ class ReactionCollector extends Collector {
    * @returns {void}
    */
   _handleGuildDeletion(guild) {
-    if (this.message.guild && guild.id === this.message.guild.id) {
+    if (guild.id === this.message.guild?.id) {
       this.stop('guildDelete');
     }
   }
@@ -194,7 +194,7 @@ class ReactionCollector extends Collector {
    * @returns {Snowflake|string}
    */
   static key(reaction) {
-    return reaction.emoji.id || reaction.emoji.name;
+    return reaction.emoji.id ?? reaction.emoji.name;
   }
 }
 

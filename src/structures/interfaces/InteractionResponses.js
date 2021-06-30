@@ -3,7 +3,7 @@
 const { Error } = require('../../errors');
 const { InteractionResponseTypes } = require('../../util/Constants');
 const MessageFlags = require('../../util/MessageFlags');
-const APIMessage = require('../APIMessage');
+const MessagePayload = require('../MessagePayload');
 
 /**
  * Interface for classes that support shared interaction response types.
@@ -25,7 +25,7 @@ class InteractionResponses {
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|void>}
    * @example
    * // Defer the reply to this interaction
    * interaction.defer()
@@ -37,23 +37,26 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async defer({ ephemeral } = {}) {
+  async defer(options = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    this.ephemeral = ephemeral ?? false;
+    if (options.fetchReply && options.ephemeral) throw new Error('INTERACTION_FETCH_EPHEMERAL');
+    this.ephemeral = options.ephemeral ?? false;
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          flags: ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
+          flags: options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
         },
       },
     });
     this.deferred = true;
+
+    return options.fetchReply ? this.fetchReply() : undefined;
   }
 
   /**
    * Creates a reply to this interaction.
-   * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
+   * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<void>}
    * @example
    * // Reply to the interaction with an embed
@@ -70,13 +73,14 @@ class InteractionResponses {
    */
   async reply(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (options.fetchReply && options.ephemeral) throw new Error('INTERACTION_FETCH_EPHEMERAL');
     this.ephemeral = options.ephemeral ?? false;
 
-    let apiMessage;
-    if (options instanceof APIMessage) apiMessage = options;
-    else apiMessage = APIMessage.create(this, options);
+    let messagePayload;
+    if (options instanceof MessagePayload) messagePayload = options;
+    else messagePayload = MessagePayload.create(this, options);
 
-    const { data, files } = await apiMessage.resolveData().resolveFiles();
+    const { data, files } = await messagePayload.resolveData().resolveFiles();
 
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
@@ -86,12 +90,14 @@ class InteractionResponses {
       files,
     });
     this.replied = true;
+
+    return options.fetchReply ? this.fetchReply() : undefined;
   }
 
   /**
    * Fetches the initial reply to this interaction.
    * @see Webhook#fetchMessage
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @returns {Promise<Message|APIMessage>}
    * @example
    * // Fetch the reply to this interaction
    * interaction.fetchReply()
@@ -106,8 +112,8 @@ class InteractionResponses {
   /**
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|APIMessage|WebhookEditMessageOptions} options The new options for the message
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @param {string|MessagePayload|WebhookEditMessageOptions} options The new options for the message
+   * @returns {Promise<Message|APIMessage>}
    * @example
    * // Edit the reply to this interaction
    * interaction.editReply('New content')
@@ -138,36 +144,42 @@ class InteractionResponses {
 
   /**
    * Send a follow-up message to this interaction.
-   * @param {string|APIMessage|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
+   * @returns {Promise<Message|APIMessage>}
    */
   followUp(options) {
     return this.webhook.send(options);
   }
 
   /**
-   * Defers an update to the message to which the component was attached
-   * @returns {Promise<void>}
+   * Defers an update to the message to which the component was attached.
+   * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
+   * @returns {Promise<Message|void>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async deferUpdate() {
+  async deferUpdate(options = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (options.fetchReply && new MessageFlags(this.message.flags).has(MessageFlags.FLAGS.EPHEMERAL)) {
+      throw new Error('INTERACTION_FETCH_EPHEMERAL');
+    }
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.DEFERRED_MESSAGE_UPDATE,
       },
     });
     this.deferred = true;
+
+    return options.fetchReply ? this.fetchReply() : undefined;
   }
 
   /**
-   * Updates the original message whose button was pressed
-   * @param {string|APIMessage|WebhookEditMessageOptions} options The options for the reply
-   * @returns {Promise<void>}
+   * Updates the original message whose button was pressed.
+   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options for the reply
+   * @returns {Promise<Message|void>}
    * @example
    * // Remove the components from the message
    * interaction.update({
@@ -179,12 +191,15 @@ class InteractionResponses {
    */
   async update(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (options.fetchReply && new MessageFlags(this.message.flags).has(MessageFlags.FLAGS.EPHEMERAL)) {
+      throw new Error('INTERACTION_FETCH_EPHEMERAL');
+    }
 
-    let apiMessage;
-    if (options instanceof APIMessage) apiMessage = options;
-    else apiMessage = APIMessage.create(this, options);
+    let messagePayload;
+    if (options instanceof MessagePayload) messagePayload = options;
+    else messagePayload = MessagePayload.create(this, options);
 
-    const { data, files } = await apiMessage.resolveData().resolveFiles();
+    const { data, files } = await messagePayload.resolveData().resolveFiles();
 
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
@@ -194,6 +209,8 @@ class InteractionResponses {
       files,
     });
     this.replied = true;
+
+    return options.fetchReply ? this.fetchReply() : undefined;
   }
 
   static applyToClass(structure, ignore = []) {

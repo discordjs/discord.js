@@ -59,8 +59,7 @@ class Emoji extends Base {
    * @readonly
    */
   get url() {
-    if (!this.id) return null;
-    return this.client.rest.cdn.Emoji(this.id, this.animated ? 'gif' : 'png');
+    return this.id && this.client.rest.cdn.Emoji(this.id, this.animated ? 'gif' : 'png');
   }
 
   /**
@@ -69,8 +68,7 @@ class Emoji extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    if (!this.id) return null;
-    return SnowflakeUtil.deconstruct(this.id).timestamp;
+    return this.id && SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -79,8 +77,7 @@ class Emoji extends Base {
    * @readonly
    */
   get createdAt() {
-    if (!this.id) return null;
-    return new Date(this.createdTimestamp);
+    return this.id && new Date(this.createdTimestamp);
   }
 
   /**

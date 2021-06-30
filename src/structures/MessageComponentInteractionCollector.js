@@ -36,7 +36,7 @@ class MessageComponentInteractionCollector extends Collector {
      * The source channel from which to collect message component interactions
      * @type {TextChannel|DMChannel|NewsChannel}
      */
-    this.channel = this.message ? this.message.channel : source;
+    this.channel = this.message?.channel ?? source;
 
     /**
      * The users which have interacted to components on this collector
@@ -82,7 +82,7 @@ class MessageComponentInteractionCollector extends Collector {
   /**
    * Handles an incoming interaction for possible collection.
    * @param {Interaction} interaction The interaction to possibly collect
-   * @returns {?(Snowflake|string)}
+   * @returns {?Snowflake}
    * @private
    */
   collect(interaction) {

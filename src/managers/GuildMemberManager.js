@@ -269,7 +269,7 @@ class GuildMemberManager extends BaseManager {
    * @example
    * // Kick a user by ID (or with a user/guild member object)
    * guild.members.kick('84484653687267328')
-   *   .then(user => console.log(`Kicked ${user.username || user.id || user} from ${guild.name}`))
+   *   .then(user => console.log(`Kicked ${user.username ?? user.id ?? user} from ${guild.name}`))
    *   .catch(console.error);
    */
   async kick(user, reason) {
@@ -356,7 +356,7 @@ class GuildMemberManager extends BaseManager {
         },
       });
       const fetchedMembers = new Collection();
-      const option = query || limit || presences || user_ids;
+      const option = Boolean(query || limit || presences || user_ids);
       let i = 0;
       const handler = (members, _, chunk) => {
         timeout.refresh();

@@ -1,6 +1,5 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
@@ -8,6 +7,7 @@ const MessageAttachment = require('./MessageAttachment');
 const MessageComponentInteractionCollector = require('./MessageComponentInteractionCollector');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
+const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
 const Sticker = require('./Sticker');
 const { Error } = require('../errors');
@@ -26,15 +26,15 @@ const Util = require('../util/Util');
 class Message extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {APIMessageRaw} data The data for the message
-   * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
+   * @param {APIMessage} data The data for the message
+   * @param {TextChannel|DMChannel|NewsChannel|ThreadChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|NewsChannel}
+     * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
      */
     this.channel = channel;
 
@@ -133,13 +133,13 @@ class Message extends Base {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = (data.embeds || []).map(e => new Embed(e, true));
+    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? [];
 
     /**
      * A list of MessageActionRows in the message
      * @type {MessageActionRow[]}
      */
-    this.components = (data.components ?? []).map(c => BaseMessageComponent.create(c, this.client));
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -180,7 +180,7 @@ class Message extends Base {
      * @type {ReactionManager}
      */
     this.reactions = new ReactionManager(this);
-    if (data.reactions && data.reactions.length > 0) {
+    if (data.reactions?.length > 0) {
       for (const reaction of data.reactions) {
         this.reactions.add(reaction);
       }
@@ -203,7 +203,7 @@ class Message extends Base {
      * ID of the webhook that sent the message, if applicable
      * @type {?Snowflake}
      */
-    this.webhookID = data.webhook_id || null;
+    this.webhookID = data.webhook_id ?? null;
 
     /**
      * Supplemental application information for group activities
@@ -300,7 +300,7 @@ class Message extends Base {
 
   /**
    * Updates the message and returns the old message.
-   * @param {APIMessageRaw} data Raw Discord message update data
+   * @param {APIMessage} data Raw Discord message update data
    * @returns {Message}
    * @private
    */
@@ -312,10 +312,6 @@ class Message extends Base {
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
     if ('thread' in data) this.thread = this.client.channels.add(data.thread);
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
-    else this.embeds = this.embeds.slice();
-    if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
-    else this.components = this.components.slice();
 
     if ('attachments' in data) {
       this.attachments = new Collection();
@@ -326,16 +322,19 @@ class Message extends Base {
       this.attachments = new Collection(this.attachments);
     }
 
+    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? this.embeds.slice();
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? this.components.slice();
+
     this.mentions = new Mentions(
       this,
-      'mentions' in data ? data.mentions : this.mentions.users,
-      'mention_roles' in data ? data.mention_roles : this.mentions.roles,
-      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
-      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
-      'referenced_message' in data ? data.referenced_message.author : this.mentions.repliedUser,
+      data.mentions ?? this.mentions.users,
+      data.mention_roles ?? this.mentions.roles,
+      data.mention_everyone ?? this.mentions.everyone,
+      data.mention_channels ?? this.mentions.crosspostedChannels,
+      data.referenced_message?.author ?? this.mentions.repliedUser,
     );
 
-    this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
+    this.flags = new MessageFlags(data.flags ?? 0).freeze();
 
     return clone;
   }
@@ -347,7 +346,7 @@ class Message extends Base {
    * @readonly
    */
   get member() {
-    return this.guild ? this.guild.members.resolve(this.author) || null : null;
+    return this.guild?.members.resolve(this.author) ?? null;
   }
 
   /**
@@ -374,7 +373,7 @@ class Message extends Base {
    * @readonly
    */
   get guild() {
-    return this.channel.guild || null;
+    return this.channel.guild ?? null;
   }
 
   /**
@@ -434,7 +433,7 @@ class Message extends Base {
     return new Promise((resolve, reject) => {
       const collector = this.createReactionCollector(options);
       collector.once('end', (reactions, reason) => {
-        if (options.errors && options.errors.includes(reason)) reject(reactions);
+        if (options.errors?.includes(reason)) reject(reactions);
         else resolve(reactions);
       });
     });
@@ -554,7 +553,6 @@ class Message extends Base {
    * @typedef {Object} MessageEditOptions
    * @property {?string} [content] Content to be edited
    * @property {MessageEmbed[]|APIEmbed[]} [embeds] Embeds to be added/edited
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
    * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
@@ -566,7 +564,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {string|APIMessage|MessageEditOptions} options The options to provide
+   * @param {string|MessagePayload|MessageEditOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -668,7 +666,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
-   * @param {string|APIMessage|ReplyMessageOptions} options The options to provide
+   * @param {string|MessagePayload|ReplyMessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message
@@ -679,10 +677,10 @@ class Message extends Base {
   reply(options) {
     let data;
 
-    if (options instanceof APIMessage) {
+    if (options instanceof MessagePayload) {
       data = options;
     } else {
-      data = APIMessage.create(this, options, {
+      data = MessagePayload.create(this, options, {
         reply: {
           messageReference: this,
           failIfNotExists: options?.failIfNotExists ?? true,
@@ -755,7 +753,7 @@ class Message extends Base {
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    * @param {Message} message The message to compare it to
-   * @param {APIMessageRaw} rawData Raw data passed through the WebSocket about this message
+   * @param {APIMessage} rawData Raw data passed through the WebSocket about this message
    * @returns {boolean}
    */
   equals(message, rawData) {

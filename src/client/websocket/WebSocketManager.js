@@ -240,7 +240,7 @@ class WebSocketManager extends EventEmitter {
     try {
       await shard.connect();
     } catch (error) {
-      if (error && error.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
+      if (error?.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
         throw new Error(WSCodes[error.code]);
         // Undefined if session is invalid, error event for regular closes
       } else if (!error || error.code) {

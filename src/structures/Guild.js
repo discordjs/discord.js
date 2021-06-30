@@ -147,13 +147,13 @@ class Guild extends AnonymousGuild {
      * The full amount of members in this guild
      * @type {number}
      */
-    this.memberCount = data.member_count || this.memberCount;
+    this.memberCount = data.member_count ?? this.memberCount;
 
     /**
      * Whether the guild is "large" (has more than large_threshold members, 50 by default)
      * @type {boolean}
      */
-    this.large = Boolean('large' in data ? data.large : this.large);
+    this.large = Boolean(data.large ?? this.large);
 
     /**
      * An array of enabled guild features, here are the possible values:
@@ -170,7 +170,10 @@ class Guild extends AnonymousGuild {
      * * NEWS
      * * PARTNERED
      * * PREVIEW_ENABLED
+     * * PRIVATE_THREADS
      * * RELAY_ENABLED
+     * * SEVEN_DAY_THREAD_ARCHIVE
+     * * THREE_DAY_THREAD_ARCHIVE
      * * TICKETED_EVENTS_ENABLED
      * * VANITY_URL
      * * VERIFIED
@@ -279,7 +282,7 @@ class Guild extends AnonymousGuild {
        * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
        * @type {?number}
        */
-      this.maximumPresences = data.max_presences || 25000;
+      this.maximumPresences = data.max_presences ?? 25000;
     } else if (typeof this.maximumPresences === 'undefined') {
       this.maximumPresences = null;
     }
@@ -403,8 +406,7 @@ class Guild extends AnonymousGuild {
    * @returns {?string}
    */
   bannerURL({ format, size } = {}) {
-    if (!this.banner) return null;
-    return this.client.rest.cdn.Banner(this.id, this.banner, format, size);
+    return this.banner && this.client.rest.cdn.Banner(this.id, this.banner, format, size);
   }
 
   /**
@@ -422,8 +424,7 @@ class Guild extends AnonymousGuild {
    * @returns {?string}
    */
   splashURL({ format, size } = {}) {
-    if (!this.splash) return null;
-    return this.client.rest.cdn.Splash(this.id, this.splash, format, size);
+    return this.splash && this.client.rest.cdn.Splash(this.id, this.splash, format, size);
   }
 
   /**
@@ -432,8 +433,7 @@ class Guild extends AnonymousGuild {
    * @returns {?string}
    */
   discoverySplashURL({ format, size } = {}) {
-    if (!this.discoverySplash) return null;
-    return this.client.rest.cdn.DiscoverySplash(this.id, this.discoverySplash, format, size);
+    return this.discoverySplash && this.client.rest.cdn.DiscoverySplash(this.id, this.discoverySplash, format, size);
   }
 
   /**
@@ -459,7 +459,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get afkChannel() {
-    return this.client.channels.cache.get(this.afkChannelID) || null;
+    return this.client.channels.resolve(this.afkChannelID);
   }
 
   /**
@@ -468,7 +468,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get systemChannel() {
-    return this.client.channels.cache.get(this.systemChannelID) || null;
+    return this.client.channels.resolve(this.systemChannelID);
   }
 
   /**
@@ -477,7 +477,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get widgetChannel() {
-    return this.client.channels.cache.get(this.widgetChannelID) || null;
+    return this.client.channels.resolve(this.widgetChannelID);
   }
 
   /**
@@ -486,7 +486,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get rulesChannel() {
-    return this.client.channels.cache.get(this.rulesChannelID) || null;
+    return this.client.channels.resolve(this.rulesChannelID);
   }
 
   /**
@@ -495,7 +495,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get publicUpdatesChannel() {
-    return this.client.channels.cache.get(this.publicUpdatesChannelID) || null;
+    return this.client.channels.resolve(this.publicUpdatesChannelID);
   }
 
   /**
@@ -505,7 +505,7 @@ class Guild extends AnonymousGuild {
    */
   get me() {
     return (
-      this.members.cache.get(this.client.user.id) ||
+      this.members.resolve(this.client.user.id) ??
       (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)
         ? this.members.add({ user: { id: this.client.user.id } }, true)
         : null)
@@ -914,7 +914,7 @@ class Guild extends AnonymousGuild {
     const welcome_channels = welcomeChannels?.map(welcomeChannelData => {
       const emoji = this.emojis.resolve(welcomeChannelData.emoji);
       return {
-        emoji_id: emoji?.id ?? null,
+        emoji_id: emoji && emoji.id,
         emoji_name: emoji?.name ?? welcomeChannelData.emoji,
         channel_id: this.channels.resolveID(welcomeChannelData.channel),
         description: welcomeChannelData.description,

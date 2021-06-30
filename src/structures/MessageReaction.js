@@ -105,9 +105,9 @@ class MessageReaction {
    */
   async fetch() {
     const message = await this.message.fetch();
-    const existing = message.reactions.cache.get(this.emoji.id || this.emoji.name);
+    const existing = message.reactions.cache.get(this.emoji.id ?? this.emoji.name);
     // The reaction won't get set when it has been completely removed
-    this._patch(existing || { count: 0 });
+    this._patch(existing ?? { count: 0 });
     return this;
   }
 
@@ -128,7 +128,7 @@ class MessageReaction {
     if (!this.me || user.id !== this.message.client.user.id) this.count--;
     if (user.id === this.message.client.user.id) this.me = false;
     if (this.count <= 0 && this.users.cache.size === 0) {
-      this.message.reactions.cache.delete(this.emoji.id || this.emoji.name);
+      this.message.reactions.cache.delete(this.emoji.id ?? this.emoji.name);
     }
   }
 }

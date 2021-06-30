@@ -39,7 +39,7 @@ function message(key, args) {
   const msg = messages.get(key);
   if (!msg) throw new Error(`An invalid error message key was used: ${key}.`);
   if (typeof msg === 'function') return msg(...args);
-  if (args === undefined || args.length === 0) return msg;
+  if (!args?.length) return msg;
   args.unshift(msg);
   return String(...args);
 }

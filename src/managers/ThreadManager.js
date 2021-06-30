@@ -63,8 +63,8 @@ class ThreadManager extends BaseManager {
    * A number that is allowed to be the duration in minutes before a thread is automatically archived. This can be:
    * * `60` (1 hour)
    * * `1440` (1 day)
-   * * `4320` (3 days)
-   * * `10080` (7 days)
+   * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
+   * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
    * @typedef {number} ThreadAutoArchiveDuration
    */
 
@@ -74,11 +74,10 @@ class ThreadManager extends BaseManager {
    * @typedef {Object} ThreadCreateOptions
    * @property {string} name The name of the new Thread
    * @property {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
-   * @property {MessageResolvable} [startMessage] The message to start a public or news thread from,
-   * creates a private thread if not provided
-   * @property {ThreadChannelType|number} [type] The type of thread to create
-   * <warn>When creating threads in a `news` channel this is always `news_thread`</warn>
-   * @param {string} [reason] Reason for creating the thread
+   * @property {MessageResolvable} [startMessage] The message to start a thread from
+   * @property {ThreadChannelType|number} [type='public_thread'] The type of thread to create
+   * <warn>When creating threads in a `news` channel this is ignored and is always `news_thread`</warn>
+   * @property {string} [reason] Reason for creating the thread
    */
 
   /**
@@ -89,16 +88,21 @@ class ThreadManager extends BaseManager {
    * // Create a new public thread
    * channel.threads
    *   .create({
-   *     name: 'food-talk'
+   *     name: 'food-talk',
    *     autoArchiveDuration: 60,
-   *     startMessage: channel.lastMessageID,
    *     reason: 'Needed a separate thread for food',
    *   })
    *   .then(console.log)
    *   .catch(console.error);
+   * @example
    * // Create a new private thread
    * channel.threads
-   *   .create({ name: 'mod-talk', autoArchiveDuration: 60, reason: 'Needed a separate thread for moderation' })
+   *   .create({
+   *      name: 'mod-talk',
+   *      autoArchiveDuration: 60,
+   *      type: 'private_thread',
+   *      reason: 'Needed a separate thread for moderation',
+   *    })
    *   .then(console.log)
    *   .catch(console.error);
    */
@@ -113,7 +117,7 @@ class ThreadManager extends BaseManager {
       if (!startMessageID) throw new TypeError('INVALID_TYPE', 'startMessage', 'MessageResolvable');
       path = path.messages(startMessageID);
     } else if (this.channel.type !== 'news') {
-      resolvedType = typeof type === 'string' ? ChannelTypes[type.toUpperCase()] : type;
+      resolvedType = typeof type === 'string' ? ChannelTypes[type.toUpperCase()] : type ?? resolvedType;
     }
 
     const data = await path.threads.post({
@@ -181,7 +185,7 @@ class ThreadManager extends BaseManager {
 
   /**
    * The data returned from a thread fetch that returns multiple threads.
-   * @typedef {FetchedThreads}
+   * @typedef {Object} FetchedThreads
    * @property {Collection<Snowflake, ThreadChannel>} threads The threads fetched, with any members returned
    * @property {?boolean} hasMore Whether there are potentially additional threads that require a subsequent call
    */
