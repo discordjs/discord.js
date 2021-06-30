@@ -3023,7 +3023,7 @@ declare module 'discord.js' {
   interface FetchBansOptions {
     cache: boolean;
   }
-  
+
   interface FetchInviteOptions extends BaseFetchOptions {
     code: string;
   }
