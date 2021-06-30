@@ -2005,12 +2005,12 @@ declare module 'discord.js' {
     public leave(): Promise<ThreadChannel>;
     public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
-    public setArchived(archived: boolean, reason?: string): Promise<ThreadChannel>;
+    public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
     public setAutoArchiveDuration(
       autoArchiveDuration: ThreadAutoArchiveDuration,
       reason?: string,
     ): Promise<ThreadChannel>;
-    public setLocked(locked: boolean, reason?: string): Promise<ThreadChannel>;
+    public setLocked(locked?: boolean, reason?: string): Promise<ThreadChannel>;
     public setName(name: string, reason?: string): Promise<ThreadChannel>;
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<ThreadChannel>;
   }
