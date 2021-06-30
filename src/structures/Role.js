@@ -196,38 +196,8 @@ class Role extends Base {
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
-  async edit(data, reason) {
-    if (typeof data.position !== 'undefined') {
-      await Util.setPosition(
-        this,
-        data.position,
-        false,
-        this.guild._sortedRoles(),
-        this.client.api.guilds(this.guild.id).roles,
-        reason,
-      ).then(updatedRoles => {
-        this.client.actions.GuildRolesPositionUpdate.handle({
-          guild_id: this.guild.id,
-          roles: updatedRoles,
-        });
-      });
-    }
-    return this.client.api.guilds[this.guild.id].roles[this.id]
-      .patch({
-        data: {
-          name: data.name ?? this.name,
-          color: data.color !== null ? Util.resolveColor(data.color ?? this.color) : null,
-          hoist: data.hoist ?? this.hoist,
-          permissions: typeof data.permissions !== 'undefined' ? new Permissions(data.permissions) : this.permissions,
-          mentionable: data.mentionable ?? this.mentionable,
-        },
-        reason,
-      })
-      .then(role => {
-        const clone = this._clone();
-        clone._patch(role);
-        return clone;
-      });
+  edit(data, reason) {
+    return this.guild.roles.edit(this, data, reason);
   }
 
   /**
