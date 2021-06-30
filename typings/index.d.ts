@@ -3887,7 +3887,7 @@ declare module 'discord.js' {
     nonce?: string | number;
     content?: string | null;
     embeds?: (MessageEmbed | MessageEmbedOptions)[];
-    components?: MessageActionRow[] | MessageActionRowOptions[] | MessageActionRowComponentResolvable[][];
+    components?: (MessageActionRow | MessageActionRowOptions | MessageActionRowComponentResolvable[])[];
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     reply?: ReplyOptions;
