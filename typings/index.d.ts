@@ -1827,8 +1827,8 @@ declare module 'discord.js' {
   export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
     public type: 'stage';
-    public readonly instance: StageInstance | null;
-    public createInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
+    public readonly stageInstance: StageInstance | null;
+    public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
   }
 
   export class StageInstance extends Base {

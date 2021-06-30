@@ -35,7 +35,7 @@ class StageInstanceManager extends BaseManager {
 
   /**
    * Creates a new stage instance.
-   * @param {StageChannel|Snowflake} channel The stage channel to associate the created instance to
+   * @param {StageChannel|Snowflake} channel The stage channel to associate the created stage instance to
    * @param {StageInstanceCreateOptions} options The options to create the stage instance
    * @returns {Promise<StageInstance>}
    * @example
@@ -68,7 +68,7 @@ class StageInstanceManager extends BaseManager {
 
   /**
    * Fetches the stage instance associated with a stage channel, if it exists.
-   * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be fetched
+   * @param {StageChannel|Snowflake} channel The stage channel whose associated stage instance is to be fetched
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<StageInstance>}
    * @example
@@ -99,7 +99,7 @@ class StageInstanceManager extends BaseManager {
 
   /**
    * Edits an existing stage instance.
-   * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be edited
+   * @param {StageChannel|Snowflake} channel The stage channel whose associated stage instance is to be edited
    * @param {StageInstanceEditOptions} options The options to edit the stage instance
    * @returns {Promise<StageInstance>}
    * @example
@@ -135,7 +135,7 @@ class StageInstanceManager extends BaseManager {
 
   /**
    * Deletes an existing stage instance.
-   * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be deleted
+   * @param {StageChannel|Snowflake} channel The stage channel whose associated stage instance is to be deleted
    * @returns {Promise<void>}
    */
   async delete(channel) {
