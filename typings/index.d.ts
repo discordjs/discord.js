@@ -563,6 +563,7 @@ declare module 'discord.js' {
     public deleteReply(): Promise<void>;
     public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
     public fetchReply(): Promise<Message | APIMessage>;
+    public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
     public reply(
       options: string | MessagePayload | (InteractionReplyOptions & { fetchReply: true }),
     ): Promise<Message | APIMessage>;
