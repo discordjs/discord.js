@@ -346,7 +346,7 @@ class Message extends Base {
    * @readonly
    */
   get member() {
-    return this.guild?.members.resolve(this.author);
+    return this.guild?.members.resolve(this.author) ?? null;
   }
 
   /**

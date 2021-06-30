@@ -39,7 +39,7 @@ class TextBasedChannel {
    * @readonly
    */
   get lastMessage() {
-    return this.messages.resolve(this.lastMessageID) ?? null;
+    return this.messages.resolve(this.lastMessageID);
   }
 
   /**

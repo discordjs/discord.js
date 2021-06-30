@@ -459,7 +459,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get afkChannel() {
-    return this.client.channels.resolve(this.afkChannelID) ?? null;
+    return this.client.channels.resolve(this.afkChannelID);
   }
 
   /**
@@ -468,7 +468,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get systemChannel() {
-    return this.client.channels.resolve(this.systemChannelID) ?? null;
+    return this.client.channels.resolve(this.systemChannelID);
   }
 
   /**
@@ -477,7 +477,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get widgetChannel() {
-    return this.client.channels.resolve(this.widgetChannelID) ?? null;
+    return this.client.channels.resolve(this.widgetChannelID);
   }
 
   /**
@@ -486,7 +486,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get rulesChannel() {
-    return this.client.channels.resolve(this.rulesChannelID) ?? null;
+    return this.client.channels.resolve(this.rulesChannelID);
   }
 
   /**
@@ -495,7 +495,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get publicUpdatesChannel() {
-    return this.client.channels.resolve(this.publicUpdatesChannelID) ?? null;
+    return this.client.channels.resolve(this.publicUpdatesChannelID);
   }
 
   /**

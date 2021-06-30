@@ -202,7 +202,7 @@ class GuildTemplate extends Base {
    * @readonly
    */
   get guild() {
-    return this.client.guilds.resolve(this.guildID) ?? null;
+    return this.client.guilds.resolve(this.guildID);
   }
 
   /**

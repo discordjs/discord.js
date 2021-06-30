@@ -85,7 +85,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get parent() {
-    return this.guild.channels.resolve(this.parentID) ?? null;
+    return this.guild.channels.resolve(this.parentID);
   }
 
   /**
