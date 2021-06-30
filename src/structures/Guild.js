@@ -170,7 +170,10 @@ class Guild extends AnonymousGuild {
      * * NEWS
      * * PARTNERED
      * * PREVIEW_ENABLED
+     * * PRIVATE_THREADS
      * * RELAY_ENABLED
+     * * SEVEN_DAY_THREAD_ARCHIVE
+     * * THREE_DAY_THREAD_ARCHIVE
      * * TICKETED_EVENTS_ENABLED
      * * VANITY_URL
      * * VERIFIED

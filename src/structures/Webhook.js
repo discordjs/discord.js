@@ -118,7 +118,7 @@ class Webhook {
    *   .catch(console.error);
    * @example
    * // Send a basic message in a thread
-   * webhook.send('hello!', { threadID: '836856309672348295' })
+   * webhook.send({ content: 'hello!', threadID: '836856309672348295' })
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
    * @example
@@ -289,10 +289,10 @@ class Webhook {
   /**
    * Deletes the webhook.
    * @param {string} [reason] Reason for deleting this webhook
-   * @returns {Promise}
+   * @returns {Promise<void>}
    */
-  delete(reason) {
-    return this.client.api.webhooks(this.id, this.token).delete({ reason });
+  async delete(reason) {
+    await this.client.api.webhooks(this.id, this.token).delete({ reason });
   }
 
   /**

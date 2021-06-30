@@ -119,12 +119,14 @@ const Messages = {
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
 
   GLOBAL_COMMAND_PERMISSIONS:
-    'Permissions for global commands may only be fetched or modified by providing a guildID' +
+    'Permissions for global commands may only be fetched or modified by providing a GuildResolvable ' +
     "or from a guild's application command manager.",
+  GUILD_UNCACHED_ROLE_RESOLVE: 'Cannot resolve roles from an arbitrary guild, provide an ID instead',
 
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
   INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
   INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
+  INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

@@ -20,7 +20,8 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
-        run: npm ci
+        # Remove --no-optional after Node 16 upgrade
+        run: npm ci --no-optional
 
       - name: Build and deploy documentation
         uses: discordjs/action-docs@v1
