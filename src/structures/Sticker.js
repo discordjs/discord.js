@@ -134,7 +134,7 @@ class Sticker extends Base {
 
   /**
    * Fetches this sticker.
-   * @returns {Promise<?Sticker>}
+   * @returns {Promise<Sticker>}
    */
   async fetch() {
     const data = await this.client.api.stickers(this.id).get();
