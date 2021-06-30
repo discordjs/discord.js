@@ -438,6 +438,7 @@ declare module 'discord.js' {
     public delete(reason?: string): Promise<Channel>;
     public fetch(force?: boolean): Promise<Channel>;
     public isText(): this is TextChannel | DMChannel | NewsChannel | ThreadChannel;
+    public isThread(): this is ThreadChannel;
     public toString(): string;
   }
 

@@ -110,6 +110,14 @@ class Channel extends Base {
     return 'messages' in this;
   }
 
+  /**
+   * Indicates whether this channel is a thread channel.
+   * @returns {boolean}
+   */
+  isThread() {
+    return ['news_thread', 'public_thread', 'private_thread'].includes(this.type);
+  }
+
   static create(client, data, guild) {
     const Structures = require('../util/Structures');
     let channel;
