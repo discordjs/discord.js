@@ -1076,7 +1076,7 @@ declare module 'discord.js' {
     public readonly bannable: boolean;
     public deleted: boolean;
     public readonly displayColor: number;
-    public readonly displayHexColor: string;
+    public readonly displayHexColor: HexColorString;
     public readonly displayName: string;
     public guild: Guild;
     public readonly id: Snowflake;
@@ -1502,7 +1502,7 @@ declare module 'discord.js' {
     public description: string | null;
     public fields: EmbedField[];
     public footer: MessageEmbedFooter | null;
-    public readonly hexColor: string | null;
+    public readonly hexColor: HexColorString | null;
     public image: MessageEmbedImage | null;
     public readonly length: number;
     public provider: MessageEmbedProvider | null;
@@ -1739,7 +1739,7 @@ declare module 'discord.js' {
     public deleted: boolean;
     public readonly editable: boolean;
     public guild: Guild;
-    public readonly hexColor: string;
+    public readonly hexColor: HexColorString;
     public hoist: boolean;
     public id: Snowflake;
     public managed: boolean;
@@ -3220,7 +3220,7 @@ declare module 'discord.js' {
     | 'RANDOM'
     | [number, number, number]
     | number
-    | `#${string}`;
+    | HexColorString;
 
   interface CommandInteractionOption {
     name: string;
@@ -3606,6 +3606,8 @@ declare module 'discord.js' {
   }
 
   type GuildTemplateResolvable = string;
+
+  type HexColorString = `#${string}`;
 
   interface HTTPAttachmentData {
     attachment: string | Buffer | Stream;
@@ -4112,7 +4114,7 @@ declare module 'discord.js' {
     > {
     readonly bannable: boolean;
     readonly displayColor: number;
-    readonly displayHexColor: string;
+    readonly displayHexColor: HexColorString;
     readonly displayName: string;
     guild: Guild;
     readonly manageable: boolean;
