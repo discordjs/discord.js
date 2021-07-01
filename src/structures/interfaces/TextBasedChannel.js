@@ -106,7 +106,7 @@ class TextBasedChannel {
   /**
    * Sends a message to this channel.
    * @param {string|MessagePayload|MessageOptions} options The options to provide
-   * @returns {Promise<Message|Message[]>}
+   * @returns {Promise<Message>}
    * @example
    * // Send a basic message
    * channel.send('hello!')

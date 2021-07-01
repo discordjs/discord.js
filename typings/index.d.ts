@@ -2277,7 +2277,7 @@ declare module 'discord.js' {
     private _cleanupConnection(): void;
     private _emitDestroyed(): void;
 
-    public send(data: unknown): void;
+    public send(data: unknown, important?: boolean): void;
 
     public on(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaited<void>): this;
     public on(event: 'close', listener: (event: CloseEvent) => Awaited<void>): this;
