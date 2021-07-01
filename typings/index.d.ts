@@ -2167,7 +2167,7 @@ declare module 'discord.js' {
     public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
     public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
     public kick(reason?: string): Promise<GuildMember>;
-    public setChannel(channel?: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
+    public setChannel(channel: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
     public setRequestToSpeak(request: boolean): Promise<void>;
     public setSuppressed(suppressed: boolean): Promise<void>;
   }
