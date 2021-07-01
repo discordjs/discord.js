@@ -2406,7 +2406,7 @@ declare module 'discord.js' {
     ): Promise<ApplicationCommandType>;
     public fetch(
       id: Snowflake,
-      options: FetchApplicationCommandOptions & { guild: GuildResolvable },
+      options: FetchApplicationCommandOptions & { guildID: Snowflake },
     ): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommandType>;
     public fetch(
@@ -2432,27 +2432,24 @@ declare module 'discord.js' {
     public guildID: Snowflake | null;
     public manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand;
     public add(
-      options: BaseOptions & { permissions: ApplicationCommandPermissionData[] },
+      options: FetchSingleOptions & { permissions: ApplicationCommandPermissionData[] },
     ): Promise<ApplicationCommandPermissions[]>;
-    public has(options: BaseOptions & { permissionsID: UserResolvable | RoleResolvable }): Promise<boolean>;
+    public has(options: FetchSingleOptions & { permissionsID: UserResolvable | RoleResolvable }): Promise<boolean>;
     public fetch(options: FetchSingleOptions): Promise<ApplicationCommandPermissions[]>;
     public fetch(options: BaseOptions): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     public remove(
       options:
-        | (BaseOptions & {
+        | (FetchSingleOptions & {
             users: UserResolvable | UserResolvable[];
             roles?: RoleResolvable | RoleResolvable[];
           })
-        | (BaseOptions & {
+        | (FetchSingleOptions & {
             users?: UserResolvable | UserResolvable[];
             roles: RoleResolvable | RoleResolvable[];
           }),
     ): Promise<ApplicationCommandPermissions[]>;
     public set(
-      options: BaseOptions & {
-        command: ApplicationCommandResolvable;
-        permissions: ApplicationCommandPermissionData[];
-      },
+      options: FetchSingleOptions & { permissions: ApplicationCommandPermissionData[] },
     ): Promise<ApplicationCommandPermissions[]>;
     public set(
       options: BaseOptions & {
@@ -2481,16 +2478,7 @@ declare module 'discord.js' {
     public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-    public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
-    public setPermissions(
-      command: ApplicationCommandResolvable,
-      permissions: ApplicationCommandPermissionData[],
-    ): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(
-      permissions: GuildApplicationCommandPermissionData[],
-    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
   }
 
   export class GuildChannelManager extends BaseManager<
