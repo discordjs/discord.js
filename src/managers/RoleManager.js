@@ -157,12 +157,12 @@ class RoleManager extends BaseManager {
    *   .catch(console.error);
    */
   async edit(role, data, reason) {
-    const id = this.resolveID(role);
-    if (!id) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
+    role = this.resolve(role);
+    if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
 
     if (typeof data.position === 'number') {
       const updatedRoles = await setPosition(
-        this,
+        role,
         data.position,
         false,
         this.guild._sortedRoles(),
@@ -184,11 +184,11 @@ class RoleManager extends BaseManager {
       mentionable: data.mentionable,
     };
 
-    const d = await this.client.api.guilds(this.guild.id).roles(id).patch({ data: _data, reason });
+    const d = await this.client.api.guilds(this.guild.id).roles(role.id).patch({ data: _data, reason });
 
-    const clone = this.cache.get(id)?._clone();
-    clone?._patch(d);
-    return clone ?? this.add(d, false);
+    const clone = role._clone();
+    clone._patch(d);
+    return clone;
   }
 
   /**
