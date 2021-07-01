@@ -1457,14 +1457,14 @@ declare module 'discord.js' {
 
   export class MessageComponentInteractionCollector extends Collector<Snowflake, MessageComponentInteraction> {
     constructor(
-      source: Message | TextChannel | NewsChannel | DMChannel,
+      source: Message | TextChannel | DMChannel | ThreadChannel,
       options?: MessageComponentInteractionCollectorOptions,
     );
     private _handleMessageDeletion(message: Message): void;
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
 
-    public channel: TextChannel | NewsChannel | DMChannel;
+    public channel: TextChannel | DMChannel | ThreadChannel;
     public empty(): void;
     public readonly endReason: string | null;
     public message: Message | null;
@@ -2606,7 +2606,7 @@ declare module 'discord.js' {
   }
 
   export class MessageManager extends BaseManager<Snowflake, Message, MessageResolvable> {
-    constructor(channel: TextChannel | DMChannel, iterable?: Iterable<any>);
+    constructor(channel: TextChannel | DMChannel | ThreadChannel, iterable?: Iterable<any>);
     public channel: TextBasedChannelFields;
     public cache: Collection<Snowflake, Message>;
     public crosspost(message: MessageResolvable): Promise<Message>;
