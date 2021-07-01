@@ -41,7 +41,7 @@ const { Error, RangeError } = require('../errors');
  * 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings). That is, if set to 500,
  * warnings will be emitted at invalid request number 500, 1000, 1500, and so on.
  * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
- * they're missing all the data for a particular structure. See the "Partials" topic on the
+ * they're missing all the data for a particular structure. See the "Partial Structures" topic on the
  * [guide](https://discordjs.guide/popular-topics/partials.html) for some
  * important usage information, as partials require you to put checks in place when handling data.
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
@@ -307,7 +307,7 @@ exports.ShardEvents = {
  * * GUILD_MEMBER
  * * MESSAGE
  * * REACTION
- * <warn>Partials require you to put checks in place when handling data, read the Partials topic on the
+ * <warn>Partials require you to put checks in place when handling data. See the "Partial Structures" topic on the
  * [guide](https://discordjs.guide/popular-topics/partials.html) for more information.</warn>
  * @typedef {string} PartialType
  */
