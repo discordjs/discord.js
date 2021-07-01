@@ -79,7 +79,7 @@ class MessageSelectMenu extends BaseMessageComponent {
 
     /**
      * Whether this select menu is currently disabled
-     * @type {?boolean}
+     * @type {boolean}
      */
     this.disabled = data.disabled ?? false;
   }
