@@ -58,8 +58,15 @@ class MessageComponentInteraction extends Interaction {
   }
 
   /**
+   * Raw message components from the API
+   * * APIMessageButton
+   * * APIMessageSelectMenu
+   * @typedef {APIMessageButton|APIMessageSelectMenu} APIMessageActionRowComponent
+   */
+
+  /**
    * The component which was interacted with
-   * @type {?(MessageActionRowComponent|Object)}
+   * @type {?(MessageActionRowComponent|APIMessageActionRowComponent)}
    * @readonly
    */
   get component() {
@@ -95,3 +102,13 @@ class MessageComponentInteraction extends Interaction {
 InteractionResponses.applyToClass(MessageComponentInteraction);
 
 module.exports = MessageComponentInteraction;
+
+/**
+ * @external APIMessageSelectMenu
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#select-menu-object}
+ */
+
+/**
+ * @external APIMessageButton
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#button-object}
+ */
