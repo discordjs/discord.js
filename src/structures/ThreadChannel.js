@@ -26,7 +26,7 @@ class ThreadChannel extends Channel {
     this.guild = guild;
 
     /**
-     * A manager of the messages set to this thread
+     * A manager of the messages sent to this thread
      * @type {MessageManager}
      */
     this.messages = new MessageManager(this);
@@ -52,7 +52,7 @@ class ThreadChannel extends Channel {
 
     if ('parent_id' in data) {
       /**
-       * The ID of the parent channel to this thread
+       * The ID of the parent channel of this thread
        * @type {Snowflake}
        */
       this.parentID = data.parent_id;
@@ -66,20 +66,21 @@ class ThreadChannel extends Channel {
       this.locked = data.thread_metadata.locked ?? false;
 
       /**
-       * Whether the thread is active (false) or archived (true)
+       * The id of the member who created this thread
        * @type {boolean}
        */
       this.archived = data.thread_metadata.archived;
 
       /**
-       * How long in minutes after recent activity before the thread is automatically archived
+       * The amount of time (in minutes) after which the thread will automatically archive in case of no recent activity
        * @type {number}
        */
       this.autoArchiveDuration = data.thread_metadata.auto_archive_duration;
 
       /**
        * The timestamp when the thread's archive status was last changed
-       * <info>If the thread was never archived or unarchived, this is set when it's created</info>
+       * <info>If the thread was never archived or unarchived, this is the timestamp at which the thread was
+       * created</info>
        * @type {number}
        */
       this.archiveTimestamp = new Date(data.thread_metadata.archive_timestamp).getTime();
@@ -111,7 +112,7 @@ class ThreadChannel extends Channel {
 
     if ('rate_limit_per_user' in data) {
       /**
-       * The ratelimit per user for this thread in seconds
+       * The ratelimit per user for this thread (in seconds)
        * @type {number}
        */
       this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
@@ -120,8 +121,8 @@ class ThreadChannel extends Channel {
     if ('message_count' in data) {
       /**
        * The approximate count of messages in this thread
-       * <info>This value will not count above 50 even when there are more than 50 messages
-       * If you need an approximate value higher than this, use ThreadChannel#messages.cache.size</info>
+       * <info>This stops counting at 50. If you need an approximate value higher than that, use
+       * `ThreadChannel#messages.cache.size`</info>
        * @type {number}
        */
       this.messageCount = data.message_count;
@@ -130,7 +131,8 @@ class ThreadChannel extends Channel {
     if ('member_count' in data) {
       /**
        * The approximate count of users in this thread
-       * <info>This value will not count above 50 even when there are more than 50 members</info>
+       * <info>This stops counting at 50. If you need an approximate value higher than that, use
+       * `ThreadChannel#members.cache.size`</info>
        * @type {number}
        */
       this.memberCount = data.member_count;
@@ -141,7 +143,7 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * A collection of the guild member objects for each of this thread's members
+   * A collection of associated guild member objects of this thread's members
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -150,8 +152,8 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * The time when the thread's archive status was last changed
-   * <info>If the thread was never archived or unarchived, this is set when it's created</info>
+   * The time at which this thread's archive status was last changed
+   * <info>If the thread was never archived or unarchived, this is the time at which the thread was created</info>
    * @type {Date}
    * @readonly
    */
@@ -185,7 +187,8 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Gets the overall set of permissions for a member or role in this threads' parent, taking into account overwrites.
+   * Gets the overall set of permissions for a member or role in this thread's parent channel, taking overwrites into
+   * account.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
    * @returns {?Readonly<Permissions>}
    */
@@ -194,20 +197,25 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Edits the thread.
-   * @param {APIChannel} data The new data for the thread
-   * @param {string} [data.name] The new name for the trhead
-   * @param {boolean} [data.archived] Whether the thread is archived
-   * @param {number} [data.autoArchiveDuration] How long in minutes before the thread is automatically archived,
-   * one of `60`, `1440`, `4320`, or `10080`
-   * @param {number} [data.rateLimitPerUser] The ratelimit per user for the thread in seconds
-   * @param {boolean} [data.locked] Whether the thread is locked
+   * The options used to edit a thread channel
+   * @typedef {Object} ThreadEditData
+   * @property {string} [name] The new name for the thread
+   * @property {boolean} [archived] Whether the thread is archived
+   * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time (in minutes) after which the thread
+   * should automatically archive in case of no recent activity
+   * @property {number} [rateLimitPerUser] The ratelimit per user for the thread in seconds
+   * @property {boolean} [locked] Whether the thread is locked
+   */
+
+  /**
+   * Edits this thread.
+   * @param {ThreadEditData} data The new data for this thread
    * @param {string} [reason] Reason for editing this thread
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Edit a thread
    * thread.edit({ name: 'new-thread' })
-   *   .then(console.log)
+   *   .then(editedThread => console.log(editedThread))
    *   .catch(console.error);
    */
   async edit(data, reason) {
@@ -231,7 +239,7 @@ class ThreadChannel extends Channel {
    * @param {string} [reason] Reason for archiving or unarchiving
    * @returns {Promise<ThreadChannel>}
    * @example
-   * // Set the thread to archived
+   * // Archive the thread
    * thread.setArchived(true)
    *   .then(newThread => console.log(`Thread is now ${newThread.archived ? 'archived' : 'active'}`))
    *   .catch(console.error);
@@ -241,15 +249,16 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Sets the duration before the channel is automatically archived.
-   * @param {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
-   * @param {string} [reason] Reason for changing the archive time
+   * Sets the duration after which the thread will automatically archive in case of no recent activity.
+   * @param {ThreadAutoArchiveDuration} autoArchiveDuration The amount of time (in minutes) after which the thread
+   * should automatically archive in case of no recent activity
+   * @param {string} [reason] Reason for changing the auto archive duration
    * @returns {Promise<ThreadChannel>}
    * @example
-   * // Set the thread auto archive time to 1 hour
+   * // Set the thread's auto archive time to 1 hour
    * thread.setAutoArchiveDuration(60)
    *   .then(newThread => {
-   *     console.log(`Thread will now archive after ${newThread.autoArchiveDuration}`);
+   *     console.log(`Thread will now archive after ${newThread.autoArchiveDuration} minutes of inactivity`);
    *    });
    *   .catch(console.error);
    */
@@ -273,12 +282,12 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Sets a new name for the thread.
+   * Sets a new name for this thread.
    * @param {string} name The new name for the thread
    * @param {string} [reason] Reason for changing the thread's name
    * @returns {Promise<ThreadChannel>}
    * @example
-   * // Set a new thread name
+   * // Change thread's name
    * thread.setName('not_general')
    *   .then(newThread => console.log(`Thread's new name is ${newThread.name}`))
    *   .catch(console.error);
@@ -364,7 +373,7 @@ class ThreadChannel extends Channel {
    * @example
    * // Delete the thread
    * thread.delete('cleaning out old threads')
-   *   .then(console.log)
+   *   .then(deletedThread => console.log(deletedThread))
    *   .catch(console.error);
    */
   delete(reason) {
