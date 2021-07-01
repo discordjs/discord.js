@@ -2160,14 +2160,14 @@ declare module 'discord.js' {
     public serverMute: boolean | null;
     public sessionID: string | null;
     public streaming: boolean;
-    public selfVideo: boolean;
+    public selfVideo: boolean | null;
     public suppress: boolean;
     public requestToSpeakTimestamp: number | null;
 
     public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
     public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
     public kick(reason?: string): Promise<GuildMember>;
-    public setChannel(channel: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
+    public setChannel(channel?: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
     public setRequestToSpeak(request: boolean): Promise<void>;
     public setSuppressed(suppressed: boolean): Promise<void>;
   }
