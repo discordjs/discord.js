@@ -563,7 +563,7 @@ declare module 'discord.js' {
 
   export class CommandInteraction extends Interaction {
     public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-    public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | null;
+    public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | ThreadChannel | null;
     public channelID: Snowflake;
     public commandID: Snowflake;
     public commandName: string;
@@ -1412,11 +1412,11 @@ declare module 'discord.js' {
   }
 
   export class MessageCollector extends Collector<Snowflake, Message> {
-    constructor(channel: TextChannel | DMChannel, options?: MessageCollectorOptions);
+    constructor(channel: TextChannel | DMChannel | ThreadChannel, options?: MessageCollectorOptions);
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
 
-    public channel: Channel;
+    public channel: TextChannel | DMChannel | ThreadChannel;
     public readonly endReason: string | null;
     public options: MessageCollectorOptions;
     public received: number;
@@ -1426,7 +1426,7 @@ declare module 'discord.js' {
   }
 
   export class MessageComponentInteraction extends Interaction {
-    public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | null;
+    public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | ThreadChannel | null;
     public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent> | null;
     public componentType: MessageComponentType;
     public customID: string;
