@@ -2063,7 +2063,7 @@ declare module 'discord.js' {
     public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
   }
 
-  export class Util {
+  export class Util extends null {
     public static basename(path: string, ext?: string): string;
     public static binaryToID(num: string): Snowflake;
     public static cleanContent(str: string, channel: Channel): string;
