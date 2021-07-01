@@ -28,31 +28,30 @@ class StageInstanceManager extends BaseManager {
 
   /**
    * Options used to create a stage instance.
-   * @typedef {Object} CreateStageInstanceOptions
-   * @property {StageChannel|Snowflake} channel The stage channel whose instance is to be created
+   * @typedef {Object} StageInstanceCreateOptions
    * @property {string} topic The topic of the stage instance
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the stage instance
    */
 
   /**
    * Creates a new stage instance.
-   * @param {CreateStageInstanceOptions} options The options to create the stage instance
+   * @param {StageChannel|Snowflake} channel The stage channel to associate the created stage instance to
+   * @param {StageInstanceCreateOptions} options The options to create the stage instance
    * @returns {Promise<StageInstance>}
    * @example
    * // Create a stage instance
-   * guild.stageInstances.create({
-   *  channel: '1234567890123456789',
+   * guild.stageInstances.create('1234567890123456789', {
    *  topic: 'A very creative topic',
    *  privacyLevel: 'GUILD_ONLY'
    * })
    *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error);
    */
-  async create(options) {
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { channel, topic, privacyLevel } = options;
+  async create(channel, options) {
     const channelID = this.guild.channels.resolveID(channel);
     if (!channelID) throw new Error('STAGE_CHANNEL_RESOLVE');
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    let { topic, privacyLevel } = options;
 
     if (privacyLevel) privacyLevel = typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
 
@@ -69,7 +68,7 @@ class StageInstanceManager extends BaseManager {
 
   /**
    * Fetches the stage instance associated with a stage channel, if it exists.
-   * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be fetched
+   * @param {StageChannel|Snowflake} channel The stage channel whose associated stage instance is to be fetched
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<StageInstance>}
    * @example
@@ -100,7 +99,7 @@ class StageInstanceManager extends BaseManager {
 
   /**
    * Edits an existing stage instance.
-   * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be edited
+   * @param {StageChannel|Snowflake} channel The stage channel whose associated stage instance is to be edited
    * @param {StageInstanceEditOptions} options The options to edit the stage instance
    * @returns {Promise<StageInstance>}
    * @example
@@ -136,7 +135,7 @@ class StageInstanceManager extends BaseManager {
 
   /**
    * Deletes an existing stage instance.
-   * @param {StageChannel|Snowflake} channel The stage channel whose instance is to be deleted
+   * @param {StageChannel|Snowflake} channel The stage channel whose associated stage instance is to be deleted
    * @returns {Promise<void>}
    */
   async delete(channel) {
