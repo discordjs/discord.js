@@ -25,7 +25,7 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
  */
 class InteractionCollector extends Collector {
   /**
-   * @param {Client} client The client on which to collect message component interactions
+   * @param {Client} client The client on which to collect interactions
    * @param {InteractionCollectorOptions} [options={}] The options to apply to this collector
    */
   constructor(client, options = {}) {
@@ -59,7 +59,7 @@ class InteractionCollector extends Collector {
         : options.interactionType ?? null;
 
     /**
-     * The the type of compoonent to collect
+     * The type of component to collect
      * @type {?MessageComponentType}
      */
     this.componentType =
