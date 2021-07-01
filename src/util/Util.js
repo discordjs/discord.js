@@ -8,7 +8,7 @@ const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
 
 /**
- * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
+ * Contains various general-purpose utility methods.
  */
 class Util {
   constructor() {
