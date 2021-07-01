@@ -1769,22 +1769,22 @@ declare module 'discord.js' {
     constructor(client: Client, data: unknown);
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
-    public available: ?boolean;
-    public description: ?string;
+    public available: boolean | null;
+    public description: string | null;
     public format: StickerFormatType;
-    public readonly guild: ?Guild;
-    public guildID: ?Snowflake;
+    public readonly guild: Guild | null;
+    public guildID: Snowflake | null;
     public id: Snowflake;
     public name: string;
-    public packID: ?Snowflake;
-    public sortValue: ?number;
-    public tags: ?string[];
-    public type: ?StickerType;
-    public user: ?User;
+    public packID: Snowflake | null;
+    public sortValue: number | null;
+    public tags: string[] | null;
+    public type: StickerType | null;
+    public user: User | null;
     public readonly url: string;
-    public fetch(): Promise<?Sticker>;
-    public fetchPack(): Promise<?StickerPack>;
-    public fetchUser(): Promise<?User>;
+    public fetch(): Promise<Sticker>;
+    public fetchPack(): Promise<StickerPack | null>;
+    public fetchUser(): Promise<User | null>;
   }
 
   export class StickerPack extends Base {
@@ -1792,8 +1792,8 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
     public bannerID: Snowflake;
-    public readonly coverSticker: ?Sticker;
-    public coverStickerID: ?Snowflake;
+    public readonly coverSticker: Sticker | null;
+    public coverStickerID: Snowflake | null;
     public description: string;
     public id: Snowflake;
     public name: string;
