@@ -1586,7 +1586,7 @@ declare module 'discord.js' {
     public options: MessageSelectOption[];
     public placeholder: string | null;
     public type: 'SELECT_MENU';
-    public addOptions(options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
+    public addOptions(...options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
     public setCustomID(customID: string): this;
     public setDisabled(disabled: boolean): this;
     public setMaxValues(maxValues: number): this;
