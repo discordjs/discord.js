@@ -18,7 +18,7 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
  */
 
 /**
- * Collects interaction on message components.
+ * Collects interactions.
  * Will automatically stop if the message (`'messageDelete'`),
  * channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
  * @extends {Collector}
