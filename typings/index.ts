@@ -256,8 +256,8 @@ client.on('ready', async () => {
   await guildCommandFromGlobal?.permissions.remove({ command: guildCommandID, roles: [testGuildID] });
   // @ts-expect-error
   await guildCommandFromGlobal?.permissions.remove({ command: guildCommandID, users: [testUserID] });
-  // @ts-expect-error
   await guildCommandFromGlobal?.permissions.remove({
+    // @ts-expect-error
     command: guildCommandID,
     roles: [testGuildID],
     users: [testUserID],
@@ -306,8 +306,8 @@ client.on('ready', async () => {
   await guildCommandFromGuild?.permissions.remove({ command: guildCommandID, roles: [testGuildID] });
   // @ts-expect-error
   await guildCommandFromGuild?.permissions.remove({ command: guildCommandID, users: [testUserID] });
-  // @ts-expect-error
   await guildCommandFromGuild?.permissions.remove({
+    // @ts-expect-error
     command: guildCommandID,
     roles: [testGuildID],
     users: [testUserID],
