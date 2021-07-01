@@ -33,7 +33,7 @@ class ApplicationCommand extends Base {
     this.guildID = guild?.id ?? guildID ?? null;
 
     /**
-     * The manager for permissions of this command on its guild or arbitrary gulds when the command is global
+     * The manager for permissions of this command on its guild or arbitrary guilds when the command is global
      * @type {ApplicationCommandPermissionsManager}
      */
     this.permissions = new ApplicationCommandPermissionsManager(this);
