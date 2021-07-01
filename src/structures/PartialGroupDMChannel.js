@@ -26,12 +26,11 @@ class PartialGroupDMChannel extends Channel {
 
   /**
    * The URL to this channel's icon.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   iconURL({ format, size } = {}) {
-    if (!this.icon) return null;
-    return this.client.rest.cdn.GDMIcon(this.id, this.icon, format, size);
+    return this.icon && this.client.rest.cdn.GDMIcon(this.id, this.icon, format, size);
   }
 
   delete() {

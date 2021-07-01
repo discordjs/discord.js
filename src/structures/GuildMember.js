@@ -15,7 +15,7 @@ let Structures;
 class GuildMember extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the guild member
+   * @param {APIGuildMember} data The data for the guild member
    * @param {Guild} guild The guild the member is part of
    */
   constructor(client, data, guild) {
@@ -85,7 +85,7 @@ class GuildMember extends Base {
     if ('nick' in data) this.nickname = data.nick;
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if ('premium_since' in data) {
-      this.premiumSinceTimestamp = data.premium_since === null ? null : new Date(data.premium_since).getTime();
+      this.premiumSinceTimestamp = data.premium_since ? new Date(data.premium_since).getTime() : null;
     }
     if ('roles' in data) this._roles = data.roles;
     this.pending = data.pending ?? false;
@@ -121,8 +121,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get lastMessage() {
-    const channel = this.guild.channels.cache.get(this.lastMessageChannelID);
-    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
+    return this.guild.channels.resolve(this.lastMessageChannelID)?.messages.resolve(this.lastMessageID) ?? null;
   }
 
   /**
@@ -133,7 +132,7 @@ class GuildMember extends Base {
   get voice() {
     if (!Structures) Structures = require('../util/Structures');
     const VoiceState = Structures.get('VoiceState');
-    return this.guild.voiceStates.cache.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
+    return this.guild.voiceStates.cache.get(this.id) ?? new VoiceState(this.guild, { user_id: this.id });
   }
 
   /**
@@ -163,7 +162,7 @@ class GuildMember extends Base {
     if (!Structures) Structures = require('../util/Structures');
     const Presence = Structures.get('Presence');
     return (
-      this.guild.presences.cache.get(this.id) ||
+      this.guild.presences.cache.get(this.id) ??
       new Presence(this.client, {
         user: {
           id: this.id,
@@ -179,8 +178,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayColor() {
-    const role = this.roles.color;
-    return (role && role.color) || 0;
+    return this.roles.color?.color ?? 0;
   }
 
   /**
@@ -189,8 +187,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayHexColor() {
-    const role = this.roles.color;
-    return (role && role.hexColor) || '#000000';
+    return this.roles.color?.hexColor ?? '#000000';
   }
 
   /**
@@ -208,7 +205,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayName() {
-    return this.nickname || this.user.username;
+    return this.nickname ?? this.user.username;
   }
 
   /**
@@ -256,13 +253,13 @@ class GuildMember extends Base {
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
-   * @param {ChannelResolvable} channel The guild channel to use as context
+   * @param {GuildChannelResolvable} channel The guild channel to use as context
    * @returns {Readonly<Permissions>}
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);
     if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
-    return channel.memberPermissions(this);
+    return channel.permissionsFor(this);
   }
 
   /**
@@ -323,9 +320,7 @@ class GuildMember extends Base {
 
   /**
    * Bans this guild member.
-   * @param {Object} [options] Options for the ban
-   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7, inclusive
-   * @param {string} [options.reason] Reason for banning
+   * @param {BanOptions} [options] Options for the ban
    * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
@@ -385,7 +380,6 @@ class GuildMember extends Base {
       guild: 'guildID',
       user: 'userID',
       displayName: true,
-      speaking: false,
       lastMessage: false,
       lastMessageID: false,
       roles: true,
@@ -400,3 +394,8 @@ class GuildMember extends Base {
 TextBasedChannel.applyToClass(GuildMember);
 
 module.exports = GuildMember;
+
+/**
+ * @external APIGuildMember
+ * @see {@link https://discord.com/developers/docs/resources/guild#guild-member-object}
+ */

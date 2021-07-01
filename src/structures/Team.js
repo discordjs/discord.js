@@ -32,13 +32,13 @@ class Team extends Base {
      * The Team's icon hash
      * @type {?string}
      */
-    this.icon = data.icon || null;
+    this.icon = data.icon ?? null;
 
     /**
      * The Team's owner id
      * @type {?string}
      */
-    this.ownerID = data.owner_user_id || null;
+    this.ownerID = data.owner_user_id ?? null;
 
     /**
      * The Team's members
@@ -58,7 +58,7 @@ class Team extends Base {
    * @readonly
    */
   get owner() {
-    return this.members.get(this.ownerID) || null;
+    return this.members.get(this.ownerID) ?? null;
   }
 
   /**
@@ -81,7 +81,7 @@ class Team extends Base {
 
   /**
    * A link to the teams's icon.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string} URL to the icon
    */
   iconURL({ format, size } = {}) {

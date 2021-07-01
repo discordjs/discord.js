@@ -11,7 +11,7 @@ const DataResolver = require('../util/DataResolver');
 class GuildTemplate extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The raw data for the template
+   * @param {APIGuildTemplate} data The raw data for the template
    */
   constructor(client, data) {
     super(client);
@@ -20,7 +20,7 @@ class GuildTemplate extends Base {
 
   /**
    * Builds or updates the template with the provided data.
-   * @param {Object} data The raw data for the template
+   * @param {APIGuildTemplate} data The raw data for the template
    * @returns {GuildTemplate}
    * @private
    */
@@ -81,8 +81,7 @@ class GuildTemplate extends Base {
 
     /**
      * The data of the guild that this template would create
-     * @type {Object}
-     * @see {@link https://discord.com/developers/docs/resources/guild#guild-resource}
+     * @type {APIGuild}
      */
     this.serializedGuild = data.serialized_source_guild;
 
@@ -136,10 +135,15 @@ class GuildTemplate extends Base {
   }
 
   /**
-   * Updates the metadata on this template.
-   * @param {Object} options Options for the template
-   * @param {string} [options.name] The name of this template
-   * @param {string} [options.description] The description of this template
+   * Options used to edit a guild template.
+   * @typedef {Object} EditGuildTemplateOptions
+   * @property {string} [name] The name of this template
+   * @property {string} [description] The description of this template
+   */
+
+  /**
+   * Updates the metadata of this template.
+   * @param {EditGuildTemplateOptions} [options] Options for editing the template
    * @returns {Promise<GuildTemplate>}
    */
   edit({ name, description } = {}) {
@@ -198,7 +202,7 @@ class GuildTemplate extends Base {
    * @readonly
    */
   get guild() {
-    return this.client.guilds.cache.get(this.guildID) || null;
+    return this.client.guilds.resolve(this.guildID);
   }
 
   /**
@@ -229,3 +233,9 @@ class GuildTemplate extends Base {
 GuildTemplate.GUILD_TEMPLATES_PATTERN = /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/gi;
 
 module.exports = GuildTemplate;
+
+/* eslint-disable max-len */
+/**
+ * @external APIGuildTemplate
+ * @see {@link https://discord.com/developers/docs/resources/guild-template#guild-template-object-guild-template-structure}
+ */

@@ -27,7 +27,7 @@ class ClientApplication extends Application {
      * The flags this application has
      * @type {ApplicationFlags}
      */
-    this.flags = 'flags' in data ? new ApplicationFlags(data.flags) : this.flags;
+    this.flags = 'flags' in data ? new ApplicationFlags(data.flags).freeze() : this.flags;
 
     /**
      * The hash of the application's cover image
@@ -36,19 +36,19 @@ class ClientApplication extends Application {
     this.cover = data.cover_image ?? this.cover ?? null;
 
     /**
-     * The app's RPC origins, if enabled
+     * The application's RPC origins, if enabled
      * @type {string[]}
      */
     this.rpcOrigins = data.rpc_origins ?? this.rpcOrigins ?? [];
 
     /**
-     * If this app's bot requires a code grant when using the OAuth2 flow
+     * If this application's bot requires a code grant when using the OAuth2 flow
      * @type {?boolean}
      */
     this.botRequireCodeGrant = data.bot_require_code_grant ?? this.botRequireCodeGrant ?? null;
 
     /**
-     * If this app's bot is public
+     * If this application's bot is public
      * @type {?boolean}
      */
     this.botPublic = data.bot_public ?? this.botPublic ?? null;

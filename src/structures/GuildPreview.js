@@ -75,7 +75,7 @@ class GuildPreview extends Base {
      * The description for this guild
      * @type {?string}
      */
-    this.description = data.description || null;
+    this.description = data.description ?? null;
 
     if (!this.emojis) {
       /**
@@ -93,22 +93,20 @@ class GuildPreview extends Base {
 
   /**
    * The URL to this guild's splash.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   splashURL({ format, size } = {}) {
-    if (!this.splash) return null;
-    return this.client.rest.cdn.Splash(this.id, this.splash, format, size);
+    return this.splash && this.client.rest.cdn.Splash(this.id, this.splash, format, size);
   }
 
   /**
    * The URL to this guild's discovery splash.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   discoverySplashURL({ format, size } = {}) {
-    if (!this.discoverySplash) return null;
-    return this.client.rest.cdn.DiscoverySplash(this.id, this.discoverySplash, format, size);
+    return this.discoverySplash && this.client.rest.cdn.DiscoverySplash(this.id, this.discoverySplash, format, size);
   }
 
   /**
@@ -117,8 +115,7 @@ class GuildPreview extends Base {
    * @returns {?string}
    */
   iconURL({ format, size, dynamic } = {}) {
-    if (!this.icon) return null;
-    return this.client.rest.cdn.Icon(this.id, this.icon, format, size, dynamic);
+    return this.icon && this.client.rest.cdn.Icon(this.id, this.icon, format, size, dynamic);
   }
 
   /**

@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const IntegrationApplication = require('./IntegrationApplication');
+const InviteStageInstance = require('./InviteStageInstance');
 const { Error } = require('../errors');
 const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
@@ -18,11 +19,16 @@ class Invite extends Base {
   }
 
   _patch(data) {
+    const InviteGuild = require('./InviteGuild');
+    const Guild = require('./Guild');
     /**
-     * The guild the invite is for
-     * @type {?Guild}
+     * The guild the invite is for including welcome screen data if present
+     * @type {?(Guild|InviteGuild)}
      */
-    this.guild = data.guild ? this.client.guilds.add(data.guild, false) : null;
+    this.guild = null;
+    if (data.guild) {
+      this.guild = data.guild instanceof Guild ? data.guild : new InviteGuild(this.client, data.guild);
+    }
 
     /**
      * The code for this invite
@@ -34,37 +40,37 @@ class Invite extends Base {
      * The approximate number of online members of the guild this invite is for
      * @type {?number}
      */
-    this.presenceCount = 'approximate_presence_count' in data ? data.approximate_presence_count : null;
+    this.presenceCount = data.approximate_presence_count ?? null;
 
     /**
      * The approximate total number of members of the guild this invite is for
      * @type {?number}
      */
-    this.memberCount = 'approximate_member_count' in data ? data.approximate_member_count : null;
+    this.memberCount = data.approximate_member_count ?? null;
 
     /**
      * Whether or not this invite is temporary
      * @type {?boolean}
      */
-    this.temporary = 'temporary' in data ? data.temporary : null;
+    this.temporary = data.temporary ?? null;
 
     /**
      * The maximum age of the invite, in seconds, 0 if never expires
      * @type {?number}
      */
-    this.maxAge = 'max_age' in data ? data.max_age : null;
+    this.maxAge = data.max_age ?? null;
 
     /**
      * How many times this invite has been used
      * @type {?number}
      */
-    this.uses = 'uses' in data ? data.uses : null;
+    this.uses = data.uses ?? null;
 
     /**
      * The maximum uses of this invite
      * @type {?number}
      */
-    this.maxUses = 'max_uses' in data ? data.max_uses : null;
+    this.maxUses = data.max_uses ?? null;
 
     /**
      * The user who created this invite
@@ -97,7 +103,7 @@ class Invite extends Base {
      * The target type
      * @type {?TargetType}
      */
-    this.targetType = typeof data.target_type === 'number' ? data.target_type : null;
+    this.targetType = data.target_type ?? null;
 
     /**
      * The channel the invite is for
@@ -112,6 +118,15 @@ class Invite extends Base {
     this.createdTimestamp = 'created_at' in data ? new Date(data.created_at).getTime() : null;
 
     this._expiresTimestamp = 'expires_at' in data ? new Date(data.expires_at).getTime() : null;
+
+    /**
+     * The stage instance data if there is a public {@link StageInstance} in the stage channel this invite is for
+     * @type {?InviteStageInstance}
+     */
+    this.stageInstance =
+      'stage_instance' in data
+        ? new InviteStageInstance(this.client, data.stage_instance, this.channel.id, this.guild.id)
+        : null;
   }
 
   /**

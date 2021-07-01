@@ -10,7 +10,9 @@
  * * **`NewsChannel`**
  * * **`StoreChannel`**
  * * **`StageChannel`**
+ * * **`ThreadChannel`**
  * * **`GuildMember`**
+ * * **`ThreadMember`**
  * * **`Guild`**
  * * **`Message`**
  * * **`MessageReaction`**
@@ -20,8 +22,9 @@
  * * **`Role`**
  * * **`User`**
  * * **`CommandInteraction`**
- * * **`MessageComponentInteraction`**
  * * **`ButtonInteraction`**
+ * * **`StageInstance`**
+ * * **`SelectMenuInteraction`**
  * @typedef {string} ExtendableStructure
  */
 
@@ -82,7 +85,7 @@ class Structures {
 
     if (!(extended.prototype instanceof structures[structure])) {
       const prototype = Object.getPrototypeOf(extended);
-      const received = `${extended.name || 'unnamed'}${prototype.name ? ` extends ${prototype.name}` : ''}`;
+      const received = `${extended.name ?? 'unnamed'}${prototype.name ? ` extends ${prototype.name}` : ''}`;
       throw new Error(
         'The class/prototype returned from the extender function must extend the existing structure class/prototype' +
           ` (received function ${received}; expected extension of ${structures[structure].name}).`,
@@ -103,7 +106,9 @@ const structures = {
   NewsChannel: require('../structures/NewsChannel'),
   StoreChannel: require('../structures/StoreChannel'),
   StageChannel: require('../structures/StageChannel'),
+  ThreadChannel: require('../structures/ThreadChannel'),
   GuildMember: require('../structures/GuildMember'),
+  ThreadMember: require('../structures/ThreadMember'),
   Guild: require('../structures/Guild'),
   Message: require('../structures/Message'),
   MessageReaction: require('../structures/MessageReaction'),
@@ -113,8 +118,9 @@ const structures = {
   Role: require('../structures/Role'),
   User: require('../structures/User'),
   CommandInteraction: require('../structures/CommandInteraction'),
-  MessageComponentInteraction: require('../structures/MessageComponentInteraction'),
   ButtonInteraction: require('../structures/ButtonInteraction'),
+  SelectMenuInteraction: require('../structures/SelectMenuInteraction'),
+  StageInstance: require('../structures/StageInstance'),
 };
 
 module.exports = Structures;

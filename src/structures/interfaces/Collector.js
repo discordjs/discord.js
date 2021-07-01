@@ -16,6 +16,7 @@ const Util = require('../../util/Util');
 /**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
+ * @property {CollectorFilter} [filter] The filter applied to this collector
  * @property {number} [time] How long to run the collector for in milliseconds
  * @property {number} [idle] How long to stop the collector after inactivity in milliseconds
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
@@ -26,7 +27,7 @@ const Util = require('../../util/Util');
  * @abstract
  */
 class Collector extends EventEmitter {
-  constructor(client, filter, options = {}) {
+  constructor(client, options = {}) {
     super();
 
     /**
@@ -40,8 +41,9 @@ class Collector extends EventEmitter {
     /**
      * The filter applied to this collector
      * @type {CollectorFilter}
+     * @returns {boolean|Promise<boolean>}
      */
-    this.filter = filter;
+    this.filter = options.filter ?? (() => true);
 
     /**
      * The options of this collector
@@ -75,8 +77,8 @@ class Collector extends EventEmitter {
      */
     this._idletimeout = null;
 
-    if (typeof filter !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'filter', 'function');
+    if (typeof this.filter !== 'function') {
+      throw new TypeError('INVALID_TYPE', 'options.filter', 'function');
     }
 
     this.handleCollect = this.handleCollect.bind(this);
@@ -89,10 +91,11 @@ class Collector extends EventEmitter {
   /**
    * Call this to handle an event as a collectable element. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
+   * @returns {Promise<void>}
    * @emits Collector#collect
    */
   async handleCollect(...args) {
-    const collect = this.collect(...args);
+    const collect = await this.collect(...args);
 
     if (collect && (await this.filter(...args, this.collected))) {
       this.collected.set(collect, args[0]);
@@ -115,13 +118,14 @@ class Collector extends EventEmitter {
   /**
    * Call this to remove an element from the collection. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
+   * @returns {Promise<void>}
    * @emits Collector#dispose
    */
-  handleDispose(...args) {
+  async handleDispose(...args) {
     if (!this.options.dispose) return;
 
     const dispose = this.dispose(...args);
-    if (!dispose || !this.filter(...args) || !this.collected.has(dispose)) return;
+    if (!dispose || !(await this.filter(...args)) || !this.collected.has(dispose)) return;
     this.collected.delete(dispose);
 
     /**
@@ -194,19 +198,25 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Resets the collectors timeout and idle timer.
-   * @param {Object} [options] Options
-   * @param {number} [options.time] How long to run the collector for in milliseconds
-   * @param {number} [options.idle] How long to stop the collector after inactivity in milliseconds
+   * Options used to reset timeout and idle timer of a {@link Collector}.
+   * @typedef {Object} CollectorResetTimerOptions
+   * @property {number} [time] How long to run the collector for (in milliseconds)
+   * @property {number} [idle] How long to wait to stop the collector after inactivity (in milliseconds)
+   */
+
+  /**
+   * Resets the collector's timeout and idle timer.
+   * @param {CollectorResetTimerOptions} [options] Options for reseting
+
    */
   resetTimer({ time, idle } = {}) {
     if (this._timeout) {
       this.client.clearTimeout(this._timeout);
-      this._timeout = this.client.setTimeout(() => this.stop('time'), time || this.options.time);
+      this._timeout = this.client.setTimeout(() => this.stop('time'), time ?? this.options.time);
     }
     if (this._idletimeout) {
       this.client.clearTimeout(this._idletimeout);
-      this._idletimeout = this.client.setTimeout(() => this.stop('idle'), idle || this.options.idle);
+      this._idletimeout = this.client.setTimeout(() => this.stop('idle'), idle ?? this.options.idle);
     }
   }
 
@@ -259,7 +269,7 @@ class Collector extends EventEmitter {
    * be collected, or returns an object describing the data that should be stored.
    * @see Collector#handleCollect
    * @param {...*} args Any args the event listener emits
-   * @returns {?{key, value}} Data to insert into collection, if any
+   * @returns {?(*|Promise<?*>)} Data to insert into collection, if any
    * @abstract
    */
   collect() {}

@@ -3,8 +3,9 @@
 const BaseManager = require('./BaseManager');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
+const ThreadChannel = require('../structures/ThreadChannel');
 const Collection = require('../util/Collection');
-const { ChannelTypes } = require('../util/Constants');
+const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for GuildChannels and stores their cache.
@@ -22,8 +23,21 @@ class GuildChannelManager extends BaseManager {
   }
 
   /**
+   * The number of channels in this managers cache excluding thread channels
+   * that do not count towards a guild's maximum channels restriction.
+   * @type {number}
+   * @readonly
+   */
+  get channelCountWithoutThreads() {
+    return this.cache.reduce((acc, channel) => {
+      if (ThreadChannelTypes.includes(channel.type)) return acc;
+      return ++acc;
+    }, 0);
+  }
+
+  /**
    * The cache of this Manager
-   * @type {Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, GuildChannel|ThreadChannel>}
    * @name GuildChannelManager#cache
    */
 
@@ -37,44 +51,52 @@ class GuildChannelManager extends BaseManager {
   /**
    * Data that can be resolved to give a Guild Channel object. This can be:
    * * A GuildChannel object
+   * * A ThreadChannel object
    * * A Snowflake
-   * @typedef {GuildChannel|Snowflake} GuildChannelResolvable
+   * @typedef {GuildChannel|ThreadChannel|Snowflake} GuildChannelResolvable
    */
 
   /**
    * Resolves a GuildChannelResolvable to a Channel object.
-   * @method resolve
-   * @memberof GuildChannelManager
-   * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?GuildChannel}
+   * @returns {?(GuildChannel|ThreadChannel)}
    */
+  resolve(channel) {
+    if (channel instanceof ThreadChannel) return super.resolve(channel.id);
+    return super.resolve(channel);
+  }
 
   /**
    * Resolves a GuildChannelResolvable to a channel ID string.
-   * @method resolveID
-   * @memberof GuildChannelManager
-   * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?Snowflake}
+   */
+  resolveID(channel) {
+    if (channel instanceof ThreadChannel) return super.resolveID(channel.id);
+    return super.resolveID(channel);
+  }
+
+  /**
+   * Options used to create a new channel in a guild.
+   * @typedef {Object} GuildChannelCreateOptions
+   * @property {string} [type='text'] The type of the new channel, either `text`, `voice`, `category`, `news`,
+   * `store`, or `stage`
+   * @property {string} [topic] The topic for the new channel
+   * @property {boolean} [nsfw] Whether the new channel is nsfw
+   * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
+   * @property {number} [userLimit] Maximum amount of users allowed in the new channel (only voice)
+   * @property {ChannelResolvable} [parent] Parent of the new channel
+   * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
+   * Permission overwrites of the new channel
+   * @property {number} [position] Position of the new channel
+   * @property {number} [rateLimitPerUser] The ratelimit per user for the new channel
+   * @property {string} [reason] Reason for creating the new channel
    */
 
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {Object} [options] Options
-   * @param {string} [options.type='text'] The type of the new channel, either `text`, `voice`, `category`, `news`,
-   * `store`, or `stage`
-   * @param {string} [options.topic] The topic for the new channel
-   * @param {boolean} [options.nsfw] Whether the new channel is nsfw
-   * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
-   * @param {number} [options.userLimit] Maximum amount of users allowed in the new channel (only voice)
-   * @param {ChannelResolvable} [options.parent] Parent of the new channel
-   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.permissionOverwrites]
-   * Permission overwrites of the new channel
-   * @param {number} [options.position] Position of the new channel
-   * @param {number} [options.rateLimitPerUser] The ratelimit per user for the channel
-   * @param {string} [options.reason] Reason for creating the channel
+   * @param {GuildChannelCreateOptions} [options={}] Options for creating the new channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create a new text channel
@@ -93,9 +115,10 @@ class GuildChannelManager extends BaseManager {
    *   ],
    * })
    */
-  async create(name, options = {}) {
-    let { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } =
-      options;
+  async create(
+    name,
+    { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
+  ) {
     if (parent) parent = this.client.channels.resolveID(parent);
     if (permissionOverwrites) {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
@@ -122,8 +145,7 @@ class GuildChannelManager extends BaseManager {
   /**
    * Obtains one or more guild channels from Discord, or the channel cache if they're already available.
    * @param {Snowflake} [id] ID of the channel
-   * @param {boolean} [cache=true] Whether to cache the new channel objects if it weren't already
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?GuildChannel|Collection<Snowflake, GuildChannel>>}
    * @example
    * // Fetch all channels from the guild
@@ -136,7 +158,7 @@ class GuildChannelManager extends BaseManager {
    *   .then(channel => console.log(`The channel name is: ${channel.name}`))
    *   .catch(console.error);
    */
-  async fetch(id, cache = true, force = false) {
+  async fetch(id, { cache = true, force = false } = {}) {
     if (id && !force) {
       const existing = this.cache.get(id);
       if (existing) return existing;

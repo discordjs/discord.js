@@ -20,11 +20,10 @@ const { Events } = require('../util/Constants');
 class ReactionCollector extends Collector {
   /**
    * @param {Message} message The message upon which to collect reactions
-   * @param {CollectorFilter} filter The filter to apply to this collector
    * @param {ReactionCollectorOptions} [options={}] The options to apply to this collector
    */
-  constructor(message, filter, options = {}) {
-    super(message.client, filter, options);
+  constructor(message, options = {}) {
+    super(message.client, options);
 
     /**
      * The message upon which to collect reactions
@@ -82,10 +81,10 @@ class ReactionCollector extends Collector {
    * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
    * @param {User} user The user that added the reaction
-   * @returns {?Snowflake|string}
+   * @returns {Promise<?(Snowflake|string)>}
    * @private
    */
-  collect(reaction, user) {
+  async collect(reaction, user) {
     /**
      * Emitted whenever a reaction is collected.
      * @event ReactionCollector#collect
@@ -102,7 +101,7 @@ class ReactionCollector extends Collector {
      * @param {MessageReaction} reaction The reaction that was added
      * @param {User} user The user that added the reaction
      */
-    if (reaction.count === 1 && this.filter(reaction, user, this.collected)) {
+    if (reaction.count === 1 && (await this.filter(reaction, user, this.collected))) {
       this.emit('create', reaction, user);
     }
 
@@ -113,7 +112,7 @@ class ReactionCollector extends Collector {
    * Handles a reaction deletion for possible disposal.
    * @param {MessageReaction} reaction The reaction to possibly dispose of
    * @param {User} user The user that removed the reaction
-   * @returns {?Snowflake|string}
+   * @returns {?(Snowflake|string)}
    */
   dispose(reaction, user) {
     /**
@@ -184,7 +183,7 @@ class ReactionCollector extends Collector {
    * @returns {void}
    */
   _handleGuildDeletion(guild) {
-    if (this.message.guild && guild.id === this.message.guild.id) {
+    if (guild.id === this.message.guild?.id) {
       this.stop('guildDelete');
     }
   }
@@ -195,7 +194,7 @@ class ReactionCollector extends Collector {
    * @returns {Snowflake|string}
    */
   static key(reaction) {
-    return reaction.emoji.id || reaction.emoji.name;
+    return reaction.emoji.id ?? reaction.emoji.name;
   }
 }
 

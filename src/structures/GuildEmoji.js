@@ -12,7 +12,7 @@ const Permissions = require('../util/Permissions');
 class GuildEmoji extends BaseGuildEmoji {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the guild emoji
+   * @param {APIEmoji} data The data for the guild emoji
    * @param {Guild} guild The guild the guild emoji is part of
    */
   constructor(client, data, guild) {
@@ -23,6 +23,14 @@ class GuildEmoji extends BaseGuildEmoji {
      * @type {?User}
      */
     this.author = null;
+
+    /**
+     * Array of role ids this emoji is active for
+     * @name GuildEmoji#_roles
+     * @type {Snowflake[]}
+     * @private
+     */
+    Object.defineProperty(this, '_roles', { value: [], writable: true });
   }
 
   /**
@@ -39,7 +47,9 @@ class GuildEmoji extends BaseGuildEmoji {
 
   _patch(data) {
     super._patch(data);
-    if (typeof data.user !== 'undefined') this.author = this.client.users.add(data.user);
+
+    if (data.user) this.author = this.client.users.add(data.user);
+    if (data.roles) this._roles = data.roles;
   }
 
   /**
@@ -98,7 +108,7 @@ class GuildEmoji extends BaseGuildEmoji {
    *   .catch(console.error);
    */
   edit(data, reason) {
-    const roles = data.roles ? data.roles.map(r => r.id || r) : undefined;
+    const roles = data.roles?.map(r => r.id ?? r);
     return this.client.api
       .guilds(this.guild.id)
       .emojis(this.id)
@@ -141,7 +151,7 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Whether this emoji is the same as another one.
-   * @param {GuildEmoji|Object} other The emoji to compare it to
+   * @param {GuildEmoji|APIEmoji} other The emoji to compare it to
    * @returns {boolean} Whether the emoji is equal to the given emoji or not
    */
   equals(other) {

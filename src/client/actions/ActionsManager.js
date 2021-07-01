@@ -17,6 +17,7 @@ class ActionsManager {
     this.register(require('./ChannelUpdate'));
     this.register(require('./GuildDelete'));
     this.register(require('./GuildUpdate'));
+    this.register(require('./InteractionCreate'));
     this.register(require('./InviteCreate'));
     this.register(require('./InviteDelete'));
     this.register(require('./GuildMemberRemove'));
@@ -33,11 +34,19 @@ class ActionsManager {
     this.register(require('./GuildEmojiDelete'));
     this.register(require('./GuildEmojiUpdate'));
     this.register(require('./GuildEmojisUpdate'));
+    this.register(require('./ThreadCreate'));
+    this.register(require('./ThreadDelete'));
+    this.register(require('./ThreadListSync'));
+    this.register(require('./ThreadMemberUpdate'));
+    this.register(require('./ThreadMembersUpdate'));
     this.register(require('./GuildRolesPositionUpdate'));
     this.register(require('./GuildChannelsPositionUpdate'));
     this.register(require('./GuildIntegrationsUpdate'));
     this.register(require('./WebhooksUpdate'));
     this.register(require('./TypingStart'));
+    this.register(require('./StageInstanceCreate'));
+    this.register(require('./StageInstanceUpdate'));
+    this.register(require('./StageInstanceDelete'));
   }
 
   register(Action) {

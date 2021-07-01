@@ -18,32 +18,32 @@ class Application extends Base {
 
   _patch(data) {
     /**
-     * The ID of the app
+     * The ID of the application
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The name of the app
+     * The name of the application
      * @type {?string}
      */
     this.name = data.name ?? this.name ?? null;
 
     /**
-     * The app's description
+     * The application's description
      * @type {?string}
      */
     this.description = data.description ?? this.description ?? null;
 
     /**
-     * The app's icon hash
+     * The application's icon hash
      * @type {?string}
      */
     this.icon = data.icon ?? this.icon ?? null;
   }
 
   /**
-   * The timestamp the app was created at
+   * The timestamp the application was created at
    * @type {number}
    * @readonly
    */
@@ -52,7 +52,7 @@ class Application extends Base {
   }
 
   /**
-   * The time the app was created at
+   * The time the application was created at
    * @type {Date}
    * @readonly
    */
@@ -62,7 +62,7 @@ class Application extends Base {
 
   /**
    * A link to the application's icon.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string} URL to the icon
    */
   iconURL({ format, size } = {}) {
@@ -72,7 +72,7 @@ class Application extends Base {
 
   /**
    * A link to this application's cover image.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string} URL to the cover image
    */
   coverURL({ format, size } = {}) {
@@ -89,7 +89,7 @@ class Application extends Base {
    */
 
   /**
-   * Gets the clients rich presence assets.
+   * Gets the application's rich presence assets.
    * @returns {Promise<Array<ApplicationAsset>>}
    */
   fetchAssets() {

@@ -109,10 +109,10 @@ class ShardClientUtil {
    */
   fetchClientValues(prop, shard) {
     return new Promise((resolve, reject) => {
-      const parent = this.parentPort || process;
+      const parent = this.parentPort ?? process;
 
       const listener = message => {
-        if (!message || message._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
+        if (message?._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
@@ -139,7 +139,7 @@ class ShardClientUtil {
    */
   broadcastEval(script, options = {}) {
     return new Promise((resolve, reject) => {
-      const parent = this.parentPort || process;
+      const parent = this.parentPort ?? process;
       if (typeof script !== 'function') {
         reject(new TypeError('SHARDING_INVALID_EVAL_BROADCAST'));
         return;
@@ -147,7 +147,7 @@ class ShardClientUtil {
       script = `(${script})(this, ${JSON.stringify(options.context)})`;
 
       const listener = message => {
-        if (!message || message._sEval !== script || message._sEvalShard !== options.shard) return;
+        if (message?._sEval !== script || message._sEvalShard !== options.shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
@@ -163,12 +163,7 @@ class ShardClientUtil {
 
   /**
    * Requests a respawn of all shards.
-   * @param {Object} [options] Options for respawning shards
-   * @param {number} [options.shardDelay=5000] How long to wait between shards (in milliseconds)
-   * @param {number} [options.respawnDelay=500] How long to wait between killing a shard's process/worker and
-   * restarting it (in milliseconds)
-   * @param {number} [options.timeout=30000] The amount in milliseconds to wait for a shard to become ready before
-   * continuing to another. (-1 or Infinity for no wait)
+   * @param {MultipleShardRespawnOptions} [options] Options for respawning shards
    * @returns {Promise<void>} Resolves upon the message being sent
    * @see {@link ShardingManager#respawnAll}
    */

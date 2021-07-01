@@ -41,7 +41,8 @@ const { Error, RangeError } = require('../errors');
  * 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings). That is, if set to 500,
  * warnings will be emitted at invalid request number 500, 1000, 1500, and so on.
  * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
- * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
+ * they're missing all the data for a particular structure. See the "Partial Structures" topic on the
+ * [guide](https://discordjs.guide/popular-topics/partials.html) for some
  * important usage information, as partials require you to put checks in place when handling data.
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
@@ -91,13 +92,13 @@ exports.DefaultOptions = {
       $browser: 'discord.js',
       $device: 'discord.js',
     },
-    version: 8,
+    version: 9,
   },
 
   /**
    * HTTP options
    * @typedef {Object} HTTPOptions
-   * @property {number} [version=8] API version to use
+   * @property {number} [version=9] API version to use
    * @property {string} [api='https://discord.com/api'] Base url of the API
    * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
    * @property {string} [invite='https://discord.gg'] Base url of invites
@@ -105,7 +106,7 @@ exports.DefaultOptions = {
    * @property {Object} [headers] Additional headers to send for all API requests
    */
   http: {
-    version: 8,
+    version: 9,
     api: 'https://discord.com/api',
     cdn: 'https://cdn.discordapp.com',
     invite: 'https://discord.gg',
@@ -136,11 +137,16 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
 
 /**
  * Options for Image URLs.
- * @typedef {Object} ImageURLOptions
- * @property {string} [format] One of `webp`, `png`, `jpg`, `jpeg`, `gif`. If no format is provided,
- * defaults to `webp`.
+ * @typedef {StaticImageURLOptions} ImageURLOptions
  * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
- * animated avatars; the default is false.
+ * animated avatars; the default is false
+ */
+
+/**
+ * Options for static Image URLs.
+ * @typedef {Object} StaticImageURLOptions
+ * @property {string} [format] One of `webp`, `png`, `jpg`, `jpeg`, `gif`. If no format is provided,
+ * defaults to `webp`
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
  */
 
@@ -203,23 +209,6 @@ exports.Status = {
   RESUMING: 8,
 };
 
-/**
- * The current status of a voice connection. Here are the available statuses:
- * * CONNECTED: 0
- * * CONNECTING: 1
- * * AUTHENTICATING: 2
- * * RECONNECTING: 3
- * * DISCONNECTED: 4
- * @typedef {number} VoiceStatus
- */
-exports.VoiceStatus = {
-  CONNECTED: 0,
-  CONNECTING: 1,
-  AUTHENTICATING: 2,
-  RECONNECTING: 3,
-  DISCONNECTED: 4,
-};
-
 exports.OPCodes = {
   DISPATCH: 0,
   HEARTBEAT: 1,
@@ -233,18 +222,6 @@ exports.OPCodes = {
   INVALID_SESSION: 9,
   HELLO: 10,
   HEARTBEAT_ACK: 11,
-};
-
-exports.VoiceOPCodes = {
-  IDENTIFY: 0,
-  SELECT_PROTOCOL: 1,
-  READY: 2,
-  HEARTBEAT: 3,
-  SESSION_DESCRIPTION: 4,
-  SPEAKING: 5,
-  HELLO: 8,
-  CLIENT_CONNECT: 12,
-  CLIENT_DISCONNECT: 13,
 };
 
 exports.Events = {
@@ -262,7 +239,6 @@ exports.Events = {
   GUILD_MEMBER_REMOVE: 'guildMemberRemove',
   GUILD_MEMBER_UPDATE: 'guildMemberUpdate',
   GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable',
-  GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
   GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
   GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate',
   GUILD_ROLE_CREATE: 'roleCreate',
@@ -287,12 +263,16 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji',
+  THREAD_CREATE: 'threadCreate',
+  THREAD_DELETE: 'threadDelete',
+  THREAD_UPDATE: 'threadUpdate',
+  THREAD_LIST_SYNC: 'threadListSync',
+  THREAD_MEMBER_UPDATE: 'threadMemberUpdate',
+  THREAD_MEMBERS_UPDATE: 'threadMembersUpdate',
   USER_UPDATE: 'userUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_SERVER_UPDATE: 'voiceServerUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
-  VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
-  VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
   WEBHOOKS_UPDATE: 'webhookUpdate',
   INTERACTION_CREATE: 'interaction',
@@ -306,6 +286,9 @@ exports.Events = {
   SHARD_RESUME: 'shardResume',
   INVALIDATED: 'invalidated',
   RAW: 'raw',
+  STAGE_INSTANCE_CREATE: 'stageInstanceCreate',
+  STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate',
+  STAGE_INSTANCE_DELETE: 'stageInstanceDelete',
 };
 
 exports.ShardEvents = {
@@ -324,8 +307,8 @@ exports.ShardEvents = {
  * * GUILD_MEMBER
  * * MESSAGE
  * * REACTION
- * <warn>Partials require you to put checks in place when handling data, read the Partials topic listed in the
- * sidebar for more information.</warn>
+ * <warn>Partials require you to put checks in place when handling data. See the "Partial Structures" topic on the
+ * [guide](https://discordjs.guide/popular-topics/partials.html) for more information.</warn>
  * @typedef {string} PartialType
  */
 exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION']);
@@ -365,6 +348,12 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * MESSAGE_REACTION_REMOVE
  * * MESSAGE_REACTION_REMOVE_ALL
  * * MESSAGE_REACTION_REMOVE_EMOJI
+ * * THREAD_CREATE
+ * * THREAD_UPDATE
+ * * THREAD_DELETE
+ * * THREAD_LIST_SYNC
+ * * THREAD_MEMBER_UPDATE
+ * * THREAD_MEMBERS_UPDATE
  * * USER_UPDATE
  * * PRESENCE_UPDATE
  * * TYPING_START
@@ -372,6 +361,9 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * VOICE_SERVER_UPDATE
  * * WEBHOOKS_UPDATE
  * * INTERACTION_CREATE
+ * * STAGE_INSTANCE_CREATE
+ * * STAGE_INSTANCE_UPDATE
+ * * STAGE_INSTANCE_DELETE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
@@ -408,6 +400,12 @@ exports.WSEvents = keyMirror([
   'MESSAGE_REACTION_REMOVE',
   'MESSAGE_REACTION_REMOVE_ALL',
   'MESSAGE_REACTION_REMOVE_EMOJI',
+  'THREAD_CREATE',
+  'THREAD_UPDATE',
+  'THREAD_DELETE',
+  'THREAD_LIST_SYNC',
+  'THREAD_MEMBER_UPDATE',
+  'THREAD_MEMBERS_UPDATE',
   'USER_UPDATE',
   'PRESENCE_UPDATE',
   'TYPING_START',
@@ -415,6 +413,9 @@ exports.WSEvents = keyMirror([
   'VOICE_SERVER_UPDATE',
   'WEBHOOKS_UPDATE',
   'INTERACTION_CREATE',
+  'STAGE_INSTANCE_CREATE',
+  'STAGE_INSTANCE_UPDATE',
+  'STAGE_INSTANCE_DELETE',
 ]);
 
 /**
@@ -466,8 +467,11 @@ exports.InviteScopes = [
  * * GUILD_DISCOVERY_REQUALIFIED
  * * GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING
  * * GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING
+ * * THREAD_CREATED
  * * REPLY
  * * APPLICATION_COMMAND
+ * * THREAD_STARTER_MESSAGE
+ * * GUILD_INVITE_REMINDER
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -489,9 +493,11 @@ exports.MessageTypes = [
   'GUILD_DISCOVERY_REQUALIFIED',
   'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING',
   'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING',
-  null,
+  'THREAD_CREATED',
   'REPLY',
   'APPLICATION_COMMAND',
+  'THREAD_STARTER_MESSAGE',
+  'GUILD_INVITE_REMINDER',
 ];
 
 /**
@@ -506,17 +512,17 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(
 );
 
 /**
- * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
+ * <info>Bots cannot set a `CUSTOM` activity type, it is only for custom statuses received from users</info>
  * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
  * * STREAMING
  * * LISTENING
  * * WATCHING
- * * CUSTOM_STATUS
+ * * CUSTOM
  * * COMPETING
  * @typedef {string} ActivityType
  */
-exports.ActivityTypes = ['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM_STATUS', 'COMPETING'];
+exports.ActivityTypes = createEnum(['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM', 'COMPETING']);
 
 exports.ChannelTypes = createEnum([
   'TEXT',
@@ -527,10 +533,22 @@ exports.ChannelTypes = createEnum([
   'NEWS',
   // 6
   'STORE',
-  ...Array(6).fill(null),
-  // 13
+  ...Array(3).fill(null),
+  // 10
+  'NEWS_THREAD',
+  'PUBLIC_THREAD',
+  'PRIVATE_THREAD',
   'STAGE',
 ]);
+
+/**
+ * The types of channels that are threads. The available types are:
+ * * news_thread
+ * * public_thread
+ * * private_thread
+ * @typedef {string} ThreadChannelType
+ */
+exports.ThreadChannelTypes = ['news_thread', 'public_thread', 'private_thread'];
 
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
@@ -577,7 +595,7 @@ exports.Colors = {
  * * ALL_MEMBERS
  * @typedef {string} ExplicitContentFilterLevel
  */
-exports.ExplicitContentFilterLevels = ['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL_MEMBERS'];
+exports.ExplicitContentFilterLevels = createEnum(['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL_MEMBERS']);
 
 /**
  * The value set for the verification levels for a guild:
@@ -588,7 +606,7 @@ exports.ExplicitContentFilterLevels = ['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL
  * * VERY_HIGH
  * @typedef {string} VerificationLevel
  */
-exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
+exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH']);
 
 /**
  * An error encountered while performing an API request. Here are the potential errors:
@@ -607,17 +625,39 @@ exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
  * * UNKNOWN_USER
  * * UNKNOWN_EMOJI
  * * UNKNOWN_WEBHOOK
+ * * UNKNOWN_WEBHOOK_SERVICE
+ * * UNKNOWN_SESSION
  * * UNKNOWN_BAN
+ * * UNKNOWN_SKU
+ * * UNKNOWN_STORE_LISTING
+ * * UNKNOWN_ENTITLEMENT
+ * * UNKNOWN_BUILD
+ * * UNKNOWN_LOBBY
+ * * UNKNOWN_BRANCH
+ * * UNKNOWN_STORE_DIRECTORY_LAYOUT
+ * * UNKNOWN_REDISTRIBUTABLE
+ * * UNKNOWN_GIFT_CODE
  * * UNKNOWN_GUILD_TEMPLATE
+ * * UNKNOWN_INTERACTION
+ * * UNKNOWN_APPLICATION_COMMAND
+ * * UNKNOWN_APPLICATION_COMMAND_PERMISSIONS
+ * * UNKNOWN_STAGE_INSTANCE
  * * BOT_PROHIBITED_ENDPOINT
  * * BOT_ONLY_ENDPOINT
+ * * CANNOT_SEND_EXPLICIT_CONTENT
+ * * NOT_AUTHORIZED
+ * * SLOWMODE_RATE_LIMIT
+ * * ACCOUNT_OWNER_ONLY
  * * ANNOUNCEMENT_EDIT_LIMIT_EXCEEDED
  * * CHANNEL_HIT_WRITE_RATELIMIT
+ * * CONTENT_NOT_ALLOWED
  * * MAXIMUM_GUILDS
  * * MAXIMUM_FRIENDS
  * * MAXIMUM_PINS
+ * * MAXIMUM_RECIPIENTS
  * * MAXIMUM_ROLES
  * * MAXIMUM_WEBHOOKS
+ * * MAXIMUM_EMOJIS
  * * MAXIMUM_REACTIONS
  * * MAXIMUM_CHANNELS
  * * MAXIMUM_ATTACHMENTS
@@ -625,11 +665,16 @@ exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
  * * MAXIMUM_ANIMATED_EMOJIS
  * * MAXIMUM_SERVER_MEMBERS
  * * GUILD_ALREADY_HAS_TEMPLATE
+ * * MAXIMUM_THREAD_PARTICIPANTS
+ * * MAXIMUM_NON_GUILD_MEMBERS_BANS
+ * * MAXIMUM_BAN_FETCHES
  * * UNAUTHORIZED
  * * ACCOUNT_VERIFICATION_REQUIRED
+ * * DIRECT_MESSAGES_TOO_FAST
  * * REQUEST_ENTITY_TOO_LARGE
  * * FEATURE_TEMPORARILY_DISABLED
  * * USER_BANNED
+ * * TARGET_USER_NOT_CONNECTED_TO_VOICE
  * * ALREADY_CROSSPOSTED
  * * MISSING_ACCESS
  * * INVALID_ACCOUNT_TYPE
@@ -652,14 +697,30 @@ exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
  * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
  * * CANNOT_EXECUTE_ON_CHANNEL_TYPE
  * * INVALID_OAUTH_TOKEN
+ * * MISSING_OAUTH_SCOPE
+ * * INVALID_WEBHOOK_TOKEN
+ * * INVALID_ROLE
  * * INVALID_RECIPIENTS
  * * BULK_DELETE_MESSAGE_TOO_OLD
  * * INVALID_FORM_BODY
  * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT
  * * INVALID_API_VERSION
+ * * CANNOT_SELF_REDEEM_GIFT
+ * * PAYMENT_SOURCE_REQUIRED
  * * CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL
+ * * INVALID_STICKER_SENT
+ * * INVALID_OPERATION_ON_ARCHIVED_THREAD
+ * * INVALID_THREAD_NOTIFICATION_SETTINGS
+ * * PARAMETER_EARLIER_THAN_CREATION
+ * * TWO_FACTOR_REQUIRED
+ * * NO_USERS_WITH_DISCORDTAG_EXIST
  * * REACTION_BLOCKED
  * * RESOURCE_OVERLOADED
+ * * STAGE_ALREADY_OPEN
+ * * MESSAGE_ALREADY_HAS_THREAD
+ * * THREAD_LOCKED
+ * * MAXIMUM_ACTIVE_THREADS
+ * * MAXIMUM_ACTIVE_ANNOUCEMENT_THREAD
  * @typedef {string} APIError
  */
 exports.APIErrors = {
@@ -678,17 +739,40 @@ exports.APIErrors = {
   UNKNOWN_USER: 10013,
   UNKNOWN_EMOJI: 10014,
   UNKNOWN_WEBHOOK: 10015,
+  UNKNOWN_WEBHOOK_SERVICE: 10016,
+  UNKNOWN_SESSION: 10020,
   UNKNOWN_BAN: 10026,
+  UNKNOWN_SKU: 10027,
+  UNKNOWN_STORE_LISTING: 10028,
+  UNKNOWN_ENTITLEMENT: 10029,
+  UNKNOWN_BUILD: 10030,
+  UNKNOWN_LOBBY: 10031,
+  UNKNOWN_BRANCH: 10032,
+  UNKNOWN_STORE_DIRECTORY_LAYOUT: 10033,
+  UNKNOWN_REDISTRIBUTABLE: 10036,
+  UNKNOWN_GIFT_CODE: 10038,
   UNKNOWN_GUILD_TEMPLATE: 10057,
+  UNKNOWN_INTERACTION: 10062,
+  UNKNOWN_APPLICATION_COMMAND: 10063,
+  UNKNOWN_APPLICATION_COMMAND_PERMISSIONS: 10066,
+  UNKNOWN_STAGE_INSTANCE: 10067,
   BOT_PROHIBITED_ENDPOINT: 20001,
   BOT_ONLY_ENDPOINT: 20002,
+  CANNOT_SEND_EXPLICIT_CONTENT: 20009,
+  NOT_AUTHORIZED: 20012,
+  SLOWMODE_RATE_LIMIT: 20016,
+  ACCOUNT_OWNER_ONLY: 20018,
   ANNOUNCEMENT_EDIT_LIMIT_EXCEEDED: 20022,
   CHANNEL_HIT_WRITE_RATELIMIT: 20028,
+  CONTENT_NOT_ALLOWED: 20031,
+  GUILD_PREMIUM_LEVEL_TOO_LOW: 20035,
   MAXIMUM_GUILDS: 30001,
   MAXIMUM_FRIENDS: 30002,
   MAXIMUM_PINS: 30003,
+  MAXIMUM_RECIPIENTS: 30004,
   MAXIMUM_ROLES: 30005,
   MAXIMUM_WEBHOOKS: 30007,
+  MAXIMUM_EMOJIS: 30008,
   MAXIMUM_REACTIONS: 30010,
   MAXIMUM_CHANNELS: 30013,
   MAXIMUM_ATTACHMENTS: 30015,
@@ -696,11 +780,16 @@ exports.APIErrors = {
   MAXIMUM_ANIMATED_EMOJIS: 30018,
   MAXIMUM_SERVER_MEMBERS: 30019,
   GUILD_ALREADY_HAS_TEMPLATE: 30031,
+  MAXIMUM_THREAD_PARTICIPANTS: 30033,
+  MAXIMUM_NON_GUILD_MEMBERS_BANS: 30035,
+  MAXIMUM_BAN_FETCHES: 30037,
   UNAUTHORIZED: 40001,
   ACCOUNT_VERIFICATION_REQUIRED: 40002,
+  DIRECT_MESSAGES_TOO_FAST: 40003,
   REQUEST_ENTITY_TOO_LARGE: 40005,
   FEATURE_TEMPORARILY_DISABLED: 40006,
   USER_BANNED: 40007,
+  TARGET_USER_NOT_CONNECTED_TO_VOICE: 40032,
   ALREADY_CROSSPOSTED: 40033,
   MISSING_ACCESS: 50001,
   INVALID_ACCOUNT_TYPE: 50002,
@@ -723,57 +812,62 @@ exports.APIErrors = {
   CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
   CANNOT_EXECUTE_ON_CHANNEL_TYPE: 50024,
   INVALID_OAUTH_TOKEN: 50025,
+  MISSING_OAUTH_SCOPE: 50026,
+  INVALID_WEBHOOK_TOKEN: 50027,
+  INVALID_ROLE: 50028,
   INVALID_RECIPIENTS: 50033,
   BULK_DELETE_MESSAGE_TOO_OLD: 50034,
   INVALID_FORM_BODY: 50035,
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
   INVALID_API_VERSION: 50041,
+  CANNOT_SELF_REDEEM_GIFT: 50054,
+  PAYMENT_SOURCE_REQUIRED: 50070,
   CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: 50074,
   INVALID_STICKER_SENT: 50081,
+  INVALID_OPERATION_ON_ARCHIVED_THREAD: 50083,
+  INVALID_THREAD_NOTIFICATION_SETTINGS: 50084,
+  PARAMETER_EARLIER_THAN_CREATION: 50085,
+  TWO_FACTOR_REQUIRED: 60003,
+  NO_USERS_WITH_DISCORDTAG_EXIST: 80004,
   REACTION_BLOCKED: 90001,
   RESOURCE_OVERLOADED: 130000,
+  STAGE_ALREADY_OPEN: 150006,
+  MESSAGE_ALREADY_HAS_THREAD: 160004,
+  THREAD_LOCKED: 160005,
+  MAXIMUM_ACTIVE_THREADS: 160006,
+  MAXIMUM_ACTIVE_ANNOUCEMENT_THREAD: 160007,
 };
 
 /**
- * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
- * * ALL
- * * MENTIONS
- * @typedef {string} DefaultMessageNotifications
+ * The value set for a guild's default message notifications, e.g. `ALL_MESSAGES`. Here are the available types:
+ * * ALL_MESSAGES
+ * * ONLY_MENTIONS
+ * @typedef {string} DefaultMessageNotificationLevel
  */
-exports.DefaultMessageNotifications = ['ALL', 'MENTIONS'];
+exports.DefaultMessageNotificationLevels = createEnum(['ALL_MESSAGES', 'ONLY_MENTIONS']);
 
 /**
  * The value set for a team members's membership state:
  * * INVITED
  * * ACCEPTED
- * @typedef {string} MembershipStates
+ * @typedef {string} MembershipState
  */
-exports.MembershipStates = [
-  // They start at 1
-  null,
-  'INVITED',
-  'ACCEPTED',
-];
+exports.MembershipStates = createEnum([null, 'INVITED', 'ACCEPTED']);
 
 /**
  * The value set for a webhook's type:
  * * Incoming
  * * Channel Follower
- * @typedef {string} WebhookTypes
+ * @typedef {string} WebhookType
  */
-exports.WebhookTypes = [
-  // They start at 1
-  null,
-  'Incoming',
-  'Channel Follower',
-];
+exports.WebhookTypes = createEnum([null, 'Incoming', 'Channel Follower']);
 
 /**
  * The value set for a sticker's type:
  * * PNG
  * * APNG
  * * LOTTIE
- * @typedef {string} StickerFormatTypes
+ * @typedef {string} StickerFormatType
  */
 exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE']);
 
@@ -852,9 +946,10 @@ exports.InteractionResponseTypes = createEnum([
  * The type of a message component
  * * ACTION_ROW
  * * BUTTON
+ * * SELECT_MENU
  * @typedef {string} MessageComponentType
  */
-exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON']);
+exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU']);
 
 /**
  * The style of a message button
@@ -876,7 +971,7 @@ exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS
 exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
 
 /**
- * NSFW level of a Guild
+ * NSFW level of a Guild:
  * * DEFAULT
  * * EXPLICIT
  * * SAFE
@@ -884,6 +979,24 @@ exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
  * @typedef {string} NSFWLevel
  */
 exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
+
+/**
+ * Privacy level of a {@link StageInstance} object:
+ * * PUBLIC
+ * * GUILD_ONLY
+ * @typedef {string} PrivacyLevel
+ */
+exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
+
+/**
+ * The premium tier (Server Boost level) of a guild:
+ * * NONE
+ * * TIER_1
+ * * TIER_2
+ * * TIER_3
+ * @typedef {string} PremiumTier
+ */
+exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
 
 function keyMirror(arr) {
   let tmp = Object.create(null);

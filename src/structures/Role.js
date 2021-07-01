@@ -13,7 +13,7 @@ const Util = require('../util/Util');
 class Role extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the role
+   * @param {APIRole} data The data for the role
    * @param {Guild} guild The guild the role is part of
    */
   constructor(client, data, guild) {
@@ -215,11 +215,11 @@ class Role extends Base {
     return this.client.api.guilds[this.guild.id].roles[this.id]
       .patch({
         data: {
-          name: data.name || this.name,
-          color: data.color !== null ? Util.resolveColor(data.color || this.color) : null,
-          hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
+          name: data.name ?? this.name,
+          color: data.color !== null ? Util.resolveColor(data.color ?? this.color) : null,
+          hoist: data.hoist ?? this.hoist,
           permissions: typeof data.permissions !== 'undefined' ? new Permissions(data.permissions) : this.permissions,
-          mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
+          mentionable: data.mentionable ?? this.mentionable,
         },
         reason,
       })
@@ -323,11 +323,16 @@ class Role extends Base {
   }
 
   /**
-   * Sets the position of the role.
-   * @param {number} position The position of the role
-   * @param {Object} [options] Options for setting position
-   * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {string} [options.reason] Reason for changing the position
+   * Options used to set position of a role.
+   * @typedef {Object} SetRolePositionOptions
+   * @property {boolean} [relative=false] Whether to change the position relative to its current value or not
+   * @property {string} [reason] The reason for changing the position
+   */
+
+  /**
+   * Sets the new position of the role.
+   * @param {number} position The new position for the role
+   * @param {SetRolePositionOptions} [options] Options for setting the position
    * @returns {Promise<Role>}
    * @example
    * // Set the position of the role
@@ -419,3 +424,8 @@ class Role extends Base {
 }
 
 module.exports = Role;
+
+/**
+ * @external APIRole
+ * @see {@link https://discord.com/developers/docs/topics/permissions#role-object}
+ */

@@ -2,8 +2,8 @@
 
 const BaseManager = require('./BaseManager');
 const { TypeError } = require('../errors');
-const APIMessage = require('../structures/APIMessage');
 const Message = require('../structures/Message');
+const MessagePayload = require('../structures/MessagePayload');
 const Collection = require('../util/Collection');
 const LimitedCollection = require('../util/LimitedCollection');
 
@@ -46,8 +46,7 @@ class MessageManager extends BaseManager {
    * <info>The returned Collection does not contain reaction users of the messages if they were not cached.
    * Those need to be fetched separately in such a case.</info>
    * @param {Snowflake|ChannelLogsQueryOptions} [message] The ID of the message to fetch, or query parameters.
-   * @param {boolean} [cache=true] Whether to cache the message(s)
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<Message>|Promise<Collection<Snowflake, Message>>}
    * @example
    * // Get message
@@ -65,7 +64,7 @@ class MessageManager extends BaseManager {
    *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
-  fetch(message, cache = true, force = false) {
+  fetch(message, { cache = true, force = false } = {}) {
     return typeof message === 'string' ? this._fetchId(message, cache, force) : this._fetchMany(message, cache);
   }
 
@@ -117,20 +116,24 @@ class MessageManager extends BaseManager {
   /**
    * Edits a message, even if it's not cached.
    * @param {MessageResolvable} message The message to edit
-   * @param {MessageEditOptions|APIMessage} [options] The options to provide
+   * @param {MessageEditOptions|MessagePayload} [options] The options to provide
    * @returns {Promise<Message>}
    */
   async edit(message, options) {
-    message = this.resolveID(message);
-    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    const messageID = this.resolveID(message);
+    if (!messageID) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    const { data, files } = await (options instanceof APIMessage ? options : APIMessage.create(this, options))
+    const { data, files } = await (options instanceof MessagePayload
+      ? options
+      : MessagePayload.create(message instanceof Message ? message : this, options)
+    )
       .resolveData()
       .resolveFiles();
-    const d = await this.client.api.channels[this.channel.id].messages[message].patch({ data, files });
+    const d = await this.client.api.channels[this.channel.id].messages[messageID].patch({ data, files });
 
-    if (this.cache.has(message)) {
-      const clone = this.cache.get(message)._clone();
+    const existing = this.cache.get(messageID);
+    if (existing) {
+      const clone = existing._clone();
       clone._patch(d);
       return clone;
     }
@@ -147,7 +150,7 @@ class MessageManager extends BaseManager {
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     const data = await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
-    return this.cache.get(data.id) || this.add(data);
+    return this.cache.get(data.id) ?? this.add(data);
   }
 
   /**

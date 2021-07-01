@@ -25,12 +25,17 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   }
 
   /**
+   * Options used for creating an emoji in a guild.
+   * @typedef {Object} GuildEmojiCreateOptions
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to limit the emoji to
+   * @property {string} [reason] The reason for creating the emoji
+   */
+
+  /**
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
    * @param {string} name The name for the emoji
-   * @param {Object} [options] Options
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [options.roles] Roles to limit the emoji to
-   * @param {string} [options.reason] Reason for creating the emoji
+   * @param {GuildEmojiCreateOptions} [options] Options for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
    * // Create a new emoji from a url
@@ -69,8 +74,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   /**
    * Obtains one or more emojis from Discord, or the emoji cache if they're already available.
    * @param {Snowflake} [id] ID of the emoji
-   * @param {boolean} [cache=true] Whether to cache the new emoji objects if it weren't already
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<GuildEmoji|Collection<Snowflake, GuildEmoji>>}
    * @example
    * // Fetch all emojis from the guild
@@ -83,7 +87,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    *   .then(emoji => console.log(`The emoji name is: ${emoji.name}`))
    *   .catch(console.error);
    */
-  async fetch(id, cache = true, force = false) {
+  async fetch(id, { cache = true, force = false } = {}) {
     if (id) {
       if (!force) {
         const existing = this.cache.get(id);

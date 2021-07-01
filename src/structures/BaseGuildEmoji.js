@@ -21,14 +21,6 @@ class BaseGuildEmoji extends Emoji {
     this.managed = null;
     this.available = null;
 
-    /**
-     * Array of role ids this emoji is active for
-     * @name BaseGuildEmoji#_roles
-     * @type {Snowflake[]}
-     * @private
-     */
-    Object.defineProperty(this, '_roles', { value: [], writable: true });
-
     this._patch(data);
   }
 
@@ -58,8 +50,6 @@ class BaseGuildEmoji extends Emoji {
        */
       this.available = data.available;
     }
-
-    if (data.roles) this._roles = data.roles;
   }
 }
 

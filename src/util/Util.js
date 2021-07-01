@@ -56,6 +56,16 @@ class Util {
   }
 
   /**
+   * Options for splitting a message.
+   * @typedef {Object} SplitOptions
+   * @property {number} [maxLength=2000] Maximum character length per message piece
+   * @property {string|string[]|RegExp|RegExp[]} [char='\n'] Character(s) or Regex(s) to split the message with,
+   * an array can be used to split multiple times
+   * @property {string} [prepend=''] Text to prepend to every piece except the first
+   * @property {string} [append=''] Text to append to every piece except the last
+   */
+
+  /**
    * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
    * @param {string} text Content to split
    * @param {SplitOptions} [options] Options controlling the behavior of the split
@@ -91,18 +101,23 @@ class Util {
   }
 
   /**
+   * Options used to escape markdown.
+   * @typedef {Object} EscapeMarkdownOptions
+   * @property {boolean} [codeBlock=true] Whether to escape code blocks or not
+   * @property {boolean} [inlineCode=true] Whether to escape inline code or not
+   * @property {boolean} [bold=true] Whether to escape bolds or not
+   * @property {boolean} [italic=true] Whether to escape italics or not
+   * @property {boolean} [underline=true] Whether to escape underlines or not
+   * @property {boolean} [strikethrough=true] Whether to escape strikethroughs or not
+   * @property {boolean} [spoiler=true] Whether to escape spoilers or not
+   * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks or not
+   * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code or not
+   */
+
+  /**
    * Escapes any Discord-flavour markdown in a string.
    * @param {string} text Content to escape
-   * @param {Object} [options={}] What types of markdown to escape
-   * @param {boolean} [options.codeBlock=true] Whether to escape code blocks or not
-   * @param {boolean} [options.inlineCode=true] Whether to escape inline code or not
-   * @param {boolean} [options.bold=true] Whether to escape bolds or not
-   * @param {boolean} [options.italic=true] Whether to escape italics or not
-   * @param {boolean} [options.underline=true] Whether to escape underlines or not
-   * @param {boolean} [options.strikethrough=true] Whether to escape strikethroughs or not
-   * @param {boolean} [options.spoiler=true] Whether to escape spoilers or not
-   * @param {boolean} [options.codeBlockContent=true] Whether to escape text inside code blocks or not
-   * @param {boolean} [options.inlineCodeContent=true] Whether to escape text inside inline code or not
+   * @param {EscapeMarkdownOptions} [options={}] Options for escaping the markdown
    * @returns {string}
    */
   static escapeMarkdown(
@@ -268,15 +283,14 @@ class Util {
    * * A URL-encoded UTF-8 emoji (no ID)
    * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
    * @param {string} text Emoji string to parse
-   * @returns {Object} Object with `animated`, `name`, and `id` properties
+   * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
    * @private
    */
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (!text.includes(':')) return { animated: false, name: text, id: null };
-    const m = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
-    if (!m) return null;
-    return { animated: Boolean(m[1]), name: m[2], id: m[3] || null };
+    const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
+    return match && { animated: Boolean(match[1]), name: match[2], id: match[3] ?? null };
   }
 
   /**
@@ -324,11 +338,16 @@ class Util {
   }
 
   /**
+   * Options used to make an error object.
+   * @typedef {Object} MakeErrorOptions
+   * @property {string} name Error type
+   * @property {string} message Message for the error
+   * @property {string} stack Stack for the error
+   */
+
+  /**
    * Makes an Error from a plain info object.
-   * @param {Object} obj Error info
-   * @param {string} obj.name Error type
-   * @param {string} obj.message Message for the error
-   * @param {string} obj.stack Stack for the error
+   * @param {MakeErrorOptions} obj Error info
    * @returns {Error}
    * @private
    */
@@ -342,7 +361,7 @@ class Util {
   /**
    * Makes a plain error info object from an Error.
    * @param {Error} err Error to get info from
-   * @returns {Object}
+   * @returns {MakeErrorOptions}
    * @private
    */
   static makePlainError(err) {
@@ -441,7 +460,7 @@ class Util {
     if (typeof color === 'string') {
       if (color === 'RANDOM') return Math.floor(Math.random() * (0xffffff + 1));
       if (color === 'DEFAULT') return 0;
-      color = Colors[color] || parseInt(color.replace('#', ''), 16);
+      color = Colors[color] ?? parseInt(color.replace('#', ''), 16);
     } else if (Array.isArray(color)) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
@@ -474,7 +493,7 @@ class Util {
    * @param {Collection<string, Channel|Role>} sorted A collection of the objects sorted properly
    * @param {APIRouter} route Route to call PATCH on
    * @param {string} [reason] Reason for the change
-   * @returns {Promise<Object[]>} Updated item list, with `id` and `position` properties
+   * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
   static setPosition(item, position, relative, sorted, route, reason) {
@@ -492,7 +511,7 @@ class Util {
    * @private
    */
   static basename(path, ext) {
-    let res = parse(path);
+    const res = parse(path);
     return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
   }
 

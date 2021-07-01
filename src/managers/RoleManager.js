@@ -33,8 +33,7 @@ class RoleManager extends BaseManager {
   /**
    * Obtains a role from Discord, or the role cache if they're already available.
    * @param {Snowflake} [id] ID of the role
-   * @param {boolean} [cache=true] Whether to cache the new role object(s) if they weren't already
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Role|Collection<Snowflake, Role>>}
    * @example
    * // Fetch all roles from the guild
@@ -47,7 +46,7 @@ class RoleManager extends BaseManager {
    *   .then(role => console.log(`The role color is: ${role.color}`))
    *   .catch(console.error);
    */
-  async fetch(id, cache = true, force = false) {
+  async fetch(id, { cache = true, force = false } = {}) {
     if (id && !force) {
       const existing = this.cache.get(id);
       if (existing) return existing;
@@ -86,16 +85,21 @@ class RoleManager extends BaseManager {
    */
 
   /**
+   * Options used to create a new role.
+   * @typedef {Object} CreateRoleOptions
+   * @property {string} [name] The name of the new role
+   * @property {ColorResolvable} [color] The data to create the role with
+   * @property {boolean} [hoist] Whether or not the new role should be hoisted
+   * @property {PermissionResolvable} [permissions] The permissions for the new role
+   * @property {number} [position] The position of the new role
+   * @property {boolean} [mentionable] Whether or not the new role should be mentionable
+   * @property {string} [reason] The reason for creating this role
+   */
+
+  /**
    * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
-   * @param {Object} [options] Options
-   * @param {string} [options.name] The name of the new role
-   * @param {ColorResolvable} [options.color] The data to create the role with
-   * @param {boolean} [options.hoist] Whether or not the new role should be hoisted.
-   * @param {PermissionResolvable} [options.permissions] The permissions for the new role
-   * @param {number} [options.position] The position of the new role
-   * @param {boolean} [options.mentionable] Whether or not the new role should be mentionable.
-   * @param {string} [options.reason] Reason for creating this role
+   * @param {CreateRoleOptions} [options] Options for creating the new role
    * @returns {Promise<Role>}
    * @example
    * // Create a new role

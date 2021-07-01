@@ -50,7 +50,13 @@ const Messages = {
   BUTTON_URL: 'MessageButton url must be a string',
   BUTTON_CUSTOM_ID: 'MessageButton customID must be a string',
 
-  INTERACTION_COLLECTOR_TIMEOUT: 'Collector timed out without receiving any interactions',
+  SELECT_MENU_CUSTOM_ID: 'MessageSelectMenu customID must be a string',
+  SELECT_MENU_PLACEHOLDER: 'MessageSelectMenu placeholder must be a string',
+  SELECT_OPTION_LABEL: 'MessageSelectOption label must be a string',
+  SELECT_OPTION_VALUE: 'MessageSelectOption value must be a string',
+  SELECT_OPTION_DESCRIPTION: 'MessageSelectOption description must be a string',
+
+  INTERACTION_COLLECTOR_ERROR: reason => `Collector received no interactions before ending with reason: ${reason}`,
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
@@ -87,9 +93,12 @@ const Messages = {
   GUILD_OWNED: 'Guild is owned by the client.',
   GUILD_MEMBERS_TIMEOUT: "Members didn't arrive in time.",
   GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
+  STAGE_CHANNEL_RESOLVE: 'Could not resolve channel to a stage channel.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
+
+  MESSAGE_THREAD_PARENT: 'The message was not sent in a guild text or news channel',
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
   WEBHOOK_TOKEN_UNAVAILABLE: 'This action requires a webhook token, but none is available.',
@@ -110,9 +119,14 @@ const Messages = {
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
 
   GLOBAL_COMMAND_PERMISSIONS:
-    "Permissions for global commands may only be fetched or modified from a guild's application command manager.",
+    'Permissions for global commands may only be fetched or modified by providing a GuildResolvable ' +
+    "or from a guild's application command manager.",
+  GUILD_UNCACHED_ROLE_RESOLVE: 'Cannot resolve roles from an arbitrary guild, provide an ID instead',
 
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
+  INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
+  INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
+  INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

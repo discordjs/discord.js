@@ -3,6 +3,7 @@
 const BaseManager = require('./BaseManager');
 const GuildMember = require('../structures/GuildMember');
 const Message = require('../structures/Message');
+const ThreadMember = require('../structures/ThreadMember');
 const User = require('../structures/User');
 
 /**
@@ -26,7 +27,8 @@ class UserManager extends BaseManager {
    * * A Snowflake
    * * A Message object (resolves to the message author)
    * * A GuildMember object
-   * @typedef {User|Snowflake|Message|GuildMember} UserResolvable
+   * * A ThreadMember object
+   * @typedef {User|Snowflake|Message|GuildMember|ThreadMember} UserResolvable
    */
 
   /**
@@ -35,7 +37,7 @@ class UserManager extends BaseManager {
    * @returns {?User}
    */
   resolve(user) {
-    if (user instanceof GuildMember) return user.user;
+    if (user instanceof GuildMember || user instanceof ThreadMember) return user.user;
     if (user instanceof Message) return user.author;
     return super.resolve(user);
   }
@@ -46,6 +48,7 @@ class UserManager extends BaseManager {
    * @returns {?Snowflake}
    */
   resolveID(user) {
+    if (user instanceof ThreadMember) return user.id;
     if (user instanceof GuildMember) return user.user.id;
     if (user instanceof Message) return user.author.id;
     return super.resolveID(user);
@@ -54,11 +57,10 @@ class UserManager extends BaseManager {
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * @param {Snowflake} id ID of the user
-   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<User>}
    */
-  async fetch(id, cache = true, force = false) {
+  async fetch(id, { cache = true, force = false } = {}) {
     if (!force) {
       const existing = this.cache.get(id);
       if (existing && !existing.partial) return existing;

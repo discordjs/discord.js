@@ -2,7 +2,7 @@
 
 /* eslint-disable import/order */
 const MessageCollector = require('../MessageCollector');
-const APIMessage = require('../APIMessage');
+const MessagePayload = require('../MessagePayload');
 const SnowflakeUtil = require('../../util/SnowflakeUtil');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError, Error } = require('../../errors');
@@ -39,7 +39,7 @@ class TextBasedChannel {
    * @readonly
    */
   get lastMessage() {
-    return this.messages.cache.get(this.lastMessageID) || null;
+    return this.messages.resolve(this.lastMessageID);
   }
 
   /**
@@ -57,12 +57,11 @@ class TextBasedChannel {
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
    * @property {string} [content=''] The content for the message
+   * @property {MessageEmbed[]|APIEmbed[]} [embeds] The embeds for the message
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to send with the message
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
-   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
-   * it exceeds the character limit. If an object is provided, these are the options for splitting the message
    * @property {MessageActionRow[]|MessageActionRowOptions[]|MessageActionRowComponentResolvable[][]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
@@ -70,8 +69,6 @@ class TextBasedChannel {
   /**
    * Options provided when sending or editing a message.
    * @typedef {BaseMessageOptions} MessageOptions
-   * @property {MessageEmbed|Object} [embed] An embed for the message
-   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {ReplyOptions} [reply] The options for replying to a message
    */
 
@@ -99,16 +96,6 @@ class TextBasedChannel {
    */
 
   /**
-   * Options for splitting a message.
-   * @typedef {Object} SplitOptions
-   * @property {number} [maxLength=2000] Maximum character length per message piece
-   * @property {string|string[]|RegExp|RegExp[]} [char='\n'] Character(s) or Regex(s) to split the message with,
-   * an array can be used to split multiple times
-   * @property {string} [prepend=''] Text to prepend to every piece except the first
-   * @property {string} [append=''] Text to append to every piece except the last
-   */
-
-  /**
    * Options for sending a message with a reply.
    * @typedef {Object} ReplyOptions
    * @param {MessageResolvable} messageReference The message to reply to (must be in the same channel and not system)
@@ -118,7 +105,7 @@ class TextBasedChannel {
 
   /**
    * Sends a message to this channel.
-   * @param {string|APIMessage|MessageOptions} options The options to provide
+   * @param {string|MessagePayload|MessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a basic message
@@ -146,11 +133,13 @@ class TextBasedChannel {
    * // Send an embed with a local image inside
    * channel.send({
    *   content: 'This is an embed',
-   *   embed: {
-   *     thumbnail: {
-   *       url: 'attachment://file.jpg'
+   *   embeds: [
+   *     {
+   *       thumbnail: {
+   *         url: 'attachment://file.jpg'
+   *       }
    *     }
-   *   },
+   *   ],
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg'
@@ -167,18 +156,15 @@ class TextBasedChannel {
       return this.createDM().then(dm => dm.send(options));
     }
 
-    let apiMessage;
+    let messagePayload;
 
-    if (options instanceof APIMessage) {
-      apiMessage = options.resolveData();
+    if (options instanceof MessagePayload) {
+      messagePayload = options.resolveData();
     } else {
-      apiMessage = APIMessage.create(this, options).resolveData();
-      if (Array.isArray(apiMessage.data.content)) {
-        return Promise.all(apiMessage.split().map(this.send.bind(this)));
-      }
+      messagePayload = MessagePayload.create(this, options).resolveData();
     }
 
-    const { data, files } = await apiMessage.resolveFiles();
+    const { data, files } = await messagePayload.resolveFiles();
     return this.client.api.channels[this.id].messages
       .post({ data, files })
       .then(d => this.client.actions.MessageCreate.handle(d).message);
@@ -199,7 +185,7 @@ class TextBasedChannel {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (this.client.user._typing.has(this.id)) {
       const entry = this.client.user._typing.get(this.id);
-      entry.count = count || entry.count + 1;
+      entry.count = count ?? entry.count + 1;
       return entry.promise;
     }
 
@@ -207,7 +193,7 @@ class TextBasedChannel {
     entry.promise = new Promise((resolve, reject) => {
       const endpoint = this.client.api.channels[this.id].typing;
       Object.assign(entry, {
-        count: count || 1,
+        count: count ?? 1,
         interval: this.client.setInterval(() => {
           endpoint.post().catch(error => {
             this.client.clearInterval(entry.interval);
@@ -266,24 +252,22 @@ class TextBasedChannel {
    * @readonly
    */
   get typingCount() {
-    if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
-    return 0;
+    return this.client.user._typing.get(this.id)?.count ?? 0;
   }
 
   /**
    * Creates a Message Collector.
-   * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
    * const filter = m => m.content.includes('discord');
-   * const collector = channel.createMessageCollector(filter, { time: 15000 });
+   * const collector = channel.createMessageCollector({ filter, time: 15000 });
    * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createMessageCollector(filter, options = {}) {
-    return new MessageCollector(this, filter, options);
+  createMessageCollector(options = {}) {
+    return new MessageCollector(this, options);
   }
 
   /**
@@ -295,22 +279,21 @@ class TextBasedChannel {
   /**
    * Similar to createMessageCollector but in promise form.
    * Resolves with a collection of messages that pass the specified filter.
-   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Await !vote messages
    * const filter = m => m.content.startsWith('!vote');
    * // Errors: ['time'] treats ending because of the time limit as an error
-   * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
+   * channel.awaitMessages({ filter, max: 4, time: 60000, errors: ['time'] })
    *   .then(collected => console.log(collected.size))
    *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
-  awaitMessages(filter, options = {}) {
+  awaitMessages(options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageCollector(filter, options);
+      const collector = this.createMessageCollector(options);
       collector.once('end', (collection, reason) => {
-        if (options.errors && options.errors.includes(reason)) {
+        if (options.errors?.includes(reason)) {
           reject(collection);
         } else {
           resolve(collection);
@@ -321,40 +304,38 @@ class TextBasedChannel {
 
   /**
    * Creates a button interaction collector.
-   * @param {CollectorFilter} filter The filter to apply
    * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
    * @returns {MessageComponentInteractionCollector}
    * @example
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = channel.createMessageComponentInteractionCollector(filter, { time: 15000 });
+   * const collector = channel.createMessageComponentInteractionCollector({ filter, time: 15000 });
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createMessageComponentInteractionCollector(filter, options = {}) {
-    return new MessageComponentInteractionCollector(this, filter, options);
+  createMessageComponentInteractionCollector(options = {}) {
+    return new MessageComponentInteractionCollector(this, options);
   }
 
   /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
-   * @param {CollectorFilter} filter The filter function to use
-   * @param {number} [time] Time to wait for an interaction before rejecting
+   * @param {AwaitMessageComponentInteractionOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
-   * // Collect a button interaction
+   * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * channel.awaitMessageComponentInteraction(filter, 15000)
+   * channel.awaitMessageComponentInteraction({ filter, time: 15000 })
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteraction(filter, time) {
+  awaitMessageComponentInteraction(options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector(filter, { max: 1, time });
-      collector.once('end', interactions => {
+      const collector = this.createMessageComponentInteractionCollector({ ...options, max: 1 });
+      collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
-        if (!interaction) reject(new Error('INTERACTION_COLLECTOR_TIMEOUT'));
-        else resolve(interaction);
+        if (interaction) resolve(interaction);
+        else reject(new Error('INTERACTION_COLLECTOR_ERROR', reason));
       });
     });
   }
@@ -373,7 +354,7 @@ class TextBasedChannel {
    */
   async bulkDelete(messages, filterOld = false) {
     if (Array.isArray(messages) || messages instanceof Collection) {
-      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
+      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id ?? m);
       if (filterOld) {
         messageIDs = messageIDs.filter(id => Date.now() - SnowflakeUtil.deconstruct(id).timestamp < 1209600000);
       }

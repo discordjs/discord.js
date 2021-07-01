@@ -21,11 +21,10 @@ class MessageComponentInteractionCollector extends Collector {
   /**
    * @param {Message|TextChannel|DMChannel|NewsChannel} source
    * The source from which to collect message component interactions
-   * @param {CollectorFilter} filter The filter to apply to this collector
    * @param {MessageComponentInteractionCollectorOptions} [options={}] The options to apply to this collector
    */
-  constructor(source, filter, options = {}) {
-    super(source.client, filter, options);
+  constructor(source, options = {}) {
+    super(source.client, options);
 
     /**
      * The message from which to collect message component interactions, if provided
@@ -37,7 +36,7 @@ class MessageComponentInteractionCollector extends Collector {
      * The source channel from which to collect message component interactions
      * @type {TextChannel|DMChannel|NewsChannel}
      */
-    this.channel = this.message ? this.message.channel : source;
+    this.channel = this.message?.channel ?? source;
 
     /**
      * The users which have interacted to components on this collector
@@ -83,7 +82,7 @@ class MessageComponentInteractionCollector extends Collector {
   /**
    * Handles an incoming interaction for possible collection.
    * @param {Interaction} interaction The interaction to possibly collect
-   * @returns {?Snowflake|string}
+   * @returns {?Snowflake}
    * @private
    */
   collect(interaction) {

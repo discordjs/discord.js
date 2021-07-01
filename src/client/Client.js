@@ -15,6 +15,7 @@ const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
+const Widget = require('../structures/Widget');
 const Collection = require('../util/Collection');
 const { Events, DefaultOptions, InviteScopes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -33,14 +34,7 @@ class Client extends BaseClient {
   constructor(options) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Obtain shard details from environment or if present, worker threads
-    let data = process.env;
-    try {
-      // Test if worker threads module is present and used
-      data = require('worker_threads').workerData || data;
-    } catch {
-      // Do nothing
-    }
+    const data = require('worker_threads').workerData ?? process.env;
 
     if (this.options.shards === DefaultOptions.shards) {
       if ('SHARDS' in data) {
@@ -187,7 +181,7 @@ class Client extends BaseClient {
    * @readonly
    */
   get readyTimestamp() {
-    return this.readyAt ? this.readyAt.getTime() : null;
+    return this.readyAt?.getTime() ?? null;
   }
 
   /**
@@ -247,7 +241,7 @@ class Client extends BaseClient {
    * @param {InviteResolvable} invite Invite code or URL
    * @returns {Promise<Invite>}
    * @example
-   * client.fetchInvite('https://discord.gg/bRCvFy9')
+   * client.fetchInvite('https://discord.gg/djs')
    *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`))
    *   .catch(console.error);
    */
@@ -340,7 +334,7 @@ class Client extends BaseClient {
       channels++;
 
       messages += channel.messages.cache.sweep(
-        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs,
+        message => now - (message.editedTimestamp ?? message.createdTimestamp) > lifetimeMs,
       );
     }
 
@@ -363,6 +357,18 @@ class Client extends BaseClient {
       .guilds(id)
       .preview.get()
       .then(data => new GuildPreview(this, data));
+  }
+
+  /**
+   * Obtains the widget of a guild from Discord, available for guilds with the widget enabled.
+   * @param {GuildResolvable} guild The guild to fetch the widget for
+   * @returns {Promise<Widget>}
+   */
+  async fetchWidget(guild) {
+    const id = this.guilds.resolveID(guild);
+    if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
+    const data = await this.api.guilds(id, 'widget.json').get();
+    return new Widget(this, data);
   }
 
   /**
