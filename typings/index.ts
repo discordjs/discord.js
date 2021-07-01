@@ -17,8 +17,330 @@ const client: Client = new Client({
   intents: Intents.NON_PRIVILEGED,
 });
 
-client.on('ready', () => {
+const testGuildID = '222078108977594368'; // DJS
+const testUserID = '987654321098765432'; // example ID
+const globalCommandID = '123456789012345678'; // example ID
+const guildCommandID = '234567890123456789'; // example ID
+
+client.on('ready', async () => {
   console.log(`Client is logged in as ${client.user!.tag} and ready!`);
+
+  // Test command manager methods
+  const globalCommand = await client.application?.commands.fetch(globalCommandID);
+  const guildCommandFromGlobal = await client.application?.commands.fetch(guildCommandID, { guildID: testGuildID });
+  const guildCommandFromGuild = await client.guilds.cache.get(testGuildID)?.commands.fetch(guildCommandID);
+
+  // @ts-expect-error
+  await client.guilds.cache.get(testGuildID)?.commands.fetch(guildCommandID, { guildID: testGuildID });
+
+  // Test command permissions
+  const globalPermissionsManager = client.application?.commands.permissions;
+  const guildPermissionsManager = client.guilds.cache.get(testGuildID)?.commands.permissions;
+  const originalPermissions = await client.application?.commands.permissions.fetch({ guild: testGuildID });
+
+  // Permissions from global manager
+  await globalPermissionsManager?.add({
+    command: globalCommandID,
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  await globalPermissionsManager?.has({ command: globalCommandID, guild: testGuildID, permissionsID: testGuildID });
+  await globalPermissionsManager?.fetch({ guild: testGuildID });
+  await globalPermissionsManager?.fetch({ command: globalCommandID, guild: testGuildID });
+  await globalPermissionsManager?.remove({ command: globalCommandID, guild: testGuildID, roles: [testGuildID] });
+  await globalPermissionsManager?.remove({ command: globalCommandID, guild: testGuildID, users: [testUserID] });
+  await globalPermissionsManager?.remove({
+    command: globalCommandID,
+    guild: testGuildID,
+    roles: [testGuildID],
+    users: [testUserID],
+  });
+  await globalPermissionsManager?.set({
+    command: globalCommandID,
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  await globalPermissionsManager?.set({
+    guild: testGuildID,
+    fullPermissions: [{ id: globalCommandID, permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] }],
+  });
+
+  // @ts-expect-error
+  await globalPermissionsManager?.add({
+    command: globalCommandID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  // @ts-expect-error
+  await globalPermissionsManager?.has({ command: globalCommandID, permissionsID: testGuildID });
+  // @ts-expect-error
+  await globalPermissionsManager?.fetch();
+  // @ts-expect-error
+  await globalPermissionsManager?.fetch({ command: globalCommandID });
+  // @ts-expect-error
+  await globalPermissionsManager?.remove({ command: globalCommandID, roles: [testGuildID] });
+  // @ts-expect-error
+  await globalPermissionsManager?.remove({ command: globalCommandID, users: [testUserID] });
+  // @ts-expect-error
+  await globalPermissionsManager?.remove({ command: globalCommandID, roles: [testGuildID], users: [testUserID] });
+  // @ts-expect-error
+  await globalPermissionsManager?.set({
+    command: globalCommandID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  // @ts-expect-error
+  await globalPermissionsManager?.set({
+    fullPermissions: [{ id: globalCommandID, permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] }],
+  });
+
+  // @ts-expect-error
+  await globalPermissionsManager?.add({
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  // @ts-expect-error
+  await globalPermissionsManager?.has({ guild: testGuildID, permissionsID: testGuildID });
+  // @ts-expect-error
+  await globalPermissionsManager?.remove({ guild: testGuildID, roles: [testGuildID] });
+  // @ts-expect-error
+  await globalPermissionsManager?.remove({ guild: testGuildID, users: [testUserID] });
+  // @ts-expect-error
+  await globalPermissionsManager?.remove({ guild: testGuildID, roles: [testGuildID], users: [testUserID] });
+  // @ts-expect-error
+  await globalPermissionsManager?.set({
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+
+  // Permissions from guild manager
+  await guildPermissionsManager?.add({
+    command: globalCommandID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  await guildPermissionsManager?.has({ command: globalCommandID, permissionsID: testGuildID });
+  await guildPermissionsManager?.fetch({});
+  await guildPermissionsManager?.fetch({ command: globalCommandID });
+  await guildPermissionsManager?.remove({ command: globalCommandID, roles: [testGuildID] });
+  await guildPermissionsManager?.remove({ command: globalCommandID, users: [testUserID] });
+  await guildPermissionsManager?.remove({ command: globalCommandID, roles: [testGuildID], users: [testUserID] });
+  await guildPermissionsManager?.set({
+    command: globalCommandID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  await guildPermissionsManager?.set({
+    fullPermissions: [{ id: globalCommandID, permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] }],
+  });
+
+  await guildPermissionsManager?.add({
+    command: globalCommandID,
+    // @ts-expect-error
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  // @ts-expect-error
+  await guildPermissionsManager?.has({ command: globalCommandID, guild: testGuildID, permissionsID: testGuildID });
+  // @ts-expect-error
+  await guildPermissionsManager?.fetch({ guild: testGuildID });
+  // @ts-expect-error
+  await guildPermissionsManager?.fetch({ command: globalCommandID, guild: testGuildID });
+  // @ts-expect-error
+  await guildPermissionsManager?.remove({ command: globalCommandID, guild: testGuildID, roles: [testGuildID] });
+  // @ts-expect-error
+  await guildPermissionsManager?.remove({ command: globalCommandID, guild: testGuildID, users: [testUserID] });
+  await guildPermissionsManager?.remove({
+    command: globalCommandID,
+    // @ts-expect-error
+    guild: testGuildID,
+    roles: [testGuildID],
+    users: [testUserID],
+  });
+  await guildPermissionsManager?.set({
+    command: globalCommandID,
+    // @ts-expect-error
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  await guildPermissionsManager?.set({
+    // @ts-expect-error
+    guild: testGuildID,
+    fullPermissions: [{ id: globalCommandID, permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] }],
+  });
+
+  // @ts-expect-error
+  await guildPermissionsManager?.add({ permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] });
+  // @ts-expect-error
+  await guildPermissionsManager?.has({ permissionsID: testGuildID });
+  // @ts-expect-error
+  await guildPermissionsManager?.remove({ roles: [testGuildID] });
+  // @ts-expect-error
+  await guildPermissionsManager?.remove({ users: [testUserID] });
+  // @ts-expect-error
+  await guildPermissionsManager?.remove({ roles: [testGuildID], users: [testUserID] });
+  // @ts-expect-error
+  await guildPermissionsManager?.set({ permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] });
+
+  // Permissions from cached global ApplicationCommand
+  await globalCommand?.permissions.add({
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  await globalCommand?.permissions.has({ guild: testGuildID, permissionsID: testGuildID });
+  await globalCommand?.permissions.fetch({ guild: testGuildID });
+  await globalCommand?.permissions.remove({ guild: testGuildID, roles: [testGuildID] });
+  await globalCommand?.permissions.remove({ guild: testGuildID, users: [testUserID] });
+  await globalCommand?.permissions.remove({ guild: testGuildID, roles: [testGuildID], users: [testUserID] });
+  await globalCommand?.permissions.set({
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+
+  await globalCommand?.permissions.add({
+    // @ts-expect-error
+    command: globalCommandID,
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  // @ts-expect-error
+  await globalCommand?.permissions.has({ command: globalCommandID, guild: testGuildID, permissionsID: testGuildID });
+  // @ts-expect-error
+  await globalCommand?.permissions.fetch({ command: globalCommandID, guild: testGuildID });
+  // @ts-expect-error
+  await globalCommand?.permissions.remove({ command: globalCommandID, guild: testGuildID, roles: [testGuildID] });
+  // @ts-expect-error
+  await globalCommand?.permissions.remove({ command: globalCommandID, guild: testGuildID, users: [testUserID] });
+  await globalCommand?.permissions.remove({
+    // @ts-expect-error
+    command: globalCommandID,
+    guild: testGuildID,
+    roles: [testGuildID],
+    users: [testUserID],
+  });
+  await globalCommand?.permissions.set({
+    // @ts-expect-error
+    command: globalCommandID,
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+
+  // @ts-expect-error
+  await globalCommand?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] });
+  // @ts-expect-error
+  await globalCommand?.permissions.has({ permissionsID: testGuildID });
+  // @ts-expect-error
+  await globalCommand?.permissions.fetch({});
+  // @ts-expect-error
+  await globalCommand?.permissions.remove({ roles: [testGuildID] });
+  // @ts-expect-error
+  await globalCommand?.permissions.remove({ users: [testUserID] });
+  // @ts-expect-error
+  await globalCommand?.permissions.remove({ roles: [testGuildID], users: [testUserID] });
+  // @ts-expect-error
+  await globalCommand?.permissions.set({ permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] });
+
+  // Permissions from cached guild ApplicationCommand
+  await guildCommandFromGlobal?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] });
+  await guildCommandFromGlobal?.permissions.has({ permissionsID: testGuildID });
+  await guildCommandFromGlobal?.permissions.fetch({});
+  await guildCommandFromGlobal?.permissions.remove({ roles: [testGuildID] });
+  await guildCommandFromGlobal?.permissions.remove({ users: [testUserID] });
+  await guildCommandFromGlobal?.permissions.remove({ roles: [testGuildID], users: [testUserID] });
+  await guildCommandFromGlobal?.permissions.set({ permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] });
+
+  await guildCommandFromGlobal?.permissions.add({
+    // @ts-expect-error
+    command: globalCommandID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  // @ts-expect-error
+  await guildCommandFromGlobal?.permissions.has({ command: guildCommandID, permissionsID: testGuildID });
+  // @ts-expect-error
+  await guildCommandFromGlobal?.permissions.remove({ command: guildCommandID, roles: [testGuildID] });
+  // @ts-expect-error
+  await guildCommandFromGlobal?.permissions.remove({ command: guildCommandID, users: [testUserID] });
+  // @ts-expect-error
+  await guildCommandFromGlobal?.permissions.remove({
+    command: guildCommandID,
+    roles: [testGuildID],
+    users: [testUserID],
+  });
+  await guildCommandFromGlobal?.permissions.set({
+    // @ts-expect-error
+    command: guildCommandID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+
+  await guildCommandFromGlobal?.permissions.add({
+    // @ts-expect-error
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  // @ts-expect-error
+  await guildCommandFromGlobal?.permissions.has({ guild: testGuildID, permissionsID: testGuildID });
+  // @ts-expect-error
+  await guildCommandFromGlobal?.permissions.remove({ guild: testGuildID, roles: [testGuildID] });
+  // @ts-expect-error
+  await guildCommandFromGlobal?.permissions.remove({ guild: testGuildID, users: [testUserID] });
+  // @ts-expect-error
+  await guildCommandFromGlobal?.permissions.remove({ guild: testGuildID, roles: [testGuildID], users: [testUserID] });
+  await guildCommandFromGlobal?.permissions.set({
+    // @ts-expect-error
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+
+  await guildCommandFromGuild?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] });
+  await guildCommandFromGuild?.permissions.has({ permissionsID: testGuildID });
+  await guildCommandFromGuild?.permissions.fetch({});
+  await guildCommandFromGuild?.permissions.remove({ roles: [testGuildID] });
+  await guildCommandFromGuild?.permissions.remove({ users: [testUserID] });
+  await guildCommandFromGuild?.permissions.remove({ roles: [testGuildID], users: [testUserID] });
+  await guildCommandFromGuild?.permissions.set({ permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] });
+
+  await guildCommandFromGuild?.permissions.add({
+    // @ts-expect-error
+    command: globalCommandID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  // @ts-expect-error
+  await guildCommandFromGuild?.permissions.has({ command: guildCommandID, permissionsID: testGuildID });
+  // @ts-expect-error
+  await guildCommandFromGuild?.permissions.remove({ command: guildCommandID, roles: [testGuildID] });
+  // @ts-expect-error
+  await guildCommandFromGuild?.permissions.remove({ command: guildCommandID, users: [testUserID] });
+  // @ts-expect-error
+  await guildCommandFromGuild?.permissions.remove({
+    command: guildCommandID,
+    roles: [testGuildID],
+    users: [testUserID],
+  });
+  await guildCommandFromGuild?.permissions.set({
+    // @ts-expect-error
+    command: guildCommandID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+
+  await guildCommandFromGuild?.permissions.add({
+    // @ts-expect-error
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+  // @ts-expect-error
+  await guildCommandFromGuild?.permissions.has({ guild: testGuildID, permissionsID: testGuildID });
+  // @ts-expect-error
+  await guildCommandFromGuild?.permissions.remove({ guild: testGuildID, roles: [testGuildID] });
+  // @ts-expect-error
+  await guildCommandFromGuild?.permissions.remove({ guild: testGuildID, users: [testUserID] });
+  // @ts-expect-error
+  await guildCommandFromGuild?.permissions.remove({ guild: testGuildID, roles: [testGuildID], users: [testUserID] });
+  await guildCommandFromGuild?.permissions.set({
+    // @ts-expect-error
+    guild: testGuildID,
+    permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
+  });
+
+  client.application?.commands.permissions.set({
+    guild: testGuildID,
+    fullPermissions: originalPermissions?.map((permissions, id) => ({ permissions, id })) ?? [],
+  });
 });
 
 client.on('guildCreate', g => {
