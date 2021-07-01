@@ -2405,7 +2405,7 @@ declare module 'discord.js' {
     ): Promise<ApplicationCommandType>;
     public fetch(
       id: Snowflake,
-      options: FetchApplicationCommandOptions & { guild: GuildResolvable },
+      options: FetchApplicationCommandOptions & { guildID: Snowflake },
     ): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommandType>;
     public fetch(
