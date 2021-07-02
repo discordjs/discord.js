@@ -81,7 +81,7 @@ class Util {
         if (currentChar instanceof RegExp) {
           splitText = splitText.flatMap(chunk => chunk.match(currentChar));
         } else {
-          splitText = splitText.map(chunk => chunk.split(currentChar)).flat(1);
+          splitText = splitText.flatMap(chunk => chunk.split(currentChar));
         }
       }
     } else {
