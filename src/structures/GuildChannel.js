@@ -27,7 +27,7 @@ class GuildChannel extends Channel {
    * @param {APIChannel} data The data for the guild channel
    */
   constructor(guild, data) {
-    super(guild.client, data);
+    super(guild.client, data, false);
 
     /**
      * The guild the channel is in
@@ -41,6 +41,8 @@ class GuildChannel extends Channel {
      * @type {PermissionOverwriteManager}
      */
     this.permissionOverwrites = new PermissionOverwriteManager(this);
+
+    this._patch(data);
   }
 
   _patch(data) {
@@ -71,6 +73,7 @@ class GuildChannel extends Channel {
     }
 
     if ('permission_overwrites' in data) {
+      this.permissionOverwrites.cache.clear();
       for (const overwrite of data.permission_overwrites) {
         this.permissionOverwrites.add(overwrite);
       }
