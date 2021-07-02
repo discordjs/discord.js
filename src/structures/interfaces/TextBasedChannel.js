@@ -335,11 +335,7 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   awaitMessageComponent(options = {}) {
-    const _options = {
-      ...options,
-      channel: this,
-      interactionType: InteractionTypes.MESSAGE_COMPONENT,
-    };
+    const _options = { ...options, max: 1 };
     return new Promise((resolve, reject) => {
       const collector = this.createMessageComponentCollector(_options);
       collector.once('end', (interactions, reason) => {

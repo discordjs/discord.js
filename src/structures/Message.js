@@ -487,12 +487,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   awaitMessageComponent(options = {}) {
-    const _options = {
-      ...options,
-      interactionType: InteractionTypes.MESSAGE_COMPONENT,
-      max: 1,
-      message: this,
-    };
+    const _options = { ...options, max: 1 };
     return new Promise((resolve, reject) => {
       const collector = this.createMessageComponentCollector(_options);
       collector.once('end', (interactions, reason) => {

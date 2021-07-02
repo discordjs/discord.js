@@ -41,13 +41,13 @@ class InteractionCollector extends Collector {
      * The channel from which to collect interactions, if provided
      * @type {?TextChannel|DMChannel|NewsChannel}
      */
-    this.channel = this.message ? this.message.channel : options.channel ?? null;
+    this.channel = this.message?.channel ?? options.channel ?? null;
 
     /**
      * The guild from which to collect interactions, if provided
      * @type {?Guild}
      */
-    this.guild = this.channel && this.channel.guild ? this.channel.guild : options.guild ?? null;
+    this.guild = this.channel?.guild ?? options.guild ?? null;
 
     /**
      * The the type of interaction to collect
