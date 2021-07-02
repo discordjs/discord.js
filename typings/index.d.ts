@@ -439,7 +439,7 @@ declare module 'discord.js' {
     public fetch(force?: boolean): Promise<Channel>;
     public isText(): this is TextChannel | DMChannel | NewsChannel | ThreadChannel;
     public isThread(): this is ThreadChannel;
-    public toString(): string;
+    public toString(): ChannelMention;
   }
 
   export class Client extends BaseClient {
@@ -1103,7 +1103,7 @@ declare module 'discord.js' {
     public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;
     public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
     public toJSON(): unknown;
-    public toString(): string;
+    public toString(): MemberMention;
     public valueOf(): string;
   }
 
@@ -1757,7 +1757,7 @@ declare module 'discord.js' {
     public setPermissions(permissions: PermissionResolvable, reason?: string): Promise<Role>;
     public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
     public toJSON(): unknown;
-    public toString(): string;
+    public toString(): RoleMention;
 
     public static comparePositions(role1: Role, role2: Role): number;
   }
@@ -2052,7 +2052,7 @@ declare module 'discord.js' {
     public equals(user: User): boolean;
     public fetch(force?: boolean): Promise<User>;
     public fetchFlags(force?: boolean): Promise<UserFlags>;
-    public toString(): string;
+    public toString(): UserMention;
     public typingDurationIn(channel: ChannelResolvable): number;
     public typingIn(channel: ChannelResolvable): boolean;
     public typingSinceIn(channel: ChannelResolvable): Date;
@@ -3027,6 +3027,11 @@ declare module 'discord.js' {
     after?: Snowflake;
     around?: Snowflake;
   }
+
+  type ChannelMention = `<#${Snowflake}>`;
+  type MemberMention = UserMention | `<@!${Snowflake}>`;
+  type RoleMention = '@everyone' | `<@&${Snowflake}>`;
+  type UserMention = `<@${Snowflake}>`;
 
   interface ChannelPosition {
     channel: ChannelResolvable;
