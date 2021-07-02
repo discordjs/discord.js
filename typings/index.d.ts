@@ -3029,9 +3029,9 @@ declare module 'discord.js' {
   }
 
   type ChannelMention = `<#${Snowflake}>`;
-  type UserMention = `<@${Snowflake}>`;
   type MemberMention = UserMention | `<@!${Snowflake}>`;
   type RoleMention = '@everyone' | `<@&${Snowflake}>`;
+  type UserMention = `<@${Snowflake}>`;
 
   interface ChannelPosition {
     channel: ChannelResolvable;
