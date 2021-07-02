@@ -62,7 +62,7 @@ class InteractionResponses {
    * // Reply to the interaction with an embed
    * const embed = new MessageEmbed().setDescription('Pong!');
    *
-   * interaction.reply(embed)
+   * interaction.reply({ embeds: [embed] })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
