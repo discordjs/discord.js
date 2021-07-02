@@ -2654,7 +2654,7 @@ declare module 'discord.js' {
     constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<any>);
     public channel: TextChannel | NewsChannel;
     public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
-    public fetch(options?: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
+    public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
     public fetch(options?: FetchThreadsOptions, cacheOptions?: BaseFetchOptions): Promise<FetchedThreads>;
     public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
     public fetchActive(cache?: boolean): Promise<FetchedThreads>;

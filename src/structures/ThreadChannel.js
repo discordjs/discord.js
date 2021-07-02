@@ -287,7 +287,7 @@ class ThreadChannel extends Channel {
    * @param {string} [reason] Reason for changing the thread's name
    * @returns {Promise<ThreadChannel>}
    * @example
-   * // Change thread's name
+   * // Change the thread's name
    * thread.setName('not_general')
    *   .then(newThread => console.log(`Thread's new name is ${newThread.name}`))
    *   .catch(console.error);
