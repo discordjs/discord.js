@@ -385,21 +385,21 @@ client.on('message', ({ channel }) => {
 client.on('interaction', async interaction => {
   if (!interaction.isCommand()) return;
 
-  const row = new MessageActionRow();
-
-  //@ts-expect-error
-  const badRow = new MessageActionRow({});
+  void new MessageActionRow();
 
   const button = new MessageButton();
 
-  const buttonRow = new MessageActionRow({ components: [button] });
+  const actionRow = new MessageActionRow({ components: [button] });
 
-  await interaction.reply({ content: 'Hi!', components: [buttonRow] });
-
-  //@ts-expect-error
-  await interaction.reply({ content: 'Hi!', components: [button] });
+  await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
   await interaction.reply({ content: 'Hi!', components: [[button]] });
+
+  // @ts-expect-error
+  void new MessageActionRow({});
+
+  // @ts-expect-error
+  await interaction.reply({ content: 'Hi!', components: [button] });
 });
 
 client.login('absolutely-valid-token');
