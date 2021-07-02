@@ -37,7 +37,7 @@ class MessageCreateAction extends Action {
 
         /**
          * Emitted whenever a message is created.
-         * @event Client#messageCreate
+         * @event Client#message
          * @param {Message} message The created message
          * @deprecated
          */
