@@ -79,7 +79,7 @@ class Util {
       while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
         const currentChar = char.shift();
         if (currentChar instanceof RegExp) {
-          splitText = splitText.map(chunk => chunk.match(currentChar)).flat(1);
+          splitText = splitText.flatMap(chunk => chunk.match(currentChar));
         } else {
           splitText = splitText.map(chunk => chunk.split(currentChar)).flat(1);
         }
