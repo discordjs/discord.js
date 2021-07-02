@@ -678,7 +678,7 @@ declare module 'discord.js' {
       CHANNEL_DELETE: 'channelDelete';
       CHANNEL_UPDATE: 'channelUpdate';
       CHANNEL_PINS_UPDATE: 'channelPinsUpdate';
-      MESSAGE_CREATE: 'message';
+      MESSAGE_CREATE: 'messageCreate';
       MESSAGE_DELETE: 'messageDelete';
       MESSAGE_UPDATE: 'messageUpdate';
       MESSAGE_BULK_DELETE: 'messageDeleteBulk';
@@ -698,7 +698,7 @@ declare module 'discord.js' {
       VOICE_STATE_UPDATE: 'voiceStateUpdate';
       TYPING_START: 'typingStart';
       WEBHOOKS_UPDATE: 'webhookUpdate';
-      INTERACTION_CREATE: 'interaction';
+      INTERACTION_CREATE: 'interactionCreate';
       ERROR: 'error';
       WARN: 'warn';
       DEBUG: 'debug';
@@ -3081,7 +3081,9 @@ declare module 'discord.js' {
     guildUpdate: [oldGuild: Guild, newGuild: Guild];
     inviteCreate: [invite: Invite];
     inviteDelete: [invite: Invite];
+    /** @deprecated */
     message: [message: Message];
+    messageCreate: [message: Message];
     messageDelete: [message: Message | PartialMessage];
     messageReactionRemoveAll: [message: Message | PartialMessage];
     messageReactionRemoveEmoji: [reaction: MessageReaction];
@@ -3110,7 +3112,9 @@ declare module 'discord.js' {
     userUpdate: [oldUser: User | PartialUser, newUser: User];
     voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
     webhookUpdate: [channel: TextChannel];
+    /** @deprecated */
     interaction: [interaction: Interaction];
+    interactionCreate: [interaction: Interaction];
     shardDisconnect: [closeEvent: CloseEvent, shardID: number];
     shardError: [error: Error, shardID: number];
     shardReady: [shardID: number, unavailableGuilds: Set<Snowflake> | undefined];

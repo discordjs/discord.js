@@ -37,12 +37,29 @@ class InteractionCreateAction extends Action {
         return;
     }
 
+    const interaction = new InteractionType(client, data);
+
     /**
      * Emitted when an interaction is created.
-     * @event Client#interaction
+     * @event Client#interactionCreate
      * @param {Interaction} interaction The interaction which was created
      */
-    client.emit(Events.INTERACTION_CREATE, new InteractionType(client, data));
+    client.emit(Events.INTERACTION_CREATE, interaction);
+
+    if (client.listenerCount('interaction')) {
+      process.emitWarning('interaction listener is deprecated', {
+        code: 'CLIENT_INTERACTION_EVENT',
+        detail: 'The event interactionCreate should be used instead.',
+      });
+
+      /**
+       * Emitted when an interaction is created.
+       * @event Client#interaction
+       * @param {Interaction} interaction The interaction which was created
+       * @deprecated
+       */
+      client.emit('interaction', interaction);
+    }
   }
 }
 

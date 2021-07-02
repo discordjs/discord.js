@@ -363,7 +363,7 @@ client.on('messageReactionRemoveAll', async message => {
 // This is to check that stuff is the right type
 declare const assertIsMessage: (m: Promise<Message>) => void;
 
-client.on('message', ({ channel }) => {
+client.on('messageCreate', ({ channel }) => {
   assertIsMessage(channel.send('string'));
   assertIsMessage(channel.send({}));
   assertIsMessage(channel.send({ embeds: [] }));

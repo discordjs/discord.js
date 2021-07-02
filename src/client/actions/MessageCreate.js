@@ -25,10 +25,25 @@ class MessageCreateAction extends Action {
 
       /**
        * Emitted whenever a message is created.
-       * @event Client#message
+       * @event Client#messageCreate
        * @param {Message} message The created message
        */
       client.emit(Events.MESSAGE_CREATE, message);
+      if (client.listenerCount('message')) {
+        process.emitWarning('message listener is deprecated', {
+          code: 'CLIENT_MESSAGE_EVENT',
+          detail: 'The event messageCreate should be used instead.',
+        });
+
+        /**
+         * Emitted whenever a message is created.
+         * @event Client#messageCreate
+         * @param {Message} message The created message
+         * @deprecated
+         */
+        client.emit('message', message);
+      }
+
       return { message };
     }
 

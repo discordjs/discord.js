@@ -6,7 +6,7 @@ const { Client } = require('../src');
 const client = new Client({ intents: ['GUILDS', 'GUILD_MESSAGES'] });
 client
   .on('ready', () => console.log('ready'))
-  .on('message', async message => {
+  .on('messageCreate', async message => {
     try {
       const templates = await message.guild.fetchTemplates();
       if (!templates.size) {
