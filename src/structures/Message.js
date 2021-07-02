@@ -1,6 +1,5 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
@@ -8,6 +7,7 @@ const MessageAttachment = require('./MessageAttachment');
 const MessageComponentInteractionCollector = require('./MessageComponentInteractionCollector');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
+const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
 const Sticker = require('./Sticker');
 const { Error } = require('../errors');
@@ -26,15 +26,15 @@ const Util = require('../util/Util');
 class Message extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the message
-   * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
+   * @param {APIMessage} data The data for the message
+   * @param {TextChannel|DMChannel|NewsChannel|ThreadChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|NewsChannel}
+     * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
      */
     this.channel = channel;
 
@@ -101,6 +101,16 @@ class Message extends Base {
       this.pinned = null;
     }
 
+    if ('thread' in data) {
+      /**
+       * The thread started by this message
+       * @type {?ThreadChannel}
+       */
+      this.thread = this.client.channels.add(data.thread);
+    } else if (!this.thread) {
+      this.thread = null;
+    }
+
     if ('tts' in data) {
       /**
        * Whether or not the message was Text-To-Speech
@@ -123,13 +133,13 @@ class Message extends Base {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = (data.embeds || []).map(e => new Embed(e, true));
+    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? [];
 
     /**
      * A list of MessageActionRows in the message
      * @type {MessageActionRow[]}
      */
-    this.components = (data.components ?? []).map(c => BaseMessageComponent.create(c, this.client));
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -170,7 +180,7 @@ class Message extends Base {
      * @type {ReactionManager}
      */
     this.reactions = new ReactionManager(this);
-    if (data.reactions && data.reactions.length > 0) {
+    if (data.reactions?.length > 0) {
       for (const reaction of data.reactions) {
         this.reactions.add(reaction);
       }
@@ -180,13 +190,20 @@ class Message extends Base {
      * All valid mentions that the message contains
      * @type {MessageMentions}
      */
-    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone, data.mention_channels);
+    this.mentions = new Mentions(
+      this,
+      data.mentions,
+      data.mention_roles,
+      data.mention_everyone,
+      data.mention_channels,
+      data.referenced_message?.author,
+    );
 
     /**
      * ID of the webhook that sent the message, if applicable
      * @type {?Snowflake}
      */
-    this.webhookID = data.webhook_id || null;
+    this.webhookID = data.webhook_id ?? null;
 
     /**
      * Supplemental application information for group activities
@@ -224,7 +241,7 @@ class Message extends Base {
     this.flags = new MessageFlags(data.flags).freeze();
 
     /**
-     * Reference data sent in a crossposted message or inline reply.
+     * Reference data sent in a message that contains IDs identifying the referenced message
      * @typedef {Object} MessageReference
      * @property {string} channelID ID of the channel the message was referenced
      * @property {?string} guildID ID of the guild the message was referenced
@@ -283,7 +300,7 @@ class Message extends Base {
 
   /**
    * Updates the message and returns the old message.
-   * @param {Object} data Raw Discord message update data
+   * @param {APIMessage} data Raw Discord message update data
    * @returns {Message}
    * @private
    */
@@ -294,10 +311,7 @@ class Message extends Base {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
-    else this.embeds = this.embeds.slice();
-    if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
-    else this.components = this.components.slice();
+    if ('thread' in data) this.thread = this.client.channels.add(data.thread);
 
     if ('attachments' in data) {
       this.attachments = new Collection();
@@ -308,15 +322,19 @@ class Message extends Base {
       this.attachments = new Collection(this.attachments);
     }
 
+    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? this.embeds.slice();
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? this.components.slice();
+
     this.mentions = new Mentions(
       this,
-      'mentions' in data ? data.mentions : this.mentions.users,
-      'mention_roles' in data ? data.mention_roles : this.mentions.roles,
-      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
-      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
+      data.mentions ?? this.mentions.users,
+      data.mention_roles ?? this.mentions.roles,
+      data.mention_everyone ?? this.mentions.everyone,
+      data.mention_channels ?? this.mentions.crosspostedChannels,
+      data.referenced_message?.author ?? this.mentions.repliedUser,
     );
 
-    this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
+    this.flags = new MessageFlags(data.flags ?? 0).freeze();
 
     return clone;
   }
@@ -328,7 +346,7 @@ class Message extends Base {
    * @readonly
    */
   get member() {
-    return this.guild ? this.guild.members.resolve(this.author) || null : null;
+    return this.guild?.members.resolve(this.author) ?? null;
   }
 
   /**
@@ -355,7 +373,7 @@ class Message extends Base {
    * @readonly
    */
   get guild() {
-    return this.channel.guild || null;
+    return this.channel.guild ?? null;
   }
 
   /**
@@ -380,18 +398,17 @@ class Message extends Base {
 
   /**
    * Creates a reaction collector.
-   * @param {CollectorFilter} filter The filter to apply
    * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID';
-   * const collector = message.createReactionCollector(filter, { time: 15000 });
+   * const collector = message.createReactionCollector({ filter, time: 15000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createReactionCollector(filter, options = {}) {
-    return new ReactionCollector(this, filter, options);
+  createReactionCollector(options = {}) {
+    return new ReactionCollector(this, options);
   }
 
   /**
@@ -403,21 +420,20 @@ class Message extends Base {
   /**
    * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
-   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
-   * message.awaitReactions(filter, { time: 15000 })
+   * message.awaitReactions({ filter, time: 15000 })
    *   .then(collected => console.log(`Collected ${collected.size} reactions`))
    *   .catch(console.error);
    */
-  awaitReactions(filter, options = {}) {
+  awaitReactions(options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createReactionCollector(filter, options);
+      const collector = this.createReactionCollector(options);
       collector.once('end', (reactions, reason) => {
-        if (options.errors && options.errors.includes(reason)) reject(reactions);
+        if (options.errors?.includes(reason)) reject(reactions);
         else resolve(reactions);
       });
     });
@@ -425,42 +441,41 @@ class Message extends Base {
 
   /**
    * Creates a message component interaction collector.
-   * @param {CollectorFilter} filter The filter to apply
    * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
    * @returns {MessageComponentInteractionCollector}
    * @example
    * // Create a message component interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = message.createMessageComponentInteractionCollector(filter, { time: 15000 });
+   * const collector = message.createMessageComponentInteractionCollector({ filter, time: 15000 });
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createMessageComponentInteractionCollector(filter, options = {}) {
-    return new MessageComponentInteractionCollector(this, filter, options);
+  createMessageComponentInteractionCollector(options = {}) {
+    return new MessageComponentInteractionCollector(this, options);
   }
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
    * @typedef {Object} AwaitMessageComponentInteractionOptions
+   * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
    */
 
   /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
-   * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitMessageComponentInteractionOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitMessageComponentInteraction(filter, { time: 15000 })
+   * message.awaitMessageComponentInteraction({ filter, time: 15000 })
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteraction(filter, { time } = {}) {
+  awaitMessageComponentInteraction(options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector(filter, { max: 1, time });
+      const collector = this.createMessageComponentInteractionCollector({ ...options, max: 1 });
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
@@ -537,8 +552,7 @@ class Message extends Base {
    * Options that can be passed into {@link Message#edit}.
    * @typedef {Object} MessageEditOptions
    * @property {?string} [content] Content to be edited
-   * @property {MessageEmbed|Object} [embed] An embed to be added/edited
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   * @property {MessageEmbed[]|APIEmbed[]} [embeds] Embeds to be added/edited
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
    * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
@@ -550,7 +564,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {string|APIMessage|MessageEditOptions} options The options to provide
+   * @param {string|MessagePayload|MessageEditOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -559,7 +573,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(options) {
-    return this.channel.messages.edit(this.id, options);
+    return this.channel.messages.edit(this, options);
   }
 
   /**
@@ -646,15 +660,13 @@ class Message extends Base {
   /**
    * Options provided when sending a message as an inline reply.
    * @typedef {BaseMessageOptions} ReplyMessageOptions
-   * @property {MessageEmbed|Object} [embed] An embed for the message
-   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
    */
 
   /**
    * Send an inline reply to this message.
-   * @param {string|APIMessage|ReplyMessageOptions} options The options to provide
+   * @param {string|MessagePayload|ReplyMessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message
@@ -665,10 +677,10 @@ class Message extends Base {
   reply(options) {
     let data;
 
-    if (options instanceof APIMessage) {
+    if (options instanceof MessagePayload) {
       data = options;
     } else {
-      data = APIMessage.create(this, options, {
+      data = MessagePayload.create(this, options, {
         reply: {
           messageReference: this,
           failIfNotExists: options?.failIfNotExists ?? true,
@@ -676,6 +688,21 @@ class Message extends Base {
       });
     }
     return this.channel.send(data);
+  }
+
+  /**
+   * Create a new public thread from this message
+   * @see ThreadManager#create
+   * @param {string} name The name of the new Thread
+   * @param {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
+   * @param {string} [reason] Reason for creating the thread
+   * @returns {Promise<ThreadChannel>}
+   */
+  startThread(name, autoArchiveDuration, reason) {
+    if (!['text', 'news'].includes(this.channel.type)) {
+      return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
+    }
+    return this.channel.threads.create({ name, autoArchiveDuration, startMessage: this, reason });
   }
 
   /**
@@ -726,7 +753,7 @@ class Message extends Base {
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    * @param {Message} message The message to compare it to
-   * @param {Object} rawData Raw data passed through the WebSocket about this message
+   * @param {APIMessage} rawData Raw data passed through the WebSocket about this message
    * @returns {boolean}
    */
   equals(message, rawData) {

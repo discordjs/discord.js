@@ -90,7 +90,7 @@ class Integration extends Base {
    */
   get roles() {
     const roles = this.guild.roles.cache;
-    return roles.filter(role => role.tags && role.tags.integrationID === this.id);
+    return roles.filter(role => role.tags?.integrationID === this.id);
   }
 
   _patch(data) {

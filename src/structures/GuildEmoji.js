@@ -12,7 +12,7 @@ const Permissions = require('../util/Permissions');
 class GuildEmoji extends BaseGuildEmoji {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the guild emoji
+   * @param {APIEmoji} data The data for the guild emoji
    * @param {Guild} guild The guild the guild emoji is part of
    */
   constructor(client, data, guild) {
@@ -108,7 +108,7 @@ class GuildEmoji extends BaseGuildEmoji {
    *   .catch(console.error);
    */
   edit(data, reason) {
-    const roles = data.roles ? data.roles.map(r => r.id || r) : undefined;
+    const roles = data.roles?.map(r => r.id ?? r);
     return this.client.api
       .guilds(this.guild.id)
       .emojis(this.id)
@@ -151,7 +151,7 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Whether this emoji is the same as another one.
-   * @param {GuildEmoji|Object} other The emoji to compare it to
+   * @param {GuildEmoji|APIEmoji} other The emoji to compare it to
    * @returns {boolean} Whether the emoji is equal to the given emoji or not
    */
   equals(other) {

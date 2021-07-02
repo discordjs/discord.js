@@ -13,7 +13,7 @@ const Util = require('../util/Util');
 class Role extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the role
+   * @param {APIRole} data The data for the role
    * @param {Guild} guild The guild the role is part of
    */
   constructor(client, data, guild) {
@@ -196,38 +196,8 @@ class Role extends Base {
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
-  async edit(data, reason) {
-    if (typeof data.position !== 'undefined') {
-      await Util.setPosition(
-        this,
-        data.position,
-        false,
-        this.guild._sortedRoles(),
-        this.client.api.guilds(this.guild.id).roles,
-        reason,
-      ).then(updatedRoles => {
-        this.client.actions.GuildRolesPositionUpdate.handle({
-          guild_id: this.guild.id,
-          roles: updatedRoles,
-        });
-      });
-    }
-    return this.client.api.guilds[this.guild.id].roles[this.id]
-      .patch({
-        data: {
-          name: data.name || this.name,
-          color: data.color !== null ? Util.resolveColor(data.color || this.color) : null,
-          hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
-          permissions: typeof data.permissions !== 'undefined' ? new Permissions(data.permissions) : this.permissions,
-          mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
-        },
-        reason,
-      })
-      .then(role => {
-        const clone = this._clone();
-        clone._patch(role);
-        return clone;
-      });
+  edit(data, reason) {
+    return this.guild.roles.edit(this, data, reason);
   }
 
   /**
@@ -424,3 +394,8 @@ class Role extends Base {
 }
 
 module.exports = Role;
+
+/**
+ * @external APIRole
+ * @see {@link https://discord.com/developers/docs/topics/permissions#role-object}
+ */

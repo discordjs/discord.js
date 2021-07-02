@@ -20,12 +20,21 @@ class StageChannel extends BaseGuildVoiceChannel {
   }
 
   /**
-   * The instance of this stage channel, if it exists
+   * The stage instance of this stage channel, if it exists
    * @type {?StageInstance}
    * @readonly
    */
-  get instance() {
+  get stageInstance() {
     return this.guild.stageInstances.cache.find(stageInstance => stageInstance.channelID === this.id) ?? null;
+  }
+
+  /**
+   * Creates a stage instance associated to this stage channel.
+   * @param {StageInstanceCreateOptions} options The options to create the stage instance
+   * @returns {Promise<StageInstance>}
+   */
+  createStageInstance(options) {
+    return this.guild.stageInstances.create(this.id, options);
   }
 
   /**

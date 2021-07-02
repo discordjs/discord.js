@@ -60,7 +60,7 @@ class StageInstance extends Base {
   }
 
   /**
-   * The stage channel associated with this instance
+   * The stage channel associated with this stage instance
    * @type {?StageChannel}
    * @readonly
    */

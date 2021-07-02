@@ -7,10 +7,10 @@ const { ActivityTypes, OPCodes } = require('../util/Constants');
 class ClientPresence extends Presence {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} [data={}] The data for the client presence
+   * @param {APIPresence} [data={}] The data for the client presence
    */
   constructor(client, data = {}) {
-    super(client, Object.assign(data, { status: data.status || 'online', user: { id: null } }));
+    super(client, Object.assign(data, { status: data.status ?? 'online', user: { id: null } }));
   }
 
   set(presence) {
@@ -33,7 +33,7 @@ class ClientPresence extends Presence {
       activities: [],
       afk: typeof afk === 'boolean' ? afk : false,
       since: typeof since === 'number' && !Number.isNaN(since) ? since : null,
-      status: status || this.status,
+      status: status ?? this.status,
     };
     if (activities?.length) {
       for (const [i, activity] of activities.entries()) {
@@ -41,7 +41,7 @@ class ClientPresence extends Presence {
         if (!activity.type) activity.type = 0;
 
         data.activities.push({
-          type: typeof activity.type === 'number' ? activity.type : ActivityTypes.indexOf(activity.type),
+          type: typeof activity.type === 'number' ? activity.type : ActivityTypes[activity.type],
           name: activity.name,
           url: activity.url,
         });
@@ -50,7 +50,7 @@ class ClientPresence extends Presence {
       data.activities.push(
         ...this.activities.map(a => ({
           name: a.name,
-          type: ActivityTypes.indexOf(a.type),
+          type: ActivityTypes[a.type],
           url: a.url ?? undefined,
         })),
       );

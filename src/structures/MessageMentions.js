@@ -8,7 +8,7 @@ const Util = require('../util/Util');
  * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
-  constructor(message, users, roles, everyone, crosspostedChannels) {
+  constructor(message, users, roles, everyone, crosspostedChannels, repliedUser) {
     /**
      * The client the message is from
      * @type {Client}
@@ -117,7 +117,7 @@ class MessageMentions {
           this.crosspostedChannels.set(d.id, {
             channelID: d.id,
             guildID: d.guild_id,
-            type: type ? type.toLowerCase() : 'unknown',
+            type: type?.toLowerCase() ?? 'unknown',
             name: d.name,
           });
         }
@@ -125,6 +125,12 @@ class MessageMentions {
     } else {
       this.crosspostedChannels = new Collection();
     }
+
+    /**
+     * The author of the message that this message is a reply to
+     * @type {?User}
+     */
+    this.repliedUser = repliedUser ? this.client.users.add(repliedUser) : null;
   }
 
   /**
@@ -185,11 +191,9 @@ class MessageMentions {
 
     if (!ignoreDirect) {
       const id =
-        this.client.users.resolveID(data) ||
-        (this.guild && this.guild.roles.resolveID(data)) ||
-        this.client.channels.resolveID(data);
+        this.guild?.roles.resolveID(data) ?? this.client.channels.resolveID(data) ?? this.client.users.resolveID(data);
 
-      return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
+      return typeof id === 'string' && (this.users.has(id) || this.channels.has(id) || this.roles.has(id));
     }
 
     return false;

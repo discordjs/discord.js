@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
 const { ApplicationCommandOptionTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
@@ -9,7 +10,7 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
  * @extends {Base}
  */
 class ApplicationCommand extends Base {
-  constructor(client, data, guild) {
+  constructor(client, data, guild, guildID) {
     super(client);
 
     /**
@@ -23,6 +24,19 @@ class ApplicationCommand extends Base {
      * @type {?Guild}
      */
     this.guild = guild ?? null;
+
+    /**
+     * The guild ID this command is part of, this may be non-null when `guild` is `null` if the command
+     * was fetched from the `ApplicationCommandManager`
+     * @type {?Snowflake}
+     */
+    this.guildID = guild?.id ?? guildID ?? null;
+
+    /**
+     * The manager for permissions of this command on its guild or arbitrary guilds when the command is global
+     * @type {ApplicationCommandPermissionsManager}
+     */
+    this.permissions = new ApplicationCommandPermissionsManager(this);
 
     this._patch(data);
   }
@@ -113,7 +127,7 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   edit(data) {
-    return this.manager.edit(this, data);
+    return this.manager.edit(this, data, this.guildID);
   }
 
   /**
@@ -126,62 +140,7 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   delete() {
-    return this.manager.delete(this);
-  }
-
-  /**
-   * Data for setting the permissions of an application command.
-   * @typedef {Object} ApplicationCommandPermissionData
-   * @property {Snowflake} id The ID of the role or user
-   * @property {ApplicationCommandPermissionType|number} type Whether this permission is for a role or a user
-   * @property {boolean} permission Whether the role or user has the permission to use this command
-   */
-
-  /**
-   * The object returned when fetching permissions for an application command.
-   * @typedef {Object} ApplicationCommandPermissions
-   * @property {Snowflake} id The ID of the role or user
-   * @property {ApplicationCommandPermissionType} type Whether this permission is for a role or a user
-   * @property {boolean} permission Whether the role or user has the permission to use this command
-   */
-
-  /**
-   * Fetches the permissions for this command.
-   * <warn>You must specify guildID if this command is handled by a {@link ApplicationCommandManager},
-   * including commands fetched for arbitrary guilds from it, otherwise it is ignored.</warn>
-   * @param {Snowflake} [guildID] ID for the guild to fetch permissions for if this is a global command
-   * @returns {Promise<ApplicationCommandPermissions[]>}
-   * @example
-   * // Fetch permissions for this command
-   * command.fetchPermissions()
-   *   .then(perms => console.log(`Fetched permissions for ${perms.length} users`))
-   *   .catch(console.error);
-   */
-  fetchPermissions(guildID) {
-    return this.manager.fetchPermissions(this, guildID);
-  }
-
-  /**
-   * Sets the permissions for this command.
-   * <warn>You must specify guildID if this command is handled by a {@link ApplicationCommandManager},
-   * including commands fetched for arbitrary guilds from it, otherwise it is ignored.</warn>
-   * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
-   * @param {Snowflake} [guildID] ID for the guild to fetch permissions for if this is a global command
-   * @returns {Promise<ApplicationCommandPermissions[]>}
-   * @example
-   * // Set the permissions for this command
-   * command.setPermissions([
-   *   {
-   *     id: '876543210987654321',
-   *     type: 'USER',
-   *     permission: false,
-   *   },
-   * ])
-   *   .then(console.log)
-   *   .catch(console.error);
-   */
-  setPermissions(permissions, guildID) {
-    return this.manager.setPermissions(this, permissions, guildID);
+    return this.manager.delete(this, this.guildID);
   }
 
   /**
@@ -206,7 +165,7 @@ class ApplicationCommand extends Base {
    * Transforms an {@link ApplicationCommandOptionData} object into something that can be used with the API.
    * @param {ApplicationCommandOptionData} option The option to transform
    * @param {boolean} [received] Whether this option has been received from Discord
-   * @returns {Object}
+   * @returns {APIApplicationCommandOption}
    * @private
    */
   static transformOption(option, received) {
@@ -224,3 +183,13 @@ class ApplicationCommand extends Base {
 }
 
 module.exports = ApplicationCommand;
+
+/**
+ * @external APIApplicationCommand
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommand}
+ */
+
+/**
+ * @external APIApplicationCommandOption
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoption}
+ */

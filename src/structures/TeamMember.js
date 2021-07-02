@@ -29,7 +29,7 @@ class TeamMember extends Base {
 
     /**
      * The permissions this Team Member has with regard to the team
-     * @type {MembershipStates}
+     * @type {MembershipState}
      */
     this.membershipState = MembershipStates[data.membership_state];
 
