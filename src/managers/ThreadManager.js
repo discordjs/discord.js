@@ -198,7 +198,7 @@ class ThreadManager extends BaseManager {
    */
   async fetchArchived({ type = 'public', fetchAll = false, before, limit } = {}, cache = true) {
     let path = this.client.api.channels(this.channel.id);
-    if (type === 'private' && fetchAll) {
+    if (type === 'private' && !fetchAll) {
       path = path.users('@me');
     }
     let timestamp;
