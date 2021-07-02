@@ -3029,9 +3029,6 @@ declare module 'discord.js' {
   }
 
   type ChannelMention = `<#${Snowflake}>`;
-  type MemberMention = UserMention | `<@!${Snowflake}>`;
-  type RoleMention = '@everyone' | `<@&${Snowflake}>`;
-  type UserMention = `<@${Snowflake}>`;
 
   interface ChannelPosition {
     channel: ChannelResolvable;
@@ -3714,6 +3711,8 @@ declare module 'discord.js' {
     stack: string;
   }
 
+  type MemberMention = UserMention | `<@!${Snowflake}>`;
+
   type MembershipState = keyof typeof MembershipStates;
 
   type MessageActionRowComponent = MessageButton | MessageSelectMenu;
@@ -4213,6 +4212,8 @@ declare module 'discord.js' {
     mentionable?: boolean;
   }
 
+  type RoleMention = '@everyone' | `<@&${Snowflake}>`;
+
   interface RolePosition {
     role: RoleResolvable;
     position: number;
@@ -4341,6 +4342,8 @@ declare module 'discord.js' {
     | 'VERIFIED_BOT'
     | 'EARLY_VERIFIED_BOT_DEVELOPER'
     | 'DISCORD_CERTIFIED_MODERATOR';
+
+  type UserMention = `<@${Snowflake}>`;
 
   type UserResolvable = User | Snowflake | Message | GuildMember | ThreadMember;
 
