@@ -39,7 +39,7 @@ class MessageCreateAction extends Action {
          * Emitted whenever a message is created.
          * @event Client#message
          * @param {Message} message The created message
-         * @deprecated
+         * @deprecated Use {@link Client#messageCreate} instead
          */
         client.emit('message', message);
       }

@@ -3081,7 +3081,7 @@ declare module 'discord.js' {
     guildUpdate: [oldGuild: Guild, newGuild: Guild];
     inviteCreate: [invite: Invite];
     inviteDelete: [invite: Invite];
-    /** @deprecated */
+    /** @deprecated Use messageCreate instead */
     message: [message: Message];
     messageCreate: [message: Message];
     messageDelete: [message: Message | PartialMessage];
@@ -3112,7 +3112,7 @@ declare module 'discord.js' {
     userUpdate: [oldUser: User | PartialUser, newUser: User];
     voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
     webhookUpdate: [channel: TextChannel];
-    /** @deprecated */
+    /** @deprecated Use interactionCreate instead */
     interaction: [interaction: Interaction];
     interactionCreate: [interaction: Interaction];
     shardDisconnect: [closeEvent: CloseEvent, shardID: number];
