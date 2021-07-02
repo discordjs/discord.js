@@ -114,7 +114,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a command interaction.
+   * Indicates whether this interaction is a {@link CommandInteraction}.
    * @returns {boolean}
    */
   isCommand() {
@@ -122,7 +122,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a message component interaction.
+   * Indicates whether this interaction is a {@link MessageComponentInteraction}.
    * @returns {boolean}
    */
   isMessageComponent() {
@@ -130,7 +130,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a button interaction.
+   * Indicates whether this interaction is a {@link ButtonInteraction}.
    * @returns {boolean}
    */
   isButton() {
@@ -141,7 +141,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a select menu interaction.
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}.
    * @returns {boolean}
    */
   isSelectMenu() {
