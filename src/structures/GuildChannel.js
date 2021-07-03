@@ -98,7 +98,10 @@ class GuildChannel extends Channel {
     if (!this.parent) return null;
 
     // Get all overwrites
-    const overwriteIds = new Set([...this.permissionOverwrites.cache.keys(), ...this.parent.permissionOverwrites.cache.keys()]);
+    const overwriteIds = new Set([
+      ...this.permissionOverwrites.cache.keys(),
+      ...this.parent.permissionOverwrites.cache.keys(),
+    ]);
 
     // Compare all overwrites
     return [...overwriteIds].every(key => {
