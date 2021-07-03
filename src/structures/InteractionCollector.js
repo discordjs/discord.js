@@ -25,7 +25,7 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
  */
 class InteractionCollector extends Collector {
   /**
-   * @param {Client} client The client on which to collect message component interactions
+   * @param {Client} client The client on which to collect interactions
    * @param {InteractionCollectorOptions} [options={}] The options to apply to this collector
    */
   constructor(client, options = {}) {
@@ -68,7 +68,7 @@ class InteractionCollector extends Collector {
         : options.componentType ?? null;
 
     /**
-     * The users which have interacted to components on this collector
+     * The users which have interacted to this collector
      * @type {Collection}
      */
     this.users = new Collection();
@@ -122,7 +122,7 @@ class InteractionCollector extends Collector {
   collect(interaction) {
     /**
      * Emitted whenever a interaction is collected.
-     * @event MessageComponentInteractionCollector#collect
+     * @event InteractionCollector#collect
      * @param {Interaction} interaction The interaction that was collected
      */
     if (this.interactionType && interaction.type !== this.interactionType) return null;
@@ -142,7 +142,7 @@ class InteractionCollector extends Collector {
   dispose(interaction) {
     /**
      * Emitted whenever an interaction is disposed of.
-     * @event MessageComponentInteractionCollector#dispose
+     * @event InteractionCollector#dispose
      * @param {Interaction} interaction The interaction that was disposed of
      */
     if (this.type && interaction.type !== this.type) return null;
@@ -155,7 +155,7 @@ class InteractionCollector extends Collector {
   }
 
   /**
-   * Empties this message component collector.
+   * Empties this interaction collector.
    */
   empty() {
     this.total = 0;
