@@ -528,7 +528,7 @@ declare module 'discord.js' {
 
   export class Options {
     public static createDefaultOptions(): ClientOptions;
-    public static cacheWithLimits(limits?: Partial<Record<string, number>>): CacheFactory;
+    public static cacheWithLimits(limits?: Record<string, number>): CacheFactory;
     public static cacheEverything(): CacheFactory;
   }
 

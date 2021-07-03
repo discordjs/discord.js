@@ -131,7 +131,7 @@ class Options extends null {
 
   /**
    * Create a cache factory using predefined limits.
-   * @param {Partial<Record<string, number>>} [limits={}] Limits for structures.
+   * @param {Record<string, number>} [limits={}] Limits for structures.
    * @returns {CacheFactory}
    */
   static cacheWithLimits(limits = {}) {
