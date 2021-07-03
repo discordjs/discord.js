@@ -298,12 +298,21 @@ class ThreadChannel extends Channel {
   }
 
   /**
+   * Whether the client user is a member of the thread.
+   * @type {boolean}
+   * @readonly
+   */
+  get joined() {
+    return this.members.cache.has(this.client.user?.id);
+  }
+
+  /**
    * Whether the thread is editable by the client user (name, archived, autoArchiveDuration)
    * @type {boolean}
    * @readonly
    */
   get editable() {
-    return this.ownerID === this.client.user.id || this.manageable;
+    return (this.ownerID === this.client.user.id && (this.type !== 'private_thread' || this.joined)) || this.manageable;
   }
 
   /**
@@ -314,6 +323,7 @@ class ThreadChannel extends Channel {
   get joinable() {
     return (
       !this.archived &&
+      !this.joined &&
       this.permissionsFor(this.client.user)?.has(
         this.type === 'private_thread' ? Permissions.FLAGS.MANAGE_THREADS : Permissions.FLAGS.VIEW_CHANNEL,
         false,
@@ -338,6 +348,7 @@ class ThreadChannel extends Channel {
   get sendable() {
     return (
       !this.archived &&
+      (this.type !== 'private_thread' || this.joined || this.manageable) &&
       this.permissionsFor(this.client.user)?.any(
         [
           Permissions.FLAGS.SEND_MESSAGES,
