@@ -2154,7 +2154,7 @@ declare module 'discord.js' {
     public serverMute: boolean | null;
     public sessionID: string | null;
     public streaming: boolean;
-    public selfVideo: boolean;
+    public selfVideo: boolean | null;
     public suppress: boolean;
     public requestToSpeakTimestamp: number | null;
 
