@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
+const { Error } = require('../errors');
 
 let Structures;
 
@@ -31,7 +32,7 @@ class DataManager extends BaseManager {
    * @abstract
    */
   get cache() {
-    throw new Error(`Getter 'cache' not implemented for ${this.constructor.name}`);
+    throw new Error('NOT_IMPLEMENTED', 'get cache', this.constructor.name);
   }
 
   /**
