@@ -94,7 +94,7 @@ class Options extends null {
    * The default client options.
    * @returns {ClientOptions}
    */
-  static createDefaultOptions() {
+  static createDefault() {
     return {
       shardCount: 1,
       makeCache: this.cacheWithLimits({ MessageManager: 200 }),

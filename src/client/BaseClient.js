@@ -38,7 +38,7 @@ class BaseClient extends EventEmitter {
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    this.options = Util.mergeDefault(Options.createDefaultOptions(), options);
+    this.options = Util.mergeDefault(Options.createDefault(), options);
 
     /**
      * The REST manager of the client

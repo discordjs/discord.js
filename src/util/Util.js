@@ -262,7 +262,7 @@ class Util extends null {
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
-    const defaults = Options.createDefaultOptions();
+    const defaults = Options.createDefault();
     return fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
