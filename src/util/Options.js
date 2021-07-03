@@ -89,7 +89,7 @@
 /**
  * Contains various utilities for client options.
  */
-class ClientOptionsUtil extends null {
+class Options extends null {
   constructor() {
     throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
   }
@@ -170,4 +170,4 @@ class ClientOptionsUtil extends null {
   }
 }
 
-module.exports = ClientOptionsUtil;
+module.exports = Options;
