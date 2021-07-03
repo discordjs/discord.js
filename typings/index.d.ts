@@ -1021,7 +1021,7 @@ declare module 'discord.js' {
     public name: string;
     public readonly parent: CategoryChannel | null;
     public parentID: Snowflake | null;
-    public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
+    public permissionOverwrites: PermissionOverwriteManager;
     public readonly permissionsLocked: boolean | null;
     public readonly position: number;
     public rawPosition: number;
@@ -1029,30 +1029,16 @@ declare module 'discord.js' {
     public readonly viewable: boolean;
     public clone(options?: GuildChannelCloneOptions): Promise<this>;
     public createInvite(options?: CreateInviteOptions): Promise<Invite>;
-    public createOverwrite(
-      userOrRole: RoleResolvable | UserResolvable,
-      options: PermissionOverwriteOptions,
-      overwriteOptions?: GuildChannelOverwriteOptions,
-    ): Promise<this>;
     public edit(data: ChannelData, reason?: string): Promise<this>;
     public equals(channel: GuildChannel): boolean;
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public lockPermissions(): Promise<this>;
-    public overwritePermissions(
-      overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
-      reason?: string,
-    ): Promise<this>;
     public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
     public setName(name: string, reason?: string): Promise<this>;
     public setParent(channel: CategoryChannel | Snowflake | null, options?: SetParentOptions): Promise<this>;
     public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
     public setTopic(topic: string | null, reason?: string): Promise<this>;
-    public updateOverwrite(
-      userOrRole: RoleResolvable | UserResolvable,
-      options: PermissionOverwriteOptions,
-      overwriteOptions?: GuildChannelOverwriteOptions,
-    ): Promise<this>;
     public isText(): this is TextChannel | NewsChannel;
   }
 
@@ -1633,14 +1619,14 @@ declare module 'discord.js' {
     public iconURL(options?: StaticImageURLOptions): string | null;
   }
 
-  export class PermissionOverwrites {
-    constructor(guildChannel: GuildChannel, data?: unknown);
+  export class PermissionOverwrites extends Base {
+    constructor(client: Client, data: object, channel: GuildChannel);
     public allow: Readonly<Permissions>;
     public readonly channel: GuildChannel;
     public deny: Readonly<Permissions>;
     public id: Snowflake;
     public type: OverwriteType;
-    public update(options: PermissionOverwriteOptions, reason?: string): Promise<PermissionOverwrites>;
+    public edit(options: PermissionOverwriteOptions, reason?: string): Promise<PermissionOverwrites>;
     public delete(reason?: string): Promise<PermissionOverwrites>;
     public toJSON(): unknown;
     public static resolveOverwriteOptions(
@@ -2609,6 +2595,35 @@ declare module 'discord.js' {
     public unpin(message: MessageResolvable): Promise<void>;
   }
 
+  export class PermissionOverwriteManager extends BaseManager<
+    Snowflake,
+    PermissionOverwrites,
+    PermissionOverwriteResolvable
+  > {
+    constructor(client: Client, iterable?: Iterable<any>);
+    public set(
+      overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
+      reason?: string,
+    ): Promise<GuildChannel>;
+    private upsert(
+      userOrRole: RoleResolvable | UserResolvable,
+      options: PermissionOverwriteOptions,
+      overwriteOptions?: GuildChannelOverwriteOptions,
+      existing?: PermissionOverwrites,
+    ): Promise<GuildChannel>;
+    public create(
+      userOrRole: RoleResolvable | UserResolvable,
+      options: PermissionOverwriteOptions,
+      overwriteOptions?: GuildChannelOverwriteOptions,
+    ): Promise<GuildChannel>;
+    public edit(
+      userOrRole: RoleResolvable | UserResolvable,
+      options: PermissionOverwriteOptions,
+      overwriteOptions?: GuildChannelOverwriteOptions,
+    ): Promise<GuildChannel>;
+    public delete(userOrRole: RoleResolvable | UserResolvable, reason?: string): Promise<GuildChannel>;
+  }
+
   export class PresenceManager extends BaseManager<Snowflake, Presence, PresenceResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
   }
@@ -3500,6 +3515,11 @@ declare module 'discord.js' {
     name?: string;
   }
 
+  interface GuildChannelOverwriteOptions {
+    reason?: string;
+    type?: number;
+  }
+
   interface GuildCreateOptions {
     afkChannelID?: Snowflake | number;
     afkTimeout?: number;
@@ -4006,6 +4026,8 @@ declare module 'discord.js' {
   interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> {}
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
+
+  type PermissionOverwriteResolvable = UserResolvable | RoleResolvable | PermissionOverwrites;
 
   type PermissionString =
     | 'CREATE_INSTANT_INVITE'
