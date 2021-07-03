@@ -73,7 +73,7 @@ class GuildInviteManager extends BaseManager {
   /**
    * Fetches invite(s) from Discord.
    * @param {InviteResolvable|FetchInviteOptions|FetchInvitesOptions} [options] Options for fetching guild invite(s)
-   * @returns {Promise<Invite>|Promise<Collection<Snowflake, Invite>>}
+   * @returns {Promise<Invite|Collection<Snowflake, Invite>>}
    * @example
    * // Fetch all invites from a guild
    * guild.invites.fetch()
