@@ -388,12 +388,17 @@ class Client extends BaseClient {
    * @returns {string}
    * @example
    * const link = client.generateInvite({
+   *   scopes: ['applications.commands'],
+   * });
+   * console.log(`Generated application invite link: ${link}`);
+   * @example
+   * const link = client.generateInvite({
    *   permissions: [
    *     Permissions.FLAGS.SEND_MESSAGES,
    *     Permissions.FLAGS.MANAGE_GUILD,
    *     Permissions.FLAGS.MENTION_EVERYONE,
    *   ],
-   *   scope: ['bot'],
+   *   scopes: ['bot'],
    * });
    * console.log(`Generated bot invite link: ${link}`);
    */
