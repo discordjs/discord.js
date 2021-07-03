@@ -103,7 +103,7 @@ class ClientUser extends Structures.get('User') {
    * @property {PresenceStatusData} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
    * @property {ActivitiesOptions[]} [activities] Activity the user is playing
-   * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
+   * @property {?(number|number[])} [shardID] Shard Id(s) to have the activity set on
    */
 
   /**
@@ -130,7 +130,7 @@ class ClientUser extends Structures.get('User') {
   /**
    * Sets the status of the client user.
    * @param {PresenceStatusData} status Status to change to
-   * @param {?number|number[]} [shardID] Shard ID(s) to have the activity set on
+   * @param {?(number|number[])} [shardID] Shard ID(s) to have the activity set on
    * @returns {Presence}
    * @example
    * // Set the client user's status
