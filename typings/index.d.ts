@@ -812,7 +812,8 @@ declare module 'discord.js' {
     PremiumTiers: typeof PremiumTiers;
   };
 
-  export class DataResolver {
+  export class DataResolver extends null {
+    private constructor();
     public static resolveBase64(data: Base64Resolvable): string;
     public static resolveCode(data: string, regx: RegExp): string;
     public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer | Stream>;
@@ -1855,7 +1856,8 @@ declare module 'discord.js' {
     public once(event: 'shardCreate', listener: (shard: Shard) => Awaited<void>): this;
   }
 
-  export class SnowflakeUtil {
+  export class SnowflakeUtil extends null {
+    private constructor();
     public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
     public static generate(timestamp?: number | Date): Snowflake;
     public static readonly EPOCH: number;
@@ -1892,7 +1894,8 @@ declare module 'discord.js' {
     public type: 'store';
   }
 
-  export class Structures {
+  export class Structures extends null {
+    private constructor();
     public static get<K extends keyof Extendable>(structure: K): Extendable[K];
     public static get(structure: string): (...args: any[]) => void;
     public static extend<K extends keyof Extendable, T extends Extendable[K]>(
@@ -2052,7 +2055,8 @@ declare module 'discord.js' {
     public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
   }
 
-  export class Util {
+  export class Util extends null {
+    private constructor();
     public static basename(path: string, ext?: string): string;
     public static binaryToID(num: string): Snowflake;
     public static cleanContent(str: string, channel: Channel): string;

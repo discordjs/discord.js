@@ -10,11 +10,7 @@ const isObject = d => typeof d === 'object' && d !== null;
 /**
  * Contains various general-purpose utility methods.
  */
-class Util {
-  constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
-  }
-
+class Util extends null {
   /**
    * Flatten an object. Any properties that are collections will get converted to an array of keys.
    * @param {Object} obj The object to flatten.

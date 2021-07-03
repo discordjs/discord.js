@@ -31,11 +31,7 @@
 /**
  * Allows for the extension of built-in Discord.js structures that are instantiated by {@link BaseManager Managers}.
  */
-class Structures {
-  constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
-  }
-
+class Structures extends null {
   /**
    * Retrieves a structure class.
    * @param {string} structure Name of the structure to retrieve
