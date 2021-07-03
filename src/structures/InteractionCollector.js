@@ -59,7 +59,7 @@ class InteractionCollector extends Collector {
         : options.interactionType ?? null;
 
     /**
-     * The the type of compoonent to collect
+     * The the type of component to collect
      * @type {?MessageComponentType}
      */
     this.componentType =
