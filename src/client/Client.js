@@ -402,7 +402,7 @@ class Client extends BaseClient {
     if (!this.application) throw new Error('CLIENT_NOT_READY', 'generate an invite link');
 
     const scopes = options.scopes;
-    if (!scopes) {
+    if (typeof scopes === 'undefined') {
       throw new TypeError('INVITE_MISSING_SCOPES');
     }
     if (!Array.isArray(scopes)) {
