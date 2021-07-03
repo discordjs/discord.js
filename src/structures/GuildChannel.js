@@ -469,10 +469,11 @@ class GuildChannel extends Channel {
   /**
    * Fetches a collection of invites to this guild channel.
    * Resolves with a collection mapping invites by their codes.
+   * @param {boolean} [cache=true] Whether or not to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
-  fetchInvites() {
-    return this.guild.invites.fetch({ channelID: this.id });
+  fetchInvites(cache = true) {
+    return this.guild.invites.fetch({ channelID: this.id, cache });
   }
 
   /**

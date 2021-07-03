@@ -1032,7 +1032,7 @@ declare module 'discord.js' {
     public createInvite(options?: CreateInviteOptions): Promise<Invite>;
     public edit(data: ChannelData, reason?: string): Promise<this>;
     public equals(channel: GuildChannel): boolean;
-    public fetchInvites(): Promise<Collection<string, Invite>>;
+    public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
     public lockPermissions(): Promise<this>;
     public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
