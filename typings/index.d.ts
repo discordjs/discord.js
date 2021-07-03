@@ -526,7 +526,7 @@ declare module 'discord.js' {
     public setUsername(username: string): Promise<this>;
   }
 
-  export class ClientOptionsUtil {
+  export class Options {
     public static createDefaultOptions(): ClientOptions;
     public static cacheWithLimits(limits?: Partial<Record<string, number>>): CacheFactory;
   }

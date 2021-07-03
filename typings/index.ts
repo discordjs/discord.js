@@ -2,7 +2,7 @@
 
 import {
   Client,
-  ClientOptionsUtil,
+  Options,
   Collection,
   Intents,
   Message,
@@ -18,7 +18,7 @@ import {
 
 const client: Client = new Client({
   intents: Intents.NON_PRIVILEGED,
-  makeCache: ClientOptionsUtil.cacheWithLimits({
+  makeCache: Options.cacheWithLimits({
     MessageManager: 200,
   }),
 });
