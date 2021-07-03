@@ -379,7 +379,7 @@ class Client extends BaseClient {
    * @property {PermissionResolvable} [permissions] Permissions to request
    * @property {GuildResolvable} [guild] Guild to preselect
    * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
-   * @property {InviteScope[]} [additionalScopes] Whether any additional scopes should be requested
+   * @property {InviteScope[]} [scopes=['bot']] Scopes that should be requested
    */
 
   /**
@@ -393,6 +393,7 @@ class Client extends BaseClient {
    *     Permissions.FLAGS.MANAGE_GUILD,
    *     Permissions.FLAGS.MENTION_EVERYONE,
    *   ],
+   *   scope: ['bot'],
    * });
    * console.log(`Generated bot invite link: ${link}`);
    */
@@ -420,16 +421,18 @@ class Client extends BaseClient {
       query.set('guild_id', guildID);
     }
 
-    if (options.additionalScopes) {
-      const scopes = options.additionalScopes;
+    if (options.scopes) {
+      const scopes = options.scopes;
       if (!Array.isArray(scopes)) {
-        throw new TypeError('INVALID_TYPE', 'additionalScopes', 'Array of Invite Scopes', true);
+        throw new TypeError('INVALID_TYPE', 'scopes', 'Array of Invite Scopes', true);
       }
       const invalidScope = scopes.find(scope => !InviteScopes.includes(scope));
       if (invalidScope) {
-        throw new TypeError('INVALID_ELEMENT', 'Array', 'additionalScopes', invalidScope);
+        throw new TypeError('INVALID_ELEMENT', 'Array', 'scopes', invalidScope);
       }
-      query.set('scope', ['bot', ...scopes].join(' '));
+      query.set('scope', [...scopes].join(' '));
+    } else {
+      query.set('scope', 'bot');
     }
 
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
