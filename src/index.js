@@ -1,7 +1,5 @@
 'use strict';
 
-const Util = require('./util/Util');
-
 module.exports = {
   // "Root" classes (starting points)
   BaseClient: require('./client/BaseClient'),
@@ -18,6 +16,7 @@ module.exports = {
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   DataResolver: require('./util/DataResolver'),
+  Formatters: require('./util/Formatters'),
   BaseManager: require('./managers/BaseManager'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
   HTTPError: require('./rest/HTTPError'),
@@ -28,8 +27,9 @@ module.exports = {
   SnowflakeUtil: require('./util/SnowflakeUtil'),
   Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
+  ThreadMemberFlags: require('./util/ThreadMemberFlags'),
   UserFlags: require('./util/UserFlags'),
-  Util: Util,
+  Util: require('./util/Util'),
   version: require('../package.json').version,
 
   // Managers
@@ -47,24 +47,18 @@ module.exports = {
   ReactionManager: require('./managers/ReactionManager'),
   ReactionUserManager: require('./managers/ReactionUserManager'),
   MessageManager: require('./managers/MessageManager'),
+  PermissionOverwriteManager: require('./managers/PermissionOverwriteManager'),
   PresenceManager: require('./managers/PresenceManager'),
   RoleManager: require('./managers/RoleManager'),
+  ThreadManager: require('./managers/ThreadManager'),
+  ThreadMemberManager: require('./managers/ThreadMemberManager'),
   UserManager: require('./managers/UserManager'),
-
-  // Shortcuts to Util methods
-  discordSort: Util.discordSort,
-  escapeMarkdown: Util.escapeMarkdown,
-  fetchRecommendedShards: Util.fetchRecommendedShards,
-  resolveColor: Util.resolveColor,
-  verifyString: Util.verifyString,
-  splitMessage: Util.splitMessage,
 
   // Structures
   Application: require('./structures/interfaces/Application'),
   ApplicationCommand: require('./structures/ApplicationCommand'),
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
-  APIMessage: require('./structures/APIMessage'),
   BaseGuild: require('./structures/BaseGuild'),
   BaseGuildEmoji: require('./structures/BaseGuildEmoji'),
   BaseGuildVoiceChannel: require('./structures/BaseGuildVoiceChannel'),
@@ -92,6 +86,7 @@ module.exports = {
   Integration: require('./structures/Integration'),
   IntegrationApplication: require('./structures/IntegrationApplication'),
   Interaction: require('./structures/Interaction'),
+  InteractionCollector: require('./structures/InteractionCollector'),
   InteractionWebhook: require('./structures/InteractionWebhook'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
@@ -100,10 +95,11 @@ module.exports = {
   MessageButton: require('./structures/MessageButton'),
   MessageCollector: require('./structures/MessageCollector'),
   MessageComponentInteraction: require('./structures/MessageComponentInteraction'),
-  MessageComponentInteractionCollector: require('./structures/MessageComponentInteractionCollector'),
   MessageEmbed: require('./structures/MessageEmbed'),
   MessageMentions: require('./structures/MessageMentions'),
+  MessagePayload: require('./structures/MessagePayload'),
   MessageReaction: require('./structures/MessageReaction'),
+  MessageSelectMenu: require('./structures/MessageSelectMenu'),
   NewsChannel: require('./structures/NewsChannel'),
   OAuth2Guild: require('./structures/OAuth2Guild'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
@@ -113,12 +109,15 @@ module.exports = {
   ReactionEmoji: require('./structures/ReactionEmoji'),
   RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
   Role: require('./structures/Role'),
+  SelectMenuInteraction: require('./structures/SelectMenuInteraction'),
   Sticker: require('./structures/Sticker'),
   StoreChannel: require('./structures/StoreChannel'),
   StageChannel: require('./structures/StageChannel'),
   Team: require('./structures/Team'),
   TeamMember: require('./structures/TeamMember'),
   TextChannel: require('./structures/TextChannel'),
+  ThreadChannel: require('./structures/ThreadChannel'),
+  ThreadMember: require('./structures/ThreadMember'),
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
   VoiceRegion: require('./structures/VoiceRegion'),

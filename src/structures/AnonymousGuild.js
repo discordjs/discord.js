@@ -5,12 +5,13 @@ const { VerificationLevels, NSFWLevels } = require('../util/Constants');
 
 /**
  * Bundles common attributes and methods between {@link Guild} and {@link InviteGuild}
+ * @extends {BaseGuild}
  * @abstract
  */
 class AnonymousGuild extends BaseGuild {
-  constructor(client, data) {
+  constructor(client, data, immediatePatch = true) {
     super(client, data);
-    this._patch(data);
+    if (immediatePatch) this._patch(data);
   }
 
   _patch(data) {

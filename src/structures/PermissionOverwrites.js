@@ -1,5 +1,6 @@
 'use strict';
 
+const Base = require('./Base');
 const Role = require('./Role');
 const { TypeError } = require('../errors');
 const { OverwriteTypes } = require('../util/Constants');
@@ -7,16 +8,19 @@ const Permissions = require('../util/Permissions');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
+ * @extends {Base}
  */
-class PermissionOverwrites {
-  constructor(guildChannel, data) {
+class PermissionOverwrites extends Base {
+  constructor(client, data, channel) {
+    super(client);
+
     /**
      * The GuildChannel this overwrite is for
      * @name PermissionOverwrites#channel
      * @type {GuildChannel}
      * @readonly
      */
-    Object.defineProperty(this, 'channel', { value: guildChannel });
+    Object.defineProperty(this, 'channel', { value: channel });
 
     if (data) this._patch(data);
   }
@@ -48,33 +52,20 @@ class PermissionOverwrites {
   }
 
   /**
-   * Updates this permissionOverwrites.
+   * Edits this Permission Overwrite.
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<PermissionOverwrites>}
    * @example
    * // Update permission overwrites
-   * permissionOverwrites.update({
+   * permissionOverwrites.edit({
    *   SEND_MESSAGES: false
    * })
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  async update(options, reason) {
-    const { allow, deny } = this.constructor.resolveOverwriteOptions(options, this);
-
-    await this.channel.client.api
-      .channels(this.channel.id)
-      .permissions(this.id)
-      .put({
-        data: {
-          id: this.id,
-          type: OverwriteTypes[this.type],
-          allow,
-          deny,
-        },
-        reason,
-      });
+  async edit(options, reason) {
+    await this.channel.permissionOverwrites.upsert(this.id, options, { type: OverwriteTypes[this.type], reason }, this);
     return this;
   }
 
@@ -84,7 +75,7 @@ class PermissionOverwrites {
    * @returns {Promise<PermissionOverwrites>}
    */
   async delete(reason) {
-    await this.channel.client.api.channels(this.channel.id).permissions(this.id).delete({ reason });
+    await this.channel.permissionOverwrites.delete(this.id, reason);
     return this;
   }
 
@@ -118,9 +109,7 @@ class PermissionOverwrites {
   /**
    * Resolves bitfield permissions overwrites from an object.
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {Object} initialPermissions The initial permissions
-   * @param {PermissionResolvable} initialPermissions.allow Initial allowed permissions
-   * @param {PermissionResolvable} initialPermissions.deny Initial denied permissions
+   * @param {ResolvedOverwriteOptions} initialPermissions The initial permissions
    * @returns {ResolvedOverwriteOptions}
    */
   static resolveOverwriteOptions(options, { allow, deny } = {}) {
@@ -183,7 +172,7 @@ class PermissionOverwrites {
       };
     }
 
-    const userOrRole = guild.roles.resolve(overwrite.id) || guild.client.users.resolve(overwrite.id);
+    const userOrRole = guild.roles.resolve(overwrite.id) ?? guild.client.users.resolve(overwrite.id);
     if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
     const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
 

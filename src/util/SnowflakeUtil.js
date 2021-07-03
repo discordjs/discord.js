@@ -9,11 +9,7 @@ let INCREMENT = 0;
 /**
  * A container for useful snowflake-related methods.
  */
-class SnowflakeUtil {
-  constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
-  }
-
+class SnowflakeUtil extends null {
   /**
    * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
    * ```

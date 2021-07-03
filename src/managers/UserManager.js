@@ -3,6 +3,7 @@
 const BaseManager = require('./BaseManager');
 const GuildMember = require('../structures/GuildMember');
 const Message = require('../structures/Message');
+const ThreadMember = require('../structures/ThreadMember');
 const User = require('../structures/User');
 
 /**
@@ -26,7 +27,8 @@ class UserManager extends BaseManager {
    * * A Snowflake
    * * A Message object (resolves to the message author)
    * * A GuildMember object
-   * @typedef {User|Snowflake|Message|GuildMember} UserResolvable
+   * * A ThreadMember object
+   * @typedef {User|Snowflake|Message|GuildMember|ThreadMember} UserResolvable
    */
 
   /**
@@ -35,7 +37,7 @@ class UserManager extends BaseManager {
    * @returns {?User}
    */
   resolve(user) {
-    if (user instanceof GuildMember) return user.user;
+    if (user instanceof GuildMember || user instanceof ThreadMember) return user.user;
     if (user instanceof Message) return user.author;
     return super.resolve(user);
   }
@@ -46,6 +48,7 @@ class UserManager extends BaseManager {
    * @returns {?Snowflake}
    */
   resolveID(user) {
+    if (user instanceof ThreadMember) return user.id;
     if (user instanceof GuildMember) return user.user.id;
     if (user instanceof Message) return user.author.id;
     return super.resolveID(user);

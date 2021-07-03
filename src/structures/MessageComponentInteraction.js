@@ -16,9 +16,9 @@ class MessageComponentInteraction extends Interaction {
 
     /**
      * The message to which the component was attached
-     * @type {?Message|Object}
+     * @type {Message|APIMessage}
      */
-    this.message = data.message ? this.channel?.messages.add(data.message) ?? data.message : null;
+    this.message = this.channel?.messages.add(data.message) ?? data.message;
 
     /**
      * The custom ID of the component which was interacted with
@@ -39,6 +39,12 @@ class MessageComponentInteraction extends Interaction {
     this.deferred = false;
 
     /**
+     * Whether the reply to this interaction is ephemeral
+     * @type {?boolean}
+     */
+    this.ephemeral = null;
+
+    /**
      * Whether this interaction has already been replied to
      * @type {boolean}
      */
@@ -49,6 +55,26 @@ class MessageComponentInteraction extends Interaction {
      * @type {InteractionWebhook}
      */
     this.webhook = new InteractionWebhook(this.client, this.applicationID, this.token);
+  }
+
+  /**
+   * Raw message components from the API
+   * * APIMessageButton
+   * * APIMessageSelectMenu
+   * @typedef {APIMessageButton|APIMessageSelectMenu} APIMessageActionRowComponent
+   */
+
+  /**
+   * The component which was interacted with
+   * @type {?(MessageActionRowComponent|APIMessageActionRowComponent)}
+   * @readonly
+   */
+  get component() {
+    return (
+      this.message.components
+        .flatMap(row => row.components)
+        .find(component => (component.customID ?? component.custom_id) === this.customID) ?? null
+    );
   }
 
   /**
@@ -76,3 +102,13 @@ class MessageComponentInteraction extends Interaction {
 InteractionResponses.applyToClass(MessageComponentInteraction);
 
 module.exports = MessageComponentInteraction;
+
+/**
+ * @external APIMessageSelectMenu
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#select-menu-object}
+ */
+
+/**
+ * @external APIMessageButton
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#button-object}
+ */

@@ -32,14 +32,14 @@ class GenericAction {
   }
 
   getChannel(data) {
-    const id = data.channel_id || data.id;
+    const id = data.channel_id ?? data.id;
     return (
-      data.channel ||
+      data.channel ??
       this.getPayload(
         {
           id,
           guild_id: data.guild_id,
-          recipients: [data.author || { id: data.user_id }],
+          recipients: [data.author ?? { id: data.user_id }],
         },
         this.client.channels,
         id,
@@ -49,14 +49,14 @@ class GenericAction {
   }
 
   getMessage(data, channel, cache) {
-    const id = data.message_id || data.id;
+    const id = data.message_id ?? data.id;
     return (
-      data.message ||
+      data.message ??
       this.getPayload(
         {
           id,
           channel_id: channel.id,
-          guild_id: data.guild_id || (channel.guild ? channel.guild.id : null),
+          guild_id: data.guild_id ?? channel.guild?.id,
         },
         channel.messages,
         id,
@@ -67,12 +67,12 @@ class GenericAction {
   }
 
   getReaction(data, message, user) {
-    const id = data.emoji.id || decodeURIComponent(data.emoji.name);
+    const id = data.emoji.id ?? decodeURIComponent(data.emoji.name);
     return this.getPayload(
       {
         emoji: data.emoji,
         count: message.partial ? null : 0,
-        me: user ? user.id === this.client.user.id : false,
+        me: user?.id === this.client.user.id,
       },
       message.reactions,
       id,
@@ -86,11 +86,11 @@ class GenericAction {
 
   getUser(data) {
     const id = data.user_id;
-    return data.user || this.getPayload({ id }, this.client.users, id, PartialTypes.USER);
+    return data.user ?? this.getPayload({ id }, this.client.users, id, PartialTypes.USER);
   }
 
   getUserFromMember(data) {
-    if (data.guild_id && data.member && data.member.user) {
+    if (data.guild_id && data.member?.user) {
       const guild = this.client.guilds.cache.get(data.guild_id);
       if (guild) {
         return guild.members.add(data.member).user;

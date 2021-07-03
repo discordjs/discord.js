@@ -17,12 +17,11 @@ const { Events } = require('../util/Constants');
 class MessageCollector extends Collector {
   /**
    * @param {TextChannel|DMChannel} channel The channel
-   * @param {CollectorFilter} filter The filter to be applied to this collector
    * @param {MessageCollectorOptions} options The options to be applied to this collector
    * @emits MessageCollector#message
    */
-  constructor(channel, filter, options = {}) {
-    super(channel.client, filter, options);
+  constructor(channel, options = {}) {
+    super(channel.client, options);
 
     /**
      * The channel
@@ -90,6 +89,11 @@ class MessageCollector extends Collector {
     return message.channel.id === this.channel.id ? message.id : null;
   }
 
+  /**
+   * The reason this collector has ended with, or null if it hasn't ended yet
+   * @type {?string}
+   * @readonly
+   */
   get endReason() {
     if (this.options.max && this.collected.size >= this.options.max) return 'limit';
     if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
@@ -115,7 +119,7 @@ class MessageCollector extends Collector {
    * @returns {void}
    */
   _handleGuildDeletion(guild) {
-    if (this.channel.guild && guild.id === this.channel.guild.id) {
+    if (guild.id === this.channel.guild?.id) {
       this.stop('guildDelete');
     }
   }

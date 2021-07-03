@@ -34,14 +34,7 @@ class Client extends BaseClient {
   constructor(options) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Obtain shard details from environment or if present, worker threads
-    let data = process.env;
-    try {
-      // Test if worker threads module is present and used
-      data = require('worker_threads').workerData || data;
-    } catch {
-      // Do nothing
-    }
+    const data = require('worker_threads').workerData ?? process.env;
 
     if (this.options.shards === DefaultOptions.shards) {
       if ('SHARDS' in data) {
@@ -188,7 +181,7 @@ class Client extends BaseClient {
    * @readonly
    */
   get readyTimestamp() {
-    return this.readyAt ? this.readyAt.getTime() : null;
+    return this.readyAt?.getTime() ?? null;
   }
 
   /**
@@ -341,7 +334,7 @@ class Client extends BaseClient {
       channels++;
 
       messages += channel.messages.cache.sweep(
-        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs,
+        message => now - (message.editedTimestamp ?? message.createdTimestamp) > lifetimeMs,
       );
     }
 
