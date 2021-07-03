@@ -136,10 +136,10 @@ class PermissionOverwriteManager extends CachedManager {
    * @returns {GuildChannel}
    */
   async delete(userOrRole, reason) {
-    userOrRole = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
-    if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
+    const userOrRoleID = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
+    if (!userOrRoleID) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
 
-    await this.client.api.channels(this.channel.id).permissions(userOrRole.id).delete({ reason });
+    await this.client.api.channels(this.channel.id).permissions(userOrRoleID).delete({ reason });
     return this.channel;
   }
 }
