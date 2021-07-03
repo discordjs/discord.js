@@ -2106,22 +2106,20 @@ declare module 'discord.js' {
     public static splitMessage(text: string, options?: SplitOptions): string[];
   }
 
-  export namespace Formatters {
-    export {
-      blockQuote,
-      bold,
-      codeBlock,
-      hideLinkEmbed,
-      hyperlink,
-      inlineCode,
-      italic,
-      quote,
-      strikethrough,
-      time,
-      TimestampStyles,
-      TimestampStylesString,
-      underscore,
-    };
+  export class Formatters extends null {
+    static blockQuote: typeof blockQuote;
+    static bold: typeof bold;
+    static codeBlock: typeof codeBlock;
+    static hideLinkEmbed: typeof hideLinkEmbed;
+    static hyperlink: typeof hyperlink;
+    static inlineCode: typeof inlineCode;
+    static italic: typeof italic;
+    static quote: typeof quote;
+    static strikethrough: typeof strikethrough;
+    static time: typeof time;
+    static TimestampStyles: typeof TimestampStyles;
+    static TimestampStylesString: TimestampStylesString;
+    static underscore: typeof underscore;
   }
 
   export class VoiceChannel extends BaseGuildVoiceChannel {

@@ -17,8 +17,9 @@ const {
 
 /**
  * Contains various Discord-specific functions for formatting messages.
- * @namespace Formatters
  */
+
+class Formatters extends null {}
 
 /**
  * Formats the content into a block quote. This needs to be at the start of the line for Discord to format it.
@@ -26,7 +27,7 @@ const {
  * @param {string} content The content to wrap.
  * @returns {string}
  */
-exports.blockQuote = blockQuote;
+Formatters.blockQuote = blockQuote;
 
 /**
  * Formats the content into bold text.
@@ -34,7 +35,7 @@ exports.blockQuote = blockQuote;
  * @param {string} content The content to wrap.
  * @returns {string}
  */
-exports.bold = bold;
+Formatters.bold = bold;
 
 /**
  * Wraps the content inside a codeblock with an optional language.
@@ -43,7 +44,7 @@ exports.bold = bold;
  * @param {string} [content] The content to wrap.
  * @returns {string}
  */
-exports.codeBlock = codeBlock;
+Formatters.codeBlock = codeBlock;
 
 /**
  * Formats the URL into <>, which stops it from embedding.
@@ -51,7 +52,7 @@ exports.codeBlock = codeBlock;
  * @param {string} content The content to wrap.
  * @returns {string}
  */
-exports.hideLinkEmbed = hideLinkEmbed;
+Formatters.hideLinkEmbed = hideLinkEmbed;
 
 /**
  * Formats the content and the URL into a masked URL with an optional title.
@@ -61,7 +62,7 @@ exports.hideLinkEmbed = hideLinkEmbed;
  * @param {string} [title] The title shown when hovering on the masked link.
  * @returns {string}
  */
-exports.hyperlink = hyperlink;
+Formatters.hyperlink = hyperlink;
 
 /**
  * Wraps the content inside an inline code.
@@ -69,7 +70,7 @@ exports.hyperlink = hyperlink;
  * @param {string} content The content to wrap.
  * @returns {string}
  */
-exports.inlineCode = inlineCode;
+Formatters.inlineCode = inlineCode;
 
 /**
  * Formats the content into italic text.
@@ -77,7 +78,7 @@ exports.inlineCode = inlineCode;
  * @param {string} content The content to wrap.
  * @returns {string}
  */
-exports.italic = italic;
+Formatters.italic = italic;
 
 /**
  * Formats the content into a quote. This needs to be at the start of the line for Discord to format it.
@@ -85,7 +86,7 @@ exports.italic = italic;
  * @param {string} content The content to wrap.
  * @returns {string}
  */
-exports.quote = quote;
+Formatters.quote = quote;
 
 /**
  * Formats the content into strikethrough text.
@@ -93,7 +94,7 @@ exports.quote = quote;
  * @param {string} content The content to wrap.
  * @returns {string}
  */
-exports.strikethrough = strikethrough;
+Formatters.strikethrough = strikethrough;
 
 /**
  * Formats a date into a short date-time string
@@ -102,7 +103,7 @@ exports.strikethrough = strikethrough;
  * @param {TimestampStyles} [style] The style to use.
  * @returns {string}
  */
-exports.time = time;
+Formatters.time = time;
 
 /**
  * A message formatting timestamp style, as defined in
@@ -123,7 +124,7 @@ exports.time = time;
  * @memberof Formatters
  * @type {Object<string, TimestampStylesString>}
  */
-exports.TimestampStyles = TimestampStyles;
+Formatters.TimestampStyles = TimestampStyles;
 
 /**
  * Formats the content into underscored text.
@@ -131,4 +132,6 @@ exports.TimestampStyles = TimestampStyles;
  * @param {string} content The content to wrap.
  * @returns {string}
  */
-exports.underscore = underscore;
+Formatters.underscore = underscore;
+
+module.exports = Formatters;
