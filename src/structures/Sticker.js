@@ -111,7 +111,7 @@ class Sticker extends Base {
    * @readonly
    */
   get partial() {
-    return 'type' in this;
+    return !this.type;
   }
 
   /**
