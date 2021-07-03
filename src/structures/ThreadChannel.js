@@ -66,7 +66,7 @@ class ThreadChannel extends Channel {
       this.locked = data.thread_metadata.locked ?? false;
 
       /**
-       * The id of the member who created this thread
+       * Whether the thread is archived
        * @type {boolean}
        */
       this.archived = data.thread_metadata.archived;
@@ -88,7 +88,7 @@ class ThreadChannel extends Channel {
 
     if ('owner_id' in data) {
       /**
-       * The id of the member that created this thread
+       * The id of the member who created this thread
        * @type {?Snowflake}
        */
       this.ownerID = data.owner_id;
