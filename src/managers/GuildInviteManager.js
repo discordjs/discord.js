@@ -85,6 +85,11 @@ class GuildInviteManager extends BaseManager {
    *   .then(console.log)
    *   .catch(console.error);
    * @example
+   * // Fetch all invites from a channel
+   * guild.invites.fetch({ channelID, '222197033908436994' })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
    * // Fetch a single invite
    * guild.invites.fetch('bRCvFy9')
    *   .then(console.log)
@@ -108,6 +113,12 @@ class GuildInviteManager extends BaseManager {
       return this._fetchSingle({ code, cache: true });
     }
     if (!options.code) {
+      if (options.channelID) {
+        const id = this.guild.channels.resolveID(options.channelID);
+        if (!id) return Promise.reject(new Error('GUILD_CHANNEL_RESOLVE'));
+        return this._fetchChannelMany(id, options.cache);
+      }
+
       if ('cache' in options) return this._fetchMany(options.cache);
       return Promise.reject(new Error('INVITE_RESOLVE_CODE'));
     }
@@ -131,6 +142,11 @@ class GuildInviteManager extends BaseManager {
 
   async _fetchMany(cache) {
     const data = await this.client.api.guilds(this.guild.id).invites.get();
+    return data.reduce((col, invite) => col.set(invite.code, this.add(invite, cache)), new Collection());
+  }
+
+  async _fetchChannelMany(channelID, cache) {
+    const data = await this.client.api.channels(channelID).invites.get();
     return data.reduce((col, invite) => col.set(invite.code, this.add(invite, cache)), new Collection());
   }
 

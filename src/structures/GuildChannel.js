@@ -1,7 +1,6 @@
 'use strict';
 
 const Channel = require('./Channel');
-const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Role = require('./Role');
 const { Error, TypeError } = require('../errors');
@@ -573,14 +572,8 @@ class GuildChannel extends Channel {
    * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
    */
-  async fetchInvites() {
-    const inviteItems = await this.client.api.channels(this.id).invites.get();
-    const invites = new Collection();
-    for (const inviteItem of inviteItems) {
-      const invite = new Invite(this.client, inviteItem);
-      invites.set(invite.code, invite);
-    }
-    return invites;
+  fetchInvites() {
+    return this.guild.invites.fetch({ channelID: this.id });
   }
 
   /**

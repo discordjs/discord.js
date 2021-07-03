@@ -3029,6 +3029,7 @@ declare module 'discord.js' {
   }
 
   interface FetchInvitesOptions {
+    channelID?: Snowflake;
     cache: boolean;
   }
 
