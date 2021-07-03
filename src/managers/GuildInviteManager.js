@@ -32,14 +32,14 @@ class GuildInviteManager extends BaseManager {
   }
 
   /**
-   * Data that resolves to give a Invite object. This can be:
+   * Data that resolves to give an Invite object. This can be:
    * * An invite code
    * * An invite URL
    * @typedef {string} InviteResolvable
    */
 
   /**
-   * Resolves a InviteResolvable to a Invite object.
+   * Resolves an InviteResolvable to an Invite object.
    * @method resolve
    * @memberof GuildInviteManager
    * @instance
@@ -48,7 +48,7 @@ class GuildInviteManager extends BaseManager {
    */
 
   /**
-   * Resolves a InviteResolvable to a invite code string.
+   * Resolves an InviteResolvable to an invite code string.
    * @method resolveID
    * @memberof GuildInviteManager
    * @instance
@@ -135,7 +135,7 @@ class GuildInviteManager extends BaseManager {
   }
 
   /**
-   * Create a invite to the guild from the provided channel.
+   * Create an invite to the guild from the provided channel.
    * @param {GuildChannelResolvable} channel The options for creating the invite from a channel.
    * @param {CreateInviteOptions} [options={}] The options for creating the invite from a channel.
    * @returns {Promise<Invite>}
@@ -170,7 +170,7 @@ class GuildInviteManager extends BaseManager {
   }
 
   /**
-   * Deletes a invite.
+   * Deletes an invite.
    * @param {InviteResolvable} invite The invite to delete
    * @param {string} [reason] Reason for deleting the invite
    * @returns {Promise<void>}
