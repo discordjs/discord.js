@@ -17,7 +17,7 @@ class CommandInteraction extends Interaction {
 
     /**
      * The channel this interaction was sent in
-     * @type {?TextChannel|NewsChannel|DMChannel}
+     * @type {?(TextChannel|NewsChannel|DMChannel)}
      * @name CommandInteraction#channel
      * @readonly
      */

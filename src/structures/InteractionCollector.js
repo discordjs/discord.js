@@ -39,7 +39,7 @@ class InteractionCollector extends Collector {
 
     /**
      * The channel from which to collect interactions, if provided
-     * @type {?TextChannel|DMChannel|NewsChannel}
+     * @type {?(TextChannel|DMChannel|NewsChannel)}
      */
     this.channel = this.message?.channel ?? options.channel ?? null;
 

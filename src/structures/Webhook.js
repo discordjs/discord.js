@@ -68,13 +68,13 @@ class Webhook {
 
     /**
      * The owner of the webhook
-     * @type {?User|APIUser}
+     * @type {?(User|APIUser)}
      */
     this.owner = data.user ? this.client.users?.add(data.user) ?? data.user : null;
 
     /**
      * The source guild of the webhook
-     * @type {?Guild|APIGuild}
+     * @type {?(Guild|APIGuild)}
      */
     this.sourceGuild = data.source_guild
       ? this.client.guilds?.add(data.source_guild, false) ?? data.source_guild
@@ -82,7 +82,7 @@ class Webhook {
 
     /**
      * The source channel of the webhook
-     * @type {?Channel|APIChannel}
+     * @type {?(Channel|APIChannel)}
      */
     this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel ?? null;
   }
