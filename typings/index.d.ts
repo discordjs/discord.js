@@ -3728,7 +3728,7 @@ declare module 'discord.js' {
   type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
 
   interface MessageActionRowOptions extends BaseMessageComponentOptions {
-    components?: MessageActionRowComponentResolvable[];
+    components: MessageActionRowComponentResolvable[];
   }
 
   interface MessageActivity {

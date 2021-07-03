@@ -5,7 +5,9 @@ import {
   Collection,
   Intents,
   Message,
+  MessageActionRow,
   MessageAttachment,
+  MessageButton,
   MessageEmbed,
   Permissions,
   Serialized,
@@ -378,6 +380,26 @@ client.on('message', ({ channel }) => {
   channel.send();
   // @ts-expect-error
   channel.send({ another: 'property' });
+});
+
+client.on('interaction', async interaction => {
+  if (!interaction.isCommand()) return;
+
+  void new MessageActionRow();
+
+  const button = new MessageButton();
+
+  const actionRow = new MessageActionRow({ components: [button] });
+
+  await interaction.reply({ content: 'Hi!', components: [actionRow] });
+
+  await interaction.reply({ content: 'Hi!', components: [[button]] });
+
+  // @ts-expect-error
+  void new MessageActionRow({});
+
+  // @ts-expect-error
+  await interaction.reply({ content: 'Hi!', components: [button] });
 });
 
 client.login('absolutely-valid-token');
