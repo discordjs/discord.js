@@ -3,8 +3,6 @@
 const BaseManager = require('./BaseManager');
 const { Error } = require('../errors');
 
-let Structures;
-
 /**
  * Manages the API methods of a data model along with a collection of instances.
  * @extends {BaseManager}
@@ -14,8 +12,6 @@ class DataManager extends BaseManager {
   constructor(client, holds) {
     super(client);
 
-    if (!Structures) Structures = require('../util/Structures');
-
     /**
      * The data structure belonging to this manager.
      * @name DataManager#holds
@@ -23,7 +19,7 @@ class DataManager extends BaseManager {
      * @private
      * @readonly
      */
-    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) ?? holds });
+    Object.defineProperty(this, 'holds', { value: holds });
   }
 
   /**

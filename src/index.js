@@ -26,7 +26,6 @@ module.exports = {
   Options: require('./util/Options'),
   Permissions: require('./util/Permissions'),
   SnowflakeUtil: require('./util/SnowflakeUtil'),
-  Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
   ThreadMemberFlags: require('./util/ThreadMemberFlags'),
   UserFlags: require('./util/UserFlags'),
