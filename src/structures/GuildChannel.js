@@ -544,7 +544,7 @@ class GuildChannel extends Channel {
    * required if `targetType` is 1, the user must be streaming in the channel
    * @property {ApplicationResolvable} [targetApplication] The embedded application to open for this invite,
    * required if `targetType` is 2, the application must have the `EMBEDDED` flag
-   * @property {InviteTargetType} [targetType] The type of the target for this voice channel invite
+   * @property {TargetType} [targetType] The type of the target for this voice channel invite
    * @property {string} [reason] The reason for creating the invite
    */
 
