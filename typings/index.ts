@@ -2,6 +2,7 @@
 
 import {
   Client,
+  ClientOptionsUtil,
   Collection,
   Intents,
   Message,
@@ -17,6 +18,9 @@ import {
 
 const client: Client = new Client({
   intents: Intents.NON_PRIVILEGED,
+  makeCache: ClientOptionsUtil.cacheWithLimits({
+    Message: 200,
+  }),
 });
 
 const testGuildID = '222078108977594368'; // DJS

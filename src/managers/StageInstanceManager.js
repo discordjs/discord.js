@@ -1,17 +1,17 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const StageInstance = require('../structures/StageInstance');
 const { PrivacyLevels } = require('../util/Constants');
 
 /**
  * Manages API methods for {@link StageInstance} objects and holds their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class StageInstanceManager extends BaseManager {
+class StageInstanceManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, StageInstance);
+    super(guild.client, StageInstance, iterable);
 
     /**
      * The guild this manager belongs to

@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const GuildBan = require('../structures/GuildBan');
 const GuildMember = require('../structures/GuildMember');
@@ -8,11 +8,11 @@ const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for GuildBans and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class GuildBanManager extends BaseManager {
+class GuildBanManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, GuildBan);
+    super(guild.client, GuildBan, iterable);
 
     /**
      * The guild this Manager belongs to

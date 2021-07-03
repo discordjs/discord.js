@@ -1,13 +1,18 @@
 'use strict';
 
+const DataManager = require('./DataManager');
 const { TypeError } = require('../errors');
+const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for roles belonging to emojis and stores their cache.
+ * @extends {DataManager}
  */
-class GuildEmojiRoleManager {
+class GuildEmojiRoleManager extends DataManager {
   constructor(emoji) {
+    super(emoji.client, Role);
+
     /**
      * The emoji belonging to this manager
      * @type {GuildEmoji}
@@ -18,12 +23,6 @@ class GuildEmojiRoleManager {
      * @type {Guild}
      */
     this.guild = emoji.guild;
-    /**
-     * The client belonging to this manager
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: emoji.client });
   }
 
   /**

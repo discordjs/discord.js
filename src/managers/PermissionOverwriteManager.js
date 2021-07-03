@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const Role = require('../structures/Role');
@@ -9,11 +9,11 @@ const { OverwriteTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for guild channel permission overwrites and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class PermissionOverwriteManager extends BaseManager {
+class PermissionOverwriteManager extends CachedManager {
   constructor(channel, iterable) {
-    super(channel.client, iterable, PermissionOverwrites);
+    super(channel.client, PermissionOverwrites, iterable);
 
     /**
      * The channel of the permission overwrite this manager belongs to

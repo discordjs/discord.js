@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const GuildMember = require('../structures/GuildMember');
 const Message = require('../structures/Message');
 const ThreadMember = require('../structures/ThreadMember');
@@ -8,11 +8,11 @@ const User = require('../structures/User');
 
 /**
  * Manages API methods for users and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class UserManager extends BaseManager {
+class UserManager extends CachedManager {
   constructor(client, iterable) {
-    super(client, iterable, User);
+    super(client, User, iterable);
   }
 
   /**

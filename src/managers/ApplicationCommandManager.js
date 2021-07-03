@@ -1,18 +1,18 @@
 'use strict';
 
 const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ApplicationCommand = require('../structures/ApplicationCommand');
 const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for application commands and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class ApplicationCommandManager extends BaseManager {
+class ApplicationCommandManager extends CachedManager {
   constructor(client, iterable) {
-    super(client, iterable, ApplicationCommand);
+    super(client, ApplicationCommand, iterable);
 
     /**
      * The manager for permissions of arbitrary commands on arbitrary guilds

@@ -23,6 +23,7 @@ module.exports = {
   RateLimitError: require('./rest/RateLimitError'),
   MessageFlags: require('./util/MessageFlags'),
   Intents: require('./util/Intents'),
+  Options: require('./util/Options'),
   Permissions: require('./util/Permissions'),
   SnowflakeUtil: require('./util/SnowflakeUtil'),
   Structures: require('./util/Structures'),
