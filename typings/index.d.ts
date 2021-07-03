@@ -517,7 +517,7 @@ declare module 'discord.js' {
     public edit(data: ClientUserEditData): Promise<this>;
     public setActivity(options?: ActivityOptions): Presence;
     public setActivity(name: string, options?: ActivityOptions): Presence;
-    public setAFK(afk: boolean): Promise<Presence>;
+    public setAFK(afk: boolean, shardID?: number | number[]): Presence;
     public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
     public setPresence(data: PresenceData): Presence;
     public setStatus(status: PresenceStatusData, shardID?: number | number[]): Presence;
