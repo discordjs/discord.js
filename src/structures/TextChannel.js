@@ -198,8 +198,8 @@ class TextChannel extends GuildChannel {
   get typingCount() {}
   createMessageCollector() {}
   awaitMessages() {}
-  createMessageComponentInteractionCollector() {}
-  awaitMessageComponentInteraction() {}
+  createMessageComponentCollector() {}
+  awaitMessageComponent() {}
   bulkDelete() {}
 }
 

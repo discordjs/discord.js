@@ -310,7 +310,7 @@ class TextBasedChannel {
    * @example
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = channel.createMessageComponentInteractionCollector({ filter, time: 15000 });
+   * const collector = channel.createMessageComponentCollector({ filter, time: 15000 });
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -330,7 +330,7 @@ class TextBasedChannel {
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * channel.awaitMessageComponentInteraction({ filter, time: 15000 })
+   * channel.awaitMessageComponent({ filter, time: 15000 })
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
