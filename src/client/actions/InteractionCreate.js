@@ -48,17 +48,15 @@ class InteractionCreateAction extends Action {
      */
     client.emit(Events.INTERACTION_CREATE, interaction);
 
-    if (!deprecationEmitted && client.listenerCount('interaction')) {
+    /**
+     * Emitted when an interaction is created.
+     * @event Client#interaction
+     * @param {Interaction} interaction The interaction which was created
+     * @deprecated Use {@link Client#interactionCreate} instead
+     */
+    if (client.emit('interaction', interaction) && !deprecationEmitted) {
       deprecationEmitted = true;
       process.emitWarning('The interaction event is deprecated. Use interactionCreate instead', 'DeprecationWarning');
-
-      /**
-       * Emitted when an interaction is created.
-       * @event Client#interaction
-       * @param {Interaction} interaction The interaction which was created
-       * @deprecated Use {@link Client#interactionCreate} instead
-       */
-      client.emit('interaction', interaction);
     }
   }
 }
