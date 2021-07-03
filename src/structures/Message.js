@@ -454,7 +454,7 @@ class Message extends Base {
    * @example
    * // Create a message component interaction collector
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = message.createMessageComponentInteractionCollector({ filter, time: 15000 });
+   * const collector = message.createMessageComponentCollector({ filter, time: 15000 });
    * collector.on('collect', i => console.log(`Collected ${i.customID}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -482,7 +482,7 @@ class Message extends Base {
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitMessageComponentInteraction({ filter, time: 15000 })
+   * message.awaitMessageComponent({ filter, time: 15000 })
    *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
    *   .catch(console.error);
    */
