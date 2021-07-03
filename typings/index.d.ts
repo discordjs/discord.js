@@ -3030,7 +3030,7 @@ declare module 'discord.js' {
 
   interface FetchInvitesOptions {
     channelID?: Snowflake;
-    cache: boolean;
+    cache?: boolean;
   }
 
   interface FetchGuildOptions extends BaseFetchOptions {
