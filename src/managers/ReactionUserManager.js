@@ -2,6 +2,7 @@
 
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
+const User = require('../structures/User');
 const Collection = require('../util/Collection');
 
 /**
@@ -10,7 +11,7 @@ const Collection = require('../util/Collection');
  */
 class ReactionUserManager extends CachedManager {
   constructor(reaction, iterable) {
-    super(reaction.client, { name: 'User' }, iterable);
+    super(reaction.client, User, iterable);
 
     /**
      * The reaction that this manager belongs to

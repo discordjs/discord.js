@@ -1,6 +1,7 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
+const VoiceState = require('../structures/VoiceState');
 
 /**
  * Manages API methods for VoiceStates and stores their cache.
@@ -8,7 +9,7 @@ const CachedManager = require('./CachedManager');
  */
 class VoiceStateManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, { name: 'VoiceState' }, iterable);
+    super(guild.client, VoiceState, iterable);
 
     /**
      * The guild this manager belongs to
