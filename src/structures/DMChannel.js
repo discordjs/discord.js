@@ -91,8 +91,8 @@ class DMChannel extends Channel {
   get typingCount() {}
   createMessageCollector() {}
   awaitMessages() {}
-  createMessageComponentInteractionCollector() {}
-  awaitMessageComponentInteraction() {}
+  createMessageComponentCollector() {}
+  awaitMessageComponent() {}
   // Doesn't work on DM channels; bulkDelete() {}
 }
 

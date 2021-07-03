@@ -405,8 +405,8 @@ class ThreadChannel extends Channel {
   get typingCount() {}
   createMessageCollector() {}
   awaitMessages() {}
-  createMessageComponentInteractionCollector() {}
-  awaitMessageComponentInteractions() {}
+  createMessageComponentCollector() {}
+  awaitMessageComponent() {}
   bulkDelete() {}
 }
 
