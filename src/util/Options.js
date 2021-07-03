@@ -101,7 +101,7 @@ class ClientOptionsUtil extends null {
   static createDefaultOptions() {
     return {
       shardCount: 1,
-      makeCache: this.cacheWithLimits({ Message: 200 }),
+      makeCache: this.cacheWithLimits({ MessageManager: 200 }),
       messageCacheLifetime: 0,
       messageSweepInterval: 0,
       invalidRequestWarningInterval: 0,
