@@ -5,7 +5,7 @@ const BaseManager = require('./BaseManager');
 let Structures;
 
 /**
- * Manager that holds data structures.
+ * Manages the API methods of a data model along with a collection of instances.
  * @extends {BaseManager}
  * @abstract
  */
@@ -17,7 +17,7 @@ class DataManager extends BaseManager {
 
     /**
      * The data structure belonging to this manager.
-     * @name BaseManager#holds
+     * @name DataManager#holds
      * @type {Function}
      * @private
      * @readonly

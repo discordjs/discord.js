@@ -3,7 +3,7 @@
 const DataManager = require('./DataManager');
 
 /**
- * Manager that holds a cache.
+ * Manages the API methods of a data model with a mutable cache of instances.
  * @extends {DataManager}
  * @abstract
  */
