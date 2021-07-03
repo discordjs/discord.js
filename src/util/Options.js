@@ -90,10 +90,6 @@
  * Contains various utilities for client options.
  */
 class Options extends null {
-  constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
-  }
-
   /**
    * The default client options.
    * @returns {ClientOptions}
