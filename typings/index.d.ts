@@ -3932,6 +3932,7 @@ declare module 'discord.js' {
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     reply?: ReplyOptions;
+    stickers?: StickerResolvable[];
   }
 
   type MessageReactionResolvable =
@@ -4327,6 +4328,8 @@ declare module 'discord.js' {
   type Status = number;
 
   type StickerFormatType = keyof typeof StickerFormatTypes;
+
+  type StickerResolvable = Sticker | Snowflake;
 
   type StickerType = keyof typeof StickerTypes;
 

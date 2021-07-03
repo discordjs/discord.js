@@ -64,6 +64,7 @@ class TextBasedChannel {
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to send with the message
    * @property {MessageActionRow[]|MessageActionRowOptions[]|MessageActionRowComponentResolvable[][]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
+   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
   /**

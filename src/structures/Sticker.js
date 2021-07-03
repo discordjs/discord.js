@@ -19,6 +19,13 @@ class Sticker extends Base {
     this._patch(sticker);
   }
 
+  /**
+   * Data that resolves to give a Sticker object. This can be:
+   * * An Sticker object
+   * * A Snowflake
+   * @typedef {Sticker|Snowflake} StickerResolvable
+   */
+
   _patch(sticker) {
     /**
      * The ID of the sticker
