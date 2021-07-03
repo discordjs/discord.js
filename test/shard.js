@@ -7,10 +7,9 @@ const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
   shards: process.argv[2],
   shardCount: process.argv[3],
-  intents: Discord.Intents.NON_PRIVILEGED,
 });
 
-client.on('message', msg => {
+client.on('messageCreate', msg => {
   if (msg.content.startsWith('?eval') && msg.author.id === '66564597481480192') {
     try {
       const com = eval(msg.content.split(' ').slice(1).join(' '));

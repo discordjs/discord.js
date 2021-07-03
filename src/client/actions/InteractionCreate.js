@@ -4,6 +4,8 @@ const Action = require('./Action');
 const { Events, InteractionTypes, MessageComponentTypes } = require('../../util/Constants');
 const Structures = require('../../util/Structures');
 
+let deprecationEmitted = false;
+
 class InteractionCreateAction extends Action {
   handle(data) {
     const client = this.client;
@@ -37,12 +39,25 @@ class InteractionCreateAction extends Action {
         return;
     }
 
+    const interaction = new InteractionType(client, data);
+
+    /**
+     * Emitted when an interaction is created.
+     * @event Client#interactionCreate
+     * @param {Interaction} interaction The interaction which was created
+     */
+    client.emit(Events.INTERACTION_CREATE, interaction);
+
     /**
      * Emitted when an interaction is created.
      * @event Client#interaction
      * @param {Interaction} interaction The interaction which was created
+     * @deprecated Use {@link Client#interactionCreate} instead
      */
-    client.emit(Events.INTERACTION_CREATE, new InteractionType(client, data));
+    if (client.emit('interaction', interaction) && !deprecationEmitted) {
+      deprecationEmitted = true;
+      process.emitWarning('The interaction event is deprecated. Use interactionCreate instead', 'DeprecationWarning');
+    }
   }
 }
 

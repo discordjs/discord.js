@@ -93,7 +93,7 @@ const tests = [
   (m, hook) => hook.send('Done!'),
 ];
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
   if (message.author.id !== owner) return;
   const match = message.content.match(/^do (.+)$/);
   const hooks = [
