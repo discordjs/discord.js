@@ -406,6 +406,10 @@ class Client extends BaseClient {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     if (!this.application) throw new Error('CLIENT_NOT_READY', 'generate an invite link');
 
+    const query = new URLSearchParams({
+      client_id: this.application.id,
+    });
+
     const scopes = options.scopes;
     if (typeof scopes === 'undefined') {
       throw new TypeError('INVITE_MISSING_SCOPES');
@@ -422,11 +426,6 @@ class Client extends BaseClient {
       throw new TypeError('INVALID_ELEMENT', 'Array', 'scopes', invalidScope);
     }
     query.set('scope', [...scopes].join(' '));
-
-    const query = new URLSearchParams({
-      client_id: this.application.id,
-      scope: 'bot',
-    });
 
     if (options.permissions && options.scopes) {
       const permissions = Permissions.resolve(options.permissions);
