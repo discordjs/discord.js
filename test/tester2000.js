@@ -1,7 +1,7 @@
 'use strict';
 
 const { token, prefix, owner } = require('./auth.js');
-const { Client, Options, Intents } = require('../src');
+const { Client, Options, Intents, Formatters } = require('../src');
 
 // eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
@@ -33,7 +33,7 @@ const commands = {
       console.error(err.stack);
       res = err.message;
     }
-    message.channel.send(res, { code: 'js' });
+    message.channel.send(Formatters.codeBlock(res));
   },
   ping: message => message.channel.send('pong'),
 };
