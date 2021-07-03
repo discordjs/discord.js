@@ -18,7 +18,6 @@ const {
 /**
  * Contains various Discord-specific functions for formatting messages.
  */
-
 class Formatters extends null {}
 
 /**
