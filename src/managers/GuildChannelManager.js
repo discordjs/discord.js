@@ -3,8 +3,9 @@
 const BaseManager = require('./BaseManager');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
+const ThreadChannel = require('../structures/ThreadChannel');
 const Collection = require('../util/Collection');
-const { ChannelTypes } = require('../util/Constants');
+const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for GuildChannels and stores their cache.
@@ -22,8 +23,21 @@ class GuildChannelManager extends BaseManager {
   }
 
   /**
+   * The number of channels in this managers cache excluding thread channels
+   * that do not count towards a guild's maximum channels restriction.
+   * @type {number}
+   * @readonly
+   */
+  get channelCountWithoutThreads() {
+    return this.cache.reduce((acc, channel) => {
+      if (ThreadChannelTypes.includes(channel.type)) return acc;
+      return ++acc;
+    }, 0);
+  }
+
+  /**
    * The cache of this Manager
-   * @type {Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, GuildChannel|ThreadChannel>}
    * @name GuildChannelManager#cache
    */
 
@@ -37,27 +51,30 @@ class GuildChannelManager extends BaseManager {
   /**
    * Data that can be resolved to give a Guild Channel object. This can be:
    * * A GuildChannel object
+   * * A ThreadChannel object
    * * A Snowflake
-   * @typedef {GuildChannel|Snowflake} GuildChannelResolvable
+   * @typedef {GuildChannel|ThreadChannel|Snowflake} GuildChannelResolvable
    */
 
   /**
    * Resolves a GuildChannelResolvable to a Channel object.
-   * @method resolve
-   * @memberof GuildChannelManager
-   * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?GuildChannel}
+   * @returns {?(GuildChannel|ThreadChannel)}
    */
+  resolve(channel) {
+    if (channel instanceof ThreadChannel) return super.resolve(channel.id);
+    return super.resolve(channel);
+  }
 
   /**
    * Resolves a GuildChannelResolvable to a channel ID string.
-   * @method resolveID
-   * @memberof GuildChannelManager
-   * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?Snowflake}
    */
+  resolveID(channel) {
+    if (channel instanceof ThreadChannel) return super.resolveID(channel.id);
+    return super.resolveID(channel);
+  }
 
   /**
    * Options used to create a new channel in a guild.
@@ -98,9 +115,10 @@ class GuildChannelManager extends BaseManager {
    *   ],
    * })
    */
-  async create(name, options = {}) {
-    let { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } =
-      options;
+  async create(
+    name,
+    { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
+  ) {
     if (parent) parent = this.client.channels.resolveID(parent);
     if (permissionOverwrites) {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));

@@ -40,7 +40,7 @@ class Shard extends EventEmitter {
      * Arguments for the shard's process (only when {@link ShardingManager#mode} is `process`)
      * @type {string[]}
      */
-    this.args = manager.shardArgs || [];
+    this.args = manager.shardArgs ?? [];
 
     /**
      * Arguments for the shard's process executable (only when {@link ShardingManager#mode} is `process`)
@@ -127,14 +127,16 @@ class Shard extends EventEmitter {
     this._evals.clear();
     this._fetches.clear();
 
+    const child = this.process ?? this.worker;
+
     /**
      * Emitted upon the creation of the shard's child process/worker.
      * @event Shard#spawn
      * @param {ChildProcess|Worker} process Child process/worker that was created
      */
-    this.emit('spawn', this.process || this.worker);
+    this.emit('spawn', child);
 
-    if (timeout === -1 || timeout === Infinity) return this.process || this.worker;
+    if (timeout === -1 || timeout === Infinity) return child;
     await new Promise((resolve, reject) => {
       const cleanup = () => {
         clearTimeout(spawnTimeoutTimer);
@@ -168,7 +170,7 @@ class Shard extends EventEmitter {
       this.once('disconnect', onDisconnect);
       this.once('death', onDeath);
     });
-    return this.process || this.worker;
+    return child;
   }
 
   /**
@@ -242,10 +244,10 @@ class Shard extends EventEmitter {
     if (this._fetches.has(prop)) return this._fetches.get(prop);
 
     const promise = new Promise((resolve, reject) => {
-      const child = this.process || this.worker;
+      const child = this.process ?? this.worker;
 
       const listener = message => {
-        if (!message || message._fetchProp !== prop) return;
+        if (message?._fetchProp !== prop) return;
         child.removeListener('message', listener);
         this._fetches.delete(prop);
         resolve(message._result);
@@ -276,10 +278,10 @@ class Shard extends EventEmitter {
     if (this._evals.has(script)) return this._evals.get(script);
 
     const promise = new Promise((resolve, reject) => {
-      const child = this.process || this.worker;
+      const child = this.process ?? this.worker;
 
       const listener = message => {
-        if (!message || message._eval !== script) return;
+        if (message?._eval !== script) return;
         child.removeListener('message', listener);
         this._evals.delete(script);
         if (!message._error) resolve(message._result);
@@ -388,7 +390,7 @@ class Shard extends EventEmitter {
      * @event Shard#death
      * @param {ChildProcess|Worker} process Child process/worker that exited
      */
-    this.emit('death', this.process || this.worker);
+    this.emit('death', this.process ?? this.worker);
 
     this.ready = false;
     this.process = null;

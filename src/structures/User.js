@@ -16,7 +16,7 @@ let Structures;
 class User extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the user
+   * @param {APIUser} data The data for the user
    */
   constructor(client, data) {
     super(client);
@@ -27,7 +27,10 @@ class User extends Base {
      */
     this.id = data.id;
 
+    this.bot = null;
+
     this.system = null;
+
     this.flags = null;
 
     /**
@@ -56,12 +59,14 @@ class User extends Base {
       this.username = null;
     }
 
-    if ('bot' in data || typeof this.bot !== 'boolean') {
+    if ('bot' in data) {
       /**
        * Whether or not the user is a bot
-       * @type {boolean}
+       * @type {?boolean}
        */
       this.bot = Boolean(data.bot);
+    } else if (!this.partial && typeof this.bot !== 'boolean') {
+      this.bot = false;
     }
 
     if ('discriminator' in data) {
@@ -90,6 +95,8 @@ class User extends Base {
        * @type {?boolean}
        */
       this.system = Boolean(data.system);
+    } else if (!this.partial && typeof this.system !== 'boolean') {
+      this.system = false;
     }
 
     if ('public_flags' in data) {
@@ -134,8 +141,7 @@ class User extends Base {
    * @readonly
    */
   get lastMessage() {
-    const channel = this.client.channels.cache.get(this.lastMessageChannelID);
-    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
+    return this.client.channels.resolve(this.lastMessageChannelID)?.messages.resolve(this.lastMessageID) ?? null;
   }
 
   /**
@@ -178,7 +184,7 @@ class User extends Base {
    * @returns {string}
    */
   displayAvatarURL(options) {
-    return this.avatarURL(options) || this.defaultAvatarURL;
+    return this.avatarURL(options) ?? this.defaultAvatarURL;
   }
 
   /**
@@ -196,8 +202,7 @@ class User extends Base {
    * @returns {boolean}
    */
   typingIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    return channel._typing.has(this.id);
+    return this.client.channels.resolve(channel)._typing.has(this.id);
   }
 
   /**
@@ -216,8 +221,7 @@ class User extends Base {
    * @returns {number}
    */
   typingDurationIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
+    return this.client.channels.resolve(channel)._typing.get(this.id)?.elapsedTime ?? -1;
   }
 
   /**
@@ -226,7 +230,7 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.cache.find(c => c.type === 'dm' && c.recipient.id === this.id) || null;
+    return this.client.channels.cache.find(c => c.type === 'dm' && c.recipient.id === this.id) ?? null;
   }
 
   /**
@@ -333,3 +337,8 @@ class User extends Base {
 TextBasedChannel.applyToClass(User);
 
 module.exports = User;
+
+/**
+ * @external APIUser
+ * @see {@link https://discord.com/developers/docs/resources/user#user-object}
+ */

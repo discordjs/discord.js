@@ -62,7 +62,7 @@ class MessageButton extends BaseMessageComponent {
 
     /**
      * Whether this button is currently disabled
-     * @type {?boolean}
+     * @type {boolean}
      */
     this.disabled = data.disabled ?? false;
   }
@@ -130,7 +130,7 @@ class MessageButton extends BaseMessageComponent {
 
   /**
    * Transforms the button to a plain object.
-   * @returns {Object} The raw data of this button
+   * @returns {APIMessageComponent} The raw data of this button
    */
   toJSON() {
     return {
@@ -147,9 +147,8 @@ class MessageButton extends BaseMessageComponent {
   /**
    * Data that can be resolved to a MessageButtonStyle. This can be
    * * MessageButtonStyle
-   * * string
    * * number
-   * @typedef {string|number|MessageButtonStyle} MessageButtonStyleResolvable
+   * @typedef {number|MessageButtonStyle} MessageButtonStyleResolvable
    */
 
   /**

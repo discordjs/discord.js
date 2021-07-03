@@ -176,7 +176,7 @@ class WebSocketShard extends EventEmitter {
   connect() {
     const { gateway, client } = this.manager;
 
-    if (this.connection && this.connection.readyState === WebSocket.OPEN && this.status === Status.READY) {
+    if (this.connection?.readyState === WebSocket.OPEN && this.status === Status.READY) {
       return Promise.resolve();
     }
 
@@ -216,7 +216,7 @@ class WebSocketShard extends EventEmitter {
       this.once(ShardEvents.INVALID_SESSION, onInvalidOrDestroyed);
       this.once(ShardEvents.DESTROYED, onInvalidOrDestroyed);
 
-      if (this.connection && this.connection.readyState === WebSocket.OPEN) {
+      if (this.connection?.readyState === WebSocket.OPEN) {
         this.debug('An open connection was found, attempting an immediate identify.');
         this.identify();
         return;
@@ -306,7 +306,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onError(event) {
-    const error = event && event.error ? event.error : event;
+    const error = event?.error ?? event;
     if (!error) return;
 
     /**
@@ -345,7 +345,7 @@ class WebSocketShard extends EventEmitter {
     this.debug(`[CLOSE]
     Event Code: ${event.code}
     Clean     : ${event.wasClean}
-    Reason    : ${event.reason || 'No reason received'}`);
+    Reason    : ${event.reason ?? 'No reason received'}`);
 
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
@@ -648,7 +648,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   _send(data) {
-    if (!this.connection || this.connection.readyState !== WebSocket.OPEN) {
+    if (this.connection?.readyState !== WebSocket.OPEN) {
       this.debug(`Tried to send packet '${JSON.stringify(data)}' but no WebSocket is available!`);
       this.destroy({ closeCode: 4000 });
       return;

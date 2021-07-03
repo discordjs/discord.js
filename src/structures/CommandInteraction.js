@@ -59,6 +59,12 @@ class CommandInteraction extends Interaction {
     this.replied = false;
 
     /**
+     * Whether the reply to this interaction is ephemeral
+     * @type {?boolean}
+     */
+    this.ephemeral = null;
+
+    /**
      * An associated interaction webhook, can be used to further interact with this interaction
      * @type {InteractionWebhook}
      */
@@ -83,15 +89,15 @@ class CommandInteraction extends Interaction {
    * @property {Collection<string, CommandInteractionOption>} [options] Additional options if this option is a
    * subcommand (group)
    * @property {User} [user] The resolved user
-   * @property {GuildMember|Object} [member] The resolved member
-   * @property {GuildChannel|Object} [channel] The resolved channel
-   * @property {Role|Object} [role] The resolved role
+   * @property {GuildMember|APIGuildMember} [member] The resolved member
+   * @property {GuildChannel|APIChannel} [channel] The resolved channel
+   * @property {Role|APIRole} [role] The resolved role
    */
 
   /**
    * Transforms an option received from the API.
-   * @param {Object} option The received option
-   * @param {Object} resolved The resolved interaction data
+   * @param {APIApplicationCommandOption} option The received option
+   * @param {APIApplicationCommandOptionResolved} resolved The resolved interaction data
    * @returns {CommandInteractionOption}
    * @private
    */
@@ -104,25 +110,27 @@ class CommandInteraction extends Interaction {
     if ('value' in option) result.value = option.value;
     if ('options' in option) result.options = this._createOptionsCollection(option.options, resolved);
 
-    const user = resolved?.users?.[option.value];
-    if (user) result.user = this.client.users.add(user);
+    if (resolved) {
+      const user = resolved.users?.[option.value];
+      if (user) result.user = this.client.users.add(user);
 
-    const member = resolved?.members?.[option.value];
-    if (member) result.member = this.guild?.members.add({ user, ...member }) ?? member;
+      const member = resolved.members?.[option.value];
+      if (member) result.member = this.guild?.members.add({ user, ...member }) ?? member;
 
-    const channel = resolved?.channels?.[option.value];
-    if (channel) result.channel = this.client.channels.add(channel, this.guild) ?? channel;
+      const channel = resolved.channels?.[option.value];
+      if (channel) result.channel = this.client.channels.add(channel, this.guild) ?? channel;
 
-    const role = resolved?.roles?.[option.value];
-    if (role) result.role = this.guild?.roles.add(role) ?? role;
+      const role = resolved.roles?.[option.value];
+      if (role) result.role = this.guild?.roles.add(role) ?? role;
+    }
 
     return result;
   }
 
   /**
    * Creates a collection of options from the received options array.
-   * @param {Object[]} options The received options
-   * @param {Object} resolved The resolved interaction data
+   * @param {APIApplicationCommandOption[]} options The received options
+   * @param {APIApplicationCommandOptionResolved} resolved The resolved interaction data
    * @returns {Collection<string, CommandInteractionOption>}
    * @private
    */
@@ -148,3 +156,9 @@ class CommandInteraction extends Interaction {
 InteractionResponses.applyToClass(CommandInteraction, ['deferUpdate', 'update']);
 
 module.exports = CommandInteraction;
+
+/* eslint-disable max-len */
+/**
+ * @external APIApplicationCommandOptionResolved
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-applicationcommandinteractiondataresolved}
+ */

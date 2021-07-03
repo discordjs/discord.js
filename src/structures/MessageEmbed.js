@@ -46,25 +46,25 @@ class MessageEmbed {
      * @type {string}
      * @deprecated
      */
-    this.type = data.type || 'rich';
+    this.type = data.type ?? 'rich';
 
     /**
      * The title of this embed
      * @type {?string}
      */
-    this.title = 'title' in data ? data.title : null;
+    this.title = data.title ?? null;
 
     /**
      * The description of this embed
      * @type {?string}
      */
-    this.description = 'description' in data ? data.description : null;
+    this.description = data.description ?? null;
 
     /**
      * The URL of this embed
      * @type {?string}
      */
-    this.url = 'url' in data ? data.url : null;
+    this.url = data.url ?? null;
 
     /**
      * The color of this embed
@@ -111,7 +111,7 @@ class MessageEmbed {
     this.thumbnail = data.thumbnail
       ? {
           url: data.thumbnail.url,
-          proxyURL: data.thumbnail.proxyURL || data.thumbnail.proxy_url,
+          proxyURL: data.thumbnail.proxyURL ?? data.thumbnail.proxy_url,
           height: data.thumbnail.height,
           width: data.thumbnail.width,
         }
@@ -133,7 +133,7 @@ class MessageEmbed {
     this.image = data.image
       ? {
           url: data.image.url,
-          proxyURL: data.image.proxyURL || data.image.proxy_url,
+          proxyURL: data.image.proxyURL ?? data.image.proxy_url,
           height: data.image.height,
           width: data.image.width,
         }
@@ -156,7 +156,7 @@ class MessageEmbed {
     this.video = data.video
       ? {
           url: data.video.url,
-          proxyURL: data.video.proxyURL || data.video.proxy_url,
+          proxyURL: data.video.proxyURL ?? data.video.proxy_url,
           height: data.video.height,
           width: data.video.width,
         }
@@ -179,8 +179,8 @@ class MessageEmbed {
       ? {
           name: data.author.name,
           url: data.author.url,
-          iconURL: data.author.iconURL || data.author.icon_url,
-          proxyIconURL: data.author.proxyIconURL || data.author.proxy_icon_url,
+          iconURL: data.author.iconURL ?? data.author.icon_url,
+          proxyIconURL: data.author.proxyIconURL ?? data.author.proxy_icon_url,
         }
       : null;
 
@@ -217,8 +217,8 @@ class MessageEmbed {
     this.footer = data.footer
       ? {
           text: data.footer.text,
-          iconURL: data.footer.iconURL || data.footer.icon_url,
-          proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
+          iconURL: data.footer.iconURL ?? data.footer.icon_url,
+          proxyIconURL: data.footer.proxyIconURL ?? data.footer.proxy_icon_url,
         }
       : null;
   }
@@ -387,7 +387,7 @@ class MessageEmbed {
 
   /**
    * Transforms the embed to a plain object.
-   * @returns {Object} The raw data of this embed
+   * @returns {APIEmbed} The raw data of this embed
    */
   toJSON() {
     return {
@@ -395,24 +395,20 @@ class MessageEmbed {
       type: 'rich',
       description: this.description,
       url: this.url,
-      timestamp: this.timestamp ? new Date(this.timestamp) : null,
+      timestamp: this.timestamp && new Date(this.timestamp),
       color: this.color,
       fields: this.fields,
       thumbnail: this.thumbnail,
       image: this.image,
-      author: this.author
-        ? {
-            name: this.author.name,
-            url: this.author.url,
-            icon_url: this.author.iconURL,
-          }
-        : null,
-      footer: this.footer
-        ? {
-            text: this.footer.text,
-            icon_url: this.footer.iconURL,
-          }
-        : null,
+      author: this.author && {
+        name: this.author.name,
+        url: this.author.url,
+        icon_url: this.author.iconURL,
+      },
+      footer: this.footer && {
+        text: this.footer.text,
+        icon_url: this.footer.iconURL,
+      },
     };
   }
 
@@ -447,13 +443,14 @@ class MessageEmbed {
     return fields
       .flat(2)
       .map(field =>
-        this.normalizeField(
-          field && field.name,
-          field && field.value,
-          field && typeof field.inline === 'boolean' ? field.inline : false,
-        ),
+        this.normalizeField(field.name, field.value, typeof field.inline === 'boolean' ? field.inline : false),
       );
   }
 }
 
 module.exports = MessageEmbed;
+
+/**
+ * @external APIEmbed
+ * @see {@link https://discord.com/developers/docs/resources/channel#embed-object}
+ */
