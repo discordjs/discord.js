@@ -176,6 +176,8 @@ declare module 'discord.js' {
     blockQuote,
     bold,
     codeBlock,
+    hideLinkEmbed,
+    hyperlink,
     inlineCode,
     italic,
     quote,
@@ -2104,20 +2106,20 @@ declare module 'discord.js' {
     public static splitMessage(text: string, options?: SplitOptions): string[];
   }
 
-  export namespace Formatters {
-    export {
-      blockQuote,
-      bold,
-      codeBlock,
-      inlineCode,
-      italic,
-      quote,
-      strikethrough,
-      time,
-      TimestampStyles,
-      TimestampStylesString,
-      underscore,
-    };
+  export class Formatters extends null {
+    public static blockQuote: typeof blockQuote;
+    public static bold: typeof bold;
+    public static codeBlock: typeof codeBlock;
+    public static hideLinkEmbed: typeof hideLinkEmbed;
+    public static hyperlink: typeof hyperlink;
+    public static inlineCode: typeof inlineCode;
+    public static italic: typeof italic;
+    public static quote: typeof quote;
+    public static strikethrough: typeof strikethrough;
+    public static time: typeof time;
+    public static TimestampStyles: typeof TimestampStyles;
+    public static TimestampStylesString: TimestampStylesString;
+    public static underscore: typeof underscore;
   }
 
   export class VoiceChannel extends BaseGuildVoiceChannel {
