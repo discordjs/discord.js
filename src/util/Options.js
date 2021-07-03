@@ -150,6 +150,24 @@ class ClientOptionsUtil extends null {
       return new LimitedCollection(limit);
     };
   }
+
+  /**
+   * Create a cache factory that always caches everything.
+   * @returns {CacheFactory}
+   */
+  static cacheEverything() {
+    const Collection = require('./Collection');
+    return () => new Collection();
+  }
+
+  /**
+   * Create a cache factory that always caches nothing.
+   * @returns {CacheFactory}
+   */
+  static cacheNothing() {
+    const LimitedCollection = require('./LimitedCollection');
+    return () => new LimitedCollection(0);
+  }
 }
 
 module.exports = ClientOptionsUtil;
