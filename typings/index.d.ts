@@ -1582,7 +1582,7 @@ declare module 'discord.js' {
     public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
     public messages: MessageManager;
     public nsfw: boolean;
-    public threads: ThreadManager;
+    public threads: ThreadManager<AllowedThreadTypeForNewsChannel>;
     public topic: string | null;
     public type: 'news';
     public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
@@ -1936,7 +1936,7 @@ declare module 'discord.js' {
     public nsfw: boolean;
     public type: 'text';
     public rateLimitPerUser: number;
-    public threads: ThreadManager;
+    public threads: ThreadManager<AllowedThreadTypeForTextChannel>;
     public topic: string | null;
     public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
     public setDefaultAutoArchiveDuration(
@@ -2655,21 +2655,12 @@ declare module 'discord.js' {
     public delete(channel: StageChannel | Snowflake): Promise<void>;
   }
 
-  export class ThreadManager extends BaseManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
+  export class ThreadManager<AllowedThreadType> extends BaseManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
     constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<any>);
     public channel: TextChannel | NewsChannel;
-    public create(options: {
-      name: string;
-      autoArchiveDuration: ThreadAutoArchiveDuration;
-      startMessage?: MessageResolvable;
-      type?: ThreadChannelType | number;
-      reason?: string;
-    }): Promise<ThreadChannel>;
+    public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
     public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
-    public fetch(
-      options?: { archived?: FetchArchivedThreadOptions; active?: boolean },
-      cacheOptions?: { cache?: boolean },
-    ): Promise<FetchedThreads>;
+    public fetch(options?: FetchThreadsOptions, cacheOptions?: { cache?: boolean }): Promise<FetchedThreads>;
     public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
     public fetchActive(cache?: boolean): Promise<FetchedThreads>;
   }
@@ -2789,6 +2780,10 @@ declare module 'discord.js' {
     mute?: boolean;
     deaf?: boolean;
   }
+
+  type AllowedThreadTypeForNewsChannel = 'news_thread' | 10;
+
+  type AllowedThreadTypeForTextChannel = 'public_thread' | 'private_thread' | 11 | 12;
 
   interface APIErrors {
     UNKNOWN_ACCOUNT: 10001;
@@ -3385,6 +3380,11 @@ declare module 'discord.js' {
   interface FetchReactionUsersOptions {
     limit?: number;
     after?: Snowflake;
+  }
+
+  interface FetchThreadsOptions {
+    archived?: FetchArchivedThreadOptions;
+    active?: boolean;
   }
 
   interface FileOptions {
@@ -4348,6 +4348,14 @@ declare module 'discord.js' {
   type ThreadChannelResolvable = ThreadChannel | Snowflake;
 
   type ThreadChannelType = 'news_thread' | 'public_thread' | 'private_thread';
+
+  interface ThreadCreateOptions<AllowedThreadType> {
+    name: string;
+    autoArchiveDuration: ThreadAutoArchiveDuration;
+    startMessage?: MessageResolvable;
+    type?: AllowedThreadType;
+    reason?: string;
+  }
 
   interface ThreadEditData {
     name?: string;

@@ -7,7 +7,7 @@ const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
 
 /**
- * Manages API methods for ThreadChannels and stores their cache.
+ * Manages API methods for {@link ThreadChannel} objects and stores their cache.
  * @extends {BaseManager}
  */
 class ThreadManager extends BaseManager {
@@ -35,7 +35,7 @@ class ThreadManager extends BaseManager {
   }
 
   /**
-   * Data that can be resolved to give a Thread Channel object. This can be:
+   * Data that can be resolved to a Thread Channel object. This can be:
    * * A ThreadChannel object
    * * A Snowflake
    * @typedef {ThreadChannel|Snowflake} ThreadChannelResolvable
@@ -60,7 +60,8 @@ class ThreadManager extends BaseManager {
    */
 
   /**
-   * A number that is allowed to be the duration in minutes before a thread is automatically archived. This can be:
+   * A number that is allowed to be the duration (in minutes) of inactivity after which a thread is automatically
+   * archived. This can be:
    * * `60` (1 hour)
    * * `1440` (1 day)
    * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
@@ -69,20 +70,22 @@ class ThreadManager extends BaseManager {
    */
 
   /**
-   * Options for creating a thread <warn>Only one of `startMessage` or `type` can be defined.
-   * If `startMessage` is defined, `type` is automatically defined and cannot be changed.</warn>
+   * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
    * @typedef {Object} ThreadCreateOptions
-   * @property {string} name The name of the new Thread
-   * @property {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
-   * @property {MessageResolvable} [startMessage] The message to start a thread from
-   * @property {ThreadChannelType|number} [type='public_thread'] The type of thread to create
-   * <warn>When creating threads in a `news` channel this is ignored and is always `news_thread`</warn>
+   * @property {string} name The name of the new thread
+   * @property {ThreadAutoArchiveDuration} autoArchiveDuration The amount of time (in minutes) after which the thread
+   * should automatically archive in case of no recent activity
+   * @property {MessageResolvable} [startMessage] The message to start a thread from. <warn>If this is defined then type
+   * of thread gets automatically defined and cannot be changed. The provided `type` field will be ignored</warn>
+   * @property {ThreadChannelType|number} [type] The type of thread to create. Defaults to `public_thread` if created in
+   * a {@link TextChannel} <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
+   * `news_thread`</warn>
    * @property {string} [reason] Reason for creating the thread
    */
 
   /**
    * Creates a new thread in the channel.
-   * @param {ThreadCreateOptions} [options] Options
+   * @param {ThreadCreateOptions} [options] Options to create a new thread
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Create a new public thread
@@ -92,7 +95,7 @@ class ThreadManager extends BaseManager {
    *     autoArchiveDuration: 60,
    *     reason: 'Needed a separate thread for food',
    *   })
-   *   .then(console.log)
+   *   .then(threadChannel => console.log(threadChannel))
    *   .catch(console.error);
    * @example
    * // Create a new private thread
@@ -103,7 +106,7 @@ class ThreadManager extends BaseManager {
    *      type: 'private_thread',
    *      reason: 'Needed a separate thread for moderation',
    *    })
-   *   .then(console.log)
+   *   .then(threadChannel => console.log(threadChannel))
    *   .catch(console.error);
    */
   async create({ name, autoArchiveDuration, startMessage, type, reason } = {}) {
@@ -141,11 +144,10 @@ class ThreadManager extends BaseManager {
 
   /**
    * Obtains a thread from Discord, or the channel cache if it's already available.
-   * @param {ThreadChannelResolvable|FetchThreadsOptions} [options] If a ThreadChannelResolvable, the thread to fetch.
-   * If undefined, fetches all active threads.
-   * If an Object, fetches the specified threads.
-   * @param {BaseFetchOptions} [cacheOptions] Additional options for this fetch
-   * only applies when fetching a single thread
+   * @param {ThreadChannelResolvable|FetchThreadsOptions} [options] The options to fetch threads. If it is a
+   * ThreadChannelResolvable then the specified thread will be fetched. Fetches all active threads if `undefined`
+   * @param {BaseFetchOptions} [cacheOptions] Additional options for this fetch. <warn>The `force` field gets ignored
+   * if `options` is not a ThreadChannelResolvable</warn>
    * @returns {Promise<?(ThreadChannel|FetchedThreads)>}
    * @example
    * // Fetch a thread by its id
@@ -164,10 +166,10 @@ class ThreadManager extends BaseManager {
   }
 
   /**
-   * Data that can be resolved to give a Date object. This can be:
+   * Data that can be resolved to a Date object. This can be:
    * * A Date object
    * * A number representing a timestamp
-   * * An ISO8601 string
+   * * An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string
    * @typedef {Date|number|string} DateResolvable
    */
 
@@ -175,24 +177,23 @@ class ThreadManager extends BaseManager {
    * The options used to fetch archived threads.
    * @typedef {Object} FetchArchivedThreadOptions
    * @property {string} [type='public'] The type of threads to fetch, either `public` or `private`
-   * @property {boolean} [fetchAll=false] When type is `private` whether to fetch **all** archived threads,
-   * requires `MANAGE_THREADS` if true
-   * @property {DateResolvable|ThreadChannelResolvable} [before] Identifier for a Date or Snowflake
-   * to get threads that were created before it,
-   * must be a ThreadChannelResolvable when type is `private` and fetchAll is `false`
+   * @property {boolean} [fetchAll=false] Whether to fetch **all** archived threads when type is `private`.
+   * Requires `MANAGE_THREADS` if true
+   * @property {DateResolvable|ThreadChannelResolvable} [before] Only return threads that were created before this Date
+   * or Snowflake. <warn>Must be a {@link ThreadChannelResolvable} when type is `private` and fetchAll is `false`</warn>
    * @property {number} [limit] Maximum number of threads to return
    */
 
   /**
    * The data returned from a thread fetch that returns multiple threads.
    * @typedef {Object} FetchedThreads
-   * @property {Collection<Snowflake, ThreadChannel>} threads The threads fetched, with any members returned
+   * @property {Collection<Snowflake, ThreadChannel>} threads The threads that were fetched, with any members returned
    * @property {?boolean} hasMore Whether there are potentially additional threads that require a subsequent call
    */
 
   /**
    * Obtains a set of archived threads from Discord, requires `READ_MESSAGE_HISTORY` in the parent channel.
-   * @param {FetchArchivedThreadOptions} [options] The options to use when fetch archived threads
+   * @param {FetchArchivedThreadOptions} [options] The options to fetch archived threads
    * @param {boolean} [cache=true] Whether to cache the new thread objects if they aren't already
    * @returns {Promise<FetchedThreads>}
    */
