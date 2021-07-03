@@ -22,6 +22,7 @@ class MessageReaction {
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
+
     /**
      * The message that this reaction refers to
      * @type {Message}
@@ -38,7 +39,7 @@ class MessageReaction {
      * A manager of the users that have given this reaction
      * @type {ReactionUserManager}
      */
-    this.users = new ReactionUserManager(client, undefined, this);
+    this.users = new ReactionUserManager(this);
 
     this._emoji = new ReactionEmoji(this, data.emoji);
 

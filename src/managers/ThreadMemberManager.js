@@ -1,17 +1,18 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
 const Collection = require('../util/Collection');
 
 /**
- * Manages API methods for ThreadMembers and stores their cache.
- * @extends {BaseManager}
+ * Manages API methods for GuildMembers and stores their cache.
+ * @extends {CachedManager}
  */
-class ThreadMemberManager extends BaseManager {
+class ThreadMemberManager extends CachedManager {
   constructor(thread, iterable) {
-    super(thread.client, iterable, ThreadMember);
+    super(thread.client, ThreadMember, iterable);
+
     /**
      * The thread this manager belongs to
      * @type {ThreadChannel}

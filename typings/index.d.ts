@@ -526,6 +526,12 @@ declare module 'discord.js' {
     public setUsername(username: string): Promise<this>;
   }
 
+  export class Options {
+    public static createDefaultOptions(): ClientOptions;
+    public static cacheWithLimits(limits?: Record<string, number>): CacheFactory;
+    public static cacheEverything(): CacheFactory;
+  }
+
   export class ClientVoiceManager {
     constructor(client: Client);
     public readonly client: Client;
@@ -608,7 +614,6 @@ declare module 'discord.js' {
       devDependencies: { [key: string]: string };
       [key: string]: any;
     };
-    DefaultOptions: ClientOptions;
     UserAgent: string | null;
     Endpoints: {
       botGateway: string;
@@ -2340,13 +2345,15 @@ declare module 'discord.js' {
 
   //#region Managers
 
-  export abstract class BaseManager<K, Holds, R> {
-    constructor(client: Client, iterable: Iterable<any>, holds: Constructable<Holds>, cacheType: Collection<K, Holds>);
-    public holds: Constructable<Holds>;
-    public cache: Collection<K, Holds>;
-    public cacheType: Collection<K, Holds>;
+  export abstract class BaseManager {
+    constructor(client: Client);
     public readonly client: Client;
-    public add(data: any, cache?: boolean, { id, extras }?: { id: K; extras: any[] }): Holds;
+  }
+
+  export abstract class DataManager<K, Holds, R> extends BaseManager {
+    constructor(client: Client, holds: Constructable<Holds>);
+    public readonly holds: Constructable<Holds>;
+    public readonly cache: Collection<K, Holds>;
     public resolve(resolvable: Holds): Holds;
     public resolve(resolvable: R): Holds | null;
     public resolveID(resolvable: Holds): K;
@@ -2354,11 +2361,16 @@ declare module 'discord.js' {
     public valueOf(): Collection<K, Holds>;
   }
 
+  export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R> {
+    constructor(client: Client, holds: Constructable<Holds>);
+    public add(data: any, cache?: boolean, { id, extras }?: { id: K; extras: any[] }): Holds;
+  }
+
   export class ApplicationCommandManager<
     ApplicationCommandType = ApplicationCommand<{ guild: GuildResolvable }>,
     PermissionsOptionsExtras = { guild: GuildResolvable },
     PermissionsGuildType = null,
-  > extends BaseManager<Snowflake, ApplicationCommandType, ApplicationCommandResolvable> {
+  > extends CachedManager<Snowflake, ApplicationCommandType, ApplicationCommandResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public permissions: ApplicationCommandPermissionsManager<
       { command?: ApplicationCommandResolvable } & PermissionsOptionsExtras,
@@ -2400,7 +2412,12 @@ declare module 'discord.js' {
     private static transformCommand(command: ApplicationCommandData): unknown;
   }
 
-  export class ApplicationCommandPermissionsManager<BaseOptions, FetchSingleOptions, GuildType, CommandIDType> {
+  export class ApplicationCommandPermissionsManager<
+    BaseOptions,
+    FetchSingleOptions,
+    GuildType,
+    CommandIDType,
+  > extends BaseManager {
     constructor(manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand);
     public client: Client;
     public commandID: CommandIDType;
@@ -2436,12 +2453,12 @@ declare module 'discord.js' {
     private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): unknown;
   }
 
-  export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
+  export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
   }
 
-  export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResolvable> {
+  export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
     constructor(client: Client, iterable: Iterable<any>);
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Channel | null>;
   }
@@ -2457,7 +2474,7 @@ declare module 'discord.js' {
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
   }
 
-  export class GuildChannelManager extends BaseManager<
+  export class GuildChannelManager extends CachedManager<
     Snowflake,
     GuildChannel | ThreadChannel,
     GuildChannelResolvable
@@ -2499,11 +2516,10 @@ declare module 'discord.js' {
     public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildEmoji>>;
   }
 
-  export class GuildEmojiRoleManager {
+  export class GuildEmojiRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
     constructor(emoji: GuildEmoji);
     public emoji: GuildEmoji;
     public guild: Guild;
-    public cache: Collection<Snowflake, Role>;
     public add(
       roleOrRoles: RoleResolvable | readonly RoleResolvable[] | Collection<Snowflake, Role>,
     ): Promise<GuildEmoji>;
@@ -2511,17 +2527,16 @@ declare module 'discord.js' {
     public remove(
       roleOrRoles: RoleResolvable | readonly RoleResolvable[] | Collection<Snowflake, Role>,
     ): Promise<GuildEmoji>;
-    public valueOf(): Collection<Snowflake, Role>;
   }
 
-  export class GuildManager extends BaseManager<Snowflake, Guild, GuildResolvable> {
+  export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public create(name: string, options?: GuildCreateOptions): Promise<Guild>;
     public fetch(options: Snowflake | FetchGuildOptions): Promise<Guild>;
     public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
   }
 
-  export class GuildMemberManager extends BaseManager<Snowflake, GuildMember, GuildMemberResolvable> {
+  export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
@@ -2537,7 +2552,7 @@ declare module 'discord.js' {
     public unban(user: UserResolvable, reason?: string): Promise<User>;
   }
 
-  export class GuildBanManager extends BaseManager<Snowflake, GuildBan, GuildBanResolvable> {
+  export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBanResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public create(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
@@ -2546,9 +2561,8 @@ declare module 'discord.js' {
     public remove(user: UserResolvable, reason?: string): Promise<User>;
   }
 
-  export class GuildMemberRoleManager {
+  export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
     constructor(member: GuildMember);
-    public readonly cache: Collection<Snowflake, Role>;
     public readonly hoist: Role | null;
     public readonly color: Role | null;
     public readonly highest: Role;
@@ -2566,10 +2580,9 @@ declare module 'discord.js' {
       roleOrRoles: RoleResolvable | readonly RoleResolvable[] | Collection<Snowflake, Role>,
       reason?: string,
     ): Promise<GuildMember>;
-    public valueOf(): Collection<Snowflake, Role>;
   }
 
-  export class MessageManager extends BaseManager<Snowflake, Message, MessageResolvable> {
+  export class MessageManager extends CachedManager<Snowflake, Message, MessageResolvable> {
     constructor(channel: TextChannel | DMChannel | ThreadChannel, iterable?: Iterable<any>);
     public channel: TextBasedChannelFields;
     public cache: Collection<Snowflake, Message>;
@@ -2587,7 +2600,7 @@ declare module 'discord.js' {
     public unpin(message: MessageResolvable): Promise<void>;
   }
 
-  export class PermissionOverwriteManager extends BaseManager<
+  export class PermissionOverwriteManager extends CachedManager<
     Snowflake,
     PermissionOverwrites,
     PermissionOverwriteResolvable
@@ -2616,24 +2629,24 @@ declare module 'discord.js' {
     public delete(userOrRole: RoleResolvable | UserResolvable, reason?: string): Promise<GuildChannel>;
   }
 
-  export class PresenceManager extends BaseManager<Snowflake, Presence, PresenceResolvable> {
+  export class PresenceManager extends CachedManager<Snowflake, Presence, PresenceResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
   }
 
-  export class ReactionManager extends BaseManager<Snowflake | string, MessageReaction, MessageReactionResolvable> {
+  export class ReactionManager extends CachedManager<Snowflake | string, MessageReaction, MessageReactionResolvable> {
     constructor(message: Message, iterable?: Iterable<any>);
     public message: Message;
     public removeAll(): Promise<Message>;
   }
 
-  export class ReactionUserManager extends BaseManager<Snowflake, User, UserResolvable> {
-    constructor(client: Client, iterable: Iterable<any> | undefined, reaction: MessageReaction);
+  export class ReactionUserManager extends CachedManager<Snowflake, User, UserResolvable> {
+    constructor(reaction: MessageReaction, iterable?: Iterable<any>);
     public reaction: MessageReaction;
     public fetch(options?: FetchReactionUsersOptions): Promise<Collection<Snowflake, User>>;
     public remove(user?: UserResolvable): Promise<MessageReaction>;
   }
 
-  export class RoleManager extends BaseManager<Snowflake, Role, RoleResolvable> {
+  export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public readonly everyone: Role;
     public readonly highest: Role;
@@ -2646,7 +2659,7 @@ declare module 'discord.js' {
     public edit(role: RoleResolvable, options: RoleData, reason?: string): Promise<Role>;
   }
 
-  export class StageInstanceManager extends BaseManager<Snowflake, StageInstance, StageInstanceResolvable> {
+  export class StageInstanceManager extends CachedManager<Snowflake, StageInstance, StageInstanceResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public create(channel: StageChannel | Snowflake, options: StageInstanceCreateOptions): Promise<StageInstance>;
@@ -2655,7 +2668,7 @@ declare module 'discord.js' {
     public delete(channel: StageChannel | Snowflake): Promise<void>;
   }
 
-  export class ThreadManager<AllowedThreadType> extends BaseManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
+  export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
     constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<any>);
     public channel: TextChannel | NewsChannel;
     public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
@@ -2666,7 +2679,7 @@ declare module 'discord.js' {
   }
 
   export interface ThreadMemberManager
-    extends Omit<BaseManager<Snowflake, ThreadMember, ThreadMemberResolvable>, 'add'> {}
+    extends Omit<CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable>, 'add'> {}
   export class ThreadMemberManager {
     constructor(thread: ThreadChannel, iterable?: Iterable<any>);
     public thread: ThreadChannel;
@@ -2676,12 +2689,12 @@ declare module 'discord.js' {
     public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
   }
 
-  export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
+  export class UserManager extends CachedManager<Snowflake, User, UserResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<User>;
   }
 
-  export class VoiceStateManager extends BaseManager<Snowflake, VoiceState, typeof VoiceState> {
+  export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, typeof VoiceState> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
   }
@@ -3008,6 +3021,8 @@ declare module 'discord.js' {
 
   type BufferResolvable = Buffer | string;
 
+  type CacheFactory = <T>(manager: { name: string }, holds: { name: string }) => Collection<Snowflake, T>;
+
   interface ChannelCreationOverwrites {
     allow?: PermissionResolvable;
     deny?: PermissionResolvable;
@@ -3133,7 +3148,7 @@ declare module 'discord.js' {
   interface ClientOptions {
     shards?: number | number[] | 'auto';
     shardCount?: number;
-    messageCacheMaxSize?: number;
+    makeCache?: CacheFactory;
     messageCacheLifetime?: number;
     messageSweepInterval?: number;
     allowedMentions?: MessageMentionOptions;

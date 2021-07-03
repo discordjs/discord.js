@@ -2,7 +2,8 @@
 
 const { parse } = require('path');
 const fetch = require('node-fetch');
-const { Colors, DefaultOptions, Endpoints } = require('./Constants');
+const { Colors, Endpoints } = require('./Constants');
+const Options = require('./Options');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
@@ -261,7 +262,8 @@ class Util extends null {
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
-    return fetch(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`, {
+    const defaults = Options.createDefault();
+    return fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
     })

@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
@@ -9,11 +9,12 @@ const { resolveColor, setPosition } = require('../util/Util');
 
 /**
  * Manages API methods for roles and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class RoleManager extends BaseManager {
+class RoleManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, Role);
+    super(guild.client, Role, iterable);
+
     /**
      * The guild belonging to this manager
      * @type {Guild}

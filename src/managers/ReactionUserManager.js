@@ -1,16 +1,18 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
+const User = require('../structures/User');
 const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for users who reacted to a reaction and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class ReactionUserManager extends BaseManager {
-  constructor(client, iterable, reaction) {
-    super(client, iterable, { name: 'User' });
+class ReactionUserManager extends CachedManager {
+  constructor(reaction, iterable) {
+    super(reaction.client, User, iterable);
+
     /**
      * The reaction that this manager belongs to
      * @type {MessageReaction}

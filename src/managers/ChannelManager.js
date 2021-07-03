@@ -1,16 +1,16 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const Channel = require('../structures/Channel');
 const { Events, ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * A manager of channels belonging to a client
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class ChannelManager extends BaseManager {
+class ChannelManager extends CachedManager {
   constructor(client, iterable) {
-    super(client, iterable, Channel);
+    super(client, Channel, iterable);
   }
 
   /**

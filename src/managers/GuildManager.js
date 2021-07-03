@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const Guild = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
 const GuildEmoji = require('../structures/GuildEmoji');
@@ -23,11 +23,11 @@ const { resolveColor } = require('../util/Util');
 
 /**
  * Manages API methods for Guilds and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class GuildManager extends BaseManager {
+class GuildManager extends CachedManager {
   constructor(client, iterable) {
-    super(client, iterable, Guild);
+    super(client, Guild, iterable);
   }
 
   /**

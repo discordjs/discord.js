@@ -1,19 +1,19 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const Message = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
 const Collection = require('../util/Collection');
-const LimitedCollection = require('../util/LimitedCollection');
 
 /**
  * Manages API methods for Messages and holds their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class MessageManager extends BaseManager {
+class MessageManager extends CachedManager {
   constructor(channel, iterable) {
-    super(channel.client, iterable, Message, LimitedCollection, channel.client.options.messageCacheMaxSize);
+    super(channel.client, Message, iterable);
+
     /**
      * The channel that the messages belong to
      * @type {TextBasedChannel}

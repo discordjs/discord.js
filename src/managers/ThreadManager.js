@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Collection = require('../util/Collection');
@@ -8,11 +8,11 @@ const { ChannelTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class ThreadManager extends BaseManager {
+class ThreadManager extends CachedManager {
   constructor(channel, iterable) {
-    super(channel.client, iterable, ThreadChannel);
+    super(channel.client, ThreadChannel, iterable);
 
     /**
      * The channel this Manager belongs to

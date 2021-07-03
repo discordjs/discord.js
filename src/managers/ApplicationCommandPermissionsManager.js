@@ -1,14 +1,18 @@
 'use strict';
 
+const BaseManager = require('./BaseManager');
 const { Error, TypeError } = require('../errors');
 const Collection = require('../util/Collection');
 const { ApplicationCommandPermissionTypes, APIErrors } = require('../util/Constants');
 
 /**
  * Manages API methods for permissions of Application Commands.
+ * @extends {BaseManager}
  */
-class ApplicationCommandPermissionsManager {
+class ApplicationCommandPermissionsManager extends BaseManager {
   constructor(manager) {
+    super(manager.client);
+
     /**
      * The manager or command that this manager belongs to
      * @type {ApplicationCommandManager|ApplicationCommand}
@@ -32,14 +36,6 @@ class ApplicationCommandPermissionsManager {
      * @type {?Snowflake}
      */
     this.commandID = manager.id ?? null;
-
-    /**
-     * The client that instantiated this Manager
-     * @name ApplicationCommandPermissionsManager#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: manager.client });
   }
 
   /**

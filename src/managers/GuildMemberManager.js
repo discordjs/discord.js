@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { Error, TypeError, RangeError } = require('../errors');
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const GuildMember = require('../structures/GuildMember');
@@ -11,11 +11,12 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class GuildMemberManager extends BaseManager {
+class GuildMemberManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, GuildMember);
+    super(guild.client, GuildMember, iterable);
+
     /**
      * The guild this manager belongs to
      * @type {Guild}

@@ -127,6 +127,8 @@ const Messages = {
   INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
   INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
   INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
+
+  NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

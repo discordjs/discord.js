@@ -17,9 +17,10 @@ const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
 const Collection = require('../util/Collection');
-const { Events, DefaultOptions, InviteScopes } = require('../util/Constants');
+const { Events, InviteScopes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
+const Options = require('../util/Options');
 const Permissions = require('../util/Permissions');
 const Structures = require('../util/Structures');
 
@@ -35,14 +36,15 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     const data = require('worker_threads').workerData ?? process.env;
+    const defaults = Options.createDefault();
 
-    if (this.options.shards === DefaultOptions.shards) {
+    if (this.options.shards === defaults.shards) {
       if ('SHARDS' in data) {
         this.options.shards = JSON.parse(data.SHARDS);
       }
     }
 
-    if (this.options.shardCount === DefaultOptions.shardCount) {
+    if (this.options.shardCount === defaults.shardCount) {
       if ('SHARD_COUNT' in data) {
         this.options.shardCount = Number(data.SHARD_COUNT);
       } else if (Array.isArray(this.options.shards)) {
@@ -468,8 +470,8 @@ class Client extends BaseClient {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shards', "'auto', a number or array of numbers");
     }
     if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
-    if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
+    if (typeof options.makeCache !== 'function') {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'makeCache', 'a function');
     }
     if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'The messageCacheLifetime', 'a number');

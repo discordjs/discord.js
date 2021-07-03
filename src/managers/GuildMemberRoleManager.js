@@ -1,24 +1,29 @@
 'use strict';
 
+const DataManager = require('./DataManager');
 const { TypeError } = require('../errors');
+const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for roles of a GuildMember and stores their cache.
+ * @extends {DataManager}
  */
-class GuildMemberRoleManager {
+class GuildMemberRoleManager extends DataManager {
   constructor(member) {
+    super(member.client, Role);
+
     /**
      * The GuildMember this manager belongs to
      * @type {GuildMember}
      */
     this.member = member;
+
     /**
      * The Guild this manager belongs to
      * @type {Guild}
      */
     this.guild = member.guild;
-    Object.defineProperty(this, 'client', { value: member.client });
   }
 
   /**
@@ -169,10 +174,6 @@ class GuildMemberRoleManager {
     const clone = new this.constructor(this.member);
     clone.member._roles = [...this.cache.keyArray()];
     return clone;
-  }
-
-  valueOf() {
-    return this.cache;
   }
 }
 
