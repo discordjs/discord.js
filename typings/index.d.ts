@@ -530,7 +530,6 @@ declare module 'discord.js' {
     public static createDefaultOptions(): ClientOptions;
     public static cacheWithLimits(limits?: Partial<Record<string, number>>): CacheFactory;
     public static cacheEverything(): CacheFactory;
-    public static cacheNothing(): CacheFactory;
   }
 
   export class ClientVoiceManager {

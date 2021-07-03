@@ -155,15 +155,6 @@ class Options extends null {
     const Collection = require('./Collection');
     return () => new Collection();
   }
-
-  /**
-   * Create a cache factory that always caches nothing.
-   * @returns {CacheFactory}
-   */
-  static cacheNothing() {
-    const LimitedCollection = require('./LimitedCollection');
-    return () => new LimitedCollection(0);
-  }
 }
 
 module.exports = Options;
