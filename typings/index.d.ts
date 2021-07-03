@@ -1785,6 +1785,7 @@ declare module 'discord.js' {
     public fetch(): Promise<Sticker>;
     public fetchPack(): Promise<StickerPack | null>;
     public fetchUser(): Promise<User | null>;
+    public readonly partial: boolean;
   }
 
   export class StickerPack extends Base {
