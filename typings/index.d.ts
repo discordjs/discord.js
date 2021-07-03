@@ -540,7 +540,7 @@ declare module 'discord.js' {
     public readonly client: Client;
     public collected: Collection<K, V>;
     public ended: boolean;
-    public abstract endReason: string | null;
+    public abstract readonly endReason: string | null;
     public filter: CollectorFilter<[V, ...F]>;
     public readonly next: Promise<V>;
     public options: CollectorOptions<[V, ...F]>;
