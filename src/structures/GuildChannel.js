@@ -98,12 +98,12 @@ class GuildChannel extends Channel {
     if (!this.parent) return null;
 
     // Get all overwrites
-    const overwriteIds = new Set([...this.permissionOverwrites.keys(), ...this.parent.permissionOverwrites.keys()]);
+    const overwriteIds = new Set([...this.permissionOverwrites.cache.keys(), ...this.parent.permissionOverwrites.cache.keys()]);
 
     // Compare all overwrites
     return [...overwriteIds].every(key => {
-      const channelVal = this.permissionOverwrites.get(key);
-      const parentVal = this.parent.permissionOverwrites.get(key);
+      const channelVal = this.permissionOverwrites.cache.get(key);
+      const parentVal = this.parent.permissionOverwrites.cache.get(key);
 
       // Handle empty overwrite
       if (
@@ -158,7 +158,7 @@ class GuildChannel extends Channel {
     let memberOverwrites;
     let everyoneOverwrites;
 
-    for (const overwrite of this.permissionOverwrites.values()) {
+    for (const overwrite of this.permissionOverwrites.cache.values()) {
       if (overwrite.id === this.guild.id) {
         everyoneOverwrites = overwrite;
       } else if (roles.has(overwrite.id)) {
@@ -210,8 +210,8 @@ class GuildChannel extends Channel {
   rolePermissions(role) {
     if (role.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
 
-    const everyoneOverwrites = this.permissionOverwrites.get(this.guild.id);
-    const roleOverwrites = this.permissionOverwrites.get(role.id);
+    const everyoneOverwrites = this.permissionOverwrites.cache.get(this.guild.id);
+    const roleOverwrites = this.permissionOverwrites.cache.get(role.id);
 
     return role.permissions
       .remove(everyoneOverwrites?.deny ?? Permissions.defaultBit)
@@ -518,7 +518,7 @@ class GuildChannel extends Channel {
    */
   clone(options = {}) {
     return this.guild.channels.create(options.name ?? this.name, {
-      permissionOverwrites: this.permissionOverwrites,
+      permissionOverwrites: this.permissionOverwrites.cache,
       topic: this.topic,
       type: this.type,
       nsfw: this.nsfw,
@@ -549,7 +549,7 @@ class GuildChannel extends Channel {
 
     if (equal) {
       if (this.permissionOverwrites && channel.permissionOverwrites) {
-        equal = this.permissionOverwrites.equals(channel.permissionOverwrites);
+        equal = this.permissionOverwrites.cache.equals(channel.permissionOverwrites.cache);
       } else {
         equal = !this.permissionOverwrites && !channel.permissionOverwrites;
       }
