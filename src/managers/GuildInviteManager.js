@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const { TypeError, Error } = require('../errors');
+const { Error } = require('../errors');
 const Invite = require('../structures/Invite');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
@@ -149,8 +149,6 @@ class GuildInviteManager extends BaseManager {
     channel,
     { temporary = false, maxAge = 86400, maxUses = 0, unique, targetUser, targetApplication, targetType, reason } = {},
   ) {
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-
     const id = this.guild.channels.resolveID(channel);
     if (!id) throw new Error('GUILD_CHANNEL_RESOLVE');
 
