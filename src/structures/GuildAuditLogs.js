@@ -474,7 +474,7 @@ class GuildAuditLogsEntry {
       this.target = guild.members.fetch(guild.client.user.id).then(me => {
         if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
           const change = this.changes.find(c => c.key === 'code');
-          return guild.fetchInvites().then(invites => {
+          return guild.invites.fetch().then(invites => {
             this.target = invites.find(i => i.code === (change.new || change.old));
           });
         } else {
