@@ -19,7 +19,7 @@ import {
 const client: Client = new Client({
   intents: Intents.NON_PRIVILEGED,
   makeCache: ClientOptionsUtil.cacheWithLimits({
-    Message: 200,
+    MessageManager: 200,
   }),
 });
 

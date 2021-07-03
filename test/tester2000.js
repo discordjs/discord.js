@@ -9,8 +9,8 @@ const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 const client = new Client({
   intents: Intents.ALL,
   makeCache: Options.cacheWithLimits({
-    Message: 10,
-    Presence: 10,
+    MessageManager: 10,
+    PresenceManager: 10,
   }),
 });
 

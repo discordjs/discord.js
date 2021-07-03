@@ -20,6 +20,7 @@
 
 /**
  * @typedef {Function} CacheFactory
+ * @param {Function} manager The manager class the cache is being requested from.
  * @param {Function} holds The class that the cache will hold.
  * @returns {Collection} Cache instance that follows collection interface.
  */
@@ -141,8 +142,8 @@ class ClientOptionsUtil extends null {
     const Collection = require('./Collection');
     const LimitedCollection = require('./LimitedCollection');
 
-    return holds => {
-      const limit = limits[holds.name];
+    return manager => {
+      const limit = limits[manager.name];
       if (limit === null || limit === undefined || limit === Infinity) {
         return new Collection();
       }

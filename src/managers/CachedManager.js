@@ -11,7 +11,7 @@ class CachedManager extends DataManager {
   constructor(client, holds, iterable) {
     super(client, holds);
 
-    Object.defineProperty(this, '_cache', { value: this.client.options.makeCache(this.holds) });
+    Object.defineProperty(this, '_cache', { value: this.client.options.makeCache(this.constructor, this.holds) });
 
     if (iterable) {
       for (const item of iterable) {

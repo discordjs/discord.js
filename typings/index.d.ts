@@ -3020,7 +3020,7 @@ declare module 'discord.js' {
 
   type BufferResolvable = Buffer | string;
 
-  type CacheFactory = <T>(holds: { name: string }) => Collection<Snowflake, T>;
+  type CacheFactory = <T>(manager: { name: string }, holds: { name: string }) => Collection<Snowflake, T>;
 
   interface ChannelCreationOverwrites {
     allow?: PermissionResolvable;
