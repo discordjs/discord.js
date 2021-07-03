@@ -376,10 +376,10 @@ class Client extends BaseClient {
   /**
    * Options for {@link Client#generateInvite}.
    * @typedef {Object} InviteGenerationOptions
+   * @property {InviteScope[]} scopes Scopes that should be requested
    * @property {PermissionResolvable} [permissions] Permissions to request
    * @property {GuildResolvable} [guild] Guild to preselect
    * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
-   * @property {InviteScope[]} [scopes=['bot']] Scopes that should be requested
    */
 
   /**
@@ -401,12 +401,29 @@ class Client extends BaseClient {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     if (!this.application) throw new Error('CLIENT_NOT_READY', 'generate an invite link');
 
+    const scopes = options.scopes;
+    if (!scopes) {
+      throw new TypeError('INVITE_MISSING_SCOPES');
+    }
+    if (!Array.isArray(scopes)) {
+      throw new TypeError('INVALID_TYPE', 'scopes', 'Array of Invite Scopes', true);
+    }
+    const requiredScope = scopes.find(scope => scope === 'bot' || scope === 'applications.commands');
+    if (!requiredScope) {
+      throw new TypeError('INVITE_MISSING_SCOPES');
+    }
+    const invalidScope = scopes.find(scope => !InviteScopes.includes(scope));
+    if (invalidScope) {
+      throw new TypeError('INVALID_ELEMENT', 'Array', 'scopes', invalidScope);
+    }
+    query.set('scope', [...scopes].join(' '));
+
     const query = new URLSearchParams({
       client_id: this.application.id,
       scope: 'bot',
     });
 
-    if (options.permissions) {
+    if (options.permissions && options.scopes) {
       const permissions = Permissions.resolve(options.permissions);
       if (permissions) query.set('permissions', permissions);
     }
@@ -419,20 +436,6 @@ class Client extends BaseClient {
       const guildID = this.guilds.resolveID(options.guild);
       if (!guildID) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
       query.set('guild_id', guildID);
-    }
-
-    if (options.scopes) {
-      const scopes = options.scopes;
-      if (!Array.isArray(scopes)) {
-        throw new TypeError('INVALID_TYPE', 'scopes', 'Array of Invite Scopes', true);
-      }
-      const invalidScope = scopes.find(scope => !InviteScopes.includes(scope));
-      if (invalidScope) {
-        throw new TypeError('INVALID_ELEMENT', 'Array', 'scopes', invalidScope);
-      }
-      query.set('scope', [...scopes].join(' '));
-    } else {
-      query.set('scope', 'bot');
     }
 
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
