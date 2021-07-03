@@ -2107,19 +2107,19 @@ declare module 'discord.js' {
   }
 
   export class Formatters extends null {
-    static blockQuote: typeof blockQuote;
-    static bold: typeof bold;
-    static codeBlock: typeof codeBlock;
-    static hideLinkEmbed: typeof hideLinkEmbed;
-    static hyperlink: typeof hyperlink;
-    static inlineCode: typeof inlineCode;
-    static italic: typeof italic;
-    static quote: typeof quote;
-    static strikethrough: typeof strikethrough;
-    static time: typeof time;
-    static TimestampStyles: typeof TimestampStyles;
-    static TimestampStylesString: TimestampStylesString;
-    static underscore: typeof underscore;
+    public static blockQuote: typeof blockQuote;
+    public static bold: typeof bold;
+    public static codeBlock: typeof codeBlock;
+    public static hideLinkEmbed: typeof hideLinkEmbed;
+    public static hyperlink: typeof hyperlink;
+    public static inlineCode: typeof inlineCode;
+    public static italic: typeof italic;
+    public static quote: typeof quote;
+    public static strikethrough: typeof strikethrough;
+    public static time: typeof time;
+    public static TimestampStyles: typeof TimestampStyles;
+    public static TimestampStylesString: TimestampStylesString;
+    public static underscore: typeof underscore;
   }
 
   export class VoiceChannel extends BaseGuildVoiceChannel {
