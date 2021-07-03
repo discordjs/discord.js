@@ -6,7 +6,7 @@ const ThreadMember = require('../structures/ThreadMember');
 const Collection = require('../util/Collection');
 
 /**
- * Manages API methods for GuildMembers and stores their cache.
+ * Manages API methods for ThreadMembers and stores their cache.
  * @extends {BaseManager}
  */
 class ThreadMemberManager extends BaseManager {

@@ -1970,6 +1970,7 @@ declare module 'discord.js' {
     public guild: Guild;
     public readonly guildMembers: Collection<Snowflake, GuildMember>;
     public readonly joinable: boolean;
+    public readonly joined: boolean;
     public locked: boolean;
     public readonly manageable: boolean;
     public readonly sendable: boolean;
