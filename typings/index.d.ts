@@ -173,9 +173,9 @@ export class BaseClient extends EventEmitter {
   public clearTimeout(timeout: NodeJS.Timeout): void;
   public clearImmediate(timeout: NodeJS.Immediate): void;
   public destroy(): void;
-  public setInterval(fn: (...args: any[]) => void, delay: number, ...args: any[]): NodeJS.Timeout;
-  public setTimeout(fn: (...args: any[]) => void, delay: number, ...args: any[]): NodeJS.Timeout;
-  public setImmediate(fn: (...args: any[]) => void, ...args: any[]): NodeJS.Immediate;
+  public setInterval(fn: (...args: unknown[]) => void, delay: number, ...args: unknown[]): NodeJS.Timeout;
+  public setTimeout(fn: (...args: unknown[]) => void, delay: number, ...args: unknown[]): NodeJS.Timeout;
+  public setImmediate(fn: (...args: unknown[]) => void, ...args: unknown[]): NodeJS.Immediate;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
 }
 
@@ -240,7 +240,7 @@ export class BitField<S extends string, N extends number | bigint = number> {
   public valueOf(): N;
   public [Symbol.iterator](): IterableIterator<S>;
   public static FLAGS: unknown;
-  public static resolve(bit?: BitFieldResolvable<any, number | bigint>): number | bigint;
+  public static resolve(bit?: BitFieldResolvable<string, number | bigint>): number | bigint;
 }
 
 export class ButtonInteraction extends MessageComponentInteraction {
@@ -271,7 +271,7 @@ export class Channel extends Base {
 export class Client extends BaseClient {
   public constructor(options: ClientOptions);
   private actions: unknown;
-  private _eval(script: string): any;
+  private _eval(script: string): unknown;
   private _validateOptions(options: ClientOptions): void;
 
   public application: ClientApplication | null;
@@ -303,22 +303,22 @@ export class Client extends BaseClient {
   public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
   public on<S extends string | symbol>(
     event: Exclude<S, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaited<void>,
+    listener: (...args: unknown[]) => Awaited<void>,
   ): this;
 
   public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
   public once<S extends string | symbol>(
     event: Exclude<S, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaited<void>,
+    listener: (...args: unknown[]) => Awaited<void>,
   ): this;
 
   public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
-  public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: any[]): boolean;
+  public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: unknown[]): boolean;
 
   public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
   public off<S extends string | symbol>(
     event: Exclude<S, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaited<void>,
+    listener: (...args: unknown[]) => Awaited<void>,
   ): this;
 
   public removeAllListeners<K extends keyof ClientEvents>(event?: K): this;
@@ -367,7 +367,7 @@ export class Collection<K, V> extends BaseCollection<K, V> {
   public toJSON(): unknown;
 }
 
-export abstract class Collector<K, V, F extends any[] = []> extends EventEmitter {
+export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmitter {
   public constructor(client: Client, options?: CollectorOptions<[V, ...F]>);
   private _timeout: NodeJS.Timeout | null;
   private _idletimeout: NodeJS.Timeout | null;
@@ -380,21 +380,21 @@ export abstract class Collector<K, V, F extends any[] = []> extends EventEmitter
   public readonly next: Promise<V>;
   public options: CollectorOptions<[V, ...F]>;
   public checkEnd(): void;
-  public handleCollect(...args: any[]): Promise<void>;
-  public handleDispose(...args: any[]): Promise<void>;
+  public handleCollect(...args: unknown[]): Promise<void>;
+  public handleDispose(...args: unknown[]): Promise<void>;
   public stop(reason?: string): void;
   public resetTimer(options?: CollectorResetTimerOptions): void;
   public [Symbol.asyncIterator](): AsyncIterableIterator<V>;
   public toJSON(): unknown;
 
-  protected listener: (...args: any[]) => void;
-  public abstract collect(...args: any[]): K | null | Promise<K | null>;
-  public abstract dispose(...args: any[]): K | null;
+  protected listener: (...args: unknown[]) => void;
+  public abstract collect(...args: unknown[]): K | null | Promise<K | null>;
+  public abstract dispose(...args: unknown[]): K | null;
 
-  public on(event: 'collect' | 'dispose', listener: (...args: any[]) => Awaited<void>): this;
+  public on(event: 'collect' | 'dispose', listener: (...args: unknown[]) => Awaited<void>): this;
   public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaited<void>): this;
 
-  public once(event: 'collect' | 'dispose', listener: (...args: any[]) => Awaited<void>): this;
+  public once(event: 'collect' | 'dispose', listener: (...args: unknown[]) => Awaited<void>): this;
   public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaited<void>): this;
 }
 
@@ -576,7 +576,7 @@ export class GuildAuditLogs {
   public static Targets: GuildAuditLogsTargets;
   public static Entry: typeof GuildAuditLogsEntry;
   public static actionType(action: number): GuildAuditLogsActionType;
-  public static build(...args: any[]): Promise<GuildAuditLogs>;
+  public static build(...args: unknown[]): Promise<GuildAuditLogs>;
   public static targetType(target: number): GuildAuditLogsTarget;
   public toJSON(): unknown;
 }
@@ -854,11 +854,11 @@ export class InteractionCollector<T extends Interaction> extends Collector<Snowf
   public dispose(interaction: Interaction): Snowflake;
   public on(event: 'collect' | 'dispose', listener: (interaction: T) => Awaited<void>): this;
   public on(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaited<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public on(event: string, listener: (...args: unknown[]) => Awaited<void>): this;
 
   public once(event: 'collect' | 'dispose', listener: (interaction: T) => Awaited<void>): this;
   public once(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaited<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public once(event: string, listener: (...args: unknown[]) => Awaited<void>): this;
 }
 
 export class InteractionWebhook extends PartialWebhookMixin() {
@@ -1304,14 +1304,14 @@ export class ReactionCollector extends Collector<Snowflake | string, MessageReac
 
   public on(event: 'collect' | 'dispose' | 'remove', listener: (reaction: MessageReaction, user: User) => void): this;
   public on(event: 'end', listener: (collected: Collection<Snowflake, MessageReaction>, reason: string) => void): this;
-  public on(event: string, listener: (...args: any[]) => void): this;
+  public on(event: string, listener: (...args: unknown[]) => void): this;
 
   public once(event: 'collect' | 'dispose' | 'remove', listener: (reaction: MessageReaction, user: User) => void): this;
   public once(
     event: 'end',
     listener: (collected: Collection<Snowflake, MessageReaction>, reason: string) => void,
   ): this;
-  public once(event: string, listener: (...args: any[]) => void): this;
+  public once(event: string, listener: (...args: unknown[]) => void): this;
 }
 
 export class ReactionEmoji extends Emoji {
@@ -1373,11 +1373,11 @@ export class SelectMenuInteraction extends MessageComponentInteraction {
 
 export class Shard extends EventEmitter {
   public constructor(manager: ShardingManager, id: number);
-  private _evals: Map<string, Promise<any>>;
-  private _exitListener: (...args: any[]) => void;
-  private _fetches: Map<string, Promise<any>>;
+  private _evals: Map<string, Promise<unknown>>;
+  private _exitListener: (...args: unknown[]) => void;
+  private _fetches: Map<string, Promise<unknown>>;
   private _handleExit(respawn?: boolean): void;
-  private _handleMessage(message: any): void;
+  private _handleMessage(message: unknown): void;
 
   public args: string[];
   public execArgv: string[];
@@ -1386,38 +1386,38 @@ export class Shard extends EventEmitter {
   public manager: ShardingManager;
   public process: ChildProcess | null;
   public ready: boolean;
-  public worker: any | null;
-  public eval(script: string): Promise<any>;
+  public worker: unknown | null;
+  public eval(script: string): Promise<unknown>;
   public eval<T>(fn: (client: Client) => T): Promise<T[]>;
-  public fetchClientValue(prop: string): Promise<any>;
+  public fetchClientValue(prop: string): Promise<unknown>;
   public kill(): void;
   public respawn(options?: { delay?: number; timeout?: number }): Promise<ChildProcess>;
-  public send(message: any): Promise<Shard>;
+  public send(message: unknown): Promise<Shard>;
   public spawn(timeout?: number): Promise<ChildProcess>;
 
   public on(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaited<void>): this;
   public on(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaited<void>): this;
   public on(event: 'error', listener: (error: Error) => Awaited<void>): this;
-  public on(event: 'message', listener: (message: any) => Awaited<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public on(event: 'message', listener: (message: unknown) => Awaited<void>): this;
+  public on(event: string, listener: (...args: unknown[]) => Awaited<void>): this;
 
   public once(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaited<void>): this;
   public once(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaited<void>): this;
   public once(event: 'error', listener: (error: Error) => Awaited<void>): this;
-  public once(event: 'message', listener: (message: any) => Awaited<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public once(event: 'message', listener: (message: unknown) => Awaited<void>): this;
+  public once(event: string, listener: (...args: unknown[]) => Awaited<void>): this;
 }
 
 export class ShardClientUtil {
   public constructor(client: Client, mode: ShardingManagerMode);
-  private _handleMessage(message: any): void;
-  private _respond(type: string, message: any): void;
+  private _handleMessage(message: unknown): void;
+  private _respond(type: string, message: unknown): void;
 
   public client: Client;
   public readonly count: number;
   public readonly ids: number[];
   public mode: ShardingManagerMode;
-  public parentPort: any | null;
+  public parentPort: unknown | null;
   public broadcastEval<T>(fn: (client: Client) => Awaited<T>): Promise<Serialized<T>[]>;
   public broadcastEval<T>(fn: (client: Client) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
   public broadcastEval<T, P>(
@@ -1428,10 +1428,10 @@ export class ShardClientUtil {
     fn: (client: Client, context: Serialized<P>) => Awaited<T>,
     options: { context: P; shard: number },
   ): Promise<Serialized<T>>;
-  public fetchClientValues(prop: string): Promise<any[]>;
-  public fetchClientValues(prop: string, shard: number): Promise<any>;
+  public fetchClientValues(prop: string): Promise<unknown[]>;
+  public fetchClientValues(prop: string, shard: number): Promise<unknown>;
   public respawnAll(options?: MultipleShardRespawnOptions): Promise<void>;
-  public send(message: any): Promise<void>;
+  public send(message: unknown): Promise<void>;
 
   public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
   public static shardIdForGuildId(guildId: Snowflake, shardCount: number): number;
@@ -1439,8 +1439,8 @@ export class ShardClientUtil {
 
 export class ShardingManager extends EventEmitter {
   public constructor(file: string, options?: ShardingManagerOptions);
-  private _performOnShards(method: string, args: any[]): Promise<any[]>;
-  private _performOnShards(method: string, args: any[], shard: number): Promise<any>;
+  private _performOnShards(method: string, args: unknown[]): Promise<unknown[]>;
+  private _performOnShards(method: string, args: unknown[], shard: number): Promise<unknown>;
 
   public file: string;
   public respawn: boolean;
@@ -1449,7 +1449,7 @@ export class ShardingManager extends EventEmitter {
   public token: string | null;
   public totalShards: number | 'auto';
   public shardList: number[] | 'auto';
-  public broadcast(message: any): Promise<Shard[]>;
+  public broadcast(message: unknown): Promise<Shard[]>;
   public broadcastEval<T>(fn: (client: Client) => Awaited<T>): Promise<Serialized<T>[]>;
   public broadcastEval<T>(fn: (client: Client) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
   public broadcastEval<T, P>(
@@ -1461,8 +1461,8 @@ export class ShardingManager extends EventEmitter {
     options: { context: P; shard: number },
   ): Promise<Serialized<T>>;
   public createShard(id: number): Shard;
-  public fetchClientValues(prop: string): Promise<any[]>;
-  public fetchClientValues(prop: string, shard: number): Promise<any>;
+  public fetchClientValues(prop: string): Promise<unknown[]>;
+  public fetchClientValues(prop: string, shard: number): Promise<unknown>;
   public respawnAll(options?: MultipleShardRespawnOptions): Promise<Collection<number, Shard>>;
   public spawn(options?: MultipleShardSpawnOptions): Promise<Collection<number, Shard>>;
 
@@ -1696,7 +1696,7 @@ export class Util extends null {
   public static makeError(obj: MakeErrorOptions): Error;
   public static makePlainError(err: Error): MakeErrorOptions;
   public static mergeDefault(def: unknown, given: unknown): unknown;
-  public static moveElementInArray(array: any[], element: any, newIndex: number, offset?: boolean): number;
+  public static moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
   public static parseEmoji(text: string): { animated: boolean; name: string; id: Snowflake | null } | null;
   public static resolveColor(color: ColorResolvable): number;
   public static resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<APIPartialEmoji> | null;
@@ -1816,8 +1816,8 @@ export class WebSocketManager extends EventEmitter {
   public status: Status;
   public readonly ping: number;
 
-  public on(event: WSEventType, listener: (data: any, shardId: number) => void): this;
-  public once(event: WSEventType, listener: (data: any, shardId: number) => void): this;
+  public on(event: WSEventType, listener: (data: unknown, shardId: number) => void): this;
+  public once(event: WSEventType, listener: (data: unknown, shardId: number) => void): this;
 
   private debug(message: string, shard?: WebSocketShard): void;
   private connect(): Promise<void>;
@@ -1875,12 +1875,12 @@ export class WebSocketShard extends EventEmitter {
   public on(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaited<void>): this;
   public on(event: 'close', listener: (event: CloseEvent) => Awaited<void>): this;
   public on(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaited<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public on(event: string, listener: (...args: unknown[]) => Awaited<void>): this;
 
   public once(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaited<void>): this;
   public once(event: 'close', listener: (event: CloseEvent) => Awaited<void>): this;
   public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaited<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public once(event: string, listener: (...args: unknown[]) => Awaited<void>): this;
 }
 
 export class Widget extends Base {
@@ -1949,7 +1949,7 @@ export const Constants: {
     dependencies: Record<string, string>;
     peerDependencies: Record<string, string>;
     devDependencies: Record<string, string>;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   UserAgent: string;
   Endpoints: {
@@ -2166,7 +2166,7 @@ export abstract class DataManager<K, Holds, R> extends BaseManager {
 
 export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R> {
   public constructor(client: Client, holds: Constructable<Holds>);
-  public add(data: any, cache?: boolean, { id, extras }?: { id: K; extras: any[] }): Holds;
+  public add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
 }
 
 export class ApplicationCommandManager<
@@ -2174,7 +2174,7 @@ export class ApplicationCommandManager<
   PermissionsOptionsExtras = { guild: GuildResolvable },
   PermissionsGuildType = null,
 > extends CachedManager<Snowflake, ApplicationCommandType, ApplicationCommandResolvable> {
-  public constructor(client: Client, iterable?: Iterable<any>);
+  public constructor(client: Client, iterable?: Iterable<unknown>);
   public permissions: ApplicationCommandPermissionsManager<
     { command?: ApplicationCommandResolvable } & PermissionsOptionsExtras,
     { command: ApplicationCommandResolvable } & PermissionsOptionsExtras,
@@ -2259,17 +2259,17 @@ export class ApplicationCommandPermissionsManager<
 }
 
 export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
-  public constructor(client: Client, iterable?: Iterable<any>);
+  public constructor(client: Client, iterable?: Iterable<unknown>);
   public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
 }
 
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
-  public constructor(client: Client, iterable: Iterable<any>);
+  public constructor(client: Client, iterable: Iterable<unknown>);
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Channel | null>;
 }
 
 export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand, {}, Guild> {
-  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
   public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
@@ -2284,7 +2284,7 @@ export class GuildChannelManager extends CachedManager<
   GuildChannel | ThreadChannel,
   GuildChannelResolvable
 > {
-  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public readonly channelCountWithoutThreads: number;
   public guild: Guild;
   public create(name: string, options: GuildChannelCreateOptions & { type: 'voice' }): Promise<VoiceChannel>;
@@ -2310,7 +2310,7 @@ export class GuildChannelManager extends CachedManager<
 }
 
 export class GuildEmojiManager extends BaseGuildEmojiManager {
-  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public create(
     attachment: BufferResolvable | Base64Resolvable,
@@ -2335,14 +2335,14 @@ export class GuildEmojiRoleManager extends DataManager<Snowflake, Role, RoleReso
 }
 
 export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvable> {
-  public constructor(client: Client, iterable?: Iterable<any>);
+  public constructor(client: Client, iterable?: Iterable<unknown>);
   public create(name: string, options?: GuildCreateOptions): Promise<Guild>;
   public fetch(options: Snowflake | FetchGuildOptions): Promise<Guild>;
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
 }
 
 export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
-  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
   public edit(user: UserResolvable, data: GuildMemberEditData, reason?: string): Promise<void>;
@@ -2358,7 +2358,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
 }
 
 export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBanResolvable> {
-  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public create(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
   public fetch(options: UserResolvable | FetchBanOptions): Promise<GuildBan>;
@@ -2367,7 +2367,7 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
 }
 
 export class GuildInviteManager extends DataManager<Snowflake, Invite, InviteResolvable> {
-  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public create(channel: GuildChannelResolvable, options?: CreateInviteOptions): Promise<Invite>;
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
@@ -2397,7 +2397,7 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
 }
 
 export class MessageManager extends CachedManager<Snowflake, Message, MessageResolvable> {
-  public constructor(channel: TextChannel | DMChannel | ThreadChannel, iterable?: Iterable<any>);
+  public constructor(channel: TextChannel | DMChannel | ThreadChannel, iterable?: Iterable<unknown>);
   public channel: TextBasedChannelFields;
   public cache: Collection<Snowflake, Message>;
   public crosspost(message: MessageResolvable): Promise<Message>;
@@ -2419,7 +2419,7 @@ export class PermissionOverwriteManager extends CachedManager<
   PermissionOverwrites,
   PermissionOverwriteResolvable
 > {
-  public constructor(client: Client, iterable?: Iterable<any>);
+  public constructor(client: Client, iterable?: Iterable<unknown>);
   public set(
     overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
     reason?: string,
@@ -2444,24 +2444,24 @@ export class PermissionOverwriteManager extends CachedManager<
 }
 
 export class PresenceManager extends CachedManager<Snowflake, Presence, PresenceResolvable> {
-  public constructor(client: Client, iterable?: Iterable<any>);
+  public constructor(client: Client, iterable?: Iterable<unknown>);
 }
 
 export class ReactionManager extends CachedManager<Snowflake | string, MessageReaction, MessageReactionResolvable> {
-  public constructor(message: Message, iterable?: Iterable<any>);
+  public constructor(message: Message, iterable?: Iterable<unknown>);
   public message: Message;
   public removeAll(): Promise<Message>;
 }
 
 export class ReactionUserManager extends CachedManager<Snowflake, User, UserResolvable> {
-  public constructor(reaction: MessageReaction, iterable?: Iterable<any>);
+  public constructor(reaction: MessageReaction, iterable?: Iterable<unknown>);
   public reaction: MessageReaction;
   public fetch(options?: FetchReactionUsersOptions): Promise<Collection<Snowflake, User>>;
   public remove(user?: UserResolvable): Promise<MessageReaction>;
 }
 
 export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> {
-  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public readonly everyone: Role;
   public readonly highest: Role;
   public guild: Guild;
@@ -2474,7 +2474,7 @@ export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> 
 }
 
 export class StageInstanceManager extends CachedManager<Snowflake, StageInstance, StageInstanceResolvable> {
-  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public create(channel: StageChannel | Snowflake, options: StageInstanceCreateOptions): Promise<StageInstance>;
   public fetch(channel: StageChannel | Snowflake, options?: BaseFetchOptions): Promise<StageInstance>;
@@ -2483,7 +2483,7 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
 }
 
 export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
-  public constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<any>);
+  public constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<unknown>);
   public channel: TextChannel | NewsChannel;
   public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
   public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
@@ -2495,21 +2495,21 @@ export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, T
 export interface ThreadMemberManager
   extends Omit<CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable>, 'add'> {}
 export class ThreadMemberManager {
-  public constructor(thread: ThreadChannel, iterable?: Iterable<any>);
+  public constructor(thread: ThreadChannel, iterable?: Iterable<unknown>);
   public thread: ThreadChannel;
-  public _add(data: any, cache?: boolean): ThreadMember;
+  public _add(data: unknown, cache?: boolean): ThreadMember;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
 }
 
 export class UserManager extends CachedManager<Snowflake, User, UserResolvable> {
-  public constructor(client: Client, iterable?: Iterable<any>);
+  public constructor(client: Client, iterable?: Iterable<unknown>);
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<User>;
 }
 
 export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, typeof VoiceState> {
-  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
 }
 
@@ -2793,8 +2793,8 @@ export type ApplicationFlagsString =
 
 export interface AuditLogChange {
   key: string;
-  old?: any;
-  new?: any;
+  old?: unknown;
+  new?: unknown;
 }
 
 export type Awaited<T> = T | PromiseLike<T>;
@@ -3005,9 +3005,9 @@ export interface CloseEvent {
   target: WebSocket;
 }
 
-export type CollectorFilter<T extends any[]> = (...args: T) => boolean | Promise<boolean>;
+export type CollectorFilter<T extends unknown[]> = (...args: T) => boolean | Promise<boolean>;
 
-export interface CollectorOptions<T extends any[]> {
+export interface CollectorOptions<T extends unknown[]> {
   filter?: CollectorFilter<T>;
   time?: number;
   idle?: number;
@@ -3117,7 +3117,7 @@ export type EmojiIdentifierResolvable = string | EmojiResolvable;
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
 
 export interface ErrorEvent {
-  error: any;
+  error: unknown;
   message: string;
   type: string;
   target: WebSocket;
@@ -4333,7 +4333,7 @@ export interface InternalDiscordGatewayAdapterLibraryMethods {
  * @internal Use `DiscordGatewayAdapterImplementerMethods` from `@discordjs/voice` instead.
  */
 export interface InternalDiscordGatewayAdapterImplementerMethods {
-  sendPayload(payload: any): boolean;
+  sendPayload(payload: unknown): boolean;
   destroy(): void;
 }
 
