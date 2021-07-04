@@ -859,6 +859,7 @@ declare module 'discord.js' {
     public approximatePresenceCount: number | null;
     public available: boolean;
     public bans: GuildBanManager;
+    public invites: GuildInviteManager;
     public channels: GuildChannelManager;
     public commands: GuildApplicationCommandManager;
     public defaultMessageNotifications: DefaultMessageNotificationLevel | number;
@@ -907,7 +908,6 @@ declare module 'discord.js' {
     public equals(guild: Guild): boolean;
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;
-    public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchOwner(options?: FetchOwnerOptions): Promise<GuildMember>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
@@ -1021,7 +1021,7 @@ declare module 'discord.js' {
     public createInvite(options?: CreateInviteOptions): Promise<Invite>;
     public edit(data: ChannelData, reason?: string): Promise<this>;
     public equals(channel: GuildChannel): boolean;
-    public fetchInvites(): Promise<Collection<string, Invite>>;
+    public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
     public lockPermissions(): Promise<this>;
     public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
@@ -2533,6 +2533,15 @@ declare module 'discord.js' {
     public remove(user: UserResolvable, reason?: string): Promise<User>;
   }
 
+  export class GuildInviteManager extends DataManager<Snowflake, Invite, InviteResolvable> {
+    constructor(guild: Guild, iterable?: Iterable<any>);
+    public guild: Guild;
+    public create(channel: GuildChannelResolvable, options?: CreateInviteOptions): Promise<Invite>;
+    public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
+    public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
+    public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
+  }
+
   export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
     constructor(member: GuildMember);
     public readonly hoist: Role | null;
@@ -3305,6 +3314,15 @@ declare module 'discord.js' {
 
   interface FetchBansOptions {
     cache: boolean;
+  }
+
+  interface FetchInviteOptions extends BaseFetchOptions {
+    code: string;
+  }
+
+  interface FetchInvitesOptions {
+    channelID?: Snowflake;
+    cache?: boolean;
   }
 
   interface FetchGuildOptions extends BaseFetchOptions {

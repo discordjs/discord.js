@@ -475,7 +475,7 @@ class GuildAuditLogsEntry {
         if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
           let change = this.changes.find(c => c.key === 'code');
           change = change.new ?? change.old;
-          return guild.fetchInvites().then(invites => {
+          return guild.invites.fetch().then(invites => {
             this.target = invites.find(i => i.code === change);
           });
         } else {

@@ -1,7 +1,6 @@
 'use strict';
 
 const Channel = require('./Channel');
-const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
@@ -470,46 +469,18 @@ class GuildChannel extends Channel {
    *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
    *   .catch(console.error);
    */
-  createInvite({
-    temporary = false,
-    maxAge = 86400,
-    maxUses = 0,
-    unique,
-    targetUser,
-    targetApplication,
-    targetType,
-    reason,
-  } = {}) {
-    return this.client.api
-      .channels(this.id)
-      .invites.post({
-        data: {
-          temporary,
-          max_age: maxAge,
-          max_uses: maxUses,
-          unique,
-          target_user_id: this.client.users.resolveId(targetUser),
-          target_application_id: targetApplication?.id ?? targetApplication?.applicationId ?? targetApplication,
-          target_type: targetType,
-        },
-        reason,
-      })
-      .then(invite => new Invite(this.client, invite));
+  createInvite(options) {
+    return this.guild.invites.create(this.id, options);
   }
 
   /**
    * Fetches a collection of invites to this guild channel.
    * Resolves with a collection mapping invites by their codes.
+   * @param {boolean} [cache=true] Whether or not to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
-  async fetchInvites() {
-    const inviteItems = await this.client.api.channels(this.id).invites.get();
-    const invites = new Collection();
-    for (const inviteItem of inviteItems) {
-      const invite = new Invite(this.client, inviteItem);
-      invites.set(invite.code, invite);
-    }
-    return invites;
+  fetchInvites(cache = true) {
+    return this.guild.invites.fetch({ channelID: this.id, cache });
   }
 
   /**
