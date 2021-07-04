@@ -479,7 +479,6 @@ export class Guild extends AnonymousGuild {
   public approximatePresenceCount: number | null;
   public available: boolean;
   public bans: GuildBanManager;
-  public invites: GuildInviteManager;
   public channels: GuildChannelManager;
   public commands: GuildApplicationCommandManager;
   public defaultMessageNotifications: DefaultMessageNotificationLevel | number;
@@ -487,6 +486,7 @@ export class Guild extends AnonymousGuild {
   public discoverySplash: string | null;
   public emojis: GuildEmojiManager;
   public explicitContentFilter: ExplicitContentFilterLevel;
+  public invites: GuildInviteManager;
   public readonly joinedAt: Date;
   public joinedTimestamp: number;
   public large: boolean;
@@ -3141,6 +3141,13 @@ export interface FetchApplicationCommandOptions extends BaseFetchOptions {
   guildId?: Snowflake;
 }
 
+export interface FetchArchivedThreadOptions {
+  type?: 'public' | 'private';
+  fetchAll?: boolean;
+  before?: ThreadChannelResolvable | DateResolvable;
+  limit?: number;
+}
+
 export interface FetchBanOptions extends BaseFetchOptions {
   user: UserResolvable;
 }
@@ -3149,13 +3156,9 @@ export interface FetchBansOptions {
   cache: boolean;
 }
 
-interface FetchInviteOptions extends BaseFetchOptions {
-  code: string;
-}
-
-interface FetchInvitesOptions {
-  channelID?: Snowflake;
-  cache?: boolean;
+export interface FetchedThreads {
+  threads: Collection<Snowflake, ThreadChannel>;
+  hasMore?: boolean;
 }
 
 export interface FetchGuildOptions extends BaseFetchOptions {
@@ -3168,16 +3171,13 @@ export interface FetchGuildsOptions {
   limit?: number;
 }
 
-export interface FetchArchivedThreadOptions {
-  type?: 'public' | 'private';
-  fetchAll?: boolean;
-  before?: ThreadChannelResolvable | DateResolvable;
-  limit?: number;
+interface FetchInviteOptions extends BaseFetchOptions {
+  code: string;
 }
 
-export interface FetchedThreads {
-  threads: Collection<Snowflake, ThreadChannel>;
-  hasMore?: boolean;
+interface FetchInvitesOptions {
+  channelID?: Snowflake;
+  cache?: boolean;
 }
 
 export interface FetchMemberOptions extends BaseFetchOptions {
