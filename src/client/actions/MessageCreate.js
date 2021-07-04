@@ -15,14 +15,14 @@ class MessageCreateAction extends Action {
       const message = channel.messages.add(data);
       const user = message.author;
       const member = message.member;
-      channel.lastMessageID = data.id;
+      channel.lastMessageId = data.id;
       if (user) {
-        user.lastMessageID = data.id;
-        user.lastMessageChannelID = channel.id;
+        user.lastMessageId = data.id;
+        user.lastMessageChannelId = channel.id;
       }
       if (member) {
-        member.lastMessageID = data.id;
-        member.lastMessageChannelID = channel.id;
+        member.lastMessageId = data.id;
+        member.lastMessageChannelId = channel.id;
       }
 
       /**

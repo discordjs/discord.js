@@ -71,7 +71,7 @@ class PermissionOverwriteManager extends CachedManager {
    * @private
    */
   async upsert(userOrRole, options, overwriteOptions = {}, existing) {
-    let userOrRoleID = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
+    let userOrRoleId = this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole);
     let { type, reason } = overwriteOptions;
     if (typeof type !== 'number') {
       userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
@@ -83,9 +83,9 @@ class PermissionOverwriteManager extends CachedManager {
 
     await this.client.api
       .channels(this.channel.id)
-      .permissions(userOrRoleID)
+      .permissions(userOrRoleId)
       .put({
-        data: { id: userOrRoleID, type, allow, deny },
+        data: { id: userOrRoleId, type, allow, deny },
         reason,
       });
     return this.channel;
@@ -124,7 +124,7 @@ class PermissionOverwriteManager extends CachedManager {
    *   .catch(console.error);
    */
   edit(userOrRole, options, overwriteOptions) {
-    userOrRole = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
+    userOrRole = this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole);
     const existing = this.cache.get(userOrRole);
     return this.upsert(userOrRole, options, overwriteOptions, existing);
   }
@@ -136,10 +136,10 @@ class PermissionOverwriteManager extends CachedManager {
    * @returns {GuildChannel}
    */
   async delete(userOrRole, reason) {
-    const userOrRoleID = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
-    if (!userOrRoleID) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
+    const userOrRoleId = this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole);
+    if (!userOrRoleId) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
 
-    await this.client.api.channels(this.channel.id).permissions(userOrRoleID).delete({ reason });
+    await this.client.api.channels(this.channel.id).permissions(userOrRoleId).delete({ reason });
     return this.channel;
   }
 }

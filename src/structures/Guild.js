@@ -113,7 +113,7 @@ class Guild extends AnonymousGuild {
      * The id of the shard this Guild belongs to.
      * @type {number}
      */
-    this.shardID = data.shardID;
+    this.shardId = data.shardId;
   }
 
   /**
@@ -122,7 +122,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get shard() {
-    return this.client.ws.shards.get(this.shardID);
+    return this.client.ws.shards.get(this.shardId);
   }
 
   /**
@@ -183,10 +183,10 @@ class Guild extends AnonymousGuild {
      */
 
     /**
-     * The ID of the application that created this guild (if applicable)
+     * The id of the application that created this guild (if applicable)
      * @type {?Snowflake}
      */
-    this.applicationID = data.application_id;
+    this.applicationId = data.application_id;
 
     /**
      * The time in seconds before a user is counted as "away from keyboard"
@@ -195,16 +195,16 @@ class Guild extends AnonymousGuild {
     this.afkTimeout = data.afk_timeout;
 
     /**
-     * The ID of the voice channel where AFK members are moved
+     * The id of the voice channel where AFK members are moved
      * @type {?Snowflake}
      */
-    this.afkChannelID = data.afk_channel_id;
+    this.afkChannelId = data.afk_channel_id;
 
     /**
-     * The ID of the system channel
+     * The system channel's id
      * @type {?Snowflake}
      */
-    this.systemChannelID = data.system_channel_id;
+    this.systemChannelId = data.system_channel_id;
 
     /**
      * The premium tier of this guild
@@ -230,10 +230,10 @@ class Guild extends AnonymousGuild {
 
     if (typeof data.widget_channel_id !== 'undefined') {
       /**
-       * The widget channel ID, if enabled
+       * The widget channel's id, if enabled
        * @type {?string}
        */
-      this.widgetChannelID = data.widget_channel_id;
+      this.widgetChannelId = data.widget_channel_id;
     }
 
     /**
@@ -317,16 +317,16 @@ class Guild extends AnonymousGuild {
     this.vanityURLUses = null;
 
     /**
-     * The ID of the rules channel for the guild
+     * The rules channel's id for the guild
      * @type {?Snowflake}
      */
-    this.rulesChannelID = data.rules_channel_id;
+    this.rulesChannelId = data.rules_channel_id;
 
     /**
-     * The ID of the community updates channel for the guild
+     * The community updates channel's id for the guild
      * @type {?Snowflake}
      */
-    this.publicUpdatesChannelID = data.public_updates_channel_id;
+    this.publicUpdatesChannelId = data.public_updates_channel_id;
 
     /**
      * The preferred locale of the guild, defaults to `en-US`
@@ -359,10 +359,10 @@ class Guild extends AnonymousGuild {
 
     if (data.owner_id) {
       /**
-       * The user ID of this guild's owner
+       * The user id of this guild's owner
        * @type {Snowflake}
        */
-      this.ownerID = data.owner_id;
+      this.ownerId = data.owner_id;
     }
 
     if (data.presences) {
@@ -445,12 +445,12 @@ class Guild extends AnonymousGuild {
 
   /**
    * Fetches the owner of the guild.
-   * If the member object isn't needed, use {@link Guild#ownerID} instead.
+   * If the member object isn't needed, use {@link Guild#ownerId} instead.
    * @param {FetchOwnerOptions} [options] The options for fetching the member
    * @returns {Promise<GuildMember>}
    */
   fetchOwner(options) {
-    return this.members.fetch({ ...options, user: this.ownerID });
+    return this.members.fetch({ ...options, user: this.ownerId });
   }
 
   /**
@@ -459,7 +459,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get afkChannel() {
-    return this.client.channels.resolve(this.afkChannelID);
+    return this.client.channels.resolve(this.afkChannelId);
   }
 
   /**
@@ -468,7 +468,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get systemChannel() {
-    return this.client.channels.resolve(this.systemChannelID);
+    return this.client.channels.resolve(this.systemChannelId);
   }
 
   /**
@@ -477,7 +477,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get widgetChannel() {
-    return this.client.channels.resolve(this.widgetChannelID);
+    return this.client.channels.resolve(this.widgetChannelId);
   }
 
   /**
@@ -486,7 +486,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get rulesChannel() {
-    return this.client.channels.resolve(this.rulesChannelID);
+    return this.client.channels.resolve(this.rulesChannelId);
   }
 
   /**
@@ -495,7 +495,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get publicUpdatesChannel() {
-    return this.client.channels.resolve(this.publicUpdatesChannelID);
+    return this.client.channels.resolve(this.publicUpdatesChannelId);
   }
 
   /**
@@ -702,7 +702,7 @@ class Guild extends AnonymousGuild {
   async fetchWidget() {
     const data = await this.client.api.guilds(this.id).widget.get();
     this.widgetEnabled = data.enabled;
-    this.widgetChannelID = data.channel_id;
+    this.widgetChannelId = data.channel_id;
     return {
       enabled: data.enabled,
       channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
@@ -738,7 +738,7 @@ class Guild extends AnonymousGuild {
         query: {
           before: options.before,
           limit: options.limit,
-          user_id: this.client.users.resolveID(options.user),
+          user_id: this.client.users.resolveId(options.user),
           action_type: options.type,
         },
       })
@@ -764,7 +764,7 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<GuildMember>}
    */
   async addMember(user, options) {
-    user = this.client.users.resolveID(user);
+    user = this.client.users.resolveId(user);
     if (!user) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
     if (this.members.cache.has(user)) return this.members.cache.get(user);
     options.access_token = options.accessToken;
@@ -774,7 +774,7 @@ class Guild extends AnonymousGuild {
       }
       const resolvedRoles = [];
       for (const role of options.roles.values()) {
-        const resolvedRole = this.roles.resolveID(role);
+        const resolvedRole = this.roles.resolveId(role);
         if (!role) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
         resolvedRoles.push(resolvedRole);
       }
@@ -832,14 +832,14 @@ class Guild extends AnonymousGuild {
           : VerificationLevels[data.verificationLevel];
     }
     if (typeof data.afkChannel !== 'undefined') {
-      _data.afk_channel_id = this.client.channels.resolveID(data.afkChannel);
+      _data.afk_channel_id = this.client.channels.resolveId(data.afkChannel);
     }
     if (typeof data.systemChannel !== 'undefined') {
-      _data.system_channel_id = this.client.channels.resolveID(data.systemChannel);
+      _data.system_channel_id = this.client.channels.resolveId(data.systemChannel);
     }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
-    if (data.owner) _data.owner_id = this.client.users.resolveID(data.owner);
+    if (data.owner) _data.owner_id = this.client.users.resolveId(data.owner);
     if (data.splash) _data.splash = data.splash;
     if (data.discoverySplash) _data.discovery_splash = data.discoverySplash;
     if (data.banner) _data.banner = data.banner;
@@ -859,10 +859,10 @@ class Guild extends AnonymousGuild {
       _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
     }
     if (typeof data.rulesChannel !== 'undefined') {
-      _data.rules_channel_id = this.client.channels.resolveID(data.rulesChannel);
+      _data.rules_channel_id = this.client.channels.resolveId(data.rulesChannel);
     }
     if (typeof data.publicUpdatesChannel !== 'undefined') {
-      _data.public_updates_channel_id = this.client.channels.resolveID(data.publicUpdatesChannel);
+      _data.public_updates_channel_id = this.client.channels.resolveId(data.publicUpdatesChannel);
     }
     if (typeof data.features !== 'undefined') {
       _data.features = data.features;
@@ -916,7 +916,7 @@ class Guild extends AnonymousGuild {
       return {
         emoji_id: emoji && emoji.id,
         emoji_name: emoji?.name ?? welcomeChannelData.emoji,
-        channel_id: this.channels.resolveID(welcomeChannelData.channel),
+        channel_id: this.channels.resolveId(welcomeChannelData.channel),
         description: welcomeChannelData.description,
       };
     });
@@ -1179,16 +1179,16 @@ class Guild extends AnonymousGuild {
    * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
    * @example
-   * guild.setChannelPositions([{ channel: channelID, position: newChannelIndex }])
+   * guild.setChannelPositions([{ channel: channelId, position: newChannelIndex }])
    *   .then(guild => console.log(`Updated channel positions for ${guild}`))
    *   .catch(console.error);
    */
   setChannelPositions(channelPositions) {
     const updatedChannels = channelPositions.map(r => ({
-      id: this.client.channels.resolveID(r.channel),
+      id: this.client.channels.resolveId(r.channel),
       position: r.position,
       lock_permissions: r.lockPermissions,
-      parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveID(r.parent) : undefined,
+      parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveId(r.parent) : undefined,
     }));
 
     return this.client.api
@@ -1206,7 +1206,7 @@ class Guild extends AnonymousGuild {
   /**
    * The data needed for updating a guild role's position
    * @typedef {Object} GuildRolePosition
-   * @property {RoleResolveable} role The ID of the role
+   * @property {RoleResolveable} role The role's id
    * @property {number} position The position to update
    */
 
@@ -1215,14 +1215,14 @@ class Guild extends AnonymousGuild {
    * @param {GuildRolePosition[]} rolePositions Role positions to update
    * @returns {Promise<Guild>}
    * @example
-   * guild.setRolePositions([{ role: roleID, position: updatedRoleIndex }])
+   * guild.setRolePositions([{ role: roleId, position: updatedRoleIndex }])
    *  .then(guild => console.log(`Role positions updated for ${guild}`))
    *  .catch(console.error);
    */
   setRolePositions(rolePositions) {
     // Make sure rolePositions are prepared for API
     rolePositions = rolePositions.map(o => ({
-      id: this.roles.resolveID(o.role),
+      id: this.roles.resolveId(o.role),
       position: o.position,
     }));
 
@@ -1253,7 +1253,7 @@ class Guild extends AnonymousGuild {
       .widget.patch({
         data: {
           enabled: widget.enabled,
-          channel_id: this.channels.resolveID(widget.channel),
+          channel_id: this.channels.resolveId(widget.channel),
         },
         reason,
       })
@@ -1270,7 +1270,7 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   leave() {
-    if (this.ownerID === this.client.user.id) return Promise.reject(new Error('GUILD_OWNED'));
+    if (this.ownerId === this.client.user.id) return Promise.reject(new Error('GUILD_OWNED'));
     return this.client.api
       .users('@me')
       .guilds(this.id)
@@ -1313,7 +1313,7 @@ class Guild extends AnonymousGuild {
       this.memberCount === guild.memberCount &&
       this.large === guild.large &&
       this.icon === guild.icon &&
-      this.ownerID === guild.ownerID &&
+      this.ownerId === guild.ownerId &&
       this.verificationLevel === guild.verificationLevel &&
       (this.features === guild.features ||
         (this.features.length === guild.features.length &&
@@ -1366,7 +1366,7 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Creates a collection of this guild's roles, sorted by their position and IDs.
+   * Creates a collection of this guild's roles, sorted by their position and ids.
    * @returns {Collection<Snowflake, Role>}
    * @private
    */
@@ -1375,7 +1375,7 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Creates a collection of this guild's or a specific category's channels, sorted by their position and IDs.
+   * Creates a collection of this guild's or a specific category's channels, sorted by their position and ids.
    * @param {GuildChannel} [channel] Category to get the channels of
    * @returns {Collection<Snowflake, GuildChannel>}
    * @private

@@ -13,7 +13,7 @@ client
         console.log('no templates');
       } else {
         const guild = await templates.first().createGuild('guild name');
-        console.log(`created guild with ID ${guild.id}`);
+        console.log(`created guild with id ${guild.id}`);
         await guild.delete();
         console.log('deleted guild');
       }

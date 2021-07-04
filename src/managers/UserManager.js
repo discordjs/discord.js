@@ -32,7 +32,7 @@ class UserManager extends CachedManager {
    */
 
   /**
-   * Resolves a UserResolvable to a User object.
+   * Resolves a {@link UserResolvable} to a {@link User} object.
    * @param {UserResolvable} user The UserResolvable to identify
    * @returns {?User}
    */
@@ -43,20 +43,20 @@ class UserManager extends CachedManager {
   }
 
   /**
-   * Resolves a UserResolvable to a user ID string.
+   * Resolves a {@link UserResolvable} to a {@link User} id.
    * @param {UserResolvable} user The UserResolvable to identify
    * @returns {?Snowflake}
    */
-  resolveID(user) {
+  resolveId(user) {
     if (user instanceof ThreadMember) return user.id;
     if (user instanceof GuildMember) return user.user.id;
     if (user instanceof Message) return user.author.id;
-    return super.resolveID(user);
+    return super.resolveId(user);
   }
 
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
-   * @param {Snowflake} id ID of the user
+   * @param {Snowflake} id The user's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<User>}
    */

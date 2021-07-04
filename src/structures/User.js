@@ -21,7 +21,7 @@ class User extends Base {
     super(client);
 
     /**
-     * The ID of the user
+     * The user's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -33,16 +33,16 @@ class User extends Base {
     this.flags = null;
 
     /**
-     * The ID of the last message sent by the user, if one was sent
+     * The user's last message id, if one was sent
      * @type {?Snowflake}
      */
-    this.lastMessageID = null;
+    this.lastMessageId = null;
 
     /**
-     * The ID of the channel for the last message sent by the user, if one was sent
+     * The channel in which the last message was sent by the user, if one was sent
      * @type {?Snowflake}
      */
-    this.lastMessageChannelID = null;
+    this.lastMessageChannelId = null;
 
     this._patch(data);
   }
@@ -80,7 +80,7 @@ class User extends Base {
 
     if ('avatar' in data) {
       /**
-       * The ID of the user's avatar
+       * The user avatar's hash
        * @type {?string}
        */
       this.avatar = data.avatar;
@@ -140,7 +140,7 @@ class User extends Base {
    * @readonly
    */
   get lastMessage() {
-    return this.client.channels.resolve(this.lastMessageChannelID)?.messages.resolve(this.lastMessageID) ?? null;
+    return this.client.channels.resolve(this.lastMessageChannelId)?.messages.resolve(this.lastMessageId) ?? null;
   }
 
   /**
@@ -262,7 +262,7 @@ class User extends Base {
   }
 
   /**
-   * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, and bot flags.
+   * Checks if the user is equal to another. It compares id, username, discriminator, avatar, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
    * @param {User} user User to compare with
    * @returns {boolean}
@@ -317,7 +317,7 @@ class User extends Base {
         defaultAvatarURL: true,
         tag: true,
         lastMessage: false,
-        lastMessageID: false,
+        lastMessageId: false,
       },
       ...props,
     );

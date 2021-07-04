@@ -211,9 +211,9 @@ class Invite extends Base {
       presenceCount: false,
       memberCount: false,
       uses: false,
-      channel: 'channelID',
-      inviter: 'inviterID',
-      guild: 'guildID',
+      channel: 'channelId',
+      inviter: 'inviterId',
+      guild: 'guildId',
     });
   }
 

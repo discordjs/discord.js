@@ -36,16 +36,16 @@ class MessageManager extends CachedManager {
    * `after` are mutually exclusive. All the parameters are optional.
    * @typedef {Object} ChannelLogsQueryOptions
    * @property {number} [limit=50] Number of messages to acquire
-   * @property {Snowflake} [before] ID of a message to get the messages that were posted before it
-   * @property {Snowflake} [after] ID of a message to get the messages that were posted after it
-   * @property {Snowflake} [around] ID of a message to get the messages that were posted around it
+   * @property {Snowflake} [before] THe message's id to get the messages that were posted before it
+   * @property {Snowflake} [after] THe message's id to get the messages that were posted after it
+   * @property {Snowflake} [around] THe message's id to get the messages that were posted around it
    */
 
   /**
    * Gets a message, or messages, from this channel.
    * <info>The returned Collection does not contain reaction users of the messages if they were not cached.
    * Those need to be fetched separately in such a case.</info>
-   * @param {Snowflake|ChannelLogsQueryOptions} [message] The ID of the message to fetch, or query parameters.
+   * @param {Snowflake|ChannelLogsQueryOptions} [message] The id of the message to fetch, or query parameters.
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<Message>|Promise<Collection<Snowflake, Message>>}
    * @example
@@ -59,7 +59,7 @@ class MessageManager extends CachedManager {
    *   .then(messages => console.log(`Received ${messages.size} messages`))
    *   .catch(console.error);
    * @example
-   * // Get messages and filter by user ID
+   * // Get messages and filter by user id
    * channel.messages.fetch()
    *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
@@ -96,7 +96,7 @@ class MessageManager extends CachedManager {
    */
 
   /**
-   * Resolves a MessageResolvable to a Message object.
+   * Resolves a {@link MessageResolvable} to a {@link Message} object.
    * @method resolve
    * @memberof MessageManager
    * @instance
@@ -105,8 +105,8 @@ class MessageManager extends CachedManager {
    */
 
   /**
-   * Resolves a MessageResolvable to a Message ID string.
-   * @method resolveID
+   * Resolves a {@link MessageResolvable} to a {@link Message} id.
+   * @method resolveId
    * @memberof MessageManager
    * @instance
    * @param {MessageResolvable} message The message resolvable to resolve
@@ -120,8 +120,8 @@ class MessageManager extends CachedManager {
    * @returns {Promise<Message>}
    */
   async edit(message, options) {
-    const messageID = this.resolveID(message);
-    if (!messageID) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    const messageId = this.resolveId(message);
+    if (!messageId) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     const { data, files } = await (options instanceof MessagePayload
       ? options
@@ -129,9 +129,9 @@ class MessageManager extends CachedManager {
     )
       .resolveData()
       .resolveFiles();
-    const d = await this.client.api.channels[this.channel.id].messages[messageID].patch({ data, files });
+    const d = await this.client.api.channels[this.channel.id].messages[messageId].patch({ data, files });
 
-    const existing = this.cache.get(messageID);
+    const existing = this.cache.get(messageId);
     if (existing) {
       const clone = existing._clone();
       clone._patch(d);
@@ -146,7 +146,7 @@ class MessageManager extends CachedManager {
    * @returns {Promise<Message>}
    */
   async crosspost(message) {
-    message = this.resolveID(message);
+    message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     const data = await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
@@ -159,7 +159,7 @@ class MessageManager extends CachedManager {
    * @returns {Promise<void>}
    */
   async pin(message) {
-    message = this.resolveID(message);
+    message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     await this.client.api.channels(this.channel.id).pins(message).put();
@@ -171,7 +171,7 @@ class MessageManager extends CachedManager {
    * @returns {Promise<void>}
    */
   async unpin(message) {
-    message = this.resolveID(message);
+    message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     await this.client.api.channels(this.channel.id).pins(message).delete();
@@ -184,7 +184,7 @@ class MessageManager extends CachedManager {
    * @returns {Promise<void>}
    */
   async react(message, emoji) {
-    message = this.resolveID(message);
+    message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     emoji = this.client.emojis.resolveIdentifier(emoji);
@@ -200,19 +200,19 @@ class MessageManager extends CachedManager {
    * @returns {Promise<void>}
    */
   async delete(message) {
-    message = this.resolveID(message);
+    message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     await this.client.api.channels(this.channel.id).messages(message).delete();
   }
 
-  async _fetchId(messageID, cache, force) {
+  async _fetchId(messageId, cache, force) {
     if (!force) {
-      const existing = this.cache.get(messageID);
+      const existing = this.cache.get(messageId);
       if (existing && !existing.partial) return existing;
     }
 
-    const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
+    const data = await this.client.api.channels[this.channel.id].messages[messageId].get();
     return this.add(data, cache);
   }
 

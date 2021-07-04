@@ -67,13 +67,13 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
-   * Resolves a GuildChannelResolvable to a channel ID string.
+   * Resolves a GuildChannelResolvable to a channel id.
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?Snowflake}
    */
-  resolveID(channel) {
-    if (channel instanceof ThreadChannel) return super.resolveID(channel.id);
-    return super.resolveID(channel);
+  resolveId(channel) {
+    if (channel instanceof ThreadChannel) return super.resolveId(channel.id);
+    return super.resolveId(channel);
   }
 
   /**
@@ -119,7 +119,7 @@ class GuildChannelManager extends CachedManager {
     name,
     { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
   ) {
-    if (parent) parent = this.client.channels.resolveID(parent);
+    if (parent) parent = this.client.channels.resolveId(parent);
     if (permissionOverwrites) {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
     }
@@ -144,7 +144,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Obtains one or more guild channels from Discord, or the channel cache if they're already available.
-   * @param {Snowflake} [id] ID of the channel
+   * @param {Snowflake} [id] The channel's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?GuildChannel|Collection<Snowflake, GuildChannel>>}
    * @example

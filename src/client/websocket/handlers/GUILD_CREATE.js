@@ -11,7 +11,7 @@ module.exports = (client, { d: data }, shard) => {
     }
   } else {
     // A new guild
-    data.shardID = shard.id;
+    data.shardId = shard.id;
     guild = client.guilds.add(data);
     if (client.ws.status === Status.READY) {
       /**

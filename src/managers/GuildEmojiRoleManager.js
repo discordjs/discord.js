@@ -44,7 +44,7 @@ class GuildEmojiRoleManager extends DataManager {
 
     const resolvedRoles = [];
     for (const role of roleOrRoles.values()) {
-      const resolvedRole = this.guild.roles.resolveID(role);
+      const resolvedRole = this.guild.roles.resolveId(role);
       if (!resolvedRole) {
         return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
       }
@@ -63,22 +63,22 @@ class GuildEmojiRoleManager extends DataManager {
   remove(roleOrRoles) {
     if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roleOrRoles = [roleOrRoles];
 
-    const resolvedRoleIDs = [];
+    const resolvedRoleIds = [];
     for (const role of roleOrRoles.values()) {
-      const roleID = this.guild.roles.resolveID(role);
-      if (!roleID) {
+      const roleId = this.guild.roles.resolveId(role);
+      if (!roleId) {
         return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
       }
-      resolvedRoleIDs.push(roleID);
+      resolvedRoleIds.push(roleId);
     }
 
-    const newRoles = this.cache.keyArray().filter(id => !resolvedRoleIDs.includes(id));
+    const newRoles = this.cache.keyArray().filter(id => !resolvedRoleIds.includes(id));
     return this.set(newRoles);
   }
 
   /**
    * Sets the role(s) that can use this emoji.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role ids to apply
    * @returns {Promise<GuildEmoji>}
    * @example
    * // Set the emoji's roles to a single role
