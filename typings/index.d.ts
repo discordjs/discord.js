@@ -3309,29 +3309,6 @@ declare module 'discord.js' {
 
   type ExplicitContentFilterLevel = keyof typeof ExplicitContentFilterLevels;
 
-  interface Extendable {
-    GuildEmoji: typeof GuildEmoji;
-    DMChannel: typeof DMChannel;
-    TextChannel: typeof TextChannel;
-    VoiceChannel: typeof VoiceChannel;
-    CategoryChannel: typeof CategoryChannel;
-    NewsChannel: typeof NewsChannel;
-    StoreChannel: typeof StoreChannel;
-    ThreadChannel: typeof ThreadChannel;
-    GuildMember: typeof GuildMember;
-    ThreadMember: typeof ThreadMember;
-    Guild: typeof Guild;
-    Message: typeof Message;
-    MessageReaction: typeof MessageReaction;
-    Presence: typeof Presence;
-    VoiceState: typeof VoiceState;
-    Role: typeof Role;
-    User: typeof User;
-    CommandInteraction: typeof CommandInteraction;
-    ButtonInteraction: typeof ButtonInteraction;
-    SelectMenuInteraction: typeof SelectMenuInteraction;
-  }
-
   interface FetchApplicationCommandOptions extends BaseFetchOptions {
     guildID?: Snowflake;
   }
