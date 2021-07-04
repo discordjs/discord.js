@@ -44,6 +44,7 @@ module.exports = {
   GuildMemberManager: require('./managers/GuildMemberManager'),
   GuildMemberRoleManager: require('./managers/GuildMemberRoleManager'),
   GuildManager: require('./managers/GuildManager'),
+  GuildStickerManager: require('./managers/GuildStickerManager'),
   ReactionManager: require('./managers/ReactionManager'),
   ReactionUserManager: require('./managers/ReactionUserManager'),
   MessageManager: require('./managers/MessageManager'),

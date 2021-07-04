@@ -19,13 +19,6 @@ class Sticker extends Base {
     this._patch(sticker);
   }
 
-  /**
-   * Data that resolves to give a Sticker object. This can be:
-   * * An Sticker object
-   * * A Snowflake
-   * @typedef {Sticker|Snowflake} StickerResolvable
-   */
-
   _patch(sticker) {
     /**
      * The ID of the sticker
@@ -168,6 +161,69 @@ class Sticker extends Base {
     const data = await this.client.api.guilds(this.guildID).stickers(this.id).get();
     this._patch(data);
     return this.user;
+  }
+
+  /**
+   * Data for editing a sticker.
+   * @typedef {Object} GuildStickerEditData
+   * @property {string} [name] The name of the sticker
+   * @property {string} [description] The description of the sticker
+   * @property {string} [tags] The Discord name of a unicode emoji representing the sticker's expression
+   */
+
+  /**
+   * Edits the sticker.
+   * @param {GuildStickerEditData} [data] The new data for the sticker
+   * @param {string} [reason] Reason for editing this sticker
+   * @returns {Promise<Sticker>}
+   * @example
+   * // Update the name of a sticker
+   * sticker.edit({ name: 'new name' })
+   *   .then(s => console.log(`Updated the name of the sticker to ${s.name}`))
+   *   .catch(console.error);
+   */
+  edit(data, reason) {
+    return this.guild.stickers.edit(this, data, reason);
+  }
+
+  /**
+   * Deletes the sticker.
+   * @returns {Promise<Sticker>}
+   * @param {string} [reason] Reason for deleting this sticker
+   * @example
+   * // Delete a message
+   * sticker.delete()
+   *   .then(s => console.log(`Deleted sticker ${s.name}`))
+   *   .catch(console.error);
+   */
+  async delete(reason) {
+    await this.guild.stickers.delete(this, reason);
+    return this;
+  }
+
+  /**
+   * Whether this sticker is the same as another one.
+   * @param {Sticker|APISticker} other The sticker to compare it to
+   * @returns {boolean} Whether the sticker is equal to the given sticker or not
+   */
+  equals(other) {
+    if (other instanceof Sticker) {
+      return (
+        other.id === this.id &&
+        other.description === this.description &&
+        other.type === this.type &&
+        other.format === this.format &&
+        other.name === this.name &&
+        other.packID === this.packID &&
+        other.tags.length === this.tags.length &&
+        other.tags.every(tag => this.tags.includes(tag)) &&
+        other.available === this.available &&
+        other.guildID === this.guildID &&
+        other.sortValue === this.sortValue
+      );
+    } else {
+      return other.id === this.id && other.description === this.description && other.name === this.name;
+    }
   }
 }
 
