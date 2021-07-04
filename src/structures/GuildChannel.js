@@ -230,7 +230,7 @@ class GuildChannel extends Channel {
    */
   lockPermissions() {
     if (!this.parent) return Promise.reject(new Error('GUILD_CHANNEL_ORPHAN'));
-    const permissionOverwrites = this.parent.permissionOverwrites.map(overwrite => overwrite.toJSON());
+    const permissionOverwrites = this.parent.permissionOverwrites.cache.map(overwrite => overwrite.toJSON());
     return this.edit({ permissionOverwrites });
   }
 
@@ -310,10 +310,14 @@ class GuildChannel extends Channel {
       if (data.parentID) {
         const newParent = this.guild.channels.resolve(data.parentID);
         if (newParent?.type === 'category') {
-          permission_overwrites = newParent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+          permission_overwrites = newParent.permissionOverwrites.cache.map(o =>
+            PermissionOverwrites.resolve(o, this.guild),
+          );
         }
       } else if (this.parent) {
-        permission_overwrites = this.parent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+        permission_overwrites = this.parent.permissionOverwrites.cache.map(o =>
+          PermissionOverwrites.resolve(o, this.guild),
+        );
       }
     }
 
