@@ -97,6 +97,12 @@ client.on('ready', async () => {
   await globalPermissionsManager?.set({
     fullPermissions: [{ id: globalCommandID, permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] }],
   });
+  // @ts-expect-error
+  await globalPermissionsManager?.set({
+    command: globalCommandID,
+    guild: testGuildID,
+    fullPermissions: [{ id: globalCommandID, permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] }],
+  });
 
   // @ts-expect-error
   await globalPermissionsManager?.add({
@@ -159,9 +165,9 @@ client.on('ready', async () => {
     roles: [testGuildID],
     users: [testUserID],
   });
+  // @ts-expect-error
   await guildPermissionsManager?.set({
     command: globalCommandID,
-    // @ts-expect-error
     guild: testGuildID,
     permissions: [{ type: 'ROLE', id: testGuildID, permission: true }],
   });
@@ -183,6 +189,11 @@ client.on('ready', async () => {
   await guildPermissionsManager?.remove({ roles: [testGuildID], users: [testUserID] });
   // @ts-expect-error
   await guildPermissionsManager?.set({ permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] });
+  // @ts-expect-error
+  await guildPermissionsManager?.set({
+    command: globalCommandID,
+    fullPermissions: [{ id: globalCommandID, permissions: [{ type: 'ROLE', id: testGuildID, permission: true }] }],
+  });
 
   // Permissions from cached global ApplicationCommand
   await globalCommand?.permissions.add({

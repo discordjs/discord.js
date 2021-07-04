@@ -312,6 +312,7 @@ declare module 'discord.js' {
     public permissions: ApplicationCommandPermissionsManager<
       PermissionsFetchType,
       PermissionsFetchType,
+      PermissionsFetchType,
       Guild | null,
       Snowflake
     >;
@@ -2375,6 +2376,7 @@ declare module 'discord.js' {
     public permissions: ApplicationCommandPermissionsManager<
       { command?: ApplicationCommandResolvable } & PermissionsOptionsExtras,
       { command: ApplicationCommandResolvable } & PermissionsOptionsExtras,
+      PermissionsOptionsExtras,
       PermissionsGuildType,
       null
     >;
@@ -2415,6 +2417,7 @@ declare module 'discord.js' {
   export class ApplicationCommandPermissionsManager<
     BaseOptions,
     FetchSingleOptions,
+    FullPermissionsOptions,
     GuildType,
     CommandIDType,
   > extends BaseManager {
@@ -2445,7 +2448,7 @@ declare module 'discord.js' {
       options: FetchSingleOptions & { permissions: ApplicationCommandPermissionData[] },
     ): Promise<ApplicationCommandPermissions[]>;
     public set(
-      options: BaseOptions & {
+      options: FullPermissionsOptions & {
         fullPermissions: GuildApplicationCommandPermissionData[];
       },
     ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
@@ -2668,7 +2671,11 @@ declare module 'discord.js' {
     public delete(channel: StageChannel | Snowflake): Promise<void>;
   }
 
-  export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
+  export class ThreadManager<AllowedThreadType> extends CachedManager<
+    Snowflake,
+    ThreadChannel,
+    ThreadChannelResolvable
+  > {
     constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<any>);
     public channel: TextChannel | NewsChannel;
     public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
