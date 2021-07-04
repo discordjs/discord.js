@@ -25,7 +25,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 
-**Node.js 14.0.0 or newer is required.**  
+**Node.js 10.4+ or newer is required.**  
 
 ```sh-session
 npm install discord.js
@@ -42,20 +42,31 @@ npm install discord.js
 ## Example usage
 
 ```js
-const { Client, Intents } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const Discord = require("eris");
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+var bot = new Discord("Bot TOKEN");
+// Replace TOKEN with your bot account's token
+
+bot.on("ready", () => { // When the bot is ready
+    console.log("Ready!"); // Log "Ready!"
 });
 
-client.on('messageCreate', message => {
-  if (message.content === 'ping') {
-    message.channel.send('pong');
-  }
+bot.on("error", (err) => {
+  console.error(err); // or your preferred logger
 });
 
-client.login('token');
+bot.on("messageCreate", (msg) => { // When a message is created
+    if(msg.content === "!ping") { // If the message content is "!ping"
+        bot.createMessage(msg.channel.id, "Pong!");
+        // Send a message in the same channel with "Pong!"
+    } else if(msg.content === "!pong") { // Otherwise, if the message is "!pong"
+        bot.createMessage(msg.channel.id, "Ping!");
+        // Respond with "Ping!"
+    }
+});
+
+bot.connect(); // Get the bot to connect to Discord
+
 ```
 
 ## Links
