@@ -425,7 +425,7 @@ class Client extends BaseClient {
     if (invalidScope) {
       throw new TypeError('INVALID_ELEMENT', 'Array', 'scopes', invalidScope);
     }
-    query.set('scope', [...scopes].join(' '));
+    query.set('scope', scopes.join(' '));
 
     if (options.permissions && options.scopes) {
       const permissions = Permissions.resolve(options.permissions);
