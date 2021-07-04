@@ -36,9 +36,9 @@ class MessageManager extends CachedManager {
    * `after` are mutually exclusive. All the parameters are optional.
    * @typedef {Object} ChannelLogsQueryOptions
    * @property {number} [limit=50] Number of messages to acquire
-   * @property {Snowflake} [before] THe message's id to get the messages that were posted before it
-   * @property {Snowflake} [after] THe message's id to get the messages that were posted after it
-   * @property {Snowflake} [around] THe message's id to get the messages that were posted around it
+   * @property {Snowflake} [before] The message's id to get the messages that were posted before it
+   * @property {Snowflake} [after] The message's id to get the messages that were posted after it
+   * @property {Snowflake} [around] The message's id to get the messages that were posted around it
    */
 
   /**
