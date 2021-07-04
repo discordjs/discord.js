@@ -410,15 +410,14 @@ class Client extends BaseClient {
       client_id: this.application.id,
     });
 
-    const scopes = options.scopes;
+    const { scopes } = options;
     if (typeof scopes === 'undefined') {
       throw new TypeError('INVITE_MISSING_SCOPES');
     }
     if (!Array.isArray(scopes)) {
       throw new TypeError('INVALID_TYPE', 'scopes', 'Array of Invite Scopes', true);
     }
-    const requiredScope = scopes.find(scope => scope === 'bot' || scope === 'applications.commands');
-    if (!requiredScope) {
+    if (!scopes.some(scope => ['bot', 'applications.commands'].includes(scope))) {
       throw new TypeError('INVITE_MISSING_SCOPES');
     }
     const invalidScope = scopes.find(scope => !InviteScopes.includes(scope));
