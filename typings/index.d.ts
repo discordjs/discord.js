@@ -510,6 +510,7 @@ declare module 'discord.js' {
   }
 
   export class Options extends null {
+    private constructor();
     public static createDefaultOptions(): ClientOptions;
     public static cacheWithLimits(limits?: Record<string, number>): CacheFactory;
     public static cacheEverything(): CacheFactory;
