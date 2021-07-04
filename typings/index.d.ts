@@ -619,13 +619,14 @@ export class GuildBan extends Base {
 }
 
 export class GuildChannel extends Channel {
-  public constructor(guild: Guild, data?: unknown);
+  public constructor(guild: Guild, data?: unknown, client?: Client);
   private memberPermissions(member: GuildMember): Readonly<Permissions>;
   private rolePermissions(role: Role): Readonly<Permissions>;
 
   public readonly calculatedPosition: number;
   public readonly deletable: boolean;
   public guild: Guild;
+  public guildId: Snowflake;
   public readonly manageable: boolean;
   public readonly members: Collection<Snowflake, GuildMember>;
   public name: string;
@@ -1519,7 +1520,7 @@ export class Sticker extends Base {
 }
 
 export class StoreChannel extends GuildChannel {
-  public constructor(guild: Guild, data?: unknown);
+  public constructor(guild: Guild, data?: unknown, client?: Client);
   public nsfw: boolean;
   public type: 'store';
 }
@@ -1558,7 +1559,7 @@ export class TeamMember extends Base {
 }
 
 export class TextChannel extends TextBasedChannel(GuildChannel) {
-  public constructor(guild: Guild, data?: unknown);
+  public constructor(guild: Guild, data?: unknown, client?: Client);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   public messages: MessageManager;
   public nsfw: boolean;
@@ -1578,13 +1579,14 @@ export class TextChannel extends TextBasedChannel(GuildChannel) {
 }
 
 export class ThreadChannel extends TextBasedChannel(Channel) {
-  public constructor(guild: Guild, data?: object);
+  public constructor(guild: Guild, data?: object, client?: Client);
   public archived: boolean;
   public readonly archivedAt: Date;
   public archiveTimestamp: number;
   public autoArchiveDuration: ThreadAutoArchiveDuration;
   public readonly editable: boolean;
   public guild: Guild;
+  public guildId: Snowflake;
   public readonly guildMembers: Collection<Snowflake, GuildMember>;
   public readonly joinable: boolean;
   public readonly joined: boolean;
@@ -2266,7 +2268,7 @@ export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, 
 
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   public constructor(client: Client, iterable: Iterable<unknown>);
-  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Channel | null>;
+  public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
 }
 
 export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand, {}, Guild> {
@@ -3156,6 +3158,10 @@ export interface FetchBanOptions extends BaseFetchOptions {
 
 export interface FetchBansOptions {
   cache: boolean;
+}
+
+export interface FetchChannelOptions extends BaseFetchOptions {
+  allowUnknownGuild?: boolean;
 }
 
 export interface FetchedThreads {
