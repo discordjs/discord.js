@@ -1291,6 +1291,11 @@ declare module 'discord.js' {
     public welcomeScreen: WelcomeScreen | null;
   }
 
+  export class LimitedCollection<K, V> extends Collection<K, V> {
+    constructor(maxSize?: number, iterable?: Iterable<readonly [K, V]>);
+    public maxSize: number;
+  }
+
   export class Message extends Base {
     constructor(client: Client, data: unknown, channel: TextChannel | DMChannel | NewsChannel | ThreadChannel);
     private patch(data: unknown): Message;
