@@ -58,10 +58,6 @@ import {
   WebhookTypes,
 } from './enums';
 
-export type Awaited<T> = T | PromiseLike<T>;
-
-export const version: string;
-
 //#region Classes
 
 export class Activity {
@@ -108,30 +104,6 @@ export abstract class AnonymousGuild extends BaseGuild {
   public verificationLevel: VerificationLevel;
   public bannerURL(options?: StaticImageURLOptions): string | null;
   public splashURL(options?: StaticImageURLOptions): string | null;
-}
-
-export class MessagePayload {
-  constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
-  public data: unknown | null;
-  public readonly isUser: boolean;
-  public readonly isWebhook: boolean;
-  public readonly isMessage: boolean;
-  public readonly isMessageManager: boolean;
-  public readonly isInteraction: boolean;
-  public files: unknown[] | null;
-  public options: MessageOptions | WebhookMessageOptions;
-  public target: MessageTarget;
-
-  public static create(
-    target: MessageTarget,
-    options: string | MessageOptions | WebhookMessageOptions,
-    extra?: MessageOptions | WebhookMessageOptions,
-  ): MessagePayload;
-  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
-
-  public makeContent(): string | undefined;
-  public resolveData(): this;
-  public resolveFiles(): Promise<this>;
 }
 
 export abstract class Application {
@@ -391,6 +363,17 @@ export class ClientVoiceManager {
   public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
 }
 
+export class Collection<K, V> extends BaseCollection<K, V> {
+  public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
+  public flatMap<T, This>(
+    fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>,
+    thisArg: This,
+  ): Collection<K, T>;
+  public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
+  public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
+  public toJSON(): unknown;
+}
+
 export abstract class Collector<K, V, F extends any[] = []> extends EventEmitter {
   constructor(client: Client, options?: CollectorOptions<[V, ...F]>);
   private _timeout: NodeJS.Timeout | null;
@@ -444,221 +427,6 @@ export class CommandInteraction extends Interaction {
   private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
   private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
 }
-
-export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
-
-export const Constants: {
-  Package: {
-    name: string;
-    version: string;
-    description: string;
-    author: string;
-    license: string;
-    main: PathLike;
-    types: PathLike;
-    homepage: string;
-    keywords: string[];
-    bugs: { url: string };
-    repository: { type: string; url: string };
-    scripts: { [key: string]: string };
-    engines: { [key: string]: string };
-    dependencies: { [key: string]: string };
-    peerDependencies: { [key: string]: string };
-    devDependencies: { [key: string]: string };
-    [key: string]: any;
-  };
-  UserAgent: string | null;
-  Endpoints: {
-    botGateway: string;
-    invite: (root: string, code: string) => string;
-    CDN: (root: string) => {
-      Asset: (name: string) => string;
-      DefaultAvatar: (id: Snowflake | number) => string;
-      Emoji: (emojiId: Snowflake, format: 'png' | 'gif') => string;
-      Avatar: (
-        userId: Snowflake | number,
-        hash: string,
-        format: 'default' | AllowedImageFormat,
-        size: number,
-      ) => string;
-      Banner: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      Icon: (userId: Snowflake | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
-      AppIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      AppAsset: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      GDMIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      Splash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      DiscoverySplash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      TeamIcon: (teamId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-    };
-  };
-  WSCodes: {
-    1000: 'WS_CLOSE_REQUESTED';
-    4004: 'TOKEN_INVALID';
-    4010: 'SHARDING_INVALID';
-    4011: 'SHARDING_REQUIRED';
-  };
-  Events: {
-    RATE_LIMIT: 'rateLimit';
-    INVALID_REQUEST_WARNING: 'invalidRequestWarning';
-    CLIENT_READY: 'ready';
-    APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
-    APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
-    APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate';
-    GUILD_CREATE: 'guildCreate';
-    GUILD_DELETE: 'guildDelete';
-    GUILD_UPDATE: 'guildUpdate';
-    INVITE_CREATE: 'inviteCreate';
-    INVITE_DELETE: 'inviteDelete';
-    GUILD_UNAVAILABLE: 'guildUnavailable';
-    GUILD_MEMBER_ADD: 'guildMemberAdd';
-    GUILD_MEMBER_REMOVE: 'guildMemberRemove';
-    GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
-    GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable';
-    GUILD_MEMBERS_CHUNK: 'guildMembersChunk';
-    GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
-    GUILD_ROLE_CREATE: 'roleCreate';
-    GUILD_ROLE_DELETE: 'roleDelete';
-    GUILD_ROLE_UPDATE: 'roleUpdate';
-    GUILD_EMOJI_CREATE: 'emojiCreate';
-    GUILD_EMOJI_DELETE: 'emojiDelete';
-    GUILD_EMOJI_UPDATE: 'emojiUpdate';
-    GUILD_BAN_ADD: 'guildBanAdd';
-    GUILD_BAN_REMOVE: 'guildBanRemove';
-    CHANNEL_CREATE: 'channelCreate';
-    CHANNEL_DELETE: 'channelDelete';
-    CHANNEL_UPDATE: 'channelUpdate';
-    CHANNEL_PINS_UPDATE: 'channelPinsUpdate';
-    MESSAGE_CREATE: 'messageCreate';
-    MESSAGE_DELETE: 'messageDelete';
-    MESSAGE_UPDATE: 'messageUpdate';
-    MESSAGE_BULK_DELETE: 'messageDeleteBulk';
-    MESSAGE_REACTION_ADD: 'messageReactionAdd';
-    MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
-    MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
-    MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji';
-    THREAD_CREATE: 'threadCreate';
-    THREAD_DELETE: 'threadDelete';
-    THREAD_UPDATE: 'threadUpdate';
-    THREAD_LIST_SYNC: 'threadListSync';
-    THREAD_MEMBER_UPDATE: 'threadMemberUpdate';
-    THREAD_MEMBERS_UPDATE: 'threadMembersUpdate';
-    USER_UPDATE: 'userUpdate';
-    PRESENCE_UPDATE: 'presenceUpdate';
-    VOICE_SERVER_UPDATE: 'voiceServerUpdate';
-    VOICE_STATE_UPDATE: 'voiceStateUpdate';
-    TYPING_START: 'typingStart';
-    WEBHOOKS_UPDATE: 'webhookUpdate';
-    INTERACTION_CREATE: 'interactionCreate';
-    ERROR: 'error';
-    WARN: 'warn';
-    DEBUG: 'debug';
-    SHARD_DISCONNECT: 'shardDisconnect';
-    SHARD_ERROR: 'shardError';
-    SHARD_RECONNECTING: 'shardReconnecting';
-    SHARD_READY: 'shardReady';
-    SHARD_RESUME: 'shardResume';
-    INVALIDATED: 'invalidated';
-    RAW: 'raw';
-    STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
-    STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate';
-    STAGE_INSTANCE_DELETE: 'stageInstanceDelete';
-  };
-  ShardEvents: {
-    CLOSE: 'close';
-    DESTROYED: 'destroyed';
-    INVALID_SESSION: 'invalidSession';
-    READY: 'ready';
-    RESUMED: 'resumed';
-  };
-  PartialTypes: {
-    [K in PartialTypes]: K;
-  };
-  WSEvents: {
-    [K in WSEventType]: K;
-  };
-  Colors: {
-    DEFAULT: 0x000000;
-    WHITE: 0xffffff;
-    AQUA: 0x1abc9c;
-    GREEN: 0x57f287;
-    BLUE: 0x3498db;
-    YELLOW: 0xfee75c;
-    PURPLE: 0x9b59b6;
-    LUMINOUS_VIVID_PINK: 0xe91e63;
-    FUCHSIA: 0xeb459e;
-    GOLD: 0xf1c40f;
-    ORANGE: 0xe67e22;
-    RED: 0xed4245;
-    GREY: 0x95a5a6;
-    NAVY: 0x34495e;
-    DARK_AQUA: 0x11806a;
-    DARK_GREEN: 0x1f8b4c;
-    DARK_BLUE: 0x206694;
-    DARK_PURPLE: 0x71368a;
-    DARK_VIVID_PINK: 0xad1457;
-    DARK_GOLD: 0xc27c0e;
-    DARK_ORANGE: 0xa84300;
-    DARK_RED: 0x992d22;
-    DARK_GREY: 0x979c9f;
-    DARKER_GREY: 0x7f8c8d;
-    LIGHT_GREY: 0xbcc0c0;
-    DARK_NAVY: 0x2c3e50;
-    BLURPLE: 0x5865f2;
-    GREYPLE: 0x99aab5;
-    DARK_BUT_NOT_BLACK: 0x2c2f33;
-    NOT_QUITE_BLACK: 0x23272a;
-  };
-  Status: {
-    READY: 0;
-    CONNECTING: 1;
-    RECONNECTING: 2;
-    IDLE: 3;
-    NEARLY: 4;
-    DISCONNECTED: 5;
-  };
-  OPCodes: {
-    DISPATCH: 0;
-    HEARTBEAT: 1;
-    IDENTIFY: 2;
-    STATUS_UPDATE: 3;
-    VOICE_STATE_UPDATE: 4;
-    VOICE_GUILD_PING: 5;
-    RESUME: 6;
-    RECONNECT: 7;
-    REQUEST_GUILD_MEMBERS: 8;
-    INVALID_SESSION: 9;
-    HELLO: 10;
-    HEARTBEAT_ACK: 11;
-  };
-  APIErrors: APIErrors;
-  ChannelTypes: typeof ChannelTypes;
-  ThreadChannelTypes: ThreadChannelType[];
-  ClientApplicationAssetTypes: {
-    SMALL: 1;
-    BIG: 2;
-  };
-  InviteScopes: InviteScope[];
-  MessageTypes: MessageType[];
-  SystemMessageTypes: SystemMessageType[];
-  ActivityTypes: typeof ActivityTypes;
-  StickerFormatTypes: typeof StickerFormatTypes;
-  OverwriteTypes: typeof OverwriteTypes;
-  ExplicitContentFilterLevels: typeof ExplicitContentFilterLevels;
-  DefaultMessageNotificationLevels: typeof DefaultMessageNotificationLevels;
-  VerificationLevels: typeof VerificationLevels;
-  MembershipStates: typeof MembershipStates;
-  ApplicationCommandOptionTypes: typeof ApplicationCommandOptionTypes;
-  ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
-  InteractionTypes: typeof InteractionTypes;
-  InteractionResponseTypes: typeof InteractionResponseTypes;
-  MessageComponentTypes: typeof MessageComponentTypes;
-  MessageButtonStyles: typeof MessageButtonStyles;
-  MFALevels: typeof MFALevels;
-  NSFWLevels: typeof NSFWLevels;
-  PrivacyLevels: typeof PrivacyLevels;
-  WebhookTypes: typeof WebhookTypes;
-  PremiumTiers: typeof PremiumTiers;
-};
 
 export class DataResolver extends null {
   private constructor();
@@ -1386,6 +1154,30 @@ export class MessageMentions {
   public static USERS_PATTERN: RegExp;
 }
 
+export class MessagePayload {
+  constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+  public data: unknown | null;
+  public readonly isUser: boolean;
+  public readonly isWebhook: boolean;
+  public readonly isMessage: boolean;
+  public readonly isMessageManager: boolean;
+  public readonly isInteraction: boolean;
+  public files: unknown[] | null;
+  public options: MessageOptions | WebhookMessageOptions;
+  public target: MessageTarget;
+
+  public static create(
+    target: MessageTarget,
+    options: string | MessageOptions | WebhookMessageOptions,
+    extra?: MessageOptions | WebhookMessageOptions,
+  ): MessagePayload;
+  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
+
+  public makeContent(): string | undefined;
+  public resolveData(): this;
+  public resolveFiles(): Promise<this>;
+}
+
 export class MessageReaction {
   constructor(client: Client, data: unknown, message: Message);
   private _emoji: GuildEmoji | ReactionEmoji;
@@ -1716,6 +1508,20 @@ export class StageInstance extends Base {
   public setTopic(topic: string): Promise<StageInstance>;
   public readonly createdTimestamp: number;
   public readonly createdAt: Date;
+}
+
+export class Sticker extends Base {
+  constructor(client: Client, data: unknown);
+  public asset: string;
+  public readonly createdTimestamp: number;
+  public readonly createdAt: Date;
+  public description: string;
+  public format: StickerFormatType;
+  public id: Snowflake;
+  public name: string;
+  public packId: Snowflake;
+  public tags: string[];
+  public readonly url: string;
 }
 
 export class StoreChannel extends GuildChannel {
@@ -2145,20 +1951,222 @@ export class WelcomeScreen extends Base {
 
 //#endregion
 
-//#region Collections
+//#region Constants
 
-export class Collection<K, V> extends BaseCollection<K, V> {
-  public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
-  public flatMap<T, This>(
-    fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>,
-    thisArg: This,
-  ): Collection<K, T>;
-  public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
-  public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
-  public toJSON(): unknown;
-}
+export const Constants: {
+  Package: {
+    name: string;
+    version: string;
+    description: string;
+    author: string;
+    license: string;
+    main: PathLike;
+    types: PathLike;
+    homepage: string;
+    keywords: string[];
+    bugs: { url: string };
+    repository: { type: string; url: string };
+    scripts: { [key: string]: string };
+    engines: { [key: string]: string };
+    dependencies: { [key: string]: string };
+    peerDependencies: { [key: string]: string };
+    devDependencies: { [key: string]: string };
+    [key: string]: any;
+  };
+  UserAgent: string | null;
+  Endpoints: {
+    botGateway: string;
+    invite: (root: string, code: string) => string;
+    CDN: (root: string) => {
+      Asset: (name: string) => string;
+      DefaultAvatar: (id: Snowflake | number) => string;
+      Emoji: (emojiId: Snowflake, format: 'png' | 'gif') => string;
+      Avatar: (
+        userId: Snowflake | number,
+        hash: string,
+        format: 'default' | AllowedImageFormat,
+        size: number,
+      ) => string;
+      Banner: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+      Icon: (userId: Snowflake | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
+      AppIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+      AppAsset: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+      GDMIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+      Splash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+      DiscoverySplash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+      TeamIcon: (teamId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+    };
+  };
+  WSCodes: {
+    1000: 'WS_CLOSE_REQUESTED';
+    4004: 'TOKEN_INVALID';
+    4010: 'SHARDING_INVALID';
+    4011: 'SHARDING_REQUIRED';
+  };
+  Events: {
+    RATE_LIMIT: 'rateLimit';
+    INVALID_REQUEST_WARNING: 'invalidRequestWarning';
+    CLIENT_READY: 'ready';
+    APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
+    APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
+    APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate';
+    GUILD_CREATE: 'guildCreate';
+    GUILD_DELETE: 'guildDelete';
+    GUILD_UPDATE: 'guildUpdate';
+    INVITE_CREATE: 'inviteCreate';
+    INVITE_DELETE: 'inviteDelete';
+    GUILD_UNAVAILABLE: 'guildUnavailable';
+    GUILD_MEMBER_ADD: 'guildMemberAdd';
+    GUILD_MEMBER_REMOVE: 'guildMemberRemove';
+    GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
+    GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable';
+    GUILD_MEMBERS_CHUNK: 'guildMembersChunk';
+    GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
+    GUILD_ROLE_CREATE: 'roleCreate';
+    GUILD_ROLE_DELETE: 'roleDelete';
+    GUILD_ROLE_UPDATE: 'roleUpdate';
+    GUILD_EMOJI_CREATE: 'emojiCreate';
+    GUILD_EMOJI_DELETE: 'emojiDelete';
+    GUILD_EMOJI_UPDATE: 'emojiUpdate';
+    GUILD_BAN_ADD: 'guildBanAdd';
+    GUILD_BAN_REMOVE: 'guildBanRemove';
+    CHANNEL_CREATE: 'channelCreate';
+    CHANNEL_DELETE: 'channelDelete';
+    CHANNEL_UPDATE: 'channelUpdate';
+    CHANNEL_PINS_UPDATE: 'channelPinsUpdate';
+    MESSAGE_CREATE: 'messageCreate';
+    MESSAGE_DELETE: 'messageDelete';
+    MESSAGE_UPDATE: 'messageUpdate';
+    MESSAGE_BULK_DELETE: 'messageDeleteBulk';
+    MESSAGE_REACTION_ADD: 'messageReactionAdd';
+    MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
+    MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
+    MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji';
+    THREAD_CREATE: 'threadCreate';
+    THREAD_DELETE: 'threadDelete';
+    THREAD_UPDATE: 'threadUpdate';
+    THREAD_LIST_SYNC: 'threadListSync';
+    THREAD_MEMBER_UPDATE: 'threadMemberUpdate';
+    THREAD_MEMBERS_UPDATE: 'threadMembersUpdate';
+    USER_UPDATE: 'userUpdate';
+    PRESENCE_UPDATE: 'presenceUpdate';
+    VOICE_SERVER_UPDATE: 'voiceServerUpdate';
+    VOICE_STATE_UPDATE: 'voiceStateUpdate';
+    TYPING_START: 'typingStart';
+    WEBHOOKS_UPDATE: 'webhookUpdate';
+    INTERACTION_CREATE: 'interactionCreate';
+    ERROR: 'error';
+    WARN: 'warn';
+    DEBUG: 'debug';
+    SHARD_DISCONNECT: 'shardDisconnect';
+    SHARD_ERROR: 'shardError';
+    SHARD_RECONNECTING: 'shardReconnecting';
+    SHARD_READY: 'shardReady';
+    SHARD_RESUME: 'shardResume';
+    INVALIDATED: 'invalidated';
+    RAW: 'raw';
+    STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
+    STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate';
+    STAGE_INSTANCE_DELETE: 'stageInstanceDelete';
+  };
+  ShardEvents: {
+    CLOSE: 'close';
+    DESTROYED: 'destroyed';
+    INVALID_SESSION: 'invalidSession';
+    READY: 'ready';
+    RESUMED: 'resumed';
+  };
+  PartialTypes: {
+    [K in PartialTypes]: K;
+  };
+  WSEvents: {
+    [K in WSEventType]: K;
+  };
+  Colors: {
+    DEFAULT: 0x000000;
+    WHITE: 0xffffff;
+    AQUA: 0x1abc9c;
+    GREEN: 0x57f287;
+    BLUE: 0x3498db;
+    YELLOW: 0xfee75c;
+    PURPLE: 0x9b59b6;
+    LUMINOUS_VIVID_PINK: 0xe91e63;
+    FUCHSIA: 0xeb459e;
+    GOLD: 0xf1c40f;
+    ORANGE: 0xe67e22;
+    RED: 0xed4245;
+    GREY: 0x95a5a6;
+    NAVY: 0x34495e;
+    DARK_AQUA: 0x11806a;
+    DARK_GREEN: 0x1f8b4c;
+    DARK_BLUE: 0x206694;
+    DARK_PURPLE: 0x71368a;
+    DARK_VIVID_PINK: 0xad1457;
+    DARK_GOLD: 0xc27c0e;
+    DARK_ORANGE: 0xa84300;
+    DARK_RED: 0x992d22;
+    DARK_GREY: 0x979c9f;
+    DARKER_GREY: 0x7f8c8d;
+    LIGHT_GREY: 0xbcc0c0;
+    DARK_NAVY: 0x2c3e50;
+    BLURPLE: 0x5865f2;
+    GREYPLE: 0x99aab5;
+    DARK_BUT_NOT_BLACK: 0x2c2f33;
+    NOT_QUITE_BLACK: 0x23272a;
+  };
+  Status: {
+    READY: 0;
+    CONNECTING: 1;
+    RECONNECTING: 2;
+    IDLE: 3;
+    NEARLY: 4;
+    DISCONNECTED: 5;
+  };
+  OPCodes: {
+    DISPATCH: 0;
+    HEARTBEAT: 1;
+    IDENTIFY: 2;
+    STATUS_UPDATE: 3;
+    VOICE_STATE_UPDATE: 4;
+    VOICE_GUILD_PING: 5;
+    RESUME: 6;
+    RECONNECT: 7;
+    REQUEST_GUILD_MEMBERS: 8;
+    INVALID_SESSION: 9;
+    HELLO: 10;
+    HEARTBEAT_ACK: 11;
+  };
+  APIErrors: APIErrors;
+  ChannelTypes: typeof ChannelTypes;
+  ThreadChannelTypes: ThreadChannelType[];
+  ClientApplicationAssetTypes: {
+    SMALL: 1;
+    BIG: 2;
+  };
+  InviteScopes: InviteScope[];
+  MessageTypes: MessageType[];
+  SystemMessageTypes: SystemMessageType[];
+  ActivityTypes: typeof ActivityTypes;
+  StickerFormatTypes: typeof StickerFormatTypes;
+  OverwriteTypes: typeof OverwriteTypes;
+  ExplicitContentFilterLevels: typeof ExplicitContentFilterLevels;
+  DefaultMessageNotificationLevels: typeof DefaultMessageNotificationLevels;
+  VerificationLevels: typeof VerificationLevels;
+  MembershipStates: typeof MembershipStates;
+  ApplicationCommandOptionTypes: typeof ApplicationCommandOptionTypes;
+  ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
+  InteractionTypes: typeof InteractionTypes;
+  InteractionResponseTypes: typeof InteractionResponseTypes;
+  MessageComponentTypes: typeof MessageComponentTypes;
+  MessageButtonStyles: typeof MessageButtonStyles;
+  MFALevels: typeof MFALevels;
+  NSFWLevels: typeof NSFWLevels;
+  PrivacyLevels: typeof PrivacyLevels;
+  WebhookTypes: typeof WebhookTypes;
+  PremiumTiers: typeof PremiumTiers;
+};
 
-//#endregion
+export const version: string;
 
 //#region Managers
 
@@ -2613,6 +2621,8 @@ export interface AddGuildMemberOptions {
   deaf?: boolean;
 }
 
+export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
+
 export type AllowedThreadTypeForNewsChannel = 'news_thread' | 10;
 
 export type AllowedThreadTypeForTextChannel = 'public_thread' | 'private_thread' | 11 | 12;
@@ -2801,6 +2811,8 @@ export interface AuditLogChange {
   old?: any;
   new?: any;
 }
+
+export type Awaited<T> = T | PromiseLike<T>;
 
 export interface AwaitMessageComponentOptions<T extends MessageComponentInteraction>
   extends Omit<MessageComponentCollectorOptions<T>, 'max' | 'maxComponents' | 'maxUsers'> {}
@@ -4116,20 +4128,6 @@ export interface StaticImageURLOptions {
 export type StageInstanceResolvable = StageInstance | Snowflake;
 
 export type Status = number;
-
-export class Sticker extends Base {
-  constructor(client: Client, data: unknown);
-  public asset: string;
-  public readonly createdTimestamp: number;
-  public readonly createdAt: Date;
-  public description: string;
-  public format: StickerFormatType;
-  public id: Snowflake;
-  public name: string;
-  public packId: Snowflake;
-  public tags: string[];
-  public readonly url: string;
-}
 
 export type StickerFormatType = keyof typeof StickerFormatTypes;
 
