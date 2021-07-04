@@ -32,26 +32,26 @@ class PresenceManager extends CachedManager {
    */
 
   /**
-   * Resolves a PresenceResolvable to a Presence object.
+   * Resolves a {@link PresenceResolvable} to a {@link Presence} object.
    * @param {PresenceResolvable} presence The presence resolvable to resolve
    * @returns {?Presence}
    */
   resolve(presence) {
     const presenceResolvable = super.resolve(presence);
     if (presenceResolvable) return presenceResolvable;
-    const UserResolvable = this.client.users.resolveID(presence);
+    const UserResolvable = this.client.users.resolveId(presence);
     return super.resolve(UserResolvable);
   }
 
   /**
-   * Resolves a PresenceResolvable to a Presence ID string.
+   * Resolves a {@link PresenceResolvable} to a {@link Presence} id.
    * @param {PresenceResolvable} presence The presence resolvable to resolve
    * @returns {?Snowflake}
    */
-  resolveID(presence) {
-    const presenceResolvable = super.resolveID(presence);
+  resolveId(presence) {
+    const presenceResolvable = super.resolveId(presence);
     if (presenceResolvable) return presenceResolvable;
-    const userResolvable = this.client.users.resolveID(presence);
+    const userResolvable = this.client.users.resolveId(presence);
     return this.cache.has(userResolvable) ? userResolvable : null;
   }
 }

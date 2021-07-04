@@ -57,10 +57,10 @@ class TextChannel extends GuildChannel {
 
     if ('last_message_id' in data) {
       /**
-       * The ID of the last message sent in this channel, if one was sent
+       * The last message id sent in the channel, if one was sent
        * @type {?Snowflake}
        */
-      this.lastMessageID = data.last_message_id;
+      this.lastMessageId = data.last_message_id;
     }
 
     if ('rate_limit_per_user' in data) {

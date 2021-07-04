@@ -19,7 +19,7 @@ class VoiceState extends Base {
      */
     this.guild = guild;
     /**
-     * The ID of the member of this voice state
+     * The id of the member of this voice state
      * @type {Snowflake}
      */
     this.id = data.user_id;
@@ -53,20 +53,20 @@ class VoiceState extends Base {
      */
     this.selfVideo = data.self_video ?? null;
     /**
-     * The session ID of this member's connection
+     * The session id for this member's connection
      * @type {?string}
      */
-    this.sessionID = data.session_id ?? null;
+    this.sessionId = data.session_id ?? null;
     /**
      * Whether this member is streaming using "Go Live"
      * @type {boolean}
      */
     this.streaming = data.self_stream ?? false;
     /**
-     * The ID of the voice or stage channel that this member is in
+     * The {@link VoiceChannel} or {@link StageChannel} id the member is in
      * @type {?Snowflake}
      */
-    this.channelID = data.channel_id ?? null;
+    this.channelId = data.channel_id ?? null;
     /**
      * Whether this member is suppressed from speaking. This property is specific to stage channels only.
      * @type {boolean}
@@ -97,7 +97,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get channel() {
-    return this.guild.channels.cache.get(this.channelID) ?? null;
+    return this.guild.channels.cache.get(this.channelId) ?? null;
   }
 
   /**
@@ -177,7 +177,7 @@ class VoiceState extends Base {
 
     await this.client.api.guilds(this.guild.id, 'voice-states', '@me').patch({
       data: {
-        channel_id: this.channelID,
+        channel_id: this.channelId,
         request_to_speak_timestamp: request ? new Date().toISOString() : null,
       },
     });
@@ -209,7 +209,7 @@ class VoiceState extends Base {
 
     await this.client.api.guilds(this.guild.id, 'voice-states', target).patch({
       data: {
-        channel_id: this.channelID,
+        channel_id: this.channelId,
         suppress: suppressed,
       },
     });
@@ -222,8 +222,8 @@ class VoiceState extends Base {
       serverMute: true,
       selfDeaf: true,
       selfMute: true,
-      sessionID: true,
-      channelID: 'channel',
+      sessionId: true,
+      channelId: 'channel',
     });
   }
 }

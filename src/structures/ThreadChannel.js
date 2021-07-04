@@ -52,10 +52,10 @@ class ThreadChannel extends Channel {
 
     if ('parent_id' in data) {
       /**
-       * The ID of the parent channel of this thread
+       * The id of the parent channel of this thread
        * @type {Snowflake}
        */
-      this.parentID = data.parent_id;
+      this.parentId = data.parent_id;
     }
 
     if ('thread_metadata' in data) {
@@ -91,15 +91,15 @@ class ThreadChannel extends Channel {
        * The id of the member who created this thread
        * @type {?Snowflake}
        */
-      this.ownerID = data.owner_id;
+      this.ownerId = data.owner_id;
     }
 
     if ('last_message_id' in data) {
       /**
-       * The ID of the last message sent in this thread, if one was sent
+       * The last message id sent in this thread, if one was sent
        * @type {?Snowflake}
        */
-      this.lastMessageID = data.last_message_id;
+      this.lastMessageId = data.last_message_id;
     }
 
     if ('last_pin_timestamp' in data) {
@@ -167,7 +167,7 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get parent() {
-    return this.guild.channels.resolve(this.parentID);
+    return this.guild.channels.resolve(this.parentId);
   }
 
   /**
@@ -321,7 +321,7 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get editable() {
-    return (this.ownerID === this.client.user.id && (this.type !== 'private_thread' || this.joined)) || this.manageable;
+    return (this.ownerId === this.client.user.id && (this.type !== 'private_thread' || this.joined)) || this.manageable;
   }
 
   /**

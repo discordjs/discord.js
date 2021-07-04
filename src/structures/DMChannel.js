@@ -38,10 +38,10 @@ class DMChannel extends Channel {
     }
 
     /**
-     * The ID of the last message in the channel, if one was sent
+     * The channel's last message id, if one was sent
      * @type {?Snowflake}
      */
-    this.lastMessageID = data.last_message_id;
+    this.lastMessageId = data.last_message_id;
 
     /**
      * The timestamp when the last pinned message was pinned, if there was one
@@ -56,7 +56,7 @@ class DMChannel extends Channel {
    * @readonly
    */
   get partial() {
-    return typeof this.lastMessageID === 'undefined';
+    return typeof this.lastMessageId === 'undefined';
   }
 
   /**

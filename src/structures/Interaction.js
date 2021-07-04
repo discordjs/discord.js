@@ -13,19 +13,19 @@ class Interaction extends Base {
     super(client);
 
     /**
-     * The type of this interaction
+     * The interaction's type
      * @type {InteractionType}
      */
     this.type = InteractionTypes[data.type];
 
     /**
-     * The ID of this interaction
+     * The interaction's id
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The token of this interaction
+     * The interaction's token
      * @type {string}
      * @name Interaction#token
      * @readonly
@@ -33,22 +33,22 @@ class Interaction extends Base {
     Object.defineProperty(this, 'token', { value: data.token });
 
     /**
-     * The ID of the application
+     * The application's id
      * @type {Snowflake}
      */
-    this.applicationID = data.application_id;
+    this.applicationId = data.application_id;
 
     /**
-     * The ID of the channel this interaction was sent in
+     * The id of the channel this interaction was sent in
      * @type {?Snowflake}
      */
-    this.channelID = data.channel_id ?? null;
+    this.channelId = data.channel_id ?? null;
 
     /**
-     * The ID of the guild this interaction was sent in
+     * The id of the guild this interaction was sent in
      * @type {?Snowflake}
      */
-    this.guildID = data.guild_id ?? null;
+    this.guildId = data.guild_id ?? null;
 
     /**
      * The user which sent this interaction
@@ -93,7 +93,7 @@ class Interaction extends Base {
    * @readonly
    */
   get channel() {
-    return this.client.channels.cache.get(this.channelID) ?? null;
+    return this.client.channels.cache.get(this.channelId) ?? null;
   }
 
   /**
@@ -102,7 +102,7 @@ class Interaction extends Base {
    * @readonly
    */
   get guild() {
-    return this.client.guilds.cache.get(this.guildID) ?? null;
+    return this.client.guilds.cache.get(this.guildId) ?? null;
   }
 
   /**
@@ -110,7 +110,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   inGuild() {
-    return Boolean(this.guildID && this.member);
+    return Boolean(this.guildId && this.member);
   }
 
   /**

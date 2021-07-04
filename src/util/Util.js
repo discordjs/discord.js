@@ -277,8 +277,8 @@ class Util extends null {
 
   /**
    * Parses emoji info out of a string. The string must be one of:
-   * * A UTF-8 emoji (no ID)
-   * * A URL-encoded UTF-8 emoji (no ID)
+   * * A UTF-8 emoji (no id)
+   * * A URL-encoded UTF-8 emoji (no id)
    * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
    * @param {string} text Emoji string to parse
    * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
@@ -469,7 +469,7 @@ class Util extends null {
   }
 
   /**
-   * Sorts by Discord's position and ID.
+   * Sorts by Discord's position and id.
    * @param  {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
@@ -539,7 +539,7 @@ class Util extends null {
    * @returns {Snowflake}
    * @private
    */
-  static binaryToID(num) {
+  static binaryToId(num) {
     let dec = '';
 
     while (num.length > 50) {

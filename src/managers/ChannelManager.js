@@ -66,8 +66,8 @@ class ChannelManager extends CachedManager {
    */
 
   /**
-   * Resolves a ChannelResolvable to a channel ID string.
-   * @method resolveID
+   * Resolves a ChannelResolvable to a channel id string.
+   * @method resolveId
    * @memberof ChannelManager
    * @instance
    * @param {ChannelResolvable} channel The channel resolvable to resolve
@@ -76,7 +76,7 @@ class ChannelManager extends CachedManager {
 
   /**
    * Obtains a channel from Discord, or the channel cache if it's already available.
-   * @param {Snowflake} id ID of the channel
+   * @param {Snowflake} id The channel's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Channel>}
    * @example

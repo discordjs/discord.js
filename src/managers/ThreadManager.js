@@ -42,7 +42,7 @@ class ThreadManager extends CachedManager {
    */
 
   /**
-   * Resolves a ThreadChannelResolvable to a Thread Channel object.
+   * Resolves a {@link ThreadChannelResolvable} to a {@link ThreadChannel} object.
    * @method resolve
    * @memberof ThreadManager
    * @instance
@@ -51,8 +51,8 @@ class ThreadManager extends CachedManager {
    */
 
   /**
-   * Resolves a ThreadChannelResolvable to a thread channel ID string.
-   * @method resolveID
+   * Resolves a {@link ThreadChannelResolvable} to a {@link ThreadChannel} id.
+   * @method resolveId
    * @memberof ThreadManager
    * @instance
    * @param {ThreadChannelResolvable} thread The ThreadChannel resolvable to resolve
@@ -116,9 +116,9 @@ class ThreadManager extends CachedManager {
     }
     let resolvedType = this.channel.type === 'news' ? ChannelTypes.NEWS_THREAD : ChannelTypes.PUBLIC_THREAD;
     if (startMessage) {
-      const startMessageID = this.channel.messages.resolveID(startMessage);
-      if (!startMessageID) throw new TypeError('INVALID_TYPE', 'startMessage', 'MessageResolvable');
-      path = path.messages(startMessageID);
+      const startMessageId = this.channel.messages.resolveId(startMessage);
+      if (!startMessageId) throw new TypeError('INVALID_TYPE', 'startMessage', 'MessageResolvable');
+      path = path.messages(startMessageId);
     } else if (this.channel.type !== 'news') {
       resolvedType = typeof type === 'string' ? ChannelTypes[type.toUpperCase()] : type ?? resolvedType;
     }
@@ -157,7 +157,7 @@ class ThreadManager extends CachedManager {
    */
   fetch(options, { cache = true, force = false } = {}) {
     if (!options) return this.fetchActive(cache);
-    const channel = this.client.channels.resolveID(options);
+    const channel = this.client.channels.resolveId(options);
     if (channel) return this.client.channels.fetch(channel, cache, force);
     if (options.archived) {
       return this.fetchArchived(options.archived, cache);
@@ -206,7 +206,7 @@ class ThreadManager extends CachedManager {
     let id;
     if (typeof before !== 'undefined') {
       if (before instanceof ThreadChannel || /^\d{16,19}$/.test(String(before))) {
-        id = this.resolveID(before);
+        id = this.resolveId(before);
         timestamp = this.resolve(before)?.archivedAt?.toISOString();
       } else {
         try {
