@@ -363,13 +363,6 @@ export class ClientVoiceManager {
 }
 
 export class Collection<K, V> extends BaseCollection<K, V> {
-  public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
-  public flatMap<T, This>(
-    fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>,
-    thisArg: This,
-  ): Collection<K, T>;
-  public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
-  public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
   public toJSON(): unknown;
 }
 
