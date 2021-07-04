@@ -31,7 +31,6 @@ import {
   Snowflake as APISnowflake,
 } from 'discord-api-types/v8';
 import { EventEmitter } from 'events';
-import { PathLike } from 'fs';
 import { Stream } from 'stream';
 import * as WebSocket from 'ws';
 import {
@@ -1945,8 +1944,8 @@ export const Constants: {
     description: string;
     author: string;
     license: string;
-    main: PathLike;
-    types: PathLike;
+    main: string;
+    types: string;
     homepage: string;
     keywords: string[];
     bugs: { url: string };
