@@ -132,6 +132,8 @@ const Messages = {
   INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
   INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
 
+  INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
+
   NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,
 };
 

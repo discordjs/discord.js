@@ -375,10 +375,10 @@ class Client extends BaseClient {
   /**
    * Options for {@link Client#generateInvite}.
    * @typedef {Object} InviteGenerationOptions
+   * @property {InviteScope[]} scopes Scopes that should be requested
    * @property {PermissionResolvable} [permissions] Permissions to request
    * @property {GuildResolvable} [guild] Guild to preselect
    * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
-   * @property {InviteScope[]} [additionalScopes] Whether any additional scopes should be requested
    */
 
   /**
@@ -387,11 +387,17 @@ class Client extends BaseClient {
    * @returns {string}
    * @example
    * const link = client.generateInvite({
+   *   scopes: ['applications.commands'],
+   * });
+   * console.log(`Generated application invite link: ${link}`);
+   * @example
+   * const link = client.generateInvite({
    *   permissions: [
    *     Permissions.FLAGS.SEND_MESSAGES,
    *     Permissions.FLAGS.MANAGE_GUILD,
    *     Permissions.FLAGS.MENTION_EVERYONE,
    *   ],
+   *   scopes: ['bot'],
    * });
    * console.log(`Generated bot invite link: ${link}`);
    */
@@ -401,8 +407,23 @@ class Client extends BaseClient {
 
     const query = new URLSearchParams({
       client_id: this.application.id,
-      scope: 'bot',
     });
+
+    const { scopes } = options;
+    if (typeof scopes === 'undefined') {
+      throw new TypeError('INVITE_MISSING_SCOPES');
+    }
+    if (!Array.isArray(scopes)) {
+      throw new TypeError('INVALID_TYPE', 'scopes', 'Array of Invite Scopes', true);
+    }
+    if (!scopes.some(scope => ['bot', 'applications.commands'].includes(scope))) {
+      throw new TypeError('INVITE_MISSING_SCOPES');
+    }
+    const invalidScope = scopes.find(scope => !InviteScopes.includes(scope));
+    if (invalidScope) {
+      throw new TypeError('INVALID_ELEMENT', 'Array', 'scopes', invalidScope);
+    }
+    query.set('scope', scopes.join(' '));
 
     if (options.permissions) {
       const permissions = Permissions.resolve(options.permissions);
@@ -417,18 +438,6 @@ class Client extends BaseClient {
       const guildId = this.guilds.resolveId(options.guild);
       if (!guildId) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
       query.set('guild_id', guildId);
-    }
-
-    if (options.additionalScopes) {
-      const scopes = options.additionalScopes;
-      if (!Array.isArray(scopes)) {
-        throw new TypeError('INVALID_TYPE', 'additionalScopes', 'Array of Invite Scopes', true);
-      }
-      const invalidScope = scopes.find(scope => !InviteScopes.includes(scope));
-      if (invalidScope) {
-        throw new TypeError('INVALID_ELEMENT', 'Array', 'additionalScopes', invalidScope);
-      }
-      query.set('scope', ['bot', ...scopes].join(' '));
     }
 
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;

@@ -3696,7 +3696,7 @@ declare module 'discord.js' {
     permissions?: PermissionResolvable;
     guild?: GuildResolvable;
     disableGuildSelect?: boolean;
-    additionalScopes?: InviteScope[];
+    scopes: InviteScope[];
   }
 
   interface CreateInviteOptions {
