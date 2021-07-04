@@ -426,7 +426,7 @@ class Client extends BaseClient {
     }
     query.set('scope', scopes.join(' '));
 
-    if (options.permissions && options.scopes) {
+    if (options.permissions) {
       const permissions = Permissions.resolve(options.permissions);
       if (permissions) query.set('permissions', permissions);
     }
