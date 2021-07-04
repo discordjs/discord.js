@@ -814,7 +814,7 @@ export class Intents extends BitField<IntentsString> {
 export class Interaction extends Base {
   public constructor(client: Client, data: unknown);
   public applicationId: Snowflake;
-  public readonly channel: Channel | null;
+  public readonly channel: Channel | PartialDMChannel | null;
   public channelId: Snowflake | null;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -3911,7 +3911,7 @@ export type Partialize<T, O extends string> = {
   [K in keyof Omit<
     T,
     'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-  >]: T[K] extends (...args: any) => void ? T[K] : T[K] | null;
+  >]: T[K] extends (...args: unknown[]) => void ? T[K] : T[K] | null;
 };
 
 export interface PartialDMChannel
