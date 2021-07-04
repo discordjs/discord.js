@@ -154,7 +154,7 @@ export class ApplicationFlags extends BitField<ApplicationFlagsString> {
 export class Base {
   public constructor(client: Client);
   public readonly client: Client;
-  public toJSON(...props: { [key: string]: boolean | string }[]): unknown;
+  public toJSON(...props: Record<string, boolean | string>[]): unknown;
   public valueOf(): string;
 }
 
@@ -176,7 +176,7 @@ export class BaseClient extends EventEmitter {
   public setInterval(fn: (...args: any[]) => void, delay: number, ...args: any[]): NodeJS.Timeout;
   public setTimeout(fn: (...args: any[]) => void, delay: number, ...args: any[]): NodeJS.Timeout;
   public setImmediate(fn: (...args: any[]) => void, ...args: any[]): NodeJS.Immediate;
-  public toJSON(...props: { [key: string]: boolean | string }[]): unknown;
+  public toJSON(...props: Record<string, boolean | string>[]): unknown;
 }
 
 export abstract class BaseGuild extends Base {
@@ -1697,7 +1697,7 @@ export class Util extends null {
   public static escapeSpoiler(text: string): string;
   public static cleanCodeBlockContent(text: string): string;
   public static fetchRecommendedShards(token: string, guildsPerShard?: number): Promise<number>;
-  public static flatten(obj: unknown, ...props: { [key: string]: boolean | string }[]): unknown;
+  public static flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
   public static idToBinary(num: Snowflake): string;
   public static makeError(obj: MakeErrorOptions): Error;
   public static makePlainError(err: Error): MakeErrorOptions;
@@ -1950,11 +1950,11 @@ export const Constants: {
     keywords: string[];
     bugs: { url: string };
     repository: { type: string; url: string };
-    scripts: { [key: string]: string };
-    engines: { [key: string]: string };
-    dependencies: { [key: string]: string };
-    peerDependencies: { [key: string]: string };
-    devDependencies: { [key: string]: string };
+    scripts: Record<string, string>;
+    engines: Record<string, string>;
+    dependencies: Record<string, string>;
+    peerDependencies: Record<string, string>;
+    devDependencies: Record<string, string>;
     [key: string]: any;
   };
   UserAgent: string;
