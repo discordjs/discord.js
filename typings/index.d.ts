@@ -4480,6 +4480,7 @@ declare module 'discord.js' {
   //#endregion
 
   //#region voice
+
   /**
    * @internal Use `DiscordGatewayAdapterLibraryMethods` from `@discordjs/voice` instead.
    */
@@ -4503,5 +4504,6 @@ declare module 'discord.js' {
   type InternalDiscordGatewayAdapterCreator = (
     methods: InternalDiscordGatewayAdapterLibraryMethods,
   ) => InternalDiscordGatewayAdapterImplementerMethods;
+
   //#endregion
 }
