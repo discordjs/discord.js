@@ -1,3 +1,40 @@
+import {
+  blockQuote,
+  bold,
+  codeBlock,
+  hideLinkEmbed,
+  hyperlink,
+  inlineCode,
+  italic,
+  quote,
+  strikethrough,
+  time,
+  TimestampStyles,
+  TimestampStylesString,
+  underscore,
+} from '@discordjs/builders';
+import BaseCollection from '@discordjs/collection';
+import { ChildProcess } from 'child_process';
+import {
+  APIActionRowComponent,
+  APIInteractionDataResolvedChannel,
+  APIInteractionDataResolvedGuildMember,
+  APIInteractionGuildMember,
+  APIMessage,
+  APIMessageComponent,
+  APIOverwrite,
+  APIPartialEmoji,
+  APIRole,
+  APIUser,
+  GatewayVoiceServerUpdateDispatchData,
+  GatewayVoiceStateUpdateDispatchData,
+  Snowflake as APISnowflake,
+} from 'discord-api-types/v8';
+import { EventEmitter } from 'events';
+import { PathLike } from 'fs';
+import { Stream } from 'stream';
+import * as WebSocket from 'ws';
+
 declare enum ActivityTypes {
   PLAYING = 0,
   STREAMING = 1,
@@ -151,43 +188,6 @@ declare enum WebhookTypes {
 }
 
 type Awaited<T> = T | PromiseLike<T>;
-
-import {
-  blockQuote,
-  bold,
-  codeBlock,
-  hideLinkEmbed,
-  hyperlink,
-  inlineCode,
-  italic,
-  quote,
-  strikethrough,
-  time,
-  TimestampStyles,
-  TimestampStylesString,
-  underscore,
-} from '@discordjs/builders';
-import BaseCollection from '@discordjs/collection';
-import { ChildProcess } from 'child_process';
-import {
-  APIActionRowComponent,
-  APIInteractionDataResolvedChannel,
-  APIInteractionDataResolvedGuildMember,
-  APIInteractionGuildMember,
-  APIMessage,
-  APIMessageComponent,
-  APIOverwrite,
-  APIPartialEmoji,
-  APIRole,
-  APIUser,
-  GatewayVoiceServerUpdateDispatchData,
-  GatewayVoiceStateUpdateDispatchData,
-  Snowflake as APISnowflake,
-} from 'discord-api-types/v8';
-import { EventEmitter } from 'events';
-import { PathLike } from 'fs';
-import { Stream } from 'stream';
-import * as WebSocket from 'ws';
 
 export const version: string;
 
