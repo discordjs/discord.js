@@ -152,25 +152,6 @@ declare enum WebhookTypes {
 
 type Awaited<T> = T | PromiseLike<T>;
 
-declare module '@discordjs/voice' {
-  import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v8';
-
-  export interface DiscordGatewayAdapterLibraryMethods {
-    onVoiceServerUpdate(data: GatewayVoiceServerUpdateDispatchData): void;
-    onVoiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): void;
-    destroy(): void;
-  }
-
-  export interface DiscordGatewayAdapterImplementerMethods {
-    sendPayload(payload: any): boolean;
-    destroy(): void;
-  }
-
-  export type DiscordGatewayAdapterCreator = (
-    methods: DiscordGatewayAdapterLibraryMethods,
-  ) => DiscordGatewayAdapterImplementerMethods;
-}
-
 declare module 'discord.js' {
   import {
     blockQuote,
@@ -188,7 +169,6 @@ declare module 'discord.js' {
     underscore,
   } from '@discordjs/builders';
   import BaseCollection from '@discordjs/collection';
-  import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '@discordjs/voice';
   import { ChildProcess } from 'child_process';
   import {
     APIActionRowComponent,
@@ -201,6 +181,8 @@ declare module 'discord.js' {
     APIPartialEmoji,
     APIRole,
     APIUser,
+    GatewayVoiceServerUpdateDispatchData,
+    GatewayVoiceStateUpdateDispatchData,
     Snowflake as APISnowflake,
   } from 'discord-api-types/v8';
   import { EventEmitter } from 'events';
@@ -536,7 +518,7 @@ declare module 'discord.js' {
   export class ClientVoiceManager {
     constructor(client: Client);
     public readonly client: Client;
-    public adapters: Map<Snowflake, DiscordGatewayAdapterLibraryMethods>;
+    public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
   }
 
   export abstract class Collector<K, V, F extends any[] = []> extends EventEmitter {
@@ -909,7 +891,7 @@ declare module 'discord.js' {
     public systemChannelFlags: Readonly<SystemChannelFlags>;
     public systemChannelID: Snowflake | null;
     public vanityURLUses: number | null;
-    public readonly voiceAdapterCreator: DiscordGatewayAdapterCreator;
+    public readonly voiceAdapterCreator: InternalDiscordGatewayAdapterCreator;
     public readonly voiceStates: VoiceStateManager;
     public readonly widgetChannel: TextChannel | null;
     public widgetChannelID: Snowflake | null;
@@ -4495,5 +4477,31 @@ declare module 'discord.js' {
     ? {}
     : { [K in keyof T]: Serialized<T[K]> };
 
+  //#endregion
+
+  //#region voice
+  /**
+   * @internal Use `DiscordGatewayAdapterLibraryMethods` from `@discordjs/voice` instead.
+   */
+  interface InternalDiscordGatewayAdapterLibraryMethods {
+    onVoiceServerUpdate(data: GatewayVoiceServerUpdateDispatchData): void;
+    onVoiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): void;
+    destroy(): void;
+  }
+
+  /**
+   * @internal Use `DiscordGatewayAdapterImplementerMethods` from `@discordjs/voice` instead.
+   */
+  interface InternalDiscordGatewayAdapterImplementerMethods {
+    sendPayload(payload: any): boolean;
+    destroy(): void;
+  }
+
+  /**
+   * @internal Use `DiscordGatewayAdapterCreator` from `@discordjs/voice` instead.
+   */
+  type InternalDiscordGatewayAdapterCreator = (
+    methods: InternalDiscordGatewayAdapterLibraryMethods,
+  ) => InternalDiscordGatewayAdapterImplementerMethods;
   //#endregion
 }
