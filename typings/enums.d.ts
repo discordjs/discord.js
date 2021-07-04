@@ -27,33 +27,19 @@ export enum ApplicationCommandPermissionTypes {
   USER = 2,
 }
 
-export enum ChannelType {
-  text = 0,
-  dm = 1,
-  voice = 2,
-  group = 3,
-  category = 4,
-  news = 5,
-  store = 6,
-  unknown = 7,
-  news_thread = 10,
-  public_thread = 11,
-  private_thread = 12,
-  stage = 13,
-}
-
 export enum ChannelTypes {
-  TEXT = 0,
+  GUILD_TEXT = 0,
   DM = 1,
-  VOICE = 2,
-  GROUP = 3,
-  CATEGORY = 4,
-  NEWS = 5,
-  STORE = 6,
-  NEWS_THREAD = 10,
-  PUBLIC_THREAD = 11,
-  PRIVATE_THREAD = 12,
-  STAGE = 13,
+  GUILD_VOICE = 2,
+  GROUP_DM = 3,
+  GUILD_CATEGORY = 4,
+  GUILD_NEWS = 5,
+  GUILD_STORE = 6,
+  UNKNOWN = 7,
+  GUILD_NEWS_THREAD = 10,
+  GUILD_PUBLIC_THREAD = 11,
+  GUILD_PRIVATE_THREAD = 12,
+  GUILD_STAGE_VOICE = 13,
 }
 
 export enum DefaultMessageNotificationLevels {

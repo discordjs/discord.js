@@ -415,31 +415,73 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(
  */
 exports.ActivityTypes = createEnum(['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM', 'COMPETING']);
 
+/**
+ * All available channel types:
+ * * `GUILD_TEXT` - a guild text channel
+ * * `DM` - a DM channel
+ * * `GUILD_VOICE` - a guild voice channel
+ * * `GROUP_DM` - a group DM channel
+ * * `GUILD_CATEGORY` - a guild category channel
+ * * `GUILD_NEWS` - a guild news channel
+ * * `GUILD_STORE` - a guild store channel
+ * * `GUILD_NEWS_THREAD` - a guild news channel's public thread channel
+ * * `GUILD_PUBLIC_THREAD` - a guild text channel's public thread channel
+ * * `GUILD_PRIVATE_THREAD` - a guild text channel's private thread channel
+ * * `GUILD_STAGE_VOICE` - a guild stage voice channel
+ * * `UNKNOWN` - a generic channel of unknown type, could be Channel or GuildChannel
+ * @typedef {string} ChannelType
+ */
 exports.ChannelTypes = createEnum([
-  'TEXT',
+  'GUILD_TEXT',
   'DM',
-  'VOICE',
-  'GROUP',
-  'CATEGORY',
-  'NEWS',
-  // 6
-  'STORE',
+  'GUILD_VOICE',
+  'GROUP_DM',
+  'GUILD_CATEGORY',
+  'GUILD_NEWS',
+  'GUILD_STORE',
   ...Array(3).fill(null),
   // 10
-  'NEWS_THREAD',
-  'PUBLIC_THREAD',
-  'PRIVATE_THREAD',
-  'STAGE',
+  'GUILD_NEWS_THREAD',
+  'GUILD_PUBLIC_THREAD',
+  'GUILD_PRIVATE_THREAD',
+  'GUILD_STAGE_VOICE',
+]);
+
+/**
+ * The types of channels that are text-based. The available types are:
+ * * DM
+ * * GUILD_TEXT
+ * * GUILD_NEWS
+ * * GUILD_NEWS_THREAD
+ * * GUILD_PUBLIC_THREAD
+ * * GUILD_PRIVATE_THREAD
+ * @typedef {string} TextBasedChannelType
+ */
+exports.TextBasedChannelTypes = createEnum([
+  'DM',
+  'GUILD_TEXT',
+  'GUILD_NEWS',
+  'GUILD_NEWS_THREAD',
+  'GUILD_PUBLIC_THREAD',
+  'GUILD_PRIVATE_THREAD',
 ]);
 
 /**
  * The types of channels that are threads. The available types are:
- * * news_thread
- * * public_thread
- * * private_thread
+ * * GUILD_NEWS_THREAD
+ * * GUILD_PUBLIC_THREAD
+ * * GUILD_PRIVATE_THREAD
  * @typedef {string} ThreadChannelType
  */
-exports.ThreadChannelTypes = ['news_thread', 'public_thread', 'private_thread'];
+exports.ThreadChannelTypes = ['GUILD_NEWS_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'];
+
+/**
+ * The types of channels that are voice-based. The available types are:
+ * * GUILD_VOICE
+ * * GUILD_STAGE_VOICE
+ * @typedef {string} VoiceBasedChannelType
+ */
+exports.VoiceBasedChannelTypes = createEnum(['GUILD_VOICE', 'GUILD_STAGE_VOICE']);
 
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
