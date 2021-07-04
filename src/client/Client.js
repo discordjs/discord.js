@@ -10,6 +10,7 @@ const ChannelManager = require('../managers/ChannelManager');
 const GuildManager = require('../managers/GuildManager');
 const UserManager = require('../managers/UserManager');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
+const ClientPresence = require('../structures/ClientPresence');
 const GuildPreview = require('../structures/GuildPreview');
 const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
@@ -17,11 +18,11 @@ const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
 const Collection = require('../util/Collection');
-const { Events, DefaultOptions, InviteScopes } = require('../util/Constants');
+const { Events, InviteScopes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
+const Options = require('../util/Options');
 const Permissions = require('../util/Permissions');
-const Structures = require('../util/Structures');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -35,14 +36,15 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     const data = require('worker_threads').workerData ?? process.env;
+    const defaults = Options.createDefault();
 
-    if (this.options.shards === DefaultOptions.shards) {
+    if (this.options.shards === defaults.shards) {
       if ('SHARDS' in data) {
         this.options.shards = JSON.parse(data.SHARDS);
       }
     }
 
-    if (this.options.shardCount === DefaultOptions.shardCount) {
+    if (this.options.shardCount === defaults.shardCount) {
       if ('SHARD_COUNT' in data) {
         this.options.shardCount = Number(data.SHARD_COUNT);
       } else if (Array.isArray(this.options.shards)) {
@@ -96,20 +98,20 @@ class Client extends BaseClient {
       : null;
 
     /**
-     * All of the {@link User} objects that have been cached at any point, mapped by their IDs
+     * All of the {@link User} objects that have been cached at any point, mapped by their ids
      * @type {UserManager}
      */
     this.users = new UserManager(this);
 
     /**
-     * All of the guilds the client is currently handling, mapped by their IDs -
+     * All of the guilds the client is currently handling, mapped by their ids -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
      * @type {GuildManager}
      */
     this.guilds = new GuildManager(this);
 
     /**
-     * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
+     * All of the {@link Channel}s that the client is currently handling, mapped by their ids -
      * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
      * is a member of. Note that DM channels will not be initially cached, and thus not be present
      * in the Manager without their explicit fetching or use.
@@ -117,7 +119,6 @@ class Client extends BaseClient {
      */
     this.channels = new ChannelManager(this);
 
-    const ClientPresence = Structures.get('ClientPresence');
     /**
      * The presence of the Client
      * @private
@@ -163,7 +164,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * All custom emojis that the client has access to, mapped by their IDs
+   * All custom emojis that the client has access to, mapped by their ids
    * @type {BaseGuildEmojiManager}
    * @readonly
    */
@@ -272,7 +273,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains a webhook from Discord.
-   * @param {Snowflake} id ID of the webhook
+   * @param {Snowflake} id The webhook's id
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
    * @example
@@ -351,7 +352,7 @@ class Client extends BaseClient {
    * @returns {Promise<GuildPreview>}
    */
   fetchGuildPreview(guild) {
-    const id = this.guilds.resolveID(guild);
+    const id = this.guilds.resolveId(guild);
     if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
     return this.api
       .guilds(id)
@@ -365,7 +366,7 @@ class Client extends BaseClient {
    * @returns {Promise<Widget>}
    */
   async fetchWidget(guild) {
-    const id = this.guilds.resolveID(guild);
+    const id = this.guilds.resolveId(guild);
     if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
     const data = await this.api.guilds(id, 'widget.json').get();
     return new Widget(this, data);
@@ -413,9 +414,9 @@ class Client extends BaseClient {
     }
 
     if (options.guild) {
-      const guildID = this.guilds.resolveID(options.guild);
-      if (!guildID) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
-      query.set('guild_id', guildID);
+      const guildId = this.guilds.resolveId(options.guild);
+      if (!guildId) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
+      query.set('guild_id', guildId);
     }
 
     if (options.additionalScopes) {
@@ -468,8 +469,8 @@ class Client extends BaseClient {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shards', "'auto', a number or array of numbers");
     }
     if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
-    if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
+    if (typeof options.makeCache !== 'function') {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'makeCache', 'a function');
     }
     if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'The messageCacheLifetime', 'a number');

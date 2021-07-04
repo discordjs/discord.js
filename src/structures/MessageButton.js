@@ -13,7 +13,7 @@ class MessageButton extends BaseMessageComponent {
   /**
    * @typedef {BaseMessageComponentOptions} MessageButtonOptions
    * @property {string} [label] The text to be displayed on this button
-   * @property {string} [customID] A unique string to be sent in the interaction when clicked
+   * @property {string} [customId] A unique string to be sent in the interaction when clicked
    * @property {MessageButtonStyleResolvable} [style] The style of this button
    * @property {EmojiIdentifierResolvable} [emoji] The emoji to be displayed to the left of the text
    * @property {string} [url] Optional URL for link-style buttons
@@ -40,7 +40,7 @@ class MessageButton extends BaseMessageComponent {
      * A unique string to be sent in the interaction when clicked
      * @type {?string}
      */
-    this.customID = data.custom_id ?? data.customID ?? null;
+    this.customId = data.custom_id ?? data.customId ?? null;
 
     /**
      * The style of this button
@@ -68,12 +68,12 @@ class MessageButton extends BaseMessageComponent {
   }
 
   /**
-   * Sets the custom ID of this button
-   * @param {string} customID A unique string to be sent in the interaction when clicked
+   * Sets the custom id for this button
+   * @param {string} customId A unique string to be sent in the interaction when clicked
    * @returns {MessageButton}
    */
-  setCustomID(customID) {
-    this.customID = Util.verifyString(customID, RangeError, 'BUTTON_CUSTOM_ID');
+  setCustomId(customId) {
+    this.customId = Util.verifyString(customId, RangeError, 'BUTTON_CUSTOM_ID');
     return this;
   }
 
@@ -134,7 +134,7 @@ class MessageButton extends BaseMessageComponent {
    */
   toJSON() {
     return {
-      custom_id: this.customID,
+      custom_id: this.customId,
       disabled: this.disabled,
       emoji: this.emoji,
       label: this.label,

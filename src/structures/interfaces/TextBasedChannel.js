@@ -22,10 +22,10 @@ class TextBasedChannel {
     this.messages = new MessageManager(this);
 
     /**
-     * The ID of the last message in the channel, if one was sent
+     * The channel's last message id, if one was sent
      * @type {?Snowflake}
      */
-    this.lastMessageID = null;
+    this.lastMessageId = null;
 
     /**
      * The timestamp when the last pinned message was pinned, if there was one
@@ -40,7 +40,7 @@ class TextBasedChannel {
    * @readonly
    */
   get lastMessage() {
-    return this.messages.resolve(this.lastMessageID);
+    return this.messages.resolve(this.lastMessageId);
   }
 
   /**
@@ -309,9 +309,9 @@ class TextBasedChannel {
    * @returns {InteractionCollector}
    * @example
    * // Create a button interaction collector
-   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = channel.createMessageComponentInteractionCollector({ filter, time: 15000 });
-   * collector.on('collect', i => console.log(`Collected ${i.customID}`));
+   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * const collector = channel.createMessageComponentCollector({ filter, time: 15000 });
+   * collector.on('collect', i => console.log(`Collected ${i.customId}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageComponentCollector(options = {}) {
@@ -329,9 +329,9 @@ class TextBasedChannel {
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
-   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * channel.awaitMessageComponentInteraction({ filter, time: 15000 })
-   *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
+   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * channel.awaitMessageComponent({ filter, time: 15000 })
+   *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */
   awaitMessageComponent(options = {}) {
@@ -360,23 +360,23 @@ class TextBasedChannel {
    */
   async bulkDelete(messages, filterOld = false) {
     if (Array.isArray(messages) || messages instanceof Collection) {
-      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id ?? m);
+      let messageIds = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id ?? m);
       if (filterOld) {
-        messageIDs = messageIDs.filter(id => Date.now() - SnowflakeUtil.deconstruct(id).timestamp < 1209600000);
+        messageIds = messageIds.filter(id => Date.now() - SnowflakeUtil.deconstruct(id).timestamp < 1209600000);
       }
-      if (messageIDs.length === 0) return new Collection();
-      if (messageIDs.length === 1) {
-        await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
+      if (messageIds.length === 0) return new Collection();
+      if (messageIds.length === 1) {
+        await this.client.api.channels(this.id).messages(messageIds[0]).delete();
         const message = this.client.actions.MessageDelete.getMessage(
           {
-            message_id: messageIDs[0],
+            message_id: messageIds[0],
           },
           this,
         );
         return message ? new Collection([[message.id, message]]) : new Collection();
       }
-      await this.client.api.channels[this.id].messages['bulk-delete'].post({ data: { messages: messageIDs } });
-      return messageIDs.reduce(
+      await this.client.api.channels[this.id].messages['bulk-delete'].post({ data: { messages: messageIds } });
+      return messageIds.reduce(
         (col, id) =>
           col.set(
             id,

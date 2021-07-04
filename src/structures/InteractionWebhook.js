@@ -9,8 +9,8 @@ const Webhook = require('./Webhook');
 class InteractionWebhook {
   /**
    * @param {Client} client The instantiating client
-   * @param {Snowflake} id ID of the application
-   * @param {string} token Token of the interaction
+   * @param {Snowflake} id The application's id
+   * @param {string} token The interaction's token
    */
   constructor(client, id, token) {
     /**

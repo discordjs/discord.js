@@ -49,7 +49,7 @@ class Message extends Base {
 
   _patch(data) {
     /**
-     * The ID of the message
+     * The message's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -142,7 +142,7 @@ class Message extends Base {
     this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
 
     /**
-     * A collection of attachments in the message - e.g. Pictures - mapped by their ID
+     * A collection of attachments in the message - e.g. Pictures - mapped by their ids
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
@@ -200,10 +200,10 @@ class Message extends Base {
     );
 
     /**
-     * ID of the webhook that sent the message, if applicable
+     * The id of the webhook that sent the message, if applicable
      * @type {?Snowflake}
      */
-    this.webhookID = data.webhook_id ?? null;
+    this.webhookId = data.webhook_id ?? null;
 
     /**
      * Supplemental application information for group activities
@@ -212,10 +212,10 @@ class Message extends Base {
     this.groupActivityApplication = data.application ? new ClientApplication(this.client, data.application) : null;
 
     /**
-     * ID of the application of the interaction that sent this message, if any
+     * The id of the application of the interaction that sent this message, if any
      * @type {?Snowflake}
      */
-    this.applicationID = data.application_id ?? null;
+    this.applicationId = data.application_id ?? null;
 
     /**
      * Group activity
@@ -223,7 +223,7 @@ class Message extends Base {
      */
     this.activity = data.activity
       ? {
-          partyID: data.activity.party_id,
+          partyId: data.activity.party_id,
           type: data.activity.type,
         }
       : null;
@@ -241,11 +241,11 @@ class Message extends Base {
     this.flags = new MessageFlags(data.flags).freeze();
 
     /**
-     * Reference data sent in a message that contains IDs identifying the referenced message
+     * Reference data sent in a message that contains ids identifying the referenced message
      * @typedef {Object} MessageReference
-     * @property {string} channelID ID of the channel the message was referenced
-     * @property {?string} guildID ID of the guild the message was referenced
-     * @property {?string} messageID ID of the message that was referenced
+     * @property {string} channelId The channel's id the message was referenced
+     * @property {?string} guildId The guild's id the message was referenced
+     * @property {?string} messageId The message's id that was referenced
      */
 
     /**
@@ -254,9 +254,9 @@ class Message extends Base {
      */
     this.reference = data.message_reference
       ? {
-          channelID: data.message_reference.channel_id,
-          guildID: data.message_reference.guild_id,
-          messageID: data.message_reference.message_id,
+          channelId: data.message_reference.channel_id,
+          guildId: data.message_reference.guild_id,
+          messageId: data.message_reference.message_id,
         }
       : null;
 
@@ -267,7 +267,7 @@ class Message extends Base {
     /**
      * Partial data of the interaction that a message is a reply to
      * @typedef {Object} MessageInteraction
-     * @property {Snowflake} id The ID of the interaction
+     * @property {Snowflake} id The interaction's id
      * @property {InteractionType} type The type of the interaction
      * @property {string} commandName The name of the interaction's application command
      * @property {User} user The user that invoked the interaction
@@ -402,7 +402,7 @@ class Message extends Base {
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
-   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID';
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId';
    * const collector = message.createReactionCollector({ filter, time: 15000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -424,7 +424,7 @@ class Message extends Base {
    * @returns {Promise<Collection<string, MessageReaction>>}
    * @example
    * // Create a reaction collector
-   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId'
    * message.awaitReactions({ filter, time: 15000 })
    *   .then(collected => console.log(`Collected ${collected.size} reactions`))
    *   .catch(console.error);
@@ -453,9 +453,9 @@ class Message extends Base {
    * @returns {InteractionCollector}
    * @example
    * // Create a message component interaction collector
-   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = message.createMessageComponentInteractionCollector({ filter, time: 15000 });
-   * collector.on('collect', i => console.log(`Collected ${i.customID}`));
+   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * const collector = message.createMessageComponentCollector({ filter, time: 15000 });
+   * collector.on('collect', i => console.log(`Collected ${i.customId}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageComponentCollector(options = {}) {
@@ -481,9 +481,9 @@ class Message extends Base {
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
-   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitMessageComponentInteraction({ filter, time: 15000 })
-   *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
+   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * message.awaitMessageComponent({ filter, time: 15000 })
+   *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */
   awaitMessageComponent(options = {}) {
@@ -538,10 +538,10 @@ class Message extends Base {
    */
   async fetchReference() {
     if (!this.reference) throw new Error('MESSAGE_REFERENCE_MISSING');
-    const { channelID, messageID } = this.reference;
-    const channel = this.client.channels.resolve(channelID);
+    const { channelId, messageId } = this.reference;
+    const channel = this.client.channels.resolve(channelId);
     if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
-    const message = await channel.messages.fetch(messageID);
+    const message = await channel.messages.fetch(messageId);
     return message;
   }
 
@@ -733,8 +733,8 @@ class Message extends Base {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
-    return this.client.fetchWebhook(this.webhookID);
+    if (!this.webhookId) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
+    return this.client.fetchWebhook(this.webhookId);
   }
 
   /**
@@ -807,10 +807,10 @@ class Message extends Base {
 
   toJSON() {
     return super.toJSON({
-      channel: 'channelID',
-      author: 'authorID',
-      groupActivityApplication: 'groupActivityApplicationID',
-      guild: 'guildID',
+      channel: 'channelId',
+      author: 'authorId',
+      groupActivityApplication: 'groupActivityApplicationId',
+      guild: 'guildId',
       cleanContent: true,
       member: false,
       reactions: false,

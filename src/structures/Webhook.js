@@ -43,7 +43,7 @@ class Webhook {
     this.avatar = data.avatar;
 
     /**
-     * The ID of the webhook
+     * The webhook's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -58,23 +58,23 @@ class Webhook {
      * The guild the webhook belongs to
      * @type {Snowflake}
      */
-    this.guildID = data.guild_id;
+    this.guildId = data.guild_id;
 
     /**
      * The channel the webhook belongs to
      * @type {Snowflake}
      */
-    this.channelID = data.channel_id;
+    this.channelId = data.channel_id;
 
     /**
      * The owner of the webhook
-     * @type {?User|APIUser}
+     * @type {?(User|APIUser)}
      */
     this.owner = data.user ? this.client.users?.add(data.user) ?? data.user : null;
 
     /**
      * The source guild of the webhook
-     * @type {?Guild|APIGuild}
+     * @type {?(Guild|APIGuild)}
      */
     this.sourceGuild = data.source_guild
       ? this.client.guilds?.add(data.source_guild, false) ?? data.source_guild
@@ -82,7 +82,7 @@ class Webhook {
 
     /**
      * The source channel of the webhook
-     * @type {?Channel|APIChannel}
+     * @type {?(Channel|APIChannel)}
      */
     this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel ?? null;
   }
@@ -92,7 +92,7 @@ class Webhook {
    * @typedef {BaseMessageOptions} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
-   * @property {Snowflake} [threadID] The id of the thread in the channel to send to.
+   * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
    * <info>For interaction webhooks, this property is ignored</info>
    */
 
@@ -118,7 +118,7 @@ class Webhook {
    *   .catch(console.error);
    * @example
    * // Send a basic message in a thread
-   * webhook.send({ content: 'hello!', threadID: '836856309672348295' })
+   * webhook.send({ content: 'hello!', threadId: '836856309672348295' })
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
    * @example
@@ -172,7 +172,7 @@ class Webhook {
       .post({
         data,
         files,
-        query: { thread_id: messagePayload.options.threadID, wait: true },
+        query: { thread_id: messagePayload.options.threadId, wait: true },
         auth: false,
       })
       .then(d => this.client.channels?.cache.get(d.channel_id)?.messages.add(d, false) ?? d);
@@ -235,13 +235,13 @@ class Webhook {
 
     this.name = data.name;
     this.avatar = data.avatar;
-    this.channelID = data.channel_id;
+    this.channelId = data.channel_id;
     return this;
   }
 
   /**
    * Gets a message that was sent by this webhook.
-   * @param {Snowflake|'@original'} message The ID of the message to fetch
+   * @param {Snowflake|'@original'} message The id of the message to fetch
    * @param {boolean} [cache=true] Whether to cache the message
    * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned

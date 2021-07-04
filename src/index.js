@@ -23,9 +23,9 @@ module.exports = {
   RateLimitError: require('./rest/RateLimitError'),
   MessageFlags: require('./util/MessageFlags'),
   Intents: require('./util/Intents'),
+  Options: require('./util/Options'),
   Permissions: require('./util/Permissions'),
   SnowflakeUtil: require('./util/SnowflakeUtil'),
-  Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
   ThreadMemberFlags: require('./util/ThreadMemberFlags'),
   UserFlags: require('./util/UserFlags'),
@@ -67,10 +67,7 @@ module.exports = {
   CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
   ClientApplication: require('./structures/ClientApplication'),
-  get ClientUser() {
-    // This is a getter so that it properly extends any custom User class
-    return require('./structures/ClientUser');
-  },
+  ClientUser: require('./structures/ClientUser'),
   Collector: require('./structures/interfaces/Collector'),
   CommandInteraction: require('./structures/CommandInteraction'),
   DMChannel: require('./structures/DMChannel'),

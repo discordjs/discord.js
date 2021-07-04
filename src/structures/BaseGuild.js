@@ -13,7 +13,7 @@ class BaseGuild extends Base {
     super(client);
 
     /**
-     * The ID of this guild
+     * The guild's id
      * @type {Snowflake}
      */
     this.id = data.id;

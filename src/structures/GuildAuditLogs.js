@@ -354,12 +354,12 @@ class GuildAuditLogsEntry {
 
     /**
      * Specific property changes
-     * @type {?(AuditLogChange[])}
+     * @type {?AuditLogChange[]}
      */
     this.changes = data.changes?.map(c => ({ key: c.key, old: c.old_value, new: c.new_value })) ?? null;
 
     /**
-     * The ID of this entry
+     * The entry's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -390,7 +390,7 @@ class GuildAuditLogsEntry {
       case Actions.MESSAGE_UNPIN:
         this.extra = {
           channel: guild.client.channels.cache.get(data.options.channel_id) ?? { id: data.options.channel_id },
-          messageID: data.options.message_id,
+          messageId: data.options.message_id,
         };
         break;
 

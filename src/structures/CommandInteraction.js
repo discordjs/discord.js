@@ -17,25 +17,25 @@ class CommandInteraction extends Interaction {
 
     /**
      * The channel this interaction was sent in
-     * @type {?TextChannel|NewsChannel|DMChannel}
+     * @type {?(TextChannel|NewsChannel|DMChannel)}
      * @name CommandInteraction#channel
      * @readonly
      */
 
     /**
-     * The ID of the channel this interaction was sent in
+     * The id of the channel this interaction was sent in
      * @type {Snowflake}
-     * @name CommandInteraction#channelID
+     * @name CommandInteraction#channelId
      */
 
     /**
-     * The ID of the invoked application command
+     * The invoked application command's id
      * @type {Snowflake}
      */
-    this.commandID = data.data.id;
+    this.commandId = data.data.id;
 
     /**
-     * The name of the invoked application command
+     * The invoked application command's name
      * @type {string}
      */
     this.commandName = data.data.name;
@@ -68,7 +68,7 @@ class CommandInteraction extends Interaction {
      * An associated interaction webhook, can be used to further interact with this interaction
      * @type {InteractionWebhook}
      */
-    this.webhook = new InteractionWebhook(this.client, this.applicationID, this.token);
+    this.webhook = new InteractionWebhook(this.client, this.applicationId, this.token);
   }
 
   /**
@@ -76,7 +76,7 @@ class CommandInteraction extends Interaction {
    * @type {?ApplicationCommand}
    */
   get command() {
-    const id = this.commandID;
+    const id = this.commandId;
     return this.guild?.commands.cache.get(id) ?? this.client.application.commands.cache.get(id) ?? null;
   }
 
