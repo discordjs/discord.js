@@ -1,5 +1,3 @@
-/// <reference path="index.d.ts" />
-
 import {
   Client,
   Collection,
@@ -14,7 +12,7 @@ import {
   Serialized,
   ShardClientUtil,
   ShardingManager,
-} from 'discord.js';
+} from '..';
 
 const client: Client = new Client({
   intents: Intents.NON_PRIVILEGED,
