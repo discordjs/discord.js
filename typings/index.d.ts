@@ -1884,11 +1884,11 @@ declare module 'discord.js' {
     public ownerId: Snowflake | null;
     public members: Collection<Snowflake, TeamMember>;
 
-    public readonly owner: TeamMember;
+    public readonly owner: TeamMember | null;
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
 
-    public iconURL(options?: StaticImageURLOptions): string;
+    public iconURL(options?: StaticImageURLOptions): string | null;
     public toJSON(): unknown;
     public toString(): string;
   }
@@ -1901,7 +1901,7 @@ declare module 'discord.js' {
     public membershipState: MembershipState;
     public user: User;
 
-    public toString(): string;
+    public toString(): UserMention;
   }
 
   export class TextChannel extends TextBasedChannel(GuildChannel) {
