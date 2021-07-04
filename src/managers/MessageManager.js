@@ -116,7 +116,7 @@ class MessageManager extends CachedManager {
   /**
    * Edits a message, even if it's not cached.
    * @param {MessageResolvable} message The message to edit
-   * @param {MessageEditOptions|MessagePayload} [options] The options to provide
+   * @param {MessageEditOptions|MessagePayload} options The options to edit the message
    * @returns {Promise<Message>}
    */
   async edit(message, options) {
