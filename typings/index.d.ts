@@ -2814,8 +2814,10 @@ export interface AuditLogChange {
 
 export type Awaited<T> = T | PromiseLike<T>;
 
-export interface AwaitMessageComponentOptions<T extends MessageComponentInteraction>
-  extends Omit<MessageComponentCollectorOptions<T>, 'max' | 'maxComponents' | 'maxUsers'> {}
+export type AwaitMessageComponentOptions<T extends MessageComponentInteraction> = Omit<
+  MessageComponentCollectorOptions<T>,
+  'max' | 'maxComponents' | 'maxUsers'
+>;
 
 export interface AwaitMessagesOptions extends MessageCollectorOptions {
   errors?: string[];
@@ -3499,7 +3501,7 @@ export interface InteractionDeferOptions {
   fetchReply?: boolean;
 }
 
-export interface InteractionDeferUpdateOptions extends Omit<InteractionDeferOptions, 'ephemeral'> {}
+export type InteractionDeferUpdateOptions = Omit<InteractionDeferOptions, 'ephemeral'>;
 
 export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL'> {
   ephemeral?: boolean;
@@ -3510,7 +3512,7 @@ export type InteractionResponseType = keyof typeof InteractionResponseTypes;
 
 export type InteractionType = keyof typeof InteractionTypes;
 
-export interface InteractionUpdateOptions extends Omit<InteractionReplyOptions, 'ephemeral'> {}
+export type InteractionUpdateOptions = Omit<InteractionReplyOptions, 'ephemeral'>;
 
 export type IntentsString =
   | 'GUILDS'
@@ -3609,8 +3611,10 @@ export interface MessageCollectorOptions extends CollectorOptions<[Message]> {
 
 export type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton | MessageSelectMenu;
 
-export interface MessageComponentCollectorOptions<T extends MessageComponentInteraction>
-  extends Omit<InteractionCollectorOptions<T>, 'channel' | 'message' | 'guild' | 'interactionType'> {}
+export type MessageComponentCollectorOptions<T extends MessageComponentInteraction> = Omit<
+  InteractionCollectorOptions<T>,
+  'channel' | 'message' | 'guild' | 'interactionType'
+>;
 
 export type MessageComponentOptions =
   | BaseMessageComponentOptions
@@ -3840,11 +3844,11 @@ export type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
 export type OverwriteType = 'member' | 'role';
 
-export interface PermissionFlags extends Record<PermissionString, bigint> {}
+export type PermissionFlags = Record<PermissionString, bigint>;
 
-export interface PermissionObject extends Record<PermissionString, boolean> {}
+export type PermissionObject = Record<PermissionString, boolean>;
 
-export interface PermissionOverwriteOptions extends Partial<Record<PermissionString, boolean | null>> {}
+export type PermissionOverwriteOptions = Partial<Record<PermissionString, boolean | null>>;
 
 export type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
@@ -3888,7 +3892,7 @@ export type PermissionString =
   | 'USE_PUBLIC_THREADS'
   | 'USE_PRIVATE_THREADS';
 
-export interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
+export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
 export type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
