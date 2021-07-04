@@ -35,18 +35,6 @@ class GuildMember extends Base {
     this.joinedTimestamp = null;
 
     /**
-     * The member's last message id, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageId = null;
-
-    /**
-     * The id of the channel for the last message sent by the member in their guild, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageChannelId = null;
-
-    /**
      * The timestamp of when the member used their Nitro boost on the guild, if it was used
      * @type {?number}
      */
@@ -114,15 +102,6 @@ class GuildMember extends Base {
    */
   get roles() {
     return new GuildMemberRoleManager(this);
-  }
-
-  /**
-   * The Message object of the last message sent by the member in their guild, if one was sent
-   * @type {?Message}
-   * @readonly
-   */
-  get lastMessage() {
-    return this.guild.channels.resolve(this.lastMessageChannelId)?.messages.resolve(this.lastMessageId) ?? null;
   }
 
   /**
@@ -352,8 +331,6 @@ class GuildMember extends Base {
       this.partial === member.partial &&
       this.guild.id === member.guild.id &&
       this.joinedTimestamp === member.joinedTimestamp &&
-      this.lastMessageId === member.lastMessageId &&
-      this.lastMessageChannelId === member.lastMessageChannelId &&
       this.nickname === member.nickname &&
       this.pending === member.pending &&
       (this._roles === member._roles ||
@@ -377,8 +354,6 @@ class GuildMember extends Base {
       guild: 'guildId',
       user: 'userId',
       displayName: true,
-      lastMessage: false,
-      lastMessageId: false,
       roles: true,
     });
   }

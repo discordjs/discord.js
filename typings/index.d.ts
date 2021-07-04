@@ -681,7 +681,6 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly joinedAt: Date | null;
   public joinedTimestamp: number | null;
   public readonly kickable: boolean;
-  public lastMessageChannelId: Snowflake | null;
   public readonly manageable: boolean;
   public nickname: string | null;
   public readonly partial: false;
@@ -1646,7 +1645,6 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlags> | null;
   public id: Snowflake;
-  public lastMessageId: Snowflake | null;
   public readonly partial: false;
   public readonly presence: Presence;
   public system: boolean;
@@ -2531,13 +2529,13 @@ export function TextBasedChannel<T, I extends keyof TextBasedChannelFields = nev
 ): Constructable<T & Omit<TextBasedChannelFields, I>>;
 
 export interface PartialTextBasedChannelFields {
-  lastMessageId: Snowflake | null;
-  readonly lastMessage: Message | null;
   send(options: string | MessagePayload | MessageOptions): Promise<Message>;
 }
 
 export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   _typing: Map<string, TypingData>;
+  lastMessageId: Snowflake | null;
+  readonly lastMessage: Message | null;
   lastPinTimestamp: number | null;
   readonly lastPinAt: Date | null;
   typing: boolean;
