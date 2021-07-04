@@ -2550,7 +2550,7 @@ declare module 'discord.js' {
     public remove(user: UserResolvable, reason?: string): Promise<User>;
   }
 
-  export class GuildInviteManager extends BaseManager<Snowflake, Invite, InviteResolvable> {
+  export class GuildInviteManager extends DataManager<Snowflake, Invite, InviteResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public create(channel: GuildChannelResolvable, options?: CreateInviteOptions): Promise<Invite>;
