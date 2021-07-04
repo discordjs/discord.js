@@ -1781,21 +1781,6 @@ export class VoiceState extends Base {
   public setSuppressed(suppressed: boolean): Promise<void>;
 }
 
-export class VolumeInterface extends EventEmitter {
-  constructor(options?: { volume?: number });
-  public readonly volume: number;
-  public readonly volumeDecibels: number;
-  public readonly volumeEditable: boolean;
-  public readonly volumeLogarithmic: number;
-  public setVolume(volume: number): void;
-  public setVolumeDecibels(db: number): void;
-  public setVolumeLogarithmic(value: number): void;
-
-  public on(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => Awaited<void>): this;
-
-  public once(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => Awaited<void>): this;
-}
-
 export class Webhook extends WebhookMixin() {
   constructor(client: Client, data?: unknown);
   public avatar: string;
@@ -1973,7 +1958,7 @@ export const Constants: {
     devDependencies: { [key: string]: string };
     [key: string]: any;
   };
-  UserAgent: string | null;
+  UserAgent: string;
   Endpoints: {
     botGateway: string;
     invite: (root: string, code: string) => string;
@@ -2571,8 +2556,6 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
 
 export function PartialWebhookMixin<T>(Base?: Constructable<T>): Constructable<T & PartialWebhookFields>;
 export function WebhookMixin<T>(Base?: Constructable<T>): Constructable<T & WebhookFields>;
-
-export function VolumeMixin<T>(base: Constructable<T>): Constructable<T & VolumeInterface>;
 
 export interface PartialWebhookFields {
   id: Snowflake;
@@ -3845,8 +3828,6 @@ export type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 export type OverwriteType = 'member' | 'role';
 
 export type PermissionFlags = Record<PermissionString, bigint>;
-
-export type PermissionObject = Record<PermissionString, boolean>;
 
 export type PermissionOverwriteOptions = Partial<Record<PermissionString, boolean | null>>;
 
