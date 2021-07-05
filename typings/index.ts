@@ -494,12 +494,12 @@ notPropertyOf(guildMember, 'lastMessage');
 notPropertyOf(guildMember, 'lastMessageId');
 
 // Test collector event parameters
-declare const mc: MessageCollector;
-mc.on('collect', (...args) => {
+declare const messageCollector: MessageCollector;
+messageCollector.on('collect', (...args) => {
   assertType<[Message]>(args);
 });
 
-declare const rc: ReactionCollector;
-rc.on('dispose', (...args) => {
+declare const reactionCollector: ReactionCollector;
+reactionCollector.on('dispose', (...args) => {
   assertType<[MessageReaction, User]>(args);
 });
