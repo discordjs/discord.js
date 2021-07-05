@@ -1367,7 +1367,7 @@ export class Role extends Base {
 
 export class SelectMenuInteraction extends MessageComponentInteraction {
   public componentType: 'SELECT_MENU';
-  public values: string[] | null;
+  public values: string[];
 }
 
 export class Shard extends EventEmitter {
