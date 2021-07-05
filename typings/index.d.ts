@@ -859,7 +859,6 @@ declare module 'discord.js' {
     public approximatePresenceCount: number | null;
     public available: boolean;
     public bans: GuildBanManager;
-    public invites: GuildInviteManager;
     public channels: GuildChannelManager;
     public commands: GuildApplicationCommandManager;
     public defaultMessageNotifications: DefaultMessageNotificationLevel | number;
@@ -867,6 +866,7 @@ declare module 'discord.js' {
     public discoverySplash: string | null;
     public emojis: GuildEmojiManager;
     public explicitContentFilter: ExplicitContentFilterLevel;
+    public invites: GuildInviteManager;
     public readonly joinedAt: Date;
     public joinedTimestamp: number;
     public large: boolean;

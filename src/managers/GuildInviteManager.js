@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
 const Invite = require('../structures/Invite');
 const Collection = require('../util/Collection');
@@ -8,11 +8,11 @@ const DataResolver = require('../util/DataResolver');
 
 /**
  * Manages API methods for GuildInvites and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class GuildInviteManager extends BaseManager {
+class GuildInviteManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, Invite);
+    super(guild.client, Invite, iterable);
 
     /**
      * The guild this Manager belongs to
