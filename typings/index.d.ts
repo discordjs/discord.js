@@ -687,7 +687,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly permissions: Readonly<Permissions>;
   public readonly premiumSince: Date | null;
   public premiumSinceTimestamp: number | null;
-  public readonly presence: Presence;
+  public readonly presence: Presence | null;
   public readonly roles: GuildMemberRoleManager;
   public user: User;
   public readonly voice: VoiceState;
@@ -1648,7 +1648,6 @@ export class User extends PartialTextBasedChannel(Base) {
   public flags: Readonly<UserFlags> | null;
   public id: Snowflake;
   public readonly partial: false;
-  public readonly presence: Presence;
   public system: boolean;
   public readonly tag: string;
   public username: string;
@@ -2931,7 +2930,7 @@ export interface ClientEvents {
   messageReactionAdd: [message: MessageReaction, user: User | PartialUser];
   messageReactionRemove: [reaction: MessageReaction, user: User | PartialUser];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
-  presenceUpdate: [oldPresence: Presence | undefined, newPresence: Presence];
+  presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
   rateLimit: [rateLimitData: RateLimitData];
   invalidRequestWarning: [invalidRequestWarningData: InvalidRequestWarningData];
   ready: [];
