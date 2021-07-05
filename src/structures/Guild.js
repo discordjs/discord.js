@@ -12,6 +12,7 @@ const GuildApplicationCommandManager = require('../managers/GuildApplicationComm
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
+const GuildInviteManager = require('../managers/GuildInviteManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
 const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
@@ -89,6 +90,12 @@ class Guild extends AnonymousGuild {
      * @type {StageInstanceManager}
      */
     this.stageInstances = new StageInstanceManager(this);
+
+    /**
+     * A manager of the invites of this guild
+     * @type {GuildInviteManager}
+     */
+    this.invites = new GuildInviteManager(this);
 
     /**
      * Whether the bot has been removed from the guild
