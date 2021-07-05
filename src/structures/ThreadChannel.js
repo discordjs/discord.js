@@ -268,7 +268,7 @@ class ThreadChannel extends Channel {
 
   /**
    * Sets whether the thread can be **unarchived** by anyone with `SEND_MESSAGES` permission.
-   * When the thread is locked only members with `MANAGE_THREADS` can unarchive it.
+   * When a thread is locked only members with `MANAGE_THREADS` can unarchive it.
    * @param {boolean} [locked=true] Whether the thread is locked
    * @param {string} [reason] Reason for locking or unlocking the thread
    * @returns {Promise<ThreadChannel>}
