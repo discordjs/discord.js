@@ -16,7 +16,7 @@ let Worker = null;
 class Shard extends EventEmitter {
   /**
    * @param {ShardingManager} manager Manager that is creating this shard
-   * @param {number} id ID of this shard
+   * @param {number} id The shard's id
    */
   constructor(manager, id) {
     super();
@@ -31,7 +31,7 @@ class Shard extends EventEmitter {
     this.manager = manager;
 
     /**
-     * ID of the shard in the manager
+     * The shard's id in the manager
      * @type {number}
      */
     this.id = id;

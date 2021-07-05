@@ -45,7 +45,7 @@ class MessageAttachment {
 
   _patch(data) {
     /**
-     * The ID of this attachment
+     * The attachment's id
      * @type {Snowflake}
      */
     this.id = data.id;

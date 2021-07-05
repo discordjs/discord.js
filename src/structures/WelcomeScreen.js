@@ -32,7 +32,7 @@ class WelcomeScreen extends Base {
 
     for (const channel of data.welcome_channels) {
       const welcomeChannel = new WelcomeChannel(this.guild, channel);
-      this.welcomeChannels.set(welcomeChannel.channelID, welcomeChannel);
+      this.welcomeChannels.set(welcomeChannel.channelId, welcomeChannel);
     }
   }
 

@@ -17,7 +17,7 @@ class Team extends Base {
 
   _patch(data) {
     /**
-     * The ID of the Team
+     * The Team's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -36,9 +36,9 @@ class Team extends Base {
 
     /**
      * The Team's owner id
-     * @type {?string}
+     * @type {?Snowflake}
      */
-    this.ownerID = data.owner_user_id ?? null;
+    this.ownerId = data.owner_user_id ?? null;
 
     /**
      * The Team's members
@@ -58,7 +58,7 @@ class Team extends Base {
    * @readonly
    */
   get owner() {
-    return this.members.get(this.ownerID) ?? null;
+    return this.members.get(this.ownerId) ?? null;
   }
 
   /**

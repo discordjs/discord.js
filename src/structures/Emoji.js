@@ -6,9 +6,9 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
 /**
  * Represents raw emoji data from the API
  * @typedef {APIEmoji} RawEmoji
- * @property {?Snowflake} id ID of this emoji
- * @property {?string} name Name of this emoji
- * @property {?boolean} animated Whether this emoji is animated
+ * @property {?Snowflake} id The emoji's id
+ * @property {?string} name The emoji's name
+ * @property {?boolean} animated Whether the emoji is animated
  */
 
 /**
@@ -19,19 +19,19 @@ class Emoji extends Base {
   constructor(client, emoji) {
     super(client);
     /**
-     * Whether this emoji is animated
+     * Whether or not the emoji is animated
      * @type {?boolean}
      */
     this.animated = emoji.animated ?? null;
 
     /**
-     * The name of this emoji
+     * The emoji's name
      * @type {?string}
      */
     this.name = emoji.name ?? null;
 
     /**
-     * The ID of this emoji
+     * The emoji's id
      * @type {?Snowflake}
      */
     this.id = emoji.id;
@@ -98,7 +98,7 @@ class Emoji extends Base {
 
   toJSON() {
     return super.toJSON({
-      guild: 'guildID',
+      guild: 'guildId',
       createdTimestamp: true,
       url: true,
       identifier: true,

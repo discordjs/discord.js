@@ -41,7 +41,7 @@ class TeamMember extends Base {
   }
 
   /**
-   * The ID of the Team Member
+   * The Team Member's id
    * @type {Snowflake}
    * @readonly
    */

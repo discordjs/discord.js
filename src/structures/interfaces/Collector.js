@@ -265,6 +265,14 @@ class Collector extends EventEmitter {
 
   /* eslint-disable no-empty-function */
   /**
+   * The reason this collector has ended with, or null if it hasn't ended yet
+   * @type {?string}
+   * @readonly
+   * @abstract
+   */
+  get endReason() {}
+
+  /**
    * Handles incoming events from the `handleCollect` function. Returns null if the event should not
    * be collected, or returns an object describing the data that should be stored.
    * @see Collector#handleCollect
@@ -284,13 +292,6 @@ class Collector extends EventEmitter {
    */
   dispose() {}
   /* eslint-enable no-empty-function */
-
-  /**
-   * The reason this collector has ended with, or null if it hasn't ended yet
-   * @name Collector#endReason
-   * @type {?string}
-   * @abstract
-   */
 }
 
 module.exports = Collector;

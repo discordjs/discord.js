@@ -21,10 +21,10 @@ class MessageComponentInteraction extends Interaction {
     this.message = this.channel?.messages.add(data.message) ?? data.message;
 
     /**
-     * The custom ID of the component which was interacted with
+     * The custom id of the component which was interacted with
      * @type {string}
      */
-    this.customID = data.data.custom_id;
+    this.customId = data.data.custom_id;
 
     /**
      * The type of component which was interacted with
@@ -54,7 +54,7 @@ class MessageComponentInteraction extends Interaction {
      * An associated interaction webhook, can be used to further interact with this interaction
      * @type {InteractionWebhook}
      */
-    this.webhook = new InteractionWebhook(this.client, this.applicationID, this.token);
+    this.webhook = new InteractionWebhook(this.client, this.applicationId, this.token);
   }
 
   /**
@@ -73,7 +73,7 @@ class MessageComponentInteraction extends Interaction {
     return (
       this.message.components
         .flatMap(row => row.components)
-        .find(component => (component.customID ?? component.custom_id) === this.customID) ?? null
+        .find(component => (component.customId ?? component.custom_id) === this.customId) ?? null
     );
   }
 

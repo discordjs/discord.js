@@ -11,11 +11,7 @@ const Invite = require('../structures/Invite');
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them.
  * @private
  */
-class DataResolver {
-  constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
-  }
-
+class DataResolver extends null {
   /**
    * Data that can be resolved to give an invite code. This can be:
    * * An invite code

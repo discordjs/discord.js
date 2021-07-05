@@ -89,7 +89,7 @@ const tests = [
   m => m.channel.send('Done!'),
 ];
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
   if (message.author.id !== owner) return;
   const match = message.content.match(/^do (.+)$/);
   if (match && match[1] === 'it') {

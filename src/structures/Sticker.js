@@ -21,7 +21,7 @@ class Sticker extends Base {
 
   _patch(sticker) {
     /**
-     * The Sticker's id
+     * The sticker's id
      * @type {Snowflake}
      */
     this.id = sticker.id;

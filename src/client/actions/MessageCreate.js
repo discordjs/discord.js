@@ -3,6 +3,8 @@
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
 
+let deprecationEmitted = false;
+
 class MessageCreateAction extends Action {
   handle(data) {
     const client = this.client;
@@ -13,22 +15,34 @@ class MessageCreateAction extends Action {
       const message = channel.messages.add(data);
       const user = message.author;
       const member = message.member;
-      channel.lastMessageID = data.id;
+      channel.lastMessageId = data.id;
       if (user) {
-        user.lastMessageID = data.id;
-        user.lastMessageChannelID = channel.id;
+        user.lastMessageId = data.id;
+        user.lastMessageChannelId = channel.id;
       }
       if (member) {
-        member.lastMessageID = data.id;
-        member.lastMessageChannelID = channel.id;
+        member.lastMessageId = data.id;
+        member.lastMessageChannelId = channel.id;
       }
+
+      /**
+       * Emitted whenever a message is created.
+       * @event Client#messageCreate
+       * @param {Message} message The created message
+       */
+      client.emit(Events.MESSAGE_CREATE, message);
 
       /**
        * Emitted whenever a message is created.
        * @event Client#message
        * @param {Message} message The created message
+       * @deprecated Use {@link Client#messageCreate} instead
        */
-      client.emit(Events.MESSAGE_CREATE, message);
+      if (client.emit('message', message) && !deprecationEmitted) {
+        deprecationEmitted = true;
+        process.emitWarning('The message event is deprecated. Use messageCreate instead', 'DeprecationWarning');
+      }
+
       return { message };
     }
 

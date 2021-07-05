@@ -1,14 +1,17 @@
 'use strict';
 
 const { token, prefix, owner } = require('./auth.js');
-const { Client, Intents } = require('../src');
+const { Client, Options, Intents, Formatters } = require('../src');
 
 // eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
-  shardCount: 2,
+  intents: Intents.ALL,
+  makeCache: Options.cacheWithLimits({
+    MessageManager: 10,
+    PresenceManager: 10,
+  }),
 });
 
 client.on('debug', log);
@@ -30,12 +33,12 @@ const commands = {
       console.error(err.stack);
       res = err.message;
     }
-    message.channel.send(res, { code: 'js' });
+    message.channel.send(Formatters.codeBlock(res));
   },
   ping: message => message.channel.send('pong'),
 };
 
-client.on('messageCreate', message => {
+client.on('message', message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   message.content = message.content.replace(prefix, '').trim().split(' ');
