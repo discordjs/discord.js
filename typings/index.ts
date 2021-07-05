@@ -428,6 +428,7 @@ client.login('absolutely-valid-token');
 // Test type transformation:
 declare const assertType: <T>(value: T) => asserts value is T;
 declare const serialize: <T>(value: T) => Serialized<T>;
+declare const notPropertyOf: <T, P extends string>(value: T, property: P & Exclude<P, keyof T>) => void;
 
 assertType<undefined>(serialize(undefined));
 assertType<null>(serialize(null));
@@ -483,7 +484,8 @@ assertType<Message | null>(dmChannel.lastMessage);
 assertType<Message | null>(threadChannel.lastMessage);
 assertType<Message | null>(newsChannel.lastMessage);
 assertType<Message | null>(textChannel.lastMessage);
-// @ts-expect-error
-assertType<never>(user.lastMessage);
-// @ts-expect-error
-assertType<never>(guildMember.lastMessage);
+
+notPropertyOf(user, 'lastMessage');
+notPropertyOf(user, 'lastMessageId');
+notPropertyOf(guildMember, 'lastMessage');
+notPropertyOf(guildMember, 'lastMessageId');
