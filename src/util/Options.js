@@ -62,6 +62,7 @@
  * route starting with /channels, such as /channels/222197033908436994/messages) or a function returning true, a
  * {@link RateLimitError} will be thrown. Otherwise the request will be queued for later
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
+ * @property {boolean} [failIfNotExists=true] Default value for {@link ReplyMessageOptions#failIfNotExists}
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
  * @property {WebsocketOptions} [ws] Options for the WebSocket
@@ -108,6 +109,7 @@ class Options extends null {
       retryLimit: 1,
       restTimeOffset: 500,
       restSweepInterval: 60,
+      failIfNotExists: true,
       presence: {},
       ws: {
         large_threshold: 50,

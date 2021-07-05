@@ -178,7 +178,7 @@ class MessagePayload {
       if (message_id) {
         message_reference = {
           message_id,
-          fail_if_not_exists: this.options.reply.failIfNotExists ?? true,
+          fail_if_not_exists: this.options.reply.failIfNotExists ?? this.target.client.options.failIfNotExists,
         };
       }
     }
