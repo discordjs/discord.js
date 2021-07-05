@@ -97,7 +97,7 @@ class GuildStickerManager extends BaseManager {
    */
   async edit(sticker, data, reason) {
     const stickerId = this.resolveId(sticker);
-    if (!stickerID) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
+    if (!stickerId) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
 
     const d = await this.client.api.guilds(this.guild.id).stickers(stickerId).patch({
       data,
