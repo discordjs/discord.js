@@ -1,16 +1,16 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const Channel = require('../structures/Channel');
 const { Events, ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * A manager of channels belonging to a client
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class ChannelManager extends BaseManager {
+class ChannelManager extends CachedManager {
   constructor(client, iterable) {
-    super(client, iterable, Channel);
+    super(client, Channel, iterable);
   }
 
   /**
@@ -66,8 +66,8 @@ class ChannelManager extends BaseManager {
    */
 
   /**
-   * Resolves a ChannelResolvable to a channel ID string.
-   * @method resolveID
+   * Resolves a ChannelResolvable to a channel id string.
+   * @method resolveId
    * @memberof ChannelManager
    * @instance
    * @param {ChannelResolvable} channel The channel resolvable to resolve
@@ -76,7 +76,7 @@ class ChannelManager extends BaseManager {
 
   /**
    * Obtains a channel from Discord, or the channel cache if it's already available.
-   * @param {Snowflake} id ID of the channel
+   * @param {Snowflake} id The channel's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Channel>}
    * @example

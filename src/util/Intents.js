@@ -61,23 +61,4 @@ Intents.FLAGS = {
   DIRECT_MESSAGE_TYPING: 1 << 14,
 };
 
-/**
- * Bitfield representing all privileged intents
- * @type {number}
- * @see {@link https://discord.com/developers/docs/topics/gateway#privileged-intents}
- */
-Intents.PRIVILEGED = Intents.FLAGS.GUILD_MEMBERS | Intents.FLAGS.GUILD_PRESENCES;
-
-/**
- * Bitfield representing all intents combined
- * @type {number}
- */
-Intents.ALL = Object.values(Intents.FLAGS).reduce((acc, p) => acc | p, 0);
-
-/**
- * Bitfield representing all non-privileged intents
- * @type {number}
- */
-Intents.NON_PRIVILEGED = Intents.ALL & ~Intents.PRIVILEGED;
-
 module.exports = Intents;

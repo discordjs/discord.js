@@ -6,8 +6,6 @@ const { Error } = require('../errors');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const UserFlags = require('../util/UserFlags');
 
-let Structures;
-
 /**
  * Represents a user on Discord.
  * @implements {TextBasedChannel}
@@ -22,7 +20,7 @@ class User extends Base {
     super(client);
 
     /**
-     * The ID of the user
+     * The user's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -32,18 +30,6 @@ class User extends Base {
     this.system = null;
 
     this.flags = null;
-
-    /**
-     * The ID of the last message sent by the user, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageID = null;
-
-    /**
-     * The ID of the channel for the last message sent by the user, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageChannelID = null;
 
     this._patch(data);
   }
@@ -81,7 +67,7 @@ class User extends Base {
 
     if ('avatar' in data) {
       /**
-       * The ID of the user's avatar
+       * The user avatar's hash
        * @type {?string}
        */
       this.avatar = data.avatar;
@@ -133,29 +119,6 @@ class User extends Base {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * The Message object of the last message sent by the user, if one was sent
-   * @type {?Message}
-   * @readonly
-   */
-  get lastMessage() {
-    return this.client.channels.resolve(this.lastMessageChannelID)?.messages.resolve(this.lastMessageID) ?? null;
-  }
-
-  /**
-   * The presence of this user
-   * @type {Presence}
-   * @readonly
-   */
-  get presence() {
-    for (const guild of this.client.guilds.cache.values()) {
-      if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
-    }
-    if (!Structures) Structures = require('../util/Structures');
-    const Presence = Structures.get('Presence');
-    return new Presence(this.client, { user: { id: this.id } });
   }
 
   /**
@@ -265,7 +228,7 @@ class User extends Base {
   }
 
   /**
-   * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, and bot flags.
+   * Checks if the user is equal to another. It compares id, username, discriminator, avatar, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
    * @param {User} user User to compare with
    * @returns {boolean}
@@ -319,8 +282,6 @@ class User extends Base {
         createdTimestamp: true,
         defaultAvatarURL: true,
         tag: true,
-        lastMessage: false,
-        lastMessageID: false,
       },
       ...props,
     );

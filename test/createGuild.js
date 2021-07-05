@@ -13,9 +13,9 @@ client.on('ready', async () => {
         { name: 'afk channel', type: 'voice', id: 0 },
         { name: 'system-channel', id: 1 },
       ],
-      afkChannelID: 0,
+      afkChannelId: 0,
       afkTimeout: 60,
-      systemChannelID: 1,
+      systemChannelId: 1,
     });
     console.log(guild.id);
     assert.strictEqual(guild.afkChannel.name, 'afk channel');

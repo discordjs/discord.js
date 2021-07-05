@@ -1,6 +1,14 @@
 'use strict';
 
 const Base = require('./Base');
+let CategoryChannel;
+let DMChannel;
+let NewsChannel;
+let StageChannel;
+let StoreChannel;
+let TextChannel;
+let ThreadChannel;
+let VoiceChannel;
 const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
@@ -42,7 +50,7 @@ class Channel extends Base {
 
   _patch(data) {
     /**
-     * The unique ID of the channel
+     * The channel's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -103,7 +111,8 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is text-based.
+   * Indicates whether this channel is text-based
+   * ({@link TextChannel}, {@link DMChannel}, {@link NewsChannel} or {@link ThreadChannel}).
    * @returns {boolean}
    */
   isText() {
@@ -111,7 +120,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is a thread channel.
+   * Indicates whether this channel is a {@link ThreadChannel}.
    * @returns {boolean}
    */
   isThread() {
@@ -119,11 +128,18 @@ class Channel extends Base {
   }
 
   static create(client, data, guild) {
-    const Structures = require('../util/Structures');
+    if (!CategoryChannel) CategoryChannel = require('./CategoryChannel');
+    if (!DMChannel) DMChannel = require('./DMChannel');
+    if (!NewsChannel) NewsChannel = require('./NewsChannel');
+    if (!StageChannel) StageChannel = require('./StageChannel');
+    if (!StoreChannel) StoreChannel = require('./StoreChannel');
+    if (!TextChannel) TextChannel = require('./TextChannel');
+    if (!ThreadChannel) ThreadChannel = require('./ThreadChannel');
+    if (!VoiceChannel) VoiceChannel = require('./VoiceChannel');
+
     let channel;
     if (!data.guild_id && !guild) {
       if ((data.recipients && data.type !== ChannelTypes.GROUP) || data.type === ChannelTypes.DM) {
-        const DMChannel = Structures.get('DMChannel');
         channel = new DMChannel(client, data);
       } else if (data.type === ChannelTypes.GROUP) {
         const PartialGroupDMChannel = require('./PartialGroupDMChannel');
@@ -135,39 +151,32 @@ class Channel extends Base {
       if (guild) {
         switch (data.type) {
           case ChannelTypes.TEXT: {
-            const TextChannel = Structures.get('TextChannel');
             channel = new TextChannel(guild, data);
             break;
           }
           case ChannelTypes.VOICE: {
-            const VoiceChannel = Structures.get('VoiceChannel');
             channel = new VoiceChannel(guild, data);
             break;
           }
           case ChannelTypes.CATEGORY: {
-            const CategoryChannel = Structures.get('CategoryChannel');
             channel = new CategoryChannel(guild, data);
             break;
           }
           case ChannelTypes.NEWS: {
-            const NewsChannel = Structures.get('NewsChannel');
             channel = new NewsChannel(guild, data);
             break;
           }
           case ChannelTypes.STORE: {
-            const StoreChannel = Structures.get('StoreChannel');
             channel = new StoreChannel(guild, data);
             break;
           }
           case ChannelTypes.STAGE: {
-            const StageChannel = Structures.get('StageChannel');
             channel = new StageChannel(guild, data);
             break;
           }
           case ChannelTypes.NEWS_THREAD:
           case ChannelTypes.PUBLIC_THREAD:
           case ChannelTypes.PRIVATE_THREAD: {
-            const ThreadChannel = Structures.get('ThreadChannel');
             channel = new ThreadChannel(guild, data);
             channel.parent?.threads.cache.set(channel.id, channel);
             break;

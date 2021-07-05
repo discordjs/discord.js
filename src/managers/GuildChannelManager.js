@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
@@ -9,11 +9,11 @@ const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for GuildChannels and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class GuildChannelManager extends BaseManager {
+class GuildChannelManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, GuildChannel);
+    super(guild.client, GuildChannel, iterable);
 
     /**
      * The guild this Manager belongs to
@@ -67,13 +67,13 @@ class GuildChannelManager extends BaseManager {
   }
 
   /**
-   * Resolves a GuildChannelResolvable to a channel ID string.
+   * Resolves a GuildChannelResolvable to a channel id.
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?Snowflake}
    */
-  resolveID(channel) {
-    if (channel instanceof ThreadChannel) return super.resolveID(channel.id);
-    return super.resolveID(channel);
+  resolveId(channel) {
+    if (channel instanceof ThreadChannel) return super.resolveId(channel.id);
+    return super.resolveId(channel);
   }
 
   /**
@@ -119,7 +119,7 @@ class GuildChannelManager extends BaseManager {
     name,
     { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
   ) {
-    if (parent) parent = this.client.channels.resolveID(parent);
+    if (parent) parent = this.client.channels.resolveId(parent);
     if (permissionOverwrites) {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
     }
@@ -144,7 +144,7 @@ class GuildChannelManager extends BaseManager {
 
   /**
    * Obtains one or more guild channels from Discord, or the channel cache if they're already available.
-   * @param {Snowflake} [id] ID of the channel
+   * @param {Snowflake} [id] The channel's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?GuildChannel|Collection<Snowflake, GuildChannel>>}
    * @example

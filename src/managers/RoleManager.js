@@ -1,18 +1,20 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
+const { TypeError } = require('../errors');
 const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
 const Permissions = require('../util/Permissions');
-const { resolveColor } = require('../util/Util');
+const { resolveColor, setPosition } = require('../util/Util');
 
 /**
  * Manages API methods for roles and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class RoleManager extends BaseManager {
+class RoleManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, Role);
+    super(guild.client, Role, iterable);
+
     /**
      * The guild belonging to this manager
      * @type {Guild}
@@ -32,7 +34,7 @@ class RoleManager extends BaseManager {
 
   /**
    * Obtains a role from Discord, or the role cache if they're already available.
-   * @param {Snowflake} [id] ID of the role
+   * @param {Snowflake} [id] The role's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Role|Collection<Snowflake, Role>>}
    * @example
@@ -67,7 +69,7 @@ class RoleManager extends BaseManager {
    */
 
   /**
-   * Resolves a RoleResolvable to a Role object.
+   * Resolves a {@link RoleResolvable} to a {@link Role} object.
    * @method resolve
    * @memberof RoleManager
    * @instance
@@ -76,8 +78,8 @@ class RoleManager extends BaseManager {
    */
 
   /**
-   * Resolves a RoleResolvable to a role ID string.
-   * @method resolveID
+   * Resolves a {@link RoleResolvable} to a {@link Role} id.
+   * @method resolveId
    * @memberof RoleManager
    * @instance
    * @param {RoleResolvable} role The role resolvable to resolve
@@ -144,15 +146,62 @@ class RoleManager extends BaseManager {
   }
 
   /**
+   * Edits a role of the guild.
+   * @param {RoleResolvable} role The role to edit
+   * @param {RoleData} data The new data for the role
+   * @param {string} [reason] Reason for editing this role
+   * @returns {Promise<Role>}
+   * @example
+   * // Edit a role
+   * guild.roles.edit('222079219327434752', { name: 'buddies' })
+   *   .then(updated => console.log(`Edited role name to ${updated.name}`))
+   *   .catch(console.error);
+   */
+  async edit(role, data, reason) {
+    role = this.resolve(role);
+    if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
+
+    if (typeof data.position === 'number') {
+      const updatedRoles = await setPosition(
+        role,
+        data.position,
+        false,
+        this.guild._sortedRoles(),
+        this.client.api.guilds(this.guild.id).roles,
+        reason,
+      );
+
+      this.client.actions.GuildRolesPositionUpdate.handle({
+        guild_id: this.guild.id,
+        roles: updatedRoles,
+      });
+    }
+
+    const _data = {
+      name: data.name,
+      color: typeof data.color === 'undefined' ? undefined : resolveColor(data.color),
+      hoist: data.hoist,
+      permissions: typeof data.permissions === 'undefined' ? undefined : new Permissions(data.permissions),
+      mentionable: data.mentionable,
+    };
+
+    const d = await this.client.api.guilds(this.guild.id).roles(role.id).patch({ data: _data, reason });
+
+    const clone = role._clone();
+    clone._patch(d);
+    return clone;
+  }
+
+  /**
    * Gets the managed role a user created when joining the guild, if any
    * <info>Only ever available for bots</info>
    * @param {UserResolvable} user The user to access the bot role for
    * @returns {?Role}
    */
   botRoleFor(user) {
-    const userID = this.client.users.resolveID(user);
-    if (!userID) return null;
-    return this.cache.find(role => role.tags?.botID === userID) ?? null;
+    const userId = this.client.users.resolveId(user);
+    if (!userId) return null;
+    return this.cache.find(role => role.tags?.botId === userId) ?? null;
   }
 
   /**

@@ -10,7 +10,7 @@ const Webhook = require('../structures/Webhook');
  */
 class WebhookClient extends BaseClient {
   /**
-   * @param {Snowflake} id ID of the webhook
+   * @param {Snowflake} id The webhook's id
    * @param {string} token Token of the webhook
    * @param {ClientOptions} [options] Options for the client
    * @example
