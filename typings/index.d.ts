@@ -2146,6 +2146,8 @@ export const Constants: {
 
 export const version: string;
 
+//#endregion
+
 //#region Managers
 
 export abstract class BaseManager {
@@ -4318,7 +4320,7 @@ export type Serialized<T> = T extends symbol | bigint | (() => unknown)
 
 //#endregion
 
-//#region voice
+//#region Voice
 
 /**
  * @internal Use `DiscordGatewayAdapterLibraryMethods` from `@discordjs/voice` instead.
