@@ -28,8 +28,8 @@ class RoleManager extends CachedManager {
    * @name RoleManager#cache
    */
 
-  add(data, cache) {
-    return super.add(data, cache, { extras: [this.guild] });
+  _add(data, cache) {
+    return super._add(data, cache, { extras: [this.guild] });
   }
 
   /**
@@ -57,7 +57,7 @@ class RoleManager extends CachedManager {
     // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
     const data = await this.client.api.guilds(this.guild.id).roles.get();
     const roles = new Collection();
-    for (const role of data) roles.set(role.id, this.add(role, cache));
+    for (const role of data) roles.set(role.id, this._add(role, cache));
     return id ? roles.get(id) ?? null : roles;
   }
 

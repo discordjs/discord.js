@@ -27,8 +27,8 @@ class ApplicationCommandManager extends CachedManager {
    * @name ApplicationCommandManager#cache
    */
 
-  add(data, cache, guildId) {
-    return super.add(data, cache, { extras: [this.guild, guildId] });
+  _add(data, cache, guildId) {
+    return super._add(data, cache, { extras: [this.guild, guildId] });
   }
 
   /**
@@ -90,11 +90,11 @@ class ApplicationCommandManager extends CachedManager {
         if (existing) return existing;
       }
       const command = await this.commandPath({ id, guildId }).get();
-      return this.add(command, cache);
+      return this._add(command, cache);
     }
 
     const data = await this.commandPath({ guildId }).get();
-    return data.reduce((coll, command) => coll.set(command.id, this.add(command, cache, guildId)), new Collection());
+    return data.reduce((coll, command) => coll.set(command.id, this._add(command, cache, guildId)), new Collection());
   }
 
   /**
@@ -116,7 +116,7 @@ class ApplicationCommandManager extends CachedManager {
     const data = await this.commandPath({ guildId }).post({
       data: this.constructor.transformCommand(command),
     });
-    return this.add(data, undefined, guildId);
+    return this._add(data, undefined, guildId);
   }
 
   /**
@@ -146,7 +146,7 @@ class ApplicationCommandManager extends CachedManager {
       data: commands.map(c => this.constructor.transformCommand(c)),
     });
     return data.reduce(
-      (coll, command) => coll.set(command.id, this.add(command, undefined, guildId)),
+      (coll, command) => coll.set(command.id, this._add(command, undefined, guildId)),
       new Collection(),
     );
   }
@@ -171,7 +171,7 @@ class ApplicationCommandManager extends CachedManager {
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
     const patched = await this.commandPath({ id, guildId }).patch({ data: this.constructor.transformCommand(data) });
-    return this.add(patched, undefined, guildId);
+    return this._add(patched, undefined, guildId);
   }
 
   /**

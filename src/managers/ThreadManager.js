@@ -27,7 +27,7 @@ class ThreadManager extends CachedManager {
    * @name ThreadManager#cache
    */
 
-  add(thread) {
+  _add(thread) {
     const existing = this.cache.get(thread.id);
     if (existing) return existing;
     this.cache.set(thread.id, thread);
@@ -234,7 +234,7 @@ class ThreadManager extends CachedManager {
 
   _mapThreads(rawThreads, cache) {
     const threads = rawThreads.threads.reduce((coll, raw) => {
-      const thread = this.client.channels.add(raw, null, cache);
+      const thread = this.client.channels._add(raw, null, cache);
       return coll.set(thread.id, thread);
     }, new Collection());
     // Discord sends the thread id as id in this object

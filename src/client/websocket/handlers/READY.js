@@ -14,7 +14,7 @@ module.exports = (client, { d: data }, shard) => {
 
   for (const guild of data.guilds) {
     guild.shardId = shard.id;
-    client.guilds.add(guild);
+    client.guilds._add(guild);
   }
 
   if (client.application) {

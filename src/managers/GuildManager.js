@@ -229,7 +229,7 @@ class GuildManager extends CachedManager {
           const timeout = this.client.setTimeout(() => {
             this.client.removeListener(Events.GUILD_CREATE, handleGuild);
             this.client.decrementMaxListeners();
-            resolve(this.client.guilds.add(data));
+            resolve(this.client.guilds._add(data));
           }, 10000);
           return undefined;
         }, reject),
@@ -265,7 +265,7 @@ class GuildManager extends CachedManager {
       }
 
       const data = await this.client.api.guilds(id).get({ query: { with_counts: true } });
-      return this.add(data, options.cache);
+      return this._add(data, options.cache);
     }
 
     const data = await this.client.api.users('@me').guilds.get({ query: options });

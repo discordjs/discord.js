@@ -30,8 +30,8 @@ class GuildMemberManager extends CachedManager {
    * @name GuildMemberManager#cache
    */
 
-  add(data, cache = true) {
-    return super.add(data, cache, { id: data.user.id, extras: [this.guild] });
+  _add(data, cache = true) {
+    return super._add(data, cache, { id: data.user.id, extras: [this.guild] });
   }
 
   /**
@@ -152,7 +152,7 @@ class GuildMemberManager extends CachedManager {
    */
   async search({ query, limit = 1, cache = true } = {}) {
     const data = await this.client.api.guilds(this.guild.id).members.search.get({ query: { query, limit } });
-    return data.reduce((col, member) => col.set(member.user.id, this.add(member, cache)), new Collection());
+    return data.reduce((col, member) => col.set(member.user.id, this._add(member, cache)), new Collection());
   }
 
   /**
@@ -193,7 +193,7 @@ class GuildMemberManager extends CachedManager {
 
     const clone = this.cache.get(id)?._clone();
     clone?._patch(d);
-    return clone ?? this.add(d, false);
+    return clone ?? this._add(d, false);
   }
 
   /**
@@ -326,7 +326,7 @@ class GuildMemberManager extends CachedManager {
       .guilds(this.guild.id)
       .members(user)
       .get()
-      .then(data => this.add(data, cache));
+      .then(data => this._add(data, cache));
   }
 
   _fetchMany({

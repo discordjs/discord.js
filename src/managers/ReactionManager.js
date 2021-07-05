@@ -18,8 +18,8 @@ class ReactionManager extends CachedManager {
     this.message = message;
   }
 
-  add(data, cache) {
-    return super.add(data, cache, { id: data.emoji.id ?? data.emoji.name, extras: [this.message] });
+  _add(data, cache) {
+    return super._add(data, cache, { id: data.emoji.id ?? data.emoji.name, extras: [this.message] });
   }
 
   /**

@@ -42,7 +42,7 @@ class GuildChannelManager extends CachedManager {
    * @name GuildChannelManager#cache
    */
 
-  add(channel) {
+  _add(channel) {
     const existing = this.cache.get(channel.id);
     if (existing) return existing;
     this.cache.set(channel.id, channel);
@@ -174,7 +174,7 @@ class GuildChannelManager extends CachedManager {
 
     const data = await this.client.api.guilds(this.guild.id).channels.get();
     const channels = new Collection();
-    for (const channel of data) channels.set(channel.id, this.client.channels.add(channel, this.guild, cache));
+    for (const channel of data) channels.set(channel.id, this.client.channels._add(channel, this.guild, cache));
     return channels;
   }
 }
