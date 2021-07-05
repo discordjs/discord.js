@@ -28,7 +28,7 @@ import {
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
-  Snowflake as APISnowflake,
+  Snowflake,
 } from 'discord-api-types/v8';
 import { EventEmitter } from 'events';
 import { Stream } from 'stream';
@@ -4109,7 +4109,7 @@ export interface ShardingManagerOptions {
   execArgv?: string[];
 }
 
-export type Snowflake = APISnowflake;
+export { Snowflake };
 
 export interface SplitOptions {
   maxLength?: number;
