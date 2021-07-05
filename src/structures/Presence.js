@@ -41,6 +41,7 @@ class Presence extends Base {
    */
   constructor(client, data = {}) {
     super(client);
+
     /**
      * The presence's user id
      * @type {Snowflake}
