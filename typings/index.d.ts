@@ -712,6 +712,9 @@ declare module 'discord.js' {
       STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
       STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate';
       STAGE_INSTANCE_DELETE: 'stageInstanceDelete';
+      GUILD_STICKER_CREATE: 'stickerCreate';
+      GUILD_STICKER_DELETE: 'stickerDelete';
+      GUILD_STICKER_UPDATE: 'stickerUpdate';
     };
     ShardEvents: {
       CLOSE: 'close';
@@ -899,6 +902,7 @@ declare module 'discord.js' {
     public readonly shard: WebSocketShard;
     public shardId: number;
     public stageInstances: StageInstanceManager;
+    public stickers: GuildStickerManager;
     public readonly systemChannel: TextChannel | null;
     public systemChannelFlags: Readonly<SystemChannelFlags>;
     public systemChannelId: Snowflake | null;
@@ -1895,6 +1899,9 @@ declare module 'discord.js' {
     public fetch(): Promise<Sticker>;
     public fetchPack(): Promise<StickerPack | null>;
     public fetchUser(): Promise<User | null>;
+    public edit(data?: GuildStickerEditData, reason?: string): Promise<Sticker>;
+    public delete(reason?: string): Promise<Sticker>;
+    public equals(other: Sticker | unknown): boolean;
     public readonly partial: boolean;
   }
 
@@ -2590,6 +2597,21 @@ declare module 'discord.js' {
     public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
   }
 
+  export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {
+    constructor(guild: Guild, iterable?: Iterable<any>);
+    public guild: Guild;
+    public create(
+      file: BufferResolvable | Stream | FileOptions | MessageAttachment,
+      name: string,
+      tags: string,
+      options?: GuildStickerCreateOptions,
+    ): Promise<Sticker>;
+    public edit(sticker: StickerResolvable, data?: GuildStickerEditData, reason?: string): Promise<Sticker>;
+    public delete(sticker: StickerResolvable, reason?: string): Promise<void>;
+    public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Sticker>;
+    public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Sticker>>;
+  }
+
   export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
     constructor(member: GuildMember);
     public readonly hoist: Role | null;
@@ -3176,6 +3198,9 @@ declare module 'discord.js' {
     stageInstanceCreate: [stageInstance: StageInstance];
     stageInstanceUpdate: [oldStageInstance: StageInstance | null, newStageInstance: StageInstance];
     stageInstanceDelete: [stageInstance: StageInstance];
+    stickerCreate: [sticker: Sticker];
+    stickerDelete: [sticker: Sticker];
+    stickerUpdate: [oldSticker: Sticker, newSticker: Sticker];
   }
 
   interface ClientOptions {
@@ -3591,6 +3616,17 @@ declare module 'discord.js' {
   interface GuildEmojiEditData {
     name?: string;
     roles?: Collection<Snowflake, Role> | RoleResolvable[];
+  }
+
+  interface GuildStickerCreateOptions {
+    description?: string | null;
+    reason?: string;
+  }
+
+  interface GuildStickerEditData {
+    name?: string;
+    description?: string | null;
+    tags?: string;
   }
 
   type GuildFeatures =
@@ -4521,7 +4557,8 @@ declare module 'discord.js' {
     | 'INTERACTION_CREATE'
     | 'STAGE_INSTANCE_CREATE'
     | 'STAGE_INSTANCE_UPDATE'
-    | 'STAGE_INSTANCE_DELETE';
+    | 'STAGE_INSTANCE_DELETE'
+    | 'GUILD_STICKERS_UPDATE';
 
   type Serialized<T> = T extends symbol | bigint | (() => unknown)
     ? never

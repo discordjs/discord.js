@@ -37,7 +37,7 @@ class GuildStickerManager extends BaseManager {
    * @param {string} name The name for the sticker
    * @param {string} tags The Discord name of a unicode emoji representing the sticker's expression
    * @param {Object} [options] Options
-   * @param {string} [options.description] The description for the sticker
+   * @param {?string} [options.description] The description for the sticker
    * @param {string} [options.reason] Reason for creating the sticker
    * @returns {Promise<Sticker>} The created sticker
    * @example

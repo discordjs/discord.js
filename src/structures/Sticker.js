@@ -167,7 +167,7 @@ class Sticker extends Base {
    * Data for editing a sticker.
    * @typedef {Object} GuildStickerEditData
    * @property {string} [name] The name of the sticker
-   * @property {string} [description] The description of the sticker
+   * @property {?string} [description] The description of the sticker
    * @property {string} [tags] The Discord name of a unicode emoji representing the sticker's expression
    */
 
