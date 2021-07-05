@@ -5,7 +5,6 @@ const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
-const Invite = require('./Invite');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
 const { Error, TypeError } = require('../errors');
@@ -13,6 +12,7 @@ const GuildApplicationCommandManager = require('../managers/GuildApplicationComm
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
+const GuildInviteManager = require('../managers/GuildInviteManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
 const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
@@ -90,6 +90,12 @@ class Guild extends AnonymousGuild {
      * @type {StageInstanceManager}
      */
     this.stageInstances = new StageInstanceManager(this);
+
+    /**
+     * A manager of the invites of this guild
+     * @type {GuildInviteManager}
+     */
+    this.invites = new GuildInviteManager(this);
 
     /**
      * Whether the bot has been removed from the guild
@@ -584,35 +590,6 @@ class Guild extends AnonymousGuild {
       .guilds(this.id)
       .templates.post({ data: { name, description } })
       .then(data => new GuildTemplate(this.client, data));
-  }
-
-  /**
-   * Fetches a collection of invites to this guild.
-   * Resolves with a collection mapping invites by their codes.
-   * @returns {Promise<Collection<string, Invite>>}
-   * @example
-   * // Fetch invites
-   * guild.fetchInvites()
-   *   .then(invites => console.log(`Fetched ${invites.size} invites`))
-   *   .catch(console.error);
-   * @example
-   * // Fetch invite creator by their id
-   * guild.fetchInvites()
-   *  .then(invites => console.log(invites.find(invite => invite.inviter.id === '84484653687267328')))
-   *  .catch(console.error);
-   */
-  fetchInvites() {
-    return this.client.api
-      .guilds(this.id)
-      .invites.get()
-      .then(inviteItems => {
-        const invites = new Collection();
-        for (const inviteItem of inviteItems) {
-          const invite = new Invite(this.client, inviteItem);
-          invites.set(invite.code, invite);
-        }
-        return invites;
-      });
   }
 
   /**

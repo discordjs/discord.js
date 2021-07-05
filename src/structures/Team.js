@@ -36,7 +36,7 @@ class Team extends Base {
 
     /**
      * The Team's owner id
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.ownerId = data.owner_user_id ?? null;
 

@@ -113,6 +113,10 @@ const Messages = {
 
   VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
 
+  INVITE_RESOLVE_CODE: 'Could not resolve the code to fetch the invite.',
+
+  INVITE_NOT_FOUND: 'Could not find the requested invite.',
+
   DELETE_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot delete them",
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
 
@@ -127,6 +131,8 @@ const Messages = {
   INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
   INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
   INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
+
+  INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 
   NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,
 };

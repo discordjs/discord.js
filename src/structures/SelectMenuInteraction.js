@@ -14,7 +14,7 @@ class SelectMenuInteraction extends MessageComponentInteraction {
      * The values selected, if the component which was interacted with was a select menu
      * @type {string[]}
      */
-    this.values = this.componentType === 'SELECT_MENU' ? data.data.values : null;
+    this.values = data.data.values ?? [];
   }
 }
 

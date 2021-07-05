@@ -1,20 +1,26 @@
-/// <reference path="index.d.ts" />
-
 import {
   Client,
   Collection,
+  DMChannel,
+  GuildMember,
   Intents,
   Message,
   MessageActionRow,
   MessageAttachment,
   MessageButton,
   MessageEmbed,
+  NewsChannel,
   Options,
+  PartialTextBasedChannelFields,
   Permissions,
   Serialized,
   ShardClientUtil,
   ShardingManager,
-} from 'discord.js';
+  TextBasedChannelFields,
+  TextChannel,
+  ThreadChannel,
+  User,
+} from '..';
 
 const client: Client = new Client({
   intents: Intents.NON_PRIVILEGED,
@@ -457,3 +463,27 @@ assertType<Promise<number[]>>(shardingManager.broadcastEval(() => 1));
 assertType<Promise<number[]>>(shardClientUtil.broadcastEval(() => 1));
 assertType<Promise<number[]>>(shardingManager.broadcastEval(async () => 1));
 assertType<Promise<number[]>>(shardClientUtil.broadcastEval(async () => 1));
+
+declare const dmChannel: DMChannel;
+declare const threadChannel: ThreadChannel;
+declare const newsChannel: NewsChannel;
+declare const textChannel: TextChannel;
+declare const user: User;
+declare const guildMember: GuildMember;
+
+// Test whether the structures implement send
+assertType<TextBasedChannelFields['send']>(dmChannel.send);
+assertType<TextBasedChannelFields>(threadChannel);
+assertType<TextBasedChannelFields>(newsChannel);
+assertType<TextBasedChannelFields>(textChannel);
+assertType<PartialTextBasedChannelFields>(user);
+assertType<PartialTextBasedChannelFields>(guildMember);
+
+assertType<Message | null>(dmChannel.lastMessage);
+assertType<Message | null>(threadChannel.lastMessage);
+assertType<Message | null>(newsChannel.lastMessage);
+assertType<Message | null>(textChannel.lastMessage);
+// @ts-expect-error
+assertType<never>(user.lastMessage);
+// @ts-expect-error
+assertType<never>(guildMember.lastMessage);
