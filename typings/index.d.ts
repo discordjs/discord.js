@@ -3556,6 +3556,7 @@ export type InviteScope =
   | 'applications.commands'
   | 'applications.entitlements'
   | 'applications.store.update'
+  | 'bot'
   | 'connections'
   | 'email'
   | 'identity'
