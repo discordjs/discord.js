@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
 const Sticker = require('../structures/Sticker');
@@ -8,11 +8,11 @@ const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for Guild Stickers and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class GuildStickerManager extends BaseManager {
+class GuildStickerManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, Sticker);
+    super(guild.client, Sticker, iterable);
 
     /**
      * The guild this manager belongs to
