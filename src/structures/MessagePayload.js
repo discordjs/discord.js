@@ -251,7 +251,7 @@ class MessagePayload {
    * @param {MessageTarget} target Target to send to
    * @param {string|MessageOptions|WebhookMessageOptions} options Options or content to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto specified options
-   * @returns {MessageOptions|WebhookMessageOptions}
+   * @returns {MessagePayload}
    */
   static create(target, options, extra = {}) {
     return new this(
