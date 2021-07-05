@@ -1276,6 +1276,7 @@ export class Permissions extends BitField<PermissionString, bigint> {
 export class Presence {
   public constructor(client: Client, data?: unknown);
   public activities: Activity[];
+  public readonly client: Client;
   public clientStatus: ClientPresenceStatusData | null;
   public guild: Guild | null;
   public readonly member: GuildMember | null;
