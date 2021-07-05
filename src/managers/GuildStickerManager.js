@@ -13,6 +13,7 @@ const Collection = require('../util/Collection');
 class GuildStickerManager extends BaseManager {
   constructor(guild, iterable) {
     super(guild.client, iterable, Sticker);
+
     /**
      * The guild this manager belongs to
      * @type {Guild}
@@ -79,8 +80,8 @@ class GuildStickerManager extends BaseManager {
    */
 
   /**
-   * Resolves an StickerResolvable to an Sticker ID string.
-   * @method resolveID
+   * Resolves an StickerResolvable to an Sticker id string.
+   * @method resolveId
    * @memberof GuildStickerManager
    * @instance
    * @param {StickerResolvable} sticker The Sticker resolvable to identify
@@ -95,15 +96,15 @@ class GuildStickerManager extends BaseManager {
    * @returns {Promise<Sticker>}
    */
   async edit(sticker, data, reason) {
-    const stickerID = this.resolveID(sticker);
+    const stickerId = this.resolveId(sticker);
     if (!stickerID) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
 
-    const d = await this.client.api.guilds(this.guild.id).stickers(stickerID).patch({
+    const d = await this.client.api.guilds(this.guild.id).stickers(stickerId).patch({
       data,
       reason,
     });
 
-    const existing = this.cache.get(stickerID);
+    const existing = this.cache.get(stickerId);
     if (existing) {
       const clone = existing._clone();
       clone._patch(d);
@@ -119,7 +120,7 @@ class GuildStickerManager extends BaseManager {
    * @returns {Promise<void>}
    */
   async delete(sticker, reason) {
-    sticker = this.resolveID(sticker);
+    sticker = this.resolveId(sticker);
     if (!sticker) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
 
     await this.client.api.guilds(this.guild.id).stickers(sticker).delete({ reason });
@@ -127,7 +128,7 @@ class GuildStickerManager extends BaseManager {
 
   /**
    * Obtains one or more stickers from Discord, or the sticker cache if they're already available.
-   * @param {Snowflake} [id] ID of the sticker
+   * @param {Snowflake} [id] The Sticker's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<Sticker|Collection<Snowflake, Sticker>>}
    * @example

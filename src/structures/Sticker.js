@@ -21,7 +21,7 @@ class Sticker extends Base {
 
   _patch(sticker) {
     /**
-     * The ID of the sticker
+     * The Sticker's id
      * @type {Snowflake}
      */
     this.id = sticker.id;
@@ -51,10 +51,10 @@ class Sticker extends Base {
     this.name = sticker.name;
 
     /**
-     * The ID of the pack the sticker is from, for standard stickers
+     * The id of the pack the sticker is from, for standard stickers
      * @type {?Snowflake}
      */
-    this.packID = sticker.pack_id ?? null;
+    this.packId = sticker.pack_id ?? null;
 
     /**
      * An array of tags for the sticker
@@ -69,10 +69,10 @@ class Sticker extends Base {
     this.available = sticker.available ?? null;
 
     /**
-     * The ID of the guild that owns this sticker
+     * The id of the guild that owns this sticker
      * @type {?Snowflake}
      */
-    this.guildID = sticker.guild_id ?? null;
+    this.guildId = sticker.guild_id ?? null;
 
     /**
      * The user that uploaded the guild sticker
@@ -120,7 +120,7 @@ class Sticker extends Base {
    * @readonly
    */
   get guild() {
-    return this.client.guilds.resolve(this.guildID);
+    return this.client.guilds.resolve(this.guildId);
   }
 
   /**
@@ -147,7 +147,7 @@ class Sticker extends Base {
    * @returns {Promise<?StickerPack>}
    */
   async fetchPack() {
-    return (this.packID && (await this.client.fetchPremiumStickerPacks()).get(this.packID)) ?? null;
+    return (this.packId && (await this.client.fetchPremiumStickerPacks()).get(this.packId)) ?? null;
   }
 
   /**
@@ -158,7 +158,7 @@ class Sticker extends Base {
     if (this.partial) await this.fetch();
     if (!this.guildID) throw new Error('NOT_GUILD_STICKER');
 
-    const data = await this.client.api.guilds(this.guildID).stickers(this.id).get();
+    const data = await this.client.api.guilds(this.guildId).stickers(this.id).get();
     this._patch(data);
     return this.user;
   }
@@ -214,11 +214,11 @@ class Sticker extends Base {
         other.type === this.type &&
         other.format === this.format &&
         other.name === this.name &&
-        other.packID === this.packID &&
+        other.packId === this.packId &&
         other.tags.length === this.tags.length &&
         other.tags.every(tag => this.tags.includes(tag)) &&
         other.available === this.available &&
-        other.guildID === this.guildID &&
+        other.guildId === this.guildId &&
         other.sortValue === this.sortValue
       );
     } else {

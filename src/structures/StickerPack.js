@@ -17,7 +17,7 @@ class StickerPack extends Base {
   constructor(client, pack) {
     super(client);
     /**
-     * The ID of the sticker pack
+     * The Sticker pack's id
      * @type {Snowflake}
      */
     this.id = pack.id;
@@ -35,16 +35,16 @@ class StickerPack extends Base {
     this.name = pack.name;
 
     /**
-     * The ID of the pack's SKU
+     * The id of the pack's SKU
      * @type {Snowflake}
      */
-    this.skuID = pack.sku_id;
+    this.skuId = pack.sku_id;
 
     /**
-     * The ID of a sticker in the pack which is shown as the pack's icon
+     * The id of a sticker in the pack which is shown as the pack's icon
      * @type {?Snowflake}
      */
-    this.coverStickerID = pack.cover_sticker_id ?? null;
+    this.coverStickerId = pack.cover_sticker_id ?? null;
 
     /**
      * The description of the sticker pack
@@ -53,10 +53,10 @@ class StickerPack extends Base {
     this.description = pack.description;
 
     /**
-     * The ID of the sticker pack's banner image
+     * The id of the sticker pack's banner image
      * @type {Snowflake}
      */
-    this.bannerID = pack.banner_asset_id;
+    this.bannerId = pack.banner_asset_id;
   }
 
   /**
@@ -83,7 +83,7 @@ class StickerPack extends Base {
    * @readonly
    */
   get coverSticker() {
-    return this.coverStickerID && this.stickers.get(this.coverStickerID);
+    return this.coverStickerId && this.stickers.get(this.coverStickerId);
   }
 
   /**
@@ -92,7 +92,7 @@ class StickerPack extends Base {
    * @returns {string}
    */
   bannerURL({ format, size } = {}) {
-    return this.client.rest.cdn.StickerPackBanner(this.bannerID, format, size);
+    return this.client.rest.cdn.StickerPackBanner(this.bannerId, format, size);
   }
 }
 

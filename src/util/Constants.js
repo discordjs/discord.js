@@ -170,8 +170,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
       AppAsset: (clientID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/app-assets/${clientID}/${hash}`, { size, format }),
-      StickerPackBanner: (bannerID, format = 'webp', size) =>
-        makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerID}`, { size, format }),
+      StickerPackBanner: (bannerId, format = 'webp', size) =>
+        makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerId}`, { size, format }),
       GDMIcon: (channelID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
       Splash: (guildID, hash, format = 'webp', size) =>
@@ -180,8 +180,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/discovery-splashes/${guildID}/${hash}`, { size, format }),
       TeamIcon: (teamID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
-      Sticker: (stickerID, stickerFormat) =>
-        `${root}/stickers/${stickerID}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
+      Sticker: (stickerId, stickerFormat) =>
+        `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
     };
   },
   invite: (root, code) => `${root}/${code}`,

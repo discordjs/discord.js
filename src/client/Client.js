@@ -307,7 +307,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains a sticker from Discord.
-   * @param {Snowflake} id The sticker's ID
+   * @param {Snowflake} id The sticker's id
    * @returns {Promise<Sticker>}
    * @example
    * client.fetchSticker('id')

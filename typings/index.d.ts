@@ -637,7 +637,7 @@ declare module 'discord.js' {
         ) => string;
         AppIcon: (userID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
         AppAsset: (userID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-        StickerPackBanner: (bannerID: Snowflake, format: AllowedImageFormat, size: number) => string;
+        StickerPackBanner: (bannerId: Snowflake, format: AllowedImageFormat, size: number) => string;
         GDMIcon: (userID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
         Splash: (guildID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
         DiscoverySplash: (
@@ -647,7 +647,7 @@ declare module 'discord.js' {
           size: number,
         ) => string;
         TeamIcon: (teamID: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-        Sticker: (stickerID: Snowflake, stickerFormat: StickerFormatType) => string;
+        Sticker: (stickerId: Snowflake, stickerFormat: StickerFormatType) => string;
       };
     };
     WSCodes: {
@@ -1916,10 +1916,10 @@ declare module 'discord.js' {
     public description: string | null;
     public format: StickerFormatType;
     public readonly guild: Guild | null;
-    public guildID: Snowflake | null;
+    public guildId: Snowflake | null;
     public id: Snowflake;
     public name: string;
-    public packID: Snowflake | null;
+    public packId: Snowflake | null;
     public sortValue: number | null;
     public tags: string[] | null;
     public type: StickerType | null;
@@ -1935,13 +1935,13 @@ declare module 'discord.js' {
     constructor(client: Client, data: unknown);
     public readonly createdTimestamp: number;
     public readonly createdAt: Date;
-    public bannerID: Snowflake;
+    public bannerId: Snowflake;
     public readonly coverSticker: Sticker | null;
-    public coverStickerID: Snowflake | null;
+    public coverStickerId: Snowflake | null;
     public description: string;
     public id: Snowflake;
     public name: string;
-    public skuID: Snowflake;
+    public skuId: Snowflake;
     public stickers: Collection<Snowflake, Sticker>;
     public bannerURL(options?: StaticImageURLOptions): string;
   }
