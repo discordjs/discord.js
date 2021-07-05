@@ -8,7 +8,7 @@ const DataResolver = require('../util/DataResolver');
 
 /**
  * Manages API methods for GuildInvites and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
 class GuildInviteManager extends CachedManager {
   constructor(guild, iterable) {
