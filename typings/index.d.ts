@@ -59,7 +59,7 @@ import {
 
 //#region Classes
 
-export class Activity extends Base {
+export class Activity {
   public constructor(presence: Presence, data?: unknown);
   public applicationId: Snowflake | null;
   public assets: RichPresenceAssets | null;
@@ -105,7 +105,7 @@ export abstract class AnonymousGuild extends BaseGuild {
   public splashURL(options?: StaticImageURLOptions): string | null;
 }
 
-export abstract class Application {
+export abstract class Application extends Base {
   public constructor(client: Client, data: unknown);
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
