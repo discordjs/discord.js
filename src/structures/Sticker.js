@@ -222,7 +222,12 @@ class Sticker extends Base {
         other.sortValue === this.sortValue
       );
     } else {
-      return other.id === this.id && other.description === this.description && other.name === this.name;
+      return (
+        other.id === this.id &&
+        other.description === this.description &&
+        other.name === this.name &&
+        other.tags === this.tags.join(', ')
+      );
     }
   }
 }
