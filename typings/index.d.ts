@@ -911,6 +911,11 @@ export class InviteGuild extends AnonymousGuild {
   public welcomeScreen: WelcomeScreen | null;
 }
 
+export class LimitedCollection<K, V> extends Collection<K, V> {
+  public constructor(maxSize?: number, iterable?: Iterable<readonly [K, V]>);
+  public maxSize: number;
+}
+
 export class Message extends Base {
   public constructor(client: Client, data: unknown, channel: TextChannel | DMChannel | NewsChannel | ThreadChannel);
   private patch(data: unknown): Message;
