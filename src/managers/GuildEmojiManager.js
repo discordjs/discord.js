@@ -59,7 +59,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       }
       data.roles = [];
       for (const role of roles.values()) {
-        const resolvedRole = this.guild.roles.resolveID(role);
+        const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
         data.roles.push(resolvedRole);
       }
@@ -73,7 +73,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
 
   /**
    * Obtains one or more emojis from Discord, or the emoji cache if they're already available.
-   * @param {Snowflake} [id] ID of the emoji
+   * @param {Snowflake} [id] The emoji's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<GuildEmoji|Collection<Snowflake, GuildEmoji>>}
    * @example

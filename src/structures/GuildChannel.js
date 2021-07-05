@@ -1,7 +1,6 @@
 'use strict';
 
 const Channel = require('./Channel');
-const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
@@ -35,7 +34,7 @@ class GuildChannel extends Channel {
      */
     this.guild = guild;
 
-    this.parentID = this.parentID ?? null;
+    this.parentId = this.parentId ?? null;
     /**
      * A manager of permission overwrites that belong to this channel
      * @type {PermissionOverwriteManager}
@@ -66,10 +65,10 @@ class GuildChannel extends Channel {
 
     if ('parent_id' in data) {
       /**
-       * The ID of the category parent of this channel
+       * The id of the category parent of this channel
        * @type {?Snowflake}
        */
-      this.parentID = data.parent_id;
+      this.parentId = data.parent_id;
     }
 
     if ('permission_overwrites' in data) {
@@ -86,7 +85,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get parent() {
-    return this.guild.channels.resolve(this.parentID);
+    return this.guild.channels.resolve(this.parentId);
   }
 
   /**
@@ -185,7 +184,7 @@ class GuildChannel extends Channel {
    * @private
    */
   memberPermissions(member) {
-    if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
+    if (member.id === this.guild.ownerId) return new Permissions(Permissions.ALL).freeze();
 
     const roles = member.roles.cache;
     const permissions = new Permissions(roles.map(role => role.permissions));
@@ -235,7 +234,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * A collection of cached members of this channel, mapped by their ID.
+   * A collection of cached members of this channel, mapped by their ids.
    * Members that can view this channel, if the channel is text based.
    * Members in the channel, if the channel is voice based.
    * @type {Collection<Snowflake, GuildMember>}
@@ -261,7 +260,7 @@ class GuildChannel extends Channel {
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
-   * @property {?Snowflake} [parentID] The parent ID of the channel
+   * @property {?Snowflake} [parentId] The parent's id of the channel
    * @property {boolean} [lockPermissions]
    * Lock the permissions of the channel to what the parent's permissions are
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
@@ -307,8 +306,8 @@ class GuildChannel extends Channel {
     }
 
     if (data.lockPermissions) {
-      if (data.parentID) {
-        const newParent = this.guild.channels.resolve(data.parentID);
+      if (data.parentId) {
+        const newParent = this.guild.channels.resolve(data.parentId);
         if (newParent?.type === 'category') {
           permission_overwrites = newParent.permissionOverwrites.cache.map(o =>
             PermissionOverwrites.resolve(o, this.guild),
@@ -330,7 +329,7 @@ class GuildChannel extends Channel {
         bitrate: data.bitrate ?? this.bitrate,
         user_limit: data.userLimit ?? this.userLimit,
         rtc_region: data.rtcRegion ?? this.rtcRegion,
-        parent_id: data.parentID,
+        parent_id: data.parentId,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: data.defaultAutoArchiveDuration,
@@ -379,7 +378,7 @@ class GuildChannel extends Channel {
     return this.edit(
       {
         // eslint-disable-next-line no-prototype-builtins
-        parentID: channel?.id ?? channel ?? null,
+        parentId: channel?.id ?? channel ?? null,
         lockPermissions,
       },
       reason,
@@ -470,46 +469,18 @@ class GuildChannel extends Channel {
    *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
    *   .catch(console.error);
    */
-  createInvite({
-    temporary = false,
-    maxAge = 86400,
-    maxUses = 0,
-    unique,
-    targetUser,
-    targetApplication,
-    targetType,
-    reason,
-  } = {}) {
-    return this.client.api
-      .channels(this.id)
-      .invites.post({
-        data: {
-          temporary,
-          max_age: maxAge,
-          max_uses: maxUses,
-          unique,
-          target_user_id: this.client.users.resolveID(targetUser),
-          target_application_id: targetApplication?.id ?? targetApplication?.applicationID ?? targetApplication,
-          target_type: targetType,
-        },
-        reason,
-      })
-      .then(invite => new Invite(this.client, invite));
+  createInvite(options) {
+    return this.guild.invites.create(this.id, options);
   }
 
   /**
    * Fetches a collection of invites to this guild channel.
    * Resolves with a collection mapping invites by their codes.
+   * @param {boolean} [cache=true] Whether or not to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
-  async fetchInvites() {
-    const inviteItems = await this.client.api.channels(this.id).invites.get();
-    const invites = new Collection();
-    for (const inviteItem of inviteItems) {
-      const invite = new Invite(this.client, inviteItem);
-      invites.set(invite.code, invite);
-    }
-    return invites;
+  fetchInvites(cache = true) {
+    return this.guild.invites.fetch({ channelID: this.id, cache });
   }
 
   /**
@@ -540,7 +511,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
+   * Checks if this channel has the same type, topic, position, name, overwrites, and id as another channel.
    * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
    * @param {GuildChannel} channel Channel to compare with
    * @returns {boolean}
@@ -573,8 +544,8 @@ class GuildChannel extends Channel {
   get deletable() {
     return (
       this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) &&
-      this.guild.rulesChannelID !== this.id &&
-      this.guild.publicUpdatesChannelID !== this.id
+      this.guild.rulesChannelId !== this.id &&
+      this.guild.publicUpdatesChannelId !== this.id
     );
   }
 
@@ -584,7 +555,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get manageable() {
-    if (this.client.user.id === this.guild.ownerID) return true;
+    if (this.client.user.id === this.guild.ownerId) return true;
     if (this.type === 'voice' || this.type === 'stage') {
       if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) {
         return false;
@@ -601,7 +572,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get viewable() {
-    if (this.client.user.id === this.guild.ownerID) return true;
+    if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
     return permissions.has(Permissions.FLAGS.VIEW_CHANNEL, false);

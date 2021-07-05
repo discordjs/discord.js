@@ -50,7 +50,7 @@ class Channel extends Base {
 
   _patch(data) {
     /**
-     * The unique ID of the channel
+     * The channel's id
      * @type {Snowflake}
      */
     this.id = data.id;

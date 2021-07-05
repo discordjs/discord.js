@@ -28,7 +28,7 @@
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
+ * @property {number|number[]|string} [shards] The shard's id to run, or an array of shard ids. If not specified,
  * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
  * recommended amount of shards from Discord and spawn that amount
  * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot

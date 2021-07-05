@@ -30,7 +30,7 @@ class Role extends Base {
 
   _patch(data) {
     /**
-     * The ID of the role (unique to the guild it is part of)
+     * The role's id (unique to the guild it is part of)
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -86,17 +86,17 @@ class Role extends Base {
     /**
      * The tags this role has
      * @type {?Object}
-     * @property {Snowflake} [botID] The id of the bot this role belongs to
-     * @property {Snowflake} [integrationID] The id of the integration this role belongs to
+     * @property {Snowflake} [botId] The id of the bot this role belongs to
+     * @property {Snowflake} [integrationId] The id of the integration this role belongs to
      * @property {true} [premiumSubscriberRole] Whether this is the guild's premium subscription role
      */
     this.tags = data.tags ? {} : null;
     if (data.tags) {
       if ('bot_id' in data.tags) {
-        this.tags.botID = data.tags.bot_id;
+        this.tags.botId = data.tags.bot_id;
       }
       if ('integration_id' in data.tags) {
-        this.tags.integrationID = data.tags.integration_id;
+        this.tags.integrationId = data.tags.integration_id;
       }
       if ('premium_subscriber' in data.tags) {
         this.tags.premiumSubscriberRole = true;

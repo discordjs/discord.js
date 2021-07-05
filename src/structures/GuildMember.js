@@ -35,18 +35,6 @@ class GuildMember extends Base {
     this.joinedTimestamp = null;
 
     /**
-     * The ID of the last message sent by the member in their guild, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageID = null;
-
-    /**
-     * The ID of the channel for the last message sent by the member in their guild, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageChannelID = null;
-
-    /**
      * The timestamp of when the member used their Nitro boost on the guild, if it was used
      * @type {?number}
      */
@@ -117,15 +105,6 @@ class GuildMember extends Base {
   }
 
   /**
-   * The Message object of the last message sent by the member in their guild, if one was sent
-   * @type {?Message}
-   * @readonly
-   */
-  get lastMessage() {
-    return this.guild.channels.resolve(this.lastMessageChannelID)?.messages.resolve(this.lastMessageID) ?? null;
-  }
-
-  /**
    * The voice state of this member
    * @type {VoiceState}
    * @readonly
@@ -188,7 +167,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The ID of this member
+   * The member's id
    * @type {Snowflake}
    * @readonly
    */
@@ -211,7 +190,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
+    if (this.user.id === this.guild.ownerId) return new Permissions(Permissions.ALL).freeze();
     return new Permissions(this.roles.cache.map(role => role.permissions)).freeze();
   }
 
@@ -222,9 +201,9 @@ class GuildMember extends Base {
    * @readonly
    */
   get manageable() {
-    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.guild.ownerId) return false;
     if (this.user.id === this.client.user.id) return false;
-    if (this.client.user.id === this.guild.ownerID) return true;
+    if (this.client.user.id === this.guild.ownerId) return true;
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
     return this.guild.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }
@@ -263,7 +242,7 @@ class GuildMember extends Base {
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {?string} [nick] The nickname to set for the member
-   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role IDs to apply
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
    * @property {ChannelResolvable|null} [channel] Channel to move member to (if they are connected to voice), or `null`
@@ -352,8 +331,6 @@ class GuildMember extends Base {
       this.partial === member.partial &&
       this.guild.id === member.guild.id &&
       this.joinedTimestamp === member.joinedTimestamp &&
-      this.lastMessageID === member.lastMessageID &&
-      this.lastMessageChannelID === member.lastMessageChannelID &&
       this.nickname === member.nickname &&
       this.pending === member.pending &&
       (this._roles === member._roles ||
@@ -374,11 +351,9 @@ class GuildMember extends Base {
 
   toJSON() {
     return super.toJSON({
-      guild: 'guildID',
-      user: 'userID',
+      guild: 'guildId',
+      user: 'userId',
       displayName: true,
-      lastMessage: false,
-      lastMessageID: false,
       roles: true,
     });
   }

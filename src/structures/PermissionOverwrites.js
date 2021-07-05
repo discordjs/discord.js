@@ -27,7 +27,7 @@ class PermissionOverwrites extends Base {
 
   _patch(data) {
     /**
-     * The ID of this overwrite, either a user ID or a role ID
+     * The overwrite's id, either a {@link User} or a {@link Role} id
      * @type {Snowflake}
      */
     this.id = data.id;

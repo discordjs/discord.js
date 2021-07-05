@@ -22,7 +22,7 @@ class BaseGuildEmojiManager extends CachedManager {
 
   /**
    * Data that can be resolved into a GuildEmoji object. This can be:
-   * * A custom emoji ID
+   * * A custom emoji identifier
    * * A GuildEmoji object
    * * A ReactionEmoji object
    * @typedef {Snowflake|GuildEmoji|ReactionEmoji} EmojiResolvable
@@ -39,13 +39,13 @@ class BaseGuildEmojiManager extends CachedManager {
   }
 
   /**
-   * Resolves an EmojiResolvable to an Emoji ID string.
+   * Resolves an EmojiResolvable to an Emoji id string.
    * @param {EmojiResolvable} emoji The Emoji resolvable to identify
    * @returns {?Snowflake}
    */
-  resolveID(emoji) {
+  resolveId(emoji) {
     if (emoji instanceof ReactionEmoji) return emoji.id;
-    return super.resolveID(emoji);
+    return super.resolveId(emoji);
   }
 
   /**

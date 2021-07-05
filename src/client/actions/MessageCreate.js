@@ -13,17 +13,7 @@ class MessageCreateAction extends Action {
       const existing = channel.messages.cache.get(data.id);
       if (existing) return { message: existing };
       const message = channel.messages.add(data);
-      const user = message.author;
-      const member = message.member;
-      channel.lastMessageID = data.id;
-      if (user) {
-        user.lastMessageID = data.id;
-        user.lastMessageChannelID = channel.id;
-      }
-      if (member) {
-        member.lastMessageID = data.id;
-        member.lastMessageChannelID = channel.id;
-      }
+      channel.lastMessageId = data.id;
 
       /**
        * Emitted whenever a message is created.

@@ -18,7 +18,7 @@ class Application extends Base {
 
   _patch(data) {
     /**
-     * The ID of the application
+     * The application's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -83,9 +83,9 @@ class Application extends Base {
   /**
    * Asset data.
    * @typedef {Object} ApplicationAsset
-   * @property {Snowflake} id The asset ID
-   * @property {string} name The asset name
-   * @property {string} type The asset type
+   * @property {Snowflake} id The asset's id
+   * @property {string} name The asset's name
+   * @property {string} type The asset's type
    */
 
   /**

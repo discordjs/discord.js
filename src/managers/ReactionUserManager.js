@@ -34,7 +34,7 @@ class ReactionUserManager extends CachedManager {
    */
 
   /**
-   * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
+   * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their ids.
    * @param {FetchReactionUsersOptions} [options] Options for fetching the users
    * @returns {Promise<Collection<Snowflake, User>>}
    */
@@ -58,11 +58,11 @@ class ReactionUserManager extends CachedManager {
    * @returns {Promise<MessageReaction>}
    */
   remove(user = this.client.user) {
-    const userID = this.client.users.resolveID(user);
-    if (!userID) return Promise.reject(new Error('REACTION_RESOLVE_USER'));
+    const userId = this.client.users.resolveId(user);
+    if (!userId) return Promise.reject(new Error('REACTION_RESOLVE_USER'));
     const message = this.reaction.message;
     return this.client.api.channels[message.channel.id].messages[message.id].reactions[this.reaction.emoji.identifier][
-      userID === this.client.user.id ? '@me' : userID
+      userId === this.client.user.id ? '@me' : userId
     ]
       .delete()
       .then(() => this.reaction);

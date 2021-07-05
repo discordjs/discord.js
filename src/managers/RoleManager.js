@@ -34,7 +34,7 @@ class RoleManager extends CachedManager {
 
   /**
    * Obtains a role from Discord, or the role cache if they're already available.
-   * @param {Snowflake} [id] ID of the role
+   * @param {Snowflake} [id] The role's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Role|Collection<Snowflake, Role>>}
    * @example
@@ -69,7 +69,7 @@ class RoleManager extends CachedManager {
    */
 
   /**
-   * Resolves a RoleResolvable to a Role object.
+   * Resolves a {@link RoleResolvable} to a {@link Role} object.
    * @method resolve
    * @memberof RoleManager
    * @instance
@@ -78,8 +78,8 @@ class RoleManager extends CachedManager {
    */
 
   /**
-   * Resolves a RoleResolvable to a role ID string.
-   * @method resolveID
+   * Resolves a {@link RoleResolvable} to a {@link Role} id.
+   * @method resolveId
    * @memberof RoleManager
    * @instance
    * @param {RoleResolvable} role The role resolvable to resolve
@@ -199,9 +199,9 @@ class RoleManager extends CachedManager {
    * @returns {?Role}
    */
   botRoleFor(user) {
-    const userID = this.client.users.resolveID(user);
-    if (!userID) return null;
-    return this.cache.find(role => role.tags?.botID === userID) ?? null;
+    const userId = this.client.users.resolveId(user);
+    if (!userId) return null;
+    return this.cache.find(role => role.tags?.botId === userId) ?? null;
   }
 
   /**

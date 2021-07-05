@@ -44,27 +44,27 @@ class ThreadMemberManager extends CachedManager {
    */
 
   /**
-   * Resolves a ThreadMemberResolvable to a ThreadMember object.
+   * Resolves a {@link ThreadMemberResolvable} to a {@link ThreadMember} object.
    * @param {ThreadMemberResolvable} member The user that is part of the thread
    * @returns {?GuildMember}
    */
   resolve(member) {
     const memberResolvable = super.resolve(member);
     if (memberResolvable) return memberResolvable;
-    const userResolvable = this.client.users.resolveID(member);
+    const userResolvable = this.client.users.resolveId(member);
     if (userResolvable) return super.resolve(userResolvable);
     return null;
   }
 
   /**
-   * Resolves a ThreadMemberResolvable to a thread member ID string.
+   * Resolves a {@link ThreadMemberResolvable} to a {@link ThreadMember} id string.
    * @param {ThreadMemberResolvable} member The user that is part of the guild
    * @returns {?Snowflake}
    */
-  resolveID(member) {
-    const memberResolvable = super.resolveID(member);
+  resolveId(member) {
+    const memberResolvable = super.resolveId(member);
     if (memberResolvable) return memberResolvable;
-    const userResolvable = this.client.users.resolveID(member);
+    const userResolvable = this.client.users.resolveId(member);
     return this.cache.has(userResolvable) ? userResolvable : null;
   }
 
@@ -75,7 +75,7 @@ class ThreadMemberManager extends CachedManager {
    * @returns {Promise<Snowflake>}
    */
   add(member, reason) {
-    const id = member === '@me' ? member : this.client.users.resolveID(member);
+    const id = member === '@me' ? member : this.client.users.resolveId(member);
     if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'member', 'UserResolvable'));
     return this.client.api
       .channels(this.thread.id, 'thread-members', id)

@@ -128,8 +128,8 @@ class InteractionCollector extends Collector {
     if (this.interactionType && interaction.type !== this.interactionType) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.message && interaction.message?.id !== this.message.id) return null;
-    if (this.channel && interaction.channelID !== this.channel.id) return null;
-    if (this.guild && interaction.guildID !== this.guild.id) return null;
+    if (this.channel && interaction.channelId !== this.channel.id) return null;
+    if (this.guild && interaction.guildId !== this.guild.id) return null;
 
     return interaction.id;
   }
@@ -148,8 +148,8 @@ class InteractionCollector extends Collector {
     if (this.type && interaction.type !== this.type) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.message && interaction.message?.id !== this.message.id) return null;
-    if (this.channel && interaction.channelID !== this.channel.id) return null;
-    if (this.guild && interaction.guildID !== this.guild.id) return null;
+    if (this.channel && interaction.channelId !== this.channel.id) return null;
+    if (this.guild && interaction.guildId !== this.guild.id) return null;
 
     return interaction.id;
   }

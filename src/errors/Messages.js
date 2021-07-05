@@ -48,9 +48,9 @@ const Messages = {
 
   BUTTON_LABEL: 'MessageButton label must be a string',
   BUTTON_URL: 'MessageButton url must be a string',
-  BUTTON_CUSTOM_ID: 'MessageButton customID must be a string',
+  BUTTON_CUSTOM_ID: 'MessageButton customId must be a string',
 
-  SELECT_MENU_CUSTOM_ID: 'MessageSelectMenu customID must be a string',
+  SELECT_MENU_CUSTOM_ID: 'MessageSelectMenu customId must be a string',
   SELECT_MENU_PLACEHOLDER: 'MessageSelectMenu placeholder must be a string',
   SELECT_OPTION_LABEL: 'MessageSelectOption label must be a string',
   SELECT_OPTION_VALUE: 'MessageSelectOption value must be a string',
@@ -82,8 +82,8 @@ const Messages = {
 
   SPLIT_MAX_LEN: 'Chunk exceeds the max length and contains no split characters.',
 
-  BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user ID to ${ban ? 'ban' : 'unban'}.`,
-  FETCH_BAN_RESOLVE_ID: "Couldn't resolve the user ID to fetch the ban.",
+  BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user id to ${ban ? 'ban' : 'unban'}.`,
+  FETCH_BAN_RESOLVE_ID: "Couldn't resolve the user id to fetch the ban.",
 
   PRUNE_DAYS_TYPE: 'Days must be a number',
 
@@ -109,9 +109,13 @@ const Messages = {
   MISSING_MANAGE_EMOJIS_PERMISSION: guild =>
     `Client must have Manage Emoji permission in guild ${guild} to see emoji authors.`,
 
-  REACTION_RESOLVE_USER: "Couldn't resolve the user ID to remove from the reaction.",
+  REACTION_RESOLVE_USER: "Couldn't resolve the user id to remove from the reaction.",
 
   VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
+
+  INVITE_RESOLVE_CODE: 'Could not resolve the code to fetch the invite.',
+
+  INVITE_NOT_FOUND: 'Could not find the requested invite.',
 
   DELETE_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot delete them",
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
@@ -121,12 +125,14 @@ const Messages = {
   GLOBAL_COMMAND_PERMISSIONS:
     'Permissions for global commands may only be fetched or modified by providing a GuildResolvable ' +
     "or from a guild's application command manager.",
-  GUILD_UNCACHED_ROLE_RESOLVE: 'Cannot resolve roles from an arbitrary guild, provide an ID instead',
+  GUILD_UNCACHED_ROLE_RESOLVE: 'Cannot resolve roles from an arbitrary guild, provide an id instead',
 
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
   INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
   INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
   INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
+
+  INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 
   NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,
 };

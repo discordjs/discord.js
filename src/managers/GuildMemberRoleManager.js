@@ -84,7 +84,7 @@ class GuildMemberRoleManager extends DataManager {
    */
   get botRole() {
     if (!this.member.user.bot) return null;
-    return this.cache.find(role => role.tags?.botID === this.member.user.id) ?? null;
+    return this.cache.find(role => role.tags?.botId === this.member.user.id) ?? null;
   }
 
   /**
@@ -97,7 +97,7 @@ class GuildMemberRoleManager extends DataManager {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
-        const resolvedRole = this.guild.roles.resolveID(role);
+        const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
@@ -105,7 +105,7 @@ class GuildMemberRoleManager extends DataManager {
       const newRoles = [...new Set(resolvedRoles.concat(...this.cache.values()))];
       return this.set(newRoles, reason);
     } else {
-      roleOrRoles = this.guild.roles.resolveID(roleOrRoles);
+      roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
       if (roleOrRoles === null) {
         throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snowflake or Array or Collection of Roles or Snowflakes');
       }
@@ -128,7 +128,7 @@ class GuildMemberRoleManager extends DataManager {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
-        const resolvedRole = this.guild.roles.resolveID(role);
+        const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
@@ -136,7 +136,7 @@ class GuildMemberRoleManager extends DataManager {
       const newRoles = this.cache.filter(role => !resolvedRoles.includes(role.id));
       return this.set(newRoles, reason);
     } else {
-      roleOrRoles = this.guild.roles.resolveID(roleOrRoles);
+      roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
       if (roleOrRoles === null) {
         throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snwoflake or Array or Collection of Roles or Snowflakes');
       }
@@ -152,7 +152,7 @@ class GuildMemberRoleManager extends DataManager {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role ids to apply
    * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
    * @example

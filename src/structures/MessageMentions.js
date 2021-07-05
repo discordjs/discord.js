@@ -95,10 +95,10 @@ class MessageMentions {
     /**
      * Crossposted channel data.
      * @typedef {Object} CrosspostedChannel
-     * @property {string} channelID ID of the mentioned channel
-     * @property {string} guildID ID of the guild that has the channel
-     * @property {string} type Type of the channel
-     * @property {string} name The name of the channel
+     * @property {string} channelId The mentioned channel's id
+     * @property {string} guildId The id of the guild that has the channel
+     * @property {string} type The channel's type
+     * @property {string} name The channel's name
      */
 
     if (crosspostedChannels) {
@@ -115,8 +115,8 @@ class MessageMentions {
         for (const d of crosspostedChannels) {
           const type = channelTypes[d.type];
           this.crosspostedChannels.set(d.id, {
-            channelID: d.id,
-            guildID: d.guild_id,
+            channelId: d.id,
+            guildId: d.guild_id,
             type: type?.toLowerCase() ?? 'unknown',
             name: d.name,
           });
@@ -191,7 +191,7 @@ class MessageMentions {
 
     if (!ignoreDirect) {
       const id =
-        this.guild?.roles.resolveID(data) ?? this.client.channels.resolveID(data) ?? this.client.users.resolveID(data);
+        this.guild?.roles.resolveId(data) ?? this.client.channels.resolveId(data) ?? this.client.users.resolveId(data);
 
       return typeof id === 'string' && (this.users.has(id) || this.channels.has(id) || this.roles.has(id));
     }
