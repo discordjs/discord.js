@@ -1273,10 +1273,9 @@ export class Permissions extends BitField<PermissionString, bigint> {
   public static resolve(permission?: PermissionResolvable): bigint;
 }
 
-export class Presence {
+export class Presence extends Base {
   public constructor(client: Client, data?: unknown);
   public activities: Activity[];
-  public readonly client: Client;
   public clientStatus: ClientPresenceStatusData | null;
   public guild: Guild | null;
   public readonly member: GuildMember | null;
