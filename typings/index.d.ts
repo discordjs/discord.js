@@ -804,9 +804,6 @@ export class IntegrationApplication extends Application {
 
 export class Intents extends BitField<IntentsString> {
   public static FLAGS: Record<IntentsString, number>;
-  public static PRIVILEGED: number;
-  public static ALL: number;
-  public static NON_PRIVILEGED: number;
   public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
 }
 
