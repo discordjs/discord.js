@@ -220,7 +220,11 @@ export class BaseGuildVoiceChannel extends GuildChannel {
 export class BaseMessageComponent {
   public constructor(data?: BaseMessageComponent | BaseMessageComponentOptions);
   public type: MessageComponentType | null;
-  private static create(data: MessageComponentOptions, client?: Client | WebhookClient, skipValidation?: boolean): MessageComponent | undefined;
+  private static create(
+    data: MessageComponentOptions,
+    client?: Client | WebhookClient,
+    skipValidation?: boolean,
+  ): MessageComponent | undefined;
   private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
@@ -2537,7 +2541,7 @@ export interface PartialTextBasedChannelFields {
 
 export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   _typing: Map<string, TypingData>;
-  lastMessageId: Snowflake | null;
+  lastMessageId: Snowflake | null | undefined;
   readonly lastMessage: Message | null;
   lastPinTimestamp: number | null;
   readonly lastPinAt: Date | null;
@@ -2610,6 +2614,8 @@ export interface AddGuildMemberOptions {
 }
 
 export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
+
+export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
 
 export type AllowedThreadTypeForNewsChannel = 'news_thread' | 10;
 
@@ -3908,7 +3914,16 @@ export interface PresenceData {
 
 export type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
-export type Partialize<T, O extends string> = {
+export interface PartialChannelData {
+  id?: Snowflake | number;
+  name: string;
+  topic?: string;
+  type?: ChannelType;
+  parentId?: Snowflake | number;
+  permissionOverwrites?: PartialOverwriteData[];
+}
+
+export type Partialize<T extends AllowedPartial, E extends keyof T | null, N extends keyof T | null> = {
   readonly client: Client;
   readonly createdAt: Date;
   readonly createdTimestamp: number;
@@ -3919,31 +3934,13 @@ export type Partialize<T, O extends string> = {
 } & {
   [K in keyof Omit<
     T,
-    'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-  >]: T[K] extends (...args: any[]) => void ? T[K] : T[K] | null;
+    'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted'
+  >]: K extends E ? T[K] : K extends N ? null : T[K] extends (...args: any[]) => void ? T[K] : T[K] | null;
 };
 
 export interface PartialDMChannel
-  extends Partialize<
-    DMChannel,
-    'lastMessage' | 'lastMessageId' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
-  > {
-  lastMessage: null;
+  extends Partialize<DMChannel, 'messages' | 'type' | 'typing' | 'typingCount', 'lastMessage'> {
   lastMessageId: undefined;
-  messages: MessageManager;
-  recipient: User | PartialUser;
-  type: 'dm';
-  readonly typing: boolean;
-  readonly typingCount: number;
-}
-
-export interface PartialChannelData {
-  id?: Snowflake | number;
-  name: string;
-  topic?: string;
-  type?: ChannelType;
-  parentId?: Snowflake | number;
-  permissionOverwrites?: PartialOverwriteData[];
 }
 
 export interface PartialGuildMember
@@ -3954,27 +3951,14 @@ export interface PartialGuildMember
     | 'displayHexColor'
     | 'displayName'
     | 'guild'
+    | 'manageable'
     | 'kickable'
     | 'permissions'
-    | 'roles'
-    | 'manageable'
     | 'presence'
-    | 'voice'
-  > {
-  readonly bannable: boolean;
-  readonly displayColor: number;
-  readonly displayHexColor: HexColorString;
-  readonly displayName: string;
-  guild: Guild;
-  readonly manageable: boolean;
-  joinedAt: null;
-  joinedTimestamp: null;
-  readonly kickable: boolean;
-  readonly permissions: GuildMember['permissions'];
-  readonly presence: GuildMember['presence'];
-  readonly roles: GuildMember['roles'];
-  readonly voice: GuildMember['voice'];
-}
+    | 'roles'
+    | 'voice',
+    'joinedAt' | 'joinedTimestamp'
+  > {}
 
 export interface PartialMessage
   extends Partialize<
@@ -3984,24 +3968,14 @@ export interface PartialMessage
     | 'deletable'
     | 'crosspostable'
     | 'editable'
+    | 'embeds'
+    | 'flags'
     | 'mentions'
     | 'pinnable'
-    | 'url'
-    | 'flags'
-    | 'embeds'
-  > {
-  attachments: Message['attachments'];
-  channel: Message['channel'];
-  readonly deletable: boolean;
-  readonly crosspostable: boolean;
-  readonly editable: boolean;
-  embeds: Message['embeds'];
-  flags: Message['flags'];
-  mentions: Message['mentions'];
-  readonly pinnable: boolean;
-  reactions: Message['reactions'];
-  readonly url: string;
-}
+    | 'reactions'
+    | 'url',
+    null
+  > {}
 
 export interface PartialOverwriteData {
   id: Snowflake | number;
@@ -4017,13 +3991,7 @@ export interface PartialRoleData extends RoleData {
 export type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
 export interface PartialUser
-  extends Omit<Partialize<User, 'bot' | 'flags' | 'system' | 'tag' | 'username'>, 'deleted'> {
-  bot: null;
-  flags: User['flags'];
-  system: null;
-  readonly tag: null;
-  username: null;
-}
+  extends Omit<Partialize<User, 'flags', 'bot' | 'system' | 'tag' | 'username'>, 'deleted'> {}
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
