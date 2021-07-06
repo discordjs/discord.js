@@ -220,7 +220,11 @@ export class BaseGuildVoiceChannel extends GuildChannel {
 export class BaseMessageComponent {
   public constructor(data?: BaseMessageComponent | BaseMessageComponentOptions);
   public type: MessageComponentType | null;
-  private static create(data: MessageComponentOptions, client?: Client | WebhookClient, skipValidation?: boolean): MessageComponent | undefined;
+  private static create(
+    data: MessageComponentOptions,
+    client?: Client | WebhookClient,
+    skipValidation?: boolean,
+  ): MessageComponent | undefined;
   private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
@@ -2495,9 +2499,7 @@ export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, T
   public fetchActive(cache?: boolean): Promise<FetchedThreads>;
 }
 
-export interface ThreadMemberManager
-  extends Omit<CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable>, 'add'> {}
-export class ThreadMemberManager {
+export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable> {
   public constructor(thread: ThreadChannel, iterable?: Iterable<unknown>);
   public thread: ThreadChannel;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
