@@ -15,15 +15,22 @@ class ThreadChannel extends Channel {
   /**
    * @param {Guild} guild The guild the thread channel is part of
    * @param {APIChannel} data The data for the thread channel
+   * @param {Client} [client] A safety parameter for the client that instantiated this
    */
-  constructor(guild, data) {
-    super(guild.client, data, false);
+  constructor(guild, data, client) {
+    super(guild?.client ?? client, data, false);
 
     /**
      * The guild the thread is in
      * @type {Guild}
      */
     this.guild = guild;
+
+    /**
+     * The id of the guild the channel is in
+     * @type {Snowflake}
+     */
+    this.guildId = guild?.id ?? data.guild_id;
 
     /**
      * A manager of the messages sent to this thread
@@ -49,6 +56,10 @@ class ThreadChannel extends Channel {
      * @type {string}
      */
     this.name = data.name;
+
+    if ('guild_id' in data) {
+      this.guildId = data.guild_id;
+    }
 
     if ('parent_id' in data) {
       /**
