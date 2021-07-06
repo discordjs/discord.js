@@ -153,7 +153,7 @@ export enum WebhookTypes {
   'Channel Follower' = 2,
 }
 
-export enum ConstantsEvents {
+export const enum ConstantsEvents {
   RATE_LIMIT = 'rateLimit',
   INVALID_REQUEST_WARNING = 'invalidRequestWarning',
   CLIENT_READY = 'ready',
@@ -220,7 +220,7 @@ export enum ConstantsEvents {
   STAGE_INSTANCE_DELETE = 'stageInstanceDelete',
 }
 
-export enum ConstantsShardEvents {
+export const enum ConstantsShardEvents {
   CLOSE = 'close',
   DESTROYED = 'destroyed',
   INVALID_SESSION = 'invalidSession',
@@ -228,7 +228,7 @@ export enum ConstantsShardEvents {
   RESUMED = 'resumed',
 }
 
-export enum ConstantsColors {
+export const enum ConstantsColors {
   DEFAULT = 0x000000,
   WHITE = 0xffffff,
   AQUA = 0x1abc9c,
@@ -261,7 +261,7 @@ export enum ConstantsColors {
   NOT_QUITE_BLACK = 0x23272a,
 }
 
-export enum ConstantsStatus {
+export const enum ConstantsStatus {
   READY = 0,
   CONNECTING = 1,
   RECONNECTING = 2,
@@ -270,7 +270,7 @@ export enum ConstantsStatus {
   DISCONNECTED = 5,
 }
 
-export enum ConstantsOpcodes {
+export const enum ConstantsOpcodes {
   DISPATCH = 0,
   HEARTBEAT = 1,
   IDENTIFY = 2,
@@ -285,7 +285,7 @@ export enum ConstantsOpcodes {
   HEARTBEAT_ACK = 11,
 }
 
-export enum ConstantsClientApplicationAssetTypes {
+export const enum ConstantsClientApplicationAssetTypes {
   SMALL = 1,
   BIG = 2,
 }

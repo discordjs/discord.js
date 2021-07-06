@@ -512,9 +512,3 @@ assertType<'close'>(Constants.ShardEvents.CLOSE);
 assertType<1>(Constants.Status.CONNECTING);
 assertType<0>(Constants.Opcodes.DISPATCH);
 assertType<2>(Constants.ClientApplicationAssetTypes.BIG);
-
-notPropertyOf(Constants.Events, 'messageCreate');
-notPropertyOf(Constants.ShardEvents, 'close');
-notPropertyOf(Constants.Status, 1);
-notPropertyOf(Constants.Opcodes, 0);
-notPropertyOf(Constants.ClientApplicationAssetTypes, 2);
