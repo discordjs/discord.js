@@ -2933,10 +2933,10 @@ export interface ClientEvents {
   messageCreate: [message: Message];
   messageDelete: [message: Message | PartialMessage];
   messageReactionRemoveAll: [message: Message | PartialMessage];
-  messageReactionRemoveEmoji: [reaction: MessageReaction];
+  messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
   messageReactionAdd: [message: MessageReaction | PartialMessageReaction, user: User | PartialUser];
-  messageReactionRemove: [reaction: MessageReaction, user: User | PartialUser];
+  messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
   rateLimit: [rateLimitData: RateLimitData];
