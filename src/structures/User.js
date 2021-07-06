@@ -1,7 +1,6 @@
 'use strict';
 
 const Base = require('./Base');
-const { Presence } = require('./Presence');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
@@ -120,18 +119,6 @@ class User extends Base {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * The presence of this user
-   * @type {Presence}
-   * @readonly
-   */
-  get presence() {
-    for (const guild of this.client.guilds.cache.values()) {
-      if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
-    }
-    return new Presence(this.client, { user: { id: this.id } });
   }
 
   /**

@@ -8,11 +8,14 @@ import {
   MessageActionRow,
   MessageAttachment,
   MessageButton,
+  MessageCollector,
   MessageEmbed,
+  MessageReaction,
   NewsChannel,
   Options,
   PartialTextBasedChannelFields,
   Permissions,
+  ReactionCollector,
   Serialized,
   ShardClientUtil,
   ShardingManager,
@@ -489,3 +492,14 @@ notPropertyOf(user, 'lastMessage');
 notPropertyOf(user, 'lastMessageId');
 notPropertyOf(guildMember, 'lastMessage');
 notPropertyOf(guildMember, 'lastMessageId');
+
+// Test collector event parameters
+declare const messageCollector: MessageCollector;
+messageCollector.on('collect', (...args) => {
+  assertType<[Message]>(args);
+});
+
+declare const reactionCollector: ReactionCollector;
+reactionCollector.on('dispose', (...args) => {
+  assertType<[MessageReaction, User]>(args);
+});

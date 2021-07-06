@@ -127,7 +127,7 @@ class Channel extends Base {
     return ThreadChannelTypes.includes(this.type);
   }
 
-  static create(client, data, guild) {
+  static create(client, data, guild, allowUnknownGuild) {
     if (!CategoryChannel) CategoryChannel = require('./CategoryChannel');
     if (!DMChannel) DMChannel = require('./DMChannel');
     if (!NewsChannel) NewsChannel = require('./NewsChannel');
@@ -148,41 +148,41 @@ class Channel extends Base {
     } else {
       if (!guild) guild = client.guilds.cache.get(data.guild_id);
 
-      if (guild) {
+      if (guild || allowUnknownGuild) {
         switch (data.type) {
           case ChannelTypes.TEXT: {
-            channel = new TextChannel(guild, data);
+            channel = new TextChannel(guild, data, client);
             break;
           }
           case ChannelTypes.VOICE: {
-            channel = new VoiceChannel(guild, data);
+            channel = new VoiceChannel(guild, data, client);
             break;
           }
           case ChannelTypes.CATEGORY: {
-            channel = new CategoryChannel(guild, data);
+            channel = new CategoryChannel(guild, data, client);
             break;
           }
           case ChannelTypes.NEWS: {
-            channel = new NewsChannel(guild, data);
+            channel = new NewsChannel(guild, data, client);
             break;
           }
           case ChannelTypes.STORE: {
-            channel = new StoreChannel(guild, data);
+            channel = new StoreChannel(guild, data, client);
             break;
           }
           case ChannelTypes.STAGE: {
-            channel = new StageChannel(guild, data);
+            channel = new StageChannel(guild, data, client);
             break;
           }
           case ChannelTypes.NEWS_THREAD:
           case ChannelTypes.PUBLIC_THREAD:
           case ChannelTypes.PRIVATE_THREAD: {
-            channel = new ThreadChannel(guild, data);
-            channel.parent?.threads.cache.set(channel.id, channel);
+            channel = new ThreadChannel(guild, data, client);
+            if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;
           }
         }
-        if (channel) guild.channels?.cache.set(channel.id, channel);
+        if (channel && !allowUnknownGuild) guild.channels?.cache.set(channel.id, channel);
       }
     }
     return channel;
