@@ -1186,7 +1186,7 @@ export class MessageReaction {
   public readonly emoji: GuildEmoji | ReactionEmoji;
   public me: boolean;
   public message: Message | PartialMessage;
-  public readonly partial: boolean;
+  public readonly partial: false;
   public users: ReactionUserManager;
   public remove(): Promise<MessageReaction>;
   public fetch(): Promise<MessageReaction>;
@@ -2935,7 +2935,7 @@ export interface ClientEvents {
   messageReactionRemoveAll: [message: Message | PartialMessage];
   messageReactionRemoveEmoji: [reaction: MessageReaction];
   messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
-  messageReactionAdd: [message: MessageReaction, user: User | PartialUser];
+  messageReactionAdd: [message: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageReactionRemove: [reaction: MessageReaction, user: User | PartialUser];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
@@ -3976,6 +3976,9 @@ export interface PartialMessage
     | 'url',
     null
   > {}
+
+export interface PartialMessageReaction
+  extends Partialize<MessageReaction, 'emoji' | 'me' | 'message' | 'users', 'count'> {}
 
 export interface PartialOverwriteData {
   id: Snowflake | number;
