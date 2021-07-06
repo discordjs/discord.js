@@ -683,8 +683,8 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public guild: Guild;
   public readonly id: Snowflake;
   public pending: boolean;
-  public readonly joinedAt: Date;
-  public joinedTimestamp: number;
+  public readonly joinedAt: Date | null;
+  public joinedTimestamp: number | null;
   public readonly kickable: boolean;
   public readonly manageable: boolean;
   public nickname: string | null;

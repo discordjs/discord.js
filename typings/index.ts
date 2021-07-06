@@ -514,7 +514,7 @@ client.on('typingStart', (channel, user) => {
 
 client.on('guildMemberRemove', member => {
   if (member.partial) return assertType<null>(member.joinedAt);
-  assertType<Date>(member.joinedAt);
+  assertType<Date | null>(member.joinedAt);
 });
 
 client.on('messageReactionAdd', async reaction => {
