@@ -13,6 +13,7 @@ import {
   MessageReaction,
   NewsChannel,
   Options,
+  PartialMessageReaction,
   PartialTextBasedChannelFields,
   Permissions,
   ReactionCollector,
@@ -474,6 +475,7 @@ declare const newsChannel: NewsChannel;
 declare const textChannel: TextChannel;
 declare const user: User;
 declare const guildMember: GuildMember;
+declare const partialReaction: PartialMessageReaction;
 
 // Test whether the structures implement send
 assertType<TextBasedChannelFields['send']>(dmChannel.send);
@@ -487,6 +489,8 @@ assertType<Message | null>(dmChannel.lastMessage);
 assertType<Message | null>(threadChannel.lastMessage);
 assertType<Message | null>(newsChannel.lastMessage);
 assertType<Message | null>(textChannel.lastMessage);
+
+assertType<null>(partialReaction.count);
 
 notPropertyOf(user, 'lastMessage');
 notPropertyOf(user, 'lastMessageId');
