@@ -75,6 +75,15 @@ class Channel extends Base {
   }
 
   /**
+   * Whether this Channel is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return this instanceof DMChannel && typeof this.lastMessageId === 'undefined';
+  }
+
+  /**
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example

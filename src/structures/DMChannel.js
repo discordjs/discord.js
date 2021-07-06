@@ -16,8 +16,10 @@ class DMChannel extends Channel {
    */
   constructor(client, data) {
     super(client, data);
+
     // Override the channel type so partials have a known type
     this.type = 'dm';
+
     /**
      * A manager of the messages belonging to this channel
      * @type {MessageManager}
@@ -49,16 +51,6 @@ class DMChannel extends Channel {
      */
     this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
   }
-
-  /**
-   * Whether this DMChannel is a partial
-   * @type {boolean}
-   * @readonly
-   */
-  get partial() {
-    return typeof this.lastMessageId === 'undefined';
-  }
-
   /**
    * Fetch this DMChannel.
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
