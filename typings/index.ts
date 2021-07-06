@@ -13,13 +13,13 @@ import {
   MessageReaction,
   NewsChannel,
   Options,
-  PartialMessageReaction,
   PartialTextBasedChannelFields,
   Permissions,
   ReactionCollector,
   Serialized,
   ShardClientUtil,
   ShardingManager,
+  Snowflake,
   TextBasedChannelFields,
   TextChannel,
   ThreadChannel,
@@ -475,7 +475,6 @@ declare const newsChannel: NewsChannel;
 declare const textChannel: TextChannel;
 declare const user: User;
 declare const guildMember: GuildMember;
-declare const partialReaction: PartialMessageReaction;
 
 // Test whether the structures implement send
 assertType<TextBasedChannelFields['send']>(dmChannel.send);
@@ -489,8 +488,6 @@ assertType<Message | null>(dmChannel.lastMessage);
 assertType<Message | null>(threadChannel.lastMessage);
 assertType<Message | null>(newsChannel.lastMessage);
 assertType<Message | null>(textChannel.lastMessage);
-
-assertType<null>(partialReaction.count);
 
 notPropertyOf(user, 'lastMessage');
 notPropertyOf(user, 'lastMessageId');
@@ -506,4 +503,26 @@ messageCollector.on('collect', (...args) => {
 declare const reactionCollector: ReactionCollector;
 reactionCollector.on('dispose', (...args) => {
   assertType<[MessageReaction, User]>(args);
+});
+
+// Test partials structures
+client.on('typingStart', (channel, user) => {
+  if (channel.partial) assertType<undefined>(channel.lastMessageId);
+  if (user.partial) return assertType<null>(user.username);
+  assertType<string>(user.username);
+});
+
+client.on('guildMemberRemove', member => {
+  if (member.partial) return assertType<null>(member.joinedAt);
+  assertType<Date>(member.joinedAt);
+});
+
+client.on('messageReactionAdd', async reaction => {
+  if (reaction.partial) {
+    assertType<null>(reaction.count);
+    reaction = await reaction.fetch();
+  }
+  assertType<number>(reaction.count);
+  if (reaction.message.partial) return assertType<string | null>(reaction.message.content);
+  assertType<string>(reaction.message.content);
 });

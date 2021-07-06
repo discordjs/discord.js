@@ -264,6 +264,7 @@ export class Channel extends Base {
   public readonly createdTimestamp: number;
   public deleted: boolean;
   public id: Snowflake;
+  public readonly partial: false;
   public type: keyof typeof ChannelType;
   public delete(): Promise<Channel>;
   public fetch(force?: boolean): Promise<Channel>;
@@ -451,7 +452,6 @@ export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
   public constructor(client: Client, data?: unknown);
   public messages: MessageManager;
   public recipient: User;
-  public readonly partial: false;
   public type: 'dm';
   public fetch(force?: boolean): Promise<this>;
 }
@@ -683,8 +683,8 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public guild: Guild;
   public readonly id: Snowflake;
   public pending: boolean;
-  public readonly joinedAt: Date | null;
-  public joinedTimestamp: number | null;
+  public readonly joinedAt: Date;
+  public joinedTimestamp: number;
   public readonly kickable: boolean;
   public readonly manageable: boolean;
   public nickname: string | null;
@@ -1182,7 +1182,7 @@ export class MessageReaction {
   private _emoji: GuildEmoji | ReactionEmoji;
 
   public readonly client: Client;
-  public count: number | null;
+  public count: number;
   public readonly emoji: GuildEmoji | ReactionEmoji;
   public me: boolean;
   public message: Message | PartialMessage;
@@ -3965,14 +3965,16 @@ export interface PartialMessage
     Message,
     | 'attachments'
     | 'channel'
-    | 'deletable'
+    | 'components'
     | 'crosspostable'
+    | 'deletable'
     | 'editable'
     | 'embeds'
     | 'flags'
     | 'mentions'
     | 'pinnable'
     | 'reactions'
+    | 'stickers'
     | 'url',
     null
   > {}
