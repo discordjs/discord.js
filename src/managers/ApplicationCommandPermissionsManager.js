@@ -347,7 +347,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
     const { guildId, commandId } = this._validateOptions(guild, command);
     if (!commandId) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    if (!permissionId) throw new TypeError('INVALID_TYPE', 'permissionsId', 'UserResolvable or RoleResolvable');
+    if (!permissionId) throw new TypeError('INVALID_TYPE', 'permissionId', 'UserResolvable or RoleResolvable');
     let resolvedId = permissionId;
     if (typeof permissionId !== 'string') {
       resolvedId = this.client.users.resolveId(permissionId);
