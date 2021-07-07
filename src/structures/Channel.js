@@ -76,7 +76,7 @@ class Channel extends Base {
 
   /**
    * Whether this Channel is a partial
-   * Note that this is always false if the channel is not a DM
+   * <info>This is always false outside of DM channels.</info>
    * @type {boolean}
    * @readonly
    */
