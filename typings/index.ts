@@ -1,6 +1,7 @@
 import {
   Client,
   Collection,
+  Constants,
   DMChannel,
   GuildMember,
   Intents,
@@ -431,7 +432,7 @@ client.login('absolutely-valid-token');
 // Test type transformation:
 declare const assertType: <T>(value: T) => asserts value is T;
 declare const serialize: <T>(value: T) => Serialized<T>;
-declare const notPropertyOf: <T, P extends string>(value: T, property: P & Exclude<P, keyof T>) => void;
+declare const notPropertyOf: <T, P extends PropertyKey>(value: T, property: P & Exclude<P, keyof T>) => void;
 
 assertType<undefined>(serialize(undefined));
 assertType<null>(serialize(null));
@@ -503,3 +504,11 @@ declare const reactionCollector: ReactionCollector;
 reactionCollector.on('dispose', (...args) => {
   assertType<[MessageReaction, User]>(args);
 });
+
+// Make sure the properties are typed correctly, and that no backwards properties
+// (K -> V and V -> K) exist:
+assertType<'messageCreate'>(Constants.Events.MESSAGE_CREATE);
+assertType<'close'>(Constants.ShardEvents.CLOSE);
+assertType<1>(Constants.Status.CONNECTING);
+assertType<0>(Constants.Opcodes.DISPATCH);
+assertType<2>(Constants.ClientApplicationAssetTypes.BIG);
