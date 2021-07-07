@@ -1605,7 +1605,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public readonly parent: TextChannel | NewsChannel | null;
   public parentId: Snowflake;
   public rateLimitPerUser: number;
-  public type: ThreadChannelType;
+  public type: ThreadChannelTypes;
   public readonly unarchivable: boolean;
   public delete(reason?: string): Promise<ThreadChannel>;
   public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
@@ -2120,7 +2120,9 @@ export const Constants: {
   };
   APIErrors: APIErrors;
   ChannelTypes: typeof ChannelTypes;
-  ThreadChannelTypes: ThreadChannelType[];
+  ThreadChannelTypes: ThreadChannelTypes[];
+  TextBasedChannelTypes: TextBasedChannelTypes[];
+  VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   ClientApplicationAssetTypes: {
     SMALL: 1;
     BIG: 2;
@@ -4167,11 +4169,19 @@ export interface StageInstanceEditOptions {
   privacyLevel?: PrivacyLevel | number;
 }
 
+export type TextBasedChannelTypes =
+  | 'DM'
+  | 'GUILD_TEXT'
+  | 'GUILD_NEWS'
+  | 'GUILD_NEWS_THREAD'
+  | 'GUILD_PUBLIC_THREAD'
+  | 'GUILD_PRIVATE_THREAD';
+
 export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080;
 
 export type ThreadChannelResolvable = ThreadChannel | Snowflake;
 
-export type ThreadChannelType = 'GUILD_NEWS_THREAD' | 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD';
+export type ThreadChannelTypes = 'GUILD_NEWS_THREAD' | 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD';
 
 export interface ThreadCreateOptions<AllowedThreadType> {
   name: string;
@@ -4218,6 +4228,8 @@ export interface Vanity {
 }
 
 export type VerificationLevel = keyof typeof VerificationLevels;
+
+export type VoiceBasedChannelTypes = 'GUILD_VOICE' | 'GUILD_STAGE_VOICE';
 
 export type WebhookClientOptions = Pick<
   ClientOptions,

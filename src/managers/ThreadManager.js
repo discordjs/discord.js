@@ -77,7 +77,7 @@ class ThreadManager extends CachedManager {
    * should automatically archive in case of no recent activity
    * @property {MessageResolvable} [startMessage] The message to start a thread from. <warn>If this is defined then type
    * of thread gets automatically defined and cannot be changed. The provided `type` field will be ignored</warn>
-   * @property {ThreadChannelType|number} [type] The type of thread to create. Defaults to `GUILD_PUBLIC_THREAD` if
+   * @property {ThreadChannelTypes|number} [type] The type of thread to create. Defaults to `GUILD_PUBLIC_THREAD` if
    * created in a {@link TextChannel} <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
    * `GUILD_NEWS_THREAD`</warn>
    * @property {string} [reason] Reason for creating the thread

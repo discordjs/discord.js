@@ -455,23 +455,23 @@ exports.ChannelTypes = createEnum([
  * * GUILD_NEWS_THREAD
  * * GUILD_PUBLIC_THREAD
  * * GUILD_PRIVATE_THREAD
- * @typedef {string} TextBasedChannelType
+ * @typedef {string} TextBasedChannelTypes
  */
-exports.TextBasedChannelTypes = createEnum([
+exports.TextBasedChannelTypes = [
   'DM',
   'GUILD_TEXT',
   'GUILD_NEWS',
   'GUILD_NEWS_THREAD',
   'GUILD_PUBLIC_THREAD',
   'GUILD_PRIVATE_THREAD',
-]);
+];
 
 /**
  * The types of channels that are threads. The available types are:
  * * GUILD_NEWS_THREAD
  * * GUILD_PUBLIC_THREAD
  * * GUILD_PRIVATE_THREAD
- * @typedef {string} ThreadChannelType
+ * @typedef {string} ThreadChannelTypes
  */
 exports.ThreadChannelTypes = ['GUILD_NEWS_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'];
 
@@ -479,9 +479,9 @@ exports.ThreadChannelTypes = ['GUILD_NEWS_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD
  * The types of channels that are voice-based. The available types are:
  * * GUILD_VOICE
  * * GUILD_STAGE_VOICE
- * @typedef {string} VoiceBasedChannelType
+ * @typedef {string} VoiceBasedChannelTypes
  */
-exports.VoiceBasedChannelTypes = createEnum(['GUILD_VOICE', 'GUILD_STAGE_VOICE']);
+exports.VoiceBasedChannelTypes = ['GUILD_VOICE', 'GUILD_STAGE_VOICE'];
 
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
