@@ -1,5 +1,6 @@
 'use strict';
 
+const Base = require('./Base');
 const Emoji = require('./Emoji');
 const ActivityFlags = require('../util/ActivityFlags');
 const { ActivityTypes } = require('../util/Constants');
@@ -31,20 +32,16 @@ const Util = require('../util/Util');
 
 /**
  * Represents a user's presence.
+ * @extends {Base}
  */
-class Presence {
+class Presence extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {APIPresence} [data={}] The data for the presence
    */
   constructor(client, data = {}) {
-    /**
-     * The client that instantiated this
-     * @name Presence#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
+
     /**
      * The presence's user id
      * @type {Snowflake}
@@ -57,7 +54,7 @@ class Presence {
      */
     this.guild = data.guild ?? null;
 
-    this.patch(data);
+    this._patch(data);
   }
 
   /**
@@ -78,7 +75,7 @@ class Presence {
     return this.guild.members.resolve(this.userId);
   }
 
-  patch(data) {
+  _patch(data) {
     /**
      * The status of this presence
      * @type {PresenceStatus}

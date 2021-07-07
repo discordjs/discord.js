@@ -1,6 +1,7 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
+const { Error } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
@@ -164,11 +165,17 @@ class GuildChannelManager extends CachedManager {
       if (existing) return existing;
     }
 
-    // We cannot fetch a single guild channel, as of this commit's date, Discord API throws with 404
+    if (id) {
+      const data = await this.client.api.channels(id).get();
+      // Since this is the guild manager, throw if on a different guild
+      if (this.guild.id !== data.guild_id) throw new Error('GUILD_CHANNEL_UNOWNED');
+      return this.client.channels.add(data, this.guild, cache);
+    }
+
     const data = await this.client.api.guilds(this.guild.id).channels.get();
     const channels = new Collection();
     for (const channel of data) channels.set(channel.id, this.client.channels.add(channel, this.guild, cache));
-    return id ? channels.get(id) ?? null : channels;
+    return channels;
   }
 }
 

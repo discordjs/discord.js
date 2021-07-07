@@ -692,7 +692,7 @@ class Message extends Base {
       data = MessagePayload.create(this, options, {
         reply: {
           messageReference: this,
-          failIfNotExists: options?.failIfNotExists ?? true,
+          failIfNotExists: options?.failIfNotExists ?? this.client.options.failIfNotExists,
         },
       });
     }

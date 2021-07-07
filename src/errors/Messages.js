@@ -90,6 +90,7 @@ const Messages = {
   GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
   GUILD_VOICE_CHANNEL_RESOLVE: 'Could not resolve channel to a guild voice channel.',
   GUILD_CHANNEL_ORPHAN: 'Could not find a parent to this guild channel.',
+  GUILD_CHANNEL_UNOWNED: "The fetched channel does not belong to this manager's guild.",
   GUILD_OWNED: 'Guild is owned by the client.',
   GUILD_MEMBERS_TIMEOUT: "Members didn't arrive in time.",
   GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',

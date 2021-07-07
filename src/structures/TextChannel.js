@@ -17,9 +17,10 @@ class TextChannel extends GuildChannel {
   /**
    * @param {Guild} guild The guild the text channel is part of
    * @param {APIChannel} data The data for the text channel
+   * @param {Client} [client] A safety parameter for the client that instantiated this
    */
-  constructor(guild, data) {
-    super(guild, data);
+  constructor(guild, data, client) {
+    super(guild, data, client);
     /**
      * A manager of the messages sent to this channel
      * @type {MessageManager}

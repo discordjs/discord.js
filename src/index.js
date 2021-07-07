@@ -21,6 +21,7 @@ module.exports = {
   DiscordAPIError: require('./rest/DiscordAPIError'),
   HTTPError: require('./rest/HTTPError'),
   RateLimitError: require('./rest/RateLimitError'),
+  LimitedCollection: require('./util/LimitedCollection'),
   MessageFlags: require('./util/MessageFlags'),
   Intents: require('./util/Intents'),
   Options: require('./util/Options'),

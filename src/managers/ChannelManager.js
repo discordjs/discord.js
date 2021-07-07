@@ -19,7 +19,7 @@ class ChannelManager extends CachedManager {
    * @name ChannelManager#cache
    */
 
-  add(data, guild, cache = true) {
+  add(data, guild, cache = true, allowUnknownGuild = false) {
     const existing = this.cache.get(data.id);
     if (existing) {
       if (cache) existing._patch(data);
@@ -30,14 +30,14 @@ class ChannelManager extends CachedManager {
       return existing;
     }
 
-    const channel = Channel.create(this.client, data, guild);
+    const channel = Channel.create(this.client, data, guild, allowUnknownGuild);
 
     if (!channel) {
       this.client.emit(Events.DEBUG, `Failed to find guild, or unknown type for channel ${data.id} ${data.type}`);
       return null;
     }
 
-    if (cache) this.cache.set(channel.id, channel);
+    if (cache && !allowUnknownGuild) this.cache.set(channel.id, channel);
 
     return channel;
   }
@@ -75,9 +75,16 @@ class ChannelManager extends CachedManager {
    */
 
   /**
+   * Options for fetching a channel from discord
+   * @typedef {BaseFetchOptions} FetchChannelOptions
+   * @property {boolean} [allowUnknownGuild=false] Allows the channel to be returned even if the guild is not in cache,
+   * it will not be cached. <warn>Many of the properties and methods on the returned channel will throw errors</warn>
+   */
+
+  /**
    * Obtains a channel from Discord, or the channel cache if it's already available.
    * @param {Snowflake} id The channel's id
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @param {FetchChannelOptions} [options] Additional options for this fetch
    * @returns {Promise<?Channel>}
    * @example
    * // Fetch a channel by its id
@@ -85,14 +92,14 @@ class ChannelManager extends CachedManager {
    *   .then(channel => console.log(channel.name))
    *   .catch(console.error);
    */
-  async fetch(id, { cache = true, force = false } = {}) {
+  async fetch(id, { allowUnknownGuild = false, cache = true, force = false } = {}) {
     if (!force) {
       const existing = this.cache.get(id);
       if (existing && !existing.partial) return existing;
     }
 
     const data = await this.client.api.channels(id).get();
-    return this.add(data, null, cache);
+    return this.add(data, null, cache, allowUnknownGuild);
   }
 }
 

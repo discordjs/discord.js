@@ -1,7 +1,6 @@
 'use strict';
 
 const Base = require('./Base');
-const { Presence } = require('./Presence');
 const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
@@ -33,18 +32,6 @@ class GuildMember extends Base {
      * @type {?number}
      */
     this.joinedTimestamp = null;
-
-    /**
-     * The member's last message id, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageId = null;
-
-    /**
-     * The id of the channel for the last message sent by the member in their guild, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageChannelId = null;
 
     /**
      * The timestamp of when the member used their Nitro boost on the guild, if it was used
@@ -117,15 +104,6 @@ class GuildMember extends Base {
   }
 
   /**
-   * The Message object of the last message sent by the member in their guild, if one was sent
-   * @type {?Message}
-   * @readonly
-   */
-  get lastMessage() {
-    return this.guild.channels.resolve(this.lastMessageChannelId)?.messages.resolve(this.lastMessageId) ?? null;
-  }
-
-  /**
    * The voice state of this member
    * @type {VoiceState}
    * @readonly
@@ -154,19 +132,11 @@ class GuildMember extends Base {
 
   /**
    * The presence of this guild member
-   * @type {Presence}
+   * @type {?Presence}
    * @readonly
    */
   get presence() {
-    return (
-      this.guild.presences.cache.get(this.id) ??
-      new Presence(this.client, {
-        user: {
-          id: this.id,
-        },
-        guild: this.guild,
-      })
-    );
+    return this.guild.presences.resolve(this.id);
   }
 
   /**
@@ -352,8 +322,6 @@ class GuildMember extends Base {
       this.partial === member.partial &&
       this.guild.id === member.guild.id &&
       this.joinedTimestamp === member.joinedTimestamp &&
-      this.lastMessageId === member.lastMessageId &&
-      this.lastMessageChannelId === member.lastMessageChannelId &&
       this.nickname === member.nickname &&
       this.pending === member.pending &&
       (this._roles === member._roles ||
@@ -377,8 +345,6 @@ class GuildMember extends Base {
       guild: 'guildId',
       user: 'userId',
       displayName: true,
-      lastMessage: false,
-      lastMessageId: false,
       roles: true,
     });
   }
