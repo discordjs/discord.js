@@ -103,7 +103,7 @@ class ClientUser extends User {
    * @property {PresenceStatusData} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
    * @property {ActivitiesOptions[]} [activities] Activity the user is playing
-   * @property {number|number[]} [shardId] Shard Id(s) to have the activity set on
+   * @property {number|number[]} [shardId] Shard id(s) to have the activity set on
    */
 
   /**
