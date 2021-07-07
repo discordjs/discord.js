@@ -1,9 +1,19 @@
 import {
+  ApplicationCommand,
+  ApplicationCommandData,
+  ApplicationCommandManager,
+  ApplicationCommandResolvable,
+  CategoryChannel,
   Client,
   Collection,
   Constants,
   DMChannel,
+  GuildApplicationCommandManager,
+  GuildChannelManager,
+  GuildEmoji,
+  GuildEmojiManager,
   GuildMember,
+  GuildResolvable,
   Intents,
   Message,
   MessageActionRow,
@@ -17,13 +27,19 @@ import {
   PartialTextBasedChannelFields,
   Permissions,
   ReactionCollector,
+  Role,
+  RoleManager,
   Serialized,
   ShardClientUtil,
   ShardingManager,
+  Snowflake,
+  StageChannel,
+  StoreChannel,
   TextBasedChannelFields,
   TextChannel,
   ThreadChannel,
   User,
+  VoiceChannel,
 } from '..';
 
 const client: Client = new Client({
@@ -512,3 +528,56 @@ assertType<'close'>(Constants.ShardEvents.CLOSE);
 assertType<1>(Constants.Status.CONNECTING);
 assertType<0>(Constants.Opcodes.DISPATCH);
 assertType<2>(Constants.ClientApplicationAssetTypes.BIG);
+
+declare const applicationCommandData: ApplicationCommandData;
+declare const applicationCommandResolvable: ApplicationCommandResolvable;
+declare const applicationCommandManager: ApplicationCommandManager;
+{
+  type ApplicationCommandType = ApplicationCommand<{ guild: GuildResolvable }>;
+
+  assertType<Promise<ApplicationCommandType>>(applicationCommandManager.create(applicationCommandData));
+  assertType<Promise<ApplicationCommand>>(applicationCommandManager.create(applicationCommandData, '0'));
+  assertType<Promise<ApplicationCommandType>>(
+    applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData),
+  );
+  assertType<Promise<ApplicationCommand>>(
+    applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData, '0'),
+  );
+  assertType<Promise<Collection<Snowflake, ApplicationCommandType>>>(
+    applicationCommandManager.set([applicationCommandData]),
+  );
+  assertType<Promise<Collection<Snowflake, ApplicationCommand>>>(
+    applicationCommandManager.set([applicationCommandData], '0'),
+  );
+}
+
+declare const guildApplicationCommandManager: GuildApplicationCommandManager;
+assertType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
+assertType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch(undefined, {}));
+assertType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
+
+declare const guildChannelManager: GuildChannelManager;
+{
+  type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel;
+
+  assertType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: 'voice' }));
+  assertType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: 'category' }));
+  assertType<Promise<TextChannel>>(guildChannelManager.create('name', { type: 'text' }));
+  assertType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: 'news' }));
+  assertType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: 'store' }));
+  assertType<Promise<StageChannel>>(guildChannelManager.create('name', { type: 'stage' }));
+
+  assertType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
+  assertType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
+  assertType<Promise<AnyChannel | null>>(guildChannelManager.fetch('0'));
+}
+
+declare const roleManager: RoleManager;
+assertType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch());
+assertType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch(undefined, {}));
+assertType<Promise<Role | null>>(roleManager.fetch('0'));
+
+declare const guildEmojiManager: GuildEmojiManager;
+assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch());
+assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
+assertType<Promise<GuildEmoji | null>>(guildEmojiManager.fetch('0'));
