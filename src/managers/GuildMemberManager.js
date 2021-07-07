@@ -6,7 +6,7 @@ const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const GuildMember = require('../structures/GuildMember');
 const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
-const { Events, OPCodes } = require('../util/Constants');
+const { Events, Opcodes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -346,7 +346,7 @@ class GuildMemberManager extends CachedManager {
       if (!query && !user_ids) query = '';
       if (nonce.length > 32) throw new RangeError('MEMBER_FETCH_NONCE_LENGTH');
       this.guild.shard.send({
-        op: OPCodes.REQUEST_GUILD_MEMBERS,
+        op: Opcodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.guild.id,
           presences,

@@ -2,7 +2,7 @@
 
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
-const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
+const { Status, Events, ShardEvents, Opcodes, WSEvents } = require('../../util/Constants');
 const Intents = require('../../util/Intents');
 
 const STATUS_KEYS = Object.keys(Status);
@@ -296,7 +296,7 @@ class WebSocketShard extends EventEmitter {
       return;
     }
     this.manager.client.emit(Events.RAW, packet, this.id);
-    if (packet.op === OPCodes.DISPATCH) this.manager.emit(packet.t, packet.d, this.id);
+    if (packet.op === Opcodes.DISPATCH) this.manager.emit(packet.t, packet.d, this.id);
     this.onPacket(packet);
   }
 
@@ -408,16 +408,16 @@ class WebSocketShard extends EventEmitter {
     if (packet.s > this.sequence) this.sequence = packet.s;
 
     switch (packet.op) {
-      case OPCodes.HELLO:
+      case Opcodes.HELLO:
         this.setHelloTimeout(-1);
         this.setHeartbeatTimer(packet.d.heartbeat_interval);
         this.identify();
         break;
-      case OPCodes.RECONNECT:
+      case Opcodes.RECONNECT:
         this.debug('[RECONNECT] Discord asked us to reconnect');
         this.destroy({ closeCode: 4000 });
         break;
-      case OPCodes.INVALID_SESSION:
+      case Opcodes.INVALID_SESSION:
         this.debug(`[INVALID SESSION] Resumable: ${packet.d}.`);
         // If we can resume the session, do so immediately
         if (packet.d) {
@@ -433,10 +433,10 @@ class WebSocketShard extends EventEmitter {
         // Finally, emit the INVALID_SESSION event
         this.emit(ShardEvents.INVALID_SESSION);
         break;
-      case OPCodes.HEARTBEAT_ACK:
+      case Opcodes.HEARTBEAT_ACK:
         this.ackHeartbeat();
         break;
-      case OPCodes.HEARTBEAT:
+      case Opcodes.HEARTBEAT:
         this.sendHeartbeat('HeartbeatRequest', true);
         break;
       default:
@@ -556,7 +556,7 @@ class WebSocketShard extends EventEmitter {
     this.debug(`[${tag}] Sending a heartbeat.`);
     this.lastHeartbeatAcked = false;
     this.lastPingTimestamp = Date.now();
-    this.send({ op: OPCodes.HEARTBEAT, d: this.sequence }, true);
+    this.send({ op: Opcodes.HEARTBEAT, d: this.sequence }, true);
   }
 
   /**
@@ -601,7 +601,7 @@ class WebSocketShard extends EventEmitter {
     };
 
     this.debug(`[IDENTIFY] Shard ${this.id}/${client.options.shardCount} with intents: ${d.intents}`);
-    this.send({ op: OPCodes.IDENTIFY, d }, true);
+    this.send({ op: Opcodes.IDENTIFY, d }, true);
   }
 
   /**
@@ -625,7 +625,7 @@ class WebSocketShard extends EventEmitter {
       seq: this.closeSequence,
     };
 
-    this.send({ op: OPCodes.RESUME, d }, true);
+    this.send({ op: Opcodes.RESUME, d }, true);
   }
 
   /**
