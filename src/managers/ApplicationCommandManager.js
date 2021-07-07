@@ -83,7 +83,7 @@ class ApplicationCommandManager extends CachedManager {
    */
   async fetch(id, { guildId, cache = true, force = false } = {}) {
     if (typeof id === 'object') {
-      ({ guildId, cache = true, force = false } = id);
+      ({ guildId, cache = true } = id);
     } else if (id) {
       if (!force) {
         const existing = this.cache.get(id);
