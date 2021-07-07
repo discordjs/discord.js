@@ -158,6 +158,13 @@ class Client extends BaseClient {
      */
     this.readyAt = null;
 
+    /**
+     * The ready state of the client - This will be true once the websocket initially connects.
+     * @type {boolean}
+     * @private
+     */
+    this.ready = false;
+
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
@@ -220,11 +227,21 @@ class Client extends BaseClient {
 
     try {
       await this.ws.connect();
+      this.ready = true;
       return this.token;
     } catch (error) {
       this.destroy();
       throw error;
     }
+  }
+
+  /**
+   * Returns whether the client has logged in, indicative of being able to access
+   * properties such as `user` and `application`.
+   * @returns {boolean}
+   */
+  isReady() {
+    return this.ready;
   }
 
   /**
