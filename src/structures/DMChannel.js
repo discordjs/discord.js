@@ -53,6 +53,15 @@ class DMChannel extends Channel {
   }
 
   /**
+   * Whether this DMChannel is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.lastMessageId === 'undefined';
+  }
+
+  /**
    * Fetch this DMChannel.
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}

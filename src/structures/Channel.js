@@ -76,11 +76,12 @@ class Channel extends Base {
 
   /**
    * Whether this Channel is a partial
+   * Note that this is always false if the channel is not a DM
    * @type {boolean}
    * @readonly
    */
   get partial() {
-    return this instanceof DMChannel && typeof this.lastMessageId === 'undefined';
+    return false;
   }
 
   /**
