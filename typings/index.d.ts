@@ -2541,7 +2541,7 @@ export interface PartialTextBasedChannelFields {
 
 export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   _typing: Map<string, TypingData>;
-  lastMessageId: Snowflake | null | undefined;
+  lastMessageId: Snowflake | null;
   readonly lastMessage: Message | null;
   lastPinTimestamp: number | null;
   readonly lastPinAt: Date | null;
@@ -3923,7 +3923,7 @@ export interface PartialChannelData {
   permissionOverwrites?: PartialOverwriteData[];
 }
 
-export type Partialize<T extends AllowedPartial, E extends keyof T | null, N extends keyof T | null> = {
+export type Partialize<T extends AllowedPartial, N extends keyof T | null, E extends string> = {
   readonly client: Client;
   readonly createdAt: Date;
   readonly createdTimestamp: number;
@@ -3934,53 +3934,22 @@ export type Partialize<T extends AllowedPartial, E extends keyof T | null, N ext
 } & {
   [K in keyof Omit<
     T,
-    'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted'
-  >]: K extends E ? T[K] : K extends N ? null : T[K] extends (...args: any[]) => void ? T[K] : T[K] | null;
+    'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | E
+  >]: K extends N ? null : T[K];
 };
 
-export interface PartialDMChannel
-  extends Partialize<DMChannel, 'messages' | 'type' | 'typing' | 'typingCount', 'lastMessage'> {
+export interface PartialDMChannel extends Partialize<DMChannel, null, 'lastMessageId'> {
   lastMessageId: undefined;
 }
 
-export interface PartialGuildMember
-  extends Partialize<
-    GuildMember,
-    | 'bannable'
-    | 'displayColor'
-    | 'displayHexColor'
-    | 'displayName'
-    | 'guild'
-    | 'manageable'
-    | 'kickable'
-    | 'permissions'
-    | 'presence'
-    | 'roles'
-    | 'voice',
-    'joinedAt' | 'joinedTimestamp'
-  > {}
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp', 'user'> {
+  user: User | null;
+}
 
 export interface PartialMessage
-  extends Partialize<
-    Message,
-    | 'attachments'
-    | 'channel'
-    | 'components'
-    | 'crosspostable'
-    | 'deletable'
-    | 'editable'
-    | 'embeds'
-    | 'flags'
-    | 'mentions'
-    | 'pinnable'
-    | 'reactions'
-    | 'stickers'
-    | 'url',
-    null
-  > {}
+  extends Partialize<Message, 'content' | 'cleanContent' | 'author' | 'type' | 'system' | 'pinned' | 'tts', ''> {}
 
-export interface PartialMessageReaction
-  extends Partialize<MessageReaction, 'emoji' | 'me' | 'message' | 'users', 'count'> {}
+export interface PartialMessageReaction extends Partialize<MessageReaction, 'count', ''> {}
 
 export interface PartialOverwriteData {
   id: Snowflake | number;
@@ -3995,8 +3964,7 @@ export interface PartialRoleData extends RoleData {
 
 export type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-export interface PartialUser
-  extends Omit<Partialize<User, 'flags', 'bot' | 'system' | 'tag' | 'username'>, 'deleted'> {}
+export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator', 'deleted'> {}
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
