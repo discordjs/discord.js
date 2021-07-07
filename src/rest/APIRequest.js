@@ -48,7 +48,7 @@ class APIRequest {
       }
       if (typeof this.options.data !== 'undefined') {
         if (this.options.dontUsePayloadJSON) {
-          for (const key in this.options.data) body.append(key, this.options.data[key]);
+          for (const [key, value] of Object.entries(this.options.data)) body.append(key, value);
         } else {
           body.append('payload_json', JSON.stringify(this.options.data));
         }
