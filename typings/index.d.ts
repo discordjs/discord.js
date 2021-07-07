@@ -111,7 +111,7 @@ export abstract class AnonymousGuild extends BaseGuild {
   public splashURL(options?: StaticImageURLOptions): string | null;
 }
 
-export abstract class Application extends Base {
+export abstract class Application extends Base<true> {
   public constructor(client: Client, data: unknown);
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -157,9 +157,9 @@ export class ApplicationFlags extends BitField<ApplicationFlagsString> {
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
-export class Base {
+export class Base<ClientReady extends boolean = boolean> {
   public constructor(client: Client);
-  public readonly client: Client;
+  public readonly client: Client<ClientReady>;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
   public valueOf(): string;
 }
@@ -185,7 +185,7 @@ export class BaseClient extends EventEmitter {
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
 }
 
-export abstract class BaseGuild extends Base {
+export abstract class BaseGuild extends Base<true> {
   public constructor(client: Client, data: unknown);
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -228,7 +228,7 @@ export class BaseMessageComponent {
   public type: MessageComponentType | null;
   private static create(
     data: MessageComponentOptions,
-    client?: Client | WebhookClient,
+    client?: Client<true> | WebhookClient,
     skipValidation?: boolean,
   ): MessageComponent | undefined;
   private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
@@ -264,7 +264,7 @@ export class CategoryChannel extends GuildChannel {
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
-export class Channel extends Base {
+export class Channel extends Base<true> {
   public constructor(client: Client, data?: unknown, immediatePatch?: boolean);
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -465,7 +465,7 @@ export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
   public fetch(force?: boolean): Promise<this>;
 }
 
-export class Emoji extends Base {
+export class Emoji extends Base<true> {
   public constructor(client: Client, emoji: unknown);
   public animated: boolean | null;
   public readonly createdAt: Date | null;
@@ -622,7 +622,7 @@ export class GuildAuditLogsEntry {
   public toJSON(): unknown;
 }
 
-export class GuildBan extends Base {
+export class GuildBan extends Base<true> {
   public constructor(client: Client, data: unknown, guild: Guild);
   public guild: Guild;
   public user: User;
@@ -1145,7 +1145,7 @@ export class MessageMentions {
   private _members: Collection<Snowflake, GuildMember> | null;
 
   public readonly channels: Collection<Snowflake, Channel>;
-  public readonly client: Client;
+  public readonly client: Client<true>;
   public everyone: boolean;
   public readonly guild: Guild;
   public has(data: UserResolvable | RoleResolvable | ChannelResolvable, options?: MessageMentionsHasOptions): boolean;
@@ -1190,7 +1190,7 @@ export class MessageReaction {
   public constructor(client: Client, data: unknown, message: Message);
   private _emoji: GuildEmoji | ReactionEmoji;
 
-  public readonly client: Client;
+  public readonly client: Client<true>;
   public count: number | null;
   public readonly emoji: GuildEmoji | ReactionEmoji;
   public me: boolean;
@@ -1403,7 +1403,7 @@ export class Shard extends EventEmitter {
   public ready: boolean;
   public worker: unknown | null;
   public eval(script: string): Promise<unknown>;
-  public eval<T>(fn: (client: Client) => T): Promise<T[]>;
+  public eval<T>(fn: (client: Client<true>) => T): Promise<T[]>;
   public fetchClientValue(prop: string): Promise<unknown>;
   public kill(): void;
   public respawn(options?: { delay?: number; timeout?: number }): Promise<ChildProcess>;
@@ -1428,19 +1428,19 @@ export class ShardClientUtil {
   private _handleMessage(message: unknown): void;
   private _respond(type: string, message: unknown): void;
 
-  public client: Client;
+  public client: Client<true>;
   public readonly count: number;
   public readonly ids: number[];
   public mode: ShardingManagerMode;
   public parentPort: unknown | null;
-  public broadcastEval<T>(fn: (client: Client) => Awaited<T>): Promise<Serialized<T>[]>;
-  public broadcastEval<T>(fn: (client: Client) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
+  public broadcastEval<T>(fn: (client: Client<true>) => Awaited<T>): Promise<Serialized<T>[]>;
+  public broadcastEval<T>(fn: (client: Client<true>) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
   public broadcastEval<T, P>(
-    fn: (client: Client, context: Serialized<P>) => Awaited<T>,
+    fn: (client: Client<true>, context: Serialized<P>) => Awaited<T>,
     options: { context: P },
   ): Promise<Serialized<T>[]>;
   public broadcastEval<T, P>(
-    fn: (client: Client, context: Serialized<P>) => Awaited<T>,
+    fn: (client: Client<true>, context: Serialized<P>) => Awaited<T>,
     options: { context: P; shard: number },
   ): Promise<Serialized<T>>;
   public fetchClientValues(prop: string): Promise<unknown[]>;
@@ -1448,7 +1448,7 @@ export class ShardClientUtil {
   public respawnAll(options?: MultipleShardRespawnOptions): Promise<void>;
   public send(message: unknown): Promise<void>;
 
-  public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
+  public static singleton(client: Client<true>, mode: ShardingManagerMode): ShardClientUtil;
   public static shardIdForGuildId(guildId: Snowflake, shardCount: number): number;
 }
 
@@ -1465,14 +1465,14 @@ export class ShardingManager extends EventEmitter {
   public totalShards: number | 'auto';
   public shardList: number[] | 'auto';
   public broadcast(message: unknown): Promise<Shard[]>;
-  public broadcastEval<T>(fn: (client: Client) => Awaited<T>): Promise<Serialized<T>[]>;
-  public broadcastEval<T>(fn: (client: Client) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
+  public broadcastEval<T>(fn: (client: Client<true>) => Awaited<T>): Promise<Serialized<T>[]>;
+  public broadcastEval<T>(fn: (client: Client<true>) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
   public broadcastEval<T, P>(
-    fn: (client: Client, context: Serialized<P>) => Awaited<T>,
+    fn: (client: Client<true>, context: Serialized<P>) => Awaited<T>,
     options: { context: P },
   ): Promise<Serialized<T>[]>;
   public broadcastEval<T, P>(
-    fn: (client: Client, context: Serialized<P>) => Awaited<T>,
+    fn: (client: Client<true>, context: Serialized<P>) => Awaited<T>,
     options: { context: P; shard: number },
   ): Promise<Serialized<T>>;
   public createShard(id: number): Shard;
@@ -1793,7 +1793,7 @@ export class Webhook extends WebhookMixin() {
   public avatar: string;
   public avatarURL(options?: StaticImageURLOptions): string | null;
   public channelId: Snowflake;
-  public client: Client;
+  public client: Client<true>;
   public guildId: Snowflake;
   public name: string;
   public owner: User | unknown | null;
@@ -2115,7 +2115,7 @@ export class ApplicationCommandPermissionsManager<
   CommandIdType,
 > extends BaseManager {
   public constructor(manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand);
-  public client: Client;
+  public client: Client<true>;
   public commandId: CommandIdType;
   public guild: GuildType;
   public guildId: Snowflake | null;
@@ -3797,7 +3797,7 @@ export interface PresenceData {
 export type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
 export type Partialize<T, O extends string> = {
-  readonly client: Client;
+  readonly client: Client<true>;
   readonly createdAt: Date;
   readonly createdTimestamp: number;
   deleted: boolean;
