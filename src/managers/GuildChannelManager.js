@@ -169,7 +169,7 @@ class GuildChannelManager extends CachedManager {
       const data = await this.client.api.channels(id).get();
       // Since this is the guild manager, throw if on a different guild
       if (this.guild.id !== data.guild_id) throw new Error('GUILD_CHANNEL_UNOWNED');
-      return this.client.channels.add(data, this.guild, cache);
+      return this.client.channels._add(data, this.guild, cache);
     }
 
     const data = await this.client.api.guilds(this.guild.id).channels.get();
