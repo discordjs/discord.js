@@ -2,7 +2,7 @@
 
 const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
-const { ActivityTypes, OPCodes } = require('../util/Constants');
+const { ActivityTypes, Opcodes } = require('../util/Constants');
 
 class ClientPresence extends Presence {
   /**
@@ -17,13 +17,13 @@ class ClientPresence extends Presence {
     const packet = this._parse(presence);
     this._patch(packet);
     if (typeof presence.shardId === 'undefined') {
-      this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
+      this.client.ws.broadcast({ op: Opcodes.STATUS_UPDATE, d: packet });
     } else if (Array.isArray(presence.shardId)) {
       for (const shardId of presence.shardId) {
-        this.client.ws.shards.get(shardId).send({ op: OPCodes.STATUS_UPDATE, d: packet });
+        this.client.ws.shards.get(shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
       }
     } else {
-      this.client.ws.shards.get(presence.shardId).send({ op: OPCodes.STATUS_UPDATE, d: packet });
+      this.client.ws.shards.get(presence.shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
     }
     return this;
   }

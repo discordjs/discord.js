@@ -1,8 +1,19 @@
 import {
+  ApplicationCommand,
+  ApplicationCommandData,
+  ApplicationCommandManager,
+  ApplicationCommandResolvable,
+  CategoryChannel,
   Client,
   Collection,
+  Constants,
   DMChannel,
+  GuildApplicationCommandManager,
+  GuildChannelManager,
+  GuildEmoji,
+  GuildEmojiManager,
   GuildMember,
+  GuildResolvable,
   Intents,
   Message,
   MessageActionRow,
@@ -16,13 +27,19 @@ import {
   PartialTextBasedChannelFields,
   Permissions,
   ReactionCollector,
+  Role,
+  RoleManager,
   Serialized,
   ShardClientUtil,
   ShardingManager,
+  Snowflake,
+  StageChannel,
+  StoreChannel,
   TextBasedChannelFields,
   TextChannel,
   ThreadChannel,
   User,
+  VoiceChannel,
 } from '..';
 
 const client: Client = new Client({
@@ -59,7 +76,7 @@ client.on('ready', async () => {
     guild: testGuildId,
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
-  await globalPermissionsManager?.has({ command: globalCommandId, guild: testGuildId, permissionsId: testGuildId });
+  await globalPermissionsManager?.has({ command: globalCommandId, guild: testGuildId, permissionId: testGuildId });
   await globalPermissionsManager?.fetch({ guild: testGuildId });
   await globalPermissionsManager?.fetch({ command: globalCommandId, guild: testGuildId });
   await globalPermissionsManager?.remove({ command: globalCommandId, guild: testGuildId, roles: [testGuildId] });
@@ -86,7 +103,7 @@ client.on('ready', async () => {
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
-  await globalPermissionsManager?.has({ command: globalCommandId, permissionsId: testGuildId });
+  await globalPermissionsManager?.has({ command: globalCommandId, permissionId: testGuildId });
   // @ts-expect-error
   await globalPermissionsManager?.fetch();
   // @ts-expect-error
@@ -119,7 +136,7 @@ client.on('ready', async () => {
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
-  await globalPermissionsManager?.has({ guild: testGuildId, permissionsId: testGuildId });
+  await globalPermissionsManager?.has({ guild: testGuildId, permissionId: testGuildId });
   // @ts-expect-error
   await globalPermissionsManager?.remove({ guild: testGuildId, roles: [testGuildId] });
   // @ts-expect-error
@@ -137,7 +154,7 @@ client.on('ready', async () => {
     command: globalCommandId,
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
-  await guildPermissionsManager?.has({ command: globalCommandId, permissionsId: testGuildId });
+  await guildPermissionsManager?.has({ command: globalCommandId, permissionId: testGuildId });
   await guildPermissionsManager?.fetch({});
   await guildPermissionsManager?.fetch({ command: globalCommandId });
   await guildPermissionsManager?.remove({ command: globalCommandId, roles: [testGuildId] });
@@ -158,7 +175,7 @@ client.on('ready', async () => {
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
-  await guildPermissionsManager?.has({ command: globalCommandId, guild: testGuildId, permissionsId: testGuildId });
+  await guildPermissionsManager?.has({ command: globalCommandId, guild: testGuildId, permissionId: testGuildId });
   // @ts-expect-error
   await guildPermissionsManager?.fetch({ guild: testGuildId });
   // @ts-expect-error
@@ -189,7 +206,7 @@ client.on('ready', async () => {
   // @ts-expect-error
   await guildPermissionsManager?.add({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
   // @ts-expect-error
-  await guildPermissionsManager?.has({ permissionsId: testGuildId });
+  await guildPermissionsManager?.has({ permissionId: testGuildId });
   // @ts-expect-error
   await guildPermissionsManager?.remove({ roles: [testGuildId] });
   // @ts-expect-error
@@ -209,7 +226,7 @@ client.on('ready', async () => {
     guild: testGuildId,
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
-  await globalCommand?.permissions.has({ guild: testGuildId, permissionsId: testGuildId });
+  await globalCommand?.permissions.has({ guild: testGuildId, permissionId: testGuildId });
   await globalCommand?.permissions.fetch({ guild: testGuildId });
   await globalCommand?.permissions.remove({ guild: testGuildId, roles: [testGuildId] });
   await globalCommand?.permissions.remove({ guild: testGuildId, users: [testUserId] });
@@ -226,7 +243,7 @@ client.on('ready', async () => {
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
-  await globalCommand?.permissions.has({ command: globalCommandId, guild: testGuildId, permissionsId: testGuildId });
+  await globalCommand?.permissions.has({ command: globalCommandId, guild: testGuildId, permissionId: testGuildId });
   // @ts-expect-error
   await globalCommand?.permissions.fetch({ command: globalCommandId, guild: testGuildId });
   // @ts-expect-error
@@ -250,7 +267,7 @@ client.on('ready', async () => {
   // @ts-expect-error
   await globalCommand?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
   // @ts-expect-error
-  await globalCommand?.permissions.has({ permissionsId: testGuildId });
+  await globalCommand?.permissions.has({ permissionId: testGuildId });
   // @ts-expect-error
   await globalCommand?.permissions.fetch({});
   // @ts-expect-error
@@ -264,7 +281,7 @@ client.on('ready', async () => {
 
   // Permissions from cached guild ApplicationCommand
   await guildCommandFromGlobal?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
-  await guildCommandFromGlobal?.permissions.has({ permissionsId: testGuildId });
+  await guildCommandFromGlobal?.permissions.has({ permissionId: testGuildId });
   await guildCommandFromGlobal?.permissions.fetch({});
   await guildCommandFromGlobal?.permissions.remove({ roles: [testGuildId] });
   await guildCommandFromGlobal?.permissions.remove({ users: [testUserId] });
@@ -277,7 +294,7 @@ client.on('ready', async () => {
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
-  await guildCommandFromGlobal?.permissions.has({ command: guildCommandId, permissionsId: testGuildId });
+  await guildCommandFromGlobal?.permissions.has({ command: guildCommandId, permissionId: testGuildId });
   // @ts-expect-error
   await guildCommandFromGlobal?.permissions.remove({ command: guildCommandId, roles: [testGuildId] });
   // @ts-expect-error
@@ -300,7 +317,7 @@ client.on('ready', async () => {
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
-  await guildCommandFromGlobal?.permissions.has({ guild: testGuildId, permissionsId: testGuildId });
+  await guildCommandFromGlobal?.permissions.has({ guild: testGuildId, permissionId: testGuildId });
   // @ts-expect-error
   await guildCommandFromGlobal?.permissions.remove({ guild: testGuildId, roles: [testGuildId] });
   // @ts-expect-error
@@ -314,7 +331,7 @@ client.on('ready', async () => {
   });
 
   await guildCommandFromGuild?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
-  await guildCommandFromGuild?.permissions.has({ permissionsId: testGuildId });
+  await guildCommandFromGuild?.permissions.has({ permissionId: testGuildId });
   await guildCommandFromGuild?.permissions.fetch({});
   await guildCommandFromGuild?.permissions.remove({ roles: [testGuildId] });
   await guildCommandFromGuild?.permissions.remove({ users: [testUserId] });
@@ -327,7 +344,7 @@ client.on('ready', async () => {
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
-  await guildCommandFromGuild?.permissions.has({ command: guildCommandId, permissionsId: testGuildId });
+  await guildCommandFromGuild?.permissions.has({ command: guildCommandId, permissionId: testGuildId });
   // @ts-expect-error
   await guildCommandFromGuild?.permissions.remove({ command: guildCommandId, roles: [testGuildId] });
   // @ts-expect-error
@@ -350,7 +367,7 @@ client.on('ready', async () => {
     permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
-  await guildCommandFromGuild?.permissions.has({ guild: testGuildId, permissionsId: testGuildId });
+  await guildCommandFromGuild?.permissions.has({ guild: testGuildId, permissionId: testGuildId });
   // @ts-expect-error
   await guildCommandFromGuild?.permissions.remove({ guild: testGuildId, roles: [testGuildId] });
   // @ts-expect-error
@@ -431,7 +448,7 @@ client.login('absolutely-valid-token');
 // Test type transformation:
 declare const assertType: <T>(value: T) => asserts value is T;
 declare const serialize: <T>(value: T) => Serialized<T>;
-declare const notPropertyOf: <T, P extends string>(value: T, property: P & Exclude<P, keyof T>) => void;
+declare const notPropertyOf: <T, P extends PropertyKey>(value: T, property: P & Exclude<P, keyof T>) => void;
 
 assertType<undefined>(serialize(undefined));
 assertType<null>(serialize(null));
@@ -503,3 +520,64 @@ declare const reactionCollector: ReactionCollector;
 reactionCollector.on('dispose', (...args) => {
   assertType<[MessageReaction, User]>(args);
 });
+
+// Make sure the properties are typed correctly, and that no backwards properties
+// (K -> V and V -> K) exist:
+assertType<'messageCreate'>(Constants.Events.MESSAGE_CREATE);
+assertType<'close'>(Constants.ShardEvents.CLOSE);
+assertType<1>(Constants.Status.CONNECTING);
+assertType<0>(Constants.Opcodes.DISPATCH);
+assertType<2>(Constants.ClientApplicationAssetTypes.BIG);
+
+declare const applicationCommandData: ApplicationCommandData;
+declare const applicationCommandResolvable: ApplicationCommandResolvable;
+declare const applicationCommandManager: ApplicationCommandManager;
+{
+  type ApplicationCommandType = ApplicationCommand<{ guild: GuildResolvable }>;
+
+  assertType<Promise<ApplicationCommandType>>(applicationCommandManager.create(applicationCommandData));
+  assertType<Promise<ApplicationCommand>>(applicationCommandManager.create(applicationCommandData, '0'));
+  assertType<Promise<ApplicationCommandType>>(
+    applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData),
+  );
+  assertType<Promise<ApplicationCommand>>(
+    applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData, '0'),
+  );
+  assertType<Promise<Collection<Snowflake, ApplicationCommandType>>>(
+    applicationCommandManager.set([applicationCommandData]),
+  );
+  assertType<Promise<Collection<Snowflake, ApplicationCommand>>>(
+    applicationCommandManager.set([applicationCommandData], '0'),
+  );
+}
+
+declare const guildApplicationCommandManager: GuildApplicationCommandManager;
+assertType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
+assertType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch(undefined, {}));
+assertType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
+
+declare const guildChannelManager: GuildChannelManager;
+{
+  type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel;
+
+  assertType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: 'voice' }));
+  assertType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: 'category' }));
+  assertType<Promise<TextChannel>>(guildChannelManager.create('name', { type: 'text' }));
+  assertType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: 'news' }));
+  assertType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: 'store' }));
+  assertType<Promise<StageChannel>>(guildChannelManager.create('name', { type: 'stage' }));
+
+  assertType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
+  assertType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
+  assertType<Promise<AnyChannel | null>>(guildChannelManager.fetch('0'));
+}
+
+declare const roleManager: RoleManager;
+assertType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch());
+assertType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch(undefined, {}));
+assertType<Promise<Role | null>>(roleManager.fetch('0'));
+
+declare const guildEmojiManager: GuildEmojiManager;
+assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch());
+assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
+assertType<Promise<GuildEmoji | null>>(guildEmojiManager.fetch('0'));
