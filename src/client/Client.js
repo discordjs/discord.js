@@ -177,15 +177,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * The ready state of the client - This will be true once the websocket initially connects.
-   * @type {boolean}
-   * @private
-   */
-  get ready() {
-    return this.ws.status === 0;
-  }
-
-  /**
    * Timestamp of the time the client was last `READY` at
    * @type {?number}
    * @readonly
@@ -242,7 +233,7 @@ class Client extends BaseClient {
    * @returns {boolean}
    */
   isReady() {
-    return this.ready;
+    return this.ws.status === 0;
   }
 
   /**
