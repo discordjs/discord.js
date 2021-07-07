@@ -611,6 +611,7 @@ export class GuildAuditLogsEntry {
     | Message
     | Integration
     | StageInstance
+    | Sticker
     | { id: Snowflake }
     | null;
   public targetType: GuildAuditLogsTarget;
@@ -3329,6 +3330,9 @@ export interface GuildAuditLogsActions {
   STAGE_INSTANCE_CREATE?: number;
   STAGE_INSTANCE_UPDATE?: number;
   STAGE_INSTANCE_DELETE?: number;
+  STICKER_CREATE?: number;
+  STICKER_UPDATE?: number;
+  STICKER_DELETE?: number;
 }
 
 export type GuildAuditLogsActionType = 'CREATE' | 'DELETE' | 'UPDATE' | 'ALL';
@@ -3354,6 +3358,7 @@ export interface GuildAuditLogsTargets {
   MESSAGE?: string;
   INTEGRATION?: string;
   STAGE_INSTANCE?: string;
+  STICKER?: string;
   UNKNOWN?: string;
 }
 
