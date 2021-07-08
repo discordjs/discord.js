@@ -2071,19 +2071,15 @@ export class ApplicationCommandManager<
     null
   >;
   private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): unknown;
+  public create(command: ApplicationCommandData): Promise<ApplicationCommandType>;
   public create(command: ApplicationCommandData, guildId: Snowflake): Promise<ApplicationCommand>;
-  public create(command: ApplicationCommandData, guildId?: Snowflake): Promise<ApplicationCommandType>;
   public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandType | null>;
+  public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommandType>;
   public edit(
     command: ApplicationCommandResolvable,
     data: ApplicationCommandData,
     guildId: Snowflake,
   ): Promise<ApplicationCommand>;
-  public edit(
-    command: ApplicationCommandResolvable,
-    data: ApplicationCommandData,
-    guildId?: Snowflake,
-  ): Promise<ApplicationCommandType>;
   public fetch(
     id: Snowflake,
     options: FetchApplicationCommandOptions & { guildId: Snowflake },
@@ -2093,14 +2089,11 @@ export class ApplicationCommandManager<
     id?: Snowflake,
     options?: FetchApplicationCommandOptions,
   ): Promise<Collection<Snowflake, ApplicationCommandType>>;
+  public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommandType>>;
   public set(
     commands: ApplicationCommandData[],
-    guildId?: Snowflake,
+    guildId: Snowflake,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
-  public set(
-    commands: ApplicationCommandData[],
-    guildId?: Snowflake,
-  ): Promise<Collection<Snowflake, ApplicationCommandType>>;
   private static transformCommand(command: ApplicationCommandData): unknown;
 }
 
@@ -2163,7 +2156,7 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
   public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
   public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
-  public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
+  public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
   public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
 
@@ -2190,7 +2183,7 @@ export class GuildChannelManager extends CachedManager<
     options?: BaseFetchOptions,
   ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel | null>;
   public fetch(
-    id?: Snowflake,
+    id?: undefined,
     options?: BaseFetchOptions,
   ): Promise<
     Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>
@@ -2206,7 +2199,7 @@ export class GuildEmojiManager extends BaseGuildEmojiManager {
     options?: GuildEmojiCreateOptions,
   ): Promise<GuildEmoji>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildEmoji>;
-  public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildEmoji>>;
+  public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildEmoji>>;
 }
 
 export class GuildEmojiRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
@@ -2356,7 +2349,7 @@ export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> 
   public readonly premiumSubscriberRole: Role | null;
   public botRoleFor(user: UserResolvable): Role | null;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Role | null>;
-  public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Role>>;
+  public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, Role>>;
   public create(options?: CreateRoleOptions): Promise<Role>;
   public edit(role: RoleResolvable, options: RoleData, reason?: string): Promise<Role>;
 }
