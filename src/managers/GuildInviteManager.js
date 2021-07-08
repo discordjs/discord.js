@@ -67,7 +67,8 @@ class GuildInviteManager extends CachedManager {
   /**
    * Options used to fetch all invites from a guild.
    * @typedef {Object} FetchInvitesOptions
-   * @property {boolean} cache Whether or not to cache the fetched invites
+   * @property {GuildChannelResolvable} [channelId] The channel to fetch all invites from
+   * @property {boolean} [cache=true] Whether or not to cache the fetched invites
    */
 
   /**
@@ -86,7 +87,7 @@ class GuildInviteManager extends CachedManager {
    *   .catch(console.error);
    * @example
    * // Fetch all invites from a channel
-   * guild.invites.fetch({ channelID, '222197033908436994' })
+   * guild.invites.fetch({ channelId: '222197033908436994' })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
