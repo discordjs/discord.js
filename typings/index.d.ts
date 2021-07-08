@@ -293,8 +293,8 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public options: ClientOptions;
   public readyAt: If<Ready, Date>;
   public readonly readyTimestamp: If<Ready, number>;
-  public shard: If<Ready, ShardClientUtil>;
-  public token: If<Ready, string>;
+  public shard: ShardClientUtil | null;
+  public token: If<Ready, string, string | null>;
   public uptime: If<Ready, number>;
   public user: If<Ready, ClientUser>;
   public users: UserManager;

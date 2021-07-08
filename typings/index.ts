@@ -440,7 +440,6 @@ declare const loggedInClient: Client<true>;
 assertType<ClientApplication>(loggedInClient.application);
 assertType<Date>(loggedInClient.readyAt);
 assertType<number>(loggedInClient.readyTimestamp);
-assertType<ShardClientUtil>(loggedInClient.shard);
 assertType<string>(loggedInClient.token);
 assertType<number>(loggedInClient.uptime);
 assertType<ClientUser>(loggedInClient.user);
@@ -449,8 +448,7 @@ declare const loggedOutClient: Client<false>;
 assertType<null>(loggedOutClient.application);
 assertType<null>(loggedOutClient.readyAt);
 assertType<null>(loggedOutClient.readyTimestamp);
-assertType<null>(loggedOutClient.shard);
-assertType<null>(loggedOutClient.token);
+assertType<string | null>(loggedOutClient.token);
 assertType<null>(loggedOutClient.uptime);
 assertType<null>(loggedOutClient.user);
 
