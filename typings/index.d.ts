@@ -3059,7 +3059,7 @@ interface FetchInviteOptions extends BaseFetchOptions {
 }
 
 interface FetchInvitesOptions {
-  channelID?: Snowflake;
+  channelId?: GuildChannelResolvable;
   cache?: boolean;
 }
 
