@@ -68,7 +68,7 @@ class InteractionResponses {
    * @example
    * // Create an ephemeral reply
    * interaction.reply({ content: 'Pong!', ephemeral: true })
-   *   .then(console.log)
+   *   .then(() => console.log('Reply sent.'))
    *   .catch(console.error);
    */
   async reply(options) {
