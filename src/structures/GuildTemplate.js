@@ -59,7 +59,7 @@ class GuildTemplate extends Base {
      * The user that created this template
      * @type {User}
      */
-    this.creator = this.client.users.add(data.creator);
+    this.creator = this.client.users._add(data.creator);
 
     /**
      * The time of when this template was created at
@@ -130,7 +130,7 @@ class GuildTemplate extends Base {
       client.incrementMaxListeners();
       client.on(Events.GUILD_CREATE, handleGuild);
 
-      const timeout = client.setTimeout(() => resolveGuild(client.guilds.add(data)), 10000);
+      const timeout = client.setTimeout(() => resolveGuild(client.guilds._add(data)), 10000);
     });
   }
 

@@ -26,7 +26,7 @@ class GenericAction {
   getPayload(data, manager, id, partialType, cache) {
     const existing = manager.cache.get(id);
     if (!existing && this.client.options.partials.includes(partialType)) {
-      return manager.add(data, cache);
+      return manager._add(data, cache);
     }
     return existing;
   }
@@ -93,9 +93,9 @@ class GenericAction {
     if (data.guild_id && data.member?.user) {
       const guild = this.client.guilds.cache.get(data.guild_id);
       if (guild) {
-        return guild.members.add(data.member).user;
+        return guild.members._add(data.member).user;
       } else {
-        return this.client.users.add(data.member.user);
+        return this.client.users._add(data.member.user);
       }
     }
     return this.getUser(data);

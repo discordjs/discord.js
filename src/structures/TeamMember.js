@@ -37,7 +37,7 @@ class TeamMember extends Base {
      * The user for this Team Member
      * @type {User}
      */
-    this.user = this.client.users.add(data.user);
+    this.user = this.client.users._add(data.user);
   }
 
   /**

@@ -18,8 +18,8 @@ class PresenceManager extends CachedManager {
    * @name PresenceManager#cache
    */
 
-  add(data, cache) {
-    return super.add(data, cache, { id: data.user.id });
+  _add(data, cache) {
+    return super._add(data, cache, { id: data.user.id });
   }
 
   /**

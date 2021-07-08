@@ -19,13 +19,13 @@ class ChannelManager extends CachedManager {
    * @name ChannelManager#cache
    */
 
-  add(data, guild, cache = true, allowUnknownGuild = false) {
+  _add(data, guild, cache = true, allowUnknownGuild = false) {
     const existing = this.cache.get(data.id);
     if (existing) {
       if (cache) existing._patch(data);
-      guild?.channels?.add(existing);
+      guild?.channels?._add(existing);
       if (ThreadChannelTypes.includes(existing.type)) {
-        existing.parent?.threads?.add(existing);
+        existing.parent?.threads?._add(existing);
       }
       return existing;
     }
@@ -42,7 +42,7 @@ class ChannelManager extends CachedManager {
     return channel;
   }
 
-  remove(id) {
+  _remove(id) {
     const channel = this.cache.get(id);
     channel?.guild?.channels.cache.delete(id);
     channel?.parent?.threads?.cache.delete(id);
@@ -99,7 +99,7 @@ class ChannelManager extends CachedManager {
     }
 
     const data = await this.client.api.channels(id).get();
-    return this.add(data, null, cache, allowUnknownGuild);
+    return this._add(data, null, cache, allowUnknownGuild);
   }
 }
 
