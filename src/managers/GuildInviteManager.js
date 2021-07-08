@@ -67,8 +67,8 @@ class GuildInviteManager extends CachedManager {
   /**
    * Options used to fetch all invites from a guild.
    * @typedef {Object} FetchInvitesOptions
-   * @property {boolean} cache Whether or not to cache the fetched invites
    * @property {GuildChannelResolvable} [channelId] The channel to fetch all invites from
+   * @property {boolean} [cache=true] Whether or not to cache the fetched invites
    */
 
   /**
