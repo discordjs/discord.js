@@ -80,8 +80,8 @@ class GuildChannelManager extends CachedManager {
   /**
    * Options used to create a new channel in a guild.
    * @typedef {Object} GuildChannelCreateOptions
-   * @property {string} [type='text'] The type of the new channel, either `text`, `voice`, `category`, `news`,
-   * `store`, or `stage`
+   * @property {string|number} [type='GUILD_TEXT'] The type of the new channel, either `GUILD_TEXT`, `GUILD_VOICE`,
+   * `GUILD_CATEGORY`, `GUILD_NEWS`, `GUILD_STORE`, or `GUILD_STAGE_VOICE`
    * @property {string} [topic] The topic for the new channel
    * @property {boolean} [nsfw] Whether the new channel is nsfw
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
@@ -107,7 +107,7 @@ class GuildChannelManager extends CachedManager {
    * @example
    * // Create a new channel with permission overwrites
    * guild.channels.create('new-voice', {
-   *   type: 'voice',
+   *   type: 'GUILD_VOICE',
    *   permissionOverwrites: [
    *      {
    *        id: message.author.id,
@@ -129,7 +129,7 @@ class GuildChannelManager extends CachedManager {
       data: {
         name,
         topic,
-        type: type ? ChannelTypes[type.toUpperCase()] : ChannelTypes.TEXT,
+        type: typeof type === 'number' ? type : ChannelTypes[type] ?? ChannelTypes.GUILD_TEXT,
         nsfw,
         bitrate,
         user_limit: userLimit,

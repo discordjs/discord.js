@@ -193,7 +193,7 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.cache.find(c => c.type === 'dm' && c.recipient.id === this.id) ?? null;
+    return this.client.channels.cache.find(c => c.type === 'DM' && c.recipient.id === this.id) ?? null;
   }
 
   /**

@@ -1358,12 +1358,12 @@ class Guild extends AnonymousGuild {
    * @private
    */
   _sortedChannels(channel) {
-    const category = channel.type === ChannelTypes.CATEGORY;
+    const category = channel.type === ChannelTypes.GUILD_CATEGORY;
     return Util.discordSort(
       this.channels.cache.filter(
         c =>
-          (['text', 'news', 'store'].includes(channel.type)
-            ? ['text', 'news', 'store'].includes(c.type)
+          (['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(channel.type)
+            ? ['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(c.type)
             : c.type === channel.type) &&
           (category || c.parent === channel.parent),
       ),
