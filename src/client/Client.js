@@ -10,7 +10,6 @@ const ChannelManager = require('../managers/ChannelManager');
 const GuildManager = require('../managers/GuildManager');
 const UserManager = require('../managers/UserManager');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
-const ClientPresence = require('../structures/ClientPresence');
 const GuildPreview = require('../structures/GuildPreview');
 const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
@@ -23,6 +22,7 @@ const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
 const Options = require('../util/Options');
 const Permissions = require('../util/Permissions');
+const Structures = require('../util/Structures');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -119,6 +119,7 @@ class Client extends BaseClient {
      */
     this.channels = new ChannelManager(this);
 
+    const ClientPresence = Structures.get('ClientPresence');
     /**
      * The presence of the Client
      * @private

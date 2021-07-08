@@ -1,10 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const ButtonInteraction = require('../../structures/ButtonInteraction');
-const CommandInteraction = require('../../structures/CommandInteraction');
-const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
 const { Events, InteractionTypes, MessageComponentTypes } = require('../../util/Constants');
+const Structures = require('../../util/Structures');
 
 let deprecationEmitted = false;
 
@@ -18,15 +16,15 @@ class InteractionCreateAction extends Action {
     let InteractionType;
     switch (data.type) {
       case InteractionTypes.APPLICATION_COMMAND:
-        InteractionType = CommandInteraction;
+        InteractionType = Structures.get('CommandInteraction');
         break;
       case InteractionTypes.MESSAGE_COMPONENT:
         switch (data.data.component_type) {
           case MessageComponentTypes.BUTTON:
-            InteractionType = ButtonInteraction;
+            InteractionType = Structures.get('ButtonInteraction');
             break;
           case MessageComponentTypes.SELECT_MENU:
-            InteractionType = SelectMenuInteraction;
+            InteractionType = Structures.get('SelectMenuInteraction');
             break;
           default:
             client.emit(
