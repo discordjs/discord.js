@@ -3797,33 +3797,29 @@ export interface PartialChannelData {
   permissionOverwrites?: PartialOverwriteData[];
 }
 
-export type Partialize<T extends AllowedPartial, N extends keyof T | null, E extends string> = {
+export type Partialize<
+  T extends AllowedPartial,
+  N extends keyof T | null = null,
+  M extends keyof T | null = null,
+  E extends keyof T | '' = '',
+> = {
   readonly client: Client;
-  readonly createdAt: Date;
-  readonly createdTimestamp: number;
-  deleted: boolean;
   id: Snowflake;
   partial: true;
-  fetch(): Promise<T>;
 } & {
-  [K in keyof Omit<
-    T,
-    'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | E
-  >]: K extends N ? null : T[K];
+  [K in keyof Omit<T, 'client' | 'id' | 'partial' | E>]: K extends N ? null : K extends M ? T[K] | null : T[K];
 };
 
-export interface PartialDMChannel extends Partialize<DMChannel, null, 'lastMessageId'> {
+export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
   lastMessageId: undefined;
 }
 
-export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp', 'user'> {
-  user: User | null;
-}
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp', 'user'> {}
 
 export interface PartialMessage
-  extends Partialize<Message, 'content' | 'cleanContent' | 'author' | 'type' | 'system' | 'pinned' | 'tts', ''> {}
+  extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
 
-export interface PartialMessageReaction extends Partialize<MessageReaction, 'count', ''> {}
+export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
 export interface PartialOverwriteData {
   id: Snowflake | number;
@@ -3838,7 +3834,7 @@ export interface PartialRoleData extends RoleData {
 
 export type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator', 'deleted'> {}
+export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
