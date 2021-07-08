@@ -126,7 +126,7 @@ export abstract class Application extends Base<true> {
   public toString(): string | null;
 }
 
-export class ApplicationCommand<PermissionsFetchType = {}> extends Base<true> {
+export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public constructor(client: Client, data: unknown, guild?: Guild, guildId?: Snowflake);
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -718,7 +718,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public valueOf(): string;
 }
 
-export class GuildPreview extends Base<true> {
+export class GuildPreview extends Base {
   public constructor(client: Client, data: unknown);
   public approximateMemberCount: number;
   public approximatePresenceCount: number;
@@ -738,7 +738,7 @@ export class GuildPreview extends Base<true> {
   public toString(): string;
 }
 
-export class GuildTemplate extends Base<true> {
+export class GuildTemplate extends Base {
   public constructor(client: Client, data: unknown);
   public readonly createdTimestamp: number;
   public readonly updatedTimestamp: number;
@@ -784,7 +784,7 @@ export class RateLimitError extends Error {
   public name: 'RateLimitError';
 }
 
-export class Integration extends Base<true> {
+export class Integration extends Base {
   public constructor(client: Client, data: unknown, guild: Guild);
   public account: IntegrationAccount;
   public application: IntegrationApplication | null;
@@ -821,7 +821,7 @@ export class Intents extends BitField<IntentsString> {
   public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
 }
 
-export class Interaction extends Base<true> {
+export class Interaction extends Base {
   public constructor(client: Client, data: unknown);
   public applicationId: Snowflake;
   public readonly channel: Channel | PartialDMChannel | null;
@@ -877,7 +877,7 @@ export class InteractionWebhook extends PartialWebhookMixin() {
   public send(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
 }
 
-export class Invite extends Base<true> {
+export class Invite extends Base {
   public constructor(client: Client, data: unknown);
   public channel: GuildChannel | PartialGroupDMChannel;
   public code: string;
@@ -905,7 +905,7 @@ export class Invite extends Base<true> {
   public stageInstance: InviteStageInstance | null;
 }
 
-export class InviteStageInstance extends Base<true> {
+export class InviteStageInstance extends Base {
   public constructor(client: Client, data: unknown, channelId: Snowflake, guildId: Snowflake);
   public channelId: Snowflake;
   public guildId: Snowflake;
@@ -927,7 +927,7 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public maxSize: number;
 }
 
-export class Message extends Base<true> {
+export class Message extends Base {
   public constructor(client: Client, data: unknown, channel: TextChannel | DMChannel | NewsChannel | ThreadChannel);
   private patch(data: unknown): Message;
 
@@ -1256,7 +1256,7 @@ export class PartialGroupDMChannel extends Channel {
   public iconURL(options?: StaticImageURLOptions): string | null;
 }
 
-export class PermissionOverwrites extends Base<true> {
+export class PermissionOverwrites extends Base {
   public constructor(client: Client, data: object, channel: GuildChannel);
   public allow: Readonly<Permissions>;
   public readonly channel: GuildChannel;
@@ -1287,7 +1287,7 @@ export class Permissions extends BitField<PermissionString, bigint> {
   public static resolve(permission?: PermissionResolvable): bigint;
 }
 
-export class Presence extends Base<true> {
+export class Presence extends Base {
   public constructor(client: Client, data?: unknown);
   public activities: Activity[];
   public clientStatus: ClientPresenceStatusData | null;
@@ -1345,7 +1345,7 @@ export class RichPresenceAssets {
   public smallImageURL(options?: StaticImageURLOptions): string | null;
 }
 
-export class Role extends Base<true> {
+export class Role extends Base {
   public constructor(client: Client, data: unknown, guild: Guild);
   public color: number;
   public readonly createdAt: Date;
@@ -1500,7 +1500,7 @@ export class StageChannel extends BaseGuildVoiceChannel {
   public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
 }
 
-export class StageInstance extends Base<true> {
+export class StageInstance extends Base {
   public constructor(client: Client, data: unknown, channel: StageChannel);
   public id: Snowflake;
   public deleted: boolean;
@@ -1518,7 +1518,7 @@ export class StageInstance extends Base<true> {
   public readonly createdAt: Date;
 }
 
-export class Sticker extends Base<true> {
+export class Sticker extends Base {
   public constructor(client: Client, data: unknown);
   public asset: string;
   public readonly createdTimestamp: number;
@@ -1543,7 +1543,7 @@ export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
   public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString, number>): number;
 }
 
-export class Team extends Base<true> {
+export class Team extends Base {
   public constructor(client: Client, data: unknown);
   public id: Snowflake;
   public name: string;
@@ -1560,7 +1560,7 @@ export class Team extends Base<true> {
   public toString(): string;
 }
 
-export class TeamMember extends Base<true> {
+export class TeamMember extends Base {
   public constructor(team: Team, data: unknown);
   public team: Team;
   public readonly id: Snowflake;
@@ -1633,7 +1633,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<ThreadChannel>;
 }
 
-export class ThreadMember extends Base<true> {
+export class ThreadMember extends Base {
   public constructor(thread: ThreadChannel, data?: object);
   public flags: ThreadMemberFlags;
   public readonly guildMember: GuildMember | null;
@@ -1761,7 +1761,7 @@ export class VoiceRegion {
   public toJSON(): unknown;
 }
 
-export class VoiceState extends Base<true> {
+export class VoiceState extends Base {
   public constructor(guild: Guild, data: unknown);
   public readonly channel: VoiceChannel | StageChannel | null;
   public channelId: Snowflake | null;
@@ -1897,7 +1897,7 @@ export class WebSocketShard extends EventEmitter {
   public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
 }
 
-export class Widget extends Base<true> {
+export class Widget extends Base {
   public constructor(client: Client, data: object);
   private _patch(data: object): void;
   public fetch(): Promise<Widget>;
@@ -1908,7 +1908,7 @@ export class Widget extends Base<true> {
   public presenceCount: number;
 }
 
-export class WidgetMember extends Base<true> {
+export class WidgetMember extends Base {
   public constructor(client: Client, data: object);
   public id: string;
   public username: string;
@@ -1925,7 +1925,7 @@ export class WidgetMember extends Base<true> {
   public activity?: WidgetActivity;
 }
 
-export class WelcomeChannel extends Base<true> {
+export class WelcomeChannel extends Base {
   private _emoji: unknown;
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
@@ -1934,7 +1934,7 @@ export class WelcomeChannel extends Base<true> {
   public readonly emoji: GuildEmoji | Emoji;
 }
 
-export class WelcomeScreen extends Base<true> {
+export class WelcomeScreen extends Base {
   public readonly enabled: boolean;
   public guild: Guild | InviteGuild;
   public description: string | null;
