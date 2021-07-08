@@ -18,7 +18,7 @@ const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
 const Collection = require('../util/Collection');
-const { Events, InviteScopes } = require('../util/Constants');
+const { Events, InviteScopes, Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
 const Options = require('../util/Options');
@@ -233,7 +233,7 @@ class Client extends BaseClient {
    * @returns {boolean}
    */
   isReady() {
-    return this.ws.status === 0;
+    return this.ws.status === Status.READY;
   }
 
   /**
