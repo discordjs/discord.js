@@ -63,7 +63,7 @@ class InteractionResponses {
    * const embed = new MessageEmbed().setDescription('Pong!');
    *
    * interaction.reply({ embeds: [embed] })
-   *   .then('Reply sent.')
+   *   .then(() => console.log('Reply sent.'))
    *   .catch(console.error);
    * @example
    * // Create an ephemeral reply
