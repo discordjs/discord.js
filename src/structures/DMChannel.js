@@ -34,7 +34,7 @@ class DMChannel extends Channel {
        * The recipient on the other end of the DM
        * @type {User}
        */
-      this.recipient = this.client.users.add(data.recipients[0]);
+      this.recipient = this.client.users._add(data.recipients[0]);
     }
 
     /**

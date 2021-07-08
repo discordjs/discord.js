@@ -2054,7 +2054,7 @@ export abstract class DataManager<K, Holds, R> extends BaseManager {
 
 export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R> {
   public constructor(client: Client, holds: Constructable<Holds>);
-  public add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
+  private _add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
 }
 
 export class ApplicationCommandManager<
@@ -2373,12 +2373,9 @@ export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, T
   public fetchActive(cache?: boolean): Promise<FetchedThreads>;
 }
 
-export interface ThreadMemberManager
-  extends Omit<CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable>, 'add'> {}
-export class ThreadMemberManager {
+export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable> {
   public constructor(thread: ThreadChannel, iterable?: Iterable<unknown>);
   public thread: ThreadChannel;
-  public _add(data: unknown, cache?: boolean): ThreadMember;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;

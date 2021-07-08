@@ -85,7 +85,7 @@ class GuildChannel extends Channel {
     if ('permission_overwrites' in data) {
       this.permissionOverwrites.cache.clear();
       for (const overwrite of data.permission_overwrites) {
-        this.permissionOverwrites.add(overwrite);
+        this.permissionOverwrites._add(overwrite);
       }
     }
   }

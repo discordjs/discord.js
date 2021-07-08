@@ -10,10 +10,10 @@ module.exports = (client, { d: data }) => {
     const guild = client.guilds.cache.get(data.guild_id);
     if (!guild) return;
     oldCommand = guild.commands.cache.get(data.id)?._clone() ?? null;
-    newCommand = guild.commands.add(data);
+    newCommand = guild.commands._add(data);
   } else {
     oldCommand = client.application.commands.cache.get(data.id)?._clone() ?? null;
-    newCommand = client.application.commands.add(data);
+    newCommand = client.application.commands._add(data);
   }
 
   /**

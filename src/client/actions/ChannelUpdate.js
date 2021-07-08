@@ -25,7 +25,7 @@ class ChannelUpdateAction extends Action {
         updated: channel,
       };
     } else {
-      client.channels.add(data);
+      client.channels._add(data);
     }
 
     return {};

@@ -67,7 +67,7 @@ class GuildMember extends Base {
        * The user that this guild member instance represents
        * @type {User}
        */
-      this.user = this.client.users.add(data.user, true);
+      this.user = this.client.users._add(data.user, true);
     }
 
     if ('nick' in data) this.nickname = data.nick;

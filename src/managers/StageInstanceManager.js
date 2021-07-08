@@ -63,7 +63,7 @@ class StageInstanceManager extends CachedManager {
       },
     });
 
-    return this.add(data);
+    return this._add(data);
   }
 
   /**
@@ -87,7 +87,7 @@ class StageInstanceManager extends CachedManager {
     }
 
     const data = await this.client.api('stage-instances', channelId).get();
-    return this.add(data, cache);
+    return this._add(data, cache);
   }
 
   /**
@@ -130,7 +130,7 @@ class StageInstanceManager extends CachedManager {
       return clone;
     }
 
-    return this.add(data);
+    return this._add(data);
   }
 
   /**

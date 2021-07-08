@@ -15,7 +15,7 @@ class ChannelDeleteAction extends Action {
     const channel = client.channels.cache.get(data.id);
 
     if (channel) {
-      client.channels.remove(channel.id);
+      client.channels._remove(channel.id);
       channel.deleted = true;
       if (channel.messages && !(channel instanceof DMChannel)) {
         for (const message of channel.messages.cache.values()) {
