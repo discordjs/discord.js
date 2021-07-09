@@ -552,7 +552,7 @@ class Message extends Base {
    */
   get crosspostable() {
     return (
-      this.channel.type === 'news' &&
+      this.channel.type === 'GUILD_NEWS' &&
       !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
       this.type === 'DEFAULT' &&
       this.channel.viewable &&
@@ -595,7 +595,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === 'news') {
+   * if (message.channel.type === 'GUILD_NEWS') {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
@@ -713,7 +713,7 @@ class Message extends Base {
    * @returns {Promise<ThreadChannel>}
    */
   startThread(name, autoArchiveDuration, reason) {
-    if (!['text', 'news'].includes(this.channel.type)) {
+    if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
     return this.channel.threads.create({ name, autoArchiveDuration, startMessage: this, reason });

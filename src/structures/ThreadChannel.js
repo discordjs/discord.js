@@ -346,7 +346,7 @@ class ThreadChannel extends Channel {
       !this.archived &&
       !this.joined &&
       this.permissionsFor(this.client.user)?.has(
-        this.type === 'private_thread' ? Permissions.FLAGS.MANAGE_THREADS : Permissions.FLAGS.VIEW_CHANNEL,
+        this.type === 'GUILD_PRIVATE_THREAD' ? Permissions.FLAGS.MANAGE_THREADS : Permissions.FLAGS.VIEW_CHANNEL,
         false,
       )
     );
@@ -373,7 +373,9 @@ class ThreadChannel extends Channel {
       this.permissionsFor(this.client.user)?.any(
         [
           Permissions.FLAGS.SEND_MESSAGES,
-          this.type === 'private_thread' ? Permissions.FLAGS.USE_PRIVATE_THREADS : Permissions.FLAGS.USE_PUBLIC_THREADS,
+          this.type === 'GUILD_PRIVATE_THREAD'
+            ? Permissions.FLAGS.USE_PRIVATE_THREADS
+            : Permissions.FLAGS.USE_PUBLIC_THREADS,
         ],
         false,
       )

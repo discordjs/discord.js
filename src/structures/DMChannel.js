@@ -18,7 +18,7 @@ class DMChannel extends Channel {
     super(client, data);
 
     // Override the channel type so partials have a known type
-    this.type = 'dm';
+    this.type = 'DM';
 
     /**
      * A manager of the messages belonging to this channel

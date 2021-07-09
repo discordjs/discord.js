@@ -21,7 +21,7 @@ class NewsChannel extends TextChannel {
    * @param {string} [reason] Reason for creating the webhook
    * @returns {Promise<NewsChannel>}
    * @example
-   * if (channel.type === 'news') {
+   * if (channel.type === 'GUILD_NEWS') {
    *   channel.addFollower('222197033908436994', 'Important announcements')
    *     .then(() => console.log('Added follower'))
    *     .catch(console.error);
