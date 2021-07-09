@@ -23,21 +23,10 @@ class Channel extends Base {
 
     const type = ChannelTypes[data.type];
     /**
-     * The type of the channel, either:
-     * * `dm` - a DM channel
-     * * `text` - a guild text channel
-     * * `voice` - a guild voice channel
-     * * `category` - a guild category channel
-     * * `news` - a guild news channel
-     * * `store` - a guild store channel
-     * * `news_thread` - a guild news channel's public thread channel
-     * * `public_thread` - a guild text channel's public thread channel
-     * * `private_thread` - a guild text channel's private thread channel
-     * * `stage` - a guild stage channel
-     * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
-     * @type {string}
+     * The type of the channel
+     * @type {ChannelType}
      */
-    this.type = type?.toLowerCase() ?? 'unknown';
+    this.type = type ?? 'UNKNOWN';
 
     /**
      * Whether the channel has been deleted
@@ -139,9 +128,9 @@ class Channel extends Base {
 
     let channel;
     if (!data.guild_id && !guild) {
-      if ((data.recipients && data.type !== ChannelTypes.GROUP) || data.type === ChannelTypes.DM) {
+      if ((data.recipients && data.type !== ChannelTypes.GROUP_DM) || data.type === ChannelTypes.DM) {
         channel = new DMChannel(client, data);
-      } else if (data.type === ChannelTypes.GROUP) {
+      } else if (data.type === ChannelTypes.GROUP_DM) {
         const PartialGroupDMChannel = require('./PartialGroupDMChannel');
         channel = new PartialGroupDMChannel(client, data);
       }
@@ -150,33 +139,33 @@ class Channel extends Base {
 
       if (guild || allowUnknownGuild) {
         switch (data.type) {
-          case ChannelTypes.TEXT: {
+          case ChannelTypes.GUILD_TEXT: {
             channel = new TextChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.VOICE: {
+          case ChannelTypes.GUILD_VOICE: {
             channel = new VoiceChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.CATEGORY: {
+          case ChannelTypes.GUILD_CATEGORY: {
             channel = new CategoryChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.NEWS: {
+          case ChannelTypes.GUILD_NEWS: {
             channel = new NewsChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.STORE: {
+          case ChannelTypes.GUILD_STORE: {
             channel = new StoreChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.STAGE: {
+          case ChannelTypes.GUILD_STAGE_VOICE: {
             channel = new StageChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.NEWS_THREAD:
-          case ChannelTypes.PUBLIC_THREAD:
-          case ChannelTypes.PRIVATE_THREAD: {
+          case ChannelTypes.GUILD_NEWS_THREAD:
+          case ChannelTypes.GUILD_PUBLIC_THREAD:
+          case ChannelTypes.GUILD_PRIVATE_THREAD: {
             channel = new ThreadChannel(guild, data, client);
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;
