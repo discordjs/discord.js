@@ -57,7 +57,7 @@ class BaseMessageComponent {
    * @returns {?MessageComponent}
    * @private
    */
-  static create(data, client, skipValidation = false) {
+  static create(data, client) {
     let component;
     let type = data.type;
 
@@ -66,7 +66,7 @@ class BaseMessageComponent {
     switch (type) {
       case MessageComponentTypes.ACTION_ROW: {
         const MessageActionRow = require('./MessageActionRow');
-        component = new MessageActionRow(data);
+        component = new MessageActionRow(data, client);
         break;
       }
       case MessageComponentTypes.BUTTON: {
@@ -82,7 +82,7 @@ class BaseMessageComponent {
       default:
         if (client) {
           client.emit(Events.DEBUG, `[BaseMessageComponent] Received component with unknown type: ${data.type}`);
-        } else if (!skipValidation) {
+        } else {
           throw new TypeError('INVALID_TYPE', 'data.type', 'valid MessageComponentType');
         }
     }
