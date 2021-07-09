@@ -3518,7 +3518,7 @@ export interface MessageEditOptions {
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
-  components?: (MessageActionRow | MessageActionRowOptions | MessageActionRowComponentResolvable[])[];
+  components?: (MessageActionRow | MessageActionRowOptions)[];
 }
 
 export interface MessageEmbedAuthor {
@@ -3617,7 +3617,7 @@ export interface MessageOptions {
   nonce?: string | number;
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions)[];
-  components?: (MessageActionRow | MessageActionRowOptions | MessageActionRowComponentResolvable[])[];
+  components?: (MessageActionRow | MessageActionRowOptions)[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
