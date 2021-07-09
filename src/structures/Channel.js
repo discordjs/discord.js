@@ -56,6 +56,16 @@ class Channel extends Base {
   }
 
   /**
+   * Whether this Channel is a partial
+   * <info>This is always false outside of DM channels.</info>
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return false;
+  }
+
+  /**
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example
@@ -124,39 +134,39 @@ class Channel extends Base {
 
       if (guild || allowUnknownGuild) {
         switch (data.type) {
-          case ChannelTypes.TEXT: {
+          case ChannelTypes.GUILD_TEXT: {
             const TextChannel = Structures.get('TextChannel');
             channel = new TextChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.VOICE: {
+          case ChannelTypes.GUILD_VOICE: {
             const VoiceChannel = Structures.get('VoiceChannel');
             channel = new VoiceChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.CATEGORY: {
+          case ChannelTypes.GUILD_CATEGORY: {
             const CategoryChannel = Structures.get('CategoryChannel');
             channel = new CategoryChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.NEWS: {
+          case ChannelTypes.GUILD_NEWS: {
             const NewsChannel = Structures.get('NewsChannel');
             channel = new NewsChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.STORE: {
+          case ChannelTypes.GUILD_STORE: {
             const StoreChannel = Structures.get('StoreChannel');
             channel = new StoreChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.STAGE: {
+          case ChannelTypes.GUILD_STAGE_VOICE: {
             const StageChannel = Structures.get('StageChannel');
             channel = new StageChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.NEWS_THREAD:
-          case ChannelTypes.PUBLIC_THREAD:
-          case ChannelTypes.PRIVATE_THREAD: {
+          case ChannelTypes.GUILD_NEWS_THREAD:
+          case ChannelTypes.GUILD_PUBLIC_THREAD:
+          case ChannelTypes.GUILD_PRIVATE_THREAD: {
             const ThreadChannel = Structures.get('ThreadChannel');
             channel = new ThreadChannel(guild, data);
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);

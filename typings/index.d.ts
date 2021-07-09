@@ -269,6 +269,7 @@ export class Channel extends Base {
   public readonly createdTimestamp: number;
   public deleted: boolean;
   public id: Snowflake;
+  public readonly partial: false;
   public type: keyof typeof ChannelTypes;
   public delete(): Promise<Channel>;
   public fetch(force?: boolean): Promise<Channel>;
@@ -456,7 +457,6 @@ export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
   public constructor(client: Client, data?: unknown);
   public messages: MessageManager;
   public recipient: User;
-  public readonly partial: false;
   public type: 'DM';
   public fetch(force?: boolean): Promise<this>;
 }
@@ -1187,11 +1187,11 @@ export class MessageReaction {
   private _emoji: GuildEmoji | ReactionEmoji;
 
   public readonly client: Client;
-  public count: number | null;
+  public count: number;
   public readonly emoji: GuildEmoji | ReactionEmoji;
   public me: boolean;
   public message: Message | PartialMessage;
-  public readonly partial: boolean;
+  public readonly partial: false;
   public users: ReactionUserManager;
   public remove(): Promise<MessageReaction>;
   public fetch(): Promise<MessageReaction>;
@@ -2507,6 +2507,8 @@ export interface AddGuildMemberOptions {
 
 export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
 
+export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
+
 export type AllowedThreadTypeForNewsChannel = 'GUILD_NEWS_THREAD' | 10;
 
 export type AllowedThreadTypeForTextChannel = 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD' | 11 | 12;
@@ -2823,10 +2825,10 @@ export interface ClientEvents {
   messageCreate: [message: Message];
   messageDelete: [message: Message | PartialMessage];
   messageReactionRemoveAll: [message: Message | PartialMessage];
-  messageReactionRemoveEmoji: [reaction: MessageReaction];
+  messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
-  messageReactionAdd: [message: MessageReaction, user: User | PartialUser];
-  messageReactionRemove: [reaction: MessageReaction, user: User | PartialUser];
+  messageReactionAdd: [message: MessageReaction | PartialMessageReaction, user: User | PartialUser];
+  messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
   rateLimit: [rateLimitData: RateLimitData];
@@ -3827,35 +3829,6 @@ export interface PresenceData {
 
 export type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
-export type Partialize<T, O extends string> = {
-  readonly client: Client;
-  readonly createdAt: Date;
-  readonly createdTimestamp: number;
-  deleted: boolean;
-  id: Snowflake;
-  partial: true;
-  fetch(): Promise<T>;
-} & {
-  [K in keyof Omit<
-    T,
-    'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-  >]: T[K] extends (...args: any[]) => void ? T[K] : T[K] | null;
-};
-
-export interface PartialDMChannel
-  extends Partialize<
-    DMChannel,
-    'lastMessage' | 'lastMessageId' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
-  > {
-  lastMessage: null;
-  lastMessageId: undefined;
-  messages: MessageManager;
-  recipient: User | PartialUser;
-  type: 'DM';
-  readonly typing: boolean;
-  readonly typingCount: number;
-}
-
 export interface PartialChannelData {
   id?: Snowflake | number;
   name: string;
@@ -3865,62 +3838,29 @@ export interface PartialChannelData {
   permissionOverwrites?: PartialOverwriteData[];
 }
 
-export interface PartialGuildMember
-  extends Partialize<
-    GuildMember,
-    | 'bannable'
-    | 'displayColor'
-    | 'displayHexColor'
-    | 'displayName'
-    | 'guild'
-    | 'kickable'
-    | 'permissions'
-    | 'roles'
-    | 'manageable'
-    | 'presence'
-    | 'voice'
-  > {
-  readonly bannable: boolean;
-  readonly displayColor: number;
-  readonly displayHexColor: HexColorString;
-  readonly displayName: string;
-  guild: Guild;
-  readonly manageable: boolean;
-  joinedAt: null;
-  joinedTimestamp: null;
-  readonly kickable: boolean;
-  readonly permissions: GuildMember['permissions'];
-  readonly presence: GuildMember['presence'];
-  readonly roles: GuildMember['roles'];
-  readonly voice: GuildMember['voice'];
+export type Partialize<
+  T extends AllowedPartial,
+  N extends keyof T | null = null,
+  M extends keyof T | null = null,
+  E extends keyof T | '' = '',
+> = {
+  readonly client: Client;
+  id: Snowflake;
+  partial: true;
+} & {
+  [K in keyof Omit<T, 'client' | 'id' | 'partial' | E>]: K extends N ? null : K extends M ? T[K] | null : T[K];
+};
+
+export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
+  lastMessageId: undefined;
 }
 
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp', 'user'> {}
+
 export interface PartialMessage
-  extends Partialize<
-    Message,
-    | 'attachments'
-    | 'channel'
-    | 'deletable'
-    | 'crosspostable'
-    | 'editable'
-    | 'mentions'
-    | 'pinnable'
-    | 'url'
-    | 'flags'
-    | 'embeds'
-  > {
-  attachments: Message['attachments'];
-  channel: Message['channel'];
-  readonly deletable: boolean;
-  readonly crosspostable: boolean;
-  readonly editable: boolean;
-  embeds: Message['embeds'];
-  flags: Message['flags'];
-  mentions: Message['mentions'];
-  readonly pinnable: boolean;
-  reactions: Message['reactions'];
-  readonly url: string;
-}
+  extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
+
+export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
 export interface PartialOverwriteData {
   id: Snowflake | number;
@@ -3935,14 +3875,7 @@ export interface PartialRoleData extends RoleData {
 
 export type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-export interface PartialUser
-  extends Omit<Partialize<User, 'bot' | 'flags' | 'system' | 'tag' | 'username'>, 'deleted'> {
-  bot: null;
-  flags: User['flags'];
-  system: null;
-  readonly tag: null;
-  username: null;
-}
+export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 

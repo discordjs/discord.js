@@ -16,6 +16,7 @@ class DMChannel extends Channel {
    */
   constructor(client, data) {
     super(client, data);
+
     // Override the channel type so partials have a known type
     this.type = 'DM';
     /**
