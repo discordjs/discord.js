@@ -64,6 +64,16 @@ class Channel extends Base {
   }
 
   /**
+   * Whether this Channel is a partial
+   * <info>This is always false outside of DM channels.</info>
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return false;
+  }
+
+  /**
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example

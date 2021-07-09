@@ -388,7 +388,7 @@ class Message extends Base {
   /**
    * The message contents with all mentions replaced by the equivalent text.
    * If mentions cannot be resolved to a name, the relevant mention in the message content will not be converted.
-   * @type {string}
+   * @type {?string}
    * @readonly
    */
   get cleanContent() {
