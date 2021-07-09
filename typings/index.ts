@@ -560,12 +560,12 @@ declare const guildChannelManager: GuildChannelManager;
 {
   type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel;
 
-  assertType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: 'voice' }));
-  assertType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: 'category' }));
-  assertType<Promise<TextChannel>>(guildChannelManager.create('name', { type: 'text' }));
-  assertType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: 'news' }));
-  assertType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: 'store' }));
-  assertType<Promise<StageChannel>>(guildChannelManager.create('name', { type: 'stage' }));
+  assertType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: 'GUILD_VOICE' }));
+  assertType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: 'GUILD_CATEGORY' }));
+  assertType<Promise<TextChannel>>(guildChannelManager.create('name', { type: 'GUILD_TEXT' }));
+  assertType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: 'GUILD_NEWS' }));
+  assertType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: 'GUILD_STORE' }));
+  assertType<Promise<StageChannel>>(guildChannelManager.create('name', { type: 'GUILD_STAGE_VOICE' }));
 
   assertType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
   assertType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
@@ -581,3 +581,25 @@ declare const guildEmojiManager: GuildEmojiManager;
 assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch());
 assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 assertType<Promise<GuildEmoji | null>>(guildEmojiManager.fetch('0'));
+
+// Test partials structures
+client.on('typingStart', (channel, user) => {
+  if (channel.partial) assertType<undefined>(channel.lastMessageId);
+  if (user.partial) return assertType<null>(user.username);
+  assertType<string>(user.username);
+});
+
+client.on('guildMemberRemove', member => {
+  if (member.partial) return assertType<null>(member.joinedAt);
+  assertType<Date | null>(member.joinedAt);
+});
+
+client.on('messageReactionAdd', async reaction => {
+  if (reaction.partial) {
+    assertType<null>(reaction.count);
+    reaction = await reaction.fetch();
+  }
+  assertType<number>(reaction.count);
+  if (reaction.message.partial) return assertType<string | null>(reaction.message.content);
+  assertType<string>(reaction.message.content);
+});

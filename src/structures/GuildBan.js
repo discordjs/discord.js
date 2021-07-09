@@ -29,7 +29,7 @@ class GuildBan extends Base {
      * The user this ban applies to
      * @type {User}
      */
-    this.user = this.client.users.add(data.user, true);
+    this.user = this.client.users._add(data.user, true);
 
     if ('reason' in data) {
       /**

@@ -24,7 +24,7 @@ class VoiceStateManager extends CachedManager {
    * @name VoiceStateManager#cache
    */
 
-  add(data, cache = true) {
+  _add(data, cache = true) {
     const existing = this.cache.get(data.user_id);
     if (existing) return existing._patch(data);
 

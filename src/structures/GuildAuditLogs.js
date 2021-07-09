@@ -140,7 +140,7 @@ const Actions = {
  */
 class GuildAuditLogs {
   constructor(guild, data) {
-    if (data.users) for (const user of data.users) guild.client.users.add(user);
+    if (data.users) for (const user of data.users) guild.client.users._add(user);
     /**
      * Cached webhooks
      * @type {Collection<Snowflake, Webhook>}
@@ -340,7 +340,7 @@ class GuildAuditLogsEntry {
      */
     this.executor = data.user_id
       ? guild.client.options.partials.includes(PartialTypes.USER)
-        ? guild.client.users.add({ id: data.user_id })
+        ? guild.client.users._add({ id: data.user_id })
         : guild.client.users.cache.get(data.user_id)
       : null;
 
@@ -450,7 +450,7 @@ class GuildAuditLogsEntry {
       // MEMBER_DISCONNECT and similar types do not provide a target_id.
     } else if (targetType === Targets.USER && data.target_id) {
       this.target = guild.client.options.partials.includes(PartialTypes.USER)
-        ? guild.client.users.add({ id: data.target_id })
+        ? guild.client.users._add({ id: data.target_id })
         : guild.client.users.cache.get(data.target_id);
     } else if (targetType === Targets.GUILD) {
       this.target = guild.client.guilds.cache.get(data.target_id);

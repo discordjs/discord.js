@@ -9,7 +9,7 @@ class ThreadDeleteAction extends Action {
     const thread = client.channels.cache.get(data.id);
 
     if (thread) {
-      client.channels.remove(thread.id);
+      client.channels._remove(thread.id);
       thread.deleted = true;
       for (const message of thread.messages.cache.values()) {
         message.deleted = true;

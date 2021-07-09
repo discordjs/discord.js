@@ -5,7 +5,7 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const Collection = require('../util/Collection');
-const { ChannelTypes } = require('../util/Constants');
+const { ChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
@@ -85,7 +85,7 @@ class GuildChannel extends Channel {
     if ('permission_overwrites' in data) {
       this.permissionOverwrites.cache.clear();
       for (const overwrite of data.permission_overwrites) {
-        this.permissionOverwrites.add(overwrite);
+        this.permissionOverwrites._add(overwrite);
       }
     }
   }
@@ -265,7 +265,7 @@ class GuildChannel extends Channel {
    * The data for a guild channel.
    * @typedef {Object} ChannelData
    * @property {string} [name] The name of the channel
-   * @property {string} [type] The type of the the channel (only conversion between text and news is supported)
+   * @property {ChannelType} [type] The type of the the channel (only conversion between text and news is supported)
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
@@ -319,7 +319,7 @@ class GuildChannel extends Channel {
     if (data.lockPermissions) {
       if (data.parentId) {
         const newParent = this.guild.channels.resolve(data.parentId);
-        if (newParent?.type === 'category') {
+        if (newParent?.type === 'GUILD_CATEGORY') {
           permission_overwrites = newParent.permissionOverwrites.cache.map(o =>
             PermissionOverwrites.resolve(o, this.guild),
           );
@@ -334,7 +334,7 @@ class GuildChannel extends Channel {
     const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name ?? this.name).trim(),
-        type: ChannelTypes[data.type?.toUpperCase()],
+        type: ChannelTypes[data.type],
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate ?? this.bitrate,
@@ -567,7 +567,7 @@ class GuildChannel extends Channel {
    */
   get manageable() {
     if (this.client.user.id === this.guild.ownerId) return true;
-    if (this.type === 'voice' || this.type === 'stage') {
+    if (this.type in VoiceBasedChannelTypes) {
       if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) {
         return false;
       }

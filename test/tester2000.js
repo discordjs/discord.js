@@ -7,7 +7,8 @@ const { Client, Options, Intents, Formatters } = require('../src');
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
 const client = new Client({
-  intents: Intents.ALL,
+  // 😏
+  intents: Object.values(Intents.FLAGS).reduce((acc, p) => acc | p, 0),
   makeCache: Options.cacheWithLimits({
     MessageManager: 10,
     PresenceManager: 10,

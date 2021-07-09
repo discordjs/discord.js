@@ -1,8 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
-const textBasedChannelTypes = ['dm', 'text', 'news', 'news_thread', 'public_thread', 'private_thread'];
+const { Events, TextBasedChannelTypes } = require('../../util/Constants');
 
 class TypingStart extends Action {
   handle(data) {
@@ -10,7 +9,7 @@ class TypingStart extends Action {
     if (!channel) {
       return;
     }
-    if (!textBasedChannelTypes.includes(channel.type)) {
+    if (!(channel.type in TextBasedChannelTypes)) {
       this.client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
       return;
     }

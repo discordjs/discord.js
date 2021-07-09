@@ -8,9 +8,9 @@ module.exports = (client, { d: data }) => {
   if (data.guild_id) {
     const guild = client.guilds.cache.get(data.guild_id);
     if (!guild) return;
-    command = guild.commands.add(data);
+    command = guild.commands._add(data);
   } else {
-    command = client.application.commands.add(data);
+    command = client.application.commands._add(data);
   }
 
   /**
