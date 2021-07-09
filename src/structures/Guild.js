@@ -343,24 +343,24 @@ class Guild extends AnonymousGuild {
     if (data.channels) {
       this.channels.cache.clear();
       for (const rawChannel of data.channels) {
-        this.client.channels.add(rawChannel, this);
+        this.client.channels._add(rawChannel, this);
       }
     }
 
     if (data.threads) {
       for (const rawThread of data.threads) {
-        this.client.channels.add(rawThread, this);
+        this.client.channels._add(rawThread, this);
       }
     }
 
     if (data.roles) {
       this.roles.cache.clear();
-      for (const role of data.roles) this.roles.add(role);
+      for (const role of data.roles) this.roles._add(role);
     }
 
     if (data.members) {
       this.members.cache.clear();
-      for (const guildUser of data.members) this.members.add(guildUser);
+      for (const guildUser of data.members) this.members._add(guildUser);
     }
 
     if (data.owner_id) {
@@ -373,21 +373,21 @@ class Guild extends AnonymousGuild {
 
     if (data.presences) {
       for (const presence of data.presences) {
-        this.presences.add(Object.assign(presence, { guild: this }));
+        this.presences._add(Object.assign(presence, { guild: this }));
       }
     }
 
     if (data.stage_instances) {
       this.stageInstances.cache.clear();
       for (const stageInstance of data.stage_instances) {
-        this.stageInstances.add(stageInstance);
+        this.stageInstances._add(stageInstance);
       }
     }
 
     if (data.voice_states) {
       this.voiceStates.cache.clear();
       for (const voiceState of data.voice_states) {
-        this.voiceStates.add(voiceState);
+        this.voiceStates._add(voiceState);
       }
     }
 
@@ -397,7 +397,7 @@ class Guild extends AnonymousGuild {
        * @type {GuildEmojiManager}
        */
       this.emojis = new GuildEmojiManager(this);
-      if (data.emojis) for (const emoji of data.emojis) this.emojis.add(emoji);
+      if (data.emojis) for (const emoji of data.emojis) this.emojis._add(emoji);
     } else if (data.emojis) {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,
@@ -513,7 +513,7 @@ class Guild extends AnonymousGuild {
     return (
       this.members.resolve(this.client.user.id) ??
       (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)
-        ? this.members.add({ user: { id: this.client.user.id } }, true)
+        ? this.members._add({ user: { id: this.client.user.id } }, true)
         : null)
     );
   }
@@ -759,7 +759,7 @@ class Guild extends AnonymousGuild {
     }
     const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
     // Data is an empty buffer if the member is already part of the guild.
-    return data instanceof Buffer ? this.members.fetch(user) : this.members.add(data);
+    return data instanceof Buffer ? this.members.fetch(user) : this.members._add(data);
   }
 
   /**
@@ -1358,12 +1358,12 @@ class Guild extends AnonymousGuild {
    * @private
    */
   _sortedChannels(channel) {
-    const category = channel.type === ChannelTypes.CATEGORY;
+    const category = channel.type === ChannelTypes.GUILD_CATEGORY;
     return Util.discordSort(
       this.channels.cache.filter(
         c =>
-          (['text', 'news', 'store'].includes(channel.type)
-            ? ['text', 'news', 'store'].includes(c.type)
+          (['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(channel.type)
+            ? ['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(c.type)
             : c.type === channel.type) &&
           (category || c.parent === channel.parent),
       ),

@@ -15,21 +15,10 @@ class Channel extends Base {
 
     const type = ChannelTypes[data.type];
     /**
-     * The type of the channel, either:
-     * * `dm` - a DM channel
-     * * `text` - a guild text channel
-     * * `voice` - a guild voice channel
-     * * `category` - a guild category channel
-     * * `news` - a guild news channel
-     * * `store` - a guild store channel
-     * * `news_thread` - a guild news channel's public thread channel
-     * * `public_thread` - a guild text channel's public thread channel
-     * * `private_thread` - a guild text channel's private thread channel
-     * * `stage` - a guild stage channel
-     * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
-     * @type {string}
+     * The type of the channel
+     * @type {ChannelType}
      */
-    this.type = type?.toLowerCase() ?? 'unknown';
+    this.type = type ?? 'UNKNOWN';
 
     /**
      * Whether the channel has been deleted
@@ -123,10 +112,10 @@ class Channel extends Base {
     const Structures = require('../util/Structures');
     let channel;
     if (!data.guild_id && !guild) {
-      if ((data.recipients && data.type !== ChannelTypes.GROUP) || data.type === ChannelTypes.DM) {
+      if ((data.recipients && data.type !== ChannelTypes.GROUP_DM) || data.type === ChannelTypes.DM) {
         const DMChannel = Structures.get('DMChannel');
         channel = new DMChannel(client, data);
-      } else if (data.type === ChannelTypes.GROUP) {
+      } else if (data.type === ChannelTypes.GROUP_DM) {
         const PartialGroupDMChannel = require('./PartialGroupDMChannel');
         channel = new PartialGroupDMChannel(client, data);
       }
@@ -137,32 +126,32 @@ class Channel extends Base {
         switch (data.type) {
           case ChannelTypes.TEXT: {
             const TextChannel = Structures.get('TextChannel');
-            channel = new TextChannel(guild, data);
+            channel = new TextChannel(guild, data, client);
             break;
           }
           case ChannelTypes.VOICE: {
             const VoiceChannel = Structures.get('VoiceChannel');
-            channel = new VoiceChannel(guild, data);
+            channel = new VoiceChannel(guild, data, client);
             break;
           }
           case ChannelTypes.CATEGORY: {
             const CategoryChannel = Structures.get('CategoryChannel');
-            channel = new CategoryChannel(guild, data);
+            channel = new CategoryChannel(guild, data, client);
             break;
           }
           case ChannelTypes.NEWS: {
             const NewsChannel = Structures.get('NewsChannel');
-            channel = new NewsChannel(guild, data);
+            channel = new NewsChannel(guild, data, client);
             break;
           }
           case ChannelTypes.STORE: {
             const StoreChannel = Structures.get('StoreChannel');
-            channel = new StoreChannel(guild, data);
+            channel = new StoreChannel(guild, data, client);
             break;
           }
           case ChannelTypes.STAGE: {
             const StageChannel = Structures.get('StageChannel');
-            channel = new StageChannel(guild, data);
+            channel = new StageChannel(guild, data, client);
             break;
           }
           case ChannelTypes.NEWS_THREAD:

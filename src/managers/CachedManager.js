@@ -15,7 +15,7 @@ class CachedManager extends DataManager {
 
     if (iterable) {
       for (const item of iterable) {
-        this.add(item);
+        this._add(item);
       }
     }
   }
@@ -29,7 +29,7 @@ class CachedManager extends DataManager {
     return this._cache;
   }
 
-  add(data, cache = true, { id, extras = [] } = {}) {
+  _add(data, cache = true, { id, extras = [] } = {}) {
     const existing = this.cache.get(id ?? data.id);
     if (cache) existing?._patch(data);
     if (existing) return existing;

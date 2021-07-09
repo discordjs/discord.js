@@ -13,7 +13,7 @@ class GuildBanAdd extends Action {
      * @event Client#guildBanAdd
      * @param {GuildBan} ban The ban that occurred
      */
-    if (guild) client.emit(Events.GUILD_BAN_ADD, guild.bans.add(data));
+    if (guild) client.emit(Events.GUILD_BAN_ADD, guild.bans._add(data));
   }
 }
 

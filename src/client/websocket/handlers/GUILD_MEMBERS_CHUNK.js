@@ -8,9 +8,9 @@ module.exports = (client, { d: data }) => {
   if (!guild) return;
   const members = new Collection();
 
-  for (const member of data.members) members.set(member.user.id, guild.members.add(member));
+  for (const member of data.members) members.set(member.user.id, guild.members._add(member));
   if (data.presences) {
-    for (const presence of data.presences) guild.presences.add(Object.assign(presence, { guild }));
+    for (const presence of data.presences) guild.presences._add(Object.assign(presence, { guild }));
   }
   /**
    * Emitted whenever a chunk of guild members is received (all members come from the same guild).

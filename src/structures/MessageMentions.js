@@ -49,9 +49,9 @@ class MessageMentions {
         this.users = new Collection();
         for (const mention of users) {
           if (mention.member && message.guild) {
-            message.guild.members.add(Object.assign(mention.member, { user: mention }));
+            message.guild.members._add(Object.assign(mention.member, { user: mention }));
           }
-          const user = message.client.users.add(mention);
+          const user = message.client.users._add(mention);
           this.users.set(user.id, user);
         }
       }
@@ -117,7 +117,7 @@ class MessageMentions {
           this.crosspostedChannels.set(d.id, {
             channelId: d.id,
             guildId: d.guild_id,
-            type: type?.toLowerCase() ?? 'unknown',
+            type: type ?? 'UNKNOWN',
             name: d.name,
           });
         }
@@ -130,7 +130,7 @@ class MessageMentions {
      * The author of the message that this message is a reply to
      * @type {?User}
      */
-    this.repliedUser = repliedUser ? this.client.users.add(repliedUser) : null;
+    this.repliedUser = repliedUser ? this.client.users._add(repliedUser) : null;
   }
 
   /**

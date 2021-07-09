@@ -70,14 +70,14 @@ class Webhook {
      * The owner of the webhook
      * @type {?(User|APIUser)}
      */
-    this.owner = data.user ? this.client.users?.add(data.user) ?? data.user : null;
+    this.owner = data.user ? this.client.users?._add(data.user) ?? data.user : null;
 
     /**
      * The source guild of the webhook
      * @type {?(Guild|APIGuild)}
      */
     this.sourceGuild = data.source_guild
-      ? this.client.guilds?.add(data.source_guild, false) ?? data.source_guild
+      ? this.client.guilds?._add(data.source_guild, false) ?? data.source_guild
       : null;
 
     /**
@@ -175,7 +175,7 @@ class Webhook {
         query: { thread_id: messagePayload.options.threadId, wait: true },
         auth: false,
       })
-      .then(d => this.client.channels?.cache.get(d.channel_id)?.messages.add(d, false) ?? d);
+      .then(d => this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? d);
   }
 
   /**
@@ -250,7 +250,7 @@ class Webhook {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     const data = await this.client.api.webhooks(this.id, this.token).messages(message).get();
-    return this.client.channels?.cache.get(data.channel_id)?.messages.add(data, cache) ?? data;
+    return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ?? data;
   }
 
   /**
@@ -279,7 +279,7 @@ class Webhook {
     if (!messageManager) return d;
 
     const existing = messageManager.cache.get(d.id);
-    if (!existing) return messageManager.add(d);
+    if (!existing) return messageManager._add(d);
 
     const clone = existing._clone();
     clone._patch(d);

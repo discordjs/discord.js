@@ -86,7 +86,7 @@ class Message extends Base {
        * The author of the message
        * @type {?User}
        */
-      this.author = this.client.users.add(data.author, !data.webhook_id);
+      this.author = this.client.users._add(data.author, !data.webhook_id);
     } else if (!this.author) {
       this.author = null;
     }
@@ -106,7 +106,7 @@ class Message extends Base {
        * The thread started by this message
        * @type {?ThreadChannel}
        */
-      this.thread = this.client.channels.add(data.thread);
+      this.thread = this.client.channels._add(data.thread);
     } else if (!this.thread) {
       this.thread = null;
     }
@@ -182,7 +182,7 @@ class Message extends Base {
     this.reactions = new ReactionManager(this);
     if (data.reactions?.length > 0) {
       for (const reaction of data.reactions) {
-        this.reactions.add(reaction);
+        this.reactions._add(reaction);
       }
     }
 
@@ -231,7 +231,7 @@ class Message extends Base {
     if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
-      this.guild.members.add(Object.assign(data.member, { user: this.author }));
+      this.guild.members._add(Object.assign(data.member, { user: this.author }));
     }
 
     /**
@@ -261,7 +261,7 @@ class Message extends Base {
       : null;
 
     if (data.referenced_message) {
-      this.channel.messages.add(data.referenced_message);
+      this.channel.messages._add(data.referenced_message);
     }
 
     /**
@@ -282,7 +282,7 @@ class Message extends Base {
         id: data.interaction.id,
         type: InteractionTypes[data.interaction.type],
         commandName: data.interaction.name,
-        user: this.client.users.add(data.interaction.user),
+        user: this.client.users._add(data.interaction.user),
       };
     } else if (!this.interaction) {
       this.interaction = null;
@@ -311,7 +311,7 @@ class Message extends Base {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
-    if ('thread' in data) this.thread = this.client.channels.add(data.thread);
+    if ('thread' in data) this.thread = this.client.channels._add(data.thread);
 
     if ('attachments' in data) {
       this.attachments = new Collection();
@@ -552,7 +552,7 @@ class Message extends Base {
    */
   get crosspostable() {
     return (
-      this.channel.type === 'news' &&
+      this.channel.type === 'GUILD_NEWS' &&
       !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
       this.type === 'DEFAULT' &&
       this.channel.viewable &&
@@ -595,7 +595,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === 'news') {
+   * if (message.channel.type === 'GUILD_NEWS') {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
@@ -713,7 +713,7 @@ class Message extends Base {
    * @returns {Promise<ThreadChannel>}
    */
   startThread(name, autoArchiveDuration, reason) {
-    if (!['text', 'news'].includes(this.channel.type)) {
+    if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
     return this.channel.threads.create({ name, autoArchiveDuration, startMessage: this, reason });

@@ -12,7 +12,7 @@ module.exports = (client, { d: data }, shard) => {
   } else {
     // A new guild
     data.shardId = shard.id;
-    guild = client.guilds.add(data);
+    guild = client.guilds._add(data);
     if (client.ws.status === Status.READY) {
       /**
        * Emitted whenever the client joins a guild.

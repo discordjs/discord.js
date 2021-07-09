@@ -28,8 +28,8 @@ class PermissionOverwriteManager extends CachedManager {
    * @name PermissionOverwriteManager#cache
    */
 
-  add(data, cache) {
-    return super.add(data, cache, { extras: [this.channel] });
+  _add(data, cache) {
+    return super._add(data, cache, { extras: [this.channel] });
   }
 
   /**
