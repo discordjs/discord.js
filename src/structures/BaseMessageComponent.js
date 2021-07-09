@@ -53,7 +53,6 @@ class BaseMessageComponent {
    * Constructs a MessageComponent based on the type of the incoming data
    * @param {MessageComponentOptions} data Data for a MessageComponent
    * @param {Client|WebhookClient} [client] Client constructing this component
-   * @param {boolean} [skipValidation=false] Whether or not to validate the component type
    * @returns {?MessageComponent}
    * @private
    */
