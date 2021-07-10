@@ -90,6 +90,12 @@ class GuildChannel extends Channel {
     }
   }
 
+  _clone() {
+    const clone = super._clone();
+    clone.permissionOverwrites = new PermissionOverwriteManager(clone, this.permissionOverwrites.cache.values());
+    return clone;
+  }
+
   /**
    * The category parent of this channel
    * @type {?CategoryChannel}

@@ -168,7 +168,7 @@ class Channel extends Base {
           case ChannelTypes.GUILD_PUBLIC_THREAD:
           case ChannelTypes.GUILD_PRIVATE_THREAD: {
             const ThreadChannel = Structures.get('ThreadChannel');
-            channel = new ThreadChannel(guild, data);
+            channel = new ThreadChannel(guild, data, client);
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;
           }

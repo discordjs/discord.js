@@ -13,13 +13,19 @@ const { OverwriteTypes } = require('../util/Constants');
  */
 class PermissionOverwriteManager extends CachedManager {
   constructor(channel, iterable) {
-    super(channel.client, PermissionOverwrites, iterable);
+    super(channel.client, PermissionOverwrites);
 
     /**
      * The channel of the permission overwrite this manager belongs to
      * @type {GuildChannel}
      */
     this.channel = channel;
+
+    if (iterable) {
+      for (const item of iterable) {
+        this._add(item);
+      }
+    }
   }
 
   /**
