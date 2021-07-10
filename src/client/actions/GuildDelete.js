@@ -15,7 +15,7 @@ class GuildDeleteAction extends Action {
     let guild = client.guilds.cache.get(data.id);
     if (guild) {
       for (const channel of guild.channels.cache.values()) {
-        if (channel.type in TextBasedChannelTypes) channel.stopTyping(true);
+        if (TextBasedChannelTypes.includes(channel.type)) channel.stopTyping(true);
       }
 
       if (data.unavailable) {
