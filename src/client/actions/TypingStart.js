@@ -9,7 +9,7 @@ class TypingStart extends Action {
     if (!channel) {
       return;
     }
-    if (!(channel.type in TextBasedChannelTypes)) {
+    if (!TextBasedChannelTypes.includes(channel.type)) {
       this.client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
       return;
     }
