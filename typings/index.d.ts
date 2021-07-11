@@ -363,7 +363,7 @@ export class ClientUser extends User {
 export class Options extends null {
   private constructor();
   public static createDefaultOptions(): ClientOptions;
-  public static cacheWithLimits(limits?: Record<string, number>): CacheFactory;
+  public static cacheWithLimits(limits?: CacheWithLimitOptions): CacheFactory;
   public static cacheEverything(): CacheFactory;
 }
 
@@ -2726,7 +2726,31 @@ export type BitFieldResolvable<T extends string, N extends number | bigint> =
 
 export type BufferResolvable = Buffer | string;
 
+export type CachedManagerTypes =
+  | 'ApplicationCommandManager'
+  | 'BaseGuildEmojiManager'
+  | 'ChannelManager'
+  | 'GuildChannelManager'
+  | 'GuildManager'
+  | 'GuildMemberManager'
+  | 'GuildBanManager'
+  | 'MessageManager'
+  | 'PermissionOverwriteManager'
+  | 'PresenceManager'
+  | 'ReactionManager'
+  | 'ReactionUserManager'
+  | 'RoleManager'
+  | 'StageInstanceManager'
+  | 'ThreadManager'
+  | 'ThreadMemberManager'
+  | 'UserManager'
+  | 'VoiceStateManager';
+
 export type CacheFactory = <T>(manager: { name: string }, holds: { name: string }) => Collection<Snowflake, T>;
+
+export type CacheWithLimitOptions = {
+  [K in CachedManagerTypes]?: number;
+};
 
 export interface ChannelCreationOverwrites {
   allow?: PermissionResolvable;
