@@ -832,7 +832,6 @@ export class Interaction extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
-  public inGuild(): boolean;
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
   public isMessageComponent(): this is MessageComponentInteraction;

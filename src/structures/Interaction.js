@@ -106,14 +106,6 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is received from a guild.
-   * @returns {boolean}
-   */
-  inGuild() {
-    return Boolean(this.guildId && this.member);
-  }
-
-  /**
    * Indicates whether this interaction is a {@link CommandInteraction}.
    * @returns {boolean}
    */
