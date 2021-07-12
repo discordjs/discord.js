@@ -7,9 +7,7 @@ class ActionsManager {
     this.client = client;
 
     let allFiles = fs.readdirSync("./").filter(
-        file => !["Action.js","ActionsManager.js"].some(
-            blacklist => blacklist === file
-        )
+        file => !["Action.js","ActionsManager.js"].includes(file)
     );
 
     for (let file of allFiles) {
