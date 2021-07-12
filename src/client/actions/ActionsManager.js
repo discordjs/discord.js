@@ -7,7 +7,7 @@ class ActionsManager {
     this.client = client;
 
     const allFiles = fs.readdirSync(__dirname).filter(
-        file => !["Action.js","ActionsManager.js"].includes(file)
+        file => !['Action.js', 'ActionsManager.js'].includes(file)
     );
 
     for (const file of allFiles) {
