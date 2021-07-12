@@ -36,6 +36,7 @@ module.exports = {
 
   // Managers
   ApplicationCommandManager: require('./managers/ApplicationCommandManager'),
+  ApplicationCommandPermissionsManager: require('./managers/ApplicationCommandPermissionsManager'),
   BaseGuildEmojiManager: require('./managers/BaseGuildEmojiManager'),
   ChannelManager: require('./managers/ChannelManager'),
   GuildApplicationCommandManager: require('./managers/GuildApplicationCommandManager'),
