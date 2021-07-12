@@ -8,7 +8,7 @@ class ActionsManager {
 
     let allFiles = fs.readdirSync("./").filter(
         file => !["Action.js","ActionsManager.js"].some(
-            blacklist => blacklist == file
+            blacklist => blacklist === file
         )
     );
 
