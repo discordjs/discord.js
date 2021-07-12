@@ -111,6 +111,7 @@ module.exports = {
   Role: require('./structures/Role'),
   SelectMenuInteraction: require('./structures/SelectMenuInteraction'),
   Sticker: require('./structures/Sticker'),
+  StageInstance: require('./structures/StageInstance'),
   StoreChannel: require('./structures/StoreChannel'),
   StageChannel: require('./structures/StageChannel'),
   Team: require('./structures/Team'),
