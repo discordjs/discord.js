@@ -6,12 +6,11 @@ class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    const allFiles = fs.readdirSync(__dirname).filter(
-        file => !['Action.js', 'ActionsManager.js'].includes(file)
-    );
+    const files = fs.readdirSync(__dirname);
 
-    for (const file of allFiles) {
-        this.register(require(`./${file}`));
+    for (const file of files) {
+      if (['Action.js', 'ActionsManager.js'].includes(file)) continue;
+      this.register(require(`./${file}`));
     }
   }
 
