@@ -6,7 +6,7 @@ class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    let allFiles = fs.readdirSync("./").filter(
+    const allFiles = fs.readdirSync("./").filter(
         file => !["Action.js","ActionsManager.js"].includes(file)
     );
 
