@@ -10,7 +10,7 @@ class ActionsManager {
         file => !["Action.js","ActionsManager.js"].includes(file)
     );
 
-    for (let file of allFiles) {
+    for (const file of allFiles) {
         this.register(require(`./${file}`));
     }
   }
