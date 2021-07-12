@@ -1,6 +1,6 @@
 'use strict';
 
-const fs = require("fs");
+const fs = require('fs');
 
 class ActionsManager {
   constructor(client) {
