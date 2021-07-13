@@ -102,8 +102,8 @@ class SweptCollection extends Collection {
     this.interval =
       sweepInterval > 0
         ? typeof this.client?.setInterval === 'function'
-          ? this.client.setInterval(intervalFunction.bind(this), sweepInterval * 1000)
-          : setInterval(intervalFunction.bind(this), sweepInterval * 1000)
+          ? this.client.setInterval(intervalFunction, sweepInterval * 1000)
+          : setInterval(intervalFunction, sweepInterval * 1000)
         : null;
   }
 

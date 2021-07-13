@@ -167,9 +167,9 @@ class Options extends null {
     return manager => {
       const setting = settings[manager.name];
       if (
-        setting === null || setting === undefined || typeof setting !== 'object' || setting.sweepInterval
-          ? setting.sweepInterval <= 0 || setting.sweepInterval === Infinity
-          : true
+        setting === null ||
+        typeof setting !== 'object' ||
+        (setting.sweepInterval ? setting.sweepInterval <= 0 || setting.sweepInterval === Infinity : true)
       ) {
         return new Collection();
       }
@@ -192,7 +192,6 @@ class Options extends null {
       if (typeof setting === 'number' && setting !== Infinity) return LimitedCollection(setting);
       if (
         setting === null ||
-        setting === undefined ||
         typeof setting !== 'object' ||
         (setting.sweepInterval ? setting.sweepInterval <= 0 || setting.sweepInterval === Infinity : true)
       ) {
