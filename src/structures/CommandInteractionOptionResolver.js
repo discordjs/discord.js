@@ -90,7 +90,7 @@ class CommandInteractionOptionResolver {
    * Gets a channel option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {?GuildChannel|APIInteractionDataResolvedChannel}
+   * @returns {?(GuildChannel|APIInteractionDataResolvedChannel)}
    * The value of the option, or null if not set and not required.
    */
   getChannel(name, required = false) {
@@ -135,7 +135,7 @@ class CommandInteractionOptionResolver {
    * Gets a member option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {?GuildMember|APIInteractionDataResolvedGuildMember}
+   * @returns {?(GuildMember|APIInteractionDataResolvedGuildMember)}
    * The value of the option, or null if not set and not required.
    */
   getMember(name, required = false) {
@@ -147,7 +147,7 @@ class CommandInteractionOptionResolver {
    * Gets a role option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {?Role|APIRole} The value of the option, or null if not set and not required.
+   * @returns {?(Role|APIRole)} The value of the option, or null if not set and not required.
    */
   getRole(name, required = false) {
     const option = this._getTypedOption(name, ['ROLE'], ['role'], required);
@@ -158,7 +158,7 @@ class CommandInteractionOptionResolver {
    * Gets a mentionable option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {?User|GuildMember|Role} The value of the option, or null if not set and not required.
+   * @returns {?(User|GuildMember|Role)} The value of the option, or null if not set and not required.
    */
   getMentionable(name, required = false) {
     const option = this._getTypedOption(name, ['MENTIONABLE'], ['user', 'member', 'role'], required);
