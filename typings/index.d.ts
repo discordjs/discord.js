@@ -434,9 +434,6 @@ export class CommandInteraction extends Interaction {
 export class CommandInteractionOptionResolver {
   constructor(options: CommandInteractionOption[]);
   private options: CommandInteractionOption[];
-
-  public get(name: string, required: true): CommandInteractionOption;
-  public get(name: string, required: boolean): CommandInteractionOption | null;
   private _getTypedOption(
     name: string,
     types: ApplicationCommandOptionType[],
@@ -450,6 +447,8 @@ export class CommandInteractionOptionResolver {
     required: boolean,
   ): CommandInteractionOption | null;
 
+  public get(name: string, required: true): CommandInteractionOption;
+  public get(name: string, required: boolean): CommandInteractionOption | null;
   public getSubCommand(name: string): CommandInteractionOptionResolver | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
