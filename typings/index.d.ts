@@ -441,14 +441,14 @@ export class CommandInteractionOptionResolver {
 
   private _getTypedOption(
     name: string,
-    types: string[],
-    properties: string[],
+    types: ApplicationCommandOptionType[],
+    properties: (keyof ApplicationCommandOption)[],
     required: true,
   ): CommandInteractionOption;
   private _getTypedOption(
     name: string,
-    types: string[],
-    properties: string[],
+    types: ApplicationCommandOptionType[],
+    properties: (keyof ApplicationCommandOption)[],
     required: boolean,
   ): CommandInteractionOption | null;
 
