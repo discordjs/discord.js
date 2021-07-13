@@ -18,7 +18,7 @@ class APIRequest {
     this.retries = 0;
 
     const userAgentSuffix = this.client.options.userAgentSuffix;
-    this.fullUserAgent = `${UserAgent}${userAgentSuffix.length && `, ${userAgentSuffix.join(", ")}`}`;
+    this.fullUserAgent = `${UserAgent}${userAgentSuffix.length && `, ${userAgentSuffix.join(', ')}`}`;
 
     let queryString = '';
     if (options.query) {
@@ -39,7 +39,7 @@ class APIRequest {
 
     let headers = {
       ...this.client.options.http.headers,
-      'User-Agent': this.fullUserAgent
+      'User-Agent': this.fullUserAgent,
     };
 
     if (this.options.auth !== false) headers.Authorization = this.rest.getAuth();
