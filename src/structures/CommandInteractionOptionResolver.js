@@ -43,14 +43,12 @@ class CommandInteractionOptionResolver {
     const option = this.get(name, required);
     if (option) {
       if (!types.includes(option.type)) {
-        throw new Error(`Option "${name}" is of type "${option.type}" but expected: ${types.join('|')}.`);
+        throw new Error(`Option "${name}" is of type "${option.type}"; expected ${types.join('|')}.`);
       } else if (required && properties.every(prop => option[prop] === null || typeof option[prop] === 'undefined')) {
-        throw new Error(`Option "${name}" of type "${option.type}" is marked as required, but is null.`);
+        throw new Error(`Option "${name}" of type "${option.type}" is required, but is empty.`);
       } else {
         return option;
       }
-    } else if (required) {
-      throw new Error(`Missing required option "${name}"`);
     } else {
       return option;
     }
