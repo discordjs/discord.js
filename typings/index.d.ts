@@ -1071,7 +1071,7 @@ export class MessageComponentInteraction extends Interaction {
   public webhook: InteractionWebhook;
   public defer(options: InteractionDeferOptions & { fetchReply: true }): Promise<Message | APIMessage>;
   public defer(options?: InteractionDeferOptions): Promise<void>;
-  public deferUpdate(options?: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
