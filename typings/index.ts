@@ -1,4 +1,3 @@
-import { S_IFDIR } from 'constants';
 import {
   ApplicationCommand,
   ApplicationCommandData,
