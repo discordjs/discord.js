@@ -432,13 +432,11 @@ export class CommandInteraction extends Interaction {
 }
 
 export class CommandInteractionOptionResolver {
-  private options: CommandInteractionOption[];
-
   constructor(options: CommandInteractionOption[]);
+  private options: CommandInteractionOption[];
 
   public get(name: string, required: true): CommandInteractionOption;
   public get(name: string, required: boolean): CommandInteractionOption | null;
-
   private _getTypedOption(
     name: string,
     types: ApplicationCommandOptionType[],
@@ -453,28 +451,20 @@ export class CommandInteractionOptionResolver {
   ): CommandInteractionOption | null;
 
   public getSubCommand(name: string): CommandInteractionOptionResolver | null;
-
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
-
   public getChannel(name: string, required: true): NonNullable<CommandInteractionOption['channel']>;
   public getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption['channel']> | null;
-
   public getString(name: string, required: true): string;
   public getString(name: string, required?: boolean): string | null;
-
   public getInteger(name: string, required: true): number;
   public getInteger(name: string, required?: boolean): number | null;
-
   public getUser(name: string, required: true): NonNullable<CommandInteractionOption['user']>;
   public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption['user']> | null;
-
   public getMember(name: string, required: true): NonNullable<CommandInteractionOption['member']>;
   public getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption['member']> | null;
-
   public getRole(name: string, required: true): NonNullable<CommandInteractionOption['role']>;
   public getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption['role']> | null;
-
   public getMentionable(
     name: string,
     required: true,
@@ -482,7 +472,6 @@ export class CommandInteractionOptionResolver {
     | NonNullable<CommandInteractionOption['member']>
     | NonNullable<CommandInteractionOption['role']>
     | NonNullable<CommandInteractionOption['user']>;
-
   public getMentionable(
     name: string,
     required?: boolean,
