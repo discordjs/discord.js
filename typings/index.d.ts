@@ -541,7 +541,6 @@ export class Guild extends AnonymousGuild {
   public fetchPreview(): Promise<GuildPreview>;
   public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
   public fetchVanityData(): Promise<Vanity>;
-  public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
   public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   public fetchWelcomeScreen(): Promise<WelcomeScreen>;
   public fetchWidget(): Promise<GuildWidget>;
@@ -3557,7 +3556,7 @@ export interface MessageEditOptions {
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
-  components?: (MessageActionRow | MessageActionRowOptions | MessageActionRowComponentResolvable[])[];
+  components?: (MessageActionRow | MessageActionRowOptions)[];
 }
 
 export interface MessageEmbedAuthor {
@@ -3656,7 +3655,7 @@ export interface MessageOptions {
   nonce?: string | number;
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions)[];
-  components?: (MessageActionRow | MessageActionRowOptions | MessageActionRowComponentResolvable[])[];
+  components?: (MessageActionRow | MessageActionRowOptions)[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
