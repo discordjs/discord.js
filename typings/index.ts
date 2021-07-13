@@ -436,6 +436,7 @@ client.on('interaction', async interaction => {
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
+  // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [[button]] });
 
   // @ts-expect-error
