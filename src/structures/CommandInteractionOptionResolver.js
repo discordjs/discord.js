@@ -58,6 +58,7 @@ class CommandInteractionOptionResolver {
    * Gets a sub-command or sub-command group.
    * @param {string} name The name of the sub-command or sub-command group.
    * @returns {CommandInteractionOptionResolver|null}
+   * A new resolver for the sub-command/group's options, or null if empty
    */
   getSubCommand(name) {
     const option = this._getTypedOption(name, ['SUB_COMMAND', 'SUB_COMMAND_GROUP'], ['options'], false);
