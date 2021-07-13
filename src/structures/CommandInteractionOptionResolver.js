@@ -1,16 +1,26 @@
 'use strict';
 
+const { TypeError } = require('../errors');
+
 /**
  * A resolver for command interaction options.
  */
 class CommandInteractionOptionResolver {
-  constructor(options) {
+  constructor(client, options) {
+    /**
+     * The client that instantiated this.
+     * @name CommandInteractionOptionResolver#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
     /**
      * The interaction options array.
      * @type {CommandInteractionOption[]}
      * @private
      */
-    this.options = options ?? [];
+    this._options = options ?? [];
   }
 
   /**
@@ -20,11 +30,11 @@ class CommandInteractionOptionResolver {
    * @returns {?CommandInteractionOption} The option, if found.
    */
   get(name, required = false) {
-    const option = this.options.find(opt => opt.name === name);
+    const option = this._options.find(opt => opt.name === name);
     if (option) {
       return option;
     } else if (required) {
-      throw new Error(`Missing required option "${name}"`);
+      throw new TypeError('COMMAND_INTERACTION_OPTION_NOT_FOUND', name);
     } else {
       return null;
     }
@@ -36,16 +46,16 @@ class CommandInteractionOptionResolver {
    * @param {ApplicationCommandOptionType[]} types The type of the option.
    * @param {string[]} properties The property to check for for `required`.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {*|null} The value of `property`.
+   * @returns {?CommandInteractionOption} The option, if found.
    * @private
    */
   _getTypedOption(name, types, properties, required) {
     const option = this.get(name, required);
     if (option) {
       if (!types.includes(option.type)) {
-        throw new Error(`Option "${name}" is of type "${option.type}"; expected ${types.join('|')}.`);
+        throw new TypeError('COMMAND_INTERACTION_OPTION_TYPE', name, option.type, types);
       } else if (required && properties.every(prop => option[prop] === null || typeof option[prop] === 'undefined')) {
-        throw new Error(`Option "${name}" of type "${option.type}" is required, but is empty.`);
+        throw new TypeError('COMMAND_INTERACTION_OPTION_EMPTY', name, option.type);
       } else {
         return option;
       }
@@ -57,19 +67,19 @@ class CommandInteractionOptionResolver {
   /**
    * Gets a sub-command or sub-command group.
    * @param {string} name The name of the sub-command or sub-command group.
-   * @returns {CommandInteractionOptionResolver|null}
+   * @returns {?CommandInteractionOptionResolver}
    * A new resolver for the sub-command/group's options, or null if empty
    */
   getSubCommand(name) {
     const option = this._getTypedOption(name, ['SUB_COMMAND', 'SUB_COMMAND_GROUP'], ['options'], false);
-    return option ? new CommandInteractionOptionResolver(option.options) : null;
+    return option ? new CommandInteractionOptionResolver(this.client, option.options) : null;
   }
 
   /**
    * Gets a boolean option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {boolean|null} The value of the option, or null if not set and not required.
+   * @returns {?boolean} The value of the option, or null if not set and not required.
    */
   getBoolean(name, required = false) {
     const option = this._getTypedOption(name, ['BOOLEAN'], ['value'], required);
@@ -80,7 +90,7 @@ class CommandInteractionOptionResolver {
    * Gets a channel option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {GuildChannel|APIInteractionDataResolvedChannel|null}
+   * @returns {?GuildChannel|APIInteractionDataResolvedChannel}
    * The value of the option, or null if not set and not required.
    */
   getChannel(name, required = false) {
@@ -92,7 +102,7 @@ class CommandInteractionOptionResolver {
    * Gets a string option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {string|null} The value of the option, or null if not set and not required.
+   * @returns {?string} The value of the option, or null if not set and not required.
    */
   getString(name, required = false) {
     const option = this._getTypedOption(name, ['STRING'], ['value'], required);
@@ -103,7 +113,7 @@ class CommandInteractionOptionResolver {
    * Gets an integer option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {number|null} The value of the option, or null if not set and not required.
+   * @returns {?number} The value of the option, or null if not set and not required.
    */
   getInteger(name, required = false) {
     const option = this._getTypedOption(name, ['INTEGER'], ['value'], required);
@@ -114,7 +124,7 @@ class CommandInteractionOptionResolver {
    * Gets a user option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {User|null} The value of the option, or null if not set and not required.
+   * @returns {?User} The value of the option, or null if not set and not required.
    */
   getUser(name, required = false) {
     const option = this._getTypedOption(name, ['USER'], ['user'], required);
@@ -125,7 +135,7 @@ class CommandInteractionOptionResolver {
    * Gets a member option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {GuildMember|APIInteractionDataResolvedGuildMember|null}
+   * @returns {?GuildMember|APIInteractionDataResolvedGuildMember}
    * The value of the option, or null if not set and not required.
    */
   getMember(name, required = false) {
@@ -137,7 +147,7 @@ class CommandInteractionOptionResolver {
    * Gets a role option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {Role|APIRole|null} The value of the option, or null if not set and not required.
+   * @returns {?Role|APIRole} The value of the option, or null if not set and not required.
    */
   getRole(name, required = false) {
     const option = this._getTypedOption(name, ['ROLE'], ['role'], required);
@@ -148,11 +158,11 @@ class CommandInteractionOptionResolver {
    * Gets a mentionable option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {User|GuildMember|Role|null} The value of the option, or null if not set and not required.
+   * @returns {?User|GuildMember|Role} The value of the option, or null if not set and not required.
    */
   getMentionable(name, required = false) {
     const option = this._getTypedOption(name, ['MENTIONABLE'], ['user', 'member', 'role'], required);
-    return option?.user ?? option?.member ?? option?.role ?? null;
+    return option?.member ?? option?.user ?? option?.role ?? null;
   }
 }
 

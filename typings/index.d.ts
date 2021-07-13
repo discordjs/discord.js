@@ -432,8 +432,9 @@ export class CommandInteraction extends Interaction {
 }
 
 export class CommandInteractionOptionResolver {
-  constructor(options: CommandInteractionOption[]);
-  private options: CommandInteractionOption[];
+  public constructor(client: Client, options: CommandInteractionOption[]);
+  public readonly client: Client;
+  private _options: CommandInteractionOption[];
   private _getTypedOption(
     name: string,
     types: ApplicationCommandOptionType[],
@@ -467,18 +468,11 @@ export class CommandInteractionOptionResolver {
   public getMentionable(
     name: string,
     required: true,
-  ):
-    | NonNullable<CommandInteractionOption['member']>
-    | NonNullable<CommandInteractionOption['role']>
-    | NonNullable<CommandInteractionOption['user']>;
+  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']>;
   public getMentionable(
     name: string,
     required?: boolean,
-  ):
-    | NonNullable<CommandInteractionOption['member']>
-    | NonNullable<CommandInteractionOption['role']>
-    | NonNullable<CommandInteractionOption['user']>
-    | null;
+  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
 }
 
 export class DataResolver extends null {

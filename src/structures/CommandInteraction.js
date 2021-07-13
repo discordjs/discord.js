@@ -51,7 +51,8 @@ class CommandInteraction extends Interaction {
      * @type {CommandInteractionOptionResolver}
      */
     this.options = new CommandInteractionOptionResolver(
-      this._createOptionsArray(data.data.options, data.data.resolved),
+      this.client,
+      data.data.options?.map(option => this.transformOption(option, data.data.resolved)),
     );
 
     /**
@@ -110,7 +111,7 @@ class CommandInteraction extends Interaction {
     };
 
     if ('value' in option) result.value = option.value;
-    if ('options' in option) result.options = this._createOptionsArray(option.options, resolved);
+    if ('options' in option) result.options = option.options.map(opt => this.transformOption(opt, resolved));
 
     if (resolved) {
       const user = resolved.users?.[option.value];
@@ -127,22 +128,6 @@ class CommandInteraction extends Interaction {
     }
 
     return result;
-  }
-
-  /**
-   * Creates an array of options from the received API options array.
-   * @param {APIApplicationCommandOption[]} options The received options
-   * @param {APIApplicationCommandOptionResolved} resolved The resolved interaction data
-   * @returns {CommandInteractionOption[]}
-   * @private
-   */
-  _createOptionsArray(options, resolved) {
-    const optionsArray = [];
-    if (typeof options === 'undefined') return optionsArray;
-    for (const option of options) {
-      optionsArray.push(this.transformOption(option, resolved));
-    }
-    return optionsArray;
   }
 
   // These are here only for documentation purposes - they are implemented by InteractionResponses
