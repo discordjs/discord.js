@@ -6,7 +6,7 @@
 class CommandInteractionOptionResolver {
   constructor(options) {
     /**
-     * The raw interaction options array.
+     * The interaction options array.
      * @type {CommandInteractionOption[]}
      * @private
      */
@@ -36,7 +36,7 @@ class CommandInteractionOptionResolver {
    * @param {ApplicationCommandOptionType[]} types The type of the option.
    * @param {string[]} properties The property to check for for `required`.
    * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {?|null} The value of `property`.
+   * @returns {*|null} The value of `property`.
    * @private
    */
   _getTypedOption(name, types, properties, required) {
@@ -44,7 +44,7 @@ class CommandInteractionOptionResolver {
     if (option) {
       if (!types.includes(option.type)) {
         throw new Error(`Option "${name}" is of type "${option.type}" but expected: ${types.join('|')}.`);
-      } else if (required && properties.every(prop => option[prop] === null)) {
+      } else if (required && properties.every(prop => option[prop] === null || typeof option[prop] === 'undefined')) {
         throw new Error(`Option "${name}" of type "${option.type}" is marked as required, but is null.`);
       } else {
         return option;
@@ -101,7 +101,7 @@ class CommandInteractionOptionResolver {
   }
 
   /**
-   * Gets a integer option.
+   * Gets an integer option.
    * @param {string} name The name of the option.
    * @param {boolean} required Whether to throw an error if the option is not found.
    * @returns {number|null} The value of the option, or null if not set and not required.
