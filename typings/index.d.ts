@@ -165,22 +165,13 @@ export class Base {
 
 export class BaseClient extends EventEmitter {
   public constructor(options?: ClientOptions | WebhookClientOptions);
-  private _timeouts: Set<NodeJS.Timeout>;
-  private _intervals: Set<NodeJS.Timeout>;
-  private _immediates: Set<NodeJS.Immediate>;
   private readonly api: unknown;
   private rest: unknown;
   private decrementMaxListeners(): void;
   private incrementMaxListeners(): void;
 
   public options: ClientOptions | WebhookClientOptions;
-  public clearInterval(interval: NodeJS.Timeout): void;
-  public clearTimeout(timeout: NodeJS.Timeout): void;
-  public clearImmediate(timeout: NodeJS.Immediate): void;
   public destroy(): void;
-  public setInterval<T extends any[]>(fn: (...args: T) => Awaited<void>, delay: number, ...args: T): NodeJS.Timeout;
-  public setTimeout<T extends any[]>(fn: (...args: T) => Awaited<void>, delay: number, ...args: T): NodeJS.Timeout;
-  public setImmediate<T extends any[]>(fn: (...args: T) => Awaited<void>, ...args: T): NodeJS.Immediate;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
 }
 
