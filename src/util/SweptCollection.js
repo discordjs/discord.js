@@ -67,7 +67,9 @@ class SweptCollection extends Collection {
      * @type {?Number}
      */
     this.interval =
-      sweepInterval > 0 && sweepFilter ? setInterval(() => this.sweep(this.sweepFilter()), sweepInterval * 1000) : null;
+      sweepInterval > 0 && sweepFilter
+        ? setInterval(() => this.sweep(this.sweepFilter()), sweepInterval * 1000).unref()
+        : null;
   }
 
   set(key, value) {
@@ -98,7 +100,7 @@ class SweptCollection extends Collection {
    * before it is considered sweepable
    * @property {Function} [getComparisonTimestamp=`e => e.createdTimestamp`] A function that takes an entry
    * and returns a timestamp to compare against in order to determine the lifetime of the entry.
-   * @property {Function} [excludeFromSweep=null] A function that takes an entry and returns a boolean,
+   * @property {Function} [excludeFromSweep=`() => false)`] A function that takes an entry and returns a boolean,
    * `true` when the entry should not be checked for sweepability.
    */
 
@@ -107,16 +109,16 @@ class SweptCollection extends Collection {
    * @param {LifetimeFilterOptions} [options={}] The options used to generate the filter function
    * @returns {Function}
    */
-  static filterByLiftetme({
+  static filterByLifetime({
     lifetime = 14400,
     getComparisonTimestamp = e => e?.createdTimestamp,
-    excludeFromSweep = null,
+    excludeFromSweep = () => false,
   } = {}) {
     if (typeof lifetime !== 'number') throw new TypeError('INVALID_TYPE', 'lifetime', 'number');
     if (typeof getComparisonTimestamp !== 'function') {
       throw new TypeError('INVALID_TYPE', 'getComparisonTimestamp', 'function');
     }
-    if (excludeFromSweep !== null && typeof excludeFromSweep !== 'function') {
+    if (typeof excludeFromSweep !== 'function') {
       throw new TypeError('INVALID_TYPE', 'excludeFromSweep', 'function');
     }
     return () => {
@@ -124,7 +126,7 @@ class SweptCollection extends Collection {
       const lifetimeMs = lifetime * 1000;
       const now = Date.now();
       return entry => {
-        if (excludeFromSweep?.(entry)) {
+        if (excludeFromSweep(entry)) {
           return false;
         }
         const comparisonTimestamp = getComparisonTimestamp(entry);

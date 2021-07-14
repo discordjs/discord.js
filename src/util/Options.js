@@ -102,7 +102,7 @@ class Options extends null {
       makeCache: this.cacheWithLimitsOrSweep({
         MessageManager: 200,
         ThreadManager: {
-          sweepInterval: require('./SweptCollection').filterByLiftetme({
+          sweepInterval: require('./SweptCollection').filterByLifetime({
             getComparisonTimestamp: e => e.archiveTimestamp,
             excludeFromSweep: e => !e.archived,
           }),
