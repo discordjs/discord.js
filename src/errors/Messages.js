@@ -143,6 +143,8 @@ const Messages = {
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 
   NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,
+
+  SWEEP_FILTER_RETURN: 'The return value of the sweepFilter function was not false or a Function',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

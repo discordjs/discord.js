@@ -1615,10 +1615,8 @@ export class StoreChannel extends GuildChannel {
 
 export class SweptCollection<K, V> extends Collection<K, V> {
   public constructor(options?: SweptCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
-  public keepAtMaxSize: ((value: V) => boolean) | null;
   public interval: number | null;
-  public maxSize: number;
-  public sweepFilter: (() => (value: V) => boolean) | null;
+  public sweepFilter: ((collection: this) => ((value: V) => boolean) | false) | null;
 
   public static filterByLifetime(options?: LifetimeFilterOptions): () => (value: any) => boolean;
 }
@@ -4295,9 +4293,7 @@ export interface StageInstanceEditOptions {
 }
 
 export interface SweptCollectionOptions<K, V> {
-  keepAtMaxSize?: (value: V) => boolean;
-  maxSize?: number;
-  sweepFilter?: () => (value: V) => boolean;
+  sweepFilter?: (collection: SweptCollection<K, V>) => ((value: V) => boolean) | false;
   sweepInterval?: number;
 }
 

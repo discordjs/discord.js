@@ -4,18 +4,17 @@ const Collection = require('./Collection.js');
 const { TypeError } = require('../errors/DJSError.js');
 
 /**
- * Options for defining the behavior of a Swept Collection
- * @typedef {Object} SweptCollectionOptions
- * @property {number} [maxSize=-1] The maximum size of the Collection
- * @property {Function|null} [keepAtMaxSize=null] A function used to exclude some entries from being removed
- * when reaching the specified max size.
- * The function takes an entry as a paremeter and returns a boolean, `true` to keep.
- * <warn>When the function returns `true` for every entry,
- * the first entry will be removed to maintain size</warn>
- * @property {Function|null} [sweepFilter=null] A custom function taking no parameters, run every every `sweepInterval`.
- * The return value of this function is a function passed to `sweep()`,
+ * @typedef {Function} SweepFilter
+ * @param {SweptCollection} collection The collection being swept
+ * @returns {Function|false} Return `false` to skip sweeping, otherwise a function passed to `sweep()`,
  * See {@link [Collection#sweep](https://discord.js.org/#/docs/collection/master/class/Collection?scrollTo=sweep)}
  * for the definition of this function.
+ */
+
+/**
+ * Options for defining the behavior of a Swept Collection
+ * @typedef {Object} SweptCollectionOptions
+ * @property {Function|null} [sweepFilter=null] A function run every `sweepInterval` to determine how to sweep
  * @property {number} [sweepInterval=3600] How frequently, in seconds, to sweep the collection.
  */
 
@@ -30,31 +29,14 @@ class SweptCollection extends Collection {
     if (typeof options !== 'object' || options === null) {
       throw new TypeError('INVALID_TYPE', 'options', 'object or iterable', true);
     }
-    const { maxSize = -1, keepAtMaxSize = null, sweepFilter = null, sweepInterval = 3600 } = options;
+    const { sweepFilter = null, sweepInterval = 3600 } = options;
 
-    if (typeof maxSize !== 'number') throw new TypeError('INVALID_TYPE', 'maxSize', 'number');
-    if (keepAtMaxSize !== null && typeof keepAtMaxSize !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'maxSizePreidcate', 'function');
-    }
     if (sweepFilter !== null && typeof sweepFilter !== 'function') {
       throw new TypeError('INVALID_TYPE', 'sweepFunction', 'function');
     }
     if (typeof sweepInterval !== 'number') throw new TypeError('INVALID_TYPE', 'sweepInterval', 'number');
 
     super(iterable);
-
-    /**
-     * The max size of the Collection.
-     * @type {number}
-     */
-    this.maxSize = maxSize;
-
-    /**
-     * A function called to exclude items from being removed when the Collection reaches max size.
-     * <warn>When the function returns `true` for every entry, the first entry is removed to maintain size</warn>
-     * @type {?Function}
-     */
-    this.keepAtMaxSize = keepAtMaxSize;
 
     /**
      * A function called every sweep interval that returns a function passed to `sweep`
@@ -68,29 +50,13 @@ class SweptCollection extends Collection {
      */
     this.interval =
       sweepInterval > 0 && sweepFilter
-        ? setInterval(() => this.sweep(this.sweepFilter()), sweepInterval * 1000).unref()
+        ? setInterval(() => {
+            const sweepFn = this.sweepFilter(this);
+            if (sweepFn === false) return;
+            if (typeof sweepFn !== 'function') throw new TypeError('SWEEP_FILTER_RETURN');
+            this.sweep(sweepFn);
+          }, sweepInterval * 1000).unref()
         : null;
-  }
-
-  set(key, value) {
-    if (this.maxSize === 0) return this;
-    if (this.maxSize === -1 || this.maxSize === Infinity) super.set(key, value);
-    if (this.size >= this.maxSize && !this.has(key)) {
-      let deleted = false;
-      if (this.keepAtMaxSize) {
-        for (const [k, v] of this) {
-          if (!this.keepAtMaxSize(v)) {
-            this.delete(k);
-            deleted = true;
-            break;
-          }
-        }
-      }
-      if (!deleted) {
-        this.delete(this.firstKey());
-      }
-    }
-    return super.set(key, value);
   }
 
   /**
@@ -107,7 +73,7 @@ class SweptCollection extends Collection {
   /**
    * Create a sweepFilter function that uses a lifetime to determine sweepability.
    * @param {LifetimeFilterOptions} [options={}] The options used to generate the filter function
-   * @returns {Function}
+   * @returns {SweepFilter}
    */
   static filterByLifetime({
     lifetime = 14400,
