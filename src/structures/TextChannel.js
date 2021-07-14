@@ -38,7 +38,6 @@ class TextChannel extends GuildChannel {
      * @type {boolean}
      */
     this.nsfw = Boolean(data.nsfw);
-    this._typing = new Map();
   }
 
   _patch(data) {
@@ -193,10 +192,7 @@ class TextChannel extends GuildChannel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
+  sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
   createMessageComponentCollector() {}
