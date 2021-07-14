@@ -434,6 +434,7 @@ client.on('interaction', async interaction => {
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
+  // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [[button]] });
 
   // @ts-expect-error
@@ -581,3 +582,25 @@ declare const guildEmojiManager: GuildEmojiManager;
 assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch());
 assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 assertType<Promise<GuildEmoji | null>>(guildEmojiManager.fetch('0'));
+
+// Test partials structures
+client.on('typingStart', (channel, user) => {
+  if (channel.partial) assertType<undefined>(channel.lastMessageId);
+  if (user.partial) return assertType<null>(user.username);
+  assertType<string>(user.username);
+});
+
+client.on('guildMemberRemove', member => {
+  if (member.partial) return assertType<null>(member.joinedAt);
+  assertType<Date | null>(member.joinedAt);
+});
+
+client.on('messageReactionAdd', async reaction => {
+  if (reaction.partial) {
+    assertType<null>(reaction.count);
+    reaction = await reaction.fetch();
+  }
+  assertType<number>(reaction.count);
+  if (reaction.message.partial) return assertType<string | null>(reaction.message.content);
+  assertType<string>(reaction.message.content);
+});
