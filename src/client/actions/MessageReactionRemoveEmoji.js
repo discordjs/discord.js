@@ -1,12 +1,12 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const { Events, VoiceBasedChannelTypes } = require('../../util/Constants');
 
 class MessageReactionRemoveEmoji extends Action {
   handle(data) {
     const channel = this.getChannel(data);
-    if (!channel || channel.type === 'voice') return false;
+    if (!channel || VoiceBasedChannelTypes.includes(channel.type)) return false;
 
     const message = this.getMessage(data, channel);
     if (!message) return false;

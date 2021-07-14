@@ -193,7 +193,7 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.cache.find(c => c.type === 'dm' && c.recipient.id === this.id) ?? null;
+    return this.client.channels.cache.find(c => c.type === 'DM' && c.recipient.id === this.id) ?? null;
   }
 
   /**
@@ -212,7 +212,7 @@ class User extends Base {
         recipient_id: this.id,
       },
     });
-    return this.client.channels.add(data);
+    return this.client.channels._add(data);
   }
 
   /**
@@ -223,7 +223,7 @@ class User extends Base {
     const { dmChannel } = this;
     if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
     await this.client.api.channels(dmChannel.id).delete();
-    this.client.channels.remove(dmChannel.id);
+    this.client.channels._remove(dmChannel.id);
     return dmChannel;
   }
 

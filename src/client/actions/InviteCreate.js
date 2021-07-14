@@ -11,7 +11,7 @@ class InviteCreateAction extends Action {
     if (!channel) return false;
 
     const inviteData = Object.assign(data, { channel, guild });
-    const invite = guild.invites.add(inviteData);
+    const invite = guild.invites._add(inviteData);
 
     /**
      * Emitted when an invite is created.

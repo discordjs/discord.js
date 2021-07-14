@@ -5,6 +5,8 @@ import {
   ApplicationCommandResolvable,
   CategoryChannel,
   Client,
+  ClientApplication,
+  ClientUser,
   Collection,
   Constants,
   DMChannel,
@@ -15,6 +17,7 @@ import {
   GuildMember,
   GuildResolvable,
   Intents,
+  Interaction,
   Message,
   MessageActionRow,
   MessageAttachment,
@@ -434,6 +437,7 @@ client.on('interaction', async interaction => {
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
+  // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [[button]] });
 
   // @ts-expect-error
@@ -444,6 +448,27 @@ client.on('interaction', async interaction => {
 });
 
 client.login('absolutely-valid-token');
+
+// Test client conditional types
+client.on('ready', client => {
+  assertType<Client<true>>(client);
+});
+
+declare const loggedInClient: Client<true>;
+assertType<ClientApplication>(loggedInClient.application);
+assertType<Date>(loggedInClient.readyAt);
+assertType<number>(loggedInClient.readyTimestamp);
+assertType<string>(loggedInClient.token);
+assertType<number>(loggedInClient.uptime);
+assertType<ClientUser>(loggedInClient.user);
+
+declare const loggedOutClient: Client<false>;
+assertType<null>(loggedOutClient.application);
+assertType<null>(loggedOutClient.readyAt);
+assertType<null>(loggedOutClient.readyTimestamp);
+assertType<string | null>(loggedOutClient.token);
+assertType<null>(loggedOutClient.uptime);
+assertType<null>(loggedOutClient.user);
 
 // Test type transformation:
 declare const assertType: <T>(value: T) => asserts value is T;
@@ -560,12 +585,12 @@ declare const guildChannelManager: GuildChannelManager;
 {
   type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel;
 
-  assertType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: 'voice' }));
-  assertType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: 'category' }));
-  assertType<Promise<TextChannel>>(guildChannelManager.create('name', { type: 'text' }));
-  assertType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: 'news' }));
-  assertType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: 'store' }));
-  assertType<Promise<StageChannel>>(guildChannelManager.create('name', { type: 'stage' }));
+  assertType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: 'GUILD_VOICE' }));
+  assertType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: 'GUILD_CATEGORY' }));
+  assertType<Promise<TextChannel>>(guildChannelManager.create('name', { type: 'GUILD_TEXT' }));
+  assertType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: 'GUILD_NEWS' }));
+  assertType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: 'GUILD_STORE' }));
+  assertType<Promise<StageChannel>>(guildChannelManager.create('name', { type: 'GUILD_STAGE_VOICE' }));
 
   assertType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
   assertType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
@@ -581,3 +606,29 @@ declare const guildEmojiManager: GuildEmojiManager;
 assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch());
 assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 assertType<Promise<GuildEmoji | null>>(guildEmojiManager.fetch('0'));
+
+// Test partials structures
+client.on('typingStart', (channel, user) => {
+  if (channel.partial) assertType<undefined>(channel.lastMessageId);
+  if (user.partial) return assertType<null>(user.username);
+  assertType<string>(user.username);
+});
+
+client.on('guildMemberRemove', member => {
+  if (member.partial) return assertType<null>(member.joinedAt);
+  assertType<Date | null>(member.joinedAt);
+});
+
+client.on('messageReactionAdd', async reaction => {
+  if (reaction.partial) {
+    assertType<null>(reaction.count);
+    reaction = await reaction.fetch();
+  }
+  assertType<number>(reaction.count);
+  if (reaction.message.partial) return assertType<string | null>(reaction.message.content);
+  assertType<string>(reaction.message.content);
+});
+
+// Test interactions
+declare const interaction: Interaction;
+if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);

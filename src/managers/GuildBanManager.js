@@ -27,8 +27,8 @@ class GuildBanManager extends CachedManager {
    * @name GuildBanManager#cache
    */
 
-  add(data, cache) {
-    return super.add(data, cache, { id: data.user.id, extras: [this.guild] });
+  _add(data, cache) {
+    return super._add(data, cache, { id: data.user.id, extras: [this.guild] });
   }
 
   /**
@@ -110,12 +110,12 @@ class GuildBanManager extends CachedManager {
     }
 
     const data = await this.client.api.guilds(this.guild.id).bans(user).get();
-    return this.add(data, cache);
+    return this._add(data, cache);
   }
 
   async _fetchMany(cache) {
     const data = await this.client.api.guilds(this.guild.id).bans.get();
-    return data.reduce((col, ban) => col.set(ban.user.id, this.add(ban, cache)), new Collection());
+    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, cache)), new Collection());
   }
 
   /**

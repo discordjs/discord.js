@@ -112,16 +112,16 @@ class CommandInteraction extends Interaction {
 
     if (resolved) {
       const user = resolved.users?.[option.value];
-      if (user) result.user = this.client.users.add(user);
+      if (user) result.user = this.client.users._add(user);
 
       const member = resolved.members?.[option.value];
-      if (member) result.member = this.guild?.members.add({ user, ...member }) ?? member;
+      if (member) result.member = this.guild?.members._add({ user, ...member }) ?? member;
 
       const channel = resolved.channels?.[option.value];
-      if (channel) result.channel = this.client.channels.add(channel, this.guild) ?? channel;
+      if (channel) result.channel = this.client.channels._add(channel, this.guild) ?? channel;
 
       const role = resolved.roles?.[option.value];
-      if (role) result.role = this.guild?.roles.add(role) ?? role;
+      if (role) result.role = this.guild?.roles._add(role) ?? role;
     }
 
     return result;

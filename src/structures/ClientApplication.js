@@ -60,7 +60,7 @@ class ClientApplication extends Application {
     this.owner = data.team
       ? new Team(this.client, data.team)
       : data.owner
-      ? this.client.users.add(data.owner)
+      ? this.client.users._add(data.owner)
       : this.owner ?? null;
   }
 

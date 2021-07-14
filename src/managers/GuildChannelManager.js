@@ -42,7 +42,7 @@ class GuildChannelManager extends CachedManager {
    * @name GuildChannelManager#cache
    */
 
-  add(channel) {
+  _add(channel) {
     const existing = this.cache.get(channel.id);
     if (existing) return existing;
     this.cache.set(channel.id, channel);
@@ -80,8 +80,8 @@ class GuildChannelManager extends CachedManager {
   /**
    * Options used to create a new channel in a guild.
    * @typedef {Object} GuildChannelCreateOptions
-   * @property {string} [type='text'] The type of the new channel, either `text`, `voice`, `category`, `news`,
-   * `store`, or `stage`
+   * @property {string|number} [type='GUILD_TEXT'] The type of the new channel, either `GUILD_TEXT`, `GUILD_VOICE`,
+   * `GUILD_CATEGORY`, `GUILD_NEWS`, `GUILD_STORE`, or `GUILD_STAGE_VOICE`
    * @property {string} [topic] The topic for the new channel
    * @property {boolean} [nsfw] Whether the new channel is nsfw
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
@@ -107,7 +107,7 @@ class GuildChannelManager extends CachedManager {
    * @example
    * // Create a new channel with permission overwrites
    * guild.channels.create('new-voice', {
-   *   type: 'voice',
+   *   type: 'GUILD_VOICE',
    *   permissionOverwrites: [
    *      {
    *        id: message.author.id,
@@ -129,7 +129,7 @@ class GuildChannelManager extends CachedManager {
       data: {
         name,
         topic,
-        type: type ? ChannelTypes[type.toUpperCase()] : ChannelTypes.TEXT,
+        type: typeof type === 'number' ? type : ChannelTypes[type] ?? ChannelTypes.GUILD_TEXT,
         nsfw,
         bitrate,
         user_limit: userLimit,
@@ -169,12 +169,12 @@ class GuildChannelManager extends CachedManager {
       const data = await this.client.api.channels(id).get();
       // Since this is the guild manager, throw if on a different guild
       if (this.guild.id !== data.guild_id) throw new Error('GUILD_CHANNEL_UNOWNED');
-      return this.client.channels.add(data, this.guild, cache);
+      return this.client.channels._add(data, this.guild, cache);
     }
 
     const data = await this.client.api.guilds(this.guild.id).channels.get();
     const channels = new Collection();
-    for (const channel of data) channels.set(channel.id, this.client.channels.add(channel, this.guild, cache));
+    for (const channel of data) channels.set(channel.id, this.client.channels._add(channel, this.guild, cache));
     return channels;
   }
 }

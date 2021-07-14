@@ -27,8 +27,8 @@ class MessageManager extends CachedManager {
    * @name MessageManager#cache
    */
 
-  add(data, cache) {
-    return super.add(data, cache, { extras: [this.channel] });
+  _add(data, cache) {
+    return super._add(data, cache, { extras: [this.channel] });
   }
 
   /**
@@ -83,7 +83,7 @@ class MessageManager extends CachedManager {
   fetchPinned(cache = true) {
     return this.client.api.channels[this.channel.id].pins.get().then(data => {
       const messages = new Collection();
-      for (const message of data) messages.set(message.id, this.add(message, cache));
+      for (const message of data) messages.set(message.id, this._add(message, cache));
       return messages;
     });
   }
@@ -137,7 +137,7 @@ class MessageManager extends CachedManager {
       clone._patch(d);
       return clone;
     }
-    return this.add(d);
+    return this._add(d);
   }
 
   /**
@@ -150,7 +150,7 @@ class MessageManager extends CachedManager {
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     const data = await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
-    return this.cache.get(data.id) ?? this.add(data);
+    return this.cache.get(data.id) ?? this._add(data);
   }
 
   /**
@@ -213,13 +213,13 @@ class MessageManager extends CachedManager {
     }
 
     const data = await this.client.api.channels[this.channel.id].messages[messageId].get();
-    return this.add(data, cache);
+    return this._add(data, cache);
   }
 
   async _fetchMany(options = {}, cache) {
     const data = await this.client.api.channels[this.channel.id].messages.get({ query: options });
     const messages = new Collection();
-    for (const message of data) messages.set(message.id, this.add(message, cache));
+    for (const message of data) messages.set(message.id, this._add(message, cache));
     return messages;
   }
 }

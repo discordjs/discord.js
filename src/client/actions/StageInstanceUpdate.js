@@ -10,7 +10,7 @@ class StageInstanceUpdateAction extends Action {
 
     if (channel) {
       const oldStageInstance = channel.guild.stageInstances.cache.get(data.id)?._clone() ?? null;
-      const newStageInstance = channel.guild.stageInstances.add(data);
+      const newStageInstance = channel.guild.stageInstances._add(data);
 
       /**
        * Emitted whenever a stage instance gets updated - e.g. change in topic or privacy level

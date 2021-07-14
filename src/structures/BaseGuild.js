@@ -101,7 +101,7 @@ class BaseGuild extends Base {
    */
   async fetch() {
     const data = await this.client.api.guilds(this.id).get({ query: { with_counts: true } });
-    return this.client.guilds.add(data);
+    return this.client.guilds._add(data);
   }
 
   /**
