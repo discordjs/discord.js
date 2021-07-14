@@ -138,7 +138,7 @@ class GuildMember extends Base {
    * @returns {string}
    */
   displayAvatarURL(options) {
-    return this.avatarURL(options) || this.user.displayAvatarURL(options);
+    return this.avatarURL(options) ?? this.user.displayAvatarURL(options);
   }
 
   /**
