@@ -44,7 +44,7 @@ class CommandInteractionOptionResolver {
    * Gets an option by name and property and checks its type.
    * @param {string} name The name of the option.
    * @param {ApplicationCommandOptionType[]} types The type of the option.
-   * @param {string[]} properties The property to check for for `required`.
+   * @param {string[]} properties The properties to check for for `required`.
    * @param {boolean} required Whether to throw an error if the option is not found.
    * @returns {?CommandInteractionOption} The option, if found.
    * @private
