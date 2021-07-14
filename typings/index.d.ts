@@ -2448,7 +2448,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     options?: InteractionCollectorOptions<T>,
   ): InteractionCollector<T>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
-  sendTyping(count?: number): Promise<void>;
+  sendTyping(): Promise<void>;
 }
 
 export function PartialWebhookMixin<T>(Base?: Constructable<T>): Constructable<T & PartialWebhookFields>;
