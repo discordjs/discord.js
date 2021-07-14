@@ -5,6 +5,8 @@ import {
   ApplicationCommandResolvable,
   CategoryChannel,
   Client,
+  ClientApplication,
+  ClientUser,
   Collection,
   Constants,
   DMChannel,
@@ -15,6 +17,7 @@ import {
   GuildMember,
   GuildResolvable,
   Intents,
+  Interaction,
   Message,
   MessageActionRow,
   MessageAttachment,
@@ -446,6 +449,27 @@ client.on('interaction', async interaction => {
 
 client.login('absolutely-valid-token');
 
+// Test client conditional types
+client.on('ready', client => {
+  assertType<Client<true>>(client);
+});
+
+declare const loggedInClient: Client<true>;
+assertType<ClientApplication>(loggedInClient.application);
+assertType<Date>(loggedInClient.readyAt);
+assertType<number>(loggedInClient.readyTimestamp);
+assertType<string>(loggedInClient.token);
+assertType<number>(loggedInClient.uptime);
+assertType<ClientUser>(loggedInClient.user);
+
+declare const loggedOutClient: Client<false>;
+assertType<null>(loggedOutClient.application);
+assertType<null>(loggedOutClient.readyAt);
+assertType<null>(loggedOutClient.readyTimestamp);
+assertType<string | null>(loggedOutClient.token);
+assertType<null>(loggedOutClient.uptime);
+assertType<null>(loggedOutClient.user);
+
 // Test type transformation:
 declare const assertType: <T>(value: T) => asserts value is T;
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -604,3 +628,7 @@ client.on('messageReactionAdd', async reaction => {
   if (reaction.message.partial) return assertType<string | null>(reaction.message.content);
   assertType<string>(reaction.message.content);
 });
+
+// Test interactions
+declare const interaction: Interaction;
+if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);

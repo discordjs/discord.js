@@ -17,7 +17,7 @@ const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
 const Collection = require('../util/Collection');
-const { Events, InviteScopes } = require('../util/Constants');
+const { Events, InviteScopes, Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
 const Options = require('../util/Options');
@@ -226,6 +226,15 @@ class Client extends BaseClient {
       this.destroy();
       throw error;
     }
+  }
+
+  /**
+   * Returns whether the client has logged in, indicative of being able to access
+   * properties such as `user` and `application`.
+   * @returns {boolean}
+   */
+  isReady() {
+    return this.ws.status === Status.READY;
   }
 
   /**
