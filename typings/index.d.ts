@@ -358,11 +358,7 @@ export class ClientUser extends User {
 export class Options extends null {
   private constructor();
   public static createDefaultOptions(): ClientOptions;
-  public static cacheWithLimits(limits?: CacheWithLimitOptions): CacheFactory;
-  public static cacheWithLimitsOrSweep(
-    settings?: Record<string, SweptCollectionOptions<unknown, unknown> | number>,
-  ): CacheFactory;
-  public static cacheWithSweep(settings?: Record<string, SweptCollectionOptions<unknown, unknown>>): CacheFactory;
+  public static cacheSome(settings?: CacheSomeOptions): CacheFactory;
   public static cacheEverything(): CacheFactory;
 }
 
@@ -2884,8 +2880,8 @@ export interface CacheFactoryArgs {
   VoiceStateManager: [manager: typeof VoiceStateManager, holds: typeof VoiceState];
 }
 
-export type CacheWithLimitOptions = {
-  [K in CachedManagerTypes]?: number;
+export type CacheSomeOptions = {
+  [K in CachedManagerTypes]?: SweptCollectionOptions<unknown, unknown> | number;
 };
 
 export interface ChannelCreationOverwrites {

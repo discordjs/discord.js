@@ -135,6 +135,10 @@ class SweptCollection extends Collection {
       };
     };
   }
+
+  static get [Symbol.species]() {
+    return Collection;
+  }
 }
 
 module.exports = SweptCollection;
