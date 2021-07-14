@@ -94,15 +94,19 @@
 class Options extends null {
   /**
    * The default client options.
-   * @param {Client} [client] The client creating these options
    * @returns {ClientOptions}
    */
-  static createDefault(client) {
+  static createDefault() {
     return {
       shardCount: 1,
       makeCache: this.cacheWithLimitsOrSweep({
         MessageManager: 200,
-        ThreadManager: { sweepArchivedOnly: true, client },
+        ThreadManager: {
+          sweepInterval: require('./SweptCollection').filterByLiftetme({
+            getComparisonTimestamp: e => e.archiveTimestamp,
+            excludeFromSweep: e => !e.archived,
+          }),
+        },
       }),
       messageCacheLifetime: 0,
       messageSweepInterval: 0,

@@ -357,20 +357,12 @@ export class ClientUser extends User {
 
 export class Options extends null {
   private constructor();
-  public static createDefaultOptions(client?: Client): ClientOptions;
+  public static createDefaultOptions(): ClientOptions;
   public static cacheWithLimits(limits?: CacheWithLimitOptions): CacheFactory;
   public static cacheWithLimitsOrSweep(
-    settings?: Record<
-      string,
-      SweptCollectionOptions<unknown, unknown> | SweptCollectionFunctionOptions<unknown, unknown> | number
-    >,
+    settings?: Record<string, SweptCollectionOptions<unknown, unknown> | number>,
   ): CacheFactory;
-  public static cacheWithSweep(
-    settings?: Record<
-      string,
-      SweptCollectionOptions<unknown, unknown> | SweptCollectionFunctionOptions<unknown, unknown>
-    >,
-  ): CacheFactory;
+  public static cacheWithSweep(settings?: Record<string, SweptCollectionOptions<unknown, unknown>>): CacheFactory;
   public static cacheEverything(): CacheFactory;
 }
 
@@ -1626,12 +1618,13 @@ export class StoreChannel extends GuildChannel {
 }
 
 export class SweptCollection<K, V> extends Collection<K, V> {
-  public constructor(options: SweptCollectionOptions<K, V> | SweptCollectionFunctionOptions<K, V>);
-  public constructor(iterable?: Iterable<readonly [K, V]>);
-  public client: Client | null;
-  public maxSize: number;
-  public maxSizePredicate: ((value: V) => boolean) | null;
+  public constructor(options?: SweptCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
+  public keepAtMaxSize: ((value: V) => boolean) | null;
   public interval: number | null;
+  public maxSize: number;
+  public sweepFilter: (() => (value: V) => boolean) | null;
+
+  public static filterByLifetime(options?: LifetimeFilterOptions): () => (value: any) => boolean;
 }
 
 export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
@@ -3779,6 +3772,12 @@ export type InviteScope =
   | 'gdm.join'
   | 'webhook.incoming';
 
+export interface LifetimeFilterOptions {
+  excludeFromSweep?: (value: any) => boolean;
+  getComparisonTimestamp?: (value: any) => number;
+  lifetime?: number;
+}
+
 export interface MakeErrorOptions {
   name: string;
   message: string;
@@ -4299,22 +4298,11 @@ export interface StageInstanceEditOptions {
   privacyLevel?: PrivacyLevel | number;
 }
 
-export interface SweptCollectionBaseOptions<K, V> {
-  client?: Client;
-  iterable?: Iterable<readonly [K, V]>;
+export interface SweptCollectionOptions<K, V> {
+  keepAtMaxSize?: (value: V) => boolean;
   maxSize?: number;
-  maxSizePredicate?: (value: V) => boolean;
+  sweepFilter?: () => (value: V) => boolean;
   sweepInterval?: number;
-}
-
-export interface SweptCollectionFunctionOptions<K, V> extends SweptCollectionBaseOptions<K, V> {
-  sweepFunction: (value: V, key: K, collection: this) => boolean;
-}
-
-export interface SweptCollectionOptions<K, V> extends SweptCollectionBaseOptions<K, V> {
-  sweepArchivedOnly?: boolean;
-  sweepLifetime?: number;
-  sweepLifetimeProperty?: string;
 }
 
 export type TextBasedChannelTypes =
