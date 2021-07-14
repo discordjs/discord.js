@@ -138,6 +138,8 @@ const Messages = {
     `Option "${name}" is of type: ${type}; expected one of: ${expected.join(', ')}`,
   COMMAND_INTERACTION_OPTION_EMPTY: (name, type) =>
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No sub-command specified for interaction.',
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No sub-command group specified for interaction.',
 
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 

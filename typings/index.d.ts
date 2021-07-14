@@ -435,6 +435,8 @@ export class CommandInteractionOptionResolver {
   public constructor(client: Client, options: CommandInteractionOption[]);
   public readonly client: Client;
   private _options: CommandInteractionOption[];
+  private _group: string | null;
+  private _subCommand: string | null;
   private _getTypedOption(
     name: string,
     types: ApplicationCommandOptionType[],
@@ -450,7 +452,9 @@ export class CommandInteractionOptionResolver {
 
   public get(name: string, required: true): CommandInteractionOption;
   public get(name: string, required?: boolean): CommandInteractionOption | null;
-  public getSubCommand(name: string): CommandInteractionOptionResolver | null;
+  public getSubCommand(): string;
+  public getSubCommandGroup(required: true): string;
+  public getSubCommandGroup(required?: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
   public getChannel(name: string, required: true): NonNullable<CommandInteractionOption['channel']>;

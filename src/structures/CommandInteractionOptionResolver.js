@@ -21,6 +21,27 @@ class CommandInteractionOptionResolver {
      * @private
      */
     this._options = options ?? [];
+
+    /**
+     * The name of the sub-command group.
+     * @type {?string}
+     * @private
+     */
+    this._group = null;
+    /**
+     * The name of the sub-command.
+     * @type {?string}
+     * @private
+     */
+    this._subCommand = null;
+    if (this._options[0]?.type === 'SUB_COMMAND_GROUP') {
+      this._group = this._options[0].name;
+      this._options = this._options[0].options ?? [];
+    }
+    if (this._options[0]?.type === 'SUB_COMMAND') {
+      this._subCommand = this._options[0].name;
+      this._options = this._options[0].options ?? [];
+    }
   }
 
   /**
@@ -62,14 +83,26 @@ class CommandInteractionOptionResolver {
   }
 
   /**
-   * Gets a sub-command or sub-command group.
-   * @param {string} name The name of the sub-command or sub-command group.
-   * @returns {?CommandInteractionOptionResolver}
-   * A new resolver for the sub-command/group's options, or null if empty
+   * Gets the selected sub-command.
+   * @returns {string} The name of the selected sub-command.
    */
-  getSubCommand(name) {
-    const option = this._getTypedOption(name, ['SUB_COMMAND', 'SUB_COMMAND_GROUP'], ['options'], false);
-    return option && new CommandInteractionOptionResolver(this.client, option.options);
+  getSubCommand() {
+    if (!this._subCommand) {
+      throw new TypeError('COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND');
+    }
+    return this._subCommand;
+  }
+
+  /**
+   * Gets the selected sub-command group.
+   * @param {boolean} [required=false] Whether to throw an error if there is no sub-command group.
+   * @returns {?string} The name of the selected sub-command group, or null if not set and not required.
+   */
+  getSubCommandGroup(required = false) {
+    if (required && !this._group) {
+      throw new TypeError('COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP');
+    }
+    return this._group;
   }
 
   /**
