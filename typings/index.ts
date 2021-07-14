@@ -54,10 +54,16 @@ import {
 
 const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
-  makeCache: Options.cacheWithLimits({
+  makeCache: Options.cacheSome({
     MessageManager: 200,
     // @ts-expect-error
     Message: 100,
+    ThreadManager: {
+      sweepInterval: require('./SweptCollection').filterByLifetime({
+        getComparisonTimestamp: (e: any) => e.archiveTimestamp,
+        excludeFromSweep: (e: any) => !e.archived,
+      }),
+    },
   }),
 });
 
