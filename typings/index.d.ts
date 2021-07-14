@@ -2725,27 +2725,9 @@ export type BitFieldResolvable<T extends string, N extends number | bigint> =
 
 export type BufferResolvable = Buffer | string;
 
-export type CachedManagerTypes =
-  | 'ApplicationCommandManager'
-  | 'BaseGuildEmojiManager'
-  | 'ChannelManager'
-  | 'GuildChannelManager'
-  | 'GuildManager'
-  | 'GuildMemberManager'
-  | 'GuildBanManager'
-  | 'MessageManager'
-  | 'PermissionOverwriteManager'
-  | 'PresenceManager'
-  | 'ReactionManager'
-  | 'ReactionUserManager'
-  | 'RoleManager'
-  | 'StageInstanceManager'
-  | 'ThreadManager'
-  | 'ThreadMemberManager'
-  | 'UserManager'
-  | 'VoiceStateManager';
+export type CachedManagerTypes = keyof CacheFactoryArgs;
 
-export type CacheFactory = <T extends keyof CacheFactoryArgs>(
+export type CacheFactory = <T extends CachedManagerTypes>(
   ...args: CacheFactoryArgs[T]
 ) => Collection<Snowflake, CacheFactoryArgs[T][1]>;
 
@@ -2771,7 +2753,7 @@ export interface CacheFactoryArgs {
 }
 
 export type CacheWithLimitOptions = {
-  [K in keyof CacheFactoryArgs]?: number;
+  [K in CachedManagerTypes]?: number;
 };
 
 export interface ChannelCreationOverwrites {
