@@ -1661,7 +1661,6 @@ export class Typing extends Base {
   public inGuild(): this is this & {
     channel: TextChannel | NewsChannel | ThreadChannel;
     readonly guild: Guild;
-    readonly member: GuildMember;
   };
 }
 

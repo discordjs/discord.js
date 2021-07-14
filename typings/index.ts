@@ -598,7 +598,6 @@ assertType<GuildMember | null>(typing.member);
 assertType<Guild | null>(typing.guild);
 
 if (typing.inGuild()) {
-  assertType<GuildMember>(typing.member);
   assertType<Guild>(typing.channel.guild);
   assertType<Guild>(typing.guild);
 }
