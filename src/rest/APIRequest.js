@@ -44,7 +44,7 @@ class APIRequest {
     if (this.options.files && this.options.files.length) {
       body = new FormData();
       for (const file of this.options.files) {
-        if (file && file.file) body.append(file.key ?? file.name, file.file, file.name);
+        if (file?.file) body.append(file.key ?? file.name, file.file, file.name);
       }
       if (typeof this.options.data !== 'undefined') {
         if (this.options.dontUsePayloadJSON) {
