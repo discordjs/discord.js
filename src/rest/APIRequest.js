@@ -18,7 +18,7 @@ class APIRequest {
     this.retries = 0;
 
     const userAgentSuffix = this.client.options.userAgentSuffix;
-    this.fullUserAgent = `${UserAgent}${userAgentSuffix.length && `, ${userAgentSuffix.join(', ')}`}`;
+    this.fullUserAgent = `${UserAgent}${userAgentSuffix.length ? `, ${userAgentSuffix.join(', ')}` : ''}`;
 
     let queryString = '';
     if (options.query) {
