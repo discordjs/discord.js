@@ -99,7 +99,7 @@ class Options extends null {
   static createDefault() {
     return {
       shardCount: 1,
-      makeCache: this.cacheWithLimitsOrSweep({
+      makeCache: this.cacheSome({
         MessageManager: 200,
         ThreadManager: {
           sweepInterval: require('./SweptCollection').filterByLifetime({
@@ -142,51 +142,22 @@ class Options extends null {
   }
 
   /**
-   * Create a cache factory using predefined limits.
-   * @param {Record<string, number>} [limits={}] Limits for structures.
+   * Create a cache factory using predefined settings to sweep or limit.
+   * @param {Record<string, SweptCollectionOptions|number>} [settings={}] Settings passed to the relevant constructor.
+   * If no setting is provided for a manager, it uses Collection.
    * @returns {CacheFactory}
+   * @example
+   * Options.cacheSome({
+   *    MessageManager: 200,
+   *    ThreadManager: {
+   *      sweepInterval: SweptCollection.filterByLifetime({
+   *        getComparisonTimestamp: e => e.archiveTimestamp,
+   *        excludeFromSweep: e => !e.archived,
+   *      }),
+   *    },
+   *  });
    */
-  static cacheWithLimits(limits = {}) {
-    const Collection = require('./Collection');
-    const LimitedCollection = require('./LimitedCollection');
-
-    return manager => {
-      const limit = limits[manager.name];
-      if (limit === null || limit === undefined || limit === Infinity) {
-        return new Collection();
-      }
-      return new LimitedCollection(limit);
-    };
-  }
-
-  /**
-   * Create a cache factory using predefined sweep settings.
-   * @param {Record<string, SweptCollectionOptions>} [settings={}] Settings for structures.
-   * @returns {CacheFactory}
-   */
-  static cacheWithSweep(settings = {}) {
-    const Collection = require('./Collection');
-    const SweptCollection = require('./SweptCollection');
-
-    return manager => {
-      const setting = settings[manager.name];
-      if (
-        setting === null ||
-        typeof setting !== 'object' ||
-        (setting.sweepInterval ? setting.sweepInterval <= 0 || setting.sweepInterval === Infinity : true)
-      ) {
-        return new Collection();
-      }
-      return new SweptCollection(setting);
-    };
-  }
-
-  /**
-   * Create a cache factory using predefined sweep settings or limits.
-   * @param {Record<string, SweptCollectionOptions|number>} [settings={}] Settings or Limits for structures.
-   * @returns {CacheFactory}
-   */
-  static cacheWithLimitsOrSweep(settings = {}) {
+  static cacheSome(settings = {}) {
     const Collection = require('./Collection');
     const LimitedCollection = require('./LimitedCollection');
     const SweptCollection = require('./SweptCollection');
