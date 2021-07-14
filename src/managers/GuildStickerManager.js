@@ -153,8 +153,7 @@ class GuildStickerManager extends CachedManager {
     }
 
     const data = await this.client.api.guilds(this.guild.id).stickers.get();
-    const stickers = new Collection(data.map(sticker => [sticker.id, this.add(sticker, cache)]));
-    return stickers;
+    return new Collection(data.map(sticker => [sticker.id, this.add(sticker, cache)]));
   }
 }
 
