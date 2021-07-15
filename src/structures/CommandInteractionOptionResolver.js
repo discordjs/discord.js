@@ -28,7 +28,7 @@ class CommandInteractionOptionResolver {
      * @private
      */
     this._group = null;
-    
+
     /**
      * The name of the sub-command.
      * @type {?string}
