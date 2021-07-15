@@ -262,7 +262,7 @@ class User extends Base {
    * @returns {Promise<User>}
    */
   fetch(force = false) {
-    return this.client.users.fetch(this.id, true, force);
+    return this.client.users.fetch(this.id, { force });
   }
 
   /**
