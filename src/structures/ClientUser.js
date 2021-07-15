@@ -1,13 +1,13 @@
 'use strict';
 
+const User = require('./User');
 const DataResolver = require('../util/DataResolver');
-const Structures = require('../util/Structures');
 
 /**
  * Represents the logged in client's Discord user.
  * @extends {User}
  */
-class ClientUser extends Structures.get('User') {
+class ClientUser extends User {
   constructor(client, data) {
     super(client, data);
     this._typing = new Map();
@@ -56,8 +56,7 @@ class ClientUser extends Structures.get('User') {
     const newData = await this.client.api.users('@me').patch({ data });
     this.client.token = newData.token;
     const { updated } = this.client.actions.UserUpdate.handle(newData);
-    if (updated) return updated;
-    return this;
+    return updated ?? this;
   }
 
   /**
@@ -104,7 +103,7 @@ class ClientUser extends Structures.get('User') {
    * @property {PresenceStatusData} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
    * @property {ActivitiesOptions[]} [activities] Activity the user is playing
-   * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
+   * @property {number|number[]} [shardId] Shard id(s) to have the activity set on
    */
 
   /**
@@ -131,14 +130,14 @@ class ClientUser extends Structures.get('User') {
   /**
    * Sets the status of the client user.
    * @param {PresenceStatusData} status Status to change to
-   * @param {?number|number[]} [shardID] Shard ID(s) to have the activity set on
+   * @param {number|number[]} [shardId] Shard id(s) to have the activity set on
    * @returns {Presence}
    * @example
    * // Set the client user's status
    * client.user.setStatus('idle');
    */
-  setStatus(status, shardID) {
-    return this.setPresence({ status, shardID });
+  setStatus(status, shardId) {
+    return this.setPresence({ status, shardId });
   }
 
   /**
@@ -147,7 +146,7 @@ class ClientUser extends Structures.get('User') {
    * @property {string} [name] Name of the activity
    * @property {string} [url] Twitch / YouTube stream URL
    * @property {ActivityType|number} [type] Type of the activity
-   * @property {number|number[]} [shardID] Shard Id(s) to have the activity set on
+   * @property {number|number[]} [shardId] Shard Id(s) to have the activity set on
    */
 
   /**
@@ -160,20 +159,20 @@ class ClientUser extends Structures.get('User') {
    * client.user.setActivity('discord.js', { type: 'WATCHING' });
    */
   setActivity(name, options = {}) {
-    if (!name) return this.setPresence({ activities: [], shardID: options.shardID });
+    if (!name) return this.setPresence({ activities: [], shardId: options.shardId });
 
     const activity = Object.assign({}, options, typeof name === 'object' ? name : { name });
-    return this.setPresence({ activities: [activity], shardID: activity.shardID });
+    return this.setPresence({ activities: [activity], shardId: activity.shardId });
   }
 
   /**
    * Sets/removes the AFK flag for the client user.
    * @param {boolean} afk Whether or not the user is AFK
-   * @param {number|number[]} [shardID] Shard Id(s) to have the AFK flag set on
+   * @param {number|number[]} [shardId] Shard Id(s) to have the AFK flag set on
    * @returns {Presence}
    */
-  setAFK(afk, shardID) {
-    return this.setPresence({ afk, shardID });
+  setAFK(afk, shardId) {
+    return this.setPresence({ afk, shardId });
   }
 }
 

@@ -42,11 +42,11 @@ client.on('debug', console.log);
 client.on('error', m => console.log('debug', new Error(m).stack));
 client.on('reconnecting', m => console.log('reconnecting', m));
 
-client.on('message', message => {
+client.on('messageCreate', message => {
   if (true) {
     if (message.content === 'makechann') {
       if (message.channel.guild) {
-        message.channel.guild.channels.create('hi', { type: 'text' }).then(console.log);
+        message.channel.guild.channels.create('hi', { type: 'GUILD_TEXT' }).then(console.log);
       }
     }
 
@@ -178,7 +178,7 @@ function chanLoop(channel) {
     .catch(console.error);
 }
 
-client.on('message', msg => {
+client.on('messageCreate', msg => {
   if (msg.content.startsWith('?raw')) {
     msg.channel.send(`\`\`\`${msg.content}\`\`\``);
   }
@@ -200,7 +200,7 @@ client.on('message', msg => {
 
 let disp, con;
 
-client.on('message', msg => {
+client.on('messageCreate', msg => {
   if (msg.content.startsWith('/play')) {
     console.log('I am now going to play', msg.content);
     const chan = msg.content
@@ -243,10 +243,10 @@ client.on('messageReactionRemove', (reaction, user) => {
   reaction.message.channel.send(`${user.username} removed reaction ${reaction.emoji}, count is now ${reaction.count}`);
 });
 
-client.on('message', m => {
+client.on('messageCreate', m => {
   if (m.content.startsWith('#reactions')) {
-    const mID = m.content.split(' ')[1];
-    m.channel.messages.fetch(mID).then(rM => {
+    const mId = m.content.split(' ')[1];
+    m.channel.messages.fetch(mId).then(rM => {
       for (const reaction of rM.reactions.cache.values()) {
         reaction.users.fetch().then(users => {
           m.channel.send(

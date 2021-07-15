@@ -1,11 +1,11 @@
 'use strict';
 
 const Base = require('./Base');
+const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Permissions = require('../util/Permissions');
-let Structures;
 
 /**
  * Represents a member of a guild on Discord.
@@ -32,18 +32,6 @@ class GuildMember extends Base {
      * @type {?number}
      */
     this.joinedTimestamp = null;
-
-    /**
-     * The ID of the last message sent by the member in their guild, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageID = null;
-
-    /**
-     * The ID of the channel for the last message sent by the member in their guild, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageChannelID = null;
 
     /**
      * The timestamp of when the member used their Nitro boost on the guild, if it was used
@@ -77,15 +65,15 @@ class GuildMember extends Base {
     if ('user' in data) {
       /**
        * The user that this guild member instance represents
-       * @type {User}
+       * @type {?User}
        */
-      this.user = this.client.users.add(data.user, true);
+      this.user = this.client.users._add(data.user, true);
     }
 
     if ('nick' in data) this.nickname = data.nick;
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if ('premium_since' in data) {
-      this.premiumSinceTimestamp = data.premium_since === null ? null : new Date(data.premium_since).getTime();
+      this.premiumSinceTimestamp = data.premium_since ? new Date(data.premium_since).getTime() : null;
     }
     if ('roles' in data) this._roles = data.roles;
     this.pending = data.pending ?? false;
@@ -116,24 +104,12 @@ class GuildMember extends Base {
   }
 
   /**
-   * The Message object of the last message sent by the member in their guild, if one was sent
-   * @type {?Message}
-   * @readonly
-   */
-  get lastMessage() {
-    const channel = this.guild.channels.cache.get(this.lastMessageChannelID);
-    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
-  }
-
-  /**
    * The voice state of this member
    * @type {VoiceState}
    * @readonly
    */
   get voice() {
-    if (!Structures) Structures = require('../util/Structures');
-    const VoiceState = Structures.get('VoiceState');
-    return this.guild.voiceStates.cache.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
+    return this.guild.voiceStates.cache.get(this.id) ?? new VoiceState(this.guild, { user_id: this.id });
   }
 
   /**
@@ -156,21 +132,11 @@ class GuildMember extends Base {
 
   /**
    * The presence of this guild member
-   * @type {Presence}
+   * @type {?Presence}
    * @readonly
    */
   get presence() {
-    if (!Structures) Structures = require('../util/Structures');
-    const Presence = Structures.get('Presence');
-    return (
-      this.guild.presences.cache.get(this.id) ||
-      new Presence(this.client, {
-        user: {
-          id: this.id,
-        },
-        guild: this.guild,
-      })
-    );
+    return this.guild.presences.resolve(this.id);
   }
 
   /**
@@ -179,8 +145,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayColor() {
-    const role = this.roles.color;
-    return (role && role.color) || 0;
+    return this.roles.color?.color ?? 0;
   }
 
   /**
@@ -189,12 +154,11 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayHexColor() {
-    const role = this.roles.color;
-    return (role && role.hexColor) || '#000000';
+    return this.roles.color?.hexColor ?? '#000000';
   }
 
   /**
-   * The ID of this member
+   * The member's id
    * @type {Snowflake}
    * @readonly
    */
@@ -208,7 +172,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayName() {
-    return this.nickname || this.user.username;
+    return this.nickname ?? this.user.username;
   }
 
   /**
@@ -217,7 +181,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
+    if (this.user.id === this.guild.ownerId) return new Permissions(Permissions.ALL).freeze();
     return new Permissions(this.roles.cache.map(role => role.permissions)).freeze();
   }
 
@@ -228,9 +192,9 @@ class GuildMember extends Base {
    * @readonly
    */
   get manageable() {
-    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.guild.ownerId) return false;
     if (this.user.id === this.client.user.id) return false;
-    if (this.client.user.id === this.guild.ownerID) return true;
+    if (this.client.user.id === this.guild.ownerId) return true;
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
     return this.guild.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }
@@ -256,20 +220,20 @@ class GuildMember extends Base {
   /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
-   * @param {ChannelResolvable} channel The guild channel to use as context
+   * @param {GuildChannelResolvable} channel The guild channel to use as context
    * @returns {Readonly<Permissions>}
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);
     if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
-    return channel.memberPermissions(this);
+    return channel.permissionsFor(this);
   }
 
   /**
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {?string} [nick] The nickname to set for the member
-   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role IDs to apply
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
    * @property {ChannelResolvable|null} [channel] Channel to move member to (if they are connected to voice), or `null`
@@ -358,8 +322,6 @@ class GuildMember extends Base {
       this.partial === member.partial &&
       this.guild.id === member.guild.id &&
       this.joinedTimestamp === member.joinedTimestamp &&
-      this.lastMessageID === member.lastMessageID &&
-      this.lastMessageChannelID === member.lastMessageChannelID &&
       this.nickname === member.nickname &&
       this.pending === member.pending &&
       (this._roles === member._roles ||
@@ -380,11 +342,9 @@ class GuildMember extends Base {
 
   toJSON() {
     return super.toJSON({
-      guild: 'guildID',
-      user: 'userID',
+      guild: 'guildId',
+      user: 'userId',
       displayName: true,
-      lastMessage: false,
-      lastMessageID: false,
       roles: true,
     });
   }

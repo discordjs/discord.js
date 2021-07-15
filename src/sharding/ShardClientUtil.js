@@ -59,7 +59,7 @@ class ShardClientUtil {
   }
 
   /**
-   * Array of shard IDs of this client
+   * Array of shard ids of this client
    * @type {number[]}
    * @readonly
    */
@@ -109,10 +109,10 @@ class ShardClientUtil {
    */
   fetchClientValues(prop, shard) {
     return new Promise((resolve, reject) => {
-      const parent = this.parentPort || process;
+      const parent = this.parentPort ?? process;
 
       const listener = message => {
-        if (!message || message._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
+        if (message?._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
@@ -139,7 +139,7 @@ class ShardClientUtil {
    */
   broadcastEval(script, options = {}) {
     return new Promise((resolve, reject) => {
-      const parent = this.parentPort || process;
+      const parent = this.parentPort ?? process;
       if (typeof script !== 'function') {
         reject(new TypeError('SHARDING_INVALID_EVAL_BROADCAST'));
         return;
@@ -147,7 +147,7 @@ class ShardClientUtil {
       script = `(${script})(this, ${JSON.stringify(options.context)})`;
 
       const listener = message => {
-        if (!message || message._sEval !== script || message._sEvalShard !== options.shard) return;
+        if (message?._sEval !== script || message._sEvalShard !== options.shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
@@ -230,14 +230,14 @@ class ShardClientUtil {
   }
 
   /**
-   * Get the shard ID for a given guild ID.
-   * @param {Snowflake} guildID Snowflake guild ID to get shard ID for
+   * Get the shard id for a given guild id.
+   * @param {Snowflake} guildId Snowflake guild id to get shard id for
    * @param {number} shardCount Number of shards
    * @returns {number}
    */
-  static shardIDForGuildID(guildID, shardCount) {
-    const shard = Number(BigInt(guildID) >> 22n) % shardCount;
-    if (shard < 0) throw new Error('SHARDING_SHARD_MISCALCULATION', shard, guildID, shardCount);
+  static shardIdForGuildId(guildId, shardCount) {
+    const shard = Number(BigInt(guildId) >> 22n) % shardCount;
+    if (shard < 0) throw new Error('SHARDING_SHARD_MISCALCULATION', shard, guildId, shardCount);
     return shard;
   }
 }

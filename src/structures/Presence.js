@@ -1,5 +1,6 @@
 'use strict';
 
+const Base = require('./Base');
 const Emoji = require('./Emoji');
 const ActivityFlags = require('../util/ActivityFlags');
 const { ActivityTypes } = require('../util/Constants');
@@ -8,7 +9,7 @@ const Util = require('../util/Util');
 /**
  * Activity sent in a message.
  * @typedef {Object} MessageActivity
- * @property {string} [partyID] Id of the party represented in activity
+ * @property {string} [partyId] Id of the party represented in activity
  * @property {number} [type] Type of activity sent
  */
 
@@ -31,33 +32,29 @@ const Util = require('../util/Util');
 
 /**
  * Represents a user's presence.
+ * @extends {Base}
  */
-class Presence {
+class Presence extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {APIPresence} [data={}] The data for the presence
    */
   constructor(client, data = {}) {
+    super(client);
+
     /**
-     * The client that instantiated this
-     * @name Presence#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-    /**
-     * The user ID of this presence
+     * The presence's user id
      * @type {Snowflake}
      */
-    this.userID = data.user.id;
+    this.userId = data.user.id;
 
     /**
-     * The guild of this presence
+     * The guild this presence is in
      * @type {?Guild}
      */
-    this.guild = data.guild || null;
+    this.guild = data.guild ?? null;
 
-    this.patch(data);
+    this._patch(data);
   }
 
   /**
@@ -66,7 +63,7 @@ class Presence {
    * @readonly
    */
   get user() {
-    return this.client.users.cache.get(this.userID) || null;
+    return this.client.users.resolve(this.userId);
   }
 
   /**
@@ -75,27 +72,21 @@ class Presence {
    * @readonly
    */
   get member() {
-    return this.guild.members.cache.get(this.userID) || null;
+    return this.guild.members.resolve(this.userId);
   }
 
-  patch(data) {
+  _patch(data) {
     /**
      * The status of this presence
      * @type {PresenceStatus}
      */
-    this.status = data.status || this.status || 'offline';
+    this.status = data.status ?? this.status ?? 'offline';
 
-    if (data.activities) {
-      /**
-       * The activities of this presence
-       * @type {Activity[]}
-       */
-      this.activities = data.activities.map(activity => new Activity(this, activity));
-    } else if (data.activity || data.game) {
-      this.activities = [new Activity(this, data.game || data.activity)];
-    } else {
-      this.activities = [];
-    }
+    /**
+     * The activities of this presence
+     * @type {Activity[]}
+     */
+    this.activities = data.activities?.map(activity => new Activity(this, activity)) ?? [];
 
     /**
      * The devices this presence is on
@@ -104,14 +95,14 @@ class Presence {
      * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
      * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
      */
-    this.clientStatus = data.client_status || null;
+    this.clientStatus = data.client_status ?? null;
 
     return this;
   }
 
   _clone() {
     const clone = Object.assign(Object.create(this), this);
-    if (this.activities) clone.activities = this.activities.map(activity => activity._clone());
+    clone.activities = this.activities.map(activity => activity._clone());
     return clone;
   }
 
@@ -127,9 +118,9 @@ class Presence {
         this.status === presence.status &&
         this.activities.length === presence.activities.length &&
         this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
-        this.clientStatus.web === presence.clientStatus.web &&
-        this.clientStatus.mobile === presence.clientStatus.mobile &&
-        this.clientStatus.desktop === presence.clientStatus.desktop)
+        this.clientStatus?.web === presence.clientStatus?.web &&
+        this.clientStatus?.mobile === presence.clientStatus?.mobile &&
+        this.clientStatus?.desktop === presence.clientStatus?.desktop)
     );
   }
 
@@ -154,19 +145,19 @@ class Activity {
     Object.defineProperty(this, 'presence', { value: presence });
 
     /**
-     * The ID of the activity
+     * The activity's id
      * @type {string}
      */
     this.id = data.id;
 
     /**
-     * The name of the activity
+     * The activity's name
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The type of the activity status
+     * The activity status's type
      * @type {ActivityType}
      */
     this.type = typeof data.type === 'number' ? ActivityTypes[data.type] : data.type;
@@ -175,25 +166,25 @@ class Activity {
      * If the activity is being streamed, a link to the stream
      * @type {?string}
      */
-    this.url = data.url || null;
+    this.url = data.url ?? null;
 
     /**
      * Details about the activity
      * @type {?string}
      */
-    this.details = data.details || null;
+    this.details = data.details ?? null;
 
     /**
      * State of the activity
      * @type {?string}
      */
-    this.state = data.state || null;
+    this.state = data.state ?? null;
 
     /**
-     * Application ID associated with this activity
+     * The id of the application associated with this activity
      * @type {?Snowflake}
      */
-    this.applicationID = data.application_id || null;
+    this.applicationId = data.application_id ?? null;
 
     /**
      * Timestamps for the activity
@@ -209,10 +200,10 @@ class Activity {
       : null;
 
     /**
-     * The ID of the song on Spotify
+     * The Spotify song's id
      * @type {?string}
      */
-    this.syncID = data.sync_id ?? null;
+    this.syncId = data.sync_id ?? null;
 
     /**
      * The platform the game is being played on
@@ -223,18 +214,16 @@ class Activity {
     /**
      * Party of the activity
      * @type {?Object}
-     * @property {?string} id ID of the party
+     * @property {?string} id The party's id
      * @property {number[]} size Size of the party as `[current, max]`
      */
-    this.party = data.party || null;
+    this.party = data.party ?? null;
 
     /**
      * Assets for rich presence
      * @type {?RichPresenceAssets}
      */
     this.assets = data.assets ? new RichPresenceAssets(this, data.assets) : null;
-
-    this.syncID = data.sync_id;
 
     /**
      * Flags that describe the activity
@@ -249,10 +238,10 @@ class Activity {
     this.emoji = data.emoji ? new Emoji(presence.client, data.emoji) : null;
 
     /**
-     * The ID of the game or Spotify session
+     * The game's or Spotify session's id
      * @type {?string}
      */
-    this.sessionID = data.session_id ?? null;
+    this.sessionId = data.session_id ?? null;
 
     /**
      * The labels of the buttons of this rich presence
@@ -317,25 +306,25 @@ class RichPresenceAssets {
      * Hover text for the large image
      * @type {?string}
      */
-    this.largeText = assets.large_text || null;
+    this.largeText = assets.large_text ?? null;
 
     /**
      * Hover text for the small image
      * @type {?string}
      */
-    this.smallText = assets.small_text || null;
+    this.smallText = assets.small_text ?? null;
 
     /**
-     * ID of the large image asset
+     * The large image asset's id
      * @type {?Snowflake}
      */
-    this.largeImage = assets.large_image || null;
+    this.largeImage = assets.large_image ?? null;
 
     /**
-     * ID of the small image asset
+     * The small image asset's id
      * @type {?Snowflake}
      */
-    this.smallImage = assets.small_image || null;
+    this.smallImage = assets.small_image ?? null;
   }
 
   /**
@@ -344,11 +333,13 @@ class RichPresenceAssets {
    * @returns {?string} The small image URL
    */
   smallImageURL({ format, size } = {}) {
-    if (!this.smallImage) return null;
-    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationID, this.smallImage, {
-      format,
-      size,
-    });
+    return (
+      this.smallImage &&
+      this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.smallImage, {
+        format,
+        size,
+      })
+    );
   }
 
   /**
@@ -363,7 +354,7 @@ class RichPresenceAssets {
     } else if (/^twitch:/.test(this.largeImage)) {
       return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${this.largeImage.slice(7)}.png`;
     }
-    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationID, this.largeImage, {
+    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.largeImage, {
       format,
       size,
     });

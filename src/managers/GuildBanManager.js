@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const GuildBan = require('../structures/GuildBan');
 const GuildMember = require('../structures/GuildMember');
@@ -8,11 +8,11 @@ const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for GuildBans and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class GuildBanManager extends BaseManager {
+class GuildBanManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, GuildBan);
+    super(guild.client, GuildBan, iterable);
 
     /**
      * The guild this Manager belongs to
@@ -27,8 +27,8 @@ class GuildBanManager extends BaseManager {
    * @name GuildBanManager#cache
    */
 
-  add(data, cache) {
-    return super.add(data, cache, { id: data.user.id, extras: [this.guild] });
+  _add(data, cache) {
+    return super._add(data, cache, { id: data.user.id, extras: [this.guild] });
   }
 
   /**
@@ -44,7 +44,7 @@ class GuildBanManager extends BaseManager {
    * @returns {?GuildBan}
    */
   resolve(ban) {
-    return super.resolve(ban) ?? super.resolve(this.client.users.resolveID(ban));
+    return super.resolve(ban) ?? super.resolve(this.client.users.resolveId(ban));
   }
 
   /**
@@ -91,10 +91,10 @@ class GuildBanManager extends BaseManager {
    */
   fetch(options) {
     if (!options) return this._fetchMany();
-    const user = this.client.users.resolveID(options);
+    const user = this.client.users.resolveId(options);
     if (user) return this._fetchSingle({ user, cache: true });
     if (options.user) {
-      options.user = this.client.users.resolveID(options.user);
+      options.user = this.client.users.resolveId(options.user);
     }
     if (!options.user) {
       if ('cache' in options) return this._fetchMany(options.cache);
@@ -110,12 +110,12 @@ class GuildBanManager extends BaseManager {
     }
 
     const data = await this.client.api.guilds(this.guild.id).bans(user).get();
-    return this.add(data, cache);
+    return this._add(data, cache);
   }
 
   async _fetchMany(cache) {
     const data = await this.client.api.guilds(this.guild.id).bans.get();
-    return data.reduce((col, ban) => col.set(ban.user.id, this.add(ban, cache)), new Collection());
+    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, cache)), new Collection());
   }
 
   /**
@@ -131,16 +131,16 @@ class GuildBanManager extends BaseManager {
    * @param {BanOptions} [options] Options for the ban
    * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
-   * be resolved, the user ID will be the result.
+   * be resolved, the user id will be the result.
    * @example
-   * // Ban a user by ID (or with a user/guild member object)
+   * // Ban a user by id (or with a user/guild member object)
    * guild.bans.create('84484653687267328')
    *   .then(user => console.log(`Banned ${user.username ?? user.id ?? user} from ${guild.name}`))
    *   .catch(console.error);
    */
   async create(user, options = { days: 0 }) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    const id = this.client.users.resolveID(user);
+    const id = this.client.users.resolveId(user);
     if (!id) throw new Error('BAN_RESOLVE_ID', true);
     await this.client.api
       .guilds(this.guild.id)
@@ -165,13 +165,13 @@ class GuildBanManager extends BaseManager {
    * @param {string} [reason] Reason for unbanning user
    * @returns {Promise<User>}
    * @example
-   * // Unban a user by ID (or with a user/guild member object)
+   * // Unban a user by id (or with a user/guild member object)
    * guild.bans.remove('84484653687267328')
    *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *   .catch(console.error);
    */
   async remove(user, reason) {
-    const id = this.client.users.resolveID(user);
+    const id = this.client.users.resolveId(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
     await this.client.api.guilds(this.guild.id).bans(id).delete({ reason });
     return this.client.users.resolve(user);

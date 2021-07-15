@@ -48,7 +48,7 @@ class GuildEmoji extends BaseGuildEmoji {
   _patch(data) {
     super._patch(data);
 
-    if (data.user) this.author = this.client.users.add(data.user);
+    if (data.user) this.author = this.client.users._add(data.user);
     if (data.roles) this._roles = data.roles;
   }
 
@@ -108,7 +108,7 @@ class GuildEmoji extends BaseGuildEmoji {
    *   .catch(console.error);
    */
   edit(data, reason) {
-    const roles = data.roles ? data.roles.map(r => r.id || r) : undefined;
+    const roles = data.roles?.map(r => r.id ?? r);
     return this.client.api
       .guilds(this.guild.id)
       .emojis(this.id)

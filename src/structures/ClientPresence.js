@@ -2,7 +2,7 @@
 
 const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
-const { ActivityTypes, OPCodes } = require('../util/Constants');
+const { ActivityTypes, Opcodes } = require('../util/Constants');
 
 class ClientPresence extends Presence {
   /**
@@ -10,20 +10,20 @@ class ClientPresence extends Presence {
    * @param {APIPresence} [data={}] The data for the client presence
    */
   constructor(client, data = {}) {
-    super(client, Object.assign(data, { status: data.status || 'online', user: { id: null } }));
+    super(client, Object.assign(data, { status: data.status ?? 'online', user: { id: null } }));
   }
 
   set(presence) {
     const packet = this._parse(presence);
-    this.patch(packet);
-    if (typeof presence.shardID === 'undefined') {
-      this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
-    } else if (Array.isArray(presence.shardID)) {
-      for (const shardID of presence.shardID) {
-        this.client.ws.shards.get(shardID).send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    this._patch(packet);
+    if (typeof presence.shardId === 'undefined') {
+      this.client.ws.broadcast({ op: Opcodes.STATUS_UPDATE, d: packet });
+    } else if (Array.isArray(presence.shardId)) {
+      for (const shardId of presence.shardId) {
+        this.client.ws.shards.get(shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
       }
     } else {
-      this.client.ws.shards.get(presence.shardID).send({ op: OPCodes.STATUS_UPDATE, d: packet });
+      this.client.ws.shards.get(presence.shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
     }
     return this;
   }
@@ -33,7 +33,7 @@ class ClientPresence extends Presence {
       activities: [],
       afk: typeof afk === 'boolean' ? afk : false,
       since: typeof since === 'number' && !Number.isNaN(since) ? since : null,
-      status: status || this.status,
+      status: status ?? this.status,
     };
     if (activities?.length) {
       for (const [i, activity] of activities.entries()) {

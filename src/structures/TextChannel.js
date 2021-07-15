@@ -17,9 +17,10 @@ class TextChannel extends GuildChannel {
   /**
    * @param {Guild} guild The guild the text channel is part of
    * @param {APIChannel} data The data for the text channel
+   * @param {Client} [client] A safety parameter for the client that instantiated this
    */
-  constructor(guild, data) {
-    super(guild, data);
+  constructor(guild, data, client) {
+    super(guild, data, client);
     /**
      * A manager of the messages sent to this channel
      * @type {MessageManager}
@@ -57,10 +58,10 @@ class TextChannel extends GuildChannel {
 
     if ('last_message_id' in data) {
       /**
-       * The ID of the last message sent in this channel, if one was sent
+       * The last message id sent in the channel, if one was sent
        * @type {?Snowflake}
        */
-      this.lastMessageID = data.last_message_id;
+      this.lastMessageId = data.last_message_id;
     }
 
     if ('rate_limit_per_user' in data) {
@@ -89,7 +90,7 @@ class TextChannel extends GuildChannel {
     }
 
     if ('messages' in data) {
-      for (const message of data.messages) this.messages.add(message);
+      for (const message of data.messages) this.messages._add(message);
     }
   }
 
@@ -198,8 +199,8 @@ class TextChannel extends GuildChannel {
   get typingCount() {}
   createMessageCollector() {}
   awaitMessages() {}
-  createMessageComponentInteractionCollector() {}
-  awaitMessageComponentInteraction() {}
+  createMessageComponentCollector() {}
+  awaitMessageComponent() {}
   bulkDelete() {}
 }
 

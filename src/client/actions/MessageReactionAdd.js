@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const { Events, VoiceBasedChannelTypes } = require('../../util/Constants');
 const { PartialTypes } = require('../../util/Constants');
 
 /*
@@ -23,7 +23,7 @@ class MessageReactionAdd extends Action {
 
     // Verify channel
     const channel = this.getChannel(data);
-    if (!channel || channel.type === 'voice') return false;
+    if (!channel || VoiceBasedChannelTypes.includes(channel.type)) return false;
 
     // Verify message
     const message = this.getMessage(data, channel);
@@ -31,9 +31,9 @@ class MessageReactionAdd extends Action {
 
     // Verify reaction
     if (message.partial && !this.client.options.partials.includes(PartialTypes.REACTION)) return false;
-    const existing = message.reactions.cache.get(data.emoji.id || data.emoji.name);
-    if (existing && existing.users.cache.has(user.id)) return { message, reaction: existing, user };
-    const reaction = message.reactions.add({
+    const existing = message.reactions.cache.get(data.emoji.id ?? data.emoji.name);
+    if (existing?.users.cache.has(user.id)) return { message, reaction: existing, user };
+    const reaction = message.reactions._add({
       emoji: data.emoji,
       count: message.partial ? null : 0,
       me: user.id === this.client.user.id,

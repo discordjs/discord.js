@@ -1,15 +1,15 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { Presence } = require('../structures/Presence');
 
 /**
  * Manages API methods for Presences and holds their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class PresenceManager extends BaseManager {
+class PresenceManager extends CachedManager {
   constructor(client, iterable) {
-    super(client, iterable, Presence);
+    super(client, Presence, iterable);
   }
 
   /**
@@ -18,9 +18,8 @@ class PresenceManager extends BaseManager {
    * @name PresenceManager#cache
    */
 
-  add(data, cache) {
-    const existing = this.cache.get(data.user.id);
-    return existing ? existing.patch(data) : super.add(data, cache, { id: data.user.id });
+  _add(data, cache) {
+    return super._add(data, cache, { id: data.user.id });
   }
 
   /**
@@ -32,26 +31,26 @@ class PresenceManager extends BaseManager {
    */
 
   /**
-   * Resolves a PresenceResolvable to a Presence object.
+   * Resolves a {@link PresenceResolvable} to a {@link Presence} object.
    * @param {PresenceResolvable} presence The presence resolvable to resolve
    * @returns {?Presence}
    */
   resolve(presence) {
     const presenceResolvable = super.resolve(presence);
     if (presenceResolvable) return presenceResolvable;
-    const UserResolvable = this.client.users.resolveID(presence);
-    return super.resolve(UserResolvable) || null;
+    const UserResolvable = this.client.users.resolveId(presence);
+    return super.resolve(UserResolvable);
   }
 
   /**
-   * Resolves a PresenceResolvable to a Presence ID string.
+   * Resolves a {@link PresenceResolvable} to a {@link Presence} id.
    * @param {PresenceResolvable} presence The presence resolvable to resolve
    * @returns {?Snowflake}
    */
-  resolveID(presence) {
-    const presenceResolvable = super.resolveID(presence);
+  resolveId(presence) {
+    const presenceResolvable = super.resolveId(presence);
     if (presenceResolvable) return presenceResolvable;
-    const userResolvable = this.client.users.resolveID(presence);
+    const userResolvable = this.client.users.resolveId(presence);
     return this.cache.has(userResolvable) ? userResolvable : null;
   }
 }

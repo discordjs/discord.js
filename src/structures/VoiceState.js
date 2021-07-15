@@ -19,7 +19,7 @@ class VoiceState extends Base {
      */
     this.guild = guild;
     /**
-     * The ID of the member of this voice state
+     * The id of the member of this voice state
      * @type {Snowflake}
      */
     this.id = data.user_id;
@@ -31,42 +31,42 @@ class VoiceState extends Base {
      * Whether this member is deafened server-wide
      * @type {?boolean}
      */
-    this.serverDeaf = 'deaf' in data ? data.deaf : null;
+    this.serverDeaf = data.deaf ?? null;
     /**
      * Whether this member is muted server-wide
      * @type {?boolean}
      */
-    this.serverMute = 'mute' in data ? data.mute : null;
+    this.serverMute = data.mute ?? null;
     /**
      * Whether this member is self-deafened
      * @type {?boolean}
      */
-    this.selfDeaf = 'self_deaf' in data ? data.self_deaf : null;
+    this.selfDeaf = data.self_deaf ?? null;
     /**
      * Whether this member is self-muted
      * @type {?boolean}
      */
-    this.selfMute = 'self_mute' in data ? data.self_mute : null;
+    this.selfMute = data.self_mute ?? null;
     /**
      * Whether this member's camera is enabled
      * @type {?boolean}
      */
-    this.selfVideo = 'self_video' in data ? data.self_video : null;
+    this.selfVideo = data.self_video ?? null;
     /**
-     * The session ID of this member's connection
+     * The session id for this member's connection
      * @type {?string}
      */
-    this.sessionID = 'session_id' in data ? data.session_id : null;
+    this.sessionId = data.session_id ?? null;
     /**
      * Whether this member is streaming using "Go Live"
      * @type {boolean}
      */
-    this.streaming = data.self_stream || false;
+    this.streaming = data.self_stream ?? false;
     /**
-     * The ID of the voice or stage channel that this member is in
+     * The {@link VoiceChannel} or {@link StageChannel} id the member is in
      * @type {?Snowflake}
      */
-    this.channelID = data.channel_id || null;
+    this.channelId = data.channel_id ?? null;
     /**
      * Whether this member is suppressed from speaking. This property is specific to stage channels only.
      * @type {boolean}
@@ -88,7 +88,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get member() {
-    return this.guild.members.cache.get(this.id) || null;
+    return this.guild.members.cache.get(this.id) ?? null;
   }
 
   /**
@@ -97,7 +97,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get channel() {
-    return this.guild.channels.cache.get(this.channelID) || null;
+    return this.guild.channels.cache.get(this.channelId) ?? null;
   }
 
   /**
@@ -125,7 +125,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setMute(mute, reason) {
-    return this.member ? this.member.edit({ mute }, reason) : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.member?.edit({ mute }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
   /**
@@ -135,7 +135,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setDeaf(deaf, reason) {
-    return this.member ? this.member.edit({ deaf }, reason) : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.member?.edit({ deaf }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
   /**
@@ -149,15 +149,13 @@ class VoiceState extends Base {
 
   /**
    * Moves the member to a different channel, or disconnects them from the one they're in.
-   * @param {ChannelResolvable|null} [channel] Channel to move the member to, or `null` if you want to disconnect them
+   * @param {ChannelResolvable|null} channel Channel to move the member to, or `null` if you want to disconnect them
    * from voice.
    * @param {string} [reason] Reason for moving member to another channel or disconnecting
    * @returns {Promise<GuildMember>}
    */
   setChannel(channel, reason) {
-    return this.member
-      ? this.member.edit({ channel }, reason)
-      : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.member?.edit({ channel }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
   /**
@@ -173,14 +171,13 @@ class VoiceState extends Base {
    * @returns {Promise<void>}
    */
   async setRequestToSpeak(request) {
-    const channel = this.channel;
-    if (channel?.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
+    if (this.channel?.type !== 'GUILD_STAGE_VOICE') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
     if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
 
     await this.client.api.guilds(this.guild.id, 'voice-states', '@me').patch({
       data: {
-        channel_id: this.channelID,
+        channel_id: this.channelId,
         request_to_speak_timestamp: request ? new Date().toISOString() : null,
       },
     });
@@ -206,14 +203,13 @@ class VoiceState extends Base {
   async setSuppressed(suppressed) {
     if (typeof suppressed !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
 
-    const channel = this.channel;
-    if (channel?.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
+    if (this.channel?.type !== 'GUILD_STAGE_VOICE') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
 
     await this.client.api.guilds(this.guild.id, 'voice-states', target).patch({
       data: {
-        channel_id: this.channelID,
+        channel_id: this.channelId,
         suppress: suppressed,
       },
     });
@@ -226,8 +222,8 @@ class VoiceState extends Base {
       serverMute: true,
       selfDeaf: true,
       selfMute: true,
-      sessionID: true,
-      channelID: 'channel',
+      sessionId: true,
+      channelId: 'channel',
     });
   }
 }

@@ -1,16 +1,16 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const Channel = require('../structures/Channel');
 const { Events, ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * A manager of channels belonging to a client
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class ChannelManager extends BaseManager {
+class ChannelManager extends CachedManager {
   constructor(client, iterable) {
-    super(client, iterable, Channel);
+    super(client, Channel, iterable);
   }
 
   /**
@@ -19,30 +19,30 @@ class ChannelManager extends BaseManager {
    * @name ChannelManager#cache
    */
 
-  add(data, guild, cache = true) {
+  _add(data, guild, cache = true, allowUnknownGuild = false) {
     const existing = this.cache.get(data.id);
     if (existing) {
-      if (existing._patch && cache) existing._patch(data);
-      if (guild) guild.channels?.add(existing);
-      if (ThreadChannelTypes.includes(existing.type) && typeof existing.parent?.threads !== 'undefined') {
-        existing.parent.threads.add(existing);
+      if (cache) existing._patch(data);
+      guild?.channels?._add(existing);
+      if (ThreadChannelTypes.includes(existing.type)) {
+        existing.parent?.threads?._add(existing);
       }
       return existing;
     }
 
-    const channel = Channel.create(this.client, data, guild);
+    const channel = Channel.create(this.client, data, guild, allowUnknownGuild);
 
     if (!channel) {
       this.client.emit(Events.DEBUG, `Failed to find guild, or unknown type for channel ${data.id} ${data.type}`);
       return null;
     }
 
-    if (cache) this.cache.set(channel.id, channel);
+    if (cache && !allowUnknownGuild) this.cache.set(channel.id, channel);
 
     return channel;
   }
 
-  remove(id) {
+  _remove(id) {
     const channel = this.cache.get(id);
     channel?.guild?.channels.cache.delete(id);
     channel?.parent?.threads?.cache.delete(id);
@@ -66,8 +66,8 @@ class ChannelManager extends BaseManager {
    */
 
   /**
-   * Resolves a ChannelResolvable to a channel ID string.
-   * @method resolveID
+   * Resolves a ChannelResolvable to a channel id string.
+   * @method resolveId
    * @memberof ChannelManager
    * @instance
    * @param {ChannelResolvable} channel The channel resolvable to resolve
@@ -75,9 +75,16 @@ class ChannelManager extends BaseManager {
    */
 
   /**
+   * Options for fetching a channel from discord
+   * @typedef {BaseFetchOptions} FetchChannelOptions
+   * @property {boolean} [allowUnknownGuild=false] Allows the channel to be returned even if the guild is not in cache,
+   * it will not be cached. <warn>Many of the properties and methods on the returned channel will throw errors</warn>
+   */
+
+  /**
    * Obtains a channel from Discord, or the channel cache if it's already available.
-   * @param {Snowflake} id ID of the channel
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @param {Snowflake} id The channel's id
+   * @param {FetchChannelOptions} [options] Additional options for this fetch
    * @returns {Promise<?Channel>}
    * @example
    * // Fetch a channel by its id
@@ -85,14 +92,14 @@ class ChannelManager extends BaseManager {
    *   .then(channel => console.log(channel.name))
    *   .catch(console.error);
    */
-  async fetch(id, { cache = true, force = false } = {}) {
+  async fetch(id, { allowUnknownGuild = false, cache = true, force = false } = {}) {
     if (!force) {
       const existing = this.cache.get(id);
       if (existing && !existing.partial) return existing;
     }
 
     const data = await this.client.api.channels(id).get();
-    return this.add(data, null, cache);
+    return this._add(data, null, cache, allowUnknownGuild);
   }
 }
 

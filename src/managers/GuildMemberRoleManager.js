@@ -1,24 +1,29 @@
 'use strict';
 
+const DataManager = require('./DataManager');
 const { TypeError } = require('../errors');
+const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for roles of a GuildMember and stores their cache.
+ * @extends {DataManager}
  */
-class GuildMemberRoleManager {
+class GuildMemberRoleManager extends DataManager {
   constructor(member) {
+    super(member.client, Role);
+
     /**
      * The GuildMember this manager belongs to
      * @type {GuildMember}
      */
     this.member = member;
+
     /**
      * The Guild this manager belongs to
      * @type {Guild}
      */
     this.guild = member.guild;
-    Object.defineProperty(this, 'client', { value: member.client });
   }
 
   /**
@@ -68,7 +73,7 @@ class GuildMemberRoleManager {
    * @readonly
    */
   get premiumSubscriberRole() {
-    return this.cache.find(role => role.tags && role.tags.premiumSubscriberRole) || null;
+    return this.cache.find(role => role.tags?.premiumSubscriberRole) ?? null;
   }
 
   /**
@@ -79,7 +84,7 @@ class GuildMemberRoleManager {
    */
   get botRole() {
     if (!this.member.user.bot) return null;
-    return this.cache.find(role => role.tags && role.tags.botID === this.member.user.id) || null;
+    return this.cache.find(role => role.tags?.botId === this.member.user.id) ?? null;
   }
 
   /**
@@ -92,7 +97,7 @@ class GuildMemberRoleManager {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
-        const resolvedRole = this.guild.roles.resolveID(role);
+        const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
@@ -100,7 +105,7 @@ class GuildMemberRoleManager {
       const newRoles = [...new Set(resolvedRoles.concat(...this.cache.values()))];
       return this.set(newRoles, reason);
     } else {
-      roleOrRoles = this.guild.roles.resolveID(roleOrRoles);
+      roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
       if (roleOrRoles === null) {
         throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snowflake or Array or Collection of Roles or Snowflakes');
       }
@@ -123,7 +128,7 @@ class GuildMemberRoleManager {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
-        const resolvedRole = this.guild.roles.resolveID(role);
+        const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
@@ -131,7 +136,7 @@ class GuildMemberRoleManager {
       const newRoles = this.cache.filter(role => !resolvedRoles.includes(role.id));
       return this.set(newRoles, reason);
     } else {
-      roleOrRoles = this.guild.roles.resolveID(roleOrRoles);
+      roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
       if (roleOrRoles === null) {
         throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snwoflake or Array or Collection of Roles or Snowflakes');
       }
@@ -147,7 +152,7 @@ class GuildMemberRoleManager {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role ids to apply
    * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
    * @example
@@ -169,10 +174,6 @@ class GuildMemberRoleManager {
     const clone = new this.constructor(this.member);
     clone.member._roles = [...this.cache.keyArray()];
     return clone;
-  }
-
-  valueOf() {
-    return this.cache;
   }
 }
 

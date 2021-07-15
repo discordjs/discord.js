@@ -1,13 +1,13 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
+const InteractionCollector = require('./InteractionCollector');
 const MessageAttachment = require('./MessageAttachment');
-const MessageComponentInteractionCollector = require('./MessageComponentInteractionCollector');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
+const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
 const Sticker = require('./Sticker');
 const { Error } = require('../errors');
@@ -26,15 +26,15 @@ const Util = require('../util/Util');
 class Message extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {APIMessageRaw} data The data for the message
-   * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
+   * @param {APIMessage} data The data for the message
+   * @param {TextChannel|DMChannel|NewsChannel|ThreadChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|NewsChannel}
+     * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
      */
     this.channel = channel;
 
@@ -49,7 +49,7 @@ class Message extends Base {
 
   _patch(data) {
     /**
-     * The ID of the message
+     * The message's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -86,7 +86,7 @@ class Message extends Base {
        * The author of the message
        * @type {?User}
        */
-      this.author = this.client.users.add(data.author, !data.webhook_id);
+      this.author = this.client.users._add(data.author, !data.webhook_id);
     } else if (!this.author) {
       this.author = null;
     }
@@ -106,7 +106,7 @@ class Message extends Base {
        * The thread started by this message
        * @type {?ThreadChannel}
        */
-      this.thread = this.client.channels.add(data.thread);
+      this.thread = this.client.channels._add(data.thread);
     } else if (!this.thread) {
       this.thread = null;
     }
@@ -133,16 +133,16 @@ class Message extends Base {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = (data.embeds || []).map(e => new Embed(e, true));
+    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? [];
 
     /**
      * A list of MessageActionRows in the message
      * @type {MessageActionRow[]}
      */
-    this.components = (data.components ?? []).map(c => BaseMessageComponent.create(c, this.client));
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
 
     /**
-     * A collection of attachments in the message - e.g. Pictures - mapped by their ID
+     * A collection of attachments in the message - e.g. Pictures - mapped by their ids
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
@@ -180,9 +180,9 @@ class Message extends Base {
      * @type {ReactionManager}
      */
     this.reactions = new ReactionManager(this);
-    if (data.reactions && data.reactions.length > 0) {
+    if (data.reactions?.length > 0) {
       for (const reaction of data.reactions) {
-        this.reactions.add(reaction);
+        this.reactions._add(reaction);
       }
     }
 
@@ -200,10 +200,10 @@ class Message extends Base {
     );
 
     /**
-     * ID of the webhook that sent the message, if applicable
+     * The id of the webhook that sent the message, if applicable
      * @type {?Snowflake}
      */
-    this.webhookID = data.webhook_id || null;
+    this.webhookId = data.webhook_id ?? null;
 
     /**
      * Supplemental application information for group activities
@@ -212,10 +212,10 @@ class Message extends Base {
     this.groupActivityApplication = data.application ? new ClientApplication(this.client, data.application) : null;
 
     /**
-     * ID of the application of the interaction that sent this message, if any
+     * The id of the application of the interaction that sent this message, if any
      * @type {?Snowflake}
      */
-    this.applicationID = data.application_id ?? null;
+    this.applicationId = data.application_id ?? null;
 
     /**
      * Group activity
@@ -223,7 +223,7 @@ class Message extends Base {
      */
     this.activity = data.activity
       ? {
-          partyID: data.activity.party_id,
+          partyId: data.activity.party_id,
           type: data.activity.type,
         }
       : null;
@@ -231,7 +231,7 @@ class Message extends Base {
     if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
-      this.guild.members.add(Object.assign(data.member, { user: this.author }));
+      this.guild.members._add(Object.assign(data.member, { user: this.author }));
     }
 
     /**
@@ -241,11 +241,11 @@ class Message extends Base {
     this.flags = new MessageFlags(data.flags).freeze();
 
     /**
-     * Reference data sent in a message that contains IDs identifying the referenced message
+     * Reference data sent in a message that contains ids identifying the referenced message
      * @typedef {Object} MessageReference
-     * @property {string} channelID ID of the channel the message was referenced
-     * @property {?string} guildID ID of the guild the message was referenced
-     * @property {?string} messageID ID of the message that was referenced
+     * @property {string} channelId The channel's id the message was referenced
+     * @property {?string} guildId The guild's id the message was referenced
+     * @property {?string} messageId The message's id that was referenced
      */
 
     /**
@@ -254,20 +254,20 @@ class Message extends Base {
      */
     this.reference = data.message_reference
       ? {
-          channelID: data.message_reference.channel_id,
-          guildID: data.message_reference.guild_id,
-          messageID: data.message_reference.message_id,
+          channelId: data.message_reference.channel_id,
+          guildId: data.message_reference.guild_id,
+          messageId: data.message_reference.message_id,
         }
       : null;
 
     if (data.referenced_message) {
-      this.channel.messages.add(data.referenced_message);
+      this.channel.messages._add(data.referenced_message);
     }
 
     /**
      * Partial data of the interaction that a message is a reply to
      * @typedef {Object} MessageInteraction
-     * @property {Snowflake} id The ID of the interaction
+     * @property {Snowflake} id The interaction's id
      * @property {InteractionType} type The type of the interaction
      * @property {string} commandName The name of the interaction's application command
      * @property {User} user The user that invoked the interaction
@@ -282,7 +282,7 @@ class Message extends Base {
         id: data.interaction.id,
         type: InteractionTypes[data.interaction.type],
         commandName: data.interaction.name,
-        user: this.client.users.add(data.interaction.user),
+        user: this.client.users._add(data.interaction.user),
       };
     } else if (!this.interaction) {
       this.interaction = null;
@@ -300,7 +300,7 @@ class Message extends Base {
 
   /**
    * Updates the message and returns the old message.
-   * @param {APIMessageRaw} data Raw Discord message update data
+   * @param {APIMessage} data Raw Discord message update data
    * @returns {Message}
    * @private
    */
@@ -311,11 +311,7 @@ class Message extends Base {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
-    if ('thread' in data) this.thread = this.client.channels.add(data.thread);
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
-    else this.embeds = this.embeds.slice();
-    if ('components' in data) this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
-    else this.components = this.components.slice();
+    if ('thread' in data) this.thread = this.client.channels._add(data.thread);
 
     if ('attachments' in data) {
       this.attachments = new Collection();
@@ -326,16 +322,19 @@ class Message extends Base {
       this.attachments = new Collection(this.attachments);
     }
 
+    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? this.embeds.slice();
+    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? this.components.slice();
+
     this.mentions = new Mentions(
       this,
-      'mentions' in data ? data.mentions : this.mentions.users,
-      'mention_roles' in data ? data.mention_roles : this.mentions.roles,
-      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
-      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
-      'referenced_message' in data ? data.referenced_message.author : this.mentions.repliedUser,
+      data.mentions ?? this.mentions.users,
+      data.mention_roles ?? this.mentions.roles,
+      data.mention_everyone ?? this.mentions.everyone,
+      data.mention_channels ?? this.mentions.crosspostedChannels,
+      data.referenced_message?.author ?? this.mentions.repliedUser,
     );
 
-    this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
+    this.flags = new MessageFlags(data.flags ?? 0).freeze();
 
     return clone;
   }
@@ -347,7 +346,7 @@ class Message extends Base {
    * @readonly
    */
   get member() {
-    return this.guild ? this.guild.members.resolve(this.author) || null : null;
+    return this.guild?.members.resolve(this.author) ?? null;
   }
 
   /**
@@ -374,7 +373,7 @@ class Message extends Base {
    * @readonly
    */
   get guild() {
-    return this.channel.guild || null;
+    return this.channel.guild ?? null;
   }
 
   /**
@@ -389,7 +388,7 @@ class Message extends Base {
   /**
    * The message contents with all mentions replaced by the equivalent text.
    * If mentions cannot be resolved to a name, the relevant mention in the message content will not be converted.
-   * @type {string}
+   * @type {?string}
    * @readonly
    */
   get cleanContent() {
@@ -403,7 +402,7 @@ class Message extends Base {
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
-   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID';
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId';
    * const collector = message.createReactionCollector({ filter, time: 15000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -425,7 +424,7 @@ class Message extends Base {
    * @returns {Promise<Collection<string, MessageReaction>>}
    * @example
    * // Create a reaction collector
-   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId'
    * message.awaitReactions({ filter, time: 15000 })
    *   .then(collected => console.log(`Collected ${collected.size} reactions`))
    *   .catch(console.error);
@@ -434,49 +433,63 @@ class Message extends Base {
     return new Promise((resolve, reject) => {
       const collector = this.createReactionCollector(options);
       collector.once('end', (reactions, reason) => {
-        if (options.errors && options.errors.includes(reason)) reject(reactions);
+        if (options.errors?.includes(reason)) reject(reactions);
         else resolve(reactions);
       });
     });
   }
 
   /**
+   * @typedef {CollectorOptions} MessageComponentCollectorOptions
+   * @property {MessageComponentType} [componentType] The type of component to listen for
+   * @property {number} [max] The maximum total amount of interactions to collect
+   * @property {number} [maxComponents] The maximum number of components to collect
+   * @property {number} [maxUsers] The maximum number of users to interact
+   */
+
+  /**
    * Creates a message component interaction collector.
-   * @param {MessageComponentInteractionCollectorOptions} [options={}] Options to send to the collector
-   * @returns {MessageComponentInteractionCollector}
+   * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
+   * @returns {InteractionCollector}
    * @example
    * // Create a message component interaction collector
-   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * const collector = message.createMessageComponentInteractionCollector({ filter, time: 15000 });
-   * collector.on('collect', i => console.log(`Collected ${i.customID}`));
+   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * const collector = message.createMessageComponentCollector({ filter, time: 15000 });
+   * collector.on('collect', i => console.log(`Collected ${i.customId}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
-  createMessageComponentInteractionCollector(options = {}) {
-    return new MessageComponentInteractionCollector(this, options);
+  createMessageComponentCollector(options = {}) {
+    return new InteractionCollector(this.client, {
+      ...options,
+      interactionType: InteractionTypes.MESSAGE_COMPONENT,
+      message: this,
+    });
   }
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {Object} AwaitMessageComponentInteractionOptions
+   * @typedef {Object} AwaitMessageComponentOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
+   * @property {MessageComponentType} [componentType] The type of component interaction to collect
    */
 
   /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
-   * @param {AwaitMessageComponentInteractionOptions} [options={}] Options to pass to the internal collector
+   * @param {AwaitMessageComponentOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
-   * const filter = (interaction) => interaction.customID === 'button' && interaction.user.id === 'someID';
-   * message.awaitMessageComponentInteraction({ filter, time: 15000 })
-   *   .then(interaction => console.log(`${interaction.customID} was clicked!`))
+   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * message.awaitMessageComponent({ filter, time: 15000 })
+   *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponentInteraction(options = {}) {
+  awaitMessageComponent(options = {}) {
+    const _options = { ...options, max: 1 };
     return new Promise((resolve, reject) => {
-      const collector = this.createMessageComponentInteractionCollector({ ...options, max: 1 });
+      const collector = this.createMessageComponentCollector(_options);
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
@@ -525,10 +538,10 @@ class Message extends Base {
    */
   async fetchReference() {
     if (!this.reference) throw new Error('MESSAGE_REFERENCE_MISSING');
-    const { channelID, messageID } = this.reference;
-    const channel = this.client.channels.resolve(channelID);
+    const { channelId, messageId } = this.reference;
+    const channel = this.client.channels.resolve(channelId);
     if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
-    const message = await channel.messages.fetch(messageID);
+    const message = await channel.messages.fetch(messageId);
     return message;
   }
 
@@ -539,7 +552,7 @@ class Message extends Base {
    */
   get crosspostable() {
     return (
-      this.channel.type === 'news' &&
+      this.channel.type === 'GUILD_NEWS' &&
       !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
       this.type === 'DEFAULT' &&
       this.channel.viewable &&
@@ -554,19 +567,18 @@ class Message extends Base {
    * @typedef {Object} MessageEditOptions
    * @property {?string} [content] Content to be edited
    * @property {MessageEmbed[]|APIEmbed[]} [embeds] Embeds to be added/edited
-   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
    * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to add to the message
-   * @property {MessageActionRow[]|MessageActionRowOptions[]|MessageActionRowComponentResolvable[][]} [components]
+   * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
 
   /**
    * Edits the content of the message.
-   * @param {string|APIMessage|MessageEditOptions} options The options to provide
+   * @param {string|MessagePayload|MessageEditOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -583,7 +595,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === 'news') {
+   * if (message.channel.type === 'GUILD_NEWS') {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
@@ -668,7 +680,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
-   * @param {string|APIMessage|ReplyMessageOptions} options The options to provide
+   * @param {string|MessagePayload|ReplyMessageOptions} options The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message
@@ -679,13 +691,13 @@ class Message extends Base {
   reply(options) {
     let data;
 
-    if (options instanceof APIMessage) {
+    if (options instanceof MessagePayload) {
       data = options;
     } else {
-      data = APIMessage.create(this, options, {
+      data = MessagePayload.create(this, options, {
         reply: {
           messageReference: this,
-          failIfNotExists: options?.failIfNotExists ?? true,
+          failIfNotExists: options?.failIfNotExists ?? this.client.options.failIfNotExists,
         },
       });
     }
@@ -701,7 +713,7 @@ class Message extends Base {
    * @returns {Promise<ThreadChannel>}
    */
   startThread(name, autoArchiveDuration, reason) {
-    if (!['text', 'news'].includes(this.channel.type)) {
+    if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
     return this.channel.threads.create({ name, autoArchiveDuration, startMessage: this, reason });
@@ -721,8 +733,8 @@ class Message extends Base {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
-    return this.client.fetchWebhook(this.webhookID);
+    if (!this.webhookId) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
+    return this.client.fetchWebhook(this.webhookId);
   }
 
   /**
@@ -755,7 +767,7 @@ class Message extends Base {
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    * @param {Message} message The message to compare it to
-   * @param {APIMessageRaw} rawData Raw data passed through the WebSocket about this message
+   * @param {APIMessage} rawData Raw data passed through the WebSocket about this message
    * @returns {boolean}
    */
   equals(message, rawData) {
@@ -795,10 +807,10 @@ class Message extends Base {
 
   toJSON() {
     return super.toJSON({
-      channel: 'channelID',
-      author: 'authorID',
-      groupActivityApplication: 'groupActivityApplicationID',
-      guild: 'guildID',
+      channel: 'channelId',
+      author: 'authorId',
+      groupActivityApplication: 'groupActivityApplicationId',
+      guild: 'guildId',
       cleanContent: true,
       member: false,
       reactions: false,

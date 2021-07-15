@@ -7,7 +7,7 @@ module.exports = (client, packet, shard) => {
   /**
    * Emitted when a shard resumes successfully.
    * @event Client#shardResume
-   * @param {number} id The shard ID that resumed
+   * @param {number} id The shard id that resumed
    * @param {number} replayedEvents The amount of replayed events
    */
   client.emit(Events.SHARD_RESUME, shard.id, replayed);

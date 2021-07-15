@@ -1,14 +1,16 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
+const VoiceState = require('../structures/VoiceState');
 
 /**
  * Manages API methods for VoiceStates and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class VoiceStateManager extends BaseManager {
+class VoiceStateManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, { name: 'VoiceState' });
+    super(guild.client, VoiceState, iterable);
+
     /**
      * The guild this manager belongs to
      * @type {Guild}
@@ -22,7 +24,7 @@ class VoiceStateManager extends BaseManager {
    * @name VoiceStateManager#cache
    */
 
-  add(data, cache = true) {
+  _add(data, cache = true) {
     const existing = this.cache.get(data.user_id);
     if (existing) return existing._patch(data);
 

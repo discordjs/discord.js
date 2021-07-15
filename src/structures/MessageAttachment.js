@@ -45,7 +45,7 @@ class MessageAttachment {
 
   _patch(data) {
     /**
-     * The ID of this attachment
+     * The attachment's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -72,13 +72,13 @@ class MessageAttachment {
      * The height of this attachment (if an image or video)
      * @type {?number}
      */
-    this.height = typeof data.height !== 'undefined' ? data.height : null;
+    this.height = data.height ?? null;
 
     /**
      * The width of this attachment (if an image or video)
      * @type {?number}
      */
-    this.width = typeof data.width !== 'undefined' ? data.width : null;
+    this.width = data.width ?? null;
 
     /**
      * This media type of this attachment

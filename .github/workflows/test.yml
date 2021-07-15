@@ -14,7 +14,8 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
-        run: npm ci
+        # Remove --no-optional after Node 16 upgrade
+        run: npm ci --no-optional
 
       - name: Run ESLint
         run: npm run lint
@@ -32,7 +33,8 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
-        run: npm ci
+        # Remove --no-optional after Node 16 upgrade
+        run: npm ci --no-optional
 
       - name: Run TSLint
         run: npm run lint:typings
@@ -50,7 +52,8 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
-        run: npm ci
+        # Remove --no-optional after Node 16 upgrade
+        run: npm ci --no-optional
 
       - name: Register Problem Matcher
         run: echo "##[add-matcher].github/tsc.json"
@@ -71,7 +74,8 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
-        run: npm ci
+        # Remove --no-optional after Node 16 upgrade
+        run: npm ci --no-optional
 
       - name: Test documentation
         run: npm run docs:test

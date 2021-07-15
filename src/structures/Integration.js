@@ -64,7 +64,7 @@ class Integration extends Base {
        * The user for this integration
        * @type {?User}
        */
-      this.user = this.client.users.add(data.user);
+      this.user = this.client.users._add(data.user);
     } else {
       this.user = null;
     }
@@ -90,7 +90,7 @@ class Integration extends Base {
    */
   get roles() {
     const roles = this.guild.roles.cache;
-    return roles.filter(role => role.tags && role.tags.integrationID === this.id);
+    return roles.filter(role => role.tags?.integrationId === this.id);
   }
 
   _patch(data) {
@@ -186,9 +186,9 @@ class Integration extends Base {
 
   toJSON() {
     return super.toJSON({
-      role: 'roleID',
-      guild: 'guildID',
-      user: 'userID',
+      role: 'roleId',
+      guild: 'guildId',
+      user: 'userId',
     });
   }
 }

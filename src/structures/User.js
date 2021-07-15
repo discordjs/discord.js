@@ -6,8 +6,6 @@ const { Error } = require('../errors');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const UserFlags = require('../util/UserFlags');
 
-let Structures;
-
 /**
  * Represents a user on Discord.
  * @implements {TextBasedChannel}
@@ -22,25 +20,16 @@ class User extends Base {
     super(client);
 
     /**
-     * The ID of the user
+     * The user's id
      * @type {Snowflake}
      */
     this.id = data.id;
 
+    this.bot = null;
+
     this.system = null;
+
     this.flags = null;
-
-    /**
-     * The ID of the last message sent by the user, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageID = null;
-
-    /**
-     * The ID of the channel for the last message sent by the user, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageChannelID = null;
 
     this._patch(data);
   }
@@ -56,12 +45,14 @@ class User extends Base {
       this.username = null;
     }
 
-    if ('bot' in data || typeof this.bot !== 'boolean') {
+    if ('bot' in data) {
       /**
        * Whether or not the user is a bot
-       * @type {boolean}
+       * @type {?boolean}
        */
       this.bot = Boolean(data.bot);
+    } else if (!this.partial && typeof this.bot !== 'boolean') {
+      this.bot = false;
     }
 
     if ('discriminator' in data) {
@@ -76,7 +67,7 @@ class User extends Base {
 
     if ('avatar' in data) {
       /**
-       * The ID of the user's avatar
+       * The user avatar's hash
        * @type {?string}
        */
       this.avatar = data.avatar;
@@ -100,6 +91,8 @@ class User extends Base {
        * @type {?boolean}
        */
       this.system = Boolean(data.system);
+    } else if (!this.partial && typeof this.system !== 'boolean') {
+      this.system = false;
     }
 
     if ('public_flags' in data) {
@@ -139,30 +132,6 @@ class User extends Base {
   }
 
   /**
-   * The Message object of the last message sent by the user, if one was sent
-   * @type {?Message}
-   * @readonly
-   */
-  get lastMessage() {
-    const channel = this.client.channels.cache.get(this.lastMessageChannelID);
-    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
-  }
-
-  /**
-   * The presence of this user
-   * @type {Presence}
-   * @readonly
-   */
-  get presence() {
-    for (const guild of this.client.guilds.cache.values()) {
-      if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
-    }
-    if (!Structures) Structures = require('../util/Structures');
-    const Presence = Structures.get('Presence');
-    return new Presence(this.client, { user: { id: this.id } });
-  }
-
-  /**
    * A link to the user's avatar.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
@@ -188,7 +157,7 @@ class User extends Base {
    * @returns {string}
    */
   displayAvatarURL(options) {
-    return this.avatarURL(options) || this.defaultAvatarURL;
+    return this.avatarURL(options) ?? this.defaultAvatarURL;
   }
 
   /**
@@ -216,8 +185,7 @@ class User extends Base {
    * @returns {boolean}
    */
   typingIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    return channel._typing.has(this.id);
+    return this.client.channels.resolve(channel)._typing.has(this.id);
   }
 
   /**
@@ -236,8 +204,7 @@ class User extends Base {
    * @returns {number}
    */
   typingDurationIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
+    return this.client.channels.resolve(channel)._typing.get(this.id)?.elapsedTime ?? -1;
   }
 
   /**
@@ -246,7 +213,7 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.cache.find(c => c.type === 'dm' && c.recipient.id === this.id) || null;
+    return this.client.channels.cache.find(c => c.type === 'DM' && c.recipient.id === this.id) ?? null;
   }
 
   /**
@@ -265,7 +232,7 @@ class User extends Base {
         recipient_id: this.id,
       },
     });
-    return this.client.channels.add(data);
+    return this.client.channels._add(data);
   }
 
   /**
@@ -276,7 +243,7 @@ class User extends Base {
     const { dmChannel } = this;
     if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
     await this.client.api.channels(dmChannel.id).delete();
-    this.client.channels.remove(dmChannel.id);
+    this.client.channels._remove(dmChannel.id);
     return dmChannel;
   }
 
@@ -336,8 +303,6 @@ class User extends Base {
         createdTimestamp: true,
         defaultAvatarURL: true,
         tag: true,
-        lastMessage: false,
-        lastMessageID: false,
       },
       ...props,
     );

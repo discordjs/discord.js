@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const { Events, TextBasedChannelTypes } = require('../../util/Constants');
 
 class GuildDeleteAction extends Action {
   constructor(client) {
@@ -15,7 +15,7 @@ class GuildDeleteAction extends Action {
     let guild = client.guilds.cache.get(data.id);
     if (guild) {
       for (const channel of guild.channels.cache.values()) {
-        if (channel.type === 'text') channel.stopTyping(true);
+        if (TextBasedChannelTypes.includes(channel.type)) channel.stopTyping(true);
       }
 
       if (data.unavailable) {
@@ -36,7 +36,7 @@ class GuildDeleteAction extends Action {
         };
       }
 
-      for (const channel of guild.channels.cache.values()) this.client.channels.remove(channel.id);
+      for (const channel of guild.channels.cache.values()) this.client.channels._remove(channel.id);
       client.voice.adapters.get(data.id)?.destroy();
 
       // Delete guild
@@ -53,7 +53,7 @@ class GuildDeleteAction extends Action {
       this.deleted.set(guild.id, guild);
       this.scheduleForDeletion(guild.id);
     } else {
-      guild = this.deleted.get(data.id) || null;
+      guild = this.deleted.get(data.id) ?? null;
     }
 
     return { guild };

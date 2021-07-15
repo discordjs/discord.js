@@ -49,9 +49,9 @@ class MessageMentions {
         this.users = new Collection();
         for (const mention of users) {
           if (mention.member && message.guild) {
-            message.guild.members.add(Object.assign(mention.member, { user: mention }));
+            message.guild.members._add(Object.assign(mention.member, { user: mention }));
           }
-          const user = message.client.users.add(mention);
+          const user = message.client.users._add(mention);
           this.users.set(user.id, user);
         }
       }
@@ -95,10 +95,10 @@ class MessageMentions {
     /**
      * Crossposted channel data.
      * @typedef {Object} CrosspostedChannel
-     * @property {string} channelID ID of the mentioned channel
-     * @property {string} guildID ID of the guild that has the channel
-     * @property {string} type Type of the channel
-     * @property {string} name The name of the channel
+     * @property {string} channelId The mentioned channel's id
+     * @property {string} guildId The id of the guild that has the channel
+     * @property {string} type The channel's type
+     * @property {string} name The channel's name
      */
 
     if (crosspostedChannels) {
@@ -115,9 +115,9 @@ class MessageMentions {
         for (const d of crosspostedChannels) {
           const type = channelTypes[d.type];
           this.crosspostedChannels.set(d.id, {
-            channelID: d.id,
-            guildID: d.guild_id,
-            type: type ? type.toLowerCase() : 'unknown',
+            channelId: d.id,
+            guildId: d.guild_id,
+            type: type ?? 'UNKNOWN',
             name: d.name,
           });
         }
@@ -130,7 +130,7 @@ class MessageMentions {
      * The author of the message that this message is a reply to
      * @type {?User}
      */
-    this.repliedUser = repliedUser ? this.client.users.add(repliedUser) : null;
+    this.repliedUser = repliedUser ? this.client.users._add(repliedUser) : null;
   }
 
   /**
@@ -191,11 +191,9 @@ class MessageMentions {
 
     if (!ignoreDirect) {
       const id =
-        this.client.users.resolveID(data) ||
-        (this.guild && this.guild.roles.resolveID(data)) ||
-        this.client.channels.resolveID(data);
+        this.guild?.roles.resolveId(data) ?? this.client.channels.resolveId(data) ?? this.client.users.resolveId(data);
 
-      return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
+      return typeof id === 'string' && (this.users.has(id) || this.channels.has(id) || this.roles.has(id));
     }
 
     return false;

@@ -1,18 +1,20 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
+const { Error } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
+const ThreadChannel = require('../structures/ThreadChannel');
 const Collection = require('../util/Collection');
 const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for GuildChannels and stores their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class GuildChannelManager extends BaseManager {
+class GuildChannelManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, GuildChannel);
+    super(guild.client, GuildChannel, iterable);
 
     /**
      * The guild this Manager belongs to
@@ -36,11 +38,11 @@ class GuildChannelManager extends BaseManager {
 
   /**
    * The cache of this Manager
-   * @type {Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, GuildChannel|ThreadChannel>}
    * @name GuildChannelManager#cache
    */
 
-  add(channel) {
+  _add(channel) {
     const existing = this.cache.get(channel.id);
     if (existing) return existing;
     this.cache.set(channel.id, channel);
@@ -50,33 +52,36 @@ class GuildChannelManager extends BaseManager {
   /**
    * Data that can be resolved to give a Guild Channel object. This can be:
    * * A GuildChannel object
+   * * A ThreadChannel object
    * * A Snowflake
-   * @typedef {GuildChannel|Snowflake} GuildChannelResolvable
+   * @typedef {GuildChannel|ThreadChannel|Snowflake} GuildChannelResolvable
    */
 
   /**
    * Resolves a GuildChannelResolvable to a Channel object.
-   * @method resolve
-   * @memberof GuildChannelManager
-   * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?GuildChannel}
+   * @returns {?(GuildChannel|ThreadChannel)}
    */
+  resolve(channel) {
+    if (channel instanceof ThreadChannel) return super.resolve(channel.id);
+    return super.resolve(channel);
+  }
 
   /**
-   * Resolves a GuildChannelResolvable to a channel ID string.
-   * @method resolveID
-   * @memberof GuildChannelManager
-   * @instance
+   * Resolves a GuildChannelResolvable to a channel id.
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?Snowflake}
    */
+  resolveId(channel) {
+    if (channel instanceof ThreadChannel) return super.resolveId(channel.id);
+    return super.resolveId(channel);
+  }
 
   /**
    * Options used to create a new channel in a guild.
    * @typedef {Object} GuildChannelCreateOptions
-   * @property {string} [type='text'] The type of the new channel, either `text`, `voice`, `category`, `news`,
-   * `store`, or `stage`
+   * @property {string|number} [type='GUILD_TEXT'] The type of the new channel, either `GUILD_TEXT`, `GUILD_VOICE`,
+   * `GUILD_CATEGORY`, `GUILD_NEWS`, `GUILD_STORE`, or `GUILD_STAGE_VOICE`
    * @property {string} [topic] The topic for the new channel
    * @property {boolean} [nsfw] Whether the new channel is nsfw
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
@@ -102,7 +107,7 @@ class GuildChannelManager extends BaseManager {
    * @example
    * // Create a new channel with permission overwrites
    * guild.channels.create('new-voice', {
-   *   type: 'voice',
+   *   type: 'GUILD_VOICE',
    *   permissionOverwrites: [
    *      {
    *        id: message.author.id,
@@ -111,10 +116,11 @@ class GuildChannelManager extends BaseManager {
    *   ],
    * })
    */
-  async create(name, options = {}) {
-    let { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } =
-      options;
-    if (parent) parent = this.client.channels.resolveID(parent);
+  async create(
+    name,
+    { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
+  ) {
+    if (parent) parent = this.client.channels.resolveId(parent);
     if (permissionOverwrites) {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
     }
@@ -123,7 +129,7 @@ class GuildChannelManager extends BaseManager {
       data: {
         name,
         topic,
-        type: type ? ChannelTypes[type.toUpperCase()] : ChannelTypes.TEXT,
+        type: typeof type === 'number' ? type : ChannelTypes[type] ?? ChannelTypes.GUILD_TEXT,
         nsfw,
         bitrate,
         user_limit: userLimit,
@@ -139,7 +145,7 @@ class GuildChannelManager extends BaseManager {
 
   /**
    * Obtains one or more guild channels from Discord, or the channel cache if they're already available.
-   * @param {Snowflake} [id] ID of the channel
+   * @param {Snowflake} [id] The channel's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?GuildChannel|Collection<Snowflake, GuildChannel>>}
    * @example
@@ -159,11 +165,17 @@ class GuildChannelManager extends BaseManager {
       if (existing) return existing;
     }
 
-    // We cannot fetch a single guild channel, as of this commit's date, Discord API throws with 404
+    if (id) {
+      const data = await this.client.api.channels(id).get();
+      // Since this is the guild manager, throw if on a different guild
+      if (this.guild.id !== data.guild_id) throw new Error('GUILD_CHANNEL_UNOWNED');
+      return this.client.channels._add(data, this.guild, cache);
+    }
+
     const data = await this.client.api.guilds(this.guild.id).channels.get();
     const channels = new Collection();
-    for (const channel of data) channels.set(channel.id, this.client.channels.add(channel, this.guild, cache));
-    return id ? channels.get(id) ?? null : channels;
+    for (const channel of data) channels.set(channel.id, this.client.channels._add(channel, this.guild, cache));
+    return channels;
   }
 }
 

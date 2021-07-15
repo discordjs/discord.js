@@ -1,7 +1,7 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Channel = require('./Channel');
+const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -34,7 +34,7 @@ class Webhook {
      * @name Webhook#token
      * @type {?string}
      */
-    Object.defineProperty(this, 'token', { value: data.token || null, writable: true, configurable: true });
+    Object.defineProperty(this, 'token', { value: data.token ?? null, writable: true, configurable: true });
 
     /**
      * The avatar for the webhook
@@ -43,7 +43,7 @@ class Webhook {
     this.avatar = data.avatar;
 
     /**
-     * The ID of the webhook
+     * The webhook's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -58,31 +58,31 @@ class Webhook {
      * The guild the webhook belongs to
      * @type {Snowflake}
      */
-    this.guildID = data.guild_id;
+    this.guildId = data.guild_id;
 
     /**
      * The channel the webhook belongs to
      * @type {Snowflake}
      */
-    this.channelID = data.channel_id;
+    this.channelId = data.channel_id;
 
     /**
      * The owner of the webhook
-     * @type {?User|APIUser}
+     * @type {?(User|APIUser)}
      */
-    this.owner = data.user ? this.client.users?.add(data.user) ?? data.user : null;
+    this.owner = data.user ? this.client.users?._add(data.user) ?? data.user : null;
 
     /**
      * The source guild of the webhook
-     * @type {?Guild|APIGuild}
+     * @type {?(Guild|APIGuild)}
      */
     this.sourceGuild = data.source_guild
-      ? this.client.guilds?.add(data.source_guild, false) ?? data.source_guild
+      ? this.client.guilds?._add(data.source_guild, false) ?? data.source_guild
       : null;
 
     /**
      * The source channel of the webhook
-     * @type {?Channel|APIChannel}
+     * @type {?(Channel|APIChannel)}
      */
     this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel ?? null;
   }
@@ -92,7 +92,7 @@ class Webhook {
    * @typedef {BaseMessageOptions} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
-   * @property {Snowflake} [threadID] The id of the thread in the channel to send to.
+   * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
    * <info>For interaction webhooks, this property is ignored</info>
    */
 
@@ -103,14 +103,14 @@ class Webhook {
    * @property {string} [content] See {@link BaseMessageOptions#content}
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] See {@link BaseMessageOptions#files}
    * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
-   * @property {MessageActionRow[]|MessageActionRowOptions[]|MessageActionRowComponentResolvable[][]} [components]
+   * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
 
   /**
    * Sends a message with this webhook.
-   * @param {string|APIMessage|WebhookMessageOptions} options The options to provide
-   * @returns {Promise<Message|APIMessageRaw>}
+   * @param {string|MessagePayload|WebhookMessageOptions} options The options to provide
+   * @returns {Promise<Message|APIMessage>}
    * @example
    * // Send a basic message
    * webhook.send('hello!')
@@ -118,7 +118,7 @@ class Webhook {
    *   .catch(console.error);
    * @example
    * // Send a basic message in a thread
-   * webhook.send('hello!', { threadID: '836856309672348295' })
+   * webhook.send({ content: 'hello!', threadId: '836856309672348295' })
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
    * @example
@@ -158,32 +158,24 @@ class Webhook {
   async send(options) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
-    let apiMessage;
+    let messagePayload;
 
-    if (options instanceof APIMessage) {
-      apiMessage = options.resolveData();
+    if (options instanceof MessagePayload) {
+      messagePayload = options.resolveData();
     } else {
-      apiMessage = APIMessage.create(this, options).resolveData();
+      messagePayload = MessagePayload.create(this, options).resolveData();
     }
 
-    if (Array.isArray(apiMessage.data.content)) {
-      return Promise.all(apiMessage.split().map(this.send.bind(this)));
-    }
-
-    const { data, files } = await apiMessage.resolveFiles();
+    const { data, files } = await messagePayload.resolveFiles();
     return this.client.api
       .webhooks(this.id, this.token)
       .post({
         data,
         files,
-        query: { thread_id: apiMessage.options.threadID, wait: true },
+        query: { thread_id: messagePayload.options.threadId, wait: true },
         auth: false,
       })
-      .then(d => {
-        const channel = this.client.channels ? this.client.channels.cache.get(d.channel_id) : undefined;
-        if (!channel) return d;
-        return channel.messages.add(d, false);
-      });
+      .then(d => this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? d);
   }
 
   /**
@@ -243,40 +235,40 @@ class Webhook {
 
     this.name = data.name;
     this.avatar = data.avatar;
-    this.channelID = data.channel_id;
+    this.channelId = data.channel_id;
     return this;
   }
 
   /**
    * Gets a message that was sent by this webhook.
-   * @param {Snowflake|'@original'} message The ID of the message to fetch
+   * @param {Snowflake|'@original'} message The id of the message to fetch
    * @param {boolean} [cache=true] Whether to cache the message
-   * @returns {Promise<Message|APIMessageRaw>} Returns the raw message data if the webhook was instantiated as a
+   * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async fetchMessage(message, cache = true) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     const data = await this.client.api.webhooks(this.id, this.token).messages(message).get();
-    return this.client.channels?.cache.get(data.channel_id)?.messages.add(data, cache) ?? data;
+    return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ?? data;
   }
 
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|APIMessage|WebhookEditMessageOptions} options The options to provide
-   * @returns {Promise<Message|APIMessageRaw>} Returns the raw message data if the webhook was instantiated as a
+   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
+   * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async editMessage(message, options) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
-    let apiMessage;
+    let messagePayload;
 
-    if (options instanceof APIMessage) apiMessage = options;
-    else apiMessage = APIMessage.create(this, options);
+    if (options instanceof MessagePayload) messagePayload = options;
+    else messagePayload = MessagePayload.create(this, options);
 
-    const { data, files } = await apiMessage.resolveData().resolveFiles();
+    const { data, files } = await messagePayload.resolveData().resolveFiles();
 
     const d = await this.client.api
       .webhooks(this.id, this.token)
@@ -287,7 +279,7 @@ class Webhook {
     if (!messageManager) return d;
 
     const existing = messageManager.cache.get(d.id);
-    if (!existing) return messageManager.add(d);
+    if (!existing) return messageManager._add(d);
 
     const clone = existing._clone();
     clone._patch(d);
@@ -297,10 +289,10 @@ class Webhook {
   /**
    * Deletes the webhook.
    * @param {string} [reason] Reason for deleting this webhook
-   * @returns {Promise}
+   * @returns {Promise<void>}
    */
-  delete(reason) {
-    return this.client.api.webhooks(this.id, this.token).delete({ reason });
+  async delete(reason) {
+    await this.client.api.webhooks(this.id, this.token).delete({ reason });
   }
 
   /**

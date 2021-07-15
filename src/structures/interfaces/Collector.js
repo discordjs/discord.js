@@ -95,7 +95,7 @@ class Collector extends EventEmitter {
    * @emits Collector#collect
    */
   async handleCollect(...args) {
-    const collect = this.collect(...args);
+    const collect = await this.collect(...args);
 
     if (collect && (await this.filter(...args, this.collected))) {
       this.collected.set(collect, args[0]);
@@ -212,11 +212,11 @@ class Collector extends EventEmitter {
   resetTimer({ time, idle } = {}) {
     if (this._timeout) {
       this.client.clearTimeout(this._timeout);
-      this._timeout = this.client.setTimeout(() => this.stop('time'), time || this.options.time);
+      this._timeout = this.client.setTimeout(() => this.stop('time'), time ?? this.options.time);
     }
     if (this._idletimeout) {
       this.client.clearTimeout(this._idletimeout);
-      this._idletimeout = this.client.setTimeout(() => this.stop('idle'), idle || this.options.idle);
+      this._idletimeout = this.client.setTimeout(() => this.stop('idle'), idle ?? this.options.idle);
     }
   }
 
@@ -265,11 +265,19 @@ class Collector extends EventEmitter {
 
   /* eslint-disable no-empty-function */
   /**
+   * The reason this collector has ended with, or null if it hasn't ended yet
+   * @type {?string}
+   * @readonly
+   * @abstract
+   */
+  get endReason() {}
+
+  /**
    * Handles incoming events from the `handleCollect` function. Returns null if the event should not
    * be collected, or returns an object describing the data that should be stored.
    * @see Collector#handleCollect
    * @param {...*} args Any args the event listener emits
-   * @returns {?{key, value}} Data to insert into collection, if any
+   * @returns {?(*|Promise<?*>)} Data to insert into collection, if any
    * @abstract
    */
   collect() {}
@@ -284,13 +292,6 @@ class Collector extends EventEmitter {
    */
   dispose() {}
   /* eslint-enable no-empty-function */
-
-  /**
-   * The reason this collector has ended with, or null if it hasn't ended yet
-   * @name Collector#endReason
-   * @type {?string}
-   * @abstract
-   */
 }
 
 module.exports = Collector;
