@@ -78,11 +78,23 @@ class User extends Base {
     if ('banner' in data) {
       /**
        * The user banner's hash
+       * <info>The user must be force fetched</info>
        * @type {?string}
        */
       this.banner = data.banner;
     } else if (typeof this.banner !== 'string') {
       this.banner = null;
+    }
+
+    if ('banner_color' in data) {
+      /**
+       * The hexadecimal version of the user banner color, with a leading hash
+       * <info>The user must be force fetched</info>
+       * @type {?string}
+       */
+      this.hexBannerColor = data.banner_color;
+    } else if (typeof this.hexBannerColor !== 'string') {
+      this.hexBannerColor = null;
     }
 
     if ('system' in data) {
@@ -161,7 +173,19 @@ class User extends Base {
   }
 
   /**
+   * The base 10 banner color of the user
+   * <info>The user must be force fetched</info>
+   * @type {?number}
+   * @readonly
+   */
+  get bannerColor() {
+    if (!this.hexBannerColor) return null;
+    return parseInt(this.hexBannerColor.substring(1), 16);
+  }
+
+  /**
    * A link to the user's banner.
+   * <info>The user must be force fetched</info>
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
@@ -248,7 +272,8 @@ class User extends Base {
   }
 
   /**
-   * Checks if the user is equal to another. It compares id, username, discriminator, avatar, banner, and bot flags.
+   * Checks if the user is equal to another.
+   * It compares id, username, discriminator, avatar, banner, banner color, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
    * @param {User} user User to compare with
    * @returns {boolean}
@@ -260,7 +285,8 @@ class User extends Base {
       this.username === user.username &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
-      this.banner === user.banner;
+      this.banner === user.banner &&
+      this.hexBannerColor === user.hexBannerColor;
 
     return equal;
   }
