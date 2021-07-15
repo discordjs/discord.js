@@ -724,7 +724,7 @@ class Message extends Base {
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<Message>}
    */
-  fetch(force = false) {
+  fetch(force = true) {
     return this.channel.messages.fetch(this.id, { force });
   }
 

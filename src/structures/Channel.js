@@ -105,7 +105,7 @@ class Channel extends Base {
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<Channel>}
    */
-  fetch(force = false) {
+  fetch(force = true) {
     return this.client.channels.fetch(this.id, { force });
   }
 

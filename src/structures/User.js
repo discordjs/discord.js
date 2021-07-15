@@ -261,7 +261,7 @@ class User extends Base {
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<User>}
    */
-  fetch(force = false) {
+  fetch(force = true) {
     return this.client.users.fetch(this.id, { force });
   }
 
