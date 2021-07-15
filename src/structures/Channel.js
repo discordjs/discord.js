@@ -106,7 +106,7 @@ class Channel extends Base {
    * @returns {Promise<Channel>}
    */
   fetch(force = false) {
-    return this.client.channels.fetch(this.id, true, force);
+    return this.client.channels.fetch(this.id, { force });
   }
 
   /**

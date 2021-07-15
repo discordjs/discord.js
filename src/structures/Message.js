@@ -725,7 +725,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   fetch(force = false) {
-    return this.channel.messages.fetch(this.id, true, force);
+    return this.channel.messages.fetch(this.id, { force });
   }
 
   /**
