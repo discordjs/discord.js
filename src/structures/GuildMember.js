@@ -301,7 +301,7 @@ class GuildMember extends Base {
 
   /**
    * Fetches this GuildMember.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<GuildMember>}
    */
   fetch(force = true) {

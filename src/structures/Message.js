@@ -721,7 +721,7 @@ class Message extends Base {
 
   /**
    * Fetch this message.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<Message>}
    */
   fetch(force = true) {
