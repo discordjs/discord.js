@@ -1652,6 +1652,7 @@ export class ThreadMemberFlags extends BitField<ThreadMemberFlagsString> {
 export class User extends PartialTextBasedChannel(Base) {
   public constructor(client: Client, data: unknown);
   public avatar: string | null;
+  public banner: string | null;
   public bot: boolean;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -1665,6 +1666,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly tag: string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
+  public bannerURL(options?: ImageURLOptions): string | null;
   public createDM(): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
@@ -1977,8 +1979,20 @@ export const Constants: {
         format: 'default' | AllowedImageFormat,
         size: number,
       ) => string;
-      Banner: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      Icon: (userId: Snowflake | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
+      Banner: (
+        id: Snowflake | number,
+        hash: string,
+        format: AllowedImageFormat,
+        size: number,
+        dynamic: boolean,
+      ) => string;
+      Icon: (
+        userId: Snowflake | number,
+        hash: string,
+        format: 'default' | AllowedImageFormat,
+        size: number,
+        dynamic: boolean,
+      ) => string;
       AppIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       AppAsset: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       GDMIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
