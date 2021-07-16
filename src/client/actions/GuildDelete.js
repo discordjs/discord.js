@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events, TextBasedChannelTypes } = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class GuildDeleteAction extends Action {
   constructor(client) {
@@ -14,10 +14,6 @@ class GuildDeleteAction extends Action {
 
     let guild = client.guilds.cache.get(data.id);
     if (guild) {
-      for (const channel of guild.channels.cache.values()) {
-        if (channel.type in TextBasedChannelTypes) channel.stopTyping(true);
-      }
-
       if (data.unavailable) {
         // Guild is unavailable
         guild.available = false;
@@ -60,7 +56,7 @@ class GuildDeleteAction extends Action {
   }
 
   scheduleForDeletion(id) {
-    this.client.setTimeout(() => this.deleted.delete(id), this.client.options.restWsBridgeTimeout);
+    setTimeout(() => this.deleted.delete(id), this.client.options.restWsBridgeTimeout).unref();
   }
 }
 

@@ -5,9 +5,12 @@ import {
   ApplicationCommandResolvable,
   CategoryChannel,
   Client,
+  ClientApplication,
+  ClientUser,
   Collection,
   Constants,
   DMChannel,
+  Guild,
   GuildApplicationCommandManager,
   GuildChannelManager,
   GuildEmoji,
@@ -15,6 +18,7 @@ import {
   GuildMember,
   GuildResolvable,
   Intents,
+  Interaction,
   Message,
   MessageActionRow,
   MessageAttachment,
@@ -24,7 +28,9 @@ import {
   MessageReaction,
   NewsChannel,
   Options,
+  PartialDMChannel,
   PartialTextBasedChannelFields,
+  PartialUser,
   Permissions,
   ReactionCollector,
   Role,
@@ -38,6 +44,7 @@ import {
   TextBasedChannelFields,
   TextChannel,
   ThreadChannel,
+  Typing,
   User,
   VoiceChannel,
 } from '..';
@@ -46,6 +53,8 @@ const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
   makeCache: Options.cacheWithLimits({
     MessageManager: 200,
+    // @ts-expect-error
+    Message: 100,
   }),
 });
 
@@ -434,6 +443,7 @@ client.on('interaction', async interaction => {
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
+  // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [[button]] });
 
   // @ts-expect-error
@@ -444,6 +454,27 @@ client.on('interaction', async interaction => {
 });
 
 client.login('absolutely-valid-token');
+
+// Test client conditional types
+client.on('ready', client => {
+  assertType<Client<true>>(client);
+});
+
+declare const loggedInClient: Client<true>;
+assertType<ClientApplication>(loggedInClient.application);
+assertType<Date>(loggedInClient.readyAt);
+assertType<number>(loggedInClient.readyTimestamp);
+assertType<string>(loggedInClient.token);
+assertType<number>(loggedInClient.uptime);
+assertType<ClientUser>(loggedInClient.user);
+
+declare const loggedOutClient: Client<false>;
+assertType<null>(loggedOutClient.application);
+assertType<null>(loggedOutClient.readyAt);
+assertType<null>(loggedOutClient.readyTimestamp);
+assertType<string | null>(loggedOutClient.token);
+assertType<null>(loggedOutClient.uptime);
+assertType<null>(loggedOutClient.user);
 
 // Test type transformation:
 declare const assertType: <T>(value: T) => asserts value is T;
@@ -582,13 +613,22 @@ assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch()
 assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 assertType<Promise<GuildEmoji | null>>(guildEmojiManager.fetch('0'));
 
-// Test partials structures
-client.on('typingStart', (channel, user) => {
-  if (channel.partial) assertType<undefined>(channel.lastMessageId);
-  if (user.partial) return assertType<null>(user.username);
-  assertType<string>(user.username);
-});
+declare const typing: Typing;
+assertType<PartialUser>(typing.user);
+if (typing.user.partial) assertType<null>(typing.user.username);
 
+assertType<TextChannel | PartialDMChannel | NewsChannel | ThreadChannel>(typing.channel);
+if (typing.channel.partial) assertType<undefined>(typing.channel.lastMessageId);
+
+assertType<GuildMember | null>(typing.member);
+assertType<Guild | null>(typing.guild);
+
+if (typing.inGuild()) {
+  assertType<Guild>(typing.channel.guild);
+  assertType<Guild>(typing.guild);
+}
+
+// Test partials structures
 client.on('guildMemberRemove', member => {
   if (member.partial) return assertType<null>(member.joinedAt);
   assertType<Date | null>(member.joinedAt);
@@ -603,3 +643,7 @@ client.on('messageReactionAdd', async reaction => {
   if (reaction.message.partial) return assertType<string | null>(reaction.message.content);
   assertType<string>(reaction.message.content);
 });
+
+// Test interactions
+declare const interaction: Interaction;
+if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);

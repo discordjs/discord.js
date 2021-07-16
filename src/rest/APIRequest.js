@@ -17,6 +17,9 @@ class APIRequest {
     this.options = options;
     this.retries = 0;
 
+    const { userAgentSuffix } = this.client.options;
+    this.fullUserAgent = `${UserAgent}${userAgentSuffix.length ? `, ${userAgentSuffix.join(', ')}` : ''}`;
+
     let queryString = '';
     if (options.query) {
       const query = Object.entries(options.query)
@@ -33,11 +36,14 @@ class APIRequest {
         ? this.client.options.http.api
         : `${this.client.options.http.api}/v${this.client.options.http.version}`;
     const url = API + this.path;
-    let headers = { ...this.client.options.http.headers };
+
+    let headers = {
+      ...this.client.options.http.headers,
+      'User-Agent': this.fullUserAgent,
+    };
 
     if (this.options.auth !== false) headers.Authorization = this.rest.getAuth();
     if (this.options.reason) headers['X-Audit-Log-Reason'] = encodeURIComponent(this.options.reason);
-    headers['User-Agent'] = UserAgent;
     if (this.options.headers) headers = Object.assign(headers, this.options.headers);
 
     let body;
@@ -53,14 +59,14 @@ class APIRequest {
     }
 
     const controller = new AbortController();
-    const timeout = this.client.setTimeout(() => controller.abort(), this.client.options.restRequestTimeout);
+    const timeout = setTimeout(() => controller.abort(), this.client.options.restRequestTimeout).unref();
     return fetch(url, {
       method: this.method,
       headers,
       agent,
       body,
       signal: controller.signal,
-    }).finally(() => this.client.clearTimeout(timeout));
+    }).finally(() => clearTimeout(timeout));
   }
 }
 

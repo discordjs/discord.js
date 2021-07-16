@@ -71,10 +71,10 @@ class RequestHandler {
 
   globalDelayFor(ms) {
     return new Promise(resolve => {
-      this.manager.client.setTimeout(() => {
+      setTimeout(() => {
         this.manager.globalDelay = null;
         resolve();
-      }, ms);
+      }, ms).unref();
     });
   }
 

@@ -25,7 +25,6 @@ class DMChannel extends Channel {
      * @type {MessageManager}
      */
     this.messages = new MessageManager(this);
-    this._typing = new Map();
   }
 
   _patch(data) {
@@ -87,10 +86,7 @@ class DMChannel extends Channel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
+  sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
   createMessageComponentCollector() {}
