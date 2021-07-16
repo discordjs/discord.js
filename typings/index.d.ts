@@ -1649,6 +1649,24 @@ export class ThreadMemberFlags extends BitField<ThreadMemberFlagsString> {
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
+export class Typing extends Base {
+  public constructor(
+    channel: TextChannel | PartialDMChannel | NewsChannel | ThreadChannel,
+    user: PartialUser,
+    data?: object,
+  );
+  public channel: TextChannel | PartialDMChannel | NewsChannel | ThreadChannel;
+  public user: PartialUser;
+  public startedTimestamp: number;
+  public readonly startedAt: Date;
+  public readonly guild: Guild | null;
+  public readonly member: GuildMember | null;
+  public inGuild(): this is this & {
+    channel: TextChannel | NewsChannel | ThreadChannel;
+    readonly guild: Guild;
+  };
+}
+
 export class User extends PartialTextBasedChannel(Base) {
   public constructor(client: Client, data: unknown);
   public avatar: string | null;
@@ -1672,9 +1690,6 @@ export class User extends PartialTextBasedChannel(Base) {
   public fetch(force?: boolean): Promise<User>;
   public fetchFlags(force?: boolean): Promise<UserFlags>;
   public toString(): UserMention;
-  public typingDurationIn(channel: ChannelResolvable): number;
-  public typingIn(channel: ChannelResolvable): boolean;
-  public typingSinceIn(channel: ChannelResolvable): Date;
 }
 
 export class UserFlags extends BitField<UserFlagsString> {
@@ -2420,13 +2435,10 @@ export interface PartialTextBasedChannelFields {
 }
 
 export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
-  _typing: Map<string, TypingData>;
   lastMessageId: Snowflake | null;
   readonly lastMessage: Message | null;
   lastPinTimestamp: number | null;
   readonly lastPinAt: Date | null;
-  typing: boolean;
-  typingCount: number;
   awaitMessageComponent<T extends MessageComponentInteraction = MessageComponentInteraction>(
     options?: AwaitMessageComponentOptions<T>,
   ): Promise<T>;
@@ -2439,8 +2451,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     options?: InteractionCollectorOptions<T>,
   ): InteractionCollector<T>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
-  startTyping(count?: number): Promise<void>;
-  stopTyping(force?: boolean): void;
+  sendTyping(): Promise<void>;
 }
 
 export function PartialWebhookMixin<T>(Base?: Constructable<T>): Constructable<T & PartialWebhookFields>;
@@ -2835,7 +2846,7 @@ export interface ClientEvents {
     mewMembers: Collection<Snowflake, ThreadMember>,
   ];
   threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
-  typingStart: [channel: Channel | PartialDMChannel, user: User | PartialUser];
+  typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhookUpdate: [channel: TextChannel];
@@ -3961,14 +3972,6 @@ export type SystemChannelFlagsString =
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
 export type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND'>;
-
-export interface TypingData {
-  user: User | PartialUser;
-  since: Date;
-  lastTimestamp: Date;
-  elapsedTime: number;
-  timeout: NodeJS.Timeout;
-}
 
 export interface StageInstanceEditOptions {
   topic?: string;

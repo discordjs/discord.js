@@ -43,8 +43,6 @@ class ThreadChannel extends Channel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-
-    this._typing = new Map();
     if (data) this._patch(data);
   }
 
@@ -413,10 +411,7 @@ class ThreadChannel extends Channel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
+  sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
   createMessageComponentCollector() {}
