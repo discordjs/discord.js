@@ -6,7 +6,8 @@ const AbortController = require('abort-controller');
 const fetch = require('node-fetch');
 const { UserAgent } = require('../util/Constants');
 
-if (https.Agent) var agent = new https.Agent({ keepAlive: true });
+let agent;
+if (https.Agent) agent = new https.Agent({ keepAlive: true });
 
 class APIRequest {
   constructor(rest, method, path, options) {
