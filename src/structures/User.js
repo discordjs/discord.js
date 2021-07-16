@@ -5,6 +5,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const UserFlags = require('../util/UserFlags');
+const Message = require('./Message');
 
 /**
  * Represents a user on Discord.
@@ -91,7 +92,12 @@ class User extends Base {
        * @type {?UserFlags}
        */
       this.flags = new UserFlags(data.public_flags);
+      
     }
+  }
+
+  get asMention(){
+    return `<@${this.id}>`;
   }
 
   /**
