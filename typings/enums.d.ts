@@ -20,6 +20,7 @@ export enum ApplicationCommandOptionTypes {
   CHANNEL = 7,
   ROLE = 8,
   MENTIONABLE = 9,
+  NUMBER = 10,
 }
 
 export enum ApplicationCommandPermissionTypes {
