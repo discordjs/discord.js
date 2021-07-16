@@ -2908,6 +2908,7 @@ export interface ClientOptions {
   restSweepInterval?: number;
   retryLimit?: number;
   failIfNotExists?: boolean;
+  userAgentSuffix?: string[];
   presence?: PresenceData;
   intents: BitFieldResolvable<IntentsString, number>;
   ws?: WebSocketOptions;

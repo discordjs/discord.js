@@ -520,6 +520,9 @@ class Client extends BaseClient {
     if (typeof options.failIfNotExists !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'failIfNotExists', 'a boolean');
     }
+    if (!Array.isArray(options.userAgentSuffix)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'userAgentSuffix', 'an array of strings');
+    }
     if (
       typeof options.rejectOnRateLimit !== 'undefined' &&
       !(typeof options.rejectOnRateLimit === 'function' || Array.isArray(options.rejectOnRateLimit))

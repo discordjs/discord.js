@@ -62,6 +62,8 @@
  * {@link RateLimitError} will be thrown. Otherwise the request will be queued for later
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
  * @property {boolean} [failIfNotExists=true] Default value for {@link ReplyMessageOptions#failIfNotExists}
+ * @property {string[]} [userAgentSuffix] An array of additional bot info to be appended to the end of the required
+ * [User Agent](https://discord.com/developers/docs/reference#user-agent) header
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
  * @property {WebsocketOptions} [ws] Options for the WebSocket
@@ -109,6 +111,7 @@ class Options extends null {
       restTimeOffset: 500,
       restSweepInterval: 60,
       failIfNotExists: true,
+      userAgentSuffix: [],
       presence: {},
       ws: {
         large_threshold: 50,
