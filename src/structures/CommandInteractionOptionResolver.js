@@ -96,7 +96,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets the selected sub-command group.
-   * @returns {string} The name of the selected sub-command group, or null if not set and not required.
+   * @returns {string} The name of the selected sub-command group.
    */
   getSubCommandGroup() {
     if (!this._group) {
