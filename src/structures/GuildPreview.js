@@ -91,7 +91,6 @@ class GuildPreview extends Base {
       this.emojis.set(emoji.id, new GuildPreviewEmoji(this.client, emoji, this));
     }
   }
-  
   /**
    * The timestamp this guild was created at
    * @type {number}
