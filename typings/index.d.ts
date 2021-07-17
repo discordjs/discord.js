@@ -711,6 +711,8 @@ export class GuildPreview extends Base {
   public constructor(client: Client, data: unknown);
   public approximateMemberCount: number;
   public approximatePresenceCount: number;
+  public readonly createdAt: Date;
+  public readonly createdTimestamp: number;
   public description: string | null;
   public discoverySplash: string | null;
   public emojis: Collection<Snowflake, GuildPreviewEmoji>;
