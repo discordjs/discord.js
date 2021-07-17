@@ -950,7 +950,7 @@ export class Message extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public system: boolean;
-  public thread: ThreadChannel;
+  public thread: ThreadChannel | null;
   public tts: boolean;
   public type: MessageType;
   public readonly url: string;
