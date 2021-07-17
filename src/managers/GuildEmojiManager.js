@@ -20,8 +20,8 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
     this.guild = guild;
   }
 
-  add(data, cache) {
-    return super.add(data, cache, { extras: [this.guild] });
+  _add(data, cache) {
+    return super._add(data, cache, { extras: [this.guild] });
   }
 
   /**
@@ -59,7 +59,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       }
       data.roles = [];
       for (const role of roles.values()) {
-        const resolvedRole = this.guild.roles.resolveID(role);
+        const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
         data.roles.push(resolvedRole);
       }
@@ -73,7 +73,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
 
   /**
    * Obtains one or more emojis from Discord, or the emoji cache if they're already available.
-   * @param {Snowflake} [id] ID of the emoji
+   * @param {Snowflake} [id] The emoji's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<GuildEmoji|Collection<Snowflake, GuildEmoji>>}
    * @example
@@ -94,12 +94,12 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
         if (existing) return existing;
       }
       const emoji = await this.client.api.guilds(this.guild.id).emojis(id).get();
-      return this.add(emoji, cache);
+      return this._add(emoji, cache);
     }
 
     const data = await this.client.api.guilds(this.guild.id).emojis.get();
     const emojis = new Collection();
-    for (const emoji of data) emojis.set(emoji.id, this.add(emoji, cache));
+    for (const emoji of data) emojis.set(emoji.id, this._add(emoji, cache));
     return emojis;
   }
 }

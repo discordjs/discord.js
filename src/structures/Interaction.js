@@ -13,19 +13,19 @@ class Interaction extends Base {
     super(client);
 
     /**
-     * The type of this interaction
+     * The interaction's type
      * @type {InteractionType}
      */
     this.type = InteractionTypes[data.type];
 
     /**
-     * The ID of this interaction
+     * The interaction's id
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The token of this interaction
+     * The interaction's token
      * @type {string}
      * @name Interaction#token
      * @readonly
@@ -33,34 +33,34 @@ class Interaction extends Base {
     Object.defineProperty(this, 'token', { value: data.token });
 
     /**
-     * The ID of the application
+     * The application's id
      * @type {Snowflake}
      */
-    this.applicationID = data.application_id;
+    this.applicationId = data.application_id;
 
     /**
-     * The ID of the channel this interaction was sent in
+     * The id of the channel this interaction was sent in
      * @type {?Snowflake}
      */
-    this.channelID = data.channel_id ?? null;
+    this.channelId = data.channel_id ?? null;
 
     /**
-     * The ID of the guild this interaction was sent in
+     * The id of the guild this interaction was sent in
      * @type {?Snowflake}
      */
-    this.guildID = data.guild_id ?? null;
+    this.guildId = data.guild_id ?? null;
 
     /**
      * The user which sent this interaction
      * @type {User}
      */
-    this.user = this.client.users.add(data.user ?? data.member.user);
+    this.user = this.client.users._add(data.user ?? data.member.user);
 
     /**
      * If this interaction was sent in a guild, the member which sent it
-     * @type {?GuildMember|APIGuildMember}
+     * @type {?(GuildMember|APIGuildMember)}
      */
-    this.member = data.member ? this.guild?.members.add(data.member) ?? data.member : null;
+    this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
 
     /**
      * The version
@@ -93,7 +93,7 @@ class Interaction extends Base {
    * @readonly
    */
   get channel() {
-    return this.client.channels.cache.get(this.channelID) ?? null;
+    return this.client.channels.cache.get(this.channelId) ?? null;
   }
 
   /**
@@ -102,7 +102,7 @@ class Interaction extends Base {
    * @readonly
    */
   get guild() {
-    return this.client.guilds.cache.get(this.guildID) ?? null;
+    return this.client.guilds.cache.get(this.guildId) ?? null;
   }
 
   /**
@@ -110,11 +110,11 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   inGuild() {
-    return Boolean(this.guildID && this.member);
+    return Boolean(this.guildId && this.member);
   }
 
   /**
-   * Indicates whether this interaction is a command interaction.
+   * Indicates whether this interaction is a {@link CommandInteraction}.
    * @returns {boolean}
    */
   isCommand() {
@@ -122,7 +122,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a message component interaction.
+   * Indicates whether this interaction is a {@link MessageComponentInteraction}.
    * @returns {boolean}
    */
   isMessageComponent() {
@@ -130,7 +130,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a button interaction.
+   * Indicates whether this interaction is a {@link ButtonInteraction}.
    * @returns {boolean}
    */
   isButton() {
@@ -141,7 +141,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a select menu interaction.
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}.
    * @returns {boolean}
    */
   isSelectMenu() {

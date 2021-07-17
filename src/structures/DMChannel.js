@@ -16,14 +16,15 @@ class DMChannel extends Channel {
    */
   constructor(client, data) {
     super(client, data);
+
     // Override the channel type so partials have a known type
-    this.type = 'dm';
+    this.type = 'DM';
+
     /**
      * A manager of the messages belonging to this channel
      * @type {MessageManager}
      */
     this.messages = new MessageManager(this);
-    this._typing = new Map();
   }
 
   _patch(data) {
@@ -34,14 +35,14 @@ class DMChannel extends Channel {
        * The recipient on the other end of the DM
        * @type {User}
        */
-      this.recipient = this.client.users.add(data.recipients[0]);
+      this.recipient = this.client.users._add(data.recipients[0]);
     }
 
     /**
-     * The ID of the last message in the channel, if one was sent
+     * The channel's last message id, if one was sent
      * @type {?Snowflake}
      */
-    this.lastMessageID = data.last_message_id;
+    this.lastMessageId = data.last_message_id;
 
     /**
      * The timestamp when the last pinned message was pinned, if there was one
@@ -56,15 +57,15 @@ class DMChannel extends Channel {
    * @readonly
    */
   get partial() {
-    return typeof this.lastMessageID === 'undefined';
+    return typeof this.lastMessageId === 'undefined';
   }
 
   /**
    * Fetch this DMChannel.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
-  fetch(force = false) {
+  fetch(force = true) {
     return this.recipient.createDM(force);
   }
 
@@ -85,14 +86,11 @@ class DMChannel extends Channel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
+  sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
-  createMessageComponentInteractionCollector() {}
-  awaitMessageComponentInteraction() {}
+  createMessageComponentCollector() {}
+  awaitMessageComponent() {}
   // Doesn't work on DM channels; bulkDelete() {}
 }
 

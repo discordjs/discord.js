@@ -49,7 +49,7 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('message', message => {
+client.on('messageCreate', message => {
   if (message.content === 'ping') {
     message.channel.send('pong');
   }

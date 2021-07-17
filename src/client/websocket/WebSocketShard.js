@@ -4,7 +4,7 @@ const EventEmitter = require('events');
 process.setMaxListeners(0);
 
 const WebSocket = require('../../WebSocket');
-const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
+const { Status, Events, ShardEvents, Opcodes, WSEvents } = require('../../util/Constants');
 const Intents = require('../../util/Intents');
 
 const STATUS_KEYS = Object.keys(Status);
@@ -29,7 +29,7 @@ class WebSocketShard extends EventEmitter {
     this.manager = manager;
 
     /**
-     * The ID of the shard
+     * The shard's id
      * @type {number}
      */
     this.id = id;
@@ -55,11 +55,11 @@ class WebSocketShard extends EventEmitter {
     this.closeSequence = 0;
 
     /**
-     * The current session ID of the shard
+     * The current session id of the shard
      * @type {?string}
      * @private
      */
-    this.sessionID = null;
+    this.sessionId = null;
 
     /**
      * The previous heartbeat ping of the shard
@@ -135,7 +135,7 @@ class WebSocketShard extends EventEmitter {
     Object.defineProperty(this, 'eventsAttached', { value: false, writable: true });
 
     /**
-     * A set of guild IDs this shard expects to receive
+     * A set of guild ids this shard expects to receive
      * @name WebSocketShard#expectedGuilds
      * @type {?Set<string>}
      * @private
@@ -297,7 +297,7 @@ class WebSocketShard extends EventEmitter {
       return;
     }
     this.manager.client.emit(Events.RAW, packet, this.id);
-    if (packet.op === OPCodes.DISPATCH) this.manager.emit(packet.t, packet.d, this.id);
+    if (packet.op === Opcodes.DISPATCH) this.manager.emit(packet.t, packet.d, this.id);
     this.onPacket(packet);
   }
 
@@ -314,7 +314,7 @@ class WebSocketShard extends EventEmitter {
      * Emitted whenever a shard's WebSocket encounters a connection error.
      * @event Client#shardError
      * @param {Error} error The encountered error
-     * @param {number} shardID The shard that encountered this error
+     * @param {number} shardId The shard that encountered this error
      */
     this.manager.client.emit(Events.SHARD_ERROR, error, this.id);
   }
@@ -383,10 +383,10 @@ class WebSocketShard extends EventEmitter {
          */
         this.emit(ShardEvents.READY);
 
-        this.sessionID = packet.d.session_id;
+        this.sessionId = packet.d.session_id;
         this.expectedGuilds = new Set(packet.d.guilds.map(d => d.id));
         this.status = Status.WAITING_FOR_GUILDS;
-        this.debug(`[READY] Session ${this.sessionID}.`);
+        this.debug(`[READY] Session ${this.sessionId}.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat('ReadyHeartbeat');
         break;
@@ -399,7 +399,7 @@ class WebSocketShard extends EventEmitter {
 
         this.status = Status.READY;
         const replayed = packet.s - this.closeSequence;
-        this.debug(`[RESUMED] Session ${this.sessionID} | Replayed ${replayed} events.`);
+        this.debug(`[RESUMED] Session ${this.sessionId} | Replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat('ResumeHeartbeat');
         break;
@@ -409,16 +409,16 @@ class WebSocketShard extends EventEmitter {
     if (packet.s > this.sequence) this.sequence = packet.s;
 
     switch (packet.op) {
-      case OPCodes.HELLO:
+      case Opcodes.HELLO:
         this.setHelloTimeout(-1);
         this.setHeartbeatTimer(packet.d.heartbeat_interval);
         this.identify();
         break;
-      case OPCodes.RECONNECT:
+      case Opcodes.RECONNECT:
         this.debug('[RECONNECT] Discord asked us to reconnect');
         this.destroy({ closeCode: 4000 });
         break;
-      case OPCodes.INVALID_SESSION:
+      case Opcodes.INVALID_SESSION:
         this.debug(`[INVALID SESSION] Resumable: ${packet.d}.`);
         // If we can resume the session, do so immediately
         if (packet.d) {
@@ -427,17 +427,17 @@ class WebSocketShard extends EventEmitter {
         }
         // Reset the sequence
         this.sequence = -1;
-        // Reset the session ID as it's invalid
-        this.sessionID = null;
+        // Reset the session id as it's invalid
+        this.sessionId = null;
         // Set the status to reconnecting
         this.status = Status.RECONNECTING;
         // Finally, emit the INVALID_SESSION event
         this.emit(ShardEvents.INVALID_SESSION);
         break;
-      case OPCodes.HEARTBEAT_ACK:
+      case Opcodes.HEARTBEAT_ACK:
         this.ackHeartbeat();
         break;
-      case OPCodes.HEARTBEAT:
+      case Opcodes.HEARTBEAT:
         this.sendHeartbeat('HeartbeatRequest', true);
         break;
       default:
@@ -456,7 +456,7 @@ class WebSocketShard extends EventEmitter {
   checkReady() {
     // Step 0. Clear the ready timeout, if it exists
     if (this.readyTimeout) {
-      this.manager.client.clearTimeout(this.readyTimeout);
+      clearTimeout(this.readyTimeout);
       this.readyTimeout = null;
     }
     // Step 1. If we don't have any other guilds pending, we are ready
@@ -476,7 +476,7 @@ class WebSocketShard extends EventEmitter {
       return;
     }
     // Step 2. Create a 15s timeout that will mark the shard as ready if there are still unavailable guilds
-    this.readyTimeout = this.manager.client.setTimeout(() => {
+    this.readyTimeout = setTimeout(() => {
       this.debug(`Shard did not receive any more guild packets in 15 seconds.
   Unavailable guild count: ${this.expectedGuilds.size}`);
 
@@ -485,7 +485,7 @@ class WebSocketShard extends EventEmitter {
       this.status = Status.READY;
 
       this.emit(ShardEvents.ALL_READY, this.expectedGuilds);
-    }, 15000);
+    }, 15000).unref();
   }
 
   /**
@@ -497,16 +497,16 @@ class WebSocketShard extends EventEmitter {
     if (time === -1) {
       if (this.helloTimeout) {
         this.debug('Clearing the HELLO timeout.');
-        this.manager.client.clearTimeout(this.helloTimeout);
+        clearTimeout(this.helloTimeout);
         this.helloTimeout = null;
       }
       return;
     }
     this.debug('Setting a HELLO timeout for 20s.');
-    this.helloTimeout = this.manager.client.setTimeout(() => {
+    this.helloTimeout = setTimeout(() => {
       this.debug('Did not receive HELLO in time. Destroying and connecting again.');
       this.destroy({ reset: true, closeCode: 4009 });
-    }, 20000);
+    }, 20000).unref();
   }
 
   /**
@@ -518,15 +518,15 @@ class WebSocketShard extends EventEmitter {
     if (time === -1) {
       if (this.heartbeatInterval) {
         this.debug('Clearing the heartbeat interval.');
-        this.manager.client.clearInterval(this.heartbeatInterval);
+        clearInterval(this.heartbeatInterval);
         this.heartbeatInterval = null;
       }
       return;
     }
     this.debug(`Setting a heartbeat interval for ${time}ms.`);
     // Sanity checks
-    if (this.heartbeatInterval) this.manager.client.clearInterval(this.heartbeatInterval);
-    this.heartbeatInterval = this.manager.client.setInterval(() => this.sendHeartbeat(), time);
+    if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
+    this.heartbeatInterval = setInterval(() => this.sendHeartbeat(), time).unref();
   }
 
   /**
@@ -557,7 +557,7 @@ class WebSocketShard extends EventEmitter {
     this.debug(`[${tag}] Sending a heartbeat.`);
     this.lastHeartbeatAcked = false;
     this.lastPingTimestamp = Date.now();
-    this.send({ op: OPCodes.HEARTBEAT, d: this.sequence }, true);
+    this.send({ op: Opcodes.HEARTBEAT, d: this.sequence }, true);
   }
 
   /**
@@ -577,7 +577,7 @@ class WebSocketShard extends EventEmitter {
    * @returns {void}
    */
   identify() {
-    return this.sessionID ? this.identifyResume() : this.identifyNew();
+    return this.sessionId ? this.identifyResume() : this.identifyNew();
   }
 
   /**
@@ -602,7 +602,7 @@ class WebSocketShard extends EventEmitter {
     };
 
     this.debug(`[IDENTIFY] Shard ${this.id}/${client.options.shardCount} with intents: ${d.intents}`);
-    this.send({ op: OPCodes.IDENTIFY, d }, true);
+    this.send({ op: Opcodes.IDENTIFY, d }, true);
   }
 
   /**
@@ -610,23 +610,23 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   identifyResume() {
-    if (!this.sessionID) {
-      this.debug('[RESUME] No session ID was present; identifying as a new session.');
+    if (!this.sessionId) {
+      this.debug('[RESUME] No session id was present; identifying as a new session.');
       this.identifyNew();
       return;
     }
 
     this.status = Status.RESUMING;
 
-    this.debug(`[RESUME] Session ${this.sessionID}, sequence ${this.closeSequence}`);
+    this.debug(`[RESUME] Session ${this.sessionId}, sequence ${this.closeSequence}`);
 
     const d = {
       token: this.manager.client.token,
-      session_id: this.sessionID,
+      session_id: this.sessionId,
       seq: this.closeSequence,
     };
 
-    this.send({ op: OPCodes.RESUME, d }, true);
+    this.send({ op: Opcodes.RESUME, d }, true);
   }
 
   /**
@@ -669,10 +669,10 @@ class WebSocketShard extends EventEmitter {
     if (this.ratelimit.remaining === 0) return;
     if (this.ratelimit.queue.length === 0) return;
     if (this.ratelimit.remaining === this.ratelimit.total) {
-      this.ratelimit.timer = this.manager.client.setTimeout(() => {
+      this.ratelimit.timer = setTimeout(() => {
         this.ratelimit.remaining = this.ratelimit.total;
         this.processQueue();
-      }, this.ratelimit.time);
+      }, this.ratelimit.time).unref();
     }
     while (this.ratelimit.remaining > 0) {
       const item = this.ratelimit.queue.shift();
@@ -732,17 +732,17 @@ class WebSocketShard extends EventEmitter {
     // Step 4: Cache the old sequence (use to attempt a resume)
     if (this.sequence !== -1) this.closeSequence = this.sequence;
 
-    // Step 5: Reset the sequence and session ID if requested
+    // Step 5: Reset the sequence and session id if requested
     if (reset) {
       this.sequence = -1;
-      this.sessionID = null;
+      this.sessionId = null;
     }
 
     // Step 6: reset the ratelimit data
     this.ratelimit.remaining = this.ratelimit.total;
     this.ratelimit.queue.length = 0;
     if (this.ratelimit.timer) {
-      this.manager.client.clearTimeout(this.ratelimit.timer);
+      clearTimeout(this.ratelimit.timer);
       this.ratelimit.timer = null;
     }
   }

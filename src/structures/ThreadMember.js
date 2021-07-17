@@ -47,7 +47,7 @@ class ThreadMember extends Base {
   }
 
   /**
-   * The guild member that this thread member instance represents
+   * The guild member associated with this thread member
    * @type {?GuildMember}
    * @readonly
    */
@@ -65,7 +65,7 @@ class ThreadMember extends Base {
   }
 
   /**
-   * The user that this thread member instance represents
+   * The user associated with this thread member
    * @type {?User}
    * @readonly
    */
@@ -83,7 +83,7 @@ class ThreadMember extends Base {
   }
 
   /**
-   * Remove this member from the thread.
+   * Removes this member from the thread.
    * @param {string} [reason] Reason for removing the member
    * @returns {ThreadMember}
    */

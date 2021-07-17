@@ -2,7 +2,7 @@
 
 const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
-const { ActivityTypes, OPCodes } = require('../util/Constants');
+const { ActivityTypes, Opcodes } = require('../util/Constants');
 
 class ClientPresence extends Presence {
   /**
@@ -15,15 +15,15 @@ class ClientPresence extends Presence {
 
   set(presence) {
     const packet = this._parse(presence);
-    this.patch(packet);
-    if (typeof presence.shardID === 'undefined') {
-      this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
-    } else if (Array.isArray(presence.shardID)) {
-      for (const shardID of presence.shardID) {
-        this.client.ws.shards.get(shardID).send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    this._patch(packet);
+    if (typeof presence.shardId === 'undefined') {
+      this.client.ws.broadcast({ op: Opcodes.STATUS_UPDATE, d: packet });
+    } else if (Array.isArray(presence.shardId)) {
+      for (const shardId of presence.shardId) {
+        this.client.ws.shards.get(shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
       }
     } else {
-      this.client.ws.shards.get(presence.shardID).send({ op: OPCodes.STATUS_UPDATE, d: packet });
+      this.client.ws.shards.get(presence.shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
     }
     return this;
   }

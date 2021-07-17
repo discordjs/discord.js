@@ -12,13 +12,13 @@ class Sticker extends Base {
   constructor(client, sticker) {
     super(client);
     /**
-     * The ID of the sticker
+     * The sticker's id
      * @type {Snowflake}
      */
     this.id = sticker.id;
 
     /**
-     * The ID of the sticker's image
+     * The sticker image's id
      * @type {string}
      */
     this.asset = sticker.asset;
@@ -42,10 +42,10 @@ class Sticker extends Base {
     this.name = sticker.name;
 
     /**
-     * The ID of the pack the sticker is from
+     * The id of the pack the sticker is from
      * @type {Snowflake}
      */
-    this.packID = sticker.pack_id;
+    this.packId = sticker.pack_id;
 
     /**
      * An array of tags for the sticker, if any

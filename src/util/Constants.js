@@ -3,117 +3,6 @@
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError } = require('../errors');
 
-/**
- * Rate limit data
- * @typedef {Object} RateLimitData
- * @property {number} timeout Time until this rate limit ends, in ms
- * @property {number} limit The maximum amount of requests of this endpoint
- * @property {string} method The http method of this request
- * @property {string} path The path of the request relative to the HTTP endpoint
- * @property {string} route The route of the request relative to the HTTP endpoint
- * @property {boolean} global Whether this is a global rate limit
- */
-
-/**
- * Whether this rate limit should throw an Error
- * @typedef {Function} RateLimitQueueFilter
- * @param {RateLimitData} rateLimitData The data of this rate limit
- * @returns {boolean|Promise<boolean>}
- */
-
-/**
- * Options for a client.
- * @typedef {Object} ClientOptions
- * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
- * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
- * recommended amount of shards from Discord and spawn that amount
- * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
- * (e.g. recommended shard count, shard count of the ShardingManager)
- * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
- * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
- * indefinitely)
- * @property {number} [messageCacheLifetime=0] How long a message should stay in the cache until it is considered
- * sweepable (in seconds, 0 for forever)
- * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
- * the message cache lifetime (in seconds, 0 for never)
- * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
- * @property {number} [invalidRequestWarningInterval=0] The number of invalid REST requests (those that return
- * 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings). That is, if set to 500,
- * warnings will be emitted at invalid request number 500, 1000, 1500, and so on.
- * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
- * they're missing all the data for a particular structure. See the "Partial Structures" topic on the
- * [guide](https://discordjs.guide/popular-topics/partials.html) for some
- * important usage information, as partials require you to put checks in place when handling data.
- * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
- * corresponding websocket events
- * @property {number} [restTimeOffset=500] Extra time in milliseconds to wait before continuing to make REST
- * requests (higher values will reduce rate-limiting errors on bad connections)
- * @property {number} [restRequestTimeout=15000] Time to wait before cancelling a REST request, in milliseconds
- * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
- * (or 0 for never)
- * @property {number} [restGlobalRateLimit=0] How many requests to allow sending per second (0 for unlimited, 50 for
- * the standard global limit used by Discord)
- * @property {string[]|RateLimitQueueFilter} [rejectOnRateLimit] Decides how rate limits and pre-emptive throttles
- * should be handled. If this option is an array containing the prefix of the request route (e.g. /channels to match any
- * route starting with /channels, such as /channels/222197033908436994/messages) or a function returning true, a
- * {@link RateLimitError} will be thrown. Otherwise the request will be queued for later
- * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
- * @property {PresenceData} [presence={}] Presence data to use upon login
- * @property {IntentsResolvable} intents Intents to enable for this connection
- * @property {WebsocketOptions} [ws] Options for the WebSocket
- * @property {HTTPOptions} [http] HTTP options
- */
-exports.DefaultOptions = {
-  shardCount: 1,
-  messageCacheMaxSize: 200,
-  messageCacheLifetime: 0,
-  messageSweepInterval: 0,
-  invalidRequestWarningInterval: 0,
-  partials: [],
-  restWsBridgeTimeout: 5000,
-  restRequestTimeout: 15000,
-  restGlobalRateLimit: 0,
-  retryLimit: 1,
-  restTimeOffset: 500,
-  restSweepInterval: 60,
-  presence: {},
-
-  /**
-   * WebSocket options (these are left as snake_case to match the API)
-   * @typedef {Object} WebsocketOptions
-   * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
-   * sent in the initial guild member list, must be between 50 and 250
-   */
-  ws: {
-    large_threshold: 50,
-    compress: false,
-    properties: {
-      $os: process.platform,
-      $browser: 'discord.js',
-      $device: 'discord.js',
-    },
-    version: 9,
-  },
-
-  /**
-   * HTTP options
-   * @typedef {Object} HTTPOptions
-   * @property {number} [version=9] API version to use
-   * @property {string} [api='https://discord.com/api'] Base url of the API
-   * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
-   * @property {string} [invite='https://discord.gg'] Base url of invites
-   * @property {string} [template='https://discord.new'] Base url of templates
-   * @property {Object} [headers] Additional headers to send for all API requests
-   */
-  http: {
-    version: 9,
-    api: 'https://discord.com/api',
-    cdn: 'https://cdn.discordapp.com',
-    invite: 'https://discord.gg',
-    template: 'https://discord.new',
-  },
-};
-
 exports.UserAgent = `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
@@ -153,31 +42,31 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
 exports.Endpoints = {
   CDN(root) {
     return {
-      Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
+      Emoji: (emojiId, format = 'png') => `${root}/emojis/${emojiId}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
-      Avatar: (userID, hash, format = 'webp', size, dynamic = false) => {
+      Avatar: (userId, hash, format = 'webp', size, dynamic = false) => {
         if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
-        return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
+        return makeImageUrl(`${root}/avatars/${userId}/${hash}`, { format, size });
       },
-      Banner: (guildID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
-      Icon: (guildID, hash, format = 'webp', size, dynamic = false) => {
+      Banner: (guildId, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/banners/${guildId}/${hash}`, { format, size }),
+      Icon: (guildId, hash, format = 'webp', size, dynamic = false) => {
         if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
-        return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
+        return makeImageUrl(`${root}/icons/${guildId}/${hash}`, { format, size });
       },
-      AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
-      AppAsset: (clientID, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-assets/${clientID}/${hash}`, { size, format }),
-      GDMIcon: (channelID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
-      Splash: (guildID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
-      DiscoverySplash: (guildID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/discovery-splashes/${guildID}/${hash}`, { size, format }),
-      TeamIcon: (teamID, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
+      AppIcon: (clientId, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/app-icons/${clientId}/${hash}`, { size, format }),
+      AppAsset: (clientId, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/app-assets/${clientId}/${hash}`, { size, format }),
+      GDMIcon: (channelId, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/channel-icons/${channelId}/${hash}`, { size, format }),
+      Splash: (guildId, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/splashes/${guildId}/${hash}`, { size, format }),
+      DiscoverySplash: (guildId, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
+      TeamIcon: (teamId, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,
@@ -209,7 +98,7 @@ exports.Status = {
   RESUMING: 8,
 };
 
-exports.OPCodes = {
+exports.Opcodes = {
   DISPATCH: 0,
   HEARTBEAT: 1,
   IDENTIFY: 2,
@@ -255,7 +144,7 @@ exports.Events = {
   CHANNEL_DELETE: 'channelDelete',
   CHANNEL_UPDATE: 'channelUpdate',
   CHANNEL_PINS_UPDATE: 'channelPinsUpdate',
-  MESSAGE_CREATE: 'message',
+  MESSAGE_CREATE: 'messageCreate',
   MESSAGE_DELETE: 'messageDelete',
   MESSAGE_UPDATE: 'messageUpdate',
   MESSAGE_BULK_DELETE: 'messageDeleteBulk',
@@ -275,7 +164,7 @@ exports.Events = {
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
   WEBHOOKS_UPDATE: 'webhookUpdate',
-  INTERACTION_CREATE: 'interaction',
+  INTERACTION_CREATE: 'interactionCreate',
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
@@ -425,6 +314,7 @@ exports.WSEvents = keyMirror([
  * * `applications.commands`: allows this bot to create commands in the server
  * * `applications.entitlements`: allows reading entitlements for a users applications
  * * `applications.store.update`: allows reading and updating of store data for a users applications
+ * * `bot`: makes the bot join the selected guild
  * * `connections`: makes the endpoint for getting a users connections available
  * * `email`: allows the `/users/@me` endpoint return with an email
  * * `identify`: allows the `/users/@me` endpoint without an email
@@ -439,6 +329,7 @@ exports.InviteScopes = [
   'applications.commands',
   'applications.entitlements',
   'applications.store.update',
+  'bot',
   'connections',
   'email',
   'identity',
@@ -524,31 +415,73 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(
  */
 exports.ActivityTypes = createEnum(['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM', 'COMPETING']);
 
+/**
+ * All available channel types:
+ * * `GUILD_TEXT` - a guild text channel
+ * * `DM` - a DM channel
+ * * `GUILD_VOICE` - a guild voice channel
+ * * `GROUP_DM` - a group DM channel
+ * * `GUILD_CATEGORY` - a guild category channel
+ * * `GUILD_NEWS` - a guild news channel
+ * * `GUILD_STORE` - a guild store channel
+ * * `GUILD_NEWS_THREAD` - a guild news channel's public thread channel
+ * * `GUILD_PUBLIC_THREAD` - a guild text channel's public thread channel
+ * * `GUILD_PRIVATE_THREAD` - a guild text channel's private thread channel
+ * * `GUILD_STAGE_VOICE` - a guild stage voice channel
+ * * `UNKNOWN` - a generic channel of unknown type, could be Channel or GuildChannel
+ * @typedef {string} ChannelType
+ */
 exports.ChannelTypes = createEnum([
-  'TEXT',
+  'GUILD_TEXT',
   'DM',
-  'VOICE',
-  'GROUP',
-  'CATEGORY',
-  'NEWS',
-  // 6
-  'STORE',
+  'GUILD_VOICE',
+  'GROUP_DM',
+  'GUILD_CATEGORY',
+  'GUILD_NEWS',
+  'GUILD_STORE',
   ...Array(3).fill(null),
   // 10
-  'NEWS_THREAD',
-  'PUBLIC_THREAD',
-  'PRIVATE_THREAD',
-  'STAGE',
+  'GUILD_NEWS_THREAD',
+  'GUILD_PUBLIC_THREAD',
+  'GUILD_PRIVATE_THREAD',
+  'GUILD_STAGE_VOICE',
 ]);
 
 /**
- * The types of channels that are threads. The available types are:
- * * news_thread
- * * public_thread
- * * private_thread
- * @typedef {string} ThreadChannelType
+ * The types of channels that are text-based. The available types are:
+ * * DM
+ * * GUILD_TEXT
+ * * GUILD_NEWS
+ * * GUILD_NEWS_THREAD
+ * * GUILD_PUBLIC_THREAD
+ * * GUILD_PRIVATE_THREAD
+ * @typedef {string} TextBasedChannelTypes
  */
-exports.ThreadChannelTypes = ['news_thread', 'public_thread', 'private_thread'];
+exports.TextBasedChannelTypes = [
+  'DM',
+  'GUILD_TEXT',
+  'GUILD_NEWS',
+  'GUILD_NEWS_THREAD',
+  'GUILD_PUBLIC_THREAD',
+  'GUILD_PRIVATE_THREAD',
+];
+
+/**
+ * The types of channels that are threads. The available types are:
+ * * GUILD_NEWS_THREAD
+ * * GUILD_PUBLIC_THREAD
+ * * GUILD_PRIVATE_THREAD
+ * @typedef {string} ThreadChannelTypes
+ */
+exports.ThreadChannelTypes = ['GUILD_NEWS_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'];
+
+/**
+ * The types of channels that are voice-based. The available types are:
+ * * GUILD_VOICE
+ * * GUILD_STAGE_VOICE
+ * @typedef {string} VoiceBasedChannelTypes
+ */
+exports.VoiceBasedChannelTypes = ['GUILD_VOICE', 'GUILD_STAGE_VOICE'];
 
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
@@ -638,10 +571,14 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * UNKNOWN_REDISTRIBUTABLE
  * * UNKNOWN_GIFT_CODE
  * * UNKNOWN_GUILD_TEMPLATE
+ * * UNKNOWN_DISCOVERABLE_SERVER_CATEGORY
+ * * UNKNOWN_STICKER
  * * UNKNOWN_INTERACTION
  * * UNKNOWN_APPLICATION_COMMAND
  * * UNKNOWN_APPLICATION_COMMAND_PERMISSIONS
  * * UNKNOWN_STAGE_INSTANCE
+ * * UNKNOWN_GUILD_MEMBER_VERIFICATION_FORM
+ * * UNKNOWN_GUILD_WELCOME_SCREEN
  * * BOT_PROHIBITED_ENDPOINT
  * * BOT_ONLY_ENDPOINT
  * * CANNOT_SEND_EXPLICIT_CONTENT
@@ -664,10 +601,12 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * MAXIMUM_INVITES
  * * MAXIMUM_ANIMATED_EMOJIS
  * * MAXIMUM_SERVER_MEMBERS
+ * * MAXIMUM_NUMBER_OF_SERVER_CATEGORIES
  * * GUILD_ALREADY_HAS_TEMPLATE
  * * MAXIMUM_THREAD_PARTICIPANTS
  * * MAXIMUM_NON_GUILD_MEMBERS_BANS
  * * MAXIMUM_BAN_FETCHES
+ * * MAXIMUM_NUMBER_OF_STICKERS_REACHED
  * * UNAUTHORIZED
  * * ACCOUNT_VERIFICATION_REQUIRED
  * * DIRECT_MESSAGES_TOO_FAST
@@ -752,10 +691,14 @@ exports.APIErrors = {
   UNKNOWN_REDISTRIBUTABLE: 10036,
   UNKNOWN_GIFT_CODE: 10038,
   UNKNOWN_GUILD_TEMPLATE: 10057,
+  UNKNOWN_DISCOVERABLE_SERVER_CATEGORY: 10059,
+  UNKNOWN_STICKER: 10060,
   UNKNOWN_INTERACTION: 10062,
   UNKNOWN_APPLICATION_COMMAND: 10063,
   UNKNOWN_APPLICATION_COMMAND_PERMISSIONS: 10066,
   UNKNOWN_STAGE_INSTANCE: 10067,
+  UNKNOWN_GUILD_MEMBER_VERIFICATION_FORM: 10068,
+  UNKNOWN_GUILD_WELCOME_SCREEN: 10069,
   BOT_PROHIBITED_ENDPOINT: 20001,
   BOT_ONLY_ENDPOINT: 20002,
   CANNOT_SEND_EXPLICIT_CONTENT: 20009,
@@ -779,10 +722,12 @@ exports.APIErrors = {
   MAXIMUM_INVITES: 30016,
   MAXIMUM_ANIMATED_EMOJIS: 30018,
   MAXIMUM_SERVER_MEMBERS: 30019,
+  MAXIMUM_NUMBER_OF_SERVER_CATEGORIES: 30030,
   GUILD_ALREADY_HAS_TEMPLATE: 30031,
   MAXIMUM_THREAD_PARTICIPANTS: 30033,
   MAXIMUM_NON_GUILD_MEMBERS_BANS: 30035,
   MAXIMUM_BAN_FETCHES: 30037,
+  MAXIMUM_NUMBER_OF_STICKERS_REACHED: 30039,
   UNAUTHORIZED: 40001,
   ACCOUNT_VERIFICATION_REQUIRED: 40002,
   DIRECT_MESSAGES_TOO_FAST: 40003,

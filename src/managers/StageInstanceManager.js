@@ -1,17 +1,17 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const StageInstance = require('../structures/StageInstance');
 const { PrivacyLevels } = require('../util/Constants');
 
 /**
  * Manages API methods for {@link StageInstance} objects and holds their cache.
- * @extends {BaseManager}
+ * @extends {CachedManager}
  */
-class StageInstanceManager extends BaseManager {
+class StageInstanceManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, StageInstance);
+    super(guild.client, StageInstance, iterable);
 
     /**
      * The guild this manager belongs to
@@ -48,8 +48,8 @@ class StageInstanceManager extends BaseManager {
    *  .catch(console.error);
    */
   async create(channel, options) {
-    const channelID = this.guild.channels.resolveID(channel);
-    if (!channelID) throw new Error('STAGE_CHANNEL_RESOLVE');
+    const channelId = this.guild.channels.resolveId(channel);
+    if (!channelId) throw new Error('STAGE_CHANNEL_RESOLVE');
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     let { topic, privacyLevel } = options;
 
@@ -57,13 +57,13 @@ class StageInstanceManager extends BaseManager {
 
     const data = await this.client.api['stage-instances'].post({
       data: {
-        channel_id: channelID,
+        channel_id: channelId,
         topic,
         privacy_level: privacyLevel,
       },
     });
 
-    return this.add(data);
+    return this._add(data);
   }
 
   /**
@@ -78,16 +78,16 @@ class StageInstanceManager extends BaseManager {
    *  .catch(console.error);
    */
   async fetch(channel, { cache = true, force = false } = {}) {
-    const channelID = this.guild.channels.resolveID(channel);
-    if (!channelID) throw new Error('STAGE_CHANNEL_RESOLVE');
+    const channelId = this.guild.channels.resolveId(channel);
+    if (!channelId) throw new Error('STAGE_CHANNEL_RESOLVE');
 
     if (!force) {
-      const existing = this.cache.find(stageInstance => stageInstance.channelID === channelID);
+      const existing = this.cache.find(stageInstance => stageInstance.channelId === channelId);
       if (existing) return existing;
     }
 
-    const data = await this.client.api('stage-instances', channelID).get();
-    return this.add(data, cache);
+    const data = await this.client.api('stage-instances', channelId).get();
+    return this._add(data, cache);
   }
 
   /**
@@ -110,14 +110,14 @@ class StageInstanceManager extends BaseManager {
    */
   async edit(channel, options) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    const channelID = this.guild.channels.resolveID(channel);
-    if (!channelID) throw new Error('STAGE_CHANNEL_RESOLVE');
+    const channelId = this.guild.channels.resolveId(channel);
+    if (!channelId) throw new Error('STAGE_CHANNEL_RESOLVE');
 
     let { topic, privacyLevel } = options;
 
     if (privacyLevel) privacyLevel = typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
 
-    const data = await this.client.api('stage-instances', channelID).patch({
+    const data = await this.client.api('stage-instances', channelId).patch({
       data: {
         topic,
         privacy_level: privacyLevel,
@@ -130,7 +130,7 @@ class StageInstanceManager extends BaseManager {
       return clone;
     }
 
-    return this.add(data);
+    return this._add(data);
   }
 
   /**
@@ -139,10 +139,10 @@ class StageInstanceManager extends BaseManager {
    * @returns {Promise<void>}
    */
   async delete(channel) {
-    const channelID = this.guild.channels.resolveID(channel);
-    if (!channelID) throw new Error('STAGE_CHANNEL_RESOLVE');
+    const channelId = this.guild.channels.resolveId(channel);
+    if (!channelId) throw new Error('STAGE_CHANNEL_RESOLVE');
 
-    await this.client.api('stage-instances', channelID).delete();
+    await this.client.api('stage-instances', channelId).delete();
   }
 }
 

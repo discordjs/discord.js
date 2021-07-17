@@ -21,7 +21,7 @@ function buildRoute(manager) {
         for (let i = 0; i < route.length; i++) {
           // Reactions routes and sub-routes all share the same bucket
           if (route[i - 1] === 'reactions') break;
-          // Literal IDs should only be taken account if they are the Major ID (the Channel/Guild ID)
+          // Literal ids should only be taken account if they are the Major id (the Channel/Guild id)
           if (/\d{16,19}/g.test(route[i]) && !/channels|guilds/.test(route[i - 1])) routeBucket.push(':id');
           // All other parts of the route should be considered as part of the bucket identifier
           else routeBucket.push(route[i]);

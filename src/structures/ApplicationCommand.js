@@ -10,11 +10,11 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
  * @extends {Base}
  */
 class ApplicationCommand extends Base {
-  constructor(client, data, guild, guildID) {
+  constructor(client, data, guild, guildId) {
     super(client);
 
     /**
-     * The ID of this command
+     * The command's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -26,14 +26,14 @@ class ApplicationCommand extends Base {
     this.guild = guild ?? null;
 
     /**
-     * The guild ID this command is part of, this may be non-null when `guild` is `null` if the command
+     * The guild's id this command is part of, this may be non-null when `guild` is `null` if the command
      * was fetched from the `ApplicationCommandManager`
      * @type {?Snowflake}
      */
-    this.guildID = guild?.id ?? guildID ?? null;
+    this.guildId = guild?.id ?? guildId ?? null;
 
     /**
-     * The manager for permissions of this command on its guild or arbitrary gulds when the command is global
+     * The manager for permissions of this command on its guild or arbitrary guilds when the command is global
      * @type {ApplicationCommandPermissionsManager}
      */
     this.permissions = new ApplicationCommandPermissionsManager(this);
@@ -127,7 +127,7 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   edit(data) {
-    return this.manager.edit(this, data, this.guildID);
+    return this.manager.edit(this, data, this.guildId);
   }
 
   /**
@@ -140,7 +140,7 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   delete() {
-    return this.manager.delete(this, this.guildID);
+    return this.manager.delete(this, this.guildId);
   }
 
   /**

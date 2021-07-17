@@ -140,7 +140,7 @@ const Actions = {
  */
 class GuildAuditLogs {
   constructor(guild, data) {
-    if (data.users) for (const user of data.users) guild.client.users.add(user);
+    if (data.users) for (const user of data.users) guild.client.users._add(user);
     /**
      * Cached webhooks
      * @type {Collection<Snowflake, Webhook>}
@@ -340,7 +340,7 @@ class GuildAuditLogsEntry {
      */
     this.executor = data.user_id
       ? guild.client.options.partials.includes(PartialTypes.USER)
-        ? guild.client.users.add({ id: data.user_id })
+        ? guild.client.users._add({ id: data.user_id })
         : guild.client.users.cache.get(data.user_id)
       : null;
 
@@ -354,12 +354,12 @@ class GuildAuditLogsEntry {
 
     /**
      * Specific property changes
-     * @type {?(AuditLogChange[])}
+     * @type {?AuditLogChange[]}
      */
     this.changes = data.changes?.map(c => ({ key: c.key, old: c.old_value, new: c.new_value })) ?? null;
 
     /**
-     * The ID of this entry
+     * The entry's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -390,7 +390,7 @@ class GuildAuditLogsEntry {
       case Actions.MESSAGE_UNPIN:
         this.extra = {
           channel: guild.client.channels.cache.get(data.options.channel_id) ?? { id: data.options.channel_id },
-          messageID: data.options.message_id,
+          messageId: data.options.message_id,
         };
         break;
 
@@ -450,7 +450,7 @@ class GuildAuditLogsEntry {
       // MEMBER_DISCONNECT and similar types do not provide a target_id.
     } else if (targetType === Targets.USER && data.target_id) {
       this.target = guild.client.options.partials.includes(PartialTypes.USER)
-        ? guild.client.users.add({ id: data.target_id })
+        ? guild.client.users._add({ id: data.target_id })
         : guild.client.users.cache.get(data.target_id);
     } else if (targetType === Targets.GUILD) {
       this.target = guild.client.guilds.cache.get(data.target_id);
@@ -475,7 +475,7 @@ class GuildAuditLogsEntry {
         if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
           let change = this.changes.find(c => c.key === 'code');
           change = change.new ?? change.old;
-          return guild.fetchInvites().then(invites => {
+          return guild.invites.fetch().then(invites => {
             this.target = invites.find(i => i.code === change);
           });
         } else {

@@ -13,7 +13,7 @@ class BaseGuild extends Base {
     super(client);
 
     /**
-     * The ID of this guild
+     * The guild's id
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -101,7 +101,7 @@ class BaseGuild extends Base {
    */
   async fetch() {
     const data = await this.client.api.guilds(this.id).get({ query: { with_counts: true } });
-    return this.client.guilds.add(data);
+    return this.client.guilds._add(data);
   }
 
   /**

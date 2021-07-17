@@ -84,8 +84,8 @@ class Collector extends EventEmitter {
     this.handleCollect = this.handleCollect.bind(this);
     this.handleDispose = this.handleDispose.bind(this);
 
-    if (options.time) this._timeout = this.client.setTimeout(() => this.stop('time'), options.time);
-    if (options.idle) this._idletimeout = this.client.setTimeout(() => this.stop('idle'), options.idle);
+    if (options.time) this._timeout = setTimeout(() => this.stop('time'), options.time).unref();
+    if (options.idle) this._idletimeout = setTimeout(() => this.stop('idle'), options.idle).unref();
   }
 
   /**
@@ -108,8 +108,8 @@ class Collector extends EventEmitter {
       this.emit('collect', ...args);
 
       if (this._idletimeout) {
-        this.client.clearTimeout(this._idletimeout);
-        this._idletimeout = this.client.setTimeout(() => this.stop('idle'), this.options.idle);
+        clearTimeout(this._idletimeout);
+        this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
       }
     }
     this.checkEnd();
@@ -179,11 +179,11 @@ class Collector extends EventEmitter {
     if (this.ended) return;
 
     if (this._timeout) {
-      this.client.clearTimeout(this._timeout);
+      clearTimeout(this._timeout);
       this._timeout = null;
     }
     if (this._idletimeout) {
-      this.client.clearTimeout(this._idletimeout);
+      clearTimeout(this._idletimeout);
       this._idletimeout = null;
     }
     this.ended = true;
@@ -211,12 +211,12 @@ class Collector extends EventEmitter {
    */
   resetTimer({ time, idle } = {}) {
     if (this._timeout) {
-      this.client.clearTimeout(this._timeout);
-      this._timeout = this.client.setTimeout(() => this.stop('time'), time ?? this.options.time);
+      clearTimeout(this._timeout);
+      this._timeout = setTimeout(() => this.stop('time'), time ?? this.options.time).unref();
     }
     if (this._idletimeout) {
-      this.client.clearTimeout(this._idletimeout);
-      this._idletimeout = this.client.setTimeout(() => this.stop('idle'), idle ?? this.options.idle);
+      clearTimeout(this._idletimeout);
+      this._idletimeout = setTimeout(() => this.stop('idle'), idle ?? this.options.idle).unref();
     }
   }
 
@@ -265,6 +265,14 @@ class Collector extends EventEmitter {
 
   /* eslint-disable no-empty-function */
   /**
+   * The reason this collector has ended with, or null if it hasn't ended yet
+   * @type {?string}
+   * @readonly
+   * @abstract
+   */
+  get endReason() {}
+
+  /**
    * Handles incoming events from the `handleCollect` function. Returns null if the event should not
    * be collected, or returns an object describing the data that should be stored.
    * @see Collector#handleCollect
@@ -284,13 +292,6 @@ class Collector extends EventEmitter {
    */
   dispose() {}
   /* eslint-enable no-empty-function */
-
-  /**
-   * The reason this collector has ended with, or null if it hasn't ended yet
-   * @name Collector#endReason
-   * @type {?string}
-   * @abstract
-   */
 }
 
 module.exports = Collector;

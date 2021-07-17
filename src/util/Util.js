@@ -2,19 +2,16 @@
 
 const { parse } = require('path');
 const fetch = require('node-fetch');
-const { Colors, DefaultOptions, Endpoints } = require('./Constants');
+const { Colors, Endpoints } = require('./Constants');
+const Options = require('./Options');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
 
 /**
- * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
+ * Contains various general-purpose utility methods.
  */
-class Util {
-  constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
-  }
-
+class Util extends null {
   /**
    * Flatten an object. Any properties that are collections will get converted to an array of keys.
    * @param {Object} obj The object to flatten.
@@ -79,9 +76,9 @@ class Util {
       while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
         const currentChar = char.shift();
         if (currentChar instanceof RegExp) {
-          splitText = splitText.map(chunk => chunk.match(currentChar));
+          splitText = splitText.flatMap(chunk => chunk.match(currentChar));
         } else {
-          splitText = splitText.map(chunk => chunk.split(currentChar));
+          splitText = splitText.flatMap(chunk => chunk.split(currentChar));
         }
       }
     } else {
@@ -265,7 +262,8 @@ class Util {
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
-    return fetch(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`, {
+    const defaults = Options.createDefault();
+    return fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
     })
@@ -279,8 +277,8 @@ class Util {
 
   /**
    * Parses emoji info out of a string. The string must be one of:
-   * * A UTF-8 emoji (no ID)
-   * * A URL-encoded UTF-8 emoji (no ID)
+   * * A UTF-8 emoji (no id)
+   * * A URL-encoded UTF-8 emoji (no id)
    * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
    * @param {string} text Emoji string to parse
    * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
@@ -472,7 +470,7 @@ class Util {
   }
 
   /**
-   * Sorts by Discord's position and ID.
+   * Sorts by Discord's position and id.
    * @param  {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
@@ -542,7 +540,7 @@ class Util {
    * @returns {Snowflake}
    * @private
    */
-  static binaryToID(num) {
+  static binaryToId(num) {
     let dec = '';
 
     while (num.length > 50) {
@@ -585,7 +583,7 @@ class Util {
     str = str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
-        if (channel.type === 'dm') {
+        if (channel.type === 'DM') {
           const user = channel.client.users.cache.get(id);
           return user ? Util.removeMentions(`@${user.username}`) : input;
         }
@@ -603,7 +601,7 @@ class Util {
         return mentionedChannel ? `#${mentionedChannel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
-        if (channel.type === 'dm') return input;
+        if (channel.type === 'DM') return input;
         const role = channel.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });

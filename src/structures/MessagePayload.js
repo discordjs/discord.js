@@ -3,7 +3,6 @@
 const BaseMessageComponent = require('./BaseMessageComponent');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
-const { MessageComponentTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
 const Util = require('../util/Util');
@@ -138,11 +137,7 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c =>
-      BaseMessageComponent.create(
-        Array.isArray(c) ? { type: MessageComponentTypes.ACTION_ROW, components: c } : c,
-      ).toJSON(),
-    );
+    const components = this.options.components?.map(c => BaseMessageComponent.create(c).toJSON());
 
     let username;
     let avatarURL;
@@ -173,12 +168,12 @@ class MessagePayload {
     let message_reference;
     if (typeof this.options.reply === 'object') {
       const message_id = this.isMessage
-        ? this.target.channel.messages.resolveID(this.options.reply.messageReference)
-        : this.target.messages.resolveID(this.options.reply.messageReference);
+        ? this.target.channel.messages.resolveId(this.options.reply.messageReference)
+        : this.target.messages.resolveId(this.options.reply.messageReference);
       if (message_id) {
         message_reference = {
           message_id,
-          fail_if_not_exists: this.options.reply.failIfNotExists ?? true,
+          fail_if_not_exists: this.options.reply.failIfNotExists ?? this.target.client.options.failIfNotExists,
         };
       }
     }
@@ -251,7 +246,7 @@ class MessagePayload {
    * @param {MessageTarget} target Target to send to
    * @param {string|MessageOptions|WebhookMessageOptions} options Options or content to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto specified options
-   * @returns {MessageOptions|WebhookMessageOptions}
+   * @returns {MessagePayload}
    */
   static create(target, options, extra = {}) {
     return new this(

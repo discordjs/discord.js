@@ -13,8 +13,8 @@ module.exports = (client, { d: data }, shard) => {
   }
 
   for (const guild of data.guilds) {
-    guild.shardID = shard.id;
-    client.guilds.add(guild);
+    guild.shardId = shard.id;
+    client.guilds._add(guild);
   }
 
   if (client.application) {

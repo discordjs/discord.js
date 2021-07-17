@@ -50,16 +50,16 @@ class GuildTemplate extends Base {
     this.usageCount = data.usage_count;
 
     /**
-     * The ID of the user that created this template
+     * The id of the user that created this template
      * @type {Snowflake}
      */
-    this.creatorID = data.creator_id;
+    this.creatorId = data.creator_id;
 
     /**
      * The user that created this template
      * @type {User}
      */
-    this.creator = this.client.users.add(data.creator);
+    this.creator = this.client.users._add(data.creator);
 
     /**
      * The time of when this template was created at
@@ -74,10 +74,10 @@ class GuildTemplate extends Base {
     this.updatedAt = new Date(data.updated_at);
 
     /**
-     * The ID of the guild that this template belongs to
+     * The id of the guild that this template belongs to
      * @type {Snowflake}
      */
-    this.guildID = data.source_guild_id;
+    this.guildId = data.source_guild_id;
 
     /**
      * The data of the guild that this template would create
@@ -122,7 +122,7 @@ class GuildTemplate extends Base {
 
       const handleGuild = guild => {
         if (guild.id === data.id) {
-          client.clearTimeout(timeout);
+          clearTimeout(timeout);
           resolveGuild(guild);
         }
       };
@@ -130,7 +130,7 @@ class GuildTemplate extends Base {
       client.incrementMaxListeners();
       client.on(Events.GUILD_CREATE, handleGuild);
 
-      const timeout = client.setTimeout(() => resolveGuild(client.guilds.add(data)), 10000);
+      const timeout = setTimeout(() => resolveGuild(client.guilds._add(data)), 10000).unref();
     });
   }
 
@@ -148,7 +148,7 @@ class GuildTemplate extends Base {
    */
   edit({ name, description } = {}) {
     return this.client.api
-      .guilds(this.guildID)
+      .guilds(this.guildId)
       .templates(this.code)
       .patch({ data: { name, description } })
       .then(data => this._patch(data));
@@ -160,7 +160,7 @@ class GuildTemplate extends Base {
    */
   delete() {
     return this.client.api
-      .guilds(this.guildID)
+      .guilds(this.guildId)
       .templates(this.code)
       .delete()
       .then(() => this);
@@ -172,7 +172,7 @@ class GuildTemplate extends Base {
    */
   sync() {
     return this.client.api
-      .guilds(this.guildID)
+      .guilds(this.guildId)
       .templates(this.code)
       .put()
       .then(data => this._patch(data));
@@ -202,7 +202,7 @@ class GuildTemplate extends Base {
    * @readonly
    */
   get guild() {
-    return this.client.guilds.resolve(this.guildID);
+    return this.client.guilds.resolve(this.guildId);
   }
 
   /**

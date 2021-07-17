@@ -15,6 +15,13 @@ class MessageEmbed {
    */
 
   /**
+   * A `Partial` object is a representation of any existing object.
+   * This object contains between 0 and all of the original objects parameters.
+   * This is true regardless of whether the parameters are optional in the base object.
+   * @typedef {Object} Partial
+   */
+
+  /**
    * Represents the possible options for a MessageEmbed
    * @typedef {Object} MessageEmbedOptions
    * @property {string} [title] The title of this embed

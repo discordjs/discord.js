@@ -188,8 +188,8 @@ class WebSocketManager extends EventEmitter {
         /**
          * Emitted when a shard turns ready.
          * @event Client#shardReady
-         * @param {number} id The shard ID that turned ready
-         * @param {?Set<string>} unavailableGuilds Set of unavailable guild IDs, if any
+         * @param {number} id The shard id that turned ready
+         * @param {?Set<string>} unavailableGuilds Set of unavailable guild ids, if any
          */
         this.client.emit(Events.SHARD_READY, shard.id, unavailableGuilds);
 
@@ -203,7 +203,7 @@ class WebSocketManager extends EventEmitter {
            * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
            * @event Client#shardDisconnect
            * @param {CloseEvent} event The WebSocket close event
-           * @param {number} id The shard ID that disconnected
+           * @param {number} id The shard id that disconnected
            */
           this.client.emit(Events.SHARD_DISCONNECT, event, shard.id);
           this.debug(WSCodes[event.code], shard);
@@ -212,13 +212,13 @@ class WebSocketManager extends EventEmitter {
 
         if (UNRESUMABLE_CLOSE_CODES.includes(event.code)) {
           // These event codes cannot be resumed
-          shard.sessionID = null;
+          shard.sessionId = null;
         }
 
         /**
          * Emitted when a shard is attempting to reconnect or re-identify.
          * @event Client#shardReconnecting
-         * @param {number} id The shard ID that is attempting to reconnect
+         * @param {number} id The shard id that is attempting to reconnect
          */
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
 
@@ -378,9 +378,9 @@ class WebSocketManager extends EventEmitter {
 
     if (this.packetQueue.length) {
       const item = this.packetQueue.shift();
-      this.client.setImmediate(() => {
+      setImmediate(() => {
         this.handlePacket(item.packet, item.shard);
-      });
+      }).unref();
     }
 
     if (packet && PacketHandlers[packet.t]) {
@@ -430,8 +430,9 @@ class WebSocketManager extends EventEmitter {
     /**
      * Emitted when the client becomes ready to start working.
      * @event Client#ready
+     * @param {Client} client The client
      */
-    this.client.emit(Events.CLIENT_READY);
+    this.client.emit(Events.CLIENT_READY, this.client);
 
     this.handlePacket();
   }

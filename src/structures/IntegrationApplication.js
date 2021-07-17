@@ -14,7 +14,7 @@ class IntegrationApplication extends Application {
      * The bot user for this application
      * @type {?User}
      */
-    this.bot = data.bot ? this.client.users.add(data.bot) : this.bot ?? null;
+    this.bot = data.bot ? this.client.users._add(data.bot) : this.bot ?? null;
 
     /**
      * The url of the application's terms of service

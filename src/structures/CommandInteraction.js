@@ -17,25 +17,25 @@ class CommandInteraction extends Interaction {
 
     /**
      * The channel this interaction was sent in
-     * @type {?TextChannel|NewsChannel|DMChannel}
+     * @type {?(TextChannel|NewsChannel|DMChannel)}
      * @name CommandInteraction#channel
      * @readonly
      */
 
     /**
-     * The ID of the channel this interaction was sent in
+     * The id of the channel this interaction was sent in
      * @type {Snowflake}
-     * @name CommandInteraction#channelID
+     * @name CommandInteraction#channelId
      */
 
     /**
-     * The ID of the invoked application command
+     * The invoked application command's id
      * @type {Snowflake}
      */
-    this.commandID = data.data.id;
+    this.commandId = data.data.id;
 
     /**
-     * The name of the invoked application command
+     * The invoked application command's name
      * @type {string}
      */
     this.commandName = data.data.name;
@@ -68,7 +68,7 @@ class CommandInteraction extends Interaction {
      * An associated interaction webhook, can be used to further interact with this interaction
      * @type {InteractionWebhook}
      */
-    this.webhook = new InteractionWebhook(this.client, this.applicationID, this.token);
+    this.webhook = new InteractionWebhook(this.client, this.applicationId, this.token);
   }
 
   /**
@@ -76,7 +76,7 @@ class CommandInteraction extends Interaction {
    * @type {?ApplicationCommand}
    */
   get command() {
-    const id = this.commandID;
+    const id = this.commandId;
     return this.guild?.commands.cache.get(id) ?? this.client.application.commands.cache.get(id) ?? null;
   }
 
@@ -112,16 +112,16 @@ class CommandInteraction extends Interaction {
 
     if (resolved) {
       const user = resolved.users?.[option.value];
-      if (user) result.user = this.client.users.add(user);
+      if (user) result.user = this.client.users._add(user);
 
       const member = resolved.members?.[option.value];
-      if (member) result.member = this.guild?.members.add({ user, ...member }) ?? member;
+      if (member) result.member = this.guild?.members._add({ user, ...member }) ?? member;
 
       const channel = resolved.channels?.[option.value];
-      if (channel) result.channel = this.client.channels.add(channel, this.guild) ?? channel;
+      if (channel) result.channel = this.client.channels._add(channel, this.guild) ?? channel;
 
       const role = resolved.roles?.[option.value];
-      if (role) result.role = this.guild?.roles.add(role) ?? role;
+      if (role) result.role = this.guild?.roles._add(role) ?? role;
     }
 
     return result;

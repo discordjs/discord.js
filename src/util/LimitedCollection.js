@@ -8,7 +8,6 @@ const Collection = require('./Collection.js');
  * @extends {Collection}
  * @param {number} [maxSize=0] The maximum size of the Collection
  * @param {Iterable} [iterable=null] Optional entries passed to the Map constructor.
- * @private
  */
 class LimitedCollection extends Collection {
   constructor(maxSize = 0, iterable = null) {
