@@ -93,6 +93,7 @@ class Permissions extends BitField {
  * * `MANAGE_THREADS`
  * * `USE_PUBLIC_THREADS`
  * * `USE_PRIVATE_THREADS`
+ * * `USE_EXTERNAL_STICKERS` (use stickers from different guilds)
  * @type {Object<string, bigint>}
  * @see {@link https://discord.com/developers/docs/topics/permissions}
  */
@@ -133,6 +134,7 @@ Permissions.FLAGS = {
   MANAGE_THREADS: 1n << 34n,
   USE_PUBLIC_THREADS: 1n << 35n,
   USE_PRIVATE_THREADS: 1n << 36n,
+  USE_EXTERNAL_STICKERS: 1n << 37n,
 };
 
 /**

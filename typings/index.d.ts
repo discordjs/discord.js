@@ -3842,7 +3842,8 @@ export type PermissionString =
   | 'REQUEST_TO_SPEAK'
   | 'MANAGE_THREADS'
   | 'USE_PUBLIC_THREADS'
-  | 'USE_PRIVATE_THREADS';
+  | 'USE_PRIVATE_THREADS'
+  | 'USE_EXTERNAL_STICKERS';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
