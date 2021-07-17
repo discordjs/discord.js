@@ -54,13 +54,13 @@ class Interaction extends Base {
      * The user which sent this interaction
      * @type {User}
      */
-    this.user = this.client.users.add(data.user ?? data.member.user);
+    this.user = this.client.users._add(data.user ?? data.member.user);
 
     /**
      * If this interaction was sent in a guild, the member which sent it
      * @type {?(GuildMember|APIGuildMember)}
      */
-    this.member = data.member ? this.guild?.members.add(data.member) ?? data.member : null;
+    this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
 
     /**
      * The version

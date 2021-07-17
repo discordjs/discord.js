@@ -45,7 +45,7 @@ class ReactionUserManager extends CachedManager {
     ].get({ query: { limit, after } });
     const users = new Collection();
     for (const rawUser of data) {
-      const user = this.client.users.add(rawUser);
+      const user = this.client.users._add(rawUser);
       this.cache.set(user.id, user);
       users.set(user.id, user);
     }

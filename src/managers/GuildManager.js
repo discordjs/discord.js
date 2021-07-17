@@ -75,7 +75,7 @@ class GuildManager extends CachedManager {
    * @property {Snowflake|number} [id] The channel's id, used to set its parent,
    * this is a placeholder and will be replaced by the API after consumption
    * @property {Snowflake|number} [parentId] The parent id for this channel
-   * @property {string} [type] The type of the channel
+   * @property {ChannelType} [type] The type of the channel
    * @property {string} name The name of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
@@ -217,7 +217,7 @@ class GuildManager extends CachedManager {
 
           const handleGuild = guild => {
             if (guild.id === data.id) {
-              this.client.clearTimeout(timeout);
+              clearTimeout(timeout);
               this.client.removeListener(Events.GUILD_CREATE, handleGuild);
               this.client.decrementMaxListeners();
               resolve(guild);
@@ -226,11 +226,11 @@ class GuildManager extends CachedManager {
           this.client.incrementMaxListeners();
           this.client.on(Events.GUILD_CREATE, handleGuild);
 
-          const timeout = this.client.setTimeout(() => {
+          const timeout = setTimeout(() => {
             this.client.removeListener(Events.GUILD_CREATE, handleGuild);
             this.client.decrementMaxListeners();
-            resolve(this.client.guilds.add(data));
-          }, 10000);
+            resolve(this.client.guilds._add(data));
+          }, 10000).unref();
           return undefined;
         }, reject),
     );
@@ -265,7 +265,7 @@ class GuildManager extends CachedManager {
       }
 
       const data = await this.client.api.guilds(id).get({ query: { with_counts: true } });
-      return this.add(data, options.cache);
+      return this._add(data, options.cache);
     }
 
     const data = await this.client.api.users('@me').guilds.get({ query: options });

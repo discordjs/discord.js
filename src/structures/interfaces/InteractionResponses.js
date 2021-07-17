@@ -63,12 +63,12 @@ class InteractionResponses {
    * const embed = new MessageEmbed().setDescription('Pong!');
    *
    * interaction.reply({ embeds: [embed] })
-   *   .then(console.log)
+   *   .then(() => console.log('Reply sent.'))
    *   .catch(console.error);
    * @example
    * // Create an ephemeral reply
    * interaction.reply({ content: 'Pong!', ephemeral: true })
-   *   .then(console.log)
+   *   .then(() => console.log('Reply sent.'))
    *   .catch(console.error);
    */
   async reply(options) {
@@ -177,13 +177,13 @@ class InteractionResponses {
   }
 
   /**
-   * Updates the original message whose button was pressed.
-   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options for the reply
+   * Updates the original message of the component on which the interaction was received on.
+   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options for the updated message
    * @returns {Promise<Message|void>}
    * @example
    * // Remove the components from the message
    * interaction.update({
-   *   content: "A button was clicked",
+   *   content: "A component interaction was received",
    *   components: []
    * })
    *   .then(console.log)

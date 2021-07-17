@@ -14,10 +14,6 @@ class GuildDeleteAction extends Action {
 
     let guild = client.guilds.cache.get(data.id);
     if (guild) {
-      for (const channel of guild.channels.cache.values()) {
-        if (channel.type === 'text') channel.stopTyping(true);
-      }
-
       if (data.unavailable) {
         // Guild is unavailable
         guild.available = false;
@@ -36,7 +32,7 @@ class GuildDeleteAction extends Action {
         };
       }
 
-      for (const channel of guild.channels.cache.values()) this.client.channels.remove(channel.id);
+      for (const channel of guild.channels.cache.values()) this.client.channels._remove(channel.id);
       client.voice.adapters.get(data.id)?.destroy();
 
       // Delete guild
@@ -60,7 +56,7 @@ class GuildDeleteAction extends Action {
   }
 
   scheduleForDeletion(id) {
-    this.client.setTimeout(() => this.deleted.delete(id), this.client.options.restWsBridgeTimeout);
+    setTimeout(() => this.deleted.delete(id), this.client.options.restWsBridgeTimeout).unref();
   }
 }
 

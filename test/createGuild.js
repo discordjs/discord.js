@@ -10,7 +10,7 @@ client.on('ready', async () => {
   try {
     const guild = await client.guilds.create('testing', {
       channels: [
-        { name: 'afk channel', type: 'voice', id: 0 },
+        { name: 'afk channel', type: 'GUILD_VOICE', id: 0 },
         { name: 'system-channel', id: 1 },
       ],
       afkChannelId: 0,

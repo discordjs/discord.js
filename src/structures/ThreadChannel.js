@@ -43,8 +43,6 @@ class ThreadChannel extends Channel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-
-    this._typing = new Map();
     if (data) this._patch(data);
   }
 
@@ -150,7 +148,7 @@ class ThreadChannel extends Channel {
     }
 
     if (data.member && this.client.user) this.members._add({ user_id: this.client.user.id, ...data.member });
-    if (data.messages) for (const message of data.messages) this.messages.add(message);
+    if (data.messages) for (const message of data.messages) this.messages._add(message);
   }
 
   /**
@@ -346,7 +344,7 @@ class ThreadChannel extends Channel {
       !this.archived &&
       !this.joined &&
       this.permissionsFor(this.client.user)?.has(
-        this.type === 'private_thread' ? Permissions.FLAGS.MANAGE_THREADS : Permissions.FLAGS.VIEW_CHANNEL,
+        this.type === 'GUILD_PRIVATE_THREAD' ? Permissions.FLAGS.MANAGE_THREADS : Permissions.FLAGS.VIEW_CHANNEL,
         false,
       )
     );
@@ -373,7 +371,9 @@ class ThreadChannel extends Channel {
       this.permissionsFor(this.client.user)?.any(
         [
           Permissions.FLAGS.SEND_MESSAGES,
-          this.type === 'private_thread' ? Permissions.FLAGS.USE_PRIVATE_THREADS : Permissions.FLAGS.USE_PUBLIC_THREADS,
+          this.type === 'GUILD_PRIVATE_THREAD'
+            ? Permissions.FLAGS.USE_PRIVATE_THREADS
+            : Permissions.FLAGS.USE_PUBLIC_THREADS,
         ],
         false,
       )
@@ -411,10 +411,7 @@ class ThreadChannel extends Channel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
+  sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
   createMessageComponentCollector() {}

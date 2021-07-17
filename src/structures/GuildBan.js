@@ -29,7 +29,7 @@ class GuildBan extends Base {
      * The user this ban applies to
      * @type {User}
      */
-    this.user = this.client.users.add(data.user, true);
+    this.user = this.client.users._add(data.user, true);
 
     if ('reason' in data) {
       /**
@@ -52,10 +52,10 @@ class GuildBan extends Base {
 
   /**
    * Fetches this GuildBan.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<GuildBan>}
    */
-  fetch(force = false) {
+  fetch(force = true) {
     return this.guild.bans.fetch({ user: this.user, cache: true, force });
   }
 }

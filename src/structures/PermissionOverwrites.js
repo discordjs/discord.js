@@ -36,7 +36,7 @@ class PermissionOverwrites extends Base {
      * The type of this overwrite
      * @type {OverwriteType}
      */
-    this.type = OverwriteTypes[data.type];
+    this.type = typeof data.type === 'number' ? OverwriteTypes[data.type] : data.type;
 
     /**
      * The permissions that are denied for the user or role.
