@@ -1661,6 +1661,8 @@ export class Typing extends Base {
 export class User extends PartialTextBasedChannel(Base) {
   public constructor(client: Client, data: unknown);
   public avatar: string | null;
+  public banner: string | null;
+  public readonly bannerColor: number | null;
   public bot: boolean;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -1668,12 +1670,14 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlags> | null;
+  public hexBannerColor: string | null;
   public id: Snowflake;
   public readonly partial: false;
   public system: boolean;
   public readonly tag: string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
+  public bannerURL(options?: ImageURLOptions): string | null;
   public createDM(): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
@@ -1983,8 +1987,20 @@ export const Constants: {
         format: 'default' | AllowedImageFormat,
         size: number,
       ) => string;
-      Banner: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      Icon: (userId: Snowflake | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
+      Banner: (
+        id: Snowflake | number,
+        hash: string,
+        format: AllowedImageFormat,
+        size: number,
+        dynamic: boolean,
+      ) => string;
+      Icon: (
+        userId: Snowflake | number,
+        hash: string,
+        format: 'default' | AllowedImageFormat,
+        size: number,
+        dynamic: boolean,
+      ) => string;
       AppIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       AppAsset: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       GDMIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
