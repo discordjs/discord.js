@@ -96,11 +96,10 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets the selected sub-command group.
-   * @param {boolean} [required=false] Whether to throw an error if there is no sub-command group.
-   * @returns {?string} The name of the selected sub-command group, or null if not set and not required.
+   * @returns {string} The name of the selected sub-command group, or null if not set and not required.
    */
-  getSubCommandGroup(required = false) {
-    if (required && !this._group) {
+  getSubCommandGroup() {
+    if (!this._group) {
       throw new TypeError('COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP');
     }
     return this._group;
