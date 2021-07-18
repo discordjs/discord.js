@@ -6,7 +6,7 @@ const { Events } = require('../../util/Constants');
 class GuildStickerCreateAction extends Action {
   handle(guild, createdSticker) {
     const already = guild.stickers.cache.has(createdSticker.id);
-    const sticker = guild.stickers.add(createdSticker);
+    const sticker = guild.stickers._add(createdSticker);
     /**
      * Emitted whenever a custom sticker is created in a guild.
      * @event Client#stickerCreate

@@ -28,7 +28,7 @@ class GuildStickerManager extends CachedManager {
    */
 
   add(data, cache) {
-    return super.add(data, cache, { extras: [this.guild] });
+    return super._add(data, cache, { extras: [this.guild] });
   }
 
   /**
@@ -110,7 +110,7 @@ class GuildStickerManager extends CachedManager {
       clone._patch(d);
       return clone;
     }
-    return this.add(d);
+    return this._add(d);
   }
 
   /**
@@ -149,11 +149,11 @@ class GuildStickerManager extends CachedManager {
         if (existing) return existing;
       }
       const sticker = await this.client.api.guilds(this.guild.id).stickers(id).get();
-      return this.add(sticker, cache);
+      return this._add(sticker, cache);
     }
 
     const data = await this.client.api.guilds(this.guild.id).stickers.get();
-    return new Collection(data.map(sticker => [sticker.id, this.add(sticker, cache)]));
+    return new Collection(data.map(sticker => [sticker.id, this._add(sticker, cache)]));
   }
 }
 

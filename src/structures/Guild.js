@@ -412,7 +412,7 @@ class Guild extends AnonymousGuild {
        * @type {GuildStickerManager}
        */
       this.stickers = new GuildStickerManager(this);
-      if (data.stickers) for (const sticker of data.stickers) this.stickers.add(sticker);
+      if (data.stickers) for (const sticker of data.stickers) this.stickers._add(sticker);
     } else if (data.stickers) {
       this.client.actions.GuildStickersUpdate.handle({
         guild_id: this.id,
