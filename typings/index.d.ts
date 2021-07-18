@@ -165,22 +165,13 @@ export class Base {
 
 export class BaseClient extends EventEmitter {
   public constructor(options?: ClientOptions | WebhookClientOptions);
-  private _timeouts: Set<NodeJS.Timeout>;
-  private _intervals: Set<NodeJS.Timeout>;
-  private _immediates: Set<NodeJS.Immediate>;
   private readonly api: unknown;
   private rest: unknown;
   private decrementMaxListeners(): void;
   private incrementMaxListeners(): void;
 
   public options: ClientOptions | WebhookClientOptions;
-  public clearInterval(interval: NodeJS.Timeout): void;
-  public clearTimeout(timeout: NodeJS.Timeout): void;
-  public clearImmediate(timeout: NodeJS.Immediate): void;
   public destroy(): void;
-  public setInterval<T extends any[]>(fn: (...args: T) => Awaited<void>, delay: number, ...args: T): NodeJS.Timeout;
-  public setTimeout<T extends any[]>(fn: (...args: T) => Awaited<void>, delay: number, ...args: T): NodeJS.Timeout;
-  public setImmediate<T extends any[]>(fn: (...args: T) => Awaited<void>, ...args: T): NodeJS.Immediate;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
 }
 
@@ -366,7 +357,7 @@ export class ClientUser extends User {
 export class Options extends null {
   private constructor();
   public static createDefaultOptions(): ClientOptions;
-  public static cacheWithLimits(limits?: Record<string, number>): CacheFactory;
+  public static cacheWithLimits(limits?: CacheWithLimitOptions): CacheFactory;
   public static cacheEverything(): CacheFactory;
 }
 
@@ -959,7 +950,7 @@ export class Message extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public system: boolean;
-  public thread: ThreadChannel;
+  public thread: ThreadChannel | null;
   public tts: boolean;
   public type: MessageType;
   public readonly url: string;
@@ -1663,6 +1654,24 @@ export class ThreadMemberFlags extends BitField<ThreadMemberFlagsString> {
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
+export class Typing extends Base {
+  public constructor(
+    channel: TextChannel | PartialDMChannel | NewsChannel | ThreadChannel,
+    user: PartialUser,
+    data?: object,
+  );
+  public channel: TextChannel | PartialDMChannel | NewsChannel | ThreadChannel;
+  public user: PartialUser;
+  public startedTimestamp: number;
+  public readonly startedAt: Date;
+  public readonly guild: Guild | null;
+  public readonly member: GuildMember | null;
+  public inGuild(): this is this & {
+    channel: TextChannel | NewsChannel | ThreadChannel;
+    readonly guild: Guild;
+  };
+}
+
 export class User extends PartialTextBasedChannel(Base) {
   public constructor(client: Client, data: unknown);
   public avatar: string | null;
@@ -1686,9 +1695,6 @@ export class User extends PartialTextBasedChannel(Base) {
   public fetch(force?: boolean): Promise<User>;
   public fetchFlags(force?: boolean): Promise<UserFlags>;
   public toString(): UserMention;
-  public typingDurationIn(channel: ChannelResolvable): number;
-  public typingIn(channel: ChannelResolvable): boolean;
-  public typingSinceIn(channel: ChannelResolvable): Date;
 }
 
 export class UserFlags extends BitField<UserFlagsString> {
@@ -2434,13 +2440,10 @@ export interface PartialTextBasedChannelFields {
 }
 
 export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
-  _typing: Map<string, TypingData>;
   lastMessageId: Snowflake | null;
   readonly lastMessage: Message | null;
   lastPinTimestamp: number | null;
   readonly lastPinAt: Date | null;
-  typing: boolean;
-  typingCount: number;
   awaitMessageComponent<T extends MessageComponentInteraction = MessageComponentInteraction>(
     options?: AwaitMessageComponentOptions<T>,
   ): Promise<T>;
@@ -2453,8 +2456,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     options?: InteractionCollectorOptions<T>,
   ): InteractionCollector<T>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
-  startTyping(count?: number): Promise<void>;
-  stopTyping(force?: boolean): void;
+  sendTyping(): Promise<void>;
 }
 
 export function PartialWebhookMixin<T>(Base?: Constructable<T>): Constructable<T & PartialWebhookFields>;
@@ -2742,7 +2744,36 @@ export type BitFieldResolvable<T extends string, N extends number | bigint> =
 
 export type BufferResolvable = Buffer | string;
 
-export type CacheFactory = <T>(manager: { name: string }, holds: { name: string }) => Collection<Snowflake, T>;
+export type CachedManagerTypes = keyof CacheFactoryArgs;
+
+export type CacheFactory = <T extends CachedManagerTypes>(
+  ...args: CacheFactoryArgs[T]
+) => Collection<Snowflake, CacheFactoryArgs[T][1]>;
+
+export interface CacheFactoryArgs {
+  ApplicationCommandManager: [manager: typeof ApplicationCommandManager, holds: typeof ApplicationCommand];
+  BaseGuildEmojiManager: [manager: typeof BaseGuildEmojiManager, holds: typeof GuildEmoji];
+  ChannelManager: [manager: typeof ChannelManager, holds: typeof Channel];
+  GuildChannelManager: [manager: typeof GuildChannelManager, holds: typeof GuildChannel];
+  GuildManager: [manager: typeof GuildManager, holds: typeof Guild];
+  GuildMemberManager: [manager: typeof GuildMemberManager, holds: typeof GuildMember];
+  GuildBanManager: [manager: typeof GuildBanManager, holds: typeof GuildBan];
+  MessageManager: [manager: typeof MessageManager, holds: typeof Message];
+  PermissionOverwriteManager: [manager: typeof PermissionOverwriteManager, holds: typeof PermissionOverwrites];
+  PresenceManager: [manager: typeof PresenceManager, holds: typeof Presence];
+  ReactionManager: [manager: typeof ReactionManager, holds: typeof MessageReaction];
+  ReactionUserManager: [manager: typeof ReactionUserManager, holds: typeof User];
+  RoleManager: [manager: typeof RoleManager, holds: typeof Role];
+  StageInstanceManager: [manager: typeof StageInstanceManager, holds: typeof StageInstance];
+  ThreadManager: [manager: typeof ThreadManager, holds: typeof ThreadChannel];
+  ThreadMemberManager: [manager: typeof ThreadMemberManager, holds: typeof ThreadMember];
+  UserManager: [manager: typeof UserManager, holds: typeof User];
+  VoiceStateManager: [manager: typeof VoiceStateManager, holds: typeof VoiceState];
+}
+
+export type CacheWithLimitOptions = {
+  [K in CachedManagerTypes]?: number;
+};
 
 export interface ChannelCreationOverwrites {
   allow?: PermissionResolvable;
@@ -2849,7 +2880,7 @@ export interface ClientEvents {
     mewMembers: Collection<Snowflake, ThreadMember>,
   ];
   threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
-  typingStart: [channel: Channel | PartialDMChannel, user: User | PartialUser];
+  typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhookUpdate: [channel: TextChannel];
@@ -2882,6 +2913,7 @@ export interface ClientOptions {
   restSweepInterval?: number;
   retryLimit?: number;
   failIfNotExists?: boolean;
+  userAgentSuffix?: string[];
   presence?: PresenceData;
   intents: BitFieldResolvable<IntentsString, number>;
   ws?: WebSocketOptions;
@@ -3998,14 +4030,6 @@ export type SystemChannelFlagsString =
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
 export type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND'>;
-
-export interface TypingData {
-  user: User | PartialUser;
-  since: Date;
-  lastTimestamp: Date;
-  elapsedTime: number;
-  timeout: NodeJS.Timeout;
-}
 
 export interface StageInstanceEditOptions {
   topic?: string;

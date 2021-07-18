@@ -15,8 +15,6 @@ class ChannelUpdateAction extends Action {
       if (ChannelTypes[channel.type] !== data.type) {
         const newChannel = Channel.create(this.client, data, channel.guild);
         for (const [id, message] of channel.messages.cache) newChannel.messages.cache.set(id, message);
-        newChannel._typing = new Map(channel._typing);
-        channel = newChannel;
         this.client.channels.cache.set(channel.id, channel);
       }
 

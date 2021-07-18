@@ -78,8 +78,6 @@ const Messages = {
   MESSAGE_NONCE_TYPE: 'Message nonce must be an integer or a string.',
   MESSAGE_CONTENT_TYPE: 'Message content must be a non-empty string.',
 
-  TYPING_COUNT: 'Count must be at least 1',
-
   SPLIT_MAX_LEN: 'Chunk exceeds the max length and contains no split characters.',
 
   BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user id to ${ban ? 'ban' : 'unban'}.`,

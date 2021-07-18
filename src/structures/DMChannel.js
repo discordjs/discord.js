@@ -25,7 +25,6 @@ class DMChannel extends Channel {
      * @type {MessageManager}
      */
     this.messages = new MessageManager(this);
-    this._typing = new Map();
   }
 
   _patch(data) {
@@ -63,10 +62,10 @@ class DMChannel extends Channel {
 
   /**
    * Fetch this DMChannel.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
-  fetch(force = false) {
+  fetch(force = true) {
     return this.recipient.createDM(force);
   }
 
@@ -87,10 +86,7 @@ class DMChannel extends Channel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
+  sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
   createMessageComponentCollector() {}

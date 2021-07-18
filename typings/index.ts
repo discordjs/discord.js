@@ -10,6 +10,7 @@ import {
   Collection,
   Constants,
   DMChannel,
+  Guild,
   GuildApplicationCommandManager,
   GuildChannelManager,
   GuildEmoji,
@@ -27,7 +28,9 @@ import {
   MessageReaction,
   NewsChannel,
   Options,
+  PartialDMChannel,
   PartialTextBasedChannelFields,
+  PartialUser,
   Permissions,
   ReactionCollector,
   Role,
@@ -41,6 +44,7 @@ import {
   TextBasedChannelFields,
   TextChannel,
   ThreadChannel,
+  Typing,
   User,
   VoiceChannel,
 } from '..';
@@ -49,6 +53,8 @@ const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
   makeCache: Options.cacheWithLimits({
     MessageManager: 200,
+    // @ts-expect-error
+    Message: 100,
   }),
 });
 
@@ -607,13 +613,22 @@ assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch()
 assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 assertType<Promise<GuildEmoji | null>>(guildEmojiManager.fetch('0'));
 
-// Test partials structures
-client.on('typingStart', (channel, user) => {
-  if (channel.partial) assertType<undefined>(channel.lastMessageId);
-  if (user.partial) return assertType<null>(user.username);
-  assertType<string>(user.username);
-});
+declare const typing: Typing;
+assertType<PartialUser>(typing.user);
+if (typing.user.partial) assertType<null>(typing.user.username);
 
+assertType<TextChannel | PartialDMChannel | NewsChannel | ThreadChannel>(typing.channel);
+if (typing.channel.partial) assertType<undefined>(typing.channel.lastMessageId);
+
+assertType<GuildMember | null>(typing.member);
+assertType<Guild | null>(typing.guild);
+
+if (typing.inGuild()) {
+  assertType<Guild>(typing.channel.guild);
+  assertType<Guild>(typing.guild);
+}
+
+// Test partials structures
 client.on('guildMemberRemove', member => {
   if (member.partial) return assertType<null>(member.joinedAt);
   assertType<Date | null>(member.joinedAt);
