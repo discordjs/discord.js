@@ -161,6 +161,10 @@ class Client extends BaseClient {
     this.readyAt = null;
 
     if (this.options.messageSweepInterval > 0) {
+      process.emitWarning(
+        'The message sweeping client options are deprecated, use the makeCache option with a SweptCollection instead.',
+        'DeprecationWarning',
+      );
       this.sweepMessageInterval = setInterval(
         this.sweepMessages.bind(this),
         this.options.messageSweepInterval * 1000,

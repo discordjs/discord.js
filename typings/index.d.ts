@@ -1616,9 +1616,11 @@ export class StoreChannel extends GuildChannel {
 export class SweptCollection<K, V> extends Collection<K, V> {
   public constructor(options?: SweptCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
   public interval: number | null;
-  public sweepFilter: ((collection: this) => ((value: V) => boolean) | false) | null;
+  public sweepFilter: ((collection: this) => ((value: V, key: K, collection: this) => boolean) | null) | null;
 
-  public static filterByLifetime(options?: LifetimeFilterOptions): () => (value: any) => boolean;
+  public static filterByLifetime<K, V>(
+    options?: LifetimeFilterOptions<K, V>,
+  ): () => (value: V, collection: SweptCollection<K, V>) => boolean;
 }
 
 export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
@@ -3011,7 +3013,9 @@ export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
   makeCache?: CacheFactory;
+  /** @deprecated Use `makeCache` with a `SweptCollection` for `MessageManager` instead. */
   messageCacheLifetime?: number;
+  /** @deprecated Use `makeCache` with a `SweptCollection` for `MessageManager` instead. */
   messageSweepInterval?: number;
   allowedMentions?: MessageMentionOptions;
   invalidRequestWarningInterval?: number;
@@ -3766,9 +3770,9 @@ export type InviteScope =
   | 'gdm.join'
   | 'webhook.incoming';
 
-export interface LifetimeFilterOptions {
-  excludeFromSweep?: (value: any) => boolean;
-  getComparisonTimestamp?: (value: any) => number;
+export interface LifetimeFilterOptions<K, V> {
+  excludeFromSweep?: (value: V, key: K, collection: SweptCollection<K, V>) => boolean;
+  getComparisonTimestamp?: (value: V, key: K, collection: SweptCollection<K, V>) => number;
   lifetime?: number;
 }
 
@@ -4293,7 +4297,9 @@ export interface StageInstanceEditOptions {
 }
 
 export interface SweptCollectionOptions<K, V> {
-  sweepFilter?: (collection: SweptCollection<K, V>) => ((value: V) => boolean) | false;
+  sweepFilter?: (
+    collection: SweptCollection<K, V>,
+  ) => ((value: V, key: K, collection: SweptCollection<K, V>) => boolean) | false;
   sweepInterval?: number;
 }
 
