@@ -146,8 +146,8 @@ class GuildInviteManager extends CachedManager {
     return data.reduce((col, invite) => col.set(invite.code, this._add(invite, cache)), new Collection());
   }
 
-  async _fetchChannelMany(channelID, cache) {
-    const data = await this.client.api.channels(channelID).invites.get();
+  async _fetchChannelMany(channelId, cache) {
+    const data = await this.client.api.channels(channelId).invites.get();
     return data.reduce((col, invite) => col.set(invite.code, this._add(invite, cache)), new Collection());
   }
 
