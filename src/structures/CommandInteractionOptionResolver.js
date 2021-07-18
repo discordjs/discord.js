@@ -188,7 +188,8 @@ class CommandInteractionOptionResolver {
    * Gets a mentionable option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(User|GuildMember|Role)} The value of the option, or null if not set and not required.
+   * @returns {?(User|GuildMember|APIInteractionDataResolvedGuildMember|Role|APIRole)}
+   * The value of the option, or null if not set and not required.
    */
   getMentionable(name, required = false) {
     const option = this._getTypedOption(name, ['MENTIONABLE'], ['user', 'member', 'role'], required);
