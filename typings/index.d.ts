@@ -410,7 +410,7 @@ export class CommandInteraction extends Interaction {
   public commandName: string;
   public deferred: boolean;
   public ephemeral: boolean | null;
-  public options: Collection<string, CommandInteractionOption>;
+  public options: CommandInteractionOptionResolver;
   public replied: boolean;
   public webhook: InteractionWebhook;
   public defer(options: InteractionDeferOptions & { fetchReply: true }): Promise<Message | APIMessage>;
@@ -423,6 +423,53 @@ export class CommandInteraction extends Interaction {
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
   private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
+}
+
+export class CommandInteractionOptionResolver {
+  public constructor(client: Client, options: CommandInteractionOption[]);
+  public readonly client: Client;
+  private _options: CommandInteractionOption[];
+  private _group: string | null;
+  private _subCommand: string | null;
+  private _getTypedOption(
+    name: string,
+    types: ApplicationCommandOptionType[],
+    properties: (keyof ApplicationCommandOption)[],
+    required: true,
+  ): CommandInteractionOption;
+  private _getTypedOption(
+    name: string,
+    types: ApplicationCommandOptionType[],
+    properties: (keyof ApplicationCommandOption)[],
+    required: boolean,
+  ): CommandInteractionOption | null;
+
+  public get(name: string, required: true): CommandInteractionOption;
+  public get(name: string, required?: boolean): CommandInteractionOption | null;
+  public getSubCommand(): string;
+  public getSubCommandGroup(): string;
+  public getBoolean(name: string, required: true): boolean;
+  public getBoolean(name: string, required?: boolean): boolean | null;
+  public getChannel(name: string, required: true): NonNullable<CommandInteractionOption['channel']>;
+  public getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption['channel']> | null;
+  public getString(name: string, required: true): string;
+  public getString(name: string, required?: boolean): string | null;
+  public getInteger(name: string, required: true): number;
+  public getInteger(name: string, required?: boolean): number | null;
+  public getUser(name: string, required: true): NonNullable<CommandInteractionOption['user']>;
+  public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption['user']> | null;
+  public getMember(name: string, required: true): NonNullable<CommandInteractionOption['member']>;
+  public getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption['member']> | null;
+  public getRole(name: string, required: true): NonNullable<CommandInteractionOption['role']>;
+  public getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption['role']> | null;
+  public getMentionable(
+    name: string,
+    required: true,
+  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']>;
+  public getMentionable(
+    name: string,
+    required?: boolean,
+  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
 }
 
 export class DataResolver extends null {
@@ -711,6 +758,8 @@ export class GuildPreview extends Base {
   public constructor(client: Client, data: unknown);
   public approximateMemberCount: number;
   public approximatePresenceCount: number;
+  public readonly createdAt: Date;
+  public readonly createdTimestamp: number;
   public description: string | null;
   public discoverySplash: string | null;
   public emojis: Collection<Snowflake, GuildPreviewEmoji>;
@@ -950,7 +999,7 @@ export class Message extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public system: boolean;
-  public thread: ThreadChannel;
+  public thread: ThreadChannel | null;
   public tts: boolean;
   public type: MessageType;
   public readonly url: string;
