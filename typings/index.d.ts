@@ -357,7 +357,7 @@ export class ClientUser extends User {
 export class Options extends null {
   private constructor();
   public static createDefaultOptions(): ClientOptions;
-  public static cacheWithLimits(limits?: CacheWithLimitOptions): CacheFactory;
+  public static cacheSome(settings?: CacheSomeOptions): CacheFactory;
   public static cacheEverything(): CacheFactory;
 }
 
@@ -1525,6 +1525,16 @@ export class StoreChannel extends GuildChannel {
   public constructor(guild: Guild, data?: unknown, client?: Client);
   public nsfw: boolean;
   public type: 'GUILD_STORE';
+}
+
+export class SweptCollection<K, V> extends Collection<K, V> {
+  public constructor(options?: SweptCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
+  public interval: number | null;
+  public sweepFilter: ((collection: this) => ((value: V, key: K, collection: this) => boolean) | null) | null;
+
+  public static filterByLifetime<K, V>(
+    options?: LifetimeFilterOptions<K, V>,
+  ): () => (value: V, collection: SweptCollection<K, V>) => boolean;
 }
 
 export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
@@ -2757,8 +2767,8 @@ export interface CacheFactoryArgs {
   VoiceStateManager: [manager: typeof VoiceStateManager, holds: typeof VoiceState];
 }
 
-export type CacheWithLimitOptions = {
-  [K in CachedManagerTypes]?: number;
+export type CacheSomeOptions = {
+  [K in CachedManagerTypes]?: SweptCollectionOptions<unknown, unknown> | number;
 };
 
 export interface ChannelCreationOverwrites {
@@ -2887,7 +2897,9 @@ export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
   makeCache?: CacheFactory;
+  /** @deprecated Use `makeCache` with a `SweptCollection` for `MessageManager` instead. */
   messageCacheLifetime?: number;
+  /** @deprecated Use `makeCache` with a `SweptCollection` for `MessageManager` instead. */
   messageSweepInterval?: number;
   allowedMentions?: MessageMentionOptions;
   invalidRequestWarningInterval?: number;
@@ -3485,6 +3497,12 @@ export type InviteScope =
   | 'gdm.join'
   | 'webhook.incoming';
 
+export interface LifetimeFilterOptions<K, V> {
+  excludeFromSweep?: (value: V, key: K, collection: SweptCollection<K, V>) => boolean;
+  getComparisonTimestamp?: (value: V, key: K, collection: SweptCollection<K, V>) => number;
+  lifetime?: number;
+}
+
 export interface MakeErrorOptions {
   name: string;
   message: string;
@@ -3997,6 +4015,13 @@ export type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPL
 export interface StageInstanceEditOptions {
   topic?: string;
   privacyLevel?: PrivacyLevel | number;
+}
+
+export interface SweptCollectionOptions<K, V> {
+  sweepFilter?: (
+    collection: SweptCollection<K, V>,
+  ) => ((value: V, key: K, collection: SweptCollection<K, V>) => boolean) | false;
+  sweepInterval?: number;
 }
 
 export type TextBasedChannelTypes =
