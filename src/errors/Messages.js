@@ -131,6 +131,14 @@ const Messages = {
   INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
   INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
 
+  COMMAND_INTERACTION_OPTION_NOT_FOUND: name => `Required option "${name}" not found.`,
+  COMMAND_INTERACTION_OPTION_TYPE: (name, type, expected) =>
+    `Option "${name}" is of type: ${type}; expected one of: ${expected.join(', ')}`,
+  COMMAND_INTERACTION_OPTION_EMPTY: (name, type) =>
+    `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No sub-command specified for interaction.',
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No sub-command group specified for interaction.',
+
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 
   NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,
