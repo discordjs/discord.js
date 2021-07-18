@@ -35,10 +35,11 @@
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {CacheFactory} [makeCache] Function to create a cache.
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
- * @property {number} [messageCacheLifetime=0] How long a message should stay in the cache until it is considered
- * sweepable (in seconds, 0 for forever)
- * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
- * the message cache lifetime (in seconds, 0 for never)
+ * @property {number} [messageCacheLifetime=0] DEPRECATED: Use `makeCache` with a `SweptCollection` instead.
+ * How long a message should stay in the cache until it is considered sweepable (in seconds, 0 for forever)
+ * @property {number} [messageSweepInterval=0] DEPRECATED: Use `makeCache` with a `SweptCollection` instead.
+ * How frequently to remove messages from the cache that are older than the message cache lifetime
+ * (in seconds, 0 for never)
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
  * @property {number} [invalidRequestWarningInterval=0] The number of invalid REST requests (those that return
  * 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings). That is, if set to 500,
@@ -102,7 +103,7 @@ class Options extends null {
       makeCache: this.cacheSome({
         MessageManager: 200,
         ThreadManager: {
-          sweepInterval: require('./SweptCollection').filterByLifetime({
+          sweepFilter: require('./SweptCollection').filterByLifetime({
             getComparisonTimestamp: e => e.archiveTimestamp,
             excludeFromSweep: e => !e.archived,
           }),
@@ -143,19 +144,33 @@ class Options extends null {
 
   /**
    * Create a cache factory using predefined settings to sweep or limit.
-   * @param {Record<string, SweptCollectionOptions|number>} [settings={}] Settings passed to the relevant constructor.
+   * @param {Object<string, SweptCollectionOptions|number>} [settings={}] Settings passed to the relevant constructor.
    * If no setting is provided for a manager, it uses Collection.
+   * If SweptCollectionOptions are provided for a manager, it uses those settings to form a SweptCollection
+   * If a number is provided for a manager, it uses that number as the max size for a LimitedCollection
    * @returns {CacheFactory}
    * @example
+   * // Store up to 200 messages per channel and discard archived threads if they were archived more than 4 hours ago.
    * Options.cacheSome({
    *    MessageManager: 200,
    *    ThreadManager: {
-   *      sweepInterval: SweptCollection.filterByLifetime({
+   *      sweepFilter: SweptCollection.filterByLifetime({
    *        getComparisonTimestamp: e => e.archiveTimestamp,
    *        excludeFromSweep: e => !e.archived,
    *      }),
    *    },
    *  });
+   * @example
+   * // Sweep messages every 5 minutes, removing messages that have not been edited or created in the last 30 minutes
+   * Options.cacheSome({
+   *   MessageManager: {
+   *     sweepInterval: 300,
+   *     sweepFilter: SweptCollection.filterByLifetime({
+   *       lifetime: 1800,
+   *       getComparisonTimestamp: e => e.editedTimestamp ?? e.createdTimestamp,
+   *     })
+   *   }
+   * });
    */
   static cacheSome(settings = {}) {
     const Collection = require('./Collection');
@@ -164,11 +179,11 @@ class Options extends null {
 
     return manager => {
       const setting = settings[manager.name];
-      if (typeof setting === 'number' && setting !== Infinity) return LimitedCollection(setting);
+      if (typeof setting === 'number' && setting !== Infinity) return new LimitedCollection(setting);
       if (
-        setting === null ||
-        typeof setting !== 'object' ||
-        (setting.sweepInterval ? setting.sweepInterval <= 0 || setting.sweepInterval === Infinity : true)
+        setting?.sweepInterval === (undefined || null) ||
+        setting.sweepInterval <= 0 ||
+        setting.sweepInterval === Infinity
       ) {
         return new Collection();
       }

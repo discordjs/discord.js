@@ -6,7 +6,7 @@ const { TypeError } = require('../errors/DJSError.js');
 /**
  * @typedef {Function} SweepFilter
  * @param {SweptCollection} collection The collection being swept
- * @returns {Function|false} Return `false` to skip sweeping, otherwise a function passed to `sweep()`,
+ * @returns {Function|null} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
  * See {@link [Collection#sweep](https://discord.js.org/#/docs/collection/master/class/Collection?scrollTo=sweep)}
  * for the definition of this function.
  */
@@ -14,7 +14,7 @@ const { TypeError } = require('../errors/DJSError.js');
 /**
  * Options for defining the behavior of a Swept Collection
  * @typedef {Object} SweptCollectionOptions
- * @property {Function|null} [sweepFilter=null] A function run every `sweepInterval` to determine how to sweep
+ * @property {?SweepFitler} [sweepFilter=null] A function run every `sweepInterval` to determine how to sweep
  * @property {number} [sweepInterval=3600] How frequently, in seconds, to sweep the collection.
  */
 
@@ -40,19 +40,19 @@ class SweptCollection extends Collection {
 
     /**
      * A function called every sweep interval that returns a function passed to `sweep`
-     * @type {?Function}
+     * @type {?SweepFilter}
      */
     this.sweepFilter = sweepFilter;
 
     /**
      * The id of the interval being used to sweep.
-     * @type {?Number}
+     * @type {?Timeout}
      */
     this.interval =
       sweepInterval > 0 && sweepFilter
         ? setInterval(() => {
             const sweepFn = this.sweepFilter(this);
-            if (sweepFn === false) return;
+            if (sweepFn === null) return;
             if (typeof sweepFn !== 'function') throw new TypeError('SWEEP_FILTER_RETURN');
             this.sweep(sweepFn);
           }, sweepInterval * 1000).unref()
@@ -64,10 +64,10 @@ class SweptCollection extends Collection {
    * @typedef {Object} LifetimeFilterOptions
    * @property {number} [lifetime=14400] How long an entry should stay in the collection
    * before it is considered sweepable
-   * @property {Function} [getComparisonTimestamp=`e => e.createdTimestamp`] A function that takes an entry
-   * and returns a timestamp to compare against in order to determine the lifetime of the entry.
-   * @property {Function} [excludeFromSweep=`() => false)`] A function that takes an entry and returns a boolean,
-   * `true` when the entry should not be checked for sweepability.
+   * @property {Function} [getComparisonTimestamp=`e => e.createdTimestamp`] A function that takes an entry, key,
+   * and the collection and returns a timestamp to compare against in order to determine the lifetime of the entry.
+   * @property {Function} [excludeFromSweep=`() => false`] A function that takes an entry, key, and the collection
+   * and returns a boolean, `true` when the entry should not be checked for sweepability.
    */
 
   /**
@@ -88,14 +88,14 @@ class SweptCollection extends Collection {
       throw new TypeError('INVALID_TYPE', 'excludeFromSweep', 'function');
     }
     return () => {
-      if (lifetime <= 0) return () => false;
+      if (lifetime <= 0) return null;
       const lifetimeMs = lifetime * 1000;
       const now = Date.now();
-      return entry => {
-        if (excludeFromSweep(entry)) {
+      return (entry, key, coll) => {
+        if (excludeFromSweep(entry, key, coll)) {
           return false;
         }
-        const comparisonTimestamp = getComparisonTimestamp(entry);
+        const comparisonTimestamp = getComparisonTimestamp(entry, key, coll);
         if (!comparisonTimestamp || typeof comparisonTimestamp !== 'number') return false;
         return now - comparisonTimestamp > lifetimeMs;
       };
