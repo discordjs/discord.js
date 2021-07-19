@@ -86,15 +86,15 @@ class User extends Base {
       this.banner = null;
     }
 
-    if ('banner_color' in data) {
+    if ('accent_color' in data) {
       /**
-       * The hexadecimal version of the user banner color, with a leading hash
+       * The base 10 accent color of the user
        * <info>The user must be force fetched</info>
-       * @type {?string}
+       * @type {?number}
        */
-      this.hexBannerColor = data.banner_color;
-    } else if (typeof this.hexBannerColor !== 'string') {
-      this.hexBannerColor = null;
+      this.accentColor = data.accent_color;
+    } else if (typeof this.accentColor === 'undefined') {
+      this.accentColor = null;
     }
 
     if ('system' in data) {
@@ -173,14 +173,14 @@ class User extends Base {
   }
 
   /**
-   * The base 10 banner color of the user
+   * The hexadecimal version of the user accent color, with a leading hash
    * <info>The user must be force fetched</info>
-   * @type {?number}
+   * @type {?string}
    * @readonly
    */
-  get bannerColor() {
-    if (!this.hexBannerColor) return null;
-    return parseInt(this.hexBannerColor.substring(1), 16);
+  get hexAccentColor() {
+    if (!this.accentColor) return null;
+    return `#${this.accentColor.toString(16).padStart(6, '0')}`;
   }
 
   /**
@@ -273,7 +273,7 @@ class User extends Base {
 
   /**
    * Checks if the user is equal to another.
-   * It compares id, username, discriminator, avatar, banner, banner color, and bot flags.
+   * It compares id, username, discriminator, avatar, banner, accent color, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
    * @param {User} user User to compare with
    * @returns {boolean}
@@ -286,7 +286,7 @@ class User extends Base {
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
       this.banner === user.banner &&
-      this.hexBannerColor === user.hexBannerColor;
+      this.accentColor === user.accentColor;
 
     return equal;
   }
@@ -328,6 +328,7 @@ class User extends Base {
       {
         createdTimestamp: true,
         defaultAvatarURL: true,
+        hexAccentColor: true,
         tag: true,
       },
       ...props,
