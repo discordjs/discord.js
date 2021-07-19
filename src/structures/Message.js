@@ -153,10 +153,12 @@ class Message extends Base {
     }
 
     /**
-     * A collection of stickers in the message
+     * A collection of (partial) stickers in the message
      * @type {Collection<Snowflake, Sticker>}
      */
-    this.stickers = new Collection(data.sticker_items?.map(s => [s.id, new Sticker(this.client, s)]));
+    this.stickers = new Collection(
+      (data.sticker_items ?? data.stickers)?.map(s => [s.id, new Sticker(this.client, s)]),
+    );
 
     /**
      * The timestamp the message was sent at
