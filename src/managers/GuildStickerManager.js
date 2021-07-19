@@ -27,7 +27,7 @@ class GuildStickerManager extends CachedManager {
    * @name GuildStickerManager#cache
    */
 
-  add(data, cache) {
+  _add(data, cache) {
     return super._add(data, cache, { extras: [this.guild] });
   }
 
