@@ -3659,7 +3659,7 @@ export type InviteScope =
   | 'bot'
   | 'connections'
   | 'email'
-  | 'identity'
+  | 'identify'
   | 'guilds'
   | 'guilds.join'
   | 'gdm.join'
