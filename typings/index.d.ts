@@ -29,7 +29,7 @@ import {
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
   Snowflake,
-} from 'discord-api-types/v8';
+} from 'discord-api-types/v9';
 import { EventEmitter } from 'events';
 import { Stream } from 'stream';
 import * as WebSocket from 'ws';
