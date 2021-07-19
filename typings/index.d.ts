@@ -25,11 +25,14 @@ import {
   APIOverwrite,
   APIPartialEmoji,
   APIRole,
+  APISticker,
+  APIStickerItem,
+  APIStickerPack,
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
   Snowflake,
-} from 'discord-api-types/v8';
+} from 'discord-api-types/v9';
 import { EventEmitter } from 'events';
 import { Stream } from 'stream';
 import * as WebSocket from 'ws';
@@ -1555,7 +1558,7 @@ export class StageInstance extends Base {
 }
 
 export class Sticker extends Base {
-  public constructor(client: Client, data: unknown);
+  public constructor(client: Client, data: APISticker | APIStickerItem);
   public readonly createdTimestamp: number;
   public readonly createdAt: Date;
   public available: boolean | null;
@@ -1581,7 +1584,7 @@ export class Sticker extends Base {
 }
 
 export class StickerPack extends Base {
-  public constructor(client: Client, data: unknown);
+  public constructor(client: Client, data: APIStickerPack);
   public readonly createdTimestamp: number;
   public readonly createdAt: Date;
   public bannerId: Snowflake;

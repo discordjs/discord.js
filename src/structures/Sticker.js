@@ -11,7 +11,7 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
 class Sticker extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} sticker The data for the sticker
+   * @param {APISticker | APIStickerItem} sticker The data for the sticker
    */
   constructor(client, sticker) {
     super(client);
@@ -233,3 +233,13 @@ class Sticker extends Base {
 }
 
 module.exports = Sticker;
+
+/**
+ * @external APISticker
+ * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-object}
+ */
+
+/**
+ * @external APIStickerItem
+ * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-item-object}
+ */

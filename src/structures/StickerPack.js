@@ -12,7 +12,7 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
 class StickerPack extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} pack The data for the sticker pack
+   * @param {APIStickerPack} pack The data for the sticker pack
    */
   constructor(client, pack) {
     super(client);
@@ -97,3 +97,8 @@ class StickerPack extends Base {
 }
 
 module.exports = StickerPack;
+
+/**
+ * @external APIStickerPack
+ * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-pack-object}
+ */
