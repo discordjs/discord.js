@@ -416,7 +416,6 @@ export class CommandInteraction extends Interaction {
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
-  private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
 }
 
 export class CommandInteractionOptionResolver {
@@ -3024,7 +3023,7 @@ export interface CommandInteractionOption {
   name: string;
   type: ApplicationCommandOptionType;
   value?: string | number | boolean;
-  options?: Collection<string, CommandInteractionOption>;
+  options?: CommandInteractionOption[];
   user?: User;
   member?: GuildMember | APIInteractionDataResolvedGuildMember;
   channel?: GuildChannel | APIInteractionDataResolvedChannel;
