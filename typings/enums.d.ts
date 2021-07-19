@@ -126,6 +126,11 @@ export enum StickerFormatTypes {
   LOTTIE = 3,
 }
 
+export enum StickerTypes {
+  STANDARD = 1,
+  GUILD = 2,
+}
+
 export enum VerificationLevels {
   NONE = 0,
   LOW = 1,

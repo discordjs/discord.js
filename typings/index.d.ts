@@ -25,6 +25,9 @@ import {
   APIOverwrite,
   APIPartialEmoji,
   APIRole,
+  APISticker,
+  APIStickerItem,
+  APIStickerPack,
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
@@ -52,6 +55,7 @@ import {
   PremiumTiers,
   PrivacyLevels,
   StickerFormatTypes,
+  StickerTypes,
   VerificationLevels,
   WebhookTypes,
 } from './enums';
@@ -290,6 +294,8 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public fetchInvite(invite: InviteResolvable): Promise<Invite>;
   public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
   public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
+  public fetchSticker(id: Snowflake): Promise<Sticker>;
+  public fetchPremiumStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
   public fetchWidget(guild: GuildResolvable): Promise<Widget>;
   public generateInvite(options?: InviteGenerationOptions): string;
@@ -552,6 +558,7 @@ export class Guild extends AnonymousGuild {
   public readonly shard: WebSocketShard;
   public shardId: number;
   public stageInstances: StageInstanceManager;
+  public stickers: GuildStickerManager;
   public readonly systemChannel: TextChannel | null;
   public systemChannelFlags: Readonly<SystemChannelFlags>;
   public systemChannelId: Snowflake | null;
@@ -645,6 +652,7 @@ export class GuildAuditLogsEntry {
     | Message
     | Integration
     | StageInstance
+    | Sticker
     | { id: Snowflake }
     | null;
   public targetType: GuildAuditLogsTarget;
@@ -1550,17 +1558,44 @@ export class StageInstance extends Base {
 }
 
 export class Sticker extends Base {
-  public constructor(client: Client, data: unknown);
-  public asset: string;
+  public constructor(client: Client, data: APISticker | APIStickerItem);
   public readonly createdTimestamp: number;
   public readonly createdAt: Date;
-  public description: string;
+  public available: boolean | null;
+  public description: string | null;
   public format: StickerFormatType;
+  public readonly guild: Guild | null;
+  public guildId: Snowflake | null;
   public id: Snowflake;
   public name: string;
-  public packId: Snowflake;
-  public tags: string[];
+  public packId: Snowflake | null;
+  public readonly partial: boolean;
+  public sortValue: number | null;
+  public tags: string[] | null;
+  public type: StickerType | null;
+  public user: User | null;
   public readonly url: string;
+  public fetch(): Promise<Sticker>;
+  public fetchPack(): Promise<StickerPack | null>;
+  public fetchUser(): Promise<User | null>;
+  public edit(data?: GuildStickerEditData, reason?: string): Promise<Sticker>;
+  public delete(reason?: string): Promise<Sticker>;
+  public equals(other: Sticker | unknown): boolean;
+}
+
+export class StickerPack extends Base {
+  public constructor(client: Client, data: APIStickerPack);
+  public readonly createdTimestamp: number;
+  public readonly createdAt: Date;
+  public bannerId: Snowflake;
+  public readonly coverSticker: Sticker | null;
+  public coverStickerId: Snowflake | null;
+  public description: string;
+  public id: Snowflake;
+  public name: string;
+  public skuId: Snowflake;
+  public stickers: Collection<Snowflake, Sticker>;
+  public bannerURL(options?: StaticImageURLOptions): string;
 }
 
 export class StoreChannel extends GuildChannel {
@@ -2029,10 +2064,12 @@ export const Constants: {
       Icon: (userId: Snowflake | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
       AppIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       AppAsset: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+      StickerPackBanner: (bannerId: Snowflake, format: AllowedImageFormat, size: number) => string;
       GDMIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       Splash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       DiscoverySplash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
       TeamIcon: (teamId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+      Sticker: (stickerId: Snowflake, stickerFormat: StickerFormatType) => string;
     };
   };
   WSCodes: {
@@ -2062,6 +2099,7 @@ export const Constants: {
   MessageTypes: MessageType[];
   SystemMessageTypes: SystemMessageType[];
   ActivityTypes: typeof ActivityTypes;
+  StickerTypes: typeof StickerTypes;
   StickerFormatTypes: typeof StickerFormatTypes;
   OverwriteTypes: typeof OverwriteTypes;
   ExplicitContentFilterLevels: typeof ExplicitContentFilterLevels;
@@ -2311,6 +2349,21 @@ export class GuildInviteManager extends DataManager<Snowflake, Invite, InviteRes
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
+}
+
+export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {
+  public constructor(guild: Guild, iterable?: Iterable<any>);
+  public guild: Guild;
+  public create(
+    file: BufferResolvable | Stream | FileOptions | MessageAttachment,
+    name: string,
+    tags: string,
+    options?: GuildStickerCreateOptions,
+  ): Promise<Sticker>;
+  public edit(sticker: StickerResolvable, data?: GuildStickerEditData, reason?: string): Promise<Sticker>;
+  public delete(sticker: StickerResolvable, reason?: string): Promise<void>;
+  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Sticker>;
+  public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Sticker>>;
 }
 
 export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
@@ -2648,6 +2701,8 @@ export interface APIErrors {
   INVALID_FORM_BODY: 50035;
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036;
   INVALID_API_VERSION: 50041;
+  FILE_UPLOADED_EXCEEDS_MAXIMUM_SIZE: 50045;
+  INVALID_FILE_UPLOADED: 50046;
   CANNOT_SELF_REDEEM_GIFT: 50054;
   PAYMENT_SOURCE_REQUIRED: 50070;
   CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: 50074;
@@ -2663,7 +2718,14 @@ export interface APIErrors {
   MESSAGE_ALREADY_HAS_THREAD: 160004;
   THREAD_LOCKED: 160005;
   MAXIMUM_ACTIVE_THREADS: 160006;
-  MAXIMUM_ACTIVE_ANNOUCEMENT_THREAD: 160007;
+  MAXIMUM_ACTIVE_ANNOUNCEMENT_THREADS: 160007;
+  INVALID_JSON_FOR_UPLOADED_LOTTIE_FILE: 170001;
+  UPLOADED_LOTTIES_CANNOT_CONTAIN_RASTERIZED_IMAGES: 170002;
+  STICKER_MAXIMUM_FRAMERATE_EXCEEDED: 170003;
+  STICKER_FRAME_COUNT_EXCEEDS_MAXIMUM_OF_1000_FRAMES: 170004;
+  LOTTIE_ANIMATION_MAXIMUM_DIMENSIONS_EXCEEDED: 170005;
+  STICKER_FRAME_RATE_IS_TOO_SMALL_OR_TOO_LARGE: 170006;
+  STICKER_ANIMATION_DURATION_EXCEEDS_MAXIMUM_OF_5_SECONDS: 170007;
 }
 
 export interface ApplicationAsset {
@@ -2923,6 +2985,9 @@ export interface ClientEvents {
   stageInstanceCreate: [stageInstance: StageInstance];
   stageInstanceUpdate: [oldStageInstance: StageInstance | null, newStageInstance: StageInstance];
   stageInstanceDelete: [stageInstance: StageInstance];
+  stickerCreate: [sticker: Sticker];
+  stickerDelete: [sticker: Sticker];
+  stickerUpdate: [oldSticker: Sticker, newSticker: Sticker];
 }
 
 export interface ClientOptions {
@@ -3133,6 +3198,9 @@ export interface ConstantsEvents {
   STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
   STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate';
   STAGE_INSTANCE_DELETE: 'stageInstanceDelete';
+  GUILD_STICKER_CREATE: 'stickerCreate';
+  GUILD_STICKER_DELETE: 'stickerDelete';
+  GUILD_STICKER_UPDATE: 'stickerUpdate';
 }
 
 export interface ConstantsOpcodes {
@@ -3363,6 +3431,9 @@ export interface GuildAuditLogsActions {
   STAGE_INSTANCE_CREATE?: number;
   STAGE_INSTANCE_UPDATE?: number;
   STAGE_INSTANCE_DELETE?: number;
+  STICKER_CREATE?: number;
+  STICKER_UPDATE?: number;
+  STICKER_DELETE?: number;
 }
 
 export type GuildAuditLogsActionType = 'CREATE' | 'DELETE' | 'UPDATE' | 'ALL';
@@ -3388,6 +3459,7 @@ export interface GuildAuditLogsTargets {
   MESSAGE?: string;
   INTEGRATION?: string;
   STAGE_INSTANCE?: string;
+  STICKER?: string;
   UNKNOWN?: string;
 }
 
@@ -3481,6 +3553,17 @@ export interface GuildEmojiCreateOptions {
 export interface GuildEmojiEditData {
   name?: string;
   roles?: Collection<Snowflake, Role> | RoleResolvable[];
+}
+
+export interface GuildStickerCreateOptions {
+  description?: string | null;
+  reason?: string;
+}
+
+export interface GuildStickerEditData {
+  name?: string;
+  description?: string | null;
+  tags?: string;
 }
 
 export type GuildFeatures =
@@ -3617,7 +3700,7 @@ export type IntentsString =
   | 'GUILDS'
   | 'GUILD_MEMBERS'
   | 'GUILD_BANS'
-  | 'GUILD_EMOJIS'
+  | 'GUILD_EMOJIS_AND_STICKERS'
   | 'GUILD_INTEGRATIONS'
   | 'GUILD_WEBHOOKS'
   | 'GUILD_INVITES'
@@ -3836,6 +3919,7 @@ export interface MessageOptions {
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
+  stickers?: StickerResolvable[];
 }
 
 export type MessageReactionResolvable =
@@ -3983,12 +4067,13 @@ export type PermissionString =
   | 'MANAGE_NICKNAMES'
   | 'MANAGE_ROLES'
   | 'MANAGE_WEBHOOKS'
-  | 'MANAGE_EMOJIS'
+  | 'MANAGE_EMOJIS_AND_STICKERS'
   | 'USE_APPLICATION_COMMANDS'
   | 'REQUEST_TO_SPEAK'
   | 'MANAGE_THREADS'
   | 'USE_PUBLIC_THREADS'
-  | 'USE_PRIVATE_THREADS';
+  | 'USE_PRIVATE_THREADS'
+  | 'USE_EXTERNAL_STICKERS';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
@@ -4163,6 +4248,10 @@ export type StageInstanceResolvable = StageInstance | Snowflake;
 export type Status = number;
 
 export type StickerFormatType = keyof typeof StickerFormatTypes;
+
+export type StickerResolvable = Sticker | Snowflake;
+
+export type StickerType = keyof typeof StickerTypes;
 
 export type SystemChannelFlagsString =
   | 'SUPPRESS_JOIN_NOTIFICATIONS'
@@ -4341,7 +4430,8 @@ export type WSEventType =
   | 'INTERACTION_CREATE'
   | 'STAGE_INSTANCE_CREATE'
   | 'STAGE_INSTANCE_UPDATE'
-  | 'STAGE_INSTANCE_DELETE';
+  | 'STAGE_INSTANCE_DELETE'
+  | 'GUILD_STICKERS_UPDATE';
 
 export type Serialized<T> = T extends symbol | bigint | (() => any)
   ? never
