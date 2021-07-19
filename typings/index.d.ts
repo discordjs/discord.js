@@ -38,10 +38,7 @@ import {
   ApplicationCommandOptionTypes,
   ApplicationCommandPermissionTypes,
   ChannelTypes,
-  ConstantsClientApplicationAssetTypes,
-  ConstantsColors,
   DefaultMessageNotificationLevels,
-  ConstantsEvents,
   ExplicitContentFilterLevels,
   InteractionResponseTypes,
   InteractionTypes,
@@ -51,16 +48,13 @@ import {
   MessageComponentTypes,
   MFALevels,
   NSFWLevels,
-  ConstantsOpcodes,
   OverwriteTypes,
   PremiumTiers,
   PrivacyLevels,
-  ConstantsStatus,
   StickerFormatTypes,
   StickerTypes,
   VerificationLevels,
   WebhookTypes,
-  ConstantsShardEvents,
 } from './enums';
 
 //#region Classes
@@ -413,7 +407,7 @@ export class CommandInteraction extends Interaction {
   public commandName: string;
   public deferred: boolean;
   public ephemeral: boolean | null;
-  public options: Collection<string, CommandInteractionOption>;
+  public options: CommandInteractionOptionResolver;
   public replied: boolean;
   public webhook: InteractionWebhook;
   public defer(options: InteractionDeferOptions & { fetchReply: true }): Promise<Message | APIMessage>;
@@ -425,7 +419,53 @@ export class CommandInteraction extends Interaction {
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   private transformOption(option: unknown, resolved: unknown): CommandInteractionOption;
-  private _createOptionsCollection(options: unknown, resolved: unknown): Collection<string, CommandInteractionOption>;
+}
+
+export class CommandInteractionOptionResolver {
+  public constructor(client: Client, options: CommandInteractionOption[]);
+  public readonly client: Client;
+  private _options: CommandInteractionOption[];
+  private _group: string | null;
+  private _subCommand: string | null;
+  private _getTypedOption(
+    name: string,
+    types: ApplicationCommandOptionType[],
+    properties: (keyof ApplicationCommandOption)[],
+    required: true,
+  ): CommandInteractionOption;
+  private _getTypedOption(
+    name: string,
+    types: ApplicationCommandOptionType[],
+    properties: (keyof ApplicationCommandOption)[],
+    required: boolean,
+  ): CommandInteractionOption | null;
+
+  public get(name: string, required: true): CommandInteractionOption;
+  public get(name: string, required?: boolean): CommandInteractionOption | null;
+  public getSubCommand(): string;
+  public getSubCommandGroup(): string;
+  public getBoolean(name: string, required: true): boolean;
+  public getBoolean(name: string, required?: boolean): boolean | null;
+  public getChannel(name: string, required: true): NonNullable<CommandInteractionOption['channel']>;
+  public getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption['channel']> | null;
+  public getString(name: string, required: true): string;
+  public getString(name: string, required?: boolean): string | null;
+  public getInteger(name: string, required: true): number;
+  public getInteger(name: string, required?: boolean): number | null;
+  public getUser(name: string, required: true): NonNullable<CommandInteractionOption['user']>;
+  public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption['user']> | null;
+  public getMember(name: string, required: true): NonNullable<CommandInteractionOption['member']>;
+  public getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption['member']> | null;
+  public getRole(name: string, required: true): NonNullable<CommandInteractionOption['role']>;
+  public getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption['role']> | null;
+  public getMentionable(
+    name: string,
+    required: true,
+  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']>;
+  public getMentionable(
+    name: string,
+    required?: boolean,
+  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
 }
 
 export class DataResolver extends null {
@@ -716,6 +756,8 @@ export class GuildPreview extends Base {
   public constructor(client: Client, data: unknown);
   public approximateMemberCount: number;
   public approximatePresenceCount: number;
+  public readonly createdAt: Date;
+  public readonly createdTimestamp: number;
   public description: string | null;
   public discoverySplash: string | null;
   public emojis: Collection<Snowflake, GuildPreviewEmoji>;
@@ -2033,23 +2075,23 @@ export const Constants: {
     4010: 'SHARDING_INVALID';
     4011: 'SHARDING_REQUIRED';
   };
-  Events: typeof ConstantsEvents;
-  ShardEvents: typeof ConstantsShardEvents;
+  Events: ConstantsEvents;
+  ShardEvents: ConstantsShardEvents;
   PartialTypes: {
     [K in PartialTypes]: K;
   };
   WSEvents: {
     [K in WSEventType]: K;
   };
-  Colors: typeof ConstantsColors;
-  Status: typeof ConstantsStatus;
-  Opcodes: typeof ConstantsOpcodes;
+  Colors: ConstantsColors;
+  Status: ConstantsStatus;
+  Opcodes: ConstantsOpcodes;
   APIErrors: APIErrors;
   ChannelTypes: typeof ChannelTypes;
   ThreadChannelTypes: ThreadChannelTypes[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
-  ClientApplicationAssetTypes: typeof ConstantsClientApplicationAssetTypes;
+  ClientApplicationAssetTypes: ConstantsClientApplicationAssetTypes;
   InviteScopes: InviteScope[];
   MessageTypes: MessageType[];
   SystemMessageTypes: SystemMessageType[];
@@ -3039,11 +3081,151 @@ export interface CommandInteractionOption {
   name: string;
   type: ApplicationCommandOptionType;
   value?: string | number | boolean;
-  options?: Collection<string, CommandInteractionOption>;
+  options?: CommandInteractionOption[];
   user?: User;
   member?: GuildMember | APIInteractionDataResolvedGuildMember;
   channel?: GuildChannel | APIInteractionDataResolvedChannel;
   role?: Role | APIRole;
+}
+
+export interface ConstantsClientApplicationAssetTypes {
+  SMALL: 1;
+  BIG: 2;
+}
+
+export interface ConstantsColors {
+  DEFAULT: 0x000000;
+  WHITE: 0xffffff;
+  AQUA: 0x1abc9c;
+  GREEN: 0x57f287;
+  BLUE: 0x3498db;
+  YELLOW: 0xfee75c;
+  PURPLE: 0x9b59b6;
+  LUMINOUS_VIVID_PINK: 0xe91e63;
+  FUCHSIA: 0xeb459e;
+  GOLD: 0xf1c40f;
+  ORANGE: 0xe67e22;
+  RED: 0xed4245;
+  GREY: 0x95a5a6;
+  NAVY: 0x34495e;
+  DARK_AQUA: 0x11806a;
+  DARK_GREEN: 0x1f8b4c;
+  DARK_BLUE: 0x206694;
+  DARK_PURPLE: 0x71368a;
+  DARK_VIVID_PINK: 0xad1457;
+  DARK_GOLD: 0xc27c0e;
+  DARK_ORANGE: 0xa84300;
+  DARK_RED: 0x992d22;
+  DARK_GREY: 0x979c9f;
+  DARKER_GREY: 0x7f8c8d;
+  LIGHT_GREY: 0xbcc0c0;
+  DARK_NAVY: 0x2c3e50;
+  BLURPLE: 0x5865f2;
+  GREYPLE: 0x99aab5;
+  DARK_BUT_NOT_BLACK: 0x2c2f33;
+  NOT_QUITE_BLACK: 0x23272a;
+}
+
+export interface ConstantsEvents {
+  RATE_LIMIT: 'rateLimit';
+  INVALID_REQUEST_WARNING: 'invalidRequestWarning';
+  CLIENT_READY: 'ready';
+  APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
+  APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
+  APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate';
+  GUILD_CREATE: 'guildCreate';
+  GUILD_DELETE: 'guildDelete';
+  GUILD_UPDATE: 'guildUpdate';
+  INVITE_CREATE: 'inviteCreate';
+  INVITE_DELETE: 'inviteDelete';
+  GUILD_UNAVAILABLE: 'guildUnavailable';
+  GUILD_MEMBER_ADD: 'guildMemberAdd';
+  GUILD_MEMBER_REMOVE: 'guildMemberRemove';
+  GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
+  GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable';
+  GUILD_MEMBERS_CHUNK: 'guildMembersChunk';
+  GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
+  GUILD_ROLE_CREATE: 'roleCreate';
+  GUILD_ROLE_DELETE: 'roleDelete';
+  GUILD_ROLE_UPDATE: 'roleUpdate';
+  GUILD_EMOJI_CREATE: 'emojiCreate';
+  GUILD_EMOJI_DELETE: 'emojiDelete';
+  GUILD_EMOJI_UPDATE: 'emojiUpdate';
+  GUILD_BAN_ADD: 'guildBanAdd';
+  GUILD_BAN_REMOVE: 'guildBanRemove';
+  CHANNEL_CREATE: 'channelCreate';
+  CHANNEL_DELETE: 'channelDelete';
+  CHANNEL_UPDATE: 'channelUpdate';
+  CHANNEL_PINS_UPDATE: 'channelPinsUpdate';
+  MESSAGE_CREATE: 'messageCreate';
+  MESSAGE_DELETE: 'messageDelete';
+  MESSAGE_UPDATE: 'messageUpdate';
+  MESSAGE_BULK_DELETE: 'messageDeleteBulk';
+  MESSAGE_REACTION_ADD: 'messageReactionAdd';
+  MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
+  MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
+  MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji';
+  THREAD_CREATE: 'threadCreate';
+  THREAD_DELETE: 'threadDelete';
+  THREAD_UPDATE: 'threadUpdate';
+  THREAD_LIST_SYNC: 'threadListSync';
+  THREAD_MEMBER_UPDATE: 'threadMemberUpdate';
+  THREAD_MEMBERS_UPDATE: 'threadMembersUpdate';
+  USER_UPDATE: 'userUpdate';
+  PRESENCE_UPDATE: 'presenceUpdate';
+  VOICE_SERVER_UPDATE: 'voiceServerUpdate';
+  VOICE_STATE_UPDATE: 'voiceStateUpdate';
+  TYPING_START: 'typingStart';
+  WEBHOOKS_UPDATE: 'webhookUpdate';
+  INTERACTION_CREATE: 'interactionCreate';
+  ERROR: 'error';
+  WARN: 'warn';
+  DEBUG: 'debug';
+  SHARD_DISCONNECT: 'shardDisconnect';
+  SHARD_ERROR: 'shardError';
+  SHARD_RECONNECTING: 'shardReconnecting';
+  SHARD_READY: 'shardReady';
+  SHARD_RESUME: 'shardResume';
+  INVALIDATED: 'invalidated';
+  RAW: 'raw';
+  STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
+  STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate';
+  STAGE_INSTANCE_DELETE: 'stageInstanceDelete';
+  GUILD_STICKER_CREATE: 'stickerCreate';
+  GUILD_STICKER_DELETE: 'stickerDelete';
+  GUILD_STICKER_UPDATE: 'stickerUpdate';
+}
+
+export interface ConstantsOpcodes {
+  DISPATCH: 0;
+  HEARTBEAT: 1;
+  IDENTIFY: 2;
+  STATUS_UPDATE: 3;
+  VOICE_STATE_UPDATE: 4;
+  VOICE_GUILD_PING: 5;
+  RESUME: 6;
+  RECONNECT: 7;
+  REQUEST_GUILD_MEMBERS: 8;
+  INVALID_SESSION: 9;
+  HELLO: 10;
+  HEARTBEAT_ACK: 11;
+}
+
+export interface ConstantsShardEvents {
+  CLOSE: 'close';
+  DESTROYED: 'destroyed';
+  INVALID_SESSION: 'invalidSession';
+  READY: 'ready';
+  RESUMED: 'resumed';
+}
+
+export interface ConstantsStatus {
+  READY: 0;
+  CONNECTING: 1;
+  RECONNECTING: 2;
+  IDLE: 3;
+  NEARLY: 4;
+  DISCONNECTED: 5;
 }
 
 export interface CreateRoleOptions extends RoleData {
@@ -3552,7 +3734,7 @@ export type InviteScope =
   | 'bot'
   | 'connections'
   | 'email'
-  | 'identity'
+  | 'identify'
   | 'guilds'
   | 'guilds.join'
   | 'gdm.join'
