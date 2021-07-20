@@ -16,13 +16,6 @@ class CommandInteractionOptionResolver {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * The interaction options array.
-     * @type {CommandInteractionOption[]}
-     * @private
-     */
-    this._options = options ?? [];
-
-    /**
      * The name of the sub-command group.
      * @type {?string}
      * @private
@@ -35,14 +28,24 @@ class CommandInteractionOptionResolver {
      * @private
      */
     this._subCommand = null;
-    if (this._options[0]?.type === 'SUB_COMMAND_GROUP') {
-      this._group = this._options[0].name;
-      this._options = this._options[0].options ?? [];
+
+    let data = options;
+    if (data[0]?.type === 'SUB_COMMAND_GROUP') {
+      this._group = data[0].name;
+      data = data[0].options ?? [];
     }
-    if (this._options[0]?.type === 'SUB_COMMAND') {
-      this._subCommand = this._options[0].name;
-      this._options = this._options[0].options ?? [];
+    if (data[0]?.type === 'SUB_COMMAND') {
+      this._subCommand = data[0].name;
+      data = data[0].options ?? [];
     }
+
+    /**
+     * The interaction options array.
+     * @name CommandInteractionOptionResolver#data
+     * @type {ReadonlyArray<CommandInteractionOption>}
+     * @readonly
+     */
+    Object.defineProperty(this, 'data', { value: Object.freeze(data) });
   }
 
   /**
@@ -52,7 +55,7 @@ class CommandInteractionOptionResolver {
    * @returns {?CommandInteractionOption} The option, if found.
    */
   get(name, required = false) {
-    const option = this._options.find(opt => opt.name === name);
+    const option = this.data.find(opt => opt.name === name);
     if (!option) {
       if (required) {
         throw new TypeError('COMMAND_INTERACTION_OPTION_NOT_FOUND', name);
