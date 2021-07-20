@@ -3080,7 +3080,7 @@ export type ColorResolvable =
   | 'DARK_BUT_NOT_BLACK'
   | 'NOT_QUITE_BLACK'
   | 'RANDOM'
-  | [number, number, number]
+  | readonly [number, number, number]
   | number
   | HexColorString;
 
