@@ -169,7 +169,7 @@ class CommandInteractionOptionResolver {
    * The value of the option, or null if not set and not required.
    */
   getMember(name, required = false) {
-    const option = this._getTypedOption(name, ['MEMBER'], ['member'], required);
+    const option = this._getTypedOption(name, ['USER'], ['member'], required);
     return option?.member ?? null;
   }
 
