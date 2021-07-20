@@ -134,7 +134,7 @@ const Messages = {
 
   COMMAND_INTERACTION_OPTION_NOT_FOUND: name => `Required option "${name}" not found.`,
   COMMAND_INTERACTION_OPTION_TYPE: (name, type, expected) =>
-    `Option "${name}" is of type: ${type}; expected one of: ${expected.join(', ')}`,
+    `Option "${name}" is of type: ${type}; expected ${expected}.`,
   COMMAND_INTERACTION_OPTION_EMPTY: (name, type) =>
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No sub-command specified for interaction.',

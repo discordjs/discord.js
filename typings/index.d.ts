@@ -432,13 +432,13 @@ export class CommandInteractionOptionResolver {
   private _subCommand: string | null;
   private _getTypedOption(
     name: string,
-    types: ApplicationCommandOptionType[],
+    type: ApplicationCommandOptionType,
     properties: (keyof ApplicationCommandOption)[],
     required: true,
   ): CommandInteractionOption;
   private _getTypedOption(
     name: string,
-    types: ApplicationCommandOptionType[],
+    type: ApplicationCommandOptionType,
     properties: (keyof ApplicationCommandOption)[],
     required: boolean,
   ): CommandInteractionOption | null;
