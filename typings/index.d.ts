@@ -125,6 +125,7 @@ export abstract class Application extends Base {
 
 export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public constructor(client: Client, data: unknown, guild?: Guild, guildId?: Snowflake);
+  public applicationId: Snowflake;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public defaultPermission: boolean;
@@ -2162,7 +2163,7 @@ export class ApplicationCommandManager<
   private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): unknown;
   public create(command: ApplicationCommandData): Promise<ApplicationCommandType>;
   public create(command: ApplicationCommandData, guildId: Snowflake): Promise<ApplicationCommand>;
-  public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandType | null>;
+  public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<void>;
   public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommandType>;
   public edit(
     command: ApplicationCommandResolvable,
@@ -2242,7 +2243,7 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
   public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
-  public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
+  public delete(command: ApplicationCommandResolvable): Promise<void>;
   public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;

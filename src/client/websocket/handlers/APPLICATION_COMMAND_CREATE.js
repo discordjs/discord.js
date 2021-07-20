@@ -3,15 +3,10 @@
 const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
-  let command;
+  const commandManager = data.guild_id ? client.guilds.cache.get(data.guild_id)?.commands : client.application.commands;
+  if (!commandManager) return;
 
-  if (data.guild_id) {
-    const guild = client.guilds.cache.get(data.guild_id);
-    if (!guild) return;
-    command = guild.commands._add(data);
-  } else {
-    command = client.application.commands._add(data);
-  }
+  const command = commandManager._add(data, data.application_id === client.application.id);
 
   /**
    * Emitted when an application command is created.

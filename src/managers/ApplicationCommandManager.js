@@ -116,7 +116,7 @@ class ApplicationCommandManager extends CachedManager {
     const data = await this.commandPath({ guildId }).post({
       data: this.constructor.transformCommand(command),
     });
-    return this._add(data, undefined, guildId);
+    return this._add(data, false, guildId);
   }
 
   /**
@@ -145,10 +145,7 @@ class ApplicationCommandManager extends CachedManager {
     const data = await this.commandPath({ guildId }).put({
       data: commands.map(c => this.constructor.transformCommand(c)),
     });
-    return data.reduce(
-      (coll, command) => coll.set(command.id, this._add(command, undefined, guildId)),
-      new Collection(),
-    );
+    return data.reduce((coll, command) => coll.set(command.id, this._add(command, false, guildId)), new Collection());
   }
 
   /**
@@ -179,7 +176,7 @@ class ApplicationCommandManager extends CachedManager {
    * @param {ApplicationCommandResolvable} command The command to delete
    * @param {Snowflake} [guildId] The guild's id where the command is registered,
    * ignored when using a {@link GuildApplicationCommandManager}
-   * @returns {Promise<?ApplicationCommand>}
+   * @returns {Promise<void>}
    * @example
    * // Delete a command
    * guild.commands.delete('123456789012345678')
@@ -191,10 +188,6 @@ class ApplicationCommandManager extends CachedManager {
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
     await this.commandPath({ id, guildId }).delete();
-
-    const cached = this.cache.get(id);
-    this.cache.delete(id);
-    return cached ?? null;
   }
 
   /**

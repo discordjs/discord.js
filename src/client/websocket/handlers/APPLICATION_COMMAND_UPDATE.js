@@ -3,18 +3,11 @@
 const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
-  let oldCommand;
-  let newCommand;
+  const commandManager = data.guild_id ? client.guilds.cache.get(data.guild_id)?.commands : client.application.commands;
+  if (!commandManager) return;
 
-  if (data.guild_id) {
-    const guild = client.guilds.cache.get(data.guild_id);
-    if (!guild) return;
-    oldCommand = guild.commands.cache.get(data.id)?._clone() ?? null;
-    newCommand = guild.commands._add(data);
-  } else {
-    oldCommand = client.application.commands.cache.get(data.id)?._clone() ?? null;
-    newCommand = client.application.commands._add(data);
-  }
+  const oldCommand = commandManager.cache.get(data.id)?._clone() ?? null;
+  const newCommand = commandManager._add(data, data.application_id === client.application.id);
 
   /**
    * Emitted when an application command is updated.
