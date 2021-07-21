@@ -429,6 +429,7 @@ export class CommandInteractionOptionResolver {
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption[];
   private _group: string | null;
+  private _hoistedOptions: CommandInteractionOption[];
   private _subCommand: string | null;
   private _getTypedOption(
     name: string,
