@@ -2925,8 +2925,8 @@ export interface ClientEvents {
   emojiDelete: [emoji: GuildEmoji];
   emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
   error: [error: Error];
-  guildBanAdd: [ban: GuildBan];
-  guildBanRemove: [ban: GuildBan];
+  guildBanAdd: [ban: GuildBan, user: User];
+  guildBanRemove: [ban: GuildBan, user: User];
   guildCreate: [guild: Guild];
   guildDelete: [guild: Guild];
   guildUnavailable: [guild: Guild];
