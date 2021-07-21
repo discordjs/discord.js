@@ -2163,7 +2163,7 @@ export class ApplicationCommandManager<
   private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): unknown;
   public create(command: ApplicationCommandData): Promise<ApplicationCommandType>;
   public create(command: ApplicationCommandData, guildId: Snowflake): Promise<ApplicationCommand>;
-  public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommand | null>;
+  public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandType | null>;
   public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommandType>;
   public edit(
     command: ApplicationCommandResolvable,
