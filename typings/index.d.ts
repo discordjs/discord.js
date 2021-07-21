@@ -2136,7 +2136,7 @@ export abstract class DataManager<K, Holds, R> extends BaseManager {
   public readonly cache: Collection<K, Holds>;
   public resolve(resolvable: Holds): Holds;
   public resolve(resolvable: R): Holds | null;
-  public resolveId(resolvable: Holds): K;
+  public resolveId(resolvable: K | Holds): K;
   public resolveId(resolvable: R): K | null;
   public valueOf(): Collection<K, Holds>;
 }
