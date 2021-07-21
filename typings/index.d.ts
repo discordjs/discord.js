@@ -427,8 +427,9 @@ export class CommandInteraction extends Interaction {
 export class CommandInteractionOptionResolver {
   public constructor(client: Client, options: CommandInteractionOption[]);
   public readonly client: Client;
-  private _options: CommandInteractionOption[];
+  public readonly data: readonly CommandInteractionOption[];
   private _group: string | null;
+  private _hoistedOptions: CommandInteractionOption[];
   private _subCommand: string | null;
   private _getTypedOption(
     name: string,

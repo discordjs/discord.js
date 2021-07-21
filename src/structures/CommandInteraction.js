@@ -52,7 +52,7 @@ class CommandInteraction extends Interaction {
      */
     this.options = new CommandInteractionOptionResolver(
       this.client,
-      data.data.options?.map(option => this.transformOption(option, data.data.resolved)),
+      data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
     );
 
     /**

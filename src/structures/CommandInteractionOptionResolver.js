@@ -16,13 +16,6 @@ class CommandInteractionOptionResolver {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * The interaction options array.
-     * @type {CommandInteractionOption[]}
-     * @private
-     */
-    this._options = options ?? [];
-
-    /**
      * The name of the sub-command group.
      * @type {?string}
      * @private
@@ -35,14 +28,33 @@ class CommandInteractionOptionResolver {
      * @private
      */
     this._subCommand = null;
-    if (this._options[0]?.type === 'SUB_COMMAND_GROUP') {
-      this._group = this._options[0].name;
-      this._options = this._options[0].options ?? [];
+
+    /**
+     * The bottom-level options for the interaction.
+     * If there is a sub-command (or sub-command and group), this is the options for the sub-command.
+     * @type {CommandInteractionOption[]}
+     * @private
+     */
+    this._hoistedOptions = options;
+
+    // Hoist sub-command group if present
+    if (this._hoistedOptions[0]?.type === 'SUB_COMMAND_GROUP') {
+      this._group = this._hoistedOptions[0].name;
+      this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
-    if (this._options[0]?.type === 'SUB_COMMAND') {
-      this._subCommand = this._options[0].name;
-      this._options = this._options[0].options ?? [];
+    // Hoist sub-command if present
+    if (this._hoistedOptions[0]?.type === 'SUB_COMMAND') {
+      this._subCommand = this._hoistedOptions[0].name;
+      this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
+
+    /**
+     * The interaction options array.
+     * @name CommandInteractionOptionResolver#data
+     * @type {ReadonlyArray<CommandInteractionOption>}
+     * @readonly
+     */
+    Object.defineProperty(this, 'data', { value: Object.freeze([...options]) });
   }
 
   /**
@@ -52,7 +64,7 @@ class CommandInteractionOptionResolver {
    * @returns {?CommandInteractionOption} The option, if found.
    */
   get(name, required = false) {
-    const option = this._options.find(opt => opt.name === name);
+    const option = this._hoistedOptions.find(opt => opt.name === name);
     if (!option) {
       if (required) {
         throw new TypeError('COMMAND_INTERACTION_OPTION_NOT_FOUND', name);
