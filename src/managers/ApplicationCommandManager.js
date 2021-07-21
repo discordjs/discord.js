@@ -192,9 +192,9 @@ class ApplicationCommandManager extends CachedManager {
 
     await this.commandPath({ id, guildId }).delete();
 
+    const cached = this.cache.get(id);
     if (!guildId) this.cache.delete(id);
-
-    return this.cache.get(id) ?? null;
+    return cached ?? null;
   }
 
   /**
