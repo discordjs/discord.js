@@ -3694,7 +3694,7 @@ export type InteractionResponseType = keyof typeof InteractionResponseTypes;
 
 export type InteractionType = keyof typeof InteractionTypes;
 
-export type InteractionUpdateOptions = Omit<InteractionReplyOptions, 'ephemeral'>;
+export type InteractionUpdateOptions = MessageEditOptions;
 
 export type IntentsString =
   | 'GUILDS'
@@ -3810,7 +3810,7 @@ export type MessageComponentType = keyof typeof MessageComponentTypes;
 export type MessageComponentTypeResolvable = MessageComponentType | MessageComponentTypes;
 
 export interface MessageEditOptions {
-  attachments?: (MessageAttachment | never)[];
+  attachments?: MessageAttachment[];
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions)[] | null;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
