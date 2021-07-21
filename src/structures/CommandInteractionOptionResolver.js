@@ -29,14 +29,23 @@ class CommandInteractionOptionResolver {
      */
     this._subCommand = null;
 
-    let data = options;
-    if (data[0]?.type === 'SUB_COMMAND_GROUP') {
-      this._group = data[0].name;
-      data = data[0].options ?? [];
+    /**
+     * The bottom-level options for the interaction.
+     * If there is a sub-command (or sub-command and group), this is the options for the sub-command.
+     * @type {CommandInteractionOption[]}
+     * @private
+     */
+    this._hoistedOptions = options;
+
+    // Hoist sub-command group if present
+    if (this._hoistedOptions[0]?.type === 'SUB_COMMAND_GROUP') {
+      this._group = this._hoistedOptions[0].name;
+      this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
-    if (data[0]?.type === 'SUB_COMMAND') {
-      this._subCommand = data[0].name;
-      data = data[0].options ?? [];
+    // Hoist sub-command if present
+    if (this._hoistedOptions[0]?.type === 'SUB_COMMAND') {
+      this._subCommand = this._hoistedOptions[0].name;
+      this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
 
     /**
@@ -45,7 +54,7 @@ class CommandInteractionOptionResolver {
      * @type {ReadonlyArray<CommandInteractionOption>}
      * @readonly
      */
-    Object.defineProperty(this, 'data', { value: Object.freeze(data) });
+    Object.defineProperty(this, 'data', { value: Object.freeze([...options]) });
   }
 
   /**
@@ -55,7 +64,7 @@ class CommandInteractionOptionResolver {
    * @returns {?CommandInteractionOption} The option, if found.
    */
   get(name, required = false) {
-    const option = this.data.find(opt => opt.name === name);
+    const option = this._hoistedOptions.find(opt => opt.name === name);
     if (!option) {
       if (required) {
         throw new TypeError('COMMAND_INTERACTION_OPTION_NOT_FOUND', name);
