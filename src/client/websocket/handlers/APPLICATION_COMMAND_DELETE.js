@@ -11,7 +11,7 @@ module.exports = (client, { d: data }) => {
   if (isOwn) commandManager.cache.delete(data.id);
 
   /**
-   * Emitted when an application command is deleted.
+   * Emitted when a guild application command is deleted.
    * @event Client#applicationCommandDelete
    * @param {ApplicationCommand} command The command which was deleted
    */

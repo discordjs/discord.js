@@ -20,7 +20,7 @@ class ApplicationCommand extends Base {
     this.id = data.id;
 
     /**
-     * The application's id
+     * The parent application's id
      * @type {Snowflake}
      */
     this.applicationId = data.application_id;

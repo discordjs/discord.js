@@ -10,7 +10,7 @@ module.exports = (client, { d: data }) => {
   const newCommand = commandManager._add(data, data.application_id === client.application.id);
 
   /**
-   * Emitted when an application command is updated.
+   * Emitted when a guild application command is updated.
    * @event Client#applicationCommandUpdate
    * @param {?ApplicationCommand} oldCommand The command before the update
    * @param {ApplicationCommand} newCommand The command after the update
