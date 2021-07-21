@@ -153,15 +153,12 @@ class Message extends Base {
     }
 
     /**
-     * A collection of stickers in the message
+     * A collection of (partial) stickers in the message
      * @type {Collection<Snowflake, Sticker>}
      */
-    this.stickers = new Collection();
-    if (data.stickers) {
-      for (const sticker of data.stickers) {
-        this.stickers.set(sticker.id, new Sticker(this.client, sticker));
-      }
-    }
+    this.stickers = new Collection(
+      (data.sticker_items ?? data.stickers)?.map(s => [s.id, new Sticker(this.client, s)]),
+    );
 
     /**
      * The timestamp the message was sent at
@@ -721,11 +718,11 @@ class Message extends Base {
 
   /**
    * Fetch this message.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<Message>}
    */
-  fetch(force = false) {
-    return this.channel.messages.fetch(this.id, true, force);
+  fetch(force = true) {
+    return this.channel.messages.fetch(this.id, { force });
   }
 
   /**

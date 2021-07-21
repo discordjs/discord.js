@@ -160,34 +160,6 @@ class User extends Base {
   }
 
   /**
-   * Checks whether the user is typing in a channel.
-   * @param {ChannelResolvable} channel The channel to check in
-   * @returns {boolean}
-   */
-  typingIn(channel) {
-    return this.client.channels.resolve(channel)._typing.has(this.id);
-  }
-
-  /**
-   * Gets the time that the user started typing.
-   * @param {ChannelResolvable} channel The channel to get the time in
-   * @returns {?Date}
-   */
-  typingSinceIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    return channel._typing.has(this.id) ? new Date(channel._typing.get(this.id).since) : null;
-  }
-
-  /**
-   * Gets the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
-   * @param {ChannelResolvable} channel The channel to get the time in
-   * @returns {number}
-   */
-  typingDurationIn(channel) {
-    return this.client.channels.resolve(channel)._typing.get(this.id)?.elapsedTime ?? -1;
-  }
-
-  /**
    * The DM between the client's user and this user
    * @type {?DMChannel}
    * @readonly
@@ -258,11 +230,11 @@ class User extends Base {
 
   /**
    * Fetches this user.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<User>}
    */
-  fetch(force = false) {
-    return this.client.users.fetch(this.id, true, force);
+  fetch(force = true) {
+    return this.client.users.fetch(this.id, { force });
   }
 
   /**

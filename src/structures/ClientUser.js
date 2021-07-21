@@ -8,11 +8,6 @@ const DataResolver = require('../util/DataResolver');
  * @extends {User}
  */
 class ClientUser extends User {
-  constructor(client, data) {
-    super(client, data);
-    this._typing = new Map();
-  }
-
   _patch(data) {
     super._patch(data);
 
