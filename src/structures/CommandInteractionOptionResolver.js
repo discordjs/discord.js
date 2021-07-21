@@ -97,10 +97,12 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets the selected sub-command.
+   * @param {boolean} [required=true] Whether to throw an error if there is no sub-command.
+   * Note that this defaults to true, unlike the other `getX()` methods.
    * @returns {string} The name of the selected sub-command.
    */
-  getSubCommand() {
-    if (!this._subCommand) {
+  getSubCommand(required = true) {
+    if (required && !this._subCommand) {
       throw new TypeError('COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND');
     }
     return this._subCommand;
@@ -108,10 +110,12 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets the selected sub-command group.
+   * @param {boolean} [required=true] Whether to throw an error if there is no sub-command group.
+   * Note that this defaults to true, unlike the other `getX()` methods.
    * @returns {string} The name of the selected sub-command group.
    */
-  getSubCommandGroup() {
-    if (!this._group) {
+  getSubCommandGroup(required = true) {
+    if (required && !this._group) {
       throw new TypeError('COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP');
     }
     return this._group;
