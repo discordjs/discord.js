@@ -3810,7 +3810,7 @@ export type MessageComponentType = keyof typeof MessageComponentTypes;
 export type MessageComponentTypeResolvable = MessageComponentType | MessageComponentTypes;
 
 export interface MessageEditOptions {
-  attachments?: Array<MessageAttachment | never>;
+  attachments?: (MessageAttachment | never)[];
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions)[] | null;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
