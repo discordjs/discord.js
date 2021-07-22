@@ -98,7 +98,6 @@ class CommandInteractionOptionResolver {
   /**
    * Gets the selected sub-command.
    * @param {boolean} [required=true] Whether to throw an error if there is no sub-command.
-   * Note that this defaults to true, unlike the other `getX()` methods.
    * @returns {?string} The name of the selected sub-command, or null if not set and not required.
    */
   getSubCommand(required = true) {
@@ -111,7 +110,6 @@ class CommandInteractionOptionResolver {
   /**
    * Gets the selected sub-command group.
    * @param {boolean} [required=true] Whether to throw an error if there is no sub-command group.
-   * Note that this defaults to true, unlike the other `getX()` methods.
    * @returns {?string} The name of the selected sub-command group, or null if not set and not required.
    */
   getSubCommandGroup(required = true) {
