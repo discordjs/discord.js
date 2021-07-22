@@ -2256,11 +2256,11 @@ export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R
 }
 
 export class ApplicationCommandManager<
-  ApplicationCommandType = ApplicationCommand<{ guild: GuildResolvable }>,
+  ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>,
   PermissionsOptionsExtras = { guild: GuildResolvable },
   PermissionsGuildType = null,
-> extends CachedManager<Snowflake, ApplicationCommandType, ApplicationCommandResolvable> {
-  public constructor(client: Client, iterable?: Iterable<RawApplicationCommandData>);
+> extends CachedManager<Snowflake, ApplicationCommandScope, ApplicationCommandResolvable> {
+  public constructor(client: Client, iterable?: Iterable<unknown>);
   public permissions: ApplicationCommandPermissionsManager<
     { command?: ApplicationCommandResolvable } & PermissionsOptionsExtras,
     { command: ApplicationCommandResolvable } & PermissionsOptionsExtras,
@@ -2269,10 +2269,10 @@ export class ApplicationCommandManager<
     null
   >;
   private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): unknown;
-  public create(command: ApplicationCommandData): Promise<ApplicationCommandType>;
+  public create(command: ApplicationCommandData): Promise<ApplicationCommandScope>;
   public create(command: ApplicationCommandData, guildId: Snowflake): Promise<ApplicationCommand>;
-  public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandType | null>;
-  public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommandType>;
+  public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope | null>;
+  public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommandScope>;
   public edit(
     command: ApplicationCommandResolvable,
     data: ApplicationCommandData,
@@ -2282,12 +2282,12 @@ export class ApplicationCommandManager<
     id: Snowflake,
     options: FetchApplicationCommandOptions & { guildId: Snowflake },
   ): Promise<ApplicationCommand>;
-  public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommandType>;
+  public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommandScope>;
   public fetch(
     id?: Snowflake,
     options?: FetchApplicationCommandOptions,
-  ): Promise<Collection<Snowflake, ApplicationCommandType>>;
-  public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommandType>>;
+  ): Promise<Collection<Snowflake, ApplicationCommandScope>>;
+  public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommandScope>>;
   public set(
     commands: ApplicationCommandData[],
     guildId: Snowflake,
