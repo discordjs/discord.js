@@ -166,7 +166,7 @@ class Message extends Base {
       this.attachments = new Collection(this.attachemnts);
     }
 
-    if ('sticker_itesm' in data || 'stickers' in data || !partial) {
+    if ('sticker_items' in data || 'stickers' in data || !partial) {
       /**
        * A collection of stickers in the message
        * @type {Collection<Snowflake, Sticker>}
