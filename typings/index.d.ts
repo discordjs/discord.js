@@ -451,7 +451,6 @@ export class CommandInteractionOptionResolver {
   public getSubCommand(required: boolean): string | null;
   public getSubCommandGroup(required?: true): string;
   public getSubCommandGroup(required: boolean): string | null;
-
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
   public getChannel(name: string, required: true): NonNullable<CommandInteractionOption['channel']>;
