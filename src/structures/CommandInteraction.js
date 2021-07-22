@@ -52,7 +52,7 @@ class CommandInteraction extends Interaction {
      */
     this.options = new CommandInteractionOptionResolver(
       this.client,
-      data.data.target_id
+      typeof data.data.target_id !== 'undefined'
         ? this.resolveContextMenuOptions(data.data)
         : data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
     );
