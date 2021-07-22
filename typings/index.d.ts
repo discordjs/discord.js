@@ -2870,6 +2870,7 @@ export interface ApplicationAsset {
 export interface ApplicationCommandData {
   name: string;
   description: string;
+  type?: ApplicationCommandType | ApplicationCommandTypes;
   options?: ApplicationCommandOptionData[];
   defaultPermission?: boolean;
 }

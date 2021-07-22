@@ -105,6 +105,7 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the command
    * @property {string} description The description of the command
+   * @property {ApplicationCommandTypes} [type] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {boolean} [defaultPermission] Whether the command is enabled by default when the app is added to a guild
    */
