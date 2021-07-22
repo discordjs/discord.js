@@ -572,6 +572,8 @@ export class CommandInteractionOptionResolver {
     name: string,
     required?: boolean,
   ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
+  public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
+  public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
 }
 
 export class DataResolver extends null {
@@ -3238,6 +3240,7 @@ export interface CommandInteractionOption {
   member?: GuildMember | APIInteractionDataResolvedGuildMember;
   channel?: GuildChannel | APIInteractionDataResolvedChannel;
   role?: Role | APIRole;
+  message?: Message | APIMessage;
 }
 
 export interface ConstantsClientApplicationAssetTypes {

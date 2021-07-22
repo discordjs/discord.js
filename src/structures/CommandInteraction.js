@@ -52,7 +52,9 @@ class CommandInteraction extends Interaction {
      */
     this.options = new CommandInteractionOptionResolver(
       this.client,
-      data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
+      data.data.target_id
+        ? this.resolveContextMenuOptions(data.data)
+        : data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
     );
 
     /**
@@ -127,6 +129,33 @@ class CommandInteraction extends Interaction {
 
       const role = resolved.roles?.[option.value];
       if (role) result.role = this.guild?.roles._add(role) ?? role;
+    }
+
+    return result;
+  }
+
+  /**
+   * Resolves and transforms options received from the API for a context menu interaction.
+   * @param {APIApplicationCommandInteractionData} data The interaction data
+   * @returns {CommandInteractionOption[]}
+   * @private
+   */
+  resolveContextMenuOptions({ target_id, resolved }) {
+    const result = [];
+
+    if (resolved.users?.[target_id]) {
+      result.push(
+        this.transformOption({ name: 'user', type: ApplicationCommandOptionTypes.USER, value: target_id }, resolved),
+      );
+    }
+
+    if (resolved.messages?.[target_id]) {
+      result.push({
+        name: 'message',
+        type: '_MESSAGE',
+        value: target_id,
+        message: this.channel?.messages._add(resolved.messages[target_id]),
+      });
     }
 
     return result;

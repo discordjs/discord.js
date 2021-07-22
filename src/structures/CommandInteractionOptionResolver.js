@@ -220,6 +220,18 @@ class CommandInteractionOptionResolver {
     const option = this._getTypedOption(name, 'MENTIONABLE', ['user', 'member', 'role'], required);
     return option?.member ?? option?.user ?? option?.role ?? null;
   }
+
+  /**
+   * Gets a message option.
+   * @param {string} name The name of the option.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @returns {?(Message|APIMessage)}
+   * The value of the option, or null if not set and not required.
+   */
+  getMessage(name, required = false) {
+    const option = this._getTypedOption(name, '_MESSAGE', ['message'], required);
+    return option?.message ?? null;
+  }
 }
 
 module.exports = CommandInteractionOptionResolver;
