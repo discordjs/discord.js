@@ -180,11 +180,8 @@ class Options extends null {
     return manager => {
       const setting = settings[manager.name];
       if (typeof setting === 'number' && setting !== Infinity) return new LimitedCollection(setting);
-      if (
-        setting?.sweepInterval === (undefined || null) ||
-        setting.sweepInterval <= 0 ||
-        setting.sweepInterval === Infinity
-      ) {
+      /* eslint-disable-next-line eqeqeq */
+      if (setting?.sweepInterval == null || setting.sweepInterval <= 0 || setting.sweepInterval === Infinity) {
         return new Collection();
       }
       return new SweptCollection(setting);
