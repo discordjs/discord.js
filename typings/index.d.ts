@@ -1616,11 +1616,9 @@ export class StoreChannel extends GuildChannel {
 export class SweptCollection<K, V> extends Collection<K, V> {
   public constructor(options?: SweptCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
   public interval: number | null;
-  public sweepFilter: ((collection: this) => ((value: V, key: K, collection: this) => boolean) | null) | null;
+  public sweepFilter: SweptCollectionSweepFilter<K, V> | null;
 
-  public static filterByLifetime<K, V>(
-    options?: LifetimeFilterOptions<K, V>,
-  ): () => (value: V, collection: SweptCollection<K, V>) => boolean;
+  public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweptCollectionSweepFilter<K, V>;
 }
 
 export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
@@ -4296,10 +4294,12 @@ export interface StageInstanceEditOptions {
   privacyLevel?: PrivacyLevel | number;
 }
 
+export type SweptCollectionSweepFilter<K, V> = (
+  collection: SweptCollection<K, V>,
+) => ((value: V, key: K, collection: SweptCollection<K, V>) => boolean) | null;
+
 export interface SweptCollectionOptions<K, V> {
-  sweepFilter?: (
-    collection: SweptCollection<K, V>,
-  ) => ((value: V, key: K, collection: SweptCollection<K, V>) => boolean) | false;
+  sweepFilter?: SweptCollectionSweepFilter<K, V>;
   sweepInterval?: number;
 }
 
