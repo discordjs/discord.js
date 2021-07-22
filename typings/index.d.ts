@@ -48,6 +48,7 @@ import {
   ActivityTypes,
   ApplicationCommandOptionTypes,
   ApplicationCommandPermissionTypes,
+  ApplicationCommandTypes,
   ChannelTypes,
   DefaultMessageNotificationLevels,
   ExplicitContentFilterLevels,
@@ -2891,6 +2892,8 @@ export interface ApplicationCommandOptionChoice {
   name: string;
   value: string | number;
 }
+
+export type ApplicationCommandType = keyof typeof ApplicationCommandTypes;
 
 export type ApplicationCommandOptionType = keyof typeof ApplicationCommandOptionTypes;
 
