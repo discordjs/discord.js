@@ -490,7 +490,7 @@ class GuildAuditLogsEntry {
           let change = this.changes.find(c => c.key === 'code');
           change = change.new ?? change.old;
           return guild.invites.fetch().then(invites => {
-            this.target = invites.find(i => i.code === change);
+            this.target = invites.find(i => i.code === change) ?? null;
           });
         } else {
           this.target = this.changes.reduce((o, c) => {
