@@ -124,6 +124,7 @@ class Options extends null {
         version: 9,
       },
       http: {
+        agent: {},
         version: 9,
         api: 'https://discord.com/api',
         cdn: 'https://cdn.discordapp.com',
