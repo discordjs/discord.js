@@ -125,6 +125,7 @@ export abstract class Application extends Base {
 
 export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public constructor(client: Client, data: unknown, guild?: Guild, guildId?: Snowflake);
+  public applicationId: Snowflake;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public defaultPermission: boolean;
