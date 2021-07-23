@@ -3699,7 +3699,9 @@ export type InteractionResponseType = keyof typeof InteractionResponseTypes;
 
 export type InteractionType = keyof typeof InteractionTypes;
 
-export type InteractionUpdateOptions = Omit<InteractionReplyOptions, 'ephemeral'>;
+export interface InteractionUpdateOptions extends MessageEditOptions {
+  fetchReply?: boolean;
+}
 
 export type IntentsString =
   | 'GUILDS'
