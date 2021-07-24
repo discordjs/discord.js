@@ -89,7 +89,7 @@ class CommandInteraction extends Interaction {
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string|number|boolean} [value] The value of the option
-   * @property {Collection<string, CommandInteractionOption>} [options] Additional options if this option is a
+   * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)
    * @property {User} [user] The resolved user
    * @property {GuildMember|APIGuildMember} [member] The resolved member

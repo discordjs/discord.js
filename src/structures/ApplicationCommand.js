@@ -20,6 +20,12 @@ class ApplicationCommand extends Base {
     this.id = data.id;
 
     /**
+     * The parent application's id
+     * @type {Snowflake}
+     */
+    this.applicationId = data.application_id;
+
+    /**
      * The guild this command is part of
      * @type {?Guild}
      */
