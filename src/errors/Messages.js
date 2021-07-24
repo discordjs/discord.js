@@ -105,8 +105,9 @@ const Messages = {
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
-  MISSING_MANAGE_EMOJIS_PERMISSION: guild =>
-    `Client must have Manage Emoji permission in guild ${guild} to see emoji authors.`,
+  MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION: guild =>
+    `Client must have Manage Emojis and Stickers permission in guild ${guild} to see emoji authors.`,
+  NOT_GUILD_STICKER: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   REACTION_RESOLVE_USER: "Couldn't resolve the user id to remove from the reaction.",
 
@@ -130,6 +131,14 @@ const Messages = {
   INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
   INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
   INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
+
+  COMMAND_INTERACTION_OPTION_NOT_FOUND: name => `Required option "${name}" not found.`,
+  COMMAND_INTERACTION_OPTION_TYPE: (name, type, expected) =>
+    `Option "${name}" is of type: ${type}; expected ${expected}.`,
+  COMMAND_INTERACTION_OPTION_EMPTY: (name, type) =>
+    `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No sub-command specified for interaction.',
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No sub-command group specified for interaction.',
 
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 

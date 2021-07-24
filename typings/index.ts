@@ -8,6 +8,9 @@ import {
   ClientApplication,
   ClientUser,
   Collection,
+  CommandInteraction,
+  CommandInteractionOption,
+  CommandInteractionOptionResolver,
   Constants,
   DMChannel,
   Guild,
@@ -646,4 +649,33 @@ client.on('messageReactionAdd', async reaction => {
 
 // Test interactions
 declare const interaction: Interaction;
+declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
+
+client.on('interactionCreate', async interaction => {
+  if (interaction.isCommand()) {
+    assertType<CommandInteraction>(interaction);
+    assertType<CommandInteractionOptionResolver>(interaction.options);
+    assertType<readonly CommandInteractionOption[]>(interaction.options.data);
+
+    const optionalOption = interaction.options.get('name');
+    const requiredOption = interaction.options.get('name', true);
+    assertType<CommandInteractionOption | null>(optionalOption);
+    assertType<CommandInteractionOption>(requiredOption);
+    assertType<CommandInteractionOption[] | undefined>(requiredOption.options);
+
+    assertType<string | null>(interaction.options.getString('name', booleanValue));
+    assertType<string | null>(interaction.options.getString('name', false));
+    assertType<string>(interaction.options.getString('name', true));
+
+    assertType<string>(interaction.options.getSubCommand());
+    assertType<string>(interaction.options.getSubCommand(true));
+    assertType<string | null>(interaction.options.getSubCommand(booleanValue));
+    assertType<string | null>(interaction.options.getSubCommand(false));
+
+    assertType<string>(interaction.options.getSubCommandGroup());
+    assertType<string>(interaction.options.getSubCommandGroup(true));
+    assertType<string | null>(interaction.options.getSubCommandGroup(booleanValue));
+    assertType<string | null>(interaction.options.getSubCommandGroup(false));
+  }
+});

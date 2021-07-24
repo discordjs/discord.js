@@ -230,11 +230,11 @@ class User extends Base {
 
   /**
    * Fetches this user.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<User>}
    */
-  fetch(force = false) {
-    return this.client.users.fetch(this.id, true, force);
+  fetch(force = true) {
+    return this.client.users.fetch(this.id, { force });
   }
 
   /**
