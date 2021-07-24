@@ -14,20 +14,20 @@ class InteractionResponses {
    * Options for deferring the reply to an {@link Interaction}.
    * @typedef {Object} InteractionDeferOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
-   * @property {boolean} [fetchReply] Whether to return the replied interaction
+   * @property {boolean} [fetchReply] Whether to fetch the reply
    */
 
   /**
    * Options for deferring and updating the reply to a {@link ButtonInteraction}.
    * @typedef {Object} InteractionDeferUpdateOptions
-   * @property {boolean} [fetchReply] Whether to return the replied interaction
+   * @property {boolean} [fetchReply] Whether to fetch the reply
    */
 
   /**
    * Options for a reply to an {@link Interaction}.
    * @typedef {BaseMessageOptions} InteractionReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
-   * @property {boolean} [fetchReply] Whether to return the replied interaction
+   * @property {boolean} [fetchReply] Whether to fetch the reply
    */
 
   /**
