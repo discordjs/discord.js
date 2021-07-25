@@ -678,7 +678,7 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   fetchWidget() {
-    return this.client.fetchWidget(this.id);
+    return this.client.fetchGuildWidget(this.id);
   }
 
   /**
