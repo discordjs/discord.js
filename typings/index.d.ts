@@ -460,6 +460,8 @@ export class CommandInteractionOptionResolver {
   public getString(name: string, required?: boolean): string | null;
   public getInteger(name: string, required: true): number;
   public getInteger(name: string, required?: boolean): number | null;
+  public getNumber(name: string, required: true): number;
+  public getNumber(name: string, required?: boolean): number | null;
   public getUser(name: string, required: true): NonNullable<CommandInteractionOption['user']>;
   public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption['user']> | null;
   public getMember(name: string, required: true): NonNullable<CommandInteractionOption['member']>;
