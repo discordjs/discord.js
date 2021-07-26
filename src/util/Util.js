@@ -263,7 +263,7 @@ class Util extends null {
   /**
    * Gets the recommended shard count from Discord.
    * @param {string} token Discord auth token
-   * @param {FetchRecommendedShardsOptions} [options] Options for fetching recommended shard count
+   * @param {FetchRecommendedShardsOptions} [options] Options for fetching the recommended shard count
    * @returns {Promise<number>} The recommended number of shards
    */
   static fetchRecommendedShards(token, { guildsPerShard = 1000, largeBotSharding = false } = {}) {
