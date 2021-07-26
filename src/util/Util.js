@@ -279,7 +279,7 @@ class Util extends null {
         if (res.status === 401) throw new DiscordError('TOKEN_INVALID');
         throw res;
       })
-      .then(data => Math.ceil(data.shards * (1000 / guildsPerShard), multiple) * multiple);
+      .then(data => Math.ceil((data.shards * (1000 / guildsPerShard)) / multiple) * multiple);
   }
 
   /**
