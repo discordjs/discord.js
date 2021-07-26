@@ -1531,6 +1531,11 @@ export class ShardingManager extends EventEmitter {
   public once(event: 'shardCreate', listener: (shard: Shard) => Awaited<void>): this;
 }
 
+export interface FetchRecommendedShardsOptions {
+  guildsPerShard?: number;
+  largeBotSharding?: boolean;
+}
+
 export class SnowflakeUtil extends null {
   private constructor();
   public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
@@ -1791,7 +1796,7 @@ export class Util extends null {
   public static escapeStrikethrough(text: string): string;
   public static escapeSpoiler(text: string): string;
   public static cleanCodeBlockContent(text: string): string;
-  public static fetchRecommendedShards(token: string, guildsPerShard?: number): Promise<number>;
+  public static fetchRecommendedShards(token: string, options?: FetchRecommendedShardsOptions): Promise<number>;
   public static flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
   public static idToBinary(num: Snowflake): string;
   public static makeError(obj: MakeErrorOptions): Error;
