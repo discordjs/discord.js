@@ -21,6 +21,7 @@ import {
   APIApplicationCommand,
   APIApplicationCommandInteractionData,
   APIApplicationCommandInteractionDataOption,
+  APIApplicationCommandOption,
   APIApplicationCommandPermission,
   APIAuditLogChange,
   APIEmoji,
@@ -239,6 +240,30 @@ export class BaseClient extends EventEmitter {
   public options: ClientOptions | WebhookClientOptions;
   public destroy(): void;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
+}
+
+export abstract class BaseCommandInteraction extends Interaction {
+  public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
+  public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | ThreadChannel | null;
+  public channelId: Snowflake;
+  public commandId: Snowflake;
+  public commandName: string;
+  public deferred: boolean;
+  public ephemeral: boolean | null;
+  public replied: boolean;
+  public webhook: InteractionWebhook;
+  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
+  public deleteReply(): Promise<void>;
+  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
+  public fetchReply(): Promise<Message | APIMessage>;
+  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
+  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
+  private transformOption(
+    option: APIApplicationCommandOption,
+    resolved: APIApplicationCommandInteractionData['resolved'],
+  ): CommandInteractionOption;
 }
 
 export abstract class BaseGuild extends Base {
@@ -495,30 +520,8 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaited<void>): this;
 }
 
-export class CommandInteraction extends Interaction {
-  public constructor(client: Client, data: RawCommandInteractionData);
-  public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public readonly channel: TextBasedChannels | null;
-  public channelId: Snowflake;
-  public commandId: Snowflake;
-  public commandName: string;
-  public deferred: boolean;
-  public ephemeral: boolean | null;
+export class CommandInteraction extends BaseCommandInteraction {
   public options: CommandInteractionOptionResolver;
-  public replied: boolean;
-  public webhook: InteractionWebhook;
-  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
-  public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
-  public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
-  public fetchReply(): Promise<Message | APIMessage>;
-  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  private transformOption(
-    option: APIApplicationCommandInteractionDataOption,
-    resolved: APIApplicationCommandInteractionData['resolved'],
-  ): CommandInteractionOption;
 }
 
 export class CommandInteractionOptionResolver {
@@ -574,6 +577,12 @@ export class CommandInteractionOptionResolver {
   ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
+}
+
+export class ContextMenuInteraction extends BaseCommandInteraction {
+  public options: CommandInteractionOptionResolver;
+  public targetId: Snowflake;
+  private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption[];
 }
 
 export class DataResolver extends null {
@@ -979,6 +988,7 @@ export class Interaction extends Base {
   public inGuild(): this is this & { guildId: Snowflake; member: GuildMember | APIInteractionGuildMember };
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
+  public isContextMenu(): this is ContextMenuInteraction;
   public isMessageComponent(): this is MessageComponentInteraction;
   public isSelectMenu(): this is SelectMenuInteraction;
 }
