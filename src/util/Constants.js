@@ -861,6 +861,7 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
  * * CHANNEL
  * * ROLE
  * * MENTIONABLE
+ * * NUMBER
  * @typedef {string} ApplicationCommandOptionType
  */
 exports.ApplicationCommandOptionTypes = createEnum([
@@ -874,6 +875,7 @@ exports.ApplicationCommandOptionTypes = createEnum([
   'CHANNEL',
   'ROLE',
   'MENTIONABLE',
+  'NUMBER',
 ]);
 
 /**

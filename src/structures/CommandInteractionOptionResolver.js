@@ -165,6 +165,17 @@ class CommandInteractionOptionResolver {
   }
 
   /**
+   * Gets a number option.
+   * @param {string} name The name of the option.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @returns {?number} The value of the option, or null if not set and not required.
+   */
+  getNumber(name, required = false) {
+    const option = this._getTypedOption(name, 'NUMBER', ['value'], required);
+    return option?.value ?? null;
+  }
+
+  /**
    * Gets a user option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
