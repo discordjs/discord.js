@@ -66,6 +66,8 @@ class ThreadChannel extends Channel {
        * @type {?Snowflake}
        */
       this.parentId = data.parent_id;
+    } else if (!this.parentId) {
+      this.parentId = null;
     }
 
     if ('thread_metadata' in data) {
@@ -94,6 +96,19 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.archiveTimestamp = new Date(data.thread_metadata.archive_timestamp).getTime();
+    } else {
+      if (!this.locked) {
+        this.locked = null;
+      }
+      if (!this.archived) {
+        this.archived = null;
+      }
+      if (!this.autoArchiveDuration) {
+        this.autoArchiveDuration = null;
+      }
+      if (!this.archiveTimestamp) {
+        this.archiveTimestamp = null;
+      }
     }
 
     if ('owner_id' in data) {
@@ -102,6 +117,8 @@ class ThreadChannel extends Channel {
        * @type {?Snowflake}
        */
       this.ownerId = data.owner_id;
+    } else if (!this.ownerId) {
+      this.ownerId = null;
     }
 
     if ('last_message_id' in data) {
@@ -110,6 +127,8 @@ class ThreadChannel extends Channel {
        * @type {?Snowflake}
        */
       this.lastMessageId = data.last_message_id;
+    } else if (!this.lastMessageId) {
+      this.lastMessageId = null;
     }
 
     if ('last_pin_timestamp' in data) {
@@ -118,6 +137,8 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+    } else if (!this.lastPinTimestamp) {
+      this.lastPinTimestamp = null;
     }
 
     if ('rate_limit_per_user' in data || !partial) {
@@ -126,6 +147,8 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
+    } else if (!this.rateLimitPerUser) {
+      this.rateLimitPerUser = null;
     }
 
     if ('message_count' in data) {
@@ -136,6 +159,8 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.messageCount = data.message_count;
+    } else if (!this.messageCount) {
+      this.messageCount = null;
     }
 
     if ('member_count' in data) {
@@ -146,6 +171,8 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.memberCount = data.member_count;
+    } else if (!this.memberCount) {
+      this.memberCount = null;
     }
 
     if (data.member && this.client.user) this.members._add({ user_id: this.client.user.id, ...data.member });

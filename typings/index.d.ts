@@ -1661,28 +1661,28 @@ export class TextChannel extends TextBasedChannel(GuildChannel) {
 
 export class ThreadChannel extends TextBasedChannel(Channel) {
   public constructor(guild: Guild, data?: object, client?: Client, fromInteraction?: boolean);
-  public archived?: boolean;
+  public archived: boolean | null;
   public readonly archivedAt: Date | null;
-  public archiveTimestamp?: number;
-  public autoArchiveDuration?: ThreadAutoArchiveDuration;
+  public archiveTimestamp: number | null;
+  public autoArchiveDuration: ThreadAutoArchiveDuration | null;
   public readonly editable: boolean;
   public guild: Guild;
   public guildId: Snowflake;
   public readonly guildMembers: Collection<Snowflake, GuildMember>;
   public readonly joinable: boolean;
   public readonly joined: boolean;
-  public locked?: boolean;
+  public locked: boolean | null;
   public readonly manageable: boolean;
   public readonly sendable: boolean;
-  public memberCount?: number | null;
-  public messageCount?: number | null;
+  public memberCount: number | null;
+  public messageCount: number | null;
   public messages: MessageManager;
   public members: ThreadMemberManager;
   public name: string;
-  public ownerId?: Snowflake;
+  public ownerId: Snowflake | null;
   public readonly parent: TextChannel | NewsChannel | null;
-  public parentId?: Snowflake;
-  public rateLimitPerUser?: number;
+  public parentId: Snowflake | null;
+  public rateLimitPerUser: number | null;
   public type: ThreadChannelTypes;
   public readonly unarchivable: boolean;
   public delete(reason?: string): Promise<ThreadChannel>;
