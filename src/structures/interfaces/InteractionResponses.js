@@ -31,6 +31,12 @@ class InteractionResponses {
    */
 
   /**
+   * Options for updating the message received from a {@link ButtonInteraction}.
+   * @typedef {MessageEditOptions} InteractionUpdateOptions
+   * @property {boolean} [fetchReply] Whether to fetch the reply
+   */
+
+  /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferOptions} [options] Options for deferring the reply to this interaction
    * @returns {Promise<Message|void>}
