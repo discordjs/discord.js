@@ -19,7 +19,7 @@ class ChannelManager extends CachedManager {
    * @name ChannelManager#cache
    */
 
-  _add(data, guild, cache = true, allowUnknownGuild = false, fromInteraction = false) {
+  _add(data, guild, { cache = true, allowUnknownGuild = false, fromInteraction = false } = {}) {
     const existing = this.cache.get(data.id);
     if (existing) {
       if (cache) existing._patch(data, fromInteraction);
@@ -30,7 +30,7 @@ class ChannelManager extends CachedManager {
       return existing;
     }
 
-    const channel = Channel.create(this.client, data, guild, allowUnknownGuild, fromInteraction);
+    const channel = Channel.create(this.client, data, guild, { allowUnknownGuild, fromInteraction });
 
     if (!channel) {
       this.client.emit(Events.DEBUG, `Failed to find guild, or unknown type for channel ${data.id} ${data.type}`);
@@ -99,7 +99,7 @@ class ChannelManager extends CachedManager {
     }
 
     const data = await this.client.api.channels(id).get();
-    return this._add(data, null, cache, allowUnknownGuild);
+    return this._add(data, null, { cache, allowUnknownGuild });
   }
 }
 

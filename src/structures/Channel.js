@@ -126,7 +126,7 @@ class Channel extends Base {
     return ThreadChannelTypes.includes(this.type);
   }
 
-  static create(client, data, guild, allowUnknownGuild, fromInteraction) {
+  static create(client, data, guild, { allowUnknownGuild, fromInteraction }) {
     if (!CategoryChannel) CategoryChannel = require('./CategoryChannel');
     if (!DMChannel) DMChannel = require('./DMChannel');
     if (!NewsChannel) NewsChannel = require('./NewsChannel');
