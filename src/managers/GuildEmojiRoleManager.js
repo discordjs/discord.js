@@ -72,7 +72,10 @@ class GuildEmojiRoleManager extends DataManager {
       resolvedRoleIds.push(roleId);
     }
 
-    const newRoles = [...this.cache.keys()].filter(id => !resolvedRoleIds.includes(id));
+    const newRoles = this.cache
+      .keys()
+      .slice()
+      .filter(id => !resolvedRoleIds.includes(id));
     return this.set(newRoles);
   }
 
@@ -97,7 +100,7 @@ class GuildEmojiRoleManager extends DataManager {
 
   clone() {
     const clone = new this.constructor(this.emoji);
-    clone._patch([...this.cache.keys()].slice());
+    clone._patch(this.cache.keys().slice());
     return clone;
   }
 
