@@ -298,7 +298,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public fetchSticker(id: Snowflake): Promise<Sticker>;
   public fetchPremiumStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
-  public fetchWidget(guild: GuildResolvable): Promise<Widget>;
+  public fetchGuildWidget(guild: GuildResolvable): Promise<Widget>;
   public generateInvite(options?: InviteGenerationOptions): string;
   public login(token?: string): Promise<string>;
   public isReady(): this is Client<true>;
@@ -591,7 +591,8 @@ export class Guild extends AnonymousGuild {
   public fetchVanityData(): Promise<Vanity>;
   public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   public fetchWelcomeScreen(): Promise<WelcomeScreen>;
-  public fetchWidget(): Promise<GuildWidget>;
+  public fetchWidget(): Promise<Widget>;
+  public fetchWidgetSettings(): Promise<GuildWidgetSettings>;
   public leave(): Promise<Guild>;
   public setAFKChannel(afkChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
@@ -617,7 +618,7 @@ export class Guild extends AnonymousGuild {
   public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
   public setVerificationLevel(verificationLevel: VerificationLevel | number, reason?: string): Promise<Guild>;
-  public setWidget(widget: GuildWidgetData, reason?: string): Promise<Guild>;
+  public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
   public toJSON(): unknown;
 }
 
@@ -3527,7 +3528,7 @@ export interface GuildCreateOptions {
   verificationLevel?: VerificationLevel | number;
 }
 
-export interface GuildWidget {
+export interface GuildWidgetSettings {
   enabled: boolean;
   channel: GuildChannel | null;
 }
@@ -3618,7 +3619,7 @@ export interface GuildPruneMembersOptions {
   roles?: RoleResolvable[];
 }
 
-export interface GuildWidgetData {
+export interface GuildWidgetSettingsData {
   enabled: boolean;
   channel: GuildChannelResolvable | null;
 }

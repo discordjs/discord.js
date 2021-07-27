@@ -404,11 +404,11 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the widget of a guild from Discord, available for guilds with the widget enabled.
-   * @param {GuildResolvable} guild The guild to fetch the widget for
+   * Obtains the widget data of a guild from Discord, available for guilds with the widget enabled.
+   * @param {GuildResolvable} guild The guild to fetch the widget data for
    * @returns {Promise<Widget>}
    */
-  async fetchWidget(guild) {
+  async fetchGuildWidget(guild) {
     const id = this.guilds.resolveId(guild);
     if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
     const data = await this.api.guilds(id, 'widget.json').get();
