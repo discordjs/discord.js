@@ -23,7 +23,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * The cache of this Manager
-   * @type {Collection<Snowflake, Invite>}
+   * @type {Collection<string, Invite>}
    * @name GuildInviteManager#cache
    */
 
@@ -74,7 +74,7 @@ class GuildInviteManager extends CachedManager {
   /**
    * Fetches invite(s) from Discord.
    * @param {InviteResolvable|FetchInviteOptions|FetchInvitesOptions} [options] Options for fetching guild invite(s)
-   * @returns {Promise<Invite|Collection<Snowflake, Invite>>}
+   * @returns {Promise<Invite|Collection<string, Invite>>}
    * @example
    * // Fetch all invites from a guild
    * guild.invites.fetch()
