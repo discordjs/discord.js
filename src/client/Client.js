@@ -73,6 +73,13 @@ class Client extends BaseClient {
     this._validateOptions();
 
     /**
+     * The intervals used by managers with a {@link SweptCollection} to sweep.
+     * These are automatically cleared when the client is destroyed.
+     * @type {Set}
+     */
+    this.sweepIntervals = new Set();
+
+    /**
      * The WebSocket manager of the client
      * @type {WebSocketManager}
      */
@@ -251,6 +258,10 @@ class Client extends BaseClient {
    */
   destroy() {
     super.destroy();
+
+    for (const interval of this.sweepIntervals) clearInterval(interval);
+    this.sweepIntervals.clear();
+
     if (this.sweepMessageInterval) clearInterval(this.sweepMessageInterval);
 
     this.ws.destroy();

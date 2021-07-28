@@ -13,6 +13,8 @@ class CachedManager extends DataManager {
 
     Object.defineProperty(this, '_cache', { value: this.client.options.makeCache(this.constructor, this.holds) });
 
+    if (this._cache.interval) client.sweepIntervals.add(this._cache.interval);
+
     if (iterable) {
       for (const item of iterable) {
         this._add(item);

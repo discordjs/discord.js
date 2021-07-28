@@ -284,6 +284,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public readyAt: If<Ready, Date>;
   public readonly readyTimestamp: If<Ready, number>;
   public shard: ShardClientUtil | null;
+  public sweepIntervals: Set<NodeJS.Timeout>;
   public token: If<Ready, string, string | null>;
   public uptime: If<Ready, number>;
   public user: If<Ready, ClientUser>;
@@ -1615,7 +1616,7 @@ export class StoreChannel extends GuildChannel {
 
 export class SweptCollection<K, V> extends Collection<K, V> {
   public constructor(options?: SweptCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
-  public interval: number | null;
+  public interval: NodeJS.Timeout | null;
   public sweepFilter: SweptCollectionSweepFilter<K, V> | null;
 
   public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweptCollectionSweepFilter<K, V>;
