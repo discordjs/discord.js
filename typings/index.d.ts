@@ -2351,7 +2351,7 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
   public remove(user: UserResolvable, reason?: string): Promise<User>;
 }
 
-export class GuildInviteManager extends DataManager<Snowflake, Invite, InviteResolvable> {
+export class GuildInviteManager extends DataManager<string, Invite, InviteResolvable> {
   public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public create(channel: GuildChannelResolvable, options?: CreateInviteOptions): Promise<Invite>;
