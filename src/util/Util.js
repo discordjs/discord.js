@@ -257,7 +257,7 @@ class Util extends null {
   /**
    * @typedef {Object} FetchRecommendedShardsOptions
    * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
-   * @property {boolean} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
+   * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
    */
 
   /**
