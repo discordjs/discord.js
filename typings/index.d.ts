@@ -28,7 +28,6 @@ import {
   APISticker,
   APIStickerItem,
   APIStickerPack,
-  APIThreadList,
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
@@ -2294,7 +2293,6 @@ export class GuildChannelManager extends CachedManager<
     Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>
   >;
   public fetchActiveThreads(cache?: boolean): Promise<FetchedThreads>;
-  public fetchActiveThreads(cache: boolean, returnRaw: true): Promise<APIThreadList>;
 }
 
 export class GuildEmojiManager extends BaseGuildEmojiManager {

@@ -229,7 +229,7 @@ class ThreadManager extends CachedManager {
    * @returns {Promise<FetchedThreads>}
    */
   async fetchActive(cache = true) {
-    const raw = await this.channel.guild.channels.fetchActiveThreads(cache, true);
+    const raw = await this.client.api.guilds(this.channel.guild.id).threads.active.get();
     return this.constructor._mapThreads(raw, this.client, { parent: this.channel, cache });
   }
 

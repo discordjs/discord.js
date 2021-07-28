@@ -182,17 +182,16 @@ class GuildChannelManager extends CachedManager {
   /**
    * Obtains all active thread channels in the guild from Discord
    * @param {boolean} [cache=true] Whether to cache the fetched data
-   * @param {boolean} [returnRaw=false] Whether to return the raw data
-   * @returns {Promise<FetchedThreads>|Promise<APIActiveThreadsList>}
+   * @returns {Promise<FetchedThreads>}
    * @example
    * // Fetch all threads from the guild
    * message.guild.channels.fetchActiveThreads()
    *   .then(fetched => console.log(`There are ${fetched.threads.size} threads.`))
    *   .catch(console.error);
    */
-  async fetchActiveThreads(cache = true, returnRaw = false) {
+  async fetchActiveThreads(cache = true) {
     const raw = await this.client.api.guilds(this.guild.id).threads.active.get();
-    return returnRaw ? raw : ThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
+    return ThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
   }
 }
 
