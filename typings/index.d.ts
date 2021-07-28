@@ -1533,7 +1533,7 @@ export class ShardingManager extends EventEmitter {
 
 export interface FetchRecommendedShardsOptions {
   guildsPerShard?: number;
-  largeBotSharding?: boolean;
+  multipleOf?: number;
 }
 
 export class SnowflakeUtil extends null {
