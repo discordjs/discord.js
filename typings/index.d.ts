@@ -448,10 +448,10 @@ export class CommandInteractionOptionResolver {
   public get(name: string, required: true): CommandInteractionOption;
   public get(name: string, required?: boolean): CommandInteractionOption | null;
 
-  public getSubCommand(required?: true): string;
-  public getSubCommand(required: boolean): string | null;
-  public getSubCommandGroup(required?: true): string;
-  public getSubCommandGroup(required: boolean): string | null;
+  public getSubcommand(required?: true): string;
+  public getSubcommand(required: boolean): string | null;
+  public getSubcommandGroup(required?: true): string;
+  public getSubcommandGroup(required: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
   public getChannel(name: string, required: true): NonNullable<CommandInteractionOption['channel']>;
