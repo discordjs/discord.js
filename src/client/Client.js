@@ -80,6 +80,13 @@ class Client extends BaseClient {
     this.sweepIntervals = new Set();
 
     /**
+     * The finalizers used within managers to clear.
+     * @type {FinalizationRegistry}
+     * @private
+     */
+    this._managerFinalizers = new FinalizationRegistry(this._finalizeManager.bind(this));
+
+    /**
      * The WebSocket manager of the client
      * @type {WebSocketManager}
      */
@@ -360,6 +367,21 @@ class Client extends BaseClient {
   async fetchPremiumStickerPacks() {
     const data = await this.api('sticker-packs').get();
     return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
+  }
+  /**
+   * A last ditch cleanup function for garbage collection on managers.
+   * @param {Collection} options.cache The cache of the manager being GCed
+   * @param {string} options.type The name of the manager being GCed
+   */
+  _finalizeManager({ cache, type }) {
+    if (cache.interval) {
+      clearInterval(cache.interval);
+      this.sweepIntervals.delete(cache.interval);
+      this.emit(
+        Events.DEBUG,
+        `${type} has no more references and contained a SweptCollection. The interval on the cache has been destroyed`,
+      );
+    }
   }
 
   /**
