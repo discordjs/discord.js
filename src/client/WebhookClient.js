@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseClient = require('./BaseClient');
+const { Error } = require('../errors');
 const Webhook = require('../structures/Webhook');
 
 /**
@@ -10,19 +11,40 @@ const Webhook = require('../structures/Webhook');
  */
 class WebhookClient extends BaseClient {
   /**
-   * @param {Snowflake} id The webhook's id
-   * @param {string} token Token of the webhook
+   * The data for the webhook client
+   * @typedef {Object} WebhookClientData
+   * @property {Snowflake} [id] The webhook's id
+   * @property {string} [token] Token of the webhook
+   * @property {string} [url] The full URL of the webhook
+   */
+
+  /**
+   * @param {WebhookClientData} data The data of the webhook
    * @param {ClientOptions} [options] Options for the client
    * @example
    * // Create a new webhook and send a message
-   * const hook = new Discord.WebhookClient('1234', 'abcdef');
+   * const hook = new Discord.WebhookClient({ id: '1234', token: 'abcdef' });
    * hook.send('This will send a message').catch(console.error);
    */
-  constructor(id, token, options) {
+  constructor(data, options) {
     super(options);
     Object.defineProperty(this, 'client', { value: this });
-    this.id = id;
-    Object.defineProperty(this, 'token', { value: token, writable: true, configurable: true });
+    let id, token;
+
+    if ('url' in data) {
+      const url = data.url.match(
+        // eslint-disable-next-line no-useless-escape
+        /^https?:\/\/(?:discord|discordapp)\.com\/api\/webhooks(?:\/v[0-9]\d*)?\/([^\/]+)\/([^\/]+)/i,
+      );
+
+      if (!url || url.length <= 1) throw new Error('WEBHOOK_URL_INVALID');
+
+      id = url[1];
+      token = url[2];
+    }
+
+    this.id = id ?? data.id;
+    Object.defineProperty(this, 'token', { value: token ?? data.id, writable: true, configurable: true });
   }
 
   // These are here only for documentation purposes - they are implemented by Webhook
