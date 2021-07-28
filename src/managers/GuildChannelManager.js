@@ -1,6 +1,7 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
+const ThreadManager = require('./ThreadManager');
 const { Error } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
@@ -149,7 +150,7 @@ class GuildChannelManager extends CachedManager {
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?GuildChannel|Collection<Snowflake, GuildChannel>>}
    * @example
-   * // Fetch all channels from the guild
+   * // Fetch all channels from the guild (excluding threads)
    * message.guild.channels.fetch()
    *   .then(channels => console.log(`There are ${channels.size} channels.`))
    *   .catch(console.error);
@@ -177,6 +178,27 @@ class GuildChannelManager extends CachedManager {
     for (const channel of data) channels.set(channel.id, this.client.channels._add(channel, this.guild, { cache }));
     return channels;
   }
+
+  /**
+   * Obtains all active thread channels in the guild from Discord
+   * @param {boolean} [cache=true] Whether to cache the fetched data
+   * @param {boolean} [returnRaw=false] Whether to return the raw data
+   * @returns {Promise<FetchedThreads>|Promise<APIActiveThreadsList>}
+   * @example
+   * // Fetch all threads from the guild
+   * message.guild.channels.fetchActiveThreads()
+   *   .then(fetched => console.log(`There are ${fetched.threads.size} threads.`))
+   *   .catch(console.error);
+   */
+  async fetchActiveThreads(cache = true, returnRaw = false) {
+    const raw = await this.client.api.guilds(this.guild.id).threads.active.get();
+    return returnRaw ? raw : ThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
+  }
 }
 
 module.exports = GuildChannelManager;
+
+/**
+ * @external APIActiveThreadsList
+ * @see {@link https://discord.com/developers/docs/resources/guild#list-active-threads-response-body}
+ */
