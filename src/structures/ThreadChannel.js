@@ -189,15 +189,6 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * The {@link ThreadMember} object of the owner of this thread
-   * @type {?ThreadMember}
-   * @readonly
-   */
-  get owner() {
-    return this.members.cache.get(this.ownerId);
-  }
-
-  /**
    * The time at which this thread's archive status was last changed
    * <info>If the thread was never archived or unarchived, this is the time at which the thread was created</info>
    * @type {?Date}
@@ -246,10 +237,18 @@ class ThreadChannel extends Channel {
   /**
    * Fetches the owner of this thread
    * @param {FetchOwnerOptions} [options] The options for fetching the member
-   * @returns {Promise<GuildMember>}
+   * @returns {Promise<ThreadMember>}
    */
-  fetchOwner(options) {
-    return this.guild.members.fetch({ ...options, user: this.ownerId });
+  async fetchOwner({ cache = true, force = false } = {}) {
+    if (!force) {
+      const existing = this.cache.get(this.ownerId);
+      if (existing) return existing;
+    }
+
+    // We cannot fetch a single thread member, as of this commit's date, Discord API throws with 405
+    const data = await this.client.api.channels(this.thread.id, 'thread-members').get();
+    const owner = data.find(member => member.user_id === this.ownerId);
+    return this._add(owner, cache);
   }
 
   /**
