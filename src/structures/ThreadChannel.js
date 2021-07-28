@@ -189,6 +189,15 @@ class ThreadChannel extends Channel {
   }
 
   /**
+   * The {@link ThreadMember} object of the owner of this thread
+   * @type {?ThreadMember}
+   * @readonly
+   */
+  get owner() {
+    return this.members.cache.get(this.ownerId);
+  }
+
+  /**
    * The time at which this thread's archive status was last changed
    * <info>If the thread was never archived or unarchived, this is the time at which the thread was created</info>
    * @type {?Date}
@@ -232,6 +241,15 @@ class ThreadChannel extends Channel {
    */
   permissionsFor(memberOrRole) {
     return this.parent?.permissionsFor(memberOrRole) ?? null;
+  }
+
+  /**
+   * Fetches the owner of this thread
+   * @param {FetchOwnerOptions} [options] The options for fetching the member
+   * @returns {Promise<GuildMember>}
+   */
+  fetchOwner(options) {
+    return this.guild.members.fetch({ ...options, user: this.ownerId });
   }
 
   /**

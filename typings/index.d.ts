@@ -1688,6 +1688,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public members: ThreadMemberManager;
   public name: string;
   public ownerId: Snowflake | null;
+  public readonly owner: ThreadMember | null;
   public readonly parent: TextChannel | NewsChannel | null;
   public parentId: Snowflake | null;
   public rateLimitPerUser: number | null;
@@ -1699,6 +1700,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public leave(): Promise<ThreadChannel>;
   public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
   public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
+  public fetchOwner(options?: FetchOwnerOptions): Promise<GuildMember>;
   public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
   public setAutoArchiveDuration(
     autoArchiveDuration: ThreadAutoArchiveDuration,
