@@ -1132,8 +1132,8 @@ export class MessageComponentInteraction extends Interaction {
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  public update(content: InteractionUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
-  public update(content: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
+  public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
 
   public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
