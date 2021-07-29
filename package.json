@@ -35,8 +35,7 @@
     "api",
     "bot",
     "client",
-    "node",
-    "discordapp"
+    "node"
   ],
   "author": "Amish Shah <amish@shah.gg>",
   "license": "Apache-2.0",
