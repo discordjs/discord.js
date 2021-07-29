@@ -11,11 +11,11 @@ const Webhook = require('../structures/Webhook');
  */
 class WebhookClient extends BaseClient {
   /**
-   * The data for the webhook client
+   * The data for the webhook client containing either an id and token or just a URL
    * @typedef {Object} WebhookClientData
-   * @property {Snowflake} [id] The webhook's id
-   * @property {string} [token] Token of the webhook
-   * @property {string} [url] The full URL of the webhook
+   * @property {Snowflake} [id] The id of the webhook
+   * @property {string} [token] The token of the webhook
+   * @property {string} [url] The full url for the webhook client
    */
 
   /**
@@ -29,22 +29,21 @@ class WebhookClient extends BaseClient {
   constructor(data, options) {
     super(options);
     Object.defineProperty(this, 'client', { value: this });
-    let id, token;
+    let { id, token } = data;
 
     if ('url' in data) {
       const url = data.url.match(
         // eslint-disable-next-line no-useless-escape
-        /^https?:\/\/(?:discord|discordapp)\.com\/api\/webhooks(?:\/v[0-9]\d*)?\/([^\/]+)\/([^\/]+)/i,
+        /^https?:\/\/(?:canary|ptb)?\.?discord\.com\/api\/webhooks(?:\/v[0-9]\d*)?\/([^\/]+)\/([^\/]+)/i,
       );
 
       if (!url || url.length <= 1) throw new Error('WEBHOOK_URL_INVALID');
 
-      id = url[1];
-      token = url[2];
+      [, id, token] = url;
     }
 
-    this.id = id ?? data.id;
-    Object.defineProperty(this, 'token', { value: token ?? data.id, writable: true, configurable: true });
+    this.id = id;
+    Object.defineProperty(this, 'token', { value: token, writable: true, configurable: true });
   }
 
   // These are here only for documentation purposes - they are implemented by Webhook
