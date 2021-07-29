@@ -2211,7 +2211,7 @@ export class ApplicationCommandPermissionsManager<
   CommandIdType,
 > extends BaseManager {
   public constructor(manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand);
-  private manager: WeakRef<ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand>;
+  private manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand;
 
   public client: Client;
   public commandId: CommandIdType;

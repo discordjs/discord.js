@@ -15,10 +15,10 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 
     /**
      * The manager or command that this manager belongs to
-     * @type {WeakRef<ApplicationCommandManager|ApplicationCommand>}
+     * @type {ApplicationCommandManager|ApplicationCommand>}
      * @private
      */
-    this.manager = new WeakRef(manager);
+    this.manager = manager;
 
     /**
      * The guild that this manager acts on
