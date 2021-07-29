@@ -501,7 +501,7 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.INVITE) {
-      this.target = guild.members.fetch(guild.client.user.id).then(async me => {
+      guild.members.fetch(guild.client.user.id).then(async me => {
         if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
           let change = this.changes.find(c => c.key === 'code');
           change = change.new ?? change.old;
@@ -513,7 +513,6 @@ class GuildAuditLogsEntry {
             return o;
           }, {});
         }
-        return this.target;
       });
     } else if (targetType === Targets.MESSAGE) {
       // Discord sends a channel id for the MESSAGE_BULK_DELETE action type.
