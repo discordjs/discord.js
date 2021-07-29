@@ -879,6 +879,14 @@ class Guild extends AnonymousGuild {
    */
 
   /**
+   * Data that can be resolved to a GuildTextChannel object. This can be:
+   * * A TextChannel
+   * * A NewsChannel
+   * * A Snowflake
+   * @typedef {TextChannel|NewsChannel|Snowflake} GuildTextChannelResolvable
+   */
+
+  /**
    * Updates the guild's welcome screen
    * @param {WelcomeScreenEditData} data Data to edit the welcome screen with
    * @returns {Promise<WelcomeScreen>}
