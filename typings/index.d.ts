@@ -431,7 +431,7 @@ export class CommandInteractionOptionResolver {
   public readonly data: readonly CommandInteractionOption[];
   private _group: string | null;
   private _hoistedOptions: CommandInteractionOption[];
-  private _subCommand: string | null;
+  private _subcommand: string | null;
   private _getTypedOption(
     name: string,
     type: ApplicationCommandOptionType,
