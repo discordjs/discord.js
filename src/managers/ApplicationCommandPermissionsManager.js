@@ -15,7 +15,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 
     /**
      * The manager or command that this manager belongs to
-     * @type {ApplicationCommandManager|ApplicationCommand>}
+     * @type {ApplicationCommandManager|ApplicationCommand}
      * @private
      */
     this.manager = manager;

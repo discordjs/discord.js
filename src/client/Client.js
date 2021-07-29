@@ -382,7 +382,7 @@ class Client extends BaseClient {
         this.emit(Events.DEBUG, message);
       }
     } catch {
-      this.emit(Events.DEBUG, `Garbage collection failed on ${name ?? 'an unkonwn item'}.`);
+      this.emit(Events.DEBUG, `Garbage collection failed on ${name ?? 'an unknown item'}.`);
     }
   }
 
