@@ -458,7 +458,7 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Options used to fetch the owner of guild.
+   * Options used to fetch the owner of a guild or a thread.
    * @typedef {Object} FetchOwnerOptions
    * @property {boolean} [cache=true] Whether or not to cache the fetched member
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
