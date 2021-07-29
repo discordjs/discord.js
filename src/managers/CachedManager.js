@@ -1,7 +1,7 @@
 'use strict';
 
 const DataManager = require('./DataManager');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
+const { _cacheCleanupSymbol } = require('../util/Constants');
 
 /**
  * Manages the API methods of a data model with a mutable cache of instances.
@@ -14,11 +14,17 @@ class CachedManager extends DataManager {
 
     Object.defineProperty(this, '_cache', { value: this.client.options.makeCache(this.constructor, this.holds) });
 
-    const cleanupId = SnowflakeUtil.generate();
-    if (this._cache[Symbol.for('djsCacheCleanup')]) {
-      client._cacheCleanups.set(cleanupId, this._cache[Symbol.for('djsCacheCleanup')]);
+    let cleanup = this._cache[_cacheCleanupSymbol];
+    const cacheType = this._cache.constructor.name;
+    if (cleanup) {
+      cleanup = cleanup.bind(this._cache);
+      client._cacheCleanups.add(cleanup);
+      client._managerFinalizers.register(this, {
+        cleanup,
+        message: `Garbage Collection completed on ${this.constructor.name}, which held a ${cacheType}.`,
+        managerName: this.constructor.name,
+      });
     }
-    client._managerFinalizers.register(this, { cleanupId, cache: this._cache, type: this.constructor.name });
 
     if (iterable) {
       for (const item of iterable) {

@@ -73,11 +73,11 @@ class Client extends BaseClient {
     this._validateOptions();
 
     /**
-     * A map of ids to function called when a cache is garbage collected or the Client is destroyed
-     * @type {Map<Snowflake, Function>}
+     * Functions called when a cache is garbage collected or the Client is destroyed
+     * @type {Set<Function>}
      * @private
      */
-    this._cacheCleanups = new Map();
+    this._cacheCleanups = new Set();
 
     /**
      * The finalizers used within managers to clear.
@@ -266,7 +266,7 @@ class Client extends BaseClient {
   destroy() {
     super.destroy();
 
-    for (const fn of this._cacheCleanups.values()) fn();
+    for (const fn of this._cacheCleanups) fn();
     this._cacheCleanups.clear();
 
     if (this.sweepMessageInterval) clearInterval(this.sweepMessageInterval);
@@ -370,20 +370,19 @@ class Client extends BaseClient {
   }
   /**
    * A last ditch cleanup function for garbage collection on managers.
-   * @param {Snowflake} options.cleanupId The id used to locate the cleanup in the cacheCleanups map
-   * @param {Collection} options.cache The cache of the manager being GCed
-   * @param {string} options.type The name of the manager being GCed
+   * @param {Function} options.cleanup The function called to GC
+   * @param {string} [options.message] The message to send after a successful GC
+   * @param {string} [options.managerName] The name of the manager being GCed
    */
-  _finalizeManager({ cleanupId, cache, type }) {
-    const cleanupFn = cache[Symbol.for('djsCacheCleanup')];
-    if (cleanupFn) {
-      cleanupFn.bind(cache)();
-      this._cacheCleanups.delete(cleanupId);
-      this.emit(
-        Events.DEBUG,
-        `${type} has no more references and contained a cache with a cleanup function. ` +
-          `Cleanup called on ${cache.constructor.name}.`,
-      );
+  _finalizeManager({ cleanup, message, managerName }) {
+    try {
+      cleanup();
+      this._cacheCleanups.delete(cleanup);
+      if (message) {
+        this.emit(Events.DEBUG, message);
+      }
+    } catch {
+      this.emit(Events.DEBUG, `Garbage collection failed on ${managerName ?? 'an unkonwn manager'}.`);
     }
   }
 
