@@ -1900,7 +1900,7 @@ export class Webhook extends WebhookMixin() {
 }
 
 export class WebhookClient extends WebhookMixin(BaseClient) {
-  public constructor(id: Snowflake, token: string, options?: WebhookClientOptions);
+  public constructor(data: WebhookClientData, options?: WebhookClientOptions);
   public client: this;
   public options: WebhookClientOptions;
   public token: string;
@@ -4349,6 +4349,17 @@ export interface Vanity {
 export type VerificationLevel = keyof typeof VerificationLevels;
 
 export type VoiceBasedChannelTypes = 'GUILD_VOICE' | 'GUILD_STAGE_VOICE';
+
+export type WebhookClientData = WebhookClientDataIdWithToken | WebhookClientDataURL;
+
+export interface WebhookClientDataIdWithToken {
+  id: Snowflake;
+  token: string;
+}
+
+export interface WebhookClientDataURL {
+  url: string;
+}
 
 export type WebhookClientOptions = Pick<
   ClientOptions,
