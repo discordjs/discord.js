@@ -1016,5 +1016,5 @@ function createEnum(keys) {
  * @property {StickerType} StickerTypes The value set for a sticker's type.
  * @property {VerificationLevel} VerificationLevels The value set for the verification levels for a guild.
  * @property {WebhookType} WebhookTypes The value set for a webhook's type.
- * @property {WSEvents} WSEventType The type of a websocket message event.
+ * @property {WSEventType} WSEvents The type of a websocket message event.
  */
