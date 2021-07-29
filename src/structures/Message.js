@@ -390,8 +390,8 @@ class Message extends Base {
 
   /**
    * The thread started by this message
-   * <info>This can be null when the message has a thread if the cache no longer has the thread.
-   * Use {@link Message#hasThread} to check whether the message has a thread.</info>
+   * <info>This property is not suitable for checking whether a message has a thread,
+   * use {@link Message#hasThread} instead.</info>
    * @type {?ThreadChannel}
    * @readonly
    */
