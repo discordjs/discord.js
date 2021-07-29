@@ -850,7 +850,6 @@ export class Integration extends Base {
   public user: User | null;
   public delete(reason?: string): Promise<Integration>;
   public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
-  public sync(): Promise<Integration>;
 }
 
 export class IntegrationApplication extends Application {
