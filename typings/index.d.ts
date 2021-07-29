@@ -996,6 +996,7 @@ export class Message extends Base {
   public embeds: MessageEmbed[];
   public groupActivityApplication: ClientApplication | null;
   public readonly guild: Guild | null;
+  public readonly hasThread: boolean;
   public id: Snowflake;
   public interaction: MessageInteraction | null;
   public readonly member: GuildMember | null;
@@ -1007,7 +1008,7 @@ export class Message extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public system: boolean;
-  public thread: ThreadChannel | null;
+  public readonly thread: ThreadChannel | null;
   public tts: boolean;
   public type: MessageType;
   public readonly url: string;
