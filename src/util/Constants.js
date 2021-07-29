@@ -829,7 +829,7 @@ exports.WebhookTypes = createEnum([null, 'Incoming', 'Channel Follower']);
  * The value set for a sticker's type:
  * * STANDARD
  * * GUILD
- * @typedef {string} StickerFormatType
+ * @typedef {string} StickerType
  */
 exports.StickerTypes = createEnum([null, 'STANDARD', 'GUILD']);
 
