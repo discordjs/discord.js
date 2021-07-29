@@ -501,7 +501,7 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.INVITE) {
-      guild.members.fetch(guild.client.user.id).then(async me => {
+      this.target = guild.members.fetch(guild.client.user.id).then(async me => {
         if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
           let change = this.changes.find(c => c.key === 'code');
           change = change.new ?? change.old;
