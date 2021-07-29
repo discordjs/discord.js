@@ -20,9 +20,9 @@ class Widget extends Base {
   /**
    * Represents a channel in a Widget
    * @typedef {Object} WidgetChannel
-   * @property {Snowflake} [id] Id of the channel
-   * @property {string} [name] Name of the channel
-   * @property {number} [position] Position of the channel
+   * @property {Snowflake} id Id of the channel
+   * @property {string} name Name of the channel
+   * @property {number} position Position of the channel
    */
 
   /**
