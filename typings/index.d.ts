@@ -3668,11 +3668,6 @@ export interface ImageURLOptions extends StaticImageURLOptions {
   dynamic?: boolean;
 }
 
-export interface IntegrationData {
-  id: Snowflake;
-  type: string;
-}
-
 export interface IntegrationAccount {
   id: string | Snowflake;
   name: string;
