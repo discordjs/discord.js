@@ -122,23 +122,6 @@ class Integration extends Base {
   }
 
   /**
-   * Sync this integration
-   * @returns {Promise<Integration>}
-   */
-  sync() {
-    this.syncing = true;
-    return this.client.api
-      .guilds(this.guild.id)
-      .integrations(this.id)
-      .post()
-      .then(() => {
-        this.syncing = false;
-        this.syncedAt = Date.now();
-        return this;
-      });
-  }
-
-  /**
    * The data for editing an integration.
    * @typedef {Object} IntegrationEditData
    * @property {number} [expireBehavior] The new behaviour of expiring subscribers
