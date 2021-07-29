@@ -1,7 +1,7 @@
 'use strict';
 
 const DataManager = require('./DataManager');
-const { _cacheCleanupSymbol } = require('../util/Constants');
+const { _cleanupSymbol } = require('../util/Constants');
 
 /**
  * Manages the API methods of a data model with a mutable cache of instances.
@@ -14,15 +14,15 @@ class CachedManager extends DataManager {
 
     Object.defineProperty(this, '_cache', { value: this.client.options.makeCache(this.constructor, this.holds) });
 
-    let cleanup = this._cache[_cacheCleanupSymbol];
+    let cleanup = this._cache[_cleanupSymbol];
     const cacheType = this._cache.constructor.name;
     if (cleanup) {
       cleanup = cleanup.bind(this._cache);
-      client._cacheCleanups.add(cleanup);
-      client._managerFinalizers.register(this, {
+      client._cleanups.add(cleanup);
+      client._finalizers.register(this, {
         cleanup,
         message: `Garbage Collection completed on ${this.constructor.name}, which held a ${cacheType}.`,
-        managerName: this.constructor.name,
+        name: this.constructor.name,
       });
     }
 

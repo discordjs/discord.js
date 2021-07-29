@@ -971,7 +971,7 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
  */
 exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
 
-exports._cacheCleanupSymbol = Symbol('djsCacheCleanup');
+exports._cleanupSymbol = Symbol('djsCleanup');
 
 function keyMirror(arr) {
   let tmp = Object.create(null);

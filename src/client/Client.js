@@ -77,14 +77,14 @@ class Client extends BaseClient {
      * @type {Set<Function>}
      * @private
      */
-    this._cacheCleanups = new Set();
+    this._cleanups = new Set();
 
     /**
-     * The finalizers used within managers to clear.
+     * The finalizers used to cleanup items.
      * @type {FinalizationRegistry}
      * @private
      */
-    this._managerFinalizers = new FinalizationRegistry(this._finalizeManager.bind(this));
+    this._finalizers = new FinalizationRegistry(this._finalize.bind(this));
 
     /**
      * The WebSocket manager of the client
@@ -266,8 +266,8 @@ class Client extends BaseClient {
   destroy() {
     super.destroy();
 
-    for (const fn of this._cacheCleanups) fn();
-    this._cacheCleanups.clear();
+    for (const fn of this._cleanups) fn();
+    this._cleanups.clear();
 
     if (this.sweepMessageInterval) clearInterval(this.sweepMessageInterval);
 
@@ -369,20 +369,20 @@ class Client extends BaseClient {
     return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
   }
   /**
-   * A last ditch cleanup function for garbage collection on managers.
+   * A last ditch cleanup function for garbage collection.
    * @param {Function} options.cleanup The function called to GC
    * @param {string} [options.message] The message to send after a successful GC
-   * @param {string} [options.managerName] The name of the manager being GCed
+   * @param {string} [options.name] The name of the item being GCed
    */
-  _finalizeManager({ cleanup, message, managerName }) {
+  _finalize({ cleanup, message, name }) {
     try {
       cleanup();
-      this._cacheCleanups.delete(cleanup);
+      this._cleanups.delete(cleanup);
       if (message) {
         this.emit(Events.DEBUG, message);
       }
     } catch {
-      this.emit(Events.DEBUG, `Garbage collection failed on ${managerName ?? 'an unkonwn manager'}.`);
+      this.emit(Events.DEBUG, `Garbage collection failed on ${name ?? 'an unkonwn item'}.`);
     }
   }
 

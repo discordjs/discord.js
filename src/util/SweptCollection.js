@@ -1,7 +1,7 @@
 'use strict';
 
 const Collection = require('./Collection.js');
-const { _cacheCleanupSymbol } = require('./Constants.js');
+const { _cleanupSymbol } = require('./Constants.js');
 const { TypeError } = require('../errors/DJSError.js');
 
 /**
@@ -103,7 +103,7 @@ class SweptCollection extends Collection {
     };
   }
 
-  [_cacheCleanupSymbol]() {
+  [_cleanupSymbol]() {
     clearInterval(this.interval);
   }
 
