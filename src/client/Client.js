@@ -73,11 +73,11 @@ class Client extends BaseClient {
     this._validateOptions();
 
     /**
-     * The intervals used by managers with a {@link SweptCollection} to sweep.
-     * These are automatically cleared when the client is destroyed.
-     * @type {Set}
+     * A map of ids to function called when a cache is garbage collected or the Client is destroyed
+     * @type {Map<Snowflake, Function>}
+     * @private
      */
-    this.sweepIntervals = new Set();
+    this._cacheCleanups = new Map();
 
     /**
      * The finalizers used within managers to clear.
@@ -266,8 +266,8 @@ class Client extends BaseClient {
   destroy() {
     super.destroy();
 
-    for (const interval of this.sweepIntervals) clearInterval(interval);
-    this.sweepIntervals.clear();
+    for (const fn of this._cacheCleanups.values()) fn();
+    this._cacheCleanups.clear();
 
     if (this.sweepMessageInterval) clearInterval(this.sweepMessageInterval);
 
@@ -370,16 +370,19 @@ class Client extends BaseClient {
   }
   /**
    * A last ditch cleanup function for garbage collection on managers.
+   * @param {Snowflake} options.cleanupId The id used to locate the cleanup in the cacheCleanups map
    * @param {Collection} options.cache The cache of the manager being GCed
    * @param {string} options.type The name of the manager being GCed
    */
-  _finalizeManager({ cache, type }) {
-    if (cache.interval) {
-      clearInterval(cache.interval);
-      this.sweepIntervals.delete(cache.interval);
+  _finalizeManager({ cleanupId, cache, type }) {
+    const cleanupFn = cache[Symbol.for('djsCacheCleanup')];
+    if (cleanupFn) {
+      cleanupFn.bind(cache)();
+      this._cacheCleanups.delete(cleanupId);
       this.emit(
         Events.DEBUG,
-        `${type} has no more references and contained a SweptCollection. The interval on the cache has been destroyed`,
+        `${type} has no more references and contained a cache with a cleanup function. ` +
+          `Cleanup called on ${cache.constructor.name}.`,
       );
     }
   }

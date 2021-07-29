@@ -1,6 +1,7 @@
 'use strict';
 
 const DataManager = require('./DataManager');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Manages the API methods of a data model with a mutable cache of instances.
@@ -13,8 +14,11 @@ class CachedManager extends DataManager {
 
     Object.defineProperty(this, '_cache', { value: this.client.options.makeCache(this.constructor, this.holds) });
 
-    if (this._cache.interval) client.sweepIntervals.add(this._cache.interval);
-    client._managerFinalizers.register(this, { cache: this._cache, type: this.constructor.name });
+    const cleanupId = SnowflakeUtil.generate();
+    if (this._cache[Symbol.for('djsCacheCleanup')]) {
+      client._cacheCleanups.set(cleanupId, this._cache[Symbol.for('djsCacheCleanup')]);
+    }
+    client._managerFinalizers.register(this, { cleanupId, cache: this._cache, type: this.constructor.name });
 
     if (iterable) {
       for (const item of iterable) {

@@ -284,7 +284,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public readyAt: If<Ready, Date>;
   public readonly readyTimestamp: If<Ready, number>;
   public shard: ShardClientUtil | null;
-  public sweepIntervals: Set<NodeJS.Timeout>;
   public token: If<Ready, string, string | null>;
   public uptime: If<Ready, number>;
   public user: If<Ready, ClientUser>;
@@ -2212,11 +2211,12 @@ export class ApplicationCommandPermissionsManager<
   CommandIdType,
 > extends BaseManager {
   public constructor(manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand);
+  private manager: WeakRef<ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand>;
+
   public client: Client;
   public commandId: CommandIdType;
   public guild: GuildType;
   public guildId: Snowflake | null;
-  public manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand;
   public add(
     options: FetchSingleOptions & { permissions: ApplicationCommandPermissionData[] },
   ): Promise<ApplicationCommandPermissions[]>;

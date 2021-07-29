@@ -102,6 +102,10 @@ class SweptCollection extends Collection {
     };
   }
 
+  [Symbol.for('djsCacheCleanup')]() {
+    clearInterval(this.interval);
+  }
+
   static get [Symbol.species]() {
     return Collection;
   }
