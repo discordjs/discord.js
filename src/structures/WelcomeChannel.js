@@ -13,7 +13,7 @@ class WelcomeChannel extends Base {
 
     /**
      * The guild for this welcome channel
-     * @type {Guild|WelcomeGuild}
+     * @type {Guild|InviteGuild}
      */
     this.guild = guild;
 
