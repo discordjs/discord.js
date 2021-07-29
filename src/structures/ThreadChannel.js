@@ -245,10 +245,9 @@ class ThreadChannel extends Channel {
       if (existing) return existing;
     }
 
-    // We cannot fetch a single thread member, as of this commit's date, Discord API throws with 405
-    const data = await this.client.api.channels(this.thread.id, 'thread-members').get();
-    const owner = data.find(member => member.user_id === this.ownerId);
-    return this._add(owner, cache);
+    // We cannot fetch a single thread member, as of this commit's date, Discord API responds with 405
+    const members = await this.members.fetch(cache);
+    return members.get(this.ownerId);
   }
 
   /**
