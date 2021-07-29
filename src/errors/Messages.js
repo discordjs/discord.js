@@ -101,12 +101,14 @@ const Messages = {
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
   WEBHOOK_TOKEN_UNAVAILABLE: 'This action requires a webhook token, but none is available.',
+  WEBHOOK_URL_INVALID: 'The provided webhook URL is not valid.',
   MESSAGE_REFERENCE_MISSING: 'The message does not reference another message',
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
-  MISSING_MANAGE_EMOJIS_PERMISSION: guild =>
-    `Client must have Manage Emoji permission in guild ${guild} to see emoji authors.`,
+  MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION: guild =>
+    `Client must have Manage Emojis and Stickers permission in guild ${guild} to see emoji authors.`,
+  NOT_GUILD_STICKER: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   REACTION_RESOLVE_USER: "Couldn't resolve the user id to remove from the reaction.",
 
@@ -133,11 +135,11 @@ const Messages = {
 
   COMMAND_INTERACTION_OPTION_NOT_FOUND: name => `Required option "${name}" not found.`,
   COMMAND_INTERACTION_OPTION_TYPE: (name, type, expected) =>
-    `Option "${name}" is of type: ${type}; expected one of: ${expected.join(', ')}`,
+    `Option "${name}" is of type: ${type}; expected ${expected}.`,
   COMMAND_INTERACTION_OPTION_EMPTY: (name, type) =>
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
-  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No sub-command specified for interaction.',
-  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No sub-command group specified for interaction.',
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No subcommand specified for interaction.',
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No subcommand group specified for interaction.',
 
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 

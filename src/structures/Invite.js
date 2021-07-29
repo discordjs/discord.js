@@ -109,7 +109,7 @@ class Invite extends Base {
      * The channel the invite is for
      * @type {Channel}
      */
-    this.channel = this.client.channels._add(data.channel, this.guild, false);
+    this.channel = this.client.channels._add(data.channel, this.guild, { cache: false });
 
     /**
      * The timestamp the invite was created at

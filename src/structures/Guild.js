@@ -14,6 +14,7 @@ const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildInviteManager = require('../managers/GuildInviteManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
+const GuildStickerManager = require('../managers/GuildStickerManager');
 const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
@@ -404,6 +405,20 @@ class Guild extends AnonymousGuild {
         emojis: data.emojis,
       });
     }
+
+    if (!this.stickers) {
+      /**
+       * A manager of the stickers belonging to this guild
+       * @type {GuildStickerManager}
+       */
+      this.stickers = new GuildStickerManager(this);
+      if (data.stickers) for (const sticker of data.stickers) this.stickers._add(sticker);
+    } else if (data.stickers) {
+      this.client.actions.GuildStickersUpdate.handle({
+        guild_id: this.id,
+        stickers: data.stickers,
+      });
+    }
   }
 
   /**
@@ -560,26 +575,6 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * The data for creating an integration.
-   * @typedef {Object} IntegrationData
-   * @property {string} id The integration id
-   * @property {string} type The integration type
-   */
-
-  /**
-   * Creates an integration by attaching an integration object
-   * @param {IntegrationData} data The data for the integration
-   * @param {string} reason Reason for creating the integration
-   * @returns {Promise<Guild>}
-   */
-  createIntegration(data, reason) {
-    return this.client.api
-      .guilds(this.id)
-      .integrations.post({ data, reason })
-      .then(() => this);
-  }
-
-  /**
    * Creates a template for the guild.
    * @param {string} name The name for the template
    * @param {string} [description] The description for the template
@@ -654,29 +649,42 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Data for the Guild Widget object
-   * @typedef {Object} GuildWidget
-   * @property {boolean} enabled Whether the widget is enabled
-   * @property {?GuildChannel} channel The widget channel
-   */
-
-  /**
-   * The Guild Widget object
-   * @typedef {Object} GuildWidgetData
-   * @property {boolean} enabled Whether the widget is enabled
-   * @property {?GuildChannelResolvable} channel The widget channel
-   */
-
-  /**
-   * Fetches the guild widget.
-   * @returns {Promise<GuildWidget>}
+   * Fetches the guild widget data, requires the widget to be enabled.
+   * @returns {Promise<Widget>}
    * @example
-   * // Fetches the guild widget
+   * // Fetches the guild widget data
    * guild.fetchWidget()
+   *   .then(widget => console.log(`The widget shows ${widget.channels.size} channels`))
+   *   .catch(console.error);
+   */
+  fetchWidget() {
+    return this.client.fetchGuildWidget(this.id);
+  }
+
+  /**
+   * Data for the Guild Widget Settings object
+   * @typedef {Object} GuildWidgetSettings
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannel} channel The widget invite channel
+   */
+
+  /**
+   * The Guild Widget Settings object
+   * @typedef {Object} GuildWidgetSettingsData
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannelResolvable} channel The widget invite channel
+   */
+
+  /**
+   * Fetches the guild widget settings.
+   * @returns {Promise<GuildWidgetSettings>}
+   * @example
+   * // Fetches the guild widget settings
+   * guild.fetchWidgetSettings()
    *   .then(widget => console.log(`The widget is ${widget.enabled ? 'enabled' : 'disabled'}`))
    *   .catch(console.error);
    */
-  async fetchWidget() {
+  async fetchWidgetSettings() {
     const data = await this.client.api.guilds(this.id).widget.get();
     this.widgetEnabled = data.enabled;
     this.widgetChannelId = data.channel_id;
@@ -868,6 +876,14 @@ class Guild extends AnonymousGuild {
    * @property {boolean} [enabled] Whether the welcome screen is enabled
    * @property {string} [description] The description for the welcome screen
    * @property {WelcomeChannelData[]} [welcomeChannels] The welcome channel data for the welcome screen
+   */
+
+  /**
+   * Data that can be resolved to a GuildTextChannel object. This can be:
+   * * A TextChannel
+   * * A NewsChannel
+   * * A Snowflake
+   * @typedef {TextChannel|NewsChannel|Snowflake} GuildTextChannelResolvable
    */
 
   /**
@@ -1219,18 +1235,18 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Edits the guild's widget.
-   * @param {GuildWidgetData} widget The widget for the guild
-   * @param {string} [reason] Reason for changing the guild's widget
+   * Edits the guild's widget settings.
+   * @param {GuildWidgetSettingsData} settings The widget settings for the guild
+   * @param {string} [reason] Reason for changing the guild's widget settings
    * @returns {Promise<Guild>}
    */
-  setWidget(widget, reason) {
+  setWidgetSettings(settings, reason) {
     return this.client.api
       .guilds(this.id)
       .widget.patch({
         data: {
-          enabled: widget.enabled,
-          channel_id: this.channels.resolveId(widget.channel),
+          enabled: settings.enabled,
+          channel_id: this.channels.resolveId(settings.channel),
         },
         reason,
       })

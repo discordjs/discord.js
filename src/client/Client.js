@@ -14,6 +14,8 @@ const ClientPresence = require('../structures/ClientPresence');
 const GuildPreview = require('../structures/GuildPreview');
 const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
+const Sticker = require('../structures/Sticker');
+const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
@@ -319,6 +321,33 @@ class Client extends BaseClient {
   }
 
   /**
+   * Obtains a sticker from Discord.
+   * @param {Snowflake} id The sticker's id
+   * @returns {Promise<Sticker>}
+   * @example
+   * client.fetchSticker('id')
+   *   .then(sticker => console.log(`Obtained sticker with name: ${sticker.name}`))
+   *   .catch(console.error);
+   */
+  async fetchSticker(id) {
+    const data = await this.api.stickers(id).get();
+    return new Sticker(this, data);
+  }
+
+  /**
+   * Obtains the list of sticker packs available to Nitro subscribers from Discord.
+   * @returns {Promise<Collection<Snowflake, StickerPack>>}
+   * @example
+   * client.fetchPremiumStickerPacks()
+   *   .then(packs => console.log(`Available sticker packs are: ${packs.map(pack => pack.name).join(', ')}`))
+   *   .catch(console.error);
+   */
+  async fetchPremiumStickerPacks() {
+    const data = await this.api('sticker-packs').get();
+    return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
+  }
+
+  /**
    * Sweeps all text-based channels' messages and removes the ones older than the max message lifetime.
    * If the message has been edited, the time of the edit is used rather than the time of the original message.
    * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
@@ -375,11 +404,11 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the widget of a guild from Discord, available for guilds with the widget enabled.
-   * @param {GuildResolvable} guild The guild to fetch the widget for
+   * Obtains the widget data of a guild from Discord, available for guilds with the widget enabled.
+   * @param {GuildResolvable} guild The guild to fetch the widget data for
    * @returns {Promise<Widget>}
    */
-  async fetchWidget(guild) {
+  async fetchGuildWidget(guild) {
     const id = this.guilds.resolveId(guild);
     if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
     const data = await this.api.guilds(id, 'widget.json').get();

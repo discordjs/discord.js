@@ -118,14 +118,14 @@ class PermissionOverwrites extends Base {
 
     for (const [perm, value] of Object.entries(options)) {
       if (value === true) {
-        allow.add(Permissions.FLAGS[perm]);
-        deny.remove(Permissions.FLAGS[perm]);
+        allow.add(perm);
+        deny.remove(perm);
       } else if (value === false) {
-        allow.remove(Permissions.FLAGS[perm]);
-        deny.add(Permissions.FLAGS[perm]);
+        allow.remove(perm);
+        deny.add(perm);
       } else if (value === null) {
-        allow.remove(Permissions.FLAGS[perm]);
-        deny.remove(Permissions.FLAGS[perm]);
+        allow.remove(perm);
+        deny.remove(perm);
       }
     }
 

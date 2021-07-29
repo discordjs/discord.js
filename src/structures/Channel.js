@@ -126,7 +126,7 @@ class Channel extends Base {
     return ThreadChannelTypes.includes(this.type);
   }
 
-  static create(client, data, guild, allowUnknownGuild) {
+  static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
     if (!CategoryChannel) CategoryChannel = require('./CategoryChannel');
     if (!DMChannel) DMChannel = require('./DMChannel');
     if (!NewsChannel) NewsChannel = require('./NewsChannel');
@@ -176,7 +176,7 @@ class Channel extends Base {
           case ChannelTypes.GUILD_NEWS_THREAD:
           case ChannelTypes.GUILD_PUBLIC_THREAD:
           case ChannelTypes.GUILD_PRIVATE_THREAD: {
-            channel = new ThreadChannel(guild, data, client);
+            channel = new ThreadChannel(guild, data, client, fromInteraction);
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;
           }

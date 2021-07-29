@@ -255,12 +255,18 @@ class Util extends null {
   }
 
   /**
+   * @typedef {Object} FetchRecommendedShardsOptions
+   * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
+   * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
+   */
+
+  /**
    * Gets the recommended shard count from Discord.
    * @param {string} token Discord auth token
-   * @param {number} [guildsPerShard=1000] Number of guilds per shard
+   * @param {FetchRecommendedShardsOptions} [options] Options for fetching the recommended shard count
    * @returns {Promise<number>} The recommended number of shards
    */
-  static fetchRecommendedShards(token, guildsPerShard = 1000) {
+  static fetchRecommendedShards(token, { guildsPerShard = 1000, multipleOf = 1 } = {}) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
     const defaults = Options.createDefault();
     return fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
@@ -272,7 +278,7 @@ class Util extends null {
         if (res.status === 401) throw new DiscordError('TOKEN_INVALID');
         throw res;
       })
-      .then(data => data.shards * (1000 / guildsPerShard));
+      .then(data => Math.ceil((data.shards * (1000 / guildsPerShard)) / multipleOf) * multipleOf);
   }
 
   /**

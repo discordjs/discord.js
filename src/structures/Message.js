@@ -47,7 +47,7 @@ class Message extends Base {
     if (data) this._patch(data);
   }
 
-  _patch(data) {
+  _patch(data, partial = false) {
     /**
      * The message's id
      * @type {Snowflake}
@@ -121,124 +121,167 @@ class Message extends Base {
       this.tts = null;
     }
 
-    /**
-     * A random number or string used for checking message delivery
-     * <warn>This is only received after the message was sent successfully, and
-     * lost if re-fetched</warn>
-     * @type {?string}
-     */
-    this.nonce = 'nonce' in data ? data.nonce : null;
-
-    /**
-     * A list of embeds in the message - e.g. YouTube Player
-     * @type {MessageEmbed[]}
-     */
-    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? [];
-
-    /**
-     * A list of MessageActionRows in the message
-     * @type {MessageActionRow[]}
-     */
-    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
-
-    /**
-     * A collection of attachments in the message - e.g. Pictures - mapped by their ids
-     * @type {Collection<Snowflake, MessageAttachment>}
-     */
-    this.attachments = new Collection();
-    if (data.attachments) {
-      for (const attachment of data.attachments) {
-        this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
-      }
+    if (!partial) {
+      /**
+       * A random number or string used for checking message delivery
+       * <warn>This is only received after the message was sent successfully, and
+       * lost if re-fetched</warn>
+       * @type {?string}
+       */
+      this.nonce = 'nonce' in data ? data.nonce : null;
     }
 
-    /**
-     * A collection of stickers in the message
-     * @type {Collection<Snowflake, Sticker>}
-     */
-    this.stickers = new Collection();
-    if (data.stickers) {
-      for (const sticker of data.stickers) {
-        this.stickers.set(sticker.id, new Sticker(this.client, sticker));
-      }
+    if ('embeds' in data || !partial) {
+      /**
+       * A list of embeds in the message - e.g. YouTube Player
+       * @type {MessageEmbed[]}
+       */
+      this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? [];
+    } else {
+      this.embeds = this.embeds.slice();
     }
 
-    /**
-     * The timestamp the message was sent at
-     * @type {number}
-     */
-    this.createdTimestamp = SnowflakeUtil.deconstruct(this.id).timestamp;
-
-    /**
-     * The timestamp the message was last edited at (if applicable)
-     * @type {?number}
-     */
-    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
-
-    /**
-     * A manager of the reactions belonging to this message
-     * @type {ReactionManager}
-     */
-    this.reactions = new ReactionManager(this);
-    if (data.reactions?.length > 0) {
-      for (const reaction of data.reactions) {
-        this.reactions._add(reaction);
-      }
+    if ('components' in data || !partial) {
+      /**
+       * A list of MessageActionRows in the message
+       * @type {MessageActionRow[]}
+       */
+      this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
+    } else {
+      this.components = this.components.slice();
     }
 
-    /**
-     * All valid mentions that the message contains
-     * @type {MessageMentions}
-     */
-    this.mentions = new Mentions(
-      this,
-      data.mentions,
-      data.mention_roles,
-      data.mention_everyone,
-      data.mention_channels,
-      data.referenced_message?.author,
-    );
-
-    /**
-     * The id of the webhook that sent the message, if applicable
-     * @type {?Snowflake}
-     */
-    this.webhookId = data.webhook_id ?? null;
-
-    /**
-     * Supplemental application information for group activities
-     * @type {?ClientApplication}
-     */
-    this.groupActivityApplication = data.application ? new ClientApplication(this.client, data.application) : null;
-
-    /**
-     * The id of the application of the interaction that sent this message, if any
-     * @type {?Snowflake}
-     */
-    this.applicationId = data.application_id ?? null;
-
-    /**
-     * Group activity
-     * @type {?MessageActivity}
-     */
-    this.activity = data.activity
-      ? {
-          partyId: data.activity.party_id,
-          type: data.activity.type,
+    if ('attachments' in data || !partial) {
+      /**
+       * A collection of attachments in the message - e.g. Pictures - mapped by their ids
+       * @type {Collection<Snowflake, MessageAttachment>}
+       */
+      this.attachments = new Collection();
+      if (data.attachments) {
+        for (const attachment of data.attachments) {
+          this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
         }
-      : null;
+      }
+    } else {
+      this.attachments = new Collection(this.attachemnts);
+    }
 
+    if ('sticker_items' in data || 'stickers' in data || !partial) {
+      /**
+       * A collection of stickers in the message
+       * @type {Collection<Snowflake, Sticker>}
+       */
+      this.stickers = new Collection(
+        (data.sticker_items ?? data.stickers)?.map(s => [s.id, new Sticker(this.client, s)]),
+      );
+    } else {
+      this.stickers = new Collection(this.stickers);
+    }
+
+    if (!partial) {
+      /**
+       * The timestamp the message was sent at
+       * @type {number}
+       */
+      this.createdTimestamp = SnowflakeUtil.deconstruct(this.id).timestamp;
+    }
+
+    if ('edited_timestamp' in data || !partial) {
+      /**
+       * The timestamp the message was last edited at (if applicable)
+       * @type {?number}
+       */
+      this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+    }
+
+    if ('reactions' in data || !partial) {
+      /**
+       * A manager of the reactions belonging to this message
+       * @type {ReactionManager}
+       */
+      this.reactions = new ReactionManager(this);
+      if (data.reactions?.length > 0) {
+        for (const reaction of data.reactions) {
+          this.reactions._add(reaction);
+        }
+      }
+    }
+
+    if (!partial) {
+      /**
+       * All valid mentions that the message contains
+       * @type {MessageMentions}
+       */
+      this.mentions = new Mentions(
+        this,
+        data.mentions,
+        data.mention_roles,
+        data.mention_everyone,
+        data.mention_channels,
+        data.referenced_message?.author,
+      );
+    } else {
+      this.mentions = new Mentions(
+        this,
+        data.mentions ?? this.mentions.users,
+        data.mention_roles ?? this.mentions.roles,
+        data.mention_everyone ?? this.mentions.everyone,
+        data.mention_channels ?? this.mentions.crosspostedChannels,
+        data.referenced_message?.author ?? this.mentions.repliedUser,
+      );
+    }
+
+    if ('webhook_id' in data || !partial) {
+      /**
+       * The id of the webhook that sent the message, if applicable
+       * @type {?Snowflake}
+       */
+      this.webhookId = data.webhook_id ?? null;
+    }
+
+    if ('application' in data || !partial) {
+      /**
+       * Supplemental application information for group activities
+       * @type {?ClientApplication}
+       */
+      this.groupActivityApplication = data.application ? new ClientApplication(this.client, data.application) : null;
+    }
+
+    if ('application_id' in data || !partial) {
+      /**
+       * The id of the application of the interaction that sent this message, if any
+       * @type {?Snowflake}
+       */
+      this.applicationId = data.application_id ?? null;
+    }
+
+    if ('activity' in data || !partial) {
+      /**
+       * Group activity
+       * @type {?MessageActivity}
+       */
+      this.activity = data.activity
+        ? {
+            partyId: data.activity.party_id,
+            type: data.activity.type,
+          }
+        : null;
+    }
     if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
       this.guild.members._add(Object.assign(data.member, { user: this.author }));
     }
 
-    /**
-     * Flags that are applied to the message
-     * @type {Readonly<MessageFlags>}
-     */
-    this.flags = new MessageFlags(data.flags).freeze();
+    if ('flags' in data || !partial) {
+      /**
+       * Flags that are applied to the message
+       * @type {Readonly<MessageFlags>}
+       */
+      this.flags = new MessageFlags(data.flags).freeze();
+    } else {
+      this.flags = new MessageFlags(this.flags).freeze();
+    }
 
     /**
      * Reference data sent in a message that contains ids identifying the referenced message
@@ -248,17 +291,19 @@ class Message extends Base {
      * @property {?string} messageId The message's id that was referenced
      */
 
-    /**
-     * Message reference data
-     * @type {?MessageReference}
-     */
-    this.reference = data.message_reference
-      ? {
-          channelId: data.message_reference.channel_id,
-          guildId: data.message_reference.guild_id,
-          messageId: data.message_reference.message_id,
-        }
-      : null;
+    if ('message_reference' in data || !partial) {
+      /**
+       * Message reference data
+       * @type {?MessageReference}
+       */
+      this.reference = data.message_reference
+        ? {
+            channelId: data.message_reference.channel_id,
+            guildId: data.message_reference.guild_id,
+            messageId: data.message_reference.message_id,
+          }
+        : null;
+    }
 
     if (data.referenced_message) {
       this.channel.messages._add(data.referenced_message);
@@ -289,6 +334,12 @@ class Message extends Base {
     }
   }
 
+  _update(data, partial = false) {
+    const clone = this._clone();
+    this._patch(data, partial);
+    return clone;
+  }
+
   /**
    * Whether or not this message is a partial
    * @type {boolean}
@@ -296,47 +347,6 @@ class Message extends Base {
    */
   get partial() {
     return typeof this.content !== 'string' || !this.author;
-  }
-
-  /**
-   * Updates the message and returns the old message.
-   * @param {APIMessage} data Raw Discord message update data
-   * @returns {Message}
-   * @private
-   */
-  patch(data) {
-    const clone = this._clone();
-
-    if (data.edited_timestamp) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
-    if ('content' in data) this.content = data.content;
-    if ('pinned' in data) this.pinned = data.pinned;
-    if ('tts' in data) this.tts = data.tts;
-    if ('thread' in data) this.thread = this.client.channels._add(data.thread);
-
-    if ('attachments' in data) {
-      this.attachments = new Collection();
-      for (const attachment of data.attachments) {
-        this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
-      }
-    } else {
-      this.attachments = new Collection(this.attachments);
-    }
-
-    this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? this.embeds.slice();
-    this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? this.components.slice();
-
-    this.mentions = new Mentions(
-      this,
-      data.mentions ?? this.mentions.users,
-      data.mention_roles ?? this.mentions.roles,
-      data.mention_everyone ?? this.mentions.everyone,
-      data.mention_channels ?? this.mentions.crosspostedChannels,
-      data.referenced_message?.author ?? this.mentions.repliedUser,
-    );
-
-    this.flags = new MessageFlags(data.flags ?? 0).freeze();
-
-    return clone;
   }
 
   /**

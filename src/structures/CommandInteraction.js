@@ -52,7 +52,7 @@ class CommandInteraction extends Interaction {
      */
     this.options = new CommandInteractionOptionResolver(
       this.client,
-      data.data.options?.map(option => this.transformOption(option, data.data.resolved)),
+      data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
     );
 
     /**
@@ -89,7 +89,7 @@ class CommandInteraction extends Interaction {
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string|number|boolean} [value] The value of the option
-   * @property {Collection<string, CommandInteractionOption>} [options] Additional options if this option is a
+   * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)
    * @property {User} [user] The resolved user
    * @property {GuildMember|APIGuildMember} [member] The resolved member
@@ -121,7 +121,9 @@ class CommandInteraction extends Interaction {
       if (member) result.member = this.guild?.members._add({ user, ...member }) ?? member;
 
       const channel = resolved.channels?.[option.value];
-      if (channel) result.channel = this.client.channels._add(channel, this.guild) ?? channel;
+      if (channel) {
+        result.channel = this.client.channels._add(channel, this.guild, { fromInteraction: true }) ?? channel;
+      }
 
       const role = resolved.roles?.[option.value];
       if (role) result.role = this.guild?.roles._add(role) ?? role;
