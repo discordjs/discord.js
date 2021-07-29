@@ -134,7 +134,7 @@ class MessageMentions {
   }
 
   /**
-   * Any members that were mentioned (only in {@link TextChannel}s and {@link ThreadChannel}s)
+   * Any members that were mentioned (only in {@link Guild}s)
    * <info>Order as received from the API, not as they appear in the message content</info>
    * @type {?Collection<Snowflake, GuildMember>}
    * @readonly
