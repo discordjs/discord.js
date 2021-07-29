@@ -54,7 +54,7 @@ import {
   Typing,
   User,
   VoiceChannel,
-} from '..';
+} from '.';
 
 const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
