@@ -65,10 +65,8 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       }
     }
 
-    return this.client.api
-      .guilds(this.guild.id)
-      .emojis.post({ data, reason })
-      .then(emoji => this.client.actions.GuildEmojiCreate.handle(this.guild, emoji).emoji);
+    const emoji = await this.client.api.guilds(this.guild.id).emojis.post({ data, reason });
+    return this.client.actions.GuildEmojiCreate.handle(this.guild, emoji).emoji;
   }
 
   /**

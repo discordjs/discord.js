@@ -126,12 +126,9 @@ class Integration extends Base {
    * @returns {Promise<Integration>}
    * @param {string} [reason] Reason for deleting this integration
    */
-  delete(reason) {
-    return this.client.api
-      .guilds(this.guild.id)
-      .integrations(this.id)
-      .delete({ reason })
-      .then(() => this);
+  async delete(reason) {
+    await this.client.api.guilds(this.guild.id).integrations(this.id).delete({ reason });
+    return this;
   }
 
   toJSON() {

@@ -57,10 +57,10 @@ class GuildStickerManager extends CachedManager {
 
     const data = { name, tags, description: description ?? '' };
 
-    return this.client.api
+    const sticker = await this.client.api
       .guilds(this.guild.id)
-      .stickers.post({ data, files: [file], reason, dontUsePayloadJSON: true })
-      .then(sticker => this.client.actions.GuildStickerCreate.handle(this.guild, sticker).sticker);
+      .stickers.post({ data, files: [file], reason, dontUsePayloadJSON: true });
+    return this.client.actions.GuildStickerCreate.handle(this.guild, sticker).sticker;
   }
 
   /**

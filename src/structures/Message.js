@@ -637,8 +637,9 @@ class Message extends Base {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  pin() {
-    return this.channel.messages.pin(this.id).then(() => this);
+  async pin() {
+    await this.channel.messages.pin(this.id);
+    return this;
   }
 
   /**
@@ -650,8 +651,9 @@ class Message extends Base {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  unpin() {
-    return this.channel.messages.unpin(this.id).then(() => this);
+  async unpin() {
+    await this.channel.messages.unpin(this.id);
+    return this;
   }
 
   /**

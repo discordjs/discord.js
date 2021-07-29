@@ -277,8 +277,8 @@ class GuildMemberManager extends CachedManager {
    *    .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *    .catch(console.error);
    */
-  prune({ days = 7, dry = false, count: compute_prune_count = true, roles = [], reason } = {}) {
-    if (typeof days !== 'number') return Promise.reject(new TypeError('PRUNE_DAYS_TYPE'));
+  async prune({ days = 7, dry = false, count: compute_prune_count = true, roles = [], reason } = {}) {
+    if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
 
     const query = { days };
     const resolvedRoles = [];
@@ -286,7 +286,7 @@ class GuildMemberManager extends CachedManager {
     for (const role of roles) {
       const resolvedRole = this.guild.roles.resolveId(role);
       if (!resolvedRole) {
-        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array', 'options.roles', role));
+        throw new TypeError('INVALID_ELEMENT', 'Array', 'options.roles', role);
       }
       resolvedRoles.push(resolvedRole);
     }
@@ -296,17 +296,16 @@ class GuildMemberManager extends CachedManager {
     }
 
     const endpoint = this.client.api.guilds(this.guild.id).prune;
-
+    let pruned;
     if (dry) {
-      return endpoint.get({ query, reason }).then(data => data.pruned);
-    }
-
-    return endpoint
-      .post({
+      ({ pruned } = await endpoint.get({ query, reason }));
+    } else {
+      ({ pruned } = await endpoint.post({
         data: { ...query, compute_prune_count },
         reason,
-      })
-      .then(data => data.pruned);
+      }));
+    }
+    return pruned;
   }
 
   /**
@@ -366,17 +365,14 @@ class GuildMemberManager extends CachedManager {
     return this.guild.bans.remove(user, reason);
   }
 
-  _fetchSingle({ user, cache, force = false }) {
+  async _fetchSingle({ user, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(user);
-      if (existing && !existing.partial) return Promise.resolve(existing);
+      if (existing && !existing.partial) return existing;
     }
 
-    return this.client.api
-      .guilds(this.guild.id)
-      .members(user)
-      .get()
-      .then(data => this._add(data, cache));
+    const data = await this.client.api.guilds(this.guild.id).members(user).get();
+    return this._add(data, cache);
   }
 
   _fetchMany({
