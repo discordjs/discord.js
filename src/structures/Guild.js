@@ -897,6 +897,14 @@ class Guild extends AnonymousGuild {
    * @property {string} [description] The description for the welcome screen
    * @property {WelcomeChannelData[]} [welcomeChannels] The welcome channel data for the welcome screen
    */
+  
+  /**
+   * Data that can be resolved to a GuildTextChannel object. This can be:
+   * * A TextChannel
+   * * A NewsChannel
+   * * A Snowflake
+   * @typedef {TextChannel|NewsChannel|Snowflake} GuildTextChannelResolvable
+   */
 
   /**
    * Updates the guild's welcome screen
