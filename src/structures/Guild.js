@@ -1199,7 +1199,7 @@ class Guild extends AnonymousGuild {
   /**
    * The data needed for updating a guild role's position
    * @typedef {Object} GuildRolePosition
-   * @property {RoleResolveable} role The role's id
+   * @property {RoleResolvable} role The role's id
    * @property {number} position The position to update
    */
 
