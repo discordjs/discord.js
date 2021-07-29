@@ -237,7 +237,7 @@ class ThreadChannel extends Channel {
   /**
    * Fetches the owner of this thread
    * @param {FetchOwnerOptions} [options] The options for fetching the member
-   * @returns {Promise<ThreadMember>}
+   * @returns {Promise<?ThreadMember>}
    */
   async fetchOwner({ cache = true, force = false } = {}) {
     if (!force) {
