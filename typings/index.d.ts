@@ -576,7 +576,6 @@ export class Guild extends AnonymousGuild {
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
-  public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
   public delete(): Promise<Guild>;
   public discoverySplashURL(options?: StaticImageURLOptions): string | null;
@@ -849,7 +848,6 @@ export class Integration extends Base {
   public type: string;
   public user: User | null;
   public delete(reason?: string): Promise<Integration>;
-  public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
 }
 
 export class IntegrationApplication extends Application {
@@ -3673,11 +3671,6 @@ export interface ImageURLOptions extends StaticImageURLOptions {
 export interface IntegrationData {
   id: Snowflake;
   type: string;
-}
-
-export interface IntegrationEditData {
-  expireBehavior?: number;
-  expireGracePeriod?: number;
 }
 
 export interface IntegrationAccount {
