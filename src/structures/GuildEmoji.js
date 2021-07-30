@@ -152,7 +152,7 @@ class GuildEmoji extends BaseGuildEmoji {
   /**
    * Whether this emoji is the same as another one.
    * @param {GuildEmoji|APIEmoji} other The emoji to compare it to
-   * @returns {boolean} Whether the emoji is equal to the given emoji or not
+   * @returns {boolean}
    */
   equals(other) {
     if (other instanceof GuildEmoji) {
