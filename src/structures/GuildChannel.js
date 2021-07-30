@@ -397,7 +397,7 @@ class GuildChannel extends Channel {
     return this.edit(
       {
         // eslint-disable-next-line no-prototype-builtins
-        parentId: channel?.id ?? channel ?? null,
+        parent: channel ?? null,
         lockPermissions,
       },
       reason,
