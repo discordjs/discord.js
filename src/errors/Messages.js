@@ -98,9 +98,11 @@ const Messages = {
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
   MESSAGE_THREAD_PARENT: 'The message was not sent in a guild text or news channel',
+  MESSAGE_EXISTING_THREAD: 'The message already has a thread',
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
   WEBHOOK_TOKEN_UNAVAILABLE: 'This action requires a webhook token, but none is available.',
+  WEBHOOK_URL_INVALID: 'The provided webhook URL is not valid.',
   MESSAGE_REFERENCE_MISSING: 'The message does not reference another message',
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
@@ -137,8 +139,8 @@ const Messages = {
     `Option "${name}" is of type: ${type}; expected ${expected}.`,
   COMMAND_INTERACTION_OPTION_EMPTY: (name, type) =>
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
-  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No sub-command specified for interaction.',
-  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No sub-command group specified for interaction.',
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No subcommand specified for interaction.',
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No subcommand group specified for interaction.',
 
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 

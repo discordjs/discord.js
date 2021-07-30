@@ -431,7 +431,7 @@ export class CommandInteractionOptionResolver {
   public readonly data: readonly CommandInteractionOption[];
   private _group: string | null;
   private _hoistedOptions: CommandInteractionOption[];
-  private _subCommand: string | null;
+  private _subcommand: string | null;
   private _getTypedOption(
     name: string,
     type: ApplicationCommandOptionType,
@@ -448,10 +448,10 @@ export class CommandInteractionOptionResolver {
   public get(name: string, required: true): CommandInteractionOption;
   public get(name: string, required?: boolean): CommandInteractionOption | null;
 
-  public getSubCommand(required?: true): string;
-  public getSubCommand(required: boolean): string | null;
-  public getSubCommandGroup(required?: true): string;
-  public getSubCommandGroup(required: boolean): string | null;
+  public getSubcommand(required?: true): string;
+  public getSubcommand(required: boolean): string | null;
+  public getSubcommandGroup(required?: true): string;
+  public getSubcommandGroup(required: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
   public getChannel(name: string, required: true): NonNullable<CommandInteractionOption['channel']>;
@@ -576,7 +576,6 @@ export class Guild extends AnonymousGuild {
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
-  public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
   public delete(): Promise<Guild>;
   public discoverySplashURL(options?: StaticImageURLOptions): string | null;
@@ -849,8 +848,6 @@ export class Integration extends Base {
   public type: string;
   public user: User | null;
   public delete(reason?: string): Promise<Integration>;
-  public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
-  public sync(): Promise<Integration>;
 }
 
 export class IntegrationApplication extends Application {
@@ -999,6 +996,7 @@ export class Message extends Base {
   public embeds: MessageEmbed[];
   public groupActivityApplication: ClientApplication | null;
   public readonly guild: Guild | null;
+  public readonly hasThread: boolean;
   public id: Snowflake;
   public interaction: MessageInteraction | null;
   public readonly member: GuildMember | null;
@@ -1010,7 +1008,7 @@ export class Message extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public system: boolean;
-  public thread: ThreadChannel | null;
+  public readonly thread: ThreadChannel | null;
   public tts: boolean;
   public type: MessageType;
   public readonly url: string;
@@ -1535,6 +1533,11 @@ export class ShardingManager extends EventEmitter {
   public once(event: 'shardCreate', listener: (shard: Shard) => Awaited<void>): this;
 }
 
+export interface FetchRecommendedShardsOptions {
+  guildsPerShard?: number;
+  multipleOf?: number;
+}
+
 export class SnowflakeUtil extends null {
   private constructor();
   public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
@@ -1795,7 +1798,7 @@ export class Util extends null {
   public static escapeStrikethrough(text: string): string;
   public static escapeSpoiler(text: string): string;
   public static cleanCodeBlockContent(text: string): string;
-  public static fetchRecommendedShards(token: string, guildsPerShard?: number): Promise<number>;
+  public static fetchRecommendedShards(token: string, options?: FetchRecommendedShardsOptions): Promise<number>;
   public static flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
   public static idToBinary(num: Snowflake): string;
   public static makeError(obj: MakeErrorOptions): Error;
@@ -1895,7 +1898,7 @@ export class Webhook extends WebhookMixin() {
 }
 
 export class WebhookClient extends WebhookMixin(BaseClient) {
-  public constructor(id: Snowflake, token: string, options?: WebhookClientOptions);
+  public constructor(data: WebhookClientData, options?: WebhookClientOptions);
   public client: this;
   public options: WebhookClientOptions;
   public token: string;
@@ -3666,16 +3669,6 @@ export interface ImageURLOptions extends StaticImageURLOptions {
   dynamic?: boolean;
 }
 
-export interface IntegrationData {
-  id: Snowflake;
-  type: string;
-}
-
-export interface IntegrationEditData {
-  expireBehavior?: number;
-  expireGracePeriod?: number;
-}
-
 export interface IntegrationAccount {
   id: string | Snowflake;
   name: string;
@@ -4353,6 +4346,17 @@ export interface Vanity {
 export type VerificationLevel = keyof typeof VerificationLevels;
 
 export type VoiceBasedChannelTypes = 'GUILD_VOICE' | 'GUILD_STAGE_VOICE';
+
+export type WebhookClientData = WebhookClientDataIdWithToken | WebhookClientDataURL;
+
+export interface WebhookClientDataIdWithToken {
+  id: Snowflake;
+  token: string;
+}
+
+export interface WebhookClientDataURL {
+  url: string;
+}
 
 export type WebhookClientOptions = Pick<
   ClientOptions,

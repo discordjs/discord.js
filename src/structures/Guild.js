@@ -575,26 +575,6 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * The data for creating an integration.
-   * @typedef {Object} IntegrationData
-   * @property {string} id The integration id
-   * @property {string} type The integration type
-   */
-
-  /**
-   * Creates an integration by attaching an integration object
-   * @param {IntegrationData} data The data for the integration
-   * @param {string} reason Reason for creating the integration
-   * @returns {Promise<Guild>}
-   */
-  createIntegration(data, reason) {
-    return this.client.api
-      .guilds(this.id)
-      .integrations.post({ data, reason })
-      .then(() => this);
-  }
-
-  /**
    * Creates a template for the guild.
    * @param {string} name The name for the template
    * @param {string} [description] The description for the template
@@ -896,6 +876,14 @@ class Guild extends AnonymousGuild {
    * @property {boolean} [enabled] Whether the welcome screen is enabled
    * @property {string} [description] The description for the welcome screen
    * @property {WelcomeChannelData[]} [welcomeChannels] The welcome channel data for the welcome screen
+   */
+
+  /**
+   * Data that can be resolved to a GuildTextChannel object. This can be:
+   * * A TextChannel
+   * * A NewsChannel
+   * * A Snowflake
+   * @typedef {TextChannel|NewsChannel|Snowflake} GuildTextChannelResolvable
    */
 
   /**
@@ -1211,7 +1199,7 @@ class Guild extends AnonymousGuild {
   /**
    * The data needed for updating a guild role's position
    * @typedef {Object} GuildRolePosition
-   * @property {RoleResolveable} role The role's id
+   * @property {RoleResolvable} role The role's id
    * @property {number} position The position to update
    */
 

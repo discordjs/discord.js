@@ -101,16 +101,6 @@ class Message extends Base {
       this.pinned = null;
     }
 
-    if ('thread' in data) {
-      /**
-       * The thread started by this message
-       * @type {?ThreadChannel}
-       */
-      this.thread = this.client.channels._add(data.thread);
-    } else if (!this.thread) {
-      this.thread = null;
-    }
-
     if ('tts' in data) {
       /**
        * Whether or not the message was Text-To-Speech
@@ -267,6 +257,9 @@ class Message extends Base {
           }
         : null;
     }
+    if ('thread' in data) {
+      this.client.channels._add(data.thread, this.guild);
+    }
     if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
@@ -384,6 +377,26 @@ class Message extends Base {
    */
   get guild() {
     return this.channel.guild ?? null;
+  }
+
+  /**
+   * Whether this message has a thread associated with it
+   * @type {boolean}
+   * @readonly
+   */
+  get hasThread() {
+    return this.flags.has(MessageFlags.FLAGS.HAS_THREAD);
+  }
+
+  /**
+   * The thread started by this message
+   * <info>This property is not suitable for checking whether a message has a thread,
+   * use {@link Message#hasThread} instead.</info>
+   * @type {?ThreadChannel}
+   * @readonly
+   */
+  get thread() {
+    return this.channel.threads.resolve(this.id);
   }
 
   /**
@@ -726,6 +739,7 @@ class Message extends Base {
     if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
+    if (this.hasThread) return Promise.reject(new Error('MESSAGE_EXISTING_THREAD'));
     return this.channel.threads.create({ name, autoArchiveDuration, startMessage: this, reason });
   }
 
