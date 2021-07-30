@@ -86,7 +86,7 @@ class GuildChannelManager extends CachedManager {
    * @property {boolean} [nsfw] Whether the new channel is nsfw
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
    * @property {number} [userLimit] Maximum amount of users allowed in the new channel (only voice)
-   * @property {ChannelResolvable} [parent] Parent of the new channel
+   * @property {CategoryChannelResolvable} [parent] Parent of the new channel
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites of the new channel
    * @property {number} [position] Position of the new channel

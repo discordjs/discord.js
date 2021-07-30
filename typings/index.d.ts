@@ -705,7 +705,7 @@ export class GuildChannel extends Channel {
   public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
   public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
   public setName(name: string, reason?: string): Promise<this>;
-  public setParent(channel: CategoryChannel | Snowflake | null, options?: SetParentOptions): Promise<this>;
+  public setParent(channel: CategoryChannelResolvable | null, options?: SetParentOptions): Promise<this>;
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
   public isText(): this is TextChannel | NewsChannel;
@@ -2892,7 +2892,7 @@ export interface ChannelData {
   nsfw?: boolean;
   bitrate?: number;
   userLimit?: number;
-  parentId?: Snowflake | null;
+  parent?: CategoryChannelResolvable | null;
   rateLimitPerUser?: number;
   lockPermissions?: boolean;
   permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
@@ -3506,7 +3506,7 @@ export interface GuildChannelCreateOptions {
     | ChannelTypes.GUILD_PRIVATE_THREAD
   >;
   nsfw?: boolean;
-  parent?: ChannelResolvable;
+  parent?: CategoryChannelResolvable;
   bitrate?: number;
   userLimit?: number;
   rateLimitPerUser?: number;
