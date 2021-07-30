@@ -593,7 +593,7 @@ export class Guild extends AnonymousGuild {
   public fetchWidget(): Promise<Widget>;
   public fetchWidgetSettings(): Promise<GuildWidgetSettings>;
   public leave(): Promise<Guild>;
-  public setAFKChannel(afkChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
+  public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
   public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
@@ -610,11 +610,11 @@ export class Guild extends AnonymousGuild {
   public setName(name: string, reason?: string): Promise<Guild>;
   public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
   public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;
-  public setPublicUpdatesChannel(publicUpdatesChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
+  public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRolePositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
-  public setRulesChannel(rulesChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
+  public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
-  public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
+  public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
   public setVerificationLevel(verificationLevel: VerificationLevel | number, reason?: string): Promise<Guild>;
   public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
@@ -1415,7 +1415,7 @@ export class Role extends Base {
   public delete(reason?: string): Promise<Role>;
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
-  public permissionsIn(channel: ChannelResolvable): Readonly<Permissions>;
+  public permissionsIn(channel: GuildChannel|Snowflake): Readonly<Permissions>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist: boolean, reason?: string): Promise<Role>;
   public setMentionable(mentionable: boolean, reason?: string): Promise<Role>;
@@ -1670,6 +1670,8 @@ export class TextChannel extends TextBasedChannel(GuildChannel) {
   public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 }
 
+export type TextChannelResolvable = Snowflake | TextChannel;
+
 export class ThreadChannel extends TextBasedChannel(Channel) {
   public constructor(guild: Guild, data?: object, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
@@ -1844,6 +1846,8 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
   public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
 }
 
+export type VoiceChannelResolvable = Snowflake | VoiceChannel;
+
 export class VoiceRegion {
   public constructor(data: unknown);
   public custom: boolean;
@@ -1877,7 +1881,7 @@ export class VoiceState extends Base {
   public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
   public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
   public kick(reason?: string): Promise<GuildMember>;
-  public setChannel(channel: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
+  public setChannel(channel: VoiceChannelResolvable | null, reason?: string): Promise<GuildMember>;
   public setRequestToSpeak(request: boolean): Promise<void>;
   public setSuppressed(suppressed: boolean): Promise<void>;
 }
@@ -2910,13 +2914,14 @@ export interface ChannelLogsQueryOptions {
 export type ChannelMention = `<#${Snowflake}>`;
 
 export interface ChannelPosition {
-  channel: ChannelResolvable;
+  channel: GuildChannel | Snowflake;
   lockPermissions?: boolean;
   parent?: CategoryChannelResolvable | null;
   position?: number;
 }
 
 export type GuildTextChannelResolvable = TextChannel | NewsChannel | Snowflake;
+export type GuildVoiceChannelResolvable = VoiceChannel | StageChannel | Snowflake;
 export type ChannelResolvable = Channel | Snowflake;
 
 export interface ChannelWebhookCreateOptions {
@@ -3546,8 +3551,8 @@ export interface GuildEditData {
   verificationLevel?: VerificationLevel | number;
   explicitContentFilter?: ExplicitContentFilterLevel | number;
   defaultMessageNotifications?: DefaultMessageNotificationLevel | number;
-  afkChannel?: ChannelResolvable;
-  systemChannel?: ChannelResolvable;
+  afkChannel?: VoiceChannelResolvable;
+  systemChannel?: TextChannelResolvable;
   systemChannelFlags?: SystemChannelFlagsResolvable;
   afkTimeout?: number;
   icon?: Base64Resolvable;
@@ -3555,8 +3560,8 @@ export interface GuildEditData {
   splash?: Base64Resolvable;
   discoverySplash?: Base64Resolvable;
   banner?: Base64Resolvable;
-  rulesChannel?: ChannelResolvable;
-  publicUpdatesChannel?: ChannelResolvable;
+  rulesChannel?: TextChannelResolvable;
+  publicUpdatesChannel?: TextChannelResolvable;
   preferredLocale?: string;
   description?: string | null;
   features?: GuildFeatures[];
@@ -3612,7 +3617,7 @@ export interface GuildMemberEditData {
   roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
   mute?: boolean;
   deaf?: boolean;
-  channel?: ChannelResolvable | null;
+  channel?: GuildVoiceChannelResolvable | null;
 }
 
 export type GuildMemberResolvable = GuildMember | UserResolvable;
@@ -4357,7 +4362,7 @@ export type WebhookClientOptions = Pick<
 export interface WebhookEditData {
   name?: string;
   avatar?: BufferResolvable;
-  channel?: ChannelResolvable;
+  channel?: GuildTextChannelResolvable;
 }
 
 export type WebhookEditMessageOptions = Pick<

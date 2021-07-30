@@ -1,6 +1,5 @@
 'use strict';
 
-const Channel = require('./Channel');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const { WebhookTypes } = require('../util/Constants');
@@ -214,7 +213,7 @@ class Webhook {
    * @typedef {Object} WebhookEditData
    * @property {string} [name=this.name] The new name for the webhook
    * @property {BufferResolvable} [avatar] The new avatar for the webhook
-   * @property {ChannelResolvable} [channel] The new channel for the webhook
+   * @property {GuildTextChannelResolvable} [channel] The new channel for the webhook
    */
 
   /**
@@ -227,7 +226,7 @@ class Webhook {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    if (channel) channel = channel instanceof Channel ? channel.id : channel;
+    if (channel) channel = channel?.id ?? channel;
     const data = await this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,
