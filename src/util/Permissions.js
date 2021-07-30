@@ -79,6 +79,8 @@ class Permissions extends BitField {
  * * `MANAGE_ROLES`
  * * `MANAGE_WEBHOOKS`
  * * `MANAGE_EMOJIS`
+ * * `USE_PUBLIC_THREADS`
+ * * `USE_PRIVATE_THREADS`
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/topics/permissions}
  */
