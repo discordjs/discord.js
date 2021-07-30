@@ -3799,11 +3799,11 @@ export interface BaseButtonOptions extends BaseMessageComponentOptions {
 export type MessageButtonOptions = BaseButtonOptions &
   (
     | {
-        style: Exclude<MessageButtonStyle, 'LINK'>;
+        style: Exclude<MessageButtonStyleResolvable, 'LINK' | MessageButtonStyles.LINK>;
         customId: string;
       }
     | {
-        style: 'LINK';
+        style: 'LINK' | MessageButtonStyles.LINK;
         url: string;
       }
   );
