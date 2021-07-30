@@ -1415,7 +1415,7 @@ export class Role extends Base {
   public delete(reason?: string): Promise<Role>;
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
-  public permissionsIn(channel: GuildChannel|Snowflake): Readonly<Permissions>;
+  public permissionsIn(channel: GuildChannel | Snowflake): Readonly<Permissions>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist: boolean, reason?: string): Promise<Role>;
   public setMentionable(mentionable: boolean, reason?: string): Promise<Role>;
@@ -1670,8 +1670,6 @@ export class TextChannel extends TextBasedChannel(GuildChannel) {
   public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 }
 
-export type TextChannelResolvable = Snowflake | TextChannel;
-
 export class ThreadChannel extends TextBasedChannel(Channel) {
   public constructor(guild: Guild, data?: object, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
@@ -1845,8 +1843,6 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
   public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
   public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
 }
-
-export type VoiceChannelResolvable = Snowflake | VoiceChannel;
 
 export class VoiceRegion {
   public constructor(data: unknown);
@@ -2921,7 +2917,6 @@ export interface ChannelPosition {
 }
 
 export type GuildTextChannelResolvable = TextChannel | NewsChannel | Snowflake;
-export type GuildVoiceChannelResolvable = VoiceChannel | StageChannel | Snowflake;
 export type ChannelResolvable = Channel | Snowflake;
 
 export interface ChannelWebhookCreateOptions {
@@ -3645,6 +3640,8 @@ export interface GuildSearchMembersOptions {
 
 export type GuildTemplateResolvable = string;
 
+export type GuildVoiceChannelResolvable = VoiceChannel | StageChannel | Snowflake;
+
 export type HexColorString = `#${string}`;
 
 export interface HTTPAttachmentData {
@@ -4289,6 +4286,8 @@ export type TextBasedChannelTypes =
   | 'GUILD_PUBLIC_THREAD'
   | 'GUILD_PRIVATE_THREAD';
 
+export type TextChannelResolvable = Snowflake | TextChannel;
+
 export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080;
 
 export type ThreadChannelResolvable = ThreadChannel | Snowflake;
@@ -4342,6 +4341,8 @@ export interface Vanity {
 export type VerificationLevel = keyof typeof VerificationLevels;
 
 export type VoiceBasedChannelTypes = 'GUILD_VOICE' | 'GUILD_STAGE_VOICE';
+
+export type VoiceChannelResolvable = Snowflake | VoiceChannel;
 
 export type WebhookClientData = WebhookClientDataIdWithToken | WebhookClientDataURL;
 
