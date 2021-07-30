@@ -54,7 +54,7 @@ import {
 
 const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
-  makeCache: Options.cacheSome({
+  makeCache: Options.cacheWithLimits({
     MessageManager: 200,
     // @ts-expect-error
     Message: 100,

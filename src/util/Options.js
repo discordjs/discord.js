@@ -100,7 +100,7 @@ class Options extends null {
   static createDefault() {
     return {
       shardCount: 1,
-      makeCache: this.cacheSome({
+      makeCache: this.cacheWithLimits({
         MessageManager: 200,
         ThreadManager: {
           sweepFilter: require('./SweptCollection').filterByLifetime({
@@ -151,7 +151,7 @@ class Options extends null {
    * @returns {CacheFactory}
    * @example
    * // Store up to 200 messages per channel and discard archived threads if they were archived more than 4 hours ago.
-   * Options.cacheSome({
+   * Options.cacheWithLimits({
    *    MessageManager: 200,
    *    ThreadManager: {
    *      sweepFilter: SweptCollection.filterByLifetime({
@@ -162,7 +162,7 @@ class Options extends null {
    *  });
    * @example
    * // Sweep messages every 5 minutes, removing messages that have not been edited or created in the last 30 minutes
-   * Options.cacheSome({
+   * Options.cacheWithLimits({
    *   MessageManager: {
    *     sweepInterval: 300,
    *     sweepFilter: SweptCollection.filterByLifetime({
@@ -172,7 +172,7 @@ class Options extends null {
    *   }
    * });
    */
-  static cacheSome(settings = {}) {
+  static cacheWithLimits(settings = {}) {
     const Collection = require('./Collection');
     const LimitedCollection = require('./LimitedCollection');
     const SweptCollection = require('./SweptCollection');

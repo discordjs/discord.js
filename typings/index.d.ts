@@ -358,7 +358,7 @@ export class ClientUser extends User {
 export class Options extends null {
   private constructor();
   public static createDefaultOptions(): ClientOptions;
-  public static cacheSome(settings?: CacheSomeOptions): CacheFactory;
+  public static cacheWithLimits(settings?: CacheWithLimitsOptions): CacheFactory;
   public static cacheEverything(): CacheFactory;
 }
 
@@ -2879,7 +2879,7 @@ export interface CacheFactoryArgs {
   VoiceStateManager: [manager: typeof VoiceStateManager, holds: typeof VoiceState];
 }
 
-export type CacheSomeOptions = {
+export type CacheWithLimitsOptions = {
   [K in CachedManagerTypes]?: SweptCollectionOptions<unknown, unknown> | number;
 };
 
