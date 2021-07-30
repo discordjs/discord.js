@@ -67,6 +67,49 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
+   * Options used to add a user to a guild using OAuth2.
+   * @typedef {Object} AddGuildMemberOptions
+   * @property {string} accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
+   * bot's application
+   * @property {string} [nick] The nickname to give to the member (requires `MANAGE_NICKNAMES`)
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to add to the member
+   * (requires `MANAGE_ROLES`)
+   * @property {boolean} [mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
+   * @property {boolean} [deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
+   * @property {boolean} [force] Whehter to skip the cache check and call the API directly
+   */
+
+  /**
+   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
+   * @param {UserResolvable} user The user to add to the guild
+   * @param {AddGuildMemberOptions} options Options for adding the user to the guild
+   * @returns {Promise<GuildMember>}
+   */
+  async add(user, options) {
+    const userId = this.client.users.resolveId(user);
+    if (!userId) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+    if (!options?.force) {
+      if (this.cache.has(userId)) return this.cache.get(userId);
+    }
+    options.access_token = options.accessToken;
+    if (options.roles) {
+      if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
+        throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
+      }
+      const resolvedRoles = [];
+      for (const role of options.roles.values()) {
+        const resolvedRole = this.guild.roles.resolveId(role);
+        if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
+        resolvedRoles.push(resolvedRole);
+      }
+      options.roles = resolvedRoles;
+    }
+    const data = await this.client.api.guilds(this.guild.id).members(userId).put({ data: options });
+    // Data is an empty buffer if the member is already part of the guild.
+    return data instanceof Buffer ? this.members.fetch(userId) : this._add(data);
+  }
+
+  /**
    * Options used to fetch a single member from a guild.
    * @typedef {BaseFetchOptions} FetchMemberOptions
    * @property {UserResolvable} user The user to fetch
