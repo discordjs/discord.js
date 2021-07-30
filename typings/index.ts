@@ -58,6 +58,12 @@ const client: Client = new Client({
     MessageManager: 200,
     // @ts-expect-error
     Message: 100,
+    ThreadManager: {
+      sweepInterval: require('./SweptCollection').filterByLifetime({
+        getComparisonTimestamp: (e: any) => e.archiveTimestamp,
+        excludeFromSweep: (e: any) => !e.archived,
+      }),
+    },
   }),
 });
 

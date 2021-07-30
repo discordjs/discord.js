@@ -358,7 +358,7 @@ export class ClientUser extends User {
 export class Options extends null {
   private constructor();
   public static createDefaultOptions(): ClientOptions;
-  public static cacheWithLimits(limits?: CacheWithLimitOptions): CacheFactory;
+  public static cacheWithLimits(settings?: CacheWithLimitsOptions): CacheFactory;
   public static cacheEverything(): CacheFactory;
 }
 
@@ -1617,6 +1617,14 @@ export class StoreChannel extends GuildChannel {
   public type: 'GUILD_STORE';
 }
 
+export class SweptCollection<K, V> extends Collection<K, V> {
+  public constructor(options?: SweptCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
+  public interval: NodeJS.Timeout | null;
+  public sweepFilter: SweptCollectionSweepFilter<K, V> | null;
+
+  public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweptCollectionSweepFilter<K, V>;
+}
+
 export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
   public static FLAGS: Record<SystemChannelFlagsString, number>;
   public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString, number>): number;
@@ -2207,11 +2215,12 @@ export class ApplicationCommandPermissionsManager<
   CommandIdType,
 > extends BaseManager {
   public constructor(manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand);
+  private manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand;
+
   public client: Client;
   public commandId: CommandIdType;
   public guild: GuildType;
   public guildId: Snowflake | null;
-  public manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand;
   public add(
     options: FetchSingleOptions & { permissions: ApplicationCommandPermissionData[] },
   ): Promise<ApplicationCommandPermissions[]>;
@@ -2874,8 +2883,8 @@ export interface CacheFactoryArgs {
   VoiceStateManager: [manager: typeof VoiceStateManager, holds: typeof VoiceState];
 }
 
-export type CacheWithLimitOptions = {
-  [K in CachedManagerTypes]?: number;
+export type CacheWithLimitsOptions = {
+  [K in CachedManagerTypes]?: SweptCollectionOptions<unknown, unknown> | number;
 };
 
 export interface ChannelCreationOverwrites {
@@ -3007,7 +3016,9 @@ export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
   makeCache?: CacheFactory;
+  /** @deprecated Use `makeCache` with a `SweptCollection` for `MessageManager` instead. */
   messageCacheLifetime?: number;
+  /** @deprecated Use `makeCache` with a `SweptCollection` for `MessageManager` instead. */
   messageSweepInterval?: number;
   allowedMentions?: MessageMentionOptions;
   invalidRequestWarningInterval?: number;
@@ -3756,6 +3767,12 @@ export type InviteScope =
   | 'gdm.join'
   | 'webhook.incoming';
 
+export interface LifetimeFilterOptions<K, V> {
+  excludeFromSweep?: (value: V, key: K, collection: SweptCollection<K, V>) => boolean;
+  getComparisonTimestamp?: (value: V, key: K, collection: SweptCollection<K, V>) => number;
+  lifetime?: number;
+}
+
 export interface MakeErrorOptions {
   name: string;
   message: string;
@@ -4274,6 +4291,15 @@ export type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPL
 export interface StageInstanceEditOptions {
   topic?: string;
   privacyLevel?: PrivacyLevel | number;
+}
+
+export type SweptCollectionSweepFilter<K, V> = (
+  collection: SweptCollection<K, V>,
+) => ((value: V, key: K, collection: SweptCollection<K, V>) => boolean) | null;
+
+export interface SweptCollectionOptions<K, V> {
+  sweepFilter?: SweptCollectionSweepFilter<K, V>;
+  sweepInterval?: number;
 }
 
 export type TextBasedChannelTypes =
