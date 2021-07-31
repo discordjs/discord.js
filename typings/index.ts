@@ -399,7 +399,7 @@ client.on('ready', async () => {
 });
 
 // This is to check that stuff is the right type
-declare const assertIsMember: (m: Promise<GuildMember> | GuildMember) => void;
+declare const assertIsPromiseMember: (m: Promise<GuildMember>) => void;
 
 client.on('guildCreate', g => {
   const channel = g.channels.cache.random();
@@ -409,21 +409,21 @@ client.on('guildCreate', g => {
     console.log(`New channel name: ${updatedChannel.name}`);
   });
 
-  // @ts-expect-error
-  assertIsMember(g.members.add(testUserId));
+  // @ts-expect-error no options
+  assertIsPromiseMember(g.members.add(testUserId));
 
-  // @ts-expect-error
-  assertIsMember(g.members.add(testUserId, {}));
+  // @ts-expect-error no access token
+  assertIsPromiseMember(g.members.add(testUserId, {}));
 
-  // @ts-expect-error
-  assertIsMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', roles: [g.roles.cache] }));
+  // @ts-expect-error invalid role resolvable
+  assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', roles: [g.roles.cache] }));
 
-  // @ts-expect-error
-  assertIsMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', fetchWhenExisting: false }));
+  // @ts-expect-error non fetched returns Promise<null>
+  assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', fetchWhenExisting: false }));
 
-  assertIsMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken' }));
+  assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken' }));
 
-  assertIsMember(
+  assertIsPromiseMember(
     g.members.add(testUserId, {
       accessToken: 'totallyRealAccessToken',
       mute: true,
