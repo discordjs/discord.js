@@ -18,6 +18,14 @@ class Widget extends Base {
   }
 
   /**
+   * Represents a channel in a Widget
+   * @typedef {Object} WidgetChannel
+   * @property {Snowflake} id Id of the channel
+   * @property {string} name Name of the channel
+   * @property {number} position Position of the channel
+   */
+
+  /**
    * Builds the widget with the provided data.
    * @param {*} data The raw data of the widget
    * @private
