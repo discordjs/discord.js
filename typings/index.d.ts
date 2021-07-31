@@ -1053,9 +1053,9 @@ export class Message extends Base {
     channel: TextChannel | DMChannel | NewsChannel | ThreadChannel,
   );
   private _patch(data: RawPartialMessageData, partial: true): Message;
-  private _patch(data: RawMessageData): Message;
+  private _patch(data: RawMessageData, partial?: boolean): Message;
   private _update(data: RawPartialMessageData, partial: true): Message;
-  private _update(data: RawMessageData): Message;
+  private _update(data: RawMessageData, partial?: boolean): Message;
 
   public activity: MessageActivity | null;
   public applicationId: Snowflake | null;
@@ -1370,7 +1370,7 @@ export class NewsChannel extends TextBasedChannel(GuildChannel) {
 }
 
 export class OAuth2Guild extends BaseGuild {
-  constructor(client: Client, data: RawOAuth2GuildData);
+  public constructor(client: Client, data: RawOAuth2GuildData);
   public owner: boolean;
   public permissions: Readonly<Permissions>;
 }
