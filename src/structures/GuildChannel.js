@@ -153,7 +153,7 @@ class GuildChannel extends Channel {
    */
   get position() {
     const sorted = this.guild._sortedChannels(this);
-    return sorted.array().indexOf(sorted.get(this.id));
+    return [...sorted.values()].indexOf(sorted.get(this.id));
   }
 
   /**

@@ -500,7 +500,7 @@ class Util extends null {
    * @private
    */
   static setPosition(item, position, relative, sorted, route, reason) {
-    let updatedItems = sorted.array();
+    let updatedItems = [...sorted.values()];
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
     return route.patch({ data: updatedItems, reason }).then(() => updatedItems);
