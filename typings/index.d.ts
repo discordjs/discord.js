@@ -3803,14 +3803,23 @@ export interface MessageActivity {
 
 export type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
-export interface MessageButtonOptions extends BaseMessageComponentOptions {
-  customId?: string;
+export interface BaseButtonOptions extends BaseMessageComponentOptions {
   disabled?: boolean;
   emoji?: EmojiIdentifierResolvable;
   label?: string;
-  style: MessageButtonStyleResolvable;
-  url?: string;
 }
+
+export type MessageButtonOptions = BaseButtonOptions &
+  (
+    | {
+        style: Exclude<MessageButtonStyleResolvable, 'LINK' | MessageButtonStyles.LINK>;
+        customId: string;
+      }
+    | {
+        style: 'LINK' | MessageButtonStyles.LINK;
+        url: string;
+      }
+  );
 
 export type MessageButtonStyle = keyof typeof MessageButtonStyles;
 
