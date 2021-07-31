@@ -776,8 +776,8 @@ class Guild extends AnonymousGuild {
    * @property {string} [name] The name of the guild
    * @property {VerificationLevel|number} [verificationLevel] The verification level of the guild
    * @property {ExplicitContentFilterLevel|number} [explicitContentFilter] The level of the explicit content filter
-   * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
-   * @property {ChannelResolvable} [systemChannel] The system channel of the guild
+   * @property {VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
@@ -787,11 +787,25 @@ class Guild extends AnonymousGuild {
    * @property {DefaultMessageNotificationLevel|number} [defaultMessageNotifications] The default message notification
    * level of the guild
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
-   * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
-   * @property {ChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
+   * @property {TextChannelResolvable} [rulesChannel] The rules channel of the guild
+   * @property {TextChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {string} [preferredLocale] The preferred locale of the guild
    * @property {string} [description] The discovery description of the guild
    * @property {Features[]} [features] The features of the guild
+   */
+
+  /**
+   * Data that can be resolved to a Text Channel object. This can be:
+   * * A TextChannel
+   * * A Snowflake
+   * @typedef {TextChannel|Snowflake} TextChannelResolvable
+   */
+
+  /**
+   * Data that can be resolved to a Voice Channel object. This can be:
+   * * A VoiceChannel
+   * * A Snowflake
+   * @typedef {VoiceChannel|Snowflake} VoiceChannelResolvable
    */
 
   /**
@@ -884,6 +898,14 @@ class Guild extends AnonymousGuild {
    * * A NewsChannel
    * * A Snowflake
    * @typedef {TextChannel|NewsChannel|Snowflake} GuildTextChannelResolvable
+   */
+
+  /**
+   * Data that can be resolved to a GuildVoiceChannel object. This can be:
+   * * A VoiceChannel
+   * * A StageChannel
+   * * A Snowflake
+   * @typedef {VoiceChannel|StageChannel|Snowflake} GuildVoiceChannelResolvable
    */
 
   /**
@@ -988,7 +1010,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the AFK channel of the guild.
-   * @param {ChannelResolvable} afkChannel The new AFK channel
+   * @param {VoiceChannelResolvable} afkChannel The new AFK channel
    * @param {string} [reason] Reason for changing the guild's AFK channel
    * @returns {Promise<Guild>}
    * @example
@@ -1003,7 +1025,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the system channel of the guild.
-   * @param {ChannelResolvable} systemChannel The new system channel
+   * @param {TextChannelResolvable} systemChannel The new system channel
    * @param {string} [reason] Reason for changing the guild's system channel
    * @returns {Promise<Guild>}
    * @example
@@ -1107,7 +1129,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the rules channel of the guild.
-   * @param {ChannelResolvable} rulesChannel The new rules channel
+   * @param {TextChannelResolvable} rulesChannel The new rules channel
    * @param {string} [reason] Reason for changing the guild's rules channel
    * @returns {Promise<Guild>}
    * @example
@@ -1122,7 +1144,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the community updates channel of the guild.
-   * @param {ChannelResolvable} publicUpdatesChannel The new community updates channel
+   * @param {TextChannelResolvable} publicUpdatesChannel The new community updates channel
    * @param {string} [reason] Reason for changing the guild's community updates channel
    * @returns {Promise<Guild>}
    * @example
@@ -1160,7 +1182,7 @@ class Guild extends AnonymousGuild {
   /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
-   * @property {ChannelResolvable} channel Channel to update
+   * @property {GuildChannel|Snowflake} channel Channel to update
    * @property {number} [position] New position for the channel
    * @property {CategoryChannelResolvable} [parent] Parent channel for this channel
    * @property {boolean} [lockPermissions] If the overwrites should be locked to the parents overwrites
