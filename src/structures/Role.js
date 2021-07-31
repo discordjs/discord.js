@@ -159,7 +159,7 @@ class Role extends Base {
    */
   get position() {
     const sorted = this.guild._sortedRoles();
-    return sorted.array().indexOf(sorted.get(this.id));
+    return [...sorted.values()].indexOf(sorted.get(this.id));
   }
 
   /**
@@ -203,7 +203,7 @@ class Role extends Base {
   /**
    * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a guild channel,
    * taking into account permission overwrites.
-   * @param {ChannelResolvable} channel The guild channel to use as context
+   * @param {GuildChannel|Snowflake} channel The guild channel to use as context
    * @returns {Readonly<Permissions>}
    */
   permissionsIn(channel) {

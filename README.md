@@ -25,7 +25,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 
-**Node.js 14.0.0 or newer is required.**  
+**Node.js 14.6.0 or newer is required.**  
 
 ```sh-session
 npm install discord.js
