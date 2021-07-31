@@ -93,7 +93,12 @@ class GuildMemberManager extends CachedManager {
       const cachedUser = this.cache.get(userId);
       if (cachedUser) return cachedUser;
     }
-    options.access_token = options.accessToken;
+    const resolvedOptions = {
+      nick: options.nick,
+      mute: options.mute,
+      deaf: options.deaf,
+    };
+    resolvedOptions.access_token = options.accessToken;
     if (options.roles) {
       if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
         throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
@@ -104,12 +109,12 @@ class GuildMemberManager extends CachedManager {
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
         resolvedRoles.push(resolvedRole);
       }
-      options.roles = resolvedRoles;
+      resolvedOptions.roles = resolvedRoles;
     }
-    const data = await this.client.api.guilds(this.guild.id).members(userId).put({ data: options });
+    const data = await this.client.api.guilds(this.guild.id).members(userId).put({ data: resolvedOptions });
     // Data is an empty buffer if the member is already part of the guild.
     let newUser = data instanceof Buffer ? null : this._add(data);
-    if (!newUser && (options.fetchWhenExisting ?? true)) {
+    if (!newUser && options.fetchWhenExisting !== false) {
       newUser = this.fetch(userId);
     }
     return newUser;
