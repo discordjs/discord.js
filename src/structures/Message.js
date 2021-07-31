@@ -728,14 +728,21 @@ class Message extends Base {
   }
 
   /**
+   * Options for starting a thread on a message.
+   * @typedef {Object} StartThreadOptions
+   * @property {string} name The name of the new thread
+   * @property {ThreadAutoArchiveDuration} autoArchiveDuration The amount of time (in minutes) after which the thread
+   * should automatically archive in case of no recent activity
+   * @property {string} [reason] Reason for creating the thread
+   */
+
+  /**
    * Create a new public thread from this message
    * @see ThreadManager#create
-   * @param {string} name The name of the new Thread
-   * @param {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
-   * @param {string} [reason] Reason for creating the thread
+   * @param {StartThreadOptions} [options] Options for starting a thread on this message
    * @returns {Promise<ThreadChannel>}
    */
-  startThread(name, autoArchiveDuration, reason) {
+  startThread({ name, autoArchiveDuration, reason } = {}) {
     if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }

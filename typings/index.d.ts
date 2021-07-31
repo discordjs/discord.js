@@ -1034,11 +1034,7 @@ export class Message extends Base {
   public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
   public removeAttachments(): Promise<Message>;
   public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message>;
-  public startThread(
-    name: string,
-    autoArchiveDuration: ThreadAutoArchiveDuration,
-    reason?: string,
-  ): Promise<ThreadChannel>;
+  public startThread(options: StartThreadOptions): Promise<ThreadChannel>;
   public suppressEmbeds(suppress?: boolean): Promise<Message>;
   public toJSON(): unknown;
   public toString(): string;
@@ -4271,6 +4267,12 @@ export interface StaticImageURLOptions {
 
 export type StageInstanceResolvable = StageInstance | Snowflake;
 
+export interface StartThreadOptions {
+  name: string;
+  autoArchiveDuration: ThreadAutoArchiveDuration;
+  reason?: string;
+}
+
 export type Status = number;
 
 export type StickerFormatType = keyof typeof StickerFormatTypes;
@@ -4316,12 +4318,9 @@ export type ThreadChannelResolvable = ThreadChannel | Snowflake;
 
 export type ThreadChannelTypes = 'GUILD_NEWS_THREAD' | 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD';
 
-export interface ThreadCreateOptions<AllowedThreadType> {
-  name: string;
-  autoArchiveDuration: ThreadAutoArchiveDuration;
+export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptions {
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
-  reason?: string;
 }
 
 export interface ThreadEditData {
