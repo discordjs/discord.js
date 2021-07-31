@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const Message = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for Messages and holds their cache.

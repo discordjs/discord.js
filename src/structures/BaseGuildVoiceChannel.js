@@ -1,7 +1,7 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const GuildChannel = require('./GuildChannel');
-const Collection = require('../util/Collection');
 const Permissions = require('../util/Permissions');
 
 /**

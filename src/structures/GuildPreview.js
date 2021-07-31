@@ -1,8 +1,8 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
 const GuildPreviewEmoji = require('./GuildPreviewEmoji');
-const Collection = require('../util/Collection');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**

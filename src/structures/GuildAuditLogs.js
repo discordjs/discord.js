@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Integration = require('./Integration');
 const StageInstance = require('./StageInstance');
 const Sticker = require('./Sticker');
 const Webhook = require('./Webhook');
-const Collection = require('../util/Collection');
 const { OverwriteTypes, PartialTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
