@@ -2303,6 +2303,7 @@ export class GuildChannelManager extends CachedManager<
   ): Promise<
     Collection<Snowflake, TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel>
   >;
+  public fetchActiveThreads(cache?: boolean): Promise<FetchedThreads>;
 }
 
 export class GuildEmojiManager extends BaseGuildEmojiManager {
