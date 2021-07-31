@@ -159,7 +159,7 @@ class Role extends Base {
    */
   get position() {
     const sorted = this.guild._sortedRoles();
-    return sorted.array().indexOf(sorted.get(this.id));
+    return [...sorted.values()].indexOf(sorted.get(this.id));
   }
 
   /**
