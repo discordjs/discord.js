@@ -237,8 +237,7 @@ class GuildMember extends Base {
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
    * @property {GuildVoiceChannelResolvable|null} [channel] Channel to move member to (if they are connected to voice),
-   * or `null`
-   * if you want to kick them from voice
+   * or `null` if you want to disconnect them from voice
    */
 
   /**
