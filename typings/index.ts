@@ -418,8 +418,9 @@ client.on('guildCreate', g => {
   // @ts-expect-error invalid role resolvable
   assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', roles: [g.roles.cache] }));
 
-  // @ts-expect-error non fetched returns Promise<null>
-  assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', fetchWhenExisting: false }));
+  assertType<Promise<GuildMember | null>>(
+    g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', fetchWhenExisting: false }),
+  );
 
   assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken' }));
 
