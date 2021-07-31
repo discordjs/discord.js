@@ -37,13 +37,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * @readonly
    */
   get members() {
-    const coll = new Collection();
-    for (const state of this.guild.voiceStates.cache.values()) {
-      if (state.channelId === this.id && state.member) {
-        coll.set(state.id, state.member);
-      }
-    }
-    return coll;
+    return this.guild.voiceStates.cache.filter(s => s.channelId === this.id && s.member);
   }
 
   /**
