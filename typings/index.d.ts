@@ -2751,18 +2751,47 @@ export interface ApplicationCommandData {
   defaultPermission?: boolean;
 }
 
-export interface ApplicationCommandOptionData {
-  type: ApplicationCommandOptionType | ApplicationCommandOptionTypes;
+export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType | ApplicationCommandOptionTypes;
+
+export type CommandOptionChoiceResolvableType =
+  | ApplicationCommandOptionTypes.NUMBER
+  | 'NUMBER'
+  | ApplicationCommandOptionTypes.STRING
+  | 'STRING'
+  | ApplicationCommandOptionTypes.INTEGER
+  | 'INTEGER';
+
+export type CommandOptionNonChoiceResolvableType = Exclude<
+  CommandOptionDataTypeResolvable,
+  CommandOptionChoiceResolvableType
+>;
+export type CommandOptionSubOptionResolvableType =
+  | ApplicationCommandOptionTypes.SUB_COMMAND
+  | 'SUB_COMMAND'
+  | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP
+  | 'SUB_COMMAND_GROUP';
+
+export type ApplicationCommandOptionData = {
   name: string;
   description: string;
   required?: boolean;
-  choices?: ApplicationCommandOptionChoice[];
-  options?: this[];
-}
+} & (
+  | {
+      type: CommandOptionChoiceResolvableType;
+      choices?: ApplicationCommandOptionChoice[];
+    }
+  | {
+      type: CommandOptionNonChoiceResolvableType;
+    }
+  | {
+      type: CommandOptionSubOptionResolvableType;
+      options?: ApplicationCommandOptionData[];
+    }
+);
 
-export interface ApplicationCommandOption extends ApplicationCommandOptionData {
+export type ApplicationCommandOption = ApplicationCommandOptionData & {
   type: ApplicationCommandOptionType;
-}
+};
 
 export interface ApplicationCommandOptionChoice {
   name: string;
