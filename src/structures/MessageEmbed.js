@@ -304,7 +304,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setFields(...fields) {
-    this.spliceFields(0, this.fields.length, this.constructor.normalizeFields(fields));
+    this.spliceFields(0, this.fields.length, fields);
     return this;
   }
 
