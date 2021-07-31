@@ -399,7 +399,7 @@ client.on('ready', async () => {
 });
 
 // This is to check that stuff is the right type
-declare const assertIsMember: (m: Promise<GuildMember>) => void;
+declare const assertIsMember: (m: Promise<GuildMember> | GuildMember) => void;
 
 client.on('guildCreate', g => {
   const channel = g.channels.cache.random();
@@ -421,6 +421,8 @@ client.on('guildCreate', g => {
   // @ts-expect-error
   assertIsMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', fetchWhenExisting: false }));
 
+  assertIsMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken' }));
+
   assertIsMember(
     g.members.add(testUserId, {
       accessToken: 'totallyRealAccessToken',
@@ -428,6 +430,7 @@ client.on('guildCreate', g => {
       deaf: false,
       roles: [g.roles.cache.first()!],
       force: true,
+      fetchWhenExisting: true,
     }),
   );
 });
