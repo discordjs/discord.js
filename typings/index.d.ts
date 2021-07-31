@@ -2771,23 +2771,30 @@ export type CommandOptionSubOptionResolvableType =
   | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP
   | 'SUB_COMMAND_GROUP';
 
-export type ApplicationCommandOptionData = {
+export interface BaseApplicationCommandOptionsData {
   name: string;
   description: string;
   required?: boolean;
-} & (
-  | {
-      type: CommandOptionChoiceResolvableType;
-      choices?: ApplicationCommandOptionChoice[];
-    }
-  | {
-      type: CommandOptionNonChoiceResolvableType;
-    }
-  | {
-      type: CommandOptionSubOptionResolvableType;
-      options?: ApplicationCommandOptionData[];
-    }
-);
+}
+
+export interface ApplicationCommandOptionsData extends BaseApplicationCommandOptionsData {
+  type: CommandOptionSubOptionResolvableType;
+  options?: ApplicationCommandOptionData[];
+}
+
+export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
+  type: CommandOptionChoiceResolvableType;
+  choices?: ApplicationCommandOptionChoice[];
+}
+
+export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
+  type: CommandOptionNonChoiceResolvableType;
+}
+
+export type ApplicationCommandOptionData =
+  | ApplicationCommandOptionsData
+  | ApplicationCommandChoicesData
+  | ApplicationCommandNonOptionsData;
 
 export type ApplicationCommandOption = ApplicationCommandOptionData & {
   type: ApplicationCommandOptionType;
