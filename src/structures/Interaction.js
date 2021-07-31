@@ -49,6 +49,12 @@ class Interaction extends Base {
      * @type {?Snowflake}
      */
     this.guildId = data.guild_id ?? null;
+    
+    /**
+     * The message this interaction was sent in
+     * @type {Message}
+     */
+    this.message = data.message
 
     /**
      * The user which sent this interaction
