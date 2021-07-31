@@ -103,6 +103,7 @@ class Options extends null {
       makeCache: this.cacheWithLimits({
         MessageManager: 200,
         ThreadManager: {
+          sweepInterval: 3600,
           sweepFilter: require('./LimitedCollection').filterByLifetime({
             getComparisonTimestamp: e => e.archiveTimestamp,
             excludeFromSweep: e => !e.archived,
@@ -154,6 +155,7 @@ class Options extends null {
    * Options.cacheWithLimits({
    *    MessageManager: 200,
    *    ThreadManager: {
+   *      sweepInterval: 3600,
    *      sweepFilter: LimitedCollection.filterByLifetime({
    *        getComparisonTimestamp: e => e.archiveTimestamp,
    *        excludeFromSweep: e => !e.archived,
