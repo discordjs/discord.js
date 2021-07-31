@@ -8,7 +8,7 @@ const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
-const { Error, TypeError } = require('../errors');
+const { Error } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
@@ -728,46 +728,6 @@ class Guild extends AnonymousGuild {
         },
       })
       .then(data => GuildAuditLogs.build(this, data));
-  }
-
-  /**
-   * Options used to add a user to a guild using OAuth2.
-   * @typedef {Object} AddGuildMemberOptions
-   * @property {string} accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
-   * bot's application
-   * @property {string} [nick] The nickname to give to the member (requires `MANAGE_NICKNAMES`)
-   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to add to the member
-   * (requires `MANAGE_ROLES`)
-   * @property {boolean} [mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
-   * @property {boolean} [deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
-   */
-
-  /**
-   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
-   * @param {UserResolvable} user The user to add to the guild
-   * @param {AddGuildMemberOptions} options Options for adding the user to the guild
-   * @returns {Promise<GuildMember>}
-   */
-  async addMember(user, options) {
-    user = this.client.users.resolveId(user);
-    if (!user) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
-    if (this.members.cache.has(user)) return this.members.cache.get(user);
-    options.access_token = options.accessToken;
-    if (options.roles) {
-      if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
-        throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
-      }
-      const resolvedRoles = [];
-      for (const role of options.roles.values()) {
-        const resolvedRole = this.roles.resolveId(role);
-        if (!role) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
-        resolvedRoles.push(resolvedRole);
-      }
-      options.roles = resolvedRoles;
-    }
-    const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
-    // Data is an empty buffer if the member is already part of the guild.
-    return data instanceof Buffer ? this.members.fetch(user) : this.members._add(data);
   }
 
   /**

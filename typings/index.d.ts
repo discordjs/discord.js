@@ -573,7 +573,6 @@ export class Guild extends AnonymousGuild {
   public readonly widgetChannel: TextChannel | null;
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
-  public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
   public delete(): Promise<Guild>;
   public discoverySplashURL(options?: StaticImageURLOptions): string | null;
@@ -2341,6 +2340,11 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
 export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
   public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
+  public add(
+    user: UserResolvable,
+    options: AddGuildMemberOptions & { fetchWhenExisting: false },
+  ): Promise<GuildMember | null>;
+  public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
   public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
   public edit(user: UserResolvable, data: GuildMemberEditData, reason?: string): Promise<void>;
   public fetch(
@@ -2609,6 +2613,8 @@ export interface AddGuildMemberOptions {
   roles?: Collection<Snowflake, Role> | RoleResolvable[];
   mute?: boolean;
   deaf?: boolean;
+  force?: boolean;
+  fetchWhenExisting?: boolean;
 }
 
 export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
