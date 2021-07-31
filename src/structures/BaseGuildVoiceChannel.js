@@ -1,5 +1,6 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const GuildChannel = require('./GuildChannel');
 const Permissions = require('../util/Permissions');
 
@@ -36,7 +37,13 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * @readonly
    */
   get members() {
-    return this.guild.voiceStates.cache.filter(s => s.channelId === this.id && s.member);
+    const coll = new Collection();
+    for (const state of this.guild.voiceStates.cache.values()) {
+      if (state.channelId === this.id && state.member) {
+        coll.set(state.id, state.member);
+      }
+    }
+    return coll;
   }
 
   /**
