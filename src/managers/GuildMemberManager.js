@@ -77,19 +77,21 @@ class GuildMemberManager extends CachedManager {
    * @property {boolean} [mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
    * @property {boolean} [deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
    * @property {boolean} [force] Whehter to skip the cache check and call the API directly
+   * @property {boolean} [fetchWhenExisting=true] Whether to fetch the user if not cached and already a member
    */
 
   /**
    * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
    * @param {UserResolvable} user The user to add to the guild
    * @param {AddGuildMemberOptions} options Options for adding the user to the guild
-   * @returns {Promise<GuildMember>}
+   * @returns {Promise<GuildMember|null>}
    */
   async add(user, options) {
     const userId = this.client.users.resolveId(user);
     if (!userId) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
-    if (!options?.force) {
-      if (this.cache.has(userId)) return this.cache.get(userId);
+    if (!options.force) {
+      const cachedUser = this.cache.get(userId);
+      if (cachedUser) return cachedUser;
     }
     options.access_token = options.accessToken;
     if (options.roles) {
@@ -106,7 +108,11 @@ class GuildMemberManager extends CachedManager {
     }
     const data = await this.client.api.guilds(this.guild.id).members(userId).put({ data: options });
     // Data is an empty buffer if the member is already part of the guild.
-    return data instanceof Buffer ? this.members.fetch(userId) : this._add(data);
+    let newUser = data instanceof Buffer ? null : this._add(data);
+    if (!newUser && (options.fetchWhenExisting ?? true)) {
+      newUser = this.fetch(userId);
+    }
+    return newUser;
   }
 
   /**

@@ -19,6 +19,7 @@ import {
   GuildEmoji,
   GuildEmojiManager,
   GuildMember,
+  GuildMemberManager,
   GuildResolvable,
   Intents,
   Interaction,

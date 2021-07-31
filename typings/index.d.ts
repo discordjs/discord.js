@@ -2332,7 +2332,8 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
 export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
   public constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
-  public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
+  public add(user: UserResolvable, options: AddGuildMemberOptions & { fetchWhenExisting: true }): Promise<GuildMember>;
+  public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember | null>;
   public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
   public edit(user: UserResolvable, data: GuildMemberEditData, reason?: string): Promise<void>;
   public fetch(
@@ -2602,6 +2603,7 @@ export interface AddGuildMemberOptions {
   mute?: boolean;
   deaf?: boolean;
   force?: boolean;
+  fetchWhenExisting?: boolean;
 }
 
 export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
