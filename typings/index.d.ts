@@ -1151,6 +1151,7 @@ export class MessageEmbed {
   public readonly video: MessageEmbedVideo | null;
   public addField(name: string, value: string, inline?: boolean): this;
   public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
+  public setFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
   public setAuthor(name: string, iconURL?: string, url?: string): this;
   public setColor(color: ColorResolvable): this;
   public setDescription(description: string): this;
