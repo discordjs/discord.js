@@ -303,7 +303,7 @@ export class BitField<S extends string, N extends number | bigint = number> {
   public toJSON(): N extends number ? number : string;
   public valueOf(): N;
   public [Symbol.iterator](): IterableIterator<S>;
-  public static FLAGS: Record<string, number | BigInt>;
+  public static FLAGS: Record<string, number | bigint>;
   public static resolve(bit?: BitFieldResolvable<string, number | bigint>): number | bigint;
 }
 
