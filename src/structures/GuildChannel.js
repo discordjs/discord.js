@@ -1,6 +1,5 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
 const Channel = require('./Channel');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
