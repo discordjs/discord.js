@@ -139,11 +139,11 @@ class VoiceState extends Base {
   }
 
   /**
-   * Kicks the member from the channel.
-   * @param {string} [reason] Reason for kicking member from the channel
+   * Disconnects the member from the channel.
+   * @param {string} [reason] Reason for disconnecting the member from the channel
    * @returns {Promise<GuildMember>}
    */
-  kick(reason) {
+  disconnect(reason) {
     return this.setChannel(null, reason);
   }
 
