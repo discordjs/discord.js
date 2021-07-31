@@ -742,7 +742,7 @@ class Message extends Base {
    * @param {StartThreadOptions} [options] Options for starting a thread on this message
    * @returns {Promise<ThreadChannel>}
    */
-  startThread({ name, autoArchiveDuration, reason } = {}) {
+  startThread(options = {}) {
     if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
