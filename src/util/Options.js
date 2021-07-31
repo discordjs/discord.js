@@ -35,9 +35,9 @@
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {CacheFactory} [makeCache] Function to create a cache.
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
- * @property {number} [messageCacheLifetime=0] DEPRECATED: Use `makeCache` with a `SweptCollection` instead.
+ * @property {number} [messageCacheLifetime=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
  * How long a message should stay in the cache until it is considered sweepable (in seconds, 0 for forever)
- * @property {number} [messageSweepInterval=0] DEPRECATED: Use `makeCache` with a `SweptCollection` instead.
+ * @property {number} [messageSweepInterval=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
  * How frequently to remove messages from the cache that are older than the message cache lifetime
  * (in seconds, 0 for never)
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
@@ -103,7 +103,8 @@ class Options extends null {
       makeCache: this.cacheWithLimits({
         MessageManager: 200,
         ThreadManager: {
-          sweepFilter: require('./SweptCollection').filterByLifetime({
+          sweepInterval: 3600,
+          sweepFilter: require('./LimitedCollection').filterByLifetime({
             getComparisonTimestamp: e => e.archiveTimestamp,
             excludeFromSweep: e => !e.archived,
           }),
@@ -144,17 +145,18 @@ class Options extends null {
 
   /**
    * Create a cache factory using predefined settings to sweep or limit.
-   * @param {Object<string, SweptCollectionOptions|number>} [settings={}] Settings passed to the relevant constructor.
+   * @param {Object<string, LimitedCollectionOptions|number>} [settings={}] Settings passed to the relevant constructor.
    * If no setting is provided for a manager, it uses Collection.
-   * If SweptCollectionOptions are provided for a manager, it uses those settings to form a SweptCollection
-   * If a number is provided for a manager, it uses that number as the max size for a LimitedCollection
+   * If a number is provided for a manager, it uses that number as the max size for a LimitedCollection.
+   * If LimitedCollectionOptions are provided for a manager, it uses those settings to form a LimitedCollection.
    * @returns {CacheFactory}
    * @example
    * // Store up to 200 messages per channel and discard archived threads if they were archived more than 4 hours ago.
    * Options.cacheWithLimits({
    *    MessageManager: 200,
    *    ThreadManager: {
-   *      sweepFilter: SweptCollection.filterByLifetime({
+   *      sweepInterval: 3600,
+   *      sweepFilter: LimitedCollection.filterByLifetime({
    *        getComparisonTimestamp: e => e.archiveTimestamp,
    *        excludeFromSweep: e => !e.archived,
    *      }),
@@ -165,7 +167,7 @@ class Options extends null {
    * Options.cacheWithLimits({
    *   MessageManager: {
    *     sweepInterval: 300,
-   *     sweepFilter: SweptCollection.filterByLifetime({
+   *     sweepFilter: LimitedCollection.filterByLifetime({
    *       lifetime: 1800,
    *       getComparisonTimestamp: e => e.editedTimestamp ?? e.createdTimestamp,
    *     })
@@ -175,20 +177,31 @@ class Options extends null {
   static cacheWithLimits(settings = {}) {
     const { Collection } = require('@discordjs/collection');
     const LimitedCollection = require('./LimitedCollection');
-    const SweptCollection = require('./SweptCollection');
 
     return manager => {
       const setting = settings[manager.name];
-      if (typeof setting === 'number' && setting !== Infinity) return new LimitedCollection(setting);
-      if (
-        /* eslint-disable-next-line eqeqeq */
-        (setting?.sweepInterval == null && setting?.sweepFilter == null) ||
-        setting.sweepInterval <= 0 ||
-        setting.sweepInterval === Infinity
-      ) {
+      /* eslint-disable-next-line eqeqeq */
+      if (setting == null) {
         return new Collection();
       }
-      return new SweptCollection(setting);
+      if (typeof setting === 'number') {
+        if (setting === Infinity) {
+          return new Collection();
+        }
+        return new LimitedCollection({ maxSize: setting });
+      }
+      /* eslint-disable eqeqeq */
+      const noSweeping =
+        setting.sweepFilter == null ||
+        setting.sweepInterval == null ||
+        setting.sweepInterval <= 0 ||
+        setting.sweepInterval === Infinity;
+      const noLimit = setting.maxSize == null || setting.maxSize === Infinity;
+      /* eslint-enable eqeqeq */
+      if (noSweeping && noLimit) {
+        return new Collection();
+      }
+      return new LimitedCollection(setting);
     };
   }
 

@@ -14,14 +14,14 @@ class CachedManager extends DataManager {
 
     Object.defineProperty(this, '_cache', { value: this.client.options.makeCache(this.constructor, this.holds) });
 
-    let cleanup = this._cache[_cleanupSymbol];
+    let cleanup = this._cache[_cleanupSymbol]?.();
     if (cleanup) {
       cleanup = cleanup.bind(this._cache);
       client._cleanups.add(cleanup);
       client._finalizers.register(this, {
         cleanup,
         message:
-          `Garbage Collection completed on ${this.constructor.name}, ` +
+          `Garbage collection completed on ${this.constructor.name}, ` +
           `which had a ${this._cache.constructor.name} of ${this.holds.name}.`,
         name: this.constructor.name,
       });

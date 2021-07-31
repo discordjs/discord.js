@@ -27,7 +27,6 @@ module.exports = {
   Permissions: require('./util/Permissions'),
   RateLimitError: require('./rest/RateLimitError'),
   SnowflakeUtil: require('./util/SnowflakeUtil'),
-  SweptCollection: require('./util/SweptCollection'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
   ThreadMemberFlags: require('./util/ThreadMemberFlags'),
   UserFlags: require('./util/UserFlags'),
