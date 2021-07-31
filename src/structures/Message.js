@@ -747,7 +747,7 @@ class Message extends Base {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
     if (this.hasThread) return Promise.reject(new Error('MESSAGE_EXISTING_THREAD'));
-    return this.channel.threads.create({ name, autoArchiveDuration, startMessage: this, reason });
+    return this.channel.threads.create({ ...options, startMessage: this });
   }
 
   /**
