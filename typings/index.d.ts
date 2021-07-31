@@ -13,7 +13,7 @@ import {
   TimestampStylesString,
   underscore,
 } from '@discordjs/builders';
-import Collection from '@discordjs/collection';
+import { Collection } from '@discordjs/collection';
 import { ChildProcess } from 'child_process';
 import {
   APIActionRowComponent,
