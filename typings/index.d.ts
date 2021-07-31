@@ -965,8 +965,13 @@ export class InviteGuild extends AnonymousGuild {
 }
 
 export class LimitedCollection<K, V> extends Collection<K, V> {
-  public constructor(maxSize?: number, iterable?: Iterable<readonly [K, V]>);
+  public constructor(options?: LimitedCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
   public maxSize: number;
+  public keepOverLimit: ((value: V, key: K, collection: this) => boolean) | null;
+  public interval: NodeJS.Timeout | null;
+  public sweepFilter: SweepFilter<K, V> | null;
+
+  public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
 export class Message extends Base {
@@ -1609,14 +1614,6 @@ export class StoreChannel extends GuildChannel {
   public constructor(guild: Guild, data?: unknown, client?: Client);
   public nsfw: boolean;
   public type: 'GUILD_STORE';
-}
-
-export class SweptCollection<K, V> extends Collection<K, V> {
-  public constructor(options?: SweptCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
-  public interval: NodeJS.Timeout | null;
-  public sweepFilter: SweptCollectionSweepFilter<K, V> | null;
-
-  public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweptCollectionSweepFilter<K, V>;
 }
 
 export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
@@ -2859,13 +2856,7 @@ export type BitFieldResolvable<T extends string, N extends number | bigint> =
 
 export type BufferResolvable = Buffer | string;
 
-export type CachedManagerTypes = keyof CacheFactoryArgs;
-
-export type CacheFactory = <T extends CachedManagerTypes>(
-  ...args: CacheFactoryArgs[T]
-) => Collection<Snowflake, CacheFactoryArgs[T][1]>;
-
-export interface CacheFactoryArgs {
+export interface Caches {
   ApplicationCommandManager: [manager: typeof ApplicationCommandManager, holds: typeof ApplicationCommand];
   BaseGuildEmojiManager: [manager: typeof BaseGuildEmojiManager, holds: typeof GuildEmoji];
   ChannelManager: [manager: typeof ChannelManager, holds: typeof Channel];
@@ -2886,8 +2877,21 @@ export interface CacheFactoryArgs {
   VoiceStateManager: [manager: typeof VoiceStateManager, holds: typeof VoiceState];
 }
 
+export type CacheConstructors = {
+  [K in keyof Caches]: Caches[K][0] & { name: K };
+};
+
+// This doesn't actually work the way it looks 😢.
+// Narrowing the type of `manager.name` doesn't propagate type information to `holds` and the return type.
+export type CacheFactory = (
+  manager: CacheConstructors[keyof Caches],
+  holds: Caches[typeof manager['name']][1],
+) => typeof manager['prototype'] extends DataManager<infer K, infer V, any> ? Collection<K, V> : never;
+
 export type CacheWithLimitsOptions = {
-  [K in CachedManagerTypes]?: SweptCollectionOptions<unknown, unknown> | number;
+  [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer K, infer V, any>
+    ? LimitedCollectionOptions<K, V> | number
+    : never;
 };
 
 export interface ChannelCreationOverwrites {
@@ -3019,9 +3023,9 @@ export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
   makeCache?: CacheFactory;
-  /** @deprecated Use `makeCache` with a `SweptCollection` for `MessageManager` instead. */
+  /** @deprecated Use `makeCache` with a `LimitedCollection` for `MessageManager` instead. */
   messageCacheLifetime?: number;
-  /** @deprecated Use `makeCache` with a `SweptCollection` for `MessageManager` instead. */
+  /** @deprecated Use `makeCache` with a `LimitedCollection` for `MessageManager` instead. */
   messageSweepInterval?: number;
   allowedMentions?: MessageMentionOptions;
   invalidRequestWarningInterval?: number;
@@ -3773,8 +3777,8 @@ export type InviteScope =
   | 'webhook.incoming';
 
 export interface LifetimeFilterOptions<K, V> {
-  excludeFromSweep?: (value: V, key: K, collection: SweptCollection<K, V>) => boolean;
-  getComparisonTimestamp?: (value: V, key: K, collection: SweptCollection<K, V>) => number;
+  excludeFromSweep?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
+  getComparisonTimestamp?: (value: V, key: K, collection: LimitedCollection<K, V>) => number;
   lifetime?: number;
 }
 
@@ -4313,12 +4317,14 @@ export interface StageInstanceEditOptions {
   privacyLevel?: PrivacyLevel | number;
 }
 
-export type SweptCollectionSweepFilter<K, V> = (
-  collection: SweptCollection<K, V>,
-) => ((value: V, key: K, collection: SweptCollection<K, V>) => boolean) | null;
+export type SweepFilter<K, V> = (
+  collection: LimitedCollection<K, V>,
+) => ((value: V, key: K, collection: LimitedCollection<K, V>) => boolean) | null;
 
-export interface SweptCollectionOptions<K, V> {
-  sweepFilter?: SweptCollectionSweepFilter<K, V>;
+export interface LimitedCollectionOptions<K, V> {
+  maxSize?: number;
+  keepOverLimit?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
+  sweepFilter?: SweepFilter<K, V>;
   sweepInterval?: number;
 }
 
