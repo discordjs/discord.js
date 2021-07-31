@@ -2761,15 +2761,16 @@ export type CommandOptionChoiceResolvableType =
   | ApplicationCommandOptionTypes.INTEGER
   | 'INTEGER';
 
-export type CommandOptionNonChoiceResolvableType = Exclude<
-  CommandOptionDataTypeResolvable,
-  CommandOptionChoiceResolvableType
->;
 export type CommandOptionSubOptionResolvableType =
   | ApplicationCommandOptionTypes.SUB_COMMAND
   | 'SUB_COMMAND'
   | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP
   | 'SUB_COMMAND_GROUP';
+
+export type CommandOptionNonChoiceResolvableType = Exclude<
+  CommandOptionDataTypeResolvable,
+  CommandOptionChoiceResolvableType | CommandOptionSubOptionResolvableType
+>;
 
 export interface BaseApplicationCommandOptionsData {
   name: string;
@@ -2777,14 +2778,14 @@ export interface BaseApplicationCommandOptionsData {
   required?: boolean;
 }
 
-export interface ApplicationCommandOptionsData extends BaseApplicationCommandOptionsData {
-  type: CommandOptionSubOptionResolvableType;
-  options?: ApplicationCommandOptionData[];
-}
-
 export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoice[];
+}
+
+export interface ApplicationCommandSubOptionsData extends BaseApplicationCommandOptionsData {
+  type: CommandOptionSubOptionResolvableType;
+  options?: this[];
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
@@ -2792,9 +2793,9 @@ export interface ApplicationCommandNonOptionsData extends BaseApplicationCommand
 }
 
 export type ApplicationCommandOptionData =
-  | ApplicationCommandOptionsData
-  | ApplicationCommandChoicesData
-  | ApplicationCommandNonOptionsData;
+  | ApplicationCommandSubOptionsData
+  | ApplicationCommandNonOptionsData
+  | ApplicationCommandChoicesData;
 
 export type ApplicationCommandOption = ApplicationCommandOptionData & {
   type: ApplicationCommandOptionType;
