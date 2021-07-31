@@ -25,7 +25,7 @@ const { TypeError } = require('../errors/DJSError.js');
 /**
  * A Collection which holds a max amount of entries and sweeps periodically.
  * @extends {Collection}
- * @param {LimitedCollectionOptions} [options={}] Options for constructing the swept collection.
+ * @param {LimitedCollectionOptions} [options={}] Options for constructing the Collection.
  * @param {Iterable} [iterable=null] Optional entries passed to the Map constructor.
  */
 class LimitedCollection extends Collection {
