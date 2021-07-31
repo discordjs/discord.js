@@ -1,11 +1,11 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
 const ThreadManager = require('../managers/ThreadManager');
-const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 
 /**

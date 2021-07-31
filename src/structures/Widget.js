@@ -1,8 +1,8 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
 const WidgetMember = require('./WidgetMember');
-const Collection = require('../util/Collection');
 
 /**
  * Represents a Widget.

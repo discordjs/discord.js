@@ -4,7 +4,7 @@
 const MessageCollector = require('../MessageCollector');
 const MessagePayload = require('../MessagePayload');
 const SnowflakeUtil = require('../../util/SnowflakeUtil');
-const Collection = require('../../util/Collection');
+const { Collection } = require('@discordjs/collection');
 const { InteractionTypes } = require('../../util/Constants');
 const { TypeError, Error } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');

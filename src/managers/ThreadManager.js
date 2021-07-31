@@ -1,9 +1,9 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
-const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
 
 /**

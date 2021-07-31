@@ -1,9 +1,9 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.

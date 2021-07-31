@@ -1,9 +1,9 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
 const User = require('../structures/User');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for users who reacted to a reaction and stores their cache.

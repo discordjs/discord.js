@@ -1,8 +1,8 @@
 'use strict';
 
 const EventEmitter = require('events');
+const { Collection } = require('@discordjs/collection');
 const { TypeError } = require('../../errors');
-const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
 
 /**

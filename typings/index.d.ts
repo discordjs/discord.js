@@ -13,7 +13,7 @@ import {
   TimestampStylesString,
   underscore,
 } from '@discordjs/builders';
-import BaseCollection from '@discordjs/collection';
+import Collection from '@discordjs/collection';
 import { ChildProcess } from 'child_process';
 import {
   APIActionRowComponent,
@@ -368,9 +368,7 @@ export class ClientVoiceManager {
   public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
 }
 
-export class Collection<K, V> extends BaseCollection<K, V> {
-  public toJSON(): unknown;
-}
+export { Collection } from '@discordjs/collection';
 
 export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmitter {
   public constructor(client: Client, options?: CollectorOptions<[V, ...F]>);

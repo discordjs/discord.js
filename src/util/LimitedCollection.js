@@ -1,6 +1,6 @@
 'use strict';
 
-const Collection = require('./Collection.js');
+const { Collection } = require('@discordjs/collection');
 
 /**
  * A Collection which holds a max amount of entries. The first key is deleted if the Collection has

@@ -173,7 +173,7 @@ class Options extends null {
    * });
    */
   static cacheWithLimits(settings = {}) {
-    const Collection = require('./Collection');
+    const { Collection } = require('@discordjs/collection');
     const LimitedCollection = require('./LimitedCollection');
     const SweptCollection = require('./SweptCollection');
 
@@ -197,7 +197,7 @@ class Options extends null {
    * @returns {CacheFactory}
    */
   static cacheEverything() {
-    const Collection = require('./Collection');
+    const { Collection } = require('@discordjs/collection');
     return () => new Collection();
   }
 }

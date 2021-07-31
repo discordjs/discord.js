@@ -1,9 +1,9 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const DataManager = require('./DataManager');
 const { TypeError } = require('../errors');
 const Role = require('../structures/Role');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for roles of a GuildMember and stores their cache.
