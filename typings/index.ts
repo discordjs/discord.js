@@ -19,7 +19,6 @@ import {
   GuildEmoji,
   GuildEmojiManager,
   GuildMember,
-  GuildMemberManager,
   GuildResolvable,
   Intents,
   Interaction,
@@ -399,6 +398,9 @@ client.on('ready', async () => {
   });
 });
 
+// This is to check that stuff is the right type
+declare const assertIsMember: (m: Promise<GuildMember>) => void;
+
 client.on('guildCreate', g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
@@ -406,6 +408,28 @@ client.on('guildCreate', g => {
   channel.setName('foo').then(updatedChannel => {
     console.log(`New channel name: ${updatedChannel.name}`);
   });
+
+  // @ts-expect-error
+  assertIsMember(g.members.add(testUserId));
+
+  // @ts-expect-error
+  assertIsMember(g.members.add(testUserId, {}));
+
+  // @ts-expect-error
+  assertIsMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', roles: [g.roles.cache] }));
+
+  // @ts-expect-error
+  assertIsMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', fetchWhenExisting: false }));
+
+  assertIsMember(
+    g.members.add(testUserId, {
+      accessToken: 'totallyRealAccessToken',
+      mute: true,
+      deaf: false,
+      roles: [g.roles.cache.first()!],
+      force: true,
+    }),
+  );
 });
 
 client.on('messageReactionRemoveAll', async message => {
