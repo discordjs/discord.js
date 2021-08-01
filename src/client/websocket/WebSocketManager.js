@@ -1,10 +1,10 @@
 'use strict';
 
 const EventEmitter = require('events');
+const { Collection } = require('@discordjs/collection');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error } = require('../../errors');
-const Collection = require('../../util/Collection');
 const { Events, ShardEvents, Status, WSCodes, WSEvents } = require('../../util/Constants');
 const Util = require('../../util/Util');
 

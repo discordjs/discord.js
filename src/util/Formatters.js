@@ -13,6 +13,7 @@ const {
   time,
   TimestampStyles,
   underscore,
+  spoiler,
 } = require('@discordjs/builders');
 
 /**
@@ -143,5 +144,14 @@ Formatters.TimestampStyles = TimestampStyles;
  * @returns {string}
  */
 Formatters.underscore = underscore;
+
+/**
+ * Formats the content into spoiler text.
+ * @method spoiler
+ * @memberof Formatters
+ * @param {string} content The content to spoiler.
+ * @returns {string}
+ */
+Formatters.spoiler = spoiler;
 
 module.exports = Formatters;

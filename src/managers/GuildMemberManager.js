@@ -1,11 +1,11 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { Error, TypeError, RangeError } = require('../errors');
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const GuildMember = require('../structures/GuildMember');
 const Role = require('../structures/Role');
-const Collection = require('../util/Collection');
 const { Events, Opcodes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
@@ -64,6 +64,56 @@ class GuildMemberManager extends CachedManager {
     if (memberResolvable) return memberResolvable;
     const userResolvable = this.client.users.resolveId(member);
     return this.cache.has(userResolvable) ? userResolvable : null;
+  }
+
+  /**
+   * Options used to add a user to a guild using OAuth2.
+   * @typedef {Object} AddGuildMemberOptions
+   * @property {string} accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
+   * bot's application
+   * @property {string} [nick] The nickname to give to the member (requires `MANAGE_NICKNAMES`)
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to add to the member
+   * (requires `MANAGE_ROLES`)
+   * @property {boolean} [mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
+   * @property {boolean} [deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
+   * @property {boolean} [force] Whehter to skip the cache check and call the API directly
+   * @property {boolean} [fetchWhenExisting=true] Whether to fetch the user if not cached and already a member
+   */
+
+  /**
+   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
+   * @param {UserResolvable} user The user to add to the guild
+   * @param {AddGuildMemberOptions} options Options for adding the user to the guild
+   * @returns {Promise<GuildMember|null>}
+   */
+  async add(user, options) {
+    const userId = this.client.users.resolveId(user);
+    if (!userId) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+    if (!options.force) {
+      const cachedUser = this.cache.get(userId);
+      if (cachedUser) return cachedUser;
+    }
+    const resolvedOptions = {
+      access_token: options.accessToken,
+      nick: options.nick,
+      mute: options.mute,
+      deaf: options.deaf,
+    };
+    if (options.roles) {
+      if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
+        throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
+      }
+      const resolvedRoles = [];
+      for (const role of options.roles.values()) {
+        const resolvedRole = this.guild.roles.resolveId(role);
+        if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
+        resolvedRoles.push(resolvedRole);
+      }
+      resolvedOptions.roles = resolvedRoles;
+    }
+    const data = await this.client.api.guilds(this.guild.id).members(userId).put({ data: resolvedOptions });
+    // Data is an empty buffer if the member is already part of the guild.
+    return data instanceof Buffer ? (options.fetchWhenExisting === false ? null : this.fetch(userId)) : this._add(data);
   }
 
   /**

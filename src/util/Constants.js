@@ -971,6 +971,8 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
  */
 exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
 
+exports._cleanupSymbol = Symbol('djsCleanup');
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
@@ -986,3 +988,35 @@ function createEnum(keys) {
   }
   return obj;
 }
+
+/**
+ * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
+ * @property {ActivityType} ActivityTypes The type of an activity of a users presence.
+ * @property {APIError} APIErrors An error encountered while performing an API request.
+ * @property {ApplicationCommandOptionType} ApplicationCommandOptionTypes
+ * The type of an {@link ApplicationCommandOption} object.
+ * @property {ApplicationCommandPermissionType} ApplicationCommandPermissionTypes
+ * The type of an {@link ApplicationCommandPermissions} object.
+ * @property {ChannelType} ChannelTypes All available channel types.
+ * @property {DefaultMessageNotificationLevel} DefaultMessageNotificationLevels
+ * The value set for a guild's default message notifications.
+ * @property {ExplicitContentFilterLevel} ExplicitContentFilterLevels
+ * The value set for the explicit content filter levels for a guild.
+ * @property {InteractionResponseType} InteractionResponseTypes The type of an interaction response.
+ * @property {InteractionType} InteractionTypes The type of an {@link Interaction} object.
+ * @property {MembershipState} MembershipStates The value set for a team members's membership state.
+ * @property {MessageButtonStyle} MessageButtonStyles The style of a message button.
+ * @property {MessageComponentType} MessageComponentTypes The type of a message component.
+ * @property {MFALevel} MFALevels The required MFA level for a guild.
+ * @property {NSFWLevel} NSFWLevels NSFW level of a guild.
+ * @property {OverwriteType} OverwriteTypes An overwrite type.
+ * @property {PartialType} PartialTypes The type of Structure allowed to be a partial.
+ * @property {PremiumTier} PremiumTiers The premium tier (Server Boost level) of a guild.
+ * @property {PrivacyLevel} PrivacyLevels Privacy level of a {@link StageInstance} object.
+ * @property {Status} Status The available statuses of the client.
+ * @property {StickerFormatType} StickerFormatTypes The value set for a sticker's format type.
+ * @property {StickerType} StickerTypes The value set for a sticker's type.
+ * @property {VerificationLevel} VerificationLevels The value set for the verification levels for a guild.
+ * @property {WebhookType} WebhookTypes The value set for a webhook's type.
+ * @property {WSEventType} WSEvents The type of a websocket message event.
+ */

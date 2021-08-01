@@ -235,6 +235,22 @@ class ThreadChannel extends Channel {
   }
 
   /**
+   * Fetches the owner of this thread
+   * @param {FetchOwnerOptions} [options] The options for fetching the member
+   * @returns {Promise<?ThreadMember>}
+   */
+  async fetchOwner({ cache = true, force = false } = {}) {
+    if (!force) {
+      const existing = this.members.cache.get(this.ownerId);
+      if (existing) return existing;
+    }
+
+    // We cannot fetch a single thread member, as of this commit's date, Discord API responds with 405
+    const members = await this.members.fetch(cache);
+    return members.get(this.ownerId) ?? null;
+  }
+
+  /**
    * The options used to edit a thread channel
    * @typedef {Object} ThreadEditData
    * @property {string} [name] The new name for the thread

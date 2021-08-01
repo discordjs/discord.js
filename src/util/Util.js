@@ -1,6 +1,7 @@
 'use strict';
 
 const { parse } = require('path');
+const { Collection } = require('@discordjs/collection');
 const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
@@ -38,9 +39,9 @@ class Util extends null {
       const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
       // If it's a Collection, make the array of keys
-      if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
+      if (element instanceof Collection) out[newProp] = Array.from(element.keys());
       // If the valueOf is a Collection, use its array of keys
-      else if (valueOf instanceof require('./Collection')) out[newProp] = Array.from(valueOf.keys());
+      else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
@@ -500,7 +501,7 @@ class Util extends null {
    * @private
    */
   static setPosition(item, position, relative, sorted, route, reason) {
-    let updatedItems = sorted.array();
+    let updatedItems = [...sorted.values()];
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
     return route.patch({ data: updatedItems, reason }).then(() => updatedItems);

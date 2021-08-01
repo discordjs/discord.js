@@ -3,6 +3,8 @@ import {
   ApplicationCommandData,
   ApplicationCommandManager,
   ApplicationCommandResolvable,
+  CacheFactory,
+  Caches,
   CategoryChannel,
   Client,
   ClientApplication,
@@ -22,12 +24,14 @@ import {
   GuildResolvable,
   Intents,
   Interaction,
+  LimitedCollection,
   Message,
   MessageActionRow,
   MessageAttachment,
   MessageButton,
   MessageCollector,
   MessageEmbed,
+  MessageManager,
   MessageReaction,
   NewsChannel,
   Options,
@@ -50,7 +54,7 @@ import {
   Typing,
   User,
   VoiceChannel,
-} from '..';
+} from '.';
 
 const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
@@ -58,6 +62,15 @@ const client: Client = new Client({
     MessageManager: 200,
     // @ts-expect-error
     Message: 100,
+    ThreadManager: {
+      maxSize: 1000,
+      keepOverLimit: (x: ThreadChannel) => x.id === '123',
+      sweepInterval: 5000,
+      sweepFilter: LimitedCollection.filterByLifetime({
+        getComparisonTimestamp: (x: ThreadChannel) => x.archiveTimestamp ?? 0,
+        excludeFromSweep: (x: ThreadChannel) => !x.archived,
+      }),
+    },
   }),
 });
 
@@ -398,6 +411,9 @@ client.on('ready', async () => {
   });
 });
 
+// This is to check that stuff is the right type
+declare const assertIsPromiseMember: (m: Promise<GuildMember>) => void;
+
 client.on('guildCreate', g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
@@ -405,6 +421,32 @@ client.on('guildCreate', g => {
   channel.setName('foo').then(updatedChannel => {
     console.log(`New channel name: ${updatedChannel.name}`);
   });
+
+  // @ts-expect-error no options
+  assertIsPromiseMember(g.members.add(testUserId));
+
+  // @ts-expect-error no access token
+  assertIsPromiseMember(g.members.add(testUserId, {}));
+
+  // @ts-expect-error invalid role resolvable
+  assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', roles: [g.roles.cache] }));
+
+  assertType<Promise<GuildMember | null>>(
+    g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', fetchWhenExisting: false }),
+  );
+
+  assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken' }));
+
+  assertIsPromiseMember(
+    g.members.add(testUserId, {
+      accessToken: 'totallyRealAccessToken',
+      mute: true,
+      deaf: false,
+      roles: [g.roles.cache.first()!],
+      force: true,
+      fetchWhenExisting: true,
+    }),
+  );
 });
 
 client.on('messageReactionRemoveAll', async message => {

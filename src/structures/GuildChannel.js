@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Channel = require('./Channel');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
-const Collection = require('../util/Collection');
 const { ChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
@@ -153,7 +153,7 @@ class GuildChannel extends Channel {
    */
   get position() {
     const sorted = this.guild._sortedChannels(this);
-    return sorted.array().indexOf(sorted.get(this.id));
+    return [...sorted.values()].indexOf(sorted.get(this.id));
   }
 
   /**
@@ -277,7 +277,7 @@ class GuildChannel extends Channel {
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
-   * @property {?Snowflake} [parentId] The parent's id of the channel
+   * @property {?CategoryChannelResolvable} [parent] The parent of the channel
    * @property {boolean} [lockPermissions]
    * Lock the permissions of the channel to what the parent's permissions are
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
@@ -300,6 +300,8 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   async edit(data, reason) {
+    if (data.parent) data.parent = this.client.channels.resolveId(data.parent);
+
     if (typeof data.position !== 'undefined') {
       await Util.setPosition(
         this,
@@ -323,8 +325,8 @@ class GuildChannel extends Channel {
     }
 
     if (data.lockPermissions) {
-      if (data.parentId) {
-        const newParent = this.guild.channels.resolve(data.parentId);
+      if (data.parent) {
+        const newParent = this.guild.channels.resolve(data.parent);
         if (newParent?.type === 'GUILD_CATEGORY') {
           permission_overwrites = newParent.permissionOverwrites.cache.map(o =>
             PermissionOverwrites.resolve(o, this.guild),
@@ -346,7 +348,7 @@ class GuildChannel extends Channel {
         bitrate: data.bitrate ?? this.bitrate,
         user_limit: data.userLimit ?? this.userLimit,
         rtc_region: data.rtcRegion ?? this.rtcRegion,
-        parent_id: data.parentId,
+        parent_id: data.parent,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: data.defaultAutoArchiveDuration,
@@ -382,7 +384,7 @@ class GuildChannel extends Channel {
 
   /**
    * Sets the parent of this channel.
-   * @param {?(CategoryChannel|Snowflake)} channel The category channel to set as parent
+   * @param {?CategoryChannelResolvable} channel The category channel to set as the parent
    * @param {SetParentOptions} [options={}] The options for setting the parent
    * @returns {Promise<GuildChannel>}
    * @example
@@ -395,7 +397,7 @@ class GuildChannel extends Channel {
     return this.edit(
       {
         // eslint-disable-next-line no-prototype-builtins
-        parentId: channel?.id ?? channel ?? null,
+        parent: channel ?? null,
         lockPermissions,
       },
       reason,

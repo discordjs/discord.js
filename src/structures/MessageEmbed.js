@@ -299,6 +299,16 @@ class MessageEmbed {
   }
 
   /**
+   * Sets the embed's fields (max 25).
+   * @param {...EmbedFieldData|EmbedFieldData[]} fields The fields to set
+   * @returns {MessageEmbed}
+   */
+  setFields(...fields) {
+    this.spliceFields(0, this.fields.length, fields);
+    return this;
+  }
+
+  /**
    * Sets the author of this embed.
    * @param {string} name The name of the author
    * @param {string} [iconURL] The icon URL of the author

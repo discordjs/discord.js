@@ -35,10 +35,11 @@
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {CacheFactory} [makeCache] Function to create a cache.
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
- * @property {number} [messageCacheLifetime=0] How long a message should stay in the cache until it is considered
- * sweepable (in seconds, 0 for forever)
- * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
- * the message cache lifetime (in seconds, 0 for never)
+ * @property {number} [messageCacheLifetime=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
+ * How long a message should stay in the cache until it is considered sweepable (in seconds, 0 for forever)
+ * @property {number} [messageSweepInterval=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
+ * How frequently to remove messages from the cache that are older than the message cache lifetime
+ * (in seconds, 0 for never)
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
  * @property {number} [invalidRequestWarningInterval=0] The number of invalid REST requests (those that return
  * 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings). That is, if set to 500,
@@ -99,7 +100,16 @@ class Options extends null {
   static createDefault() {
     return {
       shardCount: 1,
-      makeCache: this.cacheWithLimits({ MessageManager: 200 }),
+      makeCache: this.cacheWithLimits({
+        MessageManager: 200,
+        ThreadManager: {
+          sweepInterval: 3600,
+          sweepFilter: require('./LimitedCollection').filterByLifetime({
+            getComparisonTimestamp: e => e.archiveTimestamp,
+            excludeFromSweep: e => !e.archived,
+          }),
+        },
+      }),
       messageCacheLifetime: 0,
       messageSweepInterval: 0,
       invalidRequestWarningInterval: 0,
@@ -134,20 +144,64 @@ class Options extends null {
   }
 
   /**
-   * Create a cache factory using predefined limits.
-   * @param {Record<string, number>} [limits={}] Limits for structures.
+   * Create a cache factory using predefined settings to sweep or limit.
+   * @param {Object<string, LimitedCollectionOptions|number>} [settings={}] Settings passed to the relevant constructor.
+   * If no setting is provided for a manager, it uses Collection.
+   * If a number is provided for a manager, it uses that number as the max size for a LimitedCollection.
+   * If LimitedCollectionOptions are provided for a manager, it uses those settings to form a LimitedCollection.
    * @returns {CacheFactory}
+   * @example
+   * // Store up to 200 messages per channel and discard archived threads if they were archived more than 4 hours ago.
+   * Options.cacheWithLimits({
+   *    MessageManager: 200,
+   *    ThreadManager: {
+   *      sweepInterval: 3600,
+   *      sweepFilter: LimitedCollection.filterByLifetime({
+   *        getComparisonTimestamp: e => e.archiveTimestamp,
+   *        excludeFromSweep: e => !e.archived,
+   *      }),
+   *    },
+   *  });
+   * @example
+   * // Sweep messages every 5 minutes, removing messages that have not been edited or created in the last 30 minutes
+   * Options.cacheWithLimits({
+   *   MessageManager: {
+   *     sweepInterval: 300,
+   *     sweepFilter: LimitedCollection.filterByLifetime({
+   *       lifetime: 1800,
+   *       getComparisonTimestamp: e => e.editedTimestamp ?? e.createdTimestamp,
+   *     })
+   *   }
+   * });
    */
-  static cacheWithLimits(limits = {}) {
-    const Collection = require('./Collection');
+  static cacheWithLimits(settings = {}) {
+    const { Collection } = require('@discordjs/collection');
     const LimitedCollection = require('./LimitedCollection');
 
     return manager => {
-      const limit = limits[manager.name];
-      if (limit === null || limit === undefined || limit === Infinity) {
+      const setting = settings[manager.name];
+      /* eslint-disable-next-line eqeqeq */
+      if (setting == null) {
         return new Collection();
       }
-      return new LimitedCollection(limit);
+      if (typeof setting === 'number') {
+        if (setting === Infinity) {
+          return new Collection();
+        }
+        return new LimitedCollection({ maxSize: setting });
+      }
+      /* eslint-disable eqeqeq */
+      const noSweeping =
+        setting.sweepFilter == null ||
+        setting.sweepInterval == null ||
+        setting.sweepInterval <= 0 ||
+        setting.sweepInterval === Infinity;
+      const noLimit = setting.maxSize == null || setting.maxSize === Infinity;
+      /* eslint-enable eqeqeq */
+      if (noSweeping && noLimit) {
+        return new Collection();
+      }
+      return new LimitedCollection(setting);
     };
   }
 
@@ -156,7 +210,7 @@ class Options extends null {
    * @returns {CacheFactory}
    */
   static cacheEverything() {
-    const Collection = require('./Collection');
+    const { Collection } = require('@discordjs/collection');
     return () => new Collection();
   }
 }

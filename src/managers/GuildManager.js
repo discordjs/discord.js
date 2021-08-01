@@ -1,5 +1,6 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const Guild = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
@@ -8,7 +9,6 @@ const GuildMember = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const OAuth2Guild = require('../structures/OAuth2Guild');
 const Role = require('../structures/Role');
-const Collection = require('../util/Collection');
 const {
   ChannelTypes,
   Events,
@@ -134,7 +134,7 @@ class GuildManager extends CachedManager {
    * @property {Snowflake|number} [afkChannelId] The AFK channel's id
    * @property {number} [afkTimeout] The AFK timeout in seconds
    * @property {PartialChannelData[]} [channels=[]] The channels for this guild
-   * @property {DefaultMessageNotifications} [defaultMessageNotifications] The default message notifications
+   * @property {DefaultMessageNotificationLevel|number} [defaultMessageNotifications] The default message notifications
    * for the guild
    * @property {ExplicitContentFilterLevel} [explicitContentFilter] The explicit content filter level for the guild
    * @property {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild

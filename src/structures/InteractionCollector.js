@@ -1,7 +1,7 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Collector = require('./interfaces/Collector');
-const Collection = require('../util/Collection');
 const { Events } = require('../util/Constants');
 const { InteractionTypes, MessageComponentTypes } = require('../util/Constants');
 

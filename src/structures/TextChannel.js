@@ -1,11 +1,11 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
 const ThreadManager = require('../managers/ThreadManager');
-const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 
 /**
@@ -162,7 +162,7 @@ class TextChannel extends GuildChannel {
    * Creates a webhook for the channel.
    * @param {string} name The name of the webhook
    * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
-   * @returns {Promise<Webhook>} webhook The created webhook
+   * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
    * // Create a webhook for the current channel
    * channel.createWebhook('Snek', {

@@ -1,8 +1,8 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
 const WidgetMember = require('./WidgetMember');
-const Collection = require('../util/Collection');
 
 /**
  * Represents a Widget.
@@ -16,6 +16,14 @@ class Widget extends Base {
     super(client);
     this._patch(data);
   }
+
+  /**
+   * Represents a channel in a Widget
+   * @typedef {Object} WidgetChannel
+   * @property {Snowflake} id Id of the channel
+   * @property {string} name Name of the channel
+   * @property {number} position Position of the channel
+   */
 
   /**
    * Builds the widget with the provided data.

@@ -1,5 +1,6 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
@@ -19,7 +20,6 @@ const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
-const Collection = require('../util/Collection');
 const { Events, InviteScopes, Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
@@ -71,6 +71,20 @@ class Client extends BaseClient {
     }
 
     this._validateOptions();
+
+    /**
+     * Functions called when a cache is garbage collected or the Client is destroyed
+     * @type {Set<Function>}
+     * @private
+     */
+    this._cleanups = new Set();
+
+    /**
+     * The finalizers used to cleanup items.
+     * @type {FinalizationRegistry}
+     * @private
+     */
+    this._finalizers = new FinalizationRegistry(this._finalize.bind(this));
 
     /**
      * The WebSocket manager of the client
@@ -161,6 +175,10 @@ class Client extends BaseClient {
     this.readyAt = null;
 
     if (this.options.messageSweepInterval > 0) {
+      process.emitWarning(
+        'The message sweeping client options are deprecated, use the makeCache option with LimitedCollection instead.',
+        'DeprecationWarning',
+      );
       this.sweepMessageInterval = setInterval(
         this.sweepMessages.bind(this),
         this.options.messageSweepInterval * 1000,
@@ -247,6 +265,10 @@ class Client extends BaseClient {
    */
   destroy() {
     super.destroy();
+
+    for (const fn of this._cleanups) fn();
+    this._cleanups.clear();
+
     if (this.sweepMessageInterval) clearInterval(this.sweepMessageInterval);
 
     this.ws.destroy();
@@ -345,6 +367,23 @@ class Client extends BaseClient {
   async fetchPremiumStickerPacks() {
     const data = await this.api('sticker-packs').get();
     return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
+  }
+  /**
+   * A last ditch cleanup function for garbage collection.
+   * @param {Function} options.cleanup The function called to GC
+   * @param {string} [options.message] The message to send after a successful GC
+   * @param {string} [options.name] The name of the item being GCed
+   */
+  _finalize({ cleanup, message, name }) {
+    try {
+      cleanup();
+      this._cleanups.delete(cleanup);
+      if (message) {
+        this.emit(Events.DEBUG, message);
+      }
+    } catch {
+      this.emit(Events.DEBUG, `Garbage collection failed on ${name ?? 'an unknown item'}.`);
+    }
   }
 
   /**
