@@ -268,7 +268,7 @@ export class BaseGuildEmoji extends Emoji {
 }
 
 export class BaseGuildTextChannel extends TextBasedChannel(GuildChannel) {
-  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
+  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   public messages: MessageManager;
   public nsfw: boolean;
@@ -769,7 +769,7 @@ export class GuildBan extends Base {
 }
 
 export class GuildChannel extends Channel {
-  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
+  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
   private memberPermissions(member: GuildMember): Readonly<Permissions>;
   private rolePermissions(role: Role): Readonly<Permissions>;
 
