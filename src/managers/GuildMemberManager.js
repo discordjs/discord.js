@@ -296,15 +296,11 @@ class GuildMemberManager extends CachedManager {
     }
 
     const endpoint = this.client.api.guilds(this.guild.id).prune;
-    let pruned;
-    if (dry) {
-      ({ pruned } = await endpoint.get({ query, reason }));
-    } else {
-      ({ pruned } = await endpoint.post({
-        data: { ...query, compute_prune_count },
-        reason,
-      }));
-    }
+
+    const { pruned } = await (dry
+      ? endpoint.get({ query, reason })
+      : endpoint.post({ data: { ...query, compute_prune_count }, reason }));
+
     return pruned;
   }
 
