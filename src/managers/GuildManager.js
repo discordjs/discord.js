@@ -195,45 +195,42 @@ class GuildManager extends CachedManager {
     }
     if (systemChannelFlags) systemChannelFlags = SystemChannelFlags.resolve(systemChannelFlags);
 
-    return new Promise((resolve, reject) =>
-      this.client.api.guilds
-        .post({
-          data: {
-            name,
-            icon,
-            verification_level: verificationLevel,
-            default_message_notifications: defaultMessageNotifications,
-            explicit_content_filter: explicitContentFilter,
-            roles,
-            channels,
-            afk_channel_id: afkChannelId,
-            afk_timeout: afkTimeout,
-            system_channel_id: systemChannelId,
-            system_channel_flags: systemChannelFlags,
-          },
-        })
-        .then(data => {
-          if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.cache.get(data.id));
+    const data = await this.client.api.guilds.post({
+      data: {
+        name,
+        icon,
+        verification_level: verificationLevel,
+        default_message_notifications: defaultMessageNotifications,
+        explicit_content_filter: explicitContentFilter,
+        roles,
+        channels,
+        afk_channel_id: afkChannelId,
+        afk_timeout: afkTimeout,
+        system_channel_id: systemChannelId,
+        system_channel_flags: systemChannelFlags,
+      },
+    });
 
-          const handleGuild = guild => {
-            if (guild.id === data.id) {
-              clearTimeout(timeout);
-              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
-              this.client.decrementMaxListeners();
-              resolve(guild);
-            }
-          };
-          this.client.incrementMaxListeners();
-          this.client.on(Events.GUILD_CREATE, handleGuild);
+    if (this.client.guilds.cache.has(data.id)) return this.client.guilds.cache.get(data.id);
 
-          const timeout = setTimeout(() => {
-            this.client.removeListener(Events.GUILD_CREATE, handleGuild);
-            this.client.decrementMaxListeners();
-            resolve(this.client.guilds._add(data));
-          }, 10000).unref();
-          return undefined;
-        }, reject),
-    );
+    return new Promise(resolve => {
+      const handleGuild = guild => {
+        if (guild.id === data.id) {
+          clearTimeout(timeout);
+          this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+          this.client.decrementMaxListeners();
+          resolve(guild);
+        }
+      };
+      this.client.incrementMaxListeners();
+      this.client.on(Events.GUILD_CREATE, handleGuild);
+
+      const timeout = setTimeout(() => {
+        this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+        this.client.decrementMaxListeners();
+        resolve(this.client.guilds._add(data));
+      }, 10000).unref();
+    });
   }
 
   /**

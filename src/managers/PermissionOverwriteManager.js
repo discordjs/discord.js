@@ -54,7 +54,9 @@ class PermissionOverwriteManager extends CachedManager {
    */
   set(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
-      throw new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true);
+      return Promise.reject(
+        new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true),
+      );
     }
     return this.channel.edit({ permissionOverwrites: overwrites, reason });
   }
@@ -81,7 +83,7 @@ class PermissionOverwriteManager extends CachedManager {
     let { type, reason } = overwriteOptions;
     if (typeof type !== 'number') {
       userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
-      if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
+      if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
       type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
     }
 

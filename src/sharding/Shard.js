@@ -106,7 +106,7 @@ class Shard extends EventEmitter {
    * before resolving (`-1` or `Infinity` for no wait)
    * @returns {Promise<ChildProcess>}
    */
-  async spawn(timeout = 30000) {
+  spawn(timeout = 30000) {
     if (this.process) throw new Error('SHARDING_PROCESS_EXISTS', this.id);
     if (this.worker) throw new Error('SHARDING_WORKER_EXISTS', this.id);
 
@@ -137,7 +137,7 @@ class Shard extends EventEmitter {
     this.emit('spawn', child);
 
     if (timeout === -1 || timeout === Infinity) return child;
-    await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const cleanup = () => {
         clearTimeout(spawnTimeoutTimer);
         this.off('ready', onReady);
@@ -147,7 +147,7 @@ class Shard extends EventEmitter {
 
       const onReady = () => {
         cleanup();
-        resolve();
+        resolve(child);
       };
 
       const onDisconnect = () => {
@@ -170,7 +170,6 @@ class Shard extends EventEmitter {
       this.once('disconnect', onDisconnect);
       this.once('death', onDeath);
     });
-    return child;
   }
 
   /**

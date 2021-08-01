@@ -118,31 +118,27 @@ class RoleManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  create(options = {}) {
+  async create(options = {}) {
     let { name, color, hoist, permissions, position, mentionable, reason } = options;
     if (color) color = resolveColor(color);
     if (typeof permissions !== 'undefined') permissions = new Permissions(permissions);
 
-    return this.client.api
-      .guilds(this.guild.id)
-      .roles.post({
-        data: {
-          name,
-          color,
-          hoist,
-          permissions,
-          mentionable,
-        },
-        reason,
-      })
-      .then(r => {
-        const { role } = this.client.actions.GuildRoleCreate.handle({
-          guild_id: this.guild.id,
-          role: r,
-        });
-        if (position) return role.setPosition(position, reason);
-        return role;
-      });
+    const data = await this.client.api.guilds(this.guild.id).roles.post({
+      data: {
+        name,
+        color,
+        hoist,
+        permissions,
+        mentionable,
+      },
+      reason,
+    });
+    const { role } = this.client.actions.GuildRoleCreate.handle({
+      guild_id: this.guild.id,
+      role: data,
+    });
+    if (position) return role.setPosition(position, reason);
+    return role;
   }
 
   /**

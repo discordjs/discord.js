@@ -166,15 +166,13 @@ class Webhook {
     }
 
     const { data, files } = await messagePayload.resolveFiles();
-    return this.client.api
-      .webhooks(this.id, this.token)
-      .post({
-        data,
-        files,
-        query: { thread_id: messagePayload.options.threadId, wait: true },
-        auth: false,
-      })
-      .then(d => this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? d);
+    const d = await this.client.api.webhooks(this.id, this.token).post({
+      data,
+      files,
+      query: { thread_id: messagePayload.options.threadId, wait: true },
+      auth: false,
+    });
+    return this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? d;
   }
 
   /**
@@ -195,17 +193,15 @@ class Webhook {
    * }).catch(console.error);
    * @see {@link https://api.slack.com/messaging/webhooks}
    */
-  sendSlackMessage(body) {
+  async sendSlackMessage(body) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
-    return this.client.api
-      .webhooks(this.id, this.token)
-      .slack.post({
-        query: { wait: true },
-        auth: false,
-        data: body,
-      })
-      .then(data => data.toString() === 'ok');
+    const data = await this.client.api.webhooks(this.id, this.token).slack.post({
+      query: { wait: true },
+      auth: false,
+      data: body,
+    });
+    return data.toString() === 'ok';
   }
 
   /**
