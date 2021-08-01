@@ -1701,6 +1701,8 @@ export class StickerPack extends Base {
 
 export class StoreChannel extends GuildChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
+  public createInvite(options?: CreateInviteOptions): Promise<Invite>;
+  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
   public nsfw: boolean;
   public type: 'GUILD_STORE';
 }
