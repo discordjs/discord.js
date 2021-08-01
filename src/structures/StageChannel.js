@@ -38,19 +38,6 @@ class StageChannel extends BaseGuildVoiceChannel {
   }
 
   /**
-   * Sets the RTC region of the channel.
-   * @name StageChannel#setRTCRegion
-   * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
-   * @returns {Promise<StageChannel>}
-   * @example
-   * // Set the RTC region to europe
-   * stageChannel.setRTCRegion('europe');
-   * @example
-   * // Remove a fixed region for this channel - let Discord decide automatically
-   * stageChannel.setRTCRegion(null);
-   */
-
-  /**
    * Sets a new topic for the guild channel.
    * @param {?string} topic The new topic for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's topic
@@ -64,6 +51,19 @@ class StageChannel extends BaseGuildVoiceChannel {
   setTopic(topic, reason) {
     return this.edit({ topic }, reason);
   }
+
+  /**
+   * Sets the RTC region of the channel.
+   * @name StageChannel#setRTCRegion
+   * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @returns {Promise<StageChannel>}
+   * @example
+   * // Set the RTC region to europe
+   * stageChannel.setRTCRegion('europe');
+   * @example
+   * // Remove a fixed region for this channel - let Discord decide automatically
+   * stageChannel.setRTCRegion(null);
+   */
 }
 
 module.exports = StageChannel;
