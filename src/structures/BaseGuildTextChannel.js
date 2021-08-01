@@ -9,7 +9,7 @@ const ThreadManager = require('../managers/ThreadManager');
 const DataResolver = require('../util/DataResolver');
 
 /**
- * Represents a voice-based guild channel on Discord.
+ * Represents a text-based guild channel on Discord.
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
  */
