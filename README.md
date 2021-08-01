@@ -41,7 +41,7 @@ npm install discord.js
 
 ## Example usage
 
-Execute this code first to deploy your command
+First, we need to register a slash command against the Discord API:
 ```js
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
@@ -68,7 +68,8 @@ const rest = new REST({ version: '9' }).setToken('token');
     }
 })()
 ```
-Afterwards, run this to turn on your bot
+
+Afterwards we can create a quite simple example bot:
 ```js
 const { Client, Intents } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
