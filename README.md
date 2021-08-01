@@ -41,6 +41,32 @@ npm install discord.js
 
 ## Example usage
 
+Execute this code first to deploy your command
+```js
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+
+const commands = [{
+  name: 'ping',
+  description: 'Replies with Pong!'
+}]; 
+
+const rest = new REST({ version: '9' }).setToken('token');
+
+try {
+  console.log('Started refreshing application (/) commands');
+
+  await rest.put(
+    Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
+    { body: commands },
+  );
+
+  console.log('Sucessfully reloaded application (/) commands.');
+} catch (error) {
+  console.error(error);
+}
+```
+Afterwards, run this to turn on your bot
 ```js
 const { Client, Intents } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
