@@ -39,7 +39,7 @@ class InteractionResponses {
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<Message|void>}
+   * @returns {Promise<Message|APIMessage|void>}
    * @example
    * // Defer the reply to this interaction
    * interaction.defer()
@@ -71,7 +71,7 @@ class InteractionResponses {
   /**
    * Creates a reply to this interaction.
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|APIMessage|void>}
    * @example
    * // Reply to the interaction with an embed
    * const embed = new MessageEmbed().setDescription('Pong!');
@@ -168,7 +168,7 @@ class InteractionResponses {
   /**
    * Defers an update to the message to which the component was attached.
    * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
-   * @returns {Promise<Message|void>}
+   * @returns {Promise<Message|APIMessage|void>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
@@ -193,7 +193,7 @@ class InteractionResponses {
   /**
    * Updates the original message of the component on which the interaction was received on.
    * @param {string|MessagePayload|InteractionUpdateOptions} options The options for the updated message
-   * @returns {Promise<Message|void>}
+   * @returns {Promise<Message|APIMessage|void>}
    * @example
    * // Remove the components from the message
    * interaction.update({
