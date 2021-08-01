@@ -20,7 +20,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * @param {Client} [client] A safety parameter for the client that instantiated this
    */
   constructor(guild, data, client) {
-    super(guild, data, client);
+    super(guild, data, client, false);
 
     /**
      * A manager of the messages sent to this channel
