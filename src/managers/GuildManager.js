@@ -211,10 +211,9 @@ class GuildManager extends CachedManager {
       },
     });
 
-    // eslint-disable-next-line consistent-return
-    return new Promise(resolve => {
-      if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.cache.get(data.id));
+    if (this.client.guilds.cache.has(data.id)) return this.client.guilds.cache.get(data.id);
 
+    return new Promise(resolve => {
       const handleGuild = guild => {
         if (guild.id === data.id) {
           clearTimeout(timeout);

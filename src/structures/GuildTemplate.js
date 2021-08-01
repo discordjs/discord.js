@@ -109,11 +109,10 @@ class GuildTemplate extends Base {
         icon: await DataResolver.resolveImage(icon),
       },
     });
-    // eslint-disable-next-line consistent-return
-    return new Promise(resolve => {
-      const createdGuild = client.guilds.cache.get(data.id);
-      if (createdGuild) return resolve(createdGuild);
 
+    if (client.guilds.cache.has(data.id)) return client.guilds.cache.get(data.id);
+
+    return new Promise(resolve => {
       const resolveGuild = guild => {
         client.off(Events.GUILD_CREATE, handleGuild);
         client.decrementMaxListeners();
