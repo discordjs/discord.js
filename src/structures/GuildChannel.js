@@ -1,6 +1,5 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
 const Channel = require('./Channel');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
@@ -258,13 +257,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get members() {
-    const members = new Collection();
-    for (const member of this.guild.members.cache.values()) {
-      if (this.permissionsFor(member).has(Permissions.FLAGS.VIEW_CHANNEL, false)) {
-        members.set(member.id, member);
-      }
-    }
-    return members;
+    return this.guild.members.cache.filter(m => this.permissionsFor(m).has(Permissions.FLAGS.VIEW_CHANNEL, false));
   }
 
   /**
