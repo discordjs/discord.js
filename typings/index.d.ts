@@ -12,6 +12,7 @@ import {
   TimestampStyles,
   TimestampStylesString,
   underscore,
+  spoiler,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import { ChildProcess } from 'child_process';
@@ -1915,6 +1916,7 @@ export class Formatters extends null {
   public static TimestampStyles: typeof TimestampStyles;
   public static TimestampStylesString: TimestampStylesString;
   public static underscore: typeof underscore;
+  public static spoiler: typeof spoiler;
 }
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
