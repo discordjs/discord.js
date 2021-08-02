@@ -167,9 +167,8 @@ class MessagePayload {
 
     let message_reference;
     if (typeof this.options.reply === 'object') {
-      const message_id = this.isMessage
-        ? this.target.channel.messages.resolveId(this.options.reply.messageReference)
-        : this.target.messages.resolveId(this.options.reply.messageReference);
+      const reference = this.options.reply.messageReference;
+      const message_id = this.isMessage ? reference.id ?? reference : this.target.messages.resolveId(reference);
       if (message_id) {
         message_reference = {
           message_id,

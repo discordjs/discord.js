@@ -304,7 +304,7 @@ class Message extends Base {
     }
 
     if (data.referenced_message) {
-      this.channel.messages._add(data.referenced_message);
+      this.channel?.messages._add(data.referenced_message);
     }
 
     /**
@@ -410,7 +410,7 @@ class Message extends Base {
    * @readonly
    */
   get thread() {
-    return this.channel.threads.resolve(this.id);
+    return this.channel?.threads.resolve(this.id) ?? null;
   }
 
   /**
