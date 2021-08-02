@@ -7,6 +7,8 @@ const Role = require('../structures/Role');
 const Permissions = require('../util/Permissions');
 const { resolveColor, setPosition } = require('../util/Util');
 
+let cacheWarningEmitted = false;
+
 /**
  * Manages API methods for roles and stores their cache.
  * @extends {CachedManager}
@@ -14,6 +16,13 @@ const { resolveColor, setPosition } = require('../util/Util');
 class RoleManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, Role, iterable);
+    if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
+      cacheWarningEmitted = true;
+      process.emitWarning(
+        `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,
+        'UnuspportedCacheOverwriteWarning',
+      );
+    }
 
     /**
      * The guild belonging to this manager
