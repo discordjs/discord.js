@@ -1,6 +1,5 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
 const Channel = require('./Channel');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
@@ -258,13 +257,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get members() {
-    const members = new Collection();
-    for (const member of this.guild.members.cache.values()) {
-      if (this.permissionsFor(member).has(Permissions.FLAGS.VIEW_CHANNEL, false)) {
-        members.set(member.id, member);
-      }
-    }
-    return members;
+    return this.guild.members.cache.filter(m => this.permissionsFor(m).has(Permissions.FLAGS.VIEW_CHANNEL, false));
   }
 
   /**
@@ -303,18 +296,17 @@ class GuildChannel extends Channel {
     if (data.parent) data.parent = this.client.channels.resolveId(data.parent);
 
     if (typeof data.position !== 'undefined') {
-      await Util.setPosition(
+      const updatedChannels = await Util.setPosition(
         this,
         data.position,
         false,
         this.guild._sortedChannels(this),
         this.client.api.guilds(this.guild.id).channels,
         reason,
-      ).then(updatedChannels => {
-        this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.guild.id,
-          channels: updatedChannels,
-        });
+      );
+      this.client.actions.GuildChannelsPositionUpdate.handle({
+        guild_id: this.guild.id,
+        channels: updatedChannels,
       });
     }
 
@@ -396,8 +388,7 @@ class GuildChannel extends Channel {
   setParent(channel, { lockPermissions = true, reason } = {}) {
     return this.edit(
       {
-        // eslint-disable-next-line no-prototype-builtins
-        parent: channel ?? null,
+        parentId: channel?.id ?? channel ?? null,
         lockPermissions,
       },
       reason,
@@ -437,21 +428,20 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *   .catch(console.error);
    */
-  setPosition(position, { relative, reason } = {}) {
-    return Util.setPosition(
+  async setPosition(position, { relative, reason } = {}) {
+    const updatedChannels = await Util.setPosition(
       this,
       position,
       relative,
       this.guild._sortedChannels(this),
       this.client.api.guilds(this.guild.id).channels,
       reason,
-    ).then(updatedChannels => {
-      this.client.actions.GuildChannelsPositionUpdate.handle({
-        guild_id: this.guild.id,
-        channels: updatedChannels,
-      });
-      return this;
+    );
+    this.client.actions.GuildChannelsPositionUpdate.handle({
+      guild_id: this.guild.id,
+      channels: updatedChannels,
     });
+    return this;
   }
 
   /**
@@ -607,11 +597,9 @@ class GuildChannel extends Channel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  delete(reason) {
-    return this.client.api
-      .channels(this.id)
-      .delete({ reason })
-      .then(() => this);
+  async delete(reason) {
+    await this.client.api.channels(this.id).delete({ reason });
+    return this;
   }
 }
 

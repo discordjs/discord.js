@@ -212,16 +212,18 @@ class ThreadChannel extends Channel {
    * Makes the client user join the thread.
    * @returns {Promise<ThreadChannel>}
    */
-  join() {
-    return this.members.add('@me').then(() => this);
+  async join() {
+    await this.members.add('@me');
+    return this;
   }
 
   /**
    * Makes the client user leave the thread.
    * @returns {Promise<ThreadChannel>}
    */
-  leave() {
-    return this.members.remove('@me').then(() => this);
+  async leave() {
+    await this.members.remove('@me');
+    return this;
   }
 
   /**
@@ -444,11 +446,9 @@ class ThreadChannel extends Channel {
    *   .then(deletedThread => console.log(deletedThread))
    *   .catch(console.error);
    */
-  delete(reason) {
-    return this.client.api
-      .channels(this.id)
-      .delete({ reason })
-      .then(() => this);
+  async delete(reason) {
+    await this.client.api.channels(this.id).delete({ reason });
+    return this;
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
