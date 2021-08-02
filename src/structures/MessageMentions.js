@@ -69,8 +69,9 @@ class MessageMentions {
         this.roles = new Collection(roles);
       } else {
         this.roles = new Collection();
+        const guild = message.guild;
         for (const mention of roles) {
-          const role = message.guild.roles.cache.get(mention);
+          const role = guild.roles.cache.get(mention);
           if (role) this.roles.set(role.id, role);
         }
       }
