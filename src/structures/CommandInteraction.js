@@ -92,8 +92,8 @@ class CommandInteraction extends Interaction {
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)
    * @property {User} [user] The resolved user
-   * @property {GuildMember|APIGuildMember} [member] The resolved member
-   * @property {GuildChannel|APIChannel} [channel] The resolved channel
+   * @property {GuildMember|APIInteractionDataResolvedGuildMember} [member] The resolved member
+   * @property {GuildChannel|APIInteractionDataResolvedChannel} [channel] The resolved channel
    * @property {Role|APIRole} [role] The resolved role
    */
 
@@ -150,4 +150,14 @@ module.exports = CommandInteraction;
 /**
  * @external APIApplicationCommandOptionResolved
  * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-applicationcommandinteractiondataresolved}
+ */
+
+/**
+ * @external APIInteractionDataResolvedChannel
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-object-application-command-interaction-data-resolved-structure}
+ */
+
+/**
+ * @external APIInteractionDataResolvedGuildMember
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-object-application-command-interaction-data-resolved-structure}
  */

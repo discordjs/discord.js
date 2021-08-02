@@ -413,5 +413,5 @@ module.exports = ApplicationCommandPermissionsManager;
 
 /**
  * @external APIApplicationCommandPermissions
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommandpermissions}
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#application-command-permissions-object-application-command-permissions-structure}
  */
