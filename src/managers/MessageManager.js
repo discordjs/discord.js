@@ -28,7 +28,7 @@ class MessageManager extends CachedManager {
    */
 
   _add(data, cache) {
-    return super._add(data, cache, { extras: [this.channel] });
+    return super._add(data, cache);
   }
 
   /**

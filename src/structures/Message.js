@@ -27,16 +27,21 @@ class Message extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {APIMessage} data The data for the message
-   * @param {TextBasedChannels} channel The channel the message was sent in
    */
-  constructor(client, data, channel) {
+  constructor(client, data) {
     super(client);
 
     /**
-     * The channel that the message was sent in
-     * @type {TextBasedChannels}
+     * The id of the channel the message was sent in
+     * @type {Snowflake}
      */
-    this.channel = channel;
+    this.channelId = data.channel_id;
+
+    /**
+     * The id of the guild the message was sent in, if any
+     * @type {?Snowflake}
+     */
+    this.guildId = data.guild_id ?? null;
 
     /**
      * Whether this message has been deleted
@@ -334,6 +339,15 @@ class Message extends Base {
   }
 
   /**
+   * The channel that the message was sent in
+   * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
+   * @readonly
+   */
+  get channel() {
+    return this.client.channels.resolve(this.channelId);
+  }
+
+  /**
    * Whether or not this message is a partial
    * @type {boolean}
    * @readonly
@@ -376,7 +390,7 @@ class Message extends Base {
    * @readonly
    */
   get guild() {
-    return this.channel.guild ?? null;
+    return this.client.guilds.resolve(this.guildId);
   }
 
   /**
@@ -405,7 +419,7 @@ class Message extends Base {
    * @readonly
    */
   get url() {
-    return `https://discord.com/channels/${this.guild ? this.guild.id : '@me'}/${this.channel.id}/${this.id}`;
+    return `https://discord.com/channels/${this.guildId ?? '@me'}/${this.channelId}/${this.id}`;
   }
 
   /**
