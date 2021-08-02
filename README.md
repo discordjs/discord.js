@@ -66,7 +66,7 @@ const rest = new REST({ version: '9' }).setToken('token');
     } catch (error) {
       console.error(error);
     }
-})()
+})();
 ```
 
 Afterwards we can create a quite simple example bot:
