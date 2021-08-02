@@ -36,7 +36,7 @@
  * @property {CacheFactory} [makeCache] Function to create a cache.
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
  * <warn>Overriding the cache used in `GuildManager`, `ChannelManager`, 'GuildChannelManager', `RoleManager`,
- * and `PermissionOverwriteManager` is unsupported and **will** cause many things to break</warn>
+ * and `PermissionOverwriteManager` is unsupported and **will** break functionality</warn>
  * @property {number} [messageCacheLifetime=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
  * How long a message should stay in the cache until it is considered sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
