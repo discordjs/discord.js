@@ -388,7 +388,7 @@ class GuildChannel extends Channel {
   setParent(channel, { lockPermissions = true, reason } = {}) {
     return this.edit(
       {
-        parentId: channel?.id ?? channel ?? null,
+        parent: channel ?? null,
         lockPermissions,
       },
       reason,
