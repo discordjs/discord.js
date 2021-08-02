@@ -70,7 +70,7 @@ class MessageMentions {
       } else {
         this.roles = new Collection();
         for (const mention of roles) {
-          const role = message.channel.guild.roles.cache.get(mention);
+          const role = message.guild.roles.cache.get(mention);
           if (role) this.roles.set(role.id, role);
         }
       }
