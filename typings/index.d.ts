@@ -1165,7 +1165,7 @@ export class MessageButton extends BaseMessageComponent {
   public type: 'BUTTON';
   public url: string | null;
   public setCustomId(customId: string): this;
-  public setDisabled(disabled: boolean): this;
+  public setDisabled(disabled?: boolean): this;
   public setEmoji(emoji: EmojiIdentifierResolvable): this;
   public setLabel(label: string): this;
   public setStyle(style: MessageButtonStyleResolvable): this;
