@@ -3,6 +3,7 @@
 const Action = require('./Action');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
 const CommandInteraction = require('../../structures/CommandInteraction');
+const ContextMenuInteraction = require('../../structures/ContextMenuInteraction');
 const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
 const { Events, InteractionTypes, MessageComponentTypes } = require('../../util/Constants');
 
@@ -18,7 +19,11 @@ class InteractionCreateAction extends Action {
     let InteractionType;
     switch (data.type) {
       case InteractionTypes.APPLICATION_COMMAND:
-        InteractionType = CommandInteraction;
+        if (typeof data.data.target_id === 'undefined') {
+          InteractionType = CommandInteraction;
+        } else {
+          InteractionType = ContextMenuInteraction;
+        }
         break;
       case InteractionTypes.MESSAGE_COMPONENT:
         switch (data.data.component_type) {
