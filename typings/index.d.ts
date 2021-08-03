@@ -3908,17 +3908,17 @@ export interface BaseButtonOptions extends BaseMessageComponentOptions {
   label?: string;
 }
 
-export type MessageButtonOptions = BaseButtonOptions &
-  (
-    | {
-        style: Exclude<MessageButtonStyleResolvable, 'LINK' | MessageButtonStyles.LINK>;
-        customId: string;
-      }
-    | {
-        style: 'LINK' | MessageButtonStyles.LINK;
-        url: string;
-      }
-  );
+export interface LinkButtonOptions extends BaseButtonOptions {
+  style: 'LINK' | MessageButtonStyles.LINK;
+  url: string;
+}
+
+export interface NonLinkButtonOptions extends BaseButtonOptions {
+  style: Exclude<MessageButtonStyleResolvable, 'LINK' | MessageButtonStyles.LINK>;
+  customId: string;
+}
+
+export type MessageButtonOptions = NonLinkButtonOptions | LinkButtonOptions;
 
 export type MessageButtonStyle = keyof typeof MessageButtonStyles;
 
