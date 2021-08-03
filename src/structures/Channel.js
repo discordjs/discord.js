@@ -110,8 +110,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is text-based
-   * ({@link TextChannel}, {@link DMChannel}, {@link NewsChannel} or {@link ThreadChannel}).
+   * Indicates whether this channel is {@link TextBasedChannels text-based}.
    * @returns {boolean}
    */
   isText() {

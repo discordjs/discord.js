@@ -16,7 +16,7 @@ class MessageManager extends CachedManager {
 
     /**
      * The channel that the messages belong to
-     * @type {TextBasedChannel}
+     * @type {TextBasedChannels}
      */
     this.channel = channel;
   }

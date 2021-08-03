@@ -7,7 +7,7 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
 
 /**
  * @typedef {CollectorOptions} InteractionCollectorOptions
- * @property {TextChannel|DMChannel|NewsChannel} [channel] The channel to listen to interactions from
+ * @property {TextBasedChannels} [channel] The channel to listen to interactions from
  * @property {MessageComponentType} [componentType] The type of component to listen for
  * @property {Guild} [guild] The guild to listen to interactions from
  * @property {InteractionType} [interactionType] The type of interaction to listen for
@@ -39,7 +39,7 @@ class InteractionCollector extends Collector {
 
     /**
      * The channel from which to collect interactions, if provided
-     * @type {?(TextChannel|DMChannel|NewsChannel)}
+     * @type {?TextBasedChannels}
      */
     this.channel = this.message?.channel ?? options.channel ?? null;
 
