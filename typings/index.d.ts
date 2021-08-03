@@ -450,7 +450,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public filter: CollectorFilter<[V, ...F]>;
   public readonly next: Promise<V>;
   public options: CollectorOptions<[V, ...F]>;
-  public checkEnd(): void;
+  public checkEnd(): boolean;
   public handleCollect(...args: unknown[]): Promise<void>;
   public handleDispose(...args: unknown[]): Promise<void>;
   public stop(reason?: string): void;
