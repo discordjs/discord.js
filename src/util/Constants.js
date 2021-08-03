@@ -458,12 +458,11 @@ exports.ChannelTypes = createEnum([
 
 /**
  * The channels that are text-based.
- * * PartialDMChannel
  * * DMChannel
  * * TextChannel
  * * NewsChannel
  * * ThreadChannel
- * @typedef {PartialDMChannel|DMChannel|TextChannel|NewsChannel|ThreadChannel} TextBasedChannels
+ * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel} TextBasedChannels
  */
 
 /**
