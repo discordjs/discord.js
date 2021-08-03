@@ -1165,7 +1165,7 @@ export class MessageButton extends BaseMessageComponent {
   public type: 'BUTTON';
   public url: string | null;
   public setCustomId(customId: string): this;
-  public setDisabled(disabled: boolean): this;
+  public setDisabled(disabled?: boolean): this;
   public setEmoji(emoji: EmojiIdentifierResolvable): this;
   public setLabel(label: string): this;
   public setStyle(style: MessageButtonStyleResolvable): this;
@@ -1339,7 +1339,7 @@ export class MessageSelectMenu extends BaseMessageComponent {
   public type: 'SELECT_MENU';
   public addOptions(...options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
   public setCustomId(customId: string): this;
-  public setDisabled(disabled: boolean): this;
+  public setDisabled(disabled?: boolean): this;
   public setMaxValues(maxValues: number): this;
   public setMinValues(minValues: number): this;
   public setPlaceholder(placeholder: string): this;

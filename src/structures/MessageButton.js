@@ -79,10 +79,10 @@ class MessageButton extends BaseMessageComponent {
 
   /**
    * Sets the interactive status of the button
-   * @param {boolean} disabled Whether this button should be disabled
+   * @param {boolean} [disabled=true] Whether this button should be disabled
    * @returns {MessageButton}
    */
-  setDisabled(disabled) {
+  setDisabled(disabled = true) {
     this.disabled = disabled;
     return this;
   }
