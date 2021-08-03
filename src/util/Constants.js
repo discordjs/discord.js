@@ -457,6 +457,16 @@ exports.ChannelTypes = createEnum([
 ]);
 
 /**
+ * The channels that are text-based.
+ * * PartialDMChannel
+ * * DMChannel
+ * * TextChannel
+ * * NewsChannel
+ * * ThreadChannel
+ * @typedef {PartialDMChannel|DMChannel|TextChannel|NewsChannel|ThreadChannel} TextBasedChannels
+ */
+
+/**
  * The types of channels that are text-based. The available types are:
  * * DM
  * * GUILD_TEXT

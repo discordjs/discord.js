@@ -16,7 +16,7 @@ const { Events } = require('../util/Constants');
  */
 class MessageCollector extends Collector {
   /**
-   * @param {TextChannel|DMChannel} channel The channel
+   * @param {TextBasedChannels} channel The channel
    * @param {MessageCollectorOptions} options The options to be applied to this collector
    * @emits MessageCollector#message
    */
@@ -25,7 +25,7 @@ class MessageCollector extends Collector {
 
     /**
      * The channel
-     * @type {TextBasedChannel}
+     * @type {TextBasedChannels}
      */
     this.channel = channel;
 

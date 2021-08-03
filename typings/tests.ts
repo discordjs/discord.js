@@ -49,6 +49,7 @@ import {
   StageChannel,
   StoreChannel,
   TextBasedChannelFields,
+  TextBasedChannels,
   TextChannel,
   ThreadChannel,
   Typing,
@@ -662,7 +663,7 @@ declare const typing: Typing;
 assertType<PartialUser>(typing.user);
 if (typing.user.partial) assertType<null>(typing.user.username);
 
-assertType<TextChannel | PartialDMChannel | NewsChannel | ThreadChannel>(typing.channel);
+assertType<TextBasedChannels>(typing.channel);
 if (typing.channel.partial) assertType<undefined>(typing.channel.lastMessageId);
 
 assertType<GuildMember | null>(typing.member);
