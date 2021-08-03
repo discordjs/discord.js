@@ -3913,12 +3913,12 @@ export interface LinkButtonOptions extends BaseButtonOptions {
   url: string;
 }
 
-export interface NonLinkButtonOptions extends BaseButtonOptions {
+export interface InteractionButtonOptions extends BaseButtonOptions {
   style: Exclude<MessageButtonStyleResolvable, 'LINK' | MessageButtonStyles.LINK>;
   customId: string;
 }
 
-export type MessageButtonOptions = NonLinkButtonOptions | LinkButtonOptions;
+export type MessageButtonOptions = InteractionButtonOptions | LinkButtonOptions;
 
 export type MessageButtonStyle = keyof typeof MessageButtonStyles;
 
