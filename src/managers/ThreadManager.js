@@ -97,7 +97,14 @@ class ThreadManager extends CachedManager {
    *   .then(threadChannel => console.log(threadChannel))
    *   .catch(console.error);
    */
-  async create({ name, autoArchiveDuration, startMessage, type, invitable, reason } = {}) {
+  async create({
+    name,
+    autoArchiveDuration = this.channel.defaultAutoArchiveDuration,
+    startMessage,
+    type,
+    invitable,
+    reason,
+  } = {}) {
     let path = this.client.api.channels(this.channel.id);
     if (type && typeof type !== 'string' && typeof type !== 'number') {
       throw new TypeError('INVALID_TYPE', 'type', 'ThreadChannelType or Number');

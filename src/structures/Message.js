@@ -791,8 +791,8 @@ class Message extends Base {
    * Options for starting a thread on a message.
    * @typedef {Object} StartThreadOptions
    * @property {string} name The name of the new thread
-   * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time (in minutes) after which the thread
-   * should automatically archive in case of no recent activity
+   * @property {ThreadAutoArchiveDuration} [autoArchiveDuration=this.channel.defaultAutoArchiveDuration] The amount of
+   * time (in minutes) after which the thread should automatically archive in case of no recent activity
    * @property {string} [reason] Reason for creating the thread
    */
 
