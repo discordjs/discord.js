@@ -1048,7 +1048,7 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
 }
 
 export class Message extends Base {
-  public constructor(client: Client, data: RawMessageData, channel: TextBasedChannels);
+  public constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData, partial: true): Message;
   private _patch(data: RawMessageData, partial?: boolean): Message;
   private _update(data: RawPartialMessageData, partial: true): Message;
@@ -1058,7 +1058,8 @@ export class Message extends Base {
   public applicationId: Snowflake | null;
   public attachments: Collection<Snowflake, MessageAttachment>;
   public author: User;
-  public channel: TextBasedChannels;
+  public readonly channel: TextBasedChannels;
+  public channelId: Snowflake;
   public readonly cleanContent: string;
   public components: MessageActionRow[];
   public content: string;
@@ -1072,6 +1073,7 @@ export class Message extends Base {
   public editedTimestamp: number | null;
   public embeds: MessageEmbed[];
   public groupActivityApplication: ClientApplication | null;
+  public guildId: Snowflake | null;
   public readonly guild: Guild | null;
   public readonly hasThread: boolean;
   public id: Snowflake;

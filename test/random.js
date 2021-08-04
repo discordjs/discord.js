@@ -234,12 +234,12 @@ client.on('messageCreate', msg => {
 });
 
 client.on('messageReactionAdd', (reaction, user) => {
-  if (reaction.message.channel.id !== '222086648706498562') return;
+  if (reaction.message.channelId !== '222086648706498562') return;
   reaction.message.channel.send(`${user.username} added reaction ${reaction.emoji}, count is now ${reaction.count}`);
 });
 
 client.on('messageReactionRemove', (reaction, user) => {
-  if (reaction.message.channel.id !== '222086648706498562') return;
+  if (reaction.message.channelId !== '222086648706498562') return;
   reaction.message.channel.send(`${user.username} removed reaction ${reaction.emoji}, count is now ${reaction.count}`);
 });
 
