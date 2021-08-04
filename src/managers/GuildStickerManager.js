@@ -65,13 +65,13 @@ class GuildStickerManager extends CachedManager {
 
   /**
    * Data that resolves to give a Sticker object. This can be:
-   * * An Sticker object
+   * * A Sticker object
    * * A Snowflake
    * @typedef {Sticker|Snowflake} StickerResolvable
    */
 
   /**
-   * Resolves an StickerResolvable to a Sticker object.
+   * Resolves a StickerResolvable to a Sticker object.
    * @method resolve
    * @memberof GuildStickerManager
    * @instance
@@ -80,7 +80,7 @@ class GuildStickerManager extends CachedManager {
    */
 
   /**
-   * Resolves an StickerResolvable to an Sticker id string.
+   * Resolves a StickerResolvable to a Sticker id string.
    * @method resolveId
    * @memberof GuildStickerManager
    * @instance
