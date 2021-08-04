@@ -187,10 +187,15 @@ class Activity {
     this.applicationId = data.application_id ?? null;
 
     /**
-     * Timestamps for the activity
-     * @type {?Object}
+     * Represents timestamps of an activity
+     * @typedef {Object} ActivityTimestamps
      * @property {?Date} start When the activity started
      * @property {?Date} end When the activity will end
+     */
+
+    /**
+     * Timestamps for the activity
+     * @type {?ActivityTimestamps}
      */
     this.timestamps = data.timestamps
       ? {
@@ -212,10 +217,15 @@ class Activity {
     this.platform = data.platform ?? null;
 
     /**
-     * Party of the activity
-     * @type {?Object}
+     * Represents a party of an activity
+     * @typedef {Object} ActivityParty
      * @property {?string} id The party's id
      * @property {number[]} size Size of the party as `[current, max]`
+     */
+
+    /**
+     * Party of the activity
+     * @type {?ActivityParty}
      */
     this.party = data.party ?? null;
 
@@ -330,7 +340,7 @@ class RichPresenceAssets {
   /**
    * Gets the URL of the small image asset
    * @param {StaticImageURLOptions} [options] Options for the image url
-   * @returns {?string} The small image URL
+   * @returns {?string}
    */
   smallImageURL({ format, size } = {}) {
     return (
@@ -345,7 +355,7 @@ class RichPresenceAssets {
   /**
    * Gets the URL of the large image asset
    * @param {StaticImageURLOptions} [options] Options for the image url
-   * @returns {?string} The large image URL
+   * @returns {?string}
    */
   largeImageURL({ format, size } = {}) {
     if (!this.largeImage) return null;

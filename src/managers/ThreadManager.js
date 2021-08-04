@@ -144,7 +144,7 @@ class ThreadManager extends CachedManager {
    * @param {ThreadChannelResolvable|FetchThreadsOptions} [options] The options to fetch threads. If it is a
    * ThreadChannelResolvable then the specified thread will be fetched. Fetches all active threads if `undefined`
    * @param {BaseFetchOptions} [cacheOptions] Additional options for this fetch. <warn>The `force` field gets ignored
-   * if `options` is not a ThreadChannelResolvable</warn>
+   * if `options` is not a {@link ThreadChannelResolvable}</warn>
    * @returns {Promise<?(ThreadChannel|FetchedThreads)>}
    * @example
    * // Fetch a thread by its id

@@ -96,9 +96,9 @@ class MessageMentions {
     /**
      * Crossposted channel data.
      * @typedef {Object} CrosspostedChannel
-     * @property {string} channelId The mentioned channel's id
-     * @property {string} guildId The id of the guild that has the channel
-     * @property {string} type The channel's type
+     * @property {Snowflake} channelId The mentioned channel's id
+     * @property {Snowflake} guildId The id of the guild that has the channel
+     * @property {ChannelType} type The channel's type
      * @property {string} name The channel's name
      */
 
