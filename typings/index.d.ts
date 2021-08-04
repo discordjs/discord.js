@@ -267,6 +267,27 @@ export class BaseGuildEmoji extends Emoji {
   public requiresColons: boolean | null;
 }
 
+export class BaseGuildTextChannel extends TextBasedChannel(GuildChannel) {
+  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
+  public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
+  public messages: MessageManager;
+  public nsfw: boolean;
+  public threads: ThreadManager<AllowedThreadTypeForTextChannel>;
+  public topic: string | null;
+  public createInvite(options?: CreateInviteOptions): Promise<Invite>;
+  public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
+  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
+  public setDefaultAutoArchiveDuration(
+    defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
+    reason?: string,
+  ): Promise<this>;
+  public setNSFW(nsfw: boolean, reason?: string): Promise<this>;
+  public setTopic(topic: string | null, reason?: string): Promise<this>;
+  public setType(type: Pick<typeof ChannelTypes, 'GUILD_TEXT'>, reason?: string): Promise<TextChannel>;
+  public setType(type: Pick<typeof ChannelTypes, 'GUILD_NEWS'>, reason?: string): Promise<NewsChannel>;
+  public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+}
+
 export class BaseGuildVoiceChannel extends GuildChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData);
   public readonly members: Collection<Snowflake, GuildMember>;
@@ -275,7 +296,9 @@ export class BaseGuildVoiceChannel extends GuildChannel {
   public rtcRegion: string | null;
   public bitrate: number;
   public userLimit: number;
+  public createInvite(options?: CreateInviteOptions): Promise<Invite>;
   public setRTCRegion(region: string | null): Promise<this>;
+  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
 }
 
 export class BaseMessageComponent {
@@ -746,7 +769,7 @@ export class GuildBan extends Base {
 }
 
 export class GuildChannel extends Channel {
-  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
+  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
   private memberPermissions(member: GuildMember): Readonly<Permissions>;
   private rolePermissions(role: Role): Readonly<Permissions>;
 
@@ -766,17 +789,14 @@ export class GuildChannel extends Channel {
   public type: Exclude<keyof typeof ChannelTypes, 'DM' | 'GROUP_DM' | 'UNKNOWN'>;
   public readonly viewable: boolean;
   public clone(options?: GuildChannelCloneOptions): Promise<this>;
-  public createInvite(options?: CreateInviteOptions): Promise<Invite>;
   public edit(data: ChannelData, reason?: string): Promise<this>;
   public equals(channel: GuildChannel): boolean;
-  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
   public lockPermissions(): Promise<this>;
   public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
   public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
   public setName(name: string, reason?: string): Promise<this>;
   public setParent(channel: CategoryChannelResolvable | null, options?: SetParentOptions): Promise<this>;
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
-  public setTopic(topic: string | null, reason?: string): Promise<this>;
   public isText(): this is TextChannel | NewsChannel;
 }
 
@@ -1349,22 +1369,8 @@ export class MessageSelectMenu extends BaseMessageComponent {
   public toJSON(): unknown;
 }
 
-export class NewsChannel extends TextBasedChannel(GuildChannel) {
-  public constructor(guild: Guild, data?: RawGuildChannelData);
-  public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
-  public messages: MessageManager;
-  public nsfw: boolean;
-  public threads: ThreadManager<AllowedThreadTypeForNewsChannel>;
-  public topic: string | null;
+export class NewsChannel extends BaseGuildTextChannel {
   public type: 'GUILD_NEWS';
-  public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
-  public setDefaultAutoArchiveDuration(
-    defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
-    reason?: string,
-  ): Promise<NewsChannel>;
-  public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
-  public setType(type: Pick<typeof ChannelTypes, 'GUILD_TEXT' | 'GUILD_NEWS'>, reason?: string): Promise<GuildChannel>;
-  public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   public addFollower(channel: GuildChannelResolvable, reason?: string): Promise<NewsChannel>;
 }
 
@@ -1629,6 +1635,7 @@ export class StageChannel extends BaseGuildVoiceChannel {
   public type: 'GUILD_STAGE_VOICE';
   public readonly stageInstance: StageInstance | null;
   public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
+  public setTopic(topic: string): Promise<StageChannel>;
 }
 
 export class StageInstance extends Base {
@@ -1692,6 +1699,8 @@ export class StickerPack extends Base {
 
 export class StoreChannel extends GuildChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
+  public createInvite(options?: CreateInviteOptions): Promise<Invite>;
+  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
   public nsfw: boolean;
   public type: 'GUILD_STORE';
 }
@@ -1729,24 +1738,10 @@ export class TeamMember extends Base {
   public toString(): UserMention;
 }
 
-export class TextChannel extends TextBasedChannel(GuildChannel) {
-  public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
-  public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
-  public messages: MessageManager;
-  public nsfw: boolean;
-  public type: 'GUILD_TEXT';
+export class TextChannel extends BaseGuildTextChannel {
   public rateLimitPerUser: number;
-  public threads: ThreadManager<AllowedThreadTypeForTextChannel>;
-  public topic: string | null;
-  public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
-  public setDefaultAutoArchiveDuration(
-    defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
-    reason?: string,
-  ): Promise<TextChannel>;
-  public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
+  public type: 'GUILD_TEXT';
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
-  public setType(type: Pick<typeof ChannelTypes, 'GUILD_TEXT' | 'GUILD_NEWS'>, reason?: string): Promise<GuildChannel>;
-  public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 }
 
 export class ThreadChannel extends TextBasedChannel(Channel) {
