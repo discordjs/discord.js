@@ -4101,10 +4101,7 @@ export interface MessageSelectOptionData {
 export type MessageTarget =
   | Interaction
   | InteractionWebhook
-  | TextChannel
-  | NewsChannel
-  | ThreadChannel
-  | DMChannel
+  | TextBasedChannels
   | User
   | GuildMember
   | Webhook
