@@ -24,8 +24,9 @@ class GuildChannel extends Channel {
    * @param {Guild} guild The guild the guild channel is part of
    * @param {APIChannel} data The data for the guild channel
    * @param {Client} [client] A safety parameter for the client that instantiated this
+   * @param {boolean} [immediatePatch=true] Control variable for patching
    */
-  constructor(guild, data, client) {
+  constructor(guild, data, client, immediatePatch = true) {
     super(guild?.client ?? client, data, false);
 
     /**
@@ -47,7 +48,7 @@ class GuildChannel extends Channel {
      */
     this.permissionOverwrites = new PermissionOverwriteManager(this);
 
-    this._patch(data);
+    if (data && immediatePatch) this._patch(data);
   }
 
   _patch(data) {
@@ -396,21 +397,6 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Sets a new topic for the guild channel.
-   * @param {?string} topic The new topic for the guild channel
-   * @param {string} [reason] Reason for changing the guild channel's topic
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // Set a new channel topic
-   * channel.setTopic('needs more rate limiting')
-   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *   .catch(console.error);
-   */
-  setTopic(topic, reason) {
-    return this.edit({ topic }, reason);
-  }
-
-  /**
    * Options used to set position of a channel.
    * @typedef {Object} SetChannelPositionOptions
    * @param {boolean} [relative=false] Whether or not to change the position relative to its current value
@@ -451,46 +437,6 @@ class GuildChannel extends Channel {
    * * A Snowflake
    * @typedef {Application|Snowflake} ApplicationResolvable
    */
-
-  /**
-   * Options used to create an invite to a guild channel.
-   * @typedef {Object} CreateInviteOptions
-   * @property {boolean} [temporary=false] Whether members that joined via the invite should be automatically
-   * kicked after 24 hours if they have not yet received a role
-   * @property {number} [maxAge=86400] How long the invite should last (in seconds, 0 for forever)
-   * @property {number} [maxUses=0] Maximum number of uses
-   * @property {boolean} [unique=false] Create a unique invite, or use an existing one with similar settings
-   * @property {UserResolvable} [targetUser] The user whose stream to display for this invite,
-   * required if `targetType` is 1, the user must be streaming in the channel
-   * @property {ApplicationResolvable} [targetApplication] The embedded application to open for this invite,
-   * required if `targetType` is 2, the application must have the `EMBEDDED` flag
-   * @property {TargetType} [targetType] The type of the target for this voice channel invite
-   * @property {string} [reason] The reason for creating the invite
-   */
-
-  /**
-   * Creates an invite to this guild channel.
-   * @param {CreateInviteOptions} [options={}] The options for creating the invite
-   * @returns {Promise<Invite>}
-   * @example
-   * // Create an invite to a channel
-   * channel.createInvite()
-   *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
-   *   .catch(console.error);
-   */
-  createInvite(options) {
-    return this.guild.invites.create(this.id, options);
-  }
-
-  /**
-   * Fetches a collection of invites to this guild channel.
-   * Resolves with a collection mapping invites by their codes.
-   * @param {boolean} [cache=true] Whether or not to cache the fetched invites
-   * @returns {Promise<Collection<string, Invite>>}
-   */
-  fetchInvites(cache = true) {
-    return this.guild.invites.fetch({ channelId: this.id, cache });
-  }
 
   /**
    * Options used to clone a guild channel.
