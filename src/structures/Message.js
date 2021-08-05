@@ -763,6 +763,15 @@ class Message extends Base {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
     if (this.hasThread) return Promise.reject(new Error('MESSAGE_EXISTING_THREAD'));
+    if (options.autoArchiveDuration === 'MAX') {
+      let maxAutoArchiveDuration = 1440;
+      if (this.guild.premiumSubscriptionCount >= 15) {
+        maxAutoArchiveDuration = 10080;
+      } else if (this.guild.premiumSubscriptionCount >= 2) {
+        maxAutoArchiveDuration = 4320;
+      }
+      options.autoArchiveDuration = maxAutoArchiveDuration;
+    }
     return this.channel.threads.create({ ...options, startMessage: this });
   }
 
