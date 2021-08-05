@@ -416,7 +416,7 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(
 
 /**
  * <info>Bots cannot set a `CUSTOM` activity type, it is only for custom statuses received from users</info>
- * The type of an activity of a users presence. Here are the available types:
+ * The type of an activity of a user's presence. Here are the available types:
  * * PLAYING
  * * STREAMING
  * * LISTENING

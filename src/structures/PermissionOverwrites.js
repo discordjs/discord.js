@@ -142,7 +142,7 @@ class PermissionOverwrites extends Base {
    */
 
   /**
-   * Data that can be resolved into {@link RawOverwriteData}. This can be
+   * Data that can be resolved into {@link RawOverwriteData}. This can be:
    * * PermissionOverwrites
    * * OverwriteData
    * @typedef {PermissionOverwrites|OverwriteData} OverwriteResolvable

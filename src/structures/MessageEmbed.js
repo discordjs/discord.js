@@ -47,7 +47,7 @@ class MessageEmbed {
      * * `rich` - a generic embed rendered from embed attributes
      * * `image` - an image embed
      * * `video` - a video embed
-     * * `gifv` - a animated gif image embed rendered as a video embed
+     * * `gifv` - an animated gif image embed rendered as a video embed
      * * `article` - an article embed
      * * `link` - a link embed
      * @type {string}
