@@ -505,8 +505,8 @@ export class CommandInteraction extends Interaction {
   public options: CommandInteractionOptionResolver;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public defer(options: InteractionDeferOptions & { fetchReply: true }): Promise<Message | APIMessage>;
-  public defer(options?: InteractionDeferOptions): Promise<void>;
+  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
   public fetchReply(): Promise<Message | APIMessage>;
@@ -1218,8 +1218,8 @@ export class MessageComponentInteraction extends Interaction {
   public message: Message | APIMessage;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public defer(options: InteractionDeferOptions & { fetchReply: true }): Promise<Message | APIMessage>;
-  public defer(options?: InteractionDeferOptions): Promise<void>;
+  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
   public deleteReply(): Promise<void>;
@@ -3794,12 +3794,12 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   message?: Message | APIMessage;
 }
 
-export interface InteractionDeferOptions {
+export interface InteractionDeferReplyOptions {
   ephemeral?: boolean;
   fetchReply?: boolean;
 }
 
-export type InteractionDeferUpdateOptions = Omit<InteractionDeferOptions, 'ephemeral'>;
+export type InteractionDeferUpdateOptions = Omit<InteractionDeferReplyOptions, 'ephemeral'>;
 
 export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL'> {
   ephemeral?: boolean;

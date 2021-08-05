@@ -89,7 +89,7 @@ class MessageComponentInteraction extends Interaction {
 
   // These are here only for documentation purposes - they are implemented by InteractionResponses
   /* eslint-disable no-empty-function */
-  defer() {}
+  deferReply() {}
   reply() {}
   fetchReply() {}
   editReply() {}
