@@ -135,14 +135,16 @@ class PermissionOverwrites extends Base {
   /**
    * The raw data for a permission overwrite
    * @typedef {Object} RawOverwriteData
-   * @property {Snowflake} id The id of the overwrite
+   * @property {Snowflake} id The id of the {@link Role} or {@link User} this overwrite belongs to
    * @property {string} allow The permissions to allow
    * @property {string} deny The permissions to deny
    * @property {number} type The type of this OverwriteData
    */
 
   /**
-   * Data that can be resolved into {@link RawOverwriteData}
+   * Data that can be resolved into {@link RawOverwriteData}. This can be:
+   * * PermissionOverwrites
+   * * OverwriteData
    * @typedef {PermissionOverwrites|OverwriteData} OverwriteResolvable
    */
 

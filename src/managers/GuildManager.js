@@ -72,7 +72,7 @@ class GuildManager extends CachedManager {
   /**
    * Partial overwrite data.
    * @typedef {Object} PartialOverwriteData
-   * @property {Snowflake|number} id The {@link Role} or {@link User} id for this overwrite
+   * @property {Snowflake|number} id The id of the {@link Role} or {@link User} this overwrite belongs to
    * @property {string} [type] The type of this overwrite
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny

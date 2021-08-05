@@ -100,7 +100,7 @@ class ShardClientUtil {
    * Fetches a client property value of each shard, or a given shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @param {number} [shard] Shard to fetch property from, all if undefined
-   * @returns {Promise<*>|Promise<Array<*>>}
+   * @returns {Promise<*|Array<*>>}
    * @example
    * client.shard.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
@@ -130,7 +130,7 @@ class ShardClientUtil {
    * Evaluates a script or function on all shards, or a given shard, in the context of the {@link Client}s.
    * @param {Function} script JavaScript to run on each shard
    * @param {BroadcastEvalOptions} [options={}] The options for the broadcast
-   * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
+   * @returns {Promise<*|Array<*>>} Results of the script execution
    * @example
    * client.shard.broadcastEval(client => client.guilds.cache.size)
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
