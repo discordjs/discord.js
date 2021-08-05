@@ -97,7 +97,7 @@ client.on('messageCreate', async message => {
   if (message.author.id !== owner) return;
   const match = message.content.match(/^do (.+)$/);
   const hooks = [
-    { type: 'WebhookClient', hook: new WebhookClient(webhookChannel, webhookToken) },
+    { type: 'WebhookClient', hook: new WebhookClient({ id: webhookChannel, token: webhookToken }) },
     { type: 'TextChannel#fetchWebhooks', hook: await message.channel.fetchWebhooks().then(x => x.first()) },
     { type: 'Guild#fetchWebhooks', hook: await message.guild.fetchWebhooks().then(x => x.first()) },
   ];

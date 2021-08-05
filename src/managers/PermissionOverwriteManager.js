@@ -1,11 +1,13 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const Role = require('../structures/Role');
-const Collection = require('../util/Collection');
 const { OverwriteTypes } = require('../util/Constants');
+
+let cacheWarningEmitted = false;
 
 /**
  * Manages API methods for guild channel permission overwrites and stores their cache.
@@ -13,13 +15,26 @@ const { OverwriteTypes } = require('../util/Constants');
  */
 class PermissionOverwriteManager extends CachedManager {
   constructor(channel, iterable) {
-    super(channel.client, PermissionOverwrites, iterable);
+    super(channel.client, PermissionOverwrites);
+    if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
+      cacheWarningEmitted = true;
+      process.emitWarning(
+        `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,
+        'UnuspportedCacheOverwriteWarning',
+      );
+    }
 
     /**
      * The channel of the permission overwrite this manager belongs to
      * @type {GuildChannel}
      */
     this.channel = channel;
+
+    if (iterable) {
+      for (const item of iterable) {
+        this._add(item);
+      }
+    }
   }
 
   /**
@@ -48,7 +63,9 @@ class PermissionOverwriteManager extends CachedManager {
    */
   set(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
-      throw new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true);
+      return Promise.reject(
+        new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true),
+      );
     }
     return this.channel.edit({ permissionOverwrites: overwrites, reason });
   }
@@ -75,7 +92,7 @@ class PermissionOverwriteManager extends CachedManager {
     let { type, reason } = overwriteOptions;
     if (typeof type !== 'number') {
       userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
-      if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
+      if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
       type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
     }
 

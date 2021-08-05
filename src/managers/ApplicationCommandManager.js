@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ApplicationCommand = require('../structures/ApplicationCommand');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for application commands and stores their cache.
@@ -116,7 +116,7 @@ class ApplicationCommandManager extends CachedManager {
     const data = await this.commandPath({ guildId }).post({
       data: this.constructor.transformCommand(command),
     });
-    return this._add(data, undefined, guildId);
+    return this._add(data, !guildId, guildId);
   }
 
   /**
@@ -146,7 +146,7 @@ class ApplicationCommandManager extends CachedManager {
       data: commands.map(c => this.constructor.transformCommand(c)),
     });
     return data.reduce(
-      (coll, command) => coll.set(command.id, this._add(command, undefined, guildId)),
+      (coll, command) => coll.set(command.id, this._add(command, !guildId, guildId)),
       new Collection(),
     );
   }
@@ -171,7 +171,7 @@ class ApplicationCommandManager extends CachedManager {
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
     const patched = await this.commandPath({ id, guildId }).patch({ data: this.constructor.transformCommand(data) });
-    return this._add(patched, undefined, guildId);
+    return this._add(patched, !guildId, guildId);
   }
 
   /**
@@ -193,7 +193,7 @@ class ApplicationCommandManager extends CachedManager {
     await this.commandPath({ id, guildId }).delete();
 
     const cached = this.cache.get(id);
-    this.cache.delete(id);
+    if (!guildId) this.cache.delete(id);
     return cached ?? null;
   }
 

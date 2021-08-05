@@ -57,12 +57,9 @@ class ReactionManager extends CachedManager {
    * Removes all reactions from a message.
    * @returns {Promise<Message>}
    */
-  removeAll() {
-    return this.client.api
-      .channels(this.message.channel.id)
-      .messages(this.message.id)
-      .reactions.delete()
-      .then(() => this.message);
+  async removeAll() {
+    await this.client.api.channels(this.message.channelId).messages(this.message.id).reactions.delete();
+    return this.message;
   }
 }
 

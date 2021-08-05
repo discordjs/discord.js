@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const GuildBan = require('../structures/GuildBan');
 const GuildMember = require('../structures/GuildMember');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for GuildBans and stores their cache.

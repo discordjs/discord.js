@@ -1,10 +1,10 @@
 'use strict';
 
 const EventEmitter = require('events');
+const { Collection } = require('@discordjs/collection');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error } = require('../../errors');
-const Collection = require('../../util/Collection');
 const { Events, ShardEvents, Status, WSCodes, WSEvents } = require('../../util/Constants');
 const Util = require('../../util/Util');
 
@@ -336,9 +336,9 @@ class WebSocketManager extends EventEmitter {
 
     if (this.packetQueue.length) {
       const item = this.packetQueue.shift();
-      this.client.setImmediate(() => {
+      setImmediate(() => {
         this.handlePacket(item.packet, item.shard);
-      });
+      }).unref();
     }
 
     if (packet && PacketHandlers[packet.t]) {
@@ -373,8 +373,9 @@ class WebSocketManager extends EventEmitter {
     /**
      * Emitted when the client becomes ready to start working.
      * @event Client#ready
+     * @param {Client} client The client
      */
-    this.client.emit(Events.CLIENT_READY);
+    this.client.emit(Events.CLIENT_READY, this.client);
 
     this.handlePacket();
   }

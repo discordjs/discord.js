@@ -1,11 +1,11 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { Error, TypeError, RangeError } = require('../errors');
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const GuildMember = require('../structures/GuildMember');
 const Role = require('../structures/Role');
-const Collection = require('../util/Collection');
 const { Events, Opcodes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
@@ -64,6 +64,56 @@ class GuildMemberManager extends CachedManager {
     if (memberResolvable) return memberResolvable;
     const userResolvable = this.client.users.resolveId(member);
     return this.cache.has(userResolvable) ? userResolvable : null;
+  }
+
+  /**
+   * Options used to add a user to a guild using OAuth2.
+   * @typedef {Object} AddGuildMemberOptions
+   * @property {string} accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
+   * bot's application
+   * @property {string} [nick] The nickname to give to the member (requires `MANAGE_NICKNAMES`)
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to add to the member
+   * (requires `MANAGE_ROLES`)
+   * @property {boolean} [mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
+   * @property {boolean} [deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
+   * @property {boolean} [force] Whehter to skip the cache check and call the API directly
+   * @property {boolean} [fetchWhenExisting=true] Whether to fetch the user if not cached and already a member
+   */
+
+  /**
+   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
+   * @param {UserResolvable} user The user to add to the guild
+   * @param {AddGuildMemberOptions} options Options for adding the user to the guild
+   * @returns {Promise<GuildMember|null>}
+   */
+  async add(user, options) {
+    const userId = this.client.users.resolveId(user);
+    if (!userId) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+    if (!options.force) {
+      const cachedUser = this.cache.get(userId);
+      if (cachedUser) return cachedUser;
+    }
+    const resolvedOptions = {
+      access_token: options.accessToken,
+      nick: options.nick,
+      mute: options.mute,
+      deaf: options.deaf,
+    };
+    if (options.roles) {
+      if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
+        throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
+      }
+      const resolvedRoles = [];
+      for (const role of options.roles.values()) {
+        const resolvedRole = this.guild.roles.resolveId(role);
+        if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
+        resolvedRoles.push(resolvedRole);
+      }
+      resolvedOptions.roles = resolvedRoles;
+    }
+    const data = await this.client.api.guilds(this.guild.id).members(userId).put({ data: resolvedOptions });
+    // Data is an empty buffer if the member is already part of the guild.
+    return data instanceof Buffer ? (options.fetchWhenExisting === false ? null : this.fetch(userId)) : this._add(data);
   }
 
   /**
@@ -227,8 +277,8 @@ class GuildMemberManager extends CachedManager {
    *    .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *    .catch(console.error);
    */
-  prune({ days = 7, dry = false, count: compute_prune_count = true, roles = [], reason } = {}) {
-    if (typeof days !== 'number') return Promise.reject(new TypeError('PRUNE_DAYS_TYPE'));
+  async prune({ days = 7, dry = false, count: compute_prune_count = true, roles = [], reason } = {}) {
+    if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
 
     const query = { days };
     const resolvedRoles = [];
@@ -236,7 +286,7 @@ class GuildMemberManager extends CachedManager {
     for (const role of roles) {
       const resolvedRole = this.guild.roles.resolveId(role);
       if (!resolvedRole) {
-        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array', 'options.roles', role));
+        throw new TypeError('INVALID_ELEMENT', 'Array', 'options.roles', role);
       }
       resolvedRoles.push(resolvedRole);
     }
@@ -247,16 +297,11 @@ class GuildMemberManager extends CachedManager {
 
     const endpoint = this.client.api.guilds(this.guild.id).prune;
 
-    if (dry) {
-      return endpoint.get({ query, reason }).then(data => data.pruned);
-    }
+    const { pruned } = await (dry
+      ? endpoint.get({ query, reason })
+      : endpoint.post({ data: { ...query, compute_prune_count }, reason }));
 
-    return endpoint
-      .post({
-        data: { ...query, compute_prune_count },
-        reason,
-      })
-      .then(data => data.pruned);
+    return pruned;
   }
 
   /**
@@ -316,17 +361,14 @@ class GuildMemberManager extends CachedManager {
     return this.guild.bans.remove(user, reason);
   }
 
-  _fetchSingle({ user, cache, force = false }) {
+  async _fetchSingle({ user, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(user);
-      if (existing && !existing.partial) return Promise.resolve(existing);
+      if (existing && !existing.partial) return existing;
     }
 
-    return this.client.api
-      .guilds(this.guild.id)
-      .members(user)
-      .get()
-      .then(data => this._add(data, cache));
+    const data = await this.client.api.guilds(this.guild.id).members(user).get();
+    return this._add(data, cache);
   }
 
   _fetchMany({
@@ -372,7 +414,7 @@ class GuildMemberManager extends CachedManager {
           (limit && fetchedMembers.size >= limit) ||
           i === chunk.count
         ) {
-          this.client.clearTimeout(timeout);
+          clearTimeout(timeout);
           this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
           this.client.decrementMaxListeners();
           let fetched = option ? fetchedMembers : this.cache;
@@ -380,11 +422,11 @@ class GuildMemberManager extends CachedManager {
           resolve(fetched);
         }
       };
-      const timeout = this.client.setTimeout(() => {
+      const timeout = setTimeout(() => {
         this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
         this.client.decrementMaxListeners();
         reject(new Error('GUILD_MEMBERS_TIMEOUT'));
-      }, time);
+      }, time).unref();
       this.client.incrementMaxListeners();
       this.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
     });

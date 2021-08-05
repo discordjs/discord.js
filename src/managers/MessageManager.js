@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const Message = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for Messages and holds their cache.
@@ -16,7 +16,7 @@ class MessageManager extends CachedManager {
 
     /**
      * The channel that the messages belong to
-     * @type {TextBasedChannel}
+     * @type {TextBasedChannels}
      */
     this.channel = channel;
   }
@@ -28,7 +28,7 @@ class MessageManager extends CachedManager {
    */
 
   _add(data, cache) {
-    return super._add(data, cache, { extras: [this.channel] });
+    return super._add(data, cache);
   }
 
   /**
@@ -80,12 +80,11 @@ class MessageManager extends CachedManager {
    *   .then(messages => console.log(`Received ${messages.size} messages`))
    *   .catch(console.error);
    */
-  fetchPinned(cache = true) {
-    return this.client.api.channels[this.channel.id].pins.get().then(data => {
-      const messages = new Collection();
-      for (const message of data) messages.set(message.id, this._add(message, cache));
-      return messages;
-    });
+  async fetchPinned(cache = true) {
+    const data = await this.client.api.channels[this.channel.id].pins.get();
+    const messages = new Collection();
+    for (const message of data) messages.set(message.id, this._add(message, cache));
+    return messages;
   }
 
   /**

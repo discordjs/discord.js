@@ -1,5 +1,6 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
@@ -7,18 +8,18 @@ const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
-const { Error, TypeError } = require('../errors');
+const { Error } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildInviteManager = require('../managers/GuildInviteManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
+const GuildStickerManager = require('../managers/GuildStickerManager');
 const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
-const Collection = require('../util/Collection');
 const {
   ChannelTypes,
   DefaultMessageNotificationLevels,
@@ -404,6 +405,20 @@ class Guild extends AnonymousGuild {
         emojis: data.emojis,
       });
     }
+
+    if (!this.stickers) {
+      /**
+       * A manager of the stickers belonging to this guild
+       * @type {GuildStickerManager}
+       */
+      this.stickers = new GuildStickerManager(this);
+      if (data.stickers) for (const sticker of data.stickers) this.stickers._add(sticker);
+    } else if (data.stickers) {
+      this.client.actions.GuildStickersUpdate.handle({
+        guild_id: this.id,
+        stickers: data.stickers,
+      });
+    }
   }
 
   /**
@@ -443,7 +458,7 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Options used to fetch the owner of guild.
+   * Options used to fetch the owner of a guild or a thread.
    * @typedef {Object} FetchOwnerOptions
    * @property {boolean} [cache=true] Whether or not to cache the fetched member
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
@@ -541,13 +556,9 @@ class Guild extends AnonymousGuild {
    * Resolves with a collection mapping templates by their codes.
    * @returns {Promise<Collection<string, GuildTemplate>>}
    */
-  fetchTemplates() {
-    return this.client.api
-      .guilds(this.id)
-      .templates.get()
-      .then(templates =>
-        templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection()),
-      );
+  async fetchTemplates() {
+    const templates = await this.client.api.guilds(this.id).templates.get();
+    return templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection());
   }
 
   /**
@@ -560,47 +571,23 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * The data for creating an integration.
-   * @typedef {Object} IntegrationData
-   * @property {string} id The integration id
-   * @property {string} type The integration type
-   */
-
-  /**
-   * Creates an integration by attaching an integration object
-   * @param {IntegrationData} data The data for the integration
-   * @param {string} reason Reason for creating the integration
-   * @returns {Promise<Guild>}
-   */
-  createIntegration(data, reason) {
-    return this.client.api
-      .guilds(this.id)
-      .integrations.post({ data, reason })
-      .then(() => this);
-  }
-
-  /**
    * Creates a template for the guild.
    * @param {string} name The name for the template
    * @param {string} [description] The description for the template
    * @returns {Promise<GuildTemplate>}
    */
-  createTemplate(name, description) {
-    return this.client.api
-      .guilds(this.id)
-      .templates.post({ data: { name, description } })
-      .then(data => new GuildTemplate(this.client, data));
+  async createTemplate(name, description) {
+    const data = await this.client.api.guilds(this.id).templates.post({ data: { name, description } });
+    return new GuildTemplate(this.client, data);
   }
 
   /**
    * Obtains a guild preview for this guild from Discord.
    * @returns {Promise<GuildPreview>}
    */
-  fetchPreview() {
-    return this.client.api
-      .guilds(this.id)
-      .preview.get()
-      .then(data => new GuildPreview(this.client, data));
+  async fetchPreview() {
+    const data = await this.client.api.guilds(this.id).preview.get();
+    return new GuildPreview(this.client, data);
   }
 
   /**
@@ -642,41 +629,50 @@ class Guild extends AnonymousGuild {
    *   .then(webhooks => console.log(`Fetched ${webhooks.size} webhooks`))
    *   .catch(console.error);
    */
-  fetchWebhooks() {
-    return this.client.api
-      .guilds(this.id)
-      .webhooks.get()
-      .then(data => {
-        const hooks = new Collection();
-        for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
-        return hooks;
-      });
+  async fetchWebhooks() {
+    const apiHooks = await this.client.api.guilds(this.id).webhooks.get();
+    const hooks = new Collection();
+    for (const hook of apiHooks) hooks.set(hook.id, new Webhook(this.client, hook));
+    return hooks;
   }
 
   /**
-   * Data for the Guild Widget object
-   * @typedef {Object} GuildWidget
-   * @property {boolean} enabled Whether the widget is enabled
-   * @property {?GuildChannel} channel The widget channel
-   */
-
-  /**
-   * The Guild Widget object
-   * @typedef {Object} GuildWidgetData
-   * @property {boolean} enabled Whether the widget is enabled
-   * @property {?GuildChannelResolvable} channel The widget channel
-   */
-
-  /**
-   * Fetches the guild widget.
-   * @returns {Promise<GuildWidget>}
+   * Fetches the guild widget data, requires the widget to be enabled.
+   * @returns {Promise<Widget>}
    * @example
-   * // Fetches the guild widget
+   * // Fetches the guild widget data
    * guild.fetchWidget()
+   *   .then(widget => console.log(`The widget shows ${widget.channels.size} channels`))
+   *   .catch(console.error);
+   */
+  fetchWidget() {
+    return this.client.fetchGuildWidget(this.id);
+  }
+
+  /**
+   * Data for the Guild Widget Settings object
+   * @typedef {Object} GuildWidgetSettings
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannel} channel The widget invite channel
+   */
+
+  /**
+   * The Guild Widget Settings object
+   * @typedef {Object} GuildWidgetSettingsData
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannelResolvable} channel The widget invite channel
+   */
+
+  /**
+   * Fetches the guild widget settings.
+   * @returns {Promise<GuildWidgetSettings>}
+   * @example
+   * // Fetches the guild widget settings
+   * guild.fetchWidgetSettings()
    *   .then(widget => console.log(`The widget is ${widget.enabled ? 'enabled' : 'disabled'}`))
    *   .catch(console.error);
    */
-  async fetchWidget() {
+  async fetchWidgetSettings() {
     const data = await this.client.api.guilds(this.id).widget.get();
     this.widgetEnabled = data.enabled;
     this.widgetChannelId = data.channel_id;
@@ -705,61 +701,19 @@ class Guild extends AnonymousGuild {
    *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
-  fetchAuditLogs(options = {}) {
+  async fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
     if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
-    return this.client.api
-      .guilds(this.id)
-      ['audit-logs'].get({
-        query: {
-          before: options.before,
-          limit: options.limit,
-          user_id: this.client.users.resolveId(options.user),
-          action_type: options.type,
-        },
-      })
-      .then(data => GuildAuditLogs.build(this, data));
-  }
-
-  /**
-   * Options used to add a user to a guild using OAuth2.
-   * @typedef {Object} AddGuildMemberOptions
-   * @property {string} accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
-   * bot's application
-   * @property {string} [nick] The nickname to give to the member (requires `MANAGE_NICKNAMES`)
-   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to add to the member
-   * (requires `MANAGE_ROLES`)
-   * @property {boolean} [mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
-   * @property {boolean} [deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
-   */
-
-  /**
-   * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
-   * @param {UserResolvable} user The user to add to the guild
-   * @param {AddGuildMemberOptions} options Options for adding the user to the guild
-   * @returns {Promise<GuildMember>}
-   */
-  async addMember(user, options) {
-    user = this.client.users.resolveId(user);
-    if (!user) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
-    if (this.members.cache.has(user)) return this.members.cache.get(user);
-    options.access_token = options.accessToken;
-    if (options.roles) {
-      if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
-        throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
-      }
-      const resolvedRoles = [];
-      for (const role of options.roles.values()) {
-        const resolvedRole = this.roles.resolveId(role);
-        if (!role) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
-        resolvedRoles.push(resolvedRole);
-      }
-      options.roles = resolvedRoles;
-    }
-    const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
-    // Data is an empty buffer if the member is already part of the guild.
-    return data instanceof Buffer ? this.members.fetch(user) : this.members._add(data);
+    const data = await this.client.api.guilds(this.id)['audit-logs'].get({
+      query: {
+        before: options.before,
+        limit: options.limit,
+        user_id: this.client.users.resolveId(options.user),
+        action_type: options.type,
+      },
+    });
+    return GuildAuditLogs.build(this, data);
   }
 
   /**
@@ -768,8 +722,8 @@ class Guild extends AnonymousGuild {
    * @property {string} [name] The name of the guild
    * @property {VerificationLevel|number} [verificationLevel] The verification level of the guild
    * @property {ExplicitContentFilterLevel|number} [explicitContentFilter] The level of the explicit content filter
-   * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
-   * @property {ChannelResolvable} [systemChannel] The system channel of the guild
+   * @property {VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
@@ -779,11 +733,25 @@ class Guild extends AnonymousGuild {
    * @property {DefaultMessageNotificationLevel|number} [defaultMessageNotifications] The default message notification
    * level of the guild
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
-   * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
-   * @property {ChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
+   * @property {TextChannelResolvable} [rulesChannel] The rules channel of the guild
+   * @property {TextChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {string} [preferredLocale] The preferred locale of the guild
    * @property {string} [description] The discovery description of the guild
    * @property {Features[]} [features] The features of the guild
+   */
+
+  /**
+   * Data that can be resolved to a Text Channel object. This can be:
+   * * A TextChannel
+   * * A Snowflake
+   * @typedef {TextChannel|Snowflake} TextChannelResolvable
+   */
+
+  /**
+   * Data that can be resolved to a Voice Channel object. This can be:
+   * * A VoiceChannel
+   * * A Snowflake
+   * @typedef {VoiceChannel|Snowflake} VoiceChannelResolvable
    */
 
   /**
@@ -799,7 +767,7 @@ class Guild extends AnonymousGuild {
    *   .then(updated => console.log(`New guild name ${updated}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
+  async edit(data, reason) {
     const _data = {};
     if (data.name) _data.name = data.name;
     if (typeof data.verificationLevel !== 'undefined') {
@@ -848,10 +816,8 @@ class Guild extends AnonymousGuild {
       _data.description = data.description;
     }
     if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
-    return this.client.api
-      .guilds(this.id)
-      .patch({ data: _data, reason })
-      .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
+    const newData = await this.client.api.guilds(this.id).patch({ data: _data, reason });
+    return this.client.actions.GuildUpdate.handle(newData).updated;
   }
 
   /**
@@ -868,6 +834,22 @@ class Guild extends AnonymousGuild {
    * @property {boolean} [enabled] Whether the welcome screen is enabled
    * @property {string} [description] The description for the welcome screen
    * @property {WelcomeChannelData[]} [welcomeChannels] The welcome channel data for the welcome screen
+   */
+
+  /**
+   * Data that can be resolved to a GuildTextChannel object. This can be:
+   * * A TextChannel
+   * * A NewsChannel
+   * * A Snowflake
+   * @typedef {TextChannel|NewsChannel|Snowflake} GuildTextChannelResolvable
+   */
+
+  /**
+   * Data that can be resolved to a GuildVoiceChannel object. This can be:
+   * * A VoiceChannel
+   * * A StageChannel
+   * * A Snowflake
+   * @typedef {VoiceChannel|StageChannel|Snowflake} GuildVoiceChannelResolvable
    */
 
   /**
@@ -972,7 +954,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the AFK channel of the guild.
-   * @param {ChannelResolvable} afkChannel The new AFK channel
+   * @param {VoiceChannelResolvable} afkChannel The new AFK channel
    * @param {string} [reason] Reason for changing the guild's AFK channel
    * @returns {Promise<Guild>}
    * @example
@@ -987,7 +969,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the system channel of the guild.
-   * @param {ChannelResolvable} systemChannel The new system channel
+   * @param {TextChannelResolvable} systemChannel The new system channel
    * @param {string} [reason] Reason for changing the guild's system channel
    * @returns {Promise<Guild>}
    * @example
@@ -1091,7 +1073,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the rules channel of the guild.
-   * @param {ChannelResolvable} rulesChannel The new rules channel
+   * @param {TextChannelResolvable} rulesChannel The new rules channel
    * @param {string} [reason] Reason for changing the guild's rules channel
    * @returns {Promise<Guild>}
    * @example
@@ -1106,7 +1088,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the community updates channel of the guild.
-   * @param {ChannelResolvable} publicUpdatesChannel The new community updates channel
+   * @param {TextChannelResolvable} publicUpdatesChannel The new community updates channel
    * @param {string} [reason] Reason for changing the guild's community updates channel
    * @returns {Promise<Guild>}
    * @example
@@ -1144,7 +1126,7 @@ class Guild extends AnonymousGuild {
   /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
-   * @property {ChannelResolvable} channel Channel to update
+   * @property {GuildChannel|Snowflake} channel Channel to update
    * @property {number} [position] New position for the channel
    * @property {CategoryChannelResolvable} [parent] Parent channel for this channel
    * @property {boolean} [lockPermissions] If the overwrites should be locked to the parents overwrites
@@ -1160,7 +1142,7 @@ class Guild extends AnonymousGuild {
    *   .then(guild => console.log(`Updated channel positions for ${guild}`))
    *   .catch(console.error);
    */
-  setChannelPositions(channelPositions) {
+  async setChannelPositions(channelPositions) {
     const updatedChannels = channelPositions.map(r => ({
       id: this.client.channels.resolveId(r.channel),
       position: r.position,
@@ -1168,22 +1150,17 @@ class Guild extends AnonymousGuild {
       parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveId(r.parent) : undefined,
     }));
 
-    return this.client.api
-      .guilds(this.id)
-      .channels.patch({ data: updatedChannels })
-      .then(
-        () =>
-          this.client.actions.GuildChannelsPositionUpdate.handle({
-            guild_id: this.id,
-            channels: updatedChannels,
-          }).guild,
-      );
+    await this.client.api.guilds(this.id).channels.patch({ data: updatedChannels });
+    return this.client.actions.GuildChannelsPositionUpdate.handle({
+      guild_id: this.id,
+      channels: updatedChannels,
+    }).guild;
   }
 
   /**
    * The data needed for updating a guild role's position
    * @typedef {Object} GuildRolePosition
-   * @property {RoleResolveable} role The role's id
+   * @property {RoleResolvable} role The role's id
    * @property {number} position The position to update
    */
 
@@ -1196,7 +1173,7 @@ class Guild extends AnonymousGuild {
    *  .then(guild => console.log(`Role positions updated for ${guild}`))
    *  .catch(console.error);
    */
-  setRolePositions(rolePositions) {
+  async setRolePositions(rolePositions) {
     // Make sure rolePositions are prepared for API
     rolePositions = rolePositions.map(o => ({
       id: this.roles.resolveId(o.role),
@@ -1204,37 +1181,30 @@ class Guild extends AnonymousGuild {
     }));
 
     // Call the API to update role positions
-    return this.client.api
-      .guilds(this.id)
-      .roles.patch({
-        data: rolePositions,
-      })
-      .then(
-        () =>
-          this.client.actions.GuildRolesPositionUpdate.handle({
-            guild_id: this.id,
-            roles: rolePositions,
-          }).guild,
-      );
+    await this.client.api.guilds(this.id).roles.patch({
+      data: rolePositions,
+    });
+    return this.client.actions.GuildRolesPositionUpdate.handle({
+      guild_id: this.id,
+      roles: rolePositions,
+    }).guild;
   }
 
   /**
-   * Edits the guild's widget.
-   * @param {GuildWidgetData} widget The widget for the guild
-   * @param {string} [reason] Reason for changing the guild's widget
+   * Edits the guild's widget settings.
+   * @param {GuildWidgetSettingsData} settings The widget settings for the guild
+   * @param {string} [reason] Reason for changing the guild's widget settings
    * @returns {Promise<Guild>}
    */
-  setWidget(widget, reason) {
-    return this.client.api
-      .guilds(this.id)
-      .widget.patch({
-        data: {
-          enabled: widget.enabled,
-          channel_id: this.channels.resolveId(widget.channel),
-        },
-        reason,
-      })
-      .then(() => this);
+  async setWidgetSettings(settings, reason) {
+    await this.client.api.guilds(this.id).widget.patch({
+      data: {
+        enabled: settings.enabled,
+        channel_id: this.channels.resolveId(settings.channel),
+      },
+      reason,
+    });
+    return this;
   }
 
   /**
@@ -1246,13 +1216,10 @@ class Guild extends AnonymousGuild {
    *   .then(g => console.log(`Left the guild ${g}`))
    *   .catch(console.error);
    */
-  leave() {
-    if (this.ownerId === this.client.user.id) return Promise.reject(new Error('GUILD_OWNED'));
-    return this.client.api
-      .users('@me')
-      .guilds(this.id)
-      .delete()
-      .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
+  async leave() {
+    if (this.ownerId === this.client.user.id) throw new Error('GUILD_OWNED');
+    await this.client.api.users('@me').guilds(this.id).delete();
+    return this.client.actions.GuildDelete.handle({ id: this.id }).guild;
   }
 
   /**
@@ -1264,11 +1231,9 @@ class Guild extends AnonymousGuild {
    *   .then(g => console.log(`Deleted the guild ${g}`))
    *   .catch(console.error);
    */
-  delete() {
-    return this.client.api
-      .guilds(this.id)
-      .delete()
-      .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
+  async delete() {
+    await this.client.api.guilds(this.id).delete();
+    return this.client.actions.GuildDelete.handle({ id: this.id }).guild;
   }
 
   /**

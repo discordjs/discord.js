@@ -78,8 +78,6 @@ const Messages = {
   MESSAGE_NONCE_TYPE: 'Message nonce must be an integer or a string.',
   MESSAGE_CONTENT_TYPE: 'Message content must be a non-empty string.',
 
-  TYPING_COUNT: 'Count must be at least 1',
-
   SPLIT_MAX_LEN: 'Chunk exceeds the max length and contains no split characters.',
 
   BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user id to ${ban ? 'ban' : 'unban'}.`,
@@ -100,15 +98,18 @@ const Messages = {
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
   MESSAGE_THREAD_PARENT: 'The message was not sent in a guild text or news channel',
+  MESSAGE_EXISTING_THREAD: 'The message already has a thread',
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
   WEBHOOK_TOKEN_UNAVAILABLE: 'This action requires a webhook token, but none is available.',
+  WEBHOOK_URL_INVALID: 'The provided webhook URL is not valid.',
   MESSAGE_REFERENCE_MISSING: 'The message does not reference another message',
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
-  MISSING_MANAGE_EMOJIS_PERMISSION: guild =>
-    `Client must have Manage Emoji permission in guild ${guild} to see emoji authors.`,
+  MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION: guild =>
+    `Client must have Manage Emojis and Stickers permission in guild ${guild} to see emoji authors.`,
+  NOT_GUILD_STICKER: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   REACTION_RESOLVE_USER: "Couldn't resolve the user id to remove from the reaction.",
 
@@ -133,9 +134,19 @@ const Messages = {
   INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
   INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
 
+  COMMAND_INTERACTION_OPTION_NOT_FOUND: name => `Required option "${name}" not found.`,
+  COMMAND_INTERACTION_OPTION_TYPE: (name, type, expected) =>
+    `Option "${name}" is of type: ${type}; expected ${expected}.`,
+  COMMAND_INTERACTION_OPTION_EMPTY: (name, type) =>
+    `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No subcommand specified for interaction.',
+  COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No subcommand group specified for interaction.',
+
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 
   NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,
+
+  SWEEP_FILTER_RETURN: 'The return value of the sweepFilter function was not false or a Function',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

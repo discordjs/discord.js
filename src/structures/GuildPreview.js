@@ -1,8 +1,9 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
 const GuildPreviewEmoji = require('./GuildPreviewEmoji');
-const Collection = require('../util/Collection');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents the data about the guild any bot can preview, connected to the specified guild.
@@ -90,6 +91,23 @@ class GuildPreview extends Base {
       this.emojis.set(emoji.id, new GuildPreviewEmoji(this.client, emoji, this));
     }
   }
+  /**
+   * The timestamp this guild was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time this guild was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
 
   /**
    * The URL to this guild's splash.
@@ -122,14 +140,10 @@ class GuildPreview extends Base {
    * Fetches this guild.
    * @returns {Promise<GuildPreview>}
    */
-  fetch() {
-    return this.client.api
-      .guilds(this.id)
-      .preview.get()
-      .then(data => {
-        this._patch(data);
-        return this;
-      });
+  async fetch() {
+    const data = await this.client.api.guilds(this.id).preview.get();
+    this._patch(data);
+    return this;
   }
 
   /**

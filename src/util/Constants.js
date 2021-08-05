@@ -59,6 +59,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/app-icons/${clientId}/${hash}`, { size, format }),
       AppAsset: (clientId, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/app-assets/${clientId}/${hash}`, { size, format }),
+      StickerPackBanner: (bannerId, format = 'webp', size) =>
+        makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerId}`, { size, format }),
       GDMIcon: (channelId, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/channel-icons/${channelId}/${hash}`, { size, format }),
       Splash: (guildId, hash, format = 'webp', size) =>
@@ -67,6 +69,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
       TeamIcon: (teamId, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, { size, format }),
+      Sticker: (stickerId, stickerFormat) =>
+        `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
     };
   },
   invite: (root, code) => `${root}/${code}`,
@@ -178,6 +182,9 @@ exports.Events = {
   STAGE_INSTANCE_CREATE: 'stageInstanceCreate',
   STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate',
   STAGE_INSTANCE_DELETE: 'stageInstanceDelete',
+  GUILD_STICKER_CREATE: 'stickerCreate',
+  GUILD_STICKER_DELETE: 'stickerDelete',
+  GUILD_STICKER_UPDATE: 'stickerUpdate',
 };
 
 exports.ShardEvents = {
@@ -253,6 +260,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * STAGE_INSTANCE_CREATE
  * * STAGE_INSTANCE_UPDATE
  * * STAGE_INSTANCE_DELETE
+ * * GUILD_STICKERS_UPDATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
@@ -305,6 +313,7 @@ exports.WSEvents = keyMirror([
   'STAGE_INSTANCE_CREATE',
   'STAGE_INSTANCE_UPDATE',
   'STAGE_INSTANCE_DELETE',
+  'GUILD_STICKERS_UPDATE',
 ]);
 
 /**
@@ -332,7 +341,7 @@ exports.InviteScopes = [
   'bot',
   'connections',
   'email',
-  'identity',
+  'identify',
   'guilds',
   'guilds.join',
   'gdm.join',
@@ -446,6 +455,15 @@ exports.ChannelTypes = createEnum([
   'GUILD_PRIVATE_THREAD',
   'GUILD_STAGE_VOICE',
 ]);
+
+/**
+ * The channels that are text-based.
+ * * DMChannel
+ * * TextChannel
+ * * NewsChannel
+ * * ThreadChannel
+ * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel} TextBasedChannels
+ */
 
 /**
  * The types of channels that are text-based. The available types are:
@@ -570,6 +588,8 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * UNKNOWN_STORE_DIRECTORY_LAYOUT
  * * UNKNOWN_REDISTRIBUTABLE
  * * UNKNOWN_GIFT_CODE
+ * * UNKNOWN_STREAM
+ * * UNKNOWN_PREMIUM_SERVER_SUBSCRIBE_COOLDOWN
  * * UNKNOWN_GUILD_TEMPLATE
  * * UNKNOWN_DISCOVERABLE_SERVER_CATEGORY
  * * UNKNOWN_STICKER
@@ -579,6 +599,8 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * UNKNOWN_STAGE_INSTANCE
  * * UNKNOWN_GUILD_MEMBER_VERIFICATION_FORM
  * * UNKNOWN_GUILD_WELCOME_SCREEN
+ * * UNKNOWN_GUILD_SCHEDULED_EVENT
+ * * UNKNOWN_GUILD_SCHEDULED_EVENT_USER
  * * BOT_PROHIBITED_ENDPOINT
  * * BOT_ONLY_ENDPOINT
  * * CANNOT_SEND_EXPLICIT_CONTENT
@@ -651,6 +673,8 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * INVALID_OPERATION_ON_ARCHIVED_THREAD
  * * INVALID_THREAD_NOTIFICATION_SETTINGS
  * * PARAMETER_EARLIER_THAN_CREATION
+ * * GUILD_NOT_AVAILABLE_IN_LOCATION
+ * * GUILD_MONETIZATION_REQUIRED
  * * TWO_FACTOR_REQUIRED
  * * NO_USERS_WITH_DISCORDTAG_EXIST
  * * REACTION_BLOCKED
@@ -690,6 +714,8 @@ exports.APIErrors = {
   UNKNOWN_STORE_DIRECTORY_LAYOUT: 10033,
   UNKNOWN_REDISTRIBUTABLE: 10036,
   UNKNOWN_GIFT_CODE: 10038,
+  UNKNOWN_STREAM: 10049,
+  UNKNOWN_PREMIUM_SERVER_SUBSCRIBE_COOLDOWN: 10050,
   UNKNOWN_GUILD_TEMPLATE: 10057,
   UNKNOWN_DISCOVERABLE_SERVER_CATEGORY: 10059,
   UNKNOWN_STICKER: 10060,
@@ -699,6 +725,8 @@ exports.APIErrors = {
   UNKNOWN_STAGE_INSTANCE: 10067,
   UNKNOWN_GUILD_MEMBER_VERIFICATION_FORM: 10068,
   UNKNOWN_GUILD_WELCOME_SCREEN: 10069,
+  UNKNOWN_GUILD_SCHEDULED_EVENT: 10070,
+  UNKNOWN_GUILD_SCHEDULED_EVENT_USER: 10071,
   BOT_PROHIBITED_ENDPOINT: 20001,
   BOT_ONLY_ENDPOINT: 20002,
   CANNOT_SEND_EXPLICIT_CONTENT: 20009,
@@ -765,6 +793,8 @@ exports.APIErrors = {
   INVALID_FORM_BODY: 50035,
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
   INVALID_API_VERSION: 50041,
+  FILE_UPLOADED_EXCEEDS_MAXIMUM_SIZE: 50045,
+  INVALID_FILE_UPLOADED: 50046,
   CANNOT_SELF_REDEEM_GIFT: 50054,
   PAYMENT_SOURCE_REQUIRED: 50070,
   CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: 50074,
@@ -772,6 +802,8 @@ exports.APIErrors = {
   INVALID_OPERATION_ON_ARCHIVED_THREAD: 50083,
   INVALID_THREAD_NOTIFICATION_SETTINGS: 50084,
   PARAMETER_EARLIER_THAN_CREATION: 50085,
+  GUILD_NOT_AVAILABLE_IN_LOCATION: 50095,
+  GUILD_MONETIZATION_REQUIRED: 50097,
   TWO_FACTOR_REQUIRED: 60003,
   NO_USERS_WITH_DISCORDTAG_EXIST: 80004,
   REACTION_BLOCKED: 90001,
@@ -780,7 +812,14 @@ exports.APIErrors = {
   MESSAGE_ALREADY_HAS_THREAD: 160004,
   THREAD_LOCKED: 160005,
   MAXIMUM_ACTIVE_THREADS: 160006,
-  MAXIMUM_ACTIVE_ANNOUCEMENT_THREAD: 160007,
+  MAXIMUM_ACTIVE_ANNOUNCEMENT_THREADS: 160007,
+  INVALID_JSON_FOR_UPLOADED_LOTTIE_FILE: 170001,
+  UPLOADED_LOTTIES_CANNOT_CONTAIN_RASTERIZED_IMAGES: 170002,
+  STICKER_MAXIMUM_FRAMERATE_EXCEEDED: 170003,
+  STICKER_FRAME_COUNT_EXCEEDS_MAXIMUM_OF_1000_FRAMES: 170004,
+  LOTTIE_ANIMATION_MAXIMUM_DIMENSIONS_EXCEEDED: 170005,
+  STICKER_FRAME_RATE_IS_TOO_SMALL_OR_TOO_LARGE: 170006,
+  STICKER_ANIMATION_DURATION_EXCEEDS_MAXIMUM_OF_5_SECONDS: 170007,
 };
 
 /**
@@ -809,6 +848,14 @@ exports.WebhookTypes = createEnum([null, 'Incoming', 'Channel Follower']);
 
 /**
  * The value set for a sticker's type:
+ * * STANDARD
+ * * GUILD
+ * @typedef {string} StickerType
+ */
+exports.StickerTypes = createEnum([null, 'STANDARD', 'GUILD']);
+
+/**
+ * The value set for a sticker's format type:
  * * PNG
  * * APNG
  * * LOTTIE
@@ -835,6 +882,7 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
  * * CHANNEL
  * * ROLE
  * * MENTIONABLE
+ * * NUMBER
  * @typedef {string} ApplicationCommandOptionType
  */
 exports.ApplicationCommandOptionTypes = createEnum([
@@ -848,6 +896,7 @@ exports.ApplicationCommandOptionTypes = createEnum([
   'CHANNEL',
   'ROLE',
   'MENTIONABLE',
+  'NUMBER',
 ]);
 
 /**
@@ -943,6 +992,8 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
  */
 exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
 
+exports._cleanupSymbol = Symbol('djsCleanup');
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
@@ -958,3 +1009,35 @@ function createEnum(keys) {
   }
   return obj;
 }
+
+/**
+ * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
+ * @property {ActivityType} ActivityTypes The type of an activity of a users presence.
+ * @property {APIError} APIErrors An error encountered while performing an API request.
+ * @property {ApplicationCommandOptionType} ApplicationCommandOptionTypes
+ * The type of an {@link ApplicationCommandOption} object.
+ * @property {ApplicationCommandPermissionType} ApplicationCommandPermissionTypes
+ * The type of an {@link ApplicationCommandPermissions} object.
+ * @property {ChannelType} ChannelTypes All available channel types.
+ * @property {DefaultMessageNotificationLevel} DefaultMessageNotificationLevels
+ * The value set for a guild's default message notifications.
+ * @property {ExplicitContentFilterLevel} ExplicitContentFilterLevels
+ * The value set for the explicit content filter levels for a guild.
+ * @property {InteractionResponseType} InteractionResponseTypes The type of an interaction response.
+ * @property {InteractionType} InteractionTypes The type of an {@link Interaction} object.
+ * @property {MembershipState} MembershipStates The value set for a team members's membership state.
+ * @property {MessageButtonStyle} MessageButtonStyles The style of a message button.
+ * @property {MessageComponentType} MessageComponentTypes The type of a message component.
+ * @property {MFALevel} MFALevels The required MFA level for a guild.
+ * @property {NSFWLevel} NSFWLevels NSFW level of a guild.
+ * @property {OverwriteType} OverwriteTypes An overwrite type.
+ * @property {PartialType} PartialTypes The type of Structure allowed to be a partial.
+ * @property {PremiumTier} PremiumTiers The premium tier (Server Boost level) of a guild.
+ * @property {PrivacyLevel} PrivacyLevels Privacy level of a {@link StageInstance} object.
+ * @property {Status} Status The available statuses of the client.
+ * @property {StickerFormatType} StickerFormatTypes The value set for a sticker's format type.
+ * @property {StickerType} StickerTypes The value set for a sticker's type.
+ * @property {VerificationLevel} VerificationLevels The value set for the verification levels for a guild.
+ * @property {WebhookType} WebhookTypes The value set for a webhook's type.
+ * @property {WSEventType} WSEvents The type of a websocket message event.
+ */

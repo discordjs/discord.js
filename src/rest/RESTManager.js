@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const RequestHandler = require('./RequestHandler');
 const { Error } = require('../errors');
-const Collection = require('../util/Collection');
 const { Endpoints } = require('../util/Constants');
 
 class RESTManager {
@@ -18,10 +18,9 @@ class RESTManager {
     this.globalReset = null;
     this.globalDelay = null;
     if (client.options.restSweepInterval > 0) {
-      const interval = client.setInterval(() => {
+      this.sweepInterval = setInterval(() => {
         this.handlers.sweep(handler => handler._inactive);
-      }, client.options.restSweepInterval * 1000);
-      interval.unref();
+      }, client.options.restSweepInterval * 1000).unref();
     }
   }
 
