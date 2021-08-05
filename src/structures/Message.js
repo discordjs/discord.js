@@ -284,9 +284,9 @@ class Message extends Base {
     /**
      * Reference data sent in a message that contains ids identifying the referenced message
      * @typedef {Object} MessageReference
-     * @property {string} channelId The channel's id the message was referenced
-     * @property {?string} guildId The guild's id the message was referenced
-     * @property {?string} messageId The message's id that was referenced
+     * @property {Snowflake} channelId The channel's id the message was referenced
+     * @property {?Snowflake} guildId The guild's id the message was referenced
+     * @property {?Snowflake} messageId The message's id that was referenced
      */
 
     if ('message_reference' in data || !partial) {

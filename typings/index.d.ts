@@ -354,6 +354,7 @@ export class Channel extends Base {
   public delete(): Promise<Channel>;
   public fetch(force?: boolean): Promise<Channel>;
   public isText(): this is TextBasedChannels;
+  public isVoice(): this is VoiceChannel | StageChannel;
   public isThread(): this is ThreadChannel;
   public toString(): ChannelMention;
 }
@@ -473,7 +474,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public filter: CollectorFilter<[V, ...F]>;
   public readonly next: Promise<V>;
   public options: CollectorOptions<[V, ...F]>;
-  public checkEnd(): void;
+  public checkEnd(): boolean;
   public handleCollect(...args: unknown[]): Promise<void>;
   public handleDispose(...args: unknown[]): Promise<void>;
   public stop(reason?: string): void;
@@ -504,8 +505,8 @@ export class CommandInteraction extends Interaction {
   public options: CommandInteractionOptionResolver;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public defer(options: InteractionDeferOptions & { fetchReply: true }): Promise<Message | APIMessage>;
-  public defer(options?: InteractionDeferOptions): Promise<void>;
+  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
   public fetchReply(): Promise<Message | APIMessage>;
@@ -646,7 +647,7 @@ export class Guild extends AnonymousGuild {
   public members: GuildMemberManager;
   public mfaLevel: MFALevel;
   public ownerId: Snowflake;
-  public preferredLocale: string;
+  public preferredLocale?: string;
   public premiumSubscriptionCount: number | null;
   public premiumTier: PremiumTier;
   public presences: PresenceManager;
@@ -984,12 +985,12 @@ export class InteractionCollector<T extends Interaction> extends Collector<Snowf
   private _handleChannelDeletion(channel: GuildChannel): void;
   private _handleGuildDeletion(guild: Guild): void;
 
-  public channel: TextBasedChannels | null;
+  public channelId: Snowflake | null;
   public componentType: MessageComponentType | null;
   public readonly endReason: string | null;
-  public guild: Guild | null;
+  public guildId: Snowflake | null;
   public interactionType: InteractionType | null;
-  public message: Message | null;
+  public messageId: Snowflake | null;
   public options: InteractionCollectorOptions<T>;
   public total: number;
   public users: Collection<Snowflake, User>;
@@ -1217,8 +1218,8 @@ export class MessageComponentInteraction extends Interaction {
   public message: Message | APIMessage;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public defer(options: InteractionDeferOptions & { fetchReply: true }): Promise<Message | APIMessage>;
-  public defer(options?: InteractionDeferOptions): Promise<void>;
+  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
   public deleteReply(): Promise<void>;
@@ -2140,22 +2141,32 @@ export const Constants: {
     CDN: (root: string) => {
       Asset: (name: string) => string;
       DefaultAvatar: (id: Snowflake | number) => string;
-      Emoji: (emojiId: Snowflake, format: 'png' | 'gif') => string;
-      Avatar: (
+      Emoji: (emojiId: Snowflake, format: DynamicImageFormat) => string;
+      Avatar: (userId: Snowflake, hash: string, format: DynamicImageFormat, size: AllowedImageSize) => string;
+      Banner: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      Icon: (userId: Snowflake | number, hash: string, format: DynamicImageFormat, size: AllowedImageSize) => string;
+      AppIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      AppAsset: (
         userId: Snowflake | number,
         hash: string,
-        format: 'default' | AllowedImageFormat,
-        size: number,
+        format: AllowedImageFormat,
+        size: AllowedImageSize,
       ) => string;
-      Banner: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      Icon: (userId: Snowflake | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
-      AppIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      AppAsset: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      StickerPackBanner: (bannerId: Snowflake, format: AllowedImageFormat, size: number) => string;
-      GDMIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      Splash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      DiscoverySplash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
-      TeamIcon: (teamId: Snowflake | number, hash: string, format: AllowedImageFormat, size: number) => string;
+      StickerPackBanner: (bannerId: Snowflake, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      GDMIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      Splash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      DiscoverySplash: (
+        guildId: Snowflake | number,
+        hash: string,
+        format: AllowedImageFormat,
+        size: AllowedImageSize,
+      ) => string;
+      TeamIcon: (
+        teamId: Snowflake | number,
+        hash: string,
+        format: AllowedImageFormat,
+        size: AllowedImageSize,
+      ) => string;
       Sticker: (stickerId: Snowflake, stickerFormat: StickerFormatType) => string;
     };
   };
@@ -2692,7 +2703,9 @@ export interface AddGuildMemberOptions {
   fetchWhenExisting?: boolean;
 }
 
-export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
+export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg';
+
+export type AllowedImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 
 export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
 
@@ -2884,9 +2897,6 @@ export type ApplicationCommandPermissionType = keyof typeof ApplicationCommandPe
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
 export type ApplicationFlagsString =
-  | 'MANAGED_EMOJI'
-  | 'GROUP_DM_CREATE'
-  | 'RPC_HAS_CONNECTED'
   | 'GATEWAY_PRESENCE'
   | 'GATEWAY_PRESENCE_LIMITED'
   | 'GATEWAY_GUILD_MEMBERS'
@@ -3383,6 +3393,8 @@ export interface DeconstructedSnowflake {
 
 export type DefaultMessageNotificationLevel = keyof typeof DefaultMessageNotificationLevels;
 
+export type DynamicImageFormat = AllowedImageFormat | 'gif';
+
 export interface EditGuildTemplateOptions {
   name?: string;
   description?: string;
@@ -3698,20 +3710,19 @@ export type GuildFeatures =
   | 'FEATURABLE'
   | 'INVITE_SPLASH'
   | 'MEMBER_VERIFICATION_GATE_ENABLED'
-  | 'MONETIZATION_ENABLED'
-  | 'MORE_STICKERS'
   | 'NEWS'
   | 'PARTNERED'
   | 'PREVIEW_ENABLED'
-  | 'PRIVATE_THREADS'
-  | 'RELAY_ENABLED'
-  | 'SEVEN_DAY_THREAD_ARCHIVE'
-  | 'THREE_DAY_THREAD_ARCHIVE'
-  | 'TICKETED_EVENTS_ENABLED'
   | 'VANITY_URL'
   | 'VERIFIED'
   | 'VIP_REGIONS'
-  | 'WELCOME_SCREEN_ENABLED';
+  | 'WELCOME_SCREEN_ENABLED'
+  | 'TICKETED_EVENTS_ENABLED'
+  | 'MONETIZATION_ENABLED'
+  | 'MORE_STICKERS'
+  | 'THREE_DAY_THREAD_ARCHIVE'
+  | 'SEVEN_DAY_THREAD_ARCHIVE'
+  | 'PRIVATE_THREADS';
 
 export interface GuildMemberEditData {
   nick?: string | null;
@@ -3771,8 +3782,6 @@ export interface HTTPOptions {
   headers?: Record<string, string>;
 }
 
-export type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
-
 export interface ImageURLOptions extends StaticImageURLOptions {
   dynamic?: boolean;
 }
@@ -3790,15 +3799,15 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   max?: number;
   maxComponents?: number;
   maxUsers?: number;
-  message?: Message;
+  message?: Message | APIMessage;
 }
 
-export interface InteractionDeferOptions {
+export interface InteractionDeferReplyOptions {
   ephemeral?: boolean;
   fetchReply?: boolean;
 }
 
-export type InteractionDeferUpdateOptions = Omit<InteractionDeferOptions, 'ephemeral'>;
+export type InteractionDeferUpdateOptions = Omit<InteractionDeferReplyOptions, 'ephemeral'>;
 
 export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL'> {
   ephemeral?: boolean;
@@ -4113,7 +4122,7 @@ export type MessageType =
   | 'CALL'
   | 'CHANNEL_NAME_CHANGE'
   | 'CHANNEL_ICON_CHANGE'
-  | 'PINS_ADD'
+  | 'CHANNEL_PINNED_MESSAGE'
   | 'GUILD_MEMBER_JOIN'
   | 'USER_PREMIUM_GUILD_SUBSCRIPTION'
   | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
@@ -4369,7 +4378,7 @@ export interface SplitOptions {
 
 export interface StaticImageURLOptions {
   format?: AllowedImageFormat;
-  size?: ImageSize;
+  size?: AllowedImageSize;
 }
 
 export type StageInstanceResolvable = StageInstance | Snowflake;

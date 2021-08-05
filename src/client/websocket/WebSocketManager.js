@@ -175,7 +175,7 @@ class WebSocketManager extends EventEmitter {
          * Emitted when a shard turns ready.
          * @event Client#shardReady
          * @param {number} id The shard id that turned ready
-         * @param {?Set<string>} unavailableGuilds Set of unavailable guild ids, if any
+         * @param {?Set<Snowflake>} unavailableGuilds Set of unavailable guild ids, if any
          */
         this.client.emit(Events.SHARD_READY, shard.id, unavailableGuilds);
 

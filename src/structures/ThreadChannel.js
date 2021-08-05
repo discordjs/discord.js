@@ -237,7 +237,8 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Fetches the owner of this thread
+   * Fetches the owner of this thread. If the thread member object isn't needed,
+   * use {@link ThreadChannel#ownerId} instead.
    * @param {FetchOwnerOptions} [options] The options for fetching the member
    * @returns {Promise<?ThreadMember>}
    */
