@@ -139,7 +139,7 @@ class GuildMemberManager extends CachedManager {
    * @param {UserResolvable|FetchMemberOptions|FetchMembersOptions} [options] If a UserResolvable, the user to fetch.
    * If undefined, fetches all members.
    * If a query, it limits the results to users with similar usernames.
-   * @returns {Promise<(GuildMember|Collection<Snowflake, GuildMember>)>}
+   * @returns {Promise<GuildMember|Collection<Snowflake, GuildMember>>}
    * @example
    * // Fetch all members from a guild
    * guild.members.fetch()

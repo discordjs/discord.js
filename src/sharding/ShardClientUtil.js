@@ -100,7 +100,7 @@ class ShardClientUtil {
    * Fetches a client property value of each shard, or a given shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @param {number} [shard] Shard to fetch property from, all if undefined
-   * @returns {Promise<(*|Array<*>)>}
+   * @returns {Promise<*|Array<*>>}
    * @example
    * client.shard.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
