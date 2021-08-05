@@ -984,12 +984,12 @@ export class InteractionCollector<T extends Interaction> extends Collector<Snowf
   private _handleChannelDeletion(channel: GuildChannel): void;
   private _handleGuildDeletion(guild: Guild): void;
 
-  public channel: TextBasedChannels | null;
+  public channelId: Snowflake | null;
   public componentType: MessageComponentType | null;
   public readonly endReason: string | null;
-  public guild: Guild | null;
+  public guildId: Snowflake | null;
   public interactionType: InteractionType | null;
-  public message: Message | null;
+  public messageId: Snowflake | null;
   public options: InteractionCollectorOptions<T>;
   public total: number;
   public users: Collection<Snowflake, User>;
@@ -3790,7 +3790,7 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   max?: number;
   maxComponents?: number;
   maxUsers?: number;
-  message?: Message;
+  message?: Message | APIMessage;
 }
 
 export interface InteractionDeferOptions {
