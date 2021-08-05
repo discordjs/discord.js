@@ -135,7 +135,7 @@ class GuildBanManager extends CachedManager {
    * @example
    * // Ban a user by id (or with a user/guild member object)
    * guild.bans.create('84484653687267328')
-   *   .then(user => console.log(`Banned ${user.user?.tag ?? user.tag ?? user} from ${guild.name}`))
+   *   .then(banInfo => console.log(`Banned ${banInfo.user?.tag ?? banInfo.tag ?? banInfo}`))
    *   .catch(console.error);
    */
   async create(user, options = { days: 0 }) {
