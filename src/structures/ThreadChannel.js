@@ -277,9 +277,9 @@ class ThreadChannel extends Channel {
   async edit(data, reason) {
     if (data.autoArchiveDuration === 'MAX') {
       data.autoArchiveDuration = 1440;
-      if (this.channel.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
+      if (this.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
         data.autoArchiveDuration = 10080;
-      } else if (this.channel.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
+      } else if (this.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
         data.autoArchiveDuration = 4320;
       }
     }
