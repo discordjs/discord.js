@@ -36,7 +36,7 @@ class MessageComponentInteraction extends Interaction {
      * Whether the reply to this interaction has been deferred
      * @type {boolean}
      */
-    this.deferred = false;
+    this.deferredReply = false;
 
     /**
      * Whether the reply to this interaction is ephemeral

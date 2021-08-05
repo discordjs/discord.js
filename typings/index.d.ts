@@ -500,7 +500,7 @@ export class CommandInteraction extends Interaction {
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
-  public deferred: boolean;
+  public deferredReply: boolean;
   public ephemeral: boolean | null;
   public options: CommandInteractionOptionResolver;
   public replied: boolean;
@@ -1213,7 +1213,7 @@ export class MessageComponentInteraction extends Interaction {
   public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent> | null;
   public componentType: MessageComponentType;
   public customId: string;
-  public deferred: boolean;
+  public deferredReply: boolean;
   public ephemeral: boolean | null;
   public message: Message | APIMessage;
   public replied: boolean;

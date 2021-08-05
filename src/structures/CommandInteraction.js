@@ -44,7 +44,7 @@ class CommandInteraction extends Interaction {
      * Whether the reply to this interaction has been deferred
      * @type {boolean}
      */
-    this.deferred = false;
+    this.deferredReply = false;
 
     /**
      * The options passed to the command.

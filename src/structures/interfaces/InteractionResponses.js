@@ -52,7 +52,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deferReply(options = {}) {
-    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (this.deferredReply || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     if (options.fetchReply && options.ephemeral) throw new Error('INTERACTION_FETCH_EPHEMERAL');
     this.ephemeral = options.ephemeral ?? false;
     await this.client.api.interactions(this.id, this.token).callback.post({
@@ -63,7 +63,7 @@ class InteractionResponses {
         },
       },
     });
-    this.deferred = true;
+    this.deferredReply = true;
 
     return options.fetchReply ? this.fetchReply() : undefined;
   }
@@ -86,7 +86,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async reply(options) {
-    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (this.deferredReply || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     if (options.fetchReply && options.ephemeral) throw new Error('INTERACTION_FETCH_EPHEMERAL');
     this.ephemeral = options.ephemeral ?? false;
 
@@ -135,7 +135,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async editReply(options) {
-    if (!this.deferred && !this.replied) throw new Error('INTERACTION_NOT_REPLIED');
+    if (!this.deferredReply && !this.replied) throw new Error('INTERACTION_NOT_REPLIED');
     const message = await this.webhook.editMessage('@original', options);
     this.replied = true;
     return message;
@@ -176,7 +176,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deferUpdate(options = {}) {
-    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (this.deferredReply || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     if (options.fetchReply && new MessageFlags(this.message.flags).has(MessageFlags.FLAGS.EPHEMERAL)) {
       throw new Error('INTERACTION_FETCH_EPHEMERAL');
     }
@@ -185,7 +185,7 @@ class InteractionResponses {
         type: InteractionResponseTypes.DEFERRED_MESSAGE_UPDATE,
       },
     });
-    this.deferred = true;
+    this.deferredReply = true;
 
     return options.fetchReply ? this.fetchReply() : undefined;
   }
@@ -204,7 +204,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async update(options) {
-    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (this.deferredReply || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     if (options.fetchReply && new MessageFlags(this.message.flags).has(MessageFlags.FLAGS.EPHEMERAL)) {
       throw new Error('INTERACTION_FETCH_EPHEMERAL');
     }
