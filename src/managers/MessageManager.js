@@ -47,7 +47,7 @@ class MessageManager extends CachedManager {
    * Those need to be fetched separately in such a case.</info>
    * @param {Snowflake|ChannelLogsQueryOptions} [message] The id of the message to fetch, or query parameters.
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<(Message|Collection<Snowflake, Message>)>}
+   * @returns {Promise<Message|Collection<Snowflake, Message>>}
    * @example
    * // Get message
    * channel.messages.fetch('99539446449315840')

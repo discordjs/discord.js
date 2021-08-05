@@ -102,7 +102,7 @@ class LimitedCollection extends Collection {
    * @typedef {Object} LifetimeFilterOptions
    * @property {number} [lifetime=14400] How long, in seconds, an entry should stay in the collection
    * before it is considered sweepable.
-   * @property {Function} [getComparisonTimestamp='e => e?.createdTimestamp'] A function that takes an entry, key,
+   * @property {Function} [getComparisonTimestamp=e => e?.createdTimestamp] A function that takes an entry, key,
    * and the collection and returns a timestamp to compare against in order to determine the lifetime of the entry.
    * @property {Function} [excludeFromSweep=() => false] A function that takes an entry, key, and the collection
    * and returns a boolean, `true` when the entry should not be checked for sweepability.

@@ -243,7 +243,7 @@ class ShardingManager extends EventEmitter {
    * Evaluates a script on all shards, or a given shard, in the context of the {@link Client}s.
    * @param {Function} script JavaScript to run on each shard
    * @param {BroadcastEvalOptions} [options={}] The options for the broadcast
-   * @returns {Promise<(*|Array<*>)>} Results of the script execution
+   * @returns {Promise<*|Array<*>>} Results of the script execution
    */
   broadcastEval(script, options = {}) {
     if (typeof script !== 'function') return Promise.reject(new TypeError('SHARDING_INVALID_EVAL_BROADCAST'));
@@ -254,7 +254,7 @@ class ShardingManager extends EventEmitter {
    * Fetches a client property value of each shard, or a given shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @param {number} [shard] Shard to fetch property from, all if undefined
-   * @returns {Promise<(*|Array<*>)>}
+   * @returns {Promise<*|Array<*>>}
    * @example
    * manager.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
@@ -269,7 +269,7 @@ class ShardingManager extends EventEmitter {
    * @param {string} method Method name to run on each shard
    * @param {Array<*>} args Arguments to pass through to the method call
    * @param {number} [shard] Shard to run on, all if undefined
-   * @returns {Promise<(*|Array<*>)>} Results of the method execution
+   * @returns {Promise<*|Array<*>>} Results of the method execution
    * @private
    */
   _performOnShards(method, args, shard) {
