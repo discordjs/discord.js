@@ -25,7 +25,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 
-**Node.js 14.6.0 or newer is required.**  
+**Node.js 16.6.0 or newer is required.**  
 
 ```sh-session
 npm install discord.js
@@ -72,7 +72,7 @@ const rest = new REST({ version: '9' }).setToken('token');
 Afterwards we can create a quite simple example bot:
 ```js
 const { Client, Intents } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
