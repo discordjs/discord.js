@@ -277,9 +277,9 @@ class ThreadChannel extends Channel {
   async edit(data, reason) {
     if (data.autoArchiveDuration === 'MAX') {
       data.autoArchiveDuration = 1440;
-      if (this.guild.premiumSubscriptionCount >= 15) {
+      if (this.channel.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
         data.autoArchiveDuration = 10080;
-      } else if (this.guild.premiumSubscriptionCount >= 2) {
+      } else if (this.channel.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
         data.autoArchiveDuration = 4320;
       }
     }
@@ -327,14 +327,6 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setAutoArchiveDuration(autoArchiveDuration, reason) {
-    if (autoArchiveDuration === 'MAX') {
-      autoArchiveDuration = 1440;
-      if (this.guild.premiumSubscriptionCount >= 15) {
-        autoArchiveDuration = 10080;
-      } else if (this.guild.premiumSubscriptionCount >= 2) {
-        autoArchiveDuration = 4320;
-      }
-    }
     return this.edit({ autoArchiveDuration }, reason);
   }
 

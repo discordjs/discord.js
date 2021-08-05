@@ -122,9 +122,9 @@ class ThreadManager extends CachedManager {
     }
     if (autoArchiveDuration === 'MAX') {
       autoArchiveDuration = 1440;
-      if (this.channel.guild.premiumSubscriptionCount >= 15) {
+      if (this.channel.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
         autoArchiveDuration = 10080;
-      } else if (this.channel.guild.premiumSubscriptionCount >= 2) {
+      } else if (this.channel.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
         autoArchiveDuration = 4320;
       }
     }
