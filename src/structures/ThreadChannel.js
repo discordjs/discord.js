@@ -276,13 +276,12 @@ class ThreadChannel extends Channel {
    */
   async edit(data, reason) {
     if (data.autoArchiveDuration === 'MAX') {
-      let maxAutoArchiveDuration = 1440;
+      data.autoArchiveDuration = 1440;
       if (this.guild.premiumSubscriptionCount >= 15) {
-        maxAutoArchiveDuration = 10080;
+        data.autoArchiveDuration = 10080;
       } else if (this.guild.premiumSubscriptionCount >= 2) {
-        maxAutoArchiveDuration = 4320;
+        data.autoArchiveDuration = 4320;
       }
-      data.autoArchiveDuration = maxAutoArchiveDuration;
     }
     const newData = await this.client.api.channels(this.id).patch({
       data: {
@@ -329,13 +328,12 @@ class ThreadChannel extends Channel {
    */
   setAutoArchiveDuration(autoArchiveDuration, reason) {
     if (autoArchiveDuration === 'MAX') {
-      let maxAutoArchiveDuration = 1440;
+      autoArchiveDuration = 1440;
       if (this.guild.premiumSubscriptionCount >= 15) {
-        maxAutoArchiveDuration = 10080;
+        autoArchiveDuration = 10080;
       } else if (this.guild.premiumSubscriptionCount >= 2) {
-        maxAutoArchiveDuration = 4320;
+        autoArchiveDuration = 4320;
       }
-      autoArchiveDuration = maxAutoArchiveDuration;
     }
     return this.edit({ autoArchiveDuration }, reason);
   }

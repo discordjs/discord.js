@@ -67,7 +67,7 @@ class ThreadManager extends CachedManager {
    * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
    * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
    * * `'MAX'` Based on the guilds boost count
-   * @typedef {number | string} ThreadAutoArchiveDuration
+   * @typedef {number|string} ThreadAutoArchiveDuration
    */
 
   /**
@@ -121,13 +121,12 @@ class ThreadManager extends CachedManager {
       resolvedType = typeof type === 'string' ? ChannelTypes[type] : type ?? resolvedType;
     }
     if (autoArchiveDuration === 'MAX') {
-      let maxAutoArchiveDuration = 1440;
+      autoArchiveDuration = 1440;
       if (this.channel.guild.premiumSubscriptionCount >= 15) {
-        maxAutoArchiveDuration = 10080;
+        autoArchiveDuration = 10080;
       } else if (this.channel.guild.premiumSubscriptionCount >= 2) {
-        maxAutoArchiveDuration = 4320;
+        autoArchiveDuration = 4320;
       }
-      autoArchiveDuration = maxAutoArchiveDuration;
     }
 
     const data = await path.threads.post({
