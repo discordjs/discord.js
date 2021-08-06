@@ -410,7 +410,7 @@ class Message extends Base {
    * @readonly
    */
   get thread() {
-    return this.channel?.threads.resolve(this.id) ?? null;
+    return this.channel?.threads?.resolve(this.id) ?? null;
   }
 
   /**
