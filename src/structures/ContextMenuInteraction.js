@@ -2,7 +2,7 @@
 
 const BaseCommandInteraction = require('./BaseCommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { ApplicationCommandOptionTypes } = require('../util/Constants');
+const { ApplicationCommandOptionTypes, ApplicationCommandTypes } = require('../util/Constants');
 
 /**
  * Represents a context menu interaction.
@@ -12,7 +12,7 @@ class ContextMenuInteraction extends BaseCommandInteraction {
   constructor(client, data) {
     super(client, data);
     /**
-     * The target of the interaction, parsed into an option
+     * The target of the interaction, parsed into options
      * @type {CommandInteractionOptionResolver}
      */
     this.options = new CommandInteractionOptionResolver(this.client, this.resolveContextMenuOptions(data.data));
@@ -22,6 +22,12 @@ class ContextMenuInteraction extends BaseCommandInteraction {
      * @type {Snowflake}
      */
     this.targetId = data.data.target_id;
+
+    /**
+     * The type of the target of the interaction; either USER or MESSAGE
+     * @type {ApplicationCommandType}
+     */
+    this.targetType = ApplicationCommandTypes[data.data.type];
   }
 
   /**

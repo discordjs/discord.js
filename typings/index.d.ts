@@ -582,6 +582,7 @@ export class CommandInteractionOptionResolver {
 export class ContextMenuInteraction extends BaseCommandInteraction {
   public options: CommandInteractionOptionResolver;
   public targetId: Snowflake;
+  public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption[];
 }
 
