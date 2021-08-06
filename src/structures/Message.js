@@ -41,7 +41,7 @@ class Message extends Base {
      * The id of the guild the message was sent in, if any
      * @type {?Snowflake}
      */
-    this.guildId = data.guild_id ?? null;
+    this.guildId = data.guild_id ?? this.channel?.guild?.id ?? null;
 
     /**
      * Whether this message has been deleted
@@ -390,7 +390,7 @@ class Message extends Base {
    * @readonly
    */
   get guild() {
-    return this.client.guilds.resolve(this.guildId);
+    return this.client.guilds.resolve(this.guildId) ?? this.channel?.guild ?? null;
   }
 
   /**
