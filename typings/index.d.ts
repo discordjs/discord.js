@@ -1855,7 +1855,7 @@ export class Util extends null {
   public static archivedThreadSweepFilter<K, V>(lifetime?: number): SweepFilter<K, V>;
   public static basename(path: string, ext?: string): string;
   public static binaryToId(num: string): Snowflake;
-  public static cleanContent(str: string, channel: Channel): string;
+  public static cleanContent(str: string, channel: TextBasedChannels): string;
   public static removeMentions(str: string): string;
   public static cloneObject(obj: unknown): unknown;
   public static delayFor(ms: number): Promise<void>;
