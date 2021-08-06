@@ -15,7 +15,7 @@ const { TypeError } = require('../errors/DJSError.js');
 /**
  * Options for defining the behavior of a LimitedCollection
  * @typedef {Object} LimitedCollectionOptions
- * @property {?number} [maxSize=0] The maximum size of the Collection
+ * @property {?number} [maxSize=Infinity] The maximum size of the Collection
  * @property {?Function} [keepOverLimit=null] A function, which is passed the value and key of an entry, ran to decide
  * to keep an entry past the maximum size
  * @property {?SweepFilter} [sweepFilter=null] A function ran every `sweepInterval` to determine how to sweep

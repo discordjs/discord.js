@@ -18,7 +18,11 @@ let cacheWarningEmitted = false;
 class GuildChannelManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildChannel, iterable);
-    if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
+    const defaultCaching =
+      this._cache.constructor.name === 'Collection' ||
+      ((this._cache.maxSize === undefined || this._cache.maxSize === Infinity) &&
+        (this._cache.sweepFilter === undefined || this._cache.sweepFilter.isDefault));
+    if (!cacheWarningEmitted && !defaultCaching) {
       cacheWarningEmitted = true;
       process.emitWarning(
         `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,

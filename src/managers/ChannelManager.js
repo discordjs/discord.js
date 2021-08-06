@@ -13,7 +13,11 @@ let cacheWarningEmitted = false;
 class ChannelManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Channel, iterable);
-    if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
+    const defaultCaching =
+      this._cache.constructor.name === 'Collection' ||
+      ((this._cache.maxSize === undefined || this._cache.maxSize === Infinity) &&
+        (this._cache.sweepFilter === undefined || this._cache.sweepFilter.isDefault));
+    if (!cacheWarningEmitted && !defaultCaching) {
       cacheWarningEmitted = true;
       process.emitWarning(
         `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,

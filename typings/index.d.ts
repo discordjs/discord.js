@@ -1852,6 +1852,7 @@ export class UserFlags extends BitField<UserFlagsString> {
 
 export class Util extends null {
   private constructor();
+  public static archivedThreadSweepFilter<K, V>(lifetime?: number): SweepFilter<K, V>;
   public static basename(path: string, ext?: string): string;
   public static binaryToId(num: string): Snowflake;
   public static cleanContent(str: string, channel: Channel): string;

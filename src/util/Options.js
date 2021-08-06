@@ -104,12 +104,17 @@ class Options extends null {
       shardCount: 1,
       makeCache: this.cacheWithLimits({
         MessageManager: 200,
+        ChannelManager: {
+          sweepInterval: 3600,
+          sweepFilter: require('./Util').archivedThreadSweepFilter(),
+        },
+        GuildChannelManager: {
+          sweepInterval: 3600,
+          sweepFilter: require('./Util').archivedThreadSweepFilter(),
+        },
         ThreadManager: {
           sweepInterval: 3600,
-          sweepFilter: require('./LimitedCollection').filterByLifetime({
-            getComparisonTimestamp: e => e.archiveTimestamp,
-            excludeFromSweep: e => !e.archived,
-          }),
+          sweepFilter: require('./Util').archivedThreadSweepFilter(),
         },
       }),
       messageCacheLifetime: 0,
@@ -154,6 +159,7 @@ class Options extends null {
    * @returns {CacheFactory}
    * @example
    * // Store up to 200 messages per channel and discard archived threads if they were archived more than 4 hours ago.
+   * // Note archived threads will remain in the guild and client caches with these settings
    * Options.cacheWithLimits({
    *    MessageManager: 200,
    *    ThreadManager: {
