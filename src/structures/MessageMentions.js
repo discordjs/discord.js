@@ -71,6 +71,7 @@ class MessageMentions {
         this.roles = new Collection();
         const guild = message.guild;
         for (const mention of roles) {
+          if (!guild) break;
           const role = guild.roles.cache.get(mention);
           if (role) this.roles.set(role.id, role);
         }

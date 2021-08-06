@@ -304,7 +304,7 @@ class Message extends Base {
     }
 
     if (data.referenced_message) {
-      this.channel?.messages._add(data.referenced_message);
+      this.channel?.messages._add({ guild_id: data.message_reference?.guild_id, ...data.referenced_message });
     }
 
     /**
