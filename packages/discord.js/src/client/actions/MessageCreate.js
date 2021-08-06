@@ -4,8 +4,6 @@ const process = require('node:process');
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
 
-let deprecationEmitted = false;
-
 class MessageCreateAction extends Action {
   handle(data) {
     const client = this.client;
@@ -24,17 +22,6 @@ class MessageCreateAction extends Action {
        * @param {Message} message The created message
        */
       client.emit(Events.MESSAGE_CREATE, message);
-
-      /**
-       * Emitted whenever a message is created.
-       * @event Client#message
-       * @param {Message} message The created message
-       * @deprecated Use {@link Client#event:messageCreate} instead
-       */
-      if (client.emit('message', message) && !deprecationEmitted) {
-        deprecationEmitted = true;
-        process.emitWarning('The message event is deprecated. Use messageCreate instead', 'DeprecationWarning');
-      }
 
       return { message };
     }
