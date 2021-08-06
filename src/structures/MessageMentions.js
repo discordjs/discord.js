@@ -59,19 +59,18 @@ class MessageMentions {
       this.users = new Collection();
     }
 
-    if (roles) {
-      if (roles instanceof Collection) {
-        /**
-         * Any roles that were mentioned
-         * <info>Order as received from the API, not as they appear in the message content</info>
-         * @type {Collection<Snowflake, Role>}
-         */
-        this.roles = new Collection(roles);
-      } else {
-        this.roles = new Collection();
-        const guild = message.guild;
+    if (roles instanceof Collection) {
+      /**
+       * Any roles that were mentioned
+       * <info>Order as received from the API, not as they appear in the message content</info>
+       * @type {Collection<Snowflake, Role>}
+       */
+      this.roles = new Collection(roles);
+    } else if (roles) {
+      this.roles = new Collection();
+      const guild = message.guild;
+      if (guild) {
         for (const mention of roles) {
-          if (!guild) break;
           const role = guild.roles.cache.get(mention);
           if (role) this.roles.set(role.id, role);
         }
