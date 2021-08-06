@@ -10,7 +10,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v14
+      - name: Install Node v16
         uses: actions/setup-node@v2
         with:
           node-version: 16
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v14
+      - name: Install Node v16
         uses: actions/setup-node@v2
         with:
           node-version: 16
@@ -46,7 +46,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v14
+      - name: Install Node v16
         uses: actions/setup-node@v2
         with:
           node-version: 16
@@ -67,7 +67,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v14
+      - name: Install Node v16
         uses: actions/setup-node@v2
         with:
           node-version: 16
