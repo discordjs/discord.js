@@ -378,13 +378,8 @@ class GuildMemberManager extends CachedManager {
     query,
     time = 120e3,
     nonce = SnowflakeUtil.generate(),
-    force = false,
   } = {}) {
     return new Promise((resolve, reject) => {
-      if (!query && !limit && !presences && !user_ids && !force) {
-        resolve(this.cache);
-        return;
-      }
       if (!query && !user_ids) query = '';
       if (nonce.length > 32) throw new RangeError('MEMBER_FETCH_NONCE_LENGTH');
       this.guild.shard.send({
@@ -399,20 +394,19 @@ class GuildMemberManager extends CachedManager {
         },
       });
       const fetchedMembers = new Collection();
-      const option = Boolean(query || limit || presences || user_ids);
       let i = 0;
       const handler = (members, _, chunk) => {
         timeout.refresh();
         if (chunk.nonce !== nonce) return;
         i++;
         for (const member of members.values()) {
-          if (option || force) fetchedMembers.set(member.id, member);
+          fetchedMembers.set(member.id, member);
         }
-        if ((option && members.size < 1000) || (limit && fetchedMembers.size >= limit) || i === chunk.count) {
+        if (members.size < 1000 || (limit && fetchedMembers.size >= limit) || i === chunk.count) {
           clearTimeout(timeout);
           this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
           this.client.decrementMaxListeners();
-          let fetched = option || force ? fetchedMembers : this.cache;
+          let fetched = fetchedMembers;
           if (user_ids && !Array.isArray(user_ids) && fetched.size) fetched = fetched.first();
           resolve(fetched);
         }
