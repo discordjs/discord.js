@@ -1,6 +1,5 @@
 'use strict';
 
-const Channel = require('./Channel');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const { WebhookTypes } = require('../util/Constants');
@@ -167,15 +166,13 @@ class Webhook {
     }
 
     const { data, files } = await messagePayload.resolveFiles();
-    return this.client.api
-      .webhooks(this.id, this.token)
-      .post({
-        data,
-        files,
-        query: { thread_id: messagePayload.options.threadId, wait: true },
-        auth: false,
-      })
-      .then(d => this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? d);
+    const d = await this.client.api.webhooks(this.id, this.token).post({
+      data,
+      files,
+      query: { thread_id: messagePayload.options.threadId, wait: true },
+      auth: false,
+    });
+    return this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? d;
   }
 
   /**
@@ -196,17 +193,15 @@ class Webhook {
    * }).catch(console.error);
    * @see {@link https://api.slack.com/messaging/webhooks}
    */
-  sendSlackMessage(body) {
+  async sendSlackMessage(body) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
-    return this.client.api
-      .webhooks(this.id, this.token)
-      .slack.post({
-        query: { wait: true },
-        auth: false,
-        data: body,
-      })
-      .then(data => data.toString() === 'ok');
+    const data = await this.client.api.webhooks(this.id, this.token).slack.post({
+      query: { wait: true },
+      auth: false,
+      data: body,
+    });
+    return data.toString() === 'ok';
   }
 
   /**
@@ -214,7 +209,7 @@ class Webhook {
    * @typedef {Object} WebhookEditData
    * @property {string} [name=this.name] The new name for the webhook
    * @property {BufferResolvable} [avatar] The new avatar for the webhook
-   * @property {ChannelResolvable} [channel] The new channel for the webhook
+   * @property {GuildTextChannelResolvable} [channel] The new channel for the webhook
    */
 
   /**
@@ -227,7 +222,7 @@ class Webhook {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    if (channel) channel = channel instanceof Channel ? channel.id : channel;
+    if (channel) channel = channel?.id ?? channel;
     const data = await this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,

@@ -1,8 +1,8 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
 const GuildPreviewEmoji = require('./GuildPreviewEmoji');
-const Collection = require('../util/Collection');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -140,14 +140,10 @@ class GuildPreview extends Base {
    * Fetches this guild.
    * @returns {Promise<GuildPreview>}
    */
-  fetch() {
-    return this.client.api
-      .guilds(this.id)
-      .preview.get()
-      .then(data => {
-        this._patch(data);
-        return this;
-      });
+  async fetch() {
+    const data = await this.client.api.guilds(this.id).preview.get();
+    this._patch(data);
+    return this;
   }
 
   /**

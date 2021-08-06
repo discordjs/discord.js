@@ -25,7 +25,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 
-**Node.js 14.0.0 or newer is required.**  
+**Node.js 16.6.0 or newer is required.**  
 
 ```sh-session
 npm install discord.js
@@ -41,17 +41,48 @@ npm install discord.js
 
 ## Example usage
 
+First, we need to register a slash command against the Discord API:
+```js
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+
+const commands = [{
+  name: 'ping',
+  description: 'Replies with Pong!'
+}]; 
+
+const rest = new REST({ version: '9' }).setToken('token');
+
+(async () => {
+  try {
+    console.log('Started refreshing application (/) commands.');
+
+    await rest.put(
+      Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
+      { body: commands },
+    );
+
+    console.log('Successfully reloaded application (/) commands.');
+  } catch (error) {
+    console.error(error);
+  }
+})();
+```
+
+Afterwards we can create a quite simple example bot:
 ```js
 const { Client, Intents } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('messageCreate', message => {
-  if (message.content === 'ping') {
-    message.channel.send('pong');
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isCommand()) return;
+
+  if (interaction.commandName === 'ping') {
+    await interaction.reply('Pong!');
   }
 });
 
@@ -62,8 +93,8 @@ client.login('token');
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 - [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
-- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable  
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html), including updated and removed items in the library.
+- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
+  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
 - [Discord.js Discord server](https://discord.gg/djs)
 - [Discord API Discord server](https://discord.gg/discord-api)
 - [GitHub](https://github.com/discordjs/discord.js)

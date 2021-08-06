@@ -1,9 +1,9 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
 const Invite = require('../structures/Invite');
-const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 
 /**

@@ -34,15 +34,15 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
 /**
  * Options for static Image URLs.
  * @typedef {Object} StaticImageURLOptions
- * @property {string} [format] One of `webp`, `png`, `jpg`, `jpeg`, `gif`. If no format is provided,
- * defaults to `webp`
+ * @property {string} [format='webp'] One of `webp`, `png`, `jpg`, `jpeg`.
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
  */
 
+// https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints
 exports.Endpoints = {
   CDN(root) {
     return {
-      Emoji: (emojiId, format = 'png') => `${root}/emojis/${emojiId}.${format}`,
+      Emoji: (emojiId, format = 'webp') => `${root}/emojis/${emojiId}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
       Avatar: (userId, hash, format = 'webp', size, dynamic = false) => {
@@ -262,6 +262,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * STAGE_INSTANCE_DELETE
  * * GUILD_STICKERS_UPDATE
  * @typedef {string} WSEventType
+ * @see {@link https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events}
  */
 exports.WSEvents = keyMirror([
   'READY',
@@ -332,6 +333,7 @@ exports.WSEvents = keyMirror([
  * * `gdm.join`: allows joining the user to a group dm
  * * `webhook.incoming`: generates a webhook to a channel
  * @typedef {string} InviteScope
+ * @see {@link https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes}
  */
 exports.InviteScopes = [
   'applications.builds.read',
@@ -356,7 +358,7 @@ exports.InviteScopes = [
  * * CALL
  * * CHANNEL_NAME_CHANGE
  * * CHANNEL_ICON_CHANGE
- * * PINS_ADD
+ * * CHANNEL_PINNED_MESSAGE
  * * GUILD_MEMBER_JOIN
  * * USER_PREMIUM_GUILD_SUBSCRIPTION
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
@@ -373,6 +375,7 @@ exports.InviteScopes = [
  * * THREAD_STARTER_MESSAGE
  * * GUILD_INVITE_REMINDER
  * @typedef {string} MessageType
+ * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-types}
  */
 exports.MessageTypes = [
   'DEFAULT',
@@ -381,7 +384,7 @@ exports.MessageTypes = [
   'CALL',
   'CHANNEL_NAME_CHANGE',
   'CHANNEL_ICON_CHANGE',
-  'PINS_ADD',
+  'CHANNEL_PINNED_MESSAGE',
   'GUILD_MEMBER_JOIN',
   'USER_PREMIUM_GUILD_SUBSCRIPTION',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1',
@@ -413,7 +416,7 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(
 
 /**
  * <info>Bots cannot set a `CUSTOM` activity type, it is only for custom statuses received from users</info>
- * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
+ * The type of an activity of a user's presence. Here are the available types:
  * * PLAYING
  * * STREAMING
  * * LISTENING
@@ -421,6 +424,7 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(
  * * CUSTOM
  * * COMPETING
  * @typedef {string} ActivityType
+ * @see {@link https://discord.com/developers/docs/game-sdk/activities#data-models-activitytype-enum}
  */
 exports.ActivityTypes = createEnum(['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM', 'COMPETING']);
 
@@ -439,6 +443,7 @@ exports.ActivityTypes = createEnum(['PLAYING', 'STREAMING', 'LISTENING', 'WATCHI
  * * `GUILD_STAGE_VOICE` - a guild stage voice channel
  * * `UNKNOWN` - a generic channel of unknown type, could be Channel or GuildChannel
  * @typedef {string} ChannelType
+ * @see {@link https://discord.com/developers/docs/resources/channel#channel-object-channel-types}
  */
 exports.ChannelTypes = createEnum([
   'GUILD_TEXT',
@@ -455,6 +460,15 @@ exports.ChannelTypes = createEnum([
   'GUILD_PRIVATE_THREAD',
   'GUILD_STAGE_VOICE',
 ]);
+
+/**
+ * The channels that are text-based.
+ * * DMChannel
+ * * TextChannel
+ * * NewsChannel
+ * * ThreadChannel
+ * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel} TextBasedChannels
+ */
 
 /**
  * The types of channels that are text-based. The available types are:
@@ -536,6 +550,7 @@ exports.Colors = {
  * * MEMBERS_WITHOUT_ROLES
  * * ALL_MEMBERS
  * @typedef {string} ExplicitContentFilterLevel
+ * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-explicit-content-filter-level}
  */
 exports.ExplicitContentFilterLevels = createEnum(['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL_MEMBERS']);
 
@@ -547,6 +562,7 @@ exports.ExplicitContentFilterLevels = createEnum(['DISABLED', 'MEMBERS_WITHOUT_R
  * * HIGH
  * * VERY_HIGH
  * @typedef {string} VerificationLevel
+ * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-verification-level}
  */
 exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH']);
 
@@ -579,6 +595,8 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * UNKNOWN_STORE_DIRECTORY_LAYOUT
  * * UNKNOWN_REDISTRIBUTABLE
  * * UNKNOWN_GIFT_CODE
+ * * UNKNOWN_STREAM
+ * * UNKNOWN_PREMIUM_SERVER_SUBSCRIBE_COOLDOWN
  * * UNKNOWN_GUILD_TEMPLATE
  * * UNKNOWN_DISCOVERABLE_SERVER_CATEGORY
  * * UNKNOWN_STICKER
@@ -588,6 +606,8 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * UNKNOWN_STAGE_INSTANCE
  * * UNKNOWN_GUILD_MEMBER_VERIFICATION_FORM
  * * UNKNOWN_GUILD_WELCOME_SCREEN
+ * * UNKNOWN_GUILD_SCHEDULED_EVENT
+ * * UNKNOWN_GUILD_SCHEDULED_EVENT_USER
  * * BOT_PROHIBITED_ENDPOINT
  * * BOT_ONLY_ENDPOINT
  * * CANNOT_SEND_EXPLICIT_CONTENT
@@ -660,6 +680,8 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * INVALID_OPERATION_ON_ARCHIVED_THREAD
  * * INVALID_THREAD_NOTIFICATION_SETTINGS
  * * PARAMETER_EARLIER_THAN_CREATION
+ * * GUILD_NOT_AVAILABLE_IN_LOCATION
+ * * GUILD_MONETIZATION_REQUIRED
  * * TWO_FACTOR_REQUIRED
  * * NO_USERS_WITH_DISCORDTAG_EXIST
  * * REACTION_BLOCKED
@@ -670,6 +692,7 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * MAXIMUM_ACTIVE_THREADS
  * * MAXIMUM_ACTIVE_ANNOUCEMENT_THREAD
  * @typedef {string} APIError
+ * @see {@link https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes}
  */
 exports.APIErrors = {
   UNKNOWN_ACCOUNT: 10001,
@@ -699,6 +722,8 @@ exports.APIErrors = {
   UNKNOWN_STORE_DIRECTORY_LAYOUT: 10033,
   UNKNOWN_REDISTRIBUTABLE: 10036,
   UNKNOWN_GIFT_CODE: 10038,
+  UNKNOWN_STREAM: 10049,
+  UNKNOWN_PREMIUM_SERVER_SUBSCRIBE_COOLDOWN: 10050,
   UNKNOWN_GUILD_TEMPLATE: 10057,
   UNKNOWN_DISCOVERABLE_SERVER_CATEGORY: 10059,
   UNKNOWN_STICKER: 10060,
@@ -708,6 +733,8 @@ exports.APIErrors = {
   UNKNOWN_STAGE_INSTANCE: 10067,
   UNKNOWN_GUILD_MEMBER_VERIFICATION_FORM: 10068,
   UNKNOWN_GUILD_WELCOME_SCREEN: 10069,
+  UNKNOWN_GUILD_SCHEDULED_EVENT: 10070,
+  UNKNOWN_GUILD_SCHEDULED_EVENT_USER: 10071,
   BOT_PROHIBITED_ENDPOINT: 20001,
   BOT_ONLY_ENDPOINT: 20002,
   CANNOT_SEND_EXPLICIT_CONTENT: 20009,
@@ -783,6 +810,8 @@ exports.APIErrors = {
   INVALID_OPERATION_ON_ARCHIVED_THREAD: 50083,
   INVALID_THREAD_NOTIFICATION_SETTINGS: 50084,
   PARAMETER_EARLIER_THAN_CREATION: 50085,
+  GUILD_NOT_AVAILABLE_IN_LOCATION: 50095,
+  GUILD_MONETIZATION_REQUIRED: 50097,
   TWO_FACTOR_REQUIRED: 60003,
   NO_USERS_WITH_DISCORDTAG_EXIST: 80004,
   REACTION_BLOCKED: 90001,
@@ -806,6 +835,7 @@ exports.APIErrors = {
  * * ALL_MESSAGES
  * * ONLY_MENTIONS
  * @typedef {string} DefaultMessageNotificationLevel
+ * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-default-message-notification-level}
  */
 exports.DefaultMessageNotificationLevels = createEnum(['ALL_MESSAGES', 'ONLY_MENTIONS']);
 
@@ -814,6 +844,7 @@ exports.DefaultMessageNotificationLevels = createEnum(['ALL_MESSAGES', 'ONLY_MEN
  * * INVITED
  * * ACCEPTED
  * @typedef {string} MembershipState
+ * @see {@link https://discord.com/developers/docs/topics/teams#data-models-membership-state-enum}
  */
 exports.MembershipStates = createEnum([null, 'INVITED', 'ACCEPTED']);
 
@@ -821,15 +852,18 @@ exports.MembershipStates = createEnum([null, 'INVITED', 'ACCEPTED']);
  * The value set for a webhook's type:
  * * Incoming
  * * Channel Follower
+ * * Application
  * @typedef {string} WebhookType
+ * @see {@link https://discord.com/developers/docs/resources/webhook#webhook-object-webhook-types}
  */
-exports.WebhookTypes = createEnum([null, 'Incoming', 'Channel Follower']);
+exports.WebhookTypes = createEnum([null, 'Incoming', 'Channel Follower', 'Application']);
 
 /**
  * The value set for a sticker's type:
  * * STANDARD
  * * GUILD
  * @typedef {string} StickerType
+ * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-object-sticker-types}
  */
 exports.StickerTypes = createEnum([null, 'STANDARD', 'GUILD']);
 
@@ -839,6 +873,7 @@ exports.StickerTypes = createEnum([null, 'STANDARD', 'GUILD']);
  * * APNG
  * * LOTTIE
  * @typedef {string} StickerFormatType
+ * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-object-sticker-format-types}
  */
 exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE']);
 
@@ -847,9 +882,11 @@ exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE']);
  * * role
  * * member
  * @typedef {string} OverwriteType
+ * @see {@link https://discord.com/developers/docs/resources/channel#overwrite-object-overwrite-structure}
  */
 exports.OverwriteTypes = createEnum(['role', 'member']);
 
+/* eslint-disable max-len */
 /**
  * The type of an {@link ApplicationCommandOption} object:
  * * SUB_COMMAND
@@ -863,6 +900,7 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
  * * MENTIONABLE
  * * NUMBER
  * @typedef {string} ApplicationCommandOptionType
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#application-command-object-application-command-option-type}
  */
 exports.ApplicationCommandOptionTypes = createEnum([
   null,
@@ -883,6 +921,7 @@ exports.ApplicationCommandOptionTypes = createEnum([
  * * ROLE
  * * USER
  * @typedef {string} ApplicationCommandPermissionType
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#application-command-permissions-object-application-command-permission-type}
  */
 exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 
@@ -892,6 +931,7 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * * APPLICATION_COMMAND
  * * MESSAGE_COMPONENT
  * @typedef {string} InteractionType
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-object-interaction-request-type}
  */
 exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND', 'MESSAGE_COMPONENT']);
 
@@ -903,6 +943,7 @@ exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND', 'MES
  * * DEFERRED_MESSAGE_UPDATE
  * * UPDATE_MESSAGE
  * @typedef {string} InteractionResponseType
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-callback-type}
  */
 exports.InteractionResponseTypes = createEnum([
   null,
@@ -914,6 +955,7 @@ exports.InteractionResponseTypes = createEnum([
   'DEFERRED_MESSAGE_UPDATE',
   'UPDATE_MESSAGE',
 ]);
+/* eslint-enable max-len */
 
 /**
  * The type of a message component
@@ -921,6 +963,7 @@ exports.InteractionResponseTypes = createEnum([
  * * BUTTON
  * * SELECT_MENU
  * @typedef {string} MessageComponentType
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
  */
 exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU']);
 
@@ -932,6 +975,7 @@ exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELEC
  * * DANGER
  * * LINK
  * @typedef {string} MessageButtonStyle
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#button-object-button-styles}
  */
 exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'LINK']);
 
@@ -940,6 +984,7 @@ exports.MessageButtonStyles = createEnum([null, 'PRIMARY', 'SECONDARY', 'SUCCESS
  * * NONE
  * * ELEVATED
  * @typedef {string} MFALevel
+ * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-mfa-level}
  */
 exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
 
@@ -950,6 +995,7 @@ exports.MFALevels = createEnum(['NONE', 'ELEVATED']);
  * * SAFE
  * * AGE_RESTRICTED
  * @typedef {string} NSFWLevel
+ * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-nsfw-level}
  */
 exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED']);
 
@@ -958,6 +1004,7 @@ exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED'
  * * PUBLIC
  * * GUILD_ONLY
  * @typedef {string} PrivacyLevel
+ * @see {@link https://discord.com/developers/docs/resources/stage-instance#stage-instance-object-privacy-level}
  */
 exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 
@@ -968,6 +1015,7 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
  * * TIER_2
  * * TIER_3
  * @typedef {string} PremiumTier
+ * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-premium-tier}
  */
 exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
 

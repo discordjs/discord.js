@@ -12,6 +12,14 @@ const client = new Client({
   makeCache: Options.cacheWithLimits({
     MessageManager: 10,
     PresenceManager: 10,
+    UserManager: {
+      maxSize: 1,
+      keepOverLimit: v => v.id === client.user.id,
+    },
+    GuildMemberManager: {
+      maxSize: 1,
+      keepOverLimit: v => v.id === client.user.id,
+    },
   }),
 });
 

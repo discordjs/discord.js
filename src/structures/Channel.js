@@ -9,7 +9,7 @@ let StoreChannel;
 let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
-const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
+const { ChannelTypes, ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -110,12 +110,20 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is text-based
-   * ({@link TextChannel}, {@link DMChannel}, {@link NewsChannel} or {@link ThreadChannel}).
+   * Indicates whether this channel is {@link TextBasedChannels text-based}.
    * @returns {boolean}
    */
   isText() {
     return 'messages' in this;
+  }
+
+  /**
+   * Indicates whether this channel is voice-based
+   * ({@link VoiceChannel} or {@link StageChannel}).
+   * @returns {boolean}
+   */
+  isVoice() {
+    return VoiceBasedChannelTypes.includes(this.type);
   }
 
   /**

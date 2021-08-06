@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const RequestHandler = require('./RequestHandler');
 const { Error } = require('../errors');
-const Collection = require('../util/Collection');
 const { Endpoints } = require('../util/Constants');
 
 class RESTManager {

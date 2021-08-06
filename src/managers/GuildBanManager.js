@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const GuildBan = require('../structures/GuildBan');
 const GuildMember = require('../structures/GuildMember');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for GuildBans and stores their cache.
@@ -62,7 +62,7 @@ class GuildBanManager extends CachedManager {
   /**
    * Fetches ban(s) from Discord.
    * @param {UserResolvable|FetchBanOptions|FetchBansOptions} [options] Options for fetching guild ban(s)
-   * @returns {Promise<GuildBan>|Promise<Collection<Snowflake, GuildBan>>}
+   * @returns {Promise<GuildBan|Collection<Snowflake, GuildBan>>}
    * @example
    * // Fetch all bans from a guild
    * guild.bans.fetch()
@@ -135,7 +135,7 @@ class GuildBanManager extends CachedManager {
    * @example
    * // Ban a user by id (or with a user/guild member object)
    * guild.bans.create('84484653687267328')
-   *   .then(user => console.log(`Banned ${user.username ?? user.id ?? user} from ${guild.name}`))
+   *   .then(banInfo => console.log(`Banned ${banInfo.user?.tag ?? banInfo.tag ?? banInfo}`))
    *   .catch(console.error);
    */
   async create(user, options = { days: 0 }) {
