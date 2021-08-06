@@ -661,7 +661,7 @@ client.on('messageCreate', async message => {
   });
 });
 
-client.on('interaction', async interaction => {
+client.on('interactionCreate', async interaction => {
   expectType<Snowflake | null>(interaction.guildId);
   expectType<Snowflake | null>(interaction.channelId);
   expectType<GuildMember | APIInteractionGuildMember | null>(interaction.member);
