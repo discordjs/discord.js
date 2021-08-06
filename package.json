@@ -50,7 +50,6 @@
     "@discordjs/form-data": "^3.0.1",
     "@sapphire/async-queue": "^1.1.4",
     "@types/ws": "^7.4.7",
-    "abort-controller": "^3.0.0",
     "discord-api-types": "^0.22.0",
     "node-fetch": "^2.6.1",
     "ws": "^7.5.1"
