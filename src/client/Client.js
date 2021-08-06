@@ -173,17 +173,6 @@ class Client extends BaseClient {
      * @type {?Date}
      */
     this.readyAt = null;
-
-    if (this.options.messageSweepInterval > 0) {
-      process.emitWarning(
-        'The message sweeping client options are deprecated, use the makeCache option with LimitedCollection instead.',
-        'DeprecationWarning',
-      );
-      this.sweepMessageInterval = setInterval(
-        this.sweepMessages.bind(this),
-        this.options.messageSweepInterval * 1_000,
-      ).unref();
-    }
   }
 
   /**
@@ -268,8 +257,6 @@ class Client extends BaseClient {
 
     for (const fn of this._cleanups) fn();
     this._cleanups.clear();
-
-    if (this.sweepMessageInterval) clearInterval(this.sweepMessageInterval);
 
     this.ws.destroy();
     this.token = null;
@@ -378,48 +365,6 @@ class Client extends BaseClient {
     } catch {
       this.emit(Events.DEBUG, `Garbage collection failed on ${name ?? 'an unknown item'}.`);
     }
-  }
-
-  /**
-   * Sweeps all text-based channels' messages and removes the ones older than the max message lifetime.
-   * If the message has been edited, the time of the edit is used rather than the time of the original message.
-   * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}
-   * @returns {number} Amount of messages that were removed from the caches,
-   * or -1 if the message cache lifetime is unlimited
-   * @example
-   * // Remove all messages older than 1800 seconds from the messages cache
-   * const amount = client.sweepMessages(1800);
-   * console.log(`Successfully removed ${amount} messages from the cache.`);
-   */
-  sweepMessages(lifetime = this.options.messageCacheLifetime) {
-    if (typeof lifetime !== 'number' || isNaN(lifetime)) {
-      throw new TypeError('INVALID_TYPE', 'lifetime', 'number');
-    }
-    if (lifetime <= 0) {
-      this.emit(Events.DEBUG, "Didn't sweep messages - lifetime is unlimited");
-      return -1;
-    }
-
-    const lifetimeMs = lifetime * 1_000;
-    const now = Date.now();
-    let channels = 0;
-    let messages = 0;
-
-    for (const channel of this.channels.cache.values()) {
-      if (!channel.messages) continue;
-      channels++;
-
-      messages += channel.messages.cache.sweep(
-        message => now - (message.editedTimestamp ?? message.createdTimestamp) > lifetimeMs,
-      );
-    }
-
-    this.emit(
-      Events.DEBUG,
-      `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`,
-    );
-    return messages;
   }
 
   /**
@@ -554,12 +499,6 @@ class Client extends BaseClient {
     if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
     if (typeof options.makeCache !== 'function') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'makeCache', 'a function');
-    }
-    if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'The messageCacheLifetime', 'a number');
-    }
-    if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
     }
     if (typeof options.invalidRequestWarningInterval !== 'number' || isNaN(options.invalidRequestWarningInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'invalidRequestWarningInterval', 'a number');

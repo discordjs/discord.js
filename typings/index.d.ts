@@ -3542,10 +3542,6 @@ export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
   makeCache?: CacheFactory;
-  /** @deprecated Use `makeCache` with a `LimitedCollection` for `MessageManager` instead. */
-  messageCacheLifetime?: number;
-  /** @deprecated Use `makeCache` with a `LimitedCollection` for `MessageManager` instead. */
-  messageSweepInterval?: number;
   allowedMentions?: MessageMentionOptions;
   invalidRequestWarningInterval?: number;
   partials?: PartialTypes[];
