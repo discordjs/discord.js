@@ -182,6 +182,7 @@ class Guild extends AnonymousGuild {
      * * TICKETED_EVENTS_ENABLED
      * * MONETIZATION_ENABLED
      * * MORE_STICKERS
+     * * THREADS_ENABLED
      * * THREE_DAY_THREAD_ARCHIVE
      * * SEVEN_DAY_THREAD_ARCHIVE
      * * PRIVATE_THREADS
