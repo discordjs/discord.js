@@ -102,21 +102,7 @@ class Options extends null {
   static createDefault() {
     return {
       shardCount: 1,
-      makeCache: this.cacheWithLimits({
-        MessageManager: 200,
-        ChannelManager: {
-          sweepInterval: 3600,
-          sweepFilter: require('./Util').archivedThreadSweepFilter(),
-        },
-        GuildChannelManager: {
-          sweepInterval: 3600,
-          sweepFilter: require('./Util').archivedThreadSweepFilter(),
-        },
-        ThreadManager: {
-          sweepInterval: 3600,
-          sweepFilter: require('./Util').archivedThreadSweepFilter(),
-        },
-      }),
+      makeCache: this.cacheWithLimits(this.defaultMakeCacheSettings),
       messageCacheLifetime: 0,
       messageSweepInterval: 0,
       invalidRequestWarningInterval: 0,
@@ -173,6 +159,9 @@ class Options extends null {
    * @example
    * // Sweep messages every 5 minutes, removing messages that have not been edited or created in the last 30 minutes
    * Options.cacheWithLimits({
+   *   // Keep default thread sweeping behavior
+   *   ...Options.defaultMakeCacheSettings,
+   *   // Override MessageManager
    *   MessageManager: {
    *     sweepInterval: 300,
    *     sweepFilter: LimitedCollection.filterByLifetime({
@@ -220,6 +209,35 @@ class Options extends null {
   static cacheEverything() {
     const { Collection } = require('@discordjs/collection');
     return () => new Collection();
+  }
+
+  /**
+   * The default settings passed to {@link Options.cacheWithLimits}.
+   * The caches that this changes are:
+   * * `MessageManager` - Limit to 200 messages
+   * * `ChannelManager` - Sweep archived threads
+   * * `GuildChannelManager` - Sweep archived threads
+   * * `ThreadManager` - Sweep archived threads
+   * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
+   * `makeCache: Options.cacheWithLimits({ ...Options.defaultmakeCacheSettings, ReactionManager: 0 })`</info>
+   * @type {Object<string, LimitedCollectionOptions|number>}
+   */
+  static get defaultMakeCacheSettings() {
+    return {
+      MessageManager: 200,
+      ChannelManager: {
+        sweepInterval: 3600,
+        sweepFilter: require('./Util').archivedThreadSweepFilter(),
+      },
+      GuildChannelManager: {
+        sweepInterval: 3600,
+        sweepFilter: require('./Util').archivedThreadSweepFilter(),
+      },
+      ThreadManager: {
+        sweepInterval: 3600,
+        sweepFilter: require('./Util').archivedThreadSweepFilter(),
+      },
+    };
   }
 }
 
