@@ -381,7 +381,7 @@ class GuildMemberManager extends CachedManager {
     force = false,
   } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids && !force) {
+      if (!query && !limit && !presences && !user_ids && !force) {
         resolve(this.cache);
         return;
       }
@@ -406,18 +406,13 @@ class GuildMemberManager extends CachedManager {
         if (chunk.nonce !== nonce) return;
         i++;
         for (const member of members.values()) {
-          if (option) fetchedMembers.set(member.id, member);
+          if (option || force) fetchedMembers.set(member.id, member);
         }
-        if (
-          this.guild.memberCount <= this.cache.size ||
-          (option && members.size < 1000) ||
-          (limit && fetchedMembers.size >= limit) ||
-          i === chunk.count
-        ) {
+        if ((option && members.size < 1000) || (limit && fetchedMembers.size >= limit) || i === chunk.count) {
           clearTimeout(timeout);
           this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
           this.client.decrementMaxListeners();
-          let fetched = option ? fetchedMembers : this.cache;
+          let fetched = option || force ? fetchedMembers : this.cache;
           if (user_ids && !Array.isArray(user_ids) && fetched.size) fetched = fetched.first();
           resolve(fetched);
         }
