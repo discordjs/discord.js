@@ -20,7 +20,7 @@ class DataResolver extends null {
    */
 
   /**
-   * Data that can be resolved to give an template code. This can be:
+   * Data that can be resolved to give a template code. This can be:
    * * A template code
    * * A template URL
    * @typedef {string} GuildTemplateResolvable

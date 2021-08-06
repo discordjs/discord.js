@@ -37,7 +37,7 @@ const Util = require('../util/Util');
 /**
  * Represents a guild (or a server) on Discord.
  * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
- * check this with `guild.available`.</info>
+ * check this with {@link Guild#available}.</info>
  * @extends {AnonymousGuild}
  */
 class Guild extends AnonymousGuild {
@@ -172,21 +172,21 @@ class Guild extends AnonymousGuild {
      * * FEATURABLE
      * * INVITE_SPLASH
      * * MEMBER_VERIFICATION_GATE_ENABLED
-     * * MONETIZATION_ENABLED
-     * * MORE_STICKERS
      * * NEWS
      * * PARTNERED
      * * PREVIEW_ENABLED
-     * * PRIVATE_THREADS
-     * * RELAY_ENABLED
-     * * SEVEN_DAY_THREAD_ARCHIVE
-     * * THREE_DAY_THREAD_ARCHIVE
-     * * TICKETED_EVENTS_ENABLED
      * * VANITY_URL
      * * VERIFIED
      * * VIP_REGIONS
      * * WELCOME_SCREEN_ENABLED
+     * * TICKETED_EVENTS_ENABLED
+     * * MONETIZATION_ENABLED
+     * * MORE_STICKERS
+     * * THREE_DAY_THREAD_ARCHIVE
+     * * SEVEN_DAY_THREAD_ARCHIVE
+     * * PRIVATE_THREADS
      * @typedef {string} Features
+     * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-features}
      */
 
     /**
@@ -337,7 +337,8 @@ class Guild extends AnonymousGuild {
 
     /**
      * The preferred locale of the guild, defaults to `en-US`
-     * @type {string}
+     * @type {?string}
+     * @see {@link https://discord.com/developers/docs/dispatch/field-values#predefined-field-values-accepted-locales}
      */
     this.preferredLocale = data.preferred_locale;
 

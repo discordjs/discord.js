@@ -97,6 +97,7 @@ class Invite extends Base {
      * * 1: STREAM
      * * 2: EMBEDDED_APPLICATION
      * @typedef {number} TargetType
+     * @see {@link https://discord.com/developers/docs/resources/invite#invite-object-invite-target-types}
      */
 
     /**

@@ -25,7 +25,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 
-**Node.js 14.6.0 or newer is required.**  
+**Node.js 16.6.0 or newer is required.**  
 
 ```sh-session
 npm install discord.js
@@ -54,25 +54,25 @@ const commands = [{
 const rest = new REST({ version: '9' }).setToken('token');
 
 (async () => {
-    try {
-      console.log('Started refreshing application (/) commands.');
-    
-      await rest.put(
-        Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
-        { body: commands },
-      );
-    
-      console.log('Successfully reloaded application (/) commands.');
-    } catch (error) {
-      console.error(error);
-    }
+  try {
+    console.log('Started refreshing application (/) commands.');
+
+    await rest.put(
+      Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
+      { body: commands },
+    );
+
+    console.log('Successfully reloaded application (/) commands.');
+  } catch (error) {
+    console.error(error);
+  }
 })();
 ```
 
 Afterwards we can create a quite simple example bot:
 ```js
 const { Client, Intents } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
