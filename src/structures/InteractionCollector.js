@@ -128,7 +128,7 @@ class InteractionCollector extends Collector {
    */
   collect(interaction) {
     /**
-     * Emitted whenever a interaction is collected.
+     * Emitted whenever an interaction is collected.
      * @event InteractionCollector#collect
      * @param {Interaction} interaction The interaction that was collected
      */
