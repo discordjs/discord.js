@@ -34,5 +34,5 @@ assignees: ''
 Remove the comment and fill out the commit hash if this applies to you:
 (While it's not a requirement to test your issue on the main branch, it would make fixing the problem a lot easier for us, so please do so if possible.)
 
-- I have also tested the issue on latest main commit hash: `xxx`
+- I have also tested the issue on latest main; Commit hash: `xxx`
 -->
