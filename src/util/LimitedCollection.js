@@ -8,7 +8,7 @@ const { TypeError } = require('../errors/DJSError.js');
  * @typedef {Function} SweepFilter
  * @param {LimitedCollection} collection The collection being swept
  * @returns {Function|null} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
- * See {@link [Collection#sweep](https://discord.js.org/#/docs/collection/master/class/Collection?scrollTo=sweep)}
+ * See {@link [Collection#sweep](https://discord.js.org/#/docs/collection/main/class/Collection?scrollTo=sweep)}
  * for the definition of this function.
  */
 
