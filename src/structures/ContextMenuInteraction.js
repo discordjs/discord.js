@@ -18,7 +18,7 @@ class ContextMenuInteraction extends BaseCommandInteraction {
     this.options = new CommandInteractionOptionResolver(this.client, this.resolveContextMenuOptions(data.data));
 
     /**
-     * The target of the interaction
+     * The id of the target of the interaction
      * @type {Snowflake}
      */
     this.targetId = data.data.target_id;
