@@ -13,7 +13,6 @@ class ApplicationCommand extends Base {
   constructor(client, data, guild, guildId) {
     super(client);
 
-    console.log(data);
     /**
      * The command's id
      * @type {Snowflake}
