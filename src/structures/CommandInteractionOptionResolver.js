@@ -134,7 +134,7 @@ class CommandInteractionOptionResolver {
    * Gets a channel option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(GuildChannel|APIInteractionDataResolvedChannel)}
+   * @returns {?(GuildChannel|APIInteractionDataResolvedOption)}
    * The value of the option, or null if not set and not required.
    */
   getChannel(name, required = false) {
@@ -190,7 +190,7 @@ class CommandInteractionOptionResolver {
    * Gets a member option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(GuildMember|APIInteractionDataResolvedGuildMember)}
+   * @returns {?(GuildMember|APIInteractionDataResolvedOption)}
    * The value of the option, or null if not set and not required.
    */
   getMember(name, required = false) {
@@ -213,7 +213,7 @@ class CommandInteractionOptionResolver {
    * Gets a mentionable option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(User|GuildMember|APIInteractionDataResolvedGuildMember|Role|APIRole)}
+   * @returns {?(User|GuildMember|APIInteractionDataResolvedOption|Role|APIRole)}
    * The value of the option, or null if not set and not required.
    */
   getMentionable(name, required = false) {
