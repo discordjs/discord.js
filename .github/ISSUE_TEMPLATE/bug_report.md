@@ -3,7 +3,7 @@
 name: Bug report
 about: Report incorrect or unexpected behavior of discord.js
 title: ''
-labels: 's: unverified, type: bug'
+labels: 'bug, need repro'
 assignees: ''
 ---
 <!-- Use Discord for questions: https://discord.gg/djs -->
