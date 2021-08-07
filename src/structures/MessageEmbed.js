@@ -44,13 +44,14 @@ class MessageEmbed {
   setup(data, skipValidation) {
     /**
      * The type of this embed, either:
-     * * `rich` - a rich embed
+     * * `rich` - a generic embed rendered from embed attributes
      * * `image` - an image embed
      * * `video` - a video embed
-     * * `gifv` - a gifv embed
+     * * `gifv` - an animated gif image embed rendered as a video embed
      * * `article` - an article embed
      * * `link` - a link embed
      * @type {string}
+     * @see {@link https://discord.com/developers/docs/resources/channel#embed-object-embed-types}
      * @deprecated
      */
     this.type = data.type ?? 'rich';
@@ -299,6 +300,16 @@ class MessageEmbed {
   }
 
   /**
+   * Sets the embed's fields (max 25).
+   * @param {...EmbedFieldData|EmbedFieldData[]} fields The fields to set
+   * @returns {MessageEmbed}
+   */
+  setFields(...fields) {
+    this.spliceFields(0, this.fields.length, fields);
+    return this;
+  }
+
+  /**
    * Sets the author of this embed.
    * @param {string} name The name of the author
    * @param {string} [iconURL] The icon URL of the author
@@ -420,7 +431,7 @@ class MessageEmbed {
   }
 
   /**
-   * Normalizes field input and resolves strings.
+   * Normalizes field input and verifies strings.
    * @param {string} name The name of the field
    * @param {string} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline

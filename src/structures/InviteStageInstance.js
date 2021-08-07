@@ -1,7 +1,7 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
-const Collection = require('../util/Collection');
 
 /**
  * Represents the data about a public {@link StageInstance} in an {@link Invite}.

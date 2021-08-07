@@ -1,7 +1,7 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Collector = require('./interfaces/Collector');
-const Collection = require('../util/Collection');
 const { Events } = require('../util/Constants');
 
 /**
@@ -176,7 +176,7 @@ class ReactionCollector extends Collector {
    * @returns {void}
    */
   _handleChannelDeletion(channel) {
-    if (channel.id === this.message.channel.id) {
+    if (channel.id === this.message.channelId) {
       this.stop('channelDelete');
     }
   }

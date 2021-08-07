@@ -3,13 +3,19 @@ import {
   ApplicationCommandData,
   ApplicationCommandManager,
   ApplicationCommandResolvable,
+  CacheFactory,
+  Caches,
   CategoryChannel,
   Client,
   ClientApplication,
   ClientUser,
   Collection,
+  CommandInteraction,
+  CommandInteractionOption,
+  CommandInteractionOptionResolver,
   Constants,
   DMChannel,
+  Guild,
   GuildApplicationCommandManager,
   GuildChannelManager,
   GuildEmoji,
@@ -18,16 +24,20 @@ import {
   GuildResolvable,
   Intents,
   Interaction,
+  LimitedCollection,
   Message,
   MessageActionRow,
   MessageAttachment,
   MessageButton,
   MessageCollector,
   MessageEmbed,
+  MessageManager,
   MessageReaction,
   NewsChannel,
   Options,
+  PartialDMChannel,
   PartialTextBasedChannelFields,
+  PartialUser,
   Permissions,
   ReactionCollector,
   Role,
@@ -39,16 +49,29 @@ import {
   StageChannel,
   StoreChannel,
   TextBasedChannelFields,
+  TextBasedChannels,
   TextChannel,
   ThreadChannel,
+  Typing,
   User,
   VoiceChannel,
-} from '..';
+} from '.';
 
 const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
   makeCache: Options.cacheWithLimits({
     MessageManager: 200,
+    // @ts-expect-error
+    Message: 100,
+    ThreadManager: {
+      maxSize: 1000,
+      keepOverLimit: (x: ThreadChannel) => x.id === '123',
+      sweepInterval: 5000,
+      sweepFilter: LimitedCollection.filterByLifetime({
+        getComparisonTimestamp: (x: ThreadChannel) => x.archiveTimestamp ?? 0,
+        excludeFromSweep: (x: ThreadChannel) => !x.archived,
+      }),
+    },
   }),
 });
 
@@ -389,6 +412,9 @@ client.on('ready', async () => {
   });
 });
 
+// This is to check that stuff is the right type
+declare const assertIsPromiseMember: (m: Promise<GuildMember>) => void;
+
 client.on('guildCreate', g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
@@ -396,6 +422,32 @@ client.on('guildCreate', g => {
   channel.setName('foo').then(updatedChannel => {
     console.log(`New channel name: ${updatedChannel.name}`);
   });
+
+  // @ts-expect-error no options
+  assertIsPromiseMember(g.members.add(testUserId));
+
+  // @ts-expect-error no access token
+  assertIsPromiseMember(g.members.add(testUserId, {}));
+
+  // @ts-expect-error invalid role resolvable
+  assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', roles: [g.roles.cache] }));
+
+  assertType<Promise<GuildMember | null>>(
+    g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', fetchWhenExisting: false }),
+  );
+
+  assertIsPromiseMember(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken' }));
+
+  assertIsPromiseMember(
+    g.members.add(testUserId, {
+      accessToken: 'totallyRealAccessToken',
+      mute: true,
+      deaf: false,
+      roles: [g.roles.cache.first()!],
+      force: true,
+      fetchWhenExisting: true,
+    }),
+  );
 });
 
 client.on('messageReactionRemoveAll', async message => {
@@ -607,13 +659,22 @@ assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch()
 assertType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 assertType<Promise<GuildEmoji | null>>(guildEmojiManager.fetch('0'));
 
-// Test partials structures
-client.on('typingStart', (channel, user) => {
-  if (channel.partial) assertType<undefined>(channel.lastMessageId);
-  if (user.partial) return assertType<null>(user.username);
-  assertType<string>(user.username);
-});
+declare const typing: Typing;
+assertType<PartialUser>(typing.user);
+if (typing.user.partial) assertType<null>(typing.user.username);
 
+assertType<TextBasedChannels>(typing.channel);
+if (typing.channel.partial) assertType<undefined>(typing.channel.lastMessageId);
+
+assertType<GuildMember | null>(typing.member);
+assertType<Guild | null>(typing.guild);
+
+if (typing.inGuild()) {
+  assertType<Guild>(typing.channel.guild);
+  assertType<Guild>(typing.guild);
+}
+
+// Test partials structures
 client.on('guildMemberRemove', member => {
   if (member.partial) return assertType<null>(member.joinedAt);
   assertType<Date | null>(member.joinedAt);
@@ -631,4 +692,33 @@ client.on('messageReactionAdd', async reaction => {
 
 // Test interactions
 declare const interaction: Interaction;
+declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
+
+client.on('interactionCreate', async interaction => {
+  if (interaction.isCommand()) {
+    assertType<CommandInteraction>(interaction);
+    assertType<CommandInteractionOptionResolver>(interaction.options);
+    assertType<readonly CommandInteractionOption[]>(interaction.options.data);
+
+    const optionalOption = interaction.options.get('name');
+    const requiredOption = interaction.options.get('name', true);
+    assertType<CommandInteractionOption | null>(optionalOption);
+    assertType<CommandInteractionOption>(requiredOption);
+    assertType<CommandInteractionOption[] | undefined>(requiredOption.options);
+
+    assertType<string | null>(interaction.options.getString('name', booleanValue));
+    assertType<string | null>(interaction.options.getString('name', false));
+    assertType<string>(interaction.options.getString('name', true));
+
+    assertType<string>(interaction.options.getSubcommand());
+    assertType<string>(interaction.options.getSubcommand(true));
+    assertType<string | null>(interaction.options.getSubcommand(booleanValue));
+    assertType<string | null>(interaction.options.getSubcommand(false));
+
+    assertType<string>(interaction.options.getSubcommandGroup());
+    assertType<string>(interaction.options.getSubcommandGroup(true));
+    assertType<string | null>(interaction.options.getSubcommandGroup(booleanValue));
+    assertType<string | null>(interaction.options.getSubcommandGroup(false));
+  }
+});

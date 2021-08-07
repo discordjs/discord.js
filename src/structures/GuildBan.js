@@ -41,8 +41,7 @@ class GuildBan extends Base {
   }
 
   /**
-   * Whether this GuildBan is a partial
-   * If the reason is not provided the value is null
+   * Whether this GuildBan is partial. If the reason is not provided the value is null
    * @type {boolean}
    * @readonly
    */
@@ -52,10 +51,10 @@ class GuildBan extends Base {
 
   /**
    * Fetches this GuildBan.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<GuildBan>}
    */
-  fetch(force = false) {
+  fetch(force = true) {
     return this.guild.bans.fetch({ user: this.user, cache: true, force });
   }
 }

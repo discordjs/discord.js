@@ -1,9 +1,9 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -74,13 +74,11 @@ class ThreadMemberManager extends CachedManager {
    * @param {string} [reason] The reason for adding this member
    * @returns {Promise<Snowflake>}
    */
-  add(member, reason) {
+  async add(member, reason) {
     const id = member === '@me' ? member : this.client.users.resolveId(member);
-    if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'member', 'UserResolvable'));
-    return this.client.api
-      .channels(this.thread.id, 'thread-members', id)
-      .put({ reason })
-      .then(() => id);
+    if (!id) throw new TypeError('INVALID_TYPE', 'member', 'UserResolvable');
+    await this.client.api.channels(this.thread.id, 'thread-members', id).put({ reason });
+    return id;
   }
 
   /**
@@ -89,11 +87,9 @@ class ThreadMemberManager extends CachedManager {
    * @param {string} [reason] The reason for removing this member from the thread
    * @returns {Promise<Snowflake>}
    */
-  remove(id, reason) {
-    return this.client.api
-      .channels(this.thread.id, 'thread-members', id)
-      .delete({ reason })
-      .then(() => id);
+  async remove(id, reason) {
+    await this.client.api.channels(this.thread.id, 'thread-members', id).delete({ reason });
+    return id;
   }
 
   /**

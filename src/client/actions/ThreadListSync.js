@@ -1,7 +1,7 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Action = require('./Action');
-const Collection = require('../../util/Collection');
 const { Events } = require('../../util/Constants');
 
 class ThreadListSyncAction extends Action {

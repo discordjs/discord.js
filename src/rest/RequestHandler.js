@@ -71,10 +71,10 @@ class RequestHandler {
 
   globalDelayFor(ms) {
     return new Promise(resolve => {
-      this.manager.client.setTimeout(() => {
+      setTimeout(() => {
         this.manager.globalDelay = null;
         resolve();
-      }, ms);
+      }, ms).unref();
     });
   }
 
@@ -188,7 +188,7 @@ class RequestHandler {
 
       this.reset = reset || resetAfter ? calculateReset(reset, resetAfter, serverDate) : Date.now();
 
-      // https://github.com/discordapp/discord-api-docs/issues/182
+      // https://github.com/discord/discord-api-docs/issues/182
       if (!resetAfter && request.route.includes('reactions')) {
         this.reset = new Date(serverDate).getTime() - getAPIOffset(serverDate) + 250;
       }

@@ -1,9 +1,9 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
 const Invite = require('../structures/Invite');
-const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 
 /**
@@ -23,7 +23,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * The cache of this Manager
-   * @type {Collection<Snowflake, Invite>}
+   * @type {Collection<string, Invite>}
    * @name GuildInviteManager#cache
    */
 
@@ -74,7 +74,7 @@ class GuildInviteManager extends CachedManager {
   /**
    * Fetches invite(s) from Discord.
    * @param {InviteResolvable|FetchInviteOptions|FetchInvitesOptions} [options] Options for fetching guild invite(s)
-   * @returns {Promise<Invite|Collection<Snowflake, Invite>>}
+   * @returns {Promise<Invite|Collection<string, Invite>>}
    * @example
    * // Fetch all invites from a guild
    * guild.invites.fetch()
@@ -146,8 +146,8 @@ class GuildInviteManager extends CachedManager {
     return data.reduce((col, invite) => col.set(invite.code, this._add(invite, cache)), new Collection());
   }
 
-  async _fetchChannelMany(channelID, cache) {
-    const data = await this.client.api.channels(channelID).invites.get();
+  async _fetchChannelMany(channelId, cache) {
+    const data = await this.client.api.channels(channelId).invites.get();
     return data.reduce((col, invite) => col.set(invite.code, this._add(invite, cache)), new Collection());
   }
 

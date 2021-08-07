@@ -118,14 +118,14 @@ class PermissionOverwrites extends Base {
 
     for (const [perm, value] of Object.entries(options)) {
       if (value === true) {
-        allow.add(Permissions.FLAGS[perm]);
-        deny.remove(Permissions.FLAGS[perm]);
+        allow.add(perm);
+        deny.remove(perm);
       } else if (value === false) {
-        allow.remove(Permissions.FLAGS[perm]);
-        deny.add(Permissions.FLAGS[perm]);
+        allow.remove(perm);
+        deny.add(perm);
       } else if (value === null) {
-        allow.remove(Permissions.FLAGS[perm]);
-        deny.remove(Permissions.FLAGS[perm]);
+        allow.remove(perm);
+        deny.remove(perm);
       }
     }
 
@@ -135,14 +135,16 @@ class PermissionOverwrites extends Base {
   /**
    * The raw data for a permission overwrite
    * @typedef {Object} RawOverwriteData
-   * @property {Snowflake} id The id of the overwrite
+   * @property {Snowflake} id The id of the {@link Role} or {@link User} this overwrite belongs to
    * @property {string} allow The permissions to allow
    * @property {string} deny The permissions to deny
    * @property {number} type The type of this OverwriteData
    */
 
   /**
-   * Data that can be resolved into {@link RawOverwriteData}
+   * Data that can be resolved into {@link RawOverwriteData}. This can be:
+   * * PermissionOverwrites
+   * * OverwriteData
    * @typedef {PermissionOverwrites|OverwriteData} OverwriteResolvable
    */
 

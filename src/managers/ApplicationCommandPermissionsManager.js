@@ -1,8 +1,8 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const BaseManager = require('./BaseManager');
 const { Error, TypeError } = require('../errors');
-const Collection = require('../util/Collection');
 const { ApplicationCommandPermissionTypes, APIErrors } = require('../util/Constants');
 
 /**
@@ -16,6 +16,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
     /**
      * The manager or command that this manager belongs to
      * @type {ApplicationCommandManager|ApplicationCommand}
+     * @private
      */
     this.manager = manager;
 
@@ -123,7 +124,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * @typedef {BaseApplicationCommandPermissionsOptions} SetApplicationCommandPermissionsOptions
    * @param {ApplicationCommandPermissionData[]} [permissions] The new permissions for the command
    * @param {GuildApplicationCommandPermissionData[]} [fullPermissions] The new permissions for all commands
-   * in a guild <warn>When this parameter is set, permissions and command are ignored</warn>
+   * in a guild <warn>When this parameter is set, `permissions` and `command` are ignored</warn>
    */
 
   /**

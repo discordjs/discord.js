@@ -9,7 +9,7 @@ let StoreChannel;
 let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
-const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
+const { ChannelTypes, ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -102,20 +102,28 @@ class Channel extends Base {
 
   /**
    * Fetches this channel.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<Channel>}
    */
-  fetch(force = false) {
-    return this.client.channels.fetch(this.id, true, force);
+  fetch(force = true) {
+    return this.client.channels.fetch(this.id, { force });
   }
 
   /**
-   * Indicates whether this channel is text-based
-   * ({@link TextChannel}, {@link DMChannel}, {@link NewsChannel} or {@link ThreadChannel}).
+   * Indicates whether this channel is {@link TextBasedChannels text-based}.
    * @returns {boolean}
    */
   isText() {
     return 'messages' in this;
+  }
+
+  /**
+   * Indicates whether this channel is voice-based
+   * ({@link VoiceChannel} or {@link StageChannel}).
+   * @returns {boolean}
+   */
+  isVoice() {
+    return VoiceBasedChannelTypes.includes(this.type);
   }
 
   /**
@@ -126,7 +134,7 @@ class Channel extends Base {
     return ThreadChannelTypes.includes(this.type);
   }
 
-  static create(client, data, guild, allowUnknownGuild) {
+  static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
     if (!CategoryChannel) CategoryChannel = require('./CategoryChannel');
     if (!DMChannel) DMChannel = require('./DMChannel');
     if (!NewsChannel) NewsChannel = require('./NewsChannel');
@@ -176,7 +184,7 @@ class Channel extends Base {
           case ChannelTypes.GUILD_NEWS_THREAD:
           case ChannelTypes.GUILD_PUBLIC_THREAD:
           case ChannelTypes.GUILD_PRIVATE_THREAD: {
-            channel = new ThreadChannel(guild, data, client);
+            channel = new ThreadChannel(guild, data, client, fromInteraction);
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;
           }

@@ -4,6 +4,8 @@ const CachedManager = require('./CachedManager');
 const Channel = require('../structures/Channel');
 const { Events, ThreadChannelTypes } = require('../util/Constants');
 
+let cacheWarningEmitted = false;
+
 /**
  * A manager of channels belonging to a client
  * @extends {CachedManager}
@@ -11,6 +13,17 @@ const { Events, ThreadChannelTypes } = require('../util/Constants');
 class ChannelManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Channel, iterable);
+    const defaultCaching =
+      this._cache.constructor.name === 'Collection' ||
+      ((this._cache.maxSize === undefined || this._cache.maxSize === Infinity) &&
+        (this._cache.sweepFilter === undefined || this._cache.sweepFilter.isDefault));
+    if (!cacheWarningEmitted && !defaultCaching) {
+      cacheWarningEmitted = true;
+      process.emitWarning(
+        `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,
+        'UnuspportedCacheOverwriteWarning',
+      );
+    }
   }
 
   /**
@@ -19,10 +32,10 @@ class ChannelManager extends CachedManager {
    * @name ChannelManager#cache
    */
 
-  _add(data, guild, cache = true, allowUnknownGuild = false) {
+  _add(data, guild, { cache = true, allowUnknownGuild = false, fromInteraction = false } = {}) {
     const existing = this.cache.get(data.id);
     if (existing) {
-      if (cache) existing._patch(data);
+      if (cache) existing._patch(data, fromInteraction);
       guild?.channels?._add(existing);
       if (ThreadChannelTypes.includes(existing.type)) {
         existing.parent?.threads?._add(existing);
@@ -30,7 +43,7 @@ class ChannelManager extends CachedManager {
       return existing;
     }
 
-    const channel = Channel.create(this.client, data, guild, allowUnknownGuild);
+    const channel = Channel.create(this.client, data, guild, { allowUnknownGuild, fromInteraction });
 
     if (!channel) {
       this.client.emit(Events.DEBUG, `Failed to find guild, or unknown type for channel ${data.id} ${data.type}`);
@@ -99,7 +112,7 @@ class ChannelManager extends CachedManager {
     }
 
     const data = await this.client.api.channels(id).get();
-    return this._add(data, null, cache, allowUnknownGuild);
+    return this._add(data, null, { cache, allowUnknownGuild });
   }
 }
 

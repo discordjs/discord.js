@@ -1,6 +1,7 @@
 'use strict';
 
 const { parse } = require('path');
+const { Collection } = require('@discordjs/collection');
 const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
@@ -38,9 +39,9 @@ class Util extends null {
       const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
       // If it's a Collection, make the array of keys
-      if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
+      if (element instanceof Collection) out[newProp] = Array.from(element.keys());
       // If the valueOf is a Collection, use its array of keys
-      else if (valueOf instanceof require('./Collection')) out[newProp] = Array.from(valueOf.keys());
+      else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
@@ -255,24 +256,30 @@ class Util extends null {
   }
 
   /**
+   * @typedef {Object} FetchRecommendedShardsOptions
+   * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
+   * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
+   */
+
+  /**
    * Gets the recommended shard count from Discord.
    * @param {string} token Discord auth token
-   * @param {number} [guildsPerShard=1000] Number of guilds per shard
+   * @param {FetchRecommendedShardsOptions} [options] Options for fetching the recommended shard count
    * @returns {Promise<number>} The recommended number of shards
    */
-  static fetchRecommendedShards(token, guildsPerShard = 1000) {
+  static async fetchRecommendedShards(token, { guildsPerShard = 1000, multipleOf = 1 } = {}) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
     const defaults = Options.createDefault();
-    return fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
+    const response = await fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
-    })
-      .then(res => {
-        if (res.ok) return res.json();
-        if (res.status === 401) throw new DiscordError('TOKEN_INVALID');
-        throw res;
-      })
-      .then(data => data.shards * (1000 / guildsPerShard));
+    });
+    if (!response.ok) {
+      if (response.status === 401) throw new DiscordError('TOKEN_INVALID');
+      throw response;
+    }
+    const { shards } = await response.json();
+    return Math.ceil((shards * (1000 / guildsPerShard)) / multipleOf) * multipleOf;
   }
 
   /**
@@ -493,11 +500,12 @@ class Util extends null {
    * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
-  static setPosition(item, position, relative, sorted, route, reason) {
-    let updatedItems = sorted.array();
+  static async setPosition(item, position, relative, sorted, route, reason) {
+    let updatedItems = [...sorted.values()];
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
-    return route.patch({ data: updatedItems, reason }).then(() => updatedItems);
+    await route.patch({ data: updatedItems, reason });
+    return updatedItems;
   }
 
   /**
@@ -626,6 +634,21 @@ class Util extends null {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
+  }
+
+  /**
+   * Creates a sweep filter that sweeps archived threads
+   * @param {number} [lifetime=14400] How long a thread has to be archived to be valid for sweeping
+   * @returns {SweepFilter}
+   */
+  static archivedThreadSweepFilter(lifetime = 14400) {
+    const filter = require('./LimitedCollection').filterByLifetime({
+      lifetime,
+      getComparisonTimestamp: e => e.archiveTimestamp,
+      excludeFromSweep: e => !e.archived,
+    });
+    filter.isDefault = true;
+    return filter;
   }
 }
 

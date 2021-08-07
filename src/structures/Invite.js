@@ -97,6 +97,7 @@ class Invite extends Base {
      * * 1: STREAM
      * * 2: EMBEDDED_APPLICATION
      * @typedef {number} TargetType
+     * @see {@link https://discord.com/developers/docs/resources/invite#invite-object-invite-target-types}
      */
 
     /**
@@ -109,7 +110,7 @@ class Invite extends Base {
      * The channel the invite is for
      * @type {Channel}
      */
-    this.channel = this.client.channels._add(data.channel, this.guild, false);
+    this.channel = this.client.channels._add(data.channel, this.guild, { cache: false });
 
     /**
      * The timestamp the invite was created at
@@ -189,8 +190,9 @@ class Invite extends Base {
    * @param {string} [reason] Reason for deleting this invite
    * @returns {Promise<Invite>}
    */
-  delete(reason) {
-    return this.client.api.invites[this.code].delete({ reason }).then(() => this);
+  async delete(reason) {
+    await this.client.api.invites[this.code].delete({ reason });
+    return this;
   }
 
   /**

@@ -1,12 +1,15 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
+const ThreadManager = require('./ThreadManager');
 const { Error } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
-const Collection = require('../util/Collection');
 const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
+
+let cacheWarningEmitted = false;
 
 /**
  * Manages API methods for GuildChannels and stores their cache.
@@ -15,6 +18,17 @@ const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 class GuildChannelManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildChannel, iterable);
+    const defaultCaching =
+      this._cache.constructor.name === 'Collection' ||
+      ((this._cache.maxSize === undefined || this._cache.maxSize === Infinity) &&
+        (this._cache.sweepFilter === undefined || this._cache.sweepFilter.isDefault));
+    if (!cacheWarningEmitted && !defaultCaching) {
+      cacheWarningEmitted = true;
+      process.emitWarning(
+        `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,
+        'UnuspportedCacheOverwriteWarning',
+      );
+    }
 
     /**
      * The guild this Manager belongs to
@@ -86,7 +100,7 @@ class GuildChannelManager extends CachedManager {
    * @property {boolean} [nsfw] Whether the new channel is nsfw
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
    * @property {number} [userLimit] Maximum amount of users allowed in the new channel (only voice)
-   * @property {ChannelResolvable} [parent] Parent of the new channel
+   * @property {CategoryChannelResolvable} [parent] Parent of the new channel
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites of the new channel
    * @property {number} [position] Position of the new channel
@@ -149,7 +163,7 @@ class GuildChannelManager extends CachedManager {
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?GuildChannel|Collection<Snowflake, GuildChannel>>}
    * @example
-   * // Fetch all channels from the guild
+   * // Fetch all channels from the guild (excluding threads)
    * message.guild.channels.fetch()
    *   .then(channels => console.log(`There are ${channels.size} channels.`))
    *   .catch(console.error);
@@ -169,14 +183,34 @@ class GuildChannelManager extends CachedManager {
       const data = await this.client.api.channels(id).get();
       // Since this is the guild manager, throw if on a different guild
       if (this.guild.id !== data.guild_id) throw new Error('GUILD_CHANNEL_UNOWNED');
-      return this.client.channels._add(data, this.guild, cache);
+      return this.client.channels._add(data, this.guild, { cache });
     }
 
     const data = await this.client.api.guilds(this.guild.id).channels.get();
     const channels = new Collection();
-    for (const channel of data) channels.set(channel.id, this.client.channels._add(channel, this.guild, cache));
+    for (const channel of data) channels.set(channel.id, this.client.channels._add(channel, this.guild, { cache }));
     return channels;
+  }
+
+  /**
+   * Obtains all active thread channels in the guild from Discord
+   * @param {boolean} [cache=true] Whether to cache the fetched data
+   * @returns {Promise<FetchedThreads>}
+   * @example
+   * // Fetch all threads from the guild
+   * message.guild.channels.fetchActiveThreads()
+   *   .then(fetched => console.log(`There are ${fetched.threads.size} threads.`))
+   *   .catch(console.error);
+   */
+  async fetchActiveThreads(cache = true) {
+    const raw = await this.client.api.guilds(this.guild.id).threads.active.get();
+    return ThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
   }
 }
 
 module.exports = GuildChannelManager;
+
+/**
+ * @external APIActiveThreadsList
+ * @see {@link https://discord.com/developers/docs/resources/guild#list-active-threads-response-body}
+ */

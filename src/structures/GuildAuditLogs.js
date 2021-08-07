@@ -1,16 +1,17 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Integration = require('./Integration');
 const StageInstance = require('./StageInstance');
+const Sticker = require('./Sticker');
 const Webhook = require('./Webhook');
-const Collection = require('../util/Collection');
 const { OverwriteTypes, PartialTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
 /**
- * The target type of an entry, e.g. `GUILD`. Here are the available types:
+ * The target type of an entry. Here are the available types:
  * * GUILD
  * * CHANNEL
  * * USER
@@ -21,6 +22,8 @@ const Util = require('../util/Util');
  * * MESSAGE
  * * INTEGRATION
  * * STAGE_INSTANCE
+ * * STICKER
+ * * THREAD
  * @typedef {string} AuditLogTargetType
  */
 
@@ -41,6 +44,8 @@ const Targets = {
   MESSAGE: 'MESSAGE',
   INTEGRATION: 'INTEGRATION',
   STAGE_INSTANCE: 'STAGE_INSTANCE',
+  STICKER: 'STICKER',
+  THREAD: 'THREAD',
   UNKNOWN: 'UNKNOWN',
 };
 
@@ -85,7 +90,14 @@ const Targets = {
  * * STAGE_INSTANCE_CREATE: 83
  * * STAGE_INSTANCE_UPDATE: 84
  * * STAGE_INSTANCE_DELETE: 85
+ * * STICKER_CREATE: 90
+ * * STICKER_UPDATE: 91
+ * * STICKER_DELETE: 92
+ * * THREAD_CREATE: 110
+ * * THREAD_UPDATE: 111
+ * * THREAD_DELETE: 112
  * @typedef {?(number|string)} AuditLogAction
+ * @see {@link https://discord.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events}
  */
 
 /**
@@ -133,6 +145,12 @@ const Actions = {
   STAGE_INSTANCE_CREATE: 83,
   STAGE_INSTANCE_UPDATE: 84,
   STAGE_INSTANCE_DELETE: 85,
+  STICKER_CREATE: 90,
+  STICKER_UPDATE: 91,
+  STICKER_DELETE: 92,
+  THREAD_CREATE: 110,
+  THREAD_UPDATE: 111,
+  THREAD_DELETE: 112,
 };
 
 /**
@@ -141,6 +159,7 @@ const Actions = {
 class GuildAuditLogs {
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.users._add(user);
+    if (data.threads) for (const thread of data.threads) guild.client.channels._add(thread, guild);
     /**
      * Cached webhooks
      * @type {Collection<Snowflake, Webhook>}
@@ -180,9 +199,10 @@ class GuildAuditLogs {
    * Handles possible promises for entry targets.
    * @returns {Promise<GuildAuditLogs>}
    */
-  static build(...args) {
+  static async build(...args) {
     const logs = new GuildAuditLogs(...args);
-    return Promise.all(logs.entries.map(e => e.target)).then(() => logs);
+    await Promise.all(logs.entries.map(e => e.target));
+    return logs;
   }
 
   /**
@@ -197,9 +217,11 @@ class GuildAuditLogs {
    * * A message
    * * An integration
    * * A stage instance
+   * * A sticker
+   * * A thread
    * * An object with an id key if target was deleted
    * * An object where the keys represent either the new value or the old value
-   * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance)}
+   * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker)}
    * AuditLogEntryTarget
    */
 
@@ -219,6 +241,9 @@ class GuildAuditLogs {
     if (target < 80) return Targets.MESSAGE;
     if (target < 83) return Targets.INTEGRATION;
     if (target < 86) return Targets.STAGE_INSTANCE;
+    if (target < 100) return Targets.STICKER;
+    if (target < 110) return Targets.UNKNOWN;
+    if (target < 120) return Targets.THREAD;
     return Targets.UNKNOWN;
   }
 
@@ -250,6 +275,8 @@ class GuildAuditLogs {
         Actions.MESSAGE_PIN,
         Actions.INTEGRATION_CREATE,
         Actions.STAGE_INSTANCE_CREATE,
+        Actions.STICKER_CREATE,
+        Actions.THREAD_CREATE,
       ].includes(action)
     ) {
       return 'CREATE';
@@ -272,6 +299,8 @@ class GuildAuditLogs {
         Actions.MESSAGE_UNPIN,
         Actions.INTEGRATION_DELETE,
         Actions.STAGE_INSTANCE_DELETE,
+        Actions.STICKER_DELETE,
+        Actions.THREAD_DELETE,
       ].includes(action)
     ) {
       return 'DELETE';
@@ -291,6 +320,8 @@ class GuildAuditLogs {
         Actions.EMOJI_UPDATE,
         Actions.INTEGRATION_UPDATE,
         Actions.STAGE_INSTANCE_UPDATE,
+        Actions.STICKER_UPDATE,
+        Actions.THREAD_UPDATE,
       ].includes(action)
     ) {
       return 'UPDATE';
@@ -471,19 +502,17 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.INVITE) {
-      this.target = guild.members.fetch(guild.client.user.id).then(me => {
+      this.target = guild.members.fetch(guild.client.user.id).then(async me => {
         if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
           let change = this.changes.find(c => c.key === 'code');
           change = change.new ?? change.old;
-          return guild.invites.fetch().then(invites => {
-            this.target = invites.find(i => i.code === change);
-          });
+          const invites = await guild.invites.fetch();
+          this.target = invites.find(i => i.code === change) ?? null;
         } else {
           this.target = this.changes.reduce((o, c) => {
             o[c.key] = c.new ?? c.old;
             return o;
           }, {});
-          return this.target;
         }
       });
     } else if (targetType === Targets.MESSAGE) {
@@ -506,7 +535,7 @@ class GuildAuditLogsEntry {
           ),
           guild,
         );
-    } else if (targetType === Targets.CHANNEL) {
+    } else if (targetType === Targets.CHANNEL || targetType === Targets.THREAD) {
       this.target =
         guild.channels.cache.get(data.target_id) ??
         this.changes.reduce(
@@ -531,6 +560,19 @@ class GuildAuditLogsEntry {
               channel_id: data.options?.channel_id,
               guild_id: guild.id,
             },
+          ),
+        );
+    } else if (targetType === Targets.STICKER) {
+      this.target =
+        guild.stickers.cache.get(data.target_id) ??
+        new Sticker(
+          guild.client,
+          this.changes.reduce(
+            (o, c) => {
+              o[c.key] = c.new ?? c.old;
+              return o;
+            },
+            { id: data.target_id },
           ),
         );
     } else if (data.target_id) {

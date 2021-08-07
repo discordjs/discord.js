@@ -59,7 +59,7 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   get deletable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return !this.managed && this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS);
+    return !this.managed && this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS);
   }
 
   /**
@@ -80,8 +80,8 @@ class GuildEmoji extends BaseGuildEmoji {
       throw new Error('EMOJI_MANAGED');
     } else {
       if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-      if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
-        throw new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild);
+      if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) {
+        throw new Error('MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION', this.guild);
       }
     }
     const data = await this.client.api.guilds(this.guild.id).emojis(this.id).get();
@@ -107,9 +107,9 @@ class GuildEmoji extends BaseGuildEmoji {
    *   .then(e => console.log(`Edited emoji ${e}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
+  async edit(data, reason) {
     const roles = data.roles?.map(r => r.id ?? r);
-    return this.client.api
+    const newData = await this.client.api
       .guilds(this.guild.id)
       .emojis(this.id)
       .patch({
@@ -118,12 +118,10 @@ class GuildEmoji extends BaseGuildEmoji {
           roles,
         },
         reason,
-      })
-      .then(newData => {
-        const clone = this._clone();
-        clone._patch(newData);
-        return clone;
       });
+    const clone = this._clone();
+    clone._patch(newData);
+    return clone;
   }
 
   /**
@@ -141,18 +139,15 @@ class GuildEmoji extends BaseGuildEmoji {
    * @param {string} [reason] Reason for deleting the emoji
    * @returns {Promise<GuildEmoji>}
    */
-  delete(reason) {
-    return this.client.api
-      .guilds(this.guild.id)
-      .emojis(this.id)
-      .delete({ reason })
-      .then(() => this);
+  async delete(reason) {
+    await this.client.api.guilds(this.guild.id).emojis(this.id).delete({ reason });
+    return this;
   }
 
   /**
    * Whether this emoji is the same as another one.
    * @param {GuildEmoji|APIEmoji} other The emoji to compare it to
-   * @returns {boolean} Whether the emoji is equal to the given emoji or not
+   * @returns {boolean}
    */
   equals(other) {
     if (other instanceof GuildEmoji) {
