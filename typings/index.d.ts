@@ -3786,6 +3786,7 @@ export interface HTTPOptions {
 
 export interface ImageURLOptions extends StaticImageURLOptions {
   dynamic?: boolean;
+  format?: DynamicImageFormat;
 }
 
 export interface IntegrationAccount {
