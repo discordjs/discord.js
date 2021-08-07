@@ -32,13 +32,18 @@ class GuildStickerManager extends CachedManager {
   }
 
   /**
+   * Options for creating a guild sticker.
+   * @typedef {Object} GuildStickerCreateOptions
+   * @param {?string} [description] The description for the sticker
+   * @param {string} [reason] Reason for creating the sticker
+   */
+
+  /**
    * Creates a new custom sticker in the guild.
    * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} file The file for the sticker
    * @param {string} name The name for the sticker
    * @param {string} tags The Discord name of a unicode emoji representing the sticker's expression
-   * @param {Object} [options] Options
-   * @param {?string} [options.description] The description for the sticker
-   * @param {string} [options.reason] Reason for creating the sticker
+   * @param {GuildStickerCreateOptions} [options] Options
    * @returns {Promise<Sticker>} The created sticker
    * @example
    * // Create a new sticker from a url
@@ -65,13 +70,13 @@ class GuildStickerManager extends CachedManager {
 
   /**
    * Data that resolves to give a Sticker object. This can be:
-   * * An Sticker object
+   * * A Sticker object
    * * A Snowflake
    * @typedef {Sticker|Snowflake} StickerResolvable
    */
 
   /**
-   * Resolves an StickerResolvable to a Sticker object.
+   * Resolves a StickerResolvable to a Sticker object.
    * @method resolve
    * @memberof GuildStickerManager
    * @instance
@@ -80,7 +85,7 @@ class GuildStickerManager extends CachedManager {
    */
 
   /**
-   * Resolves an StickerResolvable to an Sticker id string.
+   * Resolves a StickerResolvable to a Sticker id string.
    * @method resolveId
    * @memberof GuildStickerManager
    * @instance

@@ -57,10 +57,10 @@ class Permissions extends BitField {
 
 /**
  * Numeric permission flags. All available properties:
- * * `ADMINISTRATOR` (implicitly has *all* permissions, and bypasses all channel overwrites)
  * * `CREATE_INSTANT_INVITE` (create invitations to the guild)
  * * `KICK_MEMBERS`
  * * `BAN_MEMBERS`
+ * * `ADMINISTRATOR` (implicitly has *all* permissions, and bypasses all channel overwrites)
  * * `MANAGE_CHANNELS` (edit and reorder channels)
  * * `MANAGE_GUILD` (edit the guild information, region, etc.)
  * * `ADD_REACTIONS` (add new reactions to messages)
@@ -95,7 +95,7 @@ class Permissions extends BitField {
  * * `USE_PRIVATE_THREADS`
  * * `USE_EXTERNAL_STICKERS` (use stickers from different guilds)
  * @type {Object<string, bigint>}
- * @see {@link https://discord.com/developers/docs/topics/permissions}
+ * @see {@link https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags}
  */
 Permissions.FLAGS = {
   CREATE_INSTANT_INVITE: 1n << 0n,

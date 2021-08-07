@@ -15,7 +15,7 @@ const { TypeError } = require('../errors/DJSError.js');
 /**
  * Options for defining the behavior of a LimitedCollection
  * @typedef {Object} LimitedCollectionOptions
- * @property {?number} [maxSize=0] The maximum size of the Collection
+ * @property {?number} [maxSize=Infinity] The maximum size of the Collection
  * @property {?Function} [keepOverLimit=null] A function, which is passed the value and key of an entry, ran to decide
  * to keep an entry past the maximum size
  * @property {?SweepFilter} [sweepFilter=null] A function ran every `sweepInterval` to determine how to sweep
@@ -100,11 +100,11 @@ class LimitedCollection extends Collection {
   /**
    * Options for generating a filter function based on lifetime
    * @typedef {Object} LifetimeFilterOptions
-   * @property {number} [lifetime=14400] How long an entry should stay in the collection before it is considered
-   * sweepable.
-   * @property {Function} [getComparisonTimestamp=`e => e.createdTimestamp`] A function that takes an entry, key,
+   * @property {number} [lifetime=14400] How long, in seconds, an entry should stay in the collection
+   * before it is considered sweepable.
+   * @property {Function} [getComparisonTimestamp=e => e?.createdTimestamp] A function that takes an entry, key,
    * and the collection and returns a timestamp to compare against in order to determine the lifetime of the entry.
-   * @property {Function} [excludeFromSweep=`() => false`] A function that takes an entry, key, and the collection
+   * @property {Function} [excludeFromSweep=() => false] A function that takes an entry, key, and the collection
    * and returns a boolean, `true` when the entry should not be checked for sweepability.
    */
 

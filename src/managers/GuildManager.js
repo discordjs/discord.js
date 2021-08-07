@@ -21,6 +21,8 @@ const Permissions = require('../util/Permissions');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
 const { resolveColor } = require('../util/Util');
 
+let cacheWarningEmitted = false;
+
 /**
  * Manages API methods for Guilds and stores their cache.
  * @extends {CachedManager}
@@ -28,6 +30,13 @@ const { resolveColor } = require('../util/Util');
 class GuildManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Guild, iterable);
+    if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
+      cacheWarningEmitted = true;
+      process.emitWarning(
+        `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,
+        'UnsupportedCacheOverwriteWarning',
+      );
+    }
   }
 
   /**
@@ -63,7 +72,7 @@ class GuildManager extends CachedManager {
   /**
    * Partial overwrite data.
    * @typedef {Object} PartialOverwriteData
-   * @property {Snowflake|number} id The {@link Role} or {@link User} id for this overwrite
+   * @property {Snowflake|number} id The id of the {@link Role} or {@link User} this overwrite belongs to
    * @property {string} [type] The type of this overwrite
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny

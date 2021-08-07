@@ -66,7 +66,8 @@ class ThreadManager extends CachedManager {
    * * `1440` (1 day)
    * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
    * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
-   * @typedef {number} ThreadAutoArchiveDuration
+   * * `'MAX'` Based on the guilds boost count
+   * @typedef {number|string} ThreadAutoArchiveDuration
    */
 
   /**
@@ -119,6 +120,14 @@ class ThreadManager extends CachedManager {
     } else if (this.channel.type !== 'GUILD_NEWS') {
       resolvedType = typeof type === 'string' ? ChannelTypes[type] : type ?? resolvedType;
     }
+    if (autoArchiveDuration === 'MAX') {
+      autoArchiveDuration = 1440;
+      if (this.channel.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
+        autoArchiveDuration = 10080;
+      } else if (this.channel.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
+        autoArchiveDuration = 4320;
+      }
+    }
 
     const data = await path.threads.post({
       data: {
@@ -144,7 +153,7 @@ class ThreadManager extends CachedManager {
    * @param {ThreadChannelResolvable|FetchThreadsOptions} [options] The options to fetch threads. If it is a
    * ThreadChannelResolvable then the specified thread will be fetched. Fetches all active threads if `undefined`
    * @param {BaseFetchOptions} [cacheOptions] Additional options for this fetch. <warn>The `force` field gets ignored
-   * if `options` is not a ThreadChannelResolvable</warn>
+   * if `options` is not a {@link ThreadChannelResolvable}</warn>
    * @returns {Promise<?(ThreadChannel|FetchedThreads)>}
    * @example
    * // Fetch a thread by its id

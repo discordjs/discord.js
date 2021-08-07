@@ -8,7 +8,7 @@ const Base = require('./Base');
  */
 class Typing extends Base {
   /**
-   * @param {TextChannel|DMChannel|NewsChannel|ThreadChannel} channel The channel this typing came from
+   * @param {TextBasedChannels} channel The channel this typing came from
    * @param {User} user The user that started typing
    * @param {APITypingStart} data The raw data received
    */
@@ -17,7 +17,7 @@ class Typing extends Base {
 
     /**
      * The channel the status is from
-     * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
+     * @type {TextBasedChannels}
      */
     this.channel = channel;
 

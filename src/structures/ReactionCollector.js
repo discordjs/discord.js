@@ -176,7 +176,7 @@ class ReactionCollector extends Collector {
    * @returns {void}
    */
   _handleChannelDeletion(channel) {
-    if (channel.id === this.message.channel.id) {
+    if (channel.id === this.message.channelId) {
       this.stop('channelDelete');
     }
   }

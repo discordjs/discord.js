@@ -366,6 +366,7 @@ class Client extends BaseClient {
    * @param {Function} options.cleanup The function called to GC
    * @param {string} [options.message] The message to send after a successful GC
    * @param {string} [options.name] The name of the item being GCed
+   * @private
    */
   _finalize({ cleanup, message, name }) {
     try {
@@ -608,4 +609,9 @@ module.exports = Client;
  * Emitted for general debugging information.
  * @event Client#debug
  * @param {string} info The debug information
+ */
+
+/**
+ * @external Collection
+ * @see {@link https://discord.js.org/#/docs/collection/master/class/Collection}
  */

@@ -9,6 +9,8 @@ const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 
+let cacheWarningEmitted = false;
+
 /**
  * Manages API methods for GuildChannels and stores their cache.
  * @extends {CachedManager}
@@ -16,6 +18,17 @@ const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 class GuildChannelManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildChannel, iterable);
+    const defaultCaching =
+      this._cache.constructor.name === 'Collection' ||
+      ((this._cache.maxSize === undefined || this._cache.maxSize === Infinity) &&
+        (this._cache.sweepFilter === undefined || this._cache.sweepFilter.isDefault));
+    if (!cacheWarningEmitted && !defaultCaching) {
+      cacheWarningEmitted = true;
+      process.emitWarning(
+        `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,
+        'UnsupportedCacheOverwriteWarning',
+      );
+    }
 
     /**
      * The guild this Manager belongs to

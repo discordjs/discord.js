@@ -23,9 +23,6 @@ class ApplicationFlags extends BitField {}
 
 /**
  * Numeric application flags. All available properties:
- * * `MANAGED_EMOJI`
- * * `GROUP_DM_CREATE`
- * * `RPC_HAS_CONNECTED`
  * * `GATEWAY_PRESENCE`
  * * `GATEWAY_PRESENCE_LIMITED`
  * * `GATEWAY_GUILD_MEMBERS`
@@ -33,11 +30,9 @@ class ApplicationFlags extends BitField {}
  * * `VERIFICATION_PENDING_GUILD_LIMIT`
  * * `EMBEDDED`
  * @type {Object}
+ * @see {@link https://discord.com/developers/docs/resources/application#application-object-application-flags}
  */
 ApplicationFlags.FLAGS = {
-  MANAGED_EMOJI: 1 << 2,
-  GROUP_DM_CREATE: 1 << 4,
-  RPC_HAS_CONNECTED: 1 << 11,
   GATEWAY_PRESENCE: 1 << 12,
   GATEWAY_PRESENCE_LIMITED: 1 << 13,
   GATEWAY_GUILD_MEMBERS: 1 << 14,

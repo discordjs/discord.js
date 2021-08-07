@@ -14,14 +14,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v14
+      - name: Install Node v16
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Install dependencies
-        # Remove --no-optional after Node 16 upgrade
-        run: npm ci --no-optional
+        run: npm ci
 
       - name: Build and deploy documentation
         uses: discordjs/action-docs@v1

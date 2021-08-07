@@ -58,7 +58,7 @@ class VoiceState extends Base {
      */
     this.sessionId = data.session_id ?? null;
     /**
-     * Whether this member is streaming using "Go Live"
+     * Whether this member is streaming using "Screen Share"
      * @type {boolean}
      */
     this.streaming = data.self_stream ?? false;

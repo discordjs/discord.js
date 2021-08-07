@@ -237,7 +237,8 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Fetches the owner of this thread
+   * Fetches the owner of this thread. If the thread member object isn't needed,
+   * use {@link ThreadChannel#ownerId} instead.
    * @param {FetchOwnerOptions} [options] The options for fetching the member
    * @returns {Promise<?ThreadMember>}
    */
@@ -275,11 +276,20 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   async edit(data, reason) {
+    let autoArchiveDuration = data.autoArchiveDuration;
+    if (data.autoArchiveDuration === 'MAX') {
+      autoArchiveDuration = 1440;
+      if (this.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
+        autoArchiveDuration = 10080;
+      } else if (this.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
+        autoArchiveDuration = 4320;
+      }
+    }
     const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name ?? this.name).trim(),
         archived: data.archived,
-        auto_archive_duration: data.autoArchiveDuration,
+        auto_archive_duration: autoArchiveDuration,
         rate_limit_per_user: data.rateLimitPerUser,
         locked: data.locked,
       },

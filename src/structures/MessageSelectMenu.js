@@ -96,10 +96,10 @@ class MessageSelectMenu extends BaseMessageComponent {
 
   /**
    * Sets the interactive status of the select menu
-   * @param {boolean} disabled Whether this select menu should be disabled
+   * @param {boolean} [disabled=true] Whether this select menu should be disabled
    * @returns {MessageSelectMenu}
    */
-  setDisabled(disabled) {
+  setDisabled(disabled = true) {
     this.disabled = disabled;
     return this;
   }

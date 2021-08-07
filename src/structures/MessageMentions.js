@@ -59,18 +59,19 @@ class MessageMentions {
       this.users = new Collection();
     }
 
-    if (roles) {
-      if (roles instanceof Collection) {
-        /**
-         * Any roles that were mentioned
-         * <info>Order as received from the API, not as they appear in the message content</info>
-         * @type {Collection<Snowflake, Role>}
-         */
-        this.roles = new Collection(roles);
-      } else {
-        this.roles = new Collection();
+    if (roles instanceof Collection) {
+      /**
+       * Any roles that were mentioned
+       * <info>Order as received from the API, not as they appear in the message content</info>
+       * @type {Collection<Snowflake, Role>}
+       */
+      this.roles = new Collection(roles);
+    } else if (roles) {
+      this.roles = new Collection();
+      const guild = message.guild;
+      if (guild) {
         for (const mention of roles) {
-          const role = message.channel.guild.roles.cache.get(mention);
+          const role = guild.roles.cache.get(mention);
           if (role) this.roles.set(role.id, role);
         }
       }
@@ -95,9 +96,9 @@ class MessageMentions {
     /**
      * Crossposted channel data.
      * @typedef {Object} CrosspostedChannel
-     * @property {string} channelId The mentioned channel's id
-     * @property {string} guildId The id of the guild that has the channel
-     * @property {string} type The channel's type
+     * @property {Snowflake} channelId The mentioned channel's id
+     * @property {Snowflake} guildId The id of the guild that has the channel
+     * @property {ChannelType} type The channel's type
      * @property {string} name The channel's name
      */
 
