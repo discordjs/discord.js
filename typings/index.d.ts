@@ -4430,7 +4430,7 @@ export type TextBasedChannelTypes = TextBasedChannels['type'];
 
 export type TextChannelResolvable = Snowflake | TextChannel;
 
-export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080;
+export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080 | 'MAX';
 
 export type ThreadChannelResolvable = ThreadChannel | Snowflake;
 
