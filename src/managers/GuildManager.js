@@ -34,7 +34,7 @@ class GuildManager extends CachedManager {
       cacheWarningEmitted = true;
       process.emitWarning(
         `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,
-        'UnuspportedCacheOverwriteWarning',
+        'UnsupportedCacheOverwriteWarning',
       );
     }
   }
