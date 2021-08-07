@@ -37,7 +37,7 @@ const Messages = {
     `Calculated invalid shard ${shard} for guild ${guild} with ${count} shards.`,
 
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
-  COLOR_CONVERT: 'Unable to convert color to a number.',
+  COLOR_CONVERT: 'Unable to convert color to a number!please enter a valid color.',
 
   EMBED_TITLE: 'MessageEmbed title must be a string.',
   EMBED_FIELD_NAME: 'MessageEmbed field names must be non-empty strings.',
