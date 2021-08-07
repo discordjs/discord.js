@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "13.1.0-dev",
+  "version": "13.0.1",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index.js",
   "module": "./src/index.mjs",
@@ -24,7 +24,7 @@
     "prettier": "prettier --write src/**/*.js typings/**/*.ts",
     "prepublishOnly": "npm run test && gen-esm-wrapper ./src/index.js ./src/index.mjs",
     "prepare": "is-ci || husky install",
-    "changelog": "conventional-changelog -p angular -i RELEASE_CHANGELOG.md -s"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "repository": {
     "type": "git",

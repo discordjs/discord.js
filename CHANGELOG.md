@@ -1,4 +1,14 @@
-# [13.0.0](https://github.com/discordjs/discord.js/compare/12.5.0...v13.0.0) (2021-08-06)
+## [13.0.1](https://github.com/discordjs/discord.js/compare/13.0.0...13.0.1) (2021-08-07)
+
+
+### Bug Fixes
+
+* **GuildMemberManager:** refactor fetchMany ([#6328](https://github.com/discordjs/discord.js/issues/6328)) ([909c873](https://github.com/discordjs/discord.js/commit/909c87353e24eb7947d1cabc78d9c0ee97c3902d))
+* **Message:** handle fetched messages ([#6325](https://github.com/discordjs/discord.js/issues/6325)) ([ceae596](https://github.com/discordjs/discord.js/commit/ceae5960edefc63be5f16a52e286e390c14e0d29))
+
+
+
+# [13.0.0](https://github.com/discordjs/discord.js/compare/12.5.0...13.0.0) (2021-08-06)
 
 
 ### Bug Fixes
@@ -289,7 +299,7 @@
 * stage channels ([#5456](https://github.com/discordjs/discord.js/issues/5456)) ([eec7cf7](https://github.com/discordjs/discord.js/commit/eec7cf7634653fc02ee4f94e970960174a0e6d1b))
 * stage instances ([#5749](https://github.com/discordjs/discord.js/issues/5749)) ([918921e](https://github.com/discordjs/discord.js/commit/918921e8211fc16e9b12d2502f3168264246ea22))
 * **Browser:** remove browser � ([#5113](https://github.com/discordjs/discord.js/issues/5113)) ([0a591a9](https://github.com/discordjs/discord.js/commit/0a591a96974ab8b2aef7d7b9b64ec63d0fbe4ec4))
-* **Role:** role tags ([#4628](https://github.com/discordjs/discord.js/issues/4628)) ([d6234b7](https://github.com/discordjs/discord.js/commit/d6234b764ecbf12ebc0a795429a6aa3a650f5a6c)), closes [#1](https://github.com/discordjs/discord.js/issues/1)
+* **Role:** role tags ([#4628](https://github.com/discordjs/discord.js/issues/4628)) ([d6234b7](https://github.com/discordjs/discord.js/commit/d6234b764ecbf12ebc0a795429a6aa3a650f5a6c))
 * **ShardingManager:** Allow b-Eval/fetchClientValues on a specific shard when not all are ready  ([#5222](https://github.com/discordjs/discord.js/issues/5222)) ([001676c](https://github.com/discordjs/discord.js/commit/001676c7a97f4e44c6601dd84aa0354ea94b7c25))
 * **Sticker:** added Sticker ([#4909](https://github.com/discordjs/discord.js/issues/4909)) ([026afc2](https://github.com/discordjs/discord.js/commit/026afc2c1a88bc210c973bcf235fef3484571111))
 * **Util:** allow array for StringOptions' char ([#5566](https://github.com/discordjs/discord.js/issues/5566)) ([fbcbb29](https://github.com/discordjs/discord.js/commit/fbcbb29884a35308a7af2169f5f9ae5658c458e8))
