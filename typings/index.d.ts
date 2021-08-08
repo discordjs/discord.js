@@ -2870,7 +2870,7 @@ export interface ApplicationCommandOptionData {
   description: string;
   required?: boolean;
   choices?: ApplicationCommandOptionChoice[];
-  options?: this[];
+  options?: ApplicationCommandOptionData[];
 }
 
 export interface ApplicationCommandOption extends ApplicationCommandOptionData {
