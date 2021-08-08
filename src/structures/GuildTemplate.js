@@ -205,7 +205,7 @@ class GuildTemplate extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the templates's code instead of the template object.
+   * When concatenated with a string, this automatically returns the template's code instead of the template object.
    * @returns {string}
    * @example
    * // Logs: Template: FKvmczH2HyUf
