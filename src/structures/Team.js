@@ -80,7 +80,7 @@ class Team extends Base {
   }
 
   /**
-   * A link to the teams' icon.
+   * A link to the team's icon.
    * @param {StaticImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
