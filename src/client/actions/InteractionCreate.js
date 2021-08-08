@@ -20,7 +20,7 @@ class InteractionCreateAction extends Action {
     switch (data.type) {
       case InteractionTypes.APPLICATION_COMMAND:
         switch (data.data.type) {
-          case ApplicationCommandTypes.APPLICATION_COMMAND:
+          case ApplicationCommandTypes.CHAT_INPUT:
             InteractionType = CommandInteraction;
             break;
           case ApplicationCommandTypes.USER:
