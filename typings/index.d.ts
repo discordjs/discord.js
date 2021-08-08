@@ -2141,33 +2141,42 @@ export const Constants: {
     botGateway: string;
     invite: (root: string, code: string) => string;
     CDN: (root: string) => {
-      Asset: (name: string) => string;
-      DefaultAvatar: (id: Snowflake | number) => string;
       Emoji: (emojiId: Snowflake, format: DynamicImageFormat) => string;
-      Avatar: (userId: Snowflake, hash: string, format: DynamicImageFormat, size: AllowedImageSize) => string;
-      Banner: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      Icon: (userId: Snowflake | number, hash: string, format: DynamicImageFormat, size: AllowedImageSize) => string;
-      AppIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      AppAsset: (
-        userId: Snowflake | number,
+      Asset: (name: string) => string;
+      DefaultAvatar: (discriminator: number) => string;
+      Avatar: (
+        userId: Snowflake,
         hash: string,
-        format: AllowedImageFormat,
+        format: DynamicImageFormat,
         size: AllowedImageSize,
+        dynamic: boolean,
+      ) => string;
+      Banner: (guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      Icon: (
+        guildId: Snowflake,
+        hash: string,
+        format: DynamicImageFormat,
+        size: AllowedImageSize,
+        dynamic: boolean,
+      ) => string;
+      AppIcon: (
+        appId: Snowflake,
+        hash: string,
+        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
+      ) => string;
+      AppAsset: (
+        appId: Snowflake,
+        hash: string,
+        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
       ) => string;
       StickerPackBanner: (bannerId: Snowflake, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      GDMIcon: (userId: Snowflake | number, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      Splash: (guildId: Snowflake | number, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      DiscoverySplash: (
-        guildId: Snowflake | number,
-        hash: string,
-        format: AllowedImageFormat,
-        size: AllowedImageSize,
-      ) => string;
+      GDMIcon: (channelId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      Splash: (guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      DiscoverySplash: (guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
       TeamIcon: (
-        teamId: Snowflake | number,
+        teamId: Snowflake,
         hash: string,
-        format: AllowedImageFormat,
-        size: AllowedImageSize,
+        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
       ) => string;
       Sticker: (stickerId: Snowflake, stickerFormat: StickerFormatType) => string;
     };
