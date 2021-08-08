@@ -17,7 +17,7 @@ class BaseCommandInteraction extends Interaction {
 
     /**
      * The channel this interaction was sent in
-     * @type {?(TextChannel|NewsChannel|DMChannel)}
+     * @type {?TextBasedChannels}
      * @name BaseCommandInteraction#channel
      * @readonly
      */

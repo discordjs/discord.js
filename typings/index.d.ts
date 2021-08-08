@@ -244,7 +244,7 @@ export class BaseClient extends EventEmitter {
 
 export abstract class BaseCommandInteraction extends Interaction {
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public readonly channel: TextChannel | DMChannel | NewsChannel | PartialDMChannel | ThreadChannel | null;
+  public readonly channel: TextBasedChannels | null;
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
