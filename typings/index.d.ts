@@ -3793,8 +3793,9 @@ export interface HTTPOptions {
   headers?: Record<string, string>;
 }
 
-export interface ImageURLOptions extends StaticImageURLOptions {
+export interface ImageURLOptions extends Omit<StaticImageURLOptions, 'format'> {
   dynamic?: boolean;
+  format?: DynamicImageFormat;
 }
 
 export interface IntegrationAccount {
