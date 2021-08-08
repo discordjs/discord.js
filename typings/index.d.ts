@@ -2875,7 +2875,7 @@ export interface ApplicationCommandOptionData {
 
 export interface ApplicationCommandOption extends ApplicationCommandOptionData {
   type: ApplicationCommandOptionType;
-  options?: ApplicationCommandOption[]
+  options?: ApplicationCommandOption[];
 }
 
 export interface ApplicationCommandOptionChoice {
