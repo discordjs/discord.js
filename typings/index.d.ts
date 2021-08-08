@@ -3784,10 +3784,10 @@ export interface HTTPOptions {
   headers?: Record<string, string>;
 }
 
-export type ImageURLOptions = StaticImageURLOptions & {
+export interface ImageURLOptions extends Omit<StaticImageURLOptions, 'format'> {
   dynamic?: boolean;
   format?: DynamicImageFormat;
-};
+}
 
 export interface IntegrationAccount {
   id: string | Snowflake;
