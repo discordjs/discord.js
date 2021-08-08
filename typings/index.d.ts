@@ -211,6 +211,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     Guild | null,
     Snowflake
   >;
+  public type: ApplicationCommandType;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
   public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
