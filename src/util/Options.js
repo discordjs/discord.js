@@ -219,7 +219,7 @@ class Options extends null {
    * * `GuildChannelManager` - Sweep archived threads
    * * `ThreadManager` - Sweep archived threads
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
-   * `makeCache: Options.cacheWithLimits({ ...Options.defaultmakeCacheSettings, ReactionManager: 0 })`</info>
+   * `makeCache: Options.cacheWithLimits({ ...Options.defaultMakeCacheSettings, ReactionManager: 0 })`</info>
    * @type {Object<string, LimitedCollectionOptions|number>}
    */
   static get defaultMakeCacheSettings() {
