@@ -57,10 +57,10 @@ exports.Endpoints = {
         if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/icons/${guildId}/${hash}`, { format, size });
       },
-      AppIcon: (clientId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-icons/${clientId}/${hash}`, { size, format }),
-      AppAsset: (clientId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-assets/${clientId}/${hash}`, { size, format }),
+      AppIcon: (appId, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/app-icons/${appId}/${hash}`, { size, format }),
+      AppAsset: (appId, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/app-assets/${appId}/${hash}`, { size, format }),
       StickerPackBanner: (bannerId, format = 'webp', size) =>
         makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerId}`, { size, format }),
       GDMIcon: (channelId, hash, format = 'webp', size) =>
@@ -842,7 +842,7 @@ exports.APIErrors = {
 exports.DefaultMessageNotificationLevels = createEnum(['ALL_MESSAGES', 'ONLY_MENTIONS']);
 
 /**
- * The value set for a team members's membership state:
+ * The value set for a team member's membership state:
  * * INVITED
  * * ACCEPTED
  * @typedef {string} MembershipState
@@ -1054,7 +1054,7 @@ function createEnum(keys) {
  * The value set for the explicit content filter levels for a guild.
  * @property {InteractionResponseType} InteractionResponseTypes The type of an interaction response.
  * @property {InteractionType} InteractionTypes The type of an {@link Interaction} object.
- * @property {MembershipState} MembershipStates The value set for a team members's membership state.
+ * @property {MembershipState} MembershipStates The value set for a team member's membership state.
  * @property {MessageButtonStyle} MessageButtonStyles The style of a message button.
  * @property {MessageComponentType} MessageComponentTypes The type of a message component.
  * @property {MFALevel} MFALevels The required MFA level for a guild.
