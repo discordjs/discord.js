@@ -80,9 +80,9 @@ class BaseCommandInteraction extends Interaction {
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string|number|boolean} [value] The value of the option
-   * @property {Collection<string, CommandInteractionOption>} [options] Additional options if this option is a
+   * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)
-   * @property {User} [user] The resolved user
+   * @property {User|APIUser} [user] The resolved user
    * @property {GuildMember|APIGuildMember} [member] The resolved member
    * @property {GuildChannel|APIChannel} [channel] The resolved channel
    * @property {Role|APIRole} [role] The resolved role
@@ -91,7 +91,7 @@ class BaseCommandInteraction extends Interaction {
   /**
    * Transforms an option received from the API.
    * @param {APIApplicationCommandOption} option The received option
-   * @param {APIApplicationCommandInteractionData.resolved} resolved The resolved interaction data
+   * @param {APIInteractionDataResolved} resolved The resolved interaction data
    * @returns {CommandInteractionOption}
    * @private
    */
@@ -137,11 +137,6 @@ module.exports = BaseCommandInteraction;
 
 /* eslint-disable max-len */
 /**
- * @external APIApplicationCommandOptionResolved
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-applicationcommandinteractiondataresolved}
- */
-
-/**
- * @external APIInteractionDataResolvedOption
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#sample-application-command-interaction-application-command-interaction-data-resolved-structure}
+ * @external APIInteractionDataResolved
+ * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-resolved-data-structure}
  */
