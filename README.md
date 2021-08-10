@@ -40,9 +40,12 @@ npm install discord.js
 - [@discordjs/voice](https://github.com/discordjs/voice) for interacting with the Discord Voice API
 
 ## Example usage
+
 Install all required dependencies:
 ```sh
 npm install discord.js @discordjs/rest discord-api-types
+yarn add discord.js @discordjs/rest discord-api-types
+pnpm add discord.js @discordjs/rest discord-api-types
 ```
 
 Register a slash command against the Discord API:
