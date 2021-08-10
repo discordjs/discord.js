@@ -900,7 +900,7 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
  * * MENTIONABLE
  * * NUMBER
  * @typedef {string} ApplicationCommandOptionType
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#application-command-object-application-command-option-type}
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type}
  */
 exports.ApplicationCommandOptionTypes = createEnum([
   null,
@@ -921,7 +921,7 @@ exports.ApplicationCommandOptionTypes = createEnum([
  * * ROLE
  * * USER
  * @typedef {string} ApplicationCommandPermissionType
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#application-command-permissions-object-application-command-permission-type}
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-application-command-permission-type}
  */
 exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 
