@@ -29,6 +29,8 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ```sh-session
 npm install discord.js
+yarn add discord.js
+pnpm add discord.js
 ```
 
 ### Optional packages
