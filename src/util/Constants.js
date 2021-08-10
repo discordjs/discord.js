@@ -888,6 +888,15 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
 
 /* eslint-disable max-len */
 /**
+ * The type of an {@link ApplicationCommand} object:
+ * * CHAT_INPUT
+ * * USER
+ * * MESSAGE
+ * @typedef {string} ApplicationCommandType
+ */
+exports.ApplicationCommandTypes = createEnum([null, 'CHAT_INPUT', 'USER', 'MESSAGE']);
+
+/**
  * The type of an {@link ApplicationCommandOption} object:
  * * SUB_COMMAND
  * * SUB_COMMAND_GROUP
