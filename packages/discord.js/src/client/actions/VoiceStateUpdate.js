@@ -11,7 +11,8 @@ class VoiceStateUpdate extends Action {
     if (guild) {
       // Update the state
       const oldState =
-        guild.voiceStates.cache.get(data.user_id)?._clone() ?? new VoiceState(guild, { user_id: data.user_id });
+        guild.voiceStates.cache.get(data.user_id)?._clone() ??
+        new VoiceState(guild, { user_id: data.user_id, suppress: data.suppress });
 
       const newState = guild.voiceStates._add(data);
 
