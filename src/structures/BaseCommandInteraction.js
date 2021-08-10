@@ -82,7 +82,7 @@ class BaseCommandInteraction extends Interaction {
    * @property {string|number|boolean} [value] The value of the option
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)
-   * @property {User|APIUser} [user] The resolved user
+   * @property {User} [user] The resolved user
    * @property {GuildMember|APIGuildMember} [member] The resolved member
    * @property {GuildChannel|APIChannel} [channel] The resolved channel
    * @property {Role|APIRole} [role] The resolved role
