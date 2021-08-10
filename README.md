@@ -42,7 +42,7 @@ npm install discord.js
 ## Example usage
 
 Install all required dependencies:
-```sh
+```sh-session
 npm install discord.js @discordjs/rest discord-api-types
 yarn add discord.js @discordjs/rest discord-api-types
 pnpm add discord.js @discordjs/rest discord-api-types
