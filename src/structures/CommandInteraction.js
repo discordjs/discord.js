@@ -154,5 +154,5 @@ module.exports = CommandInteraction;
 
 /**
  * @external APIInteractionDataResolvedOption
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-object-application-command-interaction-data-resolved-structure}
+ * @see {@link https://discord.com/developers/docs/interactions/slash-commands#sample-application-command-interaction-application-command-interaction-data-resolved-structure}
  */
