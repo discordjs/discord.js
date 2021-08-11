@@ -610,17 +610,17 @@ declare const applicationCommandData: ApplicationCommandData;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;
 declare const applicationCommandManager: ApplicationCommandManager;
 {
-  type ApplicationCommandType = ApplicationCommand<{ guild: GuildResolvable }>;
+  type ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>;
 
-  assertType<Promise<ApplicationCommandType>>(applicationCommandManager.create(applicationCommandData));
+  assertType<Promise<ApplicationCommandScope>>(applicationCommandManager.create(applicationCommandData));
   assertType<Promise<ApplicationCommand>>(applicationCommandManager.create(applicationCommandData, '0'));
-  assertType<Promise<ApplicationCommandType>>(
+  assertType<Promise<ApplicationCommandScope>>(
     applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData),
   );
   assertType<Promise<ApplicationCommand>>(
     applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData, '0'),
   );
-  assertType<Promise<Collection<Snowflake, ApplicationCommandType>>>(
+  assertType<Promise<Collection<Snowflake, ApplicationCommandScope>>>(
     applicationCommandManager.set([applicationCommandData]),
   );
   assertType<Promise<Collection<Snowflake, ApplicationCommand>>>(

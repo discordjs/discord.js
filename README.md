@@ -29,6 +29,8 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ```sh-session
 npm install discord.js
+yarn add discord.js
+pnpm add discord.js
 ```
 
 ### Optional packages
@@ -41,7 +43,14 @@ npm install discord.js
 
 ## Example usage
 
-First, we need to register a slash command against the Discord API:
+Install all required dependencies:
+```sh-session
+npm install discord.js @discordjs/rest discord-api-types
+yarn add discord.js @discordjs/rest discord-api-types
+pnpm add discord.js @discordjs/rest discord-api-types
+```
+
+Register a slash command against the Discord API:
 ```js
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');

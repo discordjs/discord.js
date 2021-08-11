@@ -888,6 +888,15 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
 
 /* eslint-disable max-len */
 /**
+ * The type of an {@link ApplicationCommand} object:
+ * * CHAT_INPUT
+ * * USER
+ * * MESSAGE
+ * @typedef {string} ApplicationCommandType
+ */
+exports.ApplicationCommandTypes = createEnum([null, 'CHAT_INPUT', 'USER', 'MESSAGE']);
+
+/**
  * The type of an {@link ApplicationCommandOption} object:
  * * SUB_COMMAND
  * * SUB_COMMAND_GROUP
@@ -900,7 +909,7 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
  * * MENTIONABLE
  * * NUMBER
  * @typedef {string} ApplicationCommandOptionType
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#application-command-object-application-command-option-type}
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type}
  */
 exports.ApplicationCommandOptionTypes = createEnum([
   null,
@@ -921,7 +930,7 @@ exports.ApplicationCommandOptionTypes = createEnum([
  * * ROLE
  * * USER
  * @typedef {string} ApplicationCommandPermissionType
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#application-command-permissions-object-application-command-permission-type}
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-application-command-permission-type}
  */
 exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 
@@ -931,7 +940,7 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * * APPLICATION_COMMAND
  * * MESSAGE_COMPONENT
  * @typedef {string} InteractionType
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-object-interaction-request-type}
+ * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-request-type}
  */
 exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND', 'MESSAGE_COMPONENT']);
 
@@ -943,7 +952,7 @@ exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND', 'MES
  * * DEFERRED_MESSAGE_UPDATE
  * * UPDATE_MESSAGE
  * @typedef {string} InteractionResponseType
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-callback-type}
+ * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-response-object-interaction-callback-type}
  */
 exports.InteractionResponseTypes = createEnum([
   null,

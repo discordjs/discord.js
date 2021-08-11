@@ -470,7 +470,7 @@ class Util extends null {
     }
 
     if (color < 0 || color > 0xffffff) throw new RangeError('COLOR_RANGE');
-    else if (color && isNaN(color)) throw new TypeError('COLOR_CONVERT');
+    else if (Number.isNaN(color)) throw new TypeError('COLOR_CONVERT');
 
     return color;
   }
