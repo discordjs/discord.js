@@ -149,5 +149,5 @@ module.exports = CommandInteraction;
 /* eslint-disable max-len */
 /**
  * @external APIApplicationCommandOptionResolved
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#interaction-applicationcommandinteractiondataresolved}
+ * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-resolved-data-structure}
  */

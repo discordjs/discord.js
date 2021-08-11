@@ -190,12 +190,13 @@ class ApplicationCommand extends Base {
 
 module.exports = ApplicationCommand;
 
+/* eslint-disable max-len */
 /**
  * @external APIApplicationCommand
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommand}
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-structure}
  */
 
 /**
  * @external APIApplicationCommandOption
- * @see {@link https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoption}
+ * @see {@link hhttps://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure}
  */
