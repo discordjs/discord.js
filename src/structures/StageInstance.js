@@ -54,9 +54,9 @@ class StageInstance extends Base {
 
     /**
      * Whether or not stage discovery is disabled
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.discoverableDisabled = data.discoverable_disabled;
+    this.discoverableDisabled = data.discoverable_disabled ?? null;
   }
 
   /**
