@@ -6,7 +6,7 @@ const { TypeError } = require('../errors');
  * A resolver for command interaction options.
  */
 class CommandInteractionOptionResolver {
-  constructor(client, options) {
+  constructor(client, options, resolved) {
     /**
      * The client that instantiated this.
      * @name CommandInteractionOptionResolver#client
@@ -55,6 +55,13 @@ class CommandInteractionOptionResolver {
      * @readonly
      */
     Object.defineProperty(this, 'data', { value: Object.freeze([...options]) });
+
+    /**
+     * The interaction resolved data
+     * @name CommandInteractionOptionResolver#resolved
+     * @type {Readonly<CommandInteractionResolvedData>}
+     */
+    Object.defineProperty(this, 'resolved', { value: Object.freeze(resolved) });
   }
 
   /**
