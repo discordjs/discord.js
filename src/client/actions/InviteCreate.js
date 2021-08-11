@@ -16,7 +16,7 @@ class InviteCreateAction extends Action {
     /**
      * Emitted when an invite is created.
      * <info> This event only triggers if the client has `MANAGE_GUILD` permissions for the guild,
-     * or `MANAGE_CHANNEL` permissions for the channel.</info>
+     * or `MANAGE_CHANNELS` permissions for the channel.</info>
      * @event Client#inviteCreate
      * @param {Invite} invite The invite that was created
      */

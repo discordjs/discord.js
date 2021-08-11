@@ -16,35 +16,35 @@ class CommandInteractionOptionResolver {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * The name of the sub-command group.
+     * The name of the subcommand group.
      * @type {?string}
      * @private
      */
     this._group = null;
 
     /**
-     * The name of the sub-command.
+     * The name of the subcommand.
      * @type {?string}
      * @private
      */
-    this._subCommand = null;
+    this._subcommand = null;
 
     /**
      * The bottom-level options for the interaction.
-     * If there is a sub-command (or sub-command and group), this is the options for the sub-command.
+     * If there is a subcommand (or subcommand and group), this is the options for the subcommand.
      * @type {CommandInteractionOption[]}
      * @private
      */
     this._hoistedOptions = options;
 
-    // Hoist sub-command group if present
+    // Hoist subcommand group if present
     if (this._hoistedOptions[0]?.type === 'SUB_COMMAND_GROUP') {
       this._group = this._hoistedOptions[0].name;
       this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
-    // Hoist sub-command if present
+    // Hoist subcommand if present
     if (this._hoistedOptions[0]?.type === 'SUB_COMMAND') {
-      this._subCommand = this._hoistedOptions[0].name;
+      this._subcommand = this._hoistedOptions[0].name;
       this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
 
@@ -96,23 +96,23 @@ class CommandInteractionOptionResolver {
   }
 
   /**
-   * Gets the selected sub-command.
-   * @param {boolean} [required=true] Whether to throw an error if there is no sub-command.
-   * @returns {?string} The name of the selected sub-command, or null if not set and not required.
+   * Gets the selected subcommand.
+   * @param {boolean} [required=true] Whether to throw an error if there is no subcommand.
+   * @returns {?string} The name of the selected subcommand, or null if not set and not required.
    */
-  getSubCommand(required = true) {
-    if (required && !this._subCommand) {
+  getSubcommand(required = true) {
+    if (required && !this._subcommand) {
       throw new TypeError('COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND');
     }
-    return this._subCommand;
+    return this._subcommand;
   }
 
   /**
-   * Gets the selected sub-command group.
-   * @param {boolean} [required=true] Whether to throw an error if there is no sub-command group.
-   * @returns {?string} The name of the selected sub-command group, or null if not set and not required.
+   * Gets the selected subcommand group.
+   * @param {boolean} [required=true] Whether to throw an error if there is no subcommand group.
+   * @returns {?string} The name of the selected subcommand group, or null if not set and not required.
    */
-  getSubCommandGroup(required = true) {
+  getSubcommandGroup(required = true) {
     if (required && !this._group) {
       throw new TypeError('COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP');
     }
@@ -134,7 +134,7 @@ class CommandInteractionOptionResolver {
    * Gets a channel option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(GuildChannel|APIInteractionDataResolvedChannel)}
+   * @returns {?(GuildChannel|APIGuildChannel)}
    * The value of the option, or null if not set and not required.
    */
   getChannel(name, required = false) {
@@ -190,7 +190,7 @@ class CommandInteractionOptionResolver {
    * Gets a member option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(GuildMember|APIInteractionDataResolvedGuildMember)}
+   * @returns {?(GuildMember|APIGuildMember)}
    * The value of the option, or null if not set and not required.
    */
   getMember(name, required = false) {
@@ -213,12 +213,24 @@ class CommandInteractionOptionResolver {
    * Gets a mentionable option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(User|GuildMember|APIInteractionDataResolvedGuildMember|Role|APIRole)}
+   * @returns {?(User|GuildMember|APIGuildMember|Role|APIRole)}
    * The value of the option, or null if not set and not required.
    */
   getMentionable(name, required = false) {
     const option = this._getTypedOption(name, 'MENTIONABLE', ['user', 'member', 'role'], required);
     return option?.member ?? option?.user ?? option?.role ?? null;
+  }
+
+  /**
+   * Gets a message option.
+   * @param {string} name The name of the option.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @returns {?(Message|APIMessage)}
+   * The value of the option, or null if not set and not required.
+   */
+  getMessage(name, required = false) {
+    const option = this._getTypedOption(name, '_MESSAGE', ['message'], required);
+    return option?.message ?? null;
   }
 }
 

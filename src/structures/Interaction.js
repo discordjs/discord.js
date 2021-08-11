@@ -89,7 +89,7 @@ class Interaction extends Base {
 
   /**
    * The channel this interaction was sent in
-   * @type {?Channel}
+   * @type {?TextBasedChannels}
    * @readonly
    */
   get channel() {
@@ -118,7 +118,15 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isCommand() {
-    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND;
+    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId === 'undefined';
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link ContextMenuInteraction}
+   * @returns {boolean}
+   */
+  isContextMenu() {
+    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId !== 'undefined';
   }
 
   /**

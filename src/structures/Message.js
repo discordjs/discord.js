@@ -1,5 +1,6 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
@@ -12,7 +13,6 @@ const ReactionCollector = require('./ReactionCollector');
 const Sticker = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
-const Collection = require('../util/Collection');
 const { InteractionTypes, MessageTypes, SystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
@@ -27,16 +27,21 @@ class Message extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {APIMessage} data The data for the message
-   * @param {TextChannel|DMChannel|NewsChannel|ThreadChannel} channel The channel the message was sent in
    */
-  constructor(client, data, channel) {
+  constructor(client, data) {
     super(client);
 
     /**
-     * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
+     * The id of the channel the message was sent in
+     * @type {Snowflake}
      */
-    this.channel = channel;
+    this.channelId = data.channel_id;
+
+    /**
+     * The id of the guild the message was sent in, if any
+     * @type {?Snowflake}
+     */
+    this.guildId = data.guild_id ?? this.channel?.guild?.id ?? null;
 
     /**
      * Whether this message has been deleted
@@ -99,16 +104,6 @@ class Message extends Base {
       this.pinned = Boolean(data.pinned);
     } else if (typeof this.pinned !== 'boolean') {
       this.pinned = null;
-    }
-
-    if ('thread' in data) {
-      /**
-       * The thread started by this message
-       * @type {?ThreadChannel}
-       */
-      this.thread = this.client.channels._add(data.thread);
-    } else if (!this.thread) {
-      this.thread = null;
     }
 
     if ('tts' in data) {
@@ -267,6 +262,9 @@ class Message extends Base {
           }
         : null;
     }
+    if ('thread' in data) {
+      this.client.channels._add(data.thread, this.guild);
+    }
     if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
@@ -286,9 +284,9 @@ class Message extends Base {
     /**
      * Reference data sent in a message that contains ids identifying the referenced message
      * @typedef {Object} MessageReference
-     * @property {string} channelId The channel's id the message was referenced
-     * @property {?string} guildId The guild's id the message was referenced
-     * @property {?string} messageId The message's id that was referenced
+     * @property {Snowflake} channelId The channel's id the message was referenced
+     * @property {?Snowflake} guildId The guild's id the message was referenced
+     * @property {?Snowflake} messageId The message's id that was referenced
      */
 
     if ('message_reference' in data || !partial) {
@@ -306,7 +304,7 @@ class Message extends Base {
     }
 
     if (data.referenced_message) {
-      this.channel.messages._add(data.referenced_message);
+      this.channel?.messages._add({ guild_id: data.message_reference?.guild_id, ...data.referenced_message });
     }
 
     /**
@@ -338,6 +336,15 @@ class Message extends Base {
     const clone = this._clone();
     this._patch(data, partial);
     return clone;
+  }
+
+  /**
+   * The channel that the message was sent in
+   * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
+   * @readonly
+   */
+  get channel() {
+    return this.client.channels.resolve(this.channelId);
   }
 
   /**
@@ -383,7 +390,27 @@ class Message extends Base {
    * @readonly
    */
   get guild() {
-    return this.channel.guild ?? null;
+    return this.client.guilds.resolve(this.guildId) ?? this.channel?.guild ?? null;
+  }
+
+  /**
+   * Whether this message has a thread associated with it
+   * @type {boolean}
+   * @readonly
+   */
+  get hasThread() {
+    return this.flags.has(MessageFlags.FLAGS.HAS_THREAD);
+  }
+
+  /**
+   * The thread started by this message
+   * <info>This property is not suitable for checking whether a message has a thread,
+   * use {@link Message#hasThread} instead.</info>
+   * @type {?ThreadChannel}
+   * @readonly
+   */
+  get thread() {
+    return this.channel?.threads?.resolve(this.id) ?? null;
   }
 
   /**
@@ -392,7 +419,7 @@ class Message extends Base {
    * @readonly
    */
   get url() {
-    return `https://discord.com/channels/${this.guild ? this.guild.id : '@me'}/${this.channel.id}/${this.id}`;
+    return `https://discord.com/channels/${this.guildId ?? '@me'}/${this.channelId}/${this.id}`;
   }
 
   /**
@@ -624,8 +651,9 @@ class Message extends Base {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  pin() {
-    return this.channel.messages.pin(this.id).then(() => this);
+  async pin() {
+    await this.channel.messages.pin(this.id);
+    return this;
   }
 
   /**
@@ -637,8 +665,9 @@ class Message extends Base {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  unpin() {
-    return this.channel.messages.unpin(this.id).then(() => this);
+  async unpin() {
+    await this.channel.messages.unpin(this.id);
+    return this;
   }
 
   /**
@@ -715,18 +744,26 @@ class Message extends Base {
   }
 
   /**
+   * Options for starting a thread on a message.
+   * @typedef {Object} StartThreadOptions
+   * @property {string} name The name of the new thread
+   * @property {ThreadAutoArchiveDuration} autoArchiveDuration The amount of time (in minutes) after which the thread
+   * should automatically archive in case of no recent activity
+   * @property {string} [reason] Reason for creating the thread
+   */
+
+  /**
    * Create a new public thread from this message
    * @see ThreadManager#create
-   * @param {string} name The name of the new Thread
-   * @param {ThreadAutoArchiveDuration} autoArchiveDuration How long before the thread is automatically archived
-   * @param {string} [reason] Reason for creating the thread
+   * @param {StartThreadOptions} [options] Options for starting a thread on this message
    * @returns {Promise<ThreadChannel>}
    */
-  startThread(name, autoArchiveDuration, reason) {
+  startThread(options = {}) {
     if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
-    return this.channel.threads.create({ name, autoArchiveDuration, startMessage: this, reason });
+    if (this.hasThread) return Promise.reject(new Error('MESSAGE_EXISTING_THREAD'));
+    return this.channel.threads.create({ ...options, startMessage: this });
   }
 
   /**

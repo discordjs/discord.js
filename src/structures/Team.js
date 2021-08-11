@@ -1,8 +1,8 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
 const TeamMember = require('./TeamMember');
-const Collection = require('../util/Collection');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -80,9 +80,9 @@ class Team extends Base {
   }
 
   /**
-   * A link to the teams's icon.
+   * A link to the team's icon.
    * @param {StaticImageURLOptions} [options={}] Options for the Image URL
-   * @returns {?string} URL to the icon
+   * @returns {?string}
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;

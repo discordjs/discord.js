@@ -109,11 +109,10 @@ class GuildTemplate extends Base {
         icon: await DataResolver.resolveImage(icon),
       },
     });
-    // eslint-disable-next-line consistent-return
-    return new Promise(resolve => {
-      const createdGuild = client.guilds.cache.get(data.id);
-      if (createdGuild) return resolve(createdGuild);
 
+    if (client.guilds.cache.has(data.id)) return client.guilds.cache.get(data.id);
+
+    return new Promise(resolve => {
       const resolveGuild = guild => {
         client.off(Events.GUILD_CREATE, handleGuild);
         client.decrementMaxListeners();
@@ -146,36 +145,27 @@ class GuildTemplate extends Base {
    * @param {EditGuildTemplateOptions} [options] Options for editing the template
    * @returns {Promise<GuildTemplate>}
    */
-  edit({ name, description } = {}) {
-    return this.client.api
-      .guilds(this.guildId)
-      .templates(this.code)
-      .patch({ data: { name, description } })
-      .then(data => this._patch(data));
+  async edit({ name, description } = {}) {
+    const data = await this.client.api.guilds(this.guildId).templates(this.code).patch({ data: { name, description } });
+    return this._patch(data);
   }
 
   /**
    * Deletes this template.
    * @returns {Promise<GuildTemplate>}
    */
-  delete() {
-    return this.client.api
-      .guilds(this.guildId)
-      .templates(this.code)
-      .delete()
-      .then(() => this);
+  async delete() {
+    await this.client.api.guilds(this.guildId).templates(this.code).delete();
+    return this;
   }
 
   /**
    * Syncs this template to the current state of the guild.
    * @returns {Promise<GuildTemplate>}
    */
-  sync() {
-    return this.client.api
-      .guilds(this.guildId)
-      .templates(this.code)
-      .put()
-      .then(data => this._patch(data));
+  async sync() {
+    const data = await this.client.api.guilds(this.guildId).templates(this.code).put();
+    return this._patch(data);
   }
 
   /**
@@ -215,7 +205,7 @@ class GuildTemplate extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the templates's code instead of the template object.
+   * When concatenated with a string, this automatically returns the template's code instead of the template object.
    * @returns {string}
    * @example
    * // Logs: Template: FKvmczH2HyUf

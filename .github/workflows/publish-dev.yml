@@ -11,24 +11,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v14
+      - name: Install Node v16
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        # Remove --no-optional after Node 16 upgrade
-        run: npm ci --ignore-scripts --no-optional
+        run: npm ci --ignore-scripts
 
       - name: Deprecate old versions
-        run: npm deprecate discord.js@"~13.0.0-dev" "no longer supported" || true
+        run: npm deprecate discord.js@"~$(jq --raw-output '.version' package.json)" "no longer supported" || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
       - name: Publish
         run: |
-          npm version --git-tag-version=false $(jq --raw-output '.version' package.json).$(git rev-parse --short HEAD).$(date +%s)
+          npm version --git-tag-version=false $(jq --raw-output '.version' package.json).$(date +%s).$(git rev-parse --short HEAD)
           npm publish --tag dev || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

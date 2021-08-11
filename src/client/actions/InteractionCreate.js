@@ -3,8 +3,9 @@
 const Action = require('./Action');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
 const CommandInteraction = require('../../structures/CommandInteraction');
+const ContextMenuInteraction = require('../../structures/ContextMenuInteraction');
 const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
-const { Events, InteractionTypes, MessageComponentTypes } = require('../../util/Constants');
+const { Events, InteractionTypes, MessageComponentTypes, ApplicationCommandTypes } = require('../../util/Constants');
 
 let deprecationEmitted = false;
 
@@ -18,7 +19,21 @@ class InteractionCreateAction extends Action {
     let InteractionType;
     switch (data.type) {
       case InteractionTypes.APPLICATION_COMMAND:
-        InteractionType = CommandInteraction;
+        switch (data.data.type) {
+          case ApplicationCommandTypes.CHAT_INPUT:
+            InteractionType = CommandInteraction;
+            break;
+          case ApplicationCommandTypes.USER:
+          case ApplicationCommandTypes.MESSAGE:
+            InteractionType = ContextMenuInteraction;
+            break;
+          default:
+            client.emit(
+              Events.DEBUG,
+              `[INTERACTION] Received application command interaction with unknown type: ${data.data.type}`,
+            );
+            return;
+        }
         break;
       case InteractionTypes.MESSAGE_COMPONENT:
         switch (data.data.component_type) {

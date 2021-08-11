@@ -87,8 +87,9 @@ class ThreadMember extends Base {
    * @param {string} [reason] Reason for removing the member
    * @returns {ThreadMember}
    */
-  remove(reason) {
-    return this.thread.members.remove(this.id, reason).then(() => this);
+  async remove(reason) {
+    await this.thread.members.remove(this.id, reason);
+    return this;
   }
 }
 

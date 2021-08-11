@@ -1,11 +1,13 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const Role = require('../structures/Role');
-const Collection = require('../util/Collection');
 const Permissions = require('../util/Permissions');
 const { resolveColor, setPosition } = require('../util/Util');
+
+let cacheWarningEmitted = false;
 
 /**
  * Manages API methods for roles and stores their cache.
@@ -14,6 +16,13 @@ const { resolveColor, setPosition } = require('../util/Util');
 class RoleManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, Role, iterable);
+    if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
+      cacheWarningEmitted = true;
+      process.emitWarning(
+        `Overriding the cache handling for ${this.constructor.name} is unsupported and breaks functionality.`,
+        'UnsupportedCacheOverwriteWarning',
+      );
+    }
 
     /**
      * The guild belonging to this manager
@@ -118,31 +127,27 @@ class RoleManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  create(options = {}) {
+  async create(options = {}) {
     let { name, color, hoist, permissions, position, mentionable, reason } = options;
     if (color) color = resolveColor(color);
     if (typeof permissions !== 'undefined') permissions = new Permissions(permissions);
 
-    return this.client.api
-      .guilds(this.guild.id)
-      .roles.post({
-        data: {
-          name,
-          color,
-          hoist,
-          permissions,
-          mentionable,
-        },
-        reason,
-      })
-      .then(r => {
-        const { role } = this.client.actions.GuildRoleCreate.handle({
-          guild_id: this.guild.id,
-          role: r,
-        });
-        if (position) return role.setPosition(position, reason);
-        return role;
-      });
+    const data = await this.client.api.guilds(this.guild.id).roles.post({
+      data: {
+        name,
+        color,
+        hoist,
+        permissions,
+        mentionable,
+      },
+      reason,
+    });
+    const { role } = this.client.actions.GuildRoleCreate.handle({
+      guild_id: this.guild.id,
+      role: data,
+    });
+    if (position) return role.setPosition(position, reason);
+    return role;
   }
 
   /**

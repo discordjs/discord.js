@@ -1,10 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
 const Sticker = require('../structures/Sticker');
-const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for Guild Stickers and stores their cache.
@@ -32,13 +32,18 @@ class GuildStickerManager extends CachedManager {
   }
 
   /**
+   * Options for creating a guild sticker.
+   * @typedef {Object} GuildStickerCreateOptions
+   * @param {?string} [description] The description for the sticker
+   * @param {string} [reason] Reason for creating the sticker
+   */
+
+  /**
    * Creates a new custom sticker in the guild.
    * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} file The file for the sticker
    * @param {string} name The name for the sticker
    * @param {string} tags The Discord name of a unicode emoji representing the sticker's expression
-   * @param {Object} [options] Options
-   * @param {?string} [options.description] The description for the sticker
-   * @param {string} [options.reason] Reason for creating the sticker
+   * @param {GuildStickerCreateOptions} [options] Options
    * @returns {Promise<Sticker>} The created sticker
    * @example
    * // Create a new sticker from a url
@@ -57,21 +62,21 @@ class GuildStickerManager extends CachedManager {
 
     const data = { name, tags, description: description ?? '' };
 
-    return this.client.api
+    const sticker = await this.client.api
       .guilds(this.guild.id)
-      .stickers.post({ data, files: [file], reason, dontUsePayloadJSON: true })
-      .then(sticker => this.client.actions.GuildStickerCreate.handle(this.guild, sticker).sticker);
+      .stickers.post({ data, files: [file], reason, dontUsePayloadJSON: true });
+    return this.client.actions.GuildStickerCreate.handle(this.guild, sticker).sticker;
   }
 
   /**
    * Data that resolves to give a Sticker object. This can be:
-   * * An Sticker object
+   * * A Sticker object
    * * A Snowflake
    * @typedef {Sticker|Snowflake} StickerResolvable
    */
 
   /**
-   * Resolves an StickerResolvable to a Sticker object.
+   * Resolves a StickerResolvable to a Sticker object.
    * @method resolve
    * @memberof GuildStickerManager
    * @instance
@@ -80,7 +85,7 @@ class GuildStickerManager extends CachedManager {
    */
 
   /**
-   * Resolves an StickerResolvable to an Sticker id string.
+   * Resolves a StickerResolvable to a Sticker id string.
    * @method resolveId
    * @memberof GuildStickerManager
    * @instance

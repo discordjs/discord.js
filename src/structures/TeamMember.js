@@ -50,7 +50,7 @@ class TeamMember extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the team members's mention instead of the
+   * When concatenated with a string, this automatically returns the team member's mention instead of the
    * TeamMember object.
    * @returns {string}
    * @example

@@ -58,7 +58,7 @@ class VoiceState extends Base {
      */
     this.sessionId = data.session_id ?? null;
     /**
-     * Whether this member is streaming using "Go Live"
+     * Whether this member is streaming using "Screen Share"
      * @type {boolean}
      */
     this.streaming = data.self_stream ?? false;
@@ -139,18 +139,18 @@ class VoiceState extends Base {
   }
 
   /**
-   * Kicks the member from the channel.
-   * @param {string} [reason] Reason for kicking member from the channel
+   * Disconnects the member from the channel.
+   * @param {string} [reason] Reason for disconnecting the member from the channel
    * @returns {Promise<GuildMember>}
    */
-  kick(reason) {
+  disconnect(reason) {
     return this.setChannel(null, reason);
   }
 
   /**
    * Moves the member to a different channel, or disconnects them from the one they're in.
-   * @param {ChannelResolvable|null} channel Channel to move the member to, or `null` if you want to disconnect them
-   * from voice.
+   * @param {VoiceChannelResolvable|null} channel Channel to move the member to, or `null` if you want to disconnect
+   * them from voice.
    * @param {string} [reason] Reason for moving member to another channel or disconnecting
    * @returns {Promise<GuildMember>}
    */

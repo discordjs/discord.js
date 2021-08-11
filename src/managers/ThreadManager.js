@@ -1,9 +1,9 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
-const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
 
 /**
@@ -66,21 +66,18 @@ class ThreadManager extends CachedManager {
    * * `1440` (1 day)
    * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
    * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
-   * @typedef {number} ThreadAutoArchiveDuration
+   * * `'MAX'` Based on the guilds boost count
+   * @typedef {number|string} ThreadAutoArchiveDuration
    */
 
   /**
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
-   * @typedef {Object} ThreadCreateOptions
-   * @property {string} name The name of the new thread
-   * @property {ThreadAutoArchiveDuration} autoArchiveDuration The amount of time (in minutes) after which the thread
-   * should automatically archive in case of no recent activity
+   * @typedef {StartThreadOptions} ThreadCreateOptions
    * @property {MessageResolvable} [startMessage] The message to start a thread from. <warn>If this is defined then type
    * of thread gets automatically defined and cannot be changed. The provided `type` field will be ignored</warn>
    * @property {ThreadChannelTypes|number} [type] The type of thread to create. Defaults to `GUILD_PUBLIC_THREAD` if
    * created in a {@link TextChannel} <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
    * `GUILD_NEWS_THREAD`</warn>
-   * @property {string} [reason] Reason for creating the thread
    */
 
   /**
@@ -123,6 +120,14 @@ class ThreadManager extends CachedManager {
     } else if (this.channel.type !== 'GUILD_NEWS') {
       resolvedType = typeof type === 'string' ? ChannelTypes[type] : type ?? resolvedType;
     }
+    if (autoArchiveDuration === 'MAX') {
+      autoArchiveDuration = 1440;
+      if (this.channel.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
+        autoArchiveDuration = 10080;
+      } else if (this.channel.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
+        autoArchiveDuration = 4320;
+      }
+    }
 
     const data = await path.threads.post({
       data: {
@@ -148,7 +153,7 @@ class ThreadManager extends CachedManager {
    * @param {ThreadChannelResolvable|FetchThreadsOptions} [options] The options to fetch threads. If it is a
    * ThreadChannelResolvable then the specified thread will be fetched. Fetches all active threads if `undefined`
    * @param {BaseFetchOptions} [cacheOptions] Additional options for this fetch. <warn>The `force` field gets ignored
-   * if `options` is not a ThreadChannelResolvable</warn>
+   * if `options` is not a {@link ThreadChannelResolvable}</warn>
    * @returns {Promise<?(ThreadChannel|FetchedThreads)>}
    * @example
    * // Fetch a thread by its id
@@ -220,7 +225,7 @@ class ThreadManager extends CachedManager {
     const raw = await path.threads
       .archived(type)
       .get({ query: { before: type === 'private' && !fetchAll ? id : timestamp, limit } });
-    return this._mapThreads(raw, cache);
+    return this.constructor._mapThreads(raw, this.client, { parent: this.channel, cache });
   }
 
   /**
@@ -229,20 +234,21 @@ class ThreadManager extends CachedManager {
    * @returns {Promise<FetchedThreads>}
    */
   async fetchActive(cache = true) {
-    const raw = await this.client.api.channels(this.channel.id).threads.active.get();
-    return this._mapThreads(raw, cache);
+    const raw = await this.client.api.guilds(this.channel.guild.id).threads.active.get();
+    return this.constructor._mapThreads(raw, this.client, { parent: this.channel, cache });
   }
 
-  _mapThreads(rawThreads, cache) {
+  static _mapThreads(rawThreads, client, { parent, guild, cache }) {
     const threads = rawThreads.threads.reduce((coll, raw) => {
-      const thread = this.client.channels._add(raw, null, { cache });
+      const thread = client.channels._add(raw, guild ?? parent?.guild, { cache });
+      if (parent && thread.parentId !== parent.id) return coll;
       return coll.set(thread.id, thread);
     }, new Collection());
     // Discord sends the thread id as id in this object
-    for (const rawMember of rawThreads.members) threads.get(rawMember.id)?.members._add(rawMember);
+    for (const rawMember of rawThreads.members) client.channels.cache.get(rawMember.id)?.members._add(rawMember);
     return {
       threads,
-      hasMore: rawThreads.has_more,
+      hasMore: rawThreads.has_more ?? false,
     };
   }
 }

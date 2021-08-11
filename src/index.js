@@ -14,7 +14,7 @@ module.exports = {
   ApplicationFlags: require('./util/ApplicationFlags'),
   BaseManager: require('./managers/BaseManager'),
   BitField: require('./util/BitField'),
-  Collection: require('./util/Collection'),
+  Collection: require('@discordjs/collection').Collection,
   Constants: require('./util/Constants'),
   DataResolver: require('./util/DataResolver'),
   DiscordAPIError: require('./rest/DiscordAPIError'),

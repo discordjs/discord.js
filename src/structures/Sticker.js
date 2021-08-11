@@ -204,7 +204,7 @@ class Sticker extends Base {
   /**
    * Whether this sticker is the same as another one.
    * @param {Sticker|APISticker} other The sticker to compare it to
-   * @returns {boolean} Whether the sticker is equal to the given sticker or not
+   * @returns {boolean}
    */
   equals(other) {
     if (other instanceof Sticker) {

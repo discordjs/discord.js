@@ -1,5 +1,6 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
@@ -19,7 +20,6 @@ const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
-const Collection = require('../util/Collection');
 const { Events, InviteScopes, Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
@@ -71,6 +71,20 @@ class Client extends BaseClient {
     }
 
     this._validateOptions();
+
+    /**
+     * Functions called when a cache is garbage collected or the Client is destroyed
+     * @type {Set<Function>}
+     * @private
+     */
+    this._cleanups = new Set();
+
+    /**
+     * The finalizers used to cleanup items.
+     * @type {FinalizationRegistry}
+     * @private
+     */
+    this._finalizers = new FinalizationRegistry(this._finalize.bind(this));
 
     /**
      * The WebSocket manager of the client
@@ -161,6 +175,10 @@ class Client extends BaseClient {
     this.readyAt = null;
 
     if (this.options.messageSweepInterval > 0) {
+      process.emitWarning(
+        'The message sweeping client options are deprecated, use the makeCache option with LimitedCollection instead.',
+        'DeprecationWarning',
+      );
       this.sweepMessageInterval = setInterval(
         this.sweepMessages.bind(this),
         this.options.messageSweepInterval * 1000,
@@ -218,7 +236,7 @@ class Client extends BaseClient {
     );
 
     if (this.options.presence) {
-      this.options.ws.presence = await this.presence._parse(this.options.presence);
+      this.options.ws.presence = this.presence._parse(this.options.presence);
     }
 
     this.emit(Events.DEBUG, 'Preparing to connect to the gateway...');
@@ -247,6 +265,10 @@ class Client extends BaseClient {
    */
   destroy() {
     super.destroy();
+
+    for (const fn of this._cleanups) fn();
+    this._cleanups.clear();
+
     if (this.sweepMessageInterval) clearInterval(this.sweepMessageInterval);
 
     this.ws.destroy();
@@ -262,12 +284,10 @@ class Client extends BaseClient {
    *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`))
    *   .catch(console.error);
    */
-  fetchInvite(invite) {
+  async fetchInvite(invite) {
     const code = DataResolver.resolveInviteCode(invite);
-    return this.api
-      .invites(code)
-      .get({ query: { with_counts: true, with_expiration: true } })
-      .then(data => new Invite(this, data));
+    const data = await this.api.invites(code).get({ query: { with_counts: true, with_expiration: true } });
+    return new Invite(this, data);
   }
 
   /**
@@ -279,12 +299,10 @@ class Client extends BaseClient {
    *   .then(template => console.log(`Obtained template with code: ${template.code}`))
    *   .catch(console.error);
    */
-  fetchGuildTemplate(template) {
+  async fetchGuildTemplate(template) {
     const code = DataResolver.resolveGuildTemplateCode(template);
-    return this.api.guilds
-      .templates(code)
-      .get()
-      .then(data => new GuildTemplate(this, data));
+    const data = await this.api.guilds.templates(code).get();
+    return new GuildTemplate(this, data);
   }
 
   /**
@@ -297,11 +315,9 @@ class Client extends BaseClient {
    *   .then(webhook => console.log(`Obtained webhook with name: ${webhook.name}`))
    *   .catch(console.error);
    */
-  fetchWebhook(id, token) {
-    return this.api
-      .webhooks(id, token)
-      .get()
-      .then(data => new Webhook(this, { token, ...data }));
+  async fetchWebhook(id, token) {
+    const data = await this.api.webhooks(id, token).get();
+    return new Webhook(this, { token, ...data });
   }
 
   /**
@@ -312,12 +328,11 @@ class Client extends BaseClient {
    *   .then(regions => console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`))
    *   .catch(console.error);
    */
-  fetchVoiceRegions() {
-    return this.api.voice.regions.get().then(res => {
-      const regions = new Collection();
-      for (const region of res) regions.set(region.id, new VoiceRegion(region));
-      return regions;
-    });
+  async fetchVoiceRegions() {
+    const apiRegions = await this.api.voice.regions.get();
+    const regions = new Collection();
+    for (const region of apiRegions) regions.set(region.id, new VoiceRegion(region));
+    return regions;
   }
 
   /**
@@ -345,6 +360,24 @@ class Client extends BaseClient {
   async fetchPremiumStickerPacks() {
     const data = await this.api('sticker-packs').get();
     return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
+  }
+  /**
+   * A last ditch cleanup function for garbage collection.
+   * @param {Function} options.cleanup The function called to GC
+   * @param {string} [options.message] The message to send after a successful GC
+   * @param {string} [options.name] The name of the item being GCed
+   * @private
+   */
+  _finalize({ cleanup, message, name }) {
+    try {
+      cleanup();
+      this._cleanups.delete(cleanup);
+      if (message) {
+        this.emit(Events.DEBUG, message);
+      }
+    } catch {
+      this.emit(Events.DEBUG, `Garbage collection failed on ${name ?? 'an unknown item'}.`);
+    }
   }
 
   /**
@@ -394,13 +427,11 @@ class Client extends BaseClient {
    * @param {GuildResolvable} guild The guild to fetch the preview for
    * @returns {Promise<GuildPreview>}
    */
-  fetchGuildPreview(guild) {
+  async fetchGuildPreview(guild) {
     const id = this.guilds.resolveId(guild);
     if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
-    return this.api
-      .guilds(id)
-      .preview.get()
-      .then(data => new GuildPreview(this, data));
+    const data = await this.api.guilds(id).preview.get();
+    return new GuildPreview(this, data);
   }
 
   /**
@@ -578,4 +609,9 @@ module.exports = Client;
  * Emitted for general debugging information.
  * @event Client#debug
  * @param {string} info The debug information
+ */
+
+/**
+ * @external Collection
+ * @see {@link https://discord.js.org/#/docs/collection/main/class/Collection}
  */

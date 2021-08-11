@@ -10,6 +10,12 @@ export enum ActivityTypes {
   COMPETING = 5,
 }
 
+export enum ApplicationCommandTypes {
+  CHAT_INPUT = 1,
+  USER = 2,
+  MESSAGE = 3,
+}
+
 export enum ApplicationCommandOptionTypes {
   SUB_COMMAND = 1,
   SUB_COMMAND_GROUP = 2,
@@ -143,4 +149,5 @@ export enum VerificationLevels {
 export enum WebhookTypes {
   Incoming = 1,
   'Channel Follower' = 2,
+  Application = 3,
 }

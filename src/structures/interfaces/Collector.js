@@ -1,8 +1,8 @@
 'use strict';
 
 const EventEmitter = require('events');
+const { Collection } = require('@discordjs/collection');
 const { TypeError } = require('../../errors');
-const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
 
 /**
@@ -207,7 +207,6 @@ class Collector extends EventEmitter {
   /**
    * Resets the collector's timeout and idle timer.
    * @param {CollectorResetTimerOptions} [options] Options for reseting
-
    */
   resetTimer({ time, idle } = {}) {
     if (this._timeout) {
@@ -222,10 +221,12 @@ class Collector extends EventEmitter {
 
   /**
    * Checks whether the collector should end, and if so, ends it.
+   * @returns {boolean} Whether the collector ended or not
    */
   checkEnd() {
     const reason = this.endReason;
     if (reason) this.stop(reason);
+    return Boolean(reason);
   }
 
   /**
