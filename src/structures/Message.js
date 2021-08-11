@@ -814,7 +814,7 @@ class Message extends Base {
    * @returns {boolean}
    */
    isPartial() {
-    return this.partial
+    return this.partial;
   }
 
   /**
