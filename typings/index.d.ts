@@ -2937,7 +2937,7 @@ export interface ApplicationCommandChoicesData extends BaseApplicationCommandOpt
   choices?: ApplicationCommandOptionChoice[];
 }
 
-export interface ApplicationCommandSubOptionsData extends BaseApplicationCommandOptionsData {
+export interface ApplicationCommandSubGroupData extends BaseApplicationCommandOptionsData {
   type: 'SUB_COMMAND_GROUP' | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP;
   options?: ApplicationCommandSubCommandData[];
 }
@@ -2952,7 +2952,7 @@ export interface ApplicationCommandNonOptionsData extends BaseApplicationCommand
 }
 
 export type ApplicationCommandOptionData =
-  | ApplicationCommandSubOptionsData
+  | ApplicationCommandSubGroupData
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChoicesData
   | ApplicationCommandSubCommandData;
