@@ -265,6 +265,7 @@ export abstract class BaseCommandInteraction extends Interaction {
     option: APIApplicationCommandOption,
     resolved: APIApplicationCommandInteractionData['resolved'],
   ): CommandInteractionOption;
+  private transformResolved(resolved: APIApplicationCommandInteractionData['resolved']): CommandInteractionResolvedData;
 }
 
 export abstract class BaseGuild extends Base {
@@ -529,6 +530,7 @@ export class CommandInteractionOptionResolver {
   public constructor(client: Client, options: CommandInteractionOption[]);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption[];
+  public readonly resolved: Readonly<CommandInteractionResolvedData>;
   private _group: string | null;
   private _hoistedOptions: CommandInteractionOption[];
   private _subcommand: string | null;
@@ -3253,6 +3255,14 @@ export interface CommandInteractionOption {
   channel?: GuildChannel | APIInteractionDataResolvedChannel;
   role?: Role | APIRole;
   message?: Message | APIMessage;
+}
+
+export interface CommandInteractionResolvedData {
+  users?: Collection<string, User>;
+  members?: Collection<string, GuildMember | APIInteractionDataResolvedGuildMember>;
+  roles?: Collection<string, Role | APIRole>;
+  channels?: Collection<string, GuildChannel | APIInteractionDataResolvedChannel>;
+  messages?: Collection<string, Message | APIMessage>;
 }
 
 export interface ConstantsClientApplicationAssetTypes {
