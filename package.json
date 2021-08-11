@@ -45,7 +45,7 @@
   },
   "homepage": "https://github.com/discordjs/discord.js#readme",
   "dependencies": {
-    "@discordjs/builders": "^0.4.0",
+    "@discordjs/builders": "^0.5.0",
     "@discordjs/collection": "^0.2.1",
     "@discordjs/form-data": "^3.0.1",
     "@sapphire/async-queue": "^1.1.4",

@@ -1,18 +1,23 @@
 import {
   blockQuote,
   bold,
+  channelMention,
   codeBlock,
+  formatEmoji,
   hideLinkEmbed,
   hyperlink,
   inlineCode,
   italic,
+  memberNicknameMention,
   quote,
+  roleMention,
+  spoiler,
   strikethrough,
   time,
   TimestampStyles,
   TimestampStylesString,
   underscore,
-  spoiler,
+  userMention,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import { ChildProcess } from 'child_process';
@@ -125,7 +130,7 @@ import {
   RawWelcomeChannelData,
   RawWelcomeScreenData,
   RawWidgetData,
-  RawWidgetMemberData,
+  RawWidgetMemberData
 } from './rawDataTypes';
 
 //#region Classes
@@ -1912,18 +1917,23 @@ export class Util extends null {
 export class Formatters extends null {
   public static blockQuote: typeof blockQuote;
   public static bold: typeof bold;
+  public static channelMention: typeof channelMention;
   public static codeBlock: typeof codeBlock;
+  public static formatEmoji: typeof formatEmoji;
   public static hideLinkEmbed: typeof hideLinkEmbed;
   public static hyperlink: typeof hyperlink;
   public static inlineCode: typeof inlineCode;
   public static italic: typeof italic;
+  public static memberNicknameMention: typeof memberNicknameMention;
   public static quote: typeof quote;
+  public static roleMention: typeof roleMention;
+  public static spoiler: typeof spoiler;
   public static strikethrough: typeof strikethrough;
   public static time: typeof time;
   public static TimestampStyles: typeof TimestampStyles;
   public static TimestampStylesString: TimestampStylesString;
   public static underscore: typeof underscore;
-  public static spoiler: typeof spoiler;
+  public static userMention: typeof userMention;
 }
 
 export class VoiceChannel extends BaseGuildVoiceChannel {

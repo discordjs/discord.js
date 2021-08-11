@@ -3,17 +3,22 @@
 const {
   blockQuote,
   bold,
+  channelMention,
   codeBlock,
+  formatEmoji,
   hideLinkEmbed,
   hyperlink,
   inlineCode,
   italic,
+  memberNicknameMention,
   quote,
+  roleMention,
+  spoiler,
   strikethrough,
   time,
   TimestampStyles,
   underscore,
-  spoiler,
+  userMention,
 } = require('@discordjs/builders');
 
 /**
@@ -40,6 +45,15 @@ Formatters.blockQuote = blockQuote;
 Formatters.bold = bold;
 
 /**
+ * Formats a channel ID into a channel mention.
+ * @method channelMention
+ * @memberof Formatters
+ * @param {string} channelId The channel ID to format.
+ * @returns {string}
+ */
+Formatters.channelMention = channelMention;
+
+/**
  * Wraps the content inside a codeblock with an optional language.
  * @method codeBlock
  * @memberof Formatters
@@ -50,7 +64,17 @@ Formatters.bold = bold;
 Formatters.codeBlock = codeBlock;
 
 /**
- * Formats the URL into <>, which stops it from embedding.
+ * Formats an emoji ID into a fully qualified emoji identifier
+ * @method formatEmoji
+ * @memberof Formatters
+ * @param {string} emojiId The emoji ID to format.
+ * @param {boolean} [animated] Whether the emoji is animated or not. Defaults to `false`
+ * @returns {string}
+ */
+Formatters.formatEmoji = formatEmoji;
+
+/**
+ * Wraps the URL into `<>`, which stops it from embedding.
  * @method hideLinkEmbed
  * @memberof Formatters
  * @param {string} content The content to wrap.
@@ -70,7 +94,7 @@ Formatters.hideLinkEmbed = hideLinkEmbed;
 Formatters.hyperlink = hyperlink;
 
 /**
- * Wraps the content inside an inline code.
+ * Wraps the content inside \`backticks\`, which formats it as inline code.
  * @method inlineCode
  * @memberof Formatters
  * @param {string} content The content to wrap.
@@ -88,6 +112,15 @@ Formatters.inlineCode = inlineCode;
 Formatters.italic = italic;
 
 /**
+ * Formats a user ID into a member-nickname mention.
+ * @method memberNicknameMention
+ * @memberof Formatters
+ * @param {string} memberId The user ID to format.
+ * @returns {string}
+ */
+Formatters.memberNicknameMention = memberNicknameMention;
+
+/**
  * Formats the content into a quote. This needs to be at the start of the line for Discord to format it.
  * @method quote
  * @memberof Formatters
@@ -97,7 +130,25 @@ Formatters.italic = italic;
 Formatters.quote = quote;
 
 /**
- * Formats the content into strikethrough text.
+ * Formats a role ID into a role mention.
+ * @method roleMention
+ * @memberof Formatters
+ * @param {string} roleId The role ID to format.
+ * @returns {string}
+ */
+Formatters.roleMention = roleMention;
+
+/**
+ * Formats the content into spoiler text.
+ * @method spoiler
+ * @memberof Formatters
+ * @param {string} content The content to spoiler.
+ * @returns {string}
+ */
+Formatters.spoiler = spoiler;
+
+/**
+ * Formats the content into strike-through text.
  * @method strikethrough
  * @memberof Formatters
  * @param {string} content The content to wrap.
@@ -146,12 +197,12 @@ Formatters.TimestampStyles = TimestampStyles;
 Formatters.underscore = underscore;
 
 /**
- * Formats the content into spoiler text.
- * @method spoiler
+ * Formats a user ID into a user mention.
+ * @method userMention
  * @memberof Formatters
- * @param {string} content The content to spoiler.
+ * @param {string} userId The user ID to format.
  * @returns {string}
  */
-Formatters.spoiler = spoiler;
+Formatters.userMention = userMention;
 
 module.exports = Formatters;
