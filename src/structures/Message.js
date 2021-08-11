@@ -810,7 +810,7 @@ class Message extends Base {
   }
 
   /**
-   * Indicates whether this Message is Partial.
+   * Indicates whether this message is a partial.
    * @returns {boolean}
    */
   isPartial() {
