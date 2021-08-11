@@ -96,9 +96,9 @@ class BaseCommandInteraction extends Interaction {
 
     if (members) {
       result.members = new Collection();
-      for (const member of Object.values(members)) {
-        const user = users[member.id];
-        result.members.set(member.id, this.guild?.members._add({ user, ...member }) ?? member);
+      for (const [id, member] of Object.entries(members)) {
+        const user = users[id];
+        result.members.set(id, this.guild?.members._add({ user, ...member }) ?? member);
       }
     }
 
