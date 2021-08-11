@@ -2938,8 +2938,13 @@ export interface ApplicationCommandChoicesData extends BaseApplicationCommandOpt
 }
 
 export interface ApplicationCommandSubOptionsData extends BaseApplicationCommandOptionsData {
-  type: CommandOptionSubOptionResolvableType;
-  options?: this[];
+  type: 'SUB_COMMAND_GROUP' | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP;
+  options?: ApplicationCommandSubCommandData[];
+}
+
+export interface ApplicationCommandSubCommandData extends BaseApplicationCommandOptionsData {
+  type: 'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND;
+  options?: (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData)[];
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
@@ -2949,7 +2954,8 @@ export interface ApplicationCommandNonOptionsData extends BaseApplicationCommand
 export type ApplicationCommandOptionData =
   | ApplicationCommandSubOptionsData
   | ApplicationCommandNonOptionsData
-  | ApplicationCommandChoicesData;
+  | ApplicationCommandChoicesData
+  | ApplicationCommandSubCommandData;
 
 export type ApplicationCommandOption = ApplicationCommandOptionData & {
   type: ApplicationCommandOptionType;
