@@ -1,22 +1,22 @@
 import {
   blockQuote,
   bold,
+  channelMention,
   codeBlock,
+  formatEmoji,
   hideLinkEmbed,
   hyperlink,
   inlineCode,
   italic,
+  memberNicknameMention,
   quote,
+  roleMention,
+  spoiler,
   strikethrough,
   time,
   TimestampStyles,
   TimestampStylesString,
   underscore,
-  spoiler,
-  channelMention,
-  formatEmoji,
-  memberNicknameMention,
-  roleMention,
   userMention,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
@@ -130,7 +130,7 @@ import {
   RawWelcomeChannelData,
   RawWelcomeScreenData,
   RawWidgetData,
-  RawWidgetMemberData,
+  RawWidgetMemberData
 } from './rawDataTypes';
 
 //#region Classes
