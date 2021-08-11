@@ -2881,11 +2881,8 @@ export interface ApplicationAsset {
   type: 'BIG' | 'SMALL';
 }
 
-export interface ApplicationCommandData {
+export interface BaseApplicationCommandData {
   name: string;
-  description?: string;
-  type?: ApplicationCommandType | ApplicationCommandTypes;
-  options?: ApplicationCommandOptionData[];
   defaultPermission?: boolean;
 }
 
@@ -2915,6 +2912,25 @@ export interface BaseApplicationCommandOptionsData {
   description: string;
   required?: boolean;
 }
+
+export interface UserApplicationCommandData extends BaseApplicationCommandData {
+  type: 'USER' | ApplicationCommandTypes.USER;
+}
+
+export interface MessageApplicationCommandData extends BaseApplicationCommandData {
+  type: 'MESSAGE' | ApplicationCommandTypes.MESSAGE;
+}
+
+export interface ChatInputApplicationCommandData extends BaseApplicationCommandData {
+  description: string;
+  type: 'CHAT_INPUT' | ApplicationCommandTypes.CHAT_INPUT;
+  options?: ApplicationCommandOptionData[];
+}
+
+export type ApplicationCommandData =
+  | UserApplicationCommandData
+  | MessageApplicationCommandData
+  | ChatInputApplicationCommandData;
 
 export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChoiceResolvableType;
