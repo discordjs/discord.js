@@ -1140,6 +1140,7 @@ export class Message extends Base {
   public toJSON(): unknown;
   public toString(): string;
   public unpin(): Promise<Message>;
+  public isPartial(): this is PartialMessage
 }
 
 export class MessageActionRow extends BaseMessageComponent {
