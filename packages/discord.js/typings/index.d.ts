@@ -2513,7 +2513,7 @@ export class VoiceState extends Base {
   public serverDeaf: boolean | null;
   public serverMute: boolean | null;
   public sessionId: string | null;
-  public streaming: boolean;
+  public streaming: boolean | null;
   public selfVideo: boolean | null;
   public suppress: boolean | null;
   public requestToSpeakTimestamp: number | null;
