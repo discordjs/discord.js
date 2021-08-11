@@ -128,30 +128,7 @@ import {
   RawWidgetMemberData,
 } from './rawDataTypes';
 
-export {
-  ActivityTypes,
-  ApplicationCommandOptionTypes,
-  ApplicationCommandPermissionTypes,
-  ApplicationCommandTypes,
-  ChannelTypes,
-  DefaultMessageNotificationLevels,
-  ExplicitContentFilterLevels,
-  InteractionResponseTypes,
-  InteractionTypes,
-  InviteTargetType,
-  MembershipStates,
-  MessageButtonStyles,
-  MessageComponentTypes,
-  MFALevels,
-  NSFWLevels,
-  OverwriteTypes,
-  PremiumTiers,
-  PrivacyLevels,
-  StickerFormatTypes,
-  StickerTypes,
-  VerificationLevels,
-  WebhookTypes,
-} from './enums';
+export * from './enums';
 
 //#region Classes
 
