@@ -31,7 +31,7 @@ class Formatters extends null {}
  * @method blockQuote
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.blockQuote = blockQuote;
 
@@ -40,7 +40,7 @@ Formatters.blockQuote = blockQuote;
  * @method bold
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.bold = bold;
 
@@ -49,7 +49,7 @@ Formatters.bold = bold;
  * @method channelMention
  * @memberof Formatters
  * @param {string} channelId The channel ID to format.
- * @returns {string} The formatted channel mention.
+ * @returns {string}
  */
 Formatters.channelMention = channelMention;
 
@@ -59,7 +59,7 @@ Formatters.channelMention = channelMention;
  * @memberof Formatters
  * @param {string} contentOrLanguage The language to use, content if a second parameter isn't provided.
  * @param {string} [content] The content to wrap.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.codeBlock = codeBlock;
 
@@ -69,7 +69,7 @@ Formatters.codeBlock = codeBlock;
  * @memberof Formatters
  * @param {string} emojiId The emoji ID to format.
  * @param {boolean} [animated] Whether the emoji is animated or not. Defaults to `false`
- * @returns {string} The formatted emoji.
+ * @returns {string}
  */
 Formatters.formatEmoji = formatEmoji;
 
@@ -78,7 +78,7 @@ Formatters.formatEmoji = formatEmoji;
  * @method hideLinkEmbed
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.hideLinkEmbed = hideLinkEmbed;
 
@@ -89,7 +89,7 @@ Formatters.hideLinkEmbed = hideLinkEmbed;
  * @param {string} content The content to display.
  * @param {string} url The URL the content links to.
  * @param {string} [title] The title shown when hovering on the masked link.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.hyperlink = hyperlink;
 
@@ -98,7 +98,7 @@ Formatters.hyperlink = hyperlink;
  * @method inlineCode
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.inlineCode = inlineCode;
 
@@ -107,7 +107,7 @@ Formatters.inlineCode = inlineCode;
  * @method italic
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.italic = italic;
 
@@ -116,7 +116,7 @@ Formatters.italic = italic;
  * @method memberNicknameMention
  * @memberof Formatters
  * @param {string} memberId The user ID to format.
- * @returns {string} The formatted member-nickname mention.
+ * @returns {string}
  */
 Formatters.memberNicknameMention = memberNicknameMention;
 
@@ -125,7 +125,7 @@ Formatters.memberNicknameMention = memberNicknameMention;
  * @method quote
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.quote = quote;
 
@@ -134,7 +134,7 @@ Formatters.quote = quote;
  * @method roleMention
  * @memberof Formatters
  * @param {string} roleId The role ID to format.
- * @returns {string} The formatted role mention.
+ * @returns {string}
  */
 Formatters.roleMention = roleMention;
 
@@ -143,7 +143,7 @@ Formatters.roleMention = roleMention;
  * @method spoiler
  * @memberof Formatters
  * @param {string} content The content to spoiler.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.spoiler = spoiler;
 
@@ -152,7 +152,7 @@ Formatters.spoiler = spoiler;
  * @method strikethrough
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.strikethrough = strikethrough;
 
@@ -162,7 +162,7 @@ Formatters.strikethrough = strikethrough;
  * @memberof Formatters
  * @param {number|Date} [date] The date to format.
  * @param {TimestampStyles} [style] The style to use.
- * @returns {string} The formatted timestamp.
+ * @returns {string}
  */
 Formatters.time = time;
 
@@ -192,7 +192,7 @@ Formatters.TimestampStyles = TimestampStyles;
  * @method underscore
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string} The formatted content.
+ * @returns {string}
  */
 Formatters.underscore = underscore;
 
@@ -201,7 +201,7 @@ Formatters.underscore = underscore;
  * @method userMention
  * @memberof Formatters
  * @param {string} userId The user ID to format.
- * @returns {string} The formatted user mention.
+ * @returns {string}
  */
 Formatters.userMention = userMention;
 
