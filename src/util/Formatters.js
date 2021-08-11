@@ -14,6 +14,11 @@ const {
   TimestampStyles,
   underscore,
   spoiler,
+  formatEmoji,
+  roleMention,
+  channelMention,
+  memberNicknameMention,
+  userMention,
 } = require('@discordjs/builders');
 
 /**
@@ -26,7 +31,7 @@ class Formatters extends null {}
  * @method blockQuote
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.blockQuote = blockQuote;
 
@@ -35,9 +40,18 @@ Formatters.blockQuote = blockQuote;
  * @method bold
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.bold = bold;
+
+/**
+ * Formats a channel ID into a channel mention.
+ * @method channelMention
+ * @memberof Formatters
+ * @param {string} channelId The channel ID to format.
+ * @returns {string} The formatted channel mention.
+ */
+Formatters.channelMention = channelMention;
 
 /**
  * Wraps the content inside a codeblock with an optional language.
@@ -45,16 +59,26 @@ Formatters.bold = bold;
  * @memberof Formatters
  * @param {string} contentOrLanguage The language to use, content if a second parameter isn't provided.
  * @param {string} [content] The content to wrap.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.codeBlock = codeBlock;
 
 /**
- * Formats the URL into <>, which stops it from embedding.
+ * Formats an emoji ID into a fully qualified emoji identifier
+ * @method formatEmoji
+ * @memberof Formatters
+ * @param {string} emojiId The emoji ID to format.
+ * @param {boolean} [animated] Whether the emoji is animated or not. Defaults to `false`
+ * @returns {string} The formatted emoji.
+ */
+Formatters.formatEmoji = formatEmoji;
+
+/**
+ * Wraps the URL into `<>`, which stops it from embedding.
  * @method hideLinkEmbed
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.hideLinkEmbed = hideLinkEmbed;
 
@@ -65,16 +89,16 @@ Formatters.hideLinkEmbed = hideLinkEmbed;
  * @param {string} content The content to display.
  * @param {string} url The URL the content links to.
  * @param {string} [title] The title shown when hovering on the masked link.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.hyperlink = hyperlink;
 
 /**
- * Wraps the content inside an inline code.
+ * Wraps the content inside \`backticks\`, which formats it as inline code.
  * @method inlineCode
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.inlineCode = inlineCode;
 
@@ -83,25 +107,52 @@ Formatters.inlineCode = inlineCode;
  * @method italic
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.italic = italic;
+
+/**
+ * Formats a user ID into a member-nickname mention.
+ * @method memberNicknameMention
+ * @memberof Formatters
+ * @param {string} memberId The user ID to format.
+ * @returns {string} The formatted member-nickname mention.
+ */
+Formatters.memberNicknameMention = memberNicknameMention;
 
 /**
  * Formats the content into a quote. This needs to be at the start of the line for Discord to format it.
  * @method quote
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.quote = quote;
 
 /**
- * Formats the content into strikethrough text.
+ * Formats a role ID into a role mention.
+ * @method roleMention
+ * @memberof Formatters
+ * @param {string} roleId The role ID to format.
+ * @returns {string} The formatted role mention.
+ */
+Formatters.roleMention = roleMention;
+
+/**
+ * Formats the content into spoiler text.
+ * @method spoiler
+ * @memberof Formatters
+ * @param {string} content The content to spoiler.
+ * @returns {string} The formatted content.
+ */
+Formatters.spoiler = spoiler;
+
+/**
+ * Formats the content into strike-through text.
  * @method strikethrough
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.strikethrough = strikethrough;
 
@@ -111,7 +162,7 @@ Formatters.strikethrough = strikethrough;
  * @memberof Formatters
  * @param {number|Date} [date] The date to format.
  * @param {TimestampStyles} [style] The style to use.
- * @returns {string}
+ * @returns {string} The formatted timestamp.
  */
 Formatters.time = time;
 
@@ -141,17 +192,17 @@ Formatters.TimestampStyles = TimestampStyles;
  * @method underscore
  * @memberof Formatters
  * @param {string} content The content to wrap.
- * @returns {string}
+ * @returns {string} The formatted content.
  */
 Formatters.underscore = underscore;
 
 /**
- * Formats the content into spoiler text.
- * @method spoiler
+ * Formats a user ID into a user mention.
+ * @method userMention
  * @memberof Formatters
- * @param {string} content The content to spoiler.
- * @returns {string}
+ * @param {string} userId The user ID to format.
+ * @returns {string} The formatted user mention.
  */
-Formatters.spoiler = spoiler;
+Formatters.userMention = userMention;
 
 module.exports = Formatters;
