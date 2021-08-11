@@ -1,0 +1,24 @@
+name: Format Code
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2.4.0
+        with:
+          node-version: "16.x"
+      - name: Install dependencies
+        run: npm install
+      - name: Run format
+        run: npm run prettier
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          author_name: github-actions[bot]
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com
+          message: "style: 🎨 format code"
