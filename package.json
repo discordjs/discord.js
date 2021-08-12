@@ -10,8 +10,11 @@
     "typings"
   ],
   "exports": {
-    "require": "./src/index.js",
-    "import": "./src/index.mjs"
+    "./*": "./*",
+    ".": {
+      "require": "./src/index.js",
+      "import": "./src/index.mjs"
+    }
   },
   "scripts": {
     "test": "npm run lint && npm run docs:test && npm run lint:typings",
