@@ -80,7 +80,7 @@ class BaseCommandInteraction extends Interaction {
    * @typedef {Object} CommandInteractionResolvedData
    * @property {Collection<string, User>} [users] The resolved users
    * @property {Collection<string, GuildMember|APIGuildMember>} [members] The resolved guild members
-   * @property {Collection<string, Role|APIRole>} [roles] The resolved messages
+   * @property {Collection<string, Role|APIRole>} [roles] The resolved roles
    * @property {Collection<string, Channel|APIChannel>} [channels] The resolved channels
    * @property {Collection<string, Message|APIMessage>} [messages] The resolved messages
    */
