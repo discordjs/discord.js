@@ -206,6 +206,24 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
+   * Options used for listing guild members.
+   * @typedef {Object} GuildListMembersOptions
+   * @property {Snowflake} [after] Limit fetching members to those with an id greater than the supplied id
+   * @property {number} [limit=1] Maximum number of members to list
+   * @property {boolean} [cache=true] Whether or not to cache the fetched member(s)
+   */
+
+  /**
+   * Lists up to 1000 members of the guild.
+   * @param {GuildListMembersOptions} [options] Options for listing members
+   * @returns {Promise<Collection<Snowflake, GuildMember>>}
+   */
+  async list({ after, limit = 1, cache = true } = {}) {
+    const data = await this.client.api.guilds(this.guild.id).members.get({ query: { after, limit } });
+    return data.reduce((col, member) => col.set(member.user.id, this._add(member, cache)), new Collection());
+  }
+
+  /**
    * Edits a member of the guild.
    * <info>The user must be a member of the guild</info>
    * @param {UserResolvable} user The member to edit

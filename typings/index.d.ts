@@ -2477,6 +2477,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   ): Promise<GuildMember>;
   public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public kick(user: UserResolvable, reason?: string): Promise<GuildMember | User | Snowflake>;
+  public list(options?: GuildListMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
@@ -3863,6 +3864,12 @@ export interface GuildWidgetSettingsData {
 
 export interface GuildSearchMembersOptions {
   query: string;
+  limit?: number;
+  cache?: boolean;
+}
+
+export interface GuildListMembersOptions {
+  after?: Snowflake;
   limit?: number;
   cache?: boolean;
 }
