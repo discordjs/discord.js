@@ -1284,13 +1284,6 @@ class Guild extends AnonymousGuild {
    * and stage channels.
    * @type {Function}
    * @readonly
-   * @example
-   * const { joinVoiceChannel } = require('@discordjs/voice');
-   * const voiceConnection = joinVoiceChannel({
-   *  channelId: channel.id,
-   *  guildId: channel.guild.id,
-   *  adapterCreator: channel.guild.voiceAdapterCreator,
-   * });
    */
   get voiceAdapterCreator() {
     return methods => {
