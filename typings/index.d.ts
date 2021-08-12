@@ -2936,7 +2936,7 @@ export interface MessageApplicationCommandData extends BaseApplicationCommandDat
 
 export interface ChatInputApplicationCommandData extends BaseApplicationCommandData {
   description: string;
-  type: 'CHAT_INPUT' | ApplicationCommandTypes.CHAT_INPUT;
+  type?: 'CHAT_INPUT' | ApplicationCommandTypes.CHAT_INPUT;
   options?: ApplicationCommandOptionData[];
 }
 
