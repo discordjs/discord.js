@@ -2936,19 +2936,14 @@ export interface MessageApplicationCommandData extends BaseApplicationCommandDat
 
 export interface ChatInputApplicationCommandData extends BaseApplicationCommandData {
   description: string;
-  type: 'CHAT_INPUT' | ApplicationCommandTypes.CHAT_INPUT;
-  options?: ApplicationCommandOptionData[];
-}
-
-export interface OptionalChatInputApplicationCommandData extends Omit<ChatInputApplicationCommandData, 'type'> {
   type?: 'CHAT_INPUT' | ApplicationCommandTypes.CHAT_INPUT;
+  options?: ApplicationCommandOptionData[];
 }
 
 export type ApplicationCommandData =
   | UserApplicationCommandData
   | MessageApplicationCommandData
-  | ChatInputApplicationCommandData
-  | OptionalChatInputApplicationCommandData;
+  | ChatInputApplicationCommandData;
 
 export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChoiceResolvableType;
