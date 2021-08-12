@@ -669,7 +669,7 @@ export class Guild extends AnonymousGuild {
   public members: GuildMemberManager;
   public mfaLevel: MFALevel;
   public ownerId: Snowflake;
-  public preferredLocale?: string;
+  public preferredLocale: string;
   public premiumSubscriptionCount: number | null;
   public premiumTier: PremiumTier;
   public presences: PresenceManager;
