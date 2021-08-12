@@ -130,7 +130,7 @@ import {
   RawWelcomeChannelData,
   RawWelcomeScreenData,
   RawWidgetData,
-  RawWidgetMemberData
+  RawWidgetMemberData,
 } from './rawDataTypes';
 
 //#region Classes
@@ -2107,16 +2107,16 @@ export class WidgetMember extends Base {
   public id: string;
   public username: string;
   public discriminator: string;
-  public avatar?: string;
+  public avatar: string | null;
   public status: PresenceStatus;
-  public deaf?: boolean;
-  public mute?: boolean;
-  public selfDeaf?: boolean;
-  public selfMute?: boolean;
-  public suppress?: boolean;
-  public channelId?: Snowflake;
+  public deaf: boolean | null;
+  public mute: boolean | null;
+  public selfDeaf: boolean | null;
+  public selfMute: boolean | null;
+  public suppress: boolean | null;
+  public channelId: Snowflake | null;
   public avatarURL: string;
-  public activity?: WidgetActivity;
+  public activity: WidgetActivity | null;
 }
 
 export class WelcomeChannel extends Base {
