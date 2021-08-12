@@ -214,7 +214,7 @@ class GuildMemberManager extends CachedManager {
    */
 
   /**
-   * Lists upto 1000 members of the guild.
+   * Lists up to 1000 members of the guild.
    * @param {GuildListMembersOptions} [options] Options for listing members
    * @returns {Promise<Collection<Snowflake, GuildMember>>}
    */
