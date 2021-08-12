@@ -18,6 +18,7 @@ class CommandInteraction extends BaseCommandInteraction {
     this.options = new CommandInteractionOptionResolver(
       this.client,
       data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
+      this.transformResolved(data.data.resolved ?? {}),
     );
   }
 }

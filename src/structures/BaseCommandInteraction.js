@@ -1,5 +1,6 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
@@ -72,6 +73,64 @@ class BaseCommandInteraction extends Interaction {
   get command() {
     const id = this.commandId;
     return this.guild?.commands.cache.get(id) ?? this.client.application.commands.cache.get(id) ?? null;
+  }
+
+  /**
+   * Represents the resolved data of a received command interaction.
+   * @typedef {Object} CommandInteractionResolvedData
+   * @property {Collection<string, User>} [users] The resolved users
+   * @property {Collection<string, GuildMember|APIGuildMember>} [members] The resolved guild members
+   * @property {Collection<string, Role|APIRole>} [roles] The resolved roles
+   * @property {Collection<string, Channel|APIChannel>} [channels] The resolved channels
+   * @property {Collection<string, Message|APIMessage>} [messages] The resolved messages
+   */
+
+  /**
+   * Transforms the resolved received from the API.
+   * @param {APIInteractionDataResolved} resolved The received resolved objects
+   * @returns {CommandInteractionResolvedData}
+   * @private
+   */
+  transformResolved({ members, users, channels, roles, messages }) {
+    const result = {};
+
+    if (members) {
+      result.members = new Collection();
+      for (const [id, member] of Object.entries(members)) {
+        const user = users[id];
+        result.members.set(id, this.guild?.members._add({ user, ...member }) ?? member);
+      }
+    }
+
+    if (users) {
+      result.users = new Collection();
+      for (const user of Object.values(users)) {
+        result.users.set(user.id, this.client.users._add(user));
+      }
+    }
+
+    if (roles) {
+      result.roles = new Collection();
+      for (const role of Object.values(roles)) {
+        result.roles.set(role.id, this.guild?.roles._add(role) ?? role);
+      }
+    }
+
+    if (channels) {
+      result.channels = new Collection();
+      for (const channel of Object.values(channels)) {
+        result.channels.set(channel.id, this.client.channels._add(channel, this.guild) ?? channel);
+      }
+    }
+
+    if (messages) {
+      result.messages = new Collection();
+      for (const message of Object.values(messages)) {
+        result.messages.set(message.id, this.channel?.messages?._add(message) ?? message);
+      }
+    }
+
+    return result;
   }
 
   /**

@@ -15,7 +15,11 @@ class ContextMenuInteraction extends BaseCommandInteraction {
      * The target of the interaction, parsed into options
      * @type {CommandInteractionOptionResolver}
      */
-    this.options = new CommandInteractionOptionResolver(this.client, this.resolveContextMenuOptions(data.data));
+    this.options = new CommandInteractionOptionResolver(
+      this.client,
+      this.resolveContextMenuOptions(data.data),
+      this.transformResolved(data.data.resolved),
+    );
 
     /**
      * The id of the target of the interaction
