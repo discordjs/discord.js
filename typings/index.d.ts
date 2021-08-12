@@ -1670,7 +1670,7 @@ export class StageInstance extends Base {
   public channelId: Snowflake;
   public topic: string;
   public privacyLevel: PrivacyLevel;
-  public discoverableDisabled: boolean;
+  public discoverableDisabled: boolean | null;
   public readonly channel: StageChannel | null;
   public readonly guild: Guild | null;
   public edit(options: StageInstanceEditOptions): Promise<StageInstance>;
