@@ -3261,7 +3261,7 @@ export interface CommandInteractionResolvedData {
   users?: Collection<string, User>;
   members?: Collection<string, GuildMember | APIInteractionDataResolvedGuildMember>;
   roles?: Collection<string, Role | APIRole>;
-  channels?: Collection<string, GuildChannel | APIInteractionDataResolvedChannel>;
+  channels?: Collection<string, Channel | APIInteractionDataResolvedChannel>;
   messages?: Collection<string, Message | APIMessage>;
 }
 
