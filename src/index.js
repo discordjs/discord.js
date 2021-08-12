@@ -31,6 +31,7 @@ module.exports = {
   ThreadMemberFlags: require('./util/ThreadMemberFlags'),
   UserFlags: require('./util/UserFlags'),
   Util: require('./util/Util'),
+  TypeGuards: require('./util/TypeGuards'),
   version: require('../package.json').version,
 
   // Managers

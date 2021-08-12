@@ -1938,6 +1938,26 @@ export class Formatters extends null {
   public static userMention: typeof userMention;
 }
 
+export class TypeGuards extends null {
+  private constructor();
+  public static isChatInputCommandData(
+    commandData: ApplicationCommandData,
+  ): commandData is ChatInputApplicationCommandData;
+  public static isContextMenuCommandData(
+    commandData: ApplicationCommandData,
+  ): commandData is MessageApplicationCommandData | UserApplicationCommandData;
+  public static optionDataSupportsChoices(
+    commandOptionData: ApplicationCommandOptionData,
+  ): commandOptionData is ApplicationCommandChoicesData;
+  public static optionDataSupportsSubOptions(
+    commandOptionData: ApplicationCommandOptionData,
+  ): commandOptionData is ApplicationCommandSubGroupData | ApplicationCommandSubGroupData;
+  public static isLinkButtonOptions(buttonOptions: MessageButtonOptions): buttonOptions is LinkButtonOptions;
+  public static isInteractionButtonOptions(
+    buttonOptions: MessageButtonOptions,
+  ): buttonOptions is InteractionButtonOptions;
+}
+
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public readonly editable: boolean;
   public readonly speakable: boolean;
