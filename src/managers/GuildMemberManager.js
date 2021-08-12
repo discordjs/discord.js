@@ -209,7 +209,7 @@ class GuildMemberManager extends CachedManager {
    * Options used for listing guild members.
    * @typedef {Object} GuildListMembersOptions
    * @property {Snowflake} [after] Limit fetching members to those with an id greater than the supplied id
-   * @property {number} [limit = 1] Maximum number of members to list
+   * @property {number} [limit=1] Maximum number of members to list
    * @property {boolean} [cache=true] Whether or not to cache the fetched member(s)
    */
 
