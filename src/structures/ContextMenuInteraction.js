@@ -50,7 +50,7 @@ class ContextMenuInteraction extends BaseCommandInteraction {
         name: 'message',
         type: '_MESSAGE',
         value: target_id,
-        message: this.channel?.messages._add(resolved.messages[target_id]),
+        message: this.channel?.messages._add(resolved.messages[target_id]) ?? resolved.messages[target_id],
       });
     }
 
