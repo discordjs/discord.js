@@ -130,7 +130,7 @@ import {
   RawWelcomeChannelData,
   RawWelcomeScreenData,
   RawWidgetData,
-  RawWidgetMemberData
+  RawWidgetMemberData,
 } from './rawDataTypes';
 
 //#region Classes
@@ -3524,6 +3524,7 @@ export interface FetchedThreads {
 
 export interface FetchGuildOptions extends BaseFetchOptions {
   guild: GuildResolvable;
+  withCounts?: boolean;
 }
 
 export interface FetchGuildsOptions {
