@@ -2898,6 +2898,33 @@ export interface BaseApplicationCommandData {
   defaultPermission?: boolean;
 }
 
+export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType | ApplicationCommandOptionTypes;
+
+export type CommandOptionChoiceResolvableType =
+  | ApplicationCommandOptionTypes.NUMBER
+  | 'NUMBER'
+  | ApplicationCommandOptionTypes.STRING
+  | 'STRING'
+  | ApplicationCommandOptionTypes.INTEGER
+  | 'INTEGER';
+
+export type CommandOptionSubOptionResolvableType =
+  | ApplicationCommandOptionTypes.SUB_COMMAND
+  | 'SUB_COMMAND'
+  | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP
+  | 'SUB_COMMAND_GROUP';
+
+export type CommandOptionNonChoiceResolvableType = Exclude<
+  CommandOptionDataTypeResolvable,
+  CommandOptionChoiceResolvableType | CommandOptionSubOptionResolvableType
+>;
+
+export interface BaseApplicationCommandOptionsData {
+  name: string;
+  description: string;
+  required?: boolean;
+}
+
 export interface UserApplicationCommandData extends BaseApplicationCommandData {
   type: 'USER' | ApplicationCommandTypes.USER;
 }
@@ -2917,19 +2944,35 @@ export type ApplicationCommandData =
   | MessageApplicationCommandData
   | ChatInputApplicationCommandData;
 
-export interface ApplicationCommandOptionData {
-  type: ApplicationCommandOptionType | ApplicationCommandOptionTypes;
-  name: string;
-  description: string;
-  required?: boolean;
+export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
+  type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoice[];
-  options?: ApplicationCommandOptionData[];
 }
 
-export interface ApplicationCommandOption extends ApplicationCommandOptionData {
+export interface ApplicationCommandSubGroupData extends BaseApplicationCommandOptionsData {
+  type: 'SUB_COMMAND_GROUP' | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP;
+  options?: ApplicationCommandSubCommandData[];
+}
+
+export interface ApplicationCommandSubCommandData extends BaseApplicationCommandOptionsData {
+  type: 'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND;
+  options?: (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData)[];
+}
+
+export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
+  type: CommandOptionNonChoiceResolvableType;
+}
+
+export type ApplicationCommandOptionData =
+  | ApplicationCommandSubGroupData
+  | ApplicationCommandNonOptionsData
+  | ApplicationCommandChoicesData
+  | ApplicationCommandSubCommandData;
+
+export type ApplicationCommandOption = ApplicationCommandOptionData & {
   type: ApplicationCommandOptionType;
   options?: ApplicationCommandOption[];
-}
+};
 
 export interface ApplicationCommandOptionChoice {
   name: string;
