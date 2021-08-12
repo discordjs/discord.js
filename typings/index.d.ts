@@ -2941,9 +2941,7 @@ export interface ChatInputApplicationCommandData extends BaseApplicationCommandD
 }
 
 export interface OptionalChatInputApplicationCommandData extends Omit<ChatInputApplicationCommandData, 'type'> {
-  description: string;
   type?: 'CHAT_INPUT' | ApplicationCommandTypes.CHAT_INPUT;
-  options?: ApplicationCommandOptionData[];
 }
 
 export type ApplicationCommandData =
