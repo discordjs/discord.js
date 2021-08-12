@@ -2253,6 +2253,7 @@ export const Constants: {
   PrivacyLevels: typeof PrivacyLevels;
   WebhookTypes: typeof WebhookTypes;
   PremiumTiers: typeof PremiumTiers;
+  ApplicationCommandTypes: typeof ApplicationCommandTypes;
 };
 
 export const version: string;
