@@ -2940,10 +2940,17 @@ export interface ChatInputApplicationCommandData extends BaseApplicationCommandD
   options?: ApplicationCommandOptionData[];
 }
 
+export interface OptionalChatInputApplicationCommandData extends Omit<ChatInputApplicationCommandData, 'type'> {
+  description: string;
+  type?: 'CHAT_INPUT' | ApplicationCommandTypes.CHAT_INPUT;
+  options?: ApplicationCommandOptionData[];
+}
+
 export type ApplicationCommandData =
   | UserApplicationCommandData
   | MessageApplicationCommandData
-  | ChatInputApplicationCommandData;
+  | ChatInputApplicationCommandData
+  | OptionalChatInputApplicationCommandData;
 
 export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChoiceResolvableType;
