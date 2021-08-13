@@ -158,7 +158,7 @@ class GuildChannel extends Channel {
 
   /**
    * Checks if the channel is viewable by the public.
-   * @returns {boolean} true if public, false otherwise.
+   * @type {boolean} true if public, false otherwise.
    */
   get publiclyViewable() {
     const { everyone } = this.guild.roles;
