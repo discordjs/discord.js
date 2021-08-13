@@ -86,7 +86,7 @@ class Channel extends Base {
 
   /**
    * Deletes this channel.
-   * @param {string} [reason=undefined] The reason for the channel being deleted.
+   * @param {string} [reason] Reason for deleting this channel
    * @returns {Promise<Channel>}
    * @example
    * // Delete the channel
