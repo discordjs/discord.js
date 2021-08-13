@@ -15,7 +15,7 @@ class TypeGuards extends null {
    * @param {any[]} fields The enum fields to check.
    * @returns {boolean} Whether the type is part of the enum.
    */
-  static isPartofEnum(type, object, fields) {
+  static isPartOfEnum(type, object, fields) {
     const resolvedType = typeof type === 'number' ? type : object[type];
     fields = fields.map(field => object[field]);
     return fields.includes(resolvedType);
@@ -27,7 +27,7 @@ class TypeGuards extends null {
    * @returns {boolean} True if it conforms to chat input command data, false otherwise.
    */
   static isChatInputCommandData(commandData) {
-    return TypeGuards.isPartofEnum(commandData.type, ApplicationCommandTypes, ['CHAT_INPUT']);
+    return TypeGuards.isPartOfEnum(commandData.type, ApplicationCommandTypes, ['CHAT_INPUT']);
   }
 
   /**
@@ -36,7 +36,7 @@ class TypeGuards extends null {
    * @returns {boolean} True if it conforms to chat input command data, false otherwise.
    */
   static isContextMenuCommandData(commandData) {
-    return TypeGuards.isPartofEnum(commandData.type, ApplicationCommandTypes, ['MESSAGE', 'USER']);
+    return TypeGuards.isPartOfEnum(commandData.type, ApplicationCommandTypes, ['MESSAGE', 'USER']);
   }
 
   /**
@@ -45,7 +45,7 @@ class TypeGuards extends null {
    * @returns {boolean} True if the option supports choices, false otherwise.
    */
   static optionDataSupportsChoices(commandOptionData) {
-    return TypeGuards.isPartofEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
+    return TypeGuards.isPartOfEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
       'BOOLEAN',
       'INTEGER',
       'STRING',
@@ -59,7 +59,7 @@ class TypeGuards extends null {
    * @returns {boolean} True if the option supports options, false otherwise.
    */
   static optionDataSupportsSubOptions(commandOptionData) {
-    return TypeGuards.isPartofEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
+    return TypeGuards.isPartOfEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
       'SUB_COMMAND',
       'SUB_COMMAND_GROUP',
     ]);
@@ -71,7 +71,7 @@ class TypeGuards extends null {
    * @returns {boolean} True if the option supports URL's, false otherwise.
    */
   static isLinkButtonOptions(messageButtonOptions) {
-    return TypeGuards.isPartofEnum(messageButtonOptions.type, MessageButtonStyles, ['LINK']);
+    return TypeGuards.isPartOfEnum(messageButtonOptions.type, MessageButtonStyles, ['LINK']);
   }
 
   /**
