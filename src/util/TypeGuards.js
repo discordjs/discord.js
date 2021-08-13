@@ -10,10 +10,10 @@ class TypeGuards extends null {
    * Resolves a given type to an enum equivalent value, and
    * checks if it's part of the given enum type.
    * @private
-   * @param {string | number} type The type to resolve.
-   * @param {any} object The enum to resolve to.
-   * @param {any[]} fields The enum fields to check.
-   * @returns {boolean} Whether the type is part of the enum.
+   * @param {string|number} type The type to resolve
+   * @param {any} object The enum to resolve to
+   * @param {any[]} fields The enum fields to check
+   * @returns {boolean} Whether the type is part of the enum
    */
   static isPartofEnum(type, object, fields) {
     const resolvedType = typeof type === 'number' ? type : object[type];
