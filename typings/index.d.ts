@@ -220,6 +220,14 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
   public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData): boolean;
+  public static optionsEqual(
+    existing: ApplicationCommandOption[],
+    options: ApplicationCommandOption[] | ApplicationCommandOptionData[] | APIApplicationCommandOption[],
+  ): boolean;
+  private static _optionEquals(
+    existing: ApplicationCommandOption,
+    options: ApplicationCommandOption | ApplicationCommandOptionData | APIApplicationCommandOption,
+  ): boolean;
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
 }
 

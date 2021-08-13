@@ -164,7 +164,7 @@ class ApplicationCommand extends Base {
    * @returns {boolean}
    */
   equals(command) {
-    // If given an id, early return
+    // If given an id, check if the id matches
     if (command.id && this.id !== command.id) return false;
 
     // Check top level parameters
@@ -181,47 +181,62 @@ class ApplicationCommand extends Base {
       return false;
     }
 
-    // Check a singular option
-    function optionEquals(existing, option) {
-      const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
-      // We don't check name here because name is guaranteed to match via the find operation in optionsEqual
-      if (
-        optionType !== existing.type ||
-        option.description !== existing.description ||
-        (option.required ??
-          (optionType === 'SUB_COMMAND' || optionType === 'SUB_COMMAND_GROUP' ? undefined : false) !==
-            existing.required) ||
-        option.choices?.length !== existing.choices?.length ||
-        option.options?.length !== existing.options?.length
-      ) {
-        return false;
-      }
-
-      if (existing.choices) {
-        for (const choice of existing.choices) {
-          const foundChoice = option.choices.find(c => c.name === choice.name);
-          if (!foundChoice) return false;
-          if (foundChoice.value !== choice.value) return false;
-        }
-      }
-
-      if (existing.options) {
-        return optionsEqual(existing.options, option.options);
-      }
-      return true;
-    }
-
-    // Check an array of options
-    function optionsEqual(existing, options) {
-      for (const option of existing) {
-        const foundOption = options.find(o => o.name === option.name);
-        if (!foundOption) return false;
-        if (!optionEquals(option, foundOption)) return false;
-      }
-      return true;
-    }
     if (command.options) {
-      return optionsEqual(this.options, command.options);
+      return this.constructor.optionsEqual(this.options, command.options);
+    }
+    return true;
+  }
+
+  /**
+   * Recursively checks that all options for an {@link ApplicationCommand} are equal to the provided options.
+   * In most cases it is better to compare using {@link ApplicationCommand#equals}
+   * @param {ApplicationCommandOptionData[]} existing The options on the existing command,
+   * should be {@link ApplicationCommand#options}
+   * @param {ApplicationCommandOptionData[]|APIApplicationCommandOption[]} options The options to compare against
+   * @returns {boolean}
+   */
+  static optionsEqual(existing, options) {
+    if (existing.length !== options.length) return false;
+    for (const option of existing) {
+      const foundOption = options.find(o => o.name === option.name);
+      if (!foundOption || !this._optionEquals(option, foundOption)) return false;
+    }
+    return true;
+  }
+
+  /**
+   * Checks that an option for an {@link ApplicationCommand} is equal to the provided option
+   * In most cases it is better to compare using {@link ApplicationCommand#equals}
+   * @param {ApplicationCommandOptionData} existing The option on the existing command,
+   * should be from {@link ApplicationCommand#options}
+   * @param {ApplicationCommandOptionData|APIApplicationCommandOption} option The option to compare against
+   * @returns {boolean}
+   * @private
+   */
+  static _optionEquals(existing, option) {
+    const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
+    if (
+      option.name !== existing.name ||
+      optionType !== existing.type ||
+      option.description !== existing.description ||
+      (option.required ??
+        (optionType === 'SUB_COMMAND' || optionType === 'SUB_COMMAND_GROUP' ? undefined : false) !==
+          existing.required) ||
+      option.choices?.length !== existing.choices?.length ||
+      option.options?.length !== existing.options?.length
+    ) {
+      return false;
+    }
+
+    if (existing.choices) {
+      for (const choice of existing.choices) {
+        const foundChoice = option.choices.find(c => c.name === choice.name);
+        if (!foundChoice || foundChoice.value !== choice.value) return false;
+      }
+    }
+
+    if (existing.options) {
+      return this.optionsEqual(existing.options, option.options);
     }
     return true;
   }
