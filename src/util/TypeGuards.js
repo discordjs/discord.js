@@ -10,10 +10,10 @@ class TypeGuards extends null {
    * Resolves a given type to an enum equivalent value, and
    * checks if it's part of the given enum type.
    * @private
-   * @param {string | number} type The type to resolve.
-   * @param {any} object The enum to resolve to.
-   * @param {any[]} fields The enum fields to check.
-   * @returns {boolean} Whether the type is part of the enum.
+   * @param {string|number} type The type to resolve
+   * @param {any} object The enum to resolve to
+   * @param {any[]} fields The enum fields to check
+   * @returns {boolean} Whether the type is part of the enum
    */
   static isPartOfEnum(type, object, fields) {
     const resolvedType = typeof type === 'number' ? type : object[type];
@@ -23,8 +23,8 @@ class TypeGuards extends null {
 
   /**
    * Verifies if the given command data is chat input command or not.
-   * @param {ApplicationCommandData} commandData The command data to check.
-   * @returns {boolean} True if it conforms to chat input command data, false otherwise.
+   * @param {ApplicationCommandData} commandData The command data to check
+   * @returns {boolean} True if it conforms to chat input command data, false otherwise
    */
   static isChatInputCommandData(commandData) {
     return TypeGuards.isPartOfEnum(commandData.type, ApplicationCommandTypes, ['CHAT_INPUT']);
@@ -32,8 +32,8 @@ class TypeGuards extends null {
 
   /**
    * Verifies if the given command data is a context menu command or not.
-   * @param {ApplicationCommandData} commandData The command data to check.
-   * @returns {boolean} True if it conforms to chat input command data, false otherwise.
+   * @param {ApplicationCommandData} commandData The command data to check
+   * @returns {boolean} True if it conforms to chat input command data, false otherwise
    */
   static isContextMenuCommandData(commandData) {
     return TypeGuards.isPartOfEnum(commandData.type, ApplicationCommandTypes, ['MESSAGE', 'USER']);
@@ -41,8 +41,8 @@ class TypeGuards extends null {
 
   /**
    * Verifies if the given command option data supports choices or not.
-   * @param {ApplicationCommandOptionData} commandOptionData The command option data to check.
-   * @returns {boolean} True if the option supports choices, false otherwise.
+   * @param {ApplicationCommandOptionData} commandOptionData The command option data to check
+   * @returns {boolean} True if the option supports choices, false otherwise
    */
   static optionDataSupportsChoices(commandOptionData) {
     return TypeGuards.isPartOfEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
@@ -55,8 +55,8 @@ class TypeGuards extends null {
 
   /**
    * Verifies if the given command option data supports options or not.
-   * @param {ApplicationCommandOptionData} commandOptionData The command option data to check.
-   * @returns {boolean} True if the option supports options, false otherwise.
+   * @param {ApplicationCommandOptionData} commandOptionData The command option data to check
+   * @returns {boolean} True if the option supports options, false otherwise
    */
   static optionDataSupportsSubOptions(commandOptionData) {
     return TypeGuards.isPartOfEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
@@ -66,18 +66,18 @@ class TypeGuards extends null {
   }
 
   /**
-   * Verifies if the given message button options support URL's or not.
-   * @param {MessageButtonOptions} messageButtonOptions The message button options to check.
-   * @returns {boolean} True if the option supports URL's, false otherwise.
+   * Verifies that the given message button options data supports URL.
+   * @param {MessageButtonOptions} messageButtonOptions The message button options to check
+   * @returns {boolean} True if the options data supports URL, false otherwise
    */
   static isLinkButtonOptions(messageButtonOptions) {
     return TypeGuards.isPartOfEnum(messageButtonOptions.type, MessageButtonStyles, ['LINK']);
   }
 
   /**
-   * Verifies if the given message button options support doesn't support URL's or not.
-   * @param {MessageButtonOptions} messageButtonOptions The message button options to check.
-   * @returns {boolean} True if the option doesn't support URL's, false otherwise.
+   * Verifies that the given message button options data doesn't support URL.
+   * @param {MessageButtonOptions} messageButtonOptions The message button options to check
+   * @returns {boolean} True if the options data doesn't support URL, false otherwise
    */
   static isInteractionButtonOptions(messageButtonOptions) {
     return !TypeGuards.isLinkButtonOptions(messageButtonOptions);
