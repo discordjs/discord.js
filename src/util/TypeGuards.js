@@ -23,8 +23,8 @@ class TypeGuards extends null {
 
   /**
    * Verifies if the given command data is chat input command or not.
-   * @param {ApplicationCommandData} commandData The command data to check.
-   * @returns {boolean} True if it conforms to chat input command data, false otherwise.
+   * @param {ApplicationCommandData} commandData The command data to check
+   * @returns {boolean} True if it conforms to chat input command data, false otherwise
    */
   static isChatInputCommandData(commandData) {
     return TypeGuards.isPartofEnum(commandData.type, ApplicationCommandTypes, ['CHAT_INPUT']);
