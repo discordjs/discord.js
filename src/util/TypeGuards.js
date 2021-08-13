@@ -75,9 +75,9 @@ class TypeGuards extends null {
   }
 
   /**
-   * Verifies if the given message button options support doesn't support URL's or not.
-   * @param {MessageButtonOptions} messageButtonOptions The message button options to check.
-   * @returns {boolean} True if the option doesn't support URL's, false otherwise.
+   * Verifies that the given message button options data doesn't support URL.
+   * @param {MessageButtonOptions} messageButtonOptions The message button options to check
+   * @returns {boolean} True if the options data doesn't support URL, false otherwise
    */
   static isInteractionButtonOptions(messageButtonOptions) {
     return !TypeGuards.isLinkButtonOptions(messageButtonOptions);
