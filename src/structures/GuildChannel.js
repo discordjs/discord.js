@@ -162,7 +162,7 @@ class GuildChannel extends Channel {
    */
   get publiclyViewable() {
     const { everyone } = this.guild.roles;
-    return this.permissionsFor(everyone)?.has(['VIEW_CHANNEL']) ?? false;
+    return this.permissionsFor(everyone)?.has(Permissions.FLAGS.VIEW_CHANNEL) ?? false;
   }
 
   /**
