@@ -41,8 +41,8 @@ class TypeGuards extends null {
 
   /**
    * Verifies if the given command option data supports choices or not.
-   * @param {ApplicationCommandOptionData} commandOptionData The command option data to check.
-   * @returns {boolean} True if the option supports choices, false otherwise.
+   * @param {ApplicationCommandOptionData} commandOptionData The command option data to check
+   * @returns {boolean} True if the option supports choices, false otherwise
    */
   static optionDataSupportsChoices(commandOptionData) {
     return TypeGuards.isPartofEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
