@@ -157,6 +157,76 @@ class ApplicationCommand extends Base {
   }
 
   /**
+   * Whether this copmmand equals another command. It compares all properties, so for most operations
+   * it is advisable to just compare `command.id === command2.id` as it is much faster and is often
+   * what most users need.
+   * @param {ApplicationCommand|ApplicationCommandData|APIApplicationCommand} command The command to compare with
+   * @returns {boolean}
+   */
+  equals(command) {
+    // If given an id, early return
+    if (command.id && this.id !== command.id) return false;
+
+    // Check top level parameters
+    const commandType = typeof command.type === 'string' ? command.type : ApplicationCommandTypes[command.type];
+    if (
+      command.name !== this.name ||
+      ('description' in command && command.description !== this.description) ||
+      (commandType && commandType !== this.type) ||
+      // Future proof for options being nullable
+      // TODO: remove ?? 0 on each when nullable
+      (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
+      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission
+    ) {
+      return false;
+    }
+
+    // Check a singular option
+    function optionEquals(existing, option) {
+      const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
+      // We don't check name here because name is guaranteed to match via the find operation in optionsEqual
+      if (
+        optionType !== existing.type ||
+        option.description !== existing.description ||
+        (option.required ??
+          (optionType === 'SUB_COMMAND' || optionType === 'SUB_COMMAND_GROUP' ? undefined : false) !==
+            existing.required) ||
+        option.choices?.length !== existing.choices?.length ||
+        option.options?.length !== existing.options?.length
+      ) {
+        return false;
+      }
+
+      if (existing.choices) {
+        for (const choice of existing.choices) {
+          const foundChoice = option.choices.find(c => c.name === choice.name);
+          if (!foundChoice) return false;
+          if (foundChoice.value !== choice.value) return false;
+        }
+      }
+
+      if (existing.options) {
+        return optionsEqual(existing.options, option.options);
+      }
+      return true;
+    }
+
+    // Check an array of options
+    function optionsEqual(existing, options) {
+      for (const option of existing) {
+        const foundOption = options.find(o => o.name === option.name);
+        if (!foundOption) return false;
+        if (!optionEquals(option, foundOption)) return false;
+      }
+      return true;
+    }
+    if (command.options) {
+      return optionsEqual(this.options, command.options);
+    }
+    return true;
+  }
+
+  /**
    * An option for an application command or subcommand.
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option
