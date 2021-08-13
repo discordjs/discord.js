@@ -66,9 +66,9 @@ class TypeGuards extends null {
   }
 
   /**
-   * Verifies if the given message button options support URL's or not.
-   * @param {MessageButtonOptions} messageButtonOptions The message button options to check.
-   * @returns {boolean} True if the option supports URL's, false otherwise.
+   * Verifies that the given message button options data supports URL.
+   * @param {MessageButtonOptions} messageButtonOptions The message button options to check
+   * @returns {boolean} True if the options data supports URL, false otherwise
    */
   static isLinkButtonOptions(messageButtonOptions) {
     return TypeGuards.isPartofEnum(messageButtonOptions.type, MessageButtonStyles, ['LINK']);
