@@ -12,13 +12,12 @@ class TypeGuards extends null {
    * @private
    * @param {string|number} type The type to resolve
    * @param {any} object The enum to resolve to
-   * @param {any[]} fields The enum fields to check
+   * @param {string[]} fields The enum fields to check
    * @returns {boolean} Whether the type is part of the enum
    */
   static isPartOfEnum(type, object, fields) {
     const resolvedType = typeof type === 'number' ? type : object[type];
-    fields = fields.map(field => object[field]);
-    return fields.includes(resolvedType);
+    return fields.some(field => object[field] === resolvedType);
   }
 
   /**
