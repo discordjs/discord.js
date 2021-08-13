@@ -94,7 +94,7 @@ class Channel extends Base {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  delete(reason = undefined) {
+  delete(reason) {
     return this.client.api
       .channels(this.id)
       .delete({ reason })
