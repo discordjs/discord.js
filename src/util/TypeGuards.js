@@ -1,6 +1,6 @@
 'use strict';
 
-const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageButtonStyles } = require('./Constants');
+const { ApplicationCommandOptionTypes } = require('./Constants');
 
 /**
  * Helpers for checking different variants of common types.
@@ -18,24 +18,6 @@ class TypeGuards extends null {
   static isPartOfEnum(type, object, fields) {
     const resolvedType = typeof type === 'number' ? type : object[type];
     return fields.some(field => object[field] === resolvedType);
-  }
-
-  /**
-   * Verifies if the given command data is chat input command or not.
-   * @param {ApplicationCommandData} commandData The command data to check
-   * @returns {boolean} True if it conforms to chat input command data, false otherwise
-   */
-  static isChatInputCommandData(commandData) {
-    return TypeGuards.isPartOfEnum(commandData.type, ApplicationCommandTypes, ['CHAT_INPUT']);
-  }
-
-  /**
-   * Verifies if the given command data is a context menu command or not.
-   * @param {ApplicationCommandData} commandData The command data to check
-   * @returns {boolean} True if it conforms to chat input command data, false otherwise
-   */
-  static isContextMenuCommandData(commandData) {
-    return TypeGuards.isPartOfEnum(commandData.type, ApplicationCommandTypes, ['MESSAGE', 'USER']);
   }
 
   /**
@@ -62,24 +44,6 @@ class TypeGuards extends null {
       'SUB_COMMAND',
       'SUB_COMMAND_GROUP',
     ]);
-  }
-
-  /**
-   * Verifies that the given message button options data supports URL.
-   * @param {MessageButtonOptions} messageButtonOptions The message button options to check
-   * @returns {boolean} True if the options data supports URL, false otherwise
-   */
-  static isLinkButtonOptions(messageButtonOptions) {
-    return TypeGuards.isPartOfEnum(messageButtonOptions.type, MessageButtonStyles, ['LINK']);
-  }
-
-  /**
-   * Verifies that the given message button options data doesn't support URL.
-   * @param {MessageButtonOptions} messageButtonOptions The message button options to check
-   * @returns {boolean} True if the options data doesn't support URL, false otherwise
-   */
-  static isInteractionButtonOptions(messageButtonOptions) {
-    return !TypeGuards.isLinkButtonOptions(messageButtonOptions);
   }
 }
 
