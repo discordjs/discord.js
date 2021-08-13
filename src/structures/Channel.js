@@ -86,6 +86,7 @@ class Channel extends Base {
 
   /**
    * Deletes this channel.
+   * @param {string} [reason=undefined] The reason for the channel being deleted.
    * @returns {Promise<Channel>}
    * @example
    * // Delete the channel
@@ -93,10 +94,10 @@ class Channel extends Base {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  delete() {
+  delete(reason = undefined) {
     return this.client.api
       .channels(this.id)
-      .delete()
+      .delete({ reason })
       .then(() => this);
   }
 

@@ -384,7 +384,7 @@ export class Channel extends Base {
   public id: Snowflake;
   public readonly partial: false;
   public type: keyof typeof ChannelTypes;
-  public delete(): Promise<Channel>;
+  public delete(reason?: string): Promise<Channel>;
   public fetch(force?: boolean): Promise<Channel>;
   public isText(): this is TextBasedChannels;
   public isVoice(): this is VoiceChannel | StageChannel;
