@@ -1,16 +1,33 @@
 'use strict';
 
+const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageButtonStyles } = require('./Constants');
+
 /**
  * Helpers for checking different variants of common types.
  */
 class TypeGuards extends null {
+  /**
+   * Resolves a given type to an enum equivalent value, and
+   * checks if it's part of the given enum type.
+   * @private
+   * @param {string | number} type The type to resolve.
+   * @param {any} object The enum to resolve to.
+   * @param {any[]} fields The enum fields to check.
+   * @returns {boolean} Whether the type is part of the enum.
+   */
+  static isPartofEnum(type, object, fields) {
+    const resolvedType = typeof type === 'number' ? type : object[type];
+    fields = fields.map(field => object[field]);
+    return fields.includes(resolvedType);
+  }
+
   /**
    * Verifies if the given command data is chat input command or not.
    * @param {ApplicationCommandData} commandData The command data to check.
    * @returns {boolean} True if it conforms to chat input command data, false otherwise.
    */
   static isChatInputCommandData(commandData) {
-    return commandData.type === 'CHAT_INPUT' || commandData.type === 1;
+    return TypeGuards.isPartofEnum(commandData.type, ApplicationCommandTypes, ['CHAT_INPUT']);
   }
 
   /**
@@ -19,9 +36,7 @@ class TypeGuards extends null {
    * @returns {boolean} True if it conforms to chat input command data, false otherwise.
    */
   static isContextMenuCommandData(commandData) {
-    return (
-      commandData.type === 'MESSAGE' || commandData.type === 'USER' || commandData.type === 2 || commandData.type === 3
-    );
+    return TypeGuards.isPartofEnum(commandData.type, ApplicationCommandTypes, ['MESSAGE', 'USER']);
   }
 
   /**
@@ -30,16 +45,12 @@ class TypeGuards extends null {
    * @returns {boolean} True if the option supports choices, false otherwise.
    */
   static optionDataSupportsChoices(commandOptionData) {
-    return (
-      commandOptionData.type === 'BOOLEAN' ||
-      commandOptionData.type === 5 ||
-      commandOptionData.type === 'INTEGER' ||
-      commandOptionData.type === 4 ||
-      commandOptionData.type === 'STRING' ||
-      commandOptionData.type === 3 ||
-      commandOptionData.type === 'NUMBER' ||
-      commandOptionData.type === 10
-    );
+    return TypeGuards.isPartofEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
+      'BOOLEAN',
+      'INTEGER',
+      'STRING',
+      'NUMBER',
+    ]);
   }
 
   /**
@@ -48,12 +59,10 @@ class TypeGuards extends null {
    * @returns {boolean} True if the option supports options, false otherwise.
    */
   static optionDataSupportsSubOptions(commandOptionData) {
-    return (
-      commandOptionData.type === 'SUB_COMMAND' ||
-      commandOptionData.type === 'SUB_COMMAND_GROUP' ||
-      commandOptionData.type === 1 ||
-      commandOptionData.type === 2
-    );
+    return TypeGuards.isPartofEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
+      'SUB_COMMAND',
+      'SUB_COMMAND_GROUP',
+    ]);
   }
 
   /**
@@ -62,7 +71,7 @@ class TypeGuards extends null {
    * @returns {boolean} True if the option supports URL's, false otherwise.
    */
   static isLinkButtonOptions(messageButtonOptions) {
-    return messageButtonOptions.style === 'LINK' || messageButtonOptions.style === 5;
+    return TypeGuards.isPartofEnum(messageButtonOptions.type, MessageButtonStyles, ['LINK']);
   }
 
   /**
