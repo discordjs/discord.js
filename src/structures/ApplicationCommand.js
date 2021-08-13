@@ -157,7 +157,7 @@ class ApplicationCommand extends Base {
   }
 
   /**
-   * Whether this copmmand equals another command. It compares all properties, so for most operations
+   * Whether this command equals another command. It compares all properties, so for most operations
    * it is advisable to just compare `command.id === command2.id` as it is much faster and is often
    * what most users need.
    * @param {ApplicationCommand|ApplicationCommandData|APIApplicationCommand} command The command to compare with
