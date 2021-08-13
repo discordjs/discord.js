@@ -267,19 +267,19 @@ class Util extends null {
    * @param {FetchRecommendedShardsOptions} [options] Options for fetching the recommended shard count
    * @returns {Promise<number>} The recommended number of shards
    */
-  static fetchRecommendedShards(token, { guildsPerShard = 1000, multipleOf = 1 } = {}) {
+  static async fetchRecommendedShards(token, { guildsPerShard = 1000, multipleOf = 1 } = {}) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
     const defaults = Options.createDefault();
-    return fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
+    const response = await fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
-    })
-      .then(res => {
-        if (res.ok) return res.json();
-        if (res.status === 401) throw new DiscordError('TOKEN_INVALID');
-        throw res;
-      })
-      .then(data => Math.ceil((data.shards * (1000 / guildsPerShard)) / multipleOf) * multipleOf);
+    });
+    if (!response.ok) {
+      if (response.status === 401) throw new DiscordError('TOKEN_INVALID');
+      throw response;
+    }
+    const { shards } = await response.json();
+    return Math.ceil((shards * (1000 / guildsPerShard)) / multipleOf) * multipleOf;
   }
 
   /**
@@ -500,11 +500,12 @@ class Util extends null {
    * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
-  static setPosition(item, position, relative, sorted, route, reason) {
+  static async setPosition(item, position, relative, sorted, route, reason) {
     let updatedItems = [...sorted.values()];
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
-    return route.patch({ data: updatedItems, reason }).then(() => updatedItems);
+    await route.patch({ data: updatedItems, reason });
+    return updatedItems;
   }
 
   /**
@@ -633,6 +634,21 @@ class Util extends null {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
+  }
+
+  /**
+   * Creates a sweep filter that sweeps archived threads
+   * @param {number} [lifetime=14400] How long a thread has to be archived to be valid for sweeping
+   * @returns {SweepFilter}
+   */
+  static archivedThreadSweepFilter(lifetime = 14400) {
+    const filter = require('./LimitedCollection').filterByLifetime({
+      lifetime,
+      getComparisonTimestamp: e => e.archiveTimestamp,
+      excludeFromSweep: e => !e.archived,
+    });
+    filter.isDefault = true;
+    return filter;
   }
 }
 

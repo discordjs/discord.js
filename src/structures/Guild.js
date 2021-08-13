@@ -37,7 +37,7 @@ const Util = require('../util/Util');
 /**
  * Represents a guild (or a server) on Discord.
  * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
- * check this with `guild.available`.</info>
+ * check this with {@link Guild#available}.</info>
  * @extends {AnonymousGuild}
  */
 class Guild extends AnonymousGuild {
@@ -172,21 +172,21 @@ class Guild extends AnonymousGuild {
      * * FEATURABLE
      * * INVITE_SPLASH
      * * MEMBER_VERIFICATION_GATE_ENABLED
-     * * MONETIZATION_ENABLED
-     * * MORE_STICKERS
      * * NEWS
      * * PARTNERED
      * * PREVIEW_ENABLED
-     * * PRIVATE_THREADS
-     * * RELAY_ENABLED
-     * * SEVEN_DAY_THREAD_ARCHIVE
-     * * THREE_DAY_THREAD_ARCHIVE
-     * * TICKETED_EVENTS_ENABLED
      * * VANITY_URL
      * * VERIFIED
      * * VIP_REGIONS
      * * WELCOME_SCREEN_ENABLED
+     * * TICKETED_EVENTS_ENABLED
+     * * MONETIZATION_ENABLED
+     * * MORE_STICKERS
+     * * THREE_DAY_THREAD_ARCHIVE
+     * * SEVEN_DAY_THREAD_ARCHIVE
+     * * PRIVATE_THREADS
      * @typedef {string} Features
+     * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-features}
      */
 
     /**
@@ -337,7 +337,8 @@ class Guild extends AnonymousGuild {
 
     /**
      * The preferred locale of the guild, defaults to `en-US`
-     * @type {string}
+     * @type {?string}
+     * @see {@link https://discord.com/developers/docs/dispatch/field-values#predefined-field-values-accepted-locales}
      */
     this.preferredLocale = data.preferred_locale;
 
@@ -556,13 +557,9 @@ class Guild extends AnonymousGuild {
    * Resolves with a collection mapping templates by their codes.
    * @returns {Promise<Collection<string, GuildTemplate>>}
    */
-  fetchTemplates() {
-    return this.client.api
-      .guilds(this.id)
-      .templates.get()
-      .then(templates =>
-        templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection()),
-      );
+  async fetchTemplates() {
+    const templates = await this.client.api.guilds(this.id).templates.get();
+    return templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection());
   }
 
   /**
@@ -580,22 +577,18 @@ class Guild extends AnonymousGuild {
    * @param {string} [description] The description for the template
    * @returns {Promise<GuildTemplate>}
    */
-  createTemplate(name, description) {
-    return this.client.api
-      .guilds(this.id)
-      .templates.post({ data: { name, description } })
-      .then(data => new GuildTemplate(this.client, data));
+  async createTemplate(name, description) {
+    const data = await this.client.api.guilds(this.id).templates.post({ data: { name, description } });
+    return new GuildTemplate(this.client, data);
   }
 
   /**
    * Obtains a guild preview for this guild from Discord.
    * @returns {Promise<GuildPreview>}
    */
-  fetchPreview() {
-    return this.client.api
-      .guilds(this.id)
-      .preview.get()
-      .then(data => new GuildPreview(this.client, data));
+  async fetchPreview() {
+    const data = await this.client.api.guilds(this.id).preview.get();
+    return new GuildPreview(this.client, data);
   }
 
   /**
@@ -637,15 +630,11 @@ class Guild extends AnonymousGuild {
    *   .then(webhooks => console.log(`Fetched ${webhooks.size} webhooks`))
    *   .catch(console.error);
    */
-  fetchWebhooks() {
-    return this.client.api
-      .guilds(this.id)
-      .webhooks.get()
-      .then(data => {
-        const hooks = new Collection();
-        for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
-        return hooks;
-      });
+  async fetchWebhooks() {
+    const apiHooks = await this.client.api.guilds(this.id).webhooks.get();
+    const hooks = new Collection();
+    for (const hook of apiHooks) hooks.set(hook.id, new Webhook(this.client, hook));
+    return hooks;
   }
 
   /**
@@ -713,21 +702,19 @@ class Guild extends AnonymousGuild {
    *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
-  fetchAuditLogs(options = {}) {
+  async fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
     if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
-    return this.client.api
-      .guilds(this.id)
-      ['audit-logs'].get({
-        query: {
-          before: options.before,
-          limit: options.limit,
-          user_id: this.client.users.resolveId(options.user),
-          action_type: options.type,
-        },
-      })
-      .then(data => GuildAuditLogs.build(this, data));
+    const data = await this.client.api.guilds(this.id)['audit-logs'].get({
+      query: {
+        before: options.before,
+        limit: options.limit,
+        user_id: this.client.users.resolveId(options.user),
+        action_type: options.type,
+      },
+    });
+    return GuildAuditLogs.build(this, data);
   }
 
   /**
@@ -781,7 +768,7 @@ class Guild extends AnonymousGuild {
    *   .then(updated => console.log(`New guild name ${updated}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
+  async edit(data, reason) {
     const _data = {};
     if (data.name) _data.name = data.name;
     if (typeof data.verificationLevel !== 'undefined') {
@@ -830,10 +817,8 @@ class Guild extends AnonymousGuild {
       _data.description = data.description;
     }
     if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
-    return this.client.api
-      .guilds(this.id)
-      .patch({ data: _data, reason })
-      .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
+    const newData = await this.client.api.guilds(this.id).patch({ data: _data, reason });
+    return this.client.actions.GuildUpdate.handle(newData).updated;
   }
 
   /**
@@ -1158,7 +1143,7 @@ class Guild extends AnonymousGuild {
    *   .then(guild => console.log(`Updated channel positions for ${guild}`))
    *   .catch(console.error);
    */
-  setChannelPositions(channelPositions) {
+  async setChannelPositions(channelPositions) {
     const updatedChannels = channelPositions.map(r => ({
       id: this.client.channels.resolveId(r.channel),
       position: r.position,
@@ -1166,16 +1151,11 @@ class Guild extends AnonymousGuild {
       parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveId(r.parent) : undefined,
     }));
 
-    return this.client.api
-      .guilds(this.id)
-      .channels.patch({ data: updatedChannels })
-      .then(
-        () =>
-          this.client.actions.GuildChannelsPositionUpdate.handle({
-            guild_id: this.id,
-            channels: updatedChannels,
-          }).guild,
-      );
+    await this.client.api.guilds(this.id).channels.patch({ data: updatedChannels });
+    return this.client.actions.GuildChannelsPositionUpdate.handle({
+      guild_id: this.id,
+      channels: updatedChannels,
+    }).guild;
   }
 
   /**
@@ -1194,7 +1174,7 @@ class Guild extends AnonymousGuild {
    *  .then(guild => console.log(`Role positions updated for ${guild}`))
    *  .catch(console.error);
    */
-  setRolePositions(rolePositions) {
+  async setRolePositions(rolePositions) {
     // Make sure rolePositions are prepared for API
     rolePositions = rolePositions.map(o => ({
       id: this.roles.resolveId(o.role),
@@ -1202,18 +1182,13 @@ class Guild extends AnonymousGuild {
     }));
 
     // Call the API to update role positions
-    return this.client.api
-      .guilds(this.id)
-      .roles.patch({
-        data: rolePositions,
-      })
-      .then(
-        () =>
-          this.client.actions.GuildRolesPositionUpdate.handle({
-            guild_id: this.id,
-            roles: rolePositions,
-          }).guild,
-      );
+    await this.client.api.guilds(this.id).roles.patch({
+      data: rolePositions,
+    });
+    return this.client.actions.GuildRolesPositionUpdate.handle({
+      guild_id: this.id,
+      roles: rolePositions,
+    }).guild;
   }
 
   /**
@@ -1222,17 +1197,15 @@ class Guild extends AnonymousGuild {
    * @param {string} [reason] Reason for changing the guild's widget settings
    * @returns {Promise<Guild>}
    */
-  setWidgetSettings(settings, reason) {
-    return this.client.api
-      .guilds(this.id)
-      .widget.patch({
-        data: {
-          enabled: settings.enabled,
-          channel_id: this.channels.resolveId(settings.channel),
-        },
-        reason,
-      })
-      .then(() => this);
+  async setWidgetSettings(settings, reason) {
+    await this.client.api.guilds(this.id).widget.patch({
+      data: {
+        enabled: settings.enabled,
+        channel_id: this.channels.resolveId(settings.channel),
+      },
+      reason,
+    });
+    return this;
   }
 
   /**
@@ -1244,13 +1217,10 @@ class Guild extends AnonymousGuild {
    *   .then(g => console.log(`Left the guild ${g}`))
    *   .catch(console.error);
    */
-  leave() {
-    if (this.ownerId === this.client.user.id) return Promise.reject(new Error('GUILD_OWNED'));
-    return this.client.api
-      .users('@me')
-      .guilds(this.id)
-      .delete()
-      .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
+  async leave() {
+    if (this.ownerId === this.client.user.id) throw new Error('GUILD_OWNED');
+    await this.client.api.users('@me').guilds(this.id).delete();
+    return this.client.actions.GuildDelete.handle({ id: this.id }).guild;
   }
 
   /**
@@ -1262,11 +1232,9 @@ class Guild extends AnonymousGuild {
    *   .then(g => console.log(`Deleted the guild ${g}`))
    *   .catch(console.error);
    */
-  delete() {
-    return this.client.api
-      .guilds(this.id)
-      .delete()
-      .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
+  async delete() {
+    await this.client.api.guilds(this.id).delete();
+    return this.client.actions.GuildDelete.handle({ id: this.id }).guild;
   }
 
   /**

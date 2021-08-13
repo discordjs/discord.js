@@ -310,21 +310,20 @@ class Role extends Base {
    *   .then(updated => console.log(`Role position: ${updated.position}`))
    *   .catch(console.error);
    */
-  setPosition(position, { relative, reason } = {}) {
-    return Util.setPosition(
+  async setPosition(position, { relative, reason } = {}) {
+    const updatedRoles = await Util.setPosition(
       this,
       position,
       relative,
       this.guild._sortedRoles(),
       this.client.api.guilds(this.guild.id).roles,
       reason,
-    ).then(updatedRoles => {
-      this.client.actions.GuildRolesPositionUpdate.handle({
-        guild_id: this.guild.id,
-        roles: updatedRoles,
-      });
-      return this;
+    );
+    this.client.actions.GuildRolesPositionUpdate.handle({
+      guild_id: this.guild.id,
+      roles: updatedRoles,
     });
+    return this;
   }
 
   /**
@@ -337,11 +336,10 @@ class Role extends Base {
    *   .then(deleted => console.log(`Deleted role ${deleted.name}`))
    *   .catch(console.error);
    */
-  delete(reason) {
-    return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason }).then(() => {
-      this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id });
-      return this;
-    });
+  async delete(reason) {
+    await this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason });
+    this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id });
+    return this;
   }
 
   /**

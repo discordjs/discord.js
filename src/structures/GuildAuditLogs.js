@@ -11,7 +11,7 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
 /**
- * The target type of an entry, e.g. `GUILD`. Here are the available types:
+ * The target type of an entry. Here are the available types:
  * * GUILD
  * * CHANNEL
  * * USER
@@ -97,6 +97,7 @@ const Targets = {
  * * THREAD_UPDATE: 111
  * * THREAD_DELETE: 112
  * @typedef {?(number|string)} AuditLogAction
+ * @see {@link https://discord.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events}
  */
 
 /**
@@ -198,9 +199,10 @@ class GuildAuditLogs {
    * Handles possible promises for entry targets.
    * @returns {Promise<GuildAuditLogs>}
    */
-  static build(...args) {
+  static async build(...args) {
     const logs = new GuildAuditLogs(...args);
-    return Promise.all(logs.entries.map(e => e.target)).then(() => logs);
+    await Promise.all(logs.entries.map(e => e.target));
+    return logs;
   }
 
   /**
@@ -500,19 +502,17 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.INVITE) {
-      this.target = guild.members.fetch(guild.client.user.id).then(me => {
+      this.target = guild.members.fetch(guild.client.user.id).then(async me => {
         if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
           let change = this.changes.find(c => c.key === 'code');
           change = change.new ?? change.old;
-          return guild.invites.fetch().then(invites => {
-            this.target = invites.find(i => i.code === change) ?? null;
-          });
+          const invites = await guild.invites.fetch();
+          this.target = invites.find(i => i.code === change) ?? null;
         } else {
           this.target = this.changes.reduce((o, c) => {
             o[c.key] = c.new ?? c.old;
             return o;
           }, {});
-          return this.target;
         }
       });
     } else if (targetType === Targets.MESSAGE) {

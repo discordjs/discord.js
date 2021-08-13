@@ -129,8 +129,8 @@ const Messages = {
     "or from a guild's application command manager.",
   GUILD_UNCACHED_ROLE_RESOLVE: 'Cannot resolve roles from an arbitrary guild, provide an id instead',
 
-  INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
-  INTERACTION_NOT_REPLIED: 'This interaction has not been deferred or replied to.',
+  INTERACTION_ALREADY_REPLIED: 'The reply to this interaction has already been sent or deferred.',
+  INTERACTION_NOT_REPLIED: 'The reply to this interaction has not been sent or deferred.',
   INTERACTION_EPHEMERAL_REPLIED: 'Ephemeral responses cannot be fetched or deleted.',
   INTERACTION_FETCH_EPHEMERAL: 'Ephemeral responses cannot be fetched.',
 

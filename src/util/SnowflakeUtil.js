@@ -11,10 +11,11 @@ let INCREMENT = 0;
  */
 class SnowflakeUtil extends null {
   /**
-   * A Twitter snowflake, except the epoch is 2015-01-01T00:00:00.000Z
-   * ```
-   * If we have a snowflake '266241948824764416' we can represent it as binary:
+   * A {@link https://developer.twitter.com/en/docs/twitter-ids Twitter snowflake},
+   * except the epoch is 2015-01-01T00:00:00.000Z.
    *
+   * If we have a snowflake '266241948824764416' we can represent it as binary:
+   * ```
    * 64                                          22     17     12          0
    *  000000111011000111100001101001000101000000  00001  00000  000000000000
    *       number of ms since Discord epoch       worker  pid    increment
@@ -56,7 +57,7 @@ class SnowflakeUtil extends null {
   /**
    * Deconstructs a Discord snowflake.
    * @param {Snowflake} snowflake Snowflake to deconstruct
-   * @returns {DeconstructedSnowflake} Deconstructed snowflake
+   * @returns {DeconstructedSnowflake}
    */
   static deconstruct(snowflake) {
     const BINARY = Util.idToBinary(snowflake).toString(2).padStart(64, '0');

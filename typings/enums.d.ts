@@ -143,4 +143,5 @@ export enum VerificationLevels {
 export enum WebhookTypes {
   Incoming = 1,
   'Channel Follower' = 2,
+  Application = 3,
 }

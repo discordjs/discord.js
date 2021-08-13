@@ -35,6 +35,8 @@
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {CacheFactory} [makeCache] Function to create a cache.
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
+ * <warn>Overriding the cache used in `GuildManager`, `ChannelManager`, `GuildChannelManager`, `RoleManager`,
+ * and `PermissionOverwriteManager` is unsupported and **will** break functionality</warn>
  * @property {number} [messageCacheLifetime=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
  * How long a message should stay in the cache until it is considered sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
@@ -102,12 +104,17 @@ class Options extends null {
       shardCount: 1,
       makeCache: this.cacheWithLimits({
         MessageManager: 200,
+        ChannelManager: {
+          sweepInterval: 3600,
+          sweepFilter: require('./Util').archivedThreadSweepFilter(),
+        },
+        GuildChannelManager: {
+          sweepInterval: 3600,
+          sweepFilter: require('./Util').archivedThreadSweepFilter(),
+        },
         ThreadManager: {
           sweepInterval: 3600,
-          sweepFilter: require('./LimitedCollection').filterByLifetime({
-            getComparisonTimestamp: e => e.archiveTimestamp,
-            excludeFromSweep: e => !e.archived,
-          }),
+          sweepFilter: require('./Util').archivedThreadSweepFilter(),
         },
       }),
       messageCacheLifetime: 0,
@@ -152,6 +159,7 @@ class Options extends null {
    * @returns {CacheFactory}
    * @example
    * // Store up to 200 messages per channel and discard archived threads if they were archived more than 4 hours ago.
+   * // Note archived threads will remain in the guild and client caches with these settings
    * Options.cacheWithLimits({
    *    MessageManager: 200,
    *    ThreadManager: {
