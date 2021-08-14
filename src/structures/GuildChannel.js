@@ -157,7 +157,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Checks if the channel is not viewable by users with the @everyone role.
+   * Checks if the channel is not viewable by users with only the @everyone role.
    * @type {boolean} true if private, false otherwise.
    */
   get private() {
