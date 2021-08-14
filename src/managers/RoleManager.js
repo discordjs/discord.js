@@ -49,7 +49,7 @@ class RoleManager extends CachedManager {
    * @example
    * // Fetch all roles from the guild
    * message.guild.roles.fetch()
-   *   .then(roles => console.log(`There are ${roles.cache.size} roles.`))
+   *   .then(roles => console.log(`There are ${roles.size} roles.`))
    *   .catch(console.error);
    * @example
    * // Fetch a single role
