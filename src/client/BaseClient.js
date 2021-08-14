@@ -24,7 +24,7 @@ class BaseClient extends EventEmitter {
      * @type {RESTManager}
      * @private
      */
-    this.rest = new RESTManager(this, "Bot");
+    this.rest = new RESTManager(this, 'Bot');
   }
 
   /**
