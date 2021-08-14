@@ -158,7 +158,7 @@ class Message extends Base {
         }
       }
     } else {
-      this.attachments = new Collection(this.attachemnts);
+      this.attachments = new Collection(this.attachments);
     }
 
     if ('sticker_items' in data || 'stickers' in data || !partial) {
