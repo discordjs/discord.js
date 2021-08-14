@@ -34,7 +34,7 @@ import {
   Snowflake,
 } from 'discord-api-types/v9';
 import { EventEmitter } from 'events';
-import * as https from 'https';
+import { AgentOptions } from 'https';
 import { Stream } from 'stream';
 import * as WebSocket from 'ws';
 import {
@@ -3640,7 +3640,7 @@ export interface HTTPErrorData {
 }
 
 export interface HTTPOptions {
-  agent?: Omit<https.AgentOptions, 'keepAlive'>;
+  agent?: Omit<AgentOptions, 'keepAlive'>;
   api?: string;
   version?: number;
   host?: string;
