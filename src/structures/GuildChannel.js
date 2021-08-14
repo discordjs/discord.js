@@ -157,15 +157,6 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Checks if the channel is viewable by the public.
-   * @type {boolean} true if public, false otherwise.
-   */
-  get publiclyViewable() {
-    const { everyone } = this.guild.roles;
-    return this.permissionsFor(everyone)?.has(Permissions.FLAGS.VIEW_CHANNEL) ?? false;
-  }
-
-  /**
    * Checks if the channel is not viewable by users with the @everyone role..
    * @type {boolean} true if private, false otherwise.
    */
