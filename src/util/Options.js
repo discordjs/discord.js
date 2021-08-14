@@ -79,7 +79,7 @@
 
 /**
  * HTTPS Agent options.
- * @typedef {import('https').AgentOptions} AgentOptions
+ * @typedef {Object} AgentOptions
  * @see {@link https://nodejs.org/api/https.html#https_class_https_agent}
  * @see {@link https://nodejs.org/api/http.html#http_new_agent_options}
  */
