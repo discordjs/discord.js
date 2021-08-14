@@ -1093,8 +1093,8 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
 
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
-  private _patch(data: RawPartialMessageData, partial: true): Message;
-  private _patch(data: RawMessageData, partial?: boolean): Message;
+  private _patch(data: RawPartialMessageData, partial: true): void;
+  private _patch(data: RawMessageData, partial?: boolean): void;
   private _update(data: RawPartialMessageData, partial: true): Message;
   private _update(data: RawMessageData, partial?: boolean): Message;
 
