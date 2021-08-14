@@ -78,9 +78,17 @@
  */
 
 /**
+ * HTTPS Agent options.
+ * @typedef {import('https').AgentOptions} AgentOptions
+ * @see {@link https://nodejs.org/api/https.html#https_class_https_agent}
+ * @see {@link https://nodejs.org/api/http.html#http_new_agent_options}
+ */
+
+/**
  * HTTP options
  * @typedef {Object} HTTPOptions
  * @property {number} [version=9] API version to use
+ * @property {AgentOptions} [agent={}] HTTPS Agent options
  * @property {string} [api='https://discord.com/api'] Base url of the API
  * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
  * @property {string} [invite='https://discord.gg'] Base url of invites
