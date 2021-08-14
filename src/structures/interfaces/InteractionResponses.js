@@ -53,7 +53,6 @@ class InteractionResponses {
    */
   async deferReply(options = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    if (options.fetchReply && options.ephemeral) throw new Error('INTERACTION_FETCH_EPHEMERAL');
     this.ephemeral = options.ephemeral ?? false;
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
@@ -87,7 +86,6 @@ class InteractionResponses {
    */
   async reply(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    if (options.fetchReply && options.ephemeral) throw new Error('INTERACTION_FETCH_EPHEMERAL');
     this.ephemeral = options.ephemeral ?? false;
 
     let messagePayload;
@@ -119,7 +117,6 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   fetchReply() {
-    if (this.ephemeral) throw new Error('INTERACTION_EPHEMERAL_REPLIED');
     return this.webhook.fetchMessage('@original');
   }
 
@@ -177,9 +174,6 @@ class InteractionResponses {
    */
   async deferUpdate(options = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    if (options.fetchReply && new MessageFlags(this.message.flags).has(MessageFlags.FLAGS.EPHEMERAL)) {
-      throw new Error('INTERACTION_FETCH_EPHEMERAL');
-    }
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.DEFERRED_MESSAGE_UPDATE,
@@ -205,9 +199,6 @@ class InteractionResponses {
    */
   async update(options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    if (options.fetchReply && new MessageFlags(this.message.flags).has(MessageFlags.FLAGS.EPHEMERAL)) {
-      throw new Error('INTERACTION_FETCH_EPHEMERAL');
-    }
 
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
