@@ -166,6 +166,15 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Checks if the channel is not viewable by users with the @everyone role..
+   * @type {boolean} true if private, false otherwise.
+   */
+  get private() {
+    const { everyone } = this.guild.roles;
+    return !(this.permissionsFor(everyone)?.has(['VIEW_CHANNEL']) ?? false);
+  }
+
+  /**
    * Gets the overall set of permissions for a member or role in this channel, taking into account channel overwrites.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
    * @returns {?Readonly<Permissions>}

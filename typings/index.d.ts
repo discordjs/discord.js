@@ -808,7 +808,7 @@ export class GuildChannel extends Channel {
   public permissionOverwrites: PermissionOverwriteManager;
   public readonly permissionsLocked: boolean | null;
   public readonly position: number;
-  public readonly publiclyViewable: boolean;
+  public readonly private: boolean;
   public rawPosition: number;
   public type: Exclude<keyof typeof ChannelTypes, 'DM' | 'GROUP_DM' | 'UNKNOWN'>;
   public readonly viewable: boolean;
