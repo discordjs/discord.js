@@ -305,6 +305,7 @@ export class BaseGuildTextChannel extends TextBasedChannel(GuildChannel) {
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   public messages: MessageManager;
   public nsfw: boolean;
+  public readonly sendable: boolean;
   public threads: ThreadManager<AllowedThreadTypeForTextChannel>;
   public topic: string | null;
   public createInvite(options?: CreateInviteOptions): Promise<Invite>;
