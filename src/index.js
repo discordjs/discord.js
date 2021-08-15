@@ -84,6 +84,7 @@ module.exports = {
   Collector: require('./structures/interfaces/Collector'),
   CommandInteraction: require('./structures/CommandInteraction'),
   CommandInteractionOptionResolver: require('./structures/CommandInteractionOptionResolver'),
+  ContextMenuInteraction: require('./structures/ContextMenuInteraction'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
   Guild: require('./structures/Guild'),
