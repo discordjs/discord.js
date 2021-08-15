@@ -45,10 +45,10 @@ Formatters.blockQuote = blockQuote;
 Formatters.bold = bold;
 
 /**
- * Formats a channel ID into a channel mention.
+ * Formats a channel id into a channel mention.
  * @method channelMention
  * @memberof Formatters
- * @param {string} channelId The channel ID to format.
+ * @param {string} channelId The channel id to format.
  * @returns {string}
  */
 Formatters.channelMention = channelMention;
@@ -64,10 +64,10 @@ Formatters.channelMention = channelMention;
 Formatters.codeBlock = codeBlock;
 
 /**
- * Formats an emoji ID into a fully qualified emoji identifier
+ * Formats an emoji id into a fully qualified emoji identifier
  * @method formatEmoji
  * @memberof Formatters
- * @param {string} emojiId The emoji ID to format.
+ * @param {string} emojiId The emoji id to format.
  * @param {boolean} [animated] Whether the emoji is animated or not. Defaults to `false`
  * @returns {string}
  */
@@ -112,10 +112,10 @@ Formatters.inlineCode = inlineCode;
 Formatters.italic = italic;
 
 /**
- * Formats a user ID into a member-nickname mention.
+ * Formats a user id into a member-nickname mention.
  * @method memberNicknameMention
  * @memberof Formatters
- * @param {string} memberId The user ID to format.
+ * @param {string} memberId The user id to format.
  * @returns {string}
  */
 Formatters.memberNicknameMention = memberNicknameMention;
@@ -130,10 +130,10 @@ Formatters.memberNicknameMention = memberNicknameMention;
 Formatters.quote = quote;
 
 /**
- * Formats a role ID into a role mention.
+ * Formats a role id into a role mention.
  * @method roleMention
  * @memberof Formatters
- * @param {string} roleId The role ID to format.
+ * @param {string} roleId The role id to format.
  * @returns {string}
  */
 Formatters.roleMention = roleMention;
@@ -197,10 +197,10 @@ Formatters.TimestampStyles = TimestampStyles;
 Formatters.underscore = underscore;
 
 /**
- * Formats a user ID into a user mention.
+ * Formats a user id into a user mention.
  * @method userMention
  * @memberof Formatters
- * @param {string} userId The user ID to format.
+ * @param {string} userId The user id to format.
  * @returns {string}
  */
 Formatters.userMention = userMention;
