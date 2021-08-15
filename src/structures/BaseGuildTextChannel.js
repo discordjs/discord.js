@@ -88,6 +88,18 @@ class BaseGuildTextChannel extends GuildChannel {
   }
 
   /**
+   * Whether the client user can send messages in this channel.
+   * @type {boolean}
+   * @readonly
+   */
+  get sendable() {
+    if (this.client.user.id === this.guild.ownerId) return true;
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    return permissions.has(Permissions.FLAGS.SEND_MESSAGES, false);
+  }
+
+  /**
    * Sets the default auto archive duration for all newly created threads in this channel.
    * @param {ThreadAutoArchiveDuration} defaultAutoArchiveDuration The new default auto archive duration
    * @param {string} [reason] Reason for changing the channel's default auto archive duration
