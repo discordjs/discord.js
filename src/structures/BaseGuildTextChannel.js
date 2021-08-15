@@ -95,7 +95,7 @@ class BaseGuildTextChannel extends GuildChannel {
   get sendable() {
     if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
-    if (!permissions) return false;
+    if (!permissions || !this.viewable) return false;
     return permissions.has(Permissions.FLAGS.SEND_MESSAGES, false);
   }
 
