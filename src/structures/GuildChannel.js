@@ -514,10 +514,11 @@ class GuildChannel extends Channel {
     if (!this.viewable) {
       return false;
     }
-    if (VoiceBasedChannelTypes.includes(this.type)) {
-      if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) {
-        return false;
-      }
+    if (
+      VoiceBasedChannelTypes.includes(this.type) &&
+      !this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)
+    ) {
+      return false;
     }
     return this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false);
   }
