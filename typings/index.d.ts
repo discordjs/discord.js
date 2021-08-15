@@ -479,12 +479,12 @@ export class ClientUser extends User {
   public mfaEnabled: boolean;
   public verified: boolean;
   public edit(data: ClientUserEditData): Promise<this>;
-  public setActivity(options?: ActivityOptions): Presence;
-  public setActivity(name: string, options?: ActivityOptions): Presence;
-  public setAFK(afk: boolean, shardId?: number | number[]): Presence;
+  public setActivity(options?: ActivityOptions): ClientPresence;
+  public setActivity(name: string, options?: ActivityOptions): ClientPresence;
+  public setAFK(afk: boolean, shardId?: number | number[]): ClientPresence;
   public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
-  public setPresence(data: PresenceData): Presence;
-  public setStatus(status: PresenceStatusData, shardId?: number | number[]): Presence;
+  public setPresence(data: PresenceData): ClientPresence;
+  public setStatus(status: PresenceStatusData, shardId?: number | number[]): ClientPresence;
   public setUsername(username: string): Promise<this>;
 }
 
