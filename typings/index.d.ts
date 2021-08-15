@@ -397,6 +397,7 @@ type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ?
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
   private actions: unknown;
+  private presence: ClientPresence;
   private _eval(script: string): unknown;
   private _validateOptions(options: ClientOptions): void;
 
@@ -465,6 +466,13 @@ export class ClientApplication extends Application {
   public readonly partial: boolean;
   public rpcOrigins: string[];
   public fetch(): Promise<ClientApplication>;
+}
+
+export class ClientPresence extends Presence {
+  public constructor(client: Client, data: RawPresenceData);
+  private _parse(data: PresenceData): RawPresenceData;
+
+  public set(presence: PresenceData): ClientPresence;
 }
 
 export class ClientUser extends User {
