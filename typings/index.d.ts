@@ -4011,7 +4011,9 @@ export type MembershipState = keyof typeof MembershipStates;
 
 export type MessageActionRowComponent = MessageButton | MessageSelectMenu;
 
-export type MessageActionRowComponentOptions = MessageButtonOptions | MessageSelectMenuOptions;
+export type MessageActionRowComponentOptions =
+  | (Required<BaseMessageComponentOptions> & MessageButtonOptions)
+  | (Required<BaseMessageComponentOptions> & MessageSelectMenuOptions);
 
 export type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
 
@@ -4077,7 +4079,7 @@ export interface MessageEditOptions {
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
-  components?: (MessageActionRow | MessageActionRowOptions)[];
+  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
 }
 
 export interface MessageEmbedAuthor {
@@ -4176,7 +4178,7 @@ export interface MessageOptions {
   nonce?: string | number;
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions)[];
-  components?: (MessageActionRow | MessageActionRowOptions)[];
+  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
