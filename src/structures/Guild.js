@@ -317,6 +317,33 @@ class Guild extends AnonymousGuild {
     }
 
     /**
+   * The maximum bitrate based on the guild premium_tiers level and the features
+   * @type {?number}
+   */
+    this.maximumBitrate = 96000;
+
+    if (this.features.includes('VIP_REGIONS')) {
+      this.maximumBitrate = 384000;
+    } else {
+      switch (data.premium_tier) {
+        case 0:
+          this.maximumBitrate = 96000;
+          break;
+        case 1:
+          this.maximumBitrate = 128000;
+          break;
+        case 2:
+          this.maximumBitrate = 256000;
+          break;
+        case 3:
+          this.maximumBitrate = 384000;
+          break;
+        default:
+          this.maximumBitrate = 96000;
+      }
+    }
+
+    /**
      * The use count of the vanity URL code of the guild, if any
      * <info>You will need to fetch this parameter using {@link Guild#fetchVanityData} if you want to receive it</info>
      * @type {?number}
