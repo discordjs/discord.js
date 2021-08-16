@@ -161,8 +161,7 @@ class GuildChannel extends Channel {
    * @type {boolean} true if private, false otherwise.
    */
   get private() {
-    const { everyone } = this.guild.roles;
-    return !(this.permissionsFor(everyone)?.has(Permissions.FLAGS.VIEW_CHANNEL) ?? false);
+    return !(this.permissionsFor(this.guild.roles.everyone)?.has(Permissions.FLAGS.VIEW_CHANNEL) ?? false);
   }
 
   /**
