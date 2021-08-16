@@ -33,8 +33,8 @@ class ClientUser extends User {
   }
 
   /**
-   * ClientUser's presence
-   * @type {Presence}
+   * Represents the client user's presence
+   * @type {ClientPresence}
    * @readonly
    */
   get presence() {
