@@ -317,9 +317,9 @@ class Guild extends AnonymousGuild {
     }
 
     /**
-   * The maximum bitrate based on the guild premium_tiers level and the features
-   * @type {?number}
-   */
+     * The maximum bitrate based on the guild premium_tiers level and the features
+     * @type {?number}
+     */
     this.maximumBitrate = 96000;
 
     if (this.features.includes('VIP_REGIONS')) {
