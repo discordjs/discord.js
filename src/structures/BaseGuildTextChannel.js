@@ -7,6 +7,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
 const ThreadManager = require('../managers/ThreadManager');
 const DataResolver = require('../util/DataResolver');
+const Permissions = require('../util/Permissions');
 
 /**
  * Represents a text-based guild channel on Discord.
