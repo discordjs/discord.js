@@ -11,7 +11,7 @@ class TypeGuards extends null {
    * checks if it's part of the given enum type.
    * @private
    * @param {string|number} type The type to resolve
-   * @param {any} object The enum to resolve to
+   * @param {Object} object The enum to resolve to
    * @param {string[]} fields The enum fields to check
    * @returns {boolean} Whether the type is part of the enum
    */
@@ -26,6 +26,7 @@ class TypeGuards extends null {
    * @returns {boolean} True if the option supports choices, false otherwise
    */
   static optionDataSupportsChoices(commandOptionData) {
+    TypeGuards.validateType(commandOptionData);
     return TypeGuards.isPartOfEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
       'BOOLEAN',
       'INTEGER',
@@ -40,10 +41,22 @@ class TypeGuards extends null {
    * @returns {boolean} True if the option supports options, false otherwise
    */
   static optionDataSupportsSubOptions(commandOptionData) {
+    TypeGuards.validateType(commandOptionData);
     return TypeGuards.isPartOfEnum(commandOptionData.type, ApplicationCommandOptionTypes, [
       'SUB_COMMAND',
       'SUB_COMMAND_GROUP',
     ]);
+  }
+
+  /**
+   * @private
+   * Throws a type error if the object has no `type field`.
+   * @param {Object} object The object to type check.
+   */
+  static validateType(object) {
+    if (!('type' in object)) {
+      throw new TypeError('Please use a valid type for the type guard.');
+    }
   }
 }
 
