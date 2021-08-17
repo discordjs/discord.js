@@ -91,9 +91,10 @@ class Permissions extends BitField {
  * * `USE_APPLICATION_COMMANDS`
  * * `REQUEST_TO_SPEAK`
  * * `MANAGE_THREADS`
- * * `USE_PUBLIC_THREADS`
- * * `USE_PRIVATE_THREADS`
+ * * `CREATE_PUBLIC_THREADS`
+ * * `CREATE_PRIVATE_THREADS`
  * * `USE_EXTERNAL_STICKERS` (use stickers from different guilds)
+ * * `SEND_MESSAGES_IN_THREADS`
  * @type {Object<string, bigint>}
  * @see {@link https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags}
  */
@@ -132,9 +133,10 @@ Permissions.FLAGS = {
   USE_APPLICATION_COMMANDS: 1n << 31n,
   REQUEST_TO_SPEAK: 1n << 32n,
   MANAGE_THREADS: 1n << 34n,
-  USE_PUBLIC_THREADS: 1n << 35n,
-  USE_PRIVATE_THREADS: 1n << 36n,
+  CREATE_PUBLIC_THREADS: 1n << 35n,
+  CREATE_PRIVATE_THREADS: 1n << 36n,
   USE_EXTERNAL_STICKERS: 1n << 37n,
+  SEND_MESSAGES_IN_THREADS: 1n << 38n,
 };
 
 /**
