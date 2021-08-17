@@ -536,7 +536,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Return maximum bitrate based on the guild premium_tiers level and the features
-   * @type {?number}
+   * @type {number}
    * @readonly
    */
   get maximumBitrate() {
