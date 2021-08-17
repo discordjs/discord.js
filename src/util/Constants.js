@@ -895,6 +895,7 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
  * * USER
  * * MESSAGE
  * @typedef {string} ApplicationCommandType
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-types}
  */
 exports.ApplicationCommandTypes = createEnum([null, 'CHAT_INPUT', 'USER', 'MESSAGE']);
 
