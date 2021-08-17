@@ -542,19 +542,19 @@ class Guild extends AnonymousGuild {
   get maximumBitrate() {
     if (this.features.includes('VIP_REGIONS')) {
       return 384000;
-    } else {
-      switch (this.premiumTier) {
-        case PremiumTiers[this.premiumTier] === 0:
-          return 96000;
-        case PremiumTiers[this.premiumTier] === 1:
-          return 128000;
-        case PremiumTiers[this.premiumTier] === 2:
-          return 256000;
-        case PremiumTiers[this.premiumTier] === 3:
-          return 384000;
-        default:
-          return 96000;
-      }
+    } 
+    
+    switch (PremiumTiers[this.premiumTier]) {
+      case 0:
+        return 96000;
+      case 1:
+        return 128000;
+      case 2:
+        return 256000;
+      case 3:
+        return 384000;
+      default:
+        return 96000;
     }
   }
 
