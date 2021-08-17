@@ -4185,6 +4185,7 @@ export interface MessageOptions {
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
+  attachments?: MessageAttachment[];
 }
 
 export type MessageReactionResolvable =
@@ -4629,7 +4630,7 @@ export interface WebhookEditData {
 
 export type WebhookEditMessageOptions = Pick<
   WebhookMessageOptions,
-  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components'
+  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments'
 >;
 
 export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {

@@ -66,6 +66,7 @@ class TextBasedChannel {
    * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
+   * @property {MessageAttachment[]} [attachments] Attachments to send in the message
    */
 
   /**
