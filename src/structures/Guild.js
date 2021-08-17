@@ -545,6 +545,7 @@ class Guild extends AnonymousGuild {
     } 
     
     switch (PremiumTiers[this.premiumTier]) {
+      default:
       case 0:
         return 96000;
       case 1:
