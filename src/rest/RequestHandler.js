@@ -47,7 +47,7 @@ class RequestHandler {
   async push(request) {
     await this.queue.wait();
     try {
-      return await this.execute(request);
+      return this.execute(request);
     } finally {
       this.queue.shift();
     }
