@@ -282,7 +282,14 @@ class Message extends Base {
     }
 
     /**
-     * Reference data sent in a message that contains ids identifying the referenced message
+     * Reference data sent in a message that contains ids identifying the referenced message.
+     * This can be present in the following types of message:
+     * * Crossposted messages (IS_CROSSPOST {@link MessageFlags#FLAGS message flag})
+     * * CHANNEL_FOLLOW_ADD
+     * * CHANNEL_PINNED_MESSAGE
+     * * REPLY
+     * * THREAD_STARTER_MESSAGE
+     * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
      * @property {Snowflake} channelId The channel's id the message was referenced
      * @property {?Snowflake} guildId The guild's id the message was referenced
