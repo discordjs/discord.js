@@ -4,6 +4,10 @@ const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
 const { ActivityTypes, Opcodes } = require('../util/Constants');
 
+/**
+ * Represents the client's presence.
+ * @extends {Presence}
+ */
 class ClientPresence extends Presence {
   /**
    * @param {Client} client The instantiating client
@@ -13,6 +17,11 @@ class ClientPresence extends Presence {
     super(client, Object.assign(data, { status: data.status ?? 'online', user: { id: null } }));
   }
 
+  /**
+   * Sets the client's presence
+   * @param {PresenceData} presence The data to set the presence to
+   * @returns {ClientPresence}
+   */
   set(presence) {
     const packet = this._parse(presence);
     this._patch(packet);
@@ -28,6 +37,12 @@ class ClientPresence extends Presence {
     return this;
   }
 
+  /**
+   * Parses presence data into a packet ready to be sent to Discord
+   * @param {PresenceData} presence The data to parse
+   * @returns {APIPresence}
+   * @private
+   */
   _parse({ status, since, afk, activities }) {
     const data = {
       activities: [],

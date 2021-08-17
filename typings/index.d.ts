@@ -398,6 +398,7 @@ type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ?
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
   private actions: unknown;
+  private presence: ClientPresence;
   private _eval(script: string): unknown;
   private _validateOptions(options: ClientOptions): void;
 
@@ -468,16 +469,24 @@ export class ClientApplication extends Application {
   public fetch(): Promise<ClientApplication>;
 }
 
+export class ClientPresence extends Presence {
+  public constructor(client: Client, data: RawPresenceData);
+  private _parse(data: PresenceData): RawPresenceData;
+
+  public set(presence: PresenceData): ClientPresence;
+}
+
 export class ClientUser extends User {
   public mfaEnabled: boolean;
+  public readonly presence: ClientPresence;
   public verified: boolean;
   public edit(data: ClientUserEditData): Promise<this>;
-  public setActivity(options?: ActivityOptions): Presence;
-  public setActivity(name: string, options?: ActivityOptions): Presence;
-  public setAFK(afk: boolean, shardId?: number | number[]): Presence;
+  public setActivity(options?: ActivityOptions): ClientPresence;
+  public setActivity(name: string, options?: ActivityOptions): ClientPresence;
+  public setAFK(afk: boolean, shardId?: number | number[]): ClientPresence;
   public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
-  public setPresence(data: PresenceData): Presence;
-  public setStatus(status: PresenceStatusData, shardId?: number | number[]): Presence;
+  public setPresence(data: PresenceData): ClientPresence;
+  public setStatus(status: PresenceStatusData, shardId?: number | number[]): ClientPresence;
   public setUsername(username: string): Promise<this>;
 }
 
