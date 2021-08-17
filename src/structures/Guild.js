@@ -544,13 +544,13 @@ class Guild extends AnonymousGuild {
       return 384000;
     } else {
       switch (this.premiumTier) {
-        case PremiumTiers.indexOf(this.premiumTier) === 0:
+        case PremiumTiers[this.premiumTier] === 0:
           return 96000;
-        case PremiumTiers.indexOf(this.premiumTier) === 1:
+        case PremiumTiers[this.premiumTier] === 1:
           return 128000;
-        case PremiumTiers.indexOf(this.premiumTier) === 2:
+        case PremiumTiers[this.premiumTier] === 2:
           return 256000;
-        case PremiumTiers.indexOf(this.premiumTier) === 3:
+        case PremiumTiers[this.premiumTier] === 3:
           return 384000;
         default:
           return 96000;
