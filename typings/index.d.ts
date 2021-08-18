@@ -545,10 +545,11 @@ export class CommandInteractionOptionResolver {
   public constructor(client: Client, options: CommandInteractionOption[]);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption[];
+  public readonly hoistedOptions: readonly CommandInteractionOption[];
   public readonly resolved: Readonly<CommandInteractionResolvedData>;
-  private _group: string | null;
+  public group: string | null;
+  public subcommand: string | null;
   private _hoistedOptions: CommandInteractionOption[];
-  private _subcommand: string | null;
   private _getTypedOption(
     name: string,
     type: ApplicationCommandOptionType,
