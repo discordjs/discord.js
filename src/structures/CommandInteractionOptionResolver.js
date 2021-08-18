@@ -18,16 +18,14 @@ class CommandInteractionOptionResolver {
     /**
      * The name of the subcommand group.
      * @type {?string}
-     * @private
      */
-    this._group = null;
+    this.group = null;
 
     /**
      * The name of the subcommand.
      * @type {?string}
-     * @private
      */
-    this._subcommand = null;
+    this.subcommand = null;
 
     /**
      * The bottom-level options for the interaction.
@@ -39,12 +37,12 @@ class CommandInteractionOptionResolver {
 
     // Hoist subcommand group if present
     if (this._hoistedOptions[0]?.type === 'SUB_COMMAND_GROUP') {
-      this._group = this._hoistedOptions[0].name;
+      this.group = this._hoistedOptions[0].name;
       this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
     // Hoist subcommand if present
     if (this._hoistedOptions[0]?.type === 'SUB_COMMAND') {
-      this._subcommand = this._hoistedOptions[0].name;
+      this.subcommand = this._hoistedOptions[0].name;
       this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
 
@@ -55,6 +53,14 @@ class CommandInteractionOptionResolver {
      * @readonly
      */
     Object.defineProperty(this, 'data', { value: Object.freeze([...options]) });
+
+    /**
+     * The hoisted interaction options array, so without any subcommand(groups).
+     * @name CommandInteractionOptionResolver#hoistedOptions
+     * @type {ReadonlyArray<CommandInteractionOption>}
+     * @readonly
+     */
+    Object.defineProperty(this, 'hoistedOptions', { value: Object.freeze([...this._hoistedOptions]) });
 
     /**
      * The interaction resolved data
@@ -108,10 +114,10 @@ class CommandInteractionOptionResolver {
    * @returns {?string} The name of the selected subcommand, or null if not set and not required.
    */
   getSubcommand(required = true) {
-    if (required && !this._subcommand) {
+    if (required && !this.subcommand) {
       throw new TypeError('COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND');
     }
-    return this._subcommand;
+    return this.subcommand;
   }
 
   /**
@@ -120,10 +126,10 @@ class CommandInteractionOptionResolver {
    * @returns {?string} The name of the selected subcommand group, or null if not set and not required.
    */
   getSubcommandGroup(required = true) {
-    if (required && !this._group) {
+    if (required && !this.group) {
       throw new TypeError('COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP');
     }
-    return this._group;
+    return this.group;
   }
 
   /**
