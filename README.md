@@ -45,37 +45,26 @@ pnpm add discord.js
 
 Install all required dependencies:
 ```sh-session
-npm install discord.js @discordjs/rest discord-api-types
-yarn add discord.js @discordjs/rest discord-api-types
-pnpm add discord.js @discordjs/rest discord-api-types
+npm install discord.js
+yarn add discord.js
+pnpm add discord.js
 ```
 
 Register a slash command against the Discord API:
 ```js
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { Client, Intents } = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-const commands = [{
+await client.login();
+
+console.log('Started refreshing application (/) commands.');
+
+await client.application.commands.set([{
   name: 'ping',
   description: 'Replies with Pong!'
-}]; 
+}]);
 
-const rest = new REST({ version: '9' }).setToken('token');
-
-(async () => {
-  try {
-    console.log('Started refreshing application (/) commands.');
-
-    await rest.put(
-      Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
-      { body: commands },
-    );
-
-    console.log('Successfully reloaded application (/) commands.');
-  } catch (error) {
-    console.error(error);
-  }
-})();
+console.log('Successfully reloaded application (/) commands.');
 ```
 
 Afterwards we can create a quite simple example bot:
