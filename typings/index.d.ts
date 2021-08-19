@@ -1143,10 +1143,10 @@ export class Message extends Base {
   ): Promise<T>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
-  createMessageComponentCollector<T extends MessageComponentInteraction = ButtonInteraction>(
+  public createMessageComponentCollector<T extends MessageComponentInteraction = ButtonInteraction>(
     options: ButtonInteractionCollectorOptions,
   ): InteractionCollector<T>;
-  createMessageComponentCollector<T extends MessageComponentInteraction = SelectMenuInteraction>(
+  public createMessageComponentCollector<T extends MessageComponentInteraction = SelectMenuInteraction>(
     options: SelectMenuInteractionCollectorOptions,
   ): InteractionCollector<T>;
   public createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
