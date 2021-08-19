@@ -2691,7 +2691,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
   createMessageComponentCollector(options: ButtonInteractionCollectorOptions): InteractionCollector<ButtonInteraction>;
-  createMessageComponentCollector<T extends MessageComponentInteraction = SelectMenuInteraction>(
+  createMessageComponentCollector(
     options: SelectMenuInteractionCollectorOptions,
   ): InteractionCollector<SelectMenuInteraction>;
   createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
