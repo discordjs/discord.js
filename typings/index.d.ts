@@ -1143,6 +1143,12 @@ export class Message extends Base {
   ): Promise<T>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
+  createMessageComponentCollector<T extends MessageComponentInteraction = ButtonInteraction>(
+    options: ButtonInteractionCollectorOptions,
+  ): InteractionCollector<T>;
+  createMessageComponentCollector<T extends MessageComponentInteraction = SelectMenuInteraction>(
+    options: SelectMenuInteractionCollectorOptions,
+  ): InteractionCollector<T>;
   public createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
     options?: InteractionCollectorOptions<T>,
   ): InteractionCollector<T>;
@@ -2687,6 +2693,14 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
     options?: InteractionCollectorOptions<T>,
   ): InteractionCollector<T>;
+
+  createMessageComponentCollector<T extends MessageComponentInteraction = ButtonInteraction>(
+    options: ButtonInteractionCollectorOptions,
+  ): InteractionCollector<T>;
+  createMessageComponentCollector<T extends MessageComponentInteraction = SelectMenuInteraction>(
+    options: SelectMenuInteractionCollectorOptions,
+  ): InteractionCollector<T>;
+
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   sendTyping(): Promise<void>;
 }
@@ -3911,7 +3925,7 @@ export interface IntegrationAccount {
   name: string;
 }
 
-export interface InteractionCollectorOptions<T extends Interaction> extends CollectorOptions<[T]> {
+export interface InteractionCollectorOptions<T extends Interaction> extends CollectorOptions<T[]> {
   channel?: TextBasedChannels;
   componentType?: MessageComponentType | MessageComponentTypes;
   guild?: Guild;
@@ -3920,6 +3934,14 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   maxComponents?: number;
   maxUsers?: number;
   message?: Message | APIMessage;
+}
+
+export interface ButtonInteractionCollectorOptions extends CollectorOptions<ButtonInteraction[]> {
+  componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
+}
+
+export interface SelectMenuInteractionCollectorOptions extends CollectorOptions<SelectMenuInteraction[]> {
+  componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
 }
 
 export interface InteractionDeferReplyOptions {
