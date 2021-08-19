@@ -1143,12 +1143,12 @@ export class Message extends Base {
   ): Promise<T>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
-  public createMessageComponentCollector<T extends MessageComponentInteraction = ButtonInteraction>(
+  public createMessageComponentCollector(
     options: ButtonInteractionCollectorOptions,
-  ): InteractionCollector<T>;
-  public createMessageComponentCollector<T extends MessageComponentInteraction = SelectMenuInteraction>(
+  ): InteractionCollector<ButtonInteraction>;
+  public createMessageComponentCollector(
     options: SelectMenuInteractionCollectorOptions,
-  ): InteractionCollector<T>;
+  ): InteractionCollector<SelectMenuInteraction>;
   public createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
     options?: InteractionCollectorOptions<T>,
   ): InteractionCollector<T>;
@@ -2690,17 +2690,13 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
+  createMessageComponentCollector(options: ButtonInteractionCollectorOptions): InteractionCollector<ButtonInteraction>;
+  createMessageComponentCollector<T extends MessageComponentInteraction = SelectMenuInteraction>(
+    options: SelectMenuInteractionCollectorOptions,
+  ): InteractionCollector<SelectMenuInteraction>;
   createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
     options?: InteractionCollectorOptions<T>,
   ): InteractionCollector<T>;
-
-  createMessageComponentCollector<T extends MessageComponentInteraction = ButtonInteraction>(
-    options: ButtonInteractionCollectorOptions,
-  ): InteractionCollector<T>;
-  createMessageComponentCollector<T extends MessageComponentInteraction = SelectMenuInteraction>(
-    options: SelectMenuInteractionCollectorOptions,
-  ): InteractionCollector<T>;
-
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   sendTyping(): Promise<void>;
 }
@@ -3936,11 +3932,11 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   message?: Message | APIMessage;
 }
 
-export interface ButtonInteractionCollectorOptions extends CollectorOptions<ButtonInteraction[]> {
+export interface ButtonInteractionCollectorOptions extends InteractionCollectorOptions<ButtonInteraction> {
   componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
 }
 
-export interface SelectMenuInteractionCollectorOptions extends CollectorOptions<SelectMenuInteraction[]> {
+export interface SelectMenuInteractionCollectorOptions extends InteractionCollectorOptions<SelectMenuInteraction> {
   componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
 }
 
