@@ -219,9 +219,8 @@ class ApplicationCommand extends Base {
       option.name !== existing.name ||
       optionType !== existing.type ||
       option.description !== existing.description ||
-      (option.required ??
-        (optionType === 'SUB_COMMAND' || optionType === 'SUB_COMMAND_GROUP' ? undefined : false) !==
-          existing.required) ||
+      (option.required ?? (optionType === 'SUB_COMMAND' || optionType === 'SUB_COMMAND_GROUP' ? undefined : false)) !==
+        existing.required ||
       option.choices?.length !== existing.choices?.length ||
       option.options?.length !== existing.options?.length
     ) {
