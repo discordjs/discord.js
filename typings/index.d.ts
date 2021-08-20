@@ -1151,7 +1151,7 @@ export class Message extends Base {
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
   public createMessageComponentCollector<T extends InteractionCollectorOptionsResolvable>(
-    options: T,
+    options?: T,
   ): ConditionalInteractionCollector<T>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
@@ -2692,7 +2692,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
   createMessageComponentCollector<T extends InteractionCollectorOptionsResolvable>(
-    options: T,
+    options?: T,
   ): ConditionalInteractionCollector<T>;
   sendTyping(): Promise<void>;
 }
