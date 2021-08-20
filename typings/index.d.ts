@@ -1091,7 +1091,7 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
-type ConditionalInteractionCollector<T extends InteractionCollectorOptionsResolvable> =
+type ConditionalInteractionCollector<T extends InteractionCollectorOptionsResolvable | undefined> =
   T extends MessageInteractionCollectorOptions
     ? InteractionCollector<MessageComponentInteraction>
     : T extends ButtonInteractionCollectorOptions
@@ -1150,9 +1150,9 @@ export class Message extends Base {
   ): Promise<T>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
-  public createMessageComponentCollector<T extends InteractionCollectorOptionsResolvable>(
-    options?: T,
-  ): ConditionalInteractionCollector<T>;
+  public createMessageComponentCollector<
+    T extends InteractionCollectorOptionsResolvable = MessageInteractionCollectorOptions,
+  >(options?: T): ConditionalInteractionCollector<T>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
   public equals(message: Message, rawData: unknown): boolean;
