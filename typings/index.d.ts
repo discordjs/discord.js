@@ -1091,7 +1091,7 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
-type ConditionalInteractionCollector<T extends InteractionCollectorOptionsResolvable | undefined> =
+type ConditionalInteractionCollector<T extends InteractionCollectorOptionsResolvable> =
   T extends MessageInteractionCollectorOptions
     ? InteractionCollector<MessageComponentInteraction>
     : T extends ButtonInteractionCollectorOptions
@@ -2691,7 +2691,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
-  createMessageComponentCollector<T extends InteractionCollectorOptionsResolvable>(
+  createMessageComponentCollector<T extends InteractionCollectorOptionsResolvable = MessageInteractionCollectorOptions>(
     options?: T,
   ): ConditionalInteractionCollector<T>;
   sendTyping(): Promise<void>;
