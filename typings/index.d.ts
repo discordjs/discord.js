@@ -1091,6 +1091,13 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
+type ConditionalInteractionCollector<T extends InteractionCollectorOptionsResolvable> =
+  T extends MessageInteractionCollectorOptions
+    ? InteractionCollector<MessageComponentInteraction>
+    : T extends ButtonInteractionCollectorOptions
+    ? InteractionCollector<ButtonInteraction>
+    : InteractionCollector<SelectMenuInteraction>;
+
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData, partial: true): void;
@@ -1143,15 +1150,9 @@ export class Message extends Base {
   ): Promise<T>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
-  public createMessageComponentCollector(
-    options: ButtonInteractionCollectorOptions,
-  ): InteractionCollector<ButtonInteraction>;
-  public createMessageComponentCollector(
-    options: SelectMenuInteractionCollectorOptions,
-  ): InteractionCollector<SelectMenuInteraction>;
-  public createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
-    options?: InteractionCollectorOptions<T>,
-  ): InteractionCollector<T>;
+  public createMessageComponentCollector<T extends InteractionCollectorOptionsResolvable>(
+    options: T,
+  ): ConditionalInteractionCollector<T>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
   public equals(message: Message, rawData: unknown): boolean;
@@ -2690,14 +2691,9 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
-  createMessageComponentCollector(options: ButtonInteractionCollectorOptions): InteractionCollector<ButtonInteraction>;
-  createMessageComponentCollector(
-    options: SelectMenuInteractionCollectorOptions,
-  ): InteractionCollector<SelectMenuInteraction>;
-  createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
-    options?: InteractionCollectorOptions<T>,
-  ): InteractionCollector<T>;
-  createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
+  createMessageComponentCollector<T extends InteractionCollectorOptionsResolvable>(
+    options: T,
+  ): ConditionalInteractionCollector<T>;
   sendTyping(): Promise<void>;
 }
 
@@ -3939,6 +3935,15 @@ export interface ButtonInteractionCollectorOptions extends InteractionCollectorO
 export interface SelectMenuInteractionCollectorOptions extends InteractionCollectorOptions<SelectMenuInteraction> {
   componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
 }
+
+export interface MessageInteractionCollectorOptions extends InteractionCollectorOptions<MessageComponentInteraction> {
+  componentType?: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
+}
+
+export type InteractionCollectorOptionsResolvable =
+  | MessageInteractionCollectorOptions
+  | SelectMenuInteractionCollectorOptions
+  | ButtonInteractionCollectorOptions;
 
 export interface InteractionDeferReplyOptions {
   ephemeral?: boolean;
