@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const GuildEventEntityMetadata = require('./GuildEventEntityMetadata');
 const { PrivacyLevels, GuildEventEntityTypes, GuildEventStatuses } = require('../util/Constants');
 
 /**
@@ -99,8 +100,9 @@ class GuildEvent extends Base {
 
     /**
      * The metadata for the guild event
+     * @type {GuildEventEntityMetadata}
      */
-    this.entityMetadata = data.entity_metadata;
+    this.entityMetadata = new GuildEventEntityMetadata(data.entity_metadata);
 
     /**
      * The sku ids
