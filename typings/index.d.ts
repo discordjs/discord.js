@@ -1182,6 +1182,9 @@ export class MessageActionRow extends BaseMessageComponent {
   public addComponents(
     ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
   ): this;
+  public setComponents(
+    ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
+  ): this;
   public spliceComponents(
     index: number,
     deleteCount: number,
@@ -1391,6 +1394,7 @@ export class MessageSelectMenu extends BaseMessageComponent {
   public placeholder: string | null;
   public type: 'SELECT_MENU';
   public addOptions(...options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
+  public setOptions(...options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
   public setCustomId(customId: string): this;
   public setDisabled(disabled?: boolean): this;
   public setMaxValues(maxValues: number): this;
