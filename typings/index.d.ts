@@ -1116,6 +1116,10 @@ type ConditionalType<T extends InteractionCollectorOptionsResolvable | undefined
 // This maps each componentType key to each variant.
 type MappedInteractionCollectorOptions = CollectorOptionsTypeResolver<InteractionCollectorOptionsResolvable>;
 
+type MessageCollectorOptionsParams<T> =
+  | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
+  | InteractionCollectorOptions<MessageComponentInteraction>;
+
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData, partial: true): void;
@@ -1170,11 +1174,7 @@ export class Message extends Base {
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
   public createMessageComponentCollector<
     T extends MessageComponentType | MessageComponentTypes = MessageComponentTypes.ACTION_ROW,
-  >(
-    options?:
-      | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
-      | InteractionCollectorOptions<MessageComponentInteraction>,
-  ): ConditionalType<MappedInteractionCollectorOptions[T]>;
+  >(options?: MessageCollectorOptionsParams<T>): ConditionalType<MappedInteractionCollectorOptions[T]>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
   public equals(message: Message, rawData: unknown): boolean;
@@ -2716,9 +2716,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   createMessageComponentCollector<
     T extends MessageComponentType | MessageComponentTypes = MessageComponentTypes.ACTION_ROW,
   >(
-    options?:
-      | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
-      | InteractionCollectorOptions<MessageComponentInteraction>,
+    options?: MessageCollectorOptionsParams<T>,
   ): ConditionalType<MappedInteractionCollectorOptions[T]>;
   sendTyping(): Promise<void>;
 }
