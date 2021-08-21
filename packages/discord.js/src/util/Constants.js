@@ -130,18 +130,6 @@ exports.Events = {
   API_RESPONSE: 'apiResponse',
   API_REQUEST: 'apiRequest',
   CLIENT_READY: 'ready',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
-  APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
-  APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
-  APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -238,9 +226,6 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * The type of a WebSocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED
- * * APPLICATION_COMMAND_CREATE (deprecated)
- * * APPLICATION_COMMAND_DELETE (deprecated)
- * * APPLICATION_COMMAND_UPDATE (deprecated)
  * * GUILD_CREATE
  * * GUILD_DELETE
  * * GUILD_UPDATE
@@ -297,9 +282,6 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
 exports.WSEvents = keyMirror([
   'READY',
   'RESUMED',
-  'APPLICATION_COMMAND_CREATE',
-  'APPLICATION_COMMAND_DELETE',
-  'APPLICATION_COMMAND_UPDATE',
   'GUILD_CREATE',
   'GUILD_DELETE',
   'GUILD_UPDATE',
