@@ -27,6 +27,8 @@ class GuildEvent extends Base {
      * @type {Snowflake}
      */
     this.guildId = data.guild_id;
+
+    this._patch(data);
   }
 
   _patch(data) {
@@ -108,7 +110,6 @@ class GuildEvent extends Base {
 
     /**
      * The skus
-     * @type {[]}
      */
     this.skus = data.skus;
 
