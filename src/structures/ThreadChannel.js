@@ -254,6 +254,17 @@ class ThreadChannel extends Channel {
   }
 
   /**
+   * Fetches the message that started this thread, if any.
+   * <info>This in only available when the thread started from a message in the parent channel.
+   * If you just need the id of that message, use {@link ThreadChannel#id this channel's id} instead.</info>
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @returns {Promise<?Message>}
+   */
+  fetchStarterMessage(options) {
+    return this.channel.messages.fetch(this.id, options);
+  }
+
+  /**
    * The options used to edit a thread channel
    * @typedef {Object} ThreadEditData
    * @property {string} [name] The new name for the thread
