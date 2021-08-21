@@ -1130,6 +1130,24 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
  */
 exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
 
+/**
+ * The entity type of a {@link GuildEvent}:
+ * * SCHEDULED
+ * * ACTIVE
+ * * COMPLETED
+ * * CANCELED
+ * @typedef {string} GuildEventEntityType
+ */
+exports.GuildEventEntityTypes = createEnum([null, 'SCHEDULED', 'ACTIVE', 'COMPLETED', 'CANCELED']);
+
+/**
+ * The status of a {@link GuildEvent}:
+ * * NONE
+ * * STAGE_INSTANCE
+ * @typedef {string} GuildEventStatus
+ */
+exports.GuildEventStatuses = createEnum(['NONE', 'STAGE_INSTANCE']);
+
 exports._cleanupSymbol = Symbol('djsCleanup');
 
 function keyMirror(arr) {
