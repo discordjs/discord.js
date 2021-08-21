@@ -256,7 +256,7 @@ class ThreadChannel extends Channel {
   /**
    * Fetches the message that started this thread, if any.
    * <info>This only works when the thread started from a message in the parent channel, otherwise the promise will
-   * reject. If you just need the id of that message, use {@link ThreadChannel#id this channel's id} instead.</info>
+   * reject. If you just need the id of that message, use {@link ThreadChannel#id} instead.</info>
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<Message>}
    */
