@@ -1091,12 +1091,30 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
-type ConditionalInteractionCollector<T extends InteractionCollectorOptionsResolvable> =
-  T extends MessageInteractionCollectorOptions
-    ? InteractionCollector<MessageComponentInteraction>
-    : T extends ButtonInteractionCollectorOptions
-    ? InteractionCollector<ButtonInteraction>
-    : InteractionCollector<SelectMenuInteraction>;
+// This is a general conditional type utility that allows for specific union members to be extracted given
+// a tagged union.
+type TaggedUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V>
+  ? T
+  : T extends Record<K, infer U>
+  ? V extends U
+    ? T
+    : never
+  : never;
+
+// This creates a map of MessageComponentTypes to their respective `InteractionCollectorOptionsResolvable` variant.
+type CollectorOptionsTypeResolver<U extends InteractionCollectorOptionsResolvable> = {
+  readonly [T in U['componentType']]: TaggedUnion<InteractionCollectorOptionsResolvable, 'componentType', T>;
+};
+
+// This basically says "Given a `InteractionCollectorOptionsResolvable` variant", I'll give the corresponding
+// `InteractionCollector<T>` variant back.
+type ConditionalType<T extends InteractionCollectorOptionsResolvable | undefined> =
+  T extends InteractionCollectorOptions<infer Item>
+    ? InteractionCollector<Item>
+    : InteractionCollector<MessageComponentInteraction>;
+
+// This maps each componentType key to each variant.
+type MappedInteractionCollectorOptions = CollectorOptionsTypeResolver<InteractionCollectorOptionsResolvable>;
 
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
@@ -1151,8 +1169,10 @@ export class Message extends Base {
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
   public createMessageComponentCollector<
-    T extends InteractionCollectorOptionsResolvable = MessageInteractionCollectorOptions,
-  >(options?: T): ConditionalInteractionCollector<T>;
+    T extends MessageComponentType | MessageComponentTypes = MessageComponentTypes.ACTION_ROW,
+  >(
+    options?: { componentType?: T } & InteractionCollectorOptionsResolvable,
+  ): ConditionalType<MappedInteractionCollectorOptions[T]>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
   public equals(message: Message, rawData: unknown): boolean;
@@ -2691,9 +2711,11 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
-  createMessageComponentCollector<T extends InteractionCollectorOptionsResolvable = MessageInteractionCollectorOptions>(
-    options?: T,
-  ): ConditionalInteractionCollector<T>;
+  createMessageComponentCollector<
+    T extends MessageComponentType | MessageComponentTypes = MessageComponentTypes.ACTION_ROW,
+  >(
+    options?: { componentType?: T } & InteractionCollectorOptionsResolvable,
+  ): ConditionalType<MappedInteractionCollectorOptions[T]>;
   sendTyping(): Promise<void>;
 }
 
@@ -3917,7 +3939,7 @@ export interface IntegrationAccount {
   name: string;
 }
 
-export interface InteractionCollectorOptions<T extends Interaction> extends CollectorOptions<T[]> {
+export interface InteractionCollectorOptions<T extends Interaction> extends CollectorOptions<[T]> {
   channel?: TextBasedChannels;
   componentType?: MessageComponentType | MessageComponentTypes;
   guild?: Guild;
@@ -3937,7 +3959,7 @@ export interface SelectMenuInteractionCollectorOptions extends InteractionCollec
 }
 
 export interface MessageInteractionCollectorOptions extends InteractionCollectorOptions<MessageComponentInteraction> {
-  componentType?: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
+  componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
 }
 
 export type InteractionCollectorOptionsResolvable =
