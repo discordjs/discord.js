@@ -36,6 +36,7 @@ class GuildEvent extends Base {
     if ('channel_id' in data) {
       /**
        * The id of the stage channel this event belongs to
+       * @type {Snowflake}
        */
       this.channelId = data.channel_id;
     }
