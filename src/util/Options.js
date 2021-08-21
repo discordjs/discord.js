@@ -67,6 +67,9 @@
  * @property {boolean} [failIfNotExists=true] Default value for {@link ReplyMessageOptions#failIfNotExists}
  * @property {string[]} [userAgentSuffix] An array of additional bot info to be appended to the end of the required
  * [User Agent](https://discord.com/developers/docs/reference#user-agent) header
+ * @property {boolean} [supportFriendInvites=false] Whether to support friend invites (where channel is null),
+ * if false, an error will be thrown when fetching a friend invite.
+ * This option exists for backwards compatibility, and will always be true in a future version.
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
  * @property {WebsocketOptions} [ws] Options for the WebSocket
@@ -123,6 +126,7 @@ class Options extends null {
       restSweepInterval: 60,
       failIfNotExists: true,
       userAgentSuffix: [],
+      supportFriendInvites: false,
       presence: {},
       ws: {
         large_threshold: 50,

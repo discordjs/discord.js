@@ -107,10 +107,13 @@ class Invite extends Base {
     this.targetType = data.target_type ?? null;
 
     /**
-     * The channel the invite is for
-     * @type {Channel}
+     * The channel the invite is for, can only be null if {@link ClientOptions#supportFriendInvites} is `true`
+     * @type {?Channel}
      */
-    this.channel = this.client.channels._add(data.channel, this.guild, { cache: false });
+    this.channel =
+      data.channel || !this.client.options.supportFriendInvites
+        ? this.client.channels._add(data.channel, this.guild, { cache: false })
+        : null;
 
     /**
      * The timestamp the invite was created at

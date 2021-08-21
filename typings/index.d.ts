@@ -1049,7 +1049,7 @@ export class InteractionWebhook extends PartialWebhookMixin() {
 
 export class Invite extends Base {
   public constructor(client: Client, data: RawInviteData);
-  public channel: GuildChannel | PartialGroupDMChannel;
+  public channel: GuildChannel | PartialGroupDMChannel | null;
   public code: string;
   public readonly deletable: boolean;
   public readonly createdAt: Date | null;

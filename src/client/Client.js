@@ -277,6 +277,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains an invite from Discord.
+   * If a friend invite is passed and {@link ClientOptions#supportFriendInvites} is not `true`, an error will be thrown.
    * @param {InviteResolvable} invite Invite code or URL
    * @returns {Promise<Invite>}
    * @example
