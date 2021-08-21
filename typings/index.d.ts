@@ -1171,7 +1171,9 @@ export class Message extends Base {
   public createMessageComponentCollector<
     T extends MessageComponentType | MessageComponentTypes = MessageComponentTypes.ACTION_ROW,
   >(
-    options?: { componentType?: T } & InteractionCollectorOptionsResolvable,
+    options?:
+      | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
+      | InteractionCollectorOptions<MessageComponentInteraction>,
   ): ConditionalType<MappedInteractionCollectorOptions[T]>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
@@ -2714,7 +2716,9 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   createMessageComponentCollector<
     T extends MessageComponentType | MessageComponentTypes = MessageComponentTypes.ACTION_ROW,
   >(
-    options?: { componentType?: T } & InteractionCollectorOptionsResolvable,
+    options?:
+      | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
+      | InteractionCollectorOptions<MessageComponentInteraction>,
   ): ConditionalType<MappedInteractionCollectorOptions[T]>;
   sendTyping(): Promise<void>;
 }
