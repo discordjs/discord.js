@@ -10,9 +10,8 @@ const { PrivacyLevels, GuildEventEntityTypes, GuildEventStatuses } = require('..
  */
 class GuildEvent extends Base {
   /**
-   *
    * @param {Client} client The instantiating client
-   * @param {*} data The data for the guild event
+   * @param {APIGuildEvent} data The data for the guild event
    */
   constructor(client, data) {
     super(client);
@@ -113,6 +112,8 @@ class GuildEvent extends Base {
 
     /**
      * The skus
+     * TODO: will update this once more info is available
+     * @type {Object[]}
      */
     this.skus = data.skus;
 
