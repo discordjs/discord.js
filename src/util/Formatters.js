@@ -161,7 +161,7 @@ Formatters.strikethrough = strikethrough;
  * @method time
  * @memberof Formatters
  * @param {number|Date} [date] The date to format.
- * @param {TimestampStyles} [style] The style to use.
+ * @param {TimestampStylesString} [style] The style to use.
  * @returns {string}
  */
 Formatters.time = time;
