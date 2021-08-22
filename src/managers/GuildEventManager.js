@@ -2,7 +2,9 @@
 
 const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
+const { TypeError, Error } = require('../errors');
 const GuildEvent = require('../structures/GuildEvent');
+const { PrivacyLevels, GuildEventEntityTypes } = require('../util/Constants');
 
 class GuildEventManager extends CachedManager {
   constructor(guild, iterable) {
@@ -67,6 +69,60 @@ class GuildEventManager extends CachedManager {
       (coll, guildEvent) => coll.set(guildEvent.id, new GuildEvent(this.client, guildEvent)),
       new Collection(),
     );
+  }
+
+  /**
+   * Options used to create a guild event
+   * @typedef {Object} GuildEventCreateOptions
+   * @property {string} name The name of the event
+   * @property {Date} scheduledStartTime The time to schedule the event at
+   * @property {PrivacyLevel|number} privacyLevel The privacy level of the event
+   * @property {GuildEventEntityType|number} entityType The scheduled entity type of the event
+   * @property {string} [description] The description of the event
+   * @property {StageChannel|Snowflake} [channel] The stage channel of the event
+   */
+
+  /**
+   * Creates a new guild event.
+   * @param {GuildEventCreateOptions} options Options for creating the guild event
+   * @returns {Promise<GuildEvent>}
+   */
+  async create(options) {
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    let { privacyLevel, entityType, channel } = options;
+
+    if (!privacyLevel) throw new TypeError('INVALID_TYPE', 'privacyLevel', 'string or number', false);
+    privacyLevel = typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
+
+    if (entityType) entityType = typeof entityType === 'number' ? entityType : GuildEventEntityTypes[entityType];
+
+    const channelId = this.guild.channels.resolveId(channel);
+
+    const data = await this.client.api.guilds(this.guild.id).events.post({
+      data: {
+        channel_id: channelId,
+        name: options.name,
+        privacy_level: privacyLevel,
+        scheduled_start_time: options.scheduledStartTime,
+        description: options.description,
+        entity_type: entityType,
+      },
+    });
+
+    return this._add(data);
+  }
+
+  /**
+   * Deletes a guild event
+   * @param {GuildEventResolvable} guildEvent The guild event to delete
+   * @returns {Promise<void>}
+   */
+  async delete(guildEvent) {
+    const guildEventId = this.resolveId(guildEvent);
+    if (!guildEventId) throw new Error('GUILD_EVENT_RESOLVE');
+
+    await this.client.api('guild-events', guildEventId).delete();
+    this.cache.delete(guildEventId);
   }
 }
 
