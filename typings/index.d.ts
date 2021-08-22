@@ -1179,9 +1179,9 @@ export class Message extends Base {
   ): Promise<T>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
-  public createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes>(
-    options?: MessageCollectorOptionsParams<T>,
-  ): InteractionCollectorReturnType<T>;
+  public createMessageComponentCollector<
+    T extends MessageComponentType | MessageComponentTypes | undefined = undefined,
+  >(options?: MessageCollectorOptionsParams<T>): InteractionCollectorReturnType<T>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
   public equals(message: Message, rawData: unknown): boolean;
@@ -2720,7 +2720,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
-  createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes>(
+  createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
     options?: MessageCollectorOptionsParams<T>,
   ): InteractionCollectorReturnType<T>;
   sendTyping(): Promise<void>;
