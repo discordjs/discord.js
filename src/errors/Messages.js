@@ -99,6 +99,7 @@ const Messages = {
 
   MESSAGE_THREAD_PARENT: 'The message was not sent in a guild text or news channel',
   MESSAGE_EXISTING_THREAD: 'The message already has a thread',
+  THREAD_INVITABLE_TYPE: type => `Invitable cannot be edited on ${type}`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
   WEBHOOK_TOKEN_UNAVAILABLE: 'This action requires a webhook token, but none is available.',

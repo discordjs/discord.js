@@ -306,7 +306,7 @@ export class BaseGuildTextChannel extends TextBasedChannel(GuildChannel) {
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   public messages: MessageManager;
   public nsfw: boolean;
-  public threads: ThreadManager<AllowedThreadTypeForTextChannel>;
+  public threads: ThreadManager<AllowedThreadTypeForTextChannel | AllowedThreadTypeForNewsChannel>;
   public topic: string | null;
   public createInvite(options?: CreateInviteOptions): Promise<Invite>;
   public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
@@ -1405,6 +1405,7 @@ export class MessageSelectMenu extends BaseMessageComponent {
 }
 
 export class NewsChannel extends BaseGuildTextChannel {
+  public threads: ThreadManager<AllowedThreadTypeForNewsChannel>;
   public type: 'GUILD_NEWS';
   public addFollower(channel: GuildChannelResolvable, reason?: string): Promise<NewsChannel>;
 }
@@ -1775,6 +1776,7 @@ export class TeamMember extends Base {
 
 export class TextChannel extends BaseGuildTextChannel {
   public rateLimitPerUser: number;
+  public threads: ThreadManager<AllowedThreadTypeForTextChannel>;
   public type: 'GUILD_TEXT';
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 }
@@ -1789,6 +1791,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public guild: Guild;
   public guildId: Snowflake;
   public readonly guildMembers: Collection<Snowflake, GuildMember>;
+  public invitable: boolean | null;
   public readonly joinable: boolean;
   public readonly joined: boolean;
   public locked: boolean | null;
@@ -1817,6 +1820,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
     autoArchiveDuration: ThreadAutoArchiveDuration,
     reason?: string,
   ): Promise<ThreadChannel>;
+  public setInvitable(invitable?: boolean, reason?: string): Promise<ThreadChannel>;
   public setLocked(locked?: boolean, reason?: string): Promise<ThreadChannel>;
   public setName(name: string, reason?: string): Promise<ThreadChannel>;
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<ThreadChannel>;
@@ -4571,6 +4575,7 @@ export type ThreadChannelTypes = 'GUILD_NEWS_THREAD' | 'GUILD_PUBLIC_THREAD' | '
 export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptions {
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
+  invitable?: AllowedThreadType extends 'GUILD_PRIVATE_THREAD' | 12 ? boolean : undefined;
 }
 
 export interface ThreadEditData {
@@ -4579,6 +4584,7 @@ export interface ThreadEditData {
   autoArchiveDuration?: ThreadAutoArchiveDuration;
   rateLimitPerUser?: number;
   locked?: boolean;
+  invitable?: boolean;
 }
 
 export type ThreadMemberFlagsString = '';
