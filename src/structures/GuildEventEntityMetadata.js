@@ -2,7 +2,7 @@
 
 class GuildEventEntityMetadata {
   /**
-   * @param {APIGuildEventEntityMetaData} data The data for the guild event metadata
+   * @param {APIGuildEventEntityMetadata} data The data for the guild event metadata
    */
   constructor(data) {
     this._patch(data);
