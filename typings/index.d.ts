@@ -1108,7 +1108,7 @@ type CollectorOptionsTypeResolver<U extends InteractionCollectorOptionsResolvabl
 
 // This basically says "Given a `InteractionCollectorOptionsResolvable` variant", I'll give the corresponding
 // `InteractionCollector<T>` variant back.
-type ConditionalType<T extends InteractionCollectorOptionsResolvable | undefined> =
+type ConditionalInteractionCollectorType<T extends InteractionCollectorOptionsResolvable | undefined> =
   T extends InteractionCollectorOptions<infer Item>
     ? InteractionCollector<Item>
     : InteractionCollector<MessageComponentInteraction>;
@@ -1120,7 +1120,7 @@ type MappedInteractionCollectorOptions = CollectorOptionsTypeResolver<Interactio
 type InteractionCollectorReturnType<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
   | MessageComponentType
   | MessageComponentTypes
-  ? ConditionalType<MappedInteractionCollectorOptions[T]>
+  ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions[T]>
   : InteractionCollector<MessageComponentInteraction>;
 
 type MessageCollectorOptionsParams<T> =
