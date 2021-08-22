@@ -13,6 +13,7 @@ const GuildApplicationCommandManager = require('../managers/GuildApplicationComm
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
+const GuildEventManager = require('../managers/GuildEventManager');
 const GuildInviteManager = require('../managers/GuildInviteManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
 const GuildStickerManager = require('../managers/GuildStickerManager');
@@ -108,6 +109,12 @@ class Guild extends AnonymousGuild {
      * @type {GuildInviteManager}
      */
     this.invites = new GuildInviteManager(this);
+
+    /**
+     * A manager of the events of this guild
+     * @type {GuildEventManager}
+     */
+    this.events = new GuildEventManager(this);
 
     if (!data) return;
     if (data.unavailable) {
