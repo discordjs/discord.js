@@ -130,6 +130,7 @@ class CommandInteractionOptionResolver {
    * Gets a boolean option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @param {boolean} [defaultValue=null] The value that will be returned if `required = false`.
    * @returns {?boolean} The value of the option, or null if not set and not required.
    */
   getBoolean(name, required = false, defaultValue = null) {
@@ -153,6 +154,7 @@ class CommandInteractionOptionResolver {
    * Gets a string option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @param {string} [defaultValue=null] The value that will be returned if `required = false`.
    * @returns {?string} The value of the option, or null if not set and not required.
    */
   getString(name, required = false, defaultValue = null) {
@@ -164,6 +166,7 @@ class CommandInteractionOptionResolver {
    * Gets an integer option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @param {number} [defaultValue=null] The value that will be returned if `required = false`.
    * @returns {?number} The value of the option, or null if not set and not required.
    */
   getInteger(name, required = false, defaultValue = null) {
@@ -175,6 +178,7 @@ class CommandInteractionOptionResolver {
    * Gets a number option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @param {number} [defaultValue=null] The value that will be returned if `required = false`.
    * @returns {?number} The value of the option, or null if not set and not required.
    */
   getNumber(name, required = false, defaultValue = null) {
