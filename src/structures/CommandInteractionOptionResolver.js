@@ -132,9 +132,9 @@ class CommandInteractionOptionResolver {
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?boolean} The value of the option, or null if not set and not required.
    */
-  getBoolean(name, required = false) {
+  getBoolean(name, required = false, defaultValue = null) {
     const option = this._getTypedOption(name, 'BOOLEAN', ['value'], required);
-    return option?.value ?? null;
+    return option?.value ?? defaultValue;
   }
 
   /**
@@ -155,9 +155,9 @@ class CommandInteractionOptionResolver {
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?string} The value of the option, or null if not set and not required.
    */
-  getString(name, required = false) {
+  getString(name, required = false, defaultValue = null) {
     const option = this._getTypedOption(name, 'STRING', ['value'], required);
-    return option?.value ?? null;
+    return option?.value ?? defaultValue;
   }
 
   /**
@@ -166,9 +166,9 @@ class CommandInteractionOptionResolver {
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?number} The value of the option, or null if not set and not required.
    */
-  getInteger(name, required = false) {
+  getInteger(name, required = false, defaultValue = null) {
     const option = this._getTypedOption(name, 'INTEGER', ['value'], required);
-    return option?.value ?? null;
+    return option?.value ?? defaultValue;
   }
 
   /**
@@ -177,9 +177,9 @@ class CommandInteractionOptionResolver {
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?number} The value of the option, or null if not set and not required.
    */
-  getNumber(name, required = false) {
+  getNumber(name, required = false, defaultValue = null) {
     const option = this._getTypedOption(name, 'NUMBER', ['value'], required);
-    return option?.value ?? null;
+    return option?.value ?? defaultValue;
   }
 
   /**
