@@ -1116,6 +1116,12 @@ type ConditionalType<T extends InteractionCollectorOptionsResolvable | undefined
 // This maps each componentType key to each variant.
 type MappedInteractionCollectorOptions = CollectorOptionsTypeResolver<InteractionCollectorOptionsResolvable>;
 
+type InteractionCollectorReturnType<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
+  | MessageComponentType
+  | MessageComponentTypes
+  ? ConditionalType<MappedInteractionCollectorOptions[T]>
+  : InteractionCollector<MessageComponentInteraction>;
+
 type MessageCollectorOptionsParams<T> =
   | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
   | InteractionCollectorOptions<MessageComponentInteraction>;
@@ -1172,9 +1178,9 @@ export class Message extends Base {
   ): Promise<T>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
-  public createMessageComponentCollector<
-    T extends MessageComponentType | MessageComponentTypes = MessageComponentTypes.ACTION_ROW,
-  >(options?: MessageCollectorOptionsParams<T>): ConditionalType<MappedInteractionCollectorOptions[T]>;
+  public createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes>(
+    options?: MessageCollectorOptionsParams<T>,
+  ): InteractionCollectorReturnType<T>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
   public equals(message: Message, rawData: unknown): boolean;
