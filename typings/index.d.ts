@@ -1116,6 +1116,7 @@ type ConditionalType<T extends InteractionCollectorOptionsResolvable | undefined
 // This maps each componentType key to each variant.
 type MappedInteractionCollectorOptions = CollectorOptionsTypeResolver<InteractionCollectorOptionsResolvable>;
 
+// Converts mapped types to complimentary collector types.
 type InteractionCollectorReturnType<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
   | MessageComponentType
   | MessageComponentTypes
@@ -2719,11 +2720,9 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
-  createMessageComponentCollector<
-    T extends MessageComponentType | MessageComponentTypes = MessageComponentTypes.ACTION_ROW,
-  >(
+  createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes>(
     options?: MessageCollectorOptionsParams<T>,
-  ): ConditionalType<MappedInteractionCollectorOptions[T]>;
+  ): InteractionCollectorReturnType<T>;
   sendTyping(): Promise<void>;
 }
 
