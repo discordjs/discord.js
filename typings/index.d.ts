@@ -3251,6 +3251,7 @@ export interface ClientOptions {
   retryLimit?: number;
   failIfNotExists?: boolean;
   userAgentSuffix?: string[];
+  supportFriendInvites?: boolean;
   presence?: PresenceData;
   intents: BitFieldResolvable<IntentsString, number>;
   ws?: WebSocketOptions;
