@@ -11,14 +11,14 @@ const MessagePayload = require('../MessagePayload');
  */
 class InteractionResponses {
   /**
-   * Options for deferring the reply to an {@link Interaction}.
+   * Options for deferring the reply to a {@link MessageComponentInteraction}.
    * @typedef {Object} InteractionDeferReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
    */
 
   /**
-   * Options for deferring and updating the reply to a {@link ButtonInteraction}.
+   * Options for deferring and updating the reply to a {@link MessageComponentInteraction}.
    * @typedef {Object} InteractionDeferUpdateOptions
    * @property {boolean} [fetchReply] Whether to fetch the reply
    */
