@@ -72,7 +72,7 @@ class GuildEventManager extends CachedManager {
   }
 
   /**
-   * Options used to create a guild event
+   * Options used to create a guild event.
    * @typedef {Object} GuildEventCreateOptions
    * @property {string} name The name of the event
    * @property {Date} scheduledStartTime The time to schedule the event at
@@ -113,7 +113,7 @@ class GuildEventManager extends CachedManager {
   }
 
   /**
-   * Deletes a guild event
+   * Deletes a guild event.
    * @param {GuildEventResolvable} guildEvent The guild event to delete
    * @returns {Promise<void>}
    */
@@ -123,6 +123,48 @@ class GuildEventManager extends CachedManager {
 
     await this.client.api('guild-events', guildEventId).delete();
     this.cache.delete(guildEventId);
+  }
+
+  /**
+   * Options used to edit a guild event.
+   * @typedef {Object} GuildEventEditOptions
+   * @property {string} [name] The name of the event
+   * @property {Date} [scheduledStartTime] The time to schedule the event at
+   * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the event
+   * @property {GuildEventEntityType|number} [entityType] The scheduled entity type of the event
+   * @property {string} [description] The description of the event
+   * @property {StageChannel|Snowflake} [channel] The stage channel of the event
+   */
+
+  /**
+   * Edits a guild event.
+   * @param {GuildEventResolvable} guildEvent The guild event to edit
+   * @param {GuildEventEditOptions} options Options to edit the guild event
+   * @returns {Promise<GuildEvent>}
+   */
+  async edit(guildEvent, options) {
+    const guildEventId = this.resolveId(guildEvent);
+    if (!guildEventId) throw new Error('GUILD_EVENT_RESOLVE');
+
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    let { privacyLevel, entityType, channel } = options;
+
+    if (privacyLevel) privacyLevel = typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
+    if (entityType) entityType = typeof entityType === 'number' ? entityType : GuildEventEntityTypes[entityType];
+    const channelId = this.guild.channels.resolveId(channel);
+
+    const data = await this.client.api('guild-events', guildEventId).patch({
+      data: {
+        channel_id: channelId,
+        name: options.name,
+        privacy_level: privacyLevel,
+        scheduled_start_time: options.scheduledStartTime,
+        description: options.description,
+        entity_type: entityType,
+      },
+    });
+
+    return this._add(data);
   }
 }
 
