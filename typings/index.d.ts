@@ -1127,9 +1127,18 @@ type MessageCollectorOptionsParams<T> =
   | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
   | InteractionCollectorOptions<MessageComponentInteraction>;
 
+type AwaitOmissions =
+  | 'channel'
+  | 'interactionType'
+  | 'guild'
+  | 'interactionType'
+  | 'max'
+  | 'maxComponents'
+  | 'maxUsers';
+
 type AwaitMessageCollectorOptionsParams<T> =
-  | ({ componentType?: T } & AwaitInteractionCollectorOptionsResolvable)
-  | MessageComponentCollectorOptions<MessageComponentInteraction>;
+  | ({ componentType?: T } & Omit<InteractionCollectorOptionsResolvable, AwaitOmissions>)
+  | AwaitMessageComponentOptions<MessageComponentInteraction>;
 
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
@@ -3972,25 +3981,6 @@ export interface SelectMenuInteractionCollectorOptions extends InteractionCollec
 export interface MessageInteractionCollectorOptions extends InteractionCollectorOptions<MessageComponentInteraction> {
   componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
 }
-
-export interface AwaitButtonInteractionCollectorOptions extends MessageComponentCollectorOptions<ButtonInteraction> {
-  componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
-}
-
-export interface AwaitSelectMenuInteractionCollectorOptions
-  extends MessageComponentCollectorOptions<SelectMenuInteraction> {
-  componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
-}
-
-export interface AwaitMessageInteractionCollectorOptions
-  extends MessageComponentCollectorOptions<MessageComponentInteraction> {
-  componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
-}
-
-export type AwaitInteractionCollectorOptionsResolvable =
-  | AwaitButtonInteractionCollectorOptions
-  | AwaitSelectMenuInteractionCollectorOptions
-  | AwaitMessageInteractionCollectorOptions;
 
 export type InteractionCollectorOptionsResolvable =
   | MessageInteractionCollectorOptions
