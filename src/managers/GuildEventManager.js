@@ -91,11 +91,8 @@ class GuildEventManager extends CachedManager {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     let { privacyLevel, entityType, channel } = options;
 
-    if (!privacyLevel) throw new TypeError('INVALID_TYPE', 'privacyLevel', 'string or number', false);
-    privacyLevel = typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
-
-    if (entityType) entityType = typeof entityType === 'number' ? entityType : GuildEventEntityTypes[entityType];
-
+    if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
+    if (typeof entityType === 'string') entityType = GuildEventEntityTypes[entityType];
     const channelId = this.guild.channels.resolveId(channel);
 
     const data = await this.client.api.guilds(this.guild.id).events.post({
@@ -149,8 +146,8 @@ class GuildEventManager extends CachedManager {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     let { privacyLevel, entityType, channel } = options;
 
-    if (privacyLevel) privacyLevel = typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
-    if (entityType) entityType = typeof entityType === 'number' ? entityType : GuildEventEntityTypes[entityType];
+    if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
+    if (typeof entityType === 'string') entityType = GuildEventEntityTypes[entityType];
     const channelId = this.guild.channels.resolveId(channel);
 
     const data = await this.client.api('guild-events', guildEventId).patch({
