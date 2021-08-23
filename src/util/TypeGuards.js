@@ -49,9 +49,9 @@ class TypeGuards extends null {
   }
 
   /**
-   * @private
    * Throws a type error if the object has no `type field`.
    * @param {Object} object The object to type check.
+   * @private
    */
   static validateType(object) {
     if (!('type' in object)) {
