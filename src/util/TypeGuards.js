@@ -8,20 +8,6 @@ const { TypeError } = require('../errors/DJSError');
  */
 class TypeGuards extends null {
   /**
-   * Resolves a given type to an enum equivalent value, and
-   * checks if it's part of the given enum type.
-   * @param {string|number} type The type to resolve
-   * @param {Object} object The enum to resolve to
-   * @param {string[]} fields The enum fields to check
-   * @returns {boolean} Whether the type is part of the enum
-   * @private
-   */
-  static isPartOfEnum(type, object, fields) {
-    const resolvedType = typeof type === 'number' ? type : object[type];
-    return fields.some(field => object[field] === resolvedType);
-  }
-
-  /**
    * Verifies if the given command option data supports choices or not.
    * @param {ApplicationCommandOptionData} commandOptionData The command option data to check
    * @returns {boolean} True if the option supports choices, false otherwise
@@ -47,6 +33,20 @@ class TypeGuards extends null {
       'SUB_COMMAND',
       'SUB_COMMAND_GROUP',
     ]);
+  }
+
+  /**
+   * Resolves a given type to an enum equivalent value, and
+   * checks if it's part of the given enum type.
+   * @param {string|number} type The type to resolve
+   * @param {Object} object The enum to resolve to
+   * @param {string[]} fields The enum fields to check
+   * @returns {boolean} Whether the type is part of the enum
+   * @private
+   */
+  static isPartOfEnum(type, object, fields) {
+    const resolvedType = typeof type === 'number' ? type : object[type];
+    return fields.some(field => object[field] === resolvedType);
   }
 
   /**

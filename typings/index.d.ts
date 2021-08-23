@@ -1940,13 +1940,13 @@ export class Formatters extends null {
 
 export class TypeGuards extends null {
   private constructor();
-  private static isPartOfEnum(type: string | number, object: object, fields: string[]): boolean;
   public static optionDataSupportsChoices(
     commandOptionData: ApplicationCommandOptionData,
   ): commandOptionData is ApplicationCommandChoicesData;
   public static optionDataSupportsSubOptions(
     commandOptionData: ApplicationCommandOptionData,
   ): commandOptionData is ApplicationCommandSubGroupData | ApplicationCommandSubCommandData;
+  private static isPartOfEnum(type: string | number, object: object, fields: string[]): boolean;
   private static validateType(object: object): void;
 }
 
