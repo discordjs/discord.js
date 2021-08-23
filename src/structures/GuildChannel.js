@@ -158,7 +158,7 @@ class GuildChannel extends Channel {
 
   /**
    * Checks if the channel is not viewable by users with only the @everyone role.
-   * @type {boolean} true if private, false otherwise.
+   * @type {boolean}
    */
   get private() {
     return !this.permissionsFor(this.guild.roles.everyone).has(Permissions.FLAGS.VIEW_CHANNEL);
