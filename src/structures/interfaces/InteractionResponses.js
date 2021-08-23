@@ -31,7 +31,7 @@ class InteractionResponses {
    */
 
   /**
-   * Options for updating the message received from a {@link ButtonInteraction}.
+   * Options for updating the message received from a {@link MessageComponentInteraction}.
    * @typedef {MessageEditOptions} InteractionUpdateOptions
    * @property {boolean} [fetchReply] Whether to fetch the reply
    */
