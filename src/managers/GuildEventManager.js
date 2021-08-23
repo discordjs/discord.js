@@ -50,7 +50,7 @@ class GuildEventManager extends CachedManager {
    * @returns {Promise<GuildEvent|Collection<Snowflake, GuildEvent>>}
    */
   async fetch(options = {}) {
-    const id = this.resolveId(options) ?? this.resolveId(options.guildEvent);
+    const id = this.resolveId(options.guildEvent ?? options);
 
     if (id) {
       if (!options.force) {
