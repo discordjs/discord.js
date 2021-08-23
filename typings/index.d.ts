@@ -1297,7 +1297,7 @@ export class MessageEmbed {
   public setFooter(text: string, iconURL?: string): this;
   public setImage(url: string): this;
   public setThumbnail(url: string): this;
-  public setTimestamp(timestamp?: Date | number): this;
+  public setTimestamp(timestamp?: Date | number | null): this;
   public setTitle(title: string): this;
   public setURL(url: string): this;
   public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
