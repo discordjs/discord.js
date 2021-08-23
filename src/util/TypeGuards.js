@@ -1,6 +1,7 @@
 'use strict';
 
 const { ApplicationCommandOptionTypes } = require('./Constants');
+const { TypeError } = require('../errors/DJSError');
 
 /**
  * Helpers for checking different variants of common types.
@@ -55,7 +56,7 @@ class TypeGuards extends null {
    */
   static validateType(object) {
     if (!('type' in object)) {
-      throw new TypeError('Please use a valid type for the type guard.');
+      throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     }
   }
 }
