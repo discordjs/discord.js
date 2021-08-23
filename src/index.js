@@ -71,6 +71,7 @@ module.exports = {
   Application: require('./structures/interfaces/Application'),
   ApplicationCommand: require('./structures/ApplicationCommand'),
   Base: require('./structures/Base'),
+  BaseCommandInteraction: require('./structures/BaseCommandInteraction'),
   BaseGuild: require('./structures/BaseGuild'),
   BaseGuildEmoji: require('./structures/BaseGuildEmoji'),
   BaseGuildVoiceChannel: require('./structures/BaseGuildVoiceChannel'),
