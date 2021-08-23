@@ -1127,6 +1127,10 @@ type MessageCollectorOptionsParams<T> =
   | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
   | InteractionCollectorOptions<MessageComponentInteraction>;
 
+type AwaitMessageCollectorOptionsParams<T> =
+  | ({ componentType?: T } & AwaitInteractionCollectorOptionsResolvable)
+  | MessageComponentCollectorOptions<MessageComponentInteraction>;
+
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData, partial: true): void;
@@ -1174,9 +1178,9 @@ export class Message extends Base {
   public webhookId: Snowflake | null;
   public flags: Readonly<MessageFlags>;
   public reference: MessageReference | null;
-  public awaitMessageComponent<T extends MessageComponentInteraction = MessageComponentInteraction>(
-    options?: AwaitMessageComponentOptions<T>,
-  ): Promise<T>;
+  public awaitMessageComponent<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
+    options?: AwaitMessageCollectorOptionsParams<T>,
+  ): Promise<InteractionCollectorReturnType<T>>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
   public createMessageComponentCollector<
@@ -2712,9 +2716,9 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   readonly lastMessage: Message | null;
   lastPinTimestamp: number | null;
   readonly lastPinAt: Date | null;
-  awaitMessageComponent<T extends MessageComponentInteraction = MessageComponentInteraction>(
-    options?: AwaitMessageComponentOptions<T>,
-  ): Promise<T>;
+  awaitMessageComponent<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
+    options?: AwaitMessageCollectorOptionsParams<T>,
+  ): Promise<InteractionCollectorReturnType<T>>;
   awaitMessages(options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
   bulkDelete(
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
@@ -3968,6 +3972,25 @@ export interface SelectMenuInteractionCollectorOptions extends InteractionCollec
 export interface MessageInteractionCollectorOptions extends InteractionCollectorOptions<MessageComponentInteraction> {
   componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
 }
+
+export interface AwaitButtonInteractionCollectorOptions extends MessageComponentCollectorOptions<ButtonInteraction> {
+  componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
+}
+
+export interface AwaitSelectMenuInteractionCollectorOptions
+  extends MessageComponentCollectorOptions<SelectMenuInteraction> {
+  componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
+}
+
+export interface AwaitMessageInteractionCollectorOptions
+  extends MessageComponentCollectorOptions<MessageComponentInteraction> {
+  componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
+}
+
+export type AwaitInteractionCollectorOptionsResolvable =
+  | AwaitButtonInteractionCollectorOptions
+  | AwaitSelectMenuInteractionCollectorOptions
+  | AwaitMessageInteractionCollectorOptions;
 
 export type InteractionCollectorOptionsResolvable =
   | MessageInteractionCollectorOptions
