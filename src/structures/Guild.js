@@ -543,6 +543,7 @@ class Guild extends AnonymousGuild {
     if (this.features.includes('VIP_REGIONS')) {
       return 384000;
     }
+
     switch (PremiumTiers[this.premiumTier]) {
       case PremiumTiers.TIER_1:
         return 128000;
