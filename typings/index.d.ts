@@ -1127,17 +1127,8 @@ type MessageCollectorOptionsParams<T> =
   | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
   | InteractionCollectorOptions<MessageComponentInteraction>;
 
-type AwaitMessageOmissions =
-  | 'channel'
-  | 'interactionType'
-  | 'guild'
-  | 'interactionType'
-  | 'max'
-  | 'maxComponents'
-  | 'maxUsers';
-
 type AwaitMessageCollectorOptionsParams<T> =
-  | ({ componentType?: T } & Omit<InteractionCollectorOptionsResolvable, AwaitMessageOmissions>)
+  | ({ componentType?: T } & Pick<InteractionCollectorOptionsResolvable, keyof AwaitMessageComponentOptions<any>>)
   | AwaitMessageComponentOptions<MessageComponentInteraction>;
 
 export class Message extends Base {
