@@ -49,10 +49,12 @@ class MessageAttachment {
    * @returns {MessageAttachment} This attachment
    */
   setSpoiler(spoiler = true) {
-    if (spoiler === true && this.spoiler === false) {
-      this.name = `SPOILER_${this.name}`;
-    } else if (spoiler === false && this.spoiler === true) {
-      this.name = this.name.replace('SPOILER_', '');
+    if (spoiler !== this.spoiler) {
+      if (spoiler) {
+        this.name = `SPOILER_${this.name}`;
+      } else {
+        this.name = this.name.replace(/^SPOILER_/, '');
+      }
     }
     return this;
   }
