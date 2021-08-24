@@ -50,11 +50,12 @@ class MessageAttachment {
    */
   setSpoiler(spoiler = true) {
     if (spoiler === this.spoiler) return this;
-    
+
     if (!spoiler) {
       while (this.spoiler) {
         this.name.slice('SPOILER_'.length);
       }
+      return this;
     }
     this.name = `SPOILER_${this.name}`;
     return this;
