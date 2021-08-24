@@ -94,8 +94,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Options used to create a new channel in a guild.
    * @typedef {Object} GuildChannelCreateOptions
-   * @property {string|number} [type='GUILD_TEXT'] The type of the new channel, either `GUILD_TEXT`, `GUILD_VOICE`,
-   * `GUILD_CATEGORY`, `GUILD_NEWS`, `GUILD_STORE`, or `GUILD_STAGE_VOICE`
+   * @property {ChannelType|number} [type='GUILD_TEXT'] The type of the new channel.
    * @property {string} [topic] The topic for the new channel
    * @property {boolean} [nsfw] Whether the new channel is nsfw
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)

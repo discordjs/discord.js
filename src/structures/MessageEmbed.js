@@ -374,7 +374,8 @@ class MessageEmbed {
 
   /**
    * Sets the timestamp of this embed.
-   * @param {Date|number} [timestamp=Date.now()] The timestamp or date
+   * @param {Date|number|null} [timestamp=Date.now()] The timestamp or date.
+   * If `null` then the timestamp will be unset (i.e. when editing an existing {@link MessageEmbed})
    * @returns {MessageEmbed}
    */
   setTimestamp(timestamp = Date.now()) {

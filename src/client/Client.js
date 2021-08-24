@@ -35,7 +35,7 @@ class Client extends BaseClient {
    * @param {ClientOptions} options Options for the client
    */
   constructor(options) {
-    super(Object.assign({ _tokenType: 'Bot' }, options));
+    super(options);
 
     const data = require('worker_threads').workerData ?? process.env;
     const defaults = Options.createDefault();

@@ -535,6 +535,28 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * The maximum bitrate available for this guild
+   * @type {number}
+   * @readonly
+   */
+  get maximumBitrate() {
+    if (this.features.includes('VIP_REGIONS')) {
+      return 384000;
+    }
+
+    switch (PremiumTiers[this.premiumTier]) {
+      case PremiumTiers.TIER_1:
+        return 128000;
+      case PremiumTiers.TIER_2:
+        return 256000;
+      case PremiumTiers.TIER_3:
+        return 384000;
+      default:
+        return 96000;
+    }
+  }
+
+  /**
    * Fetches a collection of integrations to this guild.
    * Resolves with a collection mapping integrations by their ids.
    * @returns {Promise<Collection<string, Integration>>}
@@ -1284,13 +1306,6 @@ class Guild extends AnonymousGuild {
    * and stage channels.
    * @type {Function}
    * @readonly
-   * @example
-   * const { joinVoiceChannel } = require('@discordjs/voice');
-   * const voiceConnection = joinVoiceChannel({
-   *  channelId: channel.id,
-   *  guildId: channel.guild.id,
-   *  adapterCreator: channel.guild.voiceAdapterCreator,
-   * });
    */
   get voiceAdapterCreator() {
     return methods => {

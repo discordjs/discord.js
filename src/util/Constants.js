@@ -636,6 +636,7 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * MAXIMUM_NON_GUILD_MEMBERS_BANS
  * * MAXIMUM_BAN_FETCHES
  * * MAXIMUM_NUMBER_OF_STICKERS_REACHED
+ * * MAXIMUM_PRUNE_REQUESTS
  * * UNAUTHORIZED
  * * ACCOUNT_VERIFICATION_REQUIRED
  * * DIRECT_MESSAGES_TOO_FAST
@@ -764,6 +765,7 @@ exports.APIErrors = {
   MAXIMUM_NON_GUILD_MEMBERS_BANS: 30035,
   MAXIMUM_BAN_FETCHES: 30037,
   MAXIMUM_NUMBER_OF_STICKERS_REACHED: 30039,
+  MAXIMUM_PRUNE_REQUESTS: 30040,
   UNAUTHORIZED: 40001,
   ACCOUNT_VERIFICATION_REQUIRED: 40002,
   DIRECT_MESSAGES_TOO_FAST: 40003,
@@ -893,6 +895,7 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
  * * USER
  * * MESSAGE
  * @typedef {string} ApplicationCommandType
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-types}
  */
 exports.ApplicationCommandTypes = createEnum([null, 'CHAT_INPUT', 'USER', 'MESSAGE']);
 

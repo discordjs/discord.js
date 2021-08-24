@@ -70,7 +70,7 @@ class Util extends null {
    * @returns {string[]}
    */
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
-    text = Util.verifyString(text, RangeError, 'MESSAGE_CONTENT_TYPE', false);
+    text = Util.verifyString(text);
     if (text.length <= maxLength) return [text];
     let splitText = [text];
     if (Array.isArray(char)) {

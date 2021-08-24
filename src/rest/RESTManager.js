@@ -8,10 +8,9 @@ const { Error } = require('../errors');
 const { Endpoints } = require('../util/Constants');
 
 class RESTManager {
-  constructor(client, tokenPrefix = 'Bot') {
+  constructor(client) {
     this.client = client;
     this.handlers = new Collection();
-    this.tokenPrefix = tokenPrefix;
     this.versioned = true;
     this.globalLimit = client.options.restGlobalRateLimit > 0 ? client.options.restGlobalRateLimit : Infinity;
     this.globalRemaining = this.globalLimit;
@@ -30,7 +29,7 @@ class RESTManager {
 
   getAuth() {
     const token = this.client.token ?? this.client.accessToken;
-    if (token) return `${this.tokenPrefix} ${token}`;
+    if (token) return `Bot ${token}`;
     throw new Error('TOKEN_MISSING');
   }
 

@@ -246,6 +246,7 @@ class GuildManager extends CachedManager {
    * Options used to fetch a single guild.
    * @typedef {BaseFetchOptions} FetchGuildOptions
    * @property {GuildResolvable} guild The guild to fetch
+   * @property {boolean} [withCounts=true] Whether the approximate member and presence counts should be returned
    */
 
   /**
@@ -253,7 +254,7 @@ class GuildManager extends CachedManager {
    * @typedef {Object} FetchGuildsOptions
    * @property {Snowflake} [before] Get guilds before this guild id
    * @property {Snowflake} [after] Get guilds after this guild id
-   * @property {number} [limit=100] Maximum number of guilds to request (1-100)
+   * @property {number} [limit=200] Maximum number of guilds to request (1-200)
    */
 
   /**
@@ -270,7 +271,7 @@ class GuildManager extends CachedManager {
         if (existing) return existing;
       }
 
-      const data = await this.client.api.guilds(id).get({ query: { with_counts: true } });
+      const data = await this.client.api.guilds(id).get({ query: { with_counts: options.withCounts ?? true } });
       return this._add(data, options.cache);
     }
 

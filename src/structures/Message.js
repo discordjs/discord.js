@@ -158,7 +158,7 @@ class Message extends Base {
         }
       }
     } else {
-      this.attachments = new Collection(this.attachemnts);
+      this.attachments = new Collection(this.attachments);
     }
 
     if ('sticker_items' in data || 'stickers' in data || !partial) {
@@ -282,7 +282,14 @@ class Message extends Base {
     }
 
     /**
-     * Reference data sent in a message that contains ids identifying the referenced message
+     * Reference data sent in a message that contains ids identifying the referenced message.
+     * This can be present in the following types of message:
+     * * Crossposted messages (IS_CROSSPOST {@link MessageFlags#FLAGS message flag})
+     * * CHANNEL_FOLLOW_ADD
+     * * CHANNEL_PINNED_MESSAGE
+     * * REPLY
+     * * THREAD_STARTER_MESSAGE
+     * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
      * @property {Snowflake} channelId The channel's id the message was referenced
      * @property {?Snowflake} guildId The guild's id the message was referenced
@@ -781,6 +788,7 @@ class Message extends Base {
    */
   fetchWebhook() {
     if (!this.webhookId) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
+    if (this.webhookId === this.applicationId) return Promise.reject(new Error('WEBHOOK_APPLICATION'));
     return this.client.fetchWebhook(this.webhookId);
   }
 
@@ -807,6 +815,15 @@ class Message extends Base {
    */
   removeAttachments() {
     return this.edit({ attachments: [] });
+  }
+
+  /**
+   * Resolves a component by a custom id.
+   * @param {string} customId The custom id to resolve against
+   * @returns {?MessageActionRowComponent}
+   */
+  resolveComponent(customId) {
+    return this.components.flatMap(row => row.components).find(component => component.customId === customId) ?? null;
   }
 
   /**

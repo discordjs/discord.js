@@ -90,7 +90,8 @@ class DataResolver extends null {
    * Data that can be resolved to give a Buffer. This can be:
    * * A Buffer
    * * The path to a local file
-   * * A URL
+   * * A URL <warn>When provided a URL, discord.js will fetch the URL internally in order to create a Buffer.
+   * This can pose a security risk when the URL has not been sanitized</warn>
    * @typedef {string|Buffer} BufferResolvable
    */
 

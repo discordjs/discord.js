@@ -47,6 +47,7 @@ import {
   Snowflake,
 } from 'discord-api-types/v9';
 import { EventEmitter } from 'events';
+import { AgentOptions } from 'https';
 import { Stream } from 'stream';
 import { MessagePort, Worker } from 'worker_threads';
 import * as WebSocket from 'ws';
@@ -397,6 +398,7 @@ type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ?
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
   private actions: unknown;
+  private presence: ClientPresence;
   private _eval(script: string): unknown;
   private _validateOptions(options: ClientOptions): void;
 
@@ -467,16 +469,24 @@ export class ClientApplication extends Application {
   public fetch(): Promise<ClientApplication>;
 }
 
+export class ClientPresence extends Presence {
+  public constructor(client: Client, data: RawPresenceData);
+  private _parse(data: PresenceData): RawPresenceData;
+
+  public set(presence: PresenceData): ClientPresence;
+}
+
 export class ClientUser extends User {
   public mfaEnabled: boolean;
+  public readonly presence: ClientPresence;
   public verified: boolean;
   public edit(data: ClientUserEditData): Promise<this>;
-  public setActivity(options?: ActivityOptions): Presence;
-  public setActivity(name: string, options?: ActivityOptions): Presence;
-  public setAFK(afk: boolean, shardId?: number | number[]): Presence;
+  public setActivity(options?: ActivityOptions): ClientPresence;
+  public setActivity(name: string, options?: ActivityOptions): ClientPresence;
+  public setAFK(afk: boolean, shardId?: number | number[]): ClientPresence;
   public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
-  public setPresence(data: PresenceData): Presence;
-  public setStatus(status: PresenceStatusData, shardId?: number | number[]): Presence;
+  public setPresence(data: PresenceData): ClientPresence;
+  public setStatus(status: PresenceStatusData, shardId?: number | number[]): ClientPresence;
   public setUsername(username: string): Promise<this>;
 }
 
@@ -532,7 +542,7 @@ export class CommandInteraction extends BaseCommandInteraction {
 }
 
 export class CommandInteractionOptionResolver {
-  public constructor(client: Client, options: CommandInteractionOption[]);
+  public constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption[];
   public readonly resolved: Readonly<CommandInteractionResolvedData>;
@@ -691,6 +701,7 @@ export class Guild extends AnonymousGuild {
   public readonly widgetChannel: TextChannel | null;
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
+  public readonly maximumBitrate: number;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
   public delete(): Promise<Guild>;
   public discoverySplashURL(options?: StaticImageURLOptions): string | null;
@@ -812,6 +823,7 @@ export class GuildChannel extends Channel {
   public type: Exclude<keyof typeof ChannelTypes, 'DM' | 'GROUP_DM' | 'UNKNOWN'>;
   public readonly viewable: boolean;
   public clone(options?: GuildChannelCloneOptions): Promise<this>;
+  public delete(reason?: string): Promise<this>;
   public edit(data: ChannelData, reason?: string): Promise<this>;
   public equals(channel: GuildChannel): boolean;
   public lockPermissions(): Promise<this>;
@@ -1093,8 +1105,8 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
 
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
-  private _patch(data: RawPartialMessageData, partial: true): Message;
-  private _patch(data: RawMessageData, partial?: boolean): Message;
+  private _patch(data: RawPartialMessageData, partial: true): void;
+  private _patch(data: RawMessageData, partial?: boolean): void;
   private _update(data: RawPartialMessageData, partial: true): Message;
   private _update(data: RawMessageData, partial?: boolean): Message;
 
@@ -1157,6 +1169,7 @@ export class Message extends Base {
   public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
   public removeAttachments(): Promise<Message>;
   public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message>;
+  public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<ThreadChannel>;
   public suppressEmbeds(suppress?: boolean): Promise<Message>;
   public toJSON(): unknown;
@@ -1169,6 +1182,9 @@ export class MessageActionRow extends BaseMessageComponent {
   public type: 'ACTION_ROW';
   public components: MessageActionRowComponent[];
   public addComponents(
+    ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
+  ): this;
+  public setComponents(
     ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
   ): this;
   public spliceComponents(
@@ -1285,7 +1301,7 @@ export class MessageEmbed {
   public setFooter(text: string, iconURL?: string): this;
   public setImage(url: string): this;
   public setThumbnail(url: string): this;
-  public setTimestamp(timestamp?: Date | number): this;
+  public setTimestamp(timestamp?: Date | number | null): this;
   public setTitle(title: string): this;
   public setURL(url: string): this;
   public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
@@ -1380,6 +1396,7 @@ export class MessageSelectMenu extends BaseMessageComponent {
   public placeholder: string | null;
   public type: 'SELECT_MENU';
   public addOptions(...options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
+  public setOptions(...options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
   public setCustomId(customId: string): this;
   public setDisabled(disabled?: boolean): this;
   public setMaxValues(maxValues: number): this;
@@ -1801,6 +1818,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
   public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
   public fetchOwner(options?: FetchOwnerOptions): Promise<ThreadMember | null>;
+  public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
   public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
   public setAutoArchiveDuration(
     autoArchiveDuration: ThreadAutoArchiveDuration,
@@ -2479,6 +2497,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   ): Promise<GuildMember>;
   public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public kick(user: UserResolvable, reason?: string): Promise<GuildMember | User | Snowflake>;
+  public list(options?: GuildListMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
@@ -2824,6 +2843,7 @@ export interface APIErrors {
   MAXIMUM_NON_GUILD_MEMBERS_BANS: 30035;
   MAXIMUM_BAN_FETCHES: 30037;
   MAXIMUM_NUMBER_OF_STICKERS_REACHED: 30039;
+  MAXIMUM_PRUNE_REQUESTS: 30040;
   UNAUTHORIZED: 40001;
   ACCOUNT_VERIFICATION_REQUIRED: 40002;
   DIRECT_MESSAGES_TOO_FAST: 40003;
@@ -2938,7 +2958,7 @@ export interface MessageApplicationCommandData extends BaseApplicationCommandDat
 
 export interface ChatInputApplicationCommandData extends BaseApplicationCommandData {
   description: string;
-  type: 'CHAT_INPUT' | ApplicationCommandTypes.CHAT_INPUT;
+  type?: 'CHAT_INPUT' | ApplicationCommandTypes.CHAT_INPUT;
   options?: ApplicationCommandOptionData[];
 }
 
@@ -3580,6 +3600,7 @@ export interface FetchedThreads {
 
 export interface FetchGuildOptions extends BaseFetchOptions {
   guild: GuildResolvable;
+  withCounts?: boolean;
 }
 
 export interface FetchGuildsOptions {
@@ -3868,6 +3889,12 @@ export interface GuildSearchMembersOptions {
   cache?: boolean;
 }
 
+export interface GuildListMembersOptions {
+  after?: Snowflake;
+  limit?: number;
+  cache?: boolean;
+}
+
 export type GuildTemplateResolvable = string;
 
 export type GuildVoiceChannelResolvable = VoiceChannel | StageChannel | Snowflake;
@@ -3886,6 +3913,7 @@ export interface HTTPErrorData {
 }
 
 export interface HTTPOptions {
+  agent?: Omit<AgentOptions, 'keepAlive'>;
   api?: string;
   version?: number;
   host?: string;
@@ -4005,7 +4033,9 @@ export type MembershipState = keyof typeof MembershipStates;
 
 export type MessageActionRowComponent = MessageButton | MessageSelectMenu;
 
-export type MessageActionRowComponentOptions = MessageButtonOptions | MessageSelectMenuOptions;
+export type MessageActionRowComponentOptions =
+  | (Required<BaseMessageComponentOptions> & MessageButtonOptions)
+  | (Required<BaseMessageComponentOptions> & MessageSelectMenuOptions);
 
 export type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
 
@@ -4071,7 +4101,7 @@ export interface MessageEditOptions {
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
-  components?: (MessageActionRow | MessageActionRowOptions)[];
+  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
 }
 
 export interface MessageEmbedAuthor {
@@ -4170,11 +4200,12 @@ export interface MessageOptions {
   nonce?: string | number;
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions)[];
-  components?: (MessageActionRow | MessageActionRowOptions)[];
+  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
+  attachments?: MessageAttachment[];
 }
 
 export type MessageReactionResolvable =
@@ -4619,7 +4650,7 @@ export interface WebhookEditData {
 
 export type WebhookEditMessageOptions = Pick<
   WebhookMessageOptions,
-  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components'
+  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments'
 >;
 
 export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
