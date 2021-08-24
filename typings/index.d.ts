@@ -1833,7 +1833,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlags> | null;
-  public readonly hexAccentColor: string | null;
+  public readonly hexAccentColor: HexColorString | null;
   public id: Snowflake;
   public readonly partial: false;
   public system: boolean;
