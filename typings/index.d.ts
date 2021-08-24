@@ -542,7 +542,7 @@ export class CommandInteraction extends BaseCommandInteraction {
 }
 
 export class CommandInteractionOptionResolver {
-  public constructor(client: Client, options: CommandInteractionOption[]);
+  public constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption[];
   public readonly resolved: Readonly<CommandInteractionResolvedData>;
@@ -701,6 +701,7 @@ export class Guild extends AnonymousGuild {
   public readonly widgetChannel: TextChannel | null;
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
+  public readonly maximumBitrate: number;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
   public delete(): Promise<Guild>;
   public discoverySplashURL(options?: StaticImageURLOptions): string | null;
@@ -4025,7 +4026,9 @@ export type MembershipState = keyof typeof MembershipStates;
 
 export type MessageActionRowComponent = MessageButton | MessageSelectMenu;
 
-export type MessageActionRowComponentOptions = MessageButtonOptions | MessageSelectMenuOptions;
+export type MessageActionRowComponentOptions =
+  | (Required<BaseMessageComponentOptions> & MessageButtonOptions)
+  | (Required<BaseMessageComponentOptions> & MessageSelectMenuOptions);
 
 export type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
 
@@ -4091,7 +4094,7 @@ export interface MessageEditOptions {
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
-  components?: (MessageActionRow | MessageActionRowOptions)[];
+  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
 }
 
 export interface MessageEmbedAuthor {
@@ -4190,7 +4193,7 @@ export interface MessageOptions {
   nonce?: string | number;
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions)[];
-  components?: (MessageActionRow | MessageActionRowOptions)[];
+  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
