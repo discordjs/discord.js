@@ -18,7 +18,7 @@ class InteractionResponses {
    */
 
   /**
-   * Options for deferring and updating the reply to a {@link ButtonInteraction}.
+   * Options for deferring and updating the reply to a {@link MessageComponentInteraction}.
    * @typedef {Object} InteractionDeferUpdateOptions
    * @property {boolean} [fetchReply] Whether to fetch the reply
    */
@@ -31,7 +31,7 @@ class InteractionResponses {
    */
 
   /**
-   * Options for updating the message received from a {@link ButtonInteraction}.
+   * Options for updating the message received from a {@link MessageComponentInteraction}.
    * @typedef {MessageEditOptions} InteractionUpdateOptions
    * @property {boolean} [fetchReply] Whether to fetch the reply
    */
