@@ -2161,6 +2161,8 @@ export class WelcomeScreen extends Base {
 
 //#region Constants
 
+type EnumHolder<T> = { [P in keyof T]: T[P] };
+
 export const Constants: {
   Package: {
     name: string;
@@ -2244,7 +2246,7 @@ export const Constants: {
   Status: ConstantsStatus;
   Opcodes: ConstantsOpcodes;
   APIErrors: APIErrors;
-  ChannelTypes: typeof ChannelTypes;
+  ChannelTypes: EnumHolder<typeof ChannelTypes>;
   ThreadChannelTypes: ThreadChannelTypes[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
@@ -2252,26 +2254,26 @@ export const Constants: {
   InviteScopes: InviteScope[];
   MessageTypes: MessageType[];
   SystemMessageTypes: SystemMessageType[];
-  ActivityTypes: typeof ActivityTypes;
-  StickerTypes: typeof StickerTypes;
-  StickerFormatTypes: typeof StickerFormatTypes;
-  OverwriteTypes: typeof OverwriteTypes;
-  ExplicitContentFilterLevels: typeof ExplicitContentFilterLevels;
-  DefaultMessageNotificationLevels: typeof DefaultMessageNotificationLevels;
-  VerificationLevels: typeof VerificationLevels;
-  MembershipStates: typeof MembershipStates;
-  ApplicationCommandOptionTypes: typeof ApplicationCommandOptionTypes;
-  ApplicationCommandPermissionTypes: typeof ApplicationCommandPermissionTypes;
-  InteractionTypes: typeof InteractionTypes;
-  InteractionResponseTypes: typeof InteractionResponseTypes;
-  MessageComponentTypes: typeof MessageComponentTypes;
-  MessageButtonStyles: typeof MessageButtonStyles;
-  MFALevels: typeof MFALevels;
-  NSFWLevels: typeof NSFWLevels;
-  PrivacyLevels: typeof PrivacyLevels;
-  WebhookTypes: typeof WebhookTypes;
-  PremiumTiers: typeof PremiumTiers;
-  ApplicationCommandTypes: typeof ApplicationCommandTypes;
+  ActivityTypes: EnumHolder<typeof ActivityTypes>;
+  StickerTypes: EnumHolder<typeof StickerTypes>;
+  StickerFormatTypes: EnumHolder<typeof StickerFormatTypes>;
+  OverwriteTypes: EnumHolder<typeof OverwriteTypes>;
+  ExplicitContentFilterLevels: EnumHolder<typeof ExplicitContentFilterLevels>;
+  DefaultMessageNotificationLevels: EnumHolder<typeof DefaultMessageNotificationLevels>;
+  VerificationLevels: EnumHolder<typeof VerificationLevels>;
+  MembershipStates: EnumHolder<typeof MembershipStates>;
+  ApplicationCommandOptionTypes: EnumHolder<typeof ApplicationCommandOptionTypes>;
+  ApplicationCommandPermissionTypes: EnumHolder<typeof ApplicationCommandPermissionTypes>;
+  InteractionTypes: EnumHolder<typeof InteractionTypes>;
+  InteractionResponseTypes: EnumHolder<typeof InteractionResponseTypes>;
+  MessageComponentTypes: EnumHolder<typeof MessageComponentTypes>;
+  MessageButtonStyles: EnumHolder<typeof MessageButtonStyles>;
+  MFALevels: EnumHolder<typeof MFALevels>;
+  NSFWLevels: EnumHolder<typeof NSFWLevels>;
+  PrivacyLevels: EnumHolder<typeof PrivacyLevels>;
+  WebhookTypes: EnumHolder<typeof WebhookTypes>;
+  PremiumTiers: EnumHolder<typeof PremiumTiers>;
+  ApplicationCommandTypes: EnumHolder<typeof ApplicationCommandTypes>;
 };
 
 export const version: string;
