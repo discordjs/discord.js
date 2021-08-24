@@ -43,6 +43,24 @@ class MessageAttachment {
     return this;
   }
 
+  /**
+   * Sets whether this attachment is a spoiler
+   * @param {boolean} [spoiler=true] Whether the attachment should be marked as a spoiler
+   * @returns {MessageAttachment} This attachment
+   */
+  setSpoiler(spoiler = true) {
+    if (spoiler === this.spoiler) return this;
+
+    if (!spoiler) {
+      while (this.spoiler) {
+        this.name.slice('SPOILER_'.length);
+      }
+      return this;
+    }
+    this.name = `SPOILER_${this.name}`;
+    return this;
+  }
+
   _patch(data) {
     /**
      * The attachment's id
@@ -93,7 +111,7 @@ class MessageAttachment {
    * @readonly
    */
   get spoiler() {
-    return Util.basename(this.url).startsWith('SPOILER_');
+    return Util.basename(this.url ?? this.name).startsWith('SPOILER_');
   }
 
   toJSON() {

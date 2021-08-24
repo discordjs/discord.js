@@ -1210,6 +1210,7 @@ export class MessageAttachment {
   public width: number | null;
   public setFile(attachment: BufferResolvable | Stream, name?: string): this;
   public setName(name: string): this;
+  public setSpoiler(spoiler?: boolean): this;
   public toJSON(): unknown;
 }
 
