@@ -66,7 +66,7 @@ class ThreadManager extends CachedManager {
    * * `1440` (1 day)
    * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
    * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
-   * * `'MAX'` Based on the guilds boost count
+   * * `'MAX'` Based on the guild's features
    * @typedef {number|string} ThreadAutoArchiveDuration
    */
 
