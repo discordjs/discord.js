@@ -61,6 +61,7 @@
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-angular": "^13.1.0",
     "@discordjs/docgen": "^0.10.0",
+    "@favware/npm-deprecate": "^1.0.2",
     "@types/node": "^16.4.12",
     "conventional-changelog-cli": "^2.1.1",
     "cross-env": "^7.0.3",
