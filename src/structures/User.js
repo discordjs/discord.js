@@ -88,8 +88,8 @@ class User extends Base {
 
     if ('accent_color' in data) {
       /**
-       * The base 10 accent color of the user
-       * <info>The user must be force fetched</info>
+       * The base 10 color of the user's banner
+       * <info>The user must be force fetched for this property to be present</info>
        * @type {?number}
        */
       this.accentColor = data.accent_color;
