@@ -49,8 +49,10 @@ exports.Endpoints = {
         if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/avatars/${userId}/${hash}`, { format, size });
       },
-      Banner: (guildId, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/banners/${guildId}/${hash}`, { format, size }),
+      Banner: (id, hash, format = 'webp', size, dynamic = false) => {
+        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+        return makeImageUrl(`${root}/banners/${id}/${hash}`, { format, size });
+      },
       Icon: (guildId, hash, format = 'webp', size, dynamic = false) => {
         if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/icons/${guildId}/${hash}`, { format, size });

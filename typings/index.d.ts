@@ -1864,7 +1864,9 @@ export class Typing extends Base {
 
 export class User extends PartialTextBasedChannel(Base) {
   public constructor(client: Client, data: RawUserData);
+  public accentColor: number | null;
   public avatar: string | null;
+  public banner: string | null;
   public bot: boolean;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -1872,12 +1874,14 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlags> | null;
+  public readonly hexAccentColor: HexColorString | null;
   public id: Snowflake;
   public readonly partial: false;
   public system: boolean;
   public readonly tag: string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
+  public bannerURL(options?: ImageURLOptions): string | null;
   public createDM(): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
@@ -2199,7 +2203,13 @@ export const Constants: {
         size: AllowedImageSize,
         dynamic: boolean,
       ) => string;
-      Banner: (guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      Banner: (
+        id: Snowflake,
+        hash: string,
+        format: DynamicImageFormat,
+        size: AllowedImageSize,
+        dynamic: boolean,
+      ) => string;
       Icon: (
         guildId: Snowflake,
         hash: string,
