@@ -78,7 +78,7 @@ class User extends Base {
     if ('banner' in data) {
       /**
        * The user banner's hash
-       * <info>The user must be force fetched</info>
+       * <info>The user must be force fetched for this property to be present</info>
        * @type {?string}
        */
       this.banner = data.banner;
@@ -88,7 +88,7 @@ class User extends Base {
 
     if ('accent_color' in data) {
       /**
-       * The base 10 color of the user's banner
+       * The base 10 accent color of the user's banner
        * <info>The user must be force fetched for this property to be present</info>
        * @type {?number}
        */
@@ -174,7 +174,7 @@ class User extends Base {
 
   /**
    * The hexadecimal version of the user accent color, with a leading hash
-   * <info>The user must be force fetched</info>
+   * <info>The user must be force fetched for this property to be present</info>
    * @type {?string}
    * @readonly
    */
@@ -185,7 +185,7 @@ class User extends Base {
 
   /**
    * A link to the user's banner.
-   * <info>The user must be force fetched</info>
+   * <info>The user must be force fetched for this property to be present</info>
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
