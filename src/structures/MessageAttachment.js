@@ -49,13 +49,9 @@ class MessageAttachment {
    * @returns {MessageAttachment} This attachment
    */
   setSpoiler(spoiler = true) {
-    if (spoiler !== this.spoiler) {
-      if (spoiler) {
-        this.name = `SPOILER_${this.name}`;
-      } else {
-        this.name = this.name.replace(/^SPOILER_/, '');
-      }
-    }
+    if (spoiler === this.spoiler) return this;
+
+    this.name = spoiler ? `SPOILER_${this.name}` : this.name.slice('SPOILER_'.length);
     return this;
   }
 
