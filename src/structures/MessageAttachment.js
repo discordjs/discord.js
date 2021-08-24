@@ -51,8 +51,7 @@ class MessageAttachment {
   setSpoiler(spoiler = true) {
     if (spoiler === true && this.spoiler === false) {
       this.name = `SPOILER_${this.name}`;
-    }
-    if (spoiler === false && this.spoiler === true) {
+    } else if (spoiler === false && this.spoiler === true) {
       this.name = this.name.replace('SPOILER_', '');
     }
     return this;
