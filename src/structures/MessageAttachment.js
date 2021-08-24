@@ -53,7 +53,7 @@ class MessageAttachment {
 
     if (!spoiler) {
       while (this.spoiler) {
-        this.name.slice('SPOILER_'.length);
+        this.name = this.name.slice('SPOILER_'.length);
       }
       return this;
     }
