@@ -117,9 +117,7 @@ class ThreadChannel extends Channel {
       if (!this.archiveTimestamp) {
         this.archiveTimestamp = null;
       }
-      if (!this.invitable) {
-        this.invitable = null;
-      }
+      this.invitable ??= null;
     }
 
     if ('owner_id' in data) {
