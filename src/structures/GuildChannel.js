@@ -514,7 +514,7 @@ class GuildChannel extends Channel {
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
     const bitfield = VoiceBasedChannelTypes.includes(this.type)
-      ? Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.MANAGE_CHANNELS | Permissions.FLAGS.CONNECT
+      ? Permissions.FLAGS.MANAGE_CHANNELS | Permissions.FLAGS.CONNECT
       : Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.MANAGE_CHANNELS;
     return permissions.has(bitfield, false);
   }
