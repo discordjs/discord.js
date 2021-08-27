@@ -583,7 +583,7 @@ class Util extends null {
   /**
    * The content to have all mentions replaced by the equivalent text.
    * @param {string} str The string to be converted
-   * @param {Channel} channel The channel the string was sent in
+   * @param {TextBasedChannels} channel The channel the string was sent in
    * @returns {string}
    */
   static cleanContent(str, channel) {
