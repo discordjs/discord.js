@@ -35,7 +35,7 @@ class Client extends BaseClient {
    * @param {ClientOptions} options Options for the client
    */
   constructor(options) {
-    super(Object.assign({ _tokenType: 'Bot' }, options));
+    super(Object.assign({ _tokenType: "" }, options));
 
     const data = require('worker_threads').workerData ?? process.env;
     const defaults = Options.createDefault();
@@ -540,11 +540,6 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.intents === 'undefined') {
-      throw new TypeError('CLIENT_MISSING_INTENTS');
-    } else {
-      options.intents = Intents.resolve(options.intents);
-    }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
     }

@@ -3240,7 +3240,7 @@ export interface ClientOptions {
   failIfNotExists?: boolean;
   userAgentSuffix?: string[];
   presence?: PresenceData;
-  intents: BitFieldResolvable<IntentsString, number>;
+  intents?: BitFieldResolvable<IntentsString, number>;
   ws?: WebSocketOptions;
   http?: HTTPOptions;
   rejectOnRateLimit?: string[] | ((data: RateLimitData) => boolean | Promise<boolean>);
