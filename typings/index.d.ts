@@ -1251,7 +1251,7 @@ export class MessageComponentInteraction extends Interaction {
   public constructor(client: Client, data: RawMessageComponentInteractionData);
   public readonly channel: TextBasedChannels | null;
   public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent> | null;
-  public componentType: MessageComponentType;
+  public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
   public customId: string;
   public deferred: boolean;
   public ephemeral: boolean | null;
