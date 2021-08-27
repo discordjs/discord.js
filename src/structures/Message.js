@@ -92,8 +92,8 @@ class Message extends Base {
        * @type {?User}
        */
       this.author = this.client.users._add(data.author, !data.webhook_id);
-    } else if (!this.author) {
-      this.author = null;
+    } else {
+      this.author ??= null;
     }
 
     if ('pinned' in data) {
@@ -334,8 +334,8 @@ class Message extends Base {
         commandName: data.interaction.name,
         user: this.client.users._add(data.interaction.user),
       };
-    } else if (!this.interaction) {
-      this.interaction = null;
+    } else {
+      this.interaction ??= null;
     }
   }
 

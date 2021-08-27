@@ -172,7 +172,7 @@ class GuildChannel extends Channel {
     if (!verified) member = this.guild.members.resolve(member);
     if (!member) return [];
 
-    if (!roles) roles = member.roles.cache;
+    roles ??= member.roles.cache;
     const roleOverwrites = [];
     let memberOverwrites;
     let everyoneOverwrites;
