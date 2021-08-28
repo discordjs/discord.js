@@ -102,8 +102,8 @@ class Message extends Base {
        * @type {?boolean}
        */
       this.pinned = Boolean(data.pinned);
-    } else if (typeof this.pinned !== 'boolean') {
-      this.pinned = null;
+    } else {
+      this.pinned ??= null;
     }
 
     if ('tts' in data) {
@@ -112,8 +112,8 @@ class Message extends Base {
        * @type {?boolean}
        */
       this.tts = data.tts;
-    } else if (typeof this.tts !== 'boolean') {
-      this.tts = null;
+    } else {
+      this.tts ??= null;
     }
 
     if (!partial) {
