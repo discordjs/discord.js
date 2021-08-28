@@ -167,7 +167,7 @@ class ShardClientUtil {
    * @returns {Promise<void>} Resolves upon the message being sent
    * @see {@link ShardingManager#respawnAll}
    */
-  respawnAll({ shardDelay = 5000, respawnDelay = 500, timeout = 30000 } = {}) {
+  respawnAll({ shardDelay = 5_000, respawnDelay = 500, timeout = 30_000 } = {}) {
     return this.send({ _sRespawnAll: { shardDelay, respawnDelay, timeout } });
   }
 

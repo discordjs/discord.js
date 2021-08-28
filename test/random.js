@@ -64,7 +64,7 @@ client.on('messageCreate', message => {
     if (message.content === 'imma queue pls') {
       let count = 0;
       let ecount = 0;
-      for (let x = 0; x < 4000; x++) {
+      for (let x = 0; x < 4_000; x++) {
         message.channel
           .send(`this is message ${x} of 3999`)
           .then(m => {

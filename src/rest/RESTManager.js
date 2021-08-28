@@ -19,7 +19,7 @@ class RESTManager {
     if (client.options.restSweepInterval > 0) {
       this.sweepInterval = setInterval(() => {
         this.handlers.sweep(handler => handler._inactive);
-      }, client.options.restSweepInterval * 1000).unref();
+      }, client.options.restSweepInterval * 1_000).unref();
     }
   }
 

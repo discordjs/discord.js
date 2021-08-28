@@ -69,7 +69,7 @@ class Util extends null {
    * @param {SplitOptions} [options] Options controlling the behavior of the split
    * @returns {string[]}
    */
-  static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
+  static splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
     text = Util.verifyString(text);
     if (text.length <= maxLength) return [text];
     let splitText = [text];
@@ -267,7 +267,7 @@ class Util extends null {
    * @param {FetchRecommendedShardsOptions} [options] Options for fetching the recommended shard count
    * @returns {Promise<number>} The recommended number of shards
    */
-  static async fetchRecommendedShards(token, { guildsPerShard = 1000, multipleOf = 1 } = {}) {
+  static async fetchRecommendedShards(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
     const defaults = Options.createDefault();
     const response = await fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
@@ -279,7 +279,7 @@ class Util extends null {
       throw response;
     }
     const { shards } = await response.json();
-    return Math.ceil((shards * (1000 / guildsPerShard)) / multipleOf) * multipleOf;
+    return Math.ceil((shards * (1_000 / guildsPerShard)) / multipleOf) * multipleOf;
   }
 
   /**
@@ -534,7 +534,7 @@ class Util extends null {
       bin = String(low & 1) + bin;
       low = Math.floor(low / 2);
       if (high > 0) {
-        low += 5000000000 * (high % 2);
+        low += 5_000_000_000 * (high % 2);
         high = Math.floor(high / 2);
       }
     }

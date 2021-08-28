@@ -19,7 +19,7 @@ const BeforeReadyWhitelist = [
 ];
 
 const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(1).map(Number);
-const UNRESUMABLE_CLOSE_CODES = [1000, 4006, 4007];
+const UNRESUMABLE_CLOSE_CODES = [1_000, 4_006, 4_007];
 
 /**
  * The WebSocket manager for this client.
@@ -184,7 +184,7 @@ class WebSocketManager extends EventEmitter {
       });
 
       shard.on(ShardEvents.CLOSE, event => {
-        if (event.code === 1000 ? this.destroyed : UNRECOVERABLE_CLOSE_CODES.includes(event.code)) {
+        if (event.code === 1_000 ? this.destroyed : UNRECOVERABLE_CLOSE_CODES.includes(event.code)) {
           /**
            * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
            * @event Client#shardDisconnect
@@ -253,7 +253,7 @@ class WebSocketManager extends EventEmitter {
     // If we have more shards, add a 5s delay
     if (this.shardQueue.size) {
       this.debug(`Shard Queue Size: ${this.shardQueue.size}; continuing in 5 seconds...`);
-      await Util.delayFor(5000);
+      await Util.delayFor(5_000);
       return this.createShards();
     }
 
@@ -274,7 +274,7 @@ class WebSocketManager extends EventEmitter {
       this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);
       if (error.httpStatus !== 401) {
         this.debug(`Possible network error occurred. Retrying in 5s...`);
-        await Util.delayFor(5000);
+        await Util.delayFor(5_000);
         this.reconnecting = false;
         return this.reconnect();
       }
@@ -316,7 +316,7 @@ class WebSocketManager extends EventEmitter {
     this.debug(`Manager was destroyed. Called by:\n${new Error('MANAGER_DESTROYED').stack}`);
     this.destroyed = true;
     this.shardQueue.clear();
-    for (const shard of this.shards.values()) shard.destroy({ closeCode: 1000, reset: true, emit: false, log: false });
+    for (const shard of this.shards.values()) shard.destroy({ closeCode: 1_000, reset: true, emit: false, log: false });
   }
 
   /**

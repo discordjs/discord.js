@@ -420,7 +420,7 @@ class GuildMemberManager extends CachedManager {
         for (const member of members.values()) {
           fetchedMembers.set(member.id, member);
         }
-        if (members.size < 1000 || (limit && fetchedMembers.size >= limit) || i === chunk.count) {
+        if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || i === chunk.count) {
           clearTimeout(timeout);
           this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
           this.client.decrementMaxListeners();

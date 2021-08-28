@@ -97,7 +97,7 @@ client.on('messageCreate', async message => {
     for (const [i, test] of tests.entries()) {
       await message.channel.send(`**#${i}**\n\`\`\`js\n${test.toString()}\`\`\``);
       await test(message).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
-      await wait(1000);
+      await wait(1_000);
     }
     /* eslint-enable no-await-in-loop */
   } else if (match) {
