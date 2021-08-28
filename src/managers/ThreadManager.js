@@ -79,7 +79,7 @@ class ThreadManager extends CachedManager {
    * created in a {@link TextChannel} <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
    * `GUILD_NEWS_THREAD`</warn>
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to the thread
-   * <info>Can only be set when type will be `GUILD_PRIVATE_THREAD` (12)</info>
+   * <info>Can only be set when type will be `GUILD_PRIVATE_THREAD`</info>
    */
 
   /**
