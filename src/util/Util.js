@@ -588,8 +588,8 @@ class Util extends null {
    */
   static cleanContent(str, channel) {
     str = str
-      .replaceAll(/<@!?[0-9]+>/g, input => {
-        const id = input.replaceAll(/<|!|>|@/g, '');
+      .replace(/<@!?[0-9]+>/g, input => {
+        const id = input.replace(/<|!|>|@/g, '');
         if (channel.type === 'DM') {
           const user = channel.client.users.cache.get(id);
           return user ? Util.removeMentions(`@${user.username}`) : input;
@@ -603,13 +603,13 @@ class Util extends null {
           return user ? Util.removeMentions(`@${user.username}`) : input;
         }
       })
-      .replaceAll(/<#[0-9]+>/g, input => {
-        const mentionedChannel = channel.client.channels.cache.get(input.replaceAll(/<|#|>/g, ''));
+      .replace(/<#[0-9]+>/g, input => {
+        const mentionedChannel = channel.client.channels.cache.get(input.replace(/<|#|>/g, ''));
         return mentionedChannel ? `#${mentionedChannel.name}` : input;
       })
-      .replaceAll(/<@&[0-9]+>/g, input => {
+      .replace(/<@&[0-9]+>/g, input => {
         if (channel.type === 'DM') return input;
-        const role = channel.guild.roles.cache.get(input.replaceAll(/<|@|>|&/g, ''));
+        const role = channel.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });
     return str;
