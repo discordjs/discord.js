@@ -202,6 +202,9 @@ exports.Events = {
   GUILD_STICKER_CREATE: 'stickerCreate',
   GUILD_STICKER_DELETE: 'stickerDelete',
   GUILD_STICKER_UPDATE: 'stickerUpdate',
+  GUILD_SCHEDULED_EVENT_CREATE: 'guildScheduledEventCreate',
+  GUILD_SCHEDULED_EVENT_UPDATE: 'guildScheduledEventUpdate',
+  GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete',
 };
 
 exports.ShardEvents = {
@@ -278,6 +281,9 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * STAGE_INSTANCE_UPDATE
  * * STAGE_INSTANCE_DELETE
  * * GUILD_STICKERS_UPDATE
+ * * GUILD_SCHEDULED_EVENT_CREATE
+ * * GUILD_SCHEDULED_EVENT_UPDATE
+ * * GUILD_SCHEDULED_EVENT_DELETE
  * @typedef {string} WSEventType
  * @see {@link https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events}
  */
@@ -332,6 +338,9 @@ exports.WSEvents = keyMirror([
   'STAGE_INSTANCE_UPDATE',
   'STAGE_INSTANCE_DELETE',
   'GUILD_STICKERS_UPDATE',
+  'GUILD_SCHEDULED_EVENT_CREATE',
+  'GUILD_SCHEDULED_EVENT_UPDATE',
+  'GUILD_SCHEDULED_EVENT_DELETE',
 ]);
 
 /**

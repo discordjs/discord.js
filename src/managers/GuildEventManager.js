@@ -31,47 +31,6 @@ class GuildEventManager extends CachedManager {
    */
 
   /**
-   * Options used to fetch a single guild event from a guild.
-   * @typedef {BaseFetchOptions} FetchGuildEventOptions
-   * @property {GuildEventResolvable} guildEvent The guild event to fetch
-   */
-
-  /**
-   * Options used to fetch multiple guild events from a guild.
-   * @typedef {Object} FetchGuildEventsOptions
-   * @property {boolean} [withUserCounts=true] Whether the number of users subscribed to the guild event
-   * should be returned
-   */
-
-  /**
-   * Obtains one or multiple guild events from Discord, or the guild cache if it's aready available.
-   * @param {GuildEventResolvable|FetchGuildEventOptions|FetchGuildEventsOptions} [options] The id of the guild event or
-   * options
-   * @returns {Promise<GuildEvent|Collection<Snowflake, GuildEvent>>}
-   */
-  async fetch(options = {}) {
-    const id = this.resolveId(options.guildEvent ?? options);
-
-    if (id) {
-      if (!options.force) {
-        const existing = this.cache.get(id);
-        if (existing) return existing;
-      }
-
-      const data = await this.client.api('guild-events', id).get();
-      return this._add(data, options.cache);
-    }
-
-    const data = await this.client.api
-      .guilds(this.guild.id)
-      .events.get({ query: { with_user_counts: options.withUserCounts ?? true } });
-    return data.reduce(
-      (coll, guildEvent) => coll.set(guildEvent.id, new GuildEvent(this.client, guildEvent)),
-      new Collection(),
-    );
-  }
-
-  /**
    * Options used to create a guild event.
    * @typedef {Object} GuildEventCreateOptions
    * @property {string} name The name of the event
@@ -110,16 +69,44 @@ class GuildEventManager extends CachedManager {
   }
 
   /**
-   * Deletes a guild event.
-   * @param {GuildEventResolvable} guildEvent The guild event to delete
-   * @returns {Promise<void>}
+   * Options used to fetch a single guild event from a guild.
+   * @typedef {BaseFetchOptions} FetchGuildEventOptions
+   * @property {GuildEventResolvable} guildEvent The guild event to fetch
    */
-  async delete(guildEvent) {
-    const guildEventId = this.resolveId(guildEvent);
-    if (!guildEventId) throw new Error('GUILD_EVENT_RESOLVE');
 
-    await this.client.api('guild-events', guildEventId).delete();
-    this.cache.delete(guildEventId);
+  /**
+   * Options used to fetch multiple guild events from a guild.
+   * @typedef {Object} FetchGuildEventsOptions
+   * @property {boolean} [withUserCounts=true] Whether the number of users subscribed to the guild event
+   * should be returned
+   */
+
+  /**
+   * Obtains one or multiple guild events from Discord, or the guild cache if it's aready available.
+   * @param {GuildEventResolvable|FetchGuildEventOptions|FetchGuildEventsOptions} [options] The id of the guild event or
+   * options
+   * @returns {Promise<GuildEvent|Collection<Snowflake, GuildEvent>>}
+   */
+  async fetch(options = {}) {
+    const id = this.resolveId(options.guildEvent ?? options);
+
+    if (id) {
+      if (!options.force) {
+        const existing = this.cache.get(id);
+        if (existing) return existing;
+      }
+
+      const data = await this.client.api('guild-events', id).get();
+      return this._add(data, options.cache);
+    }
+
+    const data = await this.client.api
+      .guilds(this.guild.id)
+      .events.get({ query: { with_user_counts: options.withUserCounts ?? true } });
+    return data.reduce(
+      (coll, guildEvent) => coll.set(guildEvent.id, new GuildEvent(this.client, guildEvent)),
+      new Collection(),
+    );
   }
 
   /**
@@ -162,6 +149,18 @@ class GuildEventManager extends CachedManager {
     });
 
     return this._add(data);
+  }
+
+  /**
+   * Deletes a guild event.
+   * @param {GuildEventResolvable} guildEvent The guild event to delete
+   * @returns {Promise<void>}
+   */
+  async delete(guildEvent) {
+    const guildEventId = this.resolveId(guildEvent);
+    if (!guildEventId) throw new Error('GUILD_EVENT_RESOLVE');
+
+    await this.client.api('guild-events', guildEventId).delete();
   }
 }
 
