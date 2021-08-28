@@ -14,8 +14,8 @@ const read = util.promisify(fs.readFile);
 const readStream = fs.createReadStream;
 const wait = util.promisify(setTimeout);
 
-const linkA = 'https://lolisafe.moe/iiDMtAXA.png';
-const linkB = 'https://lolisafe.moe/9hSpedPh.png';
+const linkA = 'https://chibisafe.moe/iiDMtAXA.png';
+const linkB = 'https://chibisafe.moe/9hSpedPh.png';
 const fileA = path.join(__dirname, 'blobReach.png');
 
 const embed = () => new MessageEmbed();
