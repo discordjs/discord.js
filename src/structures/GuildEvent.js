@@ -28,6 +28,12 @@ class GuildEvent extends Base {
      */
     this.guildId = data.guild_id;
 
+    /**
+     * Whether the guild event has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     this._patch(data);
   }
 
