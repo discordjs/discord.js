@@ -181,7 +181,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeCodeBlock(text) {
-    return text.replaceAll(/```/g, '\\`\\`\\`');
+    return text.replaceAll('```', '\\`\\`\\`');
   }
 
   /**
@@ -190,7 +190,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeInlineCode(text) {
-    return text.replaceAll(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
+    return text.replace(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
   }
 
   /**
@@ -200,12 +200,12 @@ class Util extends null {
    */
   static escapeItalic(text) {
     let i = 0;
-    text = text.replaceAll(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
+    text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
       if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
       return `\\*${match}`;
     });
     i = 0;
-    return text.replaceAll(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
+    return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
       if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
       return `\\_${match}`;
     });
@@ -218,7 +218,7 @@ class Util extends null {
    */
   static escapeBold(text) {
     let i = 0;
-    return text.replaceAll(/\*\*(\*)?/g, (_, match) => {
+    return text.replace(/\*\*(\*)?/g, (_, match) => {
       if (match) return ++i % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
       return '\\*\\*';
     });
@@ -231,7 +231,7 @@ class Util extends null {
    */
   static escapeUnderline(text) {
     let i = 0;
-    return text.replaceAll(/__(_)?/g, (_, match) => {
+    return text.replace(/__(_)?/g, (_, match) => {
       if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
       return '\\_\\_';
     });
@@ -243,7 +243,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeStrikethrough(text) {
-    return text.replaceAll(/~~/g, '\\~\\~');
+    return text.replaceAll('~~', '\\~\\~');
   }
 
   /**
@@ -252,7 +252,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeSpoiler(text) {
-    return text.replaceAll(/\|\|/g, '\\|\\|');
+    return text.replaceAll('||', '\\|\\|');
   }
 
   /**
@@ -577,7 +577,7 @@ class Util extends null {
    * @returns {string}
    */
   static removeMentions(str) {
-    return str.replaceAll(/@/g, '@\u200b');
+    return str.replaceAll('@', '@\u200b');
   }
 
   /**
@@ -621,7 +621,7 @@ class Util extends null {
    * @returns {string}
    */
   static cleanCodeBlockContent(text) {
-    return text.replaceAll(/```/g, '`\u200b``');
+    return text.replaceAll('```', '`\u200b``');
   }
 
   /**
