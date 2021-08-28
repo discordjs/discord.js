@@ -181,7 +181,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeCodeBlock(text) {
-    return text.replace(/```/g, '\\`\\`\\`');
+    return text.replaceAll(/```/g, '\\`\\`\\`');
   }
 
   /**
@@ -190,7 +190,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeInlineCode(text) {
-    return text.replace(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
+    return text.replaceAll(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
   }
 
   /**
@@ -200,12 +200,12 @@ class Util extends null {
    */
   static escapeItalic(text) {
     let i = 0;
-    text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
+    text = text.replaceAll(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
       if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
       return `\\*${match}`;
     });
     i = 0;
-    return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
+    return text.replaceAll(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
       if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
       return `\\_${match}`;
     });
@@ -218,7 +218,7 @@ class Util extends null {
    */
   static escapeBold(text) {
     let i = 0;
-    return text.replace(/\*\*(\*)?/g, (_, match) => {
+    return text.replaceAll(/\*\*(\*)?/g, (_, match) => {
       if (match) return ++i % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
       return '\\*\\*';
     });
@@ -231,7 +231,7 @@ class Util extends null {
    */
   static escapeUnderline(text) {
     let i = 0;
-    return text.replace(/__(_)?/g, (_, match) => {
+    return text.replaceAll(/__(_)?/g, (_, match) => {
       if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
       return '\\_\\_';
     });
@@ -243,7 +243,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeStrikethrough(text) {
-    return text.replace(/~~/g, '\\~\\~');
+    return text.replaceAll(/~~/g, '\\~\\~');
   }
 
   /**
@@ -252,7 +252,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeSpoiler(text) {
-    return text.replace(/\|\|/g, '\\|\\|');
+    return text.replaceAll(/\|\|/g, '\\|\\|');
   }
 
   /**
@@ -577,7 +577,7 @@ class Util extends null {
    * @returns {string}
    */
   static removeMentions(str) {
-    return str.replace(/@/g, '@\u200b');
+    return str.replaceAll(/@/g, '@\u200b');
   }
 
   /**
@@ -588,8 +588,8 @@ class Util extends null {
    */
   static cleanContent(str, channel) {
     str = str
-      .replace(/<@!?[0-9]+>/g, input => {
-        const id = input.replace(/<|!|>|@/g, '');
+      .replaceAll(/<@!?[0-9]+>/g, input => {
+        const id = input.replaceAll(/<|!|>|@/g, '');
         if (channel.type === 'DM') {
           const user = channel.client.users.cache.get(id);
           return user ? Util.removeMentions(`@${user.username}`) : input;
@@ -603,13 +603,13 @@ class Util extends null {
           return user ? Util.removeMentions(`@${user.username}`) : input;
         }
       })
-      .replace(/<#[0-9]+>/g, input => {
-        const mentionedChannel = channel.client.channels.cache.get(input.replace(/<|#|>/g, ''));
+      .replaceAll(/<#[0-9]+>/g, input => {
+        const mentionedChannel = channel.client.channels.cache.get(input.replaceAll(/<|#|>/g, ''));
         return mentionedChannel ? `#${mentionedChannel.name}` : input;
       })
-      .replace(/<@&[0-9]+>/g, input => {
+      .replaceAll(/<@&[0-9]+>/g, input => {
         if (channel.type === 'DM') return input;
-        const role = channel.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
+        const role = channel.guild.roles.cache.get(input.replaceAll(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });
     return str;
@@ -621,7 +621,7 @@ class Util extends null {
    * @returns {string}
    */
   static cleanCodeBlockContent(text) {
-    return text.replace(/```/g, '`\u200b``');
+    return text.replaceAll(/```/g, '`\u200b``');
   }
 
   /**
