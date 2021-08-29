@@ -43,7 +43,7 @@ class ClientUser extends User {
 
   /**
    * Data used to edit the logged in client
-   * @typdef {Object} ClientUserEditData
+   * @typedef {Object} ClientUserEditData
    * @property {string} [username] The new username
    * @property {BufferResolvable|Base64Resolvable} [avatar] The new avatar
    */
