@@ -2,6 +2,7 @@
 
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const { RangeError } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
 const Permissions = require('../util/Permissions');
@@ -78,6 +79,13 @@ class ThreadChannel extends Channel {
       this.locked = data.thread_metadata.locked ?? false;
 
       /**
+       * Whether members without `MANAGE_THREADS` can invite other members without `MANAGE_THREADS`
+       * <info>Always `null` in public threads</info>
+       * @type {?boolean}
+       */
+      this.invitable = this.type === 'GUILD_PRIVATE_THREAD' ? data.thread_metadata.invitable ?? false : null;
+
+      /**
        * Whether the thread is archived
        * @type {?boolean}
        */
@@ -109,6 +117,7 @@ class ThreadChannel extends Channel {
       if (!this.archiveTimestamp) {
         this.archiveTimestamp = null;
       }
+      this.invitable ??= null;
     }
 
     if ('owner_id' in data) {
@@ -273,6 +282,8 @@ class ThreadChannel extends Channel {
    * should automatically archive in case of no recent activity
    * @property {number} [rateLimitPerUser] The ratelimit per user for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
+   * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
+   * <info>Can only be edited on `GUILD_PRIVATE_THREAD`</info>
    */
 
   /**
@@ -303,6 +314,7 @@ class ThreadChannel extends Channel {
         auto_archive_duration: autoArchiveDuration,
         rate_limit_per_user: data.rateLimitPerUser,
         locked: data.locked,
+        invitable: this.type === 'GUILD_PRIVATE_THREAD' ? data.invitable : undefined,
       },
       reason,
     });
@@ -341,6 +353,18 @@ class ThreadChannel extends Channel {
    */
   setAutoArchiveDuration(autoArchiveDuration, reason) {
     return this.edit({ autoArchiveDuration }, reason);
+  }
+
+  /**
+   * Sets whether members without the `MANAGE_THREADS` permission can invite other members without the
+   * `MANAGE_THREADS` permission to this thread.
+   * @param {boolean} [invitable=true] Whether non-moderators can invite non-moderators to this thread
+   * @param {string} [reason] Reason for changing invite
+   * @returns {Promise<ThreadChannel>}
+   */
+  setInvitable(invitable = true, reason) {
+    if (this.type !== 'GUILD_PRIVATE_THREAD') return Promise.reject(new RangeError('THREAD_INVITABLE_TYPE', this.type));
+    return this.edit({ invitable }, reason);
   }
 
   /**
