@@ -161,9 +161,11 @@ class ApplicationCommand extends Base {
    * it is advisable to just compare `command.id === command2.id` as it is much faster and is often
    * what most users need.
    * @param {ApplicationCommand|ApplicationCommandData|APIApplicationCommand} command The command to compare with
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options and choices are in the same
+   * order in the array <info>The client may not always respect this ordering!</info>
    * @returns {boolean}
    */
-  equals(command) {
+  equals(command, enforceOptionOrder = false) {
     // If given an id, check if the id matches
     if (command.id && this.id !== command.id) return false;
 
@@ -182,7 +184,7 @@ class ApplicationCommand extends Base {
     }
 
     if (command.options) {
-      return this.constructor.optionsEqual(this.options, command.options);
+      return this.constructor.optionsEqual(this.options, command.options, enforceOptionOrder);
     }
     return true;
   }
@@ -193,12 +195,18 @@ class ApplicationCommand extends Base {
    * @param {ApplicationCommandOptionData[]} existing The options on the existing command,
    * should be {@link ApplicationCommand#options}
    * @param {ApplicationCommandOptionData[]|APIApplicationCommandOption[]} options The options to compare against
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options and choices are in the same
+   * order in the array <info>The client may not always respect this ordering!</info>
    * @returns {boolean}
    */
-  static optionsEqual(existing, options) {
+  static optionsEqual(existing, options, enforceOptionOrder = false) {
     if (existing.length !== options.length) return false;
+    if (enforceOptionOrder) {
+      return existing.every((option, index) => this._optionEquals(option, options[index], enforceOptionOrder));
+    }
+    const newOptions = new Map(options.map(option => [option.name, option]));
     for (const option of existing) {
-      const foundOption = options.find(o => o.name === option.name);
+      const foundOption = newOptions.get(option.name);
       if (!foundOption || !this._optionEquals(option, foundOption)) return false;
     }
     return true;
@@ -210,10 +218,12 @@ class ApplicationCommand extends Base {
    * @param {ApplicationCommandOptionData} existing The option on the existing command,
    * should be from {@link ApplicationCommand#options}
    * @param {ApplicationCommandOptionData|APIApplicationCommandOption} option The option to compare against
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options or choices are in the same
+   * order in their array <info>The client may not always respect this ordering!</info>
    * @returns {boolean}
    * @private
    */
-  static _optionEquals(existing, option) {
+  static _optionEquals(existing, option, enforceOptionOrder = false) {
     const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
     if (
       option.name !== existing.name ||
@@ -228,14 +238,25 @@ class ApplicationCommand extends Base {
     }
 
     if (existing.choices) {
-      for (const choice of existing.choices) {
-        const foundChoice = option.choices.find(c => c.name === choice.name);
-        if (!foundChoice || foundChoice.value !== choice.value) return false;
+      if (
+        enforceOptionOrder &&
+        !existing.choices.every(
+          (choice, index) => choice.name === option.choices[index].name && choice.value === option.choices[index].value,
+        )
+      ) {
+        return false;
+      }
+      if (!enforceOptionOrder) {
+        const newChoices = new Map(option.choices.map(choice => [choice.name, choice]));
+        for (const choice of existing.choices) {
+          const foundChoice = newChoices.get(choice.name);
+          if (!foundChoice || foundChoice.value !== choice.value) return false;
+        }
       }
     }
 
     if (existing.options) {
-      return this.optionsEqual(existing.options, option.options);
+      return this.optionsEqual(existing.options, option.options, enforceOptionOrder);
     }
     return true;
   }
