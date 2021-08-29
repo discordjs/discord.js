@@ -83,7 +83,10 @@ body:
     id: partials
     attributes:
       label: Which partials do you have configured?
-      description: Check your Client constructor for the `partials` key.
+      description: |
+        Check your Client constructor for the `partials` key.
+
+        Tip: you can select multiple items
       options:
         - USER
         - CHANNEL
@@ -97,7 +100,10 @@ body:
     id: intents
     attributes:
       label: Which gateway intents are you subscribing to?
-      description: Check your Client constructor for the `intents` key.
+      description: |
+        Check your Client constructor for the `intents` key.
+
+        Tip: you can select multiple items
       options:
         - GUILDS
         - GUILD_MEMBERS
