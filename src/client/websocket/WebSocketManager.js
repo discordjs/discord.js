@@ -2,6 +2,7 @@
 
 const EventEmitter = require('events');
 const { Collection } = require('@discordjs/collection');
+const { RPCErrorCodes } = require('discord-api-types/v9');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error } = require('../../errors');
@@ -19,7 +20,11 @@ const BeforeReadyWhitelist = [
 ];
 
 const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(1).map(Number);
-const UNRESUMABLE_CLOSE_CODES = [1_000, 4_006, 4_007];
+const UNRESUMABLE_CLOSE_CODES = [
+  RPCErrorCodes.UnknownError,
+  RPCErrorCodes.InvalidPermissions,
+  RPCErrorCodes.InvalidClientId,
+];
 
 /**
  * The WebSocket manager for this client.
