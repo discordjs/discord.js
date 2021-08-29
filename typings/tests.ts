@@ -494,21 +494,17 @@ client.on('messageCreate', message => {
 
   // Verify that buttons interactions are inferred.
   const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
-  assertType<Promise<InteractionCollector<ButtonInteraction>>>(
-    message.awaitMessageComponent({ componentType: 'BUTTON' }),
-  );
+  assertType<Promise<ButtonInteraction>>(message.awaitMessageComponent({ componentType: 'BUTTON' }));
   assertType<InteractionCollector<ButtonInteraction>>(buttonCollector);
 
   // Verify that select menus interaction are inferred.
   const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU' });
-  assertType<Promise<InteractionCollector<SelectMenuInteraction>>>(
-    message.awaitMessageComponent({ componentType: 'SELECT_MENU' }),
-  );
+  assertType<Promise<SelectMenuInteraction>>(message.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
   assertType<InteractionCollector<SelectMenuInteraction>>(selectMenuCollector);
 
   // Verify that message component interactions are default collected types.
   const defaultCollector = message.createMessageComponentCollector();
-  assertType<Promise<InteractionCollector<MessageComponentInteraction>>>(message.awaitMessageComponent());
+  assertType<Promise<MessageComponentInteraction>>(message.awaitMessageComponent());
   assertType<InteractionCollector<MessageComponentInteraction>>(defaultCollector);
 
   // Verify that additional options don't affect default collector types.

@@ -1135,6 +1135,14 @@ type InteractionCollectorReturnType<T extends MessageComponentType | MessageComp
   ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions[T]>
   : InteractionCollector<MessageComponentInteraction>;
 
+type InteractionReturnType<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
+  | MessageComponentType
+  | MessageComponentTypes
+  ? MappedInteractionCollectorOptions[T] extends InteractionCollectorOptions<infer Item>
+    ? Item
+    : never
+  : MessageComponentInteraction;
+
 type MessageCollectorOptionsParams<T> =
   | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
   | InteractionCollectorOptions<MessageComponentInteraction>;
@@ -1192,7 +1200,7 @@ export class Message extends Base {
   public reference: MessageReference | null;
   public awaitMessageComponent<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
     options?: AwaitMessageCollectorOptionsParams<T>,
-  ): Promise<InteractionCollectorReturnType<T>>;
+  ): Promise<InteractionReturnType<T>>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
   public createMessageComponentCollector<
