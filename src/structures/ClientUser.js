@@ -51,6 +51,7 @@ class ClientUser extends User {
   /**
    * Edits the logged in client.
    * @param {ClientUserEditData} data The new data
+   * @returns {Promise<ClientUser>}
    */
   async edit(data) {
     const newData = await this.client.api.users('@me').patch({ data });
