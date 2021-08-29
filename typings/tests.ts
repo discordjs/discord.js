@@ -34,10 +34,12 @@ import {
   Interaction,
   InteractionCollector,
   LimitedCollection,
+  LinkButtonOptions,
   Message,
   MessageActionRow,
   MessageAttachment,
   MessageButton,
+  MessageButtonOptions,
   MessageCollector,
   MessageComponentInteraction,
   MessageEmbed,
@@ -793,4 +795,33 @@ client.on('interactionCreate', async interaction => {
     assertType<string | null>(interaction.options.getSubcommandGroup(booleanValue));
     assertType<string | null>(interaction.options.getSubcommandGroup(false));
   }
+});
+
+client.on('ready', () => {
+  const validHTTPLinkButtonOptions: MessageButtonOptions = {
+    style: 'LINK',
+    url: 'http://discordjs.guide/#before-you-begin',
+  };
+
+  assertType<LinkButtonOptions>(validHTTPLinkButtonOptions);
+
+  const validHTTPSLinkButtonOptions: MessageButtonOptions = {
+    style: 'LINK',
+    url: 'https://discordjs.guide/#before-you-begin',
+  };
+
+  assertType<LinkButtonOptions>(validHTTPSLinkButtonOptions);
+
+  const validDiscordLinkButtonOptions: MessageButtonOptions = {
+    style: 'LINK',
+    url: 'discord://test',
+  };
+
+  assertType<LinkButtonOptions>(validDiscordLinkButtonOptions);
+
+  const invalidLinkButtonOptions: LinkButtonOptions = {
+    style: 'LINK',
+    // @ts-expect-error
+    url: 'foobar://test.com',
+  };
 });

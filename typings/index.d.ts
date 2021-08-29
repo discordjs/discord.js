@@ -4121,6 +4121,10 @@ export interface MessageActivity {
 
 export type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
+export type LinkButtonURLSchemes = 'http' | 'https' | 'discord';
+
+export type LinkButtonURL = `${LinkButtonURLSchemes}://${string}`;
+
 export interface BaseButtonOptions extends BaseMessageComponentOptions {
   disabled?: boolean;
   emoji?: EmojiIdentifierResolvable;
@@ -4129,7 +4133,7 @@ export interface BaseButtonOptions extends BaseMessageComponentOptions {
 
 export interface LinkButtonOptions extends BaseButtonOptions {
   style: 'LINK' | MessageButtonStyles.LINK;
-  url: string;
+  url: LinkButtonURL;
 }
 
 export interface InteractionButtonOptions extends BaseButtonOptions {
