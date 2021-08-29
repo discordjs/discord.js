@@ -74,6 +74,16 @@ class User extends Base {
     } else if (typeof this.avatar !== 'string') {
       this.avatar = null;
     }
+    
+    if ('banner' in data) {
+      /**
+       * The user banner's hash
+       * @type {?string}
+       */
+      this.banner = data.banner;
+    } else if (typeof this.banner !== 'string') {
+      this.banner = null;
+    }
 
     if ('system' in data) {
       /**
@@ -148,6 +158,25 @@ class User extends Base {
    */
   displayAvatarURL(options) {
     return this.avatarURL(options) ?? this.defaultAvatarURL;
+  }
+  
+  /**
+   * A link to the user's banner.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  bannerURL({ format, size, dynamic } = {}) {
+    if (!this.banner) return null;
+    return this.client.rest.cdn.Banner(this.id, this.banner, format, size, dynamic);
+  }
+
+  /**
+   * A link to the user's banner if they have one.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  displayBannerURL(options) {
+    return this.bannerURL(options) ?? null;
   }
 
   /**
