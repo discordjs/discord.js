@@ -8,6 +8,7 @@ import {
   ApplicationCommandResolvable,
   ApplicationCommandSubCommandData,
   ApplicationCommandSubGroupData,
+  ButtonInteraction,
   CacheFactory,
   Caches,
   CategoryChannel,
@@ -31,12 +32,14 @@ import {
   GuildResolvable,
   Intents,
   Interaction,
+  InteractionCollector,
   LimitedCollection,
   Message,
   MessageActionRow,
   MessageAttachment,
   MessageButton,
   MessageCollector,
+  MessageComponentInteraction,
   MessageEmbed,
   MessageManager,
   MessageReaction,
@@ -49,6 +52,7 @@ import {
   ReactionCollector,
   Role,
   RoleManager,
+  SelectMenuInteraction,
   Serialized,
   ShardClientUtil,
   ShardingManager,
@@ -469,7 +473,8 @@ client.on('messageReactionRemoveAll', async message => {
 // This is to check that stuff is the right type
 declare const assertIsMessage: (m: Promise<Message>) => void;
 
-client.on('messageCreate', ({ channel }) => {
+client.on('messageCreate', message => {
+  const { channel } = message;
   assertIsMessage(channel.send('string'));
   assertIsMessage(channel.send({}));
   assertIsMessage(channel.send({ embeds: [] }));
@@ -484,6 +489,31 @@ client.on('messageCreate', ({ channel }) => {
   channel.send();
   // @ts-expect-error
   channel.send({ another: 'property' });
+
+  // Check collector creations.
+
+  // Verify that buttons interactions are inferred.
+  const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
+  assertType<Promise<InteractionCollector<ButtonInteraction>>>(
+    message.awaitMessageComponent({ componentType: 'BUTTON' }),
+  );
+  assertType<InteractionCollector<ButtonInteraction>>(buttonCollector);
+
+  // Verify that select menus interaction are inferred.
+  const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU' });
+  assertType<Promise<InteractionCollector<SelectMenuInteraction>>>(
+    message.awaitMessageComponent({ componentType: 'SELECT_MENU' }),
+  );
+  assertType<InteractionCollector<SelectMenuInteraction>>(selectMenuCollector);
+
+  // Verify that message component interactions are default collected types.
+  const defaultCollector = message.createMessageComponentCollector();
+  assertType<Promise<InteractionCollector<MessageComponentInteraction>>>(message.awaitMessageComponent());
+  assertType<InteractionCollector<MessageComponentInteraction>>(defaultCollector);
+
+  // Verify that additional options don't affect default collector types.
+  const semiDefaultCollector = message.createMessageComponentCollector({ interactionType: 'APPLICATION_COMMAND' });
+  assertType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollector);
 });
 
 client.on('interaction', async interaction => {

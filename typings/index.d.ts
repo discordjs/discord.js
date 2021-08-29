@@ -1103,6 +1103,46 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
+// This is a general conditional type utility that allows for specific union members to be extracted given
+// a tagged union.
+type TaggedUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V>
+  ? T
+  : T extends Record<K, infer U>
+  ? V extends U
+    ? T
+    : never
+  : never;
+
+// This creates a map of MessageComponentTypes to their respective `InteractionCollectorOptionsResolvable` variant.
+type CollectorOptionsTypeResolver<U extends InteractionCollectorOptionsResolvable> = {
+  readonly [T in U['componentType']]: TaggedUnion<InteractionCollectorOptionsResolvable, 'componentType', T>;
+};
+
+// This basically says "Given a `InteractionCollectorOptionsResolvable` variant", I'll give the corresponding
+// `InteractionCollector<T>` variant back.
+type ConditionalInteractionCollectorType<T extends InteractionCollectorOptionsResolvable | undefined> =
+  T extends InteractionCollectorOptions<infer Item>
+    ? InteractionCollector<Item>
+    : InteractionCollector<MessageComponentInteraction>;
+
+// This maps each componentType key to each variant.
+type MappedInteractionCollectorOptions = CollectorOptionsTypeResolver<InteractionCollectorOptionsResolvable>;
+
+// Converts mapped types to complimentary collector types.
+type InteractionCollectorReturnType<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
+  | MessageComponentType
+  | MessageComponentTypes
+  ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions[T]>
+  : InteractionCollector<MessageComponentInteraction>;
+
+type MessageCollectorOptionsParams<T> =
+  | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
+  | InteractionCollectorOptions<MessageComponentInteraction>;
+
+type AwaitMessageCollectorOptionsParams<T> =
+  | ({ componentType?: T } & Pick<InteractionCollectorOptionsResolvable, keyof AwaitMessageComponentOptions<any>>)
+  | AwaitMessageComponentOptions<MessageComponentInteraction>;
+
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData, partial: true): void;
@@ -1150,14 +1190,14 @@ export class Message extends Base {
   public webhookId: Snowflake | null;
   public flags: Readonly<MessageFlags>;
   public reference: MessageReference | null;
-  public awaitMessageComponent<T extends MessageComponentInteraction = MessageComponentInteraction>(
-    options?: AwaitMessageComponentOptions<T>,
-  ): Promise<T>;
+  public awaitMessageComponent<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
+    options?: AwaitMessageCollectorOptionsParams<T>,
+  ): Promise<InteractionCollectorReturnType<T>>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
-  public createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
-    options?: InteractionCollectorOptions<T>,
-  ): InteractionCollector<T>;
+  public createMessageComponentCollector<
+    T extends MessageComponentType | MessageComponentTypes | undefined = undefined,
+  >(options?: MessageCollectorOptionsParams<T>): InteractionCollectorReturnType<T>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
   public equals(message: Message, rawData: unknown): boolean;
@@ -2711,18 +2751,17 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   readonly lastMessage: Message | null;
   lastPinTimestamp: number | null;
   readonly lastPinAt: Date | null;
-  awaitMessageComponent<T extends MessageComponentInteraction = MessageComponentInteraction>(
-    options?: AwaitMessageComponentOptions<T>,
-  ): Promise<T>;
+  awaitMessageComponent<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
+    options?: AwaitMessageCollectorOptionsParams<T>,
+  ): Promise<InteractionCollectorReturnType<T>>;
   awaitMessages(options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
   bulkDelete(
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
-  createMessageComponentCollector<T extends MessageComponentInteraction = MessageComponentInteraction>(
-    options?: InteractionCollectorOptions<T>,
-  ): InteractionCollector<T>;
-  createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
+  createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
+    options?: MessageCollectorOptionsParams<T>,
+  ): InteractionCollectorReturnType<T>;
   sendTyping(): Promise<void>;
 }
 
@@ -3958,6 +3997,23 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   maxUsers?: number;
   message?: Message | APIMessage;
 }
+
+export interface ButtonInteractionCollectorOptions extends InteractionCollectorOptions<ButtonInteraction> {
+  componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
+}
+
+export interface SelectMenuInteractionCollectorOptions extends InteractionCollectorOptions<SelectMenuInteraction> {
+  componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
+}
+
+export interface MessageInteractionCollectorOptions extends InteractionCollectorOptions<MessageComponentInteraction> {
+  componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
+}
+
+export type InteractionCollectorOptionsResolvable =
+  | MessageInteractionCollectorOptions
+  | SelectMenuInteractionCollectorOptions
+  | ButtonInteractionCollectorOptions;
 
 export interface InteractionDeferReplyOptions {
   ephemeral?: boolean;
