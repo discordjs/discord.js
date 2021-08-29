@@ -548,7 +548,11 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    return this.author.id === this.client.user.id;
+    return (
+      this.author.id === this.client.user.id &&
+      (!this.guild ||
+        (this.channel.viewable && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES)))
+    );
   }
 
   /**
@@ -557,10 +561,18 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    return Boolean(
-      !this.deleted &&
-        (this.author.id === this.client.user.id ||
-          this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES)),
+    if (this.deleted) {
+      return false;
+    }
+    if (!this.guild) {
+      return this.author.id === this.client.user.id;
+    }
+    if (!this.channel.viewable) {
+      return false;
+    }
+    return (
+      this.author.id === this.client.user.id ||
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)
     );
   }
 
@@ -570,9 +582,11 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
-    return Boolean(
+    return (
       !this.system &&
-        (!this.guild || this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false)),
+      (!this.guild ||
+        (this.channel.viewable &&
+          this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
     );
   }
 
