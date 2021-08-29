@@ -43,7 +43,7 @@ class ClientUser extends User {
 
   /**
    * Data used to edit the logged in client
-   * @typdef {Object} ClientUserEditData
+   * @typedef {Object} ClientUserEditData
    * @property {string} [username] The new username
    * @property {BufferResolvable|Base64Resolvable} [avatar] The new avatar
    */
@@ -51,6 +51,7 @@ class ClientUser extends User {
   /**
    * Edits the logged in client.
    * @param {ClientUserEditData} data The new data
+   * @returns {Promise<ClientUser>}
    */
   async edit(data) {
     const newData = await this.client.api.users('@me').patch({ data });
