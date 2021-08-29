@@ -143,7 +143,7 @@ class BaseCommandInteraction extends Interaction {
    * subcommand (group)
    * @property {User} [user] The resolved user
    * @property {GuildMember|APIGuildMember} [member] The resolved member
-   * @property {GuildChannel|APIChannel} [channel] The resolved channel
+   * @property {GuildChannel|ThreadChannel|APIChannel} [channel] The resolved channel
    * @property {Role|APIRole} [role] The resolved role
    */
 

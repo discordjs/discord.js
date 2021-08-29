@@ -3359,7 +3359,7 @@ export interface CommandInteractionOption {
   options?: CommandInteractionOption[];
   user?: User;
   member?: GuildMember | APIInteractionDataResolvedGuildMember;
-  channel?: GuildChannel | APIInteractionDataResolvedChannel;
+  channel?: GuildChannel | ThreadChannel | APIInteractionDataResolvedChannel;
   role?: Role | APIRole;
   message?: Message | APIMessage;
 }
