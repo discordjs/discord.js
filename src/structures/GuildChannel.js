@@ -511,14 +511,12 @@ class GuildChannel extends Channel {
    */
   get manageable() {
     if (this.client.user.id === this.guild.ownerId) return true;
-    if (VoiceBasedChannelTypes.includes(this.type)) {
-      if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) {
-        return false;
-      }
-    } else if (!this.viewable) {
-      return false;
-    }
-    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false);
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    const bitfield = VoiceBasedChannelTypes.includes(this.type)
+      ? Permissions.FLAGS.MANAGE_CHANNELS | Permissions.FLAGS.CONNECT
+      : Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.MANAGE_CHANNELS;
+    return permissions.has(bitfield, false);
   }
 
   /**
