@@ -30,6 +30,23 @@ body:
       label: Codesample
       description: Include a reproducible, minimal code sample. This will be automatically formatted into code, so no need for backticks.
       render: javascript
+      placeholder: |
+        const { Client, Intents } = require('discord.js');
+        const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+
+        client.on('ready', () => {
+          console.log(`Logged in as ${client.user.tag}!`);
+        });
+
+        client.on('interactionCreate', async interaction => {
+          if (!interaction.isCommand()) return;
+
+          if (interaction.commandName === 'ping') {
+            await interaction.reply('Pong!');
+          }
+        });
+
+        client.login('token');
   - type: input
     id: djs-version
     attributes:
@@ -62,20 +79,41 @@ body:
         - High (immediate attention needed)
     validations:
       required: true
-  - type: input
+  - type: dropdown
     id: partials
     attributes:
       label: Which partials do you have configured?
       description: Check your Client constructor for the `partials` key.
-      placeholder: None
+      options:
+        - USER
+        - CHANNEL
+        - GUILD_MEMBER
+        - MESSAGE
+        - REACTION
+      multiple: true
     validations:
       required: true
-  - type: input
+  - type: dropdown
     id: intents
     attributes:
       label: Which gateway intents are you subscribing to?
       description: Check your Client constructor for the `intents` key.
-      placeholder: GUILDS, ...
+      options:
+        - GUILDS
+        - GUILD_MEMBERS
+        - GUILD_EMOJIS_AND_STICKERS
+        - GUILD_INTEGRATIONS
+        - GUILD_WEBHOOKS
+        - GUILD_INVITES
+        - GUILD_VOICE_STATES
+        - GUILD_PRESENCES
+        - GUILD_MESSAGES
+        - GUILD_MESSAGE_REACTIONS
+        - GUILD_MESSAGE_TYPING
+        - DIRECT_MESSAGES
+        - DIRECT_MESSAGE_REACTIONS
+        - DIRECT_MESSAGE_TYPING
+      multiple: true
     validations:
       required: true
   - type: input
