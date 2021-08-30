@@ -1262,13 +1262,13 @@ export class MessageButton extends BaseMessageComponent {
   public label: string | null;
   public style: MessageButtonStyle | null;
   public type: 'BUTTON';
-  public url: string | null;
+  public url: LinkButtonURL | null;
   public setCustomId(customId: string): this;
   public setDisabled(disabled?: boolean): this;
   public setEmoji(emoji: EmojiIdentifierResolvable): this;
   public setLabel(label: string): this;
   public setStyle(style: MessageButtonStyleResolvable): this;
-  public setURL(url: string): this;
+  public setURL(url: LinkButtonURL): this;
   public toJSON(): unknown;
   private static resolveStyle(style: MessageButtonStyleResolvable): MessageButtonStyle;
 }
