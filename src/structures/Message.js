@@ -550,6 +550,7 @@ class Message extends Base {
   get editable() {
     return (
       this.author.id === this.client.user.id &&
+      !this.deleted &&
       (!this.guild ||
         (this.channel.viewable && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES)))
     );
@@ -584,6 +585,7 @@ class Message extends Base {
   get pinnable() {
     return (
       !this.system &&
+      !this.deleted &&
       (!this.guild ||
         (this.channel.viewable &&
           this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
@@ -616,7 +618,8 @@ class Message extends Base {
       this.channel.viewable &&
       this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES) &&
       (this.author.id === this.client.user.id ||
-        this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES))
+        this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES)) &&
+      !this.deleted
     );
   }
 
