@@ -553,7 +553,7 @@ class Message extends Base {
         !this.deleted &&
         (!this.guild ||
           (this.channel?.viewable &&
-            this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES))),
+            this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES, false))),
     );
   }
 
@@ -617,7 +617,7 @@ class Message extends Base {
         !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
         this.type === 'DEFAULT' &&
         this.channel.viewable &&
-        this.channel.permissionsFor(this.client.user)?.has(bitfield) &&
+        this.channel.permissionsFor(this.client.user)?.has(bitfield, false) &&
         !this.deleted,
     );
   }
