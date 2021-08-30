@@ -548,11 +548,12 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    return (
+    return Boolean(
       this.author.id === this.client.user.id &&
-      !this.deleted &&
-      (!this.guild ||
-        (this.channel.viewable && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES)))
+        !this.deleted &&
+        (!this.guild ||
+          (this.channel?.viewable &&
+            this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES))),
     );
   }
 
@@ -562,14 +563,11 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    if (this.deleted) {
+    if (this.deleted || !this.channel?.viewable) {
       return false;
     }
     if (!this.guild) {
       return this.author.id === this.client.user.id;
-    }
-    if (!this.channel.viewable) {
-      return false;
     }
     return (
       this.author.id === this.client.user.id ||
@@ -583,12 +581,12 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
-    return (
+    return Boolean(
       !this.system &&
-      !this.deleted &&
-      (!this.guild ||
-        (this.channel.viewable &&
-          this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
+        !this.deleted &&
+        (!this.guild ||
+          (this.channel.viewable &&
+            this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
     );
   }
 
@@ -612,7 +610,7 @@ class Message extends Base {
    */
   get crosspostable() {
     return (
-      this.channel.type === 'GUILD_NEWS' &&
+      this.channel?.type === 'GUILD_NEWS' &&
       !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
       this.type === 'DEFAULT' &&
       this.channel.viewable &&
