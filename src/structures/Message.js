@@ -553,7 +553,7 @@ class Message extends Base {
         !this.deleted &&
         (!this.guild ||
           (this.channel?.viewable &&
-            this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES))),
+            this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES))),
     );
   }
 
@@ -569,9 +569,9 @@ class Message extends Base {
     if (!this.guild) {
       return this.author.id === this.client.user.id;
     }
-    return (
+    return Boolean(
       this.author.id === this.client.user.id ||
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)
+        this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false),
     );
   }
 
@@ -585,8 +585,8 @@ class Message extends Base {
       !this.system &&
         !this.deleted &&
         (!this.guild ||
-          (this.channel.viewable &&
-            this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
+          (this.channel?.viewable &&
+            this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
     );
   }
 
@@ -609,15 +609,16 @@ class Message extends Base {
    * @readonly
    */
   get crosspostable() {
-    return (
+    const bitfield =
+      Permissions.FLAGS.SEND_MESSAGES |
+      (this.author.id === this.client.user.id ? 0 : Permissions.FLAGS.MANAGE_MESSAGES);
+    return Boolean(
       this.channel?.type === 'GUILD_NEWS' &&
-      !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
-      this.type === 'DEFAULT' &&
-      this.channel.viewable &&
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES) &&
-      (this.author.id === this.client.user.id ||
-        this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES)) &&
-      !this.deleted
+        !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
+        this.type === 'DEFAULT' &&
+        this.channel.viewable &&
+        this.channel.permissionsFor(this.client.user)?.has(bitfield) &&
+        !this.deleted,
     );
   }
 
