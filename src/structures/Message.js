@@ -563,11 +563,15 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    if (this.deleted || !this.channel?.viewable) {
+    if (this.deleted) {
       return false;
     }
     if (!this.guild) {
       return this.author.id === this.client.user.id;
+    }
+    // DMChannel does not have viewable property, so check viewable after proved that message is on a guild.
+    if (!this.channel?.viewable) {
+      return false;
     }
     return Boolean(
       this.author.id === this.client.user.id ||
