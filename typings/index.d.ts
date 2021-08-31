@@ -4311,8 +4311,8 @@ export type MessageReactionResolvable =
 
 export interface MessageReference {
   channelId: Snowflake;
-  guildId: Snowflake;
-  messageId: Snowflake | null;
+  guildId: Snowflake | undefined;
+  messageId: Snowflake | undefined;
 }
 
 export type MessageResolvable = Message | Snowflake;
