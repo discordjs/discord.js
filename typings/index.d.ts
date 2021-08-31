@@ -220,6 +220,20 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public type: ApplicationCommandType;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
   public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public equals(
+    command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
+    enforceOptionorder?: boolean,
+  ): boolean;
+  public static optionsEqual(
+    existing: ApplicationCommandOption[],
+    options: ApplicationCommandOption[] | ApplicationCommandOptionData[] | APIApplicationCommandOption[],
+    enforceOptionorder?: boolean,
+  ): boolean;
+  private static _optionEquals(
+    existing: ApplicationCommandOption,
+    options: ApplicationCommandOption | ApplicationCommandOptionData | APIApplicationCommandOption,
+    enforceOptionorder?: boolean,
+  ): boolean;
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
 }
 
@@ -2701,10 +2715,10 @@ export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> 
 export class StageInstanceManager extends CachedManager<Snowflake, StageInstance, StageInstanceResolvable> {
   public constructor(guild: Guild, iterable?: Iterable<RawStageInstanceData>);
   public guild: Guild;
-  public create(channel: StageChannel | Snowflake, options: StageInstanceCreateOptions): Promise<StageInstance>;
-  public fetch(channel: StageChannel | Snowflake, options?: BaseFetchOptions): Promise<StageInstance>;
-  public edit(channel: StageChannel | Snowflake, options: StageInstanceEditOptions): Promise<StageInstance>;
-  public delete(channel: StageChannel | Snowflake): Promise<void>;
+  public create(channel: StageChannelResolvable, options: StageInstanceCreateOptions): Promise<StageInstance>;
+  public fetch(channel: StageChannelResolvable, options?: BaseFetchOptions): Promise<StageInstance>;
+  public edit(channel: StageChannelResolvable, options: StageInstanceEditOptions): Promise<StageInstance>;
+  public delete(channel: StageChannelResolvable): Promise<void>;
 }
 
 export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
@@ -2959,6 +2973,7 @@ export interface APIErrors {
   REACTION_BLOCKED: 90001;
   RESOURCE_OVERLOADED: 130000;
   STAGE_ALREADY_OPEN: 150006;
+  CANNOT_REPLY_WITHOUT_READ_MESSAGE_HISTORY_PERMISSION: 160002;
   MESSAGE_ALREADY_HAS_THREAD: 160004;
   THREAD_LOCKED: 160005;
   MAXIMUM_ACTIVE_THREADS: 160006;
@@ -4297,8 +4312,8 @@ export type MessageReactionResolvable =
 
 export interface MessageReference {
   channelId: Snowflake;
-  guildId: Snowflake;
-  messageId: Snowflake | null;
+  guildId: Snowflake | undefined;
+  messageId: Snowflake | undefined;
 }
 
 export type MessageResolvable = Message | Snowflake;
@@ -4629,6 +4644,8 @@ export type SystemChannelFlagsString =
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
 export type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND'>;
+
+export type StageChannelResolvable = StageChannel | Snowflake;
 
 export interface StageInstanceEditOptions {
   topic?: string;
