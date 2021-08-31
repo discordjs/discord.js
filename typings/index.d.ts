@@ -4300,6 +4300,8 @@ export interface MessageOptions {
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
   attachments?: MessageAttachment[];
+  ephemeral?: boolean;
+  flags?: BitFieldResolvable<string, number | bigint>;
 }
 
 export type MessageReactionResolvable =
