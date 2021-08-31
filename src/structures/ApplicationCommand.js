@@ -157,6 +157,111 @@ class ApplicationCommand extends Base {
   }
 
   /**
+   * Whether this command equals another command. It compares all properties, so for most operations
+   * it is advisable to just compare `command.id === command2.id` as it is much faster and is often
+   * what most users need.
+   * @param {ApplicationCommand|ApplicationCommandData|APIApplicationCommand} command The command to compare with
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options and choices are in the same
+   * order in the array <info>The client may not always respect this ordering!</info>
+   * @returns {boolean}
+   */
+  equals(command, enforceOptionOrder = false) {
+    // If given an id, check if the id matches
+    if (command.id && this.id !== command.id) return false;
+
+    // Check top level parameters
+    const commandType = typeof command.type === 'string' ? command.type : ApplicationCommandTypes[command.type];
+    if (
+      command.name !== this.name ||
+      ('description' in command && command.description !== this.description) ||
+      (commandType && commandType !== this.type) ||
+      // Future proof for options being nullable
+      // TODO: remove ?? 0 on each when nullable
+      (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
+      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission
+    ) {
+      return false;
+    }
+
+    if (command.options) {
+      return this.constructor.optionsEqual(this.options, command.options, enforceOptionOrder);
+    }
+    return true;
+  }
+
+  /**
+   * Recursively checks that all options for an {@link ApplicationCommand} are equal to the provided options.
+   * In most cases it is better to compare using {@link ApplicationCommand#equals}
+   * @param {ApplicationCommandOptionData[]} existing The options on the existing command,
+   * should be {@link ApplicationCommand#options}
+   * @param {ApplicationCommandOptionData[]|APIApplicationCommandOption[]} options The options to compare against
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options and choices are in the same
+   * order in the array <info>The client may not always respect this ordering!</info>
+   * @returns {boolean}
+   */
+  static optionsEqual(existing, options, enforceOptionOrder = false) {
+    if (existing.length !== options.length) return false;
+    if (enforceOptionOrder) {
+      return existing.every((option, index) => this._optionEquals(option, options[index], enforceOptionOrder));
+    }
+    const newOptions = new Map(options.map(option => [option.name, option]));
+    for (const option of existing) {
+      const foundOption = newOptions.get(option.name);
+      if (!foundOption || !this._optionEquals(option, foundOption)) return false;
+    }
+    return true;
+  }
+
+  /**
+   * Checks that an option for an {@link ApplicationCommand} is equal to the provided option
+   * In most cases it is better to compare using {@link ApplicationCommand#equals}
+   * @param {ApplicationCommandOptionData} existing The option on the existing command,
+   * should be from {@link ApplicationCommand#options}
+   * @param {ApplicationCommandOptionData|APIApplicationCommandOption} option The option to compare against
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options or choices are in the same
+   * order in their array <info>The client may not always respect this ordering!</info>
+   * @returns {boolean}
+   * @private
+   */
+  static _optionEquals(existing, option, enforceOptionOrder = false) {
+    const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
+    if (
+      option.name !== existing.name ||
+      optionType !== existing.type ||
+      option.description !== existing.description ||
+      (option.required ?? (['SUB_COMMAND', 'SUB_COMMAND_GROUP'].includes(optionType) ? undefined : false)) !==
+        existing.required ||
+      option.choices?.length !== existing.choices?.length ||
+      option.options?.length !== existing.options?.length
+    ) {
+      return false;
+    }
+
+    if (existing.choices) {
+      if (
+        enforceOptionOrder &&
+        !existing.choices.every(
+          (choice, index) => choice.name === option.choices[index].name && choice.value === option.choices[index].value,
+        )
+      ) {
+        return false;
+      }
+      if (!enforceOptionOrder) {
+        const newChoices = new Map(option.choices.map(choice => [choice.name, choice]));
+        for (const choice of existing.choices) {
+          const foundChoice = newChoices.get(choice.name);
+          if (!foundChoice || foundChoice.value !== choice.value) return false;
+        }
+      }
+    }
+
+    if (existing.options) {
+      return this.optionsEqual(existing.options, option.options, enforceOptionOrder);
+    }
+    return true;
+  }
+
+  /**
    * An option for an application command or subcommand.
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option
