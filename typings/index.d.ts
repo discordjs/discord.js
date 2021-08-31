@@ -1149,7 +1149,7 @@ type InteractionCollectorReturnType<T extends MessageComponentType | MessageComp
   ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions[T]>
   : InteractionCollector<MessageComponentInteraction>;
 
-type InteractionReturnType<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
+type InteractionExtractor<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
   | MessageComponentType
   | MessageComponentTypes
   ? MappedInteractionCollectorOptions[T] extends InteractionCollectorOptions<infer Item>
@@ -1157,13 +1157,16 @@ type InteractionReturnType<T extends MessageComponentType | MessageComponentType
     : never
   : MessageComponentInteraction;
 
-type MessageCollectorOptionsParams<T> =
-  | ({ componentType?: T } & InteractionCollectorOptionsResolvable)
-  | InteractionCollectorOptions<MessageComponentInteraction>;
+type MessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
+  | {
+      componentType?: T;
+    } & InteractionCollectorOptions<InteractionExtractor<T>>;
 
-type AwaitMessageCollectorOptionsParams<T> =
-  | ({ componentType?: T } & Pick<InteractionCollectorOptionsResolvable, keyof AwaitMessageComponentOptions<any>>)
-  | AwaitMessageComponentOptions<MessageComponentInteraction>;
+type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
+  | { componentType?: T } & Pick<
+      InteractionCollectorOptions<InteractionExtractor<T>>,
+      keyof AwaitMessageComponentOptions<any>
+    >;
 
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
@@ -1212,9 +1215,9 @@ export class Message extends Base {
   public webhookId: Snowflake | null;
   public flags: Readonly<MessageFlags>;
   public reference: MessageReference | null;
-  public awaitMessageComponent<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
-    options?: AwaitMessageCollectorOptionsParams<T>,
-  ): Promise<InteractionReturnType<T>>;
+  public awaitMessageComponent<
+    T extends MessageComponentType | MessageComponentTypes | undefined = MessageComponentTypes.ACTION_ROW,
+  >(options?: AwaitMessageCollectorOptionsParams<T>): Promise<InteractionExtractor<T>>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
   public createMessageComponentCollector<
