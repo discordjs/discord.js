@@ -480,7 +480,7 @@ class WebSocketShard extends EventEmitter {
     // * this can be optionally be changed in the client options via fetchGuildTimeout
     // * a timeout time of zero will skip this timeout
 
-    const guildTimeoutAmount = this.manager.client.options.fetchGuildTimeout || 1500;
+    const guildTimeoutAmount = this.manager.client.options.fetchGuildTimeout ?? 15000;
 
     this.readyTimeout = setTimeout(
       () => {
