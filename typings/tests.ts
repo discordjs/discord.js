@@ -510,6 +510,53 @@ client.on('messageCreate', message => {
   // Verify that additional options don't affect default collector types.
   const semiDefaultCollector = message.createMessageComponentCollector({ interactionType: 'APPLICATION_COMMAND' });
   assertType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollector);
+
+  // Make sure filter parameters are properly inferred.
+  message.createMessageComponentCollector({
+    filter: i => {
+      assertType<MessageComponentInteraction>(i);
+      return true;
+    },
+  });
+
+  message.createMessageComponentCollector({
+    componentType: 'BUTTON',
+    filter: i => {
+      assertType<ButtonInteraction>(i);
+      return true;
+    },
+  });
+
+  message.createMessageComponentCollector({
+    componentType: 'SELECT_MENU',
+    filter: i => {
+      assertType<SelectMenuInteraction>(i);
+      return true;
+    },
+  });
+
+  message.awaitMessageComponent({
+    filter: i => {
+      assertType<MessageComponentInteraction>(i);
+      return true;
+    },
+  });
+
+  message.awaitMessageComponent({
+    componentType: 'BUTTON',
+    filter: i => {
+      assertType<ButtonInteraction>(i);
+      return true;
+    },
+  });
+
+  message.awaitMessageComponent({
+    componentType: 'SELECT_MENU',
+    filter: i => {
+      assertType<SelectMenuInteraction>(i);
+      return true;
+    },
+  });
 });
 
 client.on('interaction', async interaction => {
