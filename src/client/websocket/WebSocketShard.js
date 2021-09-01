@@ -476,7 +476,7 @@ class WebSocketShard extends EventEmitter {
     }
     const hasGuildsIntent = new Intents(this.manager.client.options.intents).has(Intents.FLAGS.GUILDS);
     // Step 2. Create a timeout that will mark the shard as ready if there are still unavailable guilds
-    // * the timeout should be 15 seconds by default, but this can be optionally be changed in the client options
+    // * the timeout should be 15 seconds by default, but this can be optionally be changed in the client options via fetchGuildTimeout
 
     const guildTimeoutAmount = this.manager.client.options.fetchGuildTimeout || 1500;
 
@@ -484,7 +484,7 @@ class WebSocketShard extends EventEmitter {
       () => {
         this.debug(
           `Shard ${hasGuildsIntent ? 'did' : 'will'} not receive any more guild packets` +
-            `${hasGuildsIntent ? `in ${guildTimeoutAmountInSeconds} seconds` : ''}.\n   Unavailable guild count: ${this.expectedGuilds.size}`,
+            `${hasGuildsIntent ? `in ${guildTimeoutAmount} milliseconds` : ''}.\n   Unavailable guild count: ${this.expectedGuilds.size}`,
         );
 
         this.readyTimeout = null;
