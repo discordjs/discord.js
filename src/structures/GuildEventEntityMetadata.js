@@ -16,6 +16,14 @@ class GuildEventEntityMetadata {
        */
       this.speakerIds = data.speaker_ids;
     }
+
+    if ('location' in data) {
+      /**
+       * The location of the event
+       * @type {?string}
+       */
+      this.location = data.location;
+    }
   }
 }
 

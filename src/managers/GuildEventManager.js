@@ -38,7 +38,7 @@ class GuildEventManager extends CachedManager {
    * @property {PrivacyLevel|number} privacyLevel The privacy level of the event
    * @property {GuildEventEntityType|number} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the event
-   * @property {StageChannel|Snowflake} [channel] The stage channel of the event
+   * @property {GuildChannelResolvable} [channel] The channel of the event
    */
 
   /**
@@ -117,7 +117,7 @@ class GuildEventManager extends CachedManager {
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the event
    * @property {GuildEventEntityType|number} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the event
-   * @property {StageChannel|Snowflake} [channel] The stage channel of the event
+   * @property {GuildChannelResolvable} [channel] The channel of the event
    */
 
   /**

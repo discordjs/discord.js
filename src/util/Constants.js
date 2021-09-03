@@ -205,6 +205,8 @@ exports.Events = {
   GUILD_SCHEDULED_EVENT_CREATE: 'guildScheduledEventCreate',
   GUILD_SCHEDULED_EVENT_UPDATE: 'guildScheduledEventUpdate',
   GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete',
+  GUILD_SCHEDULED_EVENT_USER_CREATE: 'guildScheduledEventUserCreate',
+  GUILD_SCHEDULED_EVENT_USER_DELETE: 'guildScheduledEventUserDelete',
 };
 
 exports.ShardEvents = {
@@ -284,6 +286,8 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * GUILD_SCHEDULED_EVENT_CREATE
  * * GUILD_SCHEDULED_EVENT_UPDATE
  * * GUILD_SCHEDULED_EVENT_DELETE
+ * * GUILD_SCHEDULED_EVENT_USER_CREATE
+ * * GUILD_SCHEDULED_EVENT_USER_DELETE
  * @typedef {string} WSEventType
  * @see {@link https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events}
  */
@@ -341,6 +345,8 @@ exports.WSEvents = keyMirror([
   'GUILD_SCHEDULED_EVENT_CREATE',
   'GUILD_SCHEDULED_EVENT_UPDATE',
   'GUILD_SCHEDULED_EVENT_DELETE',
+  'GUILD_SCHEDULED_EVENT_USER_CREATE',
+  'GUILD_SCHEDULED_EVENT_USER_DELETE',
 ]);
 
 /**
@@ -1154,10 +1160,10 @@ exports.GuildEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', 'COMPLETED
  * * NONE
  * * STAGE_INSTANCE
  * * VOICE
- * * EXTERNAL
+ * * LOCATION
  * @typedef {string} GuildEventEntityType
  */
-exports.GuildEventEntityTypes = createEnum(['NONE', 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
+exports.GuildEventEntityTypes = createEnum(['NONE', 'STAGE_INSTANCE', 'VOICE', 'LOCATION']);
 
 exports._cleanupSymbol = Symbol('djsCleanup');
 
@@ -1190,6 +1196,8 @@ function createEnum(keys) {
  * The value set for a guild's default message notifications.
  * @property {ExplicitContentFilterLevel} ExplicitContentFilterLevels
  * The value set for the explicit content filter levels for a guild.
+ * @property {GuildEventStatus} GuildEventStatuses The status of a {@link GuildEvent}
+ * @property {GuildEventEntityType} GuildEventEntityTypes The entity type of a {@link GuildEvent}
  * @property {InteractionResponseType} InteractionResponseTypes The type of an interaction response.
  * @property {InteractionType} InteractionTypes The type of an {@link Interaction} object.
  * @property {MembershipState} MembershipStates The value set for a team member's membership state.
