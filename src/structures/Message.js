@@ -571,7 +571,7 @@ class Message extends Base {
    */
   get pinnable() {
     return (
-      this.type === 'DEFAULT' &&
+      ['DEFAULT', 'REPLY', 'APPLICATION_COMMAND', 'THREAD_STARTER_MESSAGE'].includes(this.type) &&
       (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
     );
   }
