@@ -92,8 +92,8 @@ class Message extends Base {
        * @type {?User}
        */
       this.author = this.client.users._add(data.author, !data.webhook_id);
-    } else if (!this.author) {
-      this.author = null;
+    } else {
+      this.author ??= null;
     }
 
     if ('pinned' in data) {
@@ -102,8 +102,8 @@ class Message extends Base {
        * @type {?boolean}
        */
       this.pinned = Boolean(data.pinned);
-    } else if (typeof this.pinned !== 'boolean') {
-      this.pinned = null;
+    } else {
+      this.pinned ??= null;
     }
 
     if ('tts' in data) {
@@ -112,8 +112,8 @@ class Message extends Base {
        * @type {?boolean}
        */
       this.tts = data.tts;
-    } else if (typeof this.tts !== 'boolean') {
-      this.tts = null;
+    } else {
+      this.tts ??= null;
     }
 
     if (!partial) {
@@ -334,8 +334,8 @@ class Message extends Base {
         commandName: data.interaction.name,
         user: this.client.users._add(data.interaction.user),
       };
-    } else if (!this.interaction) {
-      this.interaction = null;
+    } else {
+      this.interaction ??= null;
     }
   }
 
@@ -447,7 +447,7 @@ class Message extends Base {
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId';
-   * const collector = message.createReactionCollector({ filter, time: 15000 });
+   * const collector = message.createReactionCollector({ filter, time: 15_000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -469,7 +469,7 @@ class Message extends Base {
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId'
-   * message.awaitReactions({ filter, time: 15000 })
+   * message.awaitReactions({ filter, time: 15_000 })
    *   .then(collected => console.log(`Collected ${collected.size} reactions`))
    *   .catch(console.error);
    */
@@ -498,7 +498,7 @@ class Message extends Base {
    * @example
    * // Create a message component interaction collector
    * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-   * const collector = message.createMessageComponentCollector({ filter, time: 15000 });
+   * const collector = message.createMessageComponentCollector({ filter, time: 15_000 });
    * collector.on('collect', i => console.log(`Collected ${i.customId}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -526,7 +526,7 @@ class Message extends Base {
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-   * message.awaitMessageComponent({ filter, time: 15000 })
+   * message.awaitMessageComponent({ filter, time: 15_000 })
    *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */

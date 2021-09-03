@@ -53,7 +53,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the bitrate of a voice channel
-   * voiceChannel.setBitrate(48000)
+   * voiceChannel.setBitrate(48_000)
    *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}bps for ${vc.name}`))
    *   .catch(console.error);
    */

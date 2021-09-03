@@ -3,7 +3,7 @@
 const Util = require('./Util');
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
-const EPOCH = 1420070400000;
+const EPOCH = 1_420_070_400_000;
 let INCREMENT = 0;
 
 /**

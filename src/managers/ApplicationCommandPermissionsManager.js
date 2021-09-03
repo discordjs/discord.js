@@ -380,9 +380,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       if (!commandId && this.guild) {
         commandId = this.guild.commands.resolveId(command);
       }
-      if (!commandId) {
-        commandId = this.client.application?.commands.resolveId(command);
-      }
+      commandId ??= this.client.application?.commands.resolveId(command);
       if (!commandId) {
         throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable', true);
       }

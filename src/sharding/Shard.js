@@ -106,7 +106,7 @@ class Shard extends EventEmitter {
    * before resolving (`-1` or `Infinity` for no wait)
    * @returns {Promise<ChildProcess>}
    */
-  spawn(timeout = 30000) {
+  spawn(timeout = 30_000) {
     if (this.process) throw new Error('SHARDING_PROCESS_EXISTS', this.id);
     if (this.worker) throw new Error('SHARDING_WORKER_EXISTS', this.id);
 
@@ -201,7 +201,7 @@ class Shard extends EventEmitter {
    * @param {ShardRespawnOptions} [options] Options for respawning the shard
    * @returns {Promise<ChildProcess>}
    */
-  async respawn({ delay = 500, timeout = 30000 } = {}) {
+  async respawn({ delay = 500, timeout = 30_000 } = {}) {
     this.kill();
     if (delay > 0) await Util.delayFor(delay);
     return this.spawn(timeout);

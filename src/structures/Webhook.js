@@ -189,7 +189,7 @@ class Webhook {
    *     'color': '#F0F',
    *     'footer_icon': 'http://snek.s3.amazonaws.com/topSnek.png',
    *     'footer': 'Powered by sneks',
-   *     'ts': Date.now() / 1000
+   *     'ts': Date.now() / 1_000
    *   }]
    * }).catch(console.error);
    * @see {@link https://api.slack.com/messaging/webhooks}

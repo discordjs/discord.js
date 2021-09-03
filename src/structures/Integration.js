@@ -116,8 +116,8 @@ class Integration extends Base {
          */
         this.application = new IntegrationApplication(this.client, data.application);
       }
-    } else if (!this.application) {
-      this.application = null;
+    } else {
+      this.application ??= null;
     }
   }
 
