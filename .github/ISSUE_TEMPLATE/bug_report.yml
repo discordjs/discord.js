@@ -94,8 +94,6 @@ body:
         - MESSAGE
         - REACTION
       multiple: true
-    validations:
-      required: true
   - type: dropdown
     id: intents
     attributes:
