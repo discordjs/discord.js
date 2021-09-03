@@ -2,8 +2,7 @@
 
 const https = require('node:https');
 const { setTimeout } = require('node:timers');
-const FormData = require('form-data');
-const fetch = require('node-fetch');
+const { fetch, FormData } = require('undici');
 const { UserAgent } = require('../util/Constants');
 
 let agent = null;
@@ -61,7 +60,6 @@ class APIRequest {
           body.append('payload_json', JSON.stringify(this.options.data));
         }
       }
-      headers = Object.assign(headers, body.getHeaders());
       // eslint-disable-next-line eqeqeq
     } else if (this.options.data != null) {
       body = JSON.stringify(this.options.data);

@@ -3,7 +3,7 @@
 const { parse } = require('node:path');
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const fetch = require('node-fetch');
+const { fetch } = require('undici');
 const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');

@@ -4,13 +4,13 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
-const fetch = require('node-fetch');
+const { fetch } = require('undici');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
 const { Client, Intents, MessageAttachment, MessageEmbed, WebhookClient } = require('../src');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
-const buffer = l => fetch(l).then(res => res.buffer());
+const buffer = l => fetch(l).then(res => res.arrayBuffer());
 const read = util.promisify(fs.readFile);
 const readStream = fs.createReadStream;
 

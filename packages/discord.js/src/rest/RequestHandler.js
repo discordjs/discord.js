@@ -12,7 +12,7 @@ const {
 
 function parseResponse(res) {
   if (res.headers.get('content-type').startsWith('application/json')) return res.json();
-  return res.buffer();
+  return res.arrayBuffer();
 }
 
 function getAPIOffset(serverDate) {
