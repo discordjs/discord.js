@@ -35,7 +35,7 @@ class Typing extends Base {
      * The UNIX timestamp in milliseconds the user started typing at
      * @type {number}
      */
-    this.startedTimestamp = data.timestamp * 1000;
+    this.startedTimestamp = data.timestamp * 1_000;
   }
 
   /**

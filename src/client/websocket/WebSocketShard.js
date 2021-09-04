@@ -415,7 +415,7 @@ class WebSocketShard extends EventEmitter {
         break;
       case Opcodes.RECONNECT:
         this.debug('[RECONNECT] Discord asked us to reconnect');
-        this.destroy({ closeCode: 4000 });
+        this.destroy({ closeCode: 4_000 });
         break;
       case Opcodes.INVALID_SESSION:
         this.debug(`[INVALID SESSION] Resumable: ${packet.d}.`);
@@ -519,7 +519,7 @@ class WebSocketShard extends EventEmitter {
     this.helloTimeout = setTimeout(() => {
       this.debug('Did not receive HELLO in time. Destroying and connecting again.');
       this.destroy({ reset: true, closeCode: 4009 });
-    }, 20000).unref();
+    }, 20_000).unref();
   }
 
   /**
@@ -664,7 +664,7 @@ class WebSocketShard extends EventEmitter {
   _send(data) {
     if (this.connection?.readyState !== WebSocket.OPEN) {
       this.debug(`Tried to send packet '${JSON.stringify(data)}' but no WebSocket is available!`);
-      this.destroy({ closeCode: 4000 });
+      this.destroy({ closeCode: 4_000 });
       return;
     }
 
@@ -700,7 +700,7 @@ class WebSocketShard extends EventEmitter {
    * @param {Object} [options={ closeCode: 1000, reset: false, emit: true, log: true }] Options for destroying the shard
    * @private
    */
-  destroy({ closeCode = 1000, reset = false, emit = true, log = true } = {}) {
+  destroy({ closeCode = 1_000, reset = false, emit = true, log = true } = {}) {
     if (log) {
       this.debug(`[DESTROY]
     Close Code    : ${closeCode}

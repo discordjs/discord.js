@@ -238,7 +238,7 @@ class GuildManager extends CachedManager {
         this.client.removeListener(Events.GUILD_CREATE, handleGuild);
         this.client.decrementMaxListeners();
         resolve(this.client.guilds._add(data));
-      }, 10000).unref();
+      }, 10_000).unref();
     });
   }
 

@@ -28,7 +28,7 @@ client.on('ready', () => {
     setTimeout(() => {
       console.log('kek dying');
       client.destroy();
-    }, 5000);
+    }, 5_000);
   }
 });
 

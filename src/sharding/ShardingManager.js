@@ -178,7 +178,7 @@ class ShardingManager extends EventEmitter {
    * @param {MultipleShardSpawnOptions} [options] Options for spawning shards
    * @returns {Promise<Collection<number, Shard>>}
    */
-  async spawn({ amount = this.totalShards, delay = 5500, timeout = 30000 } = {}) {
+  async spawn({ amount = this.totalShards, delay = 5500, timeout = 30_000 } = {}) {
     // Obtain/verify the number of shards to spawn
     if (amount === 'auto') {
       amount = await Util.fetchRecommendedShards(this.token);
@@ -302,7 +302,7 @@ class ShardingManager extends EventEmitter {
    * @param {MultipleShardRespawnOptions} [options] Options for respawning shards
    * @returns {Promise<Collection<string, Shard>>}
    */
-  async respawnAll({ shardDelay = 5000, respawnDelay = 500, timeout = 30000 } = {}) {
+  async respawnAll({ shardDelay = 5_000, respawnDelay = 500, timeout = 30_000 } = {}) {
     let s = 0;
     for (const shard of this.shards.values()) {
       const promises = [shard.respawn({ respawnDelay, timeout })];

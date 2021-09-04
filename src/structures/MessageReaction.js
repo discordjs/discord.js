@@ -120,7 +120,7 @@ class MessageReaction {
     if (this.partial) return;
     this.users.cache.set(user.id, user);
     if (!this.me || user.id !== this.message.client.user.id || this.count === 0) this.count++;
-    if (!this.me) this.me = user.id === this.message.client.user.id;
+    this.me ??= user.id === this.message.client.user.id;
   }
 
   _remove(user) {

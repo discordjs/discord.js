@@ -25,8 +25,8 @@ class ClientUser extends User {
        * @type {?boolean}
        */
       this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
-    } else if (typeof this.mfaEnabled === 'undefined') {
-      this.mfaEnabled = null;
+    } else {
+      this.mfaEnabled ??= null;
     }
 
     if (data.token) this.client.token = data.token;

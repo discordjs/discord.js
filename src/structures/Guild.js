@@ -279,8 +279,8 @@ class Guild extends AnonymousGuild {
        * @type {?number}
        */
       this.maximumMembers = data.max_members;
-    } else if (typeof this.maximumMembers === 'undefined') {
-      this.maximumMembers = null;
+    } else {
+      this.maximumMembers ??= null;
     }
 
     if (typeof data.max_presences !== 'undefined') {
@@ -289,9 +289,9 @@ class Guild extends AnonymousGuild {
        * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
        * @type {?number}
        */
-      this.maximumPresences = data.max_presences ?? 25000;
-    } else if (typeof this.maximumPresences === 'undefined') {
-      this.maximumPresences = null;
+      this.maximumPresences = data.max_presences ?? 25_000;
+    } else {
+      this.maximumPresences ??= null;
     }
 
     if (typeof data.approximate_member_count !== 'undefined') {
@@ -301,8 +301,8 @@ class Guild extends AnonymousGuild {
        * @type {?number}
        */
       this.approximateMemberCount = data.approximate_member_count;
-    } else if (typeof this.approximateMemberCount === 'undefined') {
-      this.approximateMemberCount = null;
+    } else {
+      this.approximateMemberCount ??= null;
     }
 
     if (typeof data.approximate_presence_count !== 'undefined') {
@@ -312,8 +312,8 @@ class Guild extends AnonymousGuild {
        * @type {?number}
        */
       this.approximatePresenceCount = data.approximate_presence_count;
-    } else if (typeof this.approximatePresenceCount === 'undefined') {
-      this.approximatePresenceCount = null;
+    } else {
+      this.approximatePresenceCount ??= null;
     }
 
     /**
@@ -541,18 +541,18 @@ class Guild extends AnonymousGuild {
    */
   get maximumBitrate() {
     if (this.features.includes('VIP_REGIONS')) {
-      return 384000;
+      return 384_000;
     }
 
     switch (PremiumTiers[this.premiumTier]) {
       case PremiumTiers.TIER_1:
-        return 128000;
+        return 128_000;
       case PremiumTiers.TIER_2:
-        return 256000;
+        return 256_000;
       case PremiumTiers.TIER_3:
-        return 384000;
+        return 384_000;
       default:
-        return 96000;
+        return 96_000;
     }
   }
 
