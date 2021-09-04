@@ -128,7 +128,7 @@ class Options extends null {
       failIfNotExists: true,
       userAgentSuffix: [],
       presence: {},
-      fetchGuildTimeout: 15000,
+      fetchGuildTimeout: 15_000,
       ws: {
         large_threshold: 50,
         compress: false,
