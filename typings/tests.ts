@@ -508,8 +508,13 @@ client.on('messageCreate', message => {
   assertType<InteractionCollector<MessageComponentInteraction>>(defaultCollector);
 
   // Verify that additional options don't affect default collector types.
-  const semiDefaultCollector = message.createMessageComponentCollector({ interactionType: 'APPLICATION_COMMAND' });
+  const semiDefaultCollector = message.createMessageComponentCollector({ time: 10000 });
   assertType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollector);
+
+  // Verify that interaction collector options can't be used.
+
+  // @ts-expect-error
+  const interactionOptions = message.createMessageComponentCollector({ interactionType: 'APPLICATION_COMMAND' });
 
   // Make sure filter parameters are properly inferred.
   message.createMessageComponentCollector({
