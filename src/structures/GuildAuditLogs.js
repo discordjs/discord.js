@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const GuildEvent = require('./GuildEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const { StageInstance } = require('./StageInstance');
@@ -24,6 +25,7 @@ const Util = require('../util/Util');
  * * STAGE_INSTANCE
  * * STICKER
  * * THREAD
+ * * GUILD_EVENT
  * @typedef {string} AuditLogTargetType
  */
 
@@ -35,6 +37,7 @@ const Util = require('../util/Util');
 const Targets = {
   ALL: 'ALL',
   GUILD: 'GUILD',
+  GUILD_EVENT: 'GUILD_EVENT',
   CHANNEL: 'CHANNEL',
   USER: 'USER',
   ROLE: 'ROLE',
@@ -96,6 +99,9 @@ const Targets = {
  * * THREAD_CREATE: 110
  * * THREAD_UPDATE: 111
  * * THREAD_DELETE: 112
+ * * GUILD_SCHEDULED_EVENT_CREATE: 100
+ * * GUILD_SCHEDULED_EVENT_UPDATE: 101
+ * * GUILD_SCHEDULED_EVENT_DELETE: 102
  * @typedef {?(number|string)} AuditLogAction
  * @see {@link https://discord.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events}
  */
@@ -148,6 +154,9 @@ const Actions = {
   STICKER_CREATE: 90,
   STICKER_UPDATE: 91,
   STICKER_DELETE: 92,
+  GUILD_SCHEDULED_EVENT_CREATE: 100,
+  GUILD_SCHEDULED_EVENT_UPDATE: 101,
+  GUILD_SCHEDULED_EVENT_DELETE: 102,
   THREAD_CREATE: 110,
   THREAD_UPDATE: 111,
   THREAD_DELETE: 112,
@@ -218,11 +227,12 @@ class GuildAuditLogs {
    * * An integration
    * * A stage instance
    * * A sticker
+   * * A guild event
    * * A thread
    * * An object with an id key if target was deleted
    * * An object where the keys represent either the new value or the old value
-   * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker)}
-   * AuditLogEntryTarget
+   * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
+   * GuildEvent)} AuditLogEntryTarget
    */
 
   /**
@@ -242,7 +252,7 @@ class GuildAuditLogs {
     if (target < 83) return Targets.INTEGRATION;
     if (target < 86) return Targets.STAGE_INSTANCE;
     if (target < 100) return Targets.STICKER;
-    if (target < 110) return Targets.UNKNOWN;
+    if (target < 110) return Targets.GUILD_EVENT;
     if (target < 120) return Targets.THREAD;
     return Targets.UNKNOWN;
   }
@@ -276,6 +286,7 @@ class GuildAuditLogs {
         Actions.INTEGRATION_CREATE,
         Actions.STAGE_INSTANCE_CREATE,
         Actions.STICKER_CREATE,
+        Actions.GUILD_SCHEDULED_EVENT_CREATE,
         Actions.THREAD_CREATE,
       ].includes(action)
     ) {
@@ -300,6 +311,7 @@ class GuildAuditLogs {
         Actions.INTEGRATION_DELETE,
         Actions.STAGE_INSTANCE_DELETE,
         Actions.STICKER_DELETE,
+        Actions.GUILD_SCHEDULED_EVENT_DELETE,
         Actions.THREAD_DELETE,
       ].includes(action)
     ) {
@@ -321,6 +333,7 @@ class GuildAuditLogs {
         Actions.INTEGRATION_UPDATE,
         Actions.STAGE_INSTANCE_UPDATE,
         Actions.STICKER_UPDATE,
+        Actions.GUILD_SCHEDULED_EVENT_UPDATE,
         Actions.THREAD_UPDATE,
       ].includes(action)
     ) {
@@ -568,6 +581,19 @@ class GuildAuditLogsEntry {
       this.target =
         guild.stickers.cache.get(data.target_id) ??
         new Sticker(
+          guild.client,
+          this.changes.reduce(
+            (o, c) => {
+              o[c.key] = c.new ?? c.old;
+              return o;
+            },
+            { id: data.target_id },
+          ),
+        );
+    } else if (targetType === Targets.GUILD_EVENT) {
+      this.target =
+        guild.events.cache.get(data.target_id) ??
+        new GuildEvent(
           guild.client,
           this.changes.reduce(
             (o, c) => {
