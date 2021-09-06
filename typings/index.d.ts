@@ -3298,7 +3298,7 @@ export interface ClientEvents {
   threadMemberUpdate: [oldMember: ThreadMember, newMember: ThreadMember];
   threadMembersUpdate: [
     oldMembers: Collection<Snowflake, ThreadMember>,
-    mewMembers: Collection<Snowflake, ThreadMember>,
+    newMembers: Collection<Snowflake, ThreadMember>,
   ];
   threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
   typingStart: [typing: Typing];
