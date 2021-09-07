@@ -27,7 +27,7 @@ class MessageReactionRemoveAll extends Action {
  * Emitted whenever all reactions are removed from a cached message.
  * @event Client#messageReactionRemoveAll
  * @param {Message} message The message the reactions were removed from
- * @param {Collection} reactions The message reactions that were removed.
+ * @param {Collection<Snowflake, MessageReaction>} reactions The message reactions that were removed.
  */
 
 module.exports = MessageReactionRemoveAll;
