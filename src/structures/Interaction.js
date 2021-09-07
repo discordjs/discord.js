@@ -39,8 +39,7 @@ class Interaction extends Base {
     this.applicationId = data.application_id;
 
     /**
-     * The id of the channel this interaction was sent in,
-     * non-null if {@link MessageComponentInteraction}
+     * The id of the channel this interaction was sent in
      * @type {?Snowflake}
      */
     this.channelId = data.channel_id ?? null;
