@@ -184,7 +184,8 @@ class ApplicationCommand extends Base {
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
-      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission
+      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission ||
+      command.version !== this.version
     ) {
       return false;
     }
