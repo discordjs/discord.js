@@ -77,6 +77,12 @@ class ApplicationCommand extends Base {
      * @type {boolean}
      */
     this.defaultPermission = data.default_permission;
+
+    /**
+     * Autoincrementing version identifier updated during substantial record changes
+     * @type {Snowflake}
+     */
+    this.version = data.version;
   }
 
   /**
