@@ -13,8 +13,11 @@ class MessageReactionRemoveAll extends Action {
     const message = this.getMessage(data, channel);
     if (!message) return false;
 
+    // Clone removed reactions.
+    const removed = message.reactions.cache.clone();
+
     message.reactions.cache.clear();
-    this.client.emit(Events.MESSAGE_REACTION_REMOVE_ALL, message);
+    this.client.emit(Events.MESSAGE_REACTION_REMOVE_ALL, message, removed);
 
     return { message };
   }
