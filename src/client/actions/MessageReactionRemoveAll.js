@@ -13,7 +13,7 @@ class MessageReactionRemoveAll extends Action {
     const message = this.getMessage(data, channel);
     if (!message) return false;
 
-    // Clone removed reactions.
+    // Copy removed reactions, for event.
     const removed = message.reactions.cache.clone();
 
     message.reactions.cache.clear();
