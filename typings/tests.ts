@@ -587,7 +587,6 @@ client.on('interaction', async interaction => {
   if (interaction.isMessageComponent()) {
     assertType<Snowflake>(interaction.channelId);
     assertType<Snowflake>(interaction.guildId);
-    assertType<GuildMember | APIInteractionGuildMember>(interaction.member);
   }
 });
 

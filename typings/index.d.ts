@@ -1320,7 +1320,6 @@ export class MessageComponentInteraction extends Interaction {
   public customId: string;
   public guildId: Snowflake;
   public channelId: Snowflake;
-  public member: GuildMember | APIInteractionGuildMember;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public message: Message | APIMessage;
