@@ -1160,7 +1160,7 @@ type InteractionExtractor<T extends MessageComponentType | MessageComponentTypes
 type MessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
   | {
       componentType?: T;
-    } & InteractionCollectorOptions<InteractionExtractor<T>>;
+    } & MessageComponentCollectorOptions<InteractionExtractor<T>>;
 
 type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
   | { componentType?: T } & Pick<
@@ -4026,15 +4026,16 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   message?: Message | APIMessage;
 }
 
-export interface ButtonInteractionCollectorOptions extends InteractionCollectorOptions<ButtonInteraction> {
+export interface ButtonInteractionCollectorOptions extends MessageComponentCollectorOptions<ButtonInteraction> {
   componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
 }
 
-export interface SelectMenuInteractionCollectorOptions extends InteractionCollectorOptions<SelectMenuInteraction> {
+export interface SelectMenuInteractionCollectorOptions extends MessageComponentCollectorOptions<SelectMenuInteraction> {
   componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
 }
 
-export interface MessageInteractionCollectorOptions extends InteractionCollectorOptions<MessageComponentInteraction> {
+export interface MessageInteractionCollectorOptions
+  extends MessageComponentCollectorOptions<MessageComponentInteraction> {
   componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
 }
 
