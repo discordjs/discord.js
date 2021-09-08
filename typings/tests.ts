@@ -1,3 +1,4 @@
+import { APIInteractionGuildMember } from 'discord-api-types';
 import {
   ApplicationCommand,
   ApplicationCommandChoicesData,
@@ -565,6 +566,10 @@ client.on('messageCreate', message => {
 });
 
 client.on('interaction', async interaction => {
+  assertType<Snowflake | null>(interaction.guildId);
+  assertType<Snowflake | null>(interaction.channelId);
+  assertType<GuildMember | APIInteractionGuildMember | null>(interaction.member);
+
   if (!interaction.isCommand()) return;
 
   void new MessageActionRow();
@@ -583,6 +588,10 @@ client.on('interaction', async interaction => {
 
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
+
+  if (interaction.isMessageComponent()) {
+    assertType<Snowflake>(interaction.channelId);
+  }
 });
 
 client.login('absolutely-valid-token');

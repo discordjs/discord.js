@@ -1318,6 +1318,7 @@ export class MessageComponentInteraction extends Interaction {
   public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent> | null;
   public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
   public customId: string;
+  public channelId: Snowflake;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public message: Message | APIMessage;
