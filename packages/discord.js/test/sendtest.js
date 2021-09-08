@@ -11,7 +11,10 @@ const { Client, Intents, MessageAttachment, MessageEmbed } = require('../src');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
-const buffer = l => fetch(l).then(res => res.arrayBuffer());
+const buffer = l =>
+  fetch(l)
+    .then(res => res.arrayBuffer())
+    .then(buff => Buffer.from(buff));
 const read = util.promisify(fs.readFile);
 const readStream = fs.createReadStream;
 
