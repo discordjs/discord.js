@@ -1420,7 +1420,7 @@ export class MessagePayload {
   public readonly isMessage: boolean;
   public readonly isMessageManager: boolean;
   public readonly isInteraction: boolean;
-  public files: unknown[] | null;
+  public files: HTTPAttachmentData[] | null;
   public options: MessageOptions | WebhookMessageOptions;
   public target: MessageTarget;
 
@@ -1429,7 +1429,9 @@ export class MessagePayload {
     options: string | MessageOptions | WebhookMessageOptions,
     extra?: MessageOptions | WebhookMessageOptions,
   ): MessagePayload;
-  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
+  public static resolveFile(
+    fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment,
+  ): Promise<HTTPAttachmentData>;
 
   public makeContent(): string | undefined;
   public resolveData(): this;
