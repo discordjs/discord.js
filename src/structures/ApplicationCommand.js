@@ -185,7 +185,7 @@ class ApplicationCommand extends Base {
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
       (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission ||
-      command.version !== this.version
+      ('version' in command && command.version !== this.version)
     ) {
       return false;
     }
