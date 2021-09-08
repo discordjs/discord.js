@@ -548,13 +548,7 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    return Boolean(
-      this.author.id === this.client.user.id &&
-        !this.deleted &&
-        (!this.guild ||
-          (this.channel?.viewable &&
-            this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES, false))),
-    );
+    return Boolean(this.author.id === this.client.user.id && !this.deleted && (!this.guild || this.channel?.viewable));
   }
 
   /**
