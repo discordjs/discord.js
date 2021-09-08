@@ -615,7 +615,7 @@ class Message extends Base {
   get crosspostable() {
     const bitfield =
       Permissions.FLAGS.SEND_MESSAGES |
-      (this.author.id === this.client.user.id ? 0 : Permissions.FLAGS.MANAGE_MESSAGES);
+      (this.author.id === this.client.user.id ? Permissions.defaultBit : Permissions.FLAGS.MANAGE_MESSAGES);
     return Boolean(
       this.channel?.type === 'GUILD_NEWS' &&
         !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
