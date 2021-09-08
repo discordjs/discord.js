@@ -88,12 +88,15 @@ body:
 
         Tip: you can select multiple items
       options:
+        - None
         - USER
         - CHANNEL
         - GUILD_MEMBER
         - MESSAGE
         - REACTION
       multiple: true
+    validations:
+      required: true
   - type: dropdown
     id: intents
     attributes:
