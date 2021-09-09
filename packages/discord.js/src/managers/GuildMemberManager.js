@@ -1,7 +1,7 @@
 'use strict';
 
-const { Buffer } = require('node:buffer');
 const { setTimeout } = require('node:timers');
+const { types } = require('node:util');
 const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { Error, TypeError, RangeError } = require('../errors');
@@ -115,7 +115,11 @@ class GuildMemberManager extends CachedManager {
     }
     const data = await this.client.api.guilds(this.guild.id).members(userId).put({ data: resolvedOptions });
     // Data is an empty buffer if the member is already part of the guild.
-    return data instanceof Buffer ? (options.fetchWhenExisting === false ? null : this.fetch(userId)) : this._add(data);
+    return types.isArrayBuffer(data)
+      ? options.fetchWhenExisting === false
+        ? null
+        : this.fetch(userId)
+      : this._add(data);
   }
 
   /**
