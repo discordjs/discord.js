@@ -44,6 +44,7 @@ import {
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
+  RESTPostAPIApplicationCommandsJSONBody,
   Snowflake,
 } from 'discord-api-types/v9';
 import { EventEmitter } from 'events';
@@ -235,6 +236,8 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     enforceOptionorder?: boolean,
   ): boolean;
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
+  private static transformCommand(command: ApplicationCommandData): RESTPostAPIApplicationCommandsJSONBody;
+  private static isAPICommandData(command: object): command is RESTPostAPIApplicationCommandsJSONBody;
 }
 
 export type ApplicationResolvable = Application | Activity | Snowflake;
@@ -2383,6 +2386,8 @@ export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R
   private _add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
 }
 
+export type ApplicationCommandDataResolvable = ApplicationCommandData | RESTPostAPIApplicationCommandsJSONBody;
+
 export class ApplicationCommandManager<
   ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>,
   PermissionsOptionsExtras = { guild: GuildResolvable },
@@ -2397,13 +2402,16 @@ export class ApplicationCommandManager<
     null
   >;
   private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): unknown;
-  public create(command: ApplicationCommandData): Promise<ApplicationCommandScope>;
-  public create(command: ApplicationCommandData, guildId: Snowflake): Promise<ApplicationCommand>;
+  public create(command: ApplicationCommandDataResolvable): Promise<ApplicationCommandScope>;
+  public create(command: ApplicationCommandDataResolvable, guildId: Snowflake): Promise<ApplicationCommand>;
   public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope | null>;
-  public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommandScope>;
   public edit(
     command: ApplicationCommandResolvable,
-    data: ApplicationCommandData,
+    data: ApplicationCommandDataResolvable,
+  ): Promise<ApplicationCommandScope>;
+  public edit(
+    command: ApplicationCommandResolvable,
+    data: ApplicationCommandDataResolvable,
     guildId: Snowflake,
   ): Promise<ApplicationCommand>;
   public fetch(
@@ -2415,9 +2423,9 @@ export class ApplicationCommandManager<
     id?: Snowflake,
     options?: FetchApplicationCommandOptions,
   ): Promise<Collection<Snowflake, ApplicationCommandScope>>;
-  public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommandScope>>;
+  public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommandScope>>;
   public set(
-    commands: ApplicationCommandData[],
+    commands: ApplicationCommandDataResolvable[],
     guildId: Snowflake,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
   private static transformCommand(

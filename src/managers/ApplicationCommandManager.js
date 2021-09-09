@@ -100,7 +100,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Creates an application command.
-   * @param {ApplicationCommandData} command The command
+   * @param {ApplicationCommandData|RESTPostAPIApplicationCommandsJSONBody} command The command
    * @param {Snowflake} [guildId] The guild's id to create this command in,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}
@@ -115,14 +115,14 @@ class ApplicationCommandManager extends CachedManager {
    */
   async create(command, guildId) {
     const data = await this.commandPath({ guildId }).post({
-      data: this.constructor.transformCommand(command),
+      data: ApplicationCommand.isAPICommandData(command) ? command : this.constructor.transformCommand(command),
     });
     return this._add(data, !guildId, guildId);
   }
 
   /**
    * Sets all the commands for this application or guild.
-   * @param {ApplicationCommandData[]} commands The commands
+   * @param {ApplicationCommandData[]|RESTPostAPIApplicationCommandsJSONBody[]} commands The commands
    * @param {Snowflake} [guildId] The guild's id to create the commands in,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<Collection<Snowflake, ApplicationCommand>>}
@@ -144,7 +144,7 @@ class ApplicationCommandManager extends CachedManager {
    */
   async set(commands, guildId) {
     const data = await this.commandPath({ guildId }).put({
-      data: commands.map(c => this.constructor.transformCommand(c)),
+      data: commands.map(c => (ApplicationCommand.isAPICommandData(c) ? c : this.constructor.transformCommand(c))),
     });
     return data.reduce(
       (coll, command) => coll.set(command.id, this._add(command, !guildId, guildId)),
@@ -155,7 +155,7 @@ class ApplicationCommandManager extends CachedManager {
   /**
    * Edits an application command.
    * @param {ApplicationCommandResolvable} command The command to edit
-   * @param {ApplicationCommandData} data The data to update the command with
+   * @param {ApplicationCommandData|RESTPostAPIApplicationCommandsJSONBody} data The data to update the command with
    * @param {Snowflake} [guildId] The guild's id where the command registered,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}
@@ -171,7 +171,9 @@ class ApplicationCommandManager extends CachedManager {
     const id = this.resolveId(command);
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    const patched = await this.commandPath({ id, guildId }).patch({ data: this.constructor.transformCommand(data) });
+    const patched = await this.commandPath({ id, guildId }).patch({
+      data: ApplicationCommand.isAPICommandData(data) ? data : this.constructor.transformCommand(data),
+    });
     return this._add(patched, !guildId, guildId);
   }
 
