@@ -77,6 +77,12 @@ class ApplicationCommand extends Base {
      * @type {boolean}
      */
     this.defaultPermission = data.default_permission;
+
+    /**
+     * Autoincrementing version identifier updated during substantial record changes
+     * @type {Snowflake}
+     */
+    this.version = data.version;
   }
 
   /**
@@ -174,6 +180,7 @@ class ApplicationCommand extends Base {
     if (
       command.name !== this.name ||
       ('description' in command && command.description !== this.description) ||
+      ('version' in command && command.version !== this.version) ||
       (commandType && commandType !== this.type) ||
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable

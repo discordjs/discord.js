@@ -218,6 +218,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     Snowflake
   >;
   public type: ApplicationCommandType;
+  public version: Snowflake;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
   public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(
