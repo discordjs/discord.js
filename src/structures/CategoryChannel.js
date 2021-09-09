@@ -51,8 +51,8 @@ class CategoryChannel extends GuildChannel {
    */
   createChannel(name, options = {}) {
     return this.guild.channels.create(name, {
-      parent: this.id,
       ...options,
+      parent: this.id,
     });
   }
 }
