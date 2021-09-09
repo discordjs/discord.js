@@ -49,7 +49,7 @@ class CategoryChannel extends GuildChannel {
    * @param {CategoryCreateChannelOptions} options Options for creating the new channel
    * @returns {Promise<GuildChannel>}
    */
-  createChannel(name, options = {}) {
+  createChannel(name, options) {
     return this.guild.channels.create(name, {
       ...options,
       parent: this.id,
