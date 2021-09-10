@@ -2493,12 +2493,15 @@ export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelRes
 export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand, {}, Guild> {
   public constructor(guild: Guild, iterable?: Iterable<RawApplicationCommandData>);
   public guild: Guild;
-  public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
+  public create(command: ApplicationCommandDataResolvable): Promise<ApplicationCommand>;
   public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
-  public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
+  public edit(
+    command: ApplicationCommandResolvable,
+    data: ApplicationCommandDataResolvable,
+  ): Promise<ApplicationCommand>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
-  public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
+  public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
 
 export class GuildChannelManager extends CachedManager<
