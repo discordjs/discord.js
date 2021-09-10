@@ -2791,6 +2791,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
     options?: MessageCollectorOptionsParams<T>,
   ): InteractionCollectorReturnType<T>;
+  createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   sendTyping(): Promise<void>;
 }
 
