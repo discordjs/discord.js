@@ -120,21 +120,21 @@ class VoiceState extends Base {
 
   /**
    * Mutes/unmutes the member of this voice state.
-   * @param {boolean} mute Whether or not the member should be muted
+   * @param {boolean} [mute=true] Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
    */
-  setMute(mute, reason) {
+  setMute(mute = true, reason) {
     return this.member?.edit({ mute }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
   /**
    * Deafens/undeafens the member of this voice state.
-   * @param {boolean} deaf Whether or not the member should be deafened
+   * @param {boolean} [deaf=true] Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
    */
-  setDeaf(deaf, reason) {
+  setDeaf(deaf = true, reason) {
     return this.member?.edit({ deaf }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
@@ -161,7 +161,7 @@ class VoiceState extends Base {
   /**
    * Toggles the request to speak in the channel.
    * Only applicable for stage channels and for the client's own voice state.
-   * @param {boolean} request Whether or not the client is requesting to become a speaker.
+   * @param {boolean} [request=true] Whether or not the client is requesting to become a speaker.
    * @example
    * // Making the client request to speak in a stage channel (raise its hand)
    * guild.me.voice.setRequestToSpeak(true);
@@ -170,7 +170,7 @@ class VoiceState extends Base {
    * guild.me.voice.setRequestToSpeak(false);
    * @returns {Promise<void>}
    */
-  async setRequestToSpeak(request) {
+  async setRequestToSpeak(request = true) {
     if (this.channel?.type !== 'GUILD_STAGE_VOICE') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
     if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
@@ -185,7 +185,7 @@ class VoiceState extends Base {
 
   /**
    * Suppress/unsuppress the user. Only applicable for stage channels.
-   * @param {boolean} suppressed - Whether or not the user should be suppressed.
+   * @param {boolean} [suppressed=true] Whether or not the user should be suppressed.
    * @example
    * // Making the client a speaker
    * guild.me.voice.setSuppressed(false);
@@ -200,7 +200,7 @@ class VoiceState extends Base {
    * voiceState.setSuppressed(true);
    * @returns {Promise<void>}
    */
-  async setSuppressed(suppressed) {
+  async setSuppressed(suppressed = true) {
     if (typeof suppressed !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
 
     if (this.channel?.type !== 'GUILD_STAGE_VOICE') throw new Error('VOICE_NOT_STAGE_CHANNEL');
