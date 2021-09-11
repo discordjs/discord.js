@@ -975,17 +975,20 @@ export class Integration extends Base {
   public account: IntegrationAccount;
   public application: IntegrationApplication | null;
   public enabled: boolean;
-  public expireBehavior: number;
-  public expireGracePeriod: number;
+  public expireBehavior: number | undefined;
+  public expireGracePeriod: number | undefined;
   public guild: Guild;
   public id: Snowflake;
   public name: string;
-  public role: Role;
+  public role: Role | undefined;
+  public enableEmoticons: boolean | null;
   public readonly roles: Collection<Snowflake, Role>;
-  public syncedAt: number;
-  public syncing: boolean;
+  public syncedAt: number | undefined;
+  public syncing: boolean | undefined;
   public type: string;
   public user: User | null;
+  public subscriberCount: number | null;
+  public revoked: boolean | null;
   public delete(reason?: string): Promise<Integration>;
 }
 
@@ -3283,7 +3286,10 @@ export interface ClientEvents {
   message: [message: Message];
   messageCreate: [message: Message];
   messageDelete: [message: Message | PartialMessage];
-  messageReactionRemoveAll: [message: Message | PartialMessage, reactions: Collection<string | Snowflake, MessageReaction>];
+  messageReactionRemoveAll: [
+    message: Message | PartialMessage,
+    reactions: Collection<string | Snowflake, MessageReaction>,
+  ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
   messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
