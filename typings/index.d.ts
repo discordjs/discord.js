@@ -3283,7 +3283,10 @@ export interface ClientEvents {
   message: [message: Message];
   messageCreate: [message: Message];
   messageDelete: [message: Message | PartialMessage];
-  messageReactionRemoveAll: [message: Message | PartialMessage, reactions: Collection<string | Snowflake, MessageReaction>];
+  messageReactionRemoveAll: [
+    message: Message | PartialMessage,
+    reactions: Collection<string | Snowflake, MessageReaction>,
+  ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
   messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
@@ -4460,7 +4463,8 @@ export type PermissionString =
   | 'MANAGE_THREADS'
   | 'USE_PUBLIC_THREADS'
   | 'USE_PRIVATE_THREADS'
-  | 'USE_EXTERNAL_STICKERS';
+  | 'USE_EXTERNAL_STICKERS'
+  | 'START_EMBEDDED_ACTIVITIES';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
