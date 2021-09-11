@@ -724,7 +724,7 @@ export class Guild extends AnonymousGuild {
   public editWelcomeScreen(data: WelcomeScreenEditData): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
   public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
-  public fetchIntegrations(): Promise<Collection<string, Integration>>;
+  public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
   public fetchOwner(options?: FetchOwnerOptions): Promise<GuildMember>;
   public fetchPreview(): Promise<GuildPreview>;
   public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
@@ -765,7 +765,7 @@ export class Guild extends AnonymousGuild {
 export class GuildAuditLogs {
   public constructor(guild: Guild, data: RawGuildAuditLogData);
   private webhooks: Collection<Snowflake, Webhook>;
-  private integrations: Collection<Snowflake, Integration>;
+  private integrations: Collection<Snowflake | string, Integration>;
 
   public entries: Collection<Snowflake, GuildAuditLogsEntry>;
 
@@ -978,7 +978,7 @@ export class Integration extends Base {
   public expireBehavior: number | undefined;
   public expireGracePeriod: number | undefined;
   public guild: Guild;
-  public id: Snowflake;
+  public id: Snowflake | string;
   public name: string;
   public role: Role | undefined;
   public enableEmoticons: boolean | null;

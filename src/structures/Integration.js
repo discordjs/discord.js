@@ -6,7 +6,7 @@ const IntegrationApplication = require('./IntegrationApplication');
 /**
  * The information account for an integration
  * @typedef {Object} IntegrationAccount
- * @property {string} id The id of the account
+ * @property {Snowflake|string} id The id of the account
  * @property {string} name The name of the account
  */
 
@@ -25,7 +25,7 @@ class Integration extends Base {
 
     /**
      * The integration id
-     * @type {Snowflake}
+     * @type {Snowflake|string}
      */
     this.id = data.id;
 
