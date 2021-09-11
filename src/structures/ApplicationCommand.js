@@ -298,31 +298,6 @@ class ApplicationCommand extends Base {
       options: option.options?.map(o => this.transformOption(o, received)),
     };
   }
-
-  /**
-   * Transforms an {@link ApplicationCommandData} object into something that can be used with the API.
-   * @param {ApplicationCommandData} command The command to transform
-   * @returns {APIApplicationCommand}]
-   * @private
-   */
-  static transformCommand(command) {
-    return {
-      name: command.name,
-      description: command.description,
-      type: typeof command.type === 'number' ? command.type : ApplicationCommandTypes[command.type],
-      options: command.options?.map(o => ApplicationCommand.transformOption(o)),
-      default_permission: command.defaultPermission,
-    };
-  }
-
-  /**
-   * Whether or not the given object is api command data or not.
-   * @param {Object} command The command object to check.
-   * @returns {boolean} True if the object is api command data, false otherwise.
-   */
-  static isAPICommandData(command) {
-    return 'default_permission' in command || 'guild_id' in command;
-  }
 }
 
 module.exports = ApplicationCommand;
