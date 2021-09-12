@@ -29,6 +29,7 @@ import {
   APIApplicationCommandOption,
   APIApplicationCommandPermission,
   APIAuditLogChange,
+  APIEmbed,
   APIEmoji,
   APIInteractionDataResolvedChannel,
   APIInteractionDataResolvedGuildMember,
@@ -1342,7 +1343,7 @@ export class MessageComponentInteraction extends Interaction {
 }
 
 export class MessageEmbed {
-  public constructor(data?: MessageEmbed | MessageEmbedOptions);
+  public constructor(data?: MessageEmbed | MessageEmbedOptions | APIEmbed);
   public author: MessageEmbedAuthor | null;
   public color: number | null;
   public readonly createdAt: Date | null;
@@ -3283,7 +3284,10 @@ export interface ClientEvents {
   message: [message: Message];
   messageCreate: [message: Message];
   messageDelete: [message: Message | PartialMessage];
-  messageReactionRemoveAll: [message: Message | PartialMessage, reactions: Collection<string | Snowflake, MessageReaction>];
+  messageReactionRemoveAll: [
+    message: Message | PartialMessage,
+    reactions: Collection<string | Snowflake, MessageReaction>,
+  ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
   messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
