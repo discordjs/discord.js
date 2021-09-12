@@ -30,9 +30,9 @@ class MessageEmbed {
    * @property {Partial<MessageEmbedFooter>} [footer] The footer of this embed
    */
 
+  // eslint-disable-next-line valid-jsdoc
   /**
    * @param {MessageEmbed|MessageEmbedOptions|APIEmbed} [data={}] MessageEmbed to clone or raw embed data
-   * @param {boolean} [skipValidation=false] Whether to skip validation of embed fields
    */
   constructor(data = {}, skipValidation = false) {
     this.setup(data, skipValidation);
