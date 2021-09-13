@@ -308,6 +308,15 @@ class Role extends Base {
   }
 
   /**
+   * Sets a new icon for the role.
+   * @param {BufferResolvable|Base64Resolvable} icon The icon for the role
+   * @returns {Promise<Role>}
+   */
+  setIcon(icon) {
+    return this.edit({ icon });
+  }
+
+  /**
    * Options used to set position of a role.
    * @typedef {Object} SetRolePositionOptions
    * @property {boolean} [relative=false] Whether to change the position relative to its current value or not
@@ -373,7 +382,8 @@ class Role extends Base {
       this.hoist === role.hoist &&
       this.position === role.position &&
       this.permissions.bitfield === role.permissions.bitfield &&
-      this.managed === role.managed
+      this.managed === role.managed &&
+      this.icon === role.icon
     );
   }
 
