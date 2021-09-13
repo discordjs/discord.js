@@ -368,6 +368,16 @@ class Role extends Base {
   }
 
   /**
+   * A link to the role's icon
+   * @param {StaticImageURLOptions} [options={}] Options for the image URL
+   * @returns {?string}
+   */
+  iconURL({ format, size } = {}) {
+    if (!this.icon) return null;
+    return this.client.rest.cdn.RoleIcon(this.id, this.icon, format, size);
+  }
+
+  /**
    * Whether this role equals another role. It compares all properties, so for most operations
    * it is advisable to just compare `role.id === role2.id` as it is much faster and is often
    * what most users need.

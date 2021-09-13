@@ -1651,6 +1651,7 @@ export class Role extends Base {
   public delete(reason?: string): Promise<Role>;
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
+  public iconURL(options?: StaticImageURLOptions): string | null;
   public permissionsIn(channel: GuildChannel | Snowflake): Readonly<Permissions>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
@@ -2364,8 +2365,7 @@ export const Constants: {
         { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
       ) => string;
       Sticker: (stickerId: Snowflake, stickerFormat: StickerFormatType) => string;
-      // TODO: update this later
-      RoleIcon: (roleId: Snowflake, hash: string, format: AllowedImageFormat) => string;
+      RoleIcon: (roleId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
     };
   };
   WSCodes: {
