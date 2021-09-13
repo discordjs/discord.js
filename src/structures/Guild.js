@@ -186,6 +186,7 @@ class Guild extends AnonymousGuild {
      * * THREE_DAY_THREAD_ARCHIVE
      * * SEVEN_DAY_THREAD_ARCHIVE
      * * PRIVATE_THREADS
+     * * ROLE_ICONS
      * @typedef {string} Features
      * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-features}
      */

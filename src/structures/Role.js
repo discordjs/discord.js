@@ -92,6 +92,12 @@ class Role extends Base {
     this.deleted = false;
 
     /**
+     * The icon of the role
+     * @type {?string}
+     */
+    this.icon = data.icon;
+
+    /**
      * The tags this role has
      * @type {?Object}
      * @property {Snowflake} [botId] The id of the bot this role belongs to
@@ -191,6 +197,7 @@ class Role extends Base {
    * @property {number} [position] The position of the role
    * @property {PermissionResolvable} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
+   * @property {BufferResolvable|Base64Resolvable} [icon] The icon for the role
    */
 
   /**

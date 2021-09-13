@@ -4,6 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const Role = require('../structures/Role');
+const DataResolver = require('../util/DataResolver');
 const Permissions = require('../util/Permissions');
 const { resolveColor, setPosition } = require('../util/Util');
 
@@ -105,6 +106,7 @@ class RoleManager extends CachedManager {
    * @property {number} [position] The position of the new role
    * @property {boolean} [mentionable] Whether or not the new role should be mentionable
    * @property {string} [reason] The reason for creating this role
+   * @property {BufferResolvable|Base64Resolvable} [icon] The icon for the role
    */
 
   /**
@@ -128,9 +130,10 @@ class RoleManager extends CachedManager {
    *   .catch(console.error);
    */
   async create(options = {}) {
-    let { name, color, hoist, permissions, position, mentionable, reason } = options;
+    let { name, color, hoist, permissions, position, mentionable, reason, icon } = options;
     color &&= resolveColor(color);
     if (typeof permissions !== 'undefined') permissions = new Permissions(permissions);
+    if (icon) icon = await DataResolver.resolveImage(icon);
 
     const data = await this.client.api.guilds(this.guild.id).roles.post({
       data: {
@@ -139,6 +142,7 @@ class RoleManager extends CachedManager {
         hoist,
         permissions,
         mentionable,
+        icon,
       },
       reason,
     });
@@ -188,6 +192,7 @@ class RoleManager extends CachedManager {
       hoist: data.hoist,
       permissions: typeof data.permissions === 'undefined' ? undefined : new Permissions(data.permissions),
       mentionable: data.mentionable,
+      icon: typeof data.icon === 'undefined' ? undefined : await DataResolver.resolveImage(data.icon),
     };
 
     const d = await this.client.api.guilds(this.guild.id).roles(role.id).patch({ data: _data, reason });
