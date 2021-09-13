@@ -2364,6 +2364,8 @@ export const Constants: {
         { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
       ) => string;
       Sticker: (stickerId: Snowflake, stickerFormat: StickerFormatType) => string;
+      // TODO: update this later
+      RoleIcon: (roleId: Snowflake, hash: string, format: AllowedImageFormat) => string;
     };
   };
   WSCodes: {
