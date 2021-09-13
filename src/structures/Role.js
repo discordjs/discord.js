@@ -310,10 +310,11 @@ class Role extends Base {
   /**
    * Sets a new icon for the role.
    * @param {BufferResolvable|Base64Resolvable} icon The icon for the role
+   * @param {string} [reason] Reason for changing the role's icon
    * @returns {Promise<Role>}
    */
-  setIcon(icon) {
-    return this.edit({ icon });
+  setIcon(icon, reason) {
+    return this.edit({ icon }, reason);
   }
 
   /**
