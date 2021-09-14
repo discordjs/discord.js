@@ -19,14 +19,14 @@ class StoreChannel extends GuildChannel {
      * If the guild considers this channel NSFW
      * @type {boolean}
      */
-    this.nsfw = Boolean(data.nsfw);
+    this.nsfw = !!data.nsfw;
   }
 
   _patch(data) {
     super._patch(data);
 
     if ('nsfw' in data) {
-      this.nsfw = Boolean(data.nsfw);
+      this.nsfw = !!data.nsfw;
     }
   }
 

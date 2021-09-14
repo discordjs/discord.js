@@ -160,7 +160,7 @@ class Guild extends AnonymousGuild {
      * Whether the guild is "large" (has more than large_threshold members, 50 by default)
      * @type {boolean}
      */
-    this.large = Boolean(data.large ?? this.large);
+    this.large = !!(data.large ?? this.large);
 
     /**
      * An array of enabled guild features, here are the possible values:

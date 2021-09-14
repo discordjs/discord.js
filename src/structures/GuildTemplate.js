@@ -89,7 +89,7 @@ class GuildTemplate extends Base {
      * Whether this template has unsynced changes
      * @type {?boolean}
      */
-    this.unSynced = 'is_dirty' in data ? Boolean(data.is_dirty) : null;
+    this.unSynced = 'is_dirty' in data ? !!data.is_dirty : null;
 
     return this;
   }

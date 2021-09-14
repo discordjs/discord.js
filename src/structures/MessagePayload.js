@@ -126,7 +126,7 @@ class MessagePayload {
     const isWebhook = this.isWebhook;
 
     const content = this.makeContent();
-    const tts = Boolean(this.options.tts);
+    const tts = !!this.options.tts;
 
     let nonce;
     if (typeof this.options.nonce !== 'undefined') {

@@ -101,7 +101,7 @@ class Message extends Base {
        * Whether or not this message is pinned
        * @type {?boolean}
        */
-      this.pinned = Boolean(data.pinned);
+      this.pinned = !!data.pinned;
     } else {
       this.pinned ??= null;
     }
@@ -557,10 +557,10 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    return Boolean(
+    return (
       !this.deleted &&
         (this.author.id === this.client.user.id ||
-          this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES)),
+          this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES))
     );
   }
 
@@ -570,9 +570,9 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
-    return Boolean(
+    return (
       !this.system &&
-        (!this.guild || this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false)),
+        (!this.guild || this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))
     );
   }
 

@@ -226,7 +226,7 @@ class Collector extends EventEmitter {
   checkEnd() {
     const reason = this.endReason;
     if (reason) this.stop(reason);
-    return Boolean(reason);
+    return !!reason;
   }
 
   /**

@@ -35,7 +35,7 @@ class MessageMentions {
      * Whether `@everyone` or `@here` were mentioned
      * @type {boolean}
      */
-    this.everyone = Boolean(everyone);
+    this.everyone = !!everyone;
 
     if (users) {
       if (users instanceof Collection) {

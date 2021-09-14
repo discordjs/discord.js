@@ -50,7 +50,7 @@ class User extends Base {
        * Whether or not the user is a bot
        * @type {?boolean}
        */
-      this.bot = Boolean(data.bot);
+      this.bot = !!data.bot;
     } else if (!this.partial && typeof this.bot !== 'boolean') {
       this.bot = false;
     }
@@ -102,7 +102,7 @@ class User extends Base {
        * Whether the user is an Official Discord System user (part of the urgent message system)
        * @type {?boolean}
        */
-      this.system = Boolean(data.system);
+      this.system = !!data.system;
     } else if (!this.partial && typeof this.system !== 'boolean') {
       this.system = false;
     }
