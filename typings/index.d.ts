@@ -331,7 +331,7 @@ export class BaseGuildTextChannel extends TextBasedChannel(GuildChannel) {
     defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
     reason?: string,
   ): Promise<this>;
-  public setNSFW(nsfw: boolean, reason?: string): Promise<this>;
+  public setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
   public setType(type: Pick<typeof ChannelTypes, 'GUILD_TEXT'>, reason?: string): Promise<TextChannel>;
   public setType(type: Pick<typeof ChannelTypes, 'GUILD_NEWS'>, reason?: string): Promise<NewsChannel>;
@@ -499,7 +499,7 @@ export class ClientUser extends User {
   public edit(data: ClientUserEditData): Promise<this>;
   public setActivity(options?: ActivityOptions): ClientPresence;
   public setActivity(name: string, options?: ActivityOptions): ClientPresence;
-  public setAFK(afk: boolean, shardId?: number | number[]): ClientPresence;
+  public setAFK(afk?: boolean, shardId?: number | number[]): ClientPresence;
   public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
   public setPresence(data: PresenceData): ClientPresence;
   public setStatus(status: PresenceStatusData, shardId?: number | number[]): ClientPresence;
@@ -1614,8 +1614,8 @@ export class Role extends Base {
   public equals(role: Role): boolean;
   public permissionsIn(channel: GuildChannel | Snowflake): Readonly<Permissions>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
-  public setHoist(hoist: boolean, reason?: string): Promise<Role>;
-  public setMentionable(mentionable: boolean, reason?: string): Promise<Role>;
+  public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
+  public setMentionable(mentionable?: boolean, reason?: string): Promise<Role>;
   public setName(name: string, reason?: string): Promise<Role>;
   public setPermissions(permissions: PermissionResolvable, reason?: string): Promise<Role>;
   public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
@@ -2073,12 +2073,12 @@ export class VoiceState extends Base {
   public suppress: boolean;
   public requestToSpeakTimestamp: number | null;
 
-  public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
-  public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
+  public setDeaf(deaf?: boolean, reason?: string): Promise<GuildMember>;
+  public setMute(mute?: boolean, reason?: string): Promise<GuildMember>;
   public disconnect(reason?: string): Promise<GuildMember>;
   public setChannel(channel: VoiceChannelResolvable | null, reason?: string): Promise<GuildMember>;
-  public setRequestToSpeak(request: boolean): Promise<void>;
-  public setSuppressed(suppressed: boolean): Promise<void>;
+  public setRequestToSpeak(request?: boolean): Promise<void>;
+  public setSuppressed(suppressed?: boolean): Promise<void>;
 }
 
 export class Webhook extends WebhookMixin() {
