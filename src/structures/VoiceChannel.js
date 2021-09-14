@@ -32,9 +32,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * @readonly
    */
   get joinable() {
-    if (!super.joinable) return false;
-    if (this.full && !this.permissionsFor(this.client.user).has(Permissions.FLAGS.MOVE_MEMBERS, false)) return false;
-    return true;
+    return (super.joinable && !(this.full && !this.permissionsFor(this.client.user).has(Permissions.FLAGS.MOVE_MEMBERS, false)));
   }
 
   /**
