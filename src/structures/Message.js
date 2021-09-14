@@ -557,7 +557,7 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    return (
+    return !!(
       !this.deleted &&
         (this.author.id === this.client.user.id ||
           this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES))
@@ -570,7 +570,7 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
-    return (
+    return !!(
       !this.system &&
         (!this.guild || this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))
     );
