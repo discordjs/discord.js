@@ -1658,7 +1658,7 @@ export class Role extends Base {
   public setMentionable(mentionable?: boolean, reason?: string): Promise<Role>;
   public setName(name: string, reason?: string): Promise<Role>;
   public setPermissions(permissions: PermissionResolvable, reason?: string): Promise<Role>;
-  public setIcon(icon: BufferResolvable | Base64Resolvable, reason?: string): Promise<Role>;
+  public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Role>;
   public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
   public toJSON(): unknown;
   public toString(): RoleMention;
@@ -4750,7 +4750,7 @@ export interface RoleData {
   position?: number;
   permissions?: PermissionResolvable;
   mentionable?: boolean;
-  icon?: BufferResolvable | Base64Resolvable;
+  icon?: BufferResolvable | Base64Resolvable | null;
 }
 
 export type RoleMention = '@everyone' | `<@&${Snowflake}>`;

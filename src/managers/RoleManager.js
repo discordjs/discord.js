@@ -105,7 +105,7 @@ class RoleManager extends CachedManager {
    * @property {PermissionResolvable} [permissions] The permissions for the new role
    * @property {number} [position] The position of the new role
    * @property {boolean} [mentionable] Whether or not the new role should be mentionable
-   * @property {BufferResolvable|Base64Resolvable} [icon] The icon for the role
+   * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon for the role
    * @property {string} [reason] The reason for creating this role
    */
 
