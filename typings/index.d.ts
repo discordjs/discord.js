@@ -2224,7 +2224,7 @@ export class WelcomeChannel extends Base {
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
   public description: string;
-  public readonly channel: TextChannel | NewsChannel | null;
+  public readonly channel: TextChannel | NewsChannel | StoreChannel | null;
   public readonly emoji: GuildEmoji | Emoji;
 }
 
