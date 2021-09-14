@@ -361,6 +361,7 @@ exports.InviteScopes = [
  * @see {@link https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors}
  */
 exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
+
 /**
  * The type of a message, e.g. `DEFAULT`. Here are the available types:
  * * DEFAULT
