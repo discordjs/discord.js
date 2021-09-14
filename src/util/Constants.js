@@ -46,15 +46,15 @@ exports.Endpoints = {
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
       Avatar: (userId, hash, format, size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/avatars/${userId}/${hash}`, { format, size });
       },
       Banner: (id, hash, format, size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/banners/${id}/${hash}`, { format, size });
       },
       Icon: (guildId, hash, format, size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/icons/${guildId}/${hash}`, { format, size });
       },
       AppIcon: (appId, hash, { format, size } = {}) =>
