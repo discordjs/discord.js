@@ -1022,7 +1022,11 @@ export class Interaction extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
-  public inGuild(): this is this & { guildId: Snowflake; member: GuildMember | APIInteractionGuildMember };
+  public inGuild(): this is this & {
+    guildId: Snowflake;
+    member: GuildMember | APIInteractionGuildMember;
+    channel: GuildTextBasedChannels | null;
+  };
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
   public isContextMenu(): this is ContextMenuInteraction;
@@ -4683,6 +4687,7 @@ export interface LimitedCollectionOptions<K, V> {
 }
 
 export type TextBasedChannels = PartialDMChannel | DMChannel | TextChannel | NewsChannel | ThreadChannel;
+export type GuildTextBasedChannels = TextChannel | NewsChannel | ThreadChannel;
 
 export type TextBasedChannelTypes = TextBasedChannels['type'];
 
