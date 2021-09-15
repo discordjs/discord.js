@@ -3055,6 +3055,12 @@ export type ApplicationCommandData =
   | MessageApplicationCommandData
   | ChatInputApplicationCommandData;
 
+export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
+  type: 'CHANNEL' | ApplicationCommandOptionTypes.CHANNEL;
+  channelTypes?: (keyof typeof ChannelTypes | ChannelTypes)[];
+  channel_types?: ChannelTypes[];
+}
+
 export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoice[];
@@ -3077,10 +3083,11 @@ export interface ApplicationCommandNonOptionsData extends BaseApplicationCommand
 export type ApplicationCommandOptionData =
   | ApplicationCommandSubGroupData
   | ApplicationCommandNonOptionsData
+  | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
   | ApplicationCommandSubCommandData;
 
-export type ApplicationCommandOption = ApplicationCommandOptionData & {
+export type ApplicationCommandOption = Omit<ApplicationCommandOptionData, 'ApplicationCommandChannelOptionRawData'> & {
   type: ApplicationCommandOptionType;
   options?: ApplicationCommandOption[];
 };
