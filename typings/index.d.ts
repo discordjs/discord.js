@@ -1054,45 +1054,11 @@ export class GuildAuditLogsEntry<
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public executor: User | null;
-  public extra: TAction extends 'MEMBER_PRUNE'
-    ? { removed: number; days: number }
-    : TAction extends 'MEMBER_MOVE' | 'MESSAGE_DELETE' | 'MESSAGE_BULK_DELETE'
-    ? { channel: GuildChannel | { id: Snowflake }; count: number }
-    : TAction extends 'MESSAGE_PIN' | 'MESSAGE_UNPIN'
-    ? { channel: GuildChannel | { id: Snowflake }; messageId: Snowflake }
-    : TAction extends 'MEMBER_DISCONNECT'
-    ? { count: number }
-    : TAction extends 'CHANNEL_OVERWRITE_CREATE' | 'CHANNEL_OVERWRITE_UPDATE' | 'CHANNEL_OVERWRITE_DELETE'
-    ?
-        | Role
-        | GuildMember
-        | { id: Snowflake; name: string; type: OverwriteTypes.role }
-        | { id: Snowflake; type: OverwriteTypes.member }
-    : TAction extends 'STAGE_INSTANCE_CREATE' | 'STAGE_INSTANCE_DELETE' | 'STAGE_INSTANCE_UPDATE'
-    ? GuildChannel | { id: Snowflake }
-    : null;
+  public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
   public id: Snowflake;
   public reason: string | null;
-  public target: TTargetType extends 'USER'
-    ? User | null
-    : TTargetType extends 'GUILD'
-    ? Guild
-    : TTargetType extends 'WEBHOOK'
-    ? Webhook
-    : TTargetType extends 'INVITE'
-    ? Promise<Invite> | { [x: string]: unknown }
-    : TTargetType extends 'MESSAGE'
-    ? TActionType extends 'MESSAGE_BULK_DELETE'
-      ? Guild | { id: Snowflake }
-      : User
-    : TTargetType extends 'INTEGRATION'
-    ? Integration
-    : TTargetType extends 'CHANNEL' | 'THREAD'
-    ? GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown }
-    : TTargetType extends 'STAGE_INSTANCE'
-    ? StageInstance
-    : TTargetType extends 'STICKER'
-    ? Sticker
+  public target: TTargetType extends keyof GuildAUditLogsEntryTargetField<TActionType>
+    ? GuildAUditLogsEntryTargetField<TActionType>[TTargetType]
     : Role | GuildEmoji | { id: Snowflake } | null;
   public targetType: TTargetType;
   public toJSON(): unknown;
@@ -4343,6 +4309,47 @@ export interface GuildAuditLogsActions {
 }
 
 export type GuildAuditLogsActionType = 'CREATE' | 'DELETE' | 'UPDATE' | 'ALL';
+
+interface GuildAuditLogsEntryExtraField {
+  MEMBER_PRUNE: { removed: number; days: number };
+  MEMBER_MOVE: { channel: GuildChannel | { id: Snowflake }; count: number };
+  MESSAGE_DELETE: { channel: GuildChannel | { id: Snowflake }; count: number };
+  MESSAGE_BULK_DELETE: { channel: GuildChannel | { id: Snowflake }; count: number };
+  MESSAGE_PIN: { channel: GuildChannel | { id: Snowflake }; messageId: Snowflake };
+  MESSAGE_UNPIN: { channel: GuildChannel | { id: Snowflake }; messageId: Snowflake };
+  MEMBER_DISCONNECT: { count: number };
+  CHANNEL_OVERWRITE_CREATE:
+    | Role
+    | GuildMember
+    | { id: Snowflake; name: string; type: OverwriteTypes.role }
+    | { id: Snowflake; type: OverwriteTypes.member };
+  CHANNEL_OVERWRITE_UPDATE:
+    | Role
+    | GuildMember
+    | { id: Snowflake; name: string; type: OverwriteTypes.role }
+    | { id: Snowflake; type: OverwriteTypes.member };
+  CHANNEL_OVERWRITE_DELETE:
+    | Role
+    | GuildMember
+    | { id: Snowflake; name: string; type: OverwriteTypes.role }
+    | { id: Snowflake; type: OverwriteTypes.member };
+  STAGE_INSTANCE_CREATE: GuildChannel | { id: Snowflake };
+  STAGE_INSTANCE_DELETE: GuildChannel | { id: Snowflake };
+  STAGE_INSTANCE_UPDATE: GuildChannel | { id: Snowflake };
+}
+
+interface GuildAUditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
+  USER: User | null;
+  GUILD: Guild;
+  WEBHOOK: Webhook;
+  INVITE: Promise<Invite> | { [x: string]: unknown };
+  MESSAGE: TActionType extends 'MESSAGE_BULK_DELETE' ? Guild | { id: Snowflake } : User;
+  INTEGRATION: Integration;
+  CHANNEL: GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown };
+  THREAD: GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown };
+  STAGE_INSTANCE: StageInstance;
+  STICKER: Sticker;
+}
 
 export interface GuildAuditLogsFetchOptions<T extends GuildAuditLogsAction> {
   before?: Snowflake | GuildAuditLogsEntry;
