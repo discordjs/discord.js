@@ -135,7 +135,7 @@ class ApplicationCommand extends Base {
    * the allowed types of channels that can be selected
    * @property {number[]} [channel_types] When the option type is channel,
    * the API data for allowed types of channels that can be selected
-   * <warn>This is provided for compatability with something like `@discordjs/builders`
+   * <warn>This is provided for compatibility with something like `@discordjs/builders`
    * and will be discarded when `channelTypes` is present</warn>
    */
 
