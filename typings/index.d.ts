@@ -748,7 +748,7 @@ export class Guild extends AnonymousGuild {
     explicitContentFilter: ExplicitContentFilterLevel | number,
     reason?: string,
   ): Promise<Guild>;
-  public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
+  public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
   public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
   public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;

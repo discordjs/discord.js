@@ -1022,7 +1022,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Sets a new guild icon.
-   * @param {Base64Resolvable|BufferResolvable} icon The new icon of the guild
+   * @param {?(Base64Resolvable|BufferResolvable)} icon The new icon of the guild
    * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
@@ -1031,8 +1031,8 @@ class Guild extends AnonymousGuild {
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
-  async setIcon(icon, reason) {
-    return this.edit({ icon: await DataResolver.resolveImage(icon) }, reason);
+  setIcon(icon, reason) {
+    return this.edit({ icon }, reason);
   }
 
   /**
