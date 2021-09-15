@@ -737,13 +737,16 @@ export class Guild extends AnonymousGuild {
   public leave(): Promise<Guild>;
   public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
-  public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
+  public setBanner(banner: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
   public setDefaultMessageNotifications(
     defaultMessageNotifications: DefaultMessageNotificationLevel | number,
     reason?: string,
   ): Promise<Guild>;
-  public setDiscoverySplash(discoverySplash: Base64Resolvable | null, reason?: string): Promise<Guild>;
+  public setDiscoverySplash(
+    discoverySplash: BufferResolvable | Base64Resolvable | null,
+    reason?: string,
+  ): Promise<Guild>;
   public setExplicitContentFilter(
     explicitContentFilter: ExplicitContentFilterLevel | number,
     reason?: string,
@@ -755,7 +758,7 @@ export class Guild extends AnonymousGuild {
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRolePositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
-  public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
+  public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
   public setVerificationLevel(verificationLevel: VerificationLevel | number, reason?: string): Promise<Guild>;
@@ -3895,9 +3898,9 @@ export interface GuildEditData {
   afkTimeout?: number;
   icon?: BufferResolvable | Base64Resolvable | null;
   owner?: GuildMemberResolvable;
-  splash?: Base64Resolvable;
-  discoverySplash?: Base64Resolvable;
-  banner?: Base64Resolvable;
+  splash?: BufferResolvable | Base64Resolvable | null;
+  discoverySplash?: BufferResolvable | Base64Resolvable | null;
+  banner?: BufferResolvable | Base64Resolvable | null;
   rulesChannel?: TextChannelResolvable;
   publicUpdatesChannel?: TextChannelResolvable;
   preferredLocale?: string;
