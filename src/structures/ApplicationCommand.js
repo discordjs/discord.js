@@ -246,7 +246,7 @@ class ApplicationCommand extends Base {
         existing.required ||
       option.choices?.length !== existing.choices?.length ||
       option.options?.length !== existing.options?.length ||
-      (option.channelTypes?.length ?? option.channel_types.length) !== existing.channelTypes?.length
+      (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length
     ) {
       return false;
     }
