@@ -57,10 +57,8 @@ exports.Endpoints = {
         if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/icons/${guildId}/${hash}`, { format, size });
       },
-      AppIcon: (appId, hash, { format, size } = {}) =>
-        makeImageUrl(`${root}/app-icons/${appId}/${hash}`, { size, format }),
-      AppAsset: (appId, hash, { format, size } = {}) =>
-        makeImageUrl(`${root}/app-assets/${appId}/${hash}`, { size, format }),
+      AppIcon: (appId, hash, options) => makeImageUrl(`${root}/app-icons/${appId}/${hash}`, options),
+      AppAsset: (appId, hash, options) => makeImageUrl(`${root}/app-assets/${appId}/${hash}`, options),
       StickerPackBanner: (bannerId, format, size) =>
         makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerId}`, { size, format }),
       GDMIcon: (channelId, hash, format, size) =>
@@ -68,8 +66,7 @@ exports.Endpoints = {
       Splash: (guildId, hash, format, size) => makeImageUrl(`${root}/splashes/${guildId}/${hash}`, { size, format }),
       DiscoverySplash: (guildId, hash, format, size) =>
         makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
-      TeamIcon: (teamId, hash, { format, size } = {}) =>
-        makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, { size, format }),
+      TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
         `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
     };
