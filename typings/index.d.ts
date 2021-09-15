@@ -1025,7 +1025,7 @@ export class Interaction extends Base {
   public inGuild(): this is this & {
     guildId: Snowflake;
     member: GuildMember | APIInteractionGuildMember;
-    readonly channel: GuildTextBasedChannels | null;
+    readonly channel: Exclude<TextBasedChannels, PartialDMChannel | DMChannel> | null;
   };
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
@@ -3972,8 +3972,6 @@ export interface GuildPruneMembersOptions {
   reason?: string;
   roles?: RoleResolvable[];
 }
-
-export type GuildTextBasedChannels = TextChannel | NewsChannel | ThreadChannel;
 
 export interface GuildWidgetSettingsData {
   enabled: boolean;
