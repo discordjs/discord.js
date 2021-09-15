@@ -3011,6 +3011,8 @@ export interface BaseApplicationCommandData {
 
 export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType | ApplicationCommandOptionTypes;
 
+export type CommandOptionChannelResolvableType = ApplicationCommandOptionTypes.CHANNEL | 'CHANNEL';
+
 export type CommandOptionChoiceResolvableType =
   | ApplicationCommandOptionTypes.NUMBER
   | 'NUMBER'
@@ -3027,7 +3029,7 @@ export type CommandOptionSubOptionResolvableType =
 
 export type CommandOptionNonChoiceResolvableType = Exclude<
   CommandOptionDataTypeResolvable,
-  CommandOptionChoiceResolvableType | CommandOptionSubOptionResolvableType
+  CommandOptionChoiceResolvableType | CommandOptionSubOptionResolvableType | CommandOptionChannelResolvableType
 >;
 
 export interface BaseApplicationCommandOptionsData {
@@ -3056,13 +3058,23 @@ export type ApplicationCommandData =
   | ChatInputApplicationCommandData;
 
 export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
-  type: 'CHANNEL' | ApplicationCommandOptionTypes.CHANNEL;
+  type: CommandOptionChannelResolvableType;
   channelTypes?: (keyof typeof ChannelTypes | ChannelTypes)[];
   channel_types?: ChannelTypes[];
 }
 
+export interface ApplicationCommandChannelOption extends BaseApplicationCommandOptionsData {
+  type: 'CHANNEL';
+  channelTypes?: (keyof typeof ChannelTypes)[];
+}
+
 export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChoiceResolvableType;
+  choices?: ApplicationCommandOptionChoice[];
+}
+
+export interface ApplicationCommandChoicesOption extends BaseApplicationCommandOptionsData {
+  type: Exclude<CommandOptionChoiceResolvableType, ApplicationCommandOptionTypes>;
   choices?: ApplicationCommandOptionChoice[];
 }
 
@@ -3071,13 +3083,27 @@ export interface ApplicationCommandSubGroupData extends BaseApplicationCommandOp
   options?: ApplicationCommandSubCommandData[];
 }
 
+export interface ApplicationCommandSubGroup extends BaseApplicationCommandOptionsData {
+  type: 'SUB_COMMAND_GROUP';
+  options?: ApplicationCommandSubCommand[];
+}
+
 export interface ApplicationCommandSubCommandData extends BaseApplicationCommandOptionsData {
   type: 'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND;
   options?: (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData)[];
 }
 
+export interface ApplicationCommandSubCommand extends BaseApplicationCommandOptionsData {
+  type: 'SUB_COMMAND';
+  options?: (ApplicationCommandChoicesOption | ApplicationCommandNonOptions)[];
+}
+
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
   type: CommandOptionNonChoiceResolvableType;
+}
+
+export interface ApplicationCommandNonOptions extends BaseApplicationCommandOptionsData {
+  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionTypes>;
 }
 
 export type ApplicationCommandOptionData =
@@ -3087,10 +3113,12 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandChoicesData
   | ApplicationCommandSubCommandData;
 
-export type ApplicationCommandOption = Omit<ApplicationCommandOptionData, 'ApplicationCommandChannelOptionRawData'> & {
-  type: ApplicationCommandOptionType;
-  options?: ApplicationCommandOption[];
-};
+export type ApplicationCommandOption =
+  | ApplicationCommandSubGroup
+  | ApplicationCommandNonOptions
+  | ApplicationCommandChannelOption
+  | ApplicationCommandChoicesOption
+  | ApplicationCommandSubCommand;
 
 export interface ApplicationCommandOptionChoice {
   name: string;
