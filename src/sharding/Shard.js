@@ -311,7 +311,7 @@ class Shard extends EventEmitter {
       if (message._ready) {
         this.ready = true;
         /**
-         * Emitted upon the shard's {@link Client#ready} event.
+         * Emitted upon the shard's {@link Client#event:shardReady} event.
          * @event Shard#ready
          */
         this.emit('ready');
@@ -322,7 +322,7 @@ class Shard extends EventEmitter {
       if (message._disconnect) {
         this.ready = false;
         /**
-         * Emitted upon the shard's {@link Client#disconnect} event.
+         * Emitted upon the shard's {@link Client#event:shardDisconnect} event.
          * @event Shard#disconnect
          */
         this.emit('disconnect');
@@ -333,7 +333,7 @@ class Shard extends EventEmitter {
       if (message._reconnecting) {
         this.ready = false;
         /**
-         * Emitted upon the shard's {@link Client#reconnecting} event.
+         * Emitted upon the shard's {@link Client#event:shardReconnecting} event.
          * @event Shard#reconnecting
          */
         this.emit('reconnecting');
