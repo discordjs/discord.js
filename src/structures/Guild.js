@@ -748,7 +748,7 @@ class Guild extends AnonymousGuild {
    * @property {VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
-   * @property {Base64Resolvable} [icon] The icon of the guild
+   * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The invite splash image of the guild
    * @property {Base64Resolvable} [discoverySplash] The discovery splash image of the guild
@@ -806,7 +806,7 @@ class Guild extends AnonymousGuild {
       _data.system_channel_id = this.client.channels.resolveId(data.systemChannel);
     }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (typeof data.icon !== 'undefined') _data.icon = data.icon;
+    if (typeof data.icon !== 'undefined') _data.icon = await DataResolver.resolveImage(data.icon);
     if (data.owner) _data.owner_id = this.client.users.resolveId(data.owner);
     if (data.splash) _data.splash = data.splash;
     if (data.discoverySplash) _data.discovery_splash = data.discoverySplash;

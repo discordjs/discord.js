@@ -500,7 +500,7 @@ export class ClientUser extends User {
   public setActivity(options?: ActivityOptions): ClientPresence;
   public setActivity(name: string, options?: ActivityOptions): ClientPresence;
   public setAFK(afk?: boolean, shardId?: number | number[]): ClientPresence;
-  public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
+  public setAvatar(avatar: BufferResolvable | Base64Resolvable | null): Promise<this>;
   public setPresence(data: PresenceData): ClientPresence;
   public setStatus(status: PresenceStatusData, shardId?: number | number[]): ClientPresence;
   public setUsername(username: string): Promise<this>;
@@ -3246,7 +3246,7 @@ export type GuildTextChannelResolvable = TextChannel | NewsChannel | Snowflake;
 export type ChannelResolvable = Channel | Snowflake;
 
 export interface ChannelWebhookCreateOptions {
-  avatar?: BufferResolvable | Base64Resolvable;
+  avatar?: BufferResolvable | Base64Resolvable | null;
   reason?: string;
 }
 
@@ -3368,7 +3368,7 @@ export interface ClientPresenceStatusData {
 
 export interface ClientUserEditData {
   username?: string;
-  avatar?: BufferResolvable | Base64Resolvable;
+  avatar?: BufferResolvable | Base64Resolvable | null;
 }
 
 export interface CloseEvent {
@@ -3893,7 +3893,7 @@ export interface GuildEditData {
   systemChannel?: TextChannelResolvable;
   systemChannelFlags?: SystemChannelFlagsResolvable;
   afkTimeout?: number;
-  icon?: Base64Resolvable;
+  icon?: BufferResolvable | Base64Resolvable | null;
   owner?: GuildMemberResolvable;
   splash?: Base64Resolvable;
   discoverySplash?: Base64Resolvable;
@@ -4761,7 +4761,7 @@ export type WebhookClientOptions = Pick<
 
 export interface WebhookEditData {
   name?: string;
-  avatar?: BufferResolvable;
+  avatar?: BufferResolvable | null;
   channel?: GuildTextChannelResolvable;
 }
 
