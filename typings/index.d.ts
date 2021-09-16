@@ -955,96 +955,11 @@ export class GuildAuditLogs<T extends GuildAuditLogsAction = 'ALL'> {
 
 export class GuildAuditLogsEntry<
   TAction extends GuildAuditLogsAction = 'ALL',
-  TActionType extends GuildAuditLogsActionType = TAction extends
-    | 'CHANNEL_CREATE'
-    | 'CHANNEL_OVERWRITE_CREATE'
-    | 'MEMBER_BAN_REMOVE'
-    | 'BOT_ADD'
-    | 'ROLE_CREATE'
-    | 'INVITE_CREATE'
-    | 'WEBHOOK_CREATE'
-    | 'EMOJI_CREATE'
-    | 'MESSAGE_PIN'
-    | 'INTEGRATION_CREATE'
-    | 'STAGE_INSTANCE_CREATE'
-    | 'STICKER_CREATE'
-    | 'THREAD_CREATE'
-    ? 'CREATE'
-    : TAction extends
-        | 'CHANNEL_DELETE'
-        | 'CHANNEL_OVERWRITE_DELETE'
-        | 'MEMBER_KICK'
-        | 'MEMBER_PRUNE'
-        | 'MEMBER_BAN_ADD'
-        | 'MEMBER_DISCONNECT'
-        | 'ROLE_DELETE'
-        | 'INVITE_DELETE'
-        | 'WEBHOOK_DELETE'
-        | 'EMOJI_DELETE'
-        | 'MESSAGE_DELETE'
-        | 'MESSAGE_BULK_DELETE'
-        | 'MESSAGE_UNPIN'
-        | 'INTEGRATION_DELETE'
-        | 'STAGE_INSTANCE_DELETE'
-        | 'STICKER_DELETE'
-        | 'THREAD_DELETE'
-    ? 'DELETE'
-    : TAction extends
-        | 'GUILD_UPDATE'
-        | 'CHANNEL_UPDATE'
-        | 'CHANNEL_OVERWRITE_UPDATE'
-        | 'MEMBER_UPDATE'
-        | 'MEMBER_ROLE_UPDATE'
-        | 'MEMBER_MOVE'
-        | 'ROLE_UPDATE'
-        | 'INVITE_UPDATE'
-        | 'WEBHOOK_UPDATE'
-        | 'EMOJI_UPDATE'
-        | 'INTEGRATION_UPDATE'
-        | 'STAGE_INSTANCE_UPDATE'
-        | 'STICKER_UPDATE'
-        | 'THREAD_UPDATE'
-    ? 'UPDATE'
+  TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
+    ? GuildAuditLogsTypes[TAction][1]
     : 'ALL',
-  TTargetType extends GuildAuditLogsTarget = TAction extends 'GUILD_UPDATE'
-    ? 'GUILD'
-    : TAction extends
-        | 'CHANNEL_CREATE'
-        | 'CHANNEL_UPDATE'
-        | 'CHANNEL_DELETE'
-        | 'CHANNEL_OVERWRITE_CREATE'
-        | 'CHANNEL_OVERWRITE_UPDATE'
-        | 'CHANNEL_OVERWRITE_DELETE'
-    ? 'CHANNEL'
-    : TAction extends
-        | 'MEMBER_KICK'
-        | 'MEMBER_PRUNE'
-        | 'MEMBER_BAN_ADD'
-        | 'MEMBER_BAN_REMOVE'
-        | 'MEMBER_UPDATE'
-        | 'MEMBER_ROLE_UPDATE'
-        | 'MEMBER_MOVE'
-        | 'MEMBER_DISCONNECT'
-        | 'BOT_ADD'
-    ? 'USER'
-    : TAction extends 'ROLE_CREATE' | 'ROLE_UPDATE' | 'ROLE_DELETE'
-    ? 'ROLE'
-    : TAction extends 'INVITE_CREATE' | 'INVITE_UPDATE' | 'INVITE_DELETE'
-    ? 'INVITE'
-    : TAction extends 'WEBHOOK_CREATE' | 'WEBHOOK_UPDATE' | 'WEBHOOK_DELETE'
-    ? 'WEBHOOK'
-    : TAction extends 'EMOJI_CREATE' | 'EMOJI_UPDATE' | 'EMOJI_DELETE'
-    ? 'EMOJI'
-    : TAction extends 'MESSAGE_DELETE' | 'MESSAGE_BULK_DELETE' | 'MESSAGE_PIN' | 'MESSAGE_UNPIN'
-    ? 'MESSAGE'
-    : TAction extends 'INTEGRATION_CREATE' | 'INTEGRATION_UPDATE' | 'INTEGRATION_DELETE'
-    ? 'INTEGRATION'
-    : TAction extends 'STAGE_INSTANCE_CREATE' | 'STAGE_INSTANCE_UPDATE' | 'STAGE_INSTANCE_DELETE'
-    ? 'STAGE_INSTANCE'
-    : TAction extends 'STICKER_CREATE' | 'STICKER_UPDATE' | 'STICKER_DELETE'
-    ? 'STICKER'
-    : TAction extends 'THREAD_CREATE' | 'THREAD_UPDATE' | 'THREAD_DELETE'
-    ? 'THREAD'
+  TTargetType extends GuildAuditLogsTarget = TAction extends keyof GuildAuditLogsTypes
+    ? GuildAuditLogsTypes[TAction][0]
     : 'UNKNOWN',
 > {
   private constructor(logs: GuildAuditLogs, guild: Guild, data: RawGuildAuditLogEntryData);
@@ -1057,8 +972,8 @@ export class GuildAuditLogsEntry<
   public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
   public id: Snowflake;
   public reason: string | null;
-  public target: TTargetType extends keyof GuildAUditLogsEntryTargetField<TActionType>
-    ? GuildAUditLogsEntryTargetField<TActionType>[TTargetType]
+  public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TActionType>
+    ? GuildAuditLogsEntryTargetField<TActionType>[TTargetType]
     : Role | GuildEmoji | { id: Snowflake } | null;
   public targetType: TTargetType;
   public toJSON(): unknown;
@@ -4258,55 +4173,56 @@ export interface GuildApplicationCommandPermissionData {
   permissions: ApplicationCommandPermissionData[];
 }
 
-export type GuildAuditLogsAction = keyof GuildAuditLogsActions;
-
-export interface GuildAuditLogsActions {
-  ALL?: null;
-  GUILD_UPDATE?: number;
-  CHANNEL_CREATE?: number;
-  CHANNEL_UPDATE?: number;
-  CHANNEL_DELETE?: number;
-  CHANNEL_OVERWRITE_CREATE?: number;
-  CHANNEL_OVERWRITE_UPDATE?: number;
-  CHANNEL_OVERWRITE_DELETE?: number;
-  MEMBER_KICK?: number;
-  MEMBER_PRUNE?: number;
-  MEMBER_BAN_ADD?: number;
-  MEMBER_BAN_REMOVE?: number;
-  MEMBER_UPDATE?: number;
-  MEMBER_ROLE_UPDATE?: number;
-  MEMBER_MOVE?: number;
-  MEMBER_DISCONNECT?: number;
-  BOT_ADD?: number;
-  ROLE_CREATE?: number;
-  ROLE_UPDATE?: number;
-  ROLE_DELETE?: number;
-  INVITE_CREATE?: number;
-  INVITE_UPDATE?: number;
-  INVITE_DELETE?: number;
-  WEBHOOK_CREATE?: number;
-  WEBHOOK_UPDATE?: number;
-  WEBHOOK_DELETE?: number;
-  EMOJI_CREATE?: number;
-  EMOJI_UPDATE?: number;
-  EMOJI_DELETE?: number;
-  MESSAGE_DELETE?: number;
-  MESSAGE_BULK_DELETE?: number;
-  MESSAGE_PIN?: number;
-  MESSAGE_UNPIN?: number;
-  INTEGRATION_CREATE?: number;
-  INTEGRATION_UPDATE?: number;
-  INTEGRATION_DELETE?: number;
-  STAGE_INSTANCE_CREATE?: number;
-  STAGE_INSTANCE_UPDATE?: number;
-  STAGE_INSTANCE_DELETE?: number;
-  STICKER_CREATE?: number;
-  STICKER_UPDATE?: number;
-  STICKER_DELETE?: number;
-  THREAD_CREATE?: number;
-  THREAD_UPDATE?: number;
-  THREAD_DELETE?: number;
+interface GuildAuditLogsTypes {
+  GUILD_UPDATE: ['GUILD', 'UPDATE'];
+  CHANNEL_CREATE: ['CHANNEL', 'CREATE'];
+  CHANNEL_UPDATE: ['CHANNEL', 'UPDATE'];
+  CHANNEL_DELETE: ['CHANNEL', 'DELETE'];
+  CHANNEL_OVERWRITE_CREATE: ['CHANNEL', 'CREATE'];
+  CHANNEL_OVERWRITE_UPDATE: ['CHANNEL', 'UPDATE'];
+  CHANNEL_OVERWRITE_DELETE: ['CHANNEL', 'DELETE'];
+  MEMBER_KICK: ['USER', 'DELETE'];
+  MEMBER_PRUNE: ['USER', 'DELETE'];
+  MEMBER_BAN_ADD: ['USER', 'DELETE'];
+  MEMBER_BAN_REMOVE: ['USER', 'CREATE'];
+  MEMBER_UPDATE: ['USER', 'UPDATE'];
+  MEMBER_ROLE_UPDATE: ['USER', 'UPDATE'];
+  MEMBER_MOVE: ['USER', 'UPDATE'];
+  MEMBER_DISCONNECT: ['USER', 'DELETE'];
+  BOT_ADD: ['USER', 'CREATE'];
+  ROLE_CREATE: ['ROLE', 'CREATE'];
+  ROLE_UPDATE: ['ROLE', 'UPDATE'];
+  ROLE_DELETE: ['ROLE', 'DELETE'];
+  INVITE_CREATE: ['INVITE', 'CREATE'];
+  INVITE_UPDATE: ['INVITE', 'UPDATE'];
+  INVITE_DELETE: ['INVITE', 'DELETE'];
+  WEBHOOK_CREATE: ['WEBHOOK', 'CREATE'];
+  WEBHOOK_UPDATE: ['WEBHOOK', 'UPDATE'];
+  WEBHOOK_DELETE: ['WEBHOOK', 'DELETE'];
+  EMOJI_CREATE: ['EMOJI', 'CREATE'];
+  EMOJI_UPDATE: ['EMOJI', 'UPDATE'];
+  EMOJI_DELETE: ['EMOJI', 'DELETE'];
+  MESSAGE_DELETE: ['MESSAGE', 'DELETE'];
+  MESSAGE_BULK_DELETE: ['MESSAGE', 'DELETE'];
+  MESSAGE_PIN: ['MESSAGE', 'CREATE'];
+  MESSAGE_UNPIN: ['MESSAGE', 'DELETE'];
+  INTEGRATION_CREATE: ['INTEGRATION', 'CREATE'];
+  INTEGRATION_UPDATE: ['INTEGRATION', 'UPDATE'];
+  INTEGRATION_DELETE: ['INTEGRATION', 'DELETE'];
+  STAGE_INSTANCE_CREATE: ['STAGE_INSTANCE', 'CREATE'];
+  STAGE_INSTANCE_UPDATE: ['STAGE_INSTANCE', 'UPDATE'];
+  STAGE_INSTANCE_DELETE: ['STAGE_INSTANCE', 'DELETE'];
+  STICKER_CREATE: ['STICKER', 'CREATE'];
+  STICKER_UPDATE: ['STICKER', 'UPDATE'];
+  STICKER_DELETE: ['STICKER', 'DELETE'];
+  THREAD_CREATE: ['THREAD', 'CREATE'];
+  THREAD_UPDATE: ['THREAD', 'UPDATE'];
+  THREAD_DELETE: ['THREAD', 'DELETE'];
 }
+
+export type GuildAuditLogsActions = { [key in keyof GuildAuditLogsTypes]?: number } & { ALL?: null };
+
+export type GuildAuditLogsAction = keyof GuildAuditLogsActions;
 
 export type GuildAuditLogsActionType = 'CREATE' | 'DELETE' | 'UPDATE' | 'ALL';
 
@@ -4338,7 +4254,7 @@ interface GuildAuditLogsEntryExtraField {
   STAGE_INSTANCE_UPDATE: GuildChannel | { id: Snowflake };
 }
 
-interface GuildAUditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
+interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
   USER: User | null;
   GUILD: Guild;
   WEBHOOK: Webhook;
