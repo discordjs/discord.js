@@ -270,33 +270,35 @@ class Shard extends EventEmitter {
    * @returns {Promise<*>} Result of the script execution
    */
   eval(script) {
+    // Stringify the script if it's a Function
+    const _eval = typeof script === 'function' ? `(${script})(this)` : script;
+
     // Shard is dead (maybe respawning), don't cache anything and error immediately
     if (!this.process && !this.worker) return Promise.reject(new Error('SHARDING_NO_CHILD_EXISTS', this.id));
 
     // Cached promise from previous call
-    if (this._evals.has(script)) return this._evals.get(script);
+    if (this._evals.has(_eval)) return this._evals.get(_eval);
 
     const promise = new Promise((resolve, reject) => {
       const child = this.process ?? this.worker;
 
       const listener = message => {
-        if (message?._eval !== script) return;
+        if (message?._eval !== _eval) return;
         child.removeListener('message', listener);
-        this._evals.delete(script);
+        this._evals.delete(_eval);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
       };
       child.on('message', listener);
 
-      const _eval = typeof script === 'function' ? `(${script})(this)` : script;
       this.send({ _eval }).catch(err => {
         child.removeListener('message', listener);
-        this._evals.delete(script);
+        this._evals.delete(_eval);
         reject(err);
       });
     });
 
-    this._evals.set(script, promise);
+    this._evals.set(_eval, promise);
     return promise;
   }
 
