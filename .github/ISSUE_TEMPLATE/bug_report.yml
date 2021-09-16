@@ -88,12 +88,15 @@ body:
 
         Tip: you can select multiple items
       options:
+        - No Partials
         - USER
         - CHANNEL
         - GUILD_MEMBER
         - MESSAGE
         - REACTION
       multiple: true
+    validations:
+      required: true
   - type: dropdown
     id: intents
     attributes:
@@ -124,8 +127,8 @@ body:
     id: dev-release
     attributes:
       label: I have tested this issue on a development release
-      placeholder: discord.js@xx.x.x-dev.1530234593.d23280c
+      placeholder: d23280c
       description: |
         The issue might already be fixed in a development release. This is not required, but helps us greatly.
-
         To install the latest development release run `npm i discord.js@dev` in your project directory.
+        Run `npm list discord.js` and use the last part of the printed information (`d23280c` for `discord.js@xx.x.x-dev.1530234593.d23280c`)

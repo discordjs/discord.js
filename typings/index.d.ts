@@ -29,6 +29,7 @@ import {
   APIApplicationCommandOption,
   APIApplicationCommandPermission,
   APIAuditLogChange,
+  APIEmbed,
   APIEmoji,
   APIInteractionDataResolvedChannel,
   APIInteractionDataResolvedGuildMember,
@@ -218,6 +219,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     Snowflake
   >;
   public type: ApplicationCommandType;
+  public version: Snowflake;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
   public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(
@@ -329,7 +331,7 @@ export class BaseGuildTextChannel extends TextBasedChannel(GuildChannel) {
     defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
     reason?: string,
   ): Promise<this>;
-  public setNSFW(nsfw: boolean, reason?: string): Promise<this>;
+  public setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
   public setType(type: Pick<typeof ChannelTypes, 'GUILD_TEXT'>, reason?: string): Promise<TextChannel>;
   public setType(type: Pick<typeof ChannelTypes, 'GUILD_NEWS'>, reason?: string): Promise<NewsChannel>;
@@ -497,7 +499,7 @@ export class ClientUser extends User {
   public edit(data: ClientUserEditData): Promise<this>;
   public setActivity(options?: ActivityOptions): ClientPresence;
   public setActivity(name: string, options?: ActivityOptions): ClientPresence;
-  public setAFK(afk: boolean, shardId?: number | number[]): ClientPresence;
+  public setAFK(afk?: boolean, shardId?: number | number[]): ClientPresence;
   public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
   public setPresence(data: PresenceData): ClientPresence;
   public setStatus(status: PresenceStatusData, shardId?: number | number[]): ClientPresence;
@@ -1160,7 +1162,7 @@ type InteractionExtractor<T extends MessageComponentType | MessageComponentTypes
 type MessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
   | {
       componentType?: T;
-    } & InteractionCollectorOptions<InteractionExtractor<T>>;
+    } & MessageComponentCollectorOptions<InteractionExtractor<T>>;
 
 type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
   | { componentType?: T } & Pick<
@@ -1318,6 +1320,7 @@ export class MessageComponentInteraction extends Interaction {
   public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent> | null;
   public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
   public customId: string;
+  public channelId: Snowflake;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public message: Message | APIMessage;
@@ -1340,7 +1343,7 @@ export class MessageComponentInteraction extends Interaction {
 }
 
 export class MessageEmbed {
-  public constructor(data?: MessageEmbed | MessageEmbedOptions);
+  public constructor(data?: MessageEmbed | MessageEmbedOptions | APIEmbed);
   public author: MessageEmbedAuthor | null;
   public color: number | null;
   public readonly createdAt: Date | null;
@@ -1420,7 +1423,7 @@ export class MessagePayload {
   public readonly isMessage: boolean;
   public readonly isMessageManager: boolean;
   public readonly isInteraction: boolean;
-  public files: unknown[] | null;
+  public files: HTTPAttachmentData[] | null;
   public options: MessageOptions | WebhookMessageOptions;
   public target: MessageTarget;
 
@@ -1429,7 +1432,9 @@ export class MessagePayload {
     options: string | MessageOptions | WebhookMessageOptions,
     extra?: MessageOptions | WebhookMessageOptions,
   ): MessagePayload;
-  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<unknown>;
+  public static resolveFile(
+    fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment,
+  ): Promise<HTTPAttachmentData>;
 
   public makeContent(): string | undefined;
   public resolveData(): this;
@@ -1609,8 +1614,8 @@ export class Role extends Base {
   public equals(role: Role): boolean;
   public permissionsIn(channel: GuildChannel | Snowflake): Readonly<Permissions>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
-  public setHoist(hoist: boolean, reason?: string): Promise<Role>;
-  public setMentionable(mentionable: boolean, reason?: string): Promise<Role>;
+  public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
+  public setMentionable(mentionable?: boolean, reason?: string): Promise<Role>;
   public setName(name: string, reason?: string): Promise<Role>;
   public setPermissions(permissions: PermissionResolvable, reason?: string): Promise<Role>;
   public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
@@ -2031,6 +2036,7 @@ export class Formatters extends null {
 }
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
+  /** @deprecated Use manageable instead */
   public readonly editable: boolean;
   public readonly speakable: boolean;
   public type: 'GUILD_VOICE';
@@ -2068,12 +2074,12 @@ export class VoiceState extends Base {
   public suppress: boolean;
   public requestToSpeakTimestamp: number | null;
 
-  public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
-  public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
+  public setDeaf(deaf?: boolean, reason?: string): Promise<GuildMember>;
+  public setMute(mute?: boolean, reason?: string): Promise<GuildMember>;
   public disconnect(reason?: string): Promise<GuildMember>;
   public setChannel(channel: VoiceChannelResolvable | null, reason?: string): Promise<GuildMember>;
-  public setRequestToSpeak(request: boolean): Promise<void>;
-  public setSuppressed(suppressed: boolean): Promise<void>;
+  public setRequestToSpeak(request?: boolean): Promise<void>;
+  public setSuppressed(suppressed?: boolean): Promise<void>;
 }
 
 export class Webhook extends WebhookMixin() {
@@ -2219,7 +2225,7 @@ export class WelcomeChannel extends Base {
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
   public description: string;
-  public readonly channel: TextChannel | NewsChannel | null;
+  public readonly channel: TextChannel | NewsChannel | StoreChannel | null;
   public readonly emoji: GuildEmoji | Emoji;
 }
 
@@ -2787,6 +2793,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
     options?: MessageCollectorOptionsParams<T>,
   ): InteractionCollectorReturnType<T>;
+  createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   sendTyping(): Promise<void>;
 }
 
@@ -2923,6 +2930,7 @@ export interface APIErrors {
   MAXIMUM_BAN_FETCHES: 30037;
   MAXIMUM_NUMBER_OF_STICKERS_REACHED: 30039;
   MAXIMUM_PRUNE_REQUESTS: 30040;
+  MAXIMUM_GUILD_WIDGET_SETTINGS_UPDATE: 30042;
   UNAUTHORIZED: 40001;
   ACCOUNT_VERIFICATION_REQUIRED: 40002;
   DIRECT_MESSAGES_TOO_FAST: 40003;
@@ -3278,7 +3286,10 @@ export interface ClientEvents {
   message: [message: Message];
   messageCreate: [message: Message];
   messageDelete: [message: Message | PartialMessage];
-  messageReactionRemoveAll: [message: Message | PartialMessage];
+  messageReactionRemoveAll: [
+    message: Message | PartialMessage,
+    reactions: Collection<string | Snowflake, MessageReaction>,
+  ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
   messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
@@ -4025,15 +4036,16 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   message?: Message | APIMessage;
 }
 
-export interface ButtonInteractionCollectorOptions extends InteractionCollectorOptions<ButtonInteraction> {
+export interface ButtonInteractionCollectorOptions extends MessageComponentCollectorOptions<ButtonInteraction> {
   componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
 }
 
-export interface SelectMenuInteractionCollectorOptions extends InteractionCollectorOptions<SelectMenuInteraction> {
+export interface SelectMenuInteractionCollectorOptions extends MessageComponentCollectorOptions<SelectMenuInteraction> {
   componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
 }
 
-export interface MessageInteractionCollectorOptions extends InteractionCollectorOptions<MessageComponentInteraction> {
+export interface MessageInteractionCollectorOptions
+  extends MessageComponentCollectorOptions<MessageComponentInteraction> {
   componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
 }
 
