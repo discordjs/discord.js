@@ -4157,8 +4157,6 @@ export interface MessageActivity {
   type: number;
 }
 
-export type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
-
 export interface BaseButtonOptions extends BaseMessageComponentOptions {
   disabled?: boolean;
   emoji?: EmojiIdentifierResolvable;
@@ -4206,7 +4204,7 @@ export type MessageComponentTypeResolvable = MessageComponentType | MessageCompo
 export interface MessageEditOptions {
   attachments?: MessageAttachment[];
   content?: string | null;
-  embeds?: (MessageEmbed | MessageEmbedOptions)[] | null;
+  embeds?: (MessageEmbed | MessageEmbedOptions | APIEmbed)[] | null;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
@@ -4308,7 +4306,7 @@ export interface MessageOptions {
   tts?: boolean;
   nonce?: string | number;
   content?: string | null;
-  embeds?: (MessageEmbed | MessageEmbedOptions)[];
+  embeds?: (MessageEmbed | MessageEmbedOptions | APIEmbed)[];
   components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
