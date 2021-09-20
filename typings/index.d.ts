@@ -1022,7 +1022,7 @@ export class Interaction extends Base {
   public user: User;
   public version: number;
   public inGuild(bot?: boolean): this is this & { guildId: Snowflake; member: GuildMember | APIInteractionGuildMember };
-  public inGuild(bot: true): this is this & { guildId: Snowflake; member: GuildMember };
+  public inGuild(bot: true): this is this & { guild: Guild; guildId: Snowflake; member: GuildMember };
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
   public isContextMenu(): this is ContextMenuInteraction;
