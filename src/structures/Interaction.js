@@ -107,7 +107,7 @@ class Interaction extends Base {
 
   /**
    * Indicates whether this interaction is received from a guild.
-   * @param {boolean} [bot=false] Whether to check if the interaction is from a bot in a guild.
+   * @param {boolean} [bot=false] Whether to check if the client is on the guild this interaction is from.
    * @returns {boolean}
    */
   inGuild(bot = false) {
