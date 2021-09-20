@@ -69,10 +69,8 @@
  * [User Agent](https://discord.com/developers/docs/reference#user-agent) header
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
- * @property {number} [fetchGuildTimeout=15000] Time in milliseconds that bots with the `GUILDS` intent should hang
- * and wait for missing guilds to be received before starting the bot
- * If not specified, the default is 15 seconds.
- * (0 to skip this timeout)
+ * @property {number} [waitGuildTimeout=15000] Time in milliseconds that bots with the `GUILDS` intent should wait for
+ * initial guild's data to be received before emitting ready. (0 to not wait)
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
  */
