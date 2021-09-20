@@ -111,10 +111,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   inGuild(bot = false) {
-    if (bot) {
-      return Boolean(this.guild && this.member);
-    }
-    return Boolean(this.guildId && this.member);
+    return Boolean((bot ? this.guild : this.guildId) && this.member);
   }
 
   /**
