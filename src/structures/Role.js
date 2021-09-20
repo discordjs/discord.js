@@ -244,7 +244,7 @@ class Role extends Base {
 
   /**
    * Sets whether or not the role should be hoisted.
-   * @param {boolean} hoist Whether or not to hoist the role
+   * @param {boolean} [hoist=true] Whether or not to hoist the role
    * @param {string} [reason] Reason for setting whether or not the role should be hoisted
    * @returns {Promise<Role>}
    * @example
@@ -253,7 +253,7 @@ class Role extends Base {
    *   .then(updated => console.log(`Role hoisted: ${updated.hoist}`))
    *   .catch(console.error);
    */
-  setHoist(hoist, reason) {
+  setHoist(hoist = true, reason) {
     return this.edit({ hoist }, reason);
   }
 
@@ -279,7 +279,7 @@ class Role extends Base {
 
   /**
    * Sets whether this role is mentionable.
-   * @param {boolean} mentionable Whether this role should be mentionable
+   * @param {boolean} [mentionable=true] Whether this role should be mentionable
    * @param {string} [reason] Reason for setting whether or not this role should be mentionable
    * @returns {Promise<Role>}
    * @example
@@ -288,7 +288,7 @@ class Role extends Base {
    *   .then(updated => console.log(`Role updated ${updated.name}`))
    *   .catch(console.error);
    */
-  setMentionable(mentionable, reason) {
+  setMentionable(mentionable = true, reason) {
     return this.edit({ mentionable }, reason);
   }
 

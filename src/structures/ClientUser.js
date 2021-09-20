@@ -168,11 +168,11 @@ class ClientUser extends User {
 
   /**
    * Sets/removes the AFK flag for the client user.
-   * @param {boolean} afk Whether or not the user is AFK
+   * @param {boolean} [afk=true] Whether or not the user is AFK
    * @param {number|number[]} [shardId] Shard Id(s) to have the AFK flag set on
    * @returns {ClientPresence}
    */
-  setAFK(afk, shardId) {
+  setAFK(afk = true, shardId) {
     return this.setPresence({ afk, shardId });
   }
 }
