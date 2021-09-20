@@ -567,8 +567,8 @@ class Client extends BaseClient {
     if (!Array.isArray(options.partials)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
     }
-    if (typeof options.fetchGuildTimeout !== 'number' || isNaN(options.fetchGuildTimeout)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'fetchGuildTimeout', 'a number');
+    if (typeof options.waitGuildTimeout !== 'number' || isNaN(options.waitGuildTimeout)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'waitGuildTimeout', 'a number');
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
