@@ -25,7 +25,6 @@ import {
   APIActionRowComponent,
   APIApplicationCommand,
   APIApplicationCommandInteractionData,
-  APIApplicationCommandInteractionDataOption,
   APIApplicationCommandOption,
   APIApplicationCommandPermission,
   APIAuditLogChange,
@@ -1021,7 +1020,8 @@ export class Interaction extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
-  public inGuild(): this is this & { guildId: Snowflake; member: GuildMember | APIInteractionGuildMember };
+  public inGuild(bot?: boolean): this is this & { guildId: Snowflake; member: GuildMember | APIInteractionGuildMember };
+  public inGuild(bot: true): this is this & { guildId: Snowflake; member: GuildMember };
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
   public isContextMenu(): this is ContextMenuInteraction;
@@ -3283,7 +3283,10 @@ export interface ClientEvents {
   message: [message: Message];
   messageCreate: [message: Message];
   messageDelete: [message: Message | PartialMessage];
-  messageReactionRemoveAll: [message: Message | PartialMessage, reactions: Collection<string | Snowflake, MessageReaction>];
+  messageReactionRemoveAll: [
+    message: Message | PartialMessage,
+    reactions: Collection<string | Snowflake, MessageReaction>,
+  ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
   messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];

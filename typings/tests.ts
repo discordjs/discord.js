@@ -825,6 +825,17 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
+  // Check member type narrowing
+  if (interaction.inGuild(true)) {
+    assertType<GuildMember>(interaction.member);
+  } else if (interaction.inGuild()) {
+    assertType<GuildMember | APIInteractionGuildMember>(interaction.member);
+  } else if (interaction.inGuild(false)) {
+    assertType<GuildMember | APIInteractionGuildMember>(interaction.member);
+  }
+
+  assertType<GuildMember | APIInteractionGuildMember | null>(interaction.member);
+
   if (interaction.isCommand()) {
     assertType<CommandInteraction>(interaction);
     assertType<CommandInteractionOptionResolver>(interaction.options);
