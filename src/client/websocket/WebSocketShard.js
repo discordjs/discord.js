@@ -486,7 +486,7 @@ class WebSocketShard extends EventEmitter {
       () => {
         this.debug(
           `Shard ${hasGuildsIntent ? 'did' : 'will'} not receive any more guild packets` +
-            `${hasGuildsIntent ? ` in ${guildTimeoutAmount} ms` : ''}.\nUnavailable guild count: ${
+            `${hasGuildsIntent ? ` in ${waitGuildTimeout} ms` : ''}.\nUnavailable guild count: ${
               this.expectedGuilds.size
             }`,
         );
