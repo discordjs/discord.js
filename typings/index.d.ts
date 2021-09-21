@@ -25,6 +25,7 @@ import {
   APIActionRowComponent,
   APIApplicationCommand,
   APIApplicationCommandInteractionData,
+  APIApplicationCommandInteractionDataOption,
   APIApplicationCommandOption,
   APIApplicationCommandPermission,
   APIAuditLogChange,
@@ -1021,8 +1022,9 @@ export class Interaction extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
-  public inGuild(bot: true): this is this & { guild: Guild; guildId: Snowflake; member: GuildMember };
-  public inGuild(bot?: boolean): this is this & { guildId: Snowflake; member: GuildMember | APIInteractionGuildMember };
+  public inGuild(): this is this & { guildId: Snowflake; member: GuildMember | APIInteractionGuildMember };
+  public inCachedGuild(): this is this & { guild: Guild; guildId: Snowflake; member: GuildMember };
+  public inRawGuild(): this is this & { guildId: Snowflake; member: APIInteractionGuildMember };
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
   public isContextMenu(): this is ContextMenuInteraction;

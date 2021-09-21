@@ -107,11 +107,26 @@ class Interaction extends Base {
 
   /**
    * Indicates whether this interaction is received from a guild.
-   * @param {boolean} [bot=false] Whether to check if the client is on the guild this interaction is from.
    * @returns {boolean}
    */
-  inGuild(bot = false) {
-    return Boolean((bot ? this.guild : this.guildId) && this.member);
+  inGuild() {
+    return Boolean(this.guildId && this.member);
+  }
+
+  /**
+   * Indicates whether this interaction is both received from a guild and is cached.
+   * @returns {boolean}
+   */
+  inCachedGuild() {
+    return Boolean(this.guild && this.member);
+  }
+
+  /**
+   * Indicates whether this interaction is both received from a guild and is not cached.
+   * @returns {boolean}
+   */
+  inRawGuild() {
+    return Boolean(this.guildId && !this.guild && this.member);
   }
 
   /**

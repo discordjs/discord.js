@@ -1,4 +1,4 @@
-import { APIInteractionGuildMember } from 'discord-api-types';
+import { APIGuildMember, APIInteractionGuildMember } from 'discord-api-types';
 import {
   ApplicationCommand,
   ApplicationCommandChoicesData,
@@ -826,12 +826,12 @@ if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
   // Check member type narrowing
-  if (interaction.inGuild(true)) {
+  if (interaction.inGuild()) {
+    assertType<GuildMember | APIInteractionGuildMember>(interaction.member);
+  } else if (interaction.inCachedGuild()) {
     assertType<GuildMember>(interaction.member);
-  } else if (interaction.inGuild()) {
-    assertType<GuildMember | APIInteractionGuildMember>(interaction.member);
-  } else if (interaction.inGuild(false)) {
-    assertType<GuildMember | APIInteractionGuildMember>(interaction.member);
+  } else if (interaction.inRawGuild()) {
+    assertType<APIGuildMember>(interaction.member);
   }
 
   assertType<GuildMember | APIInteractionGuildMember | null>(interaction.member);
