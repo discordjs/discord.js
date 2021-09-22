@@ -4204,7 +4204,7 @@ export interface InteractionUpdateOptions extends MessageEditOptions {
   fetchReply?: boolean;
 }
 
-export type InteractionResultOptions = CommandInteractionOption[];
+export type InteractionResultOptions = ApplicationCommandOptionChoice[];
 
 export type IntentsString =
   | 'GUILDS'
