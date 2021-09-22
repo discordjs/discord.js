@@ -242,15 +242,15 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets the focused option.
-   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(string|number)} The value of the option, or null if not set and not required.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found
+   * @returns {?(string|number)} The value of the option, or null if not set and not required
    */
   getFocused(required = false) {
     const focusedOption = this._hoistedOptions.find(option => option.focused);
     if (required && !focusedOption) {
       throw new TypeError('AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION');
     }
-    return focusedOption?.value ?? null;
+    return focusedOption ?? null;
   }
 }
 

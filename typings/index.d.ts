@@ -616,7 +616,8 @@ export class CommandInteractionOptionResolver {
   ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
-  public getFocused(require?: boolean): string | number | null;
+  public getFocused(require: true): ApplicationCommandOptionChoice;
+  public getFocused(require?: boolean): ApplicationCommandOptionChoice | null;
 }
 
 export class ContextMenuInteraction extends BaseCommandInteraction {
