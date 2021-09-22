@@ -3107,6 +3107,7 @@ export interface BaseApplicationCommandOptionsData {
   name: string;
   description: string;
   required?: boolean;
+  autocomplete?: boolean;
 }
 
 export interface UserApplicationCommandData extends BaseApplicationCommandData {
