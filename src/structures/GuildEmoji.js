@@ -30,7 +30,7 @@ class GuildEmoji extends BaseGuildEmoji {
      * @type {Snowflake[]}
      * @private
      */
-    Object.defineProperty(this, '_roles', { value: [], writable: true });
+    Object.defineProperty(this, '_roles', { value: data.roles, writable: true });
   }
 
   /**
