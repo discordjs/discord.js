@@ -6,7 +6,7 @@ const { InteractionResponseTypes } = require('../util/Constants');
 
 /**
  * Represents a autocomplete interaction.
- * @extends {Interaction}
+ * @extends {BaseCommandInteraction}
  */
 class AutocompleteInteraction extends BaseCommandInteraction {
   constructor(client, data) {
