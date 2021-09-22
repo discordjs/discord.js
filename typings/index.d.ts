@@ -559,7 +559,7 @@ export class CommandInteraction extends BaseCommandInteraction {
 
 export class AutocompleteInteraction extends BaseCommandInteraction {
   public options: CommandInteractionOptionResolver;
-  public result: (options: InteractionResultOptions) => Promise<void>;
+  public result(options: InteractionResultOptions): Promise<void>;
 }
 
 export class CommandInteractionOptionResolver {
