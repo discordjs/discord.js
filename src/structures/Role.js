@@ -204,7 +204,7 @@ class Role extends Base {
    * @property {PermissionResolvable} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
    * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon for the role
-   * @property {string} [unicodeEmoji] The unicode emoji for the role
+   * @property {?string} [unicodeEmoji] The unicode emoji for the role
    */
 
   /**
@@ -326,7 +326,7 @@ class Role extends Base {
 
   /**
    * Sets a new unicode emoji for the role.
-   * @param {string} unicodeEmoji The unicode emoji for the role
+   * @param {?string} unicodeEmoji The unicode emoji for the role
    * @param {string} [reason] Reason for changing the role's unicode emoji
    * @returns {Promise<Role>}
    */

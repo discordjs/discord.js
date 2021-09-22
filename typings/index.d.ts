@@ -1661,7 +1661,7 @@ export class Role extends Base {
   public setPermissions(permissions: PermissionResolvable, reason?: string): Promise<Role>;
   public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Role>;
   public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
-  public setUnicodeEmoji(unicodeEmoji: string, reason?: string): Promise<Role>;
+  public setUnicodeEmoji(unicodeEmoji: string | null, reason?: string): Promise<Role>;
   public toJSON(): unknown;
   public toString(): RoleMention;
 
@@ -4753,7 +4753,7 @@ export interface RoleData {
   permissions?: PermissionResolvable;
   mentionable?: boolean;
   icon?: BufferResolvable | Base64Resolvable | null;
-  unicodeEmoji?: string;
+  unicodeEmoji?: string | null;
 }
 
 export type RoleMention = '@everyone' | `<@&${Snowflake}>`;
