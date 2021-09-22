@@ -61,13 +61,13 @@ class UserManager extends CachedManager {
    * @returns {Promise<User>}
    */
   async fetch(user, { cache = true, force = false } = {}) {
-    user = this.resolveId(user);
+    const id = this.resolveId(user);
     if (!force) {
-      const existing = this.cache.get(user);
+      const existing = this.cache.get(id);
       if (existing && !existing.partial) return existing;
     }
 
-    const data = await this.client.api.users(user).get();
+    const data = await this.client.api.users(id).get();
     return this._add(data, cache);
   }
 }
