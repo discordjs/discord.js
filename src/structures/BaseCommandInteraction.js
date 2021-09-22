@@ -162,6 +162,7 @@ class BaseCommandInteraction extends Interaction {
 
     if ('value' in option) result.value = option.value;
     if ('options' in option) result.options = option.options.map(opt => this.transformOption(opt, resolved));
+    if ('focused' in option) result.focused = option.focused;
 
     if (resolved) {
       const user = resolved.users?.[option.value];

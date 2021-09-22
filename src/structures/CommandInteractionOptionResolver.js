@@ -239,6 +239,18 @@ class CommandInteractionOptionResolver {
     const option = this._getTypedOption(name, '_MESSAGE', ['message'], required);
     return option?.message ?? null;
   }
+
+  /**
+   * Gets a focused option.
+   * @param {name} name The name of the option.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @returns {?(string)}
+   * The value of the option, or null if not set and not required.
+   */
+  getFocused(name, required = false) {
+    const option = this._getTypedOption(name, 'STRING', ['value'], required);
+    return option?.value ?? null;
+  }
 }
 
 module.exports = CommandInteractionOptionResolver;

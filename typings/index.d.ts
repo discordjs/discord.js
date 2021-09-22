@@ -557,6 +557,11 @@ export class CommandInteraction extends BaseCommandInteraction {
   public options: CommandInteractionOptionResolver;
 }
 
+export class AutocompleteInteraction extends Interaction {
+  public options: CommandInteractionOptionResolver;
+  public result: (name: string, required: boolean) => Promise<string | null>;
+}
+
 export class CommandInteractionOptionResolver {
   public constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
@@ -611,6 +616,7 @@ export class CommandInteractionOptionResolver {
   ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
+  public getFocused(name: string, require?: boolean): string | null;
 }
 
 export class ContextMenuInteraction extends BaseCommandInteraction {
@@ -1025,6 +1031,7 @@ export class Interaction extends Base {
   public inGuild(): this is this & { guildId: Snowflake; member: GuildMember | APIInteractionGuildMember };
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
+  public isAutocomplete(): this is AutocompleteInteraction;
   public isContextMenu(): this is ContextMenuInteraction;
   public isMessageComponent(): this is MessageComponentInteraction;
   public isSelectMenu(): this is SelectMenuInteraction;
@@ -3432,6 +3439,8 @@ export interface CommandInteractionOption {
   name: string;
   type: ApplicationCommandOptionType;
   value?: string | number | boolean;
+  autocomplete?: boolean;
+  focused?: boolean;
   options?: CommandInteractionOption[];
   user?: User;
   member?: GuildMember | APIInteractionDataResolvedGuildMember;
@@ -4071,6 +4080,10 @@ export type InteractionType = keyof typeof InteractionTypes;
 
 export interface InteractionUpdateOptions extends MessageEditOptions {
   fetchReply?: boolean;
+}
+
+export interface InteractionResultOptions {
+  options: CommandInteractionOption[];
 }
 
 export type IntentsString =
