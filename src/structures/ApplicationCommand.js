@@ -301,6 +301,7 @@ class ApplicationCommand extends Base {
       description: option.description,
       required:
         option.required ?? (stringType === 'SUB_COMMAND' || stringType === 'SUB_COMMAND_GROUP' ? undefined : false),
+      autocomplete: option.autocomplete,
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),
     };
