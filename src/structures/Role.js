@@ -411,7 +411,8 @@ class Role extends Base {
       this.position === role.position &&
       this.permissions.bitfield === role.permissions.bitfield &&
       this.managed === role.managed &&
-      this.icon === role.icon
+      this.icon === role.icon &&
+      this.unicodeEmoji === role.unicodeEmoji
     );
   }
 
