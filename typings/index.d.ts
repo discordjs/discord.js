@@ -559,7 +559,7 @@ export class CommandInteraction extends BaseCommandInteraction {
 
 export class AutocompleteInteraction extends BaseCommandInteraction {
   public options: CommandInteractionOptionResolver;
-  public result(options: InteractionResultOptions): Promise<void>;
+  public result(options: ApplicationCommandOptionChoice[]): Promise<void>;
 }
 
 export class CommandInteractionOptionResolver {
@@ -4083,8 +4083,6 @@ export type InteractionType = keyof typeof InteractionTypes;
 export interface InteractionUpdateOptions extends MessageEditOptions {
   fetchReply?: boolean;
 }
-
-export type InteractionResultOptions = ApplicationCommandOptionChoice[];
 
 export type IntentsString =
   | 'GUILDS'
