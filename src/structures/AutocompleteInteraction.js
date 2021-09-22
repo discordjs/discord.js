@@ -29,14 +29,12 @@ class AutocompleteInteraction extends BaseCommandInteraction {
    * @returns {Promise<void>}
    * @example
    * // respond to autocomplete interaction
-   * interaction.result({
-   *  options: [
-   *   {
+   * interaction.result([
+   *  {
    *    name: 'Option 1',
    *    value: 'option1',
-   *   },
-   *  ],
-   * })
+   *  },
+   * ])
    *  .then(console.log)
    *  .catch(console.error);
    */
