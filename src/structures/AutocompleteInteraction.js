@@ -5,7 +5,7 @@ const CommandInteractionOptionResolver = require('./CommandInteractionOptionReso
 const { InteractionResponseTypes } = require('../util/Constants');
 
 /**
- * Represents a autocomplete interaction.
+ * Represents an autocomplete interaction.
  * @extends {BaseCommandInteraction}
  */
 class AutocompleteInteraction extends BaseCommandInteraction {
@@ -38,7 +38,7 @@ class AutocompleteInteraction extends BaseCommandInteraction {
    *  ],
    * })
    *  .then(console.log)
-   * .catch(console.error);
+   *  .catch(console.error);
    */
   async result(options) {
     if (this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
