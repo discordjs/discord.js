@@ -218,35 +218,6 @@ class InteractionResponses {
     return options.fetchReply ? this.fetchReply() : undefined;
   }
 
-  /**
-   * Sends results for the autocomplete of this interaction.
-   * @param {InteractionResultOptions} options The options for the autocomplete
-   * @returns {Promise<void>}
-   * @example
-   * // respond to autocomplete interaction
-   * interaction.autocomplete({
-   *  options: [
-   *   {
-   *    name: 'Option 1',
-   *    value: 'option1',
-   *   },
-   *  ],
-   * })
-   *  .then(console.log)
-   * .catch(console.error);
-   */
-  async result(options) {
-    if (this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
-        type: InteractionResponseTypes.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-        data: options,
-      },
-    });
-    this.replied = true;
-  }
-
   static applyToClass(structure, ignore = []) {
     const props = [
       'deferReply',

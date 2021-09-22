@@ -141,10 +141,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isAutocomplete() {
-    return (
-      InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND_AUTOCOMPLETE &&
-      typeof this.targetId === 'undefined'
-    );
+    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND_AUTOCOMPLETE;
   }
 
   /**
