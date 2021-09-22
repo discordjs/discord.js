@@ -56,17 +56,18 @@ class UserManager extends CachedManager {
 
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
-   * @param {Snowflake} id The user's id
+   * @param {UserResolvable} user The user to fetch
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<User>}
    */
-  async fetch(id, { cache = true, force = false } = {}) {
+  async fetch(user, { cache = true, force = false } = {}) {
+    user = this.resolveId(user);
     if (!force) {
-      const existing = this.cache.get(id);
+      const existing = this.cache.get(user);
       if (existing && !existing.partial) return existing;
     }
 
-    const data = await this.client.api.users(id).get();
+    const data = await this.client.api.users(user).get();
     return this._add(data, cache);
   }
 }
