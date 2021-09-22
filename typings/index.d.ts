@@ -1648,6 +1648,7 @@ export class Role extends Base {
   public tags: RoleTagData | null;
   public comparePositionTo(role: RoleResolvable): number;
   public icon: string | null;
+  public unicodeEmoji: string | null;
   public delete(reason?: string): Promise<Role>;
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
@@ -1660,6 +1661,7 @@ export class Role extends Base {
   public setPermissions(permissions: PermissionResolvable, reason?: string): Promise<Role>;
   public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Role>;
   public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
+  public setUnicodeEmoji(unicodeEmoji: string, reason?: string): Promise<Role>;
   public toJSON(): unknown;
   public toString(): RoleMention;
 
@@ -4751,6 +4753,7 @@ export interface RoleData {
   permissions?: PermissionResolvable;
   mentionable?: boolean;
   icon?: BufferResolvable | Base64Resolvable | null;
+  unicodeEmoji?: string;
 }
 
 export type RoleMention = '@everyone' | `<@&${Snowflake}>`;
