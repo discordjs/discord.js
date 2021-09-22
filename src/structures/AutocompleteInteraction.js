@@ -44,7 +44,9 @@ class AutocompleteInteraction extends BaseCommandInteraction {
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-        data: options,
+        data: {
+          choices: options,
+        },
       },
     });
     this.replied = true;
