@@ -13,7 +13,7 @@ class AutocompleteInteraction extends BaseCommandInteraction {
     super(client, data);
 
     /**
-     * The options passed to the command.
+     * The options passed to the command
      * @type {CommandInteractionOptionResolver}
      */
     this.options = new CommandInteractionOptionResolver(
