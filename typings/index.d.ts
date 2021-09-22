@@ -559,7 +559,7 @@ export class CommandInteraction extends BaseCommandInteraction {
 
 export class AutocompleteInteraction extends Interaction {
   public options: CommandInteractionOptionResolver;
-  public result: (name: string, required: boolean) => Promise<string | null>;
+  public result: (options: InteractionResultOptions) => Promise<void>;
 }
 
 export class CommandInteractionOptionResolver {
@@ -616,7 +616,7 @@ export class CommandInteractionOptionResolver {
   ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
-  public getFocused(name: string, require?: boolean): string | null;
+  public getFocused(require?: boolean): string | number | null;
 }
 
 export class ContextMenuInteraction extends BaseCommandInteraction {
@@ -3439,8 +3439,8 @@ export interface CommandInteractionOption {
   name: string;
   type: ApplicationCommandOptionType;
   value?: string | number | boolean;
-  autocomplete?: boolean;
   focused?: boolean;
+  autocomplete?: boolean;
   options?: CommandInteractionOption[];
   user?: User;
   member?: GuildMember | APIInteractionDataResolvedGuildMember;
@@ -4082,9 +4082,7 @@ export interface InteractionUpdateOptions extends MessageEditOptions {
   fetchReply?: boolean;
 }
 
-export interface InteractionResultOptions {
-  options: CommandInteractionOption[];
-}
+export type InteractionResultOptions = CommandInteractionOption[];
 
 export type IntentsString =
   | 'GUILDS'
