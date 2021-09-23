@@ -4508,11 +4508,15 @@ export type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
 export interface PartialChannelData {
   id?: Snowflake | number;
+  parentId?: Snowflake | number;
+  type?: ChannelTypes;
   name: string;
   topic?: string;
-  type?: ChannelTypes;
-  parentId?: Snowflake | number;
+  nsfw?: boolean;
+  bitrate?: number;
+  userLimit?: number;
   permissionOverwrites?: PartialOverwriteData[];
+  rateLimitPerUser?: number;
 }
 
 export type Partialize<
