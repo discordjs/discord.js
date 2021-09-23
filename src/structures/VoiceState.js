@@ -125,7 +125,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setMute(mute = true, reason) {
-    return this.member?.edit({ mute }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.guild.members.edit(this.id, { mute }, reason);
   }
 
   /**
@@ -135,7 +135,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setDeaf(deaf = true, reason) {
-    return this.member?.edit({ deaf }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.guild.members.edit(this.id, { deaf }, reason);
   }
 
   /**
@@ -155,7 +155,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setChannel(channel, reason) {
-    return this.member?.edit({ channel }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.guild.members.edit(this.id, { channel }, reason);
   }
 
   /**
