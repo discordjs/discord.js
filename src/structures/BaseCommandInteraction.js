@@ -138,6 +138,7 @@ class BaseCommandInteraction extends Interaction {
    * @typedef {Object} CommandInteractionOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
+   * @property {boolean} [autocomplete] Whether the option is an autocomplete option
    * @property {string|number|boolean} [value] The value of the option
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)
@@ -162,7 +163,6 @@ class BaseCommandInteraction extends Interaction {
 
     if ('value' in option) result.value = option.value;
     if ('options' in option) result.options = option.options.map(opt => this.transformOption(opt, resolved));
-    if ('focused' in option) result.focused = option.focused;
 
     if (resolved) {
       const user = resolved.users?.[option.value];

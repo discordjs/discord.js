@@ -582,9 +582,10 @@ export class CommandInteraction extends BaseCommandInteraction {
   public options: CommandInteractionOptionResolver;
 }
 
-export class AutocompleteInteraction extends BaseCommandInteraction {
+export class AutocompleteInteraction extends Interaction {
   public options: CommandInteractionOptionResolver;
-  public result(options: ApplicationCommandOptionChoice[]): Promise<void>;
+  private transformOption(option: APIApplicationCommandOption, resolved: null): CommandInteractionOption;
+  public sendResult(options: ApplicationCommandOptionChoice[]): Promise<void>;
 }
 
 export class CommandInteractionOptionResolver {
@@ -641,8 +642,8 @@ export class CommandInteractionOptionResolver {
   ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
-  public getFocused(require: true): ApplicationCommandOptionChoice;
-  public getFocused(require?: boolean): ApplicationCommandOptionChoice | null;
+  public getFocused(getFull: true): ApplicationCommandOptionChoice;
+  public getFocused(getFull?: boolean): string | number;
 }
 
 export class ContextMenuInteraction extends BaseCommandInteraction {
