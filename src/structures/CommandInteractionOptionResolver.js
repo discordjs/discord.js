@@ -242,7 +242,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets the focused option.
-   * @param {boolean} [getFull=false] Whether to throw an error if the option is not found
+   * @param {boolean} [getFull=false] Whether to get the full option object
    * @returns {string|number|ApplicationCommandOptionChoice}
    * The value of the option, or the whole option if getFull is true
    */

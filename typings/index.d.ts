@@ -559,8 +559,8 @@ export class CommandInteraction extends BaseCommandInteraction {
 
 export class AutocompleteInteraction extends Interaction {
   public options: CommandInteractionOptionResolver;
-  private transformOption(option: APIApplicationCommandOption, resolved: null): CommandInteractionOption;
-  public sendResult(options: ApplicationCommandOptionChoice[]): Promise<void>;
+  private transformOption(option: APIApplicationCommandOption): CommandInteractionOption;
+  public respond(options: ApplicationCommandOptionChoice[]): Promise<void>;
 }
 
 export class CommandInteractionOptionResolver {
