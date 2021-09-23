@@ -1025,7 +1025,11 @@ export class Interaction extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
-  public inGuild(): this is this & { guildId: Snowflake; member: GuildMember | APIInteractionGuildMember };
+  public inGuild(): this is this & {
+    guildId: Snowflake;
+    member: GuildMember | APIInteractionGuildMember;
+    readonly channel: Exclude<TextBasedChannels, PartialDMChannel | DMChannel> | null;
+  };
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
   public isContextMenu(): this is ContextMenuInteraction;
