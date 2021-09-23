@@ -25,33 +25,18 @@ class AutocompleteInteraction extends Interaction {
   /**
    * Transforms an option received from the API.
    * @param {APIApplicationCommandOption} option The received option
-   * @param {APIInteractionDataResolved} resolved The resolved interaction data
    * @returns {CommandInteractionOption}
    * @private
    */
-  transformOption(option, resolved) {
+  transformOption(option) {
     const result = {
       name: option.name,
       type: ApplicationCommandOptionTypes[option.type],
     };
 
     if ('value' in option) result.value = option.value;
-    if ('options' in option) result.options = option.options.map(opt => this.transformOption(opt, resolved));
+    if ('options' in option) result.options = option.options.map(opt => this.transformOption(opt));
     if ('focused' in option) result.focused = option.focused;
-
-    if (resolved) {
-      const user = resolved.users?.[option.value];
-      if (user) result.user = this.client.users._add(user);
-
-      const member = resolved.members?.[option.value];
-      if (member) result.member = this.guild?.members._add({ user, ...member }) ?? member;
-
-      const channel = resolved.channels?.[option.value];
-      if (channel) result.channel = this.client.channels._add(channel, this.guild) ?? channel;
-
-      const role = resolved.roles?.[option.value];
-      if (role) result.role = this.guild?.roles._add(role) ?? role;
-    }
 
     return result;
   }
@@ -62,7 +47,7 @@ class AutocompleteInteraction extends Interaction {
    * @returns {Promise<void>}
    * @example
    * // respond to autocomplete interaction
-   * interaction.sendResult([
+   * interaction.respond([
    *  {
    *    name: 'Option 1',
    *    value: 'option1',
@@ -71,7 +56,7 @@ class AutocompleteInteraction extends Interaction {
    *  .then(console.log)
    *  .catch(console.error);
    */
-  async result(options) {
+  async respond(options) {
     if (this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
 
     await this.client.api.interactions(this.id, this.token).callback.post({

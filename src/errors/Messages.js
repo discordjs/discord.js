@@ -142,6 +142,7 @@ const Messages = {
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No subcommand specified for interaction.',
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No subcommand group specified for interaction.',
+  AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION: 'No focused option for autocomplete interaction.',
 
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 
