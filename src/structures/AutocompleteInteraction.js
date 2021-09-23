@@ -13,6 +13,24 @@ class AutocompleteInteraction extends Interaction {
     super(client, data);
 
     /**
+     * The invoked application command's id
+     * @type {Snowflake}
+     */
+    this.commandId = data.data.id;
+
+    /**
+     * The invoked application command's name
+     * @type {string}
+     */
+    this.commandName = data.data.name;
+
+    /**
+     * Whether this interaction has already received a response
+     * @type {boolean}
+     */
+    this.responded = false;
+
+    /**
      * The options passed to the command
      * @type {CommandInteractionOptionResolver}
      */
@@ -57,7 +75,7 @@ class AutocompleteInteraction extends Interaction {
    *  .catch(console.error);
    */
   async respond(options) {
-    if (this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    if (this.responded) throw new Error('INTERACTION_ALREADY_REPLIED');
 
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
@@ -67,7 +85,7 @@ class AutocompleteInteraction extends Interaction {
         },
       },
     });
-    this.replied = true;
+    this.responded = true;
   }
 }
 
