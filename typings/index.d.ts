@@ -500,7 +500,7 @@ export class ClientUser extends User {
   public setActivity(options?: ActivityOptions): ClientPresence;
   public setActivity(name: string, options?: ActivityOptions): ClientPresence;
   public setAFK(afk?: boolean, shardId?: number | number[]): ClientPresence;
-  public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
+  public setAvatar(avatar: BufferResolvable | Base64Resolvable | null): Promise<this>;
   public setPresence(data: PresenceData): ClientPresence;
   public setStatus(status: PresenceStatusData, shardId?: number | number[]): ClientPresence;
   public setUsername(username: string): Promise<this>;
@@ -737,25 +737,28 @@ export class Guild extends AnonymousGuild {
   public leave(): Promise<Guild>;
   public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
-  public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
+  public setBanner(banner: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
   public setDefaultMessageNotifications(
     defaultMessageNotifications: DefaultMessageNotificationLevel | number,
     reason?: string,
   ): Promise<Guild>;
-  public setDiscoverySplash(discoverySplash: Base64Resolvable | null, reason?: string): Promise<Guild>;
+  public setDiscoverySplash(
+    discoverySplash: BufferResolvable | Base64Resolvable | null,
+    reason?: string,
+  ): Promise<Guild>;
   public setExplicitContentFilter(
     explicitContentFilter: ExplicitContentFilterLevel | number,
     reason?: string,
   ): Promise<Guild>;
-  public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
+  public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
   public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
   public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRolePositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
-  public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
+  public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
   public setVerificationLevel(verificationLevel: VerificationLevel | number, reason?: string): Promise<Guild>;
@@ -3246,7 +3249,7 @@ export type GuildTextChannelResolvable = TextChannel | NewsChannel | Snowflake;
 export type ChannelResolvable = Channel | Snowflake;
 
 export interface ChannelWebhookCreateOptions {
-  avatar?: BufferResolvable | Base64Resolvable;
+  avatar?: BufferResolvable | Base64Resolvable | null;
   reason?: string;
 }
 
@@ -3368,7 +3371,7 @@ export interface ClientPresenceStatusData {
 
 export interface ClientUserEditData {
   username?: string;
-  avatar?: BufferResolvable | Base64Resolvable;
+  avatar?: BufferResolvable | Base64Resolvable | null;
 }
 
 export interface CloseEvent {
@@ -3893,11 +3896,11 @@ export interface GuildEditData {
   systemChannel?: TextChannelResolvable;
   systemChannelFlags?: SystemChannelFlagsResolvable;
   afkTimeout?: number;
-  icon?: Base64Resolvable;
+  icon?: BufferResolvable | Base64Resolvable | null;
   owner?: GuildMemberResolvable;
-  splash?: Base64Resolvable;
-  discoverySplash?: Base64Resolvable;
-  banner?: Base64Resolvable;
+  splash?: BufferResolvable | Base64Resolvable | null;
+  discoverySplash?: BufferResolvable | Base64Resolvable | null;
+  banner?: BufferResolvable | Base64Resolvable | null;
   rulesChannel?: TextChannelResolvable;
   publicUpdatesChannel?: TextChannelResolvable;
   preferredLocale?: string;
@@ -4759,7 +4762,7 @@ export type WebhookClientOptions = Pick<
 
 export interface WebhookEditData {
   name?: string;
-  avatar?: BufferResolvable;
+  avatar?: BufferResolvable | null;
   channel?: GuildTextChannelResolvable;
 }
 

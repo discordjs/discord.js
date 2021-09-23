@@ -136,7 +136,7 @@ class BaseGuildTextChannel extends GuildChannel {
   /**
    * Options used to create a {@link Webhook} for {@link TextChannel} and {@link NewsChannel}.
    * @typedef {Object} ChannelWebhookCreateOptions
-   * @property {BufferResolvable|Base64Resolvable} [avatar] Avatar for the webhook
+   * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
    * @property {string} [reason] Reason for creating the webhook
    */
 
