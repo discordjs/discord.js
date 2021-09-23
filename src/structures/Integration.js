@@ -6,7 +6,7 @@ const IntegrationApplication = require('./IntegrationApplication');
 /**
  * The information account for an integration
  * @typedef {Object} IntegrationAccount
- * @property {string} id The id of the account
+ * @property {Snowflake|string} id The id of the account
  * @property {string} name The name of the account
  */
 
@@ -25,7 +25,7 @@ class Integration extends Base {
 
     /**
      * The integration id
-     * @type {Snowflake}
+     * @type {Snowflake|string}
      */
     this.id = data.id;
 
@@ -36,7 +36,7 @@ class Integration extends Base {
     this.name = data.name;
 
     /**
-     * The integration type (twitch, youtube, etc)
+     * The integration type (twitch, youtube or discord)
      * @type {string}
      */
     this.type = data.type;
@@ -49,15 +49,25 @@ class Integration extends Base {
 
     /**
      * Whether this integration is syncing
-     * @type {boolean}
+     * @type {?boolean}
      */
     this.syncing = data.syncing;
 
     /**
      * The role that this integration uses for subscribers
-     * @type {Role}
+     * @type {?Role}
      */
     this.role = this.guild.roles.cache.get(data.role_id);
+
+    if ('enable_emoticons' in data) {
+      /**
+       * Whether emoticons should be synced for this integration (twitch only currently)
+       * @type {?boolean}
+       */
+      this.enableEmoticons = data.enable_emoticons;
+    } else {
+      this.enableEmoticons ??= null;
+    }
 
     if (data.user) {
       /**
@@ -77,9 +87,30 @@ class Integration extends Base {
 
     /**
      * The last time this integration was last synced
-     * @type {number}
+     * @type {?number}
      */
     this.syncedAt = data.synced_at;
+
+    if ('subscriber_count' in data) {
+      /**
+       * How many subscribers this integration has
+       * @type {?number}
+       */
+      this.subscriberCount = data.subscriber_count;
+    } else {
+      this.subscriberCount ??= null;
+    }
+
+    if ('revoked' in data) {
+      /**
+       * Whether this integration has been revoked
+       * @type {?boolean}
+       */
+      this.revoked = data.revoked;
+    } else {
+      this.revoked ??= null;
+    }
+
     this._patch(data);
   }
 
@@ -96,13 +127,13 @@ class Integration extends Base {
   _patch(data) {
     /**
      * The behavior of expiring subscribers
-     * @type {number}
+     * @type {?number}
      */
     this.expireBehavior = data.expire_behavior;
 
     /**
      * The grace period before expiring subscribers
-     * @type {number}
+     * @type {?number}
      */
     this.expireGracePeriod = data.expire_grace_period;
 

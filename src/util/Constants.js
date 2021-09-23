@@ -348,6 +348,16 @@ exports.InviteScopes = [
   'webhook.incoming',
 ];
 
+// TODO: change Integration#expireBehavior to this and clean up Integration
+/**
+ * The behavior of expiring subscribers for Integrations. This can be:
+ * * REMOVE_ROLE
+ * * KICK
+ * @typedef {string} IntegrationExpireBehavior
+ * @see {@link https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors}
+ */
+exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
+
 /**
  * The type of a message, e.g. `DEFAULT`. Here are the available types:
  * * DEFAULT

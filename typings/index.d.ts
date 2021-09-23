@@ -725,7 +725,7 @@ export class Guild extends AnonymousGuild {
   public editWelcomeScreen(data: WelcomeScreenEditData): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
   public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
-  public fetchIntegrations(): Promise<Collection<string, Integration>>;
+  public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
   public fetchOwner(options?: FetchOwnerOptions): Promise<GuildMember>;
   public fetchPreview(): Promise<GuildPreview>;
   public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
@@ -769,7 +769,7 @@ export class Guild extends AnonymousGuild {
 export class GuildAuditLogs {
   public constructor(guild: Guild, data: RawGuildAuditLogData);
   private webhooks: Collection<Snowflake, Webhook>;
-  private integrations: Collection<Snowflake, Integration>;
+  private integrations: Collection<Snowflake | string, Integration>;
 
   public entries: Collection<Snowflake, GuildAuditLogsEntry>;
 
@@ -979,17 +979,20 @@ export class Integration extends Base {
   public account: IntegrationAccount;
   public application: IntegrationApplication | null;
   public enabled: boolean;
-  public expireBehavior: number;
-  public expireGracePeriod: number;
+  public expireBehavior: number | undefined;
+  public expireGracePeriod: number | undefined;
   public guild: Guild;
-  public id: Snowflake;
+  public id: Snowflake | string;
   public name: string;
-  public role: Role;
+  public role: Role | undefined;
+  public enableEmoticons: boolean | null;
   public readonly roles: Collection<Snowflake, Role>;
-  public syncedAt: number;
-  public syncing: boolean;
+  public syncedAt: number | undefined;
+  public syncing: boolean | undefined;
   public type: string;
   public user: User | null;
+  public subscriberCount: number | null;
+  public revoked: boolean | null;
   public delete(reason?: string): Promise<Integration>;
 }
 
@@ -2344,6 +2347,7 @@ export const Constants: {
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   ClientApplicationAssetTypes: ConstantsClientApplicationAssetTypes;
+  IntegrationExpireBehaviors: IntegrationExpireBehaviors[];
   InviteScopes: InviteScope[];
   MessageTypes: MessageType[];
   SystemMessageTypes: SystemMessageType[];
@@ -4114,6 +4118,8 @@ export interface CreateInviteOptions {
   targetUser?: UserResolvable;
   targetType?: InviteTargetType;
 }
+
+export type IntegrationExpireBehaviors = 'REMOVE_ROLE' | 'KICK';
 
 export type InviteResolvable = string;
 

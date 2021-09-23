@@ -559,7 +559,7 @@ class Guild extends AnonymousGuild {
   /**
    * Fetches a collection of integrations to this guild.
    * Resolves with a collection mapping integrations by their ids.
-   * @returns {Promise<Collection<string, Integration>>}
+   * @returns {Promise<Collection<Snowflake|string, Integration>>}
    * @example
    * // Fetch integrations
    * guild.fetchIntegrations()
