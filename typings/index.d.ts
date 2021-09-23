@@ -558,6 +558,12 @@ export class CommandInteraction extends BaseCommandInteraction {
 }
 
 export class AutocompleteInteraction extends Interaction {
+  public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
+  public readonly channel: TextBasedChannels | null;
+  public channelId: Snowflake;
+  public commandId: Snowflake;
+  public commandName: string;
+  public responded: boolean;
   public options: CommandInteractionOptionResolver;
   private transformOption(option: APIApplicationCommandOption): CommandInteractionOption;
   public respond(options: ApplicationCommandOptionChoice[]): Promise<void>;
