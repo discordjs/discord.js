@@ -13,6 +13,19 @@ class AutocompleteInteraction extends Interaction {
     super(client, data);
 
     /**
+     * The channel this interaction was sent in
+     * @type {?TextBasedChannels}
+     * @name AutocompleteInteraction#channel
+     * @readonly
+     */
+
+    /**
+     * The id of the channel this interaction was sent in
+     * @type {Snowflake}
+     * @name AutocompleteInteraction#channelId
+     */
+
+    /**
      * The invoked application command's id
      * @type {Snowflake}
      */
@@ -38,6 +51,15 @@ class AutocompleteInteraction extends Interaction {
       this.client,
       data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
     );
+  }
+
+  /**
+   * The invoked application command, if it was fetched before
+   * @type {?ApplicationCommand}
+   */
+  get command() {
+    const id = this.commandId;
+    return this.guild?.commands.cache.get(id) ?? this.client.application.commands.cache.get(id) ?? null;
   }
 
   /**
