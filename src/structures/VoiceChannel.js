@@ -9,22 +9,13 @@ const Permissions = require('../util/Permissions');
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
   /**
-   * Whether the channel is deletable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get deletable() {
-    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
-  }
-
-  /**
    * Whether the channel is editable by the client user
    * @type {boolean}
    * @readonly
    * @deprecated Use {@link VoiceChannel#manageable} instead
    */
   get editable() {
-    return this.manageable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
+    return this.manageable;
   }
 
   /**
