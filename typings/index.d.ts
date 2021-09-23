@@ -2426,7 +2426,7 @@ export class ApplicationCommandManager<
     commands: ApplicationCommandData[],
     guildId: Snowflake,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
-  private static transformCommand(
+  public static transformCommand(
     command: ApplicationCommandData,
   ): Omit<APIApplicationCommand, 'id' | 'application_id' | 'guild_id'>;
 }
