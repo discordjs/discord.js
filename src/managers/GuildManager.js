@@ -12,6 +12,7 @@ const Role = require('../structures/Role');
 const {
   ChannelTypes,
   Events,
+  OverwriteTypes,
   VerificationLevels,
   DefaultMessageNotificationLevels,
   ExplicitContentFilterLevels,
@@ -73,7 +74,7 @@ class GuildManager extends CachedManager {
    * Partial overwrite data.
    * @typedef {Object} PartialOverwriteData
    * @property {Snowflake|number} id The id of the {@link Role} or {@link User} this overwrite belongs to
-   * @property {string} [type] The type of this overwrite
+   * @property {OverwriteType} [type] The type of this overwrite
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
    */
@@ -190,8 +191,15 @@ class GuildManager extends CachedManager {
       if (channel.type) channel.type = ChannelTypes[channel.type.toUpperCase()];
       channel.parent_id = channel.parentId;
       delete channel.parentId;
+      channel.user_limit = channel.userLimit;
+      delete channel.userLimit;
+      channel.rate_limit_per_user = channel.rateLimitPerUser;
+      delete channel.rateLimitPerUser;
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
+        if (typeof overwrite.type === 'string') {
+          overwrite.type = OverwriteTypes[overwrite.type];
+        }
         if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow).toString();
         if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny).toString();
       }
