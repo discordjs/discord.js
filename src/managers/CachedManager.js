@@ -46,8 +46,13 @@ class CachedManager extends DataManager {
   _add(data, cache = true, { id, extras = [] } = {}) {
     const existing = this.cache.get(id ?? data.id);
     if (existing) {
-      if (cache) return existing._patch(data);
-      return existing._clone()._patch(data);
+      if (cache) {
+        existing._patch(data);
+        return existing;
+      }
+      const clone = existing._clone();
+      clone._patch(data);
+      return clone;
     }
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
