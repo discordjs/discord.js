@@ -70,6 +70,7 @@ module.exports = {
   AnonymousGuild: require('./structures/AnonymousGuild'),
   Application: require('./structures/interfaces/Application'),
   ApplicationCommand: require('./structures/ApplicationCommand'),
+  AutocompleteInteraction: require('./structures/AutocompleteInteraction'),
   Base: require('./structures/Base'),
   BaseCommandInteraction: require('./structures/BaseCommandInteraction'),
   BaseGuild: require('./structures/BaseGuild'),
