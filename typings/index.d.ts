@@ -407,7 +407,7 @@ export class Channel extends Base {
   public delete(): Promise<Channel>;
   public fetch(force?: boolean): Promise<Channel>;
   public isText(): this is TextBasedChannels;
-  public isVoice(): this is VoiceChannel | StageChannel;
+  public isVoice(): this is BaseGuildVoiceChannel;
   public isThread(): this is ThreadChannel;
   public toString(): ChannelMention;
 }
