@@ -827,7 +827,7 @@ if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 client.on('interactionCreate', async interaction => {
   if (interaction.isCommand()) {
     assertType<CommandInteraction>(interaction);
-    assertType<CommandInteractionOptionResolver>(interaction.options);
+    assertType<CommandInteractionOptionResolver<CommandInteraction>>(interaction.options);
     assertType<readonly CommandInteractionOption[]>(interaction.options.data);
 
     const optionalOption = interaction.options.get('name');
