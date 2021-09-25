@@ -4510,7 +4510,7 @@ export interface PartialChannelData {
   id?: Snowflake | number;
   name: string;
   topic?: string;
-  type?: ChannelTypes;
+  type?: keyof typeof ChannelTypes;
   parentId?: Snowflake | number;
   permissionOverwrites?: PartialOverwriteData[];
 }
