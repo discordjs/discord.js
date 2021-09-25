@@ -105,6 +105,8 @@ class Webhook {
    * @property {MessageAttachment[]} [attachments] Attachments to send with the message
    * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
+   * @property {Snowflake} [threadId] The id of the thread this message belongs to
+   * <info>For interaction webhooks, this property is ignored</info>
    */
 
   /**
@@ -236,17 +238,43 @@ class Webhook {
   }
 
   /**
+   * Options that can be passed to fetch a message.
+   * @typedef {options} WebhookFetchMessageOptions
+   * @property {boolean} [cache=true] Whether to cache the message.
+   * @property {Snowflake} [threadId] The id of the thread this message belongs to.
+   * <info>For interaction webhooks, this property is ignored</info>
+   */
+
+  /**
    * Gets a message that was sent by this webhook.
    * @param {Snowflake|'@original'} message The id of the message to fetch
-   * @param {boolean} [cache=true] Whether to cache the message
+   * @param {boolean|WebhookFetchMessageOptions} [cacheOrOptions=true|cacheOrOptions={}] If
+   * {@link ClientOptions#allowWebhookThreadFetching} is `true`, this will be {@link WebhookFetchMessageOptions}
+   * to enable fetching messages in threads. Otherwise, this will be the `cache` parameter.
    * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
-  async fetchMessage(message, cache = true) {
+  async fetchMessage(message, cacheOrOptions) {
+    const options = { cache: true, threadId: undefined };
+
+    if (this.client.options.allowedWebhookThreadFetching) {
+      options.cache = cacheOrOptions.cache ?? true;
+      options.threadId = cacheOrOptions.threadId;
+    } else {
+      options.cache = cacheOrOptions ?? true;
+    }
+
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
-    const data = await this.client.api.webhooks(this.id, this.token).messages(message).get();
-    return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ?? data;
+    const data = await this.client.api
+      .webhooks(this.id, this.token)
+      .messages(message)
+      .get({
+        query: {
+          thread_id: options.threadId,
+        },
+      });
+    return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, options.cache) ?? data;
   }
 
   /**
@@ -269,7 +297,13 @@ class Webhook {
     const d = await this.client.api
       .webhooks(this.id, this.token)
       .messages(typeof message === 'string' ? message : message.id)
-      .patch({ data, files });
+      .patch({
+        data,
+        files,
+        query: {
+          thread_id: messagePayload.options.threadId,
+        },
+      });
 
     const messageManager = this.client.channels?.cache.get(d.channel_id)?.messages;
     if (!messageManager) return d;
@@ -294,15 +328,20 @@ class Webhook {
   /**
    * Delete a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to delete
+   * @param {Snowflake} [threadId] The id of the thread this message belongs to
    * @returns {Promise<void>}
    */
-  async deleteMessage(message) {
+  async deleteMessage(message, threadId) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     await this.client.api
       .webhooks(this.id, this.token)
       .messages(typeof message === 'string' ? message : message.id)
-      .delete();
+      .delete({
+        query: {
+          thread_id: threadId,
+        },
+      });
   }
 
   /**

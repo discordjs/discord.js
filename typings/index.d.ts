@@ -2825,12 +2825,15 @@ export function WebhookMixin<T>(Base?: Constructable<T>): Constructable<T & Webh
 export interface PartialWebhookFields {
   id: Snowflake;
   readonly url: string;
-  deleteMessage(message: MessageResolvable | APIMessage | '@original'): Promise<void>;
+  deleteMessage(message: MessageResolvable | APIMessage | '@original', threadId?: Snowflake): Promise<void>;
   editMessage(
     message: MessageResolvable | '@original',
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<Message | APIMessage>;
-  fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | APIMessage>;
+  fetchMessage(
+    message: Snowflake | '@original',
+    cacheOrOptions?: boolean | WebhookFetchMessageOptions,
+  ): Promise<Message | APIMessage>;
   send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message | APIMessage>;
 }
 
@@ -3378,6 +3381,7 @@ export interface ClientOptions {
   ws?: WebSocketOptions;
   http?: HTTPOptions;
   rejectOnRateLimit?: string[] | ((data: RateLimitData) => boolean | Promise<boolean>);
+  allowWebhookThreadFetching?: boolean;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -4779,7 +4783,7 @@ export interface WebhookClientDataURL {
 
 export type WebhookClientOptions = Pick<
   ClientOptions,
-  'allowedMentions' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http'
+  'allowedMentions' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http' | 'allowWebhookThreadFetching'
 >;
 
 export interface WebhookEditData {
@@ -4790,8 +4794,13 @@ export interface WebhookEditData {
 
 export type WebhookEditMessageOptions = Pick<
   WebhookMessageOptions,
-  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments'
+  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments' | 'threadId'
 >;
+
+export interface WebhookFetchMessageOptions {
+  cache?: boolean;
+  threadId?: Snowflake;
+}
 
 export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
   username?: string;
