@@ -51,11 +51,13 @@ class ThreadChannel extends Channel {
   _patch(data, partial = false) {
     super._patch(data);
 
-    /**
-     * The name of the thread
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the thread
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
     if ('guild_id' in data) {
       this.guildId = data.guild_id;

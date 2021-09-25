@@ -37,13 +37,15 @@ class ThreadMember extends Base {
   }
 
   _patch(data) {
-    this.joinedTimestamp = new Date(data.join_timestamp).getTime();
+    if ('join_timestamp' in data) this.joinedTimestamp = new Date(data.join_timestamp).getTime();
 
-    /**
-     * The flags for this thread member
-     * @type {ThreadMemberFlags}
-     */
-    this.flags = new ThreadMemberFlags(data.flags).freeze();
+    if ('flags' in data) {
+      /**
+       * The flags for this thread member
+       * @type {ThreadMemberFlags}
+       */
+      this.flags = new ThreadMemberFlags(data.flags).freeze();
+    }
   }
 
   /**

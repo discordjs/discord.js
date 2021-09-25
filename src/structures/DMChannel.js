@@ -38,17 +38,23 @@ class DMChannel extends Channel {
       this.recipient = this.client.users._add(data.recipients[0]);
     }
 
-    /**
-     * The channel's last message id, if one was sent
-     * @type {?Snowflake}
-     */
-    this.lastMessageId = data.last_message_id;
+    if ('last_message_id' in data) {
+      /**
+       * The channel's last message id, if one was sent
+       * @type {?Snowflake}
+       */
+      this.lastMessageId = data.last_message_id;
+    }
 
-    /**
-     * The timestamp when the last pinned message was pinned, if there was one
-     * @type {?number}
-     */
-    this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+    if ('last_pin_timestamp' in data) {
+      /**
+       * The timestamp when the last pinned message was pinned, if there was one
+       * @type {?number}
+       */
+      this.lastPinTimestamp = new Date(data.last_pin_timestamp).getTime();
+    } else {
+      this.lastPinTimestamp ??= null;
+    }
   }
 
   /**

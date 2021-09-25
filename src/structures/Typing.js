@@ -31,11 +31,13 @@ class Typing extends Base {
   }
 
   _patch(data) {
-    /**
-     * The UNIX timestamp in milliseconds the user started typing at
-     * @type {number}
-     */
-    this.startedTimestamp = data.timestamp * 1_000;
+    if ('timestamp' in data) {
+      /**
+       * The UNIX timestamp in milliseconds the user started typing at
+       * @type {number}
+       */
+      this.startedTimestamp = data.timestamp * 1_000;
+    }
   }
 
   /**

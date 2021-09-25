@@ -23,35 +23,53 @@ class ClientApplication extends Application {
   _patch(data) {
     super._patch(data);
 
-    /**
-     * The flags this application has
-     * @type {ApplicationFlags}
-     */
-    this.flags = 'flags' in data ? new ApplicationFlags(data.flags).freeze() : this.flags;
+    if ('flags' in data) {
+      /**
+       * The flags this application has
+       * @type {ApplicationFlags}
+       */
+      this.flags = new ApplicationFlags(data.flags).freeze();
+    }
 
-    /**
-     * The hash of the application's cover image
-     * @type {?string}
-     */
-    this.cover = data.cover_image ?? this.cover ?? null;
+    if ('cover_image' in data) {
+      /**
+       * The hash of the application's cover image
+       * @type {?string}
+       */
+      this.cover = data.cover_image;
+    } else {
+      this.cover ??= null;
+    }
 
-    /**
-     * The application's RPC origins, if enabled
-     * @type {string[]}
-     */
-    this.rpcOrigins = data.rpc_origins ?? this.rpcOrigins ?? [];
+    if ('rpc_origins' in data) {
+      /**
+       * The application's RPC origins, if enabled
+       * @type {string[]}
+       */
+      this.rpcOrigins = data.rpc_origins;
+    } else {
+      this.rpcOrigins ??= [];
+    }
 
-    /**
-     * If this application's bot requires a code grant when using the OAuth2 flow
-     * @type {?boolean}
-     */
-    this.botRequireCodeGrant = data.bot_require_code_grant ?? this.botRequireCodeGrant ?? null;
+    if ('bot_require_code_grant' in data) {
+      /**
+       * If this application's bot requires a code grant when using the OAuth2 flow
+       * @type {?boolean}
+       */
+      this.botRequireCodeGrant = data.bot_require_code_grant;
+    } else {
+      this.botRequireCodeGrant ??= null;
+    }
 
-    /**
-     * If this application's bot is public
-     * @type {?boolean}
-     */
-    this.botPublic = data.bot_public ?? this.botPublic ?? null;
+    if ('bot_public' in data) {
+      /**
+       * If this application's bot is public
+       * @type {?boolean}
+       */
+      this.botPublic = data.bot_public;
+    } else {
+      this.botPublic ??= null;
+    }
 
     /**
      * The owner of this OAuth application

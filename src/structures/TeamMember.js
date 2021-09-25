@@ -21,23 +21,29 @@ class TeamMember extends Base {
   }
 
   _patch(data) {
-    /**
-     * The permissions this Team Member has with regard to the team
-     * @type {string[]}
-     */
-    this.permissions = data.permissions;
+    if ('permissions' in data) {
+      /**
+       * The permissions this Team Member has with regard to the team
+       * @type {string[]}
+       */
+      this.permissions = data.permissions;
+    }
 
-    /**
-     * The permissions this Team Member has with regard to the team
-     * @type {MembershipState}
-     */
-    this.membershipState = MembershipStates[data.membership_state];
+    if ('membership_state' in data) {
+      /**
+       * The permissions this Team Member has with regard to the team
+       * @type {MembershipState}
+       */
+      this.membershipState = MembershipStates[data.membership_state];
+    }
 
-    /**
-     * The user for this Team Member
-     * @type {User}
-     */
-    this.user = this.client.users._add(data.user);
+    if ('user' in data) {
+      /**
+       * The user for this Team Member
+       * @type {User}
+       */
+      this.user = this.client.users._add(data.user);
+    }
   }
 
   /**
