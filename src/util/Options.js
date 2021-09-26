@@ -71,8 +71,8 @@
  * @property {IntentsResolvable} intents Intents to enable for this connection
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
- * @property {boolean} [allowWebhookThreadFetching] This changes {@link Webhook#fetchMessage}'s second parameter to
- * accept {@link WebhookFetchMessageOptions} which allows the fetching of messages in threads.
+ * @property {boolean} [allowWebhookThreadFetching=false] This changes {@link Webhook#fetchMessage}'s second parameter
+ * to accept {@link WebhookFetchMessageOptions} which allows the fetching of messages in threads.
  */
 
 /**
