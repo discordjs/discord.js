@@ -238,7 +238,7 @@ class Webhook {
   }
 
   /**
-   * Options that can be passed to fetch a message.
+   * Options that can be passed into fetchMessage.
    * @typedef {options} WebhookFetchMessageOptions
    * @property {boolean} [cache=true] Whether to cache the message.
    * @property {Snowflake} [threadId] The id of the thread this message belongs to.
