@@ -116,8 +116,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is voice-based
-   * ({@link VoiceChannel} or {@link StageChannel}).
+   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
    * @returns {boolean}
    */
   isVoice() {

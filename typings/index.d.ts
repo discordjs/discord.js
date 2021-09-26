@@ -25,7 +25,6 @@ import {
   APIActionRowComponent,
   APIApplicationCommand,
   APIApplicationCommandInteractionData,
-  APIApplicationCommandInteractionDataOption,
   APIApplicationCommandOption,
   APIApplicationCommandPermission,
   APIAuditLogChange,
@@ -85,7 +84,6 @@ import {
   RawBaseGuildData,
   RawChannelData,
   RawClientApplicationData,
-  RawCommandInteractionData,
   RawDMChannelData,
   RawEmojiData,
   RawGuildAuditLogData,
@@ -407,7 +405,7 @@ export class Channel extends Base {
   public delete(): Promise<Channel>;
   public fetch(force?: boolean): Promise<Channel>;
   public isText(): this is TextBasedChannels;
-  public isVoice(): this is VoiceChannel | StageChannel;
+  public isVoice(): this is BaseGuildVoiceChannel;
   public isThread(): this is ThreadChannel;
   public toString(): ChannelMention;
 }
@@ -2090,7 +2088,7 @@ export class VoiceState extends Base {
   public setDeaf(deaf?: boolean, reason?: string): Promise<GuildMember>;
   public setMute(mute?: boolean, reason?: string): Promise<GuildMember>;
   public disconnect(reason?: string): Promise<GuildMember>;
-  public setChannel(channel: VoiceChannelResolvable | null, reason?: string): Promise<GuildMember>;
+  public setChannel(channel: GuildVoiceChannelResolvable | null, reason?: string): Promise<GuildMember>;
   public setRequestToSpeak(request?: boolean): Promise<void>;
   public setSuppressed(suppressed?: boolean): Promise<void>;
 }
