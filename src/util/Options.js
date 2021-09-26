@@ -144,6 +144,7 @@ class Options extends null {
         invite: 'https://discord.gg',
         template: 'https://discord.new',
       },
+      allowWebhookThreadFetching: false,
     };
   }
 
