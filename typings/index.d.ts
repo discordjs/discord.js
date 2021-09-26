@@ -2119,7 +2119,7 @@ export class WebhookClient extends WebhookMixin(BaseClient) {
     message: MessageResolvable,
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<APIMessage>;
-  public fetchMessage(message: Snowflake, cache?: boolean): Promise<APIMessage>;
+  public fetchMessage(message: Snowflake, cacheOrOptions?: boolean | WebhookFetchMessageOptions): Promise<APIMessage>;
   public send(options: string | MessagePayload | WebhookMessageOptions): Promise<APIMessage>;
 }
 
