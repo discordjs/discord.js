@@ -1,6 +1,5 @@
 name: Bug report
 description: Report incorrect or unexpected behavior of discord.js
-title: 'Bug: <title>'
 labels: [bug, need repro]
 body:
   - type: markdown
@@ -27,7 +26,7 @@ body:
   - type: textarea
     id: codesample
     attributes:
-      label: Codesample
+      label: Code sample
       description: Include a reproducible, minimal code sample. This will be automatically formatted into code, so no need for backticks.
       render: typescript
       placeholder: |
@@ -59,7 +58,9 @@ body:
     id: node-version
     attributes:
       label: Node.js version
-      description: Which version of Node.js are you using? Run `node --version` in your project directory and paste the output.
+      description: |
+        Which version of Node.js are you using? Run `node --version` in your project directory and paste the output.
+        If you are using TypeScript, please include its version (`npm list typescript`) as well. 
       placeholder: Node.js version 16.6+ is required for version 13.0.0+
     validations:
       required: true
