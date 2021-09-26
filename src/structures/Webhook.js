@@ -257,7 +257,7 @@ class Webhook {
   async fetchMessage(message, cacheOrOptions) {
     const options = { cache: true, threadId: undefined };
 
-    if (this.client.options.allowedWebhookThreadFetching) {
+    if (this.client.options.allowWebhookThreadFetching) {
       options.cache = cacheOrOptions.cache ?? true;
       options.threadId = cacheOrOptions.threadId;
     } else {
