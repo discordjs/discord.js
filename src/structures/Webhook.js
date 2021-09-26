@@ -248,20 +248,16 @@ class Webhook {
   /**
    * Gets a message that was sent by this webhook.
    * @param {Snowflake|'@original'} message The id of the message to fetch
-   * @param {boolean|WebhookFetchMessageOptions} [cacheOrOptions=true|cacheOrOptions={}] If
-   * {@link ClientOptions#allowWebhookThreadFetching} is `true`, this will be {@link WebhookFetchMessageOptions}
-   * to enable fetching messages in threads. Otherwise, this will be the `cache` parameter.
+   * @param {WebhookFetchMessageOptions|boolean} [cacheOrOptions={}] The options to provide to fetch the message.
+   * A boolean may be passed instead to specify whether to cache the message.
    * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
-  async fetchMessage(message, cacheOrOptions) {
-    const options = { cache: true, threadId: undefined };
-
-    if (this.client.options.allowWebhookThreadFetching) {
-      options.cache = cacheOrOptions.cache ?? true;
-      options.threadId = cacheOrOptions.threadId;
+  async fetchMessage(message, cacheOrOptions = { cache: true }) {
+    if (typeof cacheOrOptions === 'object') {
+      cacheOrOptions.cache ??= true;
     } else {
-      options.cache = cacheOrOptions ?? true;
+      cacheOrOptions = { cache: cacheOrOptions };
     }
 
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
@@ -271,10 +267,10 @@ class Webhook {
       .messages(message)
       .get({
         query: {
-          thread_id: options.threadId,
+          thread_id: cacheOrOptions.threadId,
         },
       });
-    return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, options.cache) ?? data;
+    return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cacheOrOptions.cache) ?? data;
   }
 
   /**

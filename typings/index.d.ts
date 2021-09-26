@@ -2119,7 +2119,7 @@ export class WebhookClient extends WebhookMixin(BaseClient) {
     message: MessageResolvable,
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<APIMessage>;
-  public fetchMessage(message: Snowflake, cacheOrOptions?: boolean | WebhookFetchMessageOptions): Promise<APIMessage>;
+  public fetchMessage(message: Snowflake, cacheOrOptions?: WebhookFetchMessageOptions | boolean): Promise<APIMessage>;
   public send(options: string | MessagePayload | WebhookMessageOptions): Promise<APIMessage>;
 }
 
@@ -2832,7 +2832,7 @@ export interface PartialWebhookFields {
   ): Promise<Message | APIMessage>;
   fetchMessage(
     message: Snowflake | '@original',
-    cacheOrOptions?: boolean | WebhookFetchMessageOptions,
+    cacheOrOptions?: WebhookFetchMessageOptions | boolean,
   ): Promise<Message | APIMessage>;
   send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message | APIMessage>;
 }
@@ -3381,7 +3381,6 @@ export interface ClientOptions {
   ws?: WebSocketOptions;
   http?: HTTPOptions;
   rejectOnRateLimit?: string[] | ((data: RateLimitData) => boolean | Promise<boolean>);
-  allowWebhookThreadFetching?: boolean;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -4783,7 +4782,7 @@ export interface WebhookClientDataURL {
 
 export type WebhookClientOptions = Pick<
   ClientOptions,
-  'allowedMentions' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http' | 'allowWebhookThreadFetching'
+  'allowedMentions' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http'
 >;
 
 export interface WebhookEditData {
