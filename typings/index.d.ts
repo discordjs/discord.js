@@ -148,7 +148,7 @@ export class Activity {
   public details: string | null;
   public emoji: Emoji | null;
   public flags: Readonly<ActivityFlags>;
-  public id: Snowflake;
+  public id: string;
   public name: string;
   public party: {
     id: string | null;
@@ -2853,7 +2853,7 @@ export type ActivitiesOptions = Omit<ActivityOptions, 'shardId'>;
 export interface ActivityOptions {
   name?: string;
   url?: string;
-  type?: ActivityType | number;
+  type?: Exclude<ActivityType, 'CUSTOM'> | Exclude<ActivityTypes, ActivityTypes.CUSTOM>;
   shardId?: number | readonly number[];
 }
 
