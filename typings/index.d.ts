@@ -650,12 +650,10 @@ export class CommandInteractionOptionResolver<
   ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
-  public getFocused<
-    T extends InteractionOptionResolverReturn<Type, AutocompleteInteraction, ApplicationCommandOptionChoice>,
-  >(getFull: true): T;
-  public getFocused<T extends InteractionOptionResolverReturn<Type, AutocompleteInteraction, string | number>>(
-    getFull?: boolean,
-  ): T;
+  public getFocused(
+    getFull: true,
+  ): InteractionOptionResolverReturn<Type, AutocompleteInteraction, ApplicationCommandOptionChoice>;
+  public getFocused(getFull?: boolean): InteractionOptionResolverReturn<Type, AutocompleteInteraction, string | number>;
 }
 
 export type InteractionOptionResolverReturn<T, AllowedInteraction, ReturnType> = T extends AllowedInteraction
