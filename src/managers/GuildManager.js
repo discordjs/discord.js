@@ -189,6 +189,7 @@ class GuildManager extends CachedManager {
     }
     for (const channel of channels) {
       if (channel.type) channel.type = ChannelTypes[channel.type.toUpperCase()];
+      if (channel.type) channel.type = typeof channel.type === 'number' ? channel.type : ChannelTypes[channel.type];
       channel.parent_id = channel.parentId;
       delete channel.parentId;
       channel.user_limit = channel.userLimit;

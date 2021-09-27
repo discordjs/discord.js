@@ -4509,7 +4509,27 @@ export type PresenceResolvable = Presence | UserResolvable | Snowflake;
 export interface PartialChannelData {
   id?: Snowflake | number;
   parentId?: Snowflake | number;
-  type?: ChannelTypes;
+  type?: Exclude<
+    keyof typeof ChannelTypes | ChannelTypes,
+    | 'DM'
+    | 'GROUP_DM'
+    | 'GUILD_NEWS'
+    | 'GUILD_STORE'
+    | 'UNKNOWN'
+    | 'GUILD_NEWS_THREAD'
+    | 'GUILD_PUBLIC_THREAD'
+    | 'GUILD_PRIVATE_THREAD'
+    | 'GUILD_STAGE_VOICE'
+    | ChannelTypes.DM
+    | ChannelTypes.GROUP_DM
+    | ChannelTypes.GUILD_NEWS
+    | ChannelTypes.GUILD_STORE
+    | ChannelTypes.UNKNOWN
+    | ChannelTypes.GUILD_NEWS_THREAD
+    | ChannelTypes.GUILD_PUBLIC_THREAD
+    | ChannelTypes.GUILD_PRIVATE_THREAD
+    | ChannelTypes.GUILD_STAGE_VOICE
+  >;
   name: string;
   topic?: string;
   nsfw?: boolean;
