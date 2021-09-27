@@ -826,23 +826,27 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
+  if (interaction.inCachedGuild()) {
+    assertType<GuildMember>(interaction.member);
+  } else if (interaction.inRawGuild()) {
+    assertType<APIInteractionGuildMember>(interaction.member);
+  } else {
+    assertType<APIGuildMember | GuildMember | null>(interaction.member);
+  }
+
   if (interaction.isContextMenu()) {
     if (interaction.inCachedGuild()) {
       assertType<Guild>(interaction.guild);
     }
   }
 
-  if (interaction.isContextMenu() && interaction.inCachedGuild()) {
-    assertType<ContextMenuInteraction<'cached'>>(interaction);
-  }
-
   if (interaction.isCommand()) {
     if (interaction.inRawGuild()) {
       assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
-    }
-
-    if (interaction.inCachedGuild()) {
+    } else if (interaction.inCachedGuild()) {
       assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
+    } else {
+      assertType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
     }
 
     assertType<CommandInteraction>(interaction);

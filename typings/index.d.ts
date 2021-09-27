@@ -266,6 +266,14 @@ export class BaseClient extends EventEmitter {
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
 }
 
+export type GuildCacheMessage<Cached extends GuildCacheState> = CacheTypeReducer<
+  Cached,
+  Message,
+  APIMessage,
+  Message | APIMessage,
+  Message | APIMessage
+>;
+
 export abstract class BaseCommandInteraction<
   Cached extends GuildCacheState = GuildCacheState,
 > extends Interaction<Cached> {
@@ -278,21 +286,13 @@ export abstract class BaseCommandInteraction<
   public ephemeral: boolean | null;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public deferReply(
-    options: InteractionDeferReplyOptions & { fetchReply: true },
-  ): CacheTypeReducer<Cached, Message, APIMessage>;
+  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
-  public editReply(
-    options: string | MessagePayload | WebhookEditMessageOptions,
-  ): Promise<CacheTypeReducer<Cached, Message, APIMessage>>;
-  public fetchReply(): Promise<CacheTypeReducer<Cached, Message, APIMessage>>;
-  public followUp(
-    options: string | MessagePayload | InteractionReplyOptions,
-  ): CacheTypeReducer<Cached, Message, APIMessage>;
-  public reply(
-    options: InteractionReplyOptions & { fetchReply: true },
-  ): Promise<CacheTypeReducer<Cached, Message, APIMessage>>;
+  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
+  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   private transformOption(
     option: APIApplicationCommandOption,
