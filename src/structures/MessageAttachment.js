@@ -106,7 +106,7 @@ class MessageAttachment {
 
     /**
      * Whether this attachment is ephemeral
-     * @type {?boolean}
+     * @type {boolean}
      */
     this.ephemeral = data.ephemeral ?? false;
   }
