@@ -50,7 +50,7 @@ exports.Endpoints = {
         return makeImageUrl(`${root}/avatars/${userId}/${hash}`, { format, size });
       },
       GuildMemberAvatar: (guildId, memberId, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/guilds/${guildId}/users/${memberId}/avatars/${hash}`, { format, size });
       },
       Banner: (id, hash, format, size, dynamic = false) => {
