@@ -1,4 +1,4 @@
-import { APIGuildMember, APIInteractionGuildMember } from 'discord-api-types';
+import { APIGuildMember, APIInteractionGuildMember, APIMessage } from 'discord-api-types';
 import {
   ApplicationCommand,
   ApplicationCommandChoicesData,
@@ -23,6 +23,7 @@ import {
   CommandOptionChoiceResolvableType,
   CommandOptionNonChoiceResolvableType,
   Constants,
+  ContextMenuInteraction,
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
@@ -825,18 +826,25 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
-  // Check member type narrowing
-  if (interaction.inGuild()) {
-    assertType<GuildMember | APIInteractionGuildMember>(interaction.member);
-  } else if (interaction.inCachedGuild()) {
-    assertType<GuildMember>(interaction.member);
-  } else if (interaction.inRawGuild()) {
-    assertType<APIGuildMember>(interaction.member);
+  if (interaction.isContextMenu()) {
+    if (interaction.inCachedGuild()) {
+      assertType<Guild>(interaction.guild);
+    }
   }
 
-  assertType<GuildMember | APIInteractionGuildMember | null>(interaction.member);
+  if (interaction.isContextMenu() && interaction.inCachedGuild()) {
+    assertType<ContextMenuInteraction<'cached'>>(interaction);
+  }
 
   if (interaction.isCommand()) {
+    if (interaction.inRawGuild()) {
+      assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
+    }
+
+    if (interaction.inCachedGuild()) {
+      assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
+    }
+
     assertType<CommandInteraction>(interaction);
     assertType<CommandInteractionOptionResolver>(interaction.options);
     assertType<readonly CommandInteractionOption[]>(interaction.options.data);
