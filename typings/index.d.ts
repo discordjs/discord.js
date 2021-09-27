@@ -1267,7 +1267,7 @@ export class MessageAttachment {
 
   public attachment: BufferResolvable | Stream;
   public contentType: string | null;
-  public ephemeral: boolean | null;
+  public ephemeral: boolean;
   public height: number | null;
   public id: Snowflake;
   public name: string | null;
