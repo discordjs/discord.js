@@ -559,7 +559,7 @@ class Guild extends AnonymousGuild {
   /**
    * Fetches a collection of integrations to this guild.
    * Resolves with a collection mapping integrations by their ids.
-   * @returns {Promise<Collection<string, Integration>>}
+   * @returns {Promise<Collection<Snowflake|string, Integration>>}
    * @example
    * // Fetch integrations
    * guild.fetchIntegrations()
@@ -748,11 +748,11 @@ class Guild extends AnonymousGuild {
    * @property {VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
-   * @property {Base64Resolvable} [icon] The icon of the guild
+   * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
-   * @property {Base64Resolvable} [splash] The invite splash image of the guild
-   * @property {Base64Resolvable} [discoverySplash] The discovery splash image of the guild
-   * @property {Base64Resolvable} [banner] The banner of the guild
+   * @property {?(BufferResolvable|Base64Resolvable)} [splash] The invite splash image of the guild
+   * @property {?(BufferResolvable|Base64Resolvable)} [discoverySplash] The discovery splash image of the guild
+   * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner of the guild
    * @property {DefaultMessageNotificationLevel|number} [defaultMessageNotifications] The default message notification
    * level of the guild
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
@@ -806,11 +806,13 @@ class Guild extends AnonymousGuild {
       _data.system_channel_id = this.client.channels.resolveId(data.systemChannel);
     }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (typeof data.icon !== 'undefined') _data.icon = data.icon;
+    if (typeof data.icon !== 'undefined') _data.icon = await DataResolver.resolveImage(data.icon);
     if (data.owner) _data.owner_id = this.client.users.resolveId(data.owner);
-    if (data.splash) _data.splash = data.splash;
-    if (data.discoverySplash) _data.discovery_splash = data.discoverySplash;
-    if (data.banner) _data.banner = data.banner;
+    if (typeof data.splash !== 'undefined') _data.splash = await DataResolver.resolveImage(data.splash);
+    if (typeof data.discoverySplash !== 'undefined') {
+      _data.discovery_splash = await DataResolver.resolveImage(data.discoverySplash);
+    }
+    if (typeof data.banner !== 'undefined') _data.banner = await DataResolver.resolveImage(data.banner);
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter =
         typeof data.explicitContentFilter === 'number'
@@ -1022,7 +1024,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Sets a new guild icon.
-   * @param {Base64Resolvable|BufferResolvable} icon The new icon of the guild
+   * @param {?(Base64Resolvable|BufferResolvable)} icon The new icon of the guild
    * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
@@ -1031,8 +1033,8 @@ class Guild extends AnonymousGuild {
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
-  async setIcon(icon, reason) {
-    return this.edit({ icon: await DataResolver.resolveImage(icon) }, reason);
+  setIcon(icon, reason) {
+    return this.edit({ icon }, reason);
   }
 
   /**
@@ -1052,7 +1054,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Sets a new guild invite splash image.
-   * @param {Base64Resolvable|BufferResolvable} splash The new invite splash image of the guild
+   * @param {?(Base64Resolvable|BufferResolvable)} splash The new invite splash image of the guild
    * @param {string} [reason] Reason for changing the guild's invite splash image
    * @returns {Promise<Guild>}
    * @example
@@ -1061,13 +1063,13 @@ class Guild extends AnonymousGuild {
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
-  async setSplash(splash, reason) {
-    return this.edit({ splash: await DataResolver.resolveImage(splash) }, reason);
+  setSplash(splash, reason) {
+    return this.edit({ splash }, reason);
   }
 
   /**
    * Sets a new guild discovery splash image.
-   * @param {Base64Resolvable|BufferResolvable} discoverySplash The new discovery splash image of the guild
+   * @param {?(Base64Resolvable|BufferResolvable)} discoverySplash The new discovery splash image of the guild
    * @param {string} [reason] Reason for changing the guild's discovery splash image
    * @returns {Promise<Guild>}
    * @example
@@ -1076,13 +1078,13 @@ class Guild extends AnonymousGuild {
    *   .then(updated => console.log('Updated the guild discovery splash'))
    *   .catch(console.error);
    */
-  async setDiscoverySplash(discoverySplash, reason) {
-    return this.edit({ discoverySplash: await DataResolver.resolveImage(discoverySplash) }, reason);
+  setDiscoverySplash(discoverySplash, reason) {
+    return this.edit({ discoverySplash }, reason);
   }
 
   /**
    * Sets a new guild banner.
-   * @param {Base64Resolvable|BufferResolvable} banner The new banner of the guild
+   * @param {?(Base64Resolvable|BufferResolvable)} banner The new banner of the guild
    * @param {string} [reason] Reason for changing the guild's banner
    * @returns {Promise<Guild>}
    * @example
@@ -1090,8 +1092,8 @@ class Guild extends AnonymousGuild {
    *  .then(updated => console.log('Updated the guild banner'))
    *  .catch(console.error);
    */
-  async setBanner(banner, reason) {
-    return this.edit({ banner: await DataResolver.resolveImage(banner) }, reason);
+  setBanner(banner, reason) {
+    return this.edit({ banner }, reason);
   }
 
   /**

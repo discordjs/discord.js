@@ -548,7 +548,7 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    return this.author.id === this.client.user.id;
+    return Boolean(this.author.id === this.client.user.id && !this.deleted && (!this.guild || this.channel?.viewable));
   }
 
   /**
@@ -557,10 +557,19 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
+    if (this.deleted) {
+      return false;
+    }
+    if (!this.guild) {
+      return this.author.id === this.client.user.id;
+    }
+    // DMChannel does not have viewable property, so check viewable after proved that message is on a guild.
+    if (!this.channel?.viewable) {
+      return false;
+    }
     return Boolean(
-      !this.deleted &&
-        (this.author.id === this.client.user.id ||
-          this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES)),
+      this.author.id === this.client.user.id ||
+        this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false),
     );
   }
 
@@ -572,7 +581,10 @@ class Message extends Base {
   get pinnable() {
     return Boolean(
       !this.system &&
-        (!this.guild || this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false)),
+        !this.deleted &&
+        (!this.guild ||
+          (this.channel?.viewable &&
+            this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
     );
   }
 
@@ -595,14 +607,16 @@ class Message extends Base {
    * @readonly
    */
   get crosspostable() {
-    return (
-      this.channel.type === 'GUILD_NEWS' &&
-      !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
-      this.type === 'DEFAULT' &&
-      this.channel.viewable &&
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES) &&
-      (this.author.id === this.client.user.id ||
-        this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES))
+    const bitfield =
+      Permissions.FLAGS.SEND_MESSAGES |
+      (this.author.id === this.client.user.id ? Permissions.defaultBit : Permissions.FLAGS.MANAGE_MESSAGES);
+    return Boolean(
+      this.channel?.type === 'GUILD_NEWS' &&
+        !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
+        this.type === 'DEFAULT' &&
+        this.channel.viewable &&
+        this.channel.permissionsFor(this.client.user)?.has(bitfield, false) &&
+        !this.deleted,
     );
   }
 

@@ -1,6 +1,5 @@
 name: Feature request
 description: Request a new feature (documented features of the official Discord developer API only!)
-title: 'Feature request: <title>'
 labels: [feature request]
 body:
   - type: markdown

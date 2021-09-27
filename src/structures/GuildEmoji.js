@@ -31,6 +31,8 @@ class GuildEmoji extends BaseGuildEmoji {
      * @private
      */
     Object.defineProperty(this, '_roles', { value: [], writable: true });
+
+    this._patch(data);
   }
 
   /**

@@ -64,7 +64,6 @@ const Messages = {
 
   VOICE_NOT_STAGE_CHANNEL: 'You are only allowed to do this in stage channels.',
 
-  VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
   VOICE_STATE_NOT_OWN:
     'You cannot self-deafen/mute/request to speak on VoiceStates that do not belong to the ClientUser.',
   VOICE_STATE_INVALID_TYPE: name => `${name} must be a boolean.`,

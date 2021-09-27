@@ -125,7 +125,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setMute(mute = true, reason) {
-    return this.member?.edit({ mute }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.guild.members.edit(this.id, { mute }, reason);
   }
 
   /**
@@ -135,7 +135,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setDeaf(deaf = true, reason) {
-    return this.member?.edit({ deaf }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.guild.members.edit(this.id, { deaf }, reason);
   }
 
   /**
@@ -149,13 +149,13 @@ class VoiceState extends Base {
 
   /**
    * Moves the member to a different channel, or disconnects them from the one they're in.
-   * @param {VoiceChannelResolvable|null} channel Channel to move the member to, or `null` if you want to disconnect
-   * them from voice.
+   * @param {GuildVoiceChannelResolvable|null} channel Channel to move the member to, or `null` if you want to
+   * disconnect them from voice.
    * @param {string} [reason] Reason for moving member to another channel or disconnecting
    * @returns {Promise<GuildMember>}
    */
   setChannel(channel, reason) {
-    return this.member?.edit({ channel }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.guild.members.edit(this.id, { channel }, reason);
   }
 
   /**

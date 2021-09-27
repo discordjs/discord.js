@@ -45,7 +45,7 @@ class ClientUser extends User {
    * Data used to edit the logged in client
    * @typedef {Object} ClientUserEditData
    * @property {string} [username] The new username
-   * @property {BufferResolvable|Base64Resolvable} [avatar] The new avatar
+   * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The new avatar
    */
 
   /**
@@ -54,6 +54,7 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    */
   async edit(data) {
+    if (typeof data.avatar !== 'undefined') data.avatar = await DataResolver.resolveImage(data.avatar);
     const newData = await this.client.api.users('@me').patch({ data });
     this.client.token = newData.token;
     const { updated } = this.client.actions.UserUpdate.handle(newData);
@@ -78,7 +79,7 @@ class ClientUser extends User {
 
   /**
    * Sets the avatar of the logged in client.
-   * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
+   * @param {?(BufferResolvable|Base64Resolvable)} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
    * // Set avatar
@@ -86,8 +87,8 @@ class ClientUser extends User {
    *   .then(user => console.log(`New avatar set!`))
    *   .catch(console.error);
    */
-  async setAvatar(avatar) {
-    return this.edit({ avatar: await DataResolver.resolveImage(avatar) });
+  setAvatar(avatar) {
+    return this.edit({ avatar });
   }
 
   /**

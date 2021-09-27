@@ -1,7 +1,7 @@
 'use strict';
 
 const Package = (exports.Package = require('../../package.json'));
-const { Error, RangeError } = require('../errors');
+const { Error, RangeError, TypeError } = require('../errors');
 
 exports.UserAgent = `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
@@ -19,6 +19,7 @@ const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 const AllowedImageSizes = Array.from({ length: 9 }, (e, i) => 2 ** (i + 4));
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
+  if (!['undefined', 'number'].includes(typeof size)) throw new TypeError('INVALID_TYPE', 'size', 'number');
   if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
   return `${root}.${format}${size ? `?size=${size}` : ''}`;
@@ -27,8 +28,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
 /**
  * Options for Image URLs.
  * @typedef {StaticImageURLOptions} ImageURLOptions
- * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
- * animated avatars; the default is false
+ * @property {boolean} [dynamic=false] If true, the format will dynamically change to `gif` for animated avatars.
  */
 
 /**
@@ -45,32 +45,28 @@ exports.Endpoints = {
       Emoji: (emojiId, format = 'webp') => `${root}/emojis/${emojiId}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
-      Avatar: (userId, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+      Avatar: (userId, hash, format, size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/avatars/${userId}/${hash}`, { format, size });
       },
-      Banner: (id, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+      Banner: (id, hash, format, size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/banners/${id}/${hash}`, { format, size });
       },
-      Icon: (guildId, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+      Icon: (guildId, hash, format, size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/icons/${guildId}/${hash}`, { format, size });
       },
-      AppIcon: (appId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-icons/${appId}/${hash}`, { size, format }),
-      AppAsset: (appId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-assets/${appId}/${hash}`, { size, format }),
-      StickerPackBanner: (bannerId, format = 'webp', size) =>
+      AppIcon: (appId, hash, options) => makeImageUrl(`${root}/app-icons/${appId}/${hash}`, options),
+      AppAsset: (appId, hash, options) => makeImageUrl(`${root}/app-assets/${appId}/${hash}`, options),
+      StickerPackBanner: (bannerId, format, size) =>
         makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerId}`, { size, format }),
-      GDMIcon: (channelId, hash, format = 'webp', size) =>
+      GDMIcon: (channelId, hash, format, size) =>
         makeImageUrl(`${root}/channel-icons/${channelId}/${hash}`, { size, format }),
-      Splash: (guildId, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/splashes/${guildId}/${hash}`, { size, format }),
-      DiscoverySplash: (guildId, hash, format = 'webp', size) =>
+      Splash: (guildId, hash, format, size) => makeImageUrl(`${root}/splashes/${guildId}/${hash}`, { size, format }),
+      DiscoverySplash: (guildId, hash, format, size) =>
         makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
-      TeamIcon: (teamId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, { size, format }),
+      TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
         `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
     };
@@ -351,6 +347,16 @@ exports.InviteScopes = [
   'gdm.join',
   'webhook.incoming',
 ];
+
+// TODO: change Integration#expireBehavior to this and clean up Integration
+/**
+ * The behavior of expiring subscribers for Integrations. This can be:
+ * * REMOVE_ROLE
+ * * KICK
+ * @typedef {string} IntegrationExpireBehavior
+ * @see {@link https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors}
+ */
+exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
 
 /**
  * The type of a message, e.g. `DEFAULT`. Here are the available types:
@@ -689,6 +695,7 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * PARAMETER_EARLIER_THAN_CREATION
  * * GUILD_NOT_AVAILABLE_IN_LOCATION
  * * GUILD_MONETIZATION_REQUIRED
+ * * INSUFFICIENT_BOOSTS
  * * TWO_FACTOR_REQUIRED
  * * NO_USERS_WITH_DISCORDTAG_EXIST
  * * REACTION_BLOCKED
@@ -822,6 +829,7 @@ exports.APIErrors = {
   PARAMETER_EARLIER_THAN_CREATION: 50085,
   GUILD_NOT_AVAILABLE_IN_LOCATION: 50095,
   GUILD_MONETIZATION_REQUIRED: 50097,
+  INSUFFICIENT_BOOSTS: 50101,
   TWO_FACTOR_REQUIRED: 60003,
   NO_USERS_WITH_DISCORDTAG_EXIST: 80004,
   REACTION_BLOCKED: 90001,
