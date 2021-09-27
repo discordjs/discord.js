@@ -3080,8 +3080,8 @@ export type ApplicationCommandData =
 
 export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChannelResolvableType;
-  channelTypes?: (keyof typeof ChannelTypes | ChannelTypes)[];
-  channel_types?: ChannelTypes[];
+  channelTypes?: Exclude<keyof typeof ChannelTypes | ChannelTypes, 'UNKNOWN' | ChannelTypes.UNKNOWN>[];
+  channel_types?: Exclude<ChannelTypes, ChannelTypes.UNKNOWN>[];
 }
 
 export interface ApplicationCommandChannelOption extends BaseApplicationCommandOptionsData {
