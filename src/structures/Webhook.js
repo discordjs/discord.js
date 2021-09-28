@@ -254,9 +254,7 @@ class Webhook {
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async fetchMessage(message, cacheOrOptions = { cache: true }) {
-    if (typeof cacheOrOptions === 'object') {
-      cacheOrOptions.cache ??= true;
-    } else {
+    if (typeof cacheOrOptions === 'boolean') {
       cacheOrOptions = { cache: cacheOrOptions };
     }
 
