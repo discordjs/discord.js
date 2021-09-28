@@ -569,7 +569,7 @@ class Message extends Base {
     }
     return Boolean(
       this.author.id === this.client.user.id ||
-        this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false),
+        this.channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false),
     );
   }
 
@@ -579,12 +579,13 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
+    const { channel } = this;
     return Boolean(
       !this.system &&
         !this.deleted &&
         (!this.guild ||
-          (this.channel?.viewable &&
-            this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
+          (channel?.viewable &&
+            channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
     );
   }
 
@@ -610,12 +611,13 @@ class Message extends Base {
     const bitfield =
       Permissions.FLAGS.SEND_MESSAGES |
       (this.author.id === this.client.user.id ? Permissions.defaultBit : Permissions.FLAGS.MANAGE_MESSAGES);
+    const { channel } = this;
     return Boolean(
-      this.channel?.type === 'GUILD_NEWS' &&
+      channel?.type === 'GUILD_NEWS' &&
         !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
         this.type === 'DEFAULT' &&
-        this.channel.viewable &&
-        this.channel.permissionsFor(this.client.user)?.has(bitfield, false) &&
+        channel.viewable &&
+        channel.permissionsFor(this.client.user)?.has(bitfield, false) &&
         !this.deleted,
     );
   }
@@ -645,6 +647,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(options) {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     return this.channel.messages.edit(this, options);
   }
 
@@ -660,6 +663,7 @@ class Message extends Base {
    * }
    */
   crosspost() {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     return this.channel.messages.crosspost(this.id);
   }
 
@@ -673,6 +677,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async pin() {
+    if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     await this.channel.messages.pin(this.id);
     return this;
   }
@@ -687,6 +692,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async unpin() {
+    if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     await this.channel.messages.unpin(this.id);
     return this;
   }
@@ -707,6 +713,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async react(emoji) {
+    if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     emoji = this.client.emojis.resolveIdentifier(emoji);
     await this.channel.messages.react(this.id, emoji);
     return this.client.actions.MessageReactionAdd.handle({
@@ -727,6 +734,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async delete() {
+    if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     await this.channel.messages.delete(this.id);
     return this;
   }
@@ -749,6 +757,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(options) {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     let data;
 
     if (options instanceof MessagePayload) {
@@ -780,6 +789,7 @@ class Message extends Base {
    * @returns {Promise<ThreadChannel>}
    */
   startThread(options = {}) {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
@@ -793,6 +803,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   fetch(force = true) {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     return this.channel.messages.fetch(this.id, { force });
   }
 
