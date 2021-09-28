@@ -98,7 +98,7 @@ class Role extends Base {
     this.icon = data.icon;
 
     /**
-     * The unicode emoji of the role
+     * The name of the unicode emoji for the role
      * @type {?string}
      */
     this.unicodeEmoji = data.unicode_emoji;
@@ -204,7 +204,7 @@ class Role extends Base {
    * @property {PermissionResolvable} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
    * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon for the role
-   * @property {?string} [unicodeEmoji] The unicode emoji for the role
+   * @property {?string} [unicodeEmoji] The name of the unicode emoji for the role
    */
 
   /**
@@ -326,9 +326,14 @@ class Role extends Base {
 
   /**
    * Sets a new unicode emoji for the role.
-   * @param {?string} unicodeEmoji The unicode emoji for the role
+   * @param {?string} unicodeEmoji The name of the new unicode emoji for the role
    * @param {string} [reason] Reason for changing the role's unicode emoji
    * @returns {Promise<Role>}
+   * @example
+   * // Set a new unicode emoji for the role
+   * role.setUnicodeEmoji('robot')
+   *   .then(updated => console.log(`Set unicode emoji for the role to ${updated.unicodeEmoji}`))
+   *   .catch(console.error);
    */
   setUnicodeEmoji(unicodeEmoji, reason) {
     return this.edit({ unicodeEmoji }, reason);
