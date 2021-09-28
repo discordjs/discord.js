@@ -274,7 +274,8 @@ export type GuildCacheMessage<Cached extends GuildCacheState> = CacheTypeReducer
   Message | APIMessage
 >;
 
-interface CachedCommandInteraction<Cached extends GuildCacheState = GuildCacheState> extends CachedInteraction<Cached> {
+export interface GuildCommandInteraction<Cached extends GuildCacheState = GuildCacheState>
+  extends GuildInteraction<Cached> {
   deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   fetchReply(): Promise<GuildCacheMessage<Cached>>;
@@ -291,9 +292,9 @@ export abstract class BaseCommandInteraction extends Interaction {
   public ephemeral: boolean | null;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public inGuild(): this is CachedCommandInteraction<'present'> & this;
-  public inCachedGuild(): this is CachedCommandInteraction<'cached'> & this;
-  public inRawGuild(): this is CachedCommandInteraction<'raw'> & this;
+  public inGuild(): this is GuildCommandInteraction<'present'> & this;
+  public inCachedGuild(): this is GuildCommandInteraction<'cached'> & this;
+  public inRawGuild(): this is GuildCommandInteraction<'raw'> & this;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
@@ -1048,14 +1049,13 @@ type CacheTypeReducer<
   ? PresentType
   : Fallback;
 
-export interface CachedInteraction<Cached extends GuildCacheState = GuildCacheState> extends Interaction {
+export interface GuildInteraction<Cached extends GuildCacheState = GuildCacheState> extends Interaction {
   guildId: CacheTypeReducer<Cached, Snowflake, Snowflake, Snowflake, null>;
   member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   readonly guild: CacheTypeReducer<Cached, Guild, null>;
 }
 
 export class Interaction extends Base {
-  // private readonly __cacheType: Cached; // Refer to https://stackoverflow.com/questions/47841211/type-guards-typescript-inferring-never-but-it-shouldnt as to why this is needed
   public constructor(client: Client, data: RawInteractionData);
   public applicationId: Snowflake;
   public readonly channel: Exclude<TextBasedChannels, PartialDMChannel | DMChannel> | null;
@@ -1070,9 +1070,9 @@ export class Interaction extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
-  public inGuild(): this is CachedInteraction<'present'> & this;
-  public inCachedGuild(): this is CachedInteraction<'cached'> & this;
-  public inRawGuild(): this is CachedInteraction<'raw'> & this;
+  public inGuild(): this is GuildInteraction<'present'> & this;
+  public inCachedGuild(): this is GuildInteraction<'cached'> & this;
+  public inRawGuild(): this is GuildInteraction<'raw'> & this;
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
   public isContextMenu(): this is ContextMenuInteraction;
