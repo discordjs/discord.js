@@ -192,7 +192,7 @@ class RoleManager extends CachedManager {
     }
 
     let icon = data.icon;
-    if (typeof icon !== 'undefined') {
+    if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
       icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
     }
