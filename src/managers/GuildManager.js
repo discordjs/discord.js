@@ -85,7 +85,7 @@ class GuildManager extends CachedManager {
    * @property {Snowflake|number} [id] The channel's id, used to set its parent,
    * this is a placeholder and will be replaced by the API after consumption
    * @property {Snowflake|number} [parentId] The parent id for this channel
-   * @property {ChannelType} [type] The type of the channel
+   * @property {ChannelType|number} [type] The type of the channel
    * @property {string} name The name of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
