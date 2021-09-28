@@ -22,7 +22,7 @@ class BaseGuildEmojiManager extends CachedManager {
 
   /**
    * Data that can be resolved into a GuildEmoji object. This can be:
-   * * A custom emoji identifier
+   * * A Snowflake
    * * A GuildEmoji object
    * * A ReactionEmoji object
    * @typedef {Snowflake|GuildEmoji|ReactionEmoji} EmojiResolvable
