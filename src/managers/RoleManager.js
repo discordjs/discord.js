@@ -105,7 +105,7 @@ class RoleManager extends CachedManager {
    * @property {PermissionResolvable} [permissions] The permissions for the new role
    * @property {number} [position] The position of the new role
    * @property {boolean} [mentionable] Whether or not the new role should be mentionable
-   * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon for the role
+   * @property {?(BufferResolvable|Base64Resolvable|EmojiResolvable)} [icon] The icon for the role
    * @property {?string} [unicodeEmoji] The name of the unicode emoji for the role
    * @property {string} [reason] The reason for creating this role
    */
@@ -134,7 +134,10 @@ class RoleManager extends CachedManager {
     let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
     color &&= resolveColor(color);
     if (typeof permissions !== 'undefined') permissions = new Permissions(permissions);
-    if (icon) icon = await DataResolver.resolveImage(icon);
+    if (icon) {
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
+      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+    }
 
     const data = await this.client.api.guilds(this.guild.id).roles.post({
       data: {
@@ -188,13 +191,19 @@ class RoleManager extends CachedManager {
       });
     }
 
+    let icon = data.icon;
+    if (typeof icon !== 'undefined') {
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
+      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+    }
+
     const _data = {
       name: data.name,
       color: typeof data.color === 'undefined' ? undefined : resolveColor(data.color),
       hoist: data.hoist,
       permissions: typeof data.permissions === 'undefined' ? undefined : new Permissions(data.permissions),
       mentionable: data.mentionable,
-      icon: typeof data.icon === 'undefined' ? undefined : await DataResolver.resolveImage(data.icon),
+      icon,
       unicode_emoji: data.unicodeEmoji,
     };
 
