@@ -1033,7 +1033,7 @@ export class Intents extends BitField<IntentsString> {
   public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
 }
 
-export type GuildCacheState = 'cached' | 'raw' | 'present' | undefined;
+export type GuildCacheState = 'cached' | 'raw' | 'present';
 
 type CacheTypeReducer<
   State extends GuildCacheState,
