@@ -1,6 +1,8 @@
 import { APIInteractionGuildMember } from 'discord-api-types';
 import {
   ApplicationCommand,
+  ApplicationCommandChannelOption,
+  ApplicationCommandChannelOptionData,
   ApplicationCommandChoicesData,
   ApplicationCommandData,
   ApplicationCommandManager,
@@ -752,9 +754,10 @@ declare const applicationSubCommandData: ApplicationCommandSubCommandData;
   assertType<'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND>(applicationSubCommandData.type);
 
   // Check that only subcommands can have no subcommand or subcommand group sub-options.
-  assertType<(ApplicationCommandChoicesData | ApplicationCommandNonOptionsData)[] | undefined>(
-    applicationSubCommandData.options,
-  );
+  assertType<
+    | (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData | ApplicationCommandChannelOptionData)[]
+    | undefined
+  >(applicationSubCommandData.options);
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
