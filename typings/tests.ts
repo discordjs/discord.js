@@ -10,6 +10,8 @@ import {
   ApplicationCommandSubCommandData,
   ApplicationCommandSubGroupData,
   ButtonInteraction,
+  CacheFactory,
+  Caches,
   CategoryChannel,
   Client,
   ClientApplication,

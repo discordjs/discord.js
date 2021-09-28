@@ -284,10 +284,10 @@ export interface GuildCommandInteraction<Cached extends GuildCacheState = GuildC
 
 export abstract class BaseCommandInteraction extends Interaction {
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
+  public readonly channel: TextBasedChannels | null;
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
-  public type: 'APPLICATION_COMMAND';
   public deferred: boolean;
   public ephemeral: boolean | null;
   public replied: boolean;
@@ -1050,15 +1050,16 @@ type CacheTypeReducer<
   : Fallback;
 
 export interface GuildInteraction<Cached extends GuildCacheState = GuildCacheState> extends Interaction {
-  guildId: CacheTypeReducer<Cached, Snowflake, Snowflake, Snowflake, null>;
+  guildId: CacheTypeReducer<Cached, Snowflake>;
   member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   readonly guild: CacheTypeReducer<Cached, Guild, null>;
+  channel: CacheTypeReducer<Cached, Exclude<TextBasedChannels, PartialDMChannel | DMChannel> | null>;
 }
 
 export class Interaction extends Base {
   public constructor(client: Client, data: RawInteractionData);
   public applicationId: Snowflake;
-  public readonly channel: Exclude<TextBasedChannels, PartialDMChannel | DMChannel> | null;
+  public readonly channel: TextBasedChannels | null;
   public channelId: Snowflake | null;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -1387,6 +1388,7 @@ export class MessageComponentInteraction extends Interaction {
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
+
   public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
