@@ -71,7 +71,7 @@ class ModuleImporter extends null {
     const files = context
       .keys()
       // We have all files in our context, so now we filter the files in the correct directory
-      .filter(file => !path.normalize(file).startsWith(pathToDirectory));
+      .filter(file => path.normalize(file).startsWith(pathToDirectory));
 
     return new Map(files.map(file => [file, () => context(file)]));
   }
