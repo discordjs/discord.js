@@ -3111,12 +3111,12 @@ export interface ApplicationCommandSubGroup extends BaseApplicationCommandOption
 
 export interface ApplicationCommandSubCommandData extends BaseApplicationCommandOptionsData {
   type: 'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND;
-  options?: (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData)[];
+  options?: (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData | ApplicationCommandChannelOptionData)[];
 }
 
 export interface ApplicationCommandSubCommand extends BaseApplicationCommandOptionsData {
   type: 'SUB_COMMAND';
-  options?: (ApplicationCommandChoicesOption | ApplicationCommandNonOptions)[];
+  options?: (ApplicationCommandChoicesOption | ApplicationCommandNonOptions | ApplicationCommandChannelOption)[];
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
