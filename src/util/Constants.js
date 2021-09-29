@@ -1146,24 +1146,24 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
 
 /**
- * The status of a {@link GuildEvent}:
+ * The status of a {@link GuildScheduledEvent}:
  * * SCHEDULED
  * * ACTIVE
  * * COMPLETED
  * * CANCELED
- * @typedef {string} GuildEventStatus
+ * @typedef {string} GuildScheduledEventStatus
  */
-exports.GuildEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', 'COMPLETED', 'CANCELED']);
+exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', 'COMPLETED', 'CANCELED']);
 
 /**
- * The entity type of a {@link GuildEvent}:
+ * The entity type of a {@link GuildScheduledEvent}:
  * * NONE
  * * STAGE_INSTANCE
  * * VOICE
  * * LOCATION
- * @typedef {string} GuildEventEntityType
+ * @typedef {string} GuildScheduledEventEntityType
  */
-exports.GuildEventEntityTypes = createEnum(['NONE', 'STAGE_INSTANCE', 'VOICE', 'LOCATION']);
+exports.GuildScheduledEventEntityTypes = createEnum(['NONE', 'STAGE_INSTANCE', 'VOICE', 'LOCATION']);
 
 exports._cleanupSymbol = Symbol('djsCleanup');
 
@@ -1196,8 +1196,9 @@ function createEnum(keys) {
  * The value set for a guild's default message notifications.
  * @property {ExplicitContentFilterLevel} ExplicitContentFilterLevels
  * The value set for the explicit content filter levels for a guild.
- * @property {GuildEventStatus} GuildEventStatuses The status of a {@link GuildEvent}
- * @property {GuildEventEntityType} GuildEventEntityTypes The entity type of a {@link GuildEvent}
+ * @property {GuildScheduledEventStatus} GuildScheduledEventStatuses The status of a {@link GuildScheduledEvent}
+ * @property {GuildScheduledEventEntityType} GuildScheduledEventEntityTypes The entity type of a
+ * {@link GuildScheduledEvent}
  * @property {InteractionResponseType} InteractionResponseTypes The type of an interaction response.
  * @property {InteractionType} InteractionTypes The type of an {@link Interaction} object.
  * @property {MembershipState} MembershipStates The value set for a team member's membership state.

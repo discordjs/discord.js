@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const GuildEvent = require('./GuildEvent');
+const GuildScheduledEvent = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const { StageInstance } = require('./StageInstance');
@@ -232,7 +232,7 @@ class GuildAuditLogs {
    * * An object with an id key if target was deleted
    * * An object where the keys represent either the new value or the old value
    * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
-   * GuildEvent)} AuditLogEntryTarget
+   * GuildScheduledEvent)} AuditLogEntryTarget
    */
 
   /**
@@ -593,7 +593,7 @@ class GuildAuditLogsEntry {
     } else if (targetType === Targets.GUILD_EVENT) {
       this.target =
         guild.events.cache.get(data.target_id) ??
-        new GuildEvent(
+        new GuildScheduledEvent(
           guild.client,
           this.changes.reduce(
             (o, c) => {

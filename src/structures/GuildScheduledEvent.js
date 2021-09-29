@@ -2,7 +2,7 @@
 
 const Base = require('./Base');
 const GuildEventEntityMetadata = require('./GuildEventEntityMetadata');
-const { PrivacyLevels, GuildEventEntityTypes, GuildEventStatuses } = require('../util/Constants');
+const { PrivacyLevels, GuildScheduledEventEntityTypes, GuildScheduledEventStatuses } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -90,15 +90,15 @@ class GuildScheduledEvent extends Base {
 
     /**
      * The status of the guild scheduled event
-     * @type {GuildEventStatus}
+     * @type {GuildScheduledEventStatus}
      */
-    this.status = GuildEventStatuses[data.status];
+    this.status = GuildScheduledEventStatuses[data.status];
 
     /**
      * The entity type of the guild scheduled event
-     * @type {GuildEventEntityType}
+     * @type {GuildScheduledEventEntityType}
      */
-    this.entityType = GuildEventEntityTypes[data.entity_type];
+    this.entityType = GuildScheduledEventEntityTypes[data.entity_type];
 
     /**
      * The entity id

@@ -9,19 +9,19 @@ class GuildScheduledEventDeleteAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
 
     if (guild) {
-      const guildEvent = guild.events._add(data);
-      if (guildEvent) {
-        guild.events.cache.delete(guildEvent.id);
-        guildEvent.deleted = true;
+      const guildScheduledEvent = guild.events._add(data);
+      if (guildScheduledEvent) {
+        guild.events.cache.delete(guildScheduledEvent.id);
+        guildScheduledEvent.deleted = true;
 
         /**
-         * Emitted whenever a guild event is deleted.
+         * Emitted whenever a guild scheduled event is deleted.
          * @event Client#guildScheduledEventDelete
-         * @param {GuildEvent} guildEvent The deleted guild event
+         * @param {GuildScheduledEvent} guildScheduledEvent The deleted guild scheduled event
          */
-        client.emit(Events.GUILD_SCHEDULED_EVENT_DELETE, guildEvent);
+        client.emit(Events.GUILD_SCHEDULED_EVENT_DELETE, guildScheduledEvent);
 
-        return { guildEvent };
+        return { guildScheduledEvent };
       }
     }
 
