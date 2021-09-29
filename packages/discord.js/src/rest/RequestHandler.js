@@ -15,6 +15,13 @@ function parseResponse(res) {
   return res.arrayBuffer();
 }
 
+async function consumeBody(res) {
+  if (res.body === null) return;
+  // eslint-disable-next-line no-unused-vars, no-empty
+  for await (const _chunk of res.body) {
+  }
+}
+
 function getAPIOffset(serverDate) {
   return new Date(serverDate).getTime() - Date.now();
 }
@@ -306,6 +313,8 @@ class RequestHandler {
     if (res.status >= 400 && res.status < 500) {
       // Handle ratelimited requests
       if (res.status === 429) {
+        consumeBody(res);
+
         const isGlobal = this.globalLimited;
         let limit, timeout;
         if (isGlobal) {
@@ -352,6 +361,8 @@ class RequestHandler {
 
     // Handle 5xx responses
     if (res.status >= 500 && res.status < 600) {
+      consumeBody(res);
+
       // Retry the specified number of times for possible serverside issues
       if (request.retries === this.manager.client.options.retryLimit) {
         throw new HTTPError(res.statusText, res.constructor.name, res.status, request);
@@ -361,6 +372,7 @@ class RequestHandler {
       return this.execute(request);
     }
 
+    consumeBody(res);
     // Fallback in the rare case a status code outside the range 200..=599 is returned
     return null;
   }
