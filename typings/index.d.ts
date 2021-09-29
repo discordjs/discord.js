@@ -4538,7 +4538,7 @@ export type PermissionString =
   | 'USE_PRIVATE_THREADS'
   | 'CREATE_PRIVATE_THREADS'
   | 'USE_EXTERNAL_STICKERS'
-  | 'SEND_MESSAGES_IN_THREADS';
+  | 'SEND_MESSAGES_IN_THREADS'
   | 'START_EMBEDDED_ACTIVITIES';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
