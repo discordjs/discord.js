@@ -592,7 +592,7 @@ class GuildAuditLogsEntry {
         );
     } else if (targetType === Targets.GUILD_EVENT) {
       this.target =
-        guild.events.cache.get(data.target_id) ??
+        guild.scheduledEvents.cache.get(data.target_id) ??
         new GuildScheduledEvent(
           guild.client,
           this.changes.reduce(

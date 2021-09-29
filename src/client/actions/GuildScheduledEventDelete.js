@@ -9,9 +9,9 @@ class GuildScheduledEventDeleteAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
 
     if (guild) {
-      const guildScheduledEvent = guild.events._add(data);
+      const guildScheduledEvent = guild.scheduledEvents._add(data);
       if (guildScheduledEvent) {
-        guild.events.cache.delete(guildScheduledEvent.id);
+        guild.scheduledEvents.cache.delete(guildScheduledEvent.id);
         guildScheduledEvent.deleted = true;
 
         /**

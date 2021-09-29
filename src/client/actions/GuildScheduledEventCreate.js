@@ -8,7 +8,7 @@ class GuildScheduledEventCreateAction extends Action {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
     if (guild) {
-      const guildScheduledEvent = guild.events._add(data);
+      const guildScheduledEvent = guild.scheduledEvents._add(data);
 
       /**
        * Emitted whenever a guild scheduled event is created.

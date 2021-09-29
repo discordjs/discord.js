@@ -9,8 +9,8 @@ class GuildScheduledEventUpdateAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
 
     if (guild) {
-      const oldGuildScheduledEvent = guild.events.cache.get(data.id)._clone() ?? null;
-      const newGuildScheduledEvent = guild.events._add(data);
+      const oldGuildScheduledEvent = guild.scheduledEvents.cache.get(data.id)._clone() ?? null;
+      const newGuildScheduledEvent = guild.scheduledEvents._add(data);
 
       /**
        * Emitted whenever a guild scheduled event gets updated.
