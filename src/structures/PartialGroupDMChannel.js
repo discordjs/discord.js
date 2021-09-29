@@ -13,7 +13,7 @@ class PartialGroupDMChannel extends Channel {
 
     /**
      * The name of this Group DM Channel
-     * @type {string}
+     * @type {?string}
      */
     this.name = data.name;
 
