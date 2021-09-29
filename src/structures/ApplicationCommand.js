@@ -2,7 +2,7 @@
 
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
-const { ApplicationCommandOptionTypes, ApplicationCommandTypes } = require('../util/Constants');
+const { ApplicationCommandOptionTypes, ApplicationCommandTypes, ChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -77,6 +77,12 @@ class ApplicationCommand extends Base {
      * @type {boolean}
      */
     this.defaultPermission = data.default_permission;
+
+    /**
+     * Autoincrementing version identifier updated during substantial record changes
+     * @type {Snowflake}
+     */
+    this.version = data.version;
   }
 
   /**
@@ -125,6 +131,12 @@ class ApplicationCommand extends Base {
    * @property {boolean} [required] Whether the option is required
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
+   * @property {ChannelType[]|number[]} [channelTypes] When the option type is channel,
+   * the allowed types of channels that can be selected
+   * @property {number[]} [channel_types] When the option type is channel,
+   * the API data for allowed types of channels that can be selected
+   * <warn>This is provided for compatibility with something like `@discordjs/builders`
+   * and will be discarded when `channelTypes` is present</warn>
    */
 
   /**
@@ -157,6 +169,122 @@ class ApplicationCommand extends Base {
   }
 
   /**
+   * Whether this command equals another command. It compares all properties, so for most operations
+   * it is advisable to just compare `command.id === command2.id` as it is much faster and is often
+   * what most users need.
+   * @param {ApplicationCommand|ApplicationCommandData|APIApplicationCommand} command The command to compare with
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options and choices are in the same
+   * order in the array <info>The client may not always respect this ordering!</info>
+   * @returns {boolean}
+   */
+  equals(command, enforceOptionOrder = false) {
+    // If given an id, check if the id matches
+    if (command.id && this.id !== command.id) return false;
+
+    // Check top level parameters
+    const commandType = typeof command.type === 'string' ? command.type : ApplicationCommandTypes[command.type];
+    if (
+      command.name !== this.name ||
+      ('description' in command && command.description !== this.description) ||
+      ('version' in command && command.version !== this.version) ||
+      (commandType && commandType !== this.type) ||
+      // Future proof for options being nullable
+      // TODO: remove ?? 0 on each when nullable
+      (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
+      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission
+    ) {
+      return false;
+    }
+
+    if (command.options) {
+      return this.constructor.optionsEqual(this.options, command.options, enforceOptionOrder);
+    }
+    return true;
+  }
+
+  /**
+   * Recursively checks that all options for an {@link ApplicationCommand} are equal to the provided options.
+   * In most cases it is better to compare using {@link ApplicationCommand#equals}
+   * @param {ApplicationCommandOptionData[]} existing The options on the existing command,
+   * should be {@link ApplicationCommand#options}
+   * @param {ApplicationCommandOptionData[]|APIApplicationCommandOption[]} options The options to compare against
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options and choices are in the same
+   * order in the array <info>The client may not always respect this ordering!</info>
+   * @returns {boolean}
+   */
+  static optionsEqual(existing, options, enforceOptionOrder = false) {
+    if (existing.length !== options.length) return false;
+    if (enforceOptionOrder) {
+      return existing.every((option, index) => this._optionEquals(option, options[index], enforceOptionOrder));
+    }
+    const newOptions = new Map(options.map(option => [option.name, option]));
+    for (const option of existing) {
+      const foundOption = newOptions.get(option.name);
+      if (!foundOption || !this._optionEquals(option, foundOption)) return false;
+    }
+    return true;
+  }
+
+  /**
+   * Checks that an option for an {@link ApplicationCommand} is equal to the provided option
+   * In most cases it is better to compare using {@link ApplicationCommand#equals}
+   * @param {ApplicationCommandOptionData} existing The option on the existing command,
+   * should be from {@link ApplicationCommand#options}
+   * @param {ApplicationCommandOptionData|APIApplicationCommandOption} option The option to compare against
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options or choices are in the same
+   * order in their array <info>The client may not always respect this ordering!</info>
+   * @returns {boolean}
+   * @private
+   */
+  static _optionEquals(existing, option, enforceOptionOrder = false) {
+    const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
+    if (
+      option.name !== existing.name ||
+      optionType !== existing.type ||
+      option.description !== existing.description ||
+      (option.required ?? (['SUB_COMMAND', 'SUB_COMMAND_GROUP'].includes(optionType) ? undefined : false)) !==
+        existing.required ||
+      option.choices?.length !== existing.choices?.length ||
+      option.options?.length !== existing.options?.length ||
+      (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length
+    ) {
+      return false;
+    }
+
+    if (existing.choices) {
+      if (
+        enforceOptionOrder &&
+        !existing.choices.every(
+          (choice, index) => choice.name === option.choices[index].name && choice.value === option.choices[index].value,
+        )
+      ) {
+        return false;
+      }
+      if (!enforceOptionOrder) {
+        const newChoices = new Map(option.choices.map(choice => [choice.name, choice]));
+        for (const choice of existing.choices) {
+          const foundChoice = newChoices.get(choice.name);
+          if (!foundChoice || foundChoice.value !== choice.value) return false;
+        }
+      }
+    }
+
+    if (existing.channelTypes) {
+      const newTypes = (option.channelTypes ?? option.channel_types).map(type =>
+        typeof type === 'number' ? ChannelTypes[type] : type,
+      );
+      for (const type of existing.channelTypes) {
+        if (!newTypes.includes(type)) return false;
+      }
+    }
+
+    if (existing.options) {
+      return this.optionsEqual(existing.options, option.options, enforceOptionOrder);
+    }
+    return true;
+  }
+
+  /**
    * An option for an application command or subcommand.
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option
@@ -165,6 +293,8 @@ class ApplicationCommand extends Base {
    * @property {boolean} [required] Whether the option is required
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
+   * @property {ChannelType[]} [channelTypes] When the option type is channel,
+   * the allowed types of channels that can be selected
    */
 
   /**
@@ -183,6 +313,7 @@ class ApplicationCommand extends Base {
    */
   static transformOption(option, received) {
     const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
+    const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     return {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
@@ -191,6 +322,11 @@ class ApplicationCommand extends Base {
         option.required ?? (stringType === 'SUB_COMMAND' || stringType === 'SUB_COMMAND_GROUP' ? undefined : false),
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),
+      [channelTypesKey]: received
+        ? option.channel_types?.map(type => ChannelTypes[type])
+        : option.channelTypes?.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)) ??
+          // When transforming to API data, accept API data
+          option.channel_types,
     };
   }
 }

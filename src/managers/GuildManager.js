@@ -146,7 +146,7 @@ class GuildManager extends CachedManager {
    * @property {DefaultMessageNotificationLevel|number} [defaultMessageNotifications] The default message notifications
    * for the guild
    * @property {ExplicitContentFilterLevel} [explicitContentFilter] The explicit content filter level for the guild
-   * @property {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @property {?(BufferResolvable|Base64Resolvable)} [icon=null] The icon for the guild
    * @property {PartialRoleData[]} [roles=[]] The roles for this guild,
    * the first element of this array is used to change properties of the guild's everyone role.
    * @property {Snowflake|number} [systemChannelId] The system channel's id
@@ -238,7 +238,7 @@ class GuildManager extends CachedManager {
         this.client.removeListener(Events.GUILD_CREATE, handleGuild);
         this.client.decrementMaxListeners();
         resolve(this.client.guilds._add(data));
-      }, 10000).unref();
+      }, 10_000).unref();
     });
   }
 

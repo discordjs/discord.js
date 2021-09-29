@@ -174,7 +174,7 @@ class GuildAuditLogs {
 
     /**
      * Cached integrations
-     * @type {Collection<Snowflake, Integration>}
+     * @type {Collection<Snowflake|string, Integration>}
      * @private
      */
     this.integrations = new Collection();

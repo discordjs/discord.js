@@ -116,8 +116,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is voice-based
-   * ({@link VoiceChannel} or {@link StageChannel}).
+   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
    * @returns {boolean}
    */
   isVoice() {
@@ -133,14 +132,14 @@ class Channel extends Base {
   }
 
   static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
-    if (!CategoryChannel) CategoryChannel = require('./CategoryChannel');
-    if (!DMChannel) DMChannel = require('./DMChannel');
-    if (!NewsChannel) NewsChannel = require('./NewsChannel');
-    if (!StageChannel) StageChannel = require('./StageChannel');
-    if (!StoreChannel) StoreChannel = require('./StoreChannel');
-    if (!TextChannel) TextChannel = require('./TextChannel');
-    if (!ThreadChannel) ThreadChannel = require('./ThreadChannel');
-    if (!VoiceChannel) VoiceChannel = require('./VoiceChannel');
+    CategoryChannel ??= require('./CategoryChannel');
+    DMChannel ??= require('./DMChannel');
+    NewsChannel ??= require('./NewsChannel');
+    StageChannel ??= require('./StageChannel');
+    StoreChannel ??= require('./StoreChannel');
+    TextChannel ??= require('./TextChannel');
+    ThreadChannel ??= require('./ThreadChannel');
+    VoiceChannel ??= require('./VoiceChannel');
 
     let channel;
     if (!data.guild_id && !guild) {
@@ -151,7 +150,7 @@ class Channel extends Base {
         channel = new PartialGroupDMChannel(client, data);
       }
     } else {
-      if (!guild) guild = client.guilds.cache.get(data.guild_id);
+      guild ??= client.guilds.cache.get(data.guild_id);
 
       if (guild || allowUnknownGuild) {
         switch (data.type) {

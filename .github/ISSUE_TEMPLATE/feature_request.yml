@@ -1,0 +1,35 @@
+name: Feature request
+description: Request a new feature (documented features of the official Discord developer API only!)
+labels: [feature request]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We can only implement features that Discord publishes, documents and merges into the Discord API documentation.
+        We do not implement unreleased features.
+        Use Discord for questions: https://discord.gg/djs
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature
+      description: A clear and concise description of what the problem is, or what feature you want to be implemented.
+      placeholder: I'm always frustrated when..., Discord has recently released..., A good addition would be...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Ideal solution or implementation
+      description: A clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative solutions or implementations
+      description: A clear and concise description of any alternative solutions or features you have considered.
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Other context
+      description: Any other context, screenshots, or file uploads that help us understand your feature request.

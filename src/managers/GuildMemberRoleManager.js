@@ -102,7 +102,7 @@ class GuildMemberRoleManager extends DataManager {
         resolvedRoles.push(resolvedRole);
       }
 
-      const newRoles = [...new Set(resolvedRoles.concat(...this.cache.values()))];
+      const newRoles = [...new Set(resolvedRoles.concat(...this.cache.keys()))];
       return this.set(newRoles, reason);
     } else {
       roleOrRoles = this.guild.roles.resolveId(roleOrRoles);

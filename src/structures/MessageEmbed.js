@@ -8,13 +8,6 @@ const Util = require('../util/Util');
  */
 class MessageEmbed {
   /**
-   * @name MessageEmbed
-   * @kind constructor
-   * @memberof MessageEmbed
-   * @param {MessageEmbed|MessageEmbedOptions} [data={}] MessageEmbed to clone or raw embed data
-   */
-
-  /**
    * A `Partial` object is a representation of any existing object.
    * This object contains between 0 and all of the original objects parameters.
    * This is true regardless of whether the parameters are optional in the base object.
@@ -37,6 +30,10 @@ class MessageEmbed {
    * @property {Partial<MessageEmbedFooter>} [footer] The footer of this embed
    */
 
+  // eslint-disable-next-line valid-jsdoc
+  /**
+   * @param {MessageEmbed|MessageEmbedOptions|APIEmbed} [data={}] MessageEmbed to clone or raw embed data
+   */
   constructor(data = {}, skipValidation = false) {
     this.setup(data, skipValidation);
   }
@@ -374,7 +371,8 @@ class MessageEmbed {
 
   /**
    * Sets the timestamp of this embed.
-   * @param {Date|number} [timestamp=Date.now()] The timestamp or date
+   * @param {Date|number|null} [timestamp=Date.now()] The timestamp or date.
+   * If `null` then the timestamp will be unset (i.e. when editing an existing {@link MessageEmbed})
    * @returns {MessageEmbed}
    */
   setTimestamp(timestamp = Date.now()) {

@@ -60,6 +60,16 @@ class MessageActionRow extends BaseMessageComponent {
   }
 
   /**
+   * Sets the components of the action row.
+   * @param {...MessageActionRowComponentResolvable[]} components The components to set
+   * @returns {MessageActionRow}
+   */
+  setComponents(...components) {
+    this.spliceComponents(0, this.components.length, components);
+    return this;
+  }
+
+  /**
    * Removes, replaces, and inserts components in the action row.
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of components to remove

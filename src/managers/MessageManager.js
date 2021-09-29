@@ -178,7 +178,7 @@ class MessageManager extends CachedManager {
 
   /**
    * Adds a reaction to a message, even if it's not cached.
-   * @param {MessageResolvable} message The messag to react to
+   * @param {MessageResolvable} message The message to react to
    * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<void>}
    */

@@ -102,6 +102,7 @@ class Webhook {
    * @property {string} [content] See {@link BaseMessageOptions#content}
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] See {@link BaseMessageOptions#files}
    * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
+   * @property {MessageAttachment[]} [attachments] Attachments to send with the message
    * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
@@ -188,7 +189,7 @@ class Webhook {
    *     'color': '#F0F',
    *     'footer_icon': 'http://snek.s3.amazonaws.com/topSnek.png',
    *     'footer': 'Powered by sneks',
-   *     'ts': Date.now() / 1000
+   *     'ts': Date.now() / 1_000
    *   }]
    * }).catch(console.error);
    * @see {@link https://api.slack.com/messaging/webhooks}
@@ -208,7 +209,7 @@ class Webhook {
    * Options used to edit a {@link Webhook}.
    * @typedef {Object} WebhookEditData
    * @property {string} [name=this.name] The new name for the webhook
-   * @property {BufferResolvable} [avatar] The new avatar for the webhook
+   * @property {?(BufferResolvable)} [avatar] The new avatar for the webhook
    * @property {GuildTextChannelResolvable} [channel] The new channel for the webhook
    */
 

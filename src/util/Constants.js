@@ -1,7 +1,7 @@
 'use strict';
 
 const Package = (exports.Package = require('../../package.json'));
-const { Error, RangeError } = require('../errors');
+const { Error, RangeError, TypeError } = require('../errors');
 
 exports.UserAgent = `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
@@ -19,6 +19,7 @@ const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 const AllowedImageSizes = Array.from({ length: 9 }, (e, i) => 2 ** (i + 4));
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
+  if (!['undefined', 'number'].includes(typeof size)) throw new TypeError('INVALID_TYPE', 'size', 'number');
   if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
   return `${root}.${format}${size ? `?size=${size}` : ''}`;
@@ -27,8 +28,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
 /**
  * Options for Image URLs.
  * @typedef {StaticImageURLOptions} ImageURLOptions
- * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
- * animated avatars; the default is false
+ * @property {boolean} [dynamic=false] If true, the format will dynamically change to `gif` for animated avatars.
  */
 
 /**
@@ -45,30 +45,32 @@ exports.Endpoints = {
       Emoji: (emojiId, format = 'webp') => `${root}/emojis/${emojiId}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
-      Avatar: (userId, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+      Avatar: (userId, hash, format, size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/avatars/${userId}/${hash}`, { format, size });
       },
-      Banner: (guildId, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/banners/${guildId}/${hash}`, { format, size }),
-      Icon: (guildId, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+      GuildMemberAvatar: (guildId, memberId, hash, format = 'webp', size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
+        return makeImageUrl(`${root}/guilds/${guildId}/users/${memberId}/avatars/${hash}`, { format, size });
+      },
+      Banner: (id, hash, format, size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
+        return makeImageUrl(`${root}/banners/${id}/${hash}`, { format, size });
+      },
+      Icon: (guildId, hash, format, size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/icons/${guildId}/${hash}`, { format, size });
       },
-      AppIcon: (appId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-icons/${appId}/${hash}`, { size, format }),
-      AppAsset: (appId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-assets/${appId}/${hash}`, { size, format }),
-      StickerPackBanner: (bannerId, format = 'webp', size) =>
+      AppIcon: (appId, hash, options) => makeImageUrl(`${root}/app-icons/${appId}/${hash}`, options),
+      AppAsset: (appId, hash, options) => makeImageUrl(`${root}/app-assets/${appId}/${hash}`, options),
+      StickerPackBanner: (bannerId, format, size) =>
         makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerId}`, { size, format }),
-      GDMIcon: (channelId, hash, format = 'webp', size) =>
+      GDMIcon: (channelId, hash, format, size) =>
         makeImageUrl(`${root}/channel-icons/${channelId}/${hash}`, { size, format }),
-      Splash: (guildId, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/splashes/${guildId}/${hash}`, { size, format }),
-      DiscoverySplash: (guildId, hash, format = 'webp', size) =>
+      Splash: (guildId, hash, format, size) => makeImageUrl(`${root}/splashes/${guildId}/${hash}`, { size, format }),
+      DiscoverySplash: (guildId, hash, format, size) =>
         makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
-      TeamIcon: (teamId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, { size, format }),
+      TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
         `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
     };
@@ -350,6 +352,16 @@ exports.InviteScopes = [
   'webhook.incoming',
 ];
 
+// TODO: change Integration#expireBehavior to this and clean up Integration
+/**
+ * The behavior of expiring subscribers for Integrations. This can be:
+ * * REMOVE_ROLE
+ * * KICK
+ * @typedef {string} IntegrationExpireBehavior
+ * @see {@link https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors}
+ */
+exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
+
 /**
  * The type of a message, e.g. `DEFAULT`. Here are the available types:
  * * DEFAULT
@@ -374,6 +386,7 @@ exports.InviteScopes = [
  * * APPLICATION_COMMAND
  * * THREAD_STARTER_MESSAGE
  * * GUILD_INVITE_REMINDER
+ * * CONTEXT_MENU_COMMAND
  * @typedef {string} MessageType
  * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-types}
  */
@@ -401,6 +414,7 @@ exports.MessageTypes = [
   'APPLICATION_COMMAND',
   'THREAD_STARTER_MESSAGE',
   'GUILD_INVITE_REMINDER',
+  'CONTEXT_MENU_COMMAND',
 ];
 
 /**
@@ -408,10 +422,11 @@ exports.MessageTypes = [
  * * DEFAULT
  * * REPLY
  * * APPLICATION_COMMAND
+ * * CONTEXT_MENU_COMMAND
  * @typedef {string} SystemMessageType
  */
 exports.SystemMessageTypes = exports.MessageTypes.filter(
-  type => type && !['DEFAULT', 'REPLY', 'APPLICATION_COMMAND'].includes(type),
+  type => type && !['DEFAULT', 'REPLY', 'APPLICATION_COMMAND', 'CONTEXT_MENU_COMMAND'].includes(type),
 );
 
 /**
@@ -636,6 +651,8 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * MAXIMUM_NON_GUILD_MEMBERS_BANS
  * * MAXIMUM_BAN_FETCHES
  * * MAXIMUM_NUMBER_OF_STICKERS_REACHED
+ * * MAXIMUM_PRUNE_REQUESTS
+ * * MAXIMUM_GUILD_WIDGET_SETTINGS_UPDATE
  * * UNAUTHORIZED
  * * ACCOUNT_VERIFICATION_REQUIRED
  * * DIRECT_MESSAGES_TOO_FAST
@@ -682,11 +699,13 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * PARAMETER_EARLIER_THAN_CREATION
  * * GUILD_NOT_AVAILABLE_IN_LOCATION
  * * GUILD_MONETIZATION_REQUIRED
+ * * INSUFFICIENT_BOOSTS
  * * TWO_FACTOR_REQUIRED
  * * NO_USERS_WITH_DISCORDTAG_EXIST
  * * REACTION_BLOCKED
  * * RESOURCE_OVERLOADED
  * * STAGE_ALREADY_OPEN
+ * * CANNOT_REPLY_WITHOUT_READ_MESSAGE_HISTORY_PERMISSION
  * * MESSAGE_ALREADY_HAS_THREAD
  * * THREAD_LOCKED
  * * MAXIMUM_ACTIVE_THREADS
@@ -764,6 +783,8 @@ exports.APIErrors = {
   MAXIMUM_NON_GUILD_MEMBERS_BANS: 30035,
   MAXIMUM_BAN_FETCHES: 30037,
   MAXIMUM_NUMBER_OF_STICKERS_REACHED: 30039,
+  MAXIMUM_PRUNE_REQUESTS: 30040,
+  MAXIMUM_GUILD_WIDGET_SETTINGS_UPDATE: 30042,
   UNAUTHORIZED: 40001,
   ACCOUNT_VERIFICATION_REQUIRED: 40002,
   DIRECT_MESSAGES_TOO_FAST: 40003,
@@ -812,11 +833,13 @@ exports.APIErrors = {
   PARAMETER_EARLIER_THAN_CREATION: 50085,
   GUILD_NOT_AVAILABLE_IN_LOCATION: 50095,
   GUILD_MONETIZATION_REQUIRED: 50097,
+  INSUFFICIENT_BOOSTS: 50101,
   TWO_FACTOR_REQUIRED: 60003,
   NO_USERS_WITH_DISCORDTAG_EXIST: 80004,
   REACTION_BLOCKED: 90001,
   RESOURCE_OVERLOADED: 130000,
   STAGE_ALREADY_OPEN: 150006,
+  CANNOT_REPLY_WITHOUT_READ_MESSAGE_HISTORY_PERMISSION: 160002,
   MESSAGE_ALREADY_HAS_THREAD: 160004,
   THREAD_LOCKED: 160005,
   MAXIMUM_ACTIVE_THREADS: 160006,
@@ -893,6 +916,7 @@ exports.OverwriteTypes = createEnum(['role', 'member']);
  * * USER
  * * MESSAGE
  * @typedef {string} ApplicationCommandType
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-types}
  */
 exports.ApplicationCommandTypes = createEnum([null, 'CHAT_INPUT', 'USER', 'MESSAGE']);
 
@@ -940,7 +964,7 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * * APPLICATION_COMMAND
  * * MESSAGE_COMPONENT
  * @typedef {string} InteractionType
- * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-request-type}
+ * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-type}
  */
 exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND', 'MESSAGE_COMPONENT']);
 

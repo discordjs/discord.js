@@ -81,9 +81,17 @@
  */
 
 /**
+ * HTTPS Agent options.
+ * @typedef {Object} AgentOptions
+ * @see {@link https://nodejs.org/api/https.html#https_class_https_agent}
+ * @see {@link https://nodejs.org/api/http.html#http_new_agent_options}
+ */
+
+/**
  * HTTP options
  * @typedef {Object} HTTPOptions
  * @property {number} [version=9] API version to use
+ * @property {AgentOptions} [agent={}] HTTPS Agent options
  * @property {string} [api='https://discord.com/api'] Base url of the API
  * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
  * @property {string} [invite='https://discord.gg'] Base url of invites
@@ -107,8 +115,8 @@ class Options extends null {
       messageSweepInterval: 0,
       invalidRequestWarningInterval: 0,
       partials: [],
-      restWsBridgeTimeout: 5000,
-      restRequestTimeout: 15000,
+      restWsBridgeTimeout: 5_000,
+      restRequestTimeout: 15_000,
       restGlobalRateLimit: 0,
       retryLimit: 1,
       restTimeOffset: 500,
@@ -127,6 +135,7 @@ class Options extends null {
         version: 9,
       },
       http: {
+        agent: {},
         version: 9,
         api: 'https://discord.com/api',
         cdn: 'https://cdn.discordapp.com',
