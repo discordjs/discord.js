@@ -6,31 +6,31 @@ const { PrivacyLevels, GuildEventEntityTypes, GuildEventStatuses } = require('..
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
- * Represents an event in a {@link Guild}.
+ * Represents a scheduled event of a {@link Guild}.
  * @extends {Base}
  */
-class GuildEvent extends Base {
+class GuildScheduledEvent extends Base {
   /**
    * @param {Client} client The instantiating client
-   * @param {APIGuildEvent} data The data for the guild event
+   * @param {APIGuildScheduledEvent} data The data for the guild scheduled event
    */
   constructor(client, data) {
     super(client);
 
     /**
-     * The guild event's id
+     * The id of the guild scheduled event
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The id of the guild this event belongs to
+     * The id of the guild this guild scheduled event belongs to
      * @type {Snowflake}
      */
     this.guildId = data.guild_id;
 
     /**
-     * Whether the guild event has been deleted
+     * Whether the guild scheduled event has been deleted
      * @type {boolean}
      */
     this.deleted = false;
@@ -41,21 +41,21 @@ class GuildEvent extends Base {
   _patch(data) {
     if ('channel_id' in data) {
       /**
-       * The id of the stage channel this event belongs to
+       * The id of the channel this guild scheduled event belongs to
        * @type {Snowflake}
        */
       this.channelId = data.channel_id;
     }
 
     /**
-     * The name of the guild event
+     * The name of the guild scheduled event
      * @type {string}
      */
     this.name = data.name;
 
     if ('description' in data) {
       /**
-       * The description of the guild event
+       * The description of the guild scheduled event
        * @type {string}
        */
       this.description = data.description;
@@ -63,39 +63,39 @@ class GuildEvent extends Base {
 
     if ('image' in data) {
       /**
-       * The image of the guild event
+       * The image of the guild scheduled event
        * @type {string}
        */
       this.image = data.image;
     }
 
     /**
-     * The timestamp at which the guild scheduled event will start
+     * The timestamp the guild scheduled event will start at
      * @type {number}
      */
     this.scheduledStartTime = data.scheduled_start_time;
 
     /**
-     * The timestamp at which the guild scheduled event will end,
+     * The timestamp the guild scheduled event will end at,
      * or `null` if the event does not have a scheduled time to end
      * @type {?number}
      */
     this.scheduledEndTime = data.scheduled_end_time;
 
     /**
-     * The privacy level of the guild event
+     * The privacy level of the guild scheduled event
      * @type {PrivacyLevel}
      */
     this.privacyLevel = PrivacyLevels[data.privacy_level];
 
     /**
-     * The status of the guild event
+     * The status of the guild scheduled event
      * @type {GuildEventStatus}
      */
     this.status = GuildEventStatuses[data.status];
 
     /**
-     * The entity type of the guild event
+     * The entity type of the guild scheduled event
      * @type {GuildEventEntityType}
      */
     this.entityType = GuildEventEntityTypes[data.entity_type];
@@ -107,7 +107,7 @@ class GuildEvent extends Base {
     this.entityId = data.entity_id;
 
     /**
-     * The metadata for the guild event
+     * The metadata for the guild scheduled event
      * @type {GuildEventEntityMetadata}
      */
     this.entityMetadata = new GuildEventEntityMetadata(data.entity_metadata);
@@ -127,7 +127,7 @@ class GuildEvent extends Base {
 
     if ('user_count' in data) {
       /**
-       * The number of users who are subscribed to this guild event
+       * The number of users who are subscribed to this guild scheduled event
        * @type {number}
        */
       this.userCount = data.user_count;
@@ -153,7 +153,7 @@ class GuildEvent extends Base {
   }
 
   /**
-   * The time at which the guild scheduled event will start
+   * The time the guild scheduled event will start at
    * @type {Date}
    * @readonly
    */
@@ -162,7 +162,7 @@ class GuildEvent extends Base {
   }
 
   /**
-   * The time at which the guild scheduled event will end,
+   * The time the guild scheduled event will end at,
    * or `null` if the event does not have a scheduled time to end
    * @type {?Date}
    * @readonly
@@ -172,4 +172,4 @@ class GuildEvent extends Base {
   }
 }
 
-module.exports = GuildEvent;
+module.exports = GuildScheduledEvent;
