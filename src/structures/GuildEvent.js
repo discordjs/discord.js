@@ -3,6 +3,7 @@
 const Base = require('./Base');
 const GuildEventEntityMetadata = require('./GuildEventEntityMetadata');
 const { PrivacyLevels, GuildEventEntityTypes, GuildEventStatuses } = require('../util/Constants');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents an event in a {@link Guild}.
@@ -69,14 +70,15 @@ class GuildEvent extends Base {
     }
 
     /**
-     * The time at which the guild event will start
-     * @type {Date}
+     * The timestamp at which the guild scheduled event will start
+     * @type {number}
      */
     this.scheduledStartTime = data.scheduled_start_time;
 
     /**
-     * The time at which the guild event will end, or `null` if the event does not have a scheduled time to end
-     * @type {?Date}
+     * The timestamp at which the guild scheduled event will end,
+     * or `null` if the event does not have a scheduled time to end
+     * @type {?number}
      */
     this.scheduledEndTime = data.scheduled_end_time;
 
@@ -130,6 +132,43 @@ class GuildEvent extends Base {
        */
       this.userCount = data.user_count;
     }
+  }
+
+  /**
+   * The timestamp the guild scheduled event was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the guild scheduled event was created at
+   * @type {Date}
+   * @readonly
+   */
+  get cretedAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The time at which the guild scheduled event will start
+   * @type {Date}
+   * @readonly
+   */
+  get scheduledStartAt() {
+    return new Date(this.scheduledStartTime);
+  }
+
+  /**
+   * The time at which the guild scheduled event will end,
+   * or `null` if the event does not have a scheduled time to end
+   * @type {?Date}
+   * @readonly
+   */
+  get scheduledEndAt() {
+    return this.scheduledEndTime ? new Date(this.scheduledEndTime) : null;
   }
 }
 
