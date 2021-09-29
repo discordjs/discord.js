@@ -94,7 +94,7 @@ const Messages = {
   GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
   CHANNEL_NOT_CACHED: 'Could not find the channel where this message came from in the cache!',
   STAGE_CHANNEL_RESOLVE: 'Could not resolve channel to a stage channel.',
-  GUILD_EVENT_RESOLVE: 'Could not resolve the guild event.',
+  GUILD_SCHEDULED_EVENT_RESOLVE: 'Could not resolve the guild scheduled event.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,

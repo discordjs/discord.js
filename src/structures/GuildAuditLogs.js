@@ -25,7 +25,7 @@ const Util = require('../util/Util');
  * * STAGE_INSTANCE
  * * STICKER
  * * THREAD
- * * GUILD_EVENT
+ * * GUILD_SCHEDULED_EVENT
  * @typedef {string} AuditLogTargetType
  */
 
@@ -37,7 +37,7 @@ const Util = require('../util/Util');
 const Targets = {
   ALL: 'ALL',
   GUILD: 'GUILD',
-  GUILD_EVENT: 'GUILD_EVENT',
+  GUILD_SCHEDULED_EVENT: 'GUILD_SCHEDULED_EVENT',
   CHANNEL: 'CHANNEL',
   USER: 'USER',
   ROLE: 'ROLE',
@@ -252,7 +252,7 @@ class GuildAuditLogs {
     if (target < 83) return Targets.INTEGRATION;
     if (target < 86) return Targets.STAGE_INSTANCE;
     if (target < 100) return Targets.STICKER;
-    if (target < 110) return Targets.GUILD_EVENT;
+    if (target < 110) return Targets.GUILD_SCHEDULED_EVENT;
     if (target < 120) return Targets.THREAD;
     return Targets.UNKNOWN;
   }
@@ -590,7 +590,7 @@ class GuildAuditLogsEntry {
             { id: data.target_id },
           ),
         );
-    } else if (targetType === Targets.GUILD_EVENT) {
+    } else if (targetType === Targets.GUILD_SCHEDULED_EVENT) {
       this.target =
         guild.scheduledEvents.cache.get(data.target_id) ??
         new GuildScheduledEvent(

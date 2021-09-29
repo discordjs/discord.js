@@ -129,7 +129,7 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async edit(guildScheduledEvent, options) {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
-    if (!guildScheduledEventId) throw new Error('GUILD_EVENT_RESOLVE');
+    if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     let { privacyLevel, entityType, channel } = options;
@@ -159,7 +159,7 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async delete(guildScheduledEvent) {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
-    if (!guildScheduledEventId) throw new Error('GUILD_EVENT_RESOLVE');
+    if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
     await this.client.api('guild-events', guildScheduledEventId).delete();
   }
