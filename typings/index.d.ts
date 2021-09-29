@@ -1512,6 +1512,7 @@ export class PartialGroupDMChannel extends Channel {
   public constructor(client: Client, data: RawPartialGroupDMChannelData);
   public name: string | null;
   public icon: string | null;
+  public recipients: string[];
   public iconURL(options?: StaticImageURLOptions): string | null;
 }
 

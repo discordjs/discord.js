@@ -22,6 +22,13 @@ class PartialGroupDMChannel extends Channel {
      * @type {?string}
      */
     this.icon = data.icon;
+
+    /**
+     * The recipients of this Group DM Channel.
+     * <info>This is an array of usernames</info>
+     * @type {string[]}
+     */
+    this.recipients = data.recipients;
   }
 
   /**
