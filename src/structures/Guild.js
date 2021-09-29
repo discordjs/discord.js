@@ -617,7 +617,7 @@ class Guild extends AnonymousGuild {
    * An object containing information about a guild's vanity invite.
    * @typedef {Object} Vanity
    * @property {?string} code Vanity invite code
-   * @property {?number} uses How many times this invite has been used
+   * @property {number} uses How many times this invite has been used
    */
 
   /**
