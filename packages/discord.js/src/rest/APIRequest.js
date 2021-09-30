@@ -1,11 +1,20 @@
 'use strict';
 
+const { Blob } = require('node:buffer');
 const https = require('node:https');
 const { setTimeout } = require('node:timers');
 const { fetch, FormData } = require('undici');
 const { UserAgent } = require('../util/Constants');
 
 let agent = null;
+
+function toBlob(value) {
+  if (Buffer.isBuffer(value)) {
+    return new Blob([value]);
+  } else {
+    return value;
+  }
+}
 
 class APIRequest {
   constructor(rest, method, path, options) {
@@ -51,7 +60,7 @@ class APIRequest {
     if (this.options.files?.length) {
       body = new FormData();
       for (const [index, file] of this.options.files.entries()) {
-        if (file?.file) body.append(file.key ?? `files[${index}]`, file.file, file.name);
+        if (file?.file) body.append(file.key ?? file.name ?? `files[${index}]`, file.file, file.name);
       }
       if (typeof this.options.data !== 'undefined') {
         if (this.options.dontUsePayloadJSON) {
