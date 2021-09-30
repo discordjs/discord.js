@@ -1,6 +1,6 @@
 'use strict';
 
-const { Buffer } = require('node:buffer');
+const { Buffer, Blob } = require('node:buffer');
 const fs = require('node:fs');
 const path = require('node:path');
 const stream = require('node:stream');
@@ -104,14 +104,21 @@ class DataResolver extends null {
   /**
    * Resolves a BufferResolvable to a Buffer or a Stream.
    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
-   * @returns {Promise<Buffer|Stream>}
+   * @returns {Promise<Blob>}
    */
   static async resolveFile(resource) {
-    if (Buffer.isBuffer(resource) || resource instanceof stream.Readable) return resource;
+    if (Buffer.isBuffer(resource)) return new Blob([resource]);
+    if (resource instanceof stream.Readable) {
+      const chunks = [];
+      for await (const chunk of resource) {
+        chunks.push(chunk);
+      }
+      return new Blob(chunks);
+    }
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
         const res = await fetch(resource);
-        return res.body;
+        return res.blob();
       }
 
       return new Promise((resolve, reject) => {
@@ -119,7 +126,10 @@ class DataResolver extends null {
         fs.stat(file, (err, stats) => {
           if (err) return reject(err);
           if (!stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
-          return resolve(fs.createReadStream(file));
+          return fs.readFile(file, (readErr, buff) => {
+            if (readErr) return reject(readErr);
+            return resolve(new Blob([buff]));
+          });
         });
       });
     }

@@ -8,14 +8,6 @@ const { UserAgent } = require('../util/Constants');
 
 let agent = null;
 
-function toBlob(value) {
-  if (Buffer.isBuffer(value)) {
-    return new Blob([value]);
-  } else {
-    return value;
-  }
-}
-
 class APIRequest {
   constructor(rest, method, path, options) {
     this.rest = rest;
