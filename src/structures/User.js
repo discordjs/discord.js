@@ -89,7 +89,7 @@ class User extends Base {
        * @type {?number}
        */
       this.accentColor = data.accent_color;
-    } else if (this.banner !== null) {
+    } else if (this.accentColor !== null) {
       this.accentColor ??= undefined;
     }
 
