@@ -2039,9 +2039,9 @@ export class User extends PartialTextBasedChannel(Base) {
   protected constructor(client: Client, data: RawUserData);
   private _equals(user: APIUser): boolean;
 
-  public accentColor: number | null;
+  public accentColor: number | null | undefined;
   public avatar: string | null;
-  public banner: string | null;
+  public banner: string | null | undefined;
   public bot: boolean;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -2049,7 +2049,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlags> | null;
-  public readonly hexAccentColor: HexColorString | null;
+  public readonly hexAccentColor: HexColorString | null | undefined;
   public id: Snowflake;
   public readonly partial: false;
   public system: boolean;
