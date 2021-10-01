@@ -3510,11 +3510,11 @@ export interface CommandInteractionOption {
 }
 
 export interface CommandInteractionResolvedData {
-  users?: Collection<string, User>;
-  members?: Collection<string, GuildMember | APIInteractionDataResolvedGuildMember>;
-  roles?: Collection<string, Role | APIRole>;
-  channels?: Collection<string, Channel | APIInteractionDataResolvedChannel>;
-  messages?: Collection<string, Message | APIMessage>;
+  users?: Collection<Snowflake, User>;
+  members?: Collection<Snowflake, GuildMember | APIInteractionDataResolvedGuildMember>;
+  roles?: Collection<Snowflake, Role | APIRole>;
+  channels?: Collection<Snowflake, Channel | APIInteractionDataResolvedChannel>;
+  messages?: Collection<Snowflake, Message | APIMessage>;
 }
 
 export interface ConstantsClientApplicationAssetTypes {
