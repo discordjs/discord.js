@@ -21,11 +21,6 @@ class Widget extends Base {
    * @property {number} position Position of the channel
    */
 
-  /**
-   * Builds the widget with the provided data.
-   * @param {*} data The raw data of the widget
-   * @private
-   */
   _patch(data) {
     /**
      * The id of the guild.

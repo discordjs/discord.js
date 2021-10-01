@@ -130,8 +130,3 @@ class MessageReaction {
 }
 
 module.exports = MessageReaction;
-
-/**
- * @external APIReaction
- * @see {@link https://discord.com/developers/docs/resources/channel#reaction-object}
- */

@@ -370,9 +370,3 @@ class RichPresenceAssets {
 exports.Presence = Presence;
 exports.Activity = Activity;
 exports.RichPresenceAssets = RichPresenceAssets;
-
-/* eslint-disable max-len */
-/**
- * @external APIPresence
- * @see {@link https://discord.com/developers/docs/rich-presence/how-to#updating-presence-update-presence-payload-fields}
- */

@@ -234,8 +234,3 @@ module.exports = Sticker;
  * @external APISticker
  * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-object}
  */
-
-/**
- * @external APIStickerItem
- * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-item-object}
- */

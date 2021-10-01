@@ -70,8 +70,3 @@ class Typing extends Base {
 }
 
 module.exports = Typing;
-
-/**
- * @external APITypingStart
- * @see {@link https://discord.com/developers/docs/topics/gateway#typing-start-typing-start-event-fields}
- */

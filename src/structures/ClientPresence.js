@@ -72,3 +72,9 @@ class ClientPresence extends Presence {
 }
 
 module.exports = ClientPresence;
+
+/* eslint-disable max-len */
+/**
+ * @external APIPresence
+ * @see {@link https://discord.com/developers/docs/rich-presence/how-to#updating-presence-update-presence-payload-fields}
+ */

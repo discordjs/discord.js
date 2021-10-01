@@ -225,8 +225,3 @@ class VoiceState extends Base {
 }
 
 module.exports = VoiceState;
-
-/**
- * @external APIVoiceState
- * @see {@link https://discord.com/developers/docs/resources/voice#voice-state-object}
- */

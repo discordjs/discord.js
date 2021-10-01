@@ -90,8 +90,3 @@ class ThreadMember extends Base {
 }
 
 module.exports = ThreadMember;
-
-/**
- * @external APIThreadMember
- * @see {@link https://discord.com/developers/docs/resources/channel#thread-member-object}
- */
