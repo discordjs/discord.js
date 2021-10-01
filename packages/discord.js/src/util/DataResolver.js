@@ -57,8 +57,8 @@ class DataResolver extends null {
   }
 
   /**
-   * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
-   * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
+   * Resolves a Base64Resolvable, a string, Blob, or a BufferResolvable to a Base 64 image.
+   * @param {BufferResolvable|Base64Resolvable|Blob} image The image to be resolved
    * @returns {Promise<?string>}
    */
   static async resolveImage(image) {
@@ -66,7 +66,7 @@ class DataResolver extends null {
     if (typeof image === 'string' && image.startsWith('data:')) {
       return image;
     }
-    const file = await this.resolveFileAsBuffer(image);
+    const file = await this.resolveFile(image);
     return DataResolver.resolveBase64(file);
   }
 
@@ -79,11 +79,16 @@ class DataResolver extends null {
 
   /**
    * Resolves a Base64Resolvable to a Base 64 image.
-   * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
-   * @returns {?string}
+   * @param {Base64Resolvable|Blob} data The base 64 resolvable you want to resolve
+   * @returns {Promise<string>}
    */
-  static resolveBase64(data) {
+  static async resolveBase64(data) {
     if (Buffer.isBuffer(data)) return `data:image/jpg;base64,${data.toString('base64')}`;
+    if (data instanceof Blob) {
+      const text = await data.text();
+      const buffer = Buffer.from(text);
+      return `data:image/jpg;base64,${buffer.toString('base64')}`;
+    }
     return data;
   }
 
@@ -102,11 +107,12 @@ class DataResolver extends null {
    */
 
   /**
-   * Resolves a BufferResolvable or Stream to a Blob.
-   * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
+   * Resolves a BufferResolvable, Blob, or Stream to a Blob.
+   * @param {BufferResolvable|Stream|Blob} resource The buffer or stream resolvable to resolve
    * @returns {Promise<Blob>}
    */
   static async resolveFile(resource) {
+    if (resource instanceof Blob) return resource;
     if (Buffer.isBuffer(resource)) return new Blob([resource]);
     if (resource instanceof stream.Readable) {
       const chunks = [];
