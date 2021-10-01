@@ -102,7 +102,7 @@ class DataResolver extends null {
    */
 
   /**
-   * Resolves a BufferResolvable to a Buffer or a Stream.
+   * Resolves a BufferResolvable or Stream to a Blob.
    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
    * @returns {Promise<Blob>}
    */
