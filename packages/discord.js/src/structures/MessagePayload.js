@@ -1,6 +1,6 @@
 'use strict';
 
-const { Buffer } = require('node:buffer');
+const { Buffer, Blob } = require('node:buffer');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
@@ -219,7 +219,8 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
-   * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
+   * @param {BufferResolvable|Stream|FileOptions|MessageAttachment|Blob} fileLike Something that could be resolved
+   * to a file
    * @returns {Promise<MessageFile>}
    */
   static async resolveFile(fileLike) {
@@ -239,7 +240,10 @@ class MessagePayload {
     };
 
     const ownAttachment =
-      typeof fileLike === 'string' || fileLike instanceof Buffer || typeof fileLike.pipe === 'function';
+      typeof fileLike === 'string' ||
+      fileLike instanceof Buffer ||
+      typeof fileLike.pipe === 'function' ||
+      fileLike instanceof Blob;
     if (ownAttachment) {
       attachment = fileLike;
       name = findName(attachment);

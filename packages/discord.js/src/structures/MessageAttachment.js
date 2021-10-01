@@ -7,7 +7,7 @@ const Util = require('../util/Util');
  */
 class MessageAttachment {
   /**
-   * @param {BufferResolvable|Stream} attachment The file
+   * @param {BufferResolvable|Stream|Blob} attachment The file
    * @param {string} [name=null] The name of the file, if any
    * @param {APIAttachment} [data] Extra data
    */
@@ -33,7 +33,7 @@ class MessageAttachment {
 
   /**
    * Sets the file of this attachment.
-   * @param {BufferResolvable|Stream} attachment The file
+   * @param {BufferResolvable|Stream|Blob} attachment The file
    * @param {string} [name=null] The name of the file, if any
    * @returns {MessageAttachment} This attachment
    */

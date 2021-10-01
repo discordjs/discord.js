@@ -53,8 +53,8 @@ import { Blob } from 'node:buffer';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { AgentOptions } from 'node:https';
-import { Response } from 'node-fetch';
 import { Stream } from 'node:stream';
+import { Response } from 'undici';
 import { MessagePort, Worker } from 'node:worker_threads';
 import * as WebSocket from 'ws';
 import {
@@ -1571,9 +1571,9 @@ export class MessageActionRow extends BaseMessageComponent {
 }
 
 export class MessageAttachment {
-  public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawMessageAttachmentData);
+  public constructor(attachment: BufferResolvable | Stream | Blob, name?: string, data?: RawMessageAttachmentData);
 
-  public attachment: BufferResolvable | Stream;
+  public attachment: BufferResolvable | Stream | Blob;
   public contentType: string | null;
   public description: string | null;
   public ephemeral: boolean;
@@ -1586,7 +1586,7 @@ export class MessageAttachment {
   public url: string;
   public width: number | null;
   public setDescription(description: string): this;
-  public setFile(attachment: BufferResolvable | Stream, name?: string): this;
+  public setFile(attachment: BufferResolvable | Stream | Blob, name?: string): this;
   public setName(name: string): this;
   public setSpoiler(spoiler?: boolean): this;
   public toJSON(): unknown;
