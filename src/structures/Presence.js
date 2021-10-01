@@ -35,10 +35,6 @@ const Util = require('../util/Util');
  * @extends {Base}
  */
 class Presence extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIPresence} [data={}] The data for the presence
-   */
   constructor(client, data = {}) {
     super(client);
 

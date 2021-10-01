@@ -8,10 +8,6 @@ const WidgetMember = require('./WidgetMember');
  * Represents a Widget.
  */
 class Widget extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {Object} data The raw data
-   */
   constructor(client, data) {
     super(client);
     this._patch(data);

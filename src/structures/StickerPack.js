@@ -10,10 +10,6 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
  * @extends {Base}
  */
 class StickerPack extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIStickerPack} pack The data for the sticker pack
-   */
   constructor(client, pack) {
     super(client);
     /**

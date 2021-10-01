@@ -12,10 +12,6 @@ class WidgetMember extends Base {
    * @property {string} name The name of the activity
    */
 
-  /**
-   * @param {Client} client The instantiating client
-   * @param {Object} data The raw data
-   */
   constructor(client, data) {
     super(client);
 

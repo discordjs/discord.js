@@ -9,10 +9,6 @@ const DataResolver = require('../util/DataResolver');
  * @extends {Base}
  */
 class GuildTemplate extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIGuildTemplate} data The raw data for the template
-   */
   constructor(client, data) {
     super(client);
     this._patch(data);

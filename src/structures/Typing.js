@@ -7,11 +7,6 @@ const Base = require('./Base');
  * @extends {Base}
  */
 class Typing extends Base {
-  /**
-   * @param {TextBasedChannels} channel The channel this typing came from
-   * @param {User} user The user that started typing
-   * @param {APITypingStart} data The raw data received
-   */
   constructor(channel, user, data) {
     super(channel.client);
 

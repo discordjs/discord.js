@@ -8,10 +8,6 @@ const ThreadMemberFlags = require('../util/ThreadMemberFlags');
  * @extends {Base}
  */
 class ThreadMember extends Base {
-  /**
-   * @param {ThreadChannel} thread The thread that this member is associated with
-   * @param {APIThreadMember} data The data for the thread member
-   */
   constructor(thread, data) {
     super(thread.client);
 
