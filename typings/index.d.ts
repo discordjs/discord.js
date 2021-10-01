@@ -4796,7 +4796,8 @@ export type UserFlagsString =
   | 'BUGHUNTER_LEVEL_2'
   | 'VERIFIED_BOT'
   | 'EARLY_VERIFIED_BOT_DEVELOPER'
-  | 'DISCORD_CERTIFIED_MODERATOR';
+  | 'DISCORD_CERTIFIED_MODERATOR'
+  | 'BOT_HTTP_INTERACTIONS';
 
 export type UserMention = `<@${Snowflake}>`;
 
