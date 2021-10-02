@@ -172,7 +172,7 @@ class GuildChannel extends Channel {
     if (!verified) member = this.guild.members.resolve(member);
     if (!member) return [];
 
-    if (!roles) roles = member.roles.cache;
+    roles ??= member.roles.cache;
     const roleOverwrites = [];
     let memberOverwrites;
     let everyoneOverwrites;
@@ -497,11 +497,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get deletable() {
-    return (
-      this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) &&
-      this.guild.rulesChannelId !== this.id &&
-      this.guild.publicUpdatesChannelId !== this.id
-    );
+    return this.manageable && this.guild.rulesChannelId !== this.id && this.guild.publicUpdatesChannelId !== this.id;
   }
 
   /**

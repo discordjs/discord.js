@@ -67,8 +67,8 @@ class ThreadChannel extends Channel {
        * @type {?Snowflake}
        */
       this.parentId = data.parent_id;
-    } else if (!this.parentId) {
-      this.parentId = null;
+    } else {
+      this.parentId ??= null;
     }
 
     if ('thread_metadata' in data) {
@@ -105,18 +105,10 @@ class ThreadChannel extends Channel {
        */
       this.archiveTimestamp = new Date(data.thread_metadata.archive_timestamp).getTime();
     } else {
-      if (!this.locked) {
-        this.locked = null;
-      }
-      if (!this.archived) {
-        this.archived = null;
-      }
-      if (!this.autoArchiveDuration) {
-        this.autoArchiveDuration = null;
-      }
-      if (!this.archiveTimestamp) {
-        this.archiveTimestamp = null;
-      }
+      this.locked ??= null;
+      this.archived ??= null;
+      this.autoArchiveDuration ??= null;
+      this.archiveTimestamp ??= null;
       this.invitable ??= null;
     }
 
@@ -126,8 +118,8 @@ class ThreadChannel extends Channel {
        * @type {?Snowflake}
        */
       this.ownerId = data.owner_id;
-    } else if (!this.ownerId) {
-      this.ownerId = null;
+    } else {
+      this.ownerId ??= null;
     }
 
     if ('last_message_id' in data) {
@@ -136,8 +128,8 @@ class ThreadChannel extends Channel {
        * @type {?Snowflake}
        */
       this.lastMessageId = data.last_message_id;
-    } else if (!this.lastMessageId) {
-      this.lastMessageId = null;
+    } else {
+      this.lastMessageId ??= null;
     }
 
     if ('last_pin_timestamp' in data) {
@@ -146,8 +138,8 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
-    } else if (!this.lastPinTimestamp) {
-      this.lastPinTimestamp = null;
+    } else {
+      this.lastPinTimestamp ??= null;
     }
 
     if ('rate_limit_per_user' in data || !partial) {
@@ -156,8 +148,8 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
-    } else if (!this.rateLimitPerUser) {
-      this.rateLimitPerUser = null;
+    } else {
+      this.rateLimitPerUser ??= null;
     }
 
     if ('message_count' in data) {
@@ -168,8 +160,8 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.messageCount = data.message_count;
-    } else if (!this.messageCount) {
-      this.messageCount = null;
+    } else {
+      this.messageCount ??= null;
     }
 
     if ('member_count' in data) {
@@ -180,8 +172,8 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.memberCount = data.member_count;
-    } else if (!this.memberCount) {
-      this.memberCount = null;
+    } else {
+      this.memberCount ??= null;
     }
 
     if (data.member && this.client.user) this.members._add({ user_id: this.client.user.id, ...data.member });
@@ -270,7 +262,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<Message>}
    */
   fetchStarterMessage(options) {
-    return this.channel.messages.fetch(this.id, options);
+    return this.parent.messages.fetch(this.id, options);
   }
 
   /**
@@ -423,7 +415,9 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get editable() {
-    return (this.ownerId === this.client.user.id && (this.type !== 'private_thread' || this.joined)) || this.manageable;
+    return (
+      (this.ownerId === this.client.user.id && (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined)) || this.manageable
+    );
   }
 
   /**
@@ -458,17 +452,10 @@ class ThreadChannel extends Channel {
    */
   get sendable() {
     return (
-      !this.archived &&
-      (this.type !== 'private_thread' || this.joined || this.manageable) &&
-      this.permissionsFor(this.client.user)?.any(
-        [
-          Permissions.FLAGS.SEND_MESSAGES,
-          this.type === 'GUILD_PRIVATE_THREAD'
-            ? Permissions.FLAGS.USE_PRIVATE_THREADS
-            : Permissions.FLAGS.USE_PUBLIC_THREADS,
-        ],
-        false,
-      )
+      (!(this.archived && this.locked && !this.manageable) &&
+        (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined || this.manageable) &&
+        this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS, false)) ??
+      false
     );
   }
 

@@ -9,21 +9,13 @@ const Permissions = require('../util/Permissions');
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
   /**
-   * Whether the channel is deletable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get deletable() {
-    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
-  }
-
-  /**
    * Whether the channel is editable by the client user
    * @type {boolean}
    * @readonly
+   * @deprecated Use {@link VoiceChannel#manageable} instead
    */
   get editable() {
-    return this.manageable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
+    return this.manageable;
   }
 
   /**
@@ -53,7 +45,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the bitrate of a voice channel
-   * voiceChannel.setBitrate(48000)
+   * voiceChannel.setBitrate(48_000)
    *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}bps for ${vc.name}`))
    *   .catch(console.error);
    */

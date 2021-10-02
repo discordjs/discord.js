@@ -162,7 +162,7 @@ class Invite extends Base {
   get expiresTimestamp() {
     return (
       this._expiresTimestamp ??
-      (this.createdTimestamp && this.maxAge ? this.createdTimestamp + this.maxAge * 1000 : null)
+      (this.createdTimestamp && this.maxAge ? this.createdTimestamp + this.maxAge * 1_000 : null)
     );
   }
 

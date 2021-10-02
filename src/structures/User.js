@@ -93,8 +93,8 @@ class User extends Base {
        * @type {?number}
        */
       this.accentColor = data.accent_color;
-    } else if (typeof this.accentColor === 'undefined') {
-      this.accentColor = null;
+    } else {
+      this.accentColor ??= null;
     }
 
     if ('system' in data) {

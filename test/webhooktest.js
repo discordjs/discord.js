@@ -1,8 +1,8 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
+const fs = require('node:fs');
+const path = require('node:path');
+const util = require('node:util');
 const fetch = require('node-fetch');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
 const { Client, Intents, MessageAttachment, MessageEmbed, WebhookClient } = require('../src');
@@ -107,7 +107,7 @@ client.on('messageCreate', async message => {
       for (const [i, test] of tests.entries()) {
         await message.channel.send(`**#${i}-Hook: ${type}**\n\`\`\`js\n${test.toString()}\`\`\``);
         await test(message, hook).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
-        await wait(1000);
+        await wait(1_000);
       }
     }
     /* eslint-enable no-await-in-loop */
