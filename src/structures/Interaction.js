@@ -3,6 +3,7 @@
 const Base = require('./Base');
 const { InteractionTypes, MessageComponentTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
+const Permissions = require('../util/Permissions');
 
 /**
  * Represents an interaction.
@@ -67,6 +68,12 @@ class Interaction extends Base {
      * @type {number}
      */
     this.version = data.version;
+
+    /**
+     * This member permissions, if exists, in the channel this interaction was sent in
+     * @type {?Permissions}
+     */
+     this.memberPermissions = data.member?.permissions ? new Permissions( data.member.permissions ) : null;
   }
 
   /**
