@@ -1,7 +1,7 @@
 'use strict';
 
-const EventEmitter = require('events');
-const path = require('path');
+const EventEmitter = require('node:events');
+const path = require('node:path');
 const { Error } = require('../errors');
 const Util = require('../util/Util');
 let childProcess = null;
@@ -21,8 +21,8 @@ class Shard extends EventEmitter {
   constructor(manager, id) {
     super();
 
-    if (manager.mode === 'process') childProcess = require('child_process');
-    else if (manager.mode === 'worker') Worker = require('worker_threads').Worker;
+    if (manager.mode === 'process') childProcess = require('node:child_process');
+    else if (manager.mode === 'worker') Worker = require('node:worker_threads').Worker;
 
     /**
      * Manager that created the shard
