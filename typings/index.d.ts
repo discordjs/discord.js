@@ -1509,7 +1509,7 @@ export class OAuth2Guild extends BaseGuild {
 }
 
 export class PartialGroupDMChannel extends Channel {
-  public constructor(client: Client, data: RawPartialGroupDMChannelData);
+  private constructor(client: Client, data: RawPartialGroupDMChannelData);
   public name: string | null;
   public icon: string | null;
   public recipients: PartialRecipient[];
