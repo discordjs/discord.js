@@ -4812,7 +4812,7 @@ export type UserResolvable = User | Snowflake | Message | GuildMember | ThreadMe
 
 export interface Vanity {
   code: string | null;
-  uses: number | null;
+  uses: number;
 }
 
 export type VerificationLevel = keyof typeof VerificationLevels;
