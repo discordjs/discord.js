@@ -1510,8 +1510,9 @@ export class OAuth2Guild extends BaseGuild {
 
 export class PartialGroupDMChannel extends Channel {
   public constructor(client: Client, data: RawPartialGroupDMChannelData);
-  public name: string;
+  public name: string | null;
   public icon: string | null;
+  public recipients: PartialRecipient[];
   public iconURL(options?: StaticImageURLOptions): string | null;
 }
 
@@ -4541,6 +4542,10 @@ export type PermissionString =
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
 export type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
+
+export interface PartialRecipient {
+  username: string;
+}
 
 export type PremiumTier = keyof typeof PremiumTiers;
 
