@@ -1,0 +1,25 @@
+name: NPM auto deprecate
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * *'
+jobs:
+  auto-deprecate:
+    name: NPM auto deprecate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Node v16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Deprecate versions
+        run: 'npm exec --no npm-deprecate -- --name "*dev*" --package "discord.js"'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

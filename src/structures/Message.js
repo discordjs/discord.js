@@ -92,8 +92,8 @@ class Message extends Base {
        * @type {?User}
        */
       this.author = this.client.users._add(data.author, !data.webhook_id);
-    } else if (!this.author) {
-      this.author = null;
+    } else {
+      this.author ??= null;
     }
 
     if ('pinned' in data) {
@@ -102,8 +102,8 @@ class Message extends Base {
        * @type {?boolean}
        */
       this.pinned = Boolean(data.pinned);
-    } else if (typeof this.pinned !== 'boolean') {
-      this.pinned = null;
+    } else {
+      this.pinned ??= null;
     }
 
     if ('tts' in data) {
@@ -112,8 +112,8 @@ class Message extends Base {
        * @type {?boolean}
        */
       this.tts = data.tts;
-    } else if (typeof this.tts !== 'boolean') {
-      this.tts = null;
+    } else {
+      this.tts ??= null;
     }
 
     if (!partial) {
@@ -282,7 +282,14 @@ class Message extends Base {
     }
 
     /**
-     * Reference data sent in a message that contains ids identifying the referenced message
+     * Reference data sent in a message that contains ids identifying the referenced message.
+     * This can be present in the following types of message:
+     * * Crossposted messages (IS_CROSSPOST {@link MessageFlags#FLAGS message flag})
+     * * CHANNEL_FOLLOW_ADD
+     * * CHANNEL_PINNED_MESSAGE
+     * * REPLY
+     * * THREAD_STARTER_MESSAGE
+     * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
      * @property {Snowflake} channelId The channel's id the message was referenced
      * @property {?Snowflake} guildId The guild's id the message was referenced
@@ -327,8 +334,8 @@ class Message extends Base {
         commandName: data.interaction.name,
         user: this.client.users._add(data.interaction.user),
       };
-    } else if (!this.interaction) {
-      this.interaction = null;
+    } else {
+      this.interaction ??= null;
     }
   }
 
@@ -440,7 +447,7 @@ class Message extends Base {
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId';
-   * const collector = message.createReactionCollector({ filter, time: 15000 });
+   * const collector = message.createReactionCollector({ filter, time: 15_000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -462,7 +469,7 @@ class Message extends Base {
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId'
-   * message.awaitReactions({ filter, time: 15000 })
+   * message.awaitReactions({ filter, time: 15_000 })
    *   .then(collected => console.log(`Collected ${collected.size} reactions`))
    *   .catch(console.error);
    */
@@ -491,7 +498,7 @@ class Message extends Base {
    * @example
    * // Create a message component interaction collector
    * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-   * const collector = message.createMessageComponentCollector({ filter, time: 15000 });
+   * const collector = message.createMessageComponentCollector({ filter, time: 15_000 });
    * collector.on('collect', i => console.log(`Collected ${i.customId}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -519,7 +526,7 @@ class Message extends Base {
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-   * message.awaitMessageComponent({ filter, time: 15000 })
+   * message.awaitMessageComponent({ filter, time: 15_000 })
    *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */
@@ -541,7 +548,7 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    return this.author.id === this.client.user.id;
+    return Boolean(this.author.id === this.client.user.id && !this.deleted && (!this.guild || this.channel?.viewable));
   }
 
   /**
@@ -550,10 +557,19 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
+    if (this.deleted) {
+      return false;
+    }
+    if (!this.guild) {
+      return this.author.id === this.client.user.id;
+    }
+    // DMChannel does not have viewable property, so check viewable after proved that message is on a guild.
+    if (!this.channel?.viewable) {
+      return false;
+    }
     return Boolean(
-      !this.deleted &&
-        (this.author.id === this.client.user.id ||
-          this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES)),
+      this.author.id === this.client.user.id ||
+        this.channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false),
     );
   }
 
@@ -563,9 +579,13 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
-    return (
-      this.type === 'DEFAULT' &&
-      (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
+    const { channel } = this;
+    return Boolean(
+      !this.system &&
+        !this.deleted &&
+        (!this.guild ||
+          (channel?.viewable &&
+            channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
     );
   }
 
@@ -588,14 +608,17 @@ class Message extends Base {
    * @readonly
    */
   get crosspostable() {
-    return (
-      this.channel.type === 'GUILD_NEWS' &&
-      !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
-      this.type === 'DEFAULT' &&
-      this.channel.viewable &&
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES) &&
-      (this.author.id === this.client.user.id ||
-        this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES))
+    const bitfield =
+      Permissions.FLAGS.SEND_MESSAGES |
+      (this.author.id === this.client.user.id ? Permissions.defaultBit : Permissions.FLAGS.MANAGE_MESSAGES);
+    const { channel } = this;
+    return Boolean(
+      channel?.type === 'GUILD_NEWS' &&
+        !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
+        this.type === 'DEFAULT' &&
+        channel.viewable &&
+        channel.permissionsFor(this.client.user)?.has(bitfield, false) &&
+        !this.deleted,
     );
   }
 
@@ -624,6 +647,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(options) {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     return this.channel.messages.edit(this, options);
   }
 
@@ -639,6 +663,7 @@ class Message extends Base {
    * }
    */
   crosspost() {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     return this.channel.messages.crosspost(this.id);
   }
 
@@ -652,6 +677,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async pin() {
+    if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     await this.channel.messages.pin(this.id);
     return this;
   }
@@ -666,6 +692,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async unpin() {
+    if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     await this.channel.messages.unpin(this.id);
     return this;
   }
@@ -686,6 +713,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async react(emoji) {
+    if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     emoji = this.client.emojis.resolveIdentifier(emoji);
     await this.channel.messages.react(this.id, emoji);
     return this.client.actions.MessageReactionAdd.handle({
@@ -706,6 +734,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async delete() {
+    if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     await this.channel.messages.delete(this.id);
     return this;
   }
@@ -720,7 +749,7 @@ class Message extends Base {
   /**
    * Send an inline reply to this message.
    * @param {string|MessagePayload|ReplyMessageOptions} options The options to provide
-   * @returns {Promise<Message|Message[]>}
+   * @returns {Promise<Message>}
    * @example
    * // Reply to a message
    * message.reply('This is a reply!')
@@ -728,6 +757,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(options) {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     let data;
 
     if (options instanceof MessagePayload) {
@@ -759,6 +789,7 @@ class Message extends Base {
    * @returns {Promise<ThreadChannel>}
    */
   startThread(options = {}) {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
@@ -772,6 +803,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   fetch(force = true) {
+    if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
     return this.channel.messages.fetch(this.id, { force });
   }
 
@@ -781,6 +813,7 @@ class Message extends Base {
    */
   fetchWebhook() {
     if (!this.webhookId) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
+    if (this.webhookId === this.applicationId) return Promise.reject(new Error('WEBHOOK_APPLICATION'));
     return this.client.fetchWebhook(this.webhookId);
   }
 
@@ -807,6 +840,15 @@ class Message extends Base {
    */
   removeAttachments() {
     return this.edit({ attachments: [] });
+  }
+
+  /**
+   * Resolves a component by a custom id.
+   * @param {string} customId The custom id to resolve against
+   * @returns {?MessageActionRowComponent}
+   */
+  resolveComponent(customId) {
+    return this.components.flatMap(row => row.components).find(component => component.customId === customId) ?? null;
   }
 
   /**

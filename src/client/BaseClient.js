@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('events');
+const EventEmitter = require('node:events');
 const { TypeError } = require('../errors');
 const RESTManager = require('../rest/RESTManager');
 const Options = require('../util/Options');
@@ -29,7 +29,7 @@ class BaseClient extends EventEmitter {
      * @type {RESTManager}
      * @private
      */
-    this.rest = new RESTManager(this, options._tokenType);
+    this.rest = new RESTManager(this);
   }
 
   /**

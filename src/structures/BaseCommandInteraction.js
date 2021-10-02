@@ -78,11 +78,11 @@ class BaseCommandInteraction extends Interaction {
   /**
    * Represents the resolved data of a received command interaction.
    * @typedef {Object} CommandInteractionResolvedData
-   * @property {Collection<string, User>} [users] The resolved users
-   * @property {Collection<string, GuildMember|APIGuildMember>} [members] The resolved guild members
-   * @property {Collection<string, Role|APIRole>} [roles] The resolved roles
-   * @property {Collection<string, Channel|APIChannel>} [channels] The resolved channels
-   * @property {Collection<string, Message|APIMessage>} [messages] The resolved messages
+   * @property {Collection<Snowflake, User>} [users] The resolved users
+   * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved guild members
+   * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
+   * @property {Collection<Snowflake, Channel|APIChannel>} [channels] The resolved channels
+   * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
    */
 
   /**
@@ -143,7 +143,7 @@ class BaseCommandInteraction extends Interaction {
    * subcommand (group)
    * @property {User} [user] The resolved user
    * @property {GuildMember|APIGuildMember} [member] The resolved member
-   * @property {GuildChannel|APIChannel} [channel] The resolved channel
+   * @property {GuildChannel|ThreadChannel|APIChannel} [channel] The resolved channel
    * @property {Role|APIRole} [role] The resolved role
    */
 

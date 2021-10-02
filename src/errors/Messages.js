@@ -64,7 +64,6 @@ const Messages = {
 
   VOICE_NOT_STAGE_CHANNEL: 'You are only allowed to do this in stage channels.',
 
-  VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
   VOICE_STATE_NOT_OWN:
     'You cannot self-deafen/mute/request to speak on VoiceStates that do not belong to the ClientUser.',
   VOICE_STATE_INVALID_TYPE: name => `${name} must be a boolean.`,
@@ -92,6 +91,7 @@ const Messages = {
   GUILD_OWNED: 'Guild is owned by the client.',
   GUILD_MEMBERS_TIMEOUT: "Members didn't arrive in time.",
   GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
+  CHANNEL_NOT_CACHED: 'Could not find the channel where this message came from in the cache!',
   STAGE_CHANNEL_RESOLVE: 'Could not resolve channel to a stage channel.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
@@ -99,10 +99,12 @@ const Messages = {
 
   MESSAGE_THREAD_PARENT: 'The message was not sent in a guild text or news channel',
   MESSAGE_EXISTING_THREAD: 'The message already has a thread',
+  THREAD_INVITABLE_TYPE: type => `Invitable cannot be edited on ${type}`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
   WEBHOOK_TOKEN_UNAVAILABLE: 'This action requires a webhook token, but none is available.',
   WEBHOOK_URL_INVALID: 'The provided webhook URL is not valid.',
+  WEBHOOK_APPLICATION: 'This message webhook belongs to an application and cannot be fetched.',
   MESSAGE_REFERENCE_MISSING: 'The message does not reference another message',
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',

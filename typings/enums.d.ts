@@ -1,7 +1,7 @@
 // These are enums that are used in the typings file but do not exist as actual exported values. To prevent them from
 // showing up in an editor, they are imported from here instead of exporting them there directly.
 
-export enum ActivityTypes {
+export const enum ActivityTypes {
   PLAYING = 0,
   STREAMING = 1,
   LISTENING = 2,
@@ -10,13 +10,13 @@ export enum ActivityTypes {
   COMPETING = 5,
 }
 
-export enum ApplicationCommandTypes {
+export const enum ApplicationCommandTypes {
   CHAT_INPUT = 1,
   USER = 2,
   MESSAGE = 3,
 }
 
-export enum ApplicationCommandOptionTypes {
+export const enum ApplicationCommandOptionTypes {
   SUB_COMMAND = 1,
   SUB_COMMAND_GROUP = 2,
   STRING = 3,
@@ -29,12 +29,12 @@ export enum ApplicationCommandOptionTypes {
   NUMBER = 10,
 }
 
-export enum ApplicationCommandPermissionTypes {
+export const enum ApplicationCommandPermissionTypes {
   ROLE = 1,
   USER = 2,
 }
 
-export enum ChannelTypes {
+export const enum ChannelTypes {
   GUILD_TEXT = 0,
   DM = 1,
   GUILD_VOICE = 2,
@@ -49,18 +49,18 @@ export enum ChannelTypes {
   GUILD_STAGE_VOICE = 13,
 }
 
-export enum DefaultMessageNotificationLevels {
+export const enum DefaultMessageNotificationLevels {
   ALL_MESSAGES = 0,
   ONLY_MENTIONS = 1,
 }
 
-export enum ExplicitContentFilterLevels {
+export const enum ExplicitContentFilterLevels {
   DISABLED = 0,
   MEMBERS_WITHOUT_ROLES = 1,
   ALL_MEMBERS = 2,
 }
 
-export enum InteractionResponseTypes {
+export const enum InteractionResponseTypes {
   PONG = 1,
   CHANNEL_MESSAGE_WITH_SOURCE = 4,
   DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5,
@@ -68,23 +68,23 @@ export enum InteractionResponseTypes {
   UPDATE_MESSAGE = 7,
 }
 
-export enum InteractionTypes {
+export const enum InteractionTypes {
   PING = 1,
   APPLICATION_COMMAND = 2,
   MESSAGE_COMPONENT = 3,
 }
 
-export enum InviteTargetType {
+export const enum InviteTargetType {
   STREAM = 1,
   EMBEDDED_APPLICATION = 2,
 }
 
-export enum MembershipStates {
+export const enum MembershipStates {
   INVITED = 1,
   ACCEPTED = 2,
 }
 
-export enum MessageButtonStyles {
+export const enum MessageButtonStyles {
   PRIMARY = 1,
   SECONDARY = 2,
   SUCCESS = 3,
@@ -92,53 +92,53 @@ export enum MessageButtonStyles {
   LINK = 5,
 }
 
-export enum MessageComponentTypes {
+export const enum MessageComponentTypes {
   ACTION_ROW = 1,
   BUTTON = 2,
   SELECT_MENU = 3,
 }
 
-export enum MFALevels {
+export const enum MFALevels {
   NONE = 0,
   ELEVATED = 1,
 }
 
-export enum NSFWLevels {
+export const enum NSFWLevels {
   DEFAULT = 0,
   EXPLICIT = 1,
   SAFE = 2,
   AGE_RESTRICTED = 3,
 }
 
-export enum OverwriteTypes {
+export const enum OverwriteTypes {
   role = 0,
   member = 1,
 }
 
-export enum PremiumTiers {
+export const enum PremiumTiers {
   NONE = 0,
   TIER_1 = 1,
   TIER_2 = 2,
   TIER_3 = 3,
 }
 
-export enum PrivacyLevels {
+export const enum PrivacyLevels {
   PUBLIC = 1,
   GUILD_ONLY = 2,
 }
 
-export enum StickerFormatTypes {
+export const enum StickerFormatTypes {
   PNG = 1,
   APNG = 2,
   LOTTIE = 3,
 }
 
-export enum StickerTypes {
+export const enum StickerTypes {
   STANDARD = 1,
   GUILD = 2,
 }
 
-export enum VerificationLevels {
+export const enum VerificationLevels {
   NONE = 0,
   LOW = 1,
   MEDIUM = 2,
@@ -146,7 +146,7 @@ export enum VerificationLevels {
   VERY_HIGH = 4,
 }
 
-export enum WebhookTypes {
+export const enum WebhookTypes {
   Incoming = 1,
   'Channel Follower' = 2,
   Application = 3,

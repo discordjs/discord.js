@@ -21,9 +21,9 @@ function getAPIOffset(serverDate) {
 function calculateReset(reset, resetAfter, serverDate) {
   // Use direct reset time when available, server date becomes irrelevant in this case
   if (resetAfter) {
-    return Date.now() + Number(resetAfter) * 1000;
+    return Date.now() + Number(resetAfter) * 1_000;
   }
-  return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
+  return new Date(Number(reset) * 1_000).getTime() - getAPIOffset(serverDate);
 }
 
 /* Invalid request limiting is done on a per-IP basis, not a per-token basis.
@@ -157,7 +157,7 @@ class RequestHandler {
 
     // As the request goes out, update the global usage information
     if (!this.manager.globalReset || this.manager.globalReset < Date.now()) {
-      this.manager.globalReset = Date.now() + 1000;
+      this.manager.globalReset = Date.now() + 1_000;
       this.manager.globalRemaining = this.manager.globalLimit;
     }
     this.manager.globalRemaining--;
@@ -195,7 +195,7 @@ class RequestHandler {
 
       // Handle retryAfter, which means we have actually hit a rate limit
       let retryAfter = res.headers.get('retry-after');
-      retryAfter = retryAfter ? Number(retryAfter) * 1000 : -1;
+      retryAfter = retryAfter ? Number(retryAfter) * 1_000 : -1;
       if (retryAfter > 0) {
         // If the global ratelimit header is set, that means we hit the global rate limit
         if (res.headers.get('x-ratelimit-global')) {
@@ -215,7 +215,7 @@ class RequestHandler {
     // Count the invalid requests
     if (res.status === 401 || res.status === 403 || res.status === 429) {
       if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
-        invalidCountResetTime = Date.now() + 1000 * 60 * 10;
+        invalidCountResetTime = Date.now() + 1_000 * 60 * 10;
         invalidCount = 0;
       }
       invalidCount++;
