@@ -133,10 +133,8 @@ class GuildChannelManager extends CachedManager {
     name,
     { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
   ) {
-    if (parent) parent = this.client.channels.resolveId(parent);
-    if (permissionOverwrites) {
-      permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
-    }
+    parent &&= this.client.channels.resolveId(parent);
+    permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
 
     const data = await this.client.api.guilds(this.guild.id).channels.post({
       data: {

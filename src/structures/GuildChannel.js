@@ -294,7 +294,7 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   async edit(data, reason) {
-    if (data.parent) data.parent = this.client.channels.resolveId(data.parent);
+    data.parent &&= this.client.channels.resolveId(data.parent);
 
     if (typeof data.position !== 'undefined') {
       const updatedChannels = await Util.setPosition(
