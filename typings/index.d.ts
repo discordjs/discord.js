@@ -1509,9 +1509,10 @@ export class OAuth2Guild extends BaseGuild {
 }
 
 export class PartialGroupDMChannel extends Channel {
-  private constructor(client: Client, data: RawPartialGroupDMChannelData);
-  public name: string;
+  public constructor(client: Client, data: RawPartialGroupDMChannelData);
+  public name: string | null;
   public icon: string | null;
+  public recipients: PartialRecipient[];
   public iconURL(options?: StaticImageURLOptions): string | null;
 }
 
@@ -1623,7 +1624,7 @@ export class Role extends Base {
   public readonly position: number;
   public rawPosition: number;
   public tags: RoleTagData | null;
-  public comparePositionTo(role: Role): number;
+  public comparePositionTo(role: RoleResolvable): number;
   public delete(reason?: string): Promise<Role>;
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
@@ -2121,7 +2122,11 @@ export class WebhookClient extends WebhookMixin(BaseClient) {
     message: MessageResolvable,
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<APIMessage>;
+  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<APIMessage>;
+  /* tslint:disable:unified-signatures */
+  /** @deprecated */
   public fetchMessage(message: Snowflake, cache?: boolean): Promise<APIMessage>;
+  /* tslint:enable:unified-signatures */
   public send(options: string | MessagePayload | WebhookMessageOptions): Promise<APIMessage>;
 }
 
@@ -2816,7 +2821,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   readonly lastPinAt: Date | null;
   awaitMessageComponent<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
     options?: AwaitMessageCollectorOptionsParams<T>,
-  ): Promise<InteractionCollectorReturnType<T>>;
+  ): Promise<InteractionExtractor<T>>;
   awaitMessages(options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
   bulkDelete(
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
@@ -2835,12 +2840,16 @@ export function WebhookMixin<T>(Base?: Constructable<T>): Constructable<T & Webh
 export interface PartialWebhookFields {
   id: Snowflake;
   readonly url: string;
-  deleteMessage(message: MessageResolvable | APIMessage | '@original'): Promise<void>;
+  deleteMessage(message: MessageResolvable | APIMessage | '@original', threadId?: Snowflake): Promise<void>;
   editMessage(
     message: MessageResolvable | '@original',
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<Message | APIMessage>;
+  fetchMessage(message: Snowflake | '@original', options?: WebhookFetchMessageOptions): Promise<Message | APIMessage>;
+  /* tslint:disable:unified-signatures */
+  /** @deprecated */
   fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | APIMessage>;
+  /* tslint:enable:unified-signatures */
   send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message | APIMessage>;
 }
 
@@ -3510,11 +3519,11 @@ export interface CommandInteractionOption {
 }
 
 export interface CommandInteractionResolvedData {
-  users?: Collection<string, User>;
-  members?: Collection<string, GuildMember | APIInteractionDataResolvedGuildMember>;
-  roles?: Collection<string, Role | APIRole>;
-  channels?: Collection<string, Channel | APIInteractionDataResolvedChannel>;
-  messages?: Collection<string, Message | APIMessage>;
+  users?: Collection<Snowflake, User>;
+  members?: Collection<Snowflake, GuildMember | APIInteractionDataResolvedGuildMember>;
+  roles?: Collection<Snowflake, Role | APIRole>;
+  channels?: Collection<Snowflake, Channel | APIInteractionDataResolvedChannel>;
+  messages?: Collection<Snowflake, Message | APIMessage>;
 }
 
 export interface ConstantsClientApplicationAssetTypes {
@@ -4534,13 +4543,20 @@ export type PermissionString =
   | 'REQUEST_TO_SPEAK'
   | 'MANAGE_THREADS'
   | 'USE_PUBLIC_THREADS'
+  | 'CREATE_PUBLIC_THREADS'
   | 'USE_PRIVATE_THREADS'
+  | 'CREATE_PRIVATE_THREADS'
   | 'USE_EXTERNAL_STICKERS'
+  | 'SEND_MESSAGES_IN_THREADS'
   | 'START_EMBEDDED_ACTIVITIES';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
 export type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
+
+export interface PartialRecipient {
+  username: string;
+}
 
 export type PremiumTier = keyof typeof PremiumTiers;
 
@@ -4555,11 +4571,35 @@ export type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
 export interface PartialChannelData {
   id?: Snowflake | number;
+  parentId?: Snowflake | number;
+  type?: Exclude<
+    keyof typeof ChannelTypes | ChannelTypes,
+    | 'DM'
+    | 'GROUP_DM'
+    | 'GUILD_NEWS'
+    | 'GUILD_STORE'
+    | 'UNKNOWN'
+    | 'GUILD_NEWS_THREAD'
+    | 'GUILD_PUBLIC_THREAD'
+    | 'GUILD_PRIVATE_THREAD'
+    | 'GUILD_STAGE_VOICE'
+    | ChannelTypes.DM
+    | ChannelTypes.GROUP_DM
+    | ChannelTypes.GUILD_NEWS
+    | ChannelTypes.GUILD_STORE
+    | ChannelTypes.UNKNOWN
+    | ChannelTypes.GUILD_NEWS_THREAD
+    | ChannelTypes.GUILD_PUBLIC_THREAD
+    | ChannelTypes.GUILD_PRIVATE_THREAD
+    | ChannelTypes.GUILD_STAGE_VOICE
+  >;
   name: string;
   topic?: string;
-  type?: ChannelTypes;
-  parentId?: Snowflake | number;
+  nsfw?: boolean;
+  bitrate?: number;
+  userLimit?: number;
   permissionOverwrites?: PartialOverwriteData[];
+  rateLimitPerUser?: number;
 }
 
 export type Partialize<
@@ -4804,7 +4844,7 @@ export type UserResolvable = User | Snowflake | Message | GuildMember | ThreadMe
 
 export interface Vanity {
   code: string | null;
-  uses: number | null;
+  uses: number;
 }
 
 export type VerificationLevel = keyof typeof VerificationLevels;
@@ -4837,8 +4877,13 @@ export interface WebhookEditData {
 
 export type WebhookEditMessageOptions = Pick<
   WebhookMessageOptions,
-  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments'
+  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments' | 'threadId'
 >;
+
+export interface WebhookFetchMessageOptions {
+  cache?: boolean;
+  threadId?: Snowflake;
+}
 
 export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
   username?: string;

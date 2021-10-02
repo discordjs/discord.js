@@ -1,6 +1,6 @@
 'use strict';
 
-const { parse } = require('path');
+const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
@@ -309,7 +309,7 @@ class Util extends null {
     if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
     const { id, name, animated } = emoji;
     if (!id && !name) return null;
-    return { id, name, animated };
+    return { id, name, animated: Boolean(animated) };
   }
 
   /**
