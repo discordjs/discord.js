@@ -415,7 +415,9 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get editable() {
-    return (this.ownerId === this.client.user.id && (this.type !== 'private_thread' || this.joined)) || this.manageable;
+    return (
+      (this.ownerId === this.client.user.id && (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined)) || this.manageable
+    );
   }
 
   /**
@@ -450,17 +452,10 @@ class ThreadChannel extends Channel {
    */
   get sendable() {
     return (
-      !this.archived &&
-      (this.type !== 'private_thread' || this.joined || this.manageable) &&
-      this.permissionsFor(this.client.user)?.any(
-        [
-          Permissions.FLAGS.SEND_MESSAGES,
-          this.type === 'GUILD_PRIVATE_THREAD'
-            ? Permissions.FLAGS.USE_PRIVATE_THREADS
-            : Permissions.FLAGS.USE_PUBLIC_THREADS,
-        ],
-        false,
-      )
+      (!(this.archived && this.locked && !this.manageable) &&
+        (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined || this.manageable) &&
+        this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS, false)) ??
+      false
     );
   }
 
