@@ -749,7 +749,7 @@ class Message extends Base {
   /**
    * Send an inline reply to this message.
    * @param {string|MessagePayload|ReplyMessageOptions} options The options to provide
-   * @returns {Promise<Message|Message[]>}
+   * @returns {Promise<Message>}
    * @example
    * // Reply to a message
    * message.reply('This is a reply!')
