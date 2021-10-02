@@ -71,7 +71,7 @@ class Interaction extends Base {
 
     /**
      * The permissions of the member, if one exists, in the channel this interaction was executed in
-     * @type {?Permissions}
+     * @type {?Readonly<Permissions>}
      */
     this.memberPermissions = data.member?.permissions ? new Permissions(data.member.permissions) : null;
   }
