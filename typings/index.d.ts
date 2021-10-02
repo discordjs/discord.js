@@ -1032,6 +1032,7 @@ export class Interaction extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
+  public memberPermissions: Permissions | null;
   public inGuild(): this is this & {
     guildId: Snowflake;
     member: GuildMember | APIInteractionGuildMember;
