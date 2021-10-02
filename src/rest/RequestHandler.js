@@ -5,7 +5,7 @@ const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const RateLimitError = require('./RateLimitError');
 const {
-  Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING },
+  Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING, API_RESPONSE },
 } = require('../util/Constants');
 const Util = require('../util/Util');
 
@@ -176,6 +176,19 @@ class RequestHandler {
       return this.execute(request);
     }
 
+    if (this.manager.client.listenerCount(API_RESPONSE)) {
+      /**
+       * Emitted after every api request has received a response.
+       * This event does not necessarily correlate to completion of the request, e.g. when hitting a rate limit.
+       * <info>This is an informational event that is emitted quite frequently,
+       * it is highly recommended to check `request.path` to filter the data.</info>
+       * @event Client#apiResponse
+       * @param {APIRequest} request The request that triggered this response
+       * @param {Response} response The response received from the discord API
+       */
+      this.manager.client.emit(API_RESPONSE, request, res);
+    }
+
     let sublimitTimeout;
     if (res.headers) {
       const serverDate = res.headers.get('date');
@@ -315,3 +328,8 @@ class RequestHandler {
 }
 
 module.exports = RequestHandler;
+
+/**
+ * @external Response
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Response}
+ */

@@ -7,13 +7,36 @@ const { UserAgent } = require('../util/Constants');
 
 let agent = null;
 
+/**
+ * Respresents a request made to the Discord API
+ */
 class APIRequest {
   constructor(rest, method, path, options) {
     this.rest = rest;
+    /**
+     * The client making this request
+     * @type {Client}
+     */
     this.client = rest.client;
+    /**
+     * The http method used in this request
+     * @type {HTTPMethod}
+     */
     this.method = method;
+    /**
+     * The API route identifying the ratelimit for this request
+     * @type {string}
+     */
     this.route = options.route;
+    /**
+     * Additional options for this request
+     * @type {Object}
+     */
     this.options = options;
+    /**
+     * The number of times this request has been previously made
+     * @type {number}
+     */
     this.retries = 0;
 
     const { userAgentSuffix } = this.client.options;
@@ -26,6 +49,10 @@ class APIRequest {
         .flatMap(([key, value]) => (Array.isArray(value) ? value.map(v => [key, v]) : [[key, value]]));
       queryString = new URLSearchParams(query).toString();
     }
+    /**
+     * The full path used to make the request
+     * @type {string}
+     */
     this.path = `${path}${queryString && `?${queryString}`}`;
   }
 
@@ -80,3 +107,8 @@ class APIRequest {
 }
 
 module.exports = APIRequest;
+
+/**
+ * @external HTTPMethod
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods}
+ */

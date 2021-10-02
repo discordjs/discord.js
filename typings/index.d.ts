@@ -49,6 +49,7 @@ import {
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { AgentOptions } from 'node:https';
+import { Response } from 'node-fetch';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
 import * as WebSocket from 'ws';
@@ -181,6 +182,18 @@ export abstract class AnonymousGuild extends BaseGuild {
   public verificationLevel: VerificationLevel;
   public bannerURL(options?: StaticImageURLOptions): string | null;
   public splashURL(options?: StaticImageURLOptions): string | null;
+}
+
+export class APIRequest {
+  private constructor(rest: unknown, method: string, path: string, options: unknown);
+  public client: Client;
+  public method: string;
+  public options: unknown;
+  public path: string;
+  private rest: unknown;
+  public retries: number;
+  public route: string;
+  private make(): Promise<Response>;
 }
 
 export abstract class Application extends Base {
@@ -3439,6 +3452,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface ClientEvents {
+  apiResponse: [request: APIRequest, response: Response];
   applicationCommandCreate: [command: ApplicationCommand];
   applicationCommandDelete: [command: ApplicationCommand];
   applicationCommandUpdate: [oldCommand: ApplicationCommand | null, newCommand: ApplicationCommand];
@@ -3677,6 +3691,7 @@ export interface ConstantsColors {
 export interface ConstantsEvents {
   RATE_LIMIT: 'rateLimit';
   INVALID_REQUEST_WARNING: 'invalidRequestWarning';
+  API_RESPONSE: 'apiResponse';
   CLIENT_READY: 'ready';
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
