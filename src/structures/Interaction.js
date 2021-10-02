@@ -70,7 +70,7 @@ class Interaction extends Base {
     this.version = data.version;
 
     /**
-     * This member permissions, if exists, in the channel this interaction was sent in
+     * The permissions of the member, if one exists, in the channel this interaction was executed in
      * @type {?Permissions}
      */
     this.memberPermissions = data.member?.permissions != null ? new Permissions(data.member.permissions) : null;
