@@ -1624,7 +1624,7 @@ export class Role extends Base {
   public readonly position: number;
   public rawPosition: number;
   public tags: RoleTagData | null;
-  public comparePositionTo(role: Role): number;
+  public comparePositionTo(role: RoleResolvable): number;
   public delete(reason?: string): Promise<Role>;
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
