@@ -1187,7 +1187,6 @@ type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | Message
 export class Message extends Base {
   public constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData | RawMessageData): void;
-  private _update(data: RawPartialMessageData | RawMessageData): Message;
 
   public activity: MessageActivity | null;
   public applicationId: Snowflake | null;
