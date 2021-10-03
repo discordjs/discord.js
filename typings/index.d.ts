@@ -2639,10 +2639,7 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
 export class GuildInviteManager extends DataManager<string, Invite, InviteResolvable> {
   public constructor(guild: Guild, iterable?: Iterable<RawInviteData>);
   public guild: Guild;
-  public create(
-    channel: TextChannel | VoiceChannel | NewsChannel | StoreChannel | StageChannel | Snowflake,
-    options?: CreateInviteOptions,
-  ): Promise<Invite>;
+  public create(channel: GuildInvitableChannelResolvable, options?: CreateInviteOptions): Promise<Invite>;
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
@@ -3786,7 +3783,7 @@ interface FetchInviteOptions extends BaseFetchOptions {
 }
 
 interface FetchInvitesOptions {
-  channelId?: TextChannel | VoiceChannel | NewsChannel | StoreChannel | StageChannel | Snowflake;
+  channelId?: GuildInvitableChannelResolvable;
   cache?: boolean;
 }
 
@@ -4177,6 +4174,14 @@ export interface InviteGenerationOptions {
   disableGuildSelect?: boolean;
   scopes: InviteScope[];
 }
+
+type GuildInvitableChannelResolvable =
+  | TextChannel
+  | VoiceChannel
+  | NewsChannel
+  | StoreChannel
+  | StageChannel
+  | Snowflake;
 
 export interface CreateInviteOptions {
   temporary?: boolean;
