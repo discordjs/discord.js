@@ -169,7 +169,7 @@ class MessageSelectMenu extends BaseMessageComponent {
 
   /**
    * Transforms the select menu to a plain object
-   * @returns {APISelectMenuButtonComponent} The raw data of this select menu
+   * @returns {APIMessageSelectMenu} The raw data of this select menu
    */
   toJSON() {
     return {
@@ -210,8 +210,3 @@ class MessageSelectMenu extends BaseMessageComponent {
 }
 
 module.exports = MessageSelectMenu;
-
-/**
- * @external APISelectMenuButtonComponent
- * @see {@link https://discord.com/developers/docs/interactions/message-components#select-menu-object}
- */

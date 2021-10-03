@@ -130,7 +130,7 @@ class MessageButton extends BaseMessageComponent {
 
   /**
    * Transforms the button to a plain object.
-   * @returns {APIButtonComponent} The raw data of this button
+   * @returns {APIMessageButton} The raw data of this button
    */
   toJSON() {
     return {
@@ -163,8 +163,3 @@ class MessageButton extends BaseMessageComponent {
 }
 
 module.exports = MessageButton;
-
-/**
- * @external APIButtonComponent
- * @see {@link https://discord.com/developers/docs/interactions/message-components#button-object}
- */
