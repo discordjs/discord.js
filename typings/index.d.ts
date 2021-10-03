@@ -1677,7 +1677,7 @@ export class Shard extends EventEmitter {
   private _evals: Map<string, Promise<unknown>>;
   private _exitListener: (...args: any[]) => void;
   private _fetches: Map<string, Promise<unknown>>;
-  private _handleExit(respawn?: boolean): void;
+  private _handleExit(respawn?: boolean, timeout?: number): void;
   private _handleMessage(message: unknown): void;
 
   public args: string[];
