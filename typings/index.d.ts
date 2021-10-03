@@ -4484,7 +4484,7 @@ export type MessageTarget =
   | Message
   | MessageManager;
 
-export type MessageType = keyof MessageTypes;
+export type MessageType = keyof typeof MessageTypes;
 
 export type MFALevel = keyof typeof MFALevels;
 
