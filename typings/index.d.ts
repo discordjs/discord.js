@@ -2135,7 +2135,7 @@ export class Webhook extends WebhookMixin() {
   public name: string;
   public owner: User | APIUser | null;
   public sourceGuild: Guild | APIPartialGuild | null;
-  public sourceChannel: Channel | APIPartialChannel | null;
+  public sourceChannel: NewsChannel | APIPartialChannel | null;
   public token: string | null;
   public type: WebhookType;
 }
