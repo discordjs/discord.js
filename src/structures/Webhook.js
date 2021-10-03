@@ -245,7 +245,7 @@ class Webhook {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    if (channel) channel = channel?.id ?? channel;
+    channel &&= channel.id ?? channel;
     const data = await this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,
