@@ -2661,7 +2661,7 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
   public create(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
   public fetch(options: UserResolvable | FetchBanOptions): Promise<GuildBan>;
   public fetch(options?: FetchBansOptions): Promise<Collection<Snowflake, GuildBan>>;
-  public remove(user: UserResolvable, reason?: string): Promise<User>;
+  public remove(user: UserResolvable, reason?: string): Promise<User | null>;
 }
 
 export class GuildInviteManager extends DataManager<string, Invite, InviteResolvable> {
