@@ -13,13 +13,6 @@ class AutocompleteInteraction extends Interaction {
     super(client, data);
 
     /**
-     * The channel this interaction was sent in
-     * @type {?TextBasedChannels}
-     * @name AutocompleteInteraction#channel
-     * @readonly
-     */
-
-    /**
      * The id of the channel this interaction was sent in
      * @type {Snowflake}
      * @name AutocompleteInteraction#channelId

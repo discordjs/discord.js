@@ -17,13 +17,6 @@ class BaseCommandInteraction extends Interaction {
     super(client, data);
 
     /**
-     * The channel this interaction was sent in
-     * @type {?TextBasedChannels}
-     * @name BaseCommandInteraction#channel
-     * @readonly
-     */
-
-    /**
      * The id of the channel this interaction was sent in
      * @type {Snowflake}
      * @name BaseCommandInteraction#channelId
