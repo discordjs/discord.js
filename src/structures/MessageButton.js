@@ -130,7 +130,7 @@ class MessageButton extends BaseMessageComponent {
 
   /**
    * Transforms the button to a plain object.
-   * @returns {APIMessageComponent} The raw data of this button
+   * @returns {APIMessageButton} The raw data of this button
    */
   toJSON() {
     return {
