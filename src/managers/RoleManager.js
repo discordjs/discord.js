@@ -106,6 +106,8 @@ class RoleManager extends CachedManager {
    * @property {number} [position] The position of the new role
    * @property {boolean} [mentionable] Whether or not the new role should be mentionable
    * @property {?(BufferResolvable|Base64Resolvable|EmojiResolvable)} [icon] The icon for the role
+   * <warn>The `EmojiResolvable` should belong to the same guild as the role.
+   * If not, pass the emoji's URL directly</warn>
    * @property {?string} [unicodeEmoji] The unicode emoji for the role
    * @property {string} [reason] The reason for creating this role
    */
@@ -137,6 +139,7 @@ class RoleManager extends CachedManager {
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
       icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      if (typeof icon !== 'string') icon = undefined;
     }
 
     const data = await this.client.api.guilds(this.guild.id).roles.post({
@@ -195,6 +198,7 @@ class RoleManager extends CachedManager {
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
       icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      if (typeof icon !== 'string') icon = undefined;
     }
 
     const _data = {

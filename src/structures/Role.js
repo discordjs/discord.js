@@ -204,6 +204,8 @@ class Role extends Base {
    * @property {PermissionResolvable} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
    * @property {?(BufferResolvable|Base64Resolvable|EmojiResolvable)} [icon] The icon for the role
+   * <warn>The `EmojiResolvable` should belong to the same guild as the role.
+   * If not, pass the emoji's URL directly</warn>
    * @property {?string} [unicodeEmoji] The unicode emoji for the role
    */
 
@@ -317,6 +319,8 @@ class Role extends Base {
   /**
    * Sets a new icon for the role.
    * @param {?(BufferResolvable|Base64Resolvable|EmojiResolvable)} icon The icon for the role
+   * <warn>The `EmojiResolvable` should belong to the same guild as the role.
+   * If not, pass the emoji's URL directly</warn>
    * @param {string} [reason] Reason for changing the role's icon
    * @returns {Promise<Role>}
    */
