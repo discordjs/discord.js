@@ -388,7 +388,10 @@ class Role extends Base {
   }
 
   toJSON() {
-    return super.toJSON({ createdTimestamp: true });
+    return {
+      ...super.toJSON({ createdTimestamp: true }),
+      permissions: this.permissions.toJSON(),
+    };
   }
 
   /**
