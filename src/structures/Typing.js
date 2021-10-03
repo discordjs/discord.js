@@ -7,11 +7,6 @@ const Base = require('./Base');
  * @extends {Base}
  */
 class Typing extends Base {
-  /**
-   * @param {TextBasedChannels} channel The channel this typing came from
-   * @param {User} user The user that started typing
-   * @param {APITypingStart} data The raw data received
-   */
   constructor(channel, user, data) {
     super(channel.client);
 
@@ -31,11 +26,13 @@ class Typing extends Base {
   }
 
   _patch(data) {
-    /**
-     * The UNIX timestamp in milliseconds the user started typing at
-     * @type {number}
-     */
-    this.startedTimestamp = data.timestamp * 1_000;
+    if ('timestamp' in data) {
+      /**
+       * The UNIX timestamp in milliseconds the user started typing at
+       * @type {number}
+       */
+      this.startedTimestamp = data.timestamp * 1_000;
+    }
   }
 
   /**
@@ -75,8 +72,3 @@ class Typing extends Base {
 }
 
 module.exports = Typing;
-
-/**
- * @external APITypingStart
- * @see {@link https://discord.com/developers/docs/topics/gateway#typing-start-typing-start-event-fields}
- */

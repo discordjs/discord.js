@@ -1,6 +1,8 @@
 import { APIGuildMember, APIInteractionGuildMember, APIMessage } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
+  ApplicationCommandChannelOption,
+  ApplicationCommandChannelOptionData,
   ApplicationCommandChoicesData,
   ApplicationCommandData,
   ApplicationCommandManager,
@@ -497,21 +499,26 @@ client.on('messageCreate', message => {
   // Verify that buttons interactions are inferred.
   const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
   assertType<Promise<ButtonInteraction>>(message.awaitMessageComponent({ componentType: 'BUTTON' }));
+  assertType<Promise<ButtonInteraction>>(channel.awaitMessageComponent({ componentType: 'BUTTON' }));
   assertType<InteractionCollector<ButtonInteraction>>(buttonCollector);
 
   // Verify that select menus interaction are inferred.
   const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU' });
   assertType<Promise<SelectMenuInteraction>>(message.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
+  assertType<Promise<SelectMenuInteraction>>(channel.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
   assertType<InteractionCollector<SelectMenuInteraction>>(selectMenuCollector);
 
   // Verify that message component interactions are default collected types.
   const defaultCollector = message.createMessageComponentCollector();
   assertType<Promise<MessageComponentInteraction>>(message.awaitMessageComponent());
+  assertType<Promise<MessageComponentInteraction>>(channel.awaitMessageComponent());
   assertType<InteractionCollector<MessageComponentInteraction>>(defaultCollector);
 
   // Verify that additional options don't affect default collector types.
   const semiDefaultCollector = message.createMessageComponentCollector({ time: 10000 });
   assertType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollector);
+  const semiDefaultCollectorChannel = message.createMessageComponentCollector({ time: 10000 });
+  assertType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollectorChannel);
 
   // Verify that interaction collector options can't be used.
 
@@ -558,6 +565,29 @@ client.on('messageCreate', message => {
   });
 
   message.awaitMessageComponent({
+    componentType: 'SELECT_MENU',
+    filter: i => {
+      assertType<SelectMenuInteraction>(i);
+      return true;
+    },
+  });
+
+  channel.awaitMessageComponent({
+    filter: i => {
+      assertType<MessageComponentInteraction>(i);
+      return true;
+    },
+  });
+
+  channel.awaitMessageComponent({
+    componentType: 'BUTTON',
+    filter: i => {
+      assertType<ButtonInteraction>(i);
+      return true;
+    },
+  });
+
+  channel.awaitMessageComponent({
     componentType: 'SELECT_MENU',
     filter: i => {
       assertType<SelectMenuInteraction>(i);
@@ -753,9 +783,10 @@ declare const applicationSubCommandData: ApplicationCommandSubCommandData;
   assertType<'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND>(applicationSubCommandData.type);
 
   // Check that only subcommands can have no subcommand or subcommand group sub-options.
-  assertType<(ApplicationCommandChoicesData | ApplicationCommandNonOptionsData)[] | undefined>(
-    applicationSubCommandData.options,
-  );
+  assertType<
+    | (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData | ApplicationCommandChannelOptionData)[]
+    | undefined
+  >(applicationSubCommandData.options);
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;

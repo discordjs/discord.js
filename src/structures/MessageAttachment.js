@@ -68,41 +68,65 @@ class MessageAttachment {
      */
     this.id = data.id;
 
-    /**
-     * The size of this attachment in bytes
-     * @type {number}
-     */
-    this.size = data.size;
+    if ('size' in data) {
+      /**
+       * The size of this attachment in bytes
+       * @type {number}
+       */
+      this.size = data.size;
+    }
+
+    if ('url' in data) {
+      /**
+       * The URL to this attachment
+       * @type {string}
+       */
+      this.url = data.url;
+    }
+
+    if ('proxy_url' in data) {
+      /**
+       * The Proxy URL to this attachment
+       * @type {string}
+       */
+      this.proxyURL = data.proxy_url;
+    }
+
+    if ('height' in data) {
+      /**
+       * The height of this attachment (if an image or video)
+       * @type {?number}
+       */
+      this.height = data.height;
+    } else {
+      this.height ??= null;
+    }
+
+    if ('width' in data) {
+      /**
+       * The width of this attachment (if an image or video)
+       * @type {?number}
+       */
+      this.width = data.width;
+    } else {
+      this.width ??= null;
+    }
+
+    if ('content_type' in data) {
+      /**
+       * This media type of this attachment
+       * @type {?string}
+       */
+      this.contentType = data.content_type;
+    } else {
+      this.contentType ??= null;
+    }
 
     /**
-     * The URL to this attachment
-     * @type {string}
+     * Whether this attachment is ephemeral
+     * @type {boolean}
      */
-    this.url = data.url;
-
-    /**
-     * The Proxy URL to this attachment
-     * @type {string}
-     */
-    this.proxyURL = data.proxy_url;
-
-    /**
-     * The height of this attachment (if an image or video)
-     * @type {?number}
-     */
-    this.height = data.height ?? null;
-
-    /**
-     * The width of this attachment (if an image or video)
-     * @type {?number}
-     */
-    this.width = data.width ?? null;
-
-    /**
-     * This media type of this attachment
-     * @type {?string}
-     */
-    this.contentType = data.content_type ?? null;
+    this.ephemeral = data.ephemeral ?? false;
   }
 
   /**

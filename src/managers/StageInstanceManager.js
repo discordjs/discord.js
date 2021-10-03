@@ -60,7 +60,7 @@ class StageInstanceManager extends CachedManager {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     let { topic, privacyLevel } = options;
 
-    if (privacyLevel) privacyLevel = typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
+    privacyLevel &&= typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
 
     const data = await this.client.api['stage-instances'].post({
       data: {
@@ -122,7 +122,7 @@ class StageInstanceManager extends CachedManager {
 
     let { topic, privacyLevel } = options;
 
-    if (privacyLevel) privacyLevel = typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
+    privacyLevel &&= typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
 
     const data = await this.client.api('stage-instances', channelId).patch({
       data: {

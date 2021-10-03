@@ -13,12 +13,6 @@ const Permissions = require('../util/Permissions');
  * @implements {TextBasedChannel}
  */
 class ThreadChannel extends Channel {
-  /**
-   * @param {Guild} guild The guild the thread channel is part of
-   * @param {APIChannel} data The data for the thread channel
-   * @param {Client} [client] A safety parameter for the client that instantiated this
-   * @param {boolean} [fromInteraction=false] Whether the data was from an interaction (partial)
-   */
   constructor(guild, data, client, fromInteraction = false) {
     super(guild?.client ?? client, data, false);
 
@@ -51,11 +45,13 @@ class ThreadChannel extends Channel {
   _patch(data, partial = false) {
     super._patch(data);
 
-    /**
-     * The name of the thread
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the thread
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
     if ('guild_id' in data) {
       this.guildId = data.guild_id;
@@ -415,7 +411,9 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get editable() {
-    return (this.ownerId === this.client.user.id && (this.type !== 'private_thread' || this.joined)) || this.manageable;
+    return (
+      (this.ownerId === this.client.user.id && (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined)) || this.manageable
+    );
   }
 
   /**
@@ -450,17 +448,10 @@ class ThreadChannel extends Channel {
    */
   get sendable() {
     return (
-      !this.archived &&
-      (this.type !== 'private_thread' || this.joined || this.manageable) &&
-      this.permissionsFor(this.client.user)?.any(
-        [
-          Permissions.FLAGS.SEND_MESSAGES,
-          this.type === 'GUILD_PRIVATE_THREAD'
-            ? Permissions.FLAGS.USE_PRIVATE_THREADS
-            : Permissions.FLAGS.USE_PUBLIC_THREADS,
-        ],
-        false,
-      )
+      (!(this.archived && this.locked && !this.manageable) &&
+        (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined || this.manageable) &&
+        this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS, false)) ??
+      false
     );
   }
 

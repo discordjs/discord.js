@@ -13,11 +13,6 @@ const Permissions = require('../util/Permissions');
  * @extends {Base}
  */
 class GuildMember extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIGuildMember} data The data for the guild member
-   * @param {Guild} guild The guild the member is part of
-   */
   constructor(client, data, guild) {
     super(client);
 
@@ -71,6 +66,15 @@ class GuildMember extends Base {
     }
 
     if ('nick' in data) this.nickname = data.nick;
+    if ('avatar' in data) {
+      /**
+       * The guild member's avatar hash
+       * @type {?string}
+       */
+      this.avatar = data.avatar;
+    } else if (typeof this.avatar !== 'string') {
+      this.avatar = null;
+    }
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if ('premium_since' in data) {
       this.premiumSinceTimestamp = data.premium_since ? new Date(data.premium_since).getTime() : null;
@@ -110,6 +114,26 @@ class GuildMember extends Base {
    */
   get voice() {
     return this.guild.voiceStates.cache.get(this.id) ?? new VoiceState(this.guild, { user_id: this.id });
+  }
+
+  /**
+   * A link to the member's guild avatar.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  avatarURL({ format, size, dynamic } = {}) {
+    if (!this.avatar) return null;
+    return this.client.rest.cdn.GuildMemberAvatar(this.guild.id, this.id, this.avatar, format, size, dynamic);
+  }
+
+  /**
+   * A link to the member's guild avatar if they have one.
+   * Otherwise, a link to their {@link User#displayAvatarURL} will be returned.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {string}
+   */
+  displayAvatarURL(options) {
+    return this.avatarURL(options) ?? this.user.displayAvatarURL(options);
   }
 
   /**
@@ -323,6 +347,7 @@ class GuildMember extends Base {
       this.guild.id === member.guild.id &&
       this.joinedTimestamp === member.joinedTimestamp &&
       this.nickname === member.nickname &&
+      this.avatar === member.avatar &&
       this.pending === member.pending &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length && this._roles.every((role, i) => role === member._roles[i])))
@@ -341,12 +366,15 @@ class GuildMember extends Base {
   }
 
   toJSON() {
-    return super.toJSON({
+    const json = super.toJSON({
       guild: 'guildId',
       user: 'userId',
       displayName: true,
       roles: true,
     });
+    json.avatarURL = this.avatarURL();
+    json.displayAvatarURL = this.displayAvatarURL();
+    return json;
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

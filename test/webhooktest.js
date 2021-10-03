@@ -1,8 +1,8 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
+const fs = require('node:fs');
+const path = require('node:path');
+const util = require('node:util');
 const fetch = require('node-fetch');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
 const { Client, Intents, MessageAttachment, MessageEmbed, WebhookClient } = require('../src');

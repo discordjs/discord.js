@@ -93,18 +93,8 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Options used to create a new channel in a guild.
-   * @typedef {Object} GuildChannelCreateOptions
-   * @property {ChannelType|number} [type='GUILD_TEXT'] The type of the new channel.
-   * @property {string} [topic] The topic for the new channel
-   * @property {boolean} [nsfw] Whether the new channel is nsfw
-   * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
-   * @property {number} [userLimit] Maximum amount of users allowed in the new channel (only voice)
+   * @typedef {CategoryCreateChannelOptions} GuildChannelCreateOptions
    * @property {CategoryChannelResolvable} [parent] Parent of the new channel
-   * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
-   * Permission overwrites of the new channel
-   * @property {number} [position] Position of the new channel
-   * @property {number} [rateLimitPerUser] The ratelimit per user for the new channel
-   * @property {string} [reason] Reason for creating the new channel
    */
 
   /**
@@ -133,10 +123,8 @@ class GuildChannelManager extends CachedManager {
     name,
     { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
   ) {
-    if (parent) parent = this.client.channels.resolveId(parent);
-    if (permissionOverwrites) {
-      permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
-    }
+    parent &&= this.client.channels.resolveId(parent);
+    permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
 
     const data = await this.client.api.guilds(this.guild.id).channels.post({
       data: {

@@ -37,7 +37,7 @@ class Client extends BaseClient {
   constructor(options) {
     super(options);
 
-    const data = require('worker_threads').workerData ?? process.env;
+    const data = require('node:worker_threads').workerData ?? process.env;
     const defaults = Options.createDefault();
 
     if (this.options.shards === defaults.shards) {

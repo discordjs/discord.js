@@ -11,11 +11,6 @@ const Util = require('../util/Util');
  * @extends {Base}
  */
 class Role extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIRole} data The data for the role
-   * @param {Guild} guild The guild the role is part of
-   */
   constructor(client, data, guild) {
     super(client);
 
@@ -34,48 +29,61 @@ class Role extends Base {
      * @type {Snowflake}
      */
     this.id = data.id;
+    if ('name' in data) {
+      /**
+       * The name of the role
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The name of the role
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('color' in data) {
+      /**
+       * The base 10 color of the role
+       * @type {number}
+       */
+      this.color = data.color;
+    }
 
-    /**
-     * The base 10 color of the role
-     * @type {number}
-     */
-    this.color = data.color;
+    if ('hoist' in data) {
+      /**
+       * If true, users that are part of this role will appear in a separate category in the users list
+       * @type {boolean}
+       */
+      this.hoist = data.hoist;
+    }
 
-    /**
-     * If true, users that are part of this role will appear in a separate category in the users list
-     * @type {boolean}
-     */
-    this.hoist = data.hoist;
+    if ('position' in data) {
+      /**
+       * The raw position of the role from the API
+       * @type {number}
+       */
+      this.rawPosition = data.position;
+    }
 
-    /**
-     * The raw position of the role from the API
-     * @type {number}
-     */
-    this.rawPosition = data.position;
+    if ('permissions' in data) {
+      /**
+       * The permissions of the role
+       * @type {Readonly<Permissions>}
+       */
+      this.permissions = new Permissions(BigInt(data.permissions)).freeze();
+    }
 
-    /**
-     * The permissions of the role
-     * @type {Readonly<Permissions>}
-     */
-    this.permissions = new Permissions(BigInt(data.permissions)).freeze();
+    if ('managed' in data) {
+      /**
+       * Whether or not the role is managed by an external service
+       * @type {boolean}
+       */
+      this.managed = data.managed;
+    }
 
-    /**
-     * Whether or not the role is managed by an external service
-     * @type {boolean}
-     */
-    this.managed = data.managed;
-
-    /**
-     * Whether or not the role can be mentioned by anyone
-     * @type {boolean}
-     */
-    this.mentionable = data.mentionable;
+    if ('mentionable' in data) {
+      /**
+       * Whether or not the role can be mentioned by anyone
+       * @type {boolean}
+       */
+      this.mentionable = data.mentionable;
+    }
 
     /**
      * Whether the role has been deleted
@@ -375,7 +383,10 @@ class Role extends Base {
   }
 
   toJSON() {
-    return super.toJSON({ createdTimestamp: true });
+    return {
+      ...super.toJSON({ createdTimestamp: true }),
+      permissions: this.permissions.toJSON(),
+    };
   }
 
   /**

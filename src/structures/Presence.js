@@ -35,10 +35,6 @@ const Util = require('../util/Util');
  * @extends {Base}
  */
 class Presence extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIPresence} [data={}] The data for the presence
-   */
   constructor(client, data = {}) {
     super(client);
 
@@ -76,26 +72,38 @@ class Presence extends Base {
   }
 
   _patch(data) {
-    /**
-     * The status of this presence
-     * @type {PresenceStatus}
-     */
-    this.status = data.status ?? this.status ?? 'offline';
+    if ('status' in data) {
+      /**
+       * The status of this presence
+       * @type {PresenceStatus}
+       */
+      this.status = data.status;
+    } else {
+      this.status ??= 'offline';
+    }
 
-    /**
-     * The activities of this presence
-     * @type {Activity[]}
-     */
-    this.activities = data.activities?.map(activity => new Activity(this, activity)) ?? [];
+    if ('activities' in data) {
+      /**
+       * The activities of this presence
+       * @type {Activity[]}
+       */
+      this.activities = data.activities.map(activity => new Activity(this, activity));
+    } else {
+      this.activities ??= [];
+    }
 
-    /**
-     * The devices this presence is on
-     * @type {?Object}
-     * @property {?ClientPresenceStatus} web The current presence in the web application
-     * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
-     * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
-     */
-    this.clientStatus = data.client_status ?? null;
+    if ('client_status' in data) {
+      /**
+       * The devices this presence is on
+       * @type {?Object}
+       * @property {?ClientPresenceStatus} web The current presence in the web application
+       * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
+       * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
+       */
+      this.clientStatus = data.client_status;
+    } else {
+      this.clientStatus ??= null;
+    }
 
     return this;
   }
@@ -374,9 +382,3 @@ class RichPresenceAssets {
 exports.Presence = Presence;
 exports.Activity = Activity;
 exports.RichPresenceAssets = RichPresenceAssets;
-
-/* eslint-disable max-len */
-/**
- * @external APIPresence
- * @see {@link https://discord.com/developers/docs/rich-presence/how-to#updating-presence-update-presence-payload-fields}
- */

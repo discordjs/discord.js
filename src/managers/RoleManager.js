@@ -129,7 +129,7 @@ class RoleManager extends CachedManager {
    */
   async create(options = {}) {
     let { name, color, hoist, permissions, position, mentionable, reason } = options;
-    if (color) color = resolveColor(color);
+    color &&= resolveColor(color);
     if (typeof permissions !== 'undefined') permissions = new Permissions(permissions);
 
     const data = await this.client.api.guilds(this.guild.id).roles.post({
