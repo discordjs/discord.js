@@ -121,7 +121,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is both received from a guild and is cached.
+   * Indicates whether or not this interaction is both cached and received from a guild.
    * @returns {boolean}
    */
   inCachedGuild() {
@@ -129,7 +129,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is both received from a guild and is not cached.
+   * Indicates whether or not this interaction is received from an uncached guild.
    * @returns {boolean}
    */
   inRawGuild() {
