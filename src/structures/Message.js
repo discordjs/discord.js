@@ -71,9 +71,9 @@ class Message extends Base {
        * @type {?boolean}
        */
       this.system = SystemMessageTypes.includes(this.type);
-    } else if (typeof this.type !== 'string') {
-      this.system = null;
-      this.type = null;
+    } else {
+      this.system ??= null;
+      this.type ??= null;
     }
 
     if ('content' in data) {

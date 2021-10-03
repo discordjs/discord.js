@@ -37,17 +37,21 @@ class Widget extends Base {
      */
     this.id = data.id;
 
-    /**
-     * The name of the guild.
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the guild.
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The invite of the guild.
-     * @type {?string}
-     */
-    this.instantInvite = data.instant_invite;
+    if ('instant_invite' in data) {
+      /**
+       * The invite of the guild.
+       * @type {?string}
+       */
+      this.instantInvite = data.instant_invite;
+    }
 
     /**
      * The list of channels in the guild.
@@ -68,11 +72,13 @@ class Widget extends Base {
       this.members.set(member.id, new WidgetMember(this.client, member));
     }
 
-    /**
-     * The number of the members online.
-     * @type {number}
-     */
-    this.presenceCount = data.presence_count;
+    if ('presence_count' in data) {
+      /**
+       * The number of the members online.
+       * @type {number}
+       */
+      this.presenceCount = data.presence_count;
+    }
   }
 
   /**
