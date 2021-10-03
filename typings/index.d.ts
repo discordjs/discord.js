@@ -1499,7 +1499,7 @@ export class MessageSelectMenu extends BaseMessageComponent {
 export class NewsChannel extends BaseGuildTextChannel {
   public threads: ThreadManager<AllowedThreadTypeForNewsChannel>;
   public type: 'GUILD_NEWS';
-  public addFollower(channel: GuildChannelResolvable, reason?: string): Promise<NewsChannel>;
+  public addFollower(channel: TextChannelResolvable, reason?: string): Promise<NewsChannel>;
 }
 
 export class OAuth2Guild extends BaseGuild {
@@ -2639,7 +2639,10 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
 export class GuildInviteManager extends DataManager<string, Invite, InviteResolvable> {
   public constructor(guild: Guild, iterable?: Iterable<RawInviteData>);
   public guild: Guild;
-  public create(channel: GuildChannelResolvable, options?: CreateInviteOptions): Promise<Invite>;
+  public create(
+    channel: TextChannel | VoiceChannel | NewsChannel | StoreChannel | StageChannel | Snowflake,
+    options?: CreateInviteOptions,
+  ): Promise<Invite>;
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
@@ -3783,7 +3786,7 @@ interface FetchInviteOptions extends BaseFetchOptions {
 }
 
 interface FetchInvitesOptions {
-  channelId?: GuildChannelResolvable;
+  channelId?: TextChannel | VoiceChannel | NewsChannel | StoreChannel | StageChannel | Snowflake;
   cache?: boolean;
 }
 

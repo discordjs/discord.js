@@ -10,7 +10,7 @@ const { Error } = require('../errors');
 class NewsChannel extends BaseGuildTextChannel {
   /**
    * Adds the target to this channel's followers.
-   * @param {GuildChannelResolvable} channel The channel where the webhook should be created
+   * @param {TextChannelResolvable} channel The channel where the webhook should be created
    * @param {string} [reason] Reason for creating the webhook
    * @returns {Promise<NewsChannel>}
    * @example
