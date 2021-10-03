@@ -390,6 +390,30 @@ export class ButtonInteraction extends MessageComponentInteraction {
 export class CategoryChannel extends GuildChannel {
   public readonly children: Collection<Snowflake, GuildChannel>;
   public type: 'GUILD_CATEGORY';
+  public createChannel(
+    name: string,
+    options: CategoryCreateChannelOptions & { type: 'GUILD_VOICE' },
+  ): Promise<VoiceChannel>;
+  public createChannel(
+    name: string,
+    options?: CategoryCreateChannelOptions & { type?: 'GUILD_TEXT' },
+  ): Promise<TextChannel>;
+  public createChannel(
+    name: string,
+    options: CategoryCreateChannelOptions & { type: 'GUILD_NEWS' },
+  ): Promise<NewsChannel>;
+  public createChannel(
+    name: string,
+    options: CategoryCreateChannelOptions & { type: 'GUILD_STORE' },
+  ): Promise<StoreChannel>;
+  public createChannel(
+    name: string,
+    options: CategoryCreateChannelOptions & { type: 'GUILD_STAGE_VOICE' },
+  ): Promise<StageChannel>;
+  public createChannel(
+    name: string,
+    options: CategoryCreateChannelOptions,
+  ): Promise<TextChannel | VoiceChannel | NewsChannel | StoreChannel | StageChannel>;
 }
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
@@ -3282,6 +3306,34 @@ export type CacheWithLimitsOptions = {
     : never;
 };
 
+export interface CategoryCreateChannelOptions {
+  permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+  topic?: string;
+  type?: Exclude<
+    keyof typeof ChannelTypes | ChannelTypes,
+    | 'DM'
+    | 'GROUP_DM'
+    | 'UNKNOWN'
+    | 'GUILD_PUBLIC_THREAD'
+    | 'GUILD_NEWS_THREAD'
+    | 'GUILD_PRIVATE_THREAD'
+    | 'GUILD_CATEGORY'
+    | ChannelTypes.DM
+    | ChannelTypes.GROUP_DM
+    | ChannelTypes.UNKNOWN
+    | ChannelTypes.GUILD_PUBLIC_THREAD
+    | ChannelTypes.GUILD_NEWS_THREAD
+    | ChannelTypes.GUILD_PRIVATE_THREAD
+    | ChannelTypes.GUILD_CATEGORY
+  >;
+  nsfw?: boolean;
+  bitrate?: number;
+  userLimit?: number;
+  rateLimitPerUser?: number;
+  position?: number;
+  reason?: string;
+}
+
 export interface ChannelCreationOverwrites {
   allow?: PermissionResolvable;
   deny?: PermissionResolvable;
@@ -3910,29 +3962,23 @@ export interface GuildChannelOverwriteOptions {
 
 export type GuildChannelResolvable = Snowflake | GuildChannel | ThreadChannel;
 
-export interface GuildChannelCreateOptions {
-  permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
-  topic?: string;
+export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
+  parent?: CategoryChannelResolvable;
   type?: Exclude<
     keyof typeof ChannelTypes | ChannelTypes,
     | 'DM'
     | 'GROUP_DM'
     | 'UNKNOWN'
     | 'GUILD_PUBLIC_THREAD'
+    | 'GUILD_NEWS_THREAD'
     | 'GUILD_PRIVATE_THREAD'
     | ChannelTypes.DM
     | ChannelTypes.GROUP_DM
     | ChannelTypes.UNKNOWN
     | ChannelTypes.GUILD_PUBLIC_THREAD
+    | ChannelTypes.GUILD_NEWS_THREAD
     | ChannelTypes.GUILD_PRIVATE_THREAD
   >;
-  nsfw?: boolean;
-  parent?: CategoryChannelResolvable;
-  bitrate?: number;
-  userLimit?: number;
-  rateLimitPerUser?: number;
-  position?: number;
-  reason?: string;
 }
 
 export interface GuildChannelCloneOptions extends GuildChannelCreateOptions {
