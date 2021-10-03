@@ -1,4 +1,4 @@
-import { APIGuildMember, APIInteractionGuildMember, APIMessage } from 'discord-api-types';
+import { APIGuildMember, APIInteractionGuildMember, APIMessage } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
   ApplicationCommandChoicesData,
@@ -23,6 +23,7 @@ import {
   CommandOptionChoiceResolvableType,
   CommandOptionNonChoiceResolvableType,
   Constants,
+  ContextMenuInteraction,
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
@@ -834,17 +835,70 @@ client.on('interactionCreate', async interaction => {
   }
 
   if (interaction.isContextMenu()) {
+    assertType<ContextMenuInteraction>(interaction);
     if (interaction.inCachedGuild()) {
+      assertType<ContextMenuInteraction>(interaction);
       assertType<Guild>(interaction.guild);
+    } else if (interaction.inRawGuild()) {
+      assertType<ContextMenuInteraction>(interaction);
+      assertType<null>(interaction.guild);
+    } else if (interaction.inGuild()) {
+      assertType<ContextMenuInteraction>(interaction);
+      assertType<Guild | null>(interaction.guild);
+    }
+  }
+
+  if (interaction.isButton()) {
+    assertType<ButtonInteraction>(interaction);
+    if (interaction.inCachedGuild()) {
+      assertType<ButtonInteraction>(interaction);
+      assertType<Guild>(interaction.guild);
+    } else if (interaction.inRawGuild()) {
+      assertType<ButtonInteraction>(interaction);
+      assertType<null>(interaction.guild);
+    } else if (interaction.inGuild()) {
+      assertType<ButtonInteraction>(interaction);
+      assertType<Guild | null>(interaction.guild);
+    }
+  }
+
+  if (interaction.isMessageComponent()) {
+    assertType<MessageComponentInteraction>(interaction);
+    if (interaction.inCachedGuild()) {
+      assertType<MessageComponentInteraction>(interaction);
+      assertType<Guild>(interaction.guild);
+    } else if (interaction.inRawGuild()) {
+      assertType<MessageComponentInteraction>(interaction);
+      assertType<null>(interaction.guild);
+    } else if (interaction.inGuild()) {
+      assertType<MessageComponentInteraction>(interaction);
+      assertType<Guild | null>(interaction.guild);
+    }
+  }
+
+  if (interaction.isSelectMenu()) {
+    assertType<SelectMenuInteraction>(interaction);
+    if (interaction.inCachedGuild()) {
+      assertType<SelectMenuInteraction>(interaction);
+      assertType<Guild>(interaction.guild);
+    } else if (interaction.inRawGuild()) {
+      assertType<SelectMenuInteraction>(interaction);
+      assertType<null>(interaction.guild);
+    } else if (interaction.inGuild()) {
+      assertType<SelectMenuInteraction>(interaction);
+      assertType<Guild | null>(interaction.guild);
     }
   }
 
   if (interaction.isCommand()) {
     if (interaction.inRawGuild()) {
+      assertType<CommandInteraction>(interaction);
       assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inCachedGuild()) {
+      assertType<CommandInteraction>(interaction);
       assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
     } else {
+      assertType<CommandInteraction>(interaction);
       assertType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
     }
 

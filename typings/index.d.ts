@@ -1050,7 +1050,7 @@ type CacheTypeReducer<
   : Fallback;
 
 export interface GuildInteraction<Cached extends GuildCacheState = GuildCacheState> extends Interaction {
-  guildId: CacheTypeReducer<Cached, Snowflake>;
+  guildId: Snowflake;
   member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   readonly guild: CacheTypeReducer<Cached, Guild, null>;
   channel: CacheTypeReducer<Cached, Exclude<TextBasedChannels, PartialDMChannel | DMChannel> | null>;
