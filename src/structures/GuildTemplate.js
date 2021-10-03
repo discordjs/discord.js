@@ -9,21 +9,11 @@ const DataResolver = require('../util/DataResolver');
  * @extends {Base}
  */
 class GuildTemplate extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIGuildTemplate} data The raw data for the template
-   */
   constructor(client, data) {
     super(client);
     this._patch(data);
   }
 
-  /**
-   * Builds or updates the template with the provided data.
-   * @param {APIGuildTemplate} data The raw data for the template
-   * @returns {GuildTemplate}
-   * @private
-   */
   _patch(data) {
     if ('code' in data) {
       /**
@@ -243,9 +233,3 @@ class GuildTemplate extends Base {
 GuildTemplate.GUILD_TEMPLATES_PATTERN = /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/gi;
 
 module.exports = GuildTemplate;
-
-/* eslint-disable max-len */
-/**
- * @external APIGuildTemplate
- * @see {@link https://discord.com/developers/docs/resources/guild-template#guild-template-object-guild-template-structure}
- */

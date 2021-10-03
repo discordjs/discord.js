@@ -18,11 +18,6 @@ class GuildPreview extends Base {
     this._patch(data);
   }
 
-  /**
-   * Builds the guild with the provided data.
-   * @param {*} data The raw data of the guild
-   * @private
-   */
   _patch(data) {
     /**
      * The id of this guild

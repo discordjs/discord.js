@@ -7,10 +7,6 @@ const { Error, TypeError } = require('../errors');
  * Represents the voice state for a Guild Member.
  */
 class VoiceState extends Base {
-  /**
-   * @param {Guild} guild The guild the voice state is part of
-   * @param {APIVoiceState} data The data for the voice state
-   */
   constructor(guild, data) {
     super(guild.client);
     /**
@@ -275,8 +271,3 @@ class VoiceState extends Base {
 }
 
 module.exports = VoiceState;
-
-/**
- * @external APIVoiceState
- * @see {@link https://discord.com/developers/docs/resources/voice#voice-state-object}
- */

@@ -24,10 +24,6 @@ const Util = require('../util/Util');
  * @extends {Base}
  */
 class Message extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIMessage} data The data for the message
-   */
   constructor(client, data) {
     super(client);
 
