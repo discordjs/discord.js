@@ -1,6 +1,5 @@
 'use strict';
 
-const { Blob } = require('node:buffer');
 const https = require('node:https');
 const { setTimeout } = require('node:timers');
 const { fetch, FormData } = require('undici');

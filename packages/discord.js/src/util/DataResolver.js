@@ -87,7 +87,7 @@ class DataResolver extends null {
     if (data instanceof Blob) {
       const text = await data.text();
       const buffer = Buffer.from(text);
-      return `data:image/jpg;base64,${buffer.toString('base64')}`;
+      return `data:${data.type || 'image/jpg'};base64,${buffer.toString('base64')}`;
     }
     return data;
   }
