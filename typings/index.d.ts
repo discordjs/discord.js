@@ -1598,7 +1598,7 @@ export class ReactionCollector extends Collector<Snowflake | string, MessageReac
 
   public static key(reaction: MessageReaction): Snowflake | string;
 
-  public collect(reaction: MessageReaction, user: User): Promise<Snowflake | string | null>;
+  public collect(reaction: MessageReaction, user: User): Snowflake | string | null;
   public dispose(reaction: MessageReaction, user: User): Snowflake | string | null;
   public empty(): void;
 
