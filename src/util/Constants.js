@@ -73,6 +73,8 @@ exports.Endpoints = {
       TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
         `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
+      RoleIcon: (roleId, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,

@@ -92,6 +92,18 @@ class Role extends Base {
     this.deleted = false;
 
     /**
+     * The icon hash of the role
+     * @type {?string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The unicode emoji for the role
+     * @type {?string}
+     */
+    this.unicodeEmoji = data.unicode_emoji;
+
+    /**
      * The tags this role has
      * @type {?Object}
      * @property {Snowflake} [botId] The id of the bot this role belongs to
@@ -191,6 +203,10 @@ class Role extends Base {
    * @property {number} [position] The position of the role
    * @property {PermissionResolvable} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
+   * @property {?(BufferResolvable|Base64Resolvable|EmojiResolvable)} [icon] The icon for the role
+   * <warn>The `EmojiResolvable` should belong to the same guild as the role.
+   * If not, pass the emoji's URL directly</warn>
+   * @property {?string} [unicodeEmoji] The unicode emoji for the role
    */
 
   /**
@@ -301,6 +317,33 @@ class Role extends Base {
   }
 
   /**
+   * Sets a new icon for the role.
+   * @param {?(BufferResolvable|Base64Resolvable|EmojiResolvable)} icon The icon for the role
+   * <warn>The `EmojiResolvable` should belong to the same guild as the role.
+   * If not, pass the emoji's URL directly</warn>
+   * @param {string} [reason] Reason for changing the role's icon
+   * @returns {Promise<Role>}
+   */
+  setIcon(icon, reason) {
+    return this.edit({ icon }, reason);
+  }
+
+  /**
+   * Sets a new unicode emoji for the role.
+   * @param {?string} unicodeEmoji The new unicode emoji for the role
+   * @param {string} [reason] Reason for changing the role's unicode emoji
+   * @returns {Promise<Role>}
+   * @example
+   * // Set a new unicode emoji for the role
+   * role.setUnicodeEmoji('🤖')
+   *   .then(updated => console.log(`Set unicode emoji for the role to ${updated.unicodeEmoji}`))
+   *   .catch(console.error);
+   */
+  setUnicodeEmoji(unicodeEmoji, reason) {
+    return this.edit({ unicodeEmoji }, reason);
+  }
+
+  /**
    * Options used to set position of a role.
    * @typedef {Object} SetRolePositionOptions
    * @property {boolean} [relative=false] Whether to change the position relative to its current value or not
@@ -351,6 +394,16 @@ class Role extends Base {
   }
 
   /**
+   * A link to the role's icon
+   * @param {StaticImageURLOptions} [options={}] Options for the image URL
+   * @returns {?string}
+   */
+  iconURL({ format, size } = {}) {
+    if (!this.icon) return null;
+    return this.client.rest.cdn.RoleIcon(this.id, this.icon, format, size);
+  }
+
+  /**
    * Whether this role equals another role. It compares all properties, so for most operations
    * it is advisable to just compare `role.id === role2.id` as it is much faster and is often
    * what most users need.
@@ -366,7 +419,9 @@ class Role extends Base {
       this.hoist === role.hoist &&
       this.position === role.position &&
       this.permissions.bitfield === role.permissions.bitfield &&
-      this.managed === role.managed
+      this.managed === role.managed &&
+      this.icon === role.icon &&
+      this.unicodeEmoji === role.unicodeEmoji
     );
   }
 
