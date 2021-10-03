@@ -18,11 +18,6 @@ class GuildPreview extends Base {
     this._patch(data);
   }
 
-  /**
-   * Builds the guild with the provided data.
-   * @param {*} data The raw data of the guild
-   * @private
-   */
   _patch(data) {
     /**
      * The id of this guild
@@ -30,53 +25,71 @@ class GuildPreview extends Base {
      */
     this.id = data.id;
 
-    /**
-     * The name of this guild
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of this guild
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The icon of this guild
-     * @type {?string}
-     */
-    this.icon = data.icon;
+    if ('icon' in data) {
+      /**
+       * The icon of this guild
+       * @type {?string}
+       */
+      this.icon = data.icon;
+    }
 
-    /**
-     * The splash icon of this guild
-     * @type {?string}
-     */
-    this.splash = data.splash;
+    if ('splash' in data) {
+      /**
+       * The splash icon of this guild
+       * @type {?string}
+       */
+      this.splash = data.splash;
+    }
 
-    /**
-     * The discovery splash icon of this guild
-     * @type {?string}
-     */
-    this.discoverySplash = data.discovery_splash;
+    if ('discovery_splash' in data) {
+      /**
+       * The discovery splash icon of this guild
+       * @type {?string}
+       */
+      this.discoverySplash = data.discovery_splash;
+    }
 
-    /**
-     * An array of enabled guild features
-     * @type {Features[]}
-     */
-    this.features = data.features;
+    if ('features' in data) {
+      /**
+       * An array of enabled guild features
+       * @type {Features[]}
+       */
+      this.features = data.features;
+    }
 
-    /**
-     * The approximate count of members in this guild
-     * @type {number}
-     */
-    this.approximateMemberCount = data.approximate_member_count;
+    if ('approximate_member_count' in data) {
+      /**
+       * The approximate count of members in this guild
+       * @type {number}
+       */
+      this.approximateMemberCount = data.approximate_member_count;
+    }
 
-    /**
-     * The approximate count of online members in this guild
-     * @type {number}
-     */
-    this.approximatePresenceCount = data.approximate_presence_count;
+    if ('approximate_presence_count' in data) {
+      /**
+       * The approximate count of online members in this guild
+       * @type {number}
+       */
+      this.approximatePresenceCount = data.approximate_presence_count;
+    }
 
-    /**
-     * The description for this guild
-     * @type {?string}
-     */
-    this.description = data.description ?? null;
+    if ('description' in data) {
+      /**
+       * The description for this guild
+       * @type {?string}
+       */
+      this.description = data.description;
+    } else {
+      this.description ??= null;
+    }
 
     if (!this.emojis) {
       /**

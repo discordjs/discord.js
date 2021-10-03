@@ -9,10 +9,6 @@ const Util = require('../util/Util');
  * Utilises IPC to send and receive data to/from the master process and other shards.
  */
 class ShardClientUtil {
-  /**
-   * @param {Client} client Client of the current shard
-   * @param {ShardingManagerMode} mode Mode the shard was spawned with
-   */
   constructor(client, mode) {
     /**
      * Client for the shard
@@ -44,7 +40,7 @@ class ShardClientUtil {
         process.send({ _reconnecting: true });
       });
     } else if (mode === 'worker') {
-      this.parentPort = require('worker_threads').parentPort;
+      this.parentPort = require('node:worker_threads').parentPort;
       this.parentPort.on('message', this._handleMessage.bind(this));
       client.on('ready', () => {
         this.parentPort.postMessage({ _ready: true });

@@ -93,9 +93,7 @@ class GuildBanManager extends CachedManager {
     if (!options) return this._fetchMany();
     const user = this.client.users.resolveId(options);
     if (user) return this._fetchSingle({ user, cache: true });
-    if (options.user) {
-      options.user = this.client.users.resolveId(options.user);
-    }
+    options.user &&= this.client.users.resolveId(options.user);
     if (!options.user) {
       if ('cache' in options) return this._fetchMany(options.cache);
       return Promise.reject(new Error('FETCH_BAN_RESOLVE_ID'));

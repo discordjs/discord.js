@@ -24,10 +24,6 @@ const Util = require('../util/Util');
  * @extends {Base}
  */
 class Message extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIMessage} data The data for the message
-   */
   constructor(client, data) {
     super(client);
 
@@ -756,7 +752,7 @@ class Message extends Base {
   /**
    * Send an inline reply to this message.
    * @param {string|MessagePayload|ReplyMessageOptions} options The options to provide
-   * @returns {Promise<Message|Message[]>}
+   * @returns {Promise<Message>}
    * @example
    * // Reply to a message
    * message.reply('This is a reply!')

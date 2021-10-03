@@ -12,23 +12,29 @@ class BaseGuildVoiceChannel extends GuildChannel {
   _patch(data) {
     super._patch(data);
 
-    /**
-     * The RTC region for this voice-based channel. This region is automatically selected if `null`.
-     * @type {?string}
-     */
-    this.rtcRegion = data.rtc_region;
+    if ('rtc_region' in data) {
+      /**
+       * The RTC region for this voice-based channel. This region is automatically selected if `null`.
+       * @type {?string}
+       */
+      this.rtcRegion = data.rtc_region;
+    }
 
-    /**
-     * The bitrate of this voice-based channel
-     * @type {number}
-     */
-    this.bitrate = data.bitrate;
+    if ('bitrate' in data) {
+      /**
+       * The bitrate of this voice-based channel
+       * @type {number}
+       */
+      this.bitrate = data.bitrate;
+    }
 
-    /**
-     * The maximum amount of users allowed in this channel.
-     * @type {number}
-     */
-    this.userLimit = data.user_limit;
+    if ('user_limit' in data) {
+      /**
+       * The maximum amount of users allowed in this channel.
+       * @type {number}
+       */
+      this.userLimit = data.user_limit;
+    }
   }
 
   /**
