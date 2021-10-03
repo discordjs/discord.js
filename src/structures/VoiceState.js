@@ -83,7 +83,7 @@ class VoiceState extends Base {
       this.sessionId ??= null;
     }
 
-    if ('self_streaming' in data) {
+    if ('self_stream' in data) {
       /**
        * Whether this member is streaming using "Screen Share"
        * @type {boolean}
