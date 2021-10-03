@@ -892,7 +892,7 @@ export class Guild extends AnonymousGuild {
   public equals(guild: Guild): boolean;
   public fetchAuditLogs<T extends GuildAuditLogsAction = 'ALL'>(
     options?: GuildAuditLogsFetchOptions<T>,
-    ): Promise<GuildAuditLogs<T>>;
+  ): Promise<GuildAuditLogs<T>>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
   public fetchOwner(options?: BaseFetchOptions): Promise<GuildMember>;
   public fetchPreview(): Promise<GuildPreview>;
@@ -4258,7 +4258,7 @@ interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActio
   USER: User | null;
   GUILD: Guild;
   WEBHOOK: Webhook;
-  INVITE: Promise<Invite> | { [x: string]: unknown };
+  INVITE: Invite | { [x: string]: unknown };
   MESSAGE: TActionType extends 'MESSAGE_BULK_DELETE' ? Guild | { id: Snowflake } : User;
   INTEGRATION: Integration;
   CHANNEL: GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown };
