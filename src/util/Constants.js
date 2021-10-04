@@ -125,6 +125,7 @@ exports.Events = {
   RATE_LIMIT: 'rateLimit',
   INVALID_REQUEST_WARNING: 'invalidRequestWarning',
   API_RESPONSE: 'apiResponse',
+  API_REQUEST: 'apiRequest',
   CLIENT_READY: 'ready',
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',

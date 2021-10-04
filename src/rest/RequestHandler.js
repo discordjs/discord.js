@@ -5,7 +5,7 @@ const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const RateLimitError = require('./RateLimitError');
 const {
-  Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING, API_RESPONSE },
+  Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING, API_RESPONSE, API_REQUEST },
 } = require('../util/Constants');
 const Util = require('../util/Util');
 
@@ -171,6 +171,24 @@ class RequestHandler {
      * @property {Object} options Additional options for this request
      * @property {number} retries The number of times this request has been attempted
      */
+
+    if (this.manager.client.listenerCount(API_REQUEST)) {
+      /**
+       * Emitted before every API request.
+       * This event can emit several times for the same request, e.g. when hitting a rate limit.
+       * <info>This is an informational event that is emitted quite frequently,
+       * it is highly recommended to check `request.path` to filter the data.</info>
+       * @event Client#apiRequest
+       * @param {APIRequest} request The request that is about to be sent
+       */
+      this.manager.client.emit(API_REQUEST, {
+        method: request.method,
+        path: request.path,
+        route: request.route,
+        options: request.options,
+        retries: request.retries,
+      });
+    }
 
     // Perform the request
     let res;

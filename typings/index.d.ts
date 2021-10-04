@@ -3449,6 +3449,7 @@ export interface ChannelWebhookCreateOptions {
 
 export interface ClientEvents {
   apiResponse: [request: APIRequest, response: Response];
+  apiRequest: [request: APIRequest];
   applicationCommandCreate: [command: ApplicationCommand];
   applicationCommandDelete: [command: ApplicationCommand];
   applicationCommandUpdate: [oldCommand: ApplicationCommand | null, newCommand: ApplicationCommand];
@@ -3688,6 +3689,7 @@ export interface ConstantsEvents {
   RATE_LIMIT: 'rateLimit';
   INVALID_REQUEST_WARNING: 'invalidRequestWarning';
   API_RESPONSE: 'apiResponse';
+  API_REQUEST: 'apiRequest';
   CLIENT_READY: 'ready';
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
