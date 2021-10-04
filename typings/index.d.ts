@@ -2892,7 +2892,7 @@ export interface AddGuildMemberOptions {
 
 export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg';
 
-export type AllowedImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
+export type AllowedImageSize = 16 | 32 | 64 | 128 | 256 | 300 | 512 | 600 | 1024 | 2048 | 4096;
 
 export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
 
