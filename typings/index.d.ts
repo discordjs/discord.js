@@ -600,10 +600,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 export type GuildCommandInteraction<Cached extends GuildCacheState = GuildCacheState> =
   BaseGuildCommandInteraction<Cached> & CommandInteraction;
 
-export class CommandInteraction extends BaseCommandInteraction {
-  public inGuild(): this is GuildCommandInteraction<'present'> & this;
-  public inCachedGuild(): this is GuildCommandInteraction<'cached'> & this;
-  public inRawGuild(): this is GuildCommandInteraction<'raw'> & this;
+export class CommandInteraction extends BaseCommandInteraction implements GuildCachedInteraction<CommandInteraction> {
   public options: CommandInteractionOptionResolver;
 }
 
@@ -666,13 +663,19 @@ export class CommandInteractionOptionResolver {
 export type GuildContextMenuInteraction<Cached extends GuildCacheState = GuildCacheState> =
   BaseGuildCommandInteraction<Cached> & ContextMenuInteraction;
 
-export class ContextMenuInteraction extends BaseCommandInteraction {
+export interface GuildCachedInteraction<T> {
+  inGuild(): this is BaseGuildCommandInteraction<'present'> & T;
+  inCachedGuild(): this is BaseGuildCommandInteraction<'cached'> & T;
+  inRawGuild(): this is BaseGuildCommandInteraction<'raw'> & T;
+}
+
+export class ContextMenuInteraction
+  extends BaseCommandInteraction
+  implements GuildCachedInteraction<ContextMenuInteraction>
+{
   public options: CommandInteractionOptionResolver;
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
-  public inGuild(): this is GuildContextMenuInteraction<'present'> & this;
-  public inCachedGuild(): this is GuildContextMenuInteraction<'cached'> & this;
-  public inRawGuild(): this is GuildContextMenuInteraction<'raw'> & this;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption[];
 }
 
