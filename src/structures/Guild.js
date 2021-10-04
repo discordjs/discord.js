@@ -926,7 +926,7 @@ class Guild extends AnonymousGuild {
     const welcome_channels = welcomeChannels?.map(welcomeChannelData => {
       const emoji = this.emojis.resolve(welcomeChannelData.emoji);
       return {
-        emoji_id: emoji && emoji.id,
+        emoji_id: emoji?.id,
         emoji_name: emoji?.name ?? welcomeChannelData.emoji,
         channel_id: this.channels.resolveId(welcomeChannelData.channel),
         description: welcomeChannelData.description,
