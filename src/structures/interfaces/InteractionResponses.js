@@ -69,7 +69,7 @@ class InteractionResponses {
 
   /**
    * Creates a reply to this interaction.
-   * <info>By default `void`, provide the `fetchReply` option to fetch the bot's response.</info>
+   * <info>Use the `fetchReply` option to get the bot's reply message.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<Message|APIMessage|void>}
    * @example
