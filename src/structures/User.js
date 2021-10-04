@@ -12,10 +12,6 @@ const UserFlags = require('../util/UserFlags');
  * @extends {Base}
  */
 class User extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIUser} data The data for the user
-   */
   constructor(client, data) {
     super(client);
 
@@ -41,8 +37,8 @@ class User extends Base {
        * @type {?string}
        */
       this.username = data.username;
-    } else if (typeof this.username !== 'string') {
-      this.username = null;
+    } else {
+      this.username ??= null;
     }
 
     if ('bot' in data) {
@@ -61,8 +57,8 @@ class User extends Base {
        * @type {?string}
        */
       this.discriminator = data.discriminator;
-    } else if (typeof this.discriminator !== 'string') {
-      this.discriminator = null;
+    } else {
+      this.discriminator ??= null;
     }
 
     if ('avatar' in data) {
@@ -71,8 +67,8 @@ class User extends Base {
        * @type {?string}
        */
       this.avatar = data.avatar;
-    } else if (typeof this.avatar !== 'string') {
-      this.avatar = null;
+    } else {
+      this.avatar ??= null;
     }
 
     if ('banner' in data) {
@@ -82,8 +78,8 @@ class User extends Base {
        * @type {?string}
        */
       this.banner = data.banner;
-    } else if (typeof this.banner !== 'string') {
-      this.banner = null;
+    } else {
+      this.banner ??= null;
     }
 
     if ('accent_color' in data) {

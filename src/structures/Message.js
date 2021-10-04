@@ -24,10 +24,6 @@ const Util = require('../util/Util');
  * @extends {Base}
  */
 class Message extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIMessage} data The data for the message
-   */
   constructor(client, data) {
     super(client);
 
@@ -52,12 +48,18 @@ class Message extends Base {
     if (data) this._patch(data);
   }
 
-  _patch(data, partial = false) {
+  _patch(data) {
     /**
      * The message's id
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    /**
+     * The timestamp the message was sent at
+     * @type {number}
+     */
+    this.createdTimestamp = SnowflakeUtil.deconstruct(this.id).timestamp;
 
     if ('type' in data) {
       /**
@@ -71,9 +73,9 @@ class Message extends Base {
        * @type {?boolean}
        */
       this.system = SystemMessageTypes.includes(this.type);
-    } else if (typeof this.type !== 'string') {
-      this.system = null;
-      this.type = null;
+    } else {
+      this.system ??= null;
+      this.type ??= null;
     }
 
     if ('content' in data) {
@@ -82,8 +84,8 @@ class Message extends Base {
        * @type {?string}
        */
       this.content = data.content;
-    } else if (typeof this.content !== 'string') {
-      this.content = null;
+    } else {
+      this.content ??= null;
     }
 
     if ('author' in data) {
@@ -116,37 +118,39 @@ class Message extends Base {
       this.tts ??= null;
     }
 
-    if (!partial) {
+    if ('nonce' in data) {
       /**
        * A random number or string used for checking message delivery
        * <warn>This is only received after the message was sent successfully, and
        * lost if re-fetched</warn>
        * @type {?string}
        */
-      this.nonce = 'nonce' in data ? data.nonce : null;
+      this.nonce = data.nonce;
+    } else {
+      this.nonce ??= null;
     }
 
-    if ('embeds' in data || !partial) {
+    if ('embeds' in data) {
       /**
        * A list of embeds in the message - e.g. YouTube Player
        * @type {MessageEmbed[]}
        */
-      this.embeds = data.embeds?.map(e => new Embed(e, true)) ?? [];
+      this.embeds = data.embeds.map(e => new Embed(e, true));
     } else {
-      this.embeds = this.embeds.slice();
+      this.embeds = this.embeds?.slice() ?? [];
     }
 
-    if ('components' in data || !partial) {
+    if ('components' in data) {
       /**
        * A list of MessageActionRows in the message
        * @type {MessageActionRow[]}
        */
-      this.components = data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
+      this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
     } else {
-      this.components = this.components.slice();
+      this.components = this.components?.slice() ?? [];
     }
 
-    if ('attachments' in data || !partial) {
+    if ('attachments' in data) {
       /**
        * A collection of attachments in the message - e.g. Pictures - mapped by their ids
        * @type {Collection<Snowflake, MessageAttachment>}
@@ -161,7 +165,7 @@ class Message extends Base {
       this.attachments = new Collection(this.attachments);
     }
 
-    if ('sticker_items' in data || 'stickers' in data || !partial) {
+    if ('sticker_items' in data || 'stickers' in data) {
       /**
        * A collection of stickers in the message
        * @type {Collection<Snowflake, Sticker>}
@@ -173,23 +177,18 @@ class Message extends Base {
       this.stickers = new Collection(this.stickers);
     }
 
-    if (!partial) {
-      /**
-       * The timestamp the message was sent at
-       * @type {number}
-       */
-      this.createdTimestamp = SnowflakeUtil.deconstruct(this.id).timestamp;
-    }
-
-    if ('edited_timestamp' in data || !partial) {
+    // Discord sends null if the message has not been edited
+    if (data.edited_timestamp) {
       /**
        * The timestamp the message was last edited at (if applicable)
        * @type {?number}
        */
-      this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+      this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+    } else {
+      this.editedTimestamp ??= null;
     }
 
-    if ('reactions' in data || !partial) {
+    if ('reactions' in data) {
       /**
        * A manager of the reactions belonging to this message
        * @type {ReactionManager}
@@ -200,9 +199,11 @@ class Message extends Base {
           this.reactions._add(reaction);
         }
       }
+    } else {
+      this.reactions ??= new ReactionManager(this);
     }
 
-    if (!partial) {
+    if (!this.mentions) {
       /**
        * All valid mentions that the message contains
        * @type {MessageMentions}
@@ -226,52 +227,60 @@ class Message extends Base {
       );
     }
 
-    if ('webhook_id' in data || !partial) {
+    if ('webhook_id' in data) {
       /**
        * The id of the webhook that sent the message, if applicable
        * @type {?Snowflake}
        */
-      this.webhookId = data.webhook_id ?? null;
+      this.webhookId = data.webhook_id;
+    } else {
+      this.webhookId ??= null;
     }
 
-    if ('application' in data || !partial) {
+    if ('application' in data) {
       /**
        * Supplemental application information for group activities
        * @type {?ClientApplication}
        */
-      this.groupActivityApplication = data.application ? new ClientApplication(this.client, data.application) : null;
+      this.groupActivityApplication = new ClientApplication(this.client, data.application);
+    } else {
+      this.groupActivityApplication ??= null;
     }
 
-    if ('application_id' in data || !partial) {
+    if ('application_id' in data) {
       /**
        * The id of the application of the interaction that sent this message, if any
        * @type {?Snowflake}
        */
-      this.applicationId = data.application_id ?? null;
+      this.applicationId = data.application_id;
+    } else {
+      this.applicationId ??= null;
     }
 
-    if ('activity' in data || !partial) {
+    if ('activity' in data) {
       /**
        * Group activity
        * @type {?MessageActivity}
        */
-      this.activity = data.activity
-        ? {
-            partyId: data.activity.party_id,
-            type: data.activity.type,
-          }
-        : null;
+      this.activity = {
+        partyId: data.activity.party_id,
+        type: data.activity.type,
+      };
+    } else {
+      this.activity ??= null;
     }
+
     if ('thread' in data) {
       this.client.channels._add(data.thread, this.guild);
     }
+
     if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
       this.guild.members._add(Object.assign(data.member, { user: this.author }));
     }
 
-    if ('flags' in data || !partial) {
+    if ('flags' in data) {
       /**
        * Flags that are applied to the message
        * @type {Readonly<MessageFlags>}
@@ -296,18 +305,18 @@ class Message extends Base {
      * @property {?Snowflake} messageId The message's id that was referenced
      */
 
-    if ('message_reference' in data || !partial) {
+    if ('message_reference' in data) {
       /**
        * Message reference data
        * @type {?MessageReference}
        */
-      this.reference = data.message_reference
-        ? {
-            channelId: data.message_reference.channel_id,
-            guildId: data.message_reference.guild_id,
-            messageId: data.message_reference.message_id,
-          }
-        : null;
+      this.reference = {
+        channelId: data.message_reference.channel_id,
+        guildId: data.message_reference.guild_id,
+        messageId: data.message_reference.message_id,
+      };
+    } else {
+      this.reference ??= null;
     }
 
     if (data.referenced_message) {
@@ -337,12 +346,6 @@ class Message extends Base {
     } else {
       this.interaction ??= null;
     }
-  }
-
-  _update(data, partial = false) {
-    const clone = this._clone();
-    this._patch(data, partial);
-    return clone;
   }
 
   /**

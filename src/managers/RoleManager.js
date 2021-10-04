@@ -4,6 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const Role = require('../structures/Role');
+const DataResolver = require('../util/DataResolver');
 const Permissions = require('../util/Permissions');
 const { resolveColor, setPosition } = require('../util/Util');
 
@@ -104,6 +105,10 @@ class RoleManager extends CachedManager {
    * @property {PermissionResolvable} [permissions] The permissions for the new role
    * @property {number} [position] The position of the new role
    * @property {boolean} [mentionable] Whether or not the new role should be mentionable
+   * @property {?(BufferResolvable|Base64Resolvable|EmojiResolvable)} [icon] The icon for the role
+   * <warn>The `EmojiResolvable` should belong to the same guild as the role.
+   * If not, pass the emoji's URL directly</warn>
+   * @property {?string} [unicodeEmoji] The unicode emoji for the role
    * @property {string} [reason] The reason for creating this role
    */
 
@@ -128,9 +133,14 @@ class RoleManager extends CachedManager {
    *   .catch(console.error);
    */
   async create(options = {}) {
-    let { name, color, hoist, permissions, position, mentionable, reason } = options;
-    if (color) color = resolveColor(color);
+    let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
+    color &&= resolveColor(color);
     if (typeof permissions !== 'undefined') permissions = new Permissions(permissions);
+    if (icon) {
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
+      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      if (typeof icon !== 'string') icon = undefined;
+    }
 
     const data = await this.client.api.guilds(this.guild.id).roles.post({
       data: {
@@ -139,6 +149,8 @@ class RoleManager extends CachedManager {
         hoist,
         permissions,
         mentionable,
+        icon,
+        unicode_emoji: unicodeEmoji,
       },
       reason,
     });
@@ -182,12 +194,21 @@ class RoleManager extends CachedManager {
       });
     }
 
+    let icon = data.icon;
+    if (icon) {
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
+      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      if (typeof icon !== 'string') icon = undefined;
+    }
+
     const _data = {
       name: data.name,
       color: typeof data.color === 'undefined' ? undefined : resolveColor(data.color),
       hoist: data.hoist,
       permissions: typeof data.permissions === 'undefined' ? undefined : new Permissions(data.permissions),
       mentionable: data.mentionable,
+      icon,
+      unicode_emoji: data.unicodeEmoji,
     };
 
     const d = await this.client.api.guilds(this.guild.id).roles(role.id).patch({ data: _data, reason });

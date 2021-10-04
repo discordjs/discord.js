@@ -14,11 +14,6 @@ const DataResolver = require('../util/DataResolver');
  * @implements {TextBasedChannel}
  */
 class BaseGuildTextChannel extends GuildChannel {
-  /**
-   * @param {Guild} guild The guild the text channel is part of
-   * @param {APIChannel} data The data for the text channel
-   * @param {Client} [client] A safety parameter for the client that instantiated this
-   */
   constructor(guild, data, client) {
     super(guild, data, client, false);
 

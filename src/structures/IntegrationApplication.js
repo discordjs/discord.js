@@ -10,53 +10,85 @@ class IntegrationApplication extends Application {
   _patch(data) {
     super._patch(data);
 
-    /**
-     * The bot user for this application
-     * @type {?User}
-     */
-    this.bot = data.bot ? this.client.users._add(data.bot) : this.bot ?? null;
+    if ('bot' in data) {
+      /**
+       * The bot user for this application
+       * @type {?User}
+       */
+      this.bot = this.client.users._add(data.bot);
+    } else {
+      this.bot ??= null;
+    }
 
-    /**
-     * The url of the application's terms of service
-     * @type {?string}
-     */
-    this.termsOfServiceURL = data.terms_of_service_url ?? this.termsOfServiceURL ?? null;
+    if ('terms_of_service_url' in data) {
+      /**
+       * The url of the application's terms of service
+       * @type {?string}
+       */
+      this.termsOfServiceURL = data.terms_of_service_url;
+    } else {
+      this.termsOfServiceURL ??= null;
+    }
 
-    /**
-     * The url of the application's privacy policy
-     * @type {?string}
-     */
-    this.privacyPolicyURL = data.privacy_policy_url ?? this.privacyPolicyURL ?? null;
+    if ('privacy_policy_url' in data) {
+      /**
+       * The url of the application's privacy policy
+       * @type {?string}
+       */
+      this.privacyPolicyURL = data.privacy_policy_url;
+    } else {
+      this.privacyPolicyURL ??= null;
+    }
 
-    /**
-     * The Array of RPC origin urls
-     * @type {string[]}
-     */
-    this.rpcOrigins = data.rpc_origins ?? this.rpcOrigins ?? [];
+    if ('rpc_origins' in data) {
+      /**
+       * The Array of RPC origin urls
+       * @type {string[]}
+       */
+      this.rpcOrigins = data.rpc_origins;
+    } else {
+      this.rpcOrigins ??= [];
+    }
 
-    /**
-     * The application's summary
-     * @type {?string}
-     */
-    this.summary = data.summary ?? this.summary ?? null;
+    if ('summary' in data) {
+      /**
+       * The application's summary
+       * @type {?string}
+       */
+      this.summary = data.summary;
+    } else {
+      this.summary ??= null;
+    }
 
-    /**
-     * Whether the application can be default hooked by the client
-     * @type {?boolean}
-     */
-    this.hook = data.hook ?? this.hook ?? null;
+    if ('hook' in data) {
+      /**
+       * Whether the application can be default hooked by the client
+       * @type {?boolean}
+       */
+      this.hook = data.hook;
+    } else {
+      this.hook ??= null;
+    }
 
-    /**
-     * The hash of the application's cover image
-     * @type {?string}
-     */
-    this.cover = data.cover_image ?? this.cover ?? null;
+    if ('cover_image' in data) {
+      /**
+       * The hash of the application's cover image
+       * @type {?string}
+       */
+      this.cover = data.cover_image;
+    } else {
+      this.cover ??= null;
+    }
 
-    /**
-     * The hex-encoded key for verification in interactions and the GameSDK's GetTicket
-     * @type {?string}
-     */
-    this.verifyKey = data.verify_key ?? this.verifyKey ?? null;
+    if ('verify_key' in data) {
+      /**
+       * The hex-encoded key for verification in interactions and the GameSDK's GetTicket
+       * @type {?string}
+       */
+      this.verifyKey = data.verify_key;
+    } else {
+      this.verifyKey ??= null;
+    }
   }
 }
 

@@ -54,35 +54,47 @@ class ApplicationCommand extends Base {
   }
 
   _patch(data) {
-    /**
-     * The name of this command
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of this command
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The description of this command
-     * @type {string}
-     */
-    this.description = data.description;
+    if ('description' in data) {
+      /**
+       * The description of this command
+       * @type {string}
+       */
+      this.description = data.description;
+    }
 
-    /**
-     * The options of this command
-     * @type {ApplicationCommandOption[]}
-     */
-    this.options = data.options?.map(o => this.constructor.transformOption(o, true)) ?? [];
+    if ('options' in data) {
+      /**
+       * The options of this command
+       * @type {ApplicationCommandOption[]}
+       */
+      this.options = data.options.map(o => this.constructor.transformOption(o, true));
+    } else {
+      this.options ??= [];
+    }
 
-    /**
-     * Whether the command is enabled by default when the app is added to a guild
-     * @type {boolean}
-     */
-    this.defaultPermission = data.default_permission;
+    if ('default_permission' in data) {
+      /**
+       * Whether the command is enabled by default when the app is added to a guild
+       * @type {boolean}
+       */
+      this.defaultPermission = data.default_permission;
+    }
 
-    /**
-     * Autoincrementing version identifier updated during substantial record changes
-     * @type {Snowflake}
-     */
-    this.version = data.version;
+    if ('version' in data) {
+      /**
+       * Autoincrementing version identifier updated during substantial record changes
+       * @type {Snowflake}
+       */
+      this.version = data.version;
+    }
   }
 
   /**

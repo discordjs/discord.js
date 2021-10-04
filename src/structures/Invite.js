@@ -20,77 +20,112 @@ class Invite extends Base {
 
   _patch(data) {
     const InviteGuild = require('./InviteGuild');
-    const Guild = require('./Guild');
     /**
      * The guild the invite is for including welcome screen data if present
      * @type {?(Guild|InviteGuild)}
      */
-    this.guild = null;
+    this.guild ??= null;
     if (data.guild) {
-      this.guild = data.guild instanceof Guild ? data.guild : new InviteGuild(this.client, data.guild);
+      this.guild = this.client.guilds.resolve(data.guild.id) ?? new InviteGuild(this.client, data.guild);
     }
 
-    /**
-     * The code for this invite
-     * @type {string}
-     */
-    this.code = data.code;
+    if ('code' in data) {
+      /**
+       * The code for this invite
+       * @type {string}
+       */
+      this.code = data.code;
+    }
 
-    /**
-     * The approximate number of online members of the guild this invite is for
-     * @type {?number}
-     */
-    this.presenceCount = data.approximate_presence_count ?? null;
+    if ('approximate_presence_count' in data) {
+      /**
+       * The approximate number of online members of the guild this invite is for
+       * @type {?number}
+       */
+      this.presenceCount = data.approximate_presence_count;
+    } else {
+      this.presenceCount ??= null;
+    }
 
-    /**
-     * The approximate total number of members of the guild this invite is for
-     * @type {?number}
-     */
-    this.memberCount = data.approximate_member_count ?? null;
+    if ('approximate_member_count' in data) {
+      /**
+       * The approximate total number of members of the guild this invite is for
+       * @type {?number}
+       */
+      this.memberCount = data.approximate_member_count;
+    } else {
+      this.memberCount ??= null;
+    }
 
-    /**
-     * Whether or not this invite is temporary
-     * @type {?boolean}
-     */
-    this.temporary = data.temporary ?? null;
+    if ('temporary' in data) {
+      /**
+       * Whether or not this invite only grants temporary membership
+       * @type {?boolean}
+       */
+      this.temporary = data.temporary ?? null;
+    } else {
+      this.temporary ??= null;
+    }
 
-    /**
-     * The maximum age of the invite, in seconds, 0 if never expires
-     * @type {?number}
-     */
-    this.maxAge = data.max_age ?? null;
+    if ('max_age' in data) {
+      /**
+       * The maximum age of the invite, in seconds, 0 if never expires
+       * @type {?number}
+       */
+      this.maxAge = data.max_age;
+    } else {
+      this.maxAge ??= null;
+    }
 
-    /**
-     * How many times this invite has been used
-     * @type {?number}
-     */
-    this.uses = data.uses ?? null;
+    if ('uses' in data) {
+      /**
+       * How many times this invite has been used
+       * @type {?number}
+       */
+      this.uses = data.uses;
+    } else {
+      this.uses ??= null;
+    }
 
-    /**
-     * The maximum uses of this invite
-     * @type {?number}
-     */
-    this.maxUses = data.max_uses ?? null;
+    if ('max_uses' in data) {
+      /**
+       * The maximum uses of this invite
+       * @type {?number}
+       */
+      this.maxUses = data.max_uses;
+    } else {
+      this.maxUses ??= null;
+    }
 
-    /**
-     * The user who created this invite
-     * @type {?User}
-     */
-    this.inviter = data.inviter ? this.client.users._add(data.inviter) : null;
+    if ('inviter' in data) {
+      /**
+       * The user who created this invite
+       * @type {?User}
+       */
+      this.inviter = this.client.users._add(data.inviter);
+    } else {
+      this.inviter ??= null;
+    }
 
-    /**
-     * The user whose stream to display for this voice channel stream invite
-     * @type {?User}
-     */
-    this.targetUser = data.target_user ? this.client.users._add(data.target_user) : null;
+    if ('target_user' in data) {
+      /**
+       * The user whose stream to display for this voice channel stream invite
+       * @type {?User}
+       */
+      this.targetUser = this.client.users._add(data.target_user);
+    } else {
+      this.targetUser ??= null;
+    }
 
-    /**
-     * The embedded application to open for this voice channel embedded application invite
-     * @type {?IntegrationApplication}
-     */
-    this.targetApplication = data.target_application
-      ? new IntegrationApplication(this.client, data.target_application)
-      : null;
+    if ('target_application' in data) {
+      /**
+       * The embedded application to open for this voice channel embedded application invite
+       * @type {?IntegrationApplication}
+       */
+      this.targetApplication = new IntegrationApplication(this.client, data.target_application);
+    } else {
+      this.targetApplication ??= null;
+    }
 
     /**
      * The type of the invite target:
@@ -100,34 +135,46 @@ class Invite extends Base {
      * @see {@link https://discord.com/developers/docs/resources/invite#invite-object-invite-target-types}
      */
 
-    /**
-     * The target type
-     * @type {?TargetType}
-     */
-    this.targetType = data.target_type ?? null;
+    if ('target_type' in data) {
+      /**
+       * The target type
+       * @type {?TargetType}
+       */
+      this.targetType = data.target_type;
+    } else {
+      this.targetType ??= null;
+    }
 
-    /**
-     * The channel the invite is for
-     * @type {Channel}
-     */
-    this.channel = this.client.channels._add(data.channel, this.guild, { cache: false });
+    if ('channel' in data) {
+      /**
+       * The channel the invite is for
+       * @type {Channel}
+       */
+      this.channel = this.client.channels._add(data.channel, this.guild, { cache: false });
+    }
 
-    /**
-     * The timestamp the invite was created at
-     * @type {?number}
-     */
-    this.createdTimestamp = 'created_at' in data ? new Date(data.created_at).getTime() : null;
+    if ('created_at' in data) {
+      /**
+       * The timestamp the invite was created at
+       * @type {?number}
+       */
+      this.createdTimestamp = new Date(data.created_at).getTime();
+    } else {
+      this.createdTimestamp ??= null;
+    }
 
-    this._expiresTimestamp = 'expires_at' in data ? new Date(data.expires_at).getTime() : null;
+    if ('expires_at' in data) this._expiresTimestamp = new Date(data.expires_at).getTime();
+    else this._expiresTimestamp ??= null;
 
-    /**
-     * The stage instance data if there is a public {@link StageInstance} in the stage channel this invite is for
-     * @type {?InviteStageInstance}
-     */
-    this.stageInstance =
-      'stage_instance' in data
-        ? new InviteStageInstance(this.client, data.stage_instance, this.channel.id, this.guild.id)
-        : null;
+    if ('stage_instance' in data) {
+      /**
+       * The stage instance data if there is a public {@link StageInstance} in the stage channel this invite is for
+       * @type {?InviteStageInstance}
+       */
+      this.stageInstance = new InviteStageInstance(this.client, data.stage_instance, this.channel.id, this.guild.id);
+    } else {
+      this.stageInstance ??= null;
+    }
   }
 
   /**

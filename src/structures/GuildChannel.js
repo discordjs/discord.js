@@ -20,12 +20,6 @@ const Util = require('../util/Util');
  * @abstract
  */
 class GuildChannel extends Channel {
-  /**
-   * @param {Guild} guild The guild the guild channel is part of
-   * @param {APIChannel} data The data for the guild channel
-   * @param {Client} [client] A safety parameter for the client that instantiated this
-   * @param {boolean} [immediatePatch=true] Control variable for patching
-   */
   constructor(guild, data, client, immediatePatch = true) {
     super(guild?.client ?? client, data, false);
 
@@ -294,7 +288,7 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   async edit(data, reason) {
-    if (data.parent) data.parent = this.client.channels.resolveId(data.parent);
+    data.parent &&= this.client.channels.resolveId(data.parent);
 
     if (typeof data.position !== 'undefined') {
       const updatedChannels = await Util.setPosition(

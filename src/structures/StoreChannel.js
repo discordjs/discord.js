@@ -7,11 +7,6 @@ const GuildChannel = require('./GuildChannel');
  * @extends {GuildChannel}
  */
 class StoreChannel extends GuildChannel {
-  /**
-   * @param {Guild} guild The guild the store channel is part of
-   * @param {APIChannel} data The data for the store channel
-   * @param {Client} [client] A safety parameter for the client that instantiated this
-   */
   constructor(guild, data, client) {
     super(guild, data, client);
 

@@ -13,12 +13,6 @@ const Permissions = require('../util/Permissions');
  * @implements {TextBasedChannel}
  */
 class ThreadChannel extends Channel {
-  /**
-   * @param {Guild} guild The guild the thread channel is part of
-   * @param {APIChannel} data The data for the thread channel
-   * @param {Client} [client] A safety parameter for the client that instantiated this
-   * @param {boolean} [fromInteraction=false] Whether the data was from an interaction (partial)
-   */
   constructor(guild, data, client, fromInteraction = false) {
     super(guild?.client ?? client, data, false);
 
@@ -51,11 +45,13 @@ class ThreadChannel extends Channel {
   _patch(data, partial = false) {
     super._patch(data);
 
-    /**
-     * The name of the thread
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the thread
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
     if ('guild_id' in data) {
       this.guildId = data.guild_id;

@@ -188,8 +188,8 @@ class GuildManager extends CachedManager {
       explicitContentFilter = ExplicitContentFilterLevels[explicitContentFilter];
     }
     for (const channel of channels) {
-      if (channel.type) channel.type = ChannelTypes[channel.type.toUpperCase()];
-      if (channel.type) channel.type = typeof channel.type === 'number' ? channel.type : ChannelTypes[channel.type];
+      channel.type &&= ChannelTypes[channel.type.toUpperCase()];
+      channel.type &&= typeof channel.type === 'number' ? channel.type : ChannelTypes[channel.type];
       channel.parent_id = channel.parentId;
       delete channel.parentId;
       channel.user_limit = channel.userLimit;
@@ -201,17 +201,17 @@ class GuildManager extends CachedManager {
         if (typeof overwrite.type === 'string') {
           overwrite.type = OverwriteTypes[overwrite.type];
         }
-        if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow).toString();
-        if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny).toString();
+        overwrite.allow &&= Permissions.resolve(overwrite.allow).toString();
+        overwrite.deny &&= Permissions.resolve(overwrite.deny).toString();
       }
       channel.permission_overwrites = channel.permissionOverwrites;
       delete channel.permissionOverwrites;
     }
     for (const role of roles) {
-      if (role.color) role.color = resolveColor(role.color);
-      if (role.permissions) role.permissions = Permissions.resolve(role.permissions).toString();
+      role.color &&= resolveColor(role.color);
+      role.permissions &&= Permissions.resolve(role.permissions).toString();
     }
-    if (systemChannelFlags) systemChannelFlags = SystemChannelFlags.resolve(systemChannelFlags);
+    systemChannelFlags &&= SystemChannelFlags.resolve(systemChannelFlags);
 
     const data = await this.client.api.guilds.post({
       data: {
