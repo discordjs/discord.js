@@ -473,25 +473,25 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public sweepMessages(lifetime?: number): number;
   public toJSON(): unknown;
 
-  public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
+  public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
   public on<S extends string | symbol>(
     event: Exclude<S, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaited<void>,
+    listener: (...args: any[]) => Awaitable<void>,
   ): this;
 
-  public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
+  public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
   public once<S extends string | symbol>(
     event: Exclude<S, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaited<void>,
+    listener: (...args: any[]) => Awaitable<void>,
   ): this;
 
   public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
   public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: unknown[]): boolean;
 
-  public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
+  public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
   public off<S extends string | symbol>(
     event: Exclude<S, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaited<void>,
+    listener: (...args: any[]) => Awaitable<void>,
   ): this;
 
   public removeAllListeners<K extends keyof ClientEvents>(event?: K): this;
@@ -572,11 +572,11 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public abstract collect(...args: unknown[]): K | null | Promise<K | null>;
   public abstract dispose(...args: unknown[]): K | null;
 
-  public on(event: 'collect' | 'dispose', listener: (...args: [V, ...F]) => Awaited<void>): this;
-  public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaited<void>): this;
+  public on(event: 'collect' | 'dispose', listener: (...args: [V, ...F]) => Awaitable<void>): this;
+  public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
 
-  public once(event: 'collect' | 'dispose', listener: (...args: [V, ...F]) => Awaited<void>): this;
-  public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaited<void>): this;
+  public once(event: 'collect' | 'dispose', listener: (...args: [V, ...F]) => Awaitable<void>): this;
+  public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
 }
 
 export class CommandInteraction extends BaseCommandInteraction {
@@ -1089,13 +1089,13 @@ export class InteractionCollector<T extends Interaction> extends Collector<Snowf
   public collect(interaction: Interaction): Snowflake;
   public empty(): void;
   public dispose(interaction: Interaction): Snowflake;
-  public on(event: 'collect' | 'dispose', listener: (interaction: T) => Awaited<void>): this;
-  public on(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaited<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public on(event: 'collect' | 'dispose', listener: (interaction: T) => Awaitable<void>): this;
+  public on(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaitable<void>): this;
+  public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 
-  public once(event: 'collect' | 'dispose', listener: (interaction: T) => Awaited<void>): this;
-  public once(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaited<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public once(event: 'collect' | 'dispose', listener: (interaction: T) => Awaitable<void>): this;
+  public once(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaitable<void>): this;
+  public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 }
 
 export class InteractionWebhook extends PartialWebhookMixin() {
@@ -1699,17 +1699,17 @@ export class Shard extends EventEmitter {
   public send(message: unknown): Promise<Shard>;
   public spawn(timeout?: number): Promise<ChildProcess>;
 
-  public on(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaited<void>): this;
-  public on(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaited<void>): this;
-  public on(event: 'error', listener: (error: Error) => Awaited<void>): this;
-  public on(event: 'message', listener: (message: any) => Awaited<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public on(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaitable<void>): this;
+  public on(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaitable<void>): this;
+  public on(event: 'error', listener: (error: Error) => Awaitable<void>): this;
+  public on(event: 'message', listener: (message: any) => Awaitable<void>): this;
+  public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 
-  public once(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaited<void>): this;
-  public once(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaited<void>): this;
-  public once(event: 'error', listener: (error: Error) => Awaited<void>): this;
-  public once(event: 'message', listener: (message: any) => Awaited<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public once(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaitable<void>): this;
+  public once(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaitable<void>): this;
+  public once(event: 'error', listener: (error: Error) => Awaitable<void>): this;
+  public once(event: 'message', listener: (message: any) => Awaitable<void>): this;
+  public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 }
 
 export class ShardClientUtil {
@@ -1722,14 +1722,14 @@ export class ShardClientUtil {
   public readonly ids: number[];
   public mode: ShardingManagerMode;
   public parentPort: MessagePort | null;
-  public broadcastEval<T>(fn: (client: Client) => Awaited<T>): Promise<Serialized<T>[]>;
-  public broadcastEval<T>(fn: (client: Client) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
+  public broadcastEval<T>(fn: (client: Client) => Awaitable<T>): Promise<Serialized<T>[]>;
+  public broadcastEval<T>(fn: (client: Client) => Awaitable<T>, options: { shard: number }): Promise<Serialized<T>>;
   public broadcastEval<T, P>(
-    fn: (client: Client, context: Serialized<P>) => Awaited<T>,
+    fn: (client: Client, context: Serialized<P>) => Awaitable<T>,
     options: { context: P },
   ): Promise<Serialized<T>[]>;
   public broadcastEval<T, P>(
-    fn: (client: Client, context: Serialized<P>) => Awaited<T>,
+    fn: (client: Client, context: Serialized<P>) => Awaitable<T>,
     options: { context: P; shard: number },
   ): Promise<Serialized<T>>;
   public fetchClientValues(prop: string): Promise<unknown[]>;
@@ -1754,14 +1754,14 @@ export class ShardingManager extends EventEmitter {
   public totalShards: number | 'auto';
   public shardList: number[] | 'auto';
   public broadcast(message: unknown): Promise<Shard[]>;
-  public broadcastEval<T>(fn: (client: Client) => Awaited<T>): Promise<Serialized<T>[]>;
-  public broadcastEval<T>(fn: (client: Client) => Awaited<T>, options: { shard: number }): Promise<Serialized<T>>;
+  public broadcastEval<T>(fn: (client: Client) => Awaitable<T>): Promise<Serialized<T>[]>;
+  public broadcastEval<T>(fn: (client: Client) => Awaitable<T>, options: { shard: number }): Promise<Serialized<T>>;
   public broadcastEval<T, P>(
-    fn: (client: Client, context: Serialized<P>) => Awaited<T>,
+    fn: (client: Client, context: Serialized<P>) => Awaitable<T>,
     options: { context: P },
   ): Promise<Serialized<T>[]>;
   public broadcastEval<T, P>(
-    fn: (client: Client, context: Serialized<P>) => Awaited<T>,
+    fn: (client: Client, context: Serialized<P>) => Awaitable<T>,
     options: { context: P; shard: number },
   ): Promise<Serialized<T>>;
   public createShard(id: number): Shard;
@@ -1770,9 +1770,9 @@ export class ShardingManager extends EventEmitter {
   public respawnAll(options?: MultipleShardRespawnOptions): Promise<Collection<number, Shard>>;
   public spawn(options?: MultipleShardSpawnOptions): Promise<Collection<number, Shard>>;
 
-  public on(event: 'shardCreate', listener: (shard: Shard) => Awaited<void>): this;
+  public on(event: 'shardCreate', listener: (shard: Shard) => Awaitable<void>): this;
 
-  public once(event: 'shardCreate', listener: (shard: Shard) => Awaited<void>): this;
+  public once(event: 'shardCreate', listener: (shard: Shard) => Awaitable<void>): this;
 }
 
 export interface FetchRecommendedShardsOptions {
@@ -2230,15 +2230,15 @@ export class WebSocketShard extends EventEmitter {
 
   public send(data: unknown, important?: boolean): void;
 
-  public on(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaited<void>): this;
-  public on(event: 'close', listener: (event: CloseEvent) => Awaited<void>): this;
-  public on(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaited<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public on(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaitable<void>): this;
+  public on(event: 'close', listener: (event: CloseEvent) => Awaitable<void>): this;
+  public on(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaitable<void>): this;
+  public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 
-  public once(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaited<void>): this;
-  public once(event: 'close', listener: (event: CloseEvent) => Awaited<void>): this;
-  public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaited<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaited<void>): this;
+  public once(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaitable<void>): this;
+  public once(event: 'close', listener: (event: CloseEvent) => Awaitable<void>): this;
+  public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaitable<void>): this;
+  public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 }
 
 export class Widget extends Base {
@@ -3232,7 +3232,7 @@ export interface AuditLogChange {
   new?: APIAuditLogChange['new_value'];
 }
 
-export type Awaited<T> = T | PromiseLike<T>;
+export type Awaitable<T> = T | PromiseLike<T>;
 
 export type AwaitMessageComponentOptions<T extends MessageComponentInteraction> = Omit<
   MessageComponentCollectorOptions<T>,
