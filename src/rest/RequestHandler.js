@@ -162,6 +162,16 @@ class RequestHandler {
     }
     this.manager.globalRemaining--;
 
+    /**
+     * Represents a request that will or has been made to the Discord API
+     * @typedef {Object} APIRequest
+     * @property {HTTPMethod} method The HTTP method used in this request
+     * @property {string} path The full path used to make the request
+     * @property {string} route The API route identifying the ratelimit for this request
+     * @property {Object} options Additional options for this request
+     * @property {number} retries The number of times this request has been attempted
+     */
+
     // Perform the request
     let res;
     try {
@@ -178,7 +188,7 @@ class RequestHandler {
 
     if (this.manager.client.listenerCount(API_RESPONSE)) {
       /**
-       * Emitted after every api request has received a response.
+       * Emitted after every API request has received a response.
        * This event does not necessarily correlate to completion of the request, e.g. when hitting a rate limit.
        * <info>This is an informational event that is emitted quite frequently,
        * it is highly recommended to check `request.path` to filter the data.</info>
@@ -186,7 +196,17 @@ class RequestHandler {
        * @param {APIRequest} request The request that triggered this response
        * @param {Response} response The response received from the discord API
        */
-      this.manager.client.emit(API_RESPONSE, request, res);
+      this.manager.client.emit(
+        API_RESPONSE,
+        {
+          method: request.method,
+          path: request.path,
+          route: request.route,
+          options: request.options,
+          retries: request.retries,
+        },
+        res.clone(),
+      );
     }
 
     let sublimitTimeout;
@@ -328,6 +348,11 @@ class RequestHandler {
 }
 
 module.exports = RequestHandler;
+
+/**
+ * @external HTTPMethod
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods}
+ */
 
 /**
  * @external Response

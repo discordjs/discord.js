@@ -184,18 +184,6 @@ export abstract class AnonymousGuild extends BaseGuild {
   public splashURL(options?: StaticImageURLOptions): string | null;
 }
 
-export class APIRequest {
-  private constructor(rest: unknown, method: string, path: string, options: unknown);
-  public client: Client;
-  public method: string;
-  public options: unknown;
-  public path: string;
-  private rest: unknown;
-  public retries: number;
-  public route: string;
-  private make(): Promise<Response>;
-}
-
 export abstract class Application extends Base {
   protected constructor(client: Client, data: RawApplicationData);
   public readonly createdAt: Date;
@@ -3140,6 +3128,14 @@ export interface APIErrors {
   LOTTIE_ANIMATION_MAXIMUM_DIMENSIONS_EXCEEDED: 170005;
   STICKER_FRAME_RATE_IS_TOO_SMALL_OR_TOO_LARGE: 170006;
   STICKER_ANIMATION_DURATION_EXCEEDS_MAXIMUM_OF_5_SECONDS: 170007;
+}
+
+export interface APIRequest {
+  method: 'get' | 'post' | 'delete' | 'patch' | 'put';
+  options: unknown;
+  path: string;
+  retries: number;
+  route: string;
 }
 
 export interface ApplicationAsset {
