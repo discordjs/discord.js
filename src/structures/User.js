@@ -247,16 +247,35 @@ class User extends Base {
    * @returns {boolean}
    */
   equals(user) {
-    let equal =
+    return (
       user &&
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
+      this.flags?.bitfield === user.flags?.bitfield &&
       this.banner === user.banner &&
-      this.accentColor === user.accentColor;
+      this.accentColor === user.accentColor
+    );
+  }
 
-    return equal;
+  /**
+   * Compares the user with an API user object
+   * @param {APIUser} user The API user object to compare
+   * @returns {boolean}
+   * @private
+   */
+  _equals(user) {
+    return (
+      user &&
+      this.id === user.id &&
+      this.username === user.username &&
+      this.discriminator === user.discriminator &&
+      this.avatar === user.avatar &&
+      this.flags?.bitfield === user.public_flags &&
+      ('banner' in user ? this.banner === user.banner : true) &&
+      ('accent_color' in user ? this.accentColor === user.accent_color : true)
+    );
   }
 
   /**
