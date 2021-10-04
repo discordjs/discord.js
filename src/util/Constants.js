@@ -16,7 +16,7 @@ exports.WSCodes = {
 
 const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 
-const AllowedImageSizes = [...Array.from({ length: 9 }, (e, i) => 2 ** (i + 4)), 300, 600].sort((a, b) => a - b);
+const AllowedImageSizes = [16, 32, 64, 128, 256, 300, 512, 600, 1024, 2048, 4096];
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (!['undefined', 'number'].includes(typeof size)) throw new TypeError('INVALID_TYPE', 'size', 'number');
