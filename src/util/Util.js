@@ -469,7 +469,7 @@ class Util extends null {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
 
-    if (color < 0 || color > 0xffffff) throw new RangeError('COLOR_RANGE');
+    if (color < 0 || color >= 0xffffff) throw new RangeError('COLOR_RANGE');
     else if (Number.isNaN(color)) throw new TypeError('COLOR_CONVERT');
 
     return color;
