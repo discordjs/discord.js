@@ -1,3 +1,85 @@
+# [13.2.0](https://github.com/discordjs/discord.js/compare/13.1.0...13.2.0) (2021-10-05)
+
+
+### Bug Fixes
+
+* ***RoleManager:** Create set of role ids correctly ([#6674](https://github.com/discordjs/discord.js/issues/6674)) ([f8aa4bd](https://github.com/discordjs/discord.js/commit/f8aa4bd4705ee3bf7892670b944516d01146580f))
+* **AllowedImageSizes:** add new image sizes ([#6754](https://github.com/discordjs/discord.js/issues/6754)) ([d0025be](https://github.com/discordjs/discord.js/commit/d0025beb7b1ee6611f4315be91b38788c428f1c1))
+* **BaseClient:** Remove selfbot ability ([#6429](https://github.com/discordjs/discord.js/issues/6429)) ([9a833b1](https://github.com/discordjs/discord.js/commit/9a833b1e0eb638c60c4abbb9255ed64a170e4679))
+* **CachedManager:** return updated data when cache is false ([#6685](https://github.com/discordjs/discord.js/issues/6685)) ([8426770](https://github.com/discordjs/discord.js/commit/84267708659e3e9bb2f8eb3b08d8923f235e8953))
+* **Constants:** allow undefined size ([#6686](https://github.com/discordjs/discord.js/issues/6686)) ([d3da833](https://github.com/discordjs/discord.js/commit/d3da83368def207585bce9ea95564d79b5097a55))
+* **GuildChannel:** Fix manageable method for voice-channels ([#6447](https://github.com/discordjs/discord.js/issues/6447)) ([9301c9b](https://github.com/discordjs/discord.js/commit/9301c9b42085e860f49a322879b21b923e23a4d7))
+* **GuildEmoji:** Cache restricted roles and author data ([#6675](https://github.com/discordjs/discord.js/issues/6675)) ([60b8ba6](https://github.com/discordjs/discord.js/commit/60b8ba6b865ba02428d7926998af72cdaa17ea5d))
+* **GuildManager:** add missing types and converts ([#6683](https://github.com/discordjs/discord.js/issues/6683)) ([cdf65f7](https://github.com/discordjs/discord.js/commit/cdf65f74e1e9d22d405617521d1e6711493ca120))
+* **Invite:** #guild never resolving into a Guild ([#6742](https://github.com/discordjs/discord.js/issues/6742)) ([b76bb8a](https://github.com/discordjs/discord.js/commit/b76bb8a409c63aef9279acf5c1f60e846131f755))
+* **Message:** avoid overwriting properties in _patch ([#6738](https://github.com/discordjs/discord.js/issues/6738)) ([a8c21cd](https://github.com/discordjs/discord.js/commit/a8c21cd754d634b4d40047f85264528681a61b41))
+* **Message:** fix typo ([#6435](https://github.com/discordjs/discord.js/issues/6435)) ([ecb6e50](https://github.com/discordjs/discord.js/commit/ecb6e50b46e627e3217107d662dd19c64527976d))
+* **Message:** pinnable returning false in non-DEFAULT messages ([#6585](https://github.com/discordjs/discord.js/issues/6585)) ([3183b11](https://github.com/discordjs/discord.js/commit/3183b1166a8c96f8864f7307710f88193217a773))
+* **Message:** throw error on missing channel ([#6581](https://github.com/discordjs/discord.js/issues/6581)) ([60aa9ae](https://github.com/discordjs/discord.js/commit/60aa9ae478597caf66d5891ff6ca4d7b4336bcba))
+* **MessageAttachment:** re-assign name ([#6518](https://github.com/discordjs/discord.js/issues/6518)) ([8a8c69a](https://github.com/discordjs/discord.js/commit/8a8c69a2575b9afc18fdb46a03424e7029499d17))
+* **ReactionCollector:** only call the filter function once ([#6734](https://github.com/discordjs/discord.js/issues/6734)) ([d15dd5f](https://github.com/discordjs/discord.js/commit/d15dd5f07dab00e8a31f0a37b1e60ea4017871d0))
+* **Role:** toJSON() throwing due to permission bigints ([#6724](https://github.com/discordjs/discord.js/issues/6724)) ([9e421f6](https://github.com/discordjs/discord.js/commit/9e421f6ccf09230769740e069590fb8937f766b9))
+* **Shard:** eval promise never resolves ([#6649](https://github.com/discordjs/discord.js/issues/6649)) ([5070d23](https://github.com/discordjs/discord.js/commit/5070d23914c13814a98cf8ea560853a82b226f94))
+* **Shard:** use provided timeout when respawning ([#6735](https://github.com/discordjs/discord.js/issues/6735)) ([905d100](https://github.com/discordjs/discord.js/commit/905d100d4def974223a128c6276d4a5833c04955))
+* **Sticker:** Rename method correctly to _add ([#6421](https://github.com/discordjs/discord.js/issues/6421)) ([2c449b6](https://github.com/discordjs/discord.js/commit/2c449b6b48f5cbc88e666afa852055b873994ca5))
+* **ThreadChannel:** fetchStarterMessage bug ([#6584](https://github.com/discordjs/discord.js/issues/6584)) ([08edc0b](https://github.com/discordjs/discord.js/commit/08edc0b1db52992b2a2f8f6012a6001fb4336f38))
+* **threadMembersUpdate:** fixed typo ([#6589](https://github.com/discordjs/discord.js/issues/6589)) ([8826e9f](https://github.com/discordjs/discord.js/commit/8826e9ffbcc8990dbebe3ccdf6e65241ab4c863c))
+* **User:** compare flags in #equals ([#6750](https://github.com/discordjs/discord.js/issues/6750)) ([00e1e26](https://github.com/discordjs/discord.js/commit/00e1e2673b86e0041f2bebab7b3ced5722f450bb))
+* **UserUpdateAction:** rely on client.user when ids match ([#6511](https://github.com/discordjs/discord.js/issues/6511)) ([1418649](https://github.com/discordjs/discord.js/commit/141864917ac920a081df6f6b34c13ba83e660bbf))
+* **Util:** allow empty strings in splitMessage ([#6437](https://github.com/discordjs/discord.js/issues/6437)) ([d6e6244](https://github.com/discordjs/discord.js/commit/d6e6244336ccdcdac9a06ab453debe76b13c9bde))
+* **Util:** default `animated` to false when omitted on resolvePartialEmoji ([#6725](https://github.com/discordjs/discord.js/issues/6725)) ([8d80fec](https://github.com/discordjs/discord.js/commit/8d80fec86d39fc640fd746cc03e6270cd574c0cf))
+* **VoiceState:** Patch streaming value ([#6747](https://github.com/discordjs/discord.js/issues/6747)) ([7eec061](https://github.com/discordjs/discord.js/commit/7eec06145a141d167afc7814f3cfd9e06eb292e6))
+* allow null to be passed in order to reset icon/avatar ([#6646](https://github.com/discordjs/discord.js/issues/6646)) ([6033506](https://github.com/discordjs/discord.js/commit/603350645d0fe9d96b763d169215d15b3f4f71b1))
+* await message component collectors should return component interactions not collectors ([#6562](https://github.com/discordjs/discord.js/issues/6562)) ([f49f70a](https://github.com/discordjs/discord.js/commit/f49f70a4ebacf657f22d73043e3a504710821249))
+* don't patch set data with undefined ([#6694](https://github.com/discordjs/discord.js/issues/6694)) ([9eb9591](https://github.com/discordjs/discord.js/commit/9eb9591473902a7608aed9c1927690c4445a6fb9))
+* **xxxable:** follow more properly with discord behavior ([#6551](https://github.com/discordjs/discord.js/issues/6551)) ([5d87398](https://github.com/discordjs/discord.js/commit/5d87398f9fc57915d5447842b4788f0c80642de0))
+
+
+### Features
+
+* add support for role icons ([#6633](https://github.com/discordjs/discord.js/issues/6633)) ([7129965](https://github.com/discordjs/discord.js/commit/7129965423e9fb333ca93cecba54b588073873fd))
+* **ApplicationCommand:** add #equals ([#6414](https://github.com/discordjs/discord.js/issues/6414)) ([581921f](https://github.com/discordjs/discord.js/commit/581921f8b7152a009cb3bd0496627665b7e3442b))
+* **ApplicationCommand:** add support for channel_types ([#6640](https://github.com/discordjs/discord.js/issues/6640)) ([3b14883](https://github.com/discordjs/discord.js/commit/3b14883e349c23a15aec225bb133ce49ed440817))
+* **ApplicationCommand:** add version property ([#6603](https://github.com/discordjs/discord.js/issues/6603)) ([f866512](https://github.com/discordjs/discord.js/commit/f866512e8435e03012222298af09addefb605451))
+* **BaseGuildTextChannel:** export `BaseGuildTextChannel` ([#6527](https://github.com/discordjs/discord.js/issues/6527)) ([fc51f61](https://github.com/discordjs/discord.js/commit/fc51f61f0cdc66087e918165646aee4be74e6e56))
+* **CategoryChannel:** add createChannel shortcut method ([#6614](https://github.com/discordjs/discord.js/issues/6614)) ([3eacf7a](https://github.com/discordjs/discord.js/commit/3eacf7a58785db0639aa38ac4fd455f3b318d4f5))
+* **Guild:** Add `Guild#maximumBitrate` getter. ([#6455](https://github.com/discordjs/discord.js/issues/6455)) ([21983de](https://github.com/discordjs/discord.js/commit/21983de3e00b6ae72bb8a41359209f77025a7808))
+* **Integration:** add missing props and fix docs/types ([#6623](https://github.com/discordjs/discord.js/issues/6623)) ([caa3b60](https://github.com/discordjs/discord.js/commit/caa3b60c30a8ab13d195e084331889aed820a389))
+* **Interaction:** add memberPermissions ([#6741](https://github.com/discordjs/discord.js/issues/6741)) ([28d96e3](https://github.com/discordjs/discord.js/commit/28d96e344bb4b4d9dfb7c9b41a04c95c1eecbd25))
+* Allow webhooks to fetch, edit and delete messages in threads ([#6695](https://github.com/discordjs/discord.js/issues/6695)) ([107822d](https://github.com/discordjs/discord.js/commit/107822d28d9de04f6c14fea74647c46fe2fd1016))
+* **GuildMember:** add guild avatars ([#5696](https://github.com/discordjs/discord.js/issues/5696)) ([dfd7b40](https://github.com/discordjs/discord.js/commit/dfd7b403a932b2e779b0b1619ebd701a86f70d00))
+* **InteractionReponses:** allow fetching of ephemeral messages ([#6426](https://github.com/discordjs/discord.js/issues/6426)) ([d289d5c](https://github.com/discordjs/discord.js/commit/d289d5ccb7153df4656f071c69f41efe74754362))
+* **Message:** Add method to resolve a component by id ([#6484](https://github.com/discordjs/discord.js/issues/6484)) ([57b94b9](https://github.com/discordjs/discord.js/commit/57b94b9adf0d7444f494190fc2c8a29d44f1c5eb))
+* **Message:** prevent fetching an interaction webhook. ([#6468](https://github.com/discordjs/discord.js/issues/6468)) ([f39b597](https://github.com/discordjs/discord.js/commit/f39b597e3120701287e86acdb247b4815f693c91))
+* **MessageAttachment:** add support for ephemeral property ([#6652](https://github.com/discordjs/discord.js/issues/6652)) ([c5db0ff](https://github.com/discordjs/discord.js/commit/c5db0ff60600875534b8bd04666ec99770497870))
+* **MessageAttachment:** allow files to be marked as spoilers ([#6509](https://github.com/discordjs/discord.js/issues/6509)) ([96e26c4](https://github.com/discordjs/discord.js/commit/96e26c428d7745b14908d56a96b635226471d699))
+* **MessageTypes:** add CONTEXT_MENU_COMMAND (23) ([#6425](https://github.com/discordjs/discord.js/issues/6425)) ([d81590d](https://github.com/discordjs/discord.js/commit/d81590d566f7252832acfa97976343f551405848))
+* **PartialGroupDMChannel:** Add recipients & fix name ([#6713](https://github.com/discordjs/discord.js/issues/6713)) ([2803db6](https://github.com/discordjs/discord.js/commit/2803db683defe73a8b24a9f3c98d7f90d9605e5c))
+* **Permissions:** add `START_EMBEDDED_ACTIVITIES` ([#6622](https://github.com/discordjs/discord.js/issues/6622)) ([66a90d3](https://github.com/discordjs/discord.js/commit/66a90d3f8903c7dbe17851f7120a06f0e1f2ee96))
+* **Threads:** update permissions and fix getters ([#6466](https://github.com/discordjs/discord.js/issues/6466)) ([10478ad](https://github.com/discordjs/discord.js/commit/10478ad14850123625a551b5c26143aa32313ab8))
+* **UserManager:** allow #fetch to take UserResolvable ([#6677](https://github.com/discordjs/discord.js/issues/6677)) ([a06a87a](https://github.com/discordjs/discord.js/commit/a06a87a7c49db29b108b77db82cf8e6f4346ef19))
+* add api error code 160002 ([#6566](https://github.com/discordjs/discord.js/issues/6566)) ([d16ada9](https://github.com/discordjs/discord.js/commit/d16ada97087e0324134484c9c0724b52a2839bdf))
+* add api error code 30042 ([#6635](https://github.com/discordjs/discord.js/issues/6635)) ([183dbd7](https://github.com/discordjs/discord.js/commit/183dbd7e533f17ae3375f42fd95cbaf3ea06bffd))
+* add api error code 50101 ([#6663](https://github.com/discordjs/discord.js/issues/6663)) ([42fdcaa](https://github.com/discordjs/discord.js/commit/42fdcaa1da65f097ef441beee5062f78ae03dfda))
+* add maximum prune requests reached api error ([#6427](https://github.com/discordjs/discord.js/issues/6427)) ([a4b8623](https://github.com/discordjs/discord.js/commit/a4b8623b60150b3d9e3d2d54a2ef07e240e3c5c7))
+* Add support for API command types in `ApplicationCommandManager` ([#6621](https://github.com/discordjs/discord.js/issues/6621)) ([ecd637f](https://github.com/discordjs/discord.js/commit/ecd637f7d6174d4c8e86c8eb8e782eb6a197dd6e))
+* default values for setX boolean methods ([#6619](https://github.com/discordjs/discord.js/issues/6619)) ([8add4b0](https://github.com/discordjs/discord.js/commit/8add4b08f5e93ff690454b8f9673f2ad4a678841))
+* Give removed `MessageReaction`s on `messageReactionRemoveAll` event ([#6607](https://github.com/discordjs/discord.js/issues/6607)) ([be8912a](https://github.com/discordjs/discord.js/commit/be8912a4219d1c1aa59a8060707973e567b7b5a3))
+* **Rest:** expose https.Agent options ([#6177](https://github.com/discordjs/discord.js/issues/6177)) ([5eb3553](https://github.com/discordjs/discord.js/commit/5eb3553fd1d7bcd88f2ddbccb452a470eb853ecb))
+* **ThreadChannel:** add fetchStarterMessage ([#6488](https://github.com/discordjs/discord.js/issues/6488)) ([705c5a1](https://github.com/discordjs/discord.js/commit/705c5a1c17bc3ba31f03f7bd6831e4c50dcbddd0))
+* **Threads:** add support for invitable in private threads ([#6501](https://github.com/discordjs/discord.js/issues/6501)) ([a693254](https://github.com/discordjs/discord.js/commit/a6932546e2ed919bf130a919a597b4f31ef35307))
+* **User:** banners and accent colors ([#6117](https://github.com/discordjs/discord.js/issues/6117)) ([839c6da](https://github.com/discordjs/discord.js/commit/839c6da03d0cc24b9023d807ba53c81704b9cb72))
+* export BaseCommandInteraction ([#6478](https://github.com/discordjs/discord.js/issues/6478)) ([c14e594](https://github.com/discordjs/discord.js/commit/c14e594d8a905d5559aa1f6ce013d245552295fd))
+* export ContextMenuInteraction ([#6434](https://github.com/discordjs/discord.js/issues/6434)) ([170c0c4](https://github.com/discordjs/discord.js/commit/170c0c4985595f77555c07747e72ae381d98a4d4))
+* set methods for MessageActionRow and MessageSelectMenu ([#6490](https://github.com/discordjs/discord.js/issues/6490)) ([fb50dd9](https://github.com/discordjs/discord.js/commit/fb50dd984178b21375928431fb106f3ba5ed91ee))
+
+
+### Performance Improvements
+
+* use logical assignments instead of if statements ([#6693](https://github.com/discordjs/discord.js/issues/6693)) ([e9daa31](https://github.com/discordjs/discord.js/commit/e9daa31eaf73c90daee667fb89542bd0e5e763ad))
+
+
+
 # [13.1.0](https://github.com/discordjs/discord.js/compare/13.0.1...13.1.0) (2021-08-12)
 
 
