@@ -74,23 +74,23 @@ class User extends Base {
     if ('banner' in data) {
       /**
        * The user banner's hash
-       * <info>The user must be force fetched for this property to be present</info>
+       * <info>The user must be force fetched for this property to be present or be updated</info>
        * @type {?string}
        */
       this.banner = data.banner;
-    } else {
-      this.banner ??= null;
+    } else if (this.banner !== null) {
+      this.banner ??= undefined;
     }
 
     if ('accent_color' in data) {
       /**
        * The base 10 accent color of the user's banner
-       * <info>The user must be force fetched for this property to be present</info>
+       * <info>The user must be force fetched for this property to be present or be updated</info>
        * @type {?number}
        */
       this.accentColor = data.accent_color;
-    } else {
-      this.accentColor ??= null;
+    } else if (this.accentColor !== null) {
+      this.accentColor ??= undefined;
     }
 
     if ('system' in data) {
@@ -175,17 +175,19 @@ class User extends Base {
    * @readonly
    */
   get hexAccentColor() {
-    if (!this.accentColor) return null;
+    if (typeof this.accentColor !== 'number') return this.accentColor;
     return `#${this.accentColor.toString(16).padStart(6, '0')}`;
   }
 
   /**
    * A link to the user's banner.
-   * <info>The user must be force fetched for this property to be present</info>
+   * <info>This method will throw an error if called before the user is force fetched.
+   * See {@link User#banner} for more info</info>
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   bannerURL({ format, size, dynamic } = {}) {
+    if (typeof this.banner === 'undefined') throw new Error('USER_BANNER_NOT_FETCHED');
     if (!this.banner) return null;
     return this.client.rest.cdn.Banner(this.id, this.banner, format, size, dynamic);
   }
@@ -247,16 +249,35 @@ class User extends Base {
    * @returns {boolean}
    */
   equals(user) {
-    let equal =
+    return (
       user &&
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
+      this.flags?.bitfield === user.flags?.bitfield &&
       this.banner === user.banner &&
-      this.accentColor === user.accentColor;
+      this.accentColor === user.accentColor
+    );
+  }
 
-    return equal;
+  /**
+   * Compares the user with an API user object
+   * @param {APIUser} user The API user object to compare
+   * @returns {boolean}
+   * @private
+   */
+  _equals(user) {
+    return (
+      user &&
+      this.id === user.id &&
+      this.username === user.username &&
+      this.discriminator === user.discriminator &&
+      this.avatar === user.avatar &&
+      this.flags?.bitfield === user.public_flags &&
+      ('banner' in user ? this.banner === user.banner : true) &&
+      ('accent_color' in user ? this.accentColor === user.accent_color : true)
+    );
   }
 
   /**

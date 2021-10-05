@@ -46,7 +46,7 @@
   "bugs": {
     "url": "https://github.com/discordjs/discord.js/issues"
   },
-  "homepage": "https://github.com/discordjs/discord.js#readme",
+  "homepage": "https://discord.js.org",
   "dependencies": {
     "@discordjs/builders": "^0.5.0",
     "@discordjs/collection": "^0.2.1",

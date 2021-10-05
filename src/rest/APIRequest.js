@@ -48,7 +48,7 @@ class APIRequest {
     if (this.options.headers) headers = Object.assign(headers, this.options.headers);
 
     let body;
-    if (this.options.files && this.options.files.length) {
+    if (this.options.files?.length) {
       body = new FormData();
       for (const file of this.options.files) {
         if (file?.file) body.append(file.key ?? file.name, file.file, file.name);
