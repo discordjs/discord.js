@@ -54,7 +54,7 @@ import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { AgentOptions } from 'node:https';
 import { Stream } from 'node:stream';
-import { Response } from 'undici';
+import { File, Response } from 'undici';
 import { MessagePort, Worker } from 'node:worker_threads';
 import * as WebSocket from 'ws';
 import {
@@ -825,11 +825,11 @@ export class ContextMenuInteraction<Cached extends CacheType = CacheType> extend
 
 export class DataResolver extends null {
   private constructor();
-  public static resolveBase64(data: Base64Resolvable): Promise<string>;
+  public static resolveBase64(data: Base64Resolvable | Blob | File): Promise<string>;
   public static resolveCode(data: string, regx: RegExp): string;
-  public static resolveFile(resource: BufferResolvable | Stream | Blob): Promise<Blob>;
+  public static resolveFile(resource: BufferResolvable | Stream | Blob | File): Promise<Blob>;
   public static resolveFileAsBuffer(resource: BufferResolvable | Stream): Promise<Buffer>;
-  public static resolveImage(resource: BufferResolvable | Base64Resolvable | Blob): Promise<string | null>;
+  public static resolveImage(resource: BufferResolvable | Base64Resolvable | Blob | File): Promise<string | null>;
   public static resolveInviteCode(data: InviteResolvable): string;
   public static resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
 }

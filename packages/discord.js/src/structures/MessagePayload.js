@@ -219,7 +219,7 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
-   * @param {BufferResolvable|Stream|FileOptions|MessageAttachment|Blob} fileLike Something that could be resolved
+   * @param {BufferResolvable|Stream|FileOptions|MessageAttachment|Blob|File} fileLike Something that could be resolved
    * to a file
    * @returns {Promise<MessageFile>}
    */
@@ -234,6 +234,10 @@ class MessagePayload {
 
       if (thing.path) {
         return Util.basename(thing.path);
+      }
+
+      if (thing.name) {
+        return thing.name;
       }
 
       return 'file.jpg';

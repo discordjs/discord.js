@@ -58,7 +58,7 @@ class DataResolver extends null {
 
   /**
    * Resolves a Base64Resolvable, a string, Blob, or a BufferResolvable to a Base 64 image.
-   * @param {BufferResolvable|Base64Resolvable|Blob} image The image to be resolved
+   * @param {BufferResolvable|Base64Resolvable|Blob|File} image The image to be resolved
    * @returns {Promise<?string>}
    */
   static async resolveImage(image) {
@@ -78,12 +78,13 @@ class DataResolver extends null {
    */
 
   /**
-   * Resolves a Base64Resolvable to a Base 64 image.
-   * @param {Base64Resolvable|Blob} data The base 64 resolvable you want to resolve
+   * Resolves a Base64Resolvable or Blob to a Base 64 image.
+   * @param {Base64Resolvable|Blob|File} data The base 64 resolvable you want to resolve
    * @returns {Promise<string>}
    */
   static async resolveBase64(data) {
     if (Buffer.isBuffer(data)) return `data:image/jpg;base64,${data.toString('base64')}`;
+    // File is an instance of Blob
     if (data instanceof Blob) {
       const text = await data.text();
       const buffer = Buffer.from(text);
@@ -108,7 +109,7 @@ class DataResolver extends null {
 
   /**
    * Resolves a BufferResolvable, Blob, or Stream to a Blob.
-   * @param {BufferResolvable|Stream|Blob} resource The buffer or stream resolvable to resolve
+   * @param {BufferResolvable|Stream|Blob|File} resource The buffer or stream resolvable to resolve
    * @returns {Promise<Blob>}
    */
   static async resolveFile(resource) {
