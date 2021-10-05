@@ -101,7 +101,7 @@ client.on('messageCreate', async message => {
     { type: 'TextChannel#fetchWebhooks', hook: await message.channel.fetchWebhooks().then(x => x.first()) },
     { type: 'Guild#fetchWebhooks', hook: await message.guild.fetchWebhooks().then(x => x.first()) },
   ];
-  if (match && match[1] === 'it') {
+  if (match?.[1] === 'it') {
     /* eslint-disable no-await-in-loop */
     for (const { type, hook } of hooks) {
       for (const [i, test] of tests.entries()) {

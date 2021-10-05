@@ -177,7 +177,7 @@ class RequestHandler {
     }
 
     let sublimitTimeout;
-    if (res && res.headers) {
+    if (res.headers) {
       const serverDate = res.headers.get('date');
       const limit = res.headers.get('x-ratelimit-limit');
       const remaining = res.headers.get('x-ratelimit-remaining');

@@ -161,7 +161,7 @@ class GuildBanManager extends CachedManager {
    * Unbans a user from the guild.
    * @param {UserResolvable} user The user to unban
    * @param {string} [reason] Reason for unbanning user
-   * @returns {Promise<User>}
+   * @returns {Promise<?User>}
    * @example
    * // Unban a user by id (or with a user/guild member object)
    * guild.bans.remove('84484653687267328')

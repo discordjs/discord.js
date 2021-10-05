@@ -121,6 +121,22 @@ class Interaction extends Base {
   }
 
   /**
+   * Indicates whether or not this interaction is both cached and received from a guild.
+   * @returns {boolean}
+   */
+  inCachedGuild() {
+    return Boolean(this.guild && this.member);
+  }
+
+  /**
+   * Indicates whether or not this interaction is received from an uncached guild.
+   * @returns {boolean}
+   */
+  inRawGuild() {
+    return Boolean(this.guildId && !this.guild && this.member);
+  }
+
+  /**
    * Indicates whether this interaction is a {@link CommandInteraction}.
    * @returns {boolean}
    */
