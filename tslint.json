@@ -22,7 +22,7 @@
     "member-access": true,
     "no-unnecessary-class": false,
     "array-type": [true, "array"],
-
+    "one-line": false,
     "no-any-union": false,
     "void-return": false
   }
