@@ -29,6 +29,7 @@ import {
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
+  GuildCached,
   GuildChannelManager,
   GuildEmoji,
   GuildEmojiManager,
@@ -912,9 +913,11 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inCachedGuild()) {
       assertType<SelectMenuInteraction>(interaction);
       assertType<Guild>(interaction.guild);
+      assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inRawGuild()) {
       assertType<SelectMenuInteraction>(interaction);
       assertType<null>(interaction.guild);
+      assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       assertType<SelectMenuInteraction>(interaction);
       assertType<Guild | null>(interaction.guild);
