@@ -2751,6 +2751,7 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
 export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
   private constructor(member: GuildMember);
   public readonly hoist: Role | null;
+  public readonly icon: Role | null;
   public readonly color: Role | null;
   public readonly highest: Role;
   public readonly premiumSubscriberRole: Role | null;
