@@ -32,23 +32,29 @@ class PermissionOverwrites extends Base {
      */
     this.id = data.id;
 
-    /**
-     * The type of this overwrite
-     * @type {OverwriteType}
-     */
-    this.type = typeof data.type === 'number' ? OverwriteTypes[data.type] : data.type;
+    if ('type' in data) {
+      /**
+       * The type of this overwrite
+       * @type {OverwriteType}
+       */
+      this.type = typeof data.type === 'number' ? OverwriteTypes[data.type] : data.type;
+    }
 
-    /**
-     * The permissions that are denied for the user or role.
-     * @type {Readonly<Permissions>}
-     */
-    this.deny = new Permissions(BigInt(data.deny)).freeze();
+    if ('deny' in data) {
+      /**
+       * The permissions that are denied for the user or role.
+       * @type {Readonly<Permissions>}
+       */
+      this.deny = new Permissions(BigInt(data.deny)).freeze();
+    }
 
-    /**
-     * The permissions that are allowed for the user or role.
-     * @type {Readonly<Permissions>}
-     */
-    this.allow = new Permissions(BigInt(data.allow)).freeze();
+    if ('allow' in data) {
+      /**
+       * The permissions that are allowed for the user or role.
+       * @type {Readonly<Permissions>}
+       */
+      this.allow = new Permissions(BigInt(data.allow)).freeze();
+    }
   }
 
   /**

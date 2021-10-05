@@ -9,11 +9,6 @@ const Util = require('../util/Util');
  * Represents a reaction to a message.
  */
 class MessageReaction {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIReaction} data The data for the message reaction
-   * @param {Message} message The message the reaction refers to
-   */
   constructor(client, data, message) {
     /**
      * The client that instantiated this message reaction
@@ -47,13 +42,12 @@ class MessageReaction {
   }
 
   _patch(data) {
-    // eslint-disable-next-line eqeqeq
-    if (this.count == undefined) {
+    if ('count' in data) {
       /**
        * The number of people that have given the same reaction
        * @type {?number}
        */
-      this.count = data.count;
+      this.count ??= data.count;
     }
   }
 
@@ -135,8 +129,3 @@ class MessageReaction {
 }
 
 module.exports = MessageReaction;
-
-/**
- * @external APIReaction
- * @see {@link https://discord.com/developers/docs/resources/channel#reaction-object}
- */

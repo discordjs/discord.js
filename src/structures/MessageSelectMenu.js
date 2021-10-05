@@ -168,8 +168,8 @@ class MessageSelectMenu extends BaseMessageComponent {
   }
 
   /**
-   * Transforms this select menu to a plain object
-   * @returns {Object} The raw data of this select menu
+   * Transforms the select menu into a plain object
+   * @returns {APIMessageSelectMenu} The raw data of this select menu
    */
   toJSON() {
     return {

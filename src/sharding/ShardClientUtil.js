@@ -9,10 +9,6 @@ const Util = require('../util/Util');
  * Utilises IPC to send and receive data to/from the master process and other shards.
  */
 class ShardClientUtil {
-  /**
-   * @param {Client} client Client of the current shard
-   * @param {ShardingManagerMode} mode Mode the shard was spawned with
-   */
   constructor(client, mode) {
     /**
      * Client for the shard

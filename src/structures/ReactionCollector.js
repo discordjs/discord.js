@@ -67,6 +67,17 @@ class ReactionCollector extends Collector {
     });
 
     this.on('collect', (reaction, user) => {
+      /**
+       * Emitted whenever a reaction is newly created on a message. Will emit only when a new reaction is
+       * added to the message, as opposed to {@link Collector#collect} which which will
+       * be emitted even when a reaction has already been added to the message.
+       * @event ReactionCollector#create
+       * @param {MessageReaction} reaction The reaction that was added
+       * @param {User} user The user that added the reaction
+       */
+      if (reaction.count === 1) {
+        this.emit('create', reaction, user);
+      }
       this.total++;
       this.users.set(user.id, user);
     });
@@ -81,10 +92,10 @@ class ReactionCollector extends Collector {
    * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
    * @param {User} user The user that added the reaction
-   * @returns {Promise<?(Snowflake|string)>}
+   * @returns {?(Snowflake|string)}
    * @private
    */
-  async collect(reaction, user) {
+  collect(reaction) {
     /**
      * Emitted whenever a reaction is collected.
      * @event ReactionCollector#collect
@@ -92,18 +103,6 @@ class ReactionCollector extends Collector {
      * @param {User} user The user that added the reaction
      */
     if (reaction.message.id !== this.message.id) return null;
-
-    /**
-     * Emitted whenever a reaction is newly created on a message. Will emit only when a new reaction is
-     * added to the message, as opposed to {@link Collector#collect} which which will
-     * be emitted even when a reaction has already been added to the message.
-     * @event ReactionCollector#create
-     * @param {MessageReaction} reaction The reaction that was added
-     * @param {User} user The user that added the reaction
-     */
-    if (reaction.count === 1 && (await this.filter(reaction, user, this.collected))) {
-      this.emit('create', reaction, user);
-    }
 
     return ReactionCollector.key(reaction);
   }

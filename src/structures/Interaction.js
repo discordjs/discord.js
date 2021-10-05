@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const { InteractionTypes, MessageComponentTypes } = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -67,6 +68,12 @@ class Interaction extends Base {
      * @type {number}
      */
     this.version = data.version;
+
+    /**
+     * The permissions of the member, if one exists, in the channel this interaction was executed in
+     * @type {?Readonly<Permissions>}
+     */
+    this.memberPermissions = data.member?.permissions ? new Permissions(data.member.permissions).freeze() : null;
   }
 
   /**
@@ -111,6 +118,22 @@ class Interaction extends Base {
    */
   inGuild() {
     return Boolean(this.guildId && this.member);
+  }
+
+  /**
+   * Indicates whether or not this interaction is both cached and received from a guild.
+   * @returns {boolean}
+   */
+  inCachedGuild() {
+    return Boolean(this.guild && this.member);
+  }
+
+  /**
+   * Indicates whether or not this interaction is received from an uncached guild.
+   * @returns {boolean}
+   */
+  inRawGuild() {
+    return Boolean(this.guildId && !this.guild && this.member);
   }
 
   /**

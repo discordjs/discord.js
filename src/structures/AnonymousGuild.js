@@ -15,36 +15,47 @@ class AnonymousGuild extends BaseGuild {
   }
 
   _patch(data) {
-    this.features = data.features;
-    /**
-     * The hash of the guild invite splash image
-     * @type {?string}
-     */
-    this.splash = data.splash;
+    if ('features' in data) this.features = data.features;
 
-    /**
-     * The hash of the guild banner
-     * @type {?string}
-     */
-    this.banner = data.banner;
+    if ('splash' in data) {
+      /**
+       * The hash of the guild invite splash image
+       * @type {?string}
+       */
+      this.splash = data.splash;
+    }
 
-    /**
-     * The description of the guild, if any
-     * @type {?string}
-     */
-    this.description = data.description;
+    if ('banner' in data) {
+      /**
+       * The hash of the guild banner
+       * @type {?string}
+       */
+      this.banner = data.banner;
+    }
 
-    /**
-     * The verification level of the guild
-     * @type {VerificationLevel}
-     */
-    this.verificationLevel = VerificationLevels[data.verification_level];
+    if ('description' in data) {
+      /**
+       * The description of the guild, if any
+       * @type {?string}
+       */
+      this.description = data.description;
+    }
 
-    /**
-     * The vanity invite code of the guild, if any
-     * @type {?string}
-     */
-    this.vanityURLCode = data.vanity_url_code;
+    if ('verification_level' in data) {
+      /**
+       * The verification level of the guild
+       * @type {VerificationLevel}
+       */
+      this.verificationLevel = VerificationLevels[data.verification_level];
+    }
+
+    if ('vanity_url_code' in data) {
+      /**
+       * The vanity invite code of the guild, if any
+       * @type {?string}
+       */
+      this.vanityURLCode = data.vanity_url_code;
+    }
 
     if ('nsfw_level' in data) {
       /**

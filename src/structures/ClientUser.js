@@ -29,7 +29,7 @@ class ClientUser extends User {
       this.mfaEnabled ??= null;
     }
 
-    if (data.token) this.client.token = data.token;
+    if ('token' in data) this.client.token = data.token;
   }
 
   /**

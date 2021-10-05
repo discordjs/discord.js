@@ -16,7 +16,7 @@ exports.WSCodes = {
 
 const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 
-const AllowedImageSizes = Array.from({ length: 9 }, (e, i) => 2 ** (i + 4));
+const AllowedImageSizes = [16, 32, 64, 128, 256, 300, 512, 600, 1024, 2048, 4096];
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (!['undefined', 'number'].includes(typeof size)) throw new TypeError('INVALID_TYPE', 'size', 'number');
@@ -35,7 +35,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * Options for static Image URLs.
  * @typedef {Object} StaticImageURLOptions
  * @property {string} [format='webp'] One of `webp`, `png`, `jpg`, `jpeg`.
- * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
+ * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `300`, `512`, `600`, `1024`, `2048`, `4096`
  */
 
 // https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints
@@ -73,6 +73,8 @@ exports.Endpoints = {
       TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
         `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
+      RoleIcon: (roleId, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,

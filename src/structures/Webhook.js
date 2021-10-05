@@ -22,11 +22,13 @@ class Webhook {
   }
 
   _patch(data) {
-    /**
-     * The name of the webhook
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the webhook
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
     /**
      * The token for the webhook, unavailable for follower webhooks and webhooks owned by another application.
@@ -35,11 +37,13 @@ class Webhook {
      */
     Object.defineProperty(this, 'token', { value: data.token ?? null, writable: true, configurable: true });
 
-    /**
-     * The avatar for the webhook
-     * @type {?string}
-     */
-    this.avatar = data.avatar;
+    if ('avatar' in data) {
+      /**
+       * The avatar for the webhook
+       * @type {?string}
+       */
+      this.avatar = data.avatar;
+    }
 
     /**
      * The webhook's id
@@ -47,43 +51,59 @@ class Webhook {
      */
     this.id = data.id;
 
-    /**
-     * The type of the webhook
-     * @type {WebhookType}
-     */
-    this.type = WebhookTypes[data.type];
+    if ('type' in data) {
+      /**
+       * The type of the webhook
+       * @type {WebhookType}
+       */
+      this.type = WebhookTypes[data.type];
+    }
 
-    /**
-     * The guild the webhook belongs to
-     * @type {Snowflake}
-     */
-    this.guildId = data.guild_id;
+    if ('guild_id' in data) {
+      /**
+       * The guild the webhook belongs to
+       * @type {Snowflake}
+       */
+      this.guildId = data.guild_id;
+    }
 
-    /**
-     * The channel the webhook belongs to
-     * @type {Snowflake}
-     */
-    this.channelId = data.channel_id;
+    if ('channel_id' in data) {
+      /**
+       * The channel the webhook belongs to
+       * @type {Snowflake}
+       */
+      this.channelId = data.channel_id;
+    }
 
-    /**
-     * The owner of the webhook
-     * @type {?(User|APIUser)}
-     */
-    this.owner = data.user ? this.client.users?._add(data.user) ?? data.user : null;
+    if ('user' in data) {
+      /**
+       * The owner of the webhook
+       * @type {?(User|APIUser)}
+       */
+      this.owner = this.client.users?._add(data.user) ?? data.user;
+    } else {
+      this.owner ??= null;
+    }
 
-    /**
-     * The source guild of the webhook
-     * @type {?(Guild|APIGuild)}
-     */
-    this.sourceGuild = data.source_guild
-      ? this.client.guilds?._add(data.source_guild, false) ?? data.source_guild
-      : null;
+    if ('source_guild' in data) {
+      /**
+       * The source guild of the webhook
+       * @type {?(Guild|APIGuild)}
+       */
+      this.sourceGuild = this.client.guilds?._add(data.source_guild, false) ?? data.source_guild;
+    } else {
+      this.sourceGuild ??= null;
+    }
 
-    /**
-     * The source channel of the webhook
-     * @type {?(Channel|APIChannel)}
-     */
-    this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel ?? null;
+    if ('source_channel' in data) {
+      /**
+       * The source channel of the webhook
+       * @type {?(NewsChannel|APIChannel)}
+       */
+      this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel;
+    } else {
+      this.sourceChannel ??= null;
+    }
   }
 
   /**
@@ -225,7 +245,7 @@ class Webhook {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    if (channel) channel = channel?.id ?? channel;
+    channel &&= channel.id ?? channel;
     const data = await this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,
