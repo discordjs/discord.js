@@ -3,7 +3,7 @@
 const { Buffer, Blob } = require('node:buffer');
 const fs = require('node:fs');
 const path = require('node:path');
-const stream = require('node:stream');
+const { blob } = require('node:stream/consumers');
 const { fetch } = require('undici');
 const { Error: DiscordError, TypeError } = require('../errors');
 const Invite = require('../structures/Invite');
@@ -115,8 +115,8 @@ class DataResolver extends null {
   static async resolveFile(resource) {
     if (resource instanceof Blob) return resource;
     if (Buffer.isBuffer(resource)) return new Blob([resource]);
-    if (resource !== null && resource !== undefined && resource[Symbol.asyncIterator]) {
-      return stream.consumers.blob(resource);
+    if (resource?.[Symbol.asyncIterator]) {
+      return blob(resource);
     }
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
