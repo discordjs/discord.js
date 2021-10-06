@@ -1,7 +1,6 @@
 import { APIGuildMember, APIInteractionGuildMember, APIMessage } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
-  ApplicationCommandChannelOption,
   ApplicationCommandChannelOptionData,
   ApplicationCommandChoicesData,
   ApplicationCommandData,
@@ -12,8 +11,6 @@ import {
   ApplicationCommandSubCommandData,
   ApplicationCommandSubGroupData,
   ButtonInteraction,
-  CacheFactory,
-  Caches,
   CategoryChannel,
   Client,
   ClientApplication,
@@ -45,11 +42,9 @@ import {
   MessageCollector,
   MessageComponentInteraction,
   MessageEmbed,
-  MessageManager,
   MessageReaction,
   NewsChannel,
   Options,
-  PartialDMChannel,
   PartialTextBasedChannelFields,
   PartialUser,
   Permissions,
@@ -71,7 +66,7 @@ import {
   User,
   VoiceChannel,
 } from '.';
-import { ApplicationCommandOptionTypes, ApplicationCommandTypes } from './enums';
+import { ApplicationCommandOptionTypes } from './enums';
 
 const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,

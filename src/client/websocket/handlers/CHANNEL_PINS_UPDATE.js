@@ -4,11 +4,11 @@ const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
-  const time = new Date(data.last_pin_timestamp);
+  const time = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
 
-  if (channel && !Number.isNaN(time.getTime())) {
+  if (channel) {
     // Discord sends null for last_pin_timestamp if the last pinned message was removed
-    channel.lastPinTimestamp = time.getTime() ?? null;
+    channel.lastPinTimestamp = time;
 
     /**
      * Emitted whenever the pins of a channel are updated. Due to the nature of the WebSocket event,
