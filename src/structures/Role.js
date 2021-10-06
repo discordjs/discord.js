@@ -32,6 +32,12 @@ class Role extends Base {
      */
     this.unicodeEmoji = null;
 
+    /**
+     * Whether the role has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     if (data) this._patch(data);
   }
 
@@ -96,12 +102,6 @@ class Role extends Base {
        */
       this.mentionable = data.mentionable;
     }
-
-    /**
-     * Whether the role has been deleted
-     * @type {boolean}
-     */
-    this.deleted = false;
 
     if ('icon' in data) this.icon = data.icon;
 
