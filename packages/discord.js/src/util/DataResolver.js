@@ -115,12 +115,8 @@ class DataResolver extends null {
   static async resolveFile(resource) {
     if (resource instanceof Blob) return resource;
     if (Buffer.isBuffer(resource)) return new Blob([resource]);
-    if (resource instanceof stream.Readable) {
-      const chunks = [];
-      for await (const chunk of resource) {
-        chunks.push(chunk);
-      }
-      return new Blob(chunks);
+    if (resource !== null && resource !== undefined && resource[Symbol.asyncIterator]) {
+      return stream.consumers.blob(resource);
     }
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
