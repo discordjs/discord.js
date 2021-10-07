@@ -4988,7 +4988,7 @@ export interface WidgetChannel {
 
 export interface WelcomeChannelData {
   description: string;
-  channel: GuildChannelResolvable;
+  channel: TextChannel | NewsChannel | StoreChannel | Snowflake;
   emoji?: EmojiIdentifierResolvable;
 }
 
