@@ -324,7 +324,7 @@ class User extends Base {
     );
     json.avatarURL = this.avatarURL();
     json.displayAvatarURL = this.displayAvatarURL();
-    json.bannerURL = this.bannerURL();
+    json.bannerURL = this.banner ? this.bannerURL() : this.banner;
     return json;
   }
 
