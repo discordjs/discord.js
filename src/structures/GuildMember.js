@@ -95,7 +95,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get partial() {
-    return !this.joinedTimestamp;
+    return this.joinedTimestamp === null;
   }
 
   /**
