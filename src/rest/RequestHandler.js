@@ -212,7 +212,7 @@ class RequestHandler {
        * it is highly recommended to check `request.path` to filter the data.</info>
        * @event Client#apiResponse
        * @param {APIRequest} request The request that triggered this response
-       * @param {Response} response The response received from the discord API
+       * @param {Response} response The response received from the Discord API
        */
       this.manager.client.emit(
         API_RESPONSE,
