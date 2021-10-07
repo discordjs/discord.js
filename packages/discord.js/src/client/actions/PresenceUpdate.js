@@ -16,8 +16,8 @@ class PresenceUpdateAction extends Action {
     const guild = this.client.guilds.cache.get(data.guild_id);
     if (!guild) return;
 
-    const oldPresence = guild.presences.cache.get(user.id)?._clone() ?? null;
-    let member = guild.members.cache.get(user.id);
+    const oldPresence = guild.presences.cache.get(data.user.id)?._clone() ?? null;
+    let member = guild.members.cache.get(data.user.id);
     if (!member && data.status !== 'offline') {
       member = guild.members._add({
         user,

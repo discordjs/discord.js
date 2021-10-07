@@ -254,7 +254,7 @@ class User extends Base {
       this.username === user.username &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
-      this.flags?.bitfield === user.public_flags &&
+      (this.flags?.bitfield ?? 0) === (user.public_flags ?? 0) &&
       ('banner' in user ? this.banner === user.banner : true) &&
       ('accent_color' in user ? this.accentColor === user.accent_color : true)
     );
