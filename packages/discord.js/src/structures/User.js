@@ -181,7 +181,7 @@ class User extends Base {
 
   /**
    * A link to the user's banner.
-   * See {@link User#banner} for more info</info>
+   * See {@link User#banner} for more info
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
