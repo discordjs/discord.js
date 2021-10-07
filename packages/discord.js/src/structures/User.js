@@ -181,14 +181,12 @@ class User extends Base {
 
   /**
    * A link to the user's banner.
-   * <info>This method will throw an error if called before the user is force fetched.
    * See {@link User#banner} for more info</info>
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   bannerURL({ format, size, dynamic } = {}) {
-    if (typeof this.banner === 'undefined') throw new Error('USER_BANNER_NOT_FETCHED');
-    if (!this.banner) return null;
+    if (!this.banner) return this.banner;
     return this.client.rest.cdn.Banner(this.id, this.banner, format, size, dynamic);
   }
 
