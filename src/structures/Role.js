@@ -20,6 +20,18 @@ class Role extends Base {
      */
     this.guild = guild;
 
+    /**
+     * The icon hash of the role
+     * @type {?string}
+     */
+    this.icon = null;
+
+    /**
+     * The unicode emoji for the role
+     * @type {?string}
+     */
+    this.unicodeEmoji = null;
+
     if (data) this._patch(data);
   }
 
@@ -91,17 +103,9 @@ class Role extends Base {
      */
     this.deleted = false;
 
-    /**
-     * The icon hash of the role
-     * @type {?string}
-     */
-    this.icon = data.icon;
+    if ('icon' in data) this.icon = data.icon;
 
-    /**
-     * The unicode emoji for the role
-     * @type {?string}
-     */
-    this.unicodeEmoji = data.unicode_emoji;
+    if ('unicode_emoji' in data) this.unicodeEmoji = data.unicode_emoji;
 
     /**
      * The tags this role has
