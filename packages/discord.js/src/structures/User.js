@@ -180,8 +180,7 @@ class User extends Base {
   }
 
   /**
-   * See {@link User#banner} for more info
-   * A link to the user's banner.
+   * A link to the user's banner. See {@link User#banner} for more info
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
