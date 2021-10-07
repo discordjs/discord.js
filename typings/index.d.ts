@@ -4393,14 +4393,14 @@ export interface MessageEditOptions {
 }
 
 export interface MessageEmbedAuthor {
-  name?: string;
+  name: string;
   url?: string;
   iconURL?: string;
   proxyIconURL?: string;
 }
 
 export interface MessageEmbedFooter {
-  text?: string;
+  text: string;
   iconURL?: string;
   proxyIconURL?: string;
 }
