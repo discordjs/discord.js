@@ -55,7 +55,7 @@ class GuildMemberRoleManager extends DataManager {
   get icon() {
     const iconRoles = this.cache.filter(role => role.icon || role.unicodeEmoji);
     if (!iconRoles.size) return null;
-    return iconRoles.reduce((prev, role) => (!prev || role.comparePositionTo(prev) > 0 ? role : prev));
+    return iconRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
   }
 
   /**
