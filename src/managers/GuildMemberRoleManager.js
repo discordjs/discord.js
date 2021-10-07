@@ -44,7 +44,7 @@ class GuildMemberRoleManager extends DataManager {
   get hoist() {
     const hoistedRoles = this.cache.filter(role => role.hoist);
     if (!hoistedRoles.size) return null;
-    return hoistedRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
+    return hoistedRoles.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev);
   }
 
   /**
@@ -55,7 +55,7 @@ class GuildMemberRoleManager extends DataManager {
   get color() {
     const coloredRoles = this.cache.filter(role => role.color);
     if (!coloredRoles.size) return null;
-    return coloredRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
+    return coloredRoles.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev);
   }
 
   /**
