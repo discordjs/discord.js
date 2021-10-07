@@ -48,6 +48,17 @@ class GuildMemberRoleManager extends DataManager {
   }
 
   /**
+   * The role of the member used to set their role icon
+   * @type {?Role}
+   * @readonly
+   */
+  get icon() {
+    const iconRoles = this.cache.filter(role => role.icon || role.unicodeEmoji);
+    if (!iconRoles.size) return null;
+    return iconRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
+  }
+
+  /**
    * The role of the member used to set their color
    * @type {?Role}
    * @readonly
