@@ -137,7 +137,11 @@ class Guild extends AnonymousGuild {
     this.id = data.id;
     if ('name' in data) this.name = data.name;
     if ('icon' in data) this.icon = data.icon;
-    this.available = 'unavailable' in data ? !data.unavailable : this.available ?? true;
+    if ('unavailable' in data) {
+      this.available = !data.unavailable;
+    } else {
+      this.available ??= true;
+    }
 
     if ('discovery_splash' in data) {
       /**
