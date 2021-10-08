@@ -28,9 +28,13 @@ class CommandInteraction extends BaseCommandInteraction {
    * @returns {string}
    */
   toString() {
-    return `/${this.commandName} ${this.options._group ? `${this.options._group} ` : ''}${
-      this.options._subcommand ? `${this.options._subcommand} ` : ''
-    }${this.options._hoistedOptions.map(o => `${o.name}:${o.value}`).join(' ')}`;
+    const properties = [
+      this.commandName,
+      this.options._group,
+      this.options._subcommand,
+      ...this.options._hoistedOptions.map(o => `${o.name}:${o.value}`),
+    ];
+    return `/${properties.filter(Boolean).join(' ')}`;
   }
 }
 
