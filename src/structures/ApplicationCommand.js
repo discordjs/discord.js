@@ -327,10 +327,11 @@ class ApplicationCommand extends Base {
    */
 
   /**
-   * Transforms an {@link ApplicationCommandOptionData} object into something that can be used with the API.
+   * Transforms an {@link ApplicationCommandOptionData} object into something that can be used by the API or vice-versa.
    * @param {ApplicationCommandOptionData} option The option to transform
    * @param {boolean} [received] Whether this option has been received from Discord
-   * @returns {APIApplicationCommandOption}
+   * @returns {APIApplicationCommandOption|ApplicationCommandOption} API-compatible option if resolved is true,
+   * otherwise an ApplicationCommandOption
    * @private
    */
   static transformOption(option, received) {
@@ -338,23 +339,34 @@ class ApplicationCommand extends Base {
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
-    return {
+    const transformedOption = {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
       description: option.description,
-      required:
-        option.required ?? (stringType === 'SUB_COMMAND' || stringType === 'SUB_COMMAND_GROUP' ? undefined : false),
-      autocomplete: option.autocomplete,
-      choices: option.choices,
-      options: option.options?.map(o => this.transformOption(o, received)),
-      [channelTypesKey]: received
-        ? option.channel_types?.map(type => ChannelTypes[type])
-        : option.channelTypes?.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)) ??
-          // When transforming to API data, accept API data
-          option.channel_types,
-      [minValueKey]: option.minValue ?? option.min_value,
-      [maxValueKey]: option.maxValue ?? option.max_value,
     };
+
+    if (!['SUB_COMMAND_GROUP', 'SUB_COMMAND'].includes(stringType)) {
+      transformedOption.required = option.required ?? false;
+    } else if (option.options) {
+      transformedOption.options = option.options.map(o => this.transformOption(o, received)) ?? [];
+    }
+
+    if (['STRING', 'INTEGER', 'NUMBER'].includes(stringType)) {
+      if (option.choices) transformedOption.choices = option.choices;
+      else if (option.autocomplete) transformedOption.autocomplete = option.autocomplete;
+      if (option.minValue ?? option.min_value) transformedOption[minValueKey] = option.minValue ?? option.min_value;
+      if (option.maxValue ?? option.max_value) transformedOption[maxValueKey] = option.maxValue ?? option.max_value;
+    }
+
+    if (stringType === 'CHANNEL' && (option.channelTypes ?? option.channel_types)) {
+      transformedOption[channelTypesKey] = received
+        ? option.channel_types.map(type => ChannelTypes[type])
+        : option.channelTypes.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)) ??
+          // When transforming to API data, accept API data
+          option.channel_types;
+    }
+
+    return transformedOption;
   }
 }
 

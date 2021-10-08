@@ -239,7 +239,12 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     options: ApplicationCommandOption | ApplicationCommandOptionData | APIApplicationCommandOption,
     enforceOptionorder?: boolean,
   ): boolean;
-  private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
+  private static transformOption(option: APIApplicationCommandOption, received: true): ApplicationCommandOption;
+  private static transformOption(option: ApplicationCommandOptionData, received?: false): APIApplicationCommandOption;
+  private static transformOption(
+    option: ApplicationCommandOptionData | APIApplicationCommandOption,
+    received?: boolean,
+  ): APIApplicationCommandOption | ApplicationCommandOption;
   private static transformCommand(command: ApplicationCommandData): RESTPostAPIApplicationCommandsJSONBody;
   private static isAPICommandData(command: object): command is RESTPostAPIApplicationCommandsJSONBody;
 }
