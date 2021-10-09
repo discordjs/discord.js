@@ -5,7 +5,7 @@ const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const RateLimitError = require('./RateLimitError');
 const {
-  Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING },
+  Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING, API_RESPONSE, API_REQUEST },
 } = require('../util/Constants');
 const Util = require('../util/Util');
 
@@ -162,6 +162,34 @@ class RequestHandler {
     }
     this.manager.globalRemaining--;
 
+    /**
+     * Represents a request that will or has been made to the Discord API
+     * @typedef {Object} APIRequest
+     * @property {HTTPMethod} method The HTTP method used in this request
+     * @property {string} path The full path used to make the request
+     * @property {string} route The API route identifying the ratelimit for this request
+     * @property {Object} options Additional options for this request
+     * @property {number} retries The number of times this request has been attempted
+     */
+
+    if (this.manager.client.listenerCount(API_REQUEST)) {
+      /**
+       * Emitted before every API request.
+       * This event can emit several times for the same request, e.g. when hitting a rate limit.
+       * <info>This is an informational event that is emitted quite frequently,
+       * it is highly recommended to check `request.path` to filter the data.</info>
+       * @event Client#apiRequest
+       * @param {APIRequest} request The request that is about to be sent
+       */
+      this.manager.client.emit(API_REQUEST, {
+        method: request.method,
+        path: request.path,
+        route: request.route,
+        options: request.options,
+        retries: request.retries,
+      });
+    }
+
     // Perform the request
     let res;
     try {
@@ -174,6 +202,29 @@ class RequestHandler {
 
       request.retries++;
       return this.execute(request);
+    }
+
+    if (this.manager.client.listenerCount(API_RESPONSE)) {
+      /**
+       * Emitted after every API request has received a response.
+       * This event does not necessarily correlate to completion of the request, e.g. when hitting a rate limit.
+       * <info>This is an informational event that is emitted quite frequently,
+       * it is highly recommended to check `request.path` to filter the data.</info>
+       * @event Client#apiResponse
+       * @param {APIRequest} request The request that triggered this response
+       * @param {Response} response The response received from the Discord API
+       */
+      this.manager.client.emit(
+        API_RESPONSE,
+        {
+          method: request.method,
+          path: request.path,
+          route: request.route,
+          options: request.options,
+          retries: request.retries,
+        },
+        res.clone(),
+      );
     }
 
     let sublimitTimeout;
@@ -315,3 +366,13 @@ class RequestHandler {
 }
 
 module.exports = RequestHandler;
+
+/**
+ * @external HTTPMethod
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods}
+ */
+
+/**
+ * @external Response
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Response}
+ */
