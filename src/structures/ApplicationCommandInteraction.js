@@ -7,26 +7,26 @@ const InteractionResponses = require('./interfaces/InteractionResponses');
 const { ApplicationCommandOptionTypes } = require('../util/Constants');
 
 /**
- * Represents a command interaction.
+ * Represents an application command interaction.
  * @extends {Interaction}
  * @implements {InteractionResponses}
  * @abstract
  */
-class BaseCommandInteraction extends Interaction {
+class ApplicationCommandInteraction extends Interaction {
   constructor(client, data) {
     super(client, data);
 
     /**
      * The channel this interaction was sent in
      * @type {?TextBasedChannels}
-     * @name BaseCommandInteraction#channel
+     * @name ApplicationCommandInteraction#channel
      * @readonly
      */
 
     /**
      * The id of the channel this interaction was sent in
      * @type {Snowflake}
-     * @name BaseCommandInteraction#channelId
+     * @name ApplicationCommandInteraction#channelId
      */
 
     /**
@@ -190,9 +190,9 @@ class BaseCommandInteraction extends Interaction {
   followUp() {}
 }
 
-InteractionResponses.applyToClass(BaseCommandInteraction, ['deferUpdate', 'update']);
+InteractionResponses.applyToClass(ApplicationCommandInteraction, ['deferUpdate', 'update']);
 
-module.exports = BaseCommandInteraction;
+module.exports = ApplicationCommandInteraction;
 
 /* eslint-disable max-len */
 /**

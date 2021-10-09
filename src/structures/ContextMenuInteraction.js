@@ -1,14 +1,14 @@
 'use strict';
 
-const BaseCommandInteraction = require('./BaseCommandInteraction');
+const ApplicationCommandInteraction = require('./ApplicationCommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 const { ApplicationCommandOptionTypes, ApplicationCommandTypes } = require('../util/Constants');
 
 /**
  * Represents a context menu interaction.
- * @extends {BaseCommandInteraction}
+ * @extends {ApplicationCommandInteraction}
  */
-class ContextMenuInteraction extends BaseCommandInteraction {
+class ContextMenuInteraction extends ApplicationCommandInteraction {
   constructor(client, data) {
     super(client, data);
     /**

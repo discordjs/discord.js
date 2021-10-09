@@ -242,6 +242,34 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   private static isAPICommandData(command: object): command is RESTPostAPIApplicationCommandsJSONBody;
 }
 
+export abstract class ApplicationCommandInteraction extends Interaction {
+  public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
+  public readonly channel: TextBasedChannels | null;
+  public channelId: Snowflake;
+  public commandId: Snowflake;
+  public commandName: string;
+  public deferred: boolean;
+  public ephemeral: boolean | null;
+  public replied: boolean;
+  public webhook: InteractionWebhook;
+  public inGuild(): this is BaseGuildCommandInteraction<'present'> & this;
+  public inCachedGuild(): this is BaseGuildCommandInteraction<'cached'> & this;
+  public inRawGuild(): this is BaseGuildCommandInteraction<'raw'> & this;
+  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
+  public deleteReply(): Promise<void>;
+  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
+  public fetchReply(): Promise<Message | APIMessage>;
+  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
+  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
+  private transformOption(
+    option: APIApplicationCommandOption,
+    resolved: APIApplicationCommandInteractionData['resolved'],
+  ): CommandInteractionOption;
+  private transformResolved(resolved: APIApplicationCommandInteractionData['resolved']): CommandInteractionResolvedData;
+}
+
 export type ApplicationResolvable = Application | Activity | Snowflake;
 
 export class ApplicationFlags extends BitField<ApplicationFlagsString> {
@@ -282,34 +310,6 @@ export interface BaseGuildCommandInteraction<Cached extends GuildCacheState = Gu
   editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   fetchReply(): Promise<GuildCacheMessage<Cached>>;
   reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-}
-
-export abstract class BaseCommandInteraction extends Interaction {
-  public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public readonly channel: TextBasedChannels | null;
-  public channelId: Snowflake;
-  public commandId: Snowflake;
-  public commandName: string;
-  public deferred: boolean;
-  public ephemeral: boolean | null;
-  public replied: boolean;
-  public webhook: InteractionWebhook;
-  public inGuild(): this is BaseGuildCommandInteraction<'present'> & this;
-  public inCachedGuild(): this is BaseGuildCommandInteraction<'cached'> & this;
-  public inRawGuild(): this is BaseGuildCommandInteraction<'raw'> & this;
-  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
-  public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
-  public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
-  public fetchReply(): Promise<Message | APIMessage>;
-  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  private transformOption(
-    option: APIApplicationCommandOption,
-    resolved: APIApplicationCommandInteractionData['resolved'],
-  ): CommandInteractionOption;
-  private transformResolved(resolved: APIApplicationCommandInteractionData['resolved']): CommandInteractionResolvedData;
 }
 
 export abstract class BaseGuild extends Base {
@@ -602,7 +602,10 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 export type GuildCommandInteraction<Cached extends GuildCacheState = GuildCacheState> =
   BaseGuildCommandInteraction<Cached> & CommandInteraction;
 
-export class CommandInteraction extends BaseCommandInteraction implements GuildCachedInteraction<CommandInteraction> {
+export class CommandInteraction
+  extends ApplicationCommandInteraction
+  implements GuildCachedInteraction<CommandInteraction>
+{
   public options: CommandInteractionOptionResolver;
 }
 
@@ -672,7 +675,7 @@ export interface GuildCachedInteraction<T> {
 }
 
 export class ContextMenuInteraction
-  extends BaseCommandInteraction
+  extends ApplicationCommandInteraction
   implements GuildCachedInteraction<ContextMenuInteraction>
 {
   public options: CommandInteractionOptionResolver;
@@ -1119,6 +1122,7 @@ export class Interaction extends Base {
   public inGuild(): this is GuildInteraction<'present'> & this;
   public inCachedGuild(): this is GuildInteraction<'cached'> & this;
   public inRawGuild(): this is GuildInteraction<'raw'> & this;
+  public isApplicationCommand(): this is ApplicationCommandInteraction;
   public isButton(): this is ButtonInteraction;
   public isCommand(): this is CommandInteraction;
   public isContextMenu(): this is ContextMenuInteraction;
