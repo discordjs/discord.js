@@ -1,13 +1,13 @@
 'use strict';
 
-const ApplicationCommandInteraction = require('./ApplicationCommandInteraction');
+const BaseCommandInteraction = require('./BaseCommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 
 /**
  * Represents a command interaction.
- * @extends {ApplicationCommandInteraction}
+ * @extends {BaseCommandInteraction}
  */
-class CommandInteraction extends ApplicationCommandInteraction {
+class CommandInteraction extends BaseCommandInteraction {
   constructor(client, data) {
     super(client, data);
 
