@@ -137,7 +137,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is n {@link BaseCommandInteraction}.
+   * Indicates whether this interaction is a {@link BaseCommandInteraction}.
    * @returns {boolean}
    */
   isApplicationCommand() {
