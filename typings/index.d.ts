@@ -303,11 +303,16 @@ export abstract class BaseCommandInteraction extends Interaction {
   private transformResolved(resolved: APIApplicationCommandInteractionData['resolved']): CommandInteractionResolvedData;
 }
 
-export type InteractionResponsesResolvable = BaseCommandInteraction | MessageComponentInteraction;
+export interface InteractionResponsesResolvable {
+  inGuild(): this is InteractionResponses<'present'> & this;
+  inCachedGuild(): this is InteractionResponses<'cached'> & this;
+  inRawGuild(): this is InteractionResponses<'raw'> & this;
+}
 
-type CacheHelper<T extends Interaction, Cached extends GuildCacheState> = T extends InteractionResponsesResolvable
-  ? InteractionResponses<Cached> & T
-  : GuildInteraction<Cached> & T;
+export type CacheHelper<
+  T extends Interaction,
+  Cached extends GuildCacheState,
+> = T extends InteractionResponsesResolvable ? InteractionResponses<Cached> & T : GuildInteraction<Cached> & T;
 
 export type GuildCached<T extends Interaction> = CacheHelper<T, 'cached'>;
 export type GuildRaw<T extends Interaction> = CacheHelper<T, 'raw'>;
