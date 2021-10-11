@@ -32,7 +32,7 @@ class ReactionCollector extends Collector {
     this.message = message;
 
     /**
-     * The users which have reacted to this message
+     * The users that have reacted to this message
      * @type {Collection}
      */
     this.users = new Collection();
