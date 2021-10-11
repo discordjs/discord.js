@@ -42,7 +42,7 @@ class IntegrationApplication extends Application {
 
     if ('rpc_origins' in data) {
       /**
-       * The Array of RPC origin urls
+       * The Array of RPC origin URLs
        * @type {string[]}
        */
       this.rpcOrigins = data.rpc_origins;
