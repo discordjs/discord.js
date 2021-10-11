@@ -220,6 +220,7 @@ class Guild extends AnonymousGuild {
 
     /**
      * An array of enabled guild features, here are the possible values:
+     * * ANIMATED_BANNER
      * * ANIMATED_ICON
      * * BANNER
      * * COMMERCE

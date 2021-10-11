@@ -4700,6 +4700,7 @@ export interface GuildStickerEditData {
 }
 
 export type GuildFeatures =
+  | 'ANIMATED_BANNER'
   | 'ANIMATED_ICON'
   | 'BANNER'
   | 'COMMERCE'
