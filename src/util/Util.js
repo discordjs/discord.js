@@ -616,7 +616,7 @@ class Util extends null {
   }
 
   /**
-   * The content to put in a codeblock with all codeblock fences replaced by the equivalent backticks.
+   * The content to put in a code block with all code block fences replaced by the equivalent backticks.
    * @param {string} text The string to be converted
    * @returns {string}
    */
