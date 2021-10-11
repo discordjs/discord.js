@@ -717,7 +717,6 @@ class Message extends Base {
    */
   async react(emoji) {
     if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
-    emoji = this.client.emojis.resolveIdentifier(emoji);
     await this.channel.messages.react(this.id, emoji);
     return this;
   }
