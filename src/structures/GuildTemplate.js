@@ -65,7 +65,7 @@ class GuildTemplate extends Base {
 
     if ('created_at' in data) {
       /**
-       * The time of when this template was created at
+       * The time when this template was created at
        * @type {Date}
        */
       this.createdAt = new Date(data.created_at);
@@ -73,7 +73,7 @@ class GuildTemplate extends Base {
 
     if ('updated_at' in data) {
       /**
-       * The time of when this template was last synced to the guild
+       * The time when this template was last synced to the guild
        * @type {Date}
        */
       this.updatedAt = new Date(data.updated_at);

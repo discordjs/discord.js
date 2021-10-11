@@ -146,7 +146,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The time of when the member used their Nitro boost on the guild, if it was used
+   * The time when the member used their Nitro boost on the guild, if it was used
    * @type {?Date}
    * @readonly
    */
