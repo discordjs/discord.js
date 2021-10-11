@@ -348,7 +348,7 @@ class Role extends Base {
   }
 
   /**
-   * Options used to set position of a role.
+   * Options used to set the position of a role.
    * @typedef {Object} SetRolePositionOptions
    * @property {boolean} [relative=false] Whether to change the position relative to its current value or not
    * @property {string} [reason] The reason for changing the position

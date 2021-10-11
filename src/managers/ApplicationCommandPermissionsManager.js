@@ -118,7 +118,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    */
 
   /**
-   * Options used to set permissions for one or more Application Commands in a guild
+   * Options used to set the permissions for one or more Application Commands in a guild
    * <warn>One of `command` AND `permissions`, OR `fullPermissions` is required.
    * `fullPermissions` is not a valid option when passing to a manager where `commandId` is non-null</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} SetApplicationCommandPermissionsOptions
