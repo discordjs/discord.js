@@ -105,7 +105,7 @@ class GuildTemplate extends Base {
   }
 
   /**
-   * Creates a guild based from this template.
+   * Creates a guild based on this template.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {string} name The name of the guild
    * @param {BufferResolvable|Base64Resolvable} [icon] The icon for the guild
