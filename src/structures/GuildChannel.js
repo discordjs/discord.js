@@ -58,7 +58,7 @@ class GuildChannel extends Channel {
 
     if ('position' in data) {
       /**
-       * The raw position of the channel from discord
+       * The raw position of the channel from Discord
        * @type {number}
        */
       this.rawPosition = data.position;

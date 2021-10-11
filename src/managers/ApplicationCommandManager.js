@@ -54,14 +54,14 @@ class ApplicationCommandManager extends CachedManager {
    */
 
   /**
-   * Options used to fetch data from discord
+   * Options used to fetch data from Discord
    * @typedef {Object} BaseFetchOptions
    * @property {boolean} [cache=true] Whether to cache the fetched data if it wasn't already
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**
-   * Options used to fetch Application Commands from discord
+   * Options used to fetch Application Commands from Discord
    * @typedef {BaseFetchOptions} FetchApplicationCommandOptions
    * @property {Snowflake} [guildId] The guild's id to fetch commands for, for when the guild is not cached
    */
