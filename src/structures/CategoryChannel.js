@@ -43,7 +43,7 @@ class CategoryChannel extends GuildChannel {
    */
 
   /**
-   * Creates a new channel on this category.
+   * Creates a new channel within this category.
    * <info>You cannot create a channel of type `GUILD_CATEGORY` inside a CategoryChannel.</info>
    * @param {string} name The name of the new channel
    * @param {CategoryCreateChannelOptions} options Options for creating the new channel
