@@ -719,12 +719,15 @@ class Message extends Base {
     if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     emoji = this.client.emojis.resolveIdentifier(emoji);
     await this.channel.messages.react(this.id, emoji);
-    return this.client.actions.MessageReactionAdd.handle({
-      user: this.client.user,
-      channel: this.channel,
-      message: this,
+
+    const reaction = this.reactions._add({
       emoji: Util.parseEmoji(emoji),
-    }).reaction;
+      count: this.partial ? null : 0,
+      me: true,
+    });
+
+    reaction._add(this.client.user);
+    return reaction;
   }
 
   /**
