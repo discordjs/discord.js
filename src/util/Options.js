@@ -63,7 +63,8 @@
  * should be handled. If this option is an array containing the prefix of the request route (e.g. /channels to match any
  * route starting with /channels, such as /channels/222197033908436994/messages) or a function returning true, a
  * {@link RateLimitError} will be thrown. Otherwise the request will be queued for later
- * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
+ * @property {number} [retryLimit=1] How many times to retry on 5XX errors
+ * (Infinity for an indefinite amount of retries)
  * @property {boolean} [failIfNotExists=true] Default value for {@link ReplyMessageOptions#failIfNotExists}
  * @property {string[]} [userAgentSuffix] An array of additional bot info to be appended to the end of the required
  * [User Agent](https://discord.com/developers/docs/reference#user-agent) header
