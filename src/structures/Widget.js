@@ -65,7 +65,7 @@ class Widget extends Base {
 
     if ('presence_count' in data) {
       /**
-       * The number of the members online.
+       * The number of members online.
        * @type {number}
        */
       this.presenceCount = data.presence_count;
