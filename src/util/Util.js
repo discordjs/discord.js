@@ -477,7 +477,7 @@ class Util extends null {
 
   /**
    * Sorts by Discord's position and id.
-   * @param  {Collection} collection Collection of objects to sort
+   * @param {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
   static discordSort(collection) {
@@ -522,7 +522,7 @@ class Util extends null {
 
   /**
    * Transforms a snowflake from a decimal string to a bit string.
-   * @param  {Snowflake} num Snowflake to be transformed
+   * @param {Snowflake} num Snowflake to be transformed
    * @returns {string}
    * @private
    */
@@ -543,7 +543,7 @@ class Util extends null {
 
   /**
    * Transforms a snowflake from a bit string to a decimal string.
-   * @param  {string} num Bit string to be transformed
+   * @param {string} num Bit string to be transformed
    * @returns {Snowflake}
    * @private
    */
