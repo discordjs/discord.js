@@ -38,7 +38,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    * @param {GuildEmojiCreateOptions} [options] Options for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
-   * // Create a new emoji from a url
+   * // Create a new emoji from a URL
    * guild.emojis.create('https://i.imgur.com/w3duR07.png', 'rip')
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);

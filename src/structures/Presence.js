@@ -347,7 +347,7 @@ class RichPresenceAssets {
 
   /**
    * Gets the URL of the small image asset
-   * @param {StaticImageURLOptions} [options] Options for the image url
+   * @param {StaticImageURLOptions} [options] Options for the image URL
    * @returns {?string}
    */
   smallImageURL({ format, size } = {}) {
@@ -362,7 +362,7 @@ class RichPresenceAssets {
 
   /**
    * Gets the URL of the large image asset
-   * @param {StaticImageURLOptions} [options] Options for the image url
+   * @param {StaticImageURLOptions} [options] Options for the image URL
    * @returns {?string}
    */
   largeImageURL({ format, size } = {}) {

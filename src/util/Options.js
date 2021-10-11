@@ -93,10 +93,10 @@
  * @typedef {Object} HTTPOptions
  * @property {number} [version=9] API version to use
  * @property {AgentOptions} [agent={}] HTTPS Agent options
- * @property {string} [api='https://discord.com/api'] Base url of the API
- * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
- * @property {string} [invite='https://discord.gg'] Base url of invites
- * @property {string} [template='https://discord.new'] Base url of templates
+ * @property {string} [api='https://discord.com/api'] Base URL of the API
+ * @property {string} [cdn='https://cdn.discordapp.com'] Base URL of the CDN
+ * @property {string} [invite='https://discord.gg'] Base URL of invites
+ * @property {string} [template='https://discord.new'] Base URL of templates
  * @property {Object} [headers] Additional headers to send for all API requests
  */
 

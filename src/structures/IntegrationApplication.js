@@ -22,7 +22,7 @@ class IntegrationApplication extends Application {
 
     if ('terms_of_service_url' in data) {
       /**
-       * The url of the application's terms of service
+       * The URL of the application's terms of service
        * @type {?string}
        */
       this.termsOfServiceURL = data.terms_of_service_url;
@@ -32,7 +32,7 @@ class IntegrationApplication extends Application {
 
     if ('privacy_policy_url' in data) {
       /**
-       * The url of the application's privacy policy
+       * The URL of the application's privacy policy
        * @type {?string}
        */
       this.privacyPolicyURL = data.privacy_policy_url;

@@ -47,7 +47,7 @@ const Messages = {
   EMBED_AUTHOR_NAME: 'MessageEmbed author name must be a string.',
 
   BUTTON_LABEL: 'MessageButton label must be a string',
-  BUTTON_URL: 'MessageButton url must be a string',
+  BUTTON_URL: 'MessageButton URL must be a string',
   BUTTON_CUSTOM_ID: 'MessageButton customId must be a string',
 
   SELECT_MENU_CUSTOM_ID: 'MessageSelectMenu customId must be a string',
