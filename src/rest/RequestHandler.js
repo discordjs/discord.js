@@ -167,7 +167,7 @@ class RequestHandler {
      * @typedef {Object} APIRequest
      * @property {HTTPMethod} method The HTTP method used in this request
      * @property {string} path The full path used to make the request
-     * @property {string} route The API route identifying the ratelimit for this request
+     * @property {string} route The API route identifying the rate limit for this request
      * @property {Object} options Additional options for this request
      * @property {number} retries The number of times this request has been attempted
      */
@@ -248,7 +248,7 @@ class RequestHandler {
       let retryAfter = res.headers.get('retry-after');
       retryAfter = retryAfter ? Number(retryAfter) * 1_000 : -1;
       if (retryAfter > 0) {
-        // If the global ratelimit header is set, that means we hit the global rate limit
+        // If the global rate limit header is set, that means we hit the global rate limit
         if (res.headers.get('x-ratelimit-global')) {
           this.manager.globalRemaining = 0;
           this.manager.globalReset = Date.now() + retryAfter;

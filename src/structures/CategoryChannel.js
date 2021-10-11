@@ -38,7 +38,7 @@ class CategoryChannel extends GuildChannel {
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites of the new channel
    * @property {number} [position] Position of the new channel
-   * @property {number} [rateLimitPerUser] The ratelimit per user for the new channel
+   * @property {number} [rateLimitPerUser] The rate limit per user for the new channel
    * @property {string} [reason] Reason for creating the new channel
    */
 
