@@ -363,7 +363,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options used to set parent of a channel.
+   * Options used to set the parent of a channel.
    * @typedef {Object} SetParentOptions
    * @property {boolean} [lockPermissions=true] Whether to lock the permissions to what the parent's permissions are
    * @property {string} [reason] The reason for modifying the parent of the channel
