@@ -196,8 +196,3 @@ class GuildChannelManager extends CachedManager {
 }
 
 module.exports = GuildChannelManager;
-
-/**
- * @external APIActiveThreadsList
- * @see {@link https://discord.com/developers/docs/resources/guild#list-active-threads-response-body}
- */
