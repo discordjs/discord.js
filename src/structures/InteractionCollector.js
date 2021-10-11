@@ -75,7 +75,7 @@ class InteractionCollector extends Collector {
         : options.componentType ?? null;
 
     /**
-     * The users which have interacted to this collector
+     * The users which have interacted with this collector
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
