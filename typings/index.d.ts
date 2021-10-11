@@ -787,7 +787,7 @@ export class Guild extends AnonymousGuild {
   public equals(guild: Guild): boolean;
   public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
-  public fetchOwner(options?: FetchOwnerOptions): Promise<GuildMember>;
+  public fetchOwner(options?: BaseFetchOptions): Promise<GuildMember>;
   public fetchPreview(): Promise<GuildPreview>;
   public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
   public fetchVanityData(): Promise<Vanity>;
@@ -1991,7 +1991,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public leave(): Promise<ThreadChannel>;
   public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
   public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
-  public fetchOwner(options?: FetchOwnerOptions): Promise<ThreadMember | null>;
+  public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
   public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
   public setAutoArchiveDuration(
@@ -3923,8 +3923,6 @@ export interface FetchMembersOptions {
   nonce?: string;
   force?: boolean;
 }
-
-export type FetchOwnerOptions = Omit<FetchMemberOptions, 'user'>;
 
 export interface FetchReactionUsersOptions {
   limit?: number;
