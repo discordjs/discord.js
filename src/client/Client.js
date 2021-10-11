@@ -25,6 +25,7 @@ const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
 const Options = require('../util/Options');
 const Permissions = require('../util/Permissions');
+const Sweepers = require('../util/Sweepers');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -134,6 +135,12 @@ class Client extends BaseClient {
      * @type {ChannelManager}
      */
     this.channels = new ChannelManager(this);
+
+    /**
+     * The sweeping functions and their intervals used to periodically sweep caches
+     * @type {Sweepers}
+     */
+    this.sweepers = new Sweepers(this, this.options.sweepers);
 
     /**
      * The presence of the Client
@@ -271,6 +278,7 @@ class Client extends BaseClient {
 
     if (this.sweepMessageInterval) clearInterval(this.sweepMessageInterval);
 
+    this.sweepers.destroy();
     this.ws.destroy();
     this.token = null;
   }
@@ -401,24 +409,10 @@ class Client extends BaseClient {
       return -1;
     }
 
-    const lifetimeMs = lifetime * 1_000;
-    const now = Date.now();
-    let channels = 0;
-    let messages = 0;
-
-    for (const channel of this.channels.cache.values()) {
-      if (!channel.messages) continue;
-      channels++;
-
-      messages += channel.messages.cache.sweep(
-        message => now - (message.editedTimestamp ?? message.createdTimestamp) > lifetimeMs,
-      );
-    }
-
-    this.emit(
-      Events.DEBUG,
-      `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`,
+    const messages = this.sweepers.sweepMessages(
+      Sweepers.filterByLifetime({ lifetime, getComparisonTimestamp: m => m.editedTimestamp ?? m.createdTimestamp })(),
     );
+    this.emit(Events.DEBUG, `Swept ${messages} messages older than ${lifetime} seconds`);
     return messages;
   }
 
@@ -560,6 +554,9 @@ class Client extends BaseClient {
     }
     if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
+    }
+    if (typeof options.sweepers !== 'object') {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'sweepers', 'an object');
     }
     if (typeof options.invalidRequestWarningInterval !== 'number' || isNaN(options.invalidRequestWarningInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'invalidRequestWarningInterval', 'a number');

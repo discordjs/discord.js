@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { _cleanupSymbol } = require('./Constants.js');
+const Sweepers = require('./Sweepers.js');
 const { TypeError } = require('../errors/DJSError.js');
 
 /**
@@ -98,19 +99,9 @@ class LimitedCollection extends Collection {
   }
 
   /**
-   * Options for generating a filter function based on lifetime
-   * @typedef {Object} LifetimeFilterOptions
-   * @property {number} [lifetime=14400] How long, in seconds, an entry should stay in the collection
-   * before it is considered sweepable.
-   * @property {Function} [getComparisonTimestamp=e => e?.createdTimestamp] A function that takes an entry, key,
-   * and the collection and returns a timestamp to compare against in order to determine the lifetime of the entry.
-   * @property {Function} [excludeFromSweep=() => false] A function that takes an entry, key, and the collection
-   * and returns a boolean, `true` when the entry should not be checked for sweepability.
-   */
-
-  /**
    * Create a sweepFilter function that uses a lifetime to determine sweepability.
    * @param {LifetimeFilterOptions} [options={}] The options used to generate the filter function
+   * @deprecated Use `Sweepers.filterByLifetime` instead
    * @returns {SweepFilter}
    */
   static filterByLifetime({
@@ -118,28 +109,7 @@ class LimitedCollection extends Collection {
     getComparisonTimestamp = e => e?.createdTimestamp,
     excludeFromSweep = () => false,
   } = {}) {
-    if (typeof lifetime !== 'number') {
-      throw new TypeError('INVALID_TYPE', 'lifetime', 'number');
-    }
-    if (typeof getComparisonTimestamp !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'getComparisonTimestamp', 'function');
-    }
-    if (typeof excludeFromSweep !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'excludeFromSweep', 'function');
-    }
-    return () => {
-      if (lifetime <= 0) return null;
-      const lifetimeMs = lifetime * 1_000;
-      const now = Date.now();
-      return (entry, key, coll) => {
-        if (excludeFromSweep(entry, key, coll)) {
-          return false;
-        }
-        const comparisonTimestamp = getComparisonTimestamp(entry, key, coll);
-        if (!comparisonTimestamp || typeof comparisonTimestamp !== 'number') return false;
-        return now - comparisonTimestamp > lifetimeMs;
-      };
-    };
+    return Sweepers.filterByLifetime({ lifetime, getComparisonTimestamp, excludeFromSweep });
   }
 
   [_cleanupSymbol]() {

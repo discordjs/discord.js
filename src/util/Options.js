@@ -70,8 +70,25 @@
  * [User Agent](https://discord.com/developers/docs/reference#user-agent) header
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
+ * @property {SweeperOptions} [sweepers={}] Options for cache sweeping
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
+ */
+
+/**
+ * Options for {@link Sweepers} defining the behavior of cache sweeping
+ * @typedef {Object<SweeperKey, SweepOptions>} SweeperOptions
+ */
+
+/**
+ * Options for sweeping a single type of item from cache
+ * @typedef {Object} SweepOptions
+ * @property {number} interval The interval (in seconds) at which to perform sweeping of the item
+ * @property {number} [lifetime] How long an item should stay in cache until it is considered sweepable.
+ * <warn>This property is only valid for the `invites`, `messages`, and `threads` keys. The `filter` property
+ * is mutually exclusive to this property and takes priority</warn>
+ * @property {GlobalSweepFilter} filter The function used to determine the function passed to the sweep method
+ * <info>This property is optional when the key is `invites`, `messages`, or `threads` and `lifetime` is set</info>
  */
 
 /**
@@ -125,6 +142,7 @@ class Options extends null {
       failIfNotExists: true,
       userAgentSuffix: [],
       presence: {},
+      sweepers: {},
       ws: {
         large_threshold: 50,
         compress: false,
