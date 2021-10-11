@@ -1053,7 +1053,7 @@ export class Integration extends Base {
   public readonly roles: Collection<Snowflake, Role>;
   public syncedAt: number | undefined;
   public syncing: boolean | undefined;
-  public type: string;
+  public type: IntegrationType;
   public user: User | null;
   public subscriberCount: number | null;
   public revoked: boolean | null;
@@ -4208,6 +4208,8 @@ export interface IntegrationAccount {
   id: string | Snowflake;
   name: string;
 }
+
+export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 
 export interface InteractionCollectorOptions<T extends Interaction> extends CollectorOptions<[T]> {
   channel?: TextBasedChannels;
