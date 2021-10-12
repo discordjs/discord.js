@@ -57,7 +57,7 @@ class InteractionCollector extends Collector {
       this.client.guilds.resolveId(options.guild);
 
     /**
-     * The the type of interaction to collect
+     * The type of interaction to collect
      * @type {?InteractionType}
      */
     this.interactionType =
@@ -66,7 +66,7 @@ class InteractionCollector extends Collector {
         : options.interactionType ?? null;
 
     /**
-     * The the type of component to collect
+     * The type of component to collect
      * @type {?MessageComponentType}
      */
     this.componentType =

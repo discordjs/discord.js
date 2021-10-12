@@ -495,7 +495,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Sets the HELLO packet timeout.
-   * @param {number} [time] If set to -1, it will clear the hello timeout timeout
+   * @param {number} [time] If set to -1, it will clear the hello timeout
    * @private
    */
   setHelloTimeout(time) {
