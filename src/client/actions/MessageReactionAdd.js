@@ -32,8 +32,6 @@ class MessageReactionAdd extends Action {
     // Verify reaction
     const includePartial = this.client.options.partials.includes(PartialTypes.REACTION);
     if (message.partial && !includePartial) return false;
-    const existing = message.reactions.cache.get(data.emoji.id ?? data.emoji.name);
-    if (existing?.users.cache.has(user.id)) return { message, reaction: existing, user };
     const reaction = message.reactions._add({
       emoji: data.emoji,
       count: message.partial ? null : 0,
@@ -41,7 +39,7 @@ class MessageReactionAdd extends Action {
     });
     if (!reaction) return false;
     reaction._add(user);
-    if (fromStructure && includePartial) return { message, reaction, user };
+    if (fromStructure) return { message, reaction, user };
     /**
      * Emitted whenever a reaction is added to a cached message.
      * @event Client#messageReactionAdd
