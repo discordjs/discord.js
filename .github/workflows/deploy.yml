@@ -2,10 +2,10 @@ name: Deployment
 on:
   push:
     branches:
-      - "*"
-      - "!docs"
+      - '*'
+      - '!docs'
     tags:
-      - "*"
+      - '*'
 jobs:
   docs:
     name: Documentation
