@@ -719,6 +719,9 @@ class Message extends Base {
     if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
     await this.channel.messages.react(this.id, emoji);
 
+    const cachedEmoji = this.channel.messages.cache.get(emoji?.id ?? emoji);
+    if (cachedEmoji) return cachedEmoji;
+
     const reaction = this.reactions._add({
       emoji: Util.resolvePartialEmoji(emoji),
       count: this.partial ? null : 0,
