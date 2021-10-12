@@ -11,6 +11,14 @@ const IntegrationApplication = require('./IntegrationApplication');
  */
 
 /**
+ * The type of an {@link Integration}. This can be:
+ * * `twitch`
+ * * `youtube`
+ * * `discord`
+ * @typedef {string} IntegrationType
+ */
+
+/**
  *  Represents a guild integration.
  */
 class Integration extends Base {
@@ -36,8 +44,8 @@ class Integration extends Base {
     this.name = data.name;
 
     /**
-     * The integration type (twitch, youtube or discord)
-     * @type {string}
+     * The integration type
+     * @type {IntegrationType}
      */
     this.type = data.type;
 
