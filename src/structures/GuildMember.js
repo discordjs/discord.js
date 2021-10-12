@@ -29,7 +29,7 @@ class GuildMember extends Base {
     this.joinedTimestamp = null;
 
     /**
-     * The timestamp when this member first used a Server Boost on the guild
+     * The last timestamp this member started boosting the guild
      * @type {?number}
      */
     this.premiumSinceTimestamp = null;
@@ -146,7 +146,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The time when this member first used a Server Boost on the guild
+   * The last time this member started boosting the guild
    * @type {?Date}
    * @readonly
    */
