@@ -1,8 +1,8 @@
 name: NPM auto deprecate
 on:
-  workflow_dispatch:
+  workflow_dispatch: null
   schedule:
-    - cron: '0 1 * * *'
+    - cron: "0 1 * * *"
 jobs:
   auto-deprecate:
     name: NPM auto deprecate
@@ -15,6 +15,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache: npm
 
       - name: Install dependencies
         run: npm ci --ignore-scripts

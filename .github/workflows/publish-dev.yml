@@ -1,8 +1,8 @@
 name: Publish dev
 on:
-  workflow_dispatch:
+  workflow_dispatch: null
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: "0 */12 * * *"
 jobs:
   npm:
     name: npm
@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+          cache: npm
 
       - name: Install dependencies
         run: npm ci --ignore-scripts

@@ -1,7 +1,7 @@
 name: Testing Cron
 on:
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: "0 */12 * * *"
 jobs:
   lint:
     name: ESLint
@@ -14,6 +14,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -32,6 +33,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -50,6 +52,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -71,6 +74,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
