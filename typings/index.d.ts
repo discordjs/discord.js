@@ -604,6 +604,7 @@ export type GuildCommandInteraction<Cached extends GuildCacheState = GuildCacheS
 
 export class CommandInteraction extends BaseCommandInteraction implements GuildCachedInteraction<CommandInteraction> {
   public options: CommandInteractionOptionResolver;
+  public toString(): string;
 }
 
 export class CommandInteractionOptionResolver {
