@@ -26,6 +26,7 @@ import {
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
+  GuildCached,
   GuildChannelManager,
   GuildEmoji,
   GuildEmojiManager,
@@ -852,12 +853,22 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
+  const consumeCachedCommand = (_i: GuildCached<CommandInteraction>) => {};
+  const consumeCachedInteraction = (_i: GuildCached<Interaction>) => {};
+
   if (interaction.inCachedGuild()) {
     assertType<GuildMember>(interaction.member);
+    // @ts-expect-error
+    consumeCachedCommand(interaction);
+    consumeCachedInteraction(interaction);
   } else if (interaction.inRawGuild()) {
     assertType<APIInteractionGuildMember>(interaction.member);
+    // @ts-expect-error
+    consumeCachedInteraction(interaction);
   } else {
     assertType<APIGuildMember | GuildMember | null>(interaction.member);
+    // @ts-expect-error
+    consumeCachedInteraction(interaction);
   }
 
   if (interaction.isContextMenu()) {
@@ -865,6 +876,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inCachedGuild()) {
       assertType<ContextMenuInteraction>(interaction);
       assertType<Guild>(interaction.guild);
+      consumeCachedCommand(interaction);
     } else if (interaction.inRawGuild()) {
       assertType<ContextMenuInteraction>(interaction);
       assertType<null>(interaction.guild);
@@ -879,12 +891,15 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inCachedGuild()) {
       assertType<ButtonInteraction>(interaction);
       assertType<Guild>(interaction.guild);
+      assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inRawGuild()) {
       assertType<ButtonInteraction>(interaction);
       assertType<null>(interaction.guild);
+      assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       assertType<ButtonInteraction>(interaction);
       assertType<Guild | null>(interaction.guild);
+      assertType<Promise<APIMessage | Message>>(interaction.reply({ fetchReply: true }));
     }
   }
 
@@ -893,12 +908,15 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inCachedGuild()) {
       assertType<MessageComponentInteraction>(interaction);
       assertType<Guild>(interaction.guild);
+      assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inRawGuild()) {
       assertType<MessageComponentInteraction>(interaction);
       assertType<null>(interaction.guild);
+      assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       assertType<MessageComponentInteraction>(interaction);
       assertType<Guild | null>(interaction.guild);
+      assertType<Promise<APIMessage | Message>>(interaction.reply({ fetchReply: true }));
     }
   }
 
@@ -907,23 +925,31 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inCachedGuild()) {
       assertType<SelectMenuInteraction>(interaction);
       assertType<Guild>(interaction.guild);
+      assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inRawGuild()) {
       assertType<SelectMenuInteraction>(interaction);
       assertType<null>(interaction.guild);
+      assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       assertType<SelectMenuInteraction>(interaction);
       assertType<Guild | null>(interaction.guild);
+      assertType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
     }
   }
 
   if (interaction.isCommand()) {
     if (interaction.inRawGuild()) {
+      // @ts-expect-error
+      consumeCachedCommand(interaction);
       assertType<CommandInteraction>(interaction);
       assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inCachedGuild()) {
+      consumeCachedCommand(interaction);
       assertType<CommandInteraction>(interaction);
       assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
     } else {
+      // @ts-expect-error
+      consumeCachedCommand(interaction);
       assertType<CommandInteraction>(interaction);
       assertType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
     }
