@@ -455,7 +455,7 @@ export abstract class Channel extends Base {
   public toString(): ChannelMention;
 }
 
-type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ? B : A | B;
+export type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ? B : A | B;
 
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
@@ -1079,7 +1079,7 @@ export class Intents extends BitField<IntentsString> {
 
 export type GuildCacheState = 'cached' | 'raw' | 'present';
 
-type CacheTypeReducer<
+export type CacheTypeReducer<
   State extends GuildCacheState,
   CachedType,
   RawType = CachedType,
@@ -1217,7 +1217,7 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
 
 // This is a general conditional type utility that allows for specific union members to be extracted given
 // a tagged union.
-type TaggedUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V>
+export type TaggedUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V>
   ? T
   : T extends Record<K, infer U>
   ? V extends U
@@ -1226,28 +1226,27 @@ type TaggedUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V>
   : never;
 
 // This creates a map of MessageComponentTypes to their respective `InteractionCollectorOptionsResolvable` variant.
-type CollectorOptionsTypeResolver<U extends InteractionCollectorOptionsResolvable> = {
+export type CollectorOptionsTypeResolver<U extends InteractionCollectorOptionsResolvable> = {
   readonly [T in U['componentType']]: TaggedUnion<InteractionCollectorOptionsResolvable, 'componentType', T>;
 };
 
 // This basically says "Given a `InteractionCollectorOptionsResolvable` variant", I'll give the corresponding
 // `InteractionCollector<T>` variant back.
-type ConditionalInteractionCollectorType<T extends InteractionCollectorOptionsResolvable | undefined> =
+export type ConditionalInteractionCollectorType<T extends InteractionCollectorOptionsResolvable | undefined> =
   T extends InteractionCollectorOptions<infer Item>
     ? InteractionCollector<Item>
     : InteractionCollector<MessageComponentInteraction>;
 
 // This maps each componentType key to each variant.
-type MappedInteractionCollectorOptions = CollectorOptionsTypeResolver<InteractionCollectorOptionsResolvable>;
+export type MappedInteractionCollectorOptions = CollectorOptionsTypeResolver<InteractionCollectorOptionsResolvable>;
 
 // Converts mapped types to complimentary collector types.
-type InteractionCollectorReturnType<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
-  | MessageComponentType
-  | MessageComponentTypes
-  ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions[T]>
-  : InteractionCollector<MessageComponentInteraction>;
+export type InteractionCollectorReturnType<T extends MessageComponentType | MessageComponentTypes | undefined> =
+  T extends MessageComponentType | MessageComponentTypes
+    ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions[T]>
+    : InteractionCollector<MessageComponentInteraction>;
 
-type InteractionExtractor<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
+export type InteractionExtractor<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
   | MessageComponentType
   | MessageComponentTypes
   ? MappedInteractionCollectorOptions[T] extends InteractionCollectorOptions<infer Item>
@@ -1255,12 +1254,12 @@ type InteractionExtractor<T extends MessageComponentType | MessageComponentTypes
     : never
   : MessageComponentInteraction;
 
-type MessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
+export type MessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
   | {
       componentType?: T;
     } & MessageComponentCollectorOptions<InteractionExtractor<T>>;
 
-type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
+export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
   | { componentType?: T } & Pick<
       InteractionCollectorOptions<InteractionExtractor<T>>,
       keyof AwaitMessageComponentOptions<any>
@@ -2347,9 +2346,9 @@ export class WelcomeScreen extends Base {
 
 //#region Constants
 
-type EnumHolder<T> = { [P in keyof T]: T[P] };
+export type EnumHolder<T> = { [P in keyof T]: T[P] };
 
-type ExcludeEnum<T, K extends keyof T> = Exclude<keyof T | T[keyof T], K | T[K]>;
+export type ExcludeEnum<T, K extends keyof T> = Exclude<keyof T | T[keyof T], K | T[K]>;
 
 export const Constants: {
   Package: {
@@ -4282,7 +4281,7 @@ export interface InviteGenerationOptions {
   scopes: InviteScope[];
 }
 
-type GuildInvitableChannelResolvable =
+export type GuildInvitableChannelResolvable =
   | TextChannel
   | VoiceChannel
   | NewsChannel
