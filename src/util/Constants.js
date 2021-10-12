@@ -3,7 +3,7 @@
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError, TypeError } = require('../errors');
 
-exports.UserAgent = `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
+exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
   1000: 'WS_CLOSE_REQUESTED',
@@ -124,6 +124,8 @@ exports.Opcodes = {
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
   INVALID_REQUEST_WARNING: 'invalidRequestWarning',
+  API_RESPONSE: 'apiResponse',
+  API_REQUEST: 'apiRequest',
   CLIENT_READY: 'ready',
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',

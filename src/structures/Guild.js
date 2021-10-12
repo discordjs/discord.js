@@ -137,7 +137,11 @@ class Guild extends AnonymousGuild {
     this.id = data.id;
     if ('name' in data) this.name = data.name;
     if ('icon' in data) this.icon = data.icon;
-    if ('unavailable' in data) this.available = !data.unavailable;
+    if ('unavailable' in data) {
+      this.available = !data.unavailable;
+    } else {
+      this.available ??= true;
+    }
 
     if ('discovery_splash' in data) {
       /**
@@ -487,16 +491,9 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Options used to fetch the owner of a guild or a thread.
-   * @typedef {Object} FetchOwnerOptions
-   * @property {boolean} [cache=true] Whether or not to cache the fetched member
-   * @property {boolean} [force=false] Whether to skip the cache check and request the API
-   */
-
-  /**
    * Fetches the owner of the guild.
    * If the member object isn't needed, use {@link Guild#ownerId} instead.
-   * @param {FetchOwnerOptions} [options] The options for fetching the member
+   * @param {BaseFetchOptions} [options] The options for fetching the member
    * @returns {Promise<GuildMember>}
    */
   fetchOwner(options) {
@@ -877,7 +874,7 @@ class Guild extends AnonymousGuild {
    * Welcome channel data
    * @typedef {Object} WelcomeChannelData
    * @property {string} description The description to show for this welcome channel
-   * @property {GuildTextChannelResolvable} channel The channel to link for this welcome channel
+   * @property {TextChannel|NewsChannel|StoreChannel|Snowflake} channel The channel to link for this welcome channel
    * @property {EmojiIdentifierResolvable} [emoji] The emoji to display for this welcome channel
    */
 

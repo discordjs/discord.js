@@ -88,7 +88,7 @@ class ChannelManager extends CachedManager {
    */
 
   /**
-   * Options for fetching a channel from discord
+   * Options for fetching a channel from Discord
    * @typedef {BaseFetchOptions} FetchChannelOptions
    * @property {boolean} [allowUnknownGuild=false] Allows the channel to be returned even if the guild is not in cache,
    * it will not be cached. <warn>Many of the properties and methods on the returned channel will throw errors</warn>
