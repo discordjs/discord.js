@@ -93,7 +93,7 @@ class GuildManager extends CachedManager {
    * @property {number} [userLimit] The user limit of the channel
    * @property {PartialOverwriteData[]} [permissionOverwrites]
    * Overwrites of the channel
-   * @property {number} [rateLimitPerUser] The rate limit per user of the channel in seconds
+   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) of the channel in seconds
    */
 
   /**
