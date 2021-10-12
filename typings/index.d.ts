@@ -3217,22 +3217,22 @@ export interface ApplicationCommandChoicesOption extends BaseApplicationCommandO
   choices?: ApplicationCommandOptionChoice[];
 }
 
-export interface ApplicationCommandSubGroupData extends BaseApplicationCommandOptionsData {
+export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: 'SUB_COMMAND_GROUP' | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP;
   options?: ApplicationCommandSubCommandData[];
 }
 
-export interface ApplicationCommandSubGroup extends BaseApplicationCommandOptionsData {
+export interface ApplicationCommandSubGroup extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: 'SUB_COMMAND_GROUP';
   options?: ApplicationCommandSubCommand[];
 }
 
-export interface ApplicationCommandSubCommandData extends BaseApplicationCommandOptionsData {
+export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: 'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND;
   options?: (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData | ApplicationCommandChannelOptionData)[];
 }
 
-export interface ApplicationCommandSubCommand extends BaseApplicationCommandOptionsData {
+export interface ApplicationCommandSubCommand extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: 'SUB_COMMAND';
   options?: (ApplicationCommandChoicesOption | ApplicationCommandNonOptions | ApplicationCommandChannelOption)[];
 }
