@@ -720,7 +720,7 @@ class Message extends Base {
     await this.channel.messages.react(this.id, emoji);
 
     const reaction = this.reactions._add({
-      emoji: this.client.emojis.resolveIdentifier(emoji),
+      emoji: Util.resolvePartialEmoji(emoji),
       count: this.partial ? null : 0,
       me: true,
     });
