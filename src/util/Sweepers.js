@@ -364,10 +364,11 @@ class Sweepers {
     let items = 0;
 
     for (const guild of this.client.guilds.cache.values()) {
-      if (guild[key].cache.size === 0) continue;
+      const cache = guild[key].cache;
+      if (cache.size === 0) continue;
       guilds++;
 
-      items += guild[key].cache.sweep(filter);
+      items += cache.sweep(filter);
     }
 
     if (emit) {
