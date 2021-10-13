@@ -424,7 +424,7 @@ class Message extends Base {
   }
 
   /**
-   * The url to jump to this message
+   * The URL to jump to this message
    * @type {string}
    * @readonly
    */

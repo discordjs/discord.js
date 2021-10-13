@@ -328,7 +328,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
   }
 
   /**
-   * Options used to check existance of permissions on a command
+   * Options used to check the existence of permissions on a command
    * <warn>The `command` parameter is not optional when the managers `commandId` is `null`</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} HasApplicationCommandPermissionsOptions
    * @param {UserResolvable|RoleResolvable} permissionId The user or role to check if a permission exists for

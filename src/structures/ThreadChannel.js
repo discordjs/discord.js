@@ -140,7 +140,7 @@ class ThreadChannel extends Channel {
 
     if ('rate_limit_per_user' in data || !partial) {
       /**
-       * The ratelimit per user for this thread (in seconds)
+       * The rate limit per user (slowmode) for this thread in seconds
        * @type {?number}
        */
       this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
@@ -268,7 +268,7 @@ class ThreadChannel extends Channel {
    * @property {boolean} [archived] Whether the thread is archived
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time (in minutes) after which the thread
    * should automatically archive in case of no recent activity
-   * @property {number} [rateLimitPerUser] The ratelimit per user for the thread in seconds
+   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
    * <info>Can only be edited on `GUILD_PRIVATE_THREAD`</info>
@@ -387,9 +387,9 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Sets the rate limit per user for this thread.
-   * @param {number} rateLimitPerUser The new ratelimit in seconds
-   * @param {string} [reason] Reason for changing the thread's ratelimits
+   * Sets the rate limit per user (slowmode) for this thread.
+   * @param {number} rateLimitPerUser The new rate limit in seconds
+   * @param {string} [reason] Reason for changing the thread's rate limit
    * @returns {Promise<ThreadChannel>}
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {

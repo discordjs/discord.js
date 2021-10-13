@@ -13,7 +13,7 @@ const Messages = {
 
   WS_CLOSE_REQUESTED: 'WebSocket closed due to user request.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
-  WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
+  WS_NOT_OPEN: (data = 'data') => `WebSocket not open to send ${data}`,
   MANAGER_DESTROYED: 'Manager was destroyed.',
 
   BITFIELD_INVALID: bit => `Invalid bitfield flag or number: ${bit}.`,
@@ -47,7 +47,7 @@ const Messages = {
   EMBED_AUTHOR_NAME: 'MessageEmbed author name must be a string.',
 
   BUTTON_LABEL: 'MessageButton label must be a string',
-  BUTTON_URL: 'MessageButton url must be a string',
+  BUTTON_URL: 'MessageButton URL must be a string',
   BUTTON_CUSTOM_ID: 'MessageButton customId must be a string',
 
   SELECT_MENU_CUSTOM_ID: 'MessageSelectMenu customId must be a string',

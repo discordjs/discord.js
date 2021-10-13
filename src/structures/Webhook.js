@@ -377,7 +377,7 @@ class Webhook {
   }
 
   /**
-   * The url of this webhook
+   * The URL of this webhook
    * @type {string}
    * @readonly
    */

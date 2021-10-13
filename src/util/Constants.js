@@ -216,7 +216,7 @@ exports.ShardEvents = {
 exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION']);
 
 /**
- * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
+ * The type of a WebSocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED
  * * APPLICATION_COMMAND_CREATE
@@ -1103,5 +1103,5 @@ function createEnum(keys) {
  * @property {StickerType} StickerTypes The value set for a sticker's type.
  * @property {VerificationLevel} VerificationLevels The value set for the verification levels for a guild.
  * @property {WebhookType} WebhookTypes The value set for a webhook's type.
- * @property {WSEventType} WSEvents The type of a websocket message event.
+ * @property {WSEventType} WSEvents The type of a WebSocket message event.
  */

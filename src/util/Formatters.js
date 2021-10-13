@@ -54,7 +54,7 @@ Formatters.bold = bold;
 Formatters.channelMention = channelMention;
 
 /**
- * Wraps the content inside a codeblock with an optional language.
+ * Wraps the content inside a code block with an optional language.
  * @method codeBlock
  * @memberof Formatters
  * @param {string} contentOrLanguage The language to use, content if a second parameter isn't provided.

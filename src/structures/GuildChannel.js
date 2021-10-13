@@ -58,7 +58,7 @@ class GuildChannel extends Channel {
 
     if ('position' in data) {
       /**
-       * The raw position of the channel from discord
+       * The raw position of the channel from Discord
        * @type {number}
        */
       this.rawPosition = data.position;
@@ -246,8 +246,8 @@ class GuildChannel extends Channel {
 
   /**
    * A collection of cached members of this channel, mapped by their ids.
-   * Members that can view this channel, if the channel is text based.
-   * Members in the channel, if the channel is voice based.
+   * Members that can view this channel, if the channel is text-based.
+   * Members in the channel, if the channel is voice-based.
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -270,7 +270,7 @@ class GuildChannel extends Channel {
    * Lock the permissions of the channel to what the parent's permissions are
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites for the channel
-   * @property {number} [rateLimitPerUser] The ratelimit per user for the channel in seconds
+   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the channel in seconds
    * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
@@ -363,7 +363,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options used to set parent of a channel.
+   * Options used to set the parent of a channel.
    * @typedef {Object} SetParentOptions
    * @property {boolean} [lockPermissions=true] Whether to lock the permissions to what the parent's permissions are
    * @property {string} [reason] The reason for modifying the parent of the channel
@@ -391,7 +391,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options used to set position of a channel.
+   * Options used to set the position of a channel.
    * @typedef {Object} SetChannelPositionOptions
    * @param {boolean} [relative=false] Whether or not to change the position relative to its current value
    * @param {string} [reason] The reason for changing the position
