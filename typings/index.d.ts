@@ -2884,7 +2884,7 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
 
 export class UserManager extends CachedManager<Snowflake, User, UserResolvable> {
   private constructor(client: Client, iterable?: Iterable<RawUserData>);
-  public fetch(user: UserResolvable, options?: BaseFetchOptions): Promise<User>;
+  public fetch(user: UserResolvable, options?: BaseFetchOptions): Promise<User | ClientUser>;
 }
 
 export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, typeof VoiceState> {
