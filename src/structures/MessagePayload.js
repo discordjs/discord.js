@@ -12,8 +12,8 @@ const Util = require('../util/Util');
  */
 class MessagePayload {
   /**
-   * @param {MessageTarget} target - The target for this message to be sent to
-   * @param {MessageOptions|WebhookMessageOptions} options - Options passed in from send
+   * @param {MessageTarget} target The target for this message to be sent to
+   * @param {MessageOptions|WebhookMessageOptions} options Options passed in from send
    */
   constructor(target, options) {
     /**
