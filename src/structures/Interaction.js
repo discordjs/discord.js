@@ -148,7 +148,7 @@ class Interaction extends Base {
    * Indicates whether this interaction is a {@link CommandInteraction}.
    * @returns {boolean}
    */
-  isSlashCommand() {
+  isChatInputCommand() {
     return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId === 'undefined';
   }
 
