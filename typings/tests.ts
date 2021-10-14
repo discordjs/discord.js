@@ -597,7 +597,7 @@ client.on('interaction', async interaction => {
   assertType<Snowflake | null>(interaction.channelId);
   assertType<GuildMember | APIInteractionGuildMember | null>(interaction.member);
 
-  if (!interaction.isCommand()) return;
+  if (!interaction.isChatInputCommand()) return;
 
   void new MessageActionRow();
 
@@ -871,7 +871,7 @@ client.on('interactionCreate', async interaction => {
     consumeCachedInteraction(interaction);
   }
 
-  if (interaction.isContextMenu()) {
+  if (interaction.isContextMenuCommand()) {
     assertType<ContextMenuInteraction>(interaction);
     if (interaction.inCachedGuild()) {
       assertType<ContextMenuInteraction>(interaction);
@@ -937,7 +937,7 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.isCommand()) {
+  if (interaction.isChatInputCommand()) {
     if (interaction.inRawGuild()) {
       // @ts-expect-error
       consumeCachedCommand(interaction);

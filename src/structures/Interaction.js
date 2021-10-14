@@ -137,10 +137,10 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link BaseCommandInteraction}.
+   * Indicates whether this interaction is a {@link CommandInteraction} or a {@link ContextMenuInteraction}.
    * @returns {boolean}
    */
-  isApplicationCommand() {
+  isCommand() {
     return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND;
   }
 
@@ -148,7 +148,7 @@ class Interaction extends Base {
    * Indicates whether this interaction is a {@link CommandInteraction}.
    * @returns {boolean}
    */
-  isCommand() {
+  isSlashCommand() {
     return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId === 'undefined';
   }
 
@@ -156,7 +156,7 @@ class Interaction extends Base {
    * Indicates whether this interaction is a {@link ContextMenuInteraction}
    * @returns {boolean}
    */
-  isContextMenu() {
+  isContextMenuCommand() {
     return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId !== 'undefined';
   }
 
