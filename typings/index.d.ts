@@ -1270,14 +1270,6 @@ export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | 
       keyof AwaitMessageComponentOptions<any>
     >;
 
-export interface GuildMessage {
-  awaitMessageComponent<
-    T extends MessageComponentType | MessageComponentTypes | undefined = MessageComponentTypes.ACTION_ROW,
-  >(
-    options?: AwaitMessageCollectorOptionsParams<T>,
-  ): Promise<InteractionResponses<'cached'> & InteractionExtractor<T>>;
-}
-
 export class Message extends Base {
   private constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData | RawMessageData): void;
@@ -1347,7 +1339,6 @@ export class Message extends Base {
   public toJSON(): unknown;
   public toString(): string;
   public unpin(): Promise<Message>;
-  public inGuild(): this is GuildMessage & this;
 }
 
 export class MessageActionRow extends BaseMessageComponent {
