@@ -270,7 +270,7 @@ export class BaseClient extends EventEmitter {
 
 export type GuildCacheMessage<Cached extends GuildCacheState> = CacheTypeReducer<
   Cached,
-  Message,
+  GuildMessage<Cached> & Message,
   APIMessage,
   Message | APIMessage,
   Message | APIMessage
@@ -1231,8 +1231,8 @@ export type TaggedUnion<T, K extends keyof T, V extends T[K]> = T extends Record
   : never;
 
 // This creates a map of MessageComponentTypes to their respective `InteractionCollectorOptionsResolvable` variant.
-export type CollectorOptionsTypeResolver<U extends InteractionCollectorOptionsResolvable> = {
-  readonly [T in U['componentType']]: TaggedUnion<InteractionCollectorOptionsResolvable, 'componentType', T>;
+export type CollectorOptionsTypeResolver<U extends InteractionCollectorOptionsResolvable<Cached>, Cached = boolean> = {
+  readonly [T in U['componentType']]: TaggedUnion<U, 'componentType', T>;
 };
 
 // This basically says "Given a `InteractionCollectorOptionsResolvable` variant", I'll give the corresponding
@@ -1243,18 +1243,23 @@ export type ConditionalInteractionCollectorType<T extends InteractionCollectorOp
     : InteractionCollector<MessageComponentInteraction>;
 
 // This maps each componentType key to each variant.
-export type MappedInteractionCollectorOptions = CollectorOptionsTypeResolver<InteractionCollectorOptionsResolvable>;
+export type MappedInteractionCollectorOptions<Cached = boolean> = CollectorOptionsTypeResolver<
+  InteractionCollectorOptionsResolvable<Cached>,
+  Cached
+>;
 
 // Converts mapped types to complimentary collector types.
-export type InteractionCollectorReturnType<T extends MessageComponentType | MessageComponentTypes | undefined> =
-  T extends MessageComponentType | MessageComponentTypes
-    ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions[T]>
-    : InteractionCollector<MessageComponentInteraction>;
+export type InteractionCollectorReturnType<
+  T extends MessageComponentType | MessageComponentTypes | undefined,
+  Cached extends boolean = false,
+> = T extends MessageComponentType | MessageComponentTypes
+  ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions<Cached>[T]>
+  : InteractionCollector<MessageComponentInteraction>;
 
 export type InteractionExtractor<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
   | MessageComponentType
   | MessageComponentTypes
-  ? MappedInteractionCollectorOptions[T] extends InteractionCollectorOptions<infer Item>
+  ? MappedInteractionCollectorOptions<false>[T] extends InteractionCollectorOptions<infer Item>
     ? Item
     : never
   : MessageComponentInteraction;
@@ -1269,6 +1274,18 @@ export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | 
       InteractionCollectorOptions<InteractionExtractor<T>>,
       keyof AwaitMessageComponentOptions<any>
     >;
+
+export interface GuildMessage<Cached extends GuildCacheState = GuildCacheState> {
+  awaitMessageComponent<
+    T extends MessageComponentType | MessageComponentTypes | undefined = MessageComponentTypes.ACTION_ROW,
+  >(
+    options?: AwaitMessageCollectorOptionsParams<T>,
+  ): Promise<InteractionResponses<Cached> & InteractionExtractor<T>>;
+
+  createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
+    options?: MessageCollectorOptionsParams<T>,
+  ): InteractionCollectorReturnType<T, true>;
+}
 
 export class Message extends Base {
   private constructor(client: Client, data: RawMessageData);
@@ -1339,6 +1356,7 @@ export class Message extends Base {
   public toJSON(): unknown;
   public toString(): string;
   public unpin(): Promise<Message>;
+  public inGuild(): this is GuildMessage<'cached'> & this;
 }
 
 export class MessageActionRow extends BaseMessageComponent {
@@ -4227,23 +4245,29 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   message?: Message | APIMessage;
 }
 
-export interface ButtonInteractionCollectorOptions extends MessageComponentCollectorOptions<ButtonInteraction> {
+export interface ButtonInteractionCollectorOptions<Cached = boolean>
+  extends MessageComponentCollectorOptions<Cached extends true ? GuildCached<ButtonInteraction> : ButtonInteraction> {
   componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
 }
 
-export interface SelectMenuInteractionCollectorOptions extends MessageComponentCollectorOptions<SelectMenuInteraction> {
+export interface SelectMenuInteractionCollectorOptions<Cached = boolean>
+  extends MessageComponentCollectorOptions<
+    Cached extends true ? GuildCached<SelectMenuInteraction> : SelectMenuInteraction
+  > {
   componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
 }
 
-export interface MessageInteractionCollectorOptions
-  extends MessageComponentCollectorOptions<MessageComponentInteraction> {
+export interface MessageInteractionCollectorOptions<Cached = boolean>
+  extends MessageComponentCollectorOptions<
+    Cached extends true ? GuildCached<MessageComponentInteraction> : MessageComponentInteraction
+  > {
   componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
 }
 
-export type InteractionCollectorOptionsResolvable =
-  | MessageInteractionCollectorOptions
-  | SelectMenuInteractionCollectorOptions
-  | ButtonInteractionCollectorOptions;
+export type InteractionCollectorOptionsResolvable<Cached = boolean> =
+  | MessageInteractionCollectorOptions<Cached>
+  | SelectMenuInteractionCollectorOptions<Cached>
+  | ButtonInteractionCollectorOptions<Cached>;
 
 export interface InteractionDeferReplyOptions {
   ephemeral?: boolean;
