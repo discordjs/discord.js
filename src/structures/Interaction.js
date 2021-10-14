@@ -137,7 +137,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link BaseCommandInteraction}.
+   * Indicates whether this interaction is a {@link CommandInteraction}.
    * @returns {boolean}
    */
   isApplicationCommand() {
@@ -153,10 +153,10 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link ContextMenuInteraction}
+   * Indicates whether this interaction is a {@link ContextMenuCommandInteraction}
    * @returns {boolean}
    */
-  isContextMenu() {
+  isContextMenuCommand() {
     return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId !== 'undefined';
   }
 

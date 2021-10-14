@@ -2,8 +2,8 @@
 
 const Action = require('./Action');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
-const CommandInteraction = require('../../structures/CommandInteraction');
-const ContextMenuInteraction = require('../../structures/ContextMenuInteraction');
+const ChatInputCommandInteraction = require('../../structures/ChatInputCommandInteraction');
+const ContextMenuCommandInteraction = require('../../structures/ContextMenuCommandInteraction');
 const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
 const { Events, InteractionTypes, MessageComponentTypes, ApplicationCommandTypes } = require('../../util/Constants');
 
@@ -21,11 +21,11 @@ class InteractionCreateAction extends Action {
       case InteractionTypes.APPLICATION_COMMAND:
         switch (data.data.type) {
           case ApplicationCommandTypes.CHAT_INPUT:
-            InteractionType = CommandInteraction;
+            InteractionType = ChatInputCommandInteraction;
             break;
           case ApplicationCommandTypes.USER:
           case ApplicationCommandTypes.MESSAGE:
-            InteractionType = ContextMenuInteraction;
+            InteractionType = ContextMenuCommandInteraction;
             break;
           default:
             client.emit(
