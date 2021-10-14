@@ -79,7 +79,7 @@ class MessageComponentInteraction extends Interaction {
     return (
       this.message.components
         .flatMap(row => row.components)
-        .find(component => (component.customId ?? component.custom_id) === this.customId) ?? null
+        .find(component => (component.customId ?? component.custom_id) === this.customId)
     );
   }
 
