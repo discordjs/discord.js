@@ -364,7 +364,7 @@ class Sweepers {
     let items = 0;
 
     for (const guild of this.client.guilds.cache.values()) {
-      const cache = guild[key].cache;
+      const { cache } = guild[key];
       if (cache.size === 0) continue;
       guilds++;
 
