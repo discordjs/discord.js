@@ -276,7 +276,7 @@ export type GuildCacheMessage<Cached extends GuildCacheState> = CacheTypeReducer
   Message | APIMessage
 >;
 
-export abstract class BaseCommandInteraction extends Interaction {
+export abstract class CommandInteraction extends Interaction {
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public readonly channel: TextBasedChannels | null;
   public channelId: Snowflake;
@@ -606,7 +606,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
 }
 
-export class CommandInteraction extends BaseCommandInteraction {
+export class ChatInputCommandInteraction extends CommandInteraction {
   public options: CommandInteractionOptionResolver;
   public toString(): string;
 }
@@ -666,7 +666,7 @@ export class CommandInteractionOptionResolver {
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
 }
-export class ContextMenuInteraction extends BaseCommandInteraction {
+export class ContextMenuCommandInteraction extends CommandInteraction {
   public options: CommandInteractionOptionResolver;
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
@@ -1111,10 +1111,10 @@ export class Interaction extends Base {
   public inGuild(): this is GuildInteraction<'present'> & this;
   public inCachedGuild(): this is GuildInteraction<'cached'> & this;
   public inRawGuild(): this is GuildInteraction<'raw'> & this;
-  public isCommand(): this is CommandInteraction | ContextMenuInteraction;
+  public isCommand(): this is CommandInteraction | ContextMenuCommandInteraction;
   public isButton(): this is ButtonInteraction;
   public isChatInputCommand(): this is CommandInteraction;
-  public isContextMenuCommand(): this is ContextMenuInteraction;
+  public isContextMenuCommand(): this is ContextMenuCommandInteraction;
   public isMessageComponent(): this is MessageComponentInteraction;
   public isSelectMenu(): this is SelectMenuInteraction;
 }
@@ -1270,6 +1270,14 @@ export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | 
       keyof AwaitMessageComponentOptions<any>
     >;
 
+export interface GuildMessage {
+  awaitMessageComponent<
+    T extends MessageComponentType | MessageComponentTypes | undefined = MessageComponentTypes.ACTION_ROW,
+  >(
+    options?: AwaitMessageCollectorOptionsParams<T>,
+  ): Promise<InteractionResponses<'cached'> & InteractionExtractor<T>>;
+}
+
 export class Message extends Base {
   private constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData | RawMessageData): void;
@@ -1339,6 +1347,7 @@ export class Message extends Base {
   public toJSON(): unknown;
   public toString(): string;
   public unpin(): Promise<Message>;
+  public inGuild(): this is GuildMessage & this;
 }
 
 export class MessageActionRow extends BaseMessageComponent {

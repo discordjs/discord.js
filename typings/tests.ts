@@ -16,13 +16,13 @@ import {
   ClientApplication,
   ClientUser,
   Collection,
-  CommandInteraction,
+  ChatInputCommandInteraction,
   CommandInteractionOption,
   CommandInteractionOptionResolver,
   CommandOptionChoiceResolvableType,
   CommandOptionNonChoiceResolvableType,
   Constants,
-  ContextMenuInteraction,
+  ContextMenuCommandInteraction,
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
@@ -853,7 +853,7 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
-  const consumeCachedCommand = (_i: GuildCached<CommandInteraction>) => {};
+  const consumeCachedCommand = (_i: GuildCached<ChatInputCommandInteraction>) => {};
   const consumeCachedInteraction = (_i: GuildCached<Interaction>) => {};
 
   if (interaction.inCachedGuild()) {
@@ -872,16 +872,16 @@ client.on('interactionCreate', async interaction => {
   }
 
   if (interaction.isContextMenuCommand()) {
-    assertType<ContextMenuInteraction>(interaction);
+    assertType<ContextMenuCommandInteraction>(interaction);
     if (interaction.inCachedGuild()) {
-      assertType<ContextMenuInteraction>(interaction);
+      assertType<ContextMenuCommandInteraction>(interaction);
       assertType<Guild>(interaction.guild);
       consumeCachedCommand(interaction);
     } else if (interaction.inRawGuild()) {
-      assertType<ContextMenuInteraction>(interaction);
+      assertType<ContextMenuCommandInteraction>(interaction);
       assertType<null>(interaction.guild);
     } else if (interaction.inGuild()) {
-      assertType<ContextMenuInteraction>(interaction);
+      assertType<ContextMenuCommandInteraction>(interaction);
       assertType<Guild | null>(interaction.guild);
     }
   }
@@ -941,20 +941,20 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inRawGuild()) {
       // @ts-expect-error
       consumeCachedCommand(interaction);
-      assertType<CommandInteraction>(interaction);
+      assertType<ChatInputCommandInteraction>(interaction);
       assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inCachedGuild()) {
       consumeCachedCommand(interaction);
-      assertType<CommandInteraction>(interaction);
+      assertType<ChatInputCommandInteraction>(interaction);
       assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);
-      assertType<CommandInteraction>(interaction);
+      assertType<ChatInputCommandInteraction>(interaction);
       assertType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
     }
 
-    assertType<CommandInteraction>(interaction);
+    assertType<ChatInputCommandInteraction>(interaction);
     assertType<CommandInteractionOptionResolver>(interaction.options);
     assertType<readonly CommandInteractionOption[]>(interaction.options.data);
 

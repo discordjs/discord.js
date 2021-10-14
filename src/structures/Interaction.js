@@ -153,7 +153,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link ContextMenuInteraction}
+   * Indicates whether this interaction is a {@link ContextMenuCommandInteraction}
    * @returns {boolean}
    */
   isContextMenuCommand() {
