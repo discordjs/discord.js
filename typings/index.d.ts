@@ -1113,7 +1113,7 @@ export class Interaction extends Base {
   public inRawGuild(): this is GuildInteraction<'raw'> & this;
   public isCommand(): this is CommandInteraction | ContextMenuCommandInteraction;
   public isButton(): this is ButtonInteraction;
-  public isChatInputCommand(): this is CommandInteraction;
+  public isChatInputCommand(): this is ChatInputCommandInteraction;
   public isContextMenuCommand(): this is ContextMenuCommandInteraction;
   public isMessageComponent(): this is MessageComponentInteraction;
   public isSelectMenu(): this is SelectMenuInteraction;
