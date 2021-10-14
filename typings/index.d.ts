@@ -1111,7 +1111,7 @@ export class Interaction extends Base {
   public inGuild(): this is GuildInteraction<'present'> & this;
   public inCachedGuild(): this is GuildInteraction<'cached'> & this;
   public inRawGuild(): this is GuildInteraction<'raw'> & this;
-  public isCommand(): this is CommandInteraction | ContextMenuCommandInteraction;
+  public isCommand(): this is CommandInteraction;
   public isButton(): this is ButtonInteraction;
   public isChatInputCommand(): this is ChatInputCommandInteraction;
   public isContextMenuCommand(): this is ContextMenuCommandInteraction;
