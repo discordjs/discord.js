@@ -1415,7 +1415,7 @@ export class MessageCollector extends Collector<Snowflake, Message> {
 export class MessageComponentInteraction extends Interaction {
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
   public readonly channel: TextBasedChannels | null;
-  public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent> | null;
+  public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>;
   public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
   public customId: string;
   public channelId: Snowflake;
