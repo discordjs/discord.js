@@ -887,11 +887,11 @@ class Message extends Base {
   }
 
   /**
-   * Whether or not this message is from a guild or not.
+   * Whether this message is from a guild.
    * @returns {boolean}
    */
   inGuild() {
-    return !!this.guild;
+    return Boolean(this.guild);
   }
 
   /**
