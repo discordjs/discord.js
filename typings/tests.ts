@@ -33,6 +33,8 @@ import {
   GuildMember,
   GuildMessage,
   GuildResolvable,
+  GuildTextBasedChannel,
+  GuildTextChannelResolvable,
   Intents,
   Interaction,
   InteractionCollector,
@@ -493,7 +495,13 @@ client.on('messageCreate', async message => {
     component.reply({ fetchReply: true });
     const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
     assertType<InteractionCollector<GuildCached<ButtonInteraction>>>(buttonCollector);
+    assertType<GuildTextBasedChannel>(message.channel);
   }
+
+  assertType<TextBasedChannels>(message.channel);
+
+  // @ts-expect-error
+  assertType<GuildTextBasedChannel>(message.channel);
 
   // @ts-expect-error
   channel.send();

@@ -1275,6 +1275,8 @@ export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | 
       keyof AwaitMessageComponentOptions<any>
     >;
 
+export type GuildTextBasedChannel = Exclude<TextBasedChannels, PartialDMChannel | DMChannel>;
+
 export interface GuildMessage<Cached extends GuildCacheState = GuildCacheState> {
   awaitMessageComponent<
     T extends MessageComponentType | MessageComponentTypes | undefined = MessageComponentTypes.ACTION_ROW,
@@ -1285,6 +1287,8 @@ export interface GuildMessage<Cached extends GuildCacheState = GuildCacheState> 
   createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
     options?: MessageCollectorOptionsParams<T>,
   ): InteractionCollectorReturnType<T, true>;
+
+  readonly channel: CacheTypeReducer<Cached, GuildTextBasedChannel>;
 }
 
 export class Message extends Base {
