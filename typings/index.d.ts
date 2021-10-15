@@ -315,10 +315,9 @@ export type CacheHelper<
   Cached extends GuildCacheState,
 > = T extends InteractionResponsesResolvable ? InteractionResponses<Cached> & T : GuildInteraction<Cached> & T;
 
-export type GuildCached<T extends Interaction> = CacheHelper<T, 'cached'>;
-export type GuildRaw<T extends Interaction> = CacheHelper<T, 'raw'>;
-export type GuildPresent<T extends Interaction> = CacheHelper<T, 'present'>;
-
+export type CachedInteraction<T extends Interaction> = CacheHelper<T, 'cached'>;
+export type RawInteraction<T extends Interaction> = CacheHelper<T, 'raw'>;
+export type PresentInteraction<T extends Interaction> = CacheHelper<T, 'present'>;
 export abstract class BaseGuild extends Base {
   protected constructor(client: Client, data: RawBaseGuildData);
   public readonly createdAt: Date;
@@ -4250,20 +4249,22 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
 }
 
 export interface ButtonInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<Cached extends true ? GuildCached<ButtonInteraction> : ButtonInteraction> {
+  extends MessageComponentCollectorOptions<
+    Cached extends true ? CachedInteraction<ButtonInteraction> : ButtonInteraction
+  > {
   componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
 }
 
 export interface SelectMenuInteractionCollectorOptions<Cached = boolean>
   extends MessageComponentCollectorOptions<
-    Cached extends true ? GuildCached<SelectMenuInteraction> : SelectMenuInteraction
+    Cached extends true ? CachedInteraction<SelectMenuInteraction> : SelectMenuInteraction
   > {
   componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
 }
 
 export interface MessageInteractionCollectorOptions<Cached = boolean>
   extends MessageComponentCollectorOptions<
-    Cached extends true ? GuildCached<MessageComponentInteraction> : MessageComponentInteraction
+    Cached extends true ? CachedInteraction<MessageComponentInteraction> : MessageComponentInteraction
   > {
   componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
 }
