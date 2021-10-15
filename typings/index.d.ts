@@ -1276,6 +1276,7 @@ export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | 
 
 export type GuildTextBasedChannel = Exclude<TextBasedChannels, PartialDMChannel | DMChannel>;
 
+export type CachedMessage = GuildMessage<'cached'> & Message;
 export interface GuildMessage<Cached extends GuildCacheState = GuildCacheState> {
   awaitMessageComponent<
     T extends MessageComponentType | MessageComponentTypes | undefined = MessageComponentTypes.ACTION_ROW,

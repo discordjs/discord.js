@@ -70,6 +70,7 @@ import {
   Typing,
   User,
   VoiceChannel,
+  CachedMessage,
 } from '.';
 import { ApplicationCommandOptionTypes } from './enums';
 
@@ -489,7 +490,10 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({ embeds: [embed] }));
   assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));
 
+  const consumeMessage = (_msg: CachedMessage) => {};
+
   if (message.inGuild()) {
+    consumeMessage(message);
     const component = await message.awaitMessageComponent({ componentType: 'BUTTON' });
     assertType<InteractionResponses<'cached'>>(component);
     component.reply({ fetchReply: true });
