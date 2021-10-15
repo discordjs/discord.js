@@ -649,45 +649,123 @@ export class CommandInteractionOptionResolver<
   public get(name: string, required: true): CommandInteractionOption;
   public get(name: string, required?: boolean): CommandInteractionOption | null;
 
-  public getSubcommand(required?: true): string;
-  public getSubcommand(required: boolean): string | null;
-  public getSubcommandGroup(required?: true): string;
-  public getSubcommandGroup(required: boolean): string | null;
-  public getBoolean(name: string, required: true): boolean;
-  public getBoolean(name: string, required?: boolean): boolean | null;
-  public getChannel(name: string, required: true): NonNullable<CommandInteractionOption['channel']>;
-  public getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption['channel']> | null;
-  public getString(name: string, required: true): string;
-  public getString(name: string, required?: boolean): string | null;
-  public getInteger(name: string, required: true): number;
-  public getInteger(name: string, required?: boolean): number | null;
-  public getNumber(name: string, required: true): number;
-  public getNumber(name: string, required?: boolean): number | null;
+  public getSubcommand(
+    required?: true,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string>;
+  public getSubcommand(
+    required: boolean,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string | null>;
+  public getSubcommandGroup(
+    required?: true,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string>;
+  public getSubcommandGroup(
+    required: boolean,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string | null>;
+  public getBoolean(
+    name: string,
+    required: true,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, boolean>;
+  public getBoolean(
+    name: string,
+    required?: boolean,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, boolean | null>;
+  public getChannel(
+    name: string,
+    required: true,
+  ): InteractionOptionResolverReturn<
+    Type,
+    CommandInteraction | AutocompleteInteraction,
+    NonNullable<CommandInteractionOption['channel']>
+  >;
+  public getChannel(
+    name: string,
+    required?: boolean,
+  ): InteractionOptionResolverReturn<
+    Type,
+    CommandInteraction | AutocompleteInteraction,
+    NonNullable<CommandInteractionOption['channel']> | null
+  >;
+  public getString(
+    name: string,
+    required: true,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string>;
+  public getString(
+    name: string,
+    required?: boolean,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string | null>;
+  public getInteger(
+    name: string,
+    required: true,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, number>;
+  public getInteger(
+    name: string,
+    required?: boolean,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, number | null>;
+  public getNumber(
+    name: string,
+    required: true,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, number>;
+  public getNumber(
+    name: string,
+    required?: boolean,
+  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, number | null>;
   public getUser(name: string, required: true): NonNullable<CommandInteractionOption['user']>;
   public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption['user']> | null;
   public getMember(name: string, required: true): NonNullable<CommandInteractionOption['member']>;
   public getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption['member']> | null;
-  public getRole(name: string, required: true): NonNullable<CommandInteractionOption['role']>;
-  public getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption['role']> | null;
+  public getRole(
+    name: string,
+    required: true,
+  ): InteractionOptionResolverReturn<
+    Type,
+    CommandInteraction | AutocompleteInteraction,
+    NonNullable<CommandInteractionOption['role']>
+  >;
+  public getRole(
+    name: string,
+    required?: boolean,
+  ): InteractionOptionResolverReturn<
+    Type,
+    CommandInteraction | AutocompleteInteraction,
+    NonNullable<CommandInteractionOption['role']> | null
+  >;
   public getMentionable(
     name: string,
     required: true,
-  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']>;
+  ): InteractionOptionResolverReturn<
+    Type,
+    CommandInteraction | AutocompleteInteraction,
+    NonNullable<CommandInteractionOption['member' | 'role' | 'user']>
+  >;
   public getMentionable(
     name: string,
     required?: boolean,
-  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
-  public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
-  public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
+  ): InteractionOptionResolverReturn<
+    Type,
+    CommandInteraction | AutocompleteInteraction,
+    NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null
+  >;
+  public getMessage(
+    name: string,
+    required: true,
+  ): InteractionOptionResolverReturn<Type, ContextMenuInteraction, NonNullable<CommandInteractionOption['message']>>;
+  public getMessage(
+    name: string,
+    required?: boolean,
+  ): InteractionOptionResolverReturn<
+    Type,
+    ContextMenuInteraction,
+    NonNullable<CommandInteractionOption['message']> | null
+  >;
   public getFocused(
     getFull: true,
   ): InteractionOptionResolverReturn<Type, AutocompleteInteraction, ApplicationCommandOptionChoice>;
   public getFocused(getFull?: boolean): InteractionOptionResolverReturn<Type, AutocompleteInteraction, string | number>;
 }
 
-export type InteractionOptionResolverReturn<T, AllowedInteraction, ReturnType> = T extends AllowedInteraction
-  ? ReturnType
-  : never;
+export type EachUnionToKeyOf<Union> = Union extends infer U ? keyof U : never;
+export type InteractionOptionResolverReturn<T, AllowedInteraction, ReturnType> =
+  keyof T extends EachUnionToKeyOf<AllowedInteraction> ? ReturnType : never;
 
 export class ContextMenuInteraction extends BaseCommandInteraction {
   public options: CommandInteractionOptionResolver<ContextMenuInteraction>;
