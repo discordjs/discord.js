@@ -315,9 +315,9 @@ export type CacheHelper<
   Cached extends GuildCacheState,
 > = T extends InteractionResponsesResolvable ? InteractionResponses<Cached> & T : GuildInteraction<Cached> & T;
 
-export type CachedInteraction<T extends Interaction> = CacheHelper<T, 'cached'>;
-export type RawInteraction<T extends Interaction> = CacheHelper<T, 'raw'>;
-export type PresentInteraction<T extends Interaction> = CacheHelper<T, 'present'>;
+export type CachedInteraction<T extends Interaction = Interaction> = CacheHelper<T, 'cached'>;
+export type RawInteraction<T extends Interaction = Interaction> = CacheHelper<T, 'raw'>;
+export type PresentInteraction<T extends Interaction = Interaction> = CacheHelper<T, 'present'>;
 export abstract class BaseGuild extends Base {
   protected constructor(client: Client, data: RawBaseGuildData);
   public readonly createdAt: Date;
