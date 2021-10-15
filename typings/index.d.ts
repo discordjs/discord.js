@@ -4709,15 +4709,12 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
   lastMessageId: undefined;
 }
 
-export type PartialGuildMember = Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp'>;
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp'> {}
 
-export type PartialMessage = Partialize<
-  Message,
-  'type' | 'system' | 'pinned' | 'tts',
-  'content' | 'cleanContent' | 'author'
->;
+export interface PartialMessage
+  extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
 
-export type PartialMessageReaction = Partialize<MessageReaction, 'count'>;
+export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
 export interface PartialOverwriteData {
   id: Snowflake | number;
@@ -4732,7 +4729,7 @@ export interface PartialRoleData extends RoleData {
 
 export type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-export type PartialUser = Partialize<User, 'username' | 'tag' | 'discriminator'>;
+export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
