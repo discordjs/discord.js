@@ -383,11 +383,7 @@ export class BaseGuildVoiceChannel extends GuildChannel {
 export class BaseMessageComponent {
   protected constructor(data?: BaseMessageComponent | BaseMessageComponentOptions);
   public type: MessageComponentType | null;
-  private static create(
-    data: MessageComponentOptions,
-    client?: Client | WebhookClient,
-    skipValidation?: boolean,
-  ): MessageComponent | undefined;
+  private static create(data: MessageComponentOptions, client?: Client | WebhookClient): MessageComponent | undefined;
   private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
