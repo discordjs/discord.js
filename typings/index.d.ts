@@ -602,12 +602,17 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
 }
 
-export class CommandInteraction extends BaseCommandInteraction {
-  public options: CommandInteractionOptionResolver;
+export type GuildCommandInteraction<Cached extends GuildCacheState> = InteractionResponses<Cached> &
+  CommandInteraction<Cached>;
+
+export class CommandInteraction<Cached extends GuildCacheState = GuildCacheState> extends BaseCommandInteraction {
+  public options: CommandInteractionOptionResolver<Cached>;
+  public inCachedGuild(): this is GuildCommandInteraction<'cached'> & this;
+  public inRawGuild(): this is GuildCommandInteraction<'raw'> & this;
   public toString(): string;
 }
 
-export class CommandInteractionOptionResolver {
+export class CommandInteractionOptionResolver<Cached extends GuildCacheState = GuildCacheState> {
   private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption[];
@@ -647,8 +652,14 @@ export class CommandInteractionOptionResolver {
   public getNumber(name: string, required?: boolean): number | null;
   public getUser(name: string, required: true): NonNullable<CommandInteractionOption['user']>;
   public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption['user']> | null;
-  public getMember(name: string, required: true): NonNullable<CommandInteractionOption['member']>;
-  public getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption['member']> | null;
+  public getMember(
+    name: string,
+    required: true,
+  ): CacheTypeReducer<Cached, GuildMember, NonNullable<APIInteractionDataResolvedGuildMember>>;
+  public getMember(
+    name: string,
+    required?: boolean,
+  ): CacheTypeReducer<Cached, GuildMember, NonNullable<APIInteractionDataResolvedGuildMember>> | null;
   public getRole(name: string, required: true): NonNullable<CommandInteractionOption['role']>;
   public getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption['role']> | null;
   public getMentionable(
@@ -1086,6 +1097,7 @@ export interface GuildInteraction<Cached extends GuildCacheState = GuildCacheSta
   member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   readonly guild: CacheTypeReducer<Cached, Guild, null>;
   channel: CacheTypeReducer<Cached, Exclude<TextBasedChannels, PartialDMChannel | DMChannel> | null>;
+  isCommand(): this is GuildCommandInteraction<Cached> & this;
 }
 
 export class Interaction extends Base {

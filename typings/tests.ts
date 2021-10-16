@@ -1,4 +1,9 @@
-import { APIGuildMember, APIInteractionGuildMember, APIMessage } from 'discord-api-types/v9';
+import {
+  APIGuildMember,
+  APIInteractionDataResolvedGuildMember,
+  APIInteractionGuildMember,
+  APIMessage,
+} from 'discord-api-types/v9';
 import {
   ApplicationCommand,
   ApplicationCommandChannelOptionData,
@@ -943,8 +948,12 @@ client.on('interactionCreate', async interaction => {
       consumeCachedCommand(interaction);
       assertType<CommandInteraction>(interaction);
       assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
+      assertType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
+      assertType<APIInteractionDataResolvedGuildMember>(interaction.options.getMember('test', true));
     } else if (interaction.inCachedGuild()) {
       consumeCachedCommand(interaction);
+      assertType<GuildMember>(interaction.options.getMember('test', true));
+      assertType<GuildMember | null>(interaction.options.getMember('test'));
       assertType<CommandInteraction>(interaction);
       assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
     } else {
@@ -952,6 +961,8 @@ client.on('interactionCreate', async interaction => {
       consumeCachedCommand(interaction);
       assertType<CommandInteraction>(interaction);
       assertType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
+      assertType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
+      assertType<APIInteractionDataResolvedGuildMember | GuildMember>(interaction.options.getMember('test', true));
     }
 
     assertType<CommandInteraction>(interaction);
