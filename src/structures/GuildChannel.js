@@ -393,8 +393,8 @@ class GuildChannel extends Channel {
   /**
    * Options used to set the position of a channel.
    * @typedef {Object} SetChannelPositionOptions
-   * @param {boolean} [relative=false] Whether or not to change the position relative to its current value
-   * @param {string} [reason] The reason for changing the position
+   * @property {boolean} [relative=false] Whether or not to change the position relative to its current value
+   * @property {string} [reason] The reason for changing the position
    */
 
   /**
