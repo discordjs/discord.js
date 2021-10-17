@@ -891,7 +891,7 @@ class Message extends Base {
    * @returns {boolean}
    */
   inGuild() {
-    return Boolean(this.guild);
+    return Boolean(this.guildId);
   }
 
   /**
