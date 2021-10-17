@@ -2200,10 +2200,12 @@ export class Webhook extends WebhookMixin() {
   public guildId: Snowflake;
   public name: string;
   public owner: User | APIUser | null;
-  public sourceGuild: Guild | APIPartialGuild | null;
-  public sourceChannel: NewsChannel | APIPartialChannel | null;
-  public token: string | null;
   public type: WebhookType;
+  public isIncoming(): this is this & { token: string };
+  public isChannelFollower(): this is this & {
+    sourceGuild: Guild | APIPartialGuild;
+    sourceChannel: NewsChannel | APIPartialChannel;
+  };
 }
 
 export class WebhookClient extends WebhookMixin(BaseClient) {
