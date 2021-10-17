@@ -400,7 +400,7 @@ class Webhook {
    * @returns {boolean}
    */
   isChannelFollower() {
-    return this.type === WebhookTypes.Incoming;
+    return this.type === WebhookTypes['Channel Follower'];
   }
 
   /**
@@ -408,7 +408,7 @@ class Webhook {
    * @returns {boolean}
    */
   isIncoming() {
-    return this.type === WebhookTypes['Channel Follower'];
+    return this.type === WebhookTypes.Incoming;
   }
 
   static applyToClass(structure, ignore = []) {
