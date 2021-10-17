@@ -90,7 +90,7 @@ class Webhook {
        * The source guild of the webhook
        * @type {?(Guild|APIGuild)}
        */
-      this.sourceGuild = this.client.guilds?._add(data.source_guild, false) ?? data.source_guild;
+      this.sourceGuild = this.client.guilds?.resolve(data.source_guild.id) ?? data.source_guild;
     } else {
       this.sourceGuild ??= null;
     }
