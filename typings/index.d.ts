@@ -3419,6 +3419,7 @@ export interface CategoryCreateChannelOptions {
   userLimit?: number;
   rateLimitPerUser?: number;
   position?: number;
+  rtcRegion?: string;
   reason?: string;
 }
 

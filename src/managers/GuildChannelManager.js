@@ -121,7 +121,19 @@ class GuildChannelManager extends CachedManager {
    */
   async create(
     name,
-    { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
+    {
+      type,
+      topic,
+      nsfw,
+      bitrate,
+      userLimit,
+      parent,
+      permissionOverwrites,
+      position,
+      rateLimitPerUser,
+      rtcRegion,
+      reason,
+    } = {},
   ) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
@@ -138,6 +150,7 @@ class GuildChannelManager extends CachedManager {
         position,
         permission_overwrites: permissionOverwrites,
         rate_limit_per_user: rateLimitPerUser,
+        rtc_region: rtcRegion,
       },
       reason,
     });
