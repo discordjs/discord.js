@@ -45,7 +45,7 @@ class RateLimitError extends Error {
     this.global = global;
 
     /**
-     * The maximum amount of requests of this end point
+     * The maximum amount of requests of this endpoint
      * @type {number}
      */
     this.limit = limit;

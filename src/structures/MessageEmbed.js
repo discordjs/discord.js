@@ -452,7 +452,7 @@ class MessageEmbed {
 
   /**
    * Normalizes field input and resolves strings.
-   * @param  {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
+   * @param {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
    * @returns {EmbedField[]}
    */
   static normalizeFields(...fields) {

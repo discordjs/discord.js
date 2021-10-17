@@ -34,8 +34,8 @@ class GuildStickerManager extends CachedManager {
   /**
    * Options for creating a guild sticker.
    * @typedef {Object} GuildStickerCreateOptions
-   * @param {?string} [description] The description for the sticker
-   * @param {string} [reason] Reason for creating the sticker
+   * @property {?string} [description] The description for the sticker
+   * @property {string} [reason] Reason for creating the sticker
    */
 
   /**
@@ -46,7 +46,7 @@ class GuildStickerManager extends CachedManager {
    * @param {GuildStickerCreateOptions} [options] Options
    * @returns {Promise<Sticker>} The created sticker
    * @example
-   * // Create a new sticker from a url
+   * // Create a new sticker from a URL
    * guild.stickers.create('https://i.imgur.com/w3duR07.png', 'rip')
    *   .then(sticker => console.log(`Created new sticker with name ${sticker.name}!`))
    *   .catch(console.error);

@@ -157,7 +157,7 @@ class Sticker extends Base {
 
   /**
    * A link to the sticker
-   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.</info>
+   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie JSON file.</info>
    * @type {string}
    */
   get url() {

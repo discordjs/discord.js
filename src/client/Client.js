@@ -218,7 +218,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Logs the client in, establishing a websocket connection to Discord.
+   * Logs the client in, establishing a WebSocket connection to Discord.
    * @param {string} [token=this.token] Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example

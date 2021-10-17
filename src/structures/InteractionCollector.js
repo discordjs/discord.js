@@ -19,8 +19,9 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
 
 /**
  * Collects interactions.
- * Will automatically stop if the message ({@link Client#messageDelete messageDelete}),
- * channel ({@link Client#channelDelete channelDelete}), or guild ({@link Client#guildDelete guildDelete}) is deleted.
+ * Will automatically stop if the message ({@link Client#event:messageDelete messageDelete}),
+ * channel ({@link Client#event:channelDelete channelDelete}), or
+ * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
  * @extends {Collector}
  */
 class InteractionCollector extends Collector {
@@ -75,7 +76,7 @@ class InteractionCollector extends Collector {
         : options.componentType ?? null;
 
     /**
-     * The users which have interacted to this collector
+     * The users that have interacted with this collector
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();

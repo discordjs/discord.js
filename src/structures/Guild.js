@@ -646,8 +646,8 @@ class Guild extends AnonymousGuild {
    */
 
   /**
-   * Fetches the vanity url invite object to this guild.
-   * Resolves with an object containing the vanity url invite code and the use count
+   * Fetches the vanity URL invite object to this guild.
+   * Resolves with an object containing the vanity URL invite code and the use count
    * @returns {Promise<Vanity>}
    * @example
    * // Fetch invite data

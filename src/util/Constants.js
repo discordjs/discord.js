@@ -16,7 +16,7 @@ exports.WSCodes = {
 
 const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 
-const AllowedImageSizes = [16, 32, 64, 128, 256, 300, 512, 600, 1024, 2048, 4096];
+const AllowedImageSizes = [16, 32, 56, 64, 96, 128, 256, 300, 512, 600, 1024, 2048, 4096];
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (!['undefined', 'number'].includes(typeof size)) throw new TypeError('INVALID_TYPE', 'size', 'number');
@@ -35,7 +35,8 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * Options for static Image URLs.
  * @typedef {Object} StaticImageURLOptions
  * @property {string} [format='webp'] One of `webp`, `png`, `jpg`, `jpeg`.
- * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `300`, `512`, `600`, `1024`, `2048`, `4096`
+ * @property {number} [size] One of `16`, `32`, `56`, `64`, `96`, `128`, `256`, `300`, `512`, `600`, `1024`, `2048`,
+ * `4096`
  */
 
 // https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints
@@ -216,7 +217,7 @@ exports.ShardEvents = {
 exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION']);
 
 /**
- * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
+ * The type of a WebSocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED
  * * APPLICATION_COMMAND_CREATE
@@ -1110,5 +1111,5 @@ function createEnum(keys) {
  * @property {StickerType} StickerTypes The value set for a sticker's type.
  * @property {VerificationLevel} VerificationLevels The value set for the verification levels for a guild.
  * @property {WebhookType} WebhookTypes The value set for a webhook's type.
- * @property {WSEventType} WSEvents The type of a websocket message event.
+ * @property {WSEventType} WSEvents The type of a WebSocket message event.
  */

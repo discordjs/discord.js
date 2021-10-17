@@ -65,7 +65,7 @@ class GuildTemplate extends Base {
 
     if ('created_at' in data) {
       /**
-       * The time of when this template was created at
+       * The time when this template was created at
        * @type {Date}
        */
       this.createdAt = new Date(data.created_at);
@@ -73,7 +73,7 @@ class GuildTemplate extends Base {
 
     if ('updated_at' in data) {
       /**
-       * The time of when this template was last synced to the guild
+       * The time when this template was last synced to the guild
        * @type {Date}
        */
       this.updatedAt = new Date(data.updated_at);
@@ -105,7 +105,7 @@ class GuildTemplate extends Base {
   }
 
   /**
-   * Creates a guild based from this template.
+   * Creates a guild based on this template.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {string} name The name of the guild
    * @param {BufferResolvable|Base64Resolvable} [icon] The icon for the guild

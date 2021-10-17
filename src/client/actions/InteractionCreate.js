@@ -73,7 +73,7 @@ class InteractionCreateAction extends Action {
      * Emitted when an interaction is created.
      * @event Client#interaction
      * @param {Interaction} interaction The interaction which was created
-     * @deprecated Use {@link Client#interactionCreate} instead
+     * @deprecated Use {@link Client#event:interactionCreate} instead
      */
     if (client.emit('interaction', interaction) && !deprecationEmitted) {
       deprecationEmitted = true;

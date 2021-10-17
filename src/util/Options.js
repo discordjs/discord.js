@@ -5,7 +5,7 @@
  * @typedef {Object} RateLimitData
  * @property {number} timeout Time until this rate limit ends, in ms
  * @property {number} limit The maximum amount of requests of this endpoint
- * @property {string} method The http method of this request
+ * @property {string} method The HTTP method of this request
  * @property {string} path The path of the request relative to the HTTP endpoint
  * @property {string} route The route of the request relative to the HTTP endpoint
  * @property {boolean} global Whether this is a global rate limit
@@ -51,7 +51,7 @@
  * [guide](https://discordjs.guide/popular-topics/partials.html) for some
  * important usage information, as partials require you to put checks in place when handling data.
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
- * corresponding websocket events
+ * corresponding WebSocket events
  * @property {number} [restTimeOffset=500] Extra time in milliseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {number} [restRequestTimeout=15000] Time to wait before cancelling a REST request, in milliseconds
@@ -63,7 +63,8 @@
  * should be handled. If this option is an array containing the prefix of the request route (e.g. /channels to match any
  * route starting with /channels, such as /channels/222197033908436994/messages) or a function returning true, a
  * {@link RateLimitError} will be thrown. Otherwise the request will be queued for later
- * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
+ * @property {number} [retryLimit=1] How many times to retry on 5XX errors
+ * (Infinity for an indefinite amount of retries)
  * @property {boolean} [failIfNotExists=true] Default value for {@link ReplyMessageOptions#failIfNotExists}
  * @property {string[]} [userAgentSuffix] An array of additional bot info to be appended to the end of the required
  * [User Agent](https://discord.com/developers/docs/reference#user-agent) header
@@ -92,10 +93,10 @@
  * @typedef {Object} HTTPOptions
  * @property {number} [version=9] API version to use
  * @property {AgentOptions} [agent={}] HTTPS Agent options
- * @property {string} [api='https://discord.com/api'] Base url of the API
- * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
- * @property {string} [invite='https://discord.gg'] Base url of invites
- * @property {string} [template='https://discord.new'] Base url of templates
+ * @property {string} [api='https://discord.com/api'] Base URL of the API
+ * @property {string} [cdn='https://cdn.discordapp.com'] Base URL of the CDN
+ * @property {string} [invite='https://discord.gg'] Base URL of invites
+ * @property {string} [template='https://discord.new'] Base URL of templates
  * @property {Object} [headers] Additional headers to send for all API requests
  */
 

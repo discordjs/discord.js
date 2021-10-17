@@ -424,7 +424,7 @@ class Message extends Base {
   }
 
   /**
-   * The url to jump to this message
+   * The URL to jump to this message
    * @type {string}
    * @readonly
    */
@@ -468,7 +468,7 @@ class Message extends Base {
    * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, MessageReaction>>}
+   * @returns {Promise<Collection<string | Snowflake, MessageReaction>>}
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId'
@@ -717,14 +717,17 @@ class Message extends Base {
    */
   async react(emoji) {
     if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
-    emoji = this.client.emojis.resolveIdentifier(emoji);
     await this.channel.messages.react(this.id, emoji);
-    return this.client.actions.MessageReactionAdd.handle({
-      user: this.client.user,
-      channel: this.channel,
-      message: this,
-      emoji: Util.parseEmoji(emoji),
-    }).reaction;
+
+    return this.client.actions.MessageReactionAdd.handle(
+      {
+        user: this.client.user,
+        channel: this.channel,
+        message: this,
+        emoji: Util.resolvePartialEmoji(emoji),
+      },
+      true,
+    ).reaction;
   }
 
   /**

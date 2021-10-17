@@ -24,9 +24,9 @@ class SystemChannelFlags extends BitField {}
  */
 
 /**
- * Data that can be resolved to give a sytem channel flag bitfield. This can be:
+ * Data that can be resolved to give a system channel flag bitfield. This can be:
  * * A string (see {@link SystemChannelFlags.FLAGS})
- * * A sytem channel flag
+ * * A system channel flag
  * * An instance of SystemChannelFlags
  * * An Array of SystemChannelFlagsResolvable
  * @typedef {string|number|SystemChannelFlags|SystemChannelFlagsResolvable[]} SystemChannelFlagsResolvable

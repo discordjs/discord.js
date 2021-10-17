@@ -32,18 +32,18 @@ class CategoryChannel extends GuildChannel {
    * @typedef {Object} CategoryCreateChannelOptions
    * @property {ChannelType|number} [type='GUILD_TEXT'] The type of the new channel.
    * @property {string} [topic] The topic for the new channel
-   * @property {boolean} [nsfw] Whether the new channel is nsfw
+   * @property {boolean} [nsfw] Whether the new channel is NSFW
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
    * @property {number} [userLimit] Maximum amount of users allowed in the new channel (only voice)
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites of the new channel
    * @property {number} [position] Position of the new channel
-   * @property {number} [rateLimitPerUser] The ratelimit per user for the new channel
+   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the new channel in seconds
    * @property {string} [reason] Reason for creating the new channel
    */
 
   /**
-   * Creates a new channel on this category.
+   * Creates a new channel within this category.
    * <info>You cannot create a channel of type `GUILD_CATEGORY` inside a CategoryChannel.</info>
    * @param {string} name The name of the new channel
    * @param {CategoryCreateChannelOptions} options Options for creating the new channel
