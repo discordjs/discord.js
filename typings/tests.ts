@@ -494,7 +494,8 @@ client.on('messageCreate', async message => {
     assertType<CachedMessage>(message);
     const component = await message.awaitMessageComponent({ componentType: 'BUTTON' });
     assertType<InteractionResponses<'cached'>>(component);
-    component.reply({ fetchReply: true });
+    assertType<Promise<CachedMessage>>(component.reply({ fetchReply: true }));
+
     const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
     assertType<InteractionCollector<CachedInteraction<ButtonInteraction>>>(buttonCollector);
     assertType<GuildTextBasedChannel>(message.channel);
