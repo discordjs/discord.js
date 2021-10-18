@@ -149,6 +149,8 @@ class ApplicationCommand extends Base {
    * the API data for allowed types of channels that can be selected
    * <warn>This is provided for compatibility with something like `@discordjs/builders`
    * and will be discarded when `channelTypes` is present</warn>
+   * @property {number} minValue The minimum value of the `INTEGER` or `NUMBER` command option type.
+   * @property {number} maxValue The maximum value of the `INTEGER` or `NUMBER` command option type.
    */
 
   /**
@@ -307,6 +309,8 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
+   * @property {number} minValue The minimum value of the `INTEGER` or `NUMBER` command option type.
+   * @property {number} maxValue The maximum value of the `INTEGER` or `NUMBER` command option type.
    */
 
   /**
@@ -326,6 +330,8 @@ class ApplicationCommand extends Base {
   static transformOption(option, received) {
     const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
+    const minKey = received ? 'minValue' : 'min_value';
+    const maxKey = received ? 'maxValue' : 'max_value';
     return {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
@@ -339,6 +345,8 @@ class ApplicationCommand extends Base {
         : option.channelTypes?.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)) ??
           // When transforming to API data, accept API data
           option.channel_types,
+      [minKey]: received ? option.min_value : option.minValue,
+      [maxKey]: received ? option.max_value : option.maxValue,
     };
   }
 }

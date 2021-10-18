@@ -3216,13 +3216,25 @@ export interface ApplicationCommandChannelOption extends BaseApplicationCommandO
 }
 
 export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
-  type: CommandOptionChoiceResolvableType;
+  type: ApplicationCommandOptionTypes.STRING | 'STRING';
   choices?: ApplicationCommandOptionChoice[];
 }
 
+export interface ApplicationCommandNumberData extends Omit<ApplicationCommandChoicesData, 'type'> {
+  type: ApplicationCommandOptionTypes.NUMBER | 'NUMBER' | ApplicationCommandOptionTypes.INTEGER | 'INTEGER';
+  maxValue?: number;
+  minValue?: number;
+}
+
 export interface ApplicationCommandChoicesOption extends BaseApplicationCommandOptionsData {
-  type: Exclude<CommandOptionChoiceResolvableType, ApplicationCommandOptionTypes>;
+  type: ApplicationCommandOptionTypes.STRING | 'STRING';
   choices?: ApplicationCommandOptionChoice[];
+}
+
+export interface ApplicationCommandNumberOption extends Omit<ApplicationCommandChoicesOption, 'type'> {
+  type: ApplicationCommandOptionTypes.NUMBER | 'NUMBER' | ApplicationCommandOptionTypes.INTEGER | 'INTEGER';
+  minValue?: number;
+  maxValue?: number;
 }
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
@@ -3258,6 +3270,7 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
+  | ApplicationCommandNumberData
   | ApplicationCommandSubCommandData;
 
 export type ApplicationCommandOption =
@@ -3265,6 +3278,7 @@ export type ApplicationCommandOption =
   | ApplicationCommandNonOptions
   | ApplicationCommandChannelOption
   | ApplicationCommandChoicesOption
+  | ApplicationCommandNumberOption
   | ApplicationCommandSubCommand;
 
 export interface ApplicationCommandOptionChoice {
