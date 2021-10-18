@@ -136,6 +136,10 @@ class ApplicationCommand extends Base {
 
   /**
    * An option for an application command or subcommand.
+   * <info>In addition to the listed properties, when used as a parameter,
+   * API style `snake_case` properties can be used for compatibility with generators like `@discordjs/builders`.</info>
+   * <warn>Note that providing a value for the `camelCase` counterpart for any `snake_case` property
+   * will discard the provided `snake_case` property.</warn>
    * @typedef {Object} ApplicationCommandOptionData
    * @property {ApplicationCommandOptionType|number} type The type of the option
    * @property {string} name The name of the option
@@ -146,18 +150,8 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]|number[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
-   * @property {number[]} [channel_types] When the option type is channel,
-   * the API data for allowed types of channels that can be selected
-   * <warn>This is provided for compatibility with something like `@discordjs/builders`
-   * and will be discarded when `channelTypes` is present</warn>
    * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
-   * @property {number} [min_value] API data for the minimum value for an `INTEGER` or `NUMBER` option
-   * <warn>This is provided for compatibility with something like `@discordjs/builders`
-   * and will be discarded when `minValue` is present</warn>
    * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
-   * @property {number} [max_value] API data for the maximum value for an `INTEGER` or `NUMBER` option
-   * <warn>This is provided for compatibility with something like `@discordjs/builders`
-   * and will be discarded when `maxValue` is present</warn>
    */
 
   /**
