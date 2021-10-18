@@ -263,7 +263,7 @@ class ApplicationCommand extends Base {
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
       (option.minValue ?? option.min_value) !== existing.minValue ||
-      (option.maxValue ?? option.maxValue) !== existing.maxValue
+      (option.maxValue ?? option.max_value) !== existing.maxValue
     ) {
       return false;
     }
