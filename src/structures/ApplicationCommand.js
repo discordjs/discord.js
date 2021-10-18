@@ -261,7 +261,9 @@ class ApplicationCommand extends Base {
         existing.required ||
       option.choices?.length !== existing.choices?.length ||
       option.options?.length !== existing.options?.length ||
-      (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length
+      (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
+      (option.minValue ?? option.min_value) !== existing.minValue ||
+      (option.maxValue ?? option.maxValue) !== existing.maxValue
     ) {
       return false;
     }
@@ -330,6 +332,8 @@ class ApplicationCommand extends Base {
   static transformOption(option, received) {
     const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
+    const minValueKey = received ? 'minValue' : 'min_value';
+    const maxValueKey = received ? 'maxValue' : 'max_value';
     return {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
@@ -344,6 +348,8 @@ class ApplicationCommand extends Base {
         : option.channelTypes?.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)) ??
           // When transforming to API data, accept API data
           option.channel_types,
+      [minValueKey]: option.minValue ?? option.min_value,
+      [maxValueKey]: option.maxValue ?? option.max_value,
     };
   }
 }
