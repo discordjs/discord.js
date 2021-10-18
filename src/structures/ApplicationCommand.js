@@ -150,6 +150,14 @@ class ApplicationCommand extends Base {
    * the API data for allowed types of channels that can be selected
    * <warn>This is provided for compatibility with something like `@discordjs/builders`
    * and will be discarded when `channelTypes` is present</warn>
+   * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [min_value] API data for the minimum value for an `INTEGER` or `NUMBER` option
+   * <warn>This is provided for compatibility with something like `@discordjs/builders`
+   * and will be discarded when `minValue` is present</warn>
+   * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [max_value] API data for the maximum value for an `INTEGER` or `NUMBER` option
+   * <warn>This is provided for compatibility with something like `@discordjs/builders`
+   * and will be discarded when `maxValue` is present</warn>
    */
 
   /**
@@ -313,6 +321,8 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
+   * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
    */
 
   /**
