@@ -188,7 +188,6 @@ class GuildManager extends CachedManager {
       explicitContentFilter = ExplicitContentFilterLevels[explicitContentFilter];
     }
     for (const channel of channels) {
-      channel.type &&= ChannelTypes[channel.type.toUpperCase()];
       channel.type &&= typeof channel.type === 'number' ? channel.type : ChannelTypes[channel.type];
       channel.parent_id = channel.parentId;
       delete channel.parentId;
