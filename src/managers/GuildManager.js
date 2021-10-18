@@ -198,7 +198,7 @@ class GuildManager extends CachedManager {
       channel.rate_limit_per_user = channel.rateLimitPerUser;
       delete channel.rateLimitPerUser;
       channel.rtc_region = channel.rtcRegion;
-      delete channel.rateLimitPerUser;
+      delete channel.rtcRegion;
 
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
