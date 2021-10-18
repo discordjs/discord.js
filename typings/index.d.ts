@@ -4703,6 +4703,7 @@ export interface PartialChannelData {
   nsfw?: boolean;
   bitrate?: number;
   userLimit?: number;
+  rtcRegion?: string | null;
   permissionOverwrites?: PartialOverwriteData[];
   rateLimitPerUser?: number;
 }
