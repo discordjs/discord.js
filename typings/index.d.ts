@@ -2090,21 +2090,8 @@ export class StoreChannel extends GuildChannel {
 export class Sweepers {
   public constructor(client: Client, options: SweeperOptions);
   public readonly client: Client;
+  public intervals: Record<SweeperKey, NodeJS.Timeout | null>;
   public options: SweeperOptions;
-  public applicationCommandInterval: NodeJS.Timeout | null;
-  public banInterval: NodeJS.Timeout | null;
-  public emojiInterval: NodeJS.Timeout | null;
-  public inviteInterval: NodeJS.Timeout | null;
-  public guildMemberInterval: NodeJS.Timeout | null;
-  public messageInterval: NodeJS.Timeout | null;
-  public presenceInterval: NodeJS.Timeout | null;
-  public reactionInterval: NodeJS.Timeout | null;
-  public stageInstnaceInterval: NodeJS.Timeout | null;
-  public stickerInterval: NodeJS.Timeout | null;
-  public threadMemberInterval: NodeJS.Timeout | null;
-  public threadInterval: NodeJS.Timeout | null;
-  public userInterval: NodeJS.Timeout | null;
-  public voiceStateInterval: NodeJS.Timeout | null;
 
   public sweepApplicationCommands(
     filter: CollectionSweepFilter<

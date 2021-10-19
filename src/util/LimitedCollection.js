@@ -101,7 +101,7 @@ class LimitedCollection extends Collection {
   /**
    * Create a sweepFilter function that uses a lifetime to determine sweepability.
    * @param {LifetimeFilterOptions} [options={}] The options used to generate the filter function
-   * @deprecated Use `Sweepers.filterByLifetime` instead
+   * @deprecated Use {@link Sweepers.filterByLifetime} instead
    * @returns {SweepFilter}
    */
   static filterByLifetime({

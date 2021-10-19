@@ -29,13 +29,13 @@ class Sweepers {
     this.options = options;
 
     /**
-     * The interval timeout that is used to sweep the indicated items, or null if not being swept
-     * @name Sweepers#*Interval
-     * @type {?Timeout}
+     * A record of interval timeout that is used to sweep the indicated items, or null if not being swept
+     * @type {Object<SweeperKey, ?Timeout>}
      */
+    this.intervals = {};
 
     for (const key of SweeperKeys) {
-      this[`${key.slice(0, -1)}Interval]`] = null;
+      this.intervals[key] = null;
       if (key in options) {
         this._validateProperties(key);
 
@@ -65,7 +65,7 @@ class Sweepers {
           }
         }
 
-        this._initInterval(`${key.slice(0, -1)}Interval`, `sweep${key[0].toUpperCase()}${key.slice(1)}`, clonedOptions);
+        this._initInterval(key, `sweep${key[0].toUpperCase()}${key.slice(1)}`, clonedOptions);
       }
     }
   }
@@ -288,9 +288,8 @@ class Sweepers {
    * @returns {void}
    */
   destroy() {
-    const propKeys = SweeperKeys.map(k => `${k.slice(0, -1)}Interval`);
-    for (const key of propKeys) {
-      if (this[key]) clearInterval(this[key]);
+    for (const key of Object.keys(this.intervals)) {
+      if (this.intervals[key]) clearInterval(this.intervals[key]);
     }
   }
 
@@ -411,7 +410,7 @@ class Sweepers {
    */
   _initInterval(intervalKey, sweepKey, opts) {
     if (opts.interval > 0 && opts.interval !== Infinity) {
-      this[intervalKey] = setInterval(() => {
+      this.intervals[intervalKey] = setInterval(() => {
         const sweepFn = opts.filter();
         if (sweepFn === null) return;
         if (typeof sweepFn !== 'function') throw new TypeError('SWEEP_FILTER_RETURN');
