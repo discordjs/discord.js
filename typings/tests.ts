@@ -1,8 +1,10 @@
 import {
   APIGuildMember,
-  APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
   APIMessage,
+  APIPartialChannel,
+  APIPartialGuild,
+  APIInteractionDataResolvedGuildMember,
 } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
@@ -478,7 +480,7 @@ client.on('messageReactionRemoveAll', async message => {
 // This is to check that stuff is the right type
 declare const assertIsMessage: (m: Promise<Message>) => void;
 
-client.on('messageCreate', message => {
+client.on('messageCreate', async message => {
   const { channel } = message;
   assertIsMessage(channel.send('string'));
   assertIsMessage(channel.send({}));
@@ -572,6 +574,22 @@ client.on('messageCreate', message => {
       return true;
     },
   });
+
+  const webhook = await message.fetchWebhook();
+
+  if (webhook.isChannelFollower()) {
+    assertType<Guild | APIPartialGuild>(webhook.sourceGuild);
+    assertType<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+  } else if (webhook.isIncoming()) {
+    assertType<string>(webhook.token);
+  }
+
+  // @ts-expect-error
+  assertType<Guild | APIPartialGuild>(webhook.sourceGuild);
+  // @ts-expect-error
+  assertType<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+  // @ts-expect-error
+  assertType<string>(webhook.token);
 
   channel.awaitMessageComponent({
     filter: i => {
