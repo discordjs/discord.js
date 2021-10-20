@@ -279,6 +279,7 @@ export type GuildCacheMessage<Cached extends GuildCacheState> = CacheTypeReducer
 export abstract class BaseCommandInteraction<
   Cached extends GuildCacheState = GuildCacheState,
 > extends Interaction<Cached> {
+  public options: CommandInteractionOptionResolver<Cached>;
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public readonly channel: TextBasedChannels | null;
   public channelId: Snowflake;
@@ -594,10 +595,6 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 export class CommandInteraction<
   Cached extends GuildCacheState = GuildCacheState,
 > extends BaseCommandInteraction<Cached> {
-  public inGuild(): this is CommandInteraction<'present'> & this;
-  public inCachedGuild(): this is CommandInteraction<'cached'> & this;
-  public inRawGuild(): this is CommandInteraction<'raw'> & this;
-  public options: CommandInteractionOptionResolver<Cached>;
   public toString(): string;
 }
 
@@ -665,13 +662,9 @@ export class CommandInteractionOptionResolver<Cached extends GuildCacheState = G
 export class ContextMenuInteraction<
   Cached extends GuildCacheState = GuildCacheState,
 > extends BaseCommandInteraction<Cached> {
-  public options: CommandInteractionOptionResolver<Cached>;
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption[];
-  public inGuild(): this is ContextMenuInteraction<'present'> & this;
-  public inCachedGuild(): this is ContextMenuInteraction<'cached'> & this;
-  public inRawGuild(): this is ContextMenuInteraction<'raw'> & this;
 }
 
 export class DataResolver extends null {
