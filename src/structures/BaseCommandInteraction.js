@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
@@ -64,6 +65,16 @@ class BaseCommandInteraction extends Interaction {
      * @type {InteractionWebhook}
      */
     this.webhook = new InteractionWebhook(this.client, this.applicationId, this.token);
+
+    /**
+     * The options passed to the command.
+     * @type {CommandInteractionOptionResolver}
+     */
+    this.options = new CommandInteractionOptionResolver(
+      this.client,
+      data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
+      this.transformResolved(data.data.resolved ?? {}),
+    );
   }
 
   /**

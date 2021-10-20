@@ -1,7 +1,6 @@
 'use strict';
 
 const BaseCommandInteraction = require('./BaseCommandInteraction');
-const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 const { ApplicationCommandOptionTypes, ApplicationCommandTypes } = require('../util/Constants');
 
 /**
@@ -11,16 +10,6 @@ const { ApplicationCommandOptionTypes, ApplicationCommandTypes } = require('../u
 class ContextMenuInteraction extends BaseCommandInteraction {
   constructor(client, data) {
     super(client, data);
-    /**
-     * The target of the interaction, parsed into options
-     * @type {CommandInteractionOptionResolver}
-     */
-    this.options = new CommandInteractionOptionResolver(
-      this.client,
-      this.resolveContextMenuOptions(data.data),
-      this.transformResolved(data.data.resolved),
-    );
-
     /**
      * The id of the target of the interaction
      * @type {Snowflake}
