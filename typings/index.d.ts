@@ -301,6 +301,7 @@ export abstract class BaseCommandInteraction extends Interaction {
     option: APIApplicationCommandOption,
     resolved: APIApplicationCommandInteractionData['resolved'],
   ): CommandInteractionOption;
+  public options: CommandInteractionOptionResolver;
   private transformResolved(resolved: APIApplicationCommandInteractionData['resolved']): CommandInteractionResolvedData;
 }
 
@@ -607,7 +608,6 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 }
 
 export class CommandInteraction extends BaseCommandInteraction {
-  public options: CommandInteractionOptionResolver;
   public toString(): string;
 }
 
@@ -667,7 +667,6 @@ export class CommandInteractionOptionResolver {
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
 }
 export class ContextMenuInteraction extends BaseCommandInteraction {
-  public options: CommandInteractionOptionResolver;
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption[];
