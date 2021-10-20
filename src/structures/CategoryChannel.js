@@ -39,6 +39,7 @@ class CategoryChannel extends GuildChannel {
    * Permission overwrites of the new channel
    * @property {number} [position] Position of the new channel
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the new channel in seconds
+   * @property {string} [rtcRegion] The specific region of the new channel.
    * @property {string} [reason] Reason for creating the new channel
    */
 
