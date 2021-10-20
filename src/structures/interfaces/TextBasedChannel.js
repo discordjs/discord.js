@@ -101,8 +101,8 @@ class TextBasedChannel {
   /**
    * Options for sending a message with a reply.
    * @typedef {Object} ReplyOptions
-   * @param {MessageResolvable} messageReference The message to reply to (must be in the same channel and not system)
-   * @param {boolean} [failIfNotExists=true] Whether to error if the referenced message
+   * @property {MessageResolvable} messageReference The message to reply to (must be in the same channel and not system)
+   * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
    */
 

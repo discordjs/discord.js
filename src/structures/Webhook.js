@@ -90,7 +90,7 @@ class Webhook {
        * The source guild of the webhook
        * @type {?(Guild|APIGuild)}
        */
-      this.sourceGuild = this.client.guilds?._add(data.source_guild, false) ?? data.source_guild;
+      this.sourceGuild = this.client.guilds?.resolve(data.source_guild.id) ?? data.source_guild;
     } else {
       this.sourceGuild ??= null;
     }
@@ -393,6 +393,22 @@ class Webhook {
   avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
     return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
+  }
+
+  /**
+   * Whether or not this webhook is a channel follower webhook.
+   * @returns {boolean}
+   */
+  isChannelFollower() {
+    return this.type === WebhookTypes['Channel Follower'];
+  }
+
+  /**
+   * Whether or not this webhook is an incoming webhook.
+   * @returns {boolean}
+   */
+  isIncoming() {
+    return this.type === WebhookTypes.Incoming;
   }
 
   static applyToClass(structure, ignore = []) {

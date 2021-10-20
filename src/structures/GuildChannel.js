@@ -153,13 +153,14 @@ class GuildChannel extends Channel {
   /**
    * Gets the overall set of permissions for a member or role in this channel, taking into account channel overwrites.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
+   * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
    * @returns {?Readonly<Permissions>}
    */
-  permissionsFor(memberOrRole) {
+  permissionsFor(memberOrRole, checkAdmin = true) {
     const member = this.guild.members.resolve(memberOrRole);
-    if (member) return this.memberPermissions(member);
+    if (member) return this.memberPermissions(member, checkAdmin);
     const role = this.guild.roles.resolve(memberOrRole);
-    return role && this.rolePermissions(role);
+    return role && this.rolePermissions(role, checkAdmin);
   }
 
   overwritesFor(member, verified = false, roles = null) {
@@ -191,16 +192,19 @@ class GuildChannel extends Channel {
   /**
    * Gets the overall set of permissions for a member in this channel, taking into account channel overwrites.
    * @param {GuildMember} member The member to obtain the overall permissions for
+   * @param {boolean} checkAdmin=true Whether having `ADMINISTRATOR` will return all permissions
    * @returns {Readonly<Permissions>}
    * @private
    */
-  memberPermissions(member) {
-    if (member.id === this.guild.ownerId) return new Permissions(Permissions.ALL).freeze();
+  memberPermissions(member, checkAdmin) {
+    if (checkAdmin && member.id === this.guild.ownerId) return new Permissions(Permissions.ALL).freeze();
 
     const roles = member.roles.cache;
     const permissions = new Permissions(roles.map(role => role.permissions));
 
-    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
+    if (checkAdmin && permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+      return new Permissions(Permissions.ALL).freeze();
+    }
 
     const overwrites = this.overwritesFor(member, true, roles);
 
@@ -217,11 +221,14 @@ class GuildChannel extends Channel {
   /**
    * Gets the overall set of permissions for a role in this channel, taking into account channel overwrites.
    * @param {Role} role The role to obtain the overall permissions for
+   * @param {boolean} checkAdmin Whether having `ADMINISTRATOR` will return all permissions
    * @returns {Readonly<Permissions>}
    * @private
    */
-  rolePermissions(role) {
-    if (role.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
+  rolePermissions(role, checkAdmin) {
+    if (checkAdmin && role.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+      return new Permissions(Permissions.ALL).freeze();
+    }
 
     const everyoneOverwrites = this.permissionOverwrites.cache.get(this.guild.id);
     const roleOverwrites = this.permissionOverwrites.cache.get(role.id);
@@ -393,8 +400,8 @@ class GuildChannel extends Channel {
   /**
    * Options used to set the position of a channel.
    * @typedef {Object} SetChannelPositionOptions
-   * @param {boolean} [relative=false] Whether or not to change the position relative to its current value
-   * @param {string} [reason] The reason for changing the position
+   * @property {boolean} [relative=false] Whether or not to change the position relative to its current value
+   * @property {string} [reason] The reason for changing the position
    */
 
   /**
