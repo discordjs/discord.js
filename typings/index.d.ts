@@ -669,6 +669,9 @@ export class ContextMenuInteraction<
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption[];
+  public inGuild(): this is ContextMenuInteraction<'present'> & this;
+  public inCachedGuild(): this is ContextMenuInteraction<'cached'> & this;
+  public inRawGuild(): this is ContextMenuInteraction<'raw'> & this;
 }
 
 export class DataResolver extends null {
