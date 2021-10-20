@@ -2099,6 +2099,7 @@ export class Util extends null {
   public static basename(path: string, ext?: string): string;
   public static binaryToId(num: string): Snowflake;
   public static cleanContent(str: string, channel: TextBasedChannels): string;
+  /** @deprecated */
   public static removeMentions(str: string): string;
   public static cloneObject(obj: unknown): unknown;
   public static delayFor(ms: number): Promise<void>;

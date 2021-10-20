@@ -575,6 +575,7 @@ class Util extends null {
    * Breaks user, role and everyone/here mentions by adding a zero width space after every @ character
    * @param {string} str The string to sanitize
    * @returns {string}
+   * @deprecated Use {@link BaseMessageOptions#allowedMentions} instead.
    */
   static removeMentions(str) {
     return str.replaceAll('@', '@\u200b');
@@ -582,6 +583,8 @@ class Util extends null {
 
   /**
    * The content to have all mentions replaced by the equivalent text.
+   * <warn>When {@link Util.removeMentions} is removed, this method will no longer sanitize mentions.
+   * Use {@link BaseMessageOptions#allowedMentions} instead to prevent mentions when sending a message.</warn>
    * @param {string} str The string to be converted
    * @param {TextBasedChannels} channel The channel the string was sent in
    * @returns {string}
