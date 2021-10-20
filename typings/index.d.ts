@@ -1375,6 +1375,7 @@ export class MessageAttachment {
 
   public attachment: BufferResolvable | Stream;
   public contentType: string | null;
+  public description: string | null;
   public ephemeral: boolean;
   public height: number | null;
   public id: Snowflake;
@@ -1384,6 +1385,7 @@ export class MessageAttachment {
   public readonly spoiler: boolean;
   public url: string;
   public width: number | null;
+  public setDescription(description: string): this;
   public setFile(attachment: BufferResolvable | Stream, name?: string): this;
   public setName(name: string): this;
   public setSpoiler(spoiler?: boolean): this;
