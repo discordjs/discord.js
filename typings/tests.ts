@@ -26,7 +26,6 @@ import {
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
-  GuildCached,
   GuildChannelManager,
   GuildEmoji,
   GuildEmojiManager,
@@ -853,8 +852,8 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
-  const consumeCachedCommand = (_i: GuildCached<CommandInteraction>) => {};
-  const consumeCachedInteraction = (_i: GuildCached<Interaction>) => {};
+  const consumeCachedCommand = (_i: CommandInteraction<'cached'>) => {};
+  const consumeCachedInteraction = (_i: Interaction<'cached'>) => {};
 
   if (interaction.inCachedGuild()) {
     assertType<GuildMember>(interaction.member);
