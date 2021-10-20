@@ -91,6 +91,7 @@ class GuildManager extends CachedManager {
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
+   * @property {?string} [rtcRegion] The RTC region of the channel
    * @property {PartialOverwriteData[]} [permissionOverwrites]
    * Overwrites of the channel
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) of the channel in seconds
@@ -188,7 +189,6 @@ class GuildManager extends CachedManager {
       explicitContentFilter = ExplicitContentFilterLevels[explicitContentFilter];
     }
     for (const channel of channels) {
-      channel.type &&= ChannelTypes[channel.type.toUpperCase()];
       channel.type &&= typeof channel.type === 'number' ? channel.type : ChannelTypes[channel.type];
       channel.parent_id = channel.parentId;
       delete channel.parentId;
@@ -196,6 +196,9 @@ class GuildManager extends CachedManager {
       delete channel.userLimit;
       channel.rate_limit_per_user = channel.rateLimitPerUser;
       delete channel.rateLimitPerUser;
+      channel.rtc_region = channel.rtcRegion;
+      delete channel.rtcRegion;
+
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
         if (typeof overwrite.type === 'string') {

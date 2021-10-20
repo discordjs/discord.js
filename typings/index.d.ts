@@ -382,11 +382,7 @@ export class BaseGuildVoiceChannel extends GuildChannel {
 export class BaseMessageComponent {
   protected constructor(data?: BaseMessageComponent | BaseMessageComponentOptions);
   public type: MessageComponentType | null;
-  private static create(
-    data: MessageComponentOptions,
-    client?: Client | WebhookClient,
-    skipValidation?: boolean,
-  ): MessageComponent | undefined;
+  private static create(data: MessageComponentOptions, client?: Client | WebhookClient): MessageComponent | undefined;
   private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
@@ -605,12 +601,17 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
 }
 
-export class CommandInteraction extends BaseCommandInteraction {
-  public options: CommandInteractionOptionResolver;
+export type GuildCommandInteraction<Cached extends GuildCacheState> = InteractionResponses<Cached> &
+  CommandInteraction<Cached>;
+
+export class CommandInteraction<Cached extends GuildCacheState = GuildCacheState> extends BaseCommandInteraction {
+  public options: CommandInteractionOptionResolver<Cached>;
+  public inCachedGuild(): this is GuildCommandInteraction<'cached'> & this;
+  public inRawGuild(): this is GuildCommandInteraction<'raw'> & this;
   public toString(): string;
 }
 
-export class CommandInteractionOptionResolver {
+export class CommandInteractionOptionResolver<Cached extends GuildCacheState = GuildCacheState> {
   private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption[];
@@ -650,8 +651,14 @@ export class CommandInteractionOptionResolver {
   public getNumber(name: string, required?: boolean): number | null;
   public getUser(name: string, required: true): NonNullable<CommandInteractionOption['user']>;
   public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption['user']> | null;
-  public getMember(name: string, required: true): NonNullable<CommandInteractionOption['member']>;
-  public getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption['member']> | null;
+  public getMember(
+    name: string,
+    required: true,
+  ): CacheTypeReducer<Cached, GuildMember, NonNullable<APIInteractionDataResolvedGuildMember>>;
+  public getMember(
+    name: string,
+    required?: boolean,
+  ): CacheTypeReducer<Cached, GuildMember, NonNullable<APIInteractionDataResolvedGuildMember>> | null;
   public getRole(name: string, required: true): NonNullable<CommandInteractionOption['role']>;
   public getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption['role']> | null;
   public getMentionable(
@@ -875,8 +882,8 @@ export class GuildBan extends Base {
 
 export abstract class GuildChannel extends Channel {
   public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
-  private memberPermissions(member: GuildMember): Readonly<Permissions>;
-  private rolePermissions(role: Role): Readonly<Permissions>;
+  private memberPermissions(member: GuildMember, checkAdmin: boolean): Readonly<Permissions>;
+  private rolePermissions(role: Role, checkAdmin: boolean): Readonly<Permissions>;
 
   public readonly calculatedPosition: number;
   public readonly deletable: boolean;
@@ -898,8 +905,11 @@ export abstract class GuildChannel extends Channel {
   public edit(data: ChannelData, reason?: string): Promise<this>;
   public equals(channel: GuildChannel): boolean;
   public lockPermissions(): Promise<this>;
-  public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
-  public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
+  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<Permissions>;
+  public permissionsFor(
+    memberOrRole: GuildMemberResolvable | RoleResolvable,
+    checkAdmin?: boolean,
+  ): Readonly<Permissions> | null;
   public setName(name: string, reason?: string): Promise<this>;
   public setParent(channel: CategoryChannelResolvable | null, options?: SetParentOptions): Promise<this>;
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
@@ -1089,6 +1099,7 @@ export interface GuildInteraction<Cached extends GuildCacheState = GuildCacheSta
   member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   readonly guild: CacheTypeReducer<Cached, Guild, null>;
   channel: CacheTypeReducer<Cached, Exclude<TextBasedChannels, PartialDMChannel | DMChannel> | null>;
+  isCommand(): this is GuildCommandInteraction<Cached> & this;
 }
 
 export class Interaction extends Base {
@@ -1739,7 +1750,7 @@ export class Role extends Base {
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
   public iconURL(options?: StaticImageURLOptions): string | null;
-  public permissionsIn(channel: GuildChannel | Snowflake): Readonly<Permissions>;
+  public permissionsIn(channel: GuildChannel | Snowflake, checkAdmin?: boolean): Readonly<Permissions>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
   public setMentionable(mentionable?: boolean, reason?: string): Promise<Role>;
@@ -2018,8 +2029,11 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
   public join(): Promise<ThreadChannel>;
   public leave(): Promise<ThreadChannel>;
-  public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
-  public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
+  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<Permissions>;
+  public permissionsFor(
+    memberOrRole: GuildMemberResolvable | RoleResolvable,
+    checkAdmin?: boolean,
+  ): Readonly<Permissions> | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
   public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
@@ -2226,6 +2240,11 @@ export class Webhook extends WebhookMixin() {
   public sourceChannel: NewsChannel | APIPartialChannel | null;
   public token: string | null;
   public type: WebhookType;
+  public isIncoming(): this is this & { token: string };
+  public isChannelFollower(): this is this & {
+    sourceGuild: Guild | APIPartialGuild;
+    sourceChannel: NewsChannel | APIPartialChannel;
+  };
 }
 
 export class WebhookClient extends WebhookMixin(BaseClient) {
@@ -3011,7 +3030,7 @@ export interface AddGuildMemberOptions {
 
 export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg';
 
-export type AllowedImageSize = 16 | 32 | 64 | 128 | 256 | 300 | 512 | 600 | 1024 | 2048 | 4096;
+export type AllowedImageSize = 16 | 32 | 56 | 64 | 96 | 128 | 256 | 300 | 512 | 600 | 1024 | 2048 | 4096;
 
 export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
 
@@ -3427,6 +3446,7 @@ export interface CategoryCreateChannelOptions {
   userLimit?: number;
   rateLimitPerUser?: number;
   position?: number;
+  rtcRegion?: string;
   reason?: string;
 }
 
@@ -4718,6 +4738,7 @@ export interface PartialChannelData {
   nsfw?: boolean;
   bitrate?: number;
   userLimit?: number;
+  rtcRegion?: string | null;
   permissionOverwrites?: PartialOverwriteData[];
   rateLimitPerUser?: number;
 }
@@ -4739,7 +4760,7 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
   lastMessageId: undefined;
 }
 
-export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp', 'user'> {}
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp'> {}
 
 export interface PartialMessage
   extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}

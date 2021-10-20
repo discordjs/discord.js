@@ -1,4 +1,11 @@
-import { APIGuildMember, APIInteractionGuildMember, APIMessage } from 'discord-api-types/v9';
+import {
+  APIGuildMember,
+  APIInteractionGuildMember,
+  APIMessage,
+  APIPartialChannel,
+  APIPartialGuild,
+  APIInteractionDataResolvedGuildMember,
+} from 'discord-api-types/v9';
 import {
   ApplicationCommand,
   ApplicationCommandChannelOptionData,
@@ -589,6 +596,22 @@ client.on('messageCreate', async message => {
     },
   });
 
+  const webhook = await message.fetchWebhook();
+
+  if (webhook.isChannelFollower()) {
+    assertType<Guild | APIPartialGuild>(webhook.sourceGuild);
+    assertType<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+  } else if (webhook.isIncoming()) {
+    assertType<string>(webhook.token);
+  }
+
+  // @ts-expect-error
+  assertType<Guild | APIPartialGuild>(webhook.sourceGuild);
+  // @ts-expect-error
+  assertType<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+  // @ts-expect-error
+  assertType<string>(webhook.token);
+
   channel.awaitMessageComponent({
     filter: i => {
       assertType<MessageComponentInteraction>(i);
@@ -964,6 +987,8 @@ client.on('interactionCreate', async interaction => {
       consumeCachedCommand(interaction);
       assertType<CommandInteraction>(interaction);
       assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
+      assertType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
+      assertType<APIInteractionDataResolvedGuildMember>(interaction.options.getMember('test', true));
     } else if (interaction.inCachedGuild()) {
       const msg = await interaction.reply({ fetchReply: true });
       const btn = await msg.awaitMessageComponent({ componentType: 'BUTTON' });
@@ -972,6 +997,8 @@ client.on('interactionCreate', async interaction => {
       assertType<CachedInteraction<ButtonInteraction>>(btn);
 
       consumeCachedCommand(interaction);
+      assertType<GuildMember>(interaction.options.getMember('test', true));
+      assertType<GuildMember | null>(interaction.options.getMember('test'));
       assertType<CommandInteraction>(interaction);
       assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
     } else {
@@ -979,6 +1006,8 @@ client.on('interactionCreate', async interaction => {
       consumeCachedCommand(interaction);
       assertType<CommandInteraction>(interaction);
       assertType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
+      assertType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
+      assertType<APIInteractionDataResolvedGuildMember | GuildMember>(interaction.options.getMember('test', true));
     }
 
     assertType<CommandInteraction>(interaction);

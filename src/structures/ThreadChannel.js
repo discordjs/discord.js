@@ -227,10 +227,11 @@ class ThreadChannel extends Channel {
    * Gets the overall set of permissions for a member or role in this thread's parent channel, taking overwrites into
    * account.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
+   * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
    * @returns {?Readonly<Permissions>}
    */
-  permissionsFor(memberOrRole) {
-    return this.parent?.permissionsFor(memberOrRole) ?? null;
+  permissionsFor(memberOrRole, checkAdmin) {
+    return this.parent?.permissionsFor(memberOrRole, checkAdmin) ?? null;
   }
 
   /**
