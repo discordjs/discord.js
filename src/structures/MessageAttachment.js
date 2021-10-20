@@ -26,7 +26,7 @@ class MessageAttachment {
    * @param {string} description The description of the file
    * @returns {MessageAttachment} This attachment
    */
-   setDescription(description) {
+  setDescription(description) {
     this.description = description;
     return this;
   }
