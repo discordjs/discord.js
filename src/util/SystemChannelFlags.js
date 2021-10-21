@@ -37,7 +37,7 @@ class SystemChannelFlags extends BitField {}
  * * `SUPPRESS_JOIN_NOTIFICATIONS` (Suppress member join notifications)
  * * `SUPPRESS_PREMIUM_SUBSCRIPTIONS` (Suppress server boost notifications)
  * * `SUPPRESS_GUILD_REMINDER_NOTIFICATIONS` (Suppress server setup tips)
- * * `SUPPRESS_JOIN_NOTIFICATION_REPLIES` (Suppress member join sticker replies)
+ * * `SUPPRESS_JOIN_NOTIFICATION_REPLIES` (Hide member join sticker reply buttons)
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags}
  */
