@@ -134,7 +134,7 @@ class MessageAttachment {
 
     if ('description' in data) {
       /**
-       * This description (alt text) of this attachment
+       * The description (alt text) of this attachment
        * @type {?string}
        */
       this.description = data.description;
