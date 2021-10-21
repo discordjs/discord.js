@@ -28,7 +28,7 @@ jobs:
 
       - name: Publish
         run: |
-          npm version --git-tag-version=false $(jq --raw-output '.version' package.json).$(git rev-parse --short HEAD)
-          if [[ $(npm view discord.js@dev version) == $(jq --raw-output '.version' package.json) ]]; then echo "skipping release"; else npm publish --tag dev || true; fi
+          npm version --git-tag-version=false $(jq --raw-output '.version' package.json).$(date +%s).$(git rev-parse --short HEAD)
+          if [[ $(npm view discord.js@dev version | grep -e "$(jq --raw-output '.version' package.json).*.$(git rev-parse --short HEAD)") ]]; then echo "skipping release"; else npm publish --tag dev || true; fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
