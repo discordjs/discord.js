@@ -38,6 +38,8 @@ import {
   GuildEmojiManager,
   GuildMember,
   GuildResolvable,
+  GuildTextBasedChannel,
+  GuildTextChannelResolvable,
   Intents,
   Interaction,
   InteractionCollector,
@@ -490,6 +492,22 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
   assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));
+
+  if (message.inGuild()) {
+    assertType<Message<true>>(message);
+    const component = await message.awaitMessageComponent({ componentType: 'BUTTON' });
+    assertType<ButtonInteraction<'cached'>>(component);
+    assertType<Message<true>>(await component.reply({ fetchReply: true }));
+
+    const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
+    assertType<InteractionCollector<ButtonInteraction<'cached'>>>(buttonCollector);
+    assertType<GuildTextBasedChannel>(message.channel);
+  }
+
+  assertType<TextBasedChannels>(message.channel);
+
+  // @ts-expect-error
+  assertType<GuildTextBasedChannel>(message.channel);
 
   // @ts-expect-error
   channel.send();
@@ -968,6 +986,12 @@ client.on('interactionCreate', async interaction => {
       assertType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
       assertType<APIInteractionDataResolvedGuildMember>(interaction.options.getMember('test', true));
     } else if (interaction.inCachedGuild()) {
+      const msg = await interaction.reply({ fetchReply: true });
+      const btn = await msg.awaitMessageComponent({ componentType: 'BUTTON' });
+
+      assertType<Message>(msg);
+      assertType<ButtonInteraction<'cached'>>(btn);
+
       consumeCachedCommand(interaction);
       assertType<GuildMember>(interaction.options.getMember('test', true));
       assertType<GuildMember | null>(interaction.options.getMember('test'));
