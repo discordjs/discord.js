@@ -1405,13 +1405,17 @@ export class MessageCollector extends Collector<Snowflake, Message> {
 export class MessageComponentInteraction<Cached extends GuildCacheState = GuildCacheState> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
   public readonly channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
-  public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent> | null;
+  public readonly component: CacheTypeReducer<
+    Cached,
+    MessageActionRowComponent,
+    Exclude<APIMessageComponent, APIActionRowComponent>
+  > | null;
   public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
   public customId: string;
   public channelId: Snowflake;
   public deferred: boolean;
   public ephemeral: boolean | null;
-  public message: Message | APIMessage;
+  public message: CacheTypeReducer<Cached, Message, APIMessage>;
   public replied: boolean;
   public webhook: InteractionWebhook;
   public inGuild(): this is MessageComponentInteraction<'present'> & this;
