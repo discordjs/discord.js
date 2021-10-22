@@ -5,6 +5,8 @@ import {
   APIPartialChannel,
   APIPartialGuild,
   APIInteractionDataResolvedGuildMember,
+  APIInteractionDataResolvedChannel,
+  APIRole,
 } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
@@ -33,6 +35,7 @@ import {
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
+  GuildChannel,
   GuildChannelManager,
   GuildEmoji,
   GuildEmojiManager,
@@ -893,14 +896,11 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
-  const consumeCachedCommand = (_i: CommandInteraction<'cached'>) => {};
-  const consumeCachedInteraction = (_i: Interaction<'cached'>) => {};
-
   if (interaction.inCachedGuild()) {
     assertType<GuildMember>(interaction.member);
     // @ts-expect-error
-    consumeCachedCommand(interaction);
-    consumeCachedInteraction(interaction);
+    assertType<CommandInteraction<'cached'>>(interaction);
+    assertType<Interaction>(interaction);
   } else if (interaction.inRawGuild()) {
     assertType<APIInteractionGuildMember>(interaction.member);
     // @ts-expect-error
@@ -916,7 +916,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inCachedGuild()) {
       assertType<ContextMenuInteraction>(interaction);
       assertType<Guild>(interaction.guild);
-      consumeCachedCommand(interaction);
+      assertType<CommandInteraction<'cached'>>(interaction);
     } else if (interaction.inRawGuild()) {
       assertType<ContextMenuInteraction>(interaction);
       assertType<null>(interaction.guild);
@@ -985,6 +985,10 @@ client.on('interactionCreate', async interaction => {
       assertType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
       assertType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
       assertType<APIInteractionDataResolvedGuildMember>(interaction.options.getMember('test', true));
+
+      assertType<APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
+      assertType<APIRole>(interaction.options.getRole('test', true));
+      assertType<APIMessage>(interaction.options.getMessage('test', true));
     } else if (interaction.inCachedGuild()) {
       const msg = await interaction.reply({ fetchReply: true });
       const btn = await msg.awaitMessageComponent({ componentType: 'BUTTON' });
@@ -992,11 +996,15 @@ client.on('interactionCreate', async interaction => {
       assertType<Message>(msg);
       assertType<ButtonInteraction<'cached'>>(btn);
 
-      consumeCachedCommand(interaction);
+      assertType<CommandInteraction<'cached'>>(interaction);
       assertType<GuildMember>(interaction.options.getMember('test', true));
       assertType<GuildMember | null>(interaction.options.getMember('test'));
       assertType<CommandInteraction>(interaction);
       assertType<Promise<Message>>(interaction.reply({ fetchReply: true }));
+
+      assertType<GuildChannel | ThreadChannel>(interaction.options.getChannel('test', true));
+      assertType<Role>(interaction.options.getRole('test', true));
+      assertType<Message>(interaction.options.getMessage('test', true));
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);
@@ -1004,6 +1012,12 @@ client.on('interactionCreate', async interaction => {
       assertType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
       assertType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
       assertType<APIInteractionDataResolvedGuildMember | GuildMember>(interaction.options.getMember('test', true));
+
+      assertType<GuildChannel | ThreadChannel | APIInteractionDataResolvedChannel>(
+        interaction.options.getChannel('test', true),
+      );
+      assertType<APIRole | Role>(interaction.options.getRole('test', true));
+      assertType<APIMessage | Message>(interaction.options.getMessage('test', true));
     }
 
     assertType<CommandInteraction>(interaction);

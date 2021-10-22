@@ -303,8 +303,10 @@ export abstract class BaseCommandInteraction<
   private transformOption(
     option: APIApplicationCommandOption,
     resolved: APIApplicationCommandInteractionData['resolved'],
-  ): CommandInteractionOption;
-  private transformResolved(resolved: APIApplicationCommandInteractionData['resolved']): CommandInteractionResolvedData;
+  ): CommandInteractionOption<Cached>;
+  private transformResolved(
+    resolved: APIApplicationCommandInteractionData['resolved'],
+  ): CommandInteractionResolvedData<Cached>;
 }
 
 export abstract class BaseGuild extends Base {
@@ -601,26 +603,26 @@ export class CommandInteraction<
 export class CommandInteractionOptionResolver<Cached extends GuildCacheState = GuildCacheState> {
   private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
-  public readonly data: readonly CommandInteractionOption[];
-  public readonly resolved: Readonly<CommandInteractionResolvedData>;
+  public readonly data: readonly CommandInteractionOption<Cached>[];
+  public readonly resolved: Readonly<CommandInteractionResolvedData<Cached>>;
   private _group: string | null;
-  private _hoistedOptions: CommandInteractionOption[];
+  private _hoistedOptions: CommandInteractionOption<Cached>[];
   private _subcommand: string | null;
   private _getTypedOption(
     name: string,
     type: ApplicationCommandOptionType,
     properties: (keyof ApplicationCommandOption)[],
     required: true,
-  ): CommandInteractionOption;
+  ): CommandInteractionOption<Cached>;
   private _getTypedOption(
     name: string,
     type: ApplicationCommandOptionType,
     properties: (keyof ApplicationCommandOption)[],
     required: boolean,
-  ): CommandInteractionOption | null;
+  ): CommandInteractionOption<Cached> | null;
 
-  public get(name: string, required: true): CommandInteractionOption;
-  public get(name: string, required?: boolean): CommandInteractionOption | null;
+  public get(name: string, required: true): CommandInteractionOption<Cached>;
+  public get(name: string, required?: boolean): CommandInteractionOption<Cached> | null;
 
   public getSubcommand(required?: true): string;
   public getSubcommand(required: boolean): string | null;
@@ -628,43 +630,37 @@ export class CommandInteractionOptionResolver<Cached extends GuildCacheState = G
   public getSubcommandGroup(required: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
-  public getChannel(name: string, required: true): NonNullable<CommandInteractionOption['channel']>;
-  public getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption['channel']> | null;
+  public getChannel(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['channel']>;
+  public getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['channel']> | null;
   public getString(name: string, required: true): string;
   public getString(name: string, required?: boolean): string | null;
   public getInteger(name: string, required: true): number;
   public getInteger(name: string, required?: boolean): number | null;
   public getNumber(name: string, required: true): number;
   public getNumber(name: string, required?: boolean): number | null;
-  public getUser(name: string, required: true): NonNullable<CommandInteractionOption['user']>;
-  public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption['user']> | null;
-  public getMember(
-    name: string,
-    required: true,
-  ): CacheTypeReducer<Cached, GuildMember, NonNullable<APIInteractionDataResolvedGuildMember>>;
-  public getMember(
-    name: string,
-    required?: boolean,
-  ): CacheTypeReducer<Cached, GuildMember, NonNullable<APIInteractionDataResolvedGuildMember>> | null;
-  public getRole(name: string, required: true): NonNullable<CommandInteractionOption['role']>;
-  public getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption['role']> | null;
+  public getUser(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['user']>;
+  public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['user']> | null;
+  public getMember(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['member']>;
+  public getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['member']> | null;
+  public getRole(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['role']>;
+  public getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['role']> | null;
   public getMentionable(
     name: string,
     required: true,
-  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']>;
+  ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']>;
   public getMentionable(
     name: string,
     required?: boolean,
-  ): NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null;
-  public getMessage(name: string, required: true): NonNullable<CommandInteractionOption['message']>;
-  public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption['message']> | null;
+  ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
+  public getMessage(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['message']>;
+  public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
 }
 export class ContextMenuInteraction<
   Cached extends GuildCacheState = GuildCacheState,
 > extends BaseCommandInteraction<Cached> {
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
-  private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption[];
+  private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
 }
 
 export class DataResolver extends null {
@@ -1427,7 +1423,7 @@ export class MessageComponentInteraction<Cached extends GuildCacheState = GuildC
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
-  public fetchReply(): Promise<Message | APIMessage>;
+  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
@@ -3639,24 +3635,24 @@ export type ColorResolvable =
   | number
   | HexColorString;
 
-export interface CommandInteractionOption {
+export interface CommandInteractionOption<Cached extends GuildCacheState = GuildCacheState> {
   name: string;
   type: ApplicationCommandOptionType;
   value?: string | number | boolean;
   options?: CommandInteractionOption[];
   user?: User;
-  member?: GuildMember | APIInteractionDataResolvedGuildMember;
-  channel?: GuildChannel | ThreadChannel | APIInteractionDataResolvedChannel;
-  role?: Role | APIRole;
-  message?: Message | APIMessage;
+  member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
+  channel?: CacheTypeReducer<Cached, GuildChannel | ThreadChannel, APIInteractionDataResolvedChannel>;
+  role?: CacheTypeReducer<Cached, Role, APIRole>;
+  message?: CacheTypeReducer<Cached, Message, APIMessage>;
 }
 
-export interface CommandInteractionResolvedData {
+export interface CommandInteractionResolvedData<Cached extends GuildCacheState = GuildCacheState> {
   users?: Collection<Snowflake, User>;
-  members?: Collection<Snowflake, GuildMember | APIInteractionDataResolvedGuildMember>;
-  roles?: Collection<Snowflake, Role | APIRole>;
-  channels?: Collection<Snowflake, Channel | APIInteractionDataResolvedChannel>;
-  messages?: Collection<Snowflake, Message | APIMessage>;
+  members?: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
+  roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
+  channels?: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIInteractionDataResolvedChannel>>;
+  messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
 }
 
 export interface ConstantsClientApplicationAssetTypes {
@@ -4221,7 +4217,8 @@ export interface IntegrationAccount {
 
 export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 
-export interface InteractionCollectorOptions<T extends Interaction> extends CollectorOptions<[T]> {
+export interface InteractionCollectorOptions<T extends Interaction, Cached extends GuildCacheState = GuildCacheState>
+  extends CollectorOptions<[T]> {
   channel?: TextBasedChannels;
   componentType?: MessageComponentType | MessageComponentTypes;
   guild?: Guild;
@@ -4229,7 +4226,7 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   max?: number;
   maxComponents?: number;
   maxUsers?: number;
-  message?: Message | APIMessage;
+  message?: CacheTypeReducer<Cached, Message, APIMessage>;
 }
 
 export interface ButtonInteractionCollectorOptions<Cached = boolean>
