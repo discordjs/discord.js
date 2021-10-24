@@ -33,15 +33,19 @@ import {
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
-  GuildCached,
+  CachedInteraction,
   GuildChannelManager,
   GuildEmoji,
   GuildEmojiManager,
   GuildMember,
+  GuildMessage,
   GuildResolvable,
+  GuildTextBasedChannel,
+  GuildTextChannelResolvable,
   Intents,
   Interaction,
   InteractionCollector,
+  InteractionResponses,
   LimitedCollection,
   Message,
   MessageActionRow,
@@ -73,6 +77,7 @@ import {
   Typing,
   User,
   VoiceChannel,
+  CachedMessage,
 } from '.';
 import { ApplicationCommandOptionTypes } from './enums';
 
@@ -492,6 +497,22 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({ embeds: [embed] }));
   assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));
 
+  if (message.inGuild()) {
+    assertType<CachedMessage>(message);
+    const component = await message.awaitMessageComponent({ componentType: 'BUTTON' });
+    assertType<InteractionResponses<'cached'>>(component);
+    assertType<Promise<CachedMessage>>(component.reply({ fetchReply: true }));
+
+    const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
+    assertType<InteractionCollector<CachedInteraction<ButtonInteraction>>>(buttonCollector);
+    assertType<GuildTextBasedChannel>(message.channel);
+  }
+
+  assertType<TextBasedChannels>(message.channel);
+
+  // @ts-expect-error
+  assertType<GuildTextBasedChannel>(message.channel);
+
   // @ts-expect-error
   channel.send();
   // @ts-expect-error
@@ -876,8 +897,8 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
-  const consumeCachedCommand = (_i: GuildCached<CommandInteraction>) => {};
-  const consumeCachedInteraction = (_i: GuildCached<Interaction>) => {};
+  const consumeCachedCommand = (_i: CachedInteraction<CommandInteraction>) => {};
+  const consumeCachedInteraction = (_i: CachedInteraction<Interaction>) => {};
 
   if (interaction.inCachedGuild()) {
     assertType<GuildMember>(interaction.member);
@@ -969,6 +990,12 @@ client.on('interactionCreate', async interaction => {
       assertType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
       assertType<APIInteractionDataResolvedGuildMember>(interaction.options.getMember('test', true));
     } else if (interaction.inCachedGuild()) {
+      const msg = await interaction.reply({ fetchReply: true });
+      const btn = await msg.awaitMessageComponent({ componentType: 'BUTTON' });
+
+      assertType<Message>(msg);
+      assertType<CachedInteraction<ButtonInteraction>>(btn);
+
       consumeCachedCommand(interaction);
       assertType<GuildMember>(interaction.options.getMember('test', true));
       assertType<GuildMember | null>(interaction.options.getMember('test'));
