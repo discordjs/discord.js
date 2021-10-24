@@ -103,7 +103,7 @@ import {
   RawInviteData,
   RawInviteGuildData,
   RawInviteStageInstance,
-  RawMessageAttachementData,
+  RawMessageAttachmentData,
   RawMessageButtonInteractionData,
   RawMessageComponentInteractionData,
   RawMessageData,
@@ -1393,7 +1393,7 @@ export class MessageActionRow extends BaseMessageComponent {
 }
 
 export class MessageAttachment {
-  public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawMessageAttachementData);
+  public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawMessageAttachmentData);
 
   public attachment: BufferResolvable | Stream;
   public contentType: string | null;

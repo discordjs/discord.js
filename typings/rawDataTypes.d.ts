@@ -149,7 +149,7 @@ export type RawInviteStageInstance = APIInviteStageInstance;
 export type RawMessageData = APIMessage;
 export type RawPartialMessageData = GatewayMessageUpdateDispatchData;
 
-export type RawMessageAttachementData = APIAttachment;
+export type RawMessageAttachmentData = APIAttachment;
 
 export type RawMessagePayloadData =
   | RESTPostAPIChannelMessageJSONBody

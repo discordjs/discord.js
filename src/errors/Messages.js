@@ -61,7 +61,7 @@ const Messages = {
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
   USER_BANNER_NOT_FETCHED: "You must fetch this user's banner before trying to generate its URL!",
-  USER_NO_DMCHANNEL: 'No DM Channel exists!',
+  USER_NO_DM_CHANNEL: 'No DM Channel exists!',
 
   VOICE_NOT_STAGE_CHANNEL: 'You are only allowed to do this in stage channels.',
 
