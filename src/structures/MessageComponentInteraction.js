@@ -72,15 +72,13 @@ class MessageComponentInteraction extends Interaction {
 
   /**
    * The component which was interacted with
-   * @type {?(MessageActionRowComponent|APIMessageActionRowComponent)}
+   * @type {MessageActionRowComponent|APIMessageActionRowComponent}
    * @readonly
    */
   get component() {
-    return (
-      this.message.components
-        .flatMap(row => row.components)
-        .find(component => (component.customId ?? component.custom_id) === this.customId) ?? null
-    );
+    return this.message.components
+      .flatMap(row => row.components)
+      .find(component => (component.customId ?? component.custom_id) === this.customId);
   }
 
   /**
