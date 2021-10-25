@@ -756,6 +756,7 @@ export class Guild extends AnonymousGuild {
   public ownerId: Snowflake;
   public preferredLocale: string;
   public premiumSubscriptionCount: number | null;
+  public premiumProgressBarEnabled: boolean;
   public premiumTier: PremiumTier;
   public presences: PresenceManager;
   public readonly publicUpdatesChannel: TextChannel | null;
@@ -821,6 +822,7 @@ export class Guild extends AnonymousGuild {
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
   public setVerificationLevel(verificationLevel: VerificationLevel | number, reason?: string): Promise<Guild>;
+  public setPremiumProgressBarEnabled(enabled?: boolean, reason?: string): Promise<Guild>;
   public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
   public toJSON(): unknown;
 }
@@ -4109,6 +4111,7 @@ export interface GuildCreateOptions {
   systemChannelFlags?: SystemChannelFlagsResolvable;
   systemChannelId?: Snowflake | number;
   verificationLevel?: VerificationLevel | number;
+  premiumProgressBarEnabled?: boolean;
 }
 
 export interface GuildWidgetSettings {
@@ -4133,6 +4136,7 @@ export interface GuildEditData {
   rulesChannel?: TextChannelResolvable;
   publicUpdatesChannel?: TextChannelResolvable;
   preferredLocale?: string;
+  premiumProgressBarEnabled?: boolean;
   description?: string | null;
   features?: GuildFeatures[];
 }
