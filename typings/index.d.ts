@@ -268,7 +268,7 @@ export class BaseClient extends EventEmitter {
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
 }
 
-export type GuildCacheMessage<Cached extends GuildCacheState> = CacheTypeReducer<
+export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
   Cached,
   Message<true>,
   APIMessage,
@@ -276,9 +276,7 @@ export type GuildCacheMessage<Cached extends GuildCacheState> = CacheTypeReducer
   Message | APIMessage
 >;
 
-export abstract class BaseCommandInteraction<
-  Cached extends GuildCacheState = GuildCacheState,
-> extends Interaction<Cached> {
+export abstract class BaseCommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   public options: CommandInteractionOptionResolver<Cached>;
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public readonly channel: TextBasedChannels | null;
@@ -396,9 +394,7 @@ export class BitField<S extends string, N extends number | bigint = number> {
   public static resolve(bit?: BitFieldResolvable<string, number | bigint>): number | bigint;
 }
 
-export class ButtonInteraction<
-  Cached extends GuildCacheState = GuildCacheState,
-> extends MessageComponentInteraction<Cached> {
+export class ButtonInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   private constructor(client: Client, data: RawMessageButtonInteractionData);
   public componentType: 'BUTTON';
 }
@@ -594,13 +590,11 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
 }
 
-export class CommandInteraction<
-  Cached extends GuildCacheState = GuildCacheState,
-> extends BaseCommandInteraction<Cached> {
+export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
   public toString(): string;
 }
 
-export class CommandInteractionOptionResolver<Cached extends GuildCacheState = GuildCacheState> {
+export class CommandInteractionOptionResolver<Cached extends CacheType = CacheType> {
   private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption<Cached>[];
@@ -655,9 +649,7 @@ export class CommandInteractionOptionResolver<Cached extends GuildCacheState = G
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
 }
-export class ContextMenuInteraction<
-  Cached extends GuildCacheState = GuildCacheState,
-> extends BaseCommandInteraction<Cached> {
+export class ContextMenuInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
@@ -1062,10 +1054,10 @@ export class Intents extends BitField<IntentsString> {
   public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
 }
 
-export type GuildCacheState = 'cached' | 'raw' | 'present';
+export type CacheType = 'cached' | 'raw' | 'present';
 
 export type CacheTypeReducer<
-  State extends GuildCacheState,
+  State extends CacheType,
   CachedType,
   RawType = CachedType,
   PresentType = CachedType | RawType,
@@ -1078,7 +1070,7 @@ export type CacheTypeReducer<
   ? PresentType
   : Fallback;
 
-export class Interaction<Cached extends GuildCacheState = GuildCacheState> extends Base {
+export class Interaction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
   private readonly _cacheType: Cached;
   protected constructor(client: Client, data: RawInteractionData);
@@ -1398,7 +1390,7 @@ export class MessageCollector extends Collector<Snowflake, Message> {
   public dispose(message: Message): Snowflake | null;
 }
 
-export class MessageComponentInteraction<Cached extends GuildCacheState = GuildCacheState> extends Interaction<Cached> {
+export class MessageComponentInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
   public readonly channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
   public readonly component: CacheTypeReducer<
@@ -1722,9 +1714,7 @@ export class Role extends Base {
   public static comparePositions(role1: Role, role2: Role): number;
 }
 
-export class SelectMenuInteraction<
-  Cached extends GuildCacheState = GuildCacheState,
-> extends MessageComponentInteraction<Cached> {
+export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   public constructor(client: Client, data: RawMessageSelectMenuInteractionData);
   public componentType: 'SELECT_MENU';
   public values: string[];
@@ -3635,7 +3625,7 @@ export type ColorResolvable =
   | number
   | HexColorString;
 
-export interface CommandInteractionOption<Cached extends GuildCacheState = GuildCacheState> {
+export interface CommandInteractionOption<Cached extends CacheType = CacheType> {
   name: string;
   type: ApplicationCommandOptionType;
   value?: string | number | boolean;
@@ -3647,7 +3637,7 @@ export interface CommandInteractionOption<Cached extends GuildCacheState = Guild
   message?: CacheTypeReducer<Cached, Message, APIMessage>;
 }
 
-export interface CommandInteractionResolvedData<Cached extends GuildCacheState = GuildCacheState> {
+export interface CommandInteractionResolvedData<Cached extends CacheType = CacheType> {
   users?: Collection<Snowflake, User>;
   members?: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
@@ -4217,7 +4207,7 @@ export interface IntegrationAccount {
 
 export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 
-export interface InteractionCollectorOptions<T extends Interaction, Cached extends GuildCacheState = GuildCacheState>
+export interface InteractionCollectorOptions<T extends Interaction, Cached extends CacheType = CacheType>
   extends CollectorOptions<[T]> {
   channel?: TextBasedChannels;
   componentType?: MessageComponentType | MessageComponentTypes;
