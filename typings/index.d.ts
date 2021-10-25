@@ -1477,6 +1477,8 @@ export class MessageComponentInteraction extends Interaction {
 }
 
 export class MessageEmbed {
+  private _fieldEquals(field: EmbedField, other: EmbedField): boolean;
+
   public constructor(data?: MessageEmbed | MessageEmbedOptions | APIEmbed);
   public author: MessageEmbedAuthor | null;
   public color: number | null;
@@ -1508,6 +1510,7 @@ export class MessageEmbed {
   public setTitle(title: string): this;
   public setURL(url: string): this;
   public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
+  public equals(embed: MessageEmbed | APIEmbed): boolean;
   public toJSON(): unknown;
 
   public static normalizeField(name: string, value: string, inline?: boolean): Required<EmbedFieldData>;
