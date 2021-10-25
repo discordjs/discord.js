@@ -235,7 +235,7 @@ class User extends Base {
    */
   async deleteDM() {
     const { dmChannel } = this;
-    if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
+    if (!dmChannel) throw new Error('USER_NO_DM_CHANNEL');
     await this.client.api.channels(dmChannel.id).delete();
     this.client.channels._remove(dmChannel.id);
     return dmChannel;

@@ -171,13 +171,7 @@ class TextBasedChannel {
     const { data, files } = await messagePayload.resolveFiles();
     const d = await this.client.api.channels[this.id].messages.post({ data, files });
 
-    const existing = this.messages.cache.get(d.id);
-    if (existing) {
-      const clone = existing._clone();
-      clone._patch(d);
-      return clone;
-    }
-    return this.messages._add(d);
+    return this.messages.cache.get(d.id) ?? this.messages._add(d);
   }
 
   /**
