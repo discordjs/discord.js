@@ -109,7 +109,7 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * Fetches member(s) for the thread from Discord, requires access to the `GUILD_MEMBERS` gateway intent.
-   * @param {UserResolvable?} member The member to fetch, if `undefined` `options.cached` is
+   * @param {?UserResolvable} member The member to fetch, if `undefined` `options.cached` is
    * `true` and all members in the thread are fetched. If boolean, this serves the purpose
    * of `options.cache`.
    * @param {BaseFetchOptions} [options] Additional options for this fetch
