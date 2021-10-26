@@ -98,8 +98,17 @@ class ThreadMemberManager extends CachedManager {
       if (existing) return existing;
     }
 
+    console.log('already cached');
+
     const data = await this.client.api.channels(this.thread.id, 'thread-members', memberId).get();
     return this._add(data, cache);
+  }
+
+  async _fetchMany(cache) {
+    const data = await this.client.api.channels(this.thread.id, 'thread-members').get();
+    const members = new Collection();
+    for (const member of data) members.set(member.id, this._add(member, cache));
+    return members;
   }
 
   /**
@@ -109,16 +118,8 @@ class ThreadMemberManager extends CachedManager {
    * @param {boolean} [force=true] Whether or not to force fetch the members.
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
-  async fetch(member, cache = true, force = false) {
-    if (typeof member === 'string') {
-      return this._fetchId(member, cache, force);
-    }
-
-    const raw = await this.client.api.channels(this.thread.id, 'thread-members').get();
-    return raw.reduce((col, rawMember) => {
-      const colMember = this._add(rawMember, cache);
-      return col.set(colMember.id, colMember);
-    }, new Collection());
+  fetch(member, cache = true, force = false) {
+    return typeof member === 'string' ? this._fetchId(member, cache, force) : this._fetchMany(cache);
   }
 }
 
