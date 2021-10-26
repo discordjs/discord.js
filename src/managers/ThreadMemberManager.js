@@ -98,18 +98,16 @@ class ThreadMemberManager extends CachedManager {
       if (existing) return existing;
     }
 
-    console.log(cache);
-
     const data = await this.client.api.channels(this.thread.id, 'thread-members', memberId).get();
     return this._add(data, cache);
   }
 
   async _fetchMany(cache) {
-    console.log(`thing${cache}`);
-    const data = await this.client.api.channels(this.thread.id, 'thread-members').get();
-    const members = new Collection();
-    for (const member of data) members.set(member.id, this._add(member, cache));
-    return members;
+    const raw = await this.client.api.channels(this.thread.id, 'thread-members').get();
+    return raw.reduce((col, rawMember) => {
+      const member = this._add(rawMember, cache);
+      return col.set(member.id, member);
+    }, new Collection());
   }
 
   /**
