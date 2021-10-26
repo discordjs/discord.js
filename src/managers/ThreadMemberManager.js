@@ -123,7 +123,7 @@ class ThreadMemberManager extends CachedManager {
       return this._fetchId(member.id, cache, force);
     }
 
-    return this._fetchMany(member);
+    return this._fetchMany(member ?? cache);
   }
 }
 
