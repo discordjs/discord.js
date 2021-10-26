@@ -119,7 +119,7 @@ class ThreadMemberManager extends CachedManager {
     // TODO: Replace `member` usages as `cache` with correct respective parameter.
     if (typeof member === 'string') {
       return this._fetchId(member, cache, force);
-    } else if (typeof member === 'object') {
+    } else if (member && typeof member === 'object') {
       return this._fetchId(member.id, cache, force);
     }
 
