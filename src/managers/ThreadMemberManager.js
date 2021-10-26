@@ -116,7 +116,6 @@ class ThreadMemberManager extends CachedManager {
    * `true` and all members in the thread are fetched. If boolean, this serves the purpose
    * of `options.cache`.
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @param {boolean} [force=true] Whether or not to force fetch the members
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
   fetch(member, { cache = true, force = false } = {}) {
