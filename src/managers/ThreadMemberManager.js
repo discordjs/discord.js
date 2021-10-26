@@ -117,7 +117,7 @@ class ThreadMemberManager extends CachedManager {
    * @param {boolean} [force=true] Whether or not to force fetch the members.
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
-  fetch(member, cache = true, force = false) {
+  fetch(member, { cache = true, force = false } = {}) {
     return typeof member === 'string' ? this._fetchId(member, cache, force) : this._fetchMany(member);
   }
 }
