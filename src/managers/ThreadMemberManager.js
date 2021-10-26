@@ -112,12 +112,15 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * Fetches member(s) for the thread from Discord, requires access to the `GUILD_MEMBERS` gateway intent.
-   * @param {Snowflake} member The member to fetch.
-   * @param {boolean} [cache=true] Whether or not to cache the fetched members.
-   * @param {boolean} [force=true] Whether or not to force fetch the members.
+   * @param {Snowflake?} member The member to fetch, if `undefined` `options.cached` is
+   * `true` and all members in the thread are fetched. If boolean, this serves the purpose
+   * of `options.cache`.
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @param {boolean} [force=true] Whether or not to force fetch the members
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
   fetch(member, { cache = true, force = false } = {}) {
+    // TODO: Replace `member` usages as `cache` with correct respective parameter.
     return typeof member === 'string' ? this._fetchId(member, cache, force) : this._fetchMany(member);
   }
 }
