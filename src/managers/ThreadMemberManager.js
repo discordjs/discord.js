@@ -104,10 +104,7 @@ class ThreadMemberManager extends CachedManager {
 
   async _fetchMany(cache) {
     const raw = await this.client.api.channels(this.thread.id, 'thread-members').get();
-    return raw.reduce((col, rawMember) => {
-      const member = this._add(rawMember, cache);
-      return col.set(member.id, member);
-    }, new Collection());
+    return raw.reduce((col, member) => col.set(member.id, this._add(member, cache)), new Collection());
   }
 
   /**
