@@ -40,13 +40,13 @@
   },
   "homepage": "https://discord.js.org",
   "dependencies": {
-    "@discordjs/builders": "^0.6.0",
+    "@discordjs/builders": "^0.7.0",
     "@discordjs/collection": "^0.2.1",
     "@discordjs/form-data": "^3.0.1",
     "@sapphire/async-queue": "^1.1.5",
     "@types/node-fetch": "^2.5.12",
     "@types/ws": "^8.2.0",
-    "discord-api-types": "^0.23.1",
+    "discord-api-types": "^0.24.0",
     "node-fetch": "^2.6.1",
     "ws": "^8.2.3"
   },
