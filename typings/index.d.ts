@@ -2898,6 +2898,9 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public thread: ThreadChannel;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(member: UserResolvable, options?: BaseFetchOptions): Promise<ThreadMember>;
+  /**
+   * @deprecated Use fetch(member, options) instead.
+   */
   public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
 }
