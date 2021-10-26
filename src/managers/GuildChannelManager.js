@@ -121,7 +121,19 @@ class GuildChannelManager extends CachedManager {
    */
   async create(
     name,
-    { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
+    {
+      type,
+      topic,
+      nsfw,
+      bitrate,
+      userLimit,
+      parent,
+      permissionOverwrites,
+      position,
+      rateLimitPerUser,
+      rtcRegion,
+      reason,
+    } = {},
   ) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
@@ -138,6 +150,7 @@ class GuildChannelManager extends CachedManager {
         position,
         permission_overwrites: permissionOverwrites,
         rate_limit_per_user: rateLimitPerUser,
+        rtc_region: rtcRegion,
       },
       reason,
     });
@@ -177,6 +190,31 @@ class GuildChannelManager extends CachedManager {
     const channels = new Collection();
     for (const channel of data) channels.set(channel.id, this.client.channels._add(channel, this.guild, { cache }));
     return channels;
+  }
+
+  /**
+   * Batch-updates the guild's channels' positions.
+   * <info>Only one channel's parent can be changed at a time</info>
+   * @param {ChannelPosition[]} channelPositions Channel positions to update
+   * @returns {Promise<Guild>}
+   * @example
+   * guild.channels.setPositions([{ channel: channelId, position: newChannelIndex }])
+   *   .then(guild => console.log(`Updated channel positions for ${guild}`))
+   *   .catch(console.error);
+   */
+  async setPositions(channelPositions) {
+    channelPositions = channelPositions.map(r => ({
+      id: this.client.channels.resolveId(r.channel),
+      position: r.position,
+      lock_permissions: r.lockPermissions,
+      parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveId(r.parent) : undefined,
+    }));
+
+    await this.client.api.guilds(this.id).channels.patch({ data: channelPositions });
+    return this.client.actions.GuildChannelsPositionUpdate.handle({
+      guild_id: this.id,
+      channels: channelPositions,
+    }).guild;
   }
 
   /**

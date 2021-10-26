@@ -219,6 +219,32 @@ class RoleManager extends CachedManager {
   }
 
   /**
+   * Batch-updates the guild's role positions
+   * @param {GuildRolePosition[]} rolePositions Role positions to update
+   * @returns {Promise<Guild>}
+   * @example
+   * guild.roles.setPositions([{ role: roleId, position: updatedRoleIndex }])
+   *  .then(guild => console.log(`Role positions updated for ${guild}`))
+   *  .catch(console.error);
+   */
+  async setPositions(rolePositions) {
+    // Make sure rolePositions are prepared for API
+    rolePositions = rolePositions.map(o => ({
+      id: this.resolveId(o.role),
+      position: o.position,
+    }));
+
+    // Call the API to update role positions
+    await this.client.api.guilds(this.id).roles.patch({
+      data: rolePositions,
+    });
+    return this.client.actions.GuildRolesPositionUpdate.handle({
+      guild_id: this.id,
+      roles: rolePositions,
+    }).guild;
+  }
+
+  /**
    * Gets the managed role a user created when joining the guild, if any
    * <info>Only ever available for bots</info>
    * @param {UserResolvable} user The user to access the bot role for

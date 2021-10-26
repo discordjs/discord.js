@@ -395,6 +395,22 @@ class Webhook {
     return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
   }
 
+  /**
+   * Whether or not this webhook is a channel follower webhook.
+   * @returns {boolean}
+   */
+  isChannelFollower() {
+    return this.type === WebhookTypes['Channel Follower'];
+  }
+
+  /**
+   * Whether or not this webhook is an incoming webhook.
+   * @returns {boolean}
+   */
+  isIncoming() {
+    return this.type === WebhookTypes.Incoming;
+  }
+
   static applyToClass(structure, ignore = []) {
     for (const prop of [
       'send',

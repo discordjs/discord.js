@@ -890,6 +890,14 @@ class Message extends Base {
   }
 
   /**
+   * Whether this message is from a guild.
+   * @returns {boolean}
+   */
+  inGuild() {
+    return Boolean(this.guildId);
+  }
+
+  /**
    * When concatenated with a string, this automatically concatenates the message's content instead of the object.
    * @returns {string}
    * @example

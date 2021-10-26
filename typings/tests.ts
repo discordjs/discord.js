@@ -1,8 +1,10 @@
 import {
   APIGuildMember,
-  APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
   APIMessage,
+  APIPartialChannel,
+  APIPartialGuild,
+  APIInteractionDataResolvedGuildMember,
 } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
@@ -31,15 +33,19 @@ import {
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
-  GuildCached,
+  CachedInteraction,
   GuildChannelManager,
   GuildEmoji,
   GuildEmojiManager,
   GuildMember,
+  GuildMessage,
   GuildResolvable,
+  GuildTextBasedChannel,
+  GuildTextChannelResolvable,
   Intents,
   Interaction,
   InteractionCollector,
+  InteractionResponses,
   LimitedCollection,
   Message,
   MessageActionRow,
@@ -71,6 +77,7 @@ import {
   Typing,
   User,
   VoiceChannel,
+  CachedMessage,
 } from '.';
 import { ApplicationCommandOptionTypes } from './enums';
 
@@ -478,7 +485,7 @@ client.on('messageReactionRemoveAll', async message => {
 // This is to check that stuff is the right type
 declare const assertIsMessage: (m: Promise<Message>) => void;
 
-client.on('messageCreate', message => {
+client.on('messageCreate', async message => {
   const { channel } = message;
   assertIsMessage(channel.send('string'));
   assertIsMessage(channel.send({}));
@@ -489,6 +496,22 @@ client.on('messageCreate', message => {
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
   assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));
+
+  if (message.inGuild()) {
+    assertType<CachedMessage>(message);
+    const component = await message.awaitMessageComponent({ componentType: 'BUTTON' });
+    assertType<InteractionResponses<'cached'>>(component);
+    assertType<Promise<CachedMessage>>(component.reply({ fetchReply: true }));
+
+    const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
+    assertType<InteractionCollector<CachedInteraction<ButtonInteraction>>>(buttonCollector);
+    assertType<GuildTextBasedChannel>(message.channel);
+  }
+
+  assertType<TextBasedChannels>(message.channel);
+
+  // @ts-expect-error
+  assertType<GuildTextBasedChannel>(message.channel);
 
   // @ts-expect-error
   channel.send();
@@ -572,6 +595,22 @@ client.on('messageCreate', message => {
       return true;
     },
   });
+
+  const webhook = await message.fetchWebhook();
+
+  if (webhook.isChannelFollower()) {
+    assertType<Guild | APIPartialGuild>(webhook.sourceGuild);
+    assertType<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+  } else if (webhook.isIncoming()) {
+    assertType<string>(webhook.token);
+  }
+
+  // @ts-expect-error
+  assertType<Guild | APIPartialGuild>(webhook.sourceGuild);
+  // @ts-expect-error
+  assertType<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+  // @ts-expect-error
+  assertType<string>(webhook.token);
 
   channel.awaitMessageComponent({
     filter: i => {
@@ -858,8 +897,8 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
-  const consumeCachedCommand = (_i: GuildCached<CommandInteraction>) => {};
-  const consumeCachedInteraction = (_i: GuildCached<Interaction>) => {};
+  const consumeCachedCommand = (_i: CachedInteraction<CommandInteraction>) => {};
+  const consumeCachedInteraction = (_i: CachedInteraction<Interaction>) => {};
 
   if (interaction.inCachedGuild()) {
     assertType<GuildMember>(interaction.member);
@@ -951,6 +990,12 @@ client.on('interactionCreate', async interaction => {
       assertType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
       assertType<APIInteractionDataResolvedGuildMember>(interaction.options.getMember('test', true));
     } else if (interaction.inCachedGuild()) {
+      const msg = await interaction.reply({ fetchReply: true });
+      const btn = await msg.awaitMessageComponent({ componentType: 'BUTTON' });
+
+      assertType<Message>(msg);
+      assertType<CachedInteraction<ButtonInteraction>>(btn);
+
       consumeCachedCommand(interaction);
       assertType<GuildMember>(interaction.options.getMember('test', true));
       assertType<GuildMember | null>(interaction.options.getMember('test'));
