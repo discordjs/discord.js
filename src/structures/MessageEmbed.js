@@ -280,6 +280,7 @@ class MessageEmbed {
       this.description === embed.description &&
       this.url === embed.url &&
       this.timestamp === embed.timestamp &&
+      this.fields.length === embed.fields.length &&
       this.fields.every((field, i) => this._fieldEquals(field, embed.fields[i])) &&
       this.footer?.text === embed.footer?.text &&
       this.footer?.iconURL === (embed.footer?.iconURL ?? embed.footer?.icon_url) &&
@@ -309,7 +310,7 @@ class MessageEmbed {
    * @private
    */
   _fieldEquals(field, other) {
-    return field.name === other?.name && field.value === other?.value && field.inline === other?.inline;
+    return field.name === other.name && field.value === other.value && field.inline === other.inline;
   }
 
   /**
