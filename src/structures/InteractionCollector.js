@@ -22,6 +22,8 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
  * Will automatically stop if the message ({@link Client#event:messageDelete messageDelete}),
  * channel ({@link Client#event:channelDelete channelDelete}), or
  * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
+ * <info>Interaction collectors that do not specify `time` or `idle` may be prone to always running.
+ * Ensure your interaction collectors end via either of these options or manual cancellation.</info>
  * @extends {Collector}
  */
 class InteractionCollector extends Collector {
