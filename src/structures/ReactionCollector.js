@@ -51,7 +51,7 @@ class ReactionCollector extends Collector {
     this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
 
     const bulkDeleteListener = messages => {
-      for (const deletedMessage of messages.values()) this._handleMessageDeletion(deletedMessage);
+      if (messages.has(this.message.id)) this.stop('messageDelete');
     };
 
     this.client.incrementMaxListeners();

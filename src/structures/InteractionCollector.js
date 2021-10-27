@@ -92,7 +92,7 @@ class InteractionCollector extends Collector {
     this.client.incrementMaxListeners();
 
     const bulkDeleteListener = messages => {
-      for (const deletedMessage of messages.values()) this._handleMessageDeletion(deletedMessage);
+      if (messages.has(this.messageId)) this.stop('messageDelete');
     };
 
     if (this.messageId) {
