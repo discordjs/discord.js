@@ -15,7 +15,8 @@ const { Events } = require('../util/Constants');
  * Collects reactions on messages.
  * Will automatically stop if the message ({@link Client#event:messageDelete messageDelete} or
  * {@link Client#event:messageDeleteBulk messageDeleteBulk}),
- * channel ({@link Client#event:channelDelete channelDelete}), or
+ * channel ({@link Client#event:channelDelete channelDelete}),
+ * thread ({@link Client#event:threadDelete threadDelete}), or
  * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
  * @extends {Collector}
  */
@@ -47,6 +48,7 @@ class ReactionCollector extends Collector {
 
     this.empty = this.empty.bind(this);
     this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
+    this._handleThreadDeletion = this._handleThreadDeletion.bind(this);
     this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
     this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
 
@@ -61,6 +63,7 @@ class ReactionCollector extends Collector {
     this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
     this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
     this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+    this.client.on(Events.THREAD_DELETE, this._handleThreadDeletion);
     this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
 
     this.once('end', () => {
@@ -70,6 +73,7 @@ class ReactionCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
       this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+      this.client.removeListener(Events.THREAD_DELETE, this._handleThreadDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
       this.client.decrementMaxListeners();
     });
@@ -183,8 +187,20 @@ class ReactionCollector extends Collector {
    * @returns {void}
    */
   _handleChannelDeletion(channel) {
-    if (channel.id === this.message.channelId) {
+    if (channel.id === this.message.channelId || channel.id === this.message.channel.parentId) {
       this.stop('channelDelete');
+    }
+  }
+
+  /**
+   * Handles checking if the thread has been deleted, and if so, stops the collector with the reason 'threadDelete'.
+   * @private
+   * @param {ThreadChannel} thread The thread that was deleted
+   * @returns {void}
+   */
+  _handleThreadDeletion(thread) {
+    if (thread.id === this.message.channelId) {
+      this.stop('threadDelete');
     }
   }
 
