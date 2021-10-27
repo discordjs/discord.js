@@ -13,8 +13,10 @@ const { Events } = require('../util/Constants');
 
 /**
  * Collects reactions on messages.
- * Will automatically stop if the message (`'messageDelete'`),
- * channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
+ * Will automatically stop if the message ({@link Client#event:messageDelete messageDelete} |
+ * {@link Client#event:messageDeleteBulk messageDeleteBulk}),
+ * channel ({@link Client#event:channelDelete channelDelete}), or
+ * guild ({@link Client#event:guildDelete guildDelete}) are deleted.
  * @extends {Collector}
  */
 class ReactionCollector extends Collector {
@@ -48,11 +50,16 @@ class ReactionCollector extends Collector {
     this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
     this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
 
+    const bulkDeleteListener = messages => {
+      for (const deletedMessage of messages.values()) this._handleMessageDeletion(deletedMessage);
+    };
+
     this.client.incrementMaxListeners();
     this.client.on(Events.MESSAGE_REACTION_ADD, this.handleCollect);
     this.client.on(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
     this.client.on(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
     this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+    this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
     this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
     this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
 
@@ -61,6 +68,7 @@ class ReactionCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
       this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+      this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
       this.client.decrementMaxListeners();

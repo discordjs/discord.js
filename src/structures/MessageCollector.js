@@ -11,7 +11,8 @@ const { Events } = require('../util/Constants');
 
 /**
  * Collects messages on a channel.
- * Will automatically stop if the channel (`'channelDelete'`) or guild (`'guildDelete'`) are deleted.
+ * Will automatically stop if the channel ({@link Client#event:channelDelete channelDelete}) or
+ * guild ({@link Client#event:guildDelete guildDelete}) are deleted.
  * @extends {Collector}
  */
 class MessageCollector extends Collector {
