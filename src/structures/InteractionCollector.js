@@ -19,10 +19,10 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
 
 /**
  * Collects interactions.
- * Will automatically stop if the message ({@link Client#event:messageDelete messageDelete} |
+ * Will automatically stop if the message ({@link Client#event:messageDelete messageDelete} or
  * {@link Client#event:messageDeleteBulk messageDeleteBulk}),
  * channel ({@link Client#event:channelDelete channelDelete}), or
- * guild ({@link Client#event:guildDelete guildDelete}) are deleted.
+ * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
  * @extends {Collector}
  */
 class InteractionCollector extends Collector {
