@@ -4898,7 +4898,7 @@ export type StageInstanceResolvable = StageInstance | Snowflake;
 
 export interface StartThreadOptions {
   name: string;
-  autoArchiveDuration: ThreadAutoArchiveDuration;
+  autoArchiveDuration?: ThreadAutoArchiveDuration;
   reason?: string;
 }
 
