@@ -1240,6 +1240,11 @@ export type MessageCollectorOptionsParams<T extends MessageComponentType | Messa
       componentType?: T;
     } & MessageComponentCollectorOptions<InteractionExtractor<T>>;
 
+export type MessageChannelCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
+  | {
+      componentType?: T;
+    } & MessageChannelComponentCollectorOptions<InteractionExtractor<T>>;
+
 export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
   | { componentType?: T } & Pick<
       InteractionCollectorOptions<InteractionExtractor<T>>,
@@ -2923,7 +2928,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
   createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
-    options?: MessageCollectorOptionsParams<T>,
+    options?: MessageChannelCollectorOptionsParams<T>,
   ): InteractionCollectorReturnType<T>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   sendTyping(): Promise<void>;
@@ -4397,6 +4402,11 @@ export type MessageComponent = BaseMessageComponent | MessageActionRow | Message
 export type MessageComponentCollectorOptions<T extends MessageComponentInteraction> = Omit<
   InteractionCollectorOptions<T>,
   'channel' | 'message' | 'guild' | 'interactionType'
+>;
+
+export type MessageChannelComponentCollectorOptions<T extends MessageComponentInteraction> = Omit<
+  InteractionCollectorOptions<T>,
+  'channel' | 'guild' | 'interactionType'
 >;
 
 export type MessageComponentOptions =
