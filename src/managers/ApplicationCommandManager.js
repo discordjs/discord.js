@@ -117,7 +117,7 @@ class ApplicationCommandManager extends CachedManager {
     const data = await this.commandPath({ guildId }).post({
       data: this.constructor.transformCommand(command),
     });
-    return this._add(data, !guildId, guildId);
+    return this._add(data, true, guildId);
   }
 
   /**
@@ -146,10 +146,7 @@ class ApplicationCommandManager extends CachedManager {
     const data = await this.commandPath({ guildId }).put({
       data: commands.map(c => this.constructor.transformCommand(c)),
     });
-    return data.reduce(
-      (coll, command) => coll.set(command.id, this._add(command, !guildId, guildId)),
-      new Collection(),
-    );
+    return data.reduce((coll, command) => coll.set(command.id, this._add(command, true, guildId)), new Collection());
   }
 
   /**
@@ -174,7 +171,7 @@ class ApplicationCommandManager extends CachedManager {
     const patched = await this.commandPath({ id, guildId }).patch({
       data: this.constructor.transformCommand(data),
     });
-    return this._add(patched, !guildId, guildId);
+    return this._add(patched, true, guildId);
   }
 
   /**
@@ -196,7 +193,7 @@ class ApplicationCommandManager extends CachedManager {
     await this.commandPath({ id, guildId }).delete();
 
     const cached = this.cache.get(id);
-    if (!guildId) this.cache.delete(id);
+    this.cache.delete(id);
     return cached ?? null;
   }
 
