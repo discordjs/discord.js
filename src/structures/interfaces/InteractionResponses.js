@@ -74,13 +74,13 @@ class InteractionResponses {
    * @returns {Promise<Message|APIMessage|void>}
    * @example
    * // Reply to the interaction and fetch the response
-   * const embed = new MessageEmbed().setDescription('Pong!');
-   *
    * interaction.reply({ content: 'Pong!', fetchReply: true })
    *   .then((message) => console.log(`Reply sent with content ${message.content}`))
    *   .catch(console.error);
    * @example
    * // Create an ephemeral reply with an embed
+   * const embed = new MessageEmbed().setDescription('Pong!');
+   *
    * interaction.reply({ embeds: [embed], ephemeral: true })
    *   .then(() => console.log('Reply sent.'))
    *   .catch(console.error);

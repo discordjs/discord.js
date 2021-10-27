@@ -268,17 +268,23 @@ export class BaseClient extends EventEmitter {
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
 }
 
-export type GuildCacheMessage<Cached extends GuildCacheState> = CacheTypeReducer<
+export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
   Cached,
-  GuildMessage<Cached> & Message,
+  Message<true>,
   APIMessage,
   Message | APIMessage,
   Message | APIMessage
 >;
 
-export abstract class BaseCommandInteraction extends Interaction {
+export abstract class BaseCommandInteraction<
+  Cached extends CacheType = CacheType,
+  Type extends CommandInteraction | AutocompleteInteraction | ContextMenuInteraction =
+    | CommandInteraction
+    | AutocompleteInteraction
+    | ContextMenuInteraction,
+> extends Interaction<Cached> {
+  public options: CommandInteractionOptionResolver<Type, Cached>;
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public readonly channel: TextBasedChannels | null;
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
@@ -286,38 +292,26 @@ export abstract class BaseCommandInteraction extends Interaction {
   public ephemeral: boolean | null;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public inGuild(): this is InteractionResponses<'present'> & this;
-  public inCachedGuild(): this is InteractionResponses<'cached'> & this;
-  public inRawGuild(): this is InteractionResponses<'raw'> & this;
-  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public inGuild(): this is BaseCommandInteraction<'present'> & this;
+  public inCachedGuild(): this is BaseCommandInteraction<'cached'> & this;
+  public inRawGuild(): this is BaseCommandInteraction<'raw'> & this;
+  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
-  public fetchReply(): Promise<Message | APIMessage>;
-  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
+  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   private transformOption(
     option: APIApplicationCommandOption,
     resolved: APIApplicationCommandInteractionData['resolved'],
-  ): CommandInteractionOption;
-  private transformResolved(resolved: APIApplicationCommandInteractionData['resolved']): CommandInteractionResolvedData;
+  ): CommandInteractionOption<Cached>;
+  private transformResolved(
+    resolved: APIApplicationCommandInteractionData['resolved'],
+  ): CommandInteractionResolvedData<Cached>;
 }
 
-export interface InteractionResponsesResolvable {
-  inGuild(): this is InteractionResponses<'present'> & this;
-  inCachedGuild(): this is InteractionResponses<'cached'> & this;
-  inRawGuild(): this is InteractionResponses<'raw'> & this;
-}
-
-export type CacheHelper<
-  T extends Interaction,
-  Cached extends GuildCacheState,
-> = T extends InteractionResponsesResolvable ? InteractionResponses<Cached> & T : GuildInteraction<Cached> & T;
-
-export type CachedInteraction<T extends Interaction = Interaction> = CacheHelper<T, 'cached'>;
-export type RawInteraction<T extends Interaction = Interaction> = CacheHelper<T, 'raw'>;
-export type PresentInteraction<T extends Interaction = Interaction> = CacheHelper<T, 'present'>;
 export abstract class BaseGuild extends Base {
   protected constructor(client: Client, data: RawBaseGuildData);
   public readonly createdAt: Date;
@@ -405,7 +399,7 @@ export class BitField<S extends string, N extends number | bigint = number> {
   public static resolve(bit?: BitFieldResolvable<string, number | bigint>): number | bigint;
 }
 
-export class ButtonInteraction extends MessageComponentInteraction {
+export class ButtonInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   private constructor(client: Client, data: RawMessageButtonInteractionData);
   public componentType: 'BUTTON';
 }
@@ -601,13 +595,10 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
 }
 
-export type GuildCommandInteraction<Cached extends GuildCacheState> = InteractionResponses<Cached> &
-  CommandInteraction<Cached>;
-
-export class CommandInteraction<Cached extends GuildCacheState = GuildCacheState> extends BaseCommandInteraction {
-  public options: CommandInteractionOptionResolver<CommandInteraction, Cached>;
-  public inCachedGuild(): this is GuildCommandInteraction<'cached'> & this;
-  public inRawGuild(): this is GuildCommandInteraction<'raw'> & this;
+export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<
+  Cached,
+  CommandInteraction
+> {
   public toString(): string;
 }
 
@@ -625,30 +616,30 @@ export class AutocompleteInteraction extends Interaction {
 
 export class CommandInteractionOptionResolver<
   Type extends AutocompleteInteraction | ContextMenuInteraction | CommandInteraction,
-  Cached extends GuildCacheState = GuildCacheState,
+  Cached extends CacheType = CacheType,
 > {
   private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
-  public readonly data: readonly CommandInteractionOption[];
-  public readonly resolved: Readonly<CommandInteractionResolvedData>;
+  public readonly data: readonly CommandInteractionOption<Cached>[];
+  public readonly resolved: Readonly<CommandInteractionResolvedData<Cached>>;
   private _group: string | null;
-  private _hoistedOptions: CommandInteractionOption[];
+  private _hoistedOptions: CommandInteractionOption<Cached>[];
   private _subcommand: string | null;
   private _getTypedOption(
     name: string,
     type: ApplicationCommandOptionType,
     properties: (keyof ApplicationCommandOption)[],
     required: true,
-  ): CommandInteractionOption;
+  ): CommandInteractionOption<Cached>;
   private _getTypedOption(
     name: string,
     type: ApplicationCommandOptionType,
     properties: (keyof ApplicationCommandOption)[],
     required: boolean,
-  ): CommandInteractionOption | null;
+  ): CommandInteractionOption<Cached> | null;
 
-  public get(name: string, required: true): CommandInteractionOption;
-  public get(name: string, required?: boolean): CommandInteractionOption | null;
+  public get(name: string, required: true): CommandInteractionOption<Cached>;
+  public get(name: string, required?: boolean): CommandInteractionOption<Cached> | null;
 
   public getSubcommand(
     required?: true,
@@ -676,7 +667,7 @@ export class CommandInteractionOptionResolver<
   ): InteractionOptionResolverReturn<
     Type,
     CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption['channel']>
+    NonNullable<CommandInteractionOption<Cached>['channel']>
   >;
   public getChannel(
     name: string,
@@ -684,7 +675,7 @@ export class CommandInteractionOptionResolver<
   ): InteractionOptionResolverReturn<
     Type,
     CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption['channel']> | null
+    NonNullable<CommandInteractionOption<Cached>['channel']> | null
   >;
   public getString(
     name: string,
@@ -710,23 +701,17 @@ export class CommandInteractionOptionResolver<
     name: string,
     required?: boolean,
   ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, number | null>;
-  public getUser(name: string, required: true): NonNullable<CommandInteractionOption['user']>;
-  public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption['user']> | null;
-  public getMember(
-    name: string,
-    required: true,
-  ): CacheTypeReducer<Cached, GuildMember, NonNullable<APIInteractionDataResolvedGuildMember>>;
-  public getMember(
-    name: string,
-    required?: boolean,
-  ): CacheTypeReducer<Cached, GuildMember, NonNullable<APIInteractionDataResolvedGuildMember>> | null;
+  public getUser(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['user']>;
+  public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['user']> | null;
+  public getMember(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['member']>;
+  public getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['member']> | null;
   public getRole(
     name: string,
     required: true,
   ): InteractionOptionResolverReturn<
     Type,
     CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption['role']>
+    NonNullable<CommandInteractionOption<Cached>['role']>
   >;
   public getRole(
     name: string,
@@ -734,7 +719,7 @@ export class CommandInteractionOptionResolver<
   ): InteractionOptionResolverReturn<
     Type,
     CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption['role']> | null
+    NonNullable<CommandInteractionOption<Cached>['role']> | null
   >;
   public getMentionable(
     name: string,
@@ -742,7 +727,7 @@ export class CommandInteractionOptionResolver<
   ): InteractionOptionResolverReturn<
     Type,
     CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption['member' | 'role' | 'user']>
+    NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']>
   >;
   public getMentionable(
     name: string,
@@ -750,19 +735,23 @@ export class CommandInteractionOptionResolver<
   ): InteractionOptionResolverReturn<
     Type,
     CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption['member' | 'role' | 'user']> | null
+    NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null
   >;
   public getMessage(
     name: string,
     required: true,
-  ): InteractionOptionResolverReturn<Type, ContextMenuInteraction, NonNullable<CommandInteractionOption['message']>>;
+  ): InteractionOptionResolverReturn<
+    Type,
+    ContextMenuInteraction,
+    NonNullable<CommandInteractionOption<Cached>['message']>
+  >;
   public getMessage(
     name: string,
     required?: boolean,
   ): InteractionOptionResolverReturn<
     Type,
     ContextMenuInteraction,
-    NonNullable<CommandInteractionOption['message']> | null
+    NonNullable<CommandInteractionOption<Cached>['message']> | null
   >;
   public getFocused(
     getFull: true,
@@ -774,11 +763,13 @@ export type EachUnionToKeyOf<Union> = Union extends infer U ? keyof U : never;
 export type InteractionOptionResolverReturn<T, AllowedInteraction, ReturnType> =
   keyof T extends EachUnionToKeyOf<AllowedInteraction> ? ReturnType : never;
 
-export class ContextMenuInteraction extends BaseCommandInteraction {
-  public options: CommandInteractionOptionResolver<ContextMenuInteraction>;
+export class ContextMenuInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<
+  Cached,
+  ContextMenuInteraction
+> {
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
-  private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption[];
+  private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
 }
 
 export class DataResolver extends null {
@@ -1182,10 +1173,10 @@ export class Intents extends BitField<IntentsString> {
   public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
 }
 
-export type GuildCacheState = 'cached' | 'raw' | 'present';
+export type CacheType = 'cached' | 'raw' | 'present';
 
 export type CacheTypeReducer<
-  State extends GuildCacheState,
+  State extends CacheType,
   CachedType,
   RawType = CachedType,
   PresentType = CachedType | RawType,
@@ -1198,52 +1189,34 @@ export type CacheTypeReducer<
   ? PresentType
   : Fallback;
 
-export interface GuildInteraction<Cached extends GuildCacheState = GuildCacheState> extends Interaction {
-  guildId: Snowflake;
-  member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
-  readonly guild: CacheTypeReducer<Cached, Guild, null>;
-  channel: CacheTypeReducer<Cached, Exclude<TextBasedChannels, PartialDMChannel | DMChannel> | null>;
-  isCommand(): this is GuildCommandInteraction<Cached> & this;
-}
-
-export class Interaction extends Base {
+export class Interaction<Cached extends CacheType = CacheType> extends Base {
+  // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
+  private readonly _cacheType: Cached;
   protected constructor(client: Client, data: RawInteractionData);
   public applicationId: Snowflake;
-  public readonly channel: TextBasedChannels | null;
+  public channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
   public channelId: Snowflake | null;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
-  public readonly guild: Guild | null;
-  public guildId: Snowflake | null;
+  public readonly guild: CacheTypeReducer<Cached, Guild, null>;
+  public guildId: CacheTypeReducer<Cached, Snowflake>;
   public id: Snowflake;
-  public member: GuildMember | APIInteractionGuildMember | null;
+  public member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   public readonly token: string;
   public type: InteractionType;
   public user: User;
   public version: number;
   public memberPermissions: Readonly<Permissions> | null;
-  public inGuild(): this is GuildInteraction<'present'> & this;
-  public inCachedGuild(): this is GuildInteraction<'cached'> & this;
-  public inRawGuild(): this is GuildInteraction<'raw'> & this;
-  public isApplicationCommand(): this is BaseCommandInteraction;
-  public isButton(): this is ButtonInteraction;
-  public isCommand(): this is CommandInteraction;
+  public inGuild(): this is Interaction<'present'> & this;
+  public inCachedGuild(): this is Interaction<'cached'> & this;
+  public inRawGuild(): this is Interaction<'raw'> & this;
+  public isApplicationCommand(): this is BaseCommandInteraction<Cached>;
+  public isButton(): this is ButtonInteraction<Cached>;
+  public isCommand(): this is CommandInteraction<Cached>;
   public isAutocomplete(): this is AutocompleteInteraction;
-  public isContextMenu(): this is ContextMenuInteraction;
-  public isMessageComponent(): this is MessageComponentInteraction;
-  public isSelectMenu(): this is SelectMenuInteraction;
-}
-
-export interface InteractionResponses<Cached extends GuildCacheState = GuildCacheState>
-  extends GuildInteraction<Cached> {
-  deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
-  deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
-  deleteReply(): Promise<void>;
-  fetchReply(): Promise<GuildCacheMessage<Cached>>;
-  reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  public isContextMenu(): this is ContextMenuInteraction<Cached>;
+  public isMessageComponent(): this is MessageComponentInteraction<Cached>;
+  public isSelectMenu(): this is SelectMenuInteraction<Cached>;
 }
 
 export class InteractionCollector<T extends Interaction> extends Collector<Snowflake, T> {
@@ -1371,10 +1344,11 @@ export type InteractionCollectorReturnType<
   ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions<Cached>[T]>
   : InteractionCollector<MessageComponentInteraction>;
 
-export type InteractionExtractor<T extends MessageComponentType | MessageComponentTypes | undefined> = T extends
-  | MessageComponentType
-  | MessageComponentTypes
-  ? MappedInteractionCollectorOptions<false>[T] extends InteractionCollectorOptions<infer Item>
+export type InteractionExtractor<
+  T extends MessageComponentType | MessageComponentTypes | undefined,
+  C extends boolean = false,
+> = T extends MessageComponentType | MessageComponentTypes
+  ? MappedInteractionCollectorOptions<C>[T] extends InteractionCollectorOptions<infer Item>
     ? Item
     : never
   : MessageComponentInteraction;
@@ -1392,22 +1366,8 @@ export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | 
 
 export type GuildTextBasedChannel = Exclude<TextBasedChannels, PartialDMChannel | DMChannel>;
 
-export type CachedMessage = GuildMessage<'cached'> & Message;
-export interface GuildMessage<Cached extends GuildCacheState = GuildCacheState> {
-  awaitMessageComponent<
-    T extends MessageComponentType | MessageComponentTypes | undefined = MessageComponentTypes.ACTION_ROW,
-  >(
-    options?: AwaitMessageCollectorOptionsParams<T>,
-  ): Promise<InteractionResponses<Cached> & InteractionExtractor<T>>;
-
-  createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
-    options?: MessageCollectorOptionsParams<T>,
-  ): InteractionCollectorReturnType<T, true>;
-
-  readonly channel: CacheTypeReducer<Cached, GuildTextBasedChannel>;
-}
-
-export class Message extends Base {
+export class Message<Cached extends boolean = boolean> extends Base {
+  private readonly _cacheType: Cached;
   private constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData | RawMessageData): void;
 
@@ -1415,7 +1375,7 @@ export class Message extends Base {
   public applicationId: Snowflake | null;
   public attachments: Collection<Snowflake, MessageAttachment>;
   public author: User;
-  public readonly channel: TextBasedChannels;
+  public readonly channel: If<Cached, GuildTextBasedChannel, TextBasedChannels>;
   public channelId: Snowflake;
   public readonly cleanContent: string;
   public components: MessageActionRow[];
@@ -1453,12 +1413,12 @@ export class Message extends Base {
   public reference: MessageReference | null;
   public awaitMessageComponent<
     T extends MessageComponentType | MessageComponentTypes | undefined = MessageComponentTypes.ACTION_ROW,
-  >(options?: AwaitMessageCollectorOptionsParams<T>): Promise<InteractionExtractor<T>>;
+  >(options?: AwaitMessageCollectorOptionsParams<T>): Promise<InteractionExtractor<T, Cached>>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
   public createMessageComponentCollector<
     T extends MessageComponentType | MessageComponentTypes | undefined = undefined,
-  >(options?: MessageCollectorOptionsParams<T>): InteractionCollectorReturnType<T>;
+  >(options?: MessageCollectorOptionsParams<T>): InteractionCollectorReturnType<T, Cached>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
   public equals(message: Message, rawData: unknown): boolean;
@@ -1476,7 +1436,7 @@ export class Message extends Base {
   public toJSON(): unknown;
   public toString(): string;
   public unpin(): Promise<Message>;
-  public inGuild(): this is GuildMessage<'cached'> & this;
+  public inGuild(): this is Message<true> & this;
 }
 
 export class MessageActionRow extends BaseMessageComponent {
@@ -1550,38 +1510,44 @@ export class MessageCollector extends Collector<Snowflake, Message> {
   public dispose(message: Message): Snowflake | null;
 }
 
-export class MessageComponentInteraction extends Interaction {
+export class MessageComponentInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
-  public readonly channel: TextBasedChannels | null;
-  public readonly component: MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>;
+  public readonly channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
+  public readonly component: CacheTypeReducer<
+    Cached,
+    MessageActionRowComponent,
+    Exclude<APIMessageComponent, APIActionRowComponent>
+  > | null;
   public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
   public customId: string;
   public channelId: Snowflake;
   public deferred: boolean;
   public ephemeral: boolean | null;
-  public message: Message | APIMessage;
+  public message: CacheTypeReducer<Cached, Message, APIMessage>;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public inGuild(): this is InteractionResponses<'present'> & this;
-  public inCachedGuild(): this is InteractionResponses<'cached'> & this;
-  public inRawGuild(): this is InteractionResponses<'raw'> & this;
-  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public inGuild(): this is MessageComponentInteraction<'present'> & this;
+  public inCachedGuild(): this is MessageComponentInteraction<'cached'> & this;
+  public inRawGuild(): this is MessageComponentInteraction<'raw'> & this;
+  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
-  public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
   public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | APIMessage>;
-  public fetchReply(): Promise<Message | APIMessage>;
-  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
+  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message | APIMessage>;
+  public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
 
   public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
 export class MessageEmbed {
+  private _fieldEquals(field: EmbedField, other: EmbedField): boolean;
+
   public constructor(data?: MessageEmbed | MessageEmbedOptions | APIEmbed);
   public author: MessageEmbedAuthor | null;
   public color: number | null;
@@ -1613,6 +1579,7 @@ export class MessageEmbed {
   public setTitle(title: string): this;
   public setURL(url: string): this;
   public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
+  public equals(embed: MessageEmbed | APIEmbed): boolean;
   public toJSON(): unknown;
 
   public static normalizeField(name: string, value: string, inline?: boolean): Required<EmbedFieldData>;
@@ -1870,7 +1837,7 @@ export class Role extends Base {
   public static comparePositions(role1: Role, role2: Role): number;
 }
 
-export class SelectMenuInteraction extends MessageComponentInteraction {
+export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   public constructor(client: Client, data: RawMessageSelectMenuInteractionData);
   public componentType: 'SELECT_MENU';
   public values: string[];
@@ -3785,7 +3752,7 @@ export type ColorResolvable =
   | number
   | HexColorString;
 
-export interface CommandInteractionOption {
+export interface CommandInteractionOption<Cached extends CacheType = CacheType> {
   name: string;
   type: ApplicationCommandOptionType;
   value?: string | number | boolean;
@@ -3793,18 +3760,18 @@ export interface CommandInteractionOption {
   autocomplete?: boolean;
   options?: CommandInteractionOption[];
   user?: User;
-  member?: GuildMember | APIInteractionDataResolvedGuildMember;
-  channel?: GuildChannel | ThreadChannel | APIInteractionDataResolvedChannel;
-  role?: Role | APIRole;
-  message?: Message | APIMessage;
+  member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
+  channel?: CacheTypeReducer<Cached, GuildChannel | ThreadChannel, APIInteractionDataResolvedChannel>;
+  role?: CacheTypeReducer<Cached, Role, APIRole>;
+  message?: CacheTypeReducer<Cached, Message, APIMessage>;
 }
 
-export interface CommandInteractionResolvedData {
+export interface CommandInteractionResolvedData<Cached extends CacheType = CacheType> {
   users?: Collection<Snowflake, User>;
-  members?: Collection<Snowflake, GuildMember | APIInteractionDataResolvedGuildMember>;
-  roles?: Collection<Snowflake, Role | APIRole>;
-  channels?: Collection<Snowflake, Channel | APIInteractionDataResolvedChannel>;
-  messages?: Collection<Snowflake, Message | APIMessage>;
+  members?: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
+  roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
+  channels?: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIInteractionDataResolvedChannel>>;
+  messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
 }
 
 export interface ConstantsClientApplicationAssetTypes {
@@ -4369,7 +4336,8 @@ export interface IntegrationAccount {
 
 export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 
-export interface InteractionCollectorOptions<T extends Interaction> extends CollectorOptions<[T]> {
+export interface InteractionCollectorOptions<T extends Interaction, Cached extends CacheType = CacheType>
+  extends CollectorOptions<[T]> {
   channel?: TextBasedChannels;
   componentType?: MessageComponentType | MessageComponentTypes;
   guild?: Guild;
@@ -4377,26 +4345,24 @@ export interface InteractionCollectorOptions<T extends Interaction> extends Coll
   max?: number;
   maxComponents?: number;
   maxUsers?: number;
-  message?: Message | APIMessage;
+  message?: CacheTypeReducer<Cached, Message, APIMessage>;
 }
 
 export interface ButtonInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<
-    Cached extends true ? CachedInteraction<ButtonInteraction> : ButtonInteraction
-  > {
+  extends MessageComponentCollectorOptions<Cached extends true ? ButtonInteraction<'cached'> : ButtonInteraction> {
   componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
 }
 
 export interface SelectMenuInteractionCollectorOptions<Cached = boolean>
   extends MessageComponentCollectorOptions<
-    Cached extends true ? CachedInteraction<SelectMenuInteraction> : SelectMenuInteraction
+    Cached extends true ? SelectMenuInteraction<'cached'> : SelectMenuInteraction
   > {
   componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
 }
 
 export interface MessageInteractionCollectorOptions<Cached = boolean>
   extends MessageComponentCollectorOptions<
-    Cached extends true ? CachedInteraction<MessageComponentInteraction> : MessageComponentInteraction
+    Cached extends true ? MessageComponentInteraction<'cached'> : MessageComponentInteraction
   > {
   componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
 }
@@ -5004,7 +4970,7 @@ export type StageInstanceResolvable = StageInstance | Snowflake;
 
 export interface StartThreadOptions {
   name: string;
-  autoArchiveDuration: ThreadAutoArchiveDuration;
+  autoArchiveDuration?: ThreadAutoArchiveDuration;
   reason?: string;
 }
 
