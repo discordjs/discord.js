@@ -602,9 +602,8 @@ export class CommandInteraction<Cached extends CacheType = CacheType> extends Ba
   public toString(): string;
 }
 
-export class AutocompleteInteraction extends Interaction {
+export class AutocompleteInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public readonly channel: TextBasedChannels | null;
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
