@@ -106,6 +106,12 @@ const guildCommandId = '234567890123456789'; // example id
 client.on('ready', async () => {
   console.log(`Client is logged in as ${client.user!.tag} and ready!`);
 
+  // Test fetching all global commands and ones from one guild
+  assertType<Collection<string, ApplicationCommand>>(await client.application!.commands.fetch());
+  assertType<Collection<string, ApplicationCommand>>(
+    await client.application!.commands.fetch({ guildId: testGuildId }),
+  );
+
   // Test command manager methods
   const globalCommand = await client.application?.commands.fetch(globalCommandId);
   const guildCommandFromGlobal = await client.application?.commands.fetch(guildCommandId, { guildId: testGuildId });
