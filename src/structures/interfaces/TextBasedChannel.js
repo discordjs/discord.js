@@ -129,6 +129,7 @@ class TextBasedChannel {
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg'
+   *     description: 'A description of the file'
    *   }]
    * })
    *   .then(console.log)
@@ -147,6 +148,7 @@ class TextBasedChannel {
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg'
+   *     description: 'A description of the file'
    *   }]
    * })
    *   .then(console.log)
