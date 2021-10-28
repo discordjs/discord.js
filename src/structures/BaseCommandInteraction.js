@@ -17,13 +17,6 @@ class BaseCommandInteraction extends Interaction {
     super(client, data);
 
     /**
-     * The channel this interaction was sent in
-     * @type {?TextBasedChannels}
-     * @name BaseCommandInteraction#channel
-     * @readonly
-     */
-
-    /**
      * The id of the channel this interaction was sent in
      * @type {Snowflake}
      * @name BaseCommandInteraction#channelId
@@ -138,6 +131,7 @@ class BaseCommandInteraction extends Interaction {
    * @typedef {Object} CommandInteractionOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
+   * @property {boolean} [autocomplete] Whether the option is an autocomplete option
    * @property {string|number|boolean} [value] The value of the option
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)

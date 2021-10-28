@@ -69,6 +69,7 @@ exports.Activity = require('./structures/Presence').Activity;
 exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
+exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
 exports.Base = require('./structures/Base');
 exports.BaseCommandInteraction = require('./structures/BaseCommandInteraction');
 exports.BaseGuild = require('./structures/BaseGuild');

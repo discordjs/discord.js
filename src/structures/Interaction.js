@@ -161,6 +161,14 @@ class Interaction extends Base {
   }
 
   /**
+   * Indicates whether this interaction is an {@link AutocompleteInteraction}
+   * @returns {boolean}
+   */
+  isAutocomplete() {
+    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND_AUTOCOMPLETE;
+  }
+
+  /**
    * Indicates whether this interaction is a {@link MessageComponentInteraction}.
    * @returns {boolean}
    */
