@@ -1103,7 +1103,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   private readonly _cacheType: Cached;
   protected constructor(client: Client, data: RawInteractionData);
   public applicationId: Snowflake;
-  public channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
+  public readonly channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
   public channelId: Snowflake | null;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -1266,6 +1266,11 @@ export type MessageCollectorOptionsParams<T extends MessageComponentType | Messa
   | {
       componentType?: T;
     } & MessageComponentCollectorOptions<InteractionExtractor<T>>;
+
+export type MessageChannelCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
+  | {
+      componentType?: T;
+    } & MessageChannelComponentCollectorOptions<InteractionExtractor<T>>;
 
 export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
   | { componentType?: T } & Pick<
@@ -2569,6 +2574,7 @@ export class ApplicationCommandManager<
     id: Snowflake,
     options: FetchApplicationCommandOptions & { guildId: Snowflake },
   ): Promise<ApplicationCommand>;
+  public fetch(options: FetchApplicationCommandOptions): Promise<Collection<string, ApplicationCommandScope>>;
   public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommandScope>;
   public fetch(
     id?: Snowflake,
@@ -2651,6 +2657,7 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
     data: ApplicationCommandDataResolvable,
   ): Promise<ApplicationCommand>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
+  public fetch(options: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
   public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
@@ -2950,7 +2957,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
   createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
-    options?: MessageCollectorOptionsParams<T>,
+    options?: MessageChannelCollectorOptionsParams<T>,
   ): InteractionCollectorReturnType<T>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   sendTyping(): Promise<void>;
@@ -4427,6 +4434,11 @@ export type MessageComponent = BaseMessageComponent | MessageActionRow | Message
 export type MessageComponentCollectorOptions<T extends MessageComponentInteraction> = Omit<
   InteractionCollectorOptions<T>,
   'channel' | 'message' | 'guild' | 'interactionType'
+>;
+
+export type MessageChannelComponentCollectorOptions<T extends MessageComponentInteraction> = Omit<
+  InteractionCollectorOptions<T>,
+  'channel' | 'guild' | 'interactionType'
 >;
 
 export type MessageComponentOptions =
