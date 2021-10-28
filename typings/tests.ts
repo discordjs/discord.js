@@ -1021,7 +1021,7 @@ client.on('interactionCreate', async interaction => {
     }
 
     assertType<CommandInteraction>(interaction);
-    assertType<CommandInteractionOptionResolver<CommandInteraction>>(interaction.options);
+    assertType<CommandInteractionOptionResolver>(interaction.options);
     assertType<readonly CommandInteractionOption[]>(interaction.options.data);
 
     const optionalOption = interaction.options.get('name');
