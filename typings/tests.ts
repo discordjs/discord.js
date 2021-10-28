@@ -1,4 +1,4 @@
-import {
+import type {
   APIGuildMember,
   APIInteractionGuildMember,
   APIMessage,
@@ -42,7 +42,6 @@ import {
   GuildMember,
   GuildResolvable,
   GuildTextBasedChannel,
-  GuildTextChannelResolvable,
   Intents,
   Interaction,
   InteractionCollector,
@@ -78,7 +77,7 @@ import {
   User,
   VoiceChannel,
 } from '.';
-import { ApplicationCommandOptionTypes } from './enums';
+import type { ApplicationCommandOptionTypes } from './enums';
 
 const client: Client = new Client({
   intents: Intents.FLAGS.GUILDS,
