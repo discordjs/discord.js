@@ -76,6 +76,7 @@ import {
   Typing,
   User,
   VoiceChannel,
+  Shard,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 
@@ -1050,3 +1051,7 @@ client.on('interactionCreate', async interaction => {
     assertType<string | null>(interaction.options.getSubcommandGroup(false));
   }
 });
+
+declare const shard: Shard;
+
+assertType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
