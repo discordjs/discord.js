@@ -634,7 +634,10 @@ export interface ApplicationCommandInteractionOptionResolver<Cached extends Cach
 }
 
 export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
-  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getFocused'>;
+  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
+  public inGuild(): this is CommandInteraction<'present'> & this;
+  public inCachedGuild(): this is CommandInteraction<'cached'> & this;
+  public inRawGuild(): this is CommandInteraction<'raw'> & this;
   public toString(): string;
 }
 
@@ -645,23 +648,12 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public commandName: string;
   public responded: boolean;
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
+  public inGuild(): this is CommandInteraction<'present'> & this;
+  public inCachedGuild(): this is CommandInteraction<'cached'> & this;
+  public inRawGuild(): this is CommandInteraction<'raw'> & this;
   private transformOption(option: APIApplicationCommandOption): CommandInteractionOption;
   public respond(options: ApplicationCommandOptionChoice[]): Promise<void>;
 }
-
-export type BaseCommandInteractionOptionResolver<Cached extends CacheType = CacheType> = Omit<
-  CommandInteractionOptionResolver<Cached>,
-  | 'getFocused'
-  | 'getMentionable'
-  | 'getRole'
-  | 'getNumber'
-  | 'getInteger'
-  | 'getString'
-  | 'getChannel'
-  | 'getBoolean'
-  | 'getSubcommandGroup'
-  | 'getSubcommand'
->;
 
 export class CommandInteractionOptionResolver<Cached extends CacheType = CacheType> {
   private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
