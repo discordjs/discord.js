@@ -276,14 +276,7 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
   Message | APIMessage
 >;
 
-export abstract class BaseCommandInteraction<
-  Cached extends CacheType = CacheType,
-  Type extends CommandInteraction | AutocompleteInteraction | ContextMenuInteraction =
-    | CommandInteraction
-    | AutocompleteInteraction
-    | ContextMenuInteraction,
-> extends Interaction<Cached> {
-  public options: CommandInteractionOptionResolver<Type, Cached>;
+export abstract class BaseCommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public channelId: Snowflake;
   public commandId: Snowflake;
@@ -595,10 +588,8 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
 }
 
-export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<
-  Cached,
-  CommandInteraction
-> {
+export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
+  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
   public toString(): string;
 }
 
@@ -608,15 +599,12 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public commandId: Snowflake;
   public commandName: string;
   public responded: boolean;
-  public options: CommandInteractionOptionResolver<AutocompleteInteraction>;
+  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
   private transformOption(option: APIApplicationCommandOption): CommandInteractionOption;
   public respond(options: ApplicationCommandOptionChoice[]): Promise<void>;
 }
 
-export class CommandInteractionOptionResolver<
-  Type extends AutocompleteInteraction | ContextMenuInteraction | CommandInteraction,
-  Cached extends CacheType = CacheType,
-> {
+export class CommandInteractionOptionResolver<Cached extends CacheType = CacheType> {
   private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption<Cached>[];
@@ -640,132 +628,54 @@ export class CommandInteractionOptionResolver<
   public get(name: string, required: true): CommandInteractionOption<Cached>;
   public get(name: string, required?: boolean): CommandInteractionOption<Cached> | null;
 
-  public getSubcommand(
-    required?: true,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string>;
-  public getSubcommand(
-    required: boolean,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string | null>;
-  public getSubcommandGroup(
-    required?: true,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string>;
-  public getSubcommandGroup(
-    required: boolean,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string | null>;
-  public getBoolean(
-    name: string,
-    required: true,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, boolean>;
-  public getBoolean(
-    name: string,
-    required?: boolean,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, boolean | null>;
-  public getChannel(
-    name: string,
-    required: true,
-  ): InteractionOptionResolverReturn<
-    Type,
-    CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption<Cached>['channel']>
-  >;
-  public getChannel(
-    name: string,
-    required?: boolean,
-  ): InteractionOptionResolverReturn<
-    Type,
-    CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption<Cached>['channel']> | null
-  >;
-  public getString(
-    name: string,
-    required: true,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string>;
-  public getString(
-    name: string,
-    required?: boolean,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, string | null>;
-  public getInteger(
-    name: string,
-    required: true,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, number>;
-  public getInteger(
-    name: string,
-    required?: boolean,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, number | null>;
-  public getNumber(
-    name: string,
-    required: true,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, number>;
-  public getNumber(
-    name: string,
-    required?: boolean,
-  ): InteractionOptionResolverReturn<Type, CommandInteraction | AutocompleteInteraction, number | null>;
+  public getSubcommand(required?: true): string;
+  public getSubcommand(required: boolean): string | null;
+  public getSubcommandGroup(required?: true): string;
+  public getSubcommandGroup(required: boolean): string | null;
+  public getBoolean(name: string, required: true): boolean;
+  public getBoolean(name: string, required?: boolean): boolean | null;
+  public getChannel(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['channel']>;
+  public getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['channel']> | null;
+  public getString(name: string, required: true): string;
+  public getString(name: string, required?: boolean): string | null;
+  public getInteger(name: string, required: true): number;
+  public getInteger(name: string, required?: boolean): number | null;
+  public getNumber(name: string, required: true): number;
+  public getNumber(name: string, required?: boolean): number | null;
   public getUser(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['user']>;
   public getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['user']> | null;
   public getMember(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['member']>;
   public getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['member']> | null;
-  public getRole(
-    name: string,
-    required: true,
-  ): InteractionOptionResolverReturn<
-    Type,
-    CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption<Cached>['role']>
-  >;
-  public getRole(
-    name: string,
-    required?: boolean,
-  ): InteractionOptionResolverReturn<
-    Type,
-    CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption<Cached>['role']> | null
-  >;
+  public getRole(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['role']>;
+  public getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['role']> | null;
   public getMentionable(
     name: string,
     required: true,
-  ): InteractionOptionResolverReturn<
-    Type,
-    CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']>
-  >;
+  ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']>;
   public getMentionable(
     name: string,
     required?: boolean,
-  ): InteractionOptionResolverReturn<
-    Type,
-    CommandInteraction | AutocompleteInteraction,
-    NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null
-  >;
-  public getMessage(
-    name: string,
-    required: true,
-  ): InteractionOptionResolverReturn<
-    Type,
-    ContextMenuInteraction,
-    NonNullable<CommandInteractionOption<Cached>['message']>
-  >;
-  public getMessage(
-    name: string,
-    required?: boolean,
-  ): InteractionOptionResolverReturn<
-    Type,
-    ContextMenuInteraction,
-    NonNullable<CommandInteractionOption<Cached>['message']> | null
-  >;
-  public getFocused(
-    getFull: true,
-  ): InteractionOptionResolverReturn<Type, AutocompleteInteraction, ApplicationCommandOptionChoice>;
-  public getFocused(getFull?: boolean): InteractionOptionResolverReturn<Type, AutocompleteInteraction, string | number>;
+  ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
+  public getMessage(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['message']>;
+  public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
+  public getFocused(getFull: true): ApplicationCommandOptionChoice;
+  public getFocused(getFull?: boolean): string | number;
 }
 
-export type EachUnionToKeyOf<Union> = Union extends infer U ? keyof U : never;
-export type InteractionOptionResolverReturn<T, AllowedInteraction, ReturnType> =
-  keyof T extends EachUnionToKeyOf<AllowedInteraction> ? ReturnType : never;
-
-export class ContextMenuInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<
-  Cached,
-  ContextMenuInteraction
-> {
+export class ContextMenuInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
+  public options: Omit<
+    CommandInteractionOptionResolver<Cached>,
+    | 'getFocused'
+    | 'getMentionable'
+    | 'getRole'
+    | 'getNumber'
+    | 'getInteger'
+    | 'getString'
+    | 'getChannel'
+    | 'getBoolean'
+    | 'getSubcommandGroup'
+    | 'getSubcommand'
+  >;
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
