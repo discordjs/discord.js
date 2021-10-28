@@ -239,6 +239,18 @@ class CommandInteractionOptionResolver {
     const option = this._getTypedOption(name, '_MESSAGE', ['message'], required);
     return option?.message ?? null;
   }
+
+  /**
+   * Gets the focused option.
+   * @param {boolean} [getFull=false] Whether to get the full option object
+   * @returns {string|number|ApplicationCommandOptionChoice}
+   * The value of the option, or the whole option if getFull is true
+   */
+  getFocused(getFull = false) {
+    const focusedOption = this._hoistedOptions.find(option => option.focused);
+    if (!focusedOption) throw new TypeError('AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION');
+    return getFull ? focusedOption : focusedOption.value;
+  }
 }
 
 module.exports = CommandInteractionOptionResolver;

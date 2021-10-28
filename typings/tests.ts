@@ -19,7 +19,9 @@ import {
   ApplicationCommandResolvable,
   ApplicationCommandSubCommandData,
   ApplicationCommandSubGroupData,
+  BaseCommandInteraction,
   ButtonInteraction,
+  CacheType,
   CategoryChannel,
   Client,
   ClientApplication,
@@ -922,7 +924,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inCachedGuild()) {
       assertType<ContextMenuInteraction>(interaction);
       assertType<Guild>(interaction.guild);
-      assertType<CommandInteraction<'cached'>>(interaction);
+      assertType<BaseCommandInteraction<'cached'>>(interaction);
     } else if (interaction.inRawGuild()) {
       assertType<ContextMenuInteraction>(interaction);
       assertType<null>(interaction.guild);
@@ -994,7 +996,6 @@ client.on('interactionCreate', async interaction => {
 
       assertType<APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
       assertType<APIRole>(interaction.options.getRole('test', true));
-      assertType<APIMessage>(interaction.options.getMessage('test', true));
     } else if (interaction.inCachedGuild()) {
       const msg = await interaction.reply({ fetchReply: true });
       const btn = await msg.awaitMessageComponent({ componentType: 'BUTTON' });
@@ -1010,7 +1011,6 @@ client.on('interactionCreate', async interaction => {
 
       assertType<GuildChannel | ThreadChannel>(interaction.options.getChannel('test', true));
       assertType<Role>(interaction.options.getRole('test', true));
-      assertType<Message>(interaction.options.getMessage('test', true));
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);
@@ -1023,11 +1023,10 @@ client.on('interactionCreate', async interaction => {
         interaction.options.getChannel('test', true),
       );
       assertType<APIRole | Role>(interaction.options.getRole('test', true));
-      assertType<APIMessage | Message>(interaction.options.getMessage('test', true));
     }
 
     assertType<CommandInteraction>(interaction);
-    assertType<CommandInteractionOptionResolver>(interaction.options);
+    assertType<Omit<CommandInteractionOptionResolver<CacheType>, 'getFocused' | 'getMessage'>>(interaction.options);
     assertType<readonly CommandInteractionOption[]>(interaction.options.data);
 
     const optionalOption = interaction.options.get('name');
