@@ -19,6 +19,7 @@ import {
   ApplicationCommandResolvable,
   ApplicationCommandSubCommandData,
   ApplicationCommandSubGroupData,
+  BaseCommandInteraction,
   ButtonInteraction,
   CategoryChannel,
   Client,
@@ -921,7 +922,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inCachedGuild()) {
       assertType<ContextMenuInteraction>(interaction);
       assertType<Guild>(interaction.guild);
-      assertType<CommandInteraction<'cached'>>(interaction);
+      assertType<BaseCommandInteraction<'cached'>>(interaction);
     } else if (interaction.inRawGuild()) {
       assertType<ContextMenuInteraction>(interaction);
       assertType<null>(interaction.guild);
