@@ -3966,7 +3966,7 @@ export interface FetchThreadsOptions {
 export interface FileOptions {
   attachment: BufferResolvable | Stream;
   name?: string;
-  description?: string
+  description?: string;
 }
 
 export interface GuildApplicationCommandPermissionData {
