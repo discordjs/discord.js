@@ -59,7 +59,7 @@ jobs:
         run: echo "##[add-matcher].github/tsc.json"
 
       - name: Validate typings
-        run: npx tsc typings\index.d.ts
+        run: npx tsc typings/index.d.ts
 
       - name: Run TypeScript compiler
         run: npm run test:typescript
