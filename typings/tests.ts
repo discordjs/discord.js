@@ -75,6 +75,7 @@ import {
   TextBasedChannels,
   TextChannel,
   ThreadChannel,
+  ThreadMember,
   Typing,
   User,
   VoiceChannel,
@@ -446,9 +447,16 @@ client.on('ready', async () => {
 // This is to check that stuff is the right type
 declare const assertIsPromiseMember: (m: Promise<GuildMember>) => void;
 
-client.on('guildCreate', g => {
+client.on('guildCreate', async g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
+
+  if (channel.isThread()) {
+    const fetchedMember = await channel.members.fetch('12345678');
+    assertType<ThreadMember>(fetchedMember);
+    const fetchedMemberCol = await channel.members.fetch(true);
+    assertType<Collection<Snowflake, ThreadMember>>(fetchedMemberCol);
+  }
 
   channel.setName('foo').then(updatedChannel => {
     console.log(`New channel name: ${updatedChannel.name}`);
