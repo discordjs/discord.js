@@ -2429,7 +2429,6 @@ export const Constants: {
     name: string;
     version: string;
     description: string;
-    author: string;
     license: string;
     main: string;
     types: string;
@@ -2440,7 +2439,6 @@ export const Constants: {
     scripts: Record<string, string>;
     engines: Record<string, string>;
     dependencies: Record<string, string>;
-    peerDependencies: Record<string, string>;
     devDependencies: Record<string, string>;
     [key: string]: unknown;
   };
