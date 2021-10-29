@@ -1,3 +1,41 @@
+# [13.3.0](https://github.com/discordjs/discord.js/compare/13.2.0...13.3.0) (2021-10-29)
+
+
+### Bug Fixes
+
+* Handle message bulk delete and thread delete in collectors ([#6902](https://github.com/discordjs/discord.js/issues/6902)) ([d6685b1](https://github.com/discordjs/discord.js/commit/d6685b1c5097377b8228b32ff05f1e5553051417))
+* **AllowedImageSizes:** add new image sizes ([#6844](https://github.com/discordjs/discord.js/issues/6844)) ([ef01b84](https://github.com/discordjs/discord.js/commit/ef01b84fa8c8933a496528da8eeeb346cbf41ea4))
+* **ApplicationCommandManager:** update guild command cache on c/u/d ([#6841](https://github.com/discordjs/discord.js/issues/6841)) ([f169c8f](https://github.com/discordjs/discord.js/commit/f169c8fe460ef2be6f38d6ee73c55d8b4182e3b7))
+* **Guild:** guild.available is never set on new joins ([#6769](https://github.com/discordjs/discord.js/issues/6769)) ([29667c9](https://github.com/discordjs/discord.js/commit/29667c96e52a9f0b1e499fa6c21d9fe80e06bb37))
+* **GuildBanManager:** send reason in the headers instead of json body ([#6800](https://github.com/discordjs/discord.js/issues/6800)) ([bfb89de](https://github.com/discordjs/discord.js/commit/bfb89de864fd5dc4cbb654f6259f802ee21c9a0e))
+* **GuildMember:** more explicit partial check ([#6760](https://github.com/discordjs/discord.js/issues/6760)) ([b1656bf](https://github.com/discordjs/discord.js/commit/b1656bfb4f72819512fc75d5c052d2982f0b9683))
+* **MessageComponentInteraction:** component getter is not null anymore ([#6835](https://github.com/discordjs/discord.js/issues/6835)) ([7621e9d](https://github.com/discordjs/discord.js/commit/7621e9da4c9c5f501131d64aaa1a3a16c3b985db))
+* **TextBasedChannel:** return the cached message instead of clone it ([#6877](https://github.com/discordjs/discord.js/issues/6877)) ([ceaf738](https://github.com/discordjs/discord.js/commit/ceaf738d2efc4b482c8a1fc5b486df99b1d0f037))
+* `PartialGuildMember#id` is not null ([#6840](https://github.com/discordjs/discord.js/issues/6840)) ([4dff279](https://github.com/discordjs/discord.js/commit/4dff279a6f88612db9283851fba8850a2d6c65fe))
+* **MessageReaction:** Prevent event double fire from uncached messages ([#6818](https://github.com/discordjs/discord.js/issues/6818)) ([267a4b3](https://github.com/discordjs/discord.js/commit/267a4b3f68fa81629a083ebf04f7e49b5579ae86))
+* **Role:** check for presence of icon and unicode_emoji before patching ([#6780](https://github.com/discordjs/discord.js/issues/6780)) ([e31c5ca](https://github.com/discordjs/discord.js/commit/e31c5ca1a88a32e425f9e28abbdfd66d4309c5c6))
+* **Types:** export more types ([#6808](https://github.com/discordjs/discord.js/issues/6808)) ([b474677](https://github.com/discordjs/discord.js/commit/b47467755cb5d1dd779d79ad86eb678bb13541e9))
+* **User:** don't generate the banner URL when not cached ([#6783](https://github.com/discordjs/discord.js/issues/6783)) ([0d599a1](https://github.com/discordjs/discord.js/commit/0d599a1a7680fc4a35b5f44ba0c3b9aeccccbfaf))
+* **Webhook:** Resolve source guild only if cached ([#6834](https://github.com/discordjs/discord.js/issues/6834)) ([d193d04](https://github.com/discordjs/discord.js/commit/d193d04cea862e2db84ac40226cfdbdb39be46d5))
+
+
+### Features
+
+* **ThreadMemberManager:** allow individual members to be fetched ([#6889](https://github.com/discordjs/discord.js/issues/6889)) ([14716df](https://github.com/discordjs/discord.js/commit/14716df6b62b35f3a09243ba12242db9dc798aa7))
+* add support for autocomplete interactions ([#6672](https://github.com/discordjs/discord.js/issues/6672)) ([ddf759c](https://github.com/discordjs/discord.js/commit/ddf759c8117e7a00702d444f5b5f0c2257189b09))
+* **MessageEmbed:** add #equals ([#6885](https://github.com/discordjs/discord.js/issues/6885)) ([fae4abf](https://github.com/discordjs/discord.js/commit/fae4abf2f7071425639e8d1ea1a8598403fa2a07))
+* **StartThreadOptions:** default autoArchiveDuration to channel's defaultAutoArchiveDuration ([#6278](https://github.com/discordjs/discord.js/issues/6278)) ([740d3f0](https://github.com/discordjs/discord.js/commit/740d3f006ef637709e3026f90fe72f93b8397229))
+* Add `rtcRegion` to `GuildManager#create()` ([#6858](https://github.com/discordjs/discord.js/issues/6858)) ([399e720](https://github.com/discordjs/discord.js/commit/399e720b92c11539f4d16a13e1b8190f136da6cc))
+* add typeguards to webhooks ([#6850](https://github.com/discordjs/discord.js/issues/6850)) ([e0afcad](https://github.com/discordjs/discord.js/commit/e0afcadda4bf70497b327cd3b3372688ba03422a))
+* **Client:** add apiResponse and apiRequest events ([#6739](https://github.com/discordjs/discord.js/issues/6739)) ([26f927b](https://github.com/discordjs/discord.js/commit/26f927b9fe338f2f3dc413f46122532608a5a080))
+* **CommandInteraction:** add toString method ([#6793](https://github.com/discordjs/discord.js/issues/6793)) ([bd48e6d](https://github.com/discordjs/discord.js/commit/bd48e6df844fd535949937c3603629413d422526))
+* **GuildChannelManager:** add 'rtcRegion' option to 'create' method ([#6849](https://github.com/discordjs/discord.js/issues/6849)) ([487d32d](https://github.com/discordjs/discord.js/commit/487d32d303c340b1609b0fe6b829a5f4fe001ef0))
+* **Interaction:** add `isApplicationCommand` check ([#6801](https://github.com/discordjs/discord.js/issues/6801)) ([6898fa3](https://github.com/discordjs/discord.js/commit/6898fa3b37bf5248c85417f145dc377b4c0ebc82))
+* **ModuleImporter:** implement import module compatible with bundlers ([#6709](https://github.com/discordjs/discord.js/issues/6709)) ([d399a28](https://github.com/discordjs/discord.js/commit/d399a28323fbcdc8c3e94f10b97f47e0dfc61f7a))
+* **Permissions:** add checkAdmin to permission overwrite checks ([#6847](https://github.com/discordjs/discord.js/issues/6847)) ([7513b45](https://github.com/discordjs/discord.js/commit/7513b4528ca1b6cf03b8af147feb73ea42a4f8e6))
+
+
+
 # [13.2.0](https://github.com/discordjs/discord.js/compare/13.1.0...13.2.0) (2021-10-05)
 
 
