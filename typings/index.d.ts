@@ -279,7 +279,7 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
 export abstract class BaseCommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public options: Omit<
-    CommandInteractionOptionResolver<Cached>,
+    BaseCommandInteractionOptionResolver<Cached>,
     | 'getFocused'
     | 'getMentionable'
     | 'getRole'
@@ -633,8 +633,8 @@ export interface ApplicationCommandInteractionOptionResolver<Cached extends Cach
   ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
 }
 
-export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
-  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
+export class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
+  public options: Omit<BaseCommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
   public inGuild(): this is CommandInteraction<'present'> & this;
   public inCachedGuild(): this is CommandInteraction<'cached'> & this;
   public inRawGuild(): this is CommandInteraction<'raw'> & this;
@@ -647,7 +647,7 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public commandId: Snowflake;
   public commandName: string;
   public responded: boolean;
-  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
+  public options: Omit<BaseCommandInteractionOptionResolver<Cached>, 'getMessage'>;
   public inGuild(): this is CommandInteraction<'present'> & this;
   public inCachedGuild(): this is CommandInteraction<'cached'> & this;
   public inRawGuild(): this is CommandInteraction<'raw'> & this;
@@ -655,7 +655,7 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public respond(options: ApplicationCommandOptionChoice[]): Promise<void>;
 }
 
-export class CommandInteractionOptionResolver<Cached extends CacheType = CacheType> {
+export class BaseCommandInteractionOptionResolver<Cached extends CacheType = CacheType> {
   private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption<Cached>[];
