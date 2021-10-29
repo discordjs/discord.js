@@ -634,7 +634,7 @@ export interface ApplicationCommandInteractionOptionResolver<Cached extends Cach
 }
 
 export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
-  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getFocused'>;
+  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
   public inGuild(): this is CommandInteraction<'present'> & this;
   public inCachedGuild(): this is CommandInteraction<'cached'> & this;
   public inRawGuild(): this is CommandInteraction<'raw'> & this;
