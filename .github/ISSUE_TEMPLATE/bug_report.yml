@@ -60,7 +60,7 @@ body:
       label: Node.js version
       description: |
         Which version of Node.js are you using? Run `node --version` in your project directory and paste the output.
-        If you are using TypeScript, please include its version (`npm list typescript`) as well. 
+        If you are using TypeScript, please include its version (`npm list typescript`) as well.
       placeholder: Node.js version 16.6+ is required for version 13.0.0+
     validations:
       required: true

@@ -60,17 +60,6 @@ class ThreadManager extends CachedManager {
    */
 
   /**
-   * A number that is allowed to be the duration (in minutes) of inactivity after which a thread is automatically
-   * archived. This can be:
-   * * `60` (1 hour)
-   * * `1440` (1 day)
-   * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
-   * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
-   * * `'MAX'` Based on the guild's features
-   * @typedef {number|string} ThreadAutoArchiveDuration
-   */
-
-  /**
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
    * @typedef {StartThreadOptions} ThreadCreateOptions
    * @property {MessageResolvable} [startMessage] The message to start a thread from. <warn>If this is defined then type
@@ -108,7 +97,14 @@ class ThreadManager extends CachedManager {
    *   .then(threadChannel => console.log(threadChannel))
    *   .catch(console.error);
    */
-  async create({ name, autoArchiveDuration, startMessage, type, invitable, reason } = {}) {
+  async create({
+    name,
+    autoArchiveDuration = this.channel.defaultAutoArchiveDuration,
+    startMessage,
+    type,
+    invitable,
+    reason,
+  } = {}) {
     let path = this.client.api.channels(this.channel.id);
     if (type && typeof type !== 'string' && typeof type !== 'number') {
       throw new TypeError('INVALID_TYPE', 'type', 'ThreadChannelType or Number');

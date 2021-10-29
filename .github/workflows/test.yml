@@ -1,4 +1,4 @@
-name: Testing
+name: Tests
 on: [push, pull_request]
 jobs:
   lint:

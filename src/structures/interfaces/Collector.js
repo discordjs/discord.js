@@ -206,7 +206,7 @@ class Collector extends EventEmitter {
 
   /**
    * Resets the collector's timeout and idle timer.
-   * @param {CollectorResetTimerOptions} [options] Options for reseting
+   * @param {CollectorResetTimerOptions} [options] Options for resetting
    */
   resetTimer({ time, idle } = {}) {
     if (this._timeout) {

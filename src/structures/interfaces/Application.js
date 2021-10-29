@@ -115,7 +115,7 @@ class Application extends Base {
 
   /**
    * When concatenated with a string, this automatically returns the application's name instead of the
-   * Oauth2Application object.
+   * Application object.
    * @returns {?string}
    * @example
    * // Logs: Application name: My App

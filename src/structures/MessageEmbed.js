@@ -264,6 +264,56 @@ class MessageEmbed {
   }
 
   /**
+   * Checks if this embed is equal to another one by comparing every single one of their properties.
+   * @param {MessageEmbed|APIEmbed} embed The embed to compare with
+   * @returns {boolean}
+   */
+  equals(embed) {
+    return (
+      this.type === embed.type &&
+      this.author?.name === embed.author?.name &&
+      this.author?.url === embed.author?.url &&
+      this.author?.iconURL === (embed.author?.iconURL ?? embed.author?.icon_url) &&
+      this.author?.proxyIconURL === (embed.author?.proxyIconURL ?? embed.author?.proxy_icon_url) &&
+      this.color === embed.color &&
+      this.title === embed.title &&
+      this.description === embed.description &&
+      this.url === embed.url &&
+      this.timestamp === embed.timestamp &&
+      this.fields.length === embed.fields.length &&
+      this.fields.every((field, i) => this._fieldEquals(field, embed.fields[i])) &&
+      this.footer?.text === embed.footer?.text &&
+      this.footer?.iconURL === (embed.footer?.iconURL ?? embed.footer?.icon_url) &&
+      this.footer?.proxyIconURL === (embed.footer?.proxyIconURL ?? embed.footer?.proxy_icon_url) &&
+      this.image?.url === embed.image?.url &&
+      this.image?.proxyURL === (embed.image?.proxyURL ?? embed.image?.proxy_url) &&
+      this.image?.height === embed.image?.height &&
+      this.image?.width === embed.image?.width &&
+      this.thumbnail?.url === embed.thumbnail?.url &&
+      this.thumbnail?.proxyURL === (embed.thumbnail?.proxyURL ?? embed.thumbnail?.proxy_url) &&
+      this.thumbnail?.height === embed.thumbnail?.height &&
+      this.thumbnail?.width === embed.thumbnail?.width &&
+      this.video?.url === embed.video?.url &&
+      this.video?.proxyURL === (embed.video?.proxyURL ?? embed.video?.proxy_url) &&
+      this.video?.height === embed.video?.height &&
+      this.video?.width === embed.video?.width &&
+      this.provider?.name === embed.provider?.name &&
+      this.provider?.url === embed.provider?.url
+    );
+  }
+
+  /**
+   * Compares two given embed fields to see if they are equal
+   * @param {EmbedFieldData} field The first field to compare
+   * @param {EmbedFieldData} other The second field to compare
+   * @returns {boolean}
+   * @private
+   */
+  _fieldEquals(field, other) {
+    return field.name === other.name && field.value === other.value && field.inline === other.inline;
+  }
+
+  /**
    * Adds a field to the embed (max 25).
    * @param {string} name The name of this field
    * @param {string} value The value of this field
