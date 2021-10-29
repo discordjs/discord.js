@@ -116,13 +116,8 @@ class ThreadMemberManager extends CachedManager {
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
   fetch(member, { cache = true, force = false } = {}) {
-    // TODO: Replace `member` usages as `cache` with correct respective parameter.
-    if (typeof member !== 'boolean') {
-      const ID = this.resolveId(member);
-      return this._fetchOne(ID, cache, force);
-    }
-
-    return this._fetchMany(member ?? cache);
+    const id = this.resolveId(member);
+    return id ? this._fetchOne(id, cache, force) : this._fetchMany(member ?? cache);
   }
 }
 
