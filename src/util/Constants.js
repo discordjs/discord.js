@@ -968,6 +968,7 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * * PING
  * * APPLICATION_COMMAND
  * * MESSAGE_COMPONENT
+ * * APPLICATION_COMMAND_AUTOCOMPLETE
  * @typedef {string} InteractionType
  * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-type}
  */
@@ -986,6 +987,7 @@ exports.InteractionTypes = createEnum([
  * * DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
  * * DEFERRED_MESSAGE_UPDATE
  * * UPDATE_MESSAGE
+ * * APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
  * @typedef {string} InteractionResponseType
  * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-response-object-interaction-callback-type}
  */
