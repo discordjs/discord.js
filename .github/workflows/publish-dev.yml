@@ -18,7 +18,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: npm
 
-      - name: pre-release
+      - name: Check previous released version
         id: pre-release
         run: |
           if [[ $(npm view discord.js@dev version | grep -e "$(jq --raw-output '.version' package.json).*.$(git rev-parse --short HEAD | cut -b1-3)") ]]; \

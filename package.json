@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "13.3.0-dev",
+  "version": "13.3.0",
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "npm run lint && npm run docs:test && npm run lint:typings && npm run test:typescript",
@@ -49,8 +49,8 @@
   },
   "homepage": "https://discord.js.org",
   "dependencies": {
-    "@discordjs/builders": "^0.7.0",
-    "@discordjs/collection": "^0.2.4",
+    "@discordjs/builders": "^0.8.1",
+    "@discordjs/collection": "^0.3.2",
     "@discordjs/form-data": "^3.0.1",
     "@sapphire/async-queue": "^1.1.8",
     "@types/node-fetch": "^2.5.12",
@@ -66,7 +66,6 @@
     "@favware/npm-deprecate": "^1.0.4",
     "@types/node": "^16.11.6",
     "conventional-changelog-cli": "^2.1.1",
-    "cross-env": "^7.0.3",
     "dtslint": "^4.2.0",
     "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
