@@ -968,6 +968,7 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * * PING
  * * APPLICATION_COMMAND
  * * MESSAGE_COMPONENT
+ * * APPLICATION_COMMAND_AUTOCOMPLETE
  * @typedef {string} InteractionType
  * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-type}
  */
