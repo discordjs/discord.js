@@ -92,7 +92,7 @@ class ThreadMemberManager extends CachedManager {
     return id;
   }
 
-  async _fetchId(memberId, cache, force) {
+  async _fetchOne(memberId, cache, force) {
     if (!force) {
       const existing = this.cache.get(memberId);
       if (existing) return existing;
@@ -117,10 +117,9 @@ class ThreadMemberManager extends CachedManager {
    */
   fetch(member, { cache = true, force = false } = {}) {
     // TODO: Replace `member` usages as `cache` with correct respective parameter.
-    if (typeof member === 'string') {
-      return this._fetchId(member, cache, force);
-    } else if (member && typeof member === 'object') {
-      return this._fetchId(member.id, cache, force);
+    if (typeof member !== 'boolean') {
+      const ID = this.resolveId(member);
+      return this._fetchOne(ID, cache, force);
     }
 
     return this._fetchMany(member ?? cache);
