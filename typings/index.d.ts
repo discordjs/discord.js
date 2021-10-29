@@ -707,6 +707,8 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
     name: string,
     required?: boolean,
   ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
+  public getMessage(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['message']>;
+  public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
   public getFocused(getFull: true): ApplicationCommandOptionChoice;
   public getFocused(getFull?: boolean): string | number;
 }
