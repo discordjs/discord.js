@@ -2,14 +2,14 @@
 
 const Action = require('./Action');
 const Typing = require('../../structures/Typing');
-const { Events, TextBasedChannelTypes } = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class TypingStart extends Action {
   handle(data) {
     const channel = this.getChannel(data);
     if (!channel) return;
 
-    if (!TextBasedChannelTypes.includes(channel.type)) {
+    if (!channel.isText()) {
       this.client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
       return;
     }
