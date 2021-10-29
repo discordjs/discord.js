@@ -633,11 +633,11 @@ export interface ApplicationCommandInteractionOptionResolver<Cached extends Cach
   ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
 }
 
-export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
-  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getFocused'>;
-  public inGuild(): this is BaseCommandInteraction<'present'> & this;
-  public inCachedGuild(): this is BaseCommandInteraction<'cached'> & this;
-  public inRawGuild(): this is BaseCommandInteraction<'raw'> & this;
+export class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
+  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
+  public inGuild(): this is CommandInteraction<'present'> & this;
+  public inCachedGuild(): this is CommandInteraction<'cached'> & this;
+  public inRawGuild(): this is CommandInteraction<'raw'> & this;
   public toString(): string;
 }
 
