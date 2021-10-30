@@ -27,6 +27,7 @@ import {
   APIApplicationCommandOption,
   APIApplicationCommandPermission,
   APIAuditLogChange,
+  APIButtonComponent,
   APIEmbed,
   APIEmoji,
   APIInteractionDataResolvedChannel,
@@ -39,6 +40,7 @@ import {
   APIPartialEmoji,
   APIPartialGuild,
   APIRole,
+  APISelectMenuComponent,
   APITemplateSerializedSourceGuild,
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
@@ -1406,7 +1408,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
 }
 
 export class MessageActionRow extends BaseMessageComponent {
-  public constructor(data?: MessageActionRow | MessageActionRowOptions);
+  public constructor(data?: MessageActionRow | MessageActionRowOptions | APIActionRowComponent);
   public type: 'ACTION_ROW';
   public components: MessageActionRowComponent[];
   public addComponents(
@@ -1420,7 +1422,7 @@ export class MessageActionRow extends BaseMessageComponent {
     deleteCount: number,
     ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
   ): this;
-  public toJSON(): unknown;
+  public toJSON(): APIActionRowComponent;
 }
 
 export class MessageAttachment {
@@ -1444,7 +1446,7 @@ export class MessageAttachment {
 }
 
 export class MessageButton extends BaseMessageComponent {
-  public constructor(data?: MessageButton | MessageButtonOptions);
+  public constructor(data?: MessageButton | MessageButtonOptions | APIButtonComponent);
   public customId: string | null;
   public disabled: boolean;
   public emoji: APIPartialEmoji | null;
@@ -1458,7 +1460,7 @@ export class MessageButton extends BaseMessageComponent {
   public setLabel(label: string): this;
   public setStyle(style: MessageButtonStyleResolvable): this;
   public setURL(url: string): this;
-  public toJSON(): unknown;
+  public toJSON(): APIButtonComponent;
   private static resolveStyle(style: MessageButtonStyleResolvable): MessageButtonStyle;
 }
 
@@ -1546,7 +1548,7 @@ export class MessageEmbed {
   public setURL(url: string): this;
   public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
   public equals(embed: MessageEmbed | APIEmbed): boolean;
-  public toJSON(): unknown;
+  public toJSON(): APIEmbed;
 
   public static normalizeField(name: string, value: string, inline?: boolean): Required<EmbedFieldData>;
   public static normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
@@ -1630,7 +1632,7 @@ export class MessageReaction {
 }
 
 export class MessageSelectMenu extends BaseMessageComponent {
-  public constructor(data?: MessageSelectMenu | MessageSelectMenuOptions);
+  public constructor(data?: MessageSelectMenu | MessageSelectMenuOptions | APISelectMenuComponent);
   public customId: string | null;
   public disabled: boolean;
   public maxValues: number | null;
@@ -1650,7 +1652,7 @@ export class MessageSelectMenu extends BaseMessageComponent {
     deleteCount: number,
     ...options: MessageSelectOptionData[] | MessageSelectOptionData[][]
   ): this;
-  public toJSON(): unknown;
+  public toJSON(): APISelectMenuComponent;
 }
 
 export class NewsChannel extends BaseGuildTextChannel {
