@@ -4,7 +4,7 @@
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "npm run lint && npm run docs:test && npm run lint:typings && npm run test:typescript",
-    "test:typescript": "tsc --noEmit",
+    "test:typescript": "tsc --skipLibCheck false --noEmit",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "lint:typings": "tslint typings/index.d.ts",
