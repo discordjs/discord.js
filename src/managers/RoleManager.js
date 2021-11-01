@@ -235,11 +235,11 @@ class RoleManager extends CachedManager {
     }));
 
     // Call the API to update role positions
-    await this.client.api.guilds(this.id).roles.patch({
+    await this.client.api.guilds(this.guild.id).roles.patch({
       data: rolePositions,
     });
     return this.client.actions.GuildRolesPositionUpdate.handle({
-      guild_id: this.id,
+      guild_id: this.guild.id,
       roles: rolePositions,
     }).guild;
   }
