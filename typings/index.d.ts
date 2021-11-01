@@ -3383,7 +3383,9 @@ export type ApplicationFlagsString =
   | 'GATEWAY_GUILD_MEMBERS'
   | 'GATEWAY_GUILD_MEMBERS_LIMITED'
   | 'VERIFICATION_PENDING_GUILD_LIMIT'
-  | 'EMBEDDED';
+  | 'EMBEDDED'
+  | 'GATEWAY_MESSAGE_CONTENT'
+  | 'GATEWAY_MESSAGE_CONTENT_LIMITED';
 
 export interface AuditLogChange {
   key: APIAuditLogChange['key'];
