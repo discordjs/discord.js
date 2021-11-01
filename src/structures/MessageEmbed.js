@@ -274,7 +274,6 @@ class MessageEmbed {
       this.author?.name === embed.author?.name &&
       this.author?.url === embed.author?.url &&
       this.author?.iconURL === (embed.author?.iconURL ?? embed.author?.icon_url) &&
-      this.author?.proxyIconURL === (embed.author?.proxyIconURL ?? embed.author?.proxy_icon_url) &&
       this.color === embed.color &&
       this.title === embed.title &&
       this.description === embed.description &&
@@ -284,19 +283,9 @@ class MessageEmbed {
       this.fields.every((field, i) => this._fieldEquals(field, embed.fields[i])) &&
       this.footer?.text === embed.footer?.text &&
       this.footer?.iconURL === (embed.footer?.iconURL ?? embed.footer?.icon_url) &&
-      this.footer?.proxyIconURL === (embed.footer?.proxyIconURL ?? embed.footer?.proxy_icon_url) &&
       this.image?.url === embed.image?.url &&
-      this.image?.proxyURL === (embed.image?.proxyURL ?? embed.image?.proxy_url) &&
-      this.image?.height === embed.image?.height &&
-      this.image?.width === embed.image?.width &&
       this.thumbnail?.url === embed.thumbnail?.url &&
-      this.thumbnail?.proxyURL === (embed.thumbnail?.proxyURL ?? embed.thumbnail?.proxy_url) &&
-      this.thumbnail?.height === embed.thumbnail?.height &&
-      this.thumbnail?.width === embed.thumbnail?.width &&
       this.video?.url === embed.video?.url &&
-      this.video?.proxyURL === (embed.video?.proxyURL ?? embed.video?.proxy_url) &&
-      this.video?.height === embed.video?.height &&
-      this.video?.width === embed.video?.width &&
       this.provider?.name === embed.provider?.name &&
       this.provider?.url === embed.provider?.url
     );
