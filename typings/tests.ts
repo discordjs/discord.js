@@ -514,11 +514,11 @@ client.on('messageCreate', async message => {
 
   if (message.inGuild()) {
     assertType<Message<true>>(message);
-    const component = await message.awaitMessageComponent({ componentType: 'BUTTON' });
+    const component = await message.awaitMessageComponent({ componentType: 'BUTTON' } as const);
     assertType<ButtonInteraction<'cached'>>(component);
     assertType<Message<true>>(await component.reply({ fetchReply: true }));
 
-    const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
+    const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' } as const);
     assertType<InteractionCollector<ButtonInteraction<'cached'>>>(buttonCollector);
     assertType<GuildTextBasedChannel>(message.channel);
   }
@@ -536,15 +536,15 @@ client.on('messageCreate', async message => {
   // Check collector creations.
 
   // Verify that buttons interactions are inferred.
-  const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
-  assertType<Promise<ButtonInteraction>>(message.awaitMessageComponent({ componentType: 'BUTTON' }));
-  assertType<Promise<ButtonInteraction>>(channel.awaitMessageComponent({ componentType: 'BUTTON' }));
+  const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' } as const);
+  assertType<Promise<ButtonInteraction>>(message.awaitMessageComponent({ componentType: 'BUTTON' } as const));
+  assertType<Promise<ButtonInteraction>>(channel.awaitMessageComponent({ componentType: 'BUTTON' } as const));
   assertType<InteractionCollector<ButtonInteraction>>(buttonCollector);
 
   // Verify that select menus interaction are inferred.
-  const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU' });
-  assertType<Promise<SelectMenuInteraction>>(message.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
-  assertType<Promise<SelectMenuInteraction>>(channel.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
+  const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU' } as const);
+  assertType<Promise<SelectMenuInteraction>>(message.awaitMessageComponent({ componentType: 'SELECT_MENU' } as const));
+  assertType<Promise<SelectMenuInteraction>>(channel.awaitMessageComponent({ componentType: 'SELECT_MENU' } as const));
   assertType<InteractionCollector<SelectMenuInteraction>>(selectMenuCollector);
 
   // Verify that message component interactions are default collected types.
@@ -573,7 +573,7 @@ client.on('messageCreate', async message => {
   });
 
   message.createMessageComponentCollector({
-    componentType: 'BUTTON',
+    componentType: 'BUTTON' as const,
     filter: i => {
       assertType<ButtonInteraction>(i);
       return true;
@@ -581,7 +581,7 @@ client.on('messageCreate', async message => {
   });
 
   message.createMessageComponentCollector({
-    componentType: 'SELECT_MENU',
+    componentType: 'SELECT_MENU' as const,
     filter: i => {
       assertType<SelectMenuInteraction>(i);
       return true;
@@ -596,7 +596,7 @@ client.on('messageCreate', async message => {
   });
 
   message.awaitMessageComponent({
-    componentType: 'BUTTON',
+    componentType: 'BUTTON' as const,
     filter: i => {
       assertType<ButtonInteraction>(i);
       return true;
@@ -604,7 +604,7 @@ client.on('messageCreate', async message => {
   });
 
   message.awaitMessageComponent({
-    componentType: 'SELECT_MENU',
+    componentType: 'SELECT_MENU' as const,
     filter: i => {
       assertType<SelectMenuInteraction>(i);
       return true;
@@ -635,7 +635,7 @@ client.on('messageCreate', async message => {
   });
 
   channel.awaitMessageComponent({
-    componentType: 'BUTTON',
+    componentType: 'BUTTON' as const,
     filter: i => {
       assertType<ButtonInteraction>(i);
       return true;
@@ -643,7 +643,7 @@ client.on('messageCreate', async message => {
   });
 
   channel.awaitMessageComponent({
-    componentType: 'SELECT_MENU',
+    componentType: 'SELECT_MENU' as const,
     filter: i => {
       assertType<SelectMenuInteraction>(i);
       return true;
@@ -1006,7 +1006,7 @@ client.on('interactionCreate', async interaction => {
       assertType<APIRole>(interaction.options.getRole('test', true));
     } else if (interaction.inCachedGuild()) {
       const msg = await interaction.reply({ fetchReply: true });
-      const btn = await msg.awaitMessageComponent({ componentType: 'BUTTON' });
+      const btn = await msg.awaitMessageComponent({ componentType: 'BUTTON' } as const);
 
       assertType<Message>(msg);
       assertType<ButtonInteraction<'cached'>>(btn);
