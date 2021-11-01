@@ -521,6 +521,8 @@ client.on('messageCreate', async message => {
     const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
     assertType<InteractionCollector<ButtonInteraction<'cached'>>>(buttonCollector);
     assertType<GuildTextBasedChannel>(message.channel);
+    assertType<Guild>(message.guild);
+    assertType<GuildMember>(message.member);
   }
 
   assertType<TextBasedChannels>(message.channel);
