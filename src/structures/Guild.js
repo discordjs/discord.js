@@ -1070,7 +1070,7 @@ class Guild extends AnonymousGuild {
    * @example
    * // Edit the guild owner
    * guild.setOwner(guild.members.cache.first())
-   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.displayName}`))
+   *  .then(updated => console.log(`Updated the guild owner to ${updated.members.resolve(updated.ownerId).displayName}`))
    *  .catch(console.error);
    */
   setOwner(owner, reason) {
