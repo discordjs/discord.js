@@ -2,8 +2,6 @@
 
 const { Events } = require('../../../util/Constants');
 
-let deprecationEmitted = false;
-
 module.exports = (client, { d: data }) => {
   const commandManager = data.guild_id ? client.guilds.cache.get(data.guild_id)?.commands : client.application.commands;
   if (!commandManager) return;
@@ -16,14 +14,5 @@ module.exports = (client, { d: data }) => {
    * @param {ApplicationCommand} command The command which was created
    * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue) for more information.
    */
-
-  if (client.emit(Events.APPLICATION_COMMAND_CREATE, command) && !deprecationEmitted) {
-    deprecationEmitted = true;
-
-    process.emitWarning(
-      /* eslint-disable-next-line max-len */
-      'The applicationCommandCreate event is deprecated. See https://github.com/discord/discord-api-docs/issues/3690 for more information.',
-      'DeprecationWarning',
-    );
-  }
+  client.emit(Events.APPLICATION_COMMAND_CREATE, command);
 };
