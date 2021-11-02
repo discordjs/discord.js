@@ -3556,11 +3556,11 @@ export interface ChannelWebhookCreateOptions {
 export interface ClientEvents {
   apiResponse: [request: APIRequest, response: Response];
   apiRequest: [request: APIRequest];
-  /** @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue) for more information. */
+  /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   applicationCommandCreate: [command: ApplicationCommand];
-  /** @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue) for more information. */
+  /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   applicationCommandDelete: [command: ApplicationCommand];
-  /** @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue) for more information. */
+  /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   applicationCommandUpdate: [oldCommand: ApplicationCommand | null, newCommand: ApplicationCommand];
   channelCreate: [channel: GuildChannel];
   channelDelete: [channel: DMChannel | GuildChannel];
