@@ -265,6 +265,39 @@ export class BaseClient extends EventEmitter {
   private decrementMaxListeners(): void;
   private incrementMaxListeners(): void;
 
+  public on<K extends keyof BaseClientEvents>(
+    event: K,
+    listener: (...args: BaseClientEvents[K]) => Awaitable<void>,
+  ): this;
+  public on<S extends string | symbol>(
+    event: Exclude<S, keyof BaseClientEvents>,
+    listener: (...args: any[]) => Awaitable<void>,
+  ): this;
+
+  public once<K extends keyof BaseClientEvents>(
+    event: K,
+    listener: (...args: BaseClientEvents[K]) => Awaitable<void>,
+  ): this;
+  public once<S extends string | symbol>(
+    event: Exclude<S, keyof BaseClientEvents>,
+    listener: (...args: any[]) => Awaitable<void>,
+  ): this;
+
+  public emit<K extends keyof BaseClientEvents>(event: K, ...args: BaseClientEvents[K]): boolean;
+  public emit<S extends string | symbol>(event: Exclude<S, keyof BaseClientEvents>, ...args: unknown[]): boolean;
+
+  public off<K extends keyof BaseClientEvents>(
+    event: K,
+    listener: (...args: BaseClientEvents[K]) => Awaitable<void>,
+  ): this;
+  public off<S extends string | symbol>(
+    event: Exclude<S, keyof BaseClientEvents>,
+    listener: (...args: any[]) => Awaitable<void>,
+  ): this;
+
+  public removeAllListeners<K extends keyof BaseClientEvents>(event?: K): this;
+  public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof BaseClientEvents>): this;
+
   public options: ClientOptions | WebhookClientOptions;
   public destroy(): void;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
@@ -3553,9 +3586,15 @@ export interface ChannelWebhookCreateOptions {
   reason?: string;
 }
 
-export interface ClientEvents {
+export interface BaseClientEvents {
   apiResponse: [request: APIRequest, response: Response];
   apiRequest: [request: APIRequest];
+  debug: [message: string];
+  rateLimit: [rateLimitData: RateLimitData];
+  invalidRequestWarning: [invalidRequestWarningData: InvalidRequestWarningData];
+}
+
+export interface ClientEvents extends BaseClientEvents {
   /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   applicationCommandCreate: [command: ApplicationCommand];
   /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
@@ -3566,7 +3605,6 @@ export interface ClientEvents {
   channelDelete: [channel: DMChannel | GuildChannel];
   channelPinsUpdate: [channel: TextBasedChannels, date: Date];
   channelUpdate: [oldChannel: DMChannel | GuildChannel, newChannel: DMChannel | GuildChannel];
-  debug: [message: string];
   warn: [message: string];
   emojiCreate: [emoji: GuildEmoji];
   emojiDelete: [emoji: GuildEmoji];
@@ -3604,8 +3642,6 @@ export interface ClientEvents {
   messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
-  rateLimit: [rateLimitData: RateLimitData];
-  invalidRequestWarning: [invalidRequestWarningData: InvalidRequestWarningData];
   ready: [client: Client<true>];
   invalidated: [];
   roleCreate: [role: Role];
