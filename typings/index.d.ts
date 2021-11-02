@@ -444,7 +444,17 @@ export class CategoryChannel extends GuildChannel {
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
-export abstract class Channel extends Base {
+export type Channel =
+  | TextChannel
+  | VoiceChannel
+  | NewsChannel
+  | StoreChannel
+  | StageChannel
+  | CategoryChannel
+  | ThreadChannel
+  | DMChannel;
+
+export abstract class BaseChannel extends Base {
   public constructor(client: Client, data?: RawChannelData, immediatePatch?: boolean);
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -452,8 +462,8 @@ export abstract class Channel extends Base {
   public id: Snowflake;
   public readonly partial: false;
   public type: keyof typeof ChannelTypes;
-  public delete(): Promise<Channel>;
-  public fetch(force?: boolean): Promise<Channel>;
+  public delete(): Promise<this>;
+  public fetch(force?: boolean): Promise<this>;
   public isText(): this is TextBasedChannels;
   public isVoice(): this is BaseGuildVoiceChannel;
   public isThread(): this is ThreadChannel;
@@ -757,7 +767,7 @@ export class DiscordAPIError extends Error {
   public requestData: HTTPErrorData;
 }
 
-export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
+export class DMChannel extends TextBasedChannel(BaseChannel, ['bulkDelete']) {
   private constructor(client: Client, data?: RawDMChannelData);
   public messages: MessageManager;
   public recipient: User;
@@ -938,7 +948,7 @@ export class GuildBan extends Base {
   public fetch(force?: boolean): Promise<GuildBan>;
 }
 
-export abstract class GuildChannel extends Channel {
+export abstract class GuildChannel extends BaseChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
   private memberPermissions(member: GuildMember, checkAdmin: boolean): Readonly<Permissions>;
   private rolePermissions(role: Role, checkAdmin: boolean): Readonly<Permissions>;
@@ -1667,7 +1677,7 @@ export class OAuth2Guild extends BaseGuild {
   public permissions: Readonly<Permissions>;
 }
 
-export class PartialGroupDMChannel extends Channel {
+export class PartialGroupDMChannel extends BaseChannel {
   private constructor(client: Client, data: RawPartialGroupDMChannelData);
   public name: string | null;
   public icon: string | null;
@@ -2038,7 +2048,7 @@ export class TextChannel extends BaseGuildTextChannel {
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 }
 
-export class ThreadChannel extends TextBasedChannel(Channel) {
+export class ThreadChannel extends TextBasedChannel(BaseChannel) {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
   public readonly archivedAt: Date | null;
@@ -2065,10 +2075,10 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public rateLimitPerUser: number | null;
   public type: ThreadChannelTypes;
   public readonly unarchivable: boolean;
-  public delete(reason?: string): Promise<ThreadChannel>;
+  public delete(reason?: string): Promise<this>;
   public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
-  public join(): Promise<ThreadChannel>;
-  public leave(): Promise<ThreadChannel>;
+  public join(): Promise<this>;
+  public leave(): Promise<this>;
   public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<Permissions>;
   public permissionsFor(
     memberOrRole: GuildMemberResolvable | RoleResolvable,

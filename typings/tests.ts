@@ -109,6 +109,16 @@ const guildCommandId = '234567890123456789'; // example id
 client.on('ready', async () => {
   console.log(`Client is logged in as ${client.user!.tag} and ready!`);
 
+  // Try getting a text channel and sending a message;
+  const channel = client.channels.cache.get('test');
+
+  if (channel?.type === 'GUILD_TEXT') {
+    channel.send('test message');
+  } else {
+    // @ts-expect-error
+    channel.send('test message');
+  }
+
   // Test fetching all global commands and ones from one guild
   assertType<Collection<string, ApplicationCommand>>(await client.application!.commands.fetch());
   assertType<Collection<string, ApplicationCommand>>(
