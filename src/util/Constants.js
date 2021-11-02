@@ -129,15 +129,15 @@ exports.Events = {
   API_REQUEST: 'apiRequest',
   CLIENT_READY: 'ready',
   /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue) for more information.
+   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
    */
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
   /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue) for more information.
+   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
    */
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
   /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue) for more information.
+   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
    */
   APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
   GUILD_CREATE: 'guildCreate',
