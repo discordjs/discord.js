@@ -42,33 +42,32 @@ pnpm add discord.js
 
 ## Example usage
 
-Install all required dependencies:
-```sh-session
-npm install discord.js @discordjs/rest discord-api-types
-yarn add discord.js @discordjs/rest discord-api-types
-pnpm add discord.js @discordjs/rest discord-api-types
-```
-
 Register a slash command against the Discord API:
 ```js
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { Client, ClientApplication } = require('discord.js');
 
 const commands = [{
   name: 'ping',
   description: 'Replies with Pong!'
 }]; 
 
-const rest = new REST({ version: '9' }).setToken('token');
+const client = new Client({ intents: 0 });
+
+const GUILD_ID = "";
 
 (async () => {
   try {
     console.log('Started refreshing application (/) commands.');
+    
+    client.token = "token";
+    client.application = new ClientApplication(client, {});
+    await client.application.fetch();
 
-    await rest.put(
-      Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
-      { body: commands },
-    );
+    if (!GUILD_ID) {
+      await client.application.commands.set(commands);
+    } else {
+      await client.application.commands.set(commands, GUILD_ID);
+    }
 
     console.log('Successfully reloaded application (/) commands.');
   } catch (error) {
