@@ -606,12 +606,6 @@ module.exports = Client;
  */
 
 /**
- * Emitted for general debugging information.
- * @event Client#debug
- * @param {string} info The debug information
- */
-
-/**
  * @external Collection
  * @see {@link https://discord.js.org/#/docs/collection/main/class/Collection}
  */

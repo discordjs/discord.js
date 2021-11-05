@@ -124,7 +124,7 @@ class RequestHandler {
       if (this.manager.client.listenerCount(RATE_LIMIT)) {
         /**
          * Emitted when the client hits a rate limit while making a request
-         * @event Client#rateLimit
+         * @event BaseClient#rateLimit
          * @param {RateLimitData} rateLimitData Object containing the rate limit info
          */
         this.manager.client.emit(RATE_LIMIT, {
@@ -178,7 +178,7 @@ class RequestHandler {
        * This event can emit several times for the same request, e.g. when hitting a rate limit.
        * <info>This is an informational event that is emitted quite frequently,
        * it is highly recommended to check `request.path` to filter the data.</info>
-       * @event Client#apiRequest
+       * @event BaseClient#apiRequest
        * @param {APIRequest} request The request that is about to be sent
        */
       this.manager.client.emit(API_REQUEST, {
@@ -210,7 +210,7 @@ class RequestHandler {
        * This event does not necessarily correlate to completion of the request, e.g. when hitting a rate limit.
        * <info>This is an informational event that is emitted quite frequently,
        * it is highly recommended to check `request.path` to filter the data.</info>
-       * @event Client#apiResponse
+       * @event BaseClient#apiResponse
        * @param {APIRequest} request The request that triggered this response
        * @param {Response} response The response received from the Discord API
        */
@@ -285,7 +285,7 @@ class RequestHandler {
         /**
          * Emitted periodically when the process sends invalid requests to let users avoid the
          * 10k invalid requests in 10 minutes threshold that causes a ban
-         * @event Client#invalidRequestWarning
+         * @event BaseClient#invalidRequestWarning
          * @param {InvalidRequestWarningData} invalidRequestWarningData Object containing the invalid request info
          */
         this.manager.client.emit(INVALID_REQUEST_WARNING, {
