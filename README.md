@@ -99,19 +99,19 @@ client.login('token');
 
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-- [Documentation](https://discord.js.org/#/docs)
+- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website)), Official Website
+- [Documentation](https://discord.js.org/#/docs), Allows you to view methods and classes for certian components of DJS
 - [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
   See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
-- [discord.js Discord server](https://discord.gg/djs)
-- [Discord API Discord server](https://discord.gg/discord-api)
-- [GitHub](https://github.com/discordjs/discord.js)
-- [npm](https://www.npmjs.com/package/discord.js)
-- [Related libraries](https://discord.com/developers/docs/topics/community-resources#libraries)
+- [discord.js Discord server](https://discord.gg/djs), Ask for support about the module. 3rd Party Module support is not provided.
+- [Discord API Discord server](https://discord.gg/discord-api), Discord's Official API Server
+- [GitHub](https://github.com/discordjs/discord.js), DJS Source
+- [npm](https://www.npmjs.com/package/discord.js), NPM Page for DJS
+- [Related libraries](https://discord.com/developers/docs/topics/community-resources#libraries), Related libraries
 
 ### Extensions
 
-- [RPC](https://www.npmjs.com/package/discord-rpc) ([source](https://github.com/discordjs/RPC))
+- [RPC](https://www.npmjs.com/package/discord-rpc) ([source](https://github.com/discordjs/RPC)), Allows you to set a custom presence on your Discord profile.
 
 ## Contributing
 
