@@ -1055,7 +1055,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
-  public disableCommunication(duration: number, reason?: string): Promise<GuildMember>;
+  public disableCommunication(duration: number | null, reason?: string): Promise<GuildMember>;
   public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
   public kick(reason?: string): Promise<GuildMember>;
   public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;
