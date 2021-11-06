@@ -3311,7 +3311,6 @@ export interface BaseApplicationCommandOptionsData {
   name: string;
   description: string;
   required?: boolean;
-  autocomplete?: boolean;
 }
 
 export interface UserApplicationCommandData extends BaseApplicationCommandData {
@@ -3344,14 +3343,28 @@ export interface ApplicationCommandChannelOption extends BaseApplicationCommandO
   channelTypes?: (keyof typeof ChannelTypes)[];
 }
 
+export interface ApplicationCommandStringAutocompleteOption
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: 'STRING' | ApplicationCommandOptionTypes.STRING;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandNumericAutocompleteOption
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: 'NUMBER' | 'INTEGER' | ApplicationCommandOptionTypes.NUMBER | ApplicationCommandOptionTypes.INTEGER;
+  autocomplete: true;
+}
+
 export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoice[];
+  autocomplete?: false;
 }
 
 export interface ApplicationCommandChoicesOption extends BaseApplicationCommandOptionsData {
   type: Exclude<CommandOptionChoiceResolvableType, ApplicationCommandOptionTypes>;
   choices?: ApplicationCommandOptionChoice[];
+  autocomplete?: false;
 }
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
@@ -3387,7 +3400,9 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
-  | ApplicationCommandSubCommandData;
+  | ApplicationCommandSubCommandData
+  | ApplicationCommandStringAutocompleteOption
+  | ApplicationCommandNumericAutocompleteOption;
 
 export type ApplicationCommandOption =
   | ApplicationCommandSubGroup
