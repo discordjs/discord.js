@@ -307,8 +307,8 @@ class GuildMember extends Base {
   
   /**
    * Disables or enables communication for this member.
-   * @param {?number} seconds The duration in seconds the guild member should have communication disabled for,
-   * or `null` to enable communication for them
+   * @param {?number | Date} seconds The duration in seconds or a date in the future until the member should have
+   * their communication disabled. Passing `null` will enable communication for them. 
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    */
