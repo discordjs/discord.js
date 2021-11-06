@@ -240,10 +240,10 @@ class GuildMemberManager extends CachedManager {
     if (_data.communicationDisabledUntil) {
       if (_data.communicationDisabledUntil instanceof Date) {
         _data.communication_disabled_until = _data.communicationDisabledUntil;
-        if(_data.communication_disabled_until.getTime() < Date.now()) throw new Error("The given date can't be in the past");
+        if(_data.communication_disabled_until.getTime() < Date.now()) throw new Error('COMMUNICATION_DISABLED_PAST_DATE');
       } else {
         _data.communication_disabled_until = new Date(Date.now() + _data.communicationDisabledUntil * 1000);
-        if(_data.communication_disabled_until.getTime() < Date.now()) throw new Error("The given amount of seconds can't be negative");
+        if(_data.communication_disabled_until.getTime() < Date.now()) throw new Error('COMMUNICATION_DISABLED_PAST_DATE');
       };
       _data.communication_disabled_until = _data.communication_disabled_until.toISOString();
       delete _data.communicationDisabledUntil;
