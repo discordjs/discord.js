@@ -1032,6 +1032,8 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly displayHexColor: HexColorString;
   public readonly displayName: string;
   public guild: Guild;
+  public readonly communicationDisabledUntil: Date | null;
+  public communicationDisabledUntilTimestamp: number | null;  
   public readonly id: Snowflake;
   public pending: boolean;
   public readonly joinedAt: Date | null;
@@ -1053,6 +1055,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
+  public disableCommunication(duration: number, reason?: string): Promise<GuildMember>;
   public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
   public kick(reason?: string): Promise<GuildMember>;
   public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;

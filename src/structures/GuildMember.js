@@ -47,6 +47,12 @@ class GuildMember extends Base {
     this.nickname = null;
 
     /**
+     * When this member will be unmuted, if they are muted
+     * @type {?number}
+     */
+    this.communicationDisabledUntilTimestamp = null;
+
+    /**
      * Whether this member has yet to pass the guild's membership gate
      * @type {boolean}
      */
@@ -80,6 +86,9 @@ class GuildMember extends Base {
       this.premiumSinceTimestamp = data.premium_since ? new Date(data.premium_since).getTime() : null;
     }
     if ('roles' in data) this._roles = data.roles;
+    if('communication_disabled_until' in data) {
+      this.communicationDisabledUntilTimestamp = data.communication_disabled_until ? new Date(data.communication_disabled_until).getTime() : null;
+    }
     this.pending = data.pending ?? false;
   }
 
@@ -152,6 +161,15 @@ class GuildMember extends Base {
    */
   get premiumSince() {
     return this.premiumSinceTimestamp ? new Date(this.premiumSinceTimestamp) : null;
+  }
+
+  /**
+   * The time the member will be unmuted, if muted
+   * @type {?Date}
+   * @readonly
+   */
+  get communicationDisabledUntil() {
+    return this.communicationDisabledUntilTimestamp ? new Date(this.communicationDisabledUntilTimestamp) : null;
   }
 
   /**
@@ -282,6 +300,18 @@ class GuildMember extends Base {
    */
   setNickname(nick, reason) {
     return this.edit({ nick }, reason);
+  }
+
+  
+  /**
+   * Disables or enables communication for this member.
+   * @param {?Date} The duration in milliseconds the guild member should have communication disabled for, or `null` to enable communication for them
+   * @param {string} [reason] Reason for setting the nickname
+   * @returns {Promise<GuildMember>}
+   */
+  disableCommunication(duration, reason) {
+    const timestamp = Date.now()+duration;
+    return this.edit({communication_disabled_until: new Date(timestamp).toISOString()}, reason);
   }
 
   /**
