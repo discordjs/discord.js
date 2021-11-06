@@ -150,6 +150,9 @@ const Messages = {
   NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,
 
   SWEEP_FILTER_RETURN: 'The return value of the sweepFilter function was not false or a Function',
+
+  COMMUNICATION_DISABLED_PAST_DATE: 'The given date can\'t be in the past',
+  COMMUNICATION_DISABLED_NEGATIVE_DURATION: 'The given duration can\' be negative',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
