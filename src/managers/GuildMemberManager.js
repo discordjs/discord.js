@@ -246,6 +246,7 @@ class GuildMemberManager extends CachedManager {
         if(_data.communication_disabled_until.getTime() < Date.now()) throw new Error("The given amount of seconds can't be negative");
       };
       _data.communication_disabled_until = _data.communication_disabled_until.toISOString();
+      delete _data.communicationDisabledUntil;
     };
     if (_data.channel) {
       _data.channel = this.guild.channels.resolve(_data.channel);
