@@ -237,8 +237,16 @@ class GuildMemberManager extends CachedManager {
 
     // Clone the data object for immutability
     const _data = { ...data };
-    _data.communication_disabled_until = new Date(Date.now() + _data.communicationDisabledUntil * 1000).toISOString();
-    if (_data.communicationDisabledUntil < 0) throw new Error('The seconds have to be positive');
+    if (_data.communicationDisabledUntil) {
+      if (_data.communicationDisabledUntil instanceof Date) {
+        _data.communication_disabled_until = _data.communicationDisabledUntil;
+        if(_data.communication_disabled_until.getTime() < Date.now()) throw new Error("The given date can't be in the past");
+      } else {
+        _data.communication_disabled_until = new Date(Date.now() + _data.communicationDisabledUntil * 1000);
+        if(_data.communication_disabled_until.getTime() < Date.now()) throw new Error("The given amount of seconds can't be negative");
+      };
+      _data.communication_disabled_until = _data.communication_disabled_until.toISOString();
+    };
     if (_data.channel) {
       _data.channel = this.guild.channels.resolve(_data.channel);
       if (!(_data.channel instanceof BaseGuildVoiceChannel)) {
