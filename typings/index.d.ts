@@ -3343,15 +3343,14 @@ export interface ApplicationCommandChannelOption extends BaseApplicationCommandO
   channelTypes?: (keyof typeof ChannelTypes)[];
 }
 
-export interface ApplicationCommandStringAutocompleteOption
-  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
-  type: 'STRING' | ApplicationCommandOptionTypes.STRING;
-  autocomplete: true;
-}
-
-export interface ApplicationCommandNumericAutocompleteOption
-  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
-  type: 'NUMBER' | 'INTEGER' | ApplicationCommandOptionTypes.NUMBER | ApplicationCommandOptionTypes.INTEGER;
+export interface ApplicationCommandAutocompleteOption extends BaseApplicationCommandOptionsData {
+  type:
+    | 'STRING'
+    | 'NUMBER'
+    | 'INTEGER'
+    | ApplicationCommandOptionTypes.STRING
+    | ApplicationCommandOptionTypes.NUMBER
+    | ApplicationCommandOptionTypes.INTEGER;
   autocomplete: true;
 }
 
@@ -3401,8 +3400,7 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
   | ApplicationCommandSubCommandData
-  | ApplicationCommandStringAutocompleteOption
-  | ApplicationCommandNumericAutocompleteOption;
+  | ApplicationCommandAutocompleteOption;
 
 export type ApplicationCommandOption =
   | ApplicationCommandSubGroup
