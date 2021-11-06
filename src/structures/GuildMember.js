@@ -88,8 +88,8 @@ class GuildMember extends Base {
     if ('roles' in data) this._roles = data.roles;
     if ('communication_disabled_until' in data) {
       this.communicationDisabledUntilTimestamp = data.communication_disabled_until
-      ? new Date(data.communication_disabled_until).getTime()
-      : null;
+      ?  new Date(data.communication_disabled_until).getTime()
+      :  null;
     }
     this.pending = data.pending ?? false;
   }
@@ -307,12 +307,13 @@ class GuildMember extends Base {
   
   /**
    * Disables or enables communication for this member.
-   * @param {?number} seconds The duration in seconds the guild member should have communication disabled for, or `null` to enable communication for them
+   * @param {?number} seconds The duration in seconds the guild member should have communication disabled for,
+   * or `null` to enable communication for them
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    */
-  disableCommunication(duration, reason) {
-    return this.edit({communicationDisabledUntil: seconds}, reason);
+  disableCommunication(seconds, reason) {
+    return this.edit({ communicationDisabledUntil: seconds }, reason);
   }
 
   /**
