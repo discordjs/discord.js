@@ -1033,7 +1033,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly displayName: string;
   public guild: Guild;
   public readonly communicationDisabledUntil: Date | null;
-  public communicationDisabledUntilTimestamp: number | null;  
+  public communicationDisabledUntilTimestamp: number | null;
   public readonly id: Snowflake;
   public pending: boolean;
   public readonly joinedAt: Date | null;
