@@ -86,8 +86,10 @@ class GuildMember extends Base {
       this.premiumSinceTimestamp = data.premium_since ? new Date(data.premium_since).getTime() : null;
     }
     if ('roles' in data) this._roles = data.roles;
-    if('communication_disabled_until' in data) {
-      this.communicationDisabledUntilTimestamp = data.communication_disabled_until ? new Date(data.communication_disabled_until).getTime() : null;
+    if ('communication_disabled_until' in data) {
+      this.communicationDisabledUntilTimestamp = data.communication_disabled_until
+      ? new Date(data.communication_disabled_until).getTime()
+      : null;
     }
     this.pending = data.pending ?? false;
   }
