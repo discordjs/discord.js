@@ -305,13 +305,12 @@ class GuildMember extends Base {
   
   /**
    * Disables or enables communication for this member.
-   * @param {?Date} The duration in milliseconds the guild member should have communication disabled for, or `null` to enable communication for them
+   * @param {?number} seconds The duration in seconds the guild member should have communication disabled for, or `null` to enable communication for them
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    */
   disableCommunication(duration, reason) {
-    const timestamp = Date.now()+duration;
-    return this.edit({communication_disabled_until: new Date(timestamp).toISOString()}, reason);
+    return this.edit({communicationDisabledUntil: seconds}, reason);
   }
 
   /**
