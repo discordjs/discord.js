@@ -8,7 +8,7 @@ class MessageCreateAction extends Action {
     const client = this.client;
     const channel = this.getChannel(data);
     if (channel) {
-      if (!channel.isText()) return {};
+      if (!channel.isTextBased()) return {};
 
       const existing = channel.messages.cache.get(data.id);
       if (existing) return { message: existing };
