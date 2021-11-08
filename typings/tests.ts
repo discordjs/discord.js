@@ -1,4 +1,4 @@
-import type {
+import {
   APIGuildMember,
   APIInteractionGuildMember,
   APIMessage,
@@ -7,18 +7,20 @@ import type {
   APIInteractionDataResolvedGuildMember,
   APIInteractionDataResolvedChannel,
   APIRole,
+  ChannelType,
+  ApplicationCommandOptionType,
+  APIApplicationCommand,
+  APIApplicationCommandOption,
+  APIApplicationCommandSubCommandOptions,
 } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
   ApplicationCommandChannelOptionData,
   ApplicationCommandChoicesData,
-  ApplicationCommandData,
   ApplicationCommandManager,
   ApplicationCommandNonOptionsData,
-  ApplicationCommandOptionData,
   ApplicationCommandResolvable,
   ApplicationCommandSubCommandData,
-  ApplicationCommandSubGroupData,
   BaseCommandInteraction,
   ButtonInteraction,
   CacheType,
@@ -30,7 +32,6 @@ import {
   CommandInteraction,
   CommandInteractionOption,
   CommandInteractionOptionResolver,
-  CommandOptionChoiceResolvableType,
   CommandOptionNonChoiceResolvableType,
   Constants,
   ContextMenuInteraction,
@@ -80,6 +81,7 @@ import {
   User,
   VoiceChannel,
   Shard,
+  Camelize,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 
@@ -685,6 +687,20 @@ client.login('absolutely-valid-token');
 // Test client conditional types
 client.on('ready', client => {
   assertType<Client<true>>(client);
+
+  // Test camelized post command data.
+  client.application.commands.create({
+    name: 'Foo',
+    description: 'Bar',
+    options: [
+      {
+        name: 'test',
+        description: 'test',
+        type: ApplicationCommandOptionType.Channel,
+        channelTypes: [ChannelType.GuildCategory],
+      },
+    ],
+  });
 });
 
 declare const loggedInClient: Client<true>;
@@ -787,7 +803,7 @@ assertType<1>(Constants.Status.CONNECTING);
 assertType<0>(Constants.Opcodes.DISPATCH);
 assertType<2>(Constants.ClientApplicationAssetTypes.BIG);
 
-declare const applicationCommandData: ApplicationCommandData;
+declare const applicationCommandData: Camelize<APIApplicationCommand>;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;
 declare const applicationCommandManager: ApplicationCommandManager;
 {
@@ -809,7 +825,7 @@ declare const applicationCommandManager: ApplicationCommandManager;
   );
 }
 
-declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
+declare const applicationNonChoiceOptionData: APIApplicationCommandOption & {
   type: CommandOptionNonChoiceResolvableType;
 };
 {
@@ -819,18 +835,18 @@ declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
   applicationNonChoiceOptionData.choices;
 }
 
-declare const applicationChoiceOptionData: ApplicationCommandOptionData & { type: CommandOptionChoiceResolvableType };
+declare const applicationChoiceOptionData: APIApplicationCommandOption & { type: ApplicationCommandOptionType.String };
 {
   // Choices should be available.
   applicationChoiceOptionData.choices;
 }
 
-declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
+declare const applicationSubGroupCommandData: Camelize<APIApplicationCommandSubCommandOptions>;
 {
-  assertType<'SUB_COMMAND_GROUP' | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP>(
+  assertType<ApplicationCommandOptionType.Subcommand | ApplicationCommandOptionType.SubcommandGroup>(
     applicationSubGroupCommandData.type,
   );
-  assertType<ApplicationCommandSubCommandData[] | undefined>(applicationSubGroupCommandData.options);
+  assertType<APIApplicationCommandOption[] | undefined>(applicationSubGroupCommandData.options);
 }
 
 declare const applicationSubCommandData: ApplicationCommandSubCommandData;

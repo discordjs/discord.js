@@ -45,6 +45,7 @@ import {
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
+  RESTPatchAPIApplicationCommandJSONBody,
   RESTPostAPIApplicationCommandsJSONBody,
   Snowflake,
 } from 'discord-api-types/v9';
@@ -137,6 +138,7 @@ import {
   RawWidgetData,
   RawWidgetMemberData,
 } from './rawDataTypes';
+import type { CamelCasedPropertiesDeep } from 'type-fest';
 
 //#region Classes
 
@@ -213,7 +215,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public readonly manager: ApplicationCommandManager;
   public id: Snowflake;
   public name: string;
-  public options: ApplicationCommandOption[];
+  public options: Camelize<APIApplicationCommandOption>[];
   public permissions: ApplicationCommandPermissionsManager<
     PermissionsFetchType,
     PermissionsFetchType,
@@ -224,23 +226,31 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public type: ApplicationCommandType;
   public version: Snowflake;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
+  /**
+   * @deprecated use `Camelize<RESTPatchAPIApplicationCommandJSONBody>)` instead
+   */
   public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public edit(
+    data: Camelize<RESTPatchAPIApplicationCommandJSONBody>,
+  ): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(
-    command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
+    command: ApplicationCommand | Camelize<RESTPatchAPIApplicationCommandJSONBody> | RawApplicationCommandData,
     enforceOptionorder?: boolean,
   ): boolean;
   public static optionsEqual(
-    existing: ApplicationCommandOption[],
-    options: ApplicationCommandOption[] | ApplicationCommandOptionData[] | APIApplicationCommandOption[],
+    existing: Camelize<APIApplicationCommandOption>[],
+    options: Camelize<APIApplicationCommandOption>[] | APIApplicationCommandOption[],
     enforceOptionorder?: boolean,
   ): boolean;
   private static _optionEquals(
-    existing: ApplicationCommandOption,
-    options: ApplicationCommandOption | ApplicationCommandOptionData | APIApplicationCommandOption,
+    existing: Camelize<APIApplicationCommandOption>[],
+    options: Camelize<APIApplicationCommandOption>[] | APIApplicationCommandOption,
     enforceOptionorder?: boolean,
   ): boolean;
-  private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
-  private static transformCommand(command: ApplicationCommandData): RESTPostAPIApplicationCommandsJSONBody;
+  private static transformOption(option: Camelize<APIApplicationCommandOption>, received?: boolean): unknown;
+  private static transformCommand(
+    command: Camelize<RESTPostAPIApplicationCommandsJSONBody>,
+  ): RESTPostAPIApplicationCommandsJSONBody;
   private static isAPICommandData(command: object): command is RESTPostAPIApplicationCommandsJSONBody;
 }
 
@@ -2627,7 +2637,11 @@ export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R
   private _add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
 }
 
-export type ApplicationCommandDataResolvable = ApplicationCommandData | RESTPostAPIApplicationCommandsJSONBody;
+export type ApplicationCommandDataResolvable =
+  | Camelize<RESTPostAPIApplicationCommandsJSONBody>
+  | RESTPostAPIApplicationCommandsJSONBody;
+
+export type foo = Camelize<RESTPostAPIApplicationCommandsJSONBody>['options'];
 
 export class ApplicationCommandManager<
   ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>,
@@ -2643,8 +2657,22 @@ export class ApplicationCommandManager<
     null
   >;
   private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): unknown;
+  /**
+   * @deprecated use `create(ApplicationCommandDataResolvable)` instead
+   */
+  public create(
+    command: ApplicationCommandData | RESTPostAPIApplicationCommandsJSONBody,
+  ): Promise<ApplicationCommandScope>;
+  /**
+   * @deprecated use `create(ApplicationCommandDataResolvable, Snowflake)` instead
+   */
+  public create(
+    command: ApplicationCommandData | RESTPostAPIApplicationCommandsJSONBody,
+    guildId: Snowflake,
+  ): Promise<ApplicationCommand>;
   public create(command: ApplicationCommandDataResolvable): Promise<ApplicationCommandScope>;
-  public create(command: ApplicationCommandDataResolvable, guildId: Snowflake): Promise<ApplicationCommand>;
+  /** @deprecated use `delete(ApplicationCommandDataResolvable, Snowflake?)` instead */
+  public delete(command: ApplicationCommandData, guildId?: Snowflake): Promise<ApplicationCommandScope | null>;
   public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope | null>;
   public edit(
     command: ApplicationCommandResolvable,
@@ -2665,13 +2693,20 @@ export class ApplicationCommandManager<
     id?: Snowflake,
     options?: FetchApplicationCommandOptions,
   ): Promise<Collection<Snowflake, ApplicationCommandScope>>;
+  /** @deprecated Use `set(ApplicationCommandResolvable)` instead */
+  public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommandScope>>;
+  /** @deprecated Use `set(ApplicationCommandResolvable, Snowflake)` instead */
+  public set(
+    commands: ApplicationCommandData[],
+    guildId: Snowflake,
+  ): Promise<Collection<Snowflake, ApplicationCommand>>;
   public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommandScope>>;
   public set(
     commands: ApplicationCommandDataResolvable[],
     guildId: Snowflake,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
   private static transformCommand(
-    command: ApplicationCommandData,
+    command: Camelize<RESTPostAPIApplicationCommandsJSONBody>,
   ): Omit<APIApplicationCommand, 'id' | 'application_id' | 'guild_id'>;
 }
 
@@ -2736,7 +2771,9 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
   private constructor(guild: Guild, iterable?: Iterable<RawApplicationCommandData>);
   public guild: Guild;
   public create(command: ApplicationCommandDataResolvable): Promise<ApplicationCommand>;
-  public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
+  /** @deprecated use `delete(ApplicationCommandDataResolvable, Snowflake?)` instead */
+  public delete(command: ApplicationCommandData, guildId?: Snowflake): Promise<ApplicationCommand | null>;
+  public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommand | null>;
   public edit(
     command: ApplicationCommandResolvable,
     data: ApplicationCommandDataResolvable,
@@ -2744,6 +2781,8 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationCommand>;
   public fetch(options: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
+  /** @deprecated Use `set(ApplicationCommandResolvable)` instead */
+  public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
   public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
 
@@ -3328,6 +3367,9 @@ export interface ChatInputApplicationCommandData extends BaseApplicationCommandD
   options?: ApplicationCommandOptionData[];
 }
 
+/**
+ * @deprecated use `Camelize<RESTPostApplicationCommandBody>` instead
+ */
 export type ApplicationCommandData =
   | UserApplicationCommandData
   | MessageApplicationCommandData
@@ -3382,6 +3424,9 @@ export interface ApplicationCommandNonOptions extends BaseApplicationCommandOpti
   type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionTypes>;
 }
 
+// The original name for the utility type is really long, so this is just an alias for it.
+export type Camelize<T> = CamelCasedPropertiesDeep<T>;
+/** @deprecated Use `Camelize<APIApplicationCommandsOption>` instead. */
 export type ApplicationCommandOptionData =
   | ApplicationCommandSubGroupData
   | ApplicationCommandNonOptionsData
@@ -3389,6 +3434,7 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandChoicesData
   | ApplicationCommandSubCommandData;
 
+/** @deprecated use `Camelize<APIApplicationCommandOption>` instead */
 export type ApplicationCommandOption =
   | ApplicationCommandSubGroup
   | ApplicationCommandNonOptions
