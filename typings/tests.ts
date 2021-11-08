@@ -454,7 +454,7 @@ const baseCommandOptionData = {
 assertType<ApplicationCommandOptionData>({
   ...baseCommandOptionData,
   type: 'STRING',
-  // @ts-ignore
+  // @ts-expect-error
   autocomplete: true,
   choices: [],
 });
