@@ -3424,16 +3424,8 @@ export interface ApplicationCommandNonOptions extends BaseApplicationCommandOpti
   type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionTypes>;
 }
 
-export type CamelCase<S extends string> = S extends `${infer FirstPart}_${infer Rest}`
-  ? `${FirstPart}${Capitalize<CamelCase<Rest>>}`
-  : S;
-
-// tslint:disable-next-line:array-type
-export type Camelize<T> = T extends Array<infer Inner>
-  ? Camelize<Inner>[]
-  : T extends object
-  ? { [Key in keyof T as CamelCase<Key & string>]: Camelize<T[Key]> }
-  : T;
+// Type alias since the lib name is very long.
+export type Camelize<T> = CamelCasedPropertiesDeep<T>;
 
 /** @deprecated Use `Camelize<APIApplicationCommandsOption>` instead. */
 export type ApplicationCommandOptionData =
