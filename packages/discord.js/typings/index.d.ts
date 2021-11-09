@@ -516,6 +516,7 @@ export type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
 export abstract class Channel extends Base {
   public constructor(client: Client, data?: RawChannelData, immediatePatch?: boolean);
+  public banner: string | null;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
@@ -4721,7 +4722,8 @@ export type GuildFeatures =
   | 'THREE_DAY_THREAD_ARCHIVE'
   | 'SEVEN_DAY_THREAD_ARCHIVE'
   | 'PRIVATE_THREADS'
-  | 'ROLE_ICONS';
+  | 'ROLE_ICONS'
+  | 'CHANNEL_BANNER';
 
 export interface GuildMemberEditData {
   nick?: string | null;

@@ -37,6 +37,18 @@ class Channel extends Base {
      */
     this.type = type ?? 'UNKNOWN';
 
+    /**
+     * Whether the channel has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
+    /**
+     * The hash of the channel banner
+     * @type {?string}
+     */
+    this.banner = null;
+
     if (data && immediatePatch) this._patch(data);
   }
 
@@ -46,6 +58,8 @@ class Channel extends Base {
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    if ('banner' in data) this.banner = data.banner;
   }
 
   /**
