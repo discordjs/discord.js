@@ -2639,8 +2639,6 @@ export type ApplicationCommandDataResolvable =
   | Camelize<RESTPostAPIApplicationCommandsJSONBody>
   | RESTPostAPIApplicationCommandsJSONBody;
 
-export type foo = Camelize<RESTPostAPIApplicationCommandsJSONBody>['options'];
-
 export class ApplicationCommandManager<
   ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>,
   PermissionsOptionsExtras = { guild: GuildResolvable },
