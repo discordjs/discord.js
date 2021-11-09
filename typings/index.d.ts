@@ -226,9 +226,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public type: ApplicationCommandType;
   public version: Snowflake;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
-  /**
-   * @deprecated use `Camelize<RESTPatchAPIApplicationCommandJSONBody>)` instead
-   */
+  /** @deprecated use `edit(Camelize<RESTPatchAPIApplicationCommandJSONBody>)` instead */
   public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
   public edit(
     data: Camelize<RESTPatchAPIApplicationCommandJSONBody>,
@@ -2657,15 +2655,11 @@ export class ApplicationCommandManager<
     null
   >;
   private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): unknown;
-  /**
-   * @deprecated use `create(ApplicationCommandDataResolvable)` instead
-   */
+  /** @deprecated use `create(ApplicationCommandDataResolvable)` instead */
   public create(
     command: ApplicationCommandData | RESTPostAPIApplicationCommandsJSONBody,
   ): Promise<ApplicationCommandScope>;
-  /**
-   * @deprecated use `create(ApplicationCommandDataResolvable, Snowflake)` instead
-   */
+  /** @deprecated use `create(ApplicationCommandDataResolvable, Snowflake)` instead */
   public create(
     command: ApplicationCommandData | RESTPostAPIApplicationCommandsJSONBody,
     guildId: Snowflake,
@@ -3367,9 +3361,7 @@ export interface ChatInputApplicationCommandData extends BaseApplicationCommandD
   options?: ApplicationCommandOptionData[];
 }
 
-/**
- * @deprecated use `Camelize<RESTPostApplicationCommandBody>` instead
- */
+/** @deprecated use `Camelize<RESTPostApplicationCommandBody>` instead */
 export type ApplicationCommandData =
   | UserApplicationCommandData
   | MessageApplicationCommandData
