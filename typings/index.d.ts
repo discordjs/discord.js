@@ -3428,8 +3428,9 @@ export type CamelCase<S extends string> = S extends `${infer FirstPart}_${infer 
   ? `${FirstPart}${Capitalize<CamelCase<Rest>>}`
   : S;
 
+// tslint:disable-next-line:array-type
 export type Camelize<T> = T extends Array<infer Inner>
-  ? Array<Camelize<Inner>>
+  ? Camelize<Inner>[]
   : T extends object
   ? { [Key in keyof T as CamelCase<Key & string>]: Camelize<T[Key]> }
   : T;
