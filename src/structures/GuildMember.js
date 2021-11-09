@@ -42,6 +42,13 @@ class GuildMember extends Base {
     this.premiumSinceTimestamp = null;
 
     /**
+     * Timestamp of when the time out will be removed; until then, this member
+     * cannot interact with the server
+     * @type {?number}
+     */
+    this.communicationDisabledTimestamp = null;
+
+    /**
      * The nickname of this member, if they have one
      * @type {?string}
      */
@@ -81,7 +88,11 @@ class GuildMember extends Base {
       this.premiumSinceTimestamp = data.premium_since ? new Date(data.premium_since).getTime() : null;
     }
     if ('roles' in data) this._roles = data.roles;
-    this.pending = data.pending ?? false;
+    if ('communication_disabled_until' in data) {
+      this.communicationDisabledTimestamp = new Date(data.communication_disabled_until).getTime();
+    }
+
+    this.this.pending = data.pending ?? false;
   }
 
   _clone() {
