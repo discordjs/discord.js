@@ -834,7 +834,6 @@ declare const applicationNonChoiceOptionData: APIApplicationCommandOption & {
   // @ts-expect-error
   applicationNonChoiceOptionData.choices;
 }
-
 declare const applicationChoiceOptionData: APIApplicationCommandOption & { type: ApplicationCommandOptionType.String };
 {
   // Choices should be available.

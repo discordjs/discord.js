@@ -3424,8 +3424,16 @@ export interface ApplicationCommandNonOptions extends BaseApplicationCommandOpti
   type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionTypes>;
 }
 
-// The original name for the utility type is really long, so this is just an alias for it.
-export type Camelize<T> = CamelCasedPropertiesDeep<T>;
+export type CamelCase<S extends string> = S extends `${infer FirstPart}_${infer Rest}`
+  ? `${FirstPart}${Capitalize<CamelCase<Rest>>}`
+  : S;
+
+export type Camelize<T> = T extends Array<infer Inner>
+  ? Array<Camelize<Inner>>
+  : T extends object
+  ? { [Key in keyof T as CamelCase<Key & string>]: Camelize<T[Key]> }
+  : T;
+
 /** @deprecated Use `Camelize<APIApplicationCommandsOption>` instead. */
 export type ApplicationCommandOptionData =
   | ApplicationCommandSubGroupData
