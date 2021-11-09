@@ -3359,16 +3359,16 @@ export interface ApplicationCommandChoicesOption extends BaseApplicationCommandO
 
 export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData {
   type: CommandOptionNumericResolvableType;
-  minValue: number;
-  min_value: number;
-  maxValue: number;
-  max_value: number;
+  minValue?: number;
+  min_value?: number;
+  maxValue?: number;
+  max_value?: number;
 }
 
 export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
   type: Exclude<CommandOptionNumericResolvableType, ApplicationCommandOptionTypes>;
-  minValue: number;
-  maxValue: number;
+  minValue?: number;
+  maxValue?: number;
 }
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
