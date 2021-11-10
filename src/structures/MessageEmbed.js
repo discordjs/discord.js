@@ -358,8 +358,8 @@ class MessageEmbed {
    * Sets the author of this embed.
    * @param {string | MessageEmbedAuthor} options The options to provide for the author.
    * A string may simply be provided if only the author name is desirable.
-   * @param {string} [deprecatedIconURL] @deprecated test text
-   * @param {string} [deprecatedAuthorURL] @deprecated test text
+   * @param {string} [deprecatedIconURL] The icon URL of this author. This parameter is **deprecated**.
+   * @param {string} [deprecatedAuthorURL] The URL of this author. This parameter is **deprecated**.
    * @returns {MessageEmbed}
    */
   setAuthor(options = {}, deprecatedIconURL, deprecatedAuthorURL) {
