@@ -359,12 +359,12 @@ class MessageEmbed {
    * @param {string | MessageEmbedAuthor} options The options to provide for the author.
    * A string may simply be provided if only the author name is desirable.
    * @param {string} [deprecatedIconURL] The icon URL of this author. This parameter is **deprecated**.
-   * @param {string} [deprecatedAuthorURL] The URL of this author. This parameter is **deprecated**.
+   * @param {string} [deprecatedURL] The URL of this author. This parameter is **deprecated**.
    * @returns {MessageEmbed}
    */
-  setAuthor(options = {}, deprecatedIconURL, deprecatedAuthorURL) {
+  setAuthor(options = {}, deprecatedIconURL, deprecatedURL) {
     if (typeof nameOrOptions === 'string') {
-      options = { name: options, url: deprecatedAuthorURL, iconURL: deprecatedIconURL };
+      options = { name: options, url: deprecatedURL, iconURL: deprecatedIconURL };
     }
 
     const { name, url, iconURL } = options;
