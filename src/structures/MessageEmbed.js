@@ -347,7 +347,7 @@ class MessageEmbed {
 
   /**
    * The options to provide for setting an author for a {@link MessageEmbed}.
-   * @typedef {Object} MessageEmbedAuthor
+   * @typedef {Object} EmbedAuthorData
    * @property {string} name The name of this author.
    * @property {string} [url] The URL of this author.
    * @property {string} [iconURL] The icon URL of this author.
@@ -356,7 +356,7 @@ class MessageEmbed {
   // TODO: Remove the deprecated code in the following method and typings.
   /**
    * Sets the author of this embed.
-   * @param {string | MessageEmbedAuthor} options The options to provide for the author.
+   * @param {string | EmbedAuthorData} options The options to provide for the author.
    * A string may simply be provided if only the author name is desirable.
    * @param {string} [deprecatedIconURL] The icon URL of this author.
    * <warn>This parameter is **deprecated**. Use the `options` parameter instead.</warn>
