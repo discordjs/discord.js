@@ -363,7 +363,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setAuthor(options = {}, deprecatedIconURL, deprecatedURL) {
-    if (typeof nameOrOptions === 'string') {
+    if (typeof options === 'string') {
       options = { name: options, url: deprecatedURL, iconURL: deprecatedIconURL };
     }
 
