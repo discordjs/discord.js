@@ -346,14 +346,28 @@ class MessageEmbed {
   }
 
   /**
+   * The options to provide for setting an author for a {@link MessageEmbed}.
+   * @typedef {Object} MessageEmbedAuthor
+   * @property {string} name The name of this author.
+   * @property {string} [url] The URL of this author.
+   * @property {string} [iconURL] The icon URL of this author.
+   */
+
+  // TODO: Remove the deprecated parameters.
+  /* eslint-disable-next-line valid-jsdoc */
+  /**
    * Sets the author of this embed.
-   * @param {string} name The name of the author
-   * @param {string} [iconURL] The icon URL of the author
-   * @param {string} [url] The URL of the author
+   * @param {string | MessageEmbedAuthor} options The options to provide for the author.
+   * A string may simply be provided if only the author name is desirable.
    * @returns {MessageEmbed}
    */
-  setAuthor(name, iconURL, url) {
-    this.author = { name: Util.verifyString(name, RangeError, 'EMBED_AUTHOR_NAME'), iconURL, url };
+  setAuthor(options = {}, deprecatedIconURL, deprecatedAuthorURL) {
+    if (typeof nameOrOptions === 'string') {
+      options = { name: options, url: deprecatedAuthorURL, iconURL: deprecatedIconURL };
+    }
+
+    const { name, url, iconURL } = options;
+    this.author = { name: Util.verifyString(name, RangeError, 'EMBED_AUTHOR_NAME'), url, iconURL };
     return this;
   }
 
