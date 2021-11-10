@@ -353,12 +353,13 @@ class MessageEmbed {
    * @property {string} [iconURL] The icon URL of this author.
    */
 
-  // TODO: Remove the deprecated parameters.
-  /* eslint-disable-next-line valid-jsdoc */
+  // TODO: Remove the deprecated code in the following method and typings.
   /**
    * Sets the author of this embed.
    * @param {string | MessageEmbedAuthor} options The options to provide for the author.
    * A string may simply be provided if only the author name is desirable.
+   * @param {string} [deprecatedIconURL] @deprecated test text
+   * @param {string} [deprecatedAuthorURL] @deprecated test text
    * @returns {MessageEmbed}
    */
   setAuthor(options = {}, deprecatedIconURL, deprecatedAuthorURL) {
