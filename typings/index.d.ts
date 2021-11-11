@@ -890,7 +890,7 @@ export class Guild extends AnonymousGuild {
   public edit(data: GuildEditData, reason?: string): Promise<Guild>;
   public editWelcomeScreen(data: WelcomeScreenEditData): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
-  public fetchAuditLogs<T extends GuildAuditLogsAction = 'ALL'>(
+  public fetchAuditLogs<T extends keyof GuildAuditLogsIds | GuildAuditLogsAction = 'ALL'>(
     options?: GuildAuditLogsFetchOptions<T>,
   ): Promise<GuildAuditLogs<T>>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
@@ -937,7 +937,7 @@ export class Guild extends AnonymousGuild {
   public toJSON(): unknown;
 }
 
-export class GuildAuditLogs<T extends GuildAuditLogsAction = 'ALL'> {
+export class GuildAuditLogs<T extends keyof GuildAuditLogsIds | GuildAuditLogsAction = 'ALL'> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
@@ -954,7 +954,8 @@ export class GuildAuditLogs<T extends GuildAuditLogsAction = 'ALL'> {
 }
 
 export class GuildAuditLogsEntry<
-  TAction extends GuildAuditLogsAction = 'ALL',
+  TAction2 extends keyof GuildAuditLogsIds | GuildAuditLogsAction = 'ALL',
+  TAction = TAction2 extends keyof GuildAuditLogsIds ? GuildAuditLogsIds[TAction2] : TAction2,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
     : 'ALL',
@@ -4220,6 +4221,53 @@ interface GuildAuditLogsTypes {
   THREAD_DELETE: ['THREAD', 'DELETE'];
 }
 
+export interface GuildAuditLogsIds {
+  1: 'GUILD_UPDATE';
+  10: 'CHANNEL_CREATE';
+  11: 'CHANNEL_UPDATE';
+  12: 'CHANNEL_DELETE';
+  13: 'CHANNEL_OVERWRITE_CREATE';
+  14: 'CHANNEL_OVERWRITE_UPDATE';
+  15: 'CHANNEL_OVERWRITE_DELETE';
+  20: 'MEMBER_KICK';
+  21: 'MEMBER_PRUNE';
+  22: 'MEMBER_BAN_ADD';
+  23: 'MEMBER_BAN_REMOVE';
+  24: 'MEMBER_UPDATE';
+  25: 'MEMBER_ROLE_UPDATE';
+  26: 'MEMBER_MOVE';
+  27: 'MEMBER_DISCONNECT';
+  28: 'BOT_ADD';
+  30: 'ROLE_CREATE';
+  31: 'ROLE_UPDATE';
+  32: 'ROLE_DELETE';
+  40: 'INVITE_CREATE';
+  41: 'INVITE_UPDATE';
+  42: 'INVITE_DELETE';
+  50: 'WEBHOOK_CREATE';
+  51: 'WEBHOOK_UPDATE';
+  52: 'WEBHOOK_DELETE';
+  60: 'EMOJI_CREATE';
+  61: 'EMOJI_UPDATE';
+  62: 'EMOJI_DELETE';
+  72: 'MESSAGE_DELETE';
+  73: 'MESSAGE_BULK_DELETE';
+  74: 'MESSAGE_PIN';
+  75: 'MESSAGE_UNPIN';
+  80: 'INTEGRATION_CREATE';
+  81: 'INTEGRATION_UPDATE';
+  82: 'INTEGRATION_DELETE';
+  83: 'STAGE_INSTANCE_CREATE';
+  84: 'STAGE_INSTANCE_UPDATE';
+  85: 'STAGE_INSTANCE_DELETE';
+  90: 'STICKER_CREATE';
+  91: 'STICKER_UPDATE';
+  92: 'STICKER_DELETE';
+  110: 'THREAD_CREATE';
+  111: 'THREAD_UPDATE';
+  112: 'THREAD_DELETE';
+}
+
 export type GuildAuditLogsActions = { [key in keyof GuildAuditLogsTypes]?: number } & { ALL?: null };
 
 export type GuildAuditLogsAction = keyof GuildAuditLogsActions;
@@ -4267,7 +4315,7 @@ interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActio
   STICKER: Sticker;
 }
 
-export interface GuildAuditLogsFetchOptions<T extends GuildAuditLogsAction> {
+export interface GuildAuditLogsFetchOptions<T extends keyof GuildAuditLogsIds | GuildAuditLogsAction> {
   before?: Snowflake | GuildAuditLogsEntry;
   limit?: number;
   user?: UserResolvable;

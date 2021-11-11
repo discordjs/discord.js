@@ -1070,18 +1070,25 @@ expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
 // Test audit logs
 declare const guild: Guild;
 expectType<Promise<GuildAuditLogs<'MEMBER_KICK'>>>(guild.fetchAuditLogs({ type: 'MEMBER_KICK' }));
+expectType<Promise<any>>(guild.fetchAuditLogs({ type: 20 }));
 expectType<Promise<GuildAuditLogs<'CHANNEL_CREATE'>>>(guild.fetchAuditLogs({ type: 'CHANNEL_CREATE' }));
+expectType<Promise<any>>(guild.fetchAuditLogs({ type: 10 }));
 expectType<Promise<GuildAuditLogs<'INTEGRATION_UPDATE'>>>(guild.fetchAuditLogs({ type: 'INTEGRATION_UPDATE' }));
+expectType<Promise<any>>(guild.fetchAuditLogs({ type: 81 }));
 expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs({ type: 'ALL' }));
 expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs());
 
-expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
   guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()),
+);
+expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
+  guild.fetchAuditLogs({ type: 20 }).then(al => al.entries.first()),
 );
 
 expectType<Promise<null | undefined>>(
   guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()?.extra),
 );
+expectType<Promise<null | undefined>>(guild.fetchAuditLogs({ type: 20 }).then(al => al.entries.first()?.extra));
 expectType<Promise<GuildChannel | { id: Snowflake } | undefined>>(
   guild.fetchAuditLogs({ type: 'STAGE_INSTANCE_CREATE' }).then(al => al.entries.first()?.extra),
 );
@@ -1092,9 +1099,15 @@ expectType<Promise<{ channel: GuildChannel | { id: Snowflake }; count: number } 
 expectType<Promise<User | null | undefined>>(
   guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()?.target),
 );
+expectType<Promise<User | null | undefined>>(guild.fetchAuditLogs({ type: 20 }).then(al => al.entries.first()?.target));
 expectType<Promise<StageInstance | undefined>>(
   guild.fetchAuditLogs({ type: 'STAGE_INSTANCE_CREATE' }).then(al => al.entries.first()?.target),
 );
 expectType<Promise<User | undefined>>(
   guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' }).then(al => al.entries.first()?.target),
+);
+
+expectType<Promise<User | undefined>>(
+  // @ts-expect-error Invalid audit log ID
+  guild.fetchAuditLogs({ type: 19 }).then(al => al.entries.first()?.target),
 );
