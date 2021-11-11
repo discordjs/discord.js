@@ -954,8 +954,8 @@ export class GuildAuditLogs<T extends keyof GuildAuditLogsIds | GuildAuditLogsAc
 }
 
 export class GuildAuditLogsEntry<
-  TAction2 extends keyof GuildAuditLogsIds | GuildAuditLogsAction = 'ALL',
-  TAction = TAction2 extends keyof GuildAuditLogsIds ? GuildAuditLogsIds[TAction2] : TAction2,
+  TActionRaw extends keyof GuildAuditLogsIds | GuildAuditLogsAction = 'ALL',
+  TAction = TActionRaw extends keyof GuildAuditLogsIds ? GuildAuditLogsIds[TActionRaw] : TActionRaw,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
     : 'ALL',
