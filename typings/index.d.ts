@@ -4174,7 +4174,7 @@ export interface GuildApplicationCommandPermissionData {
   permissions: ApplicationCommandPermissionData[];
 }
 
-interface GuildAuditLogsTypes {
+export interface GuildAuditLogsTypes {
   GUILD_UPDATE: ['GUILD', 'UPDATE'];
   CHANNEL_CREATE: ['CHANNEL', 'CREATE'];
   CHANNEL_UPDATE: ['CHANNEL', 'UPDATE'];
@@ -4274,7 +4274,7 @@ export type GuildAuditLogsAction = keyof GuildAuditLogsActions;
 
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'ALL';
 
-interface GuildAuditLogsEntryExtraField {
+export interface GuildAuditLogsEntryExtraField {
   MEMBER_PRUNE: { removed: number; days: number };
   MEMBER_MOVE: { channel: GuildChannel | { id: Snowflake }; count: number };
   MESSAGE_DELETE: { channel: GuildChannel | { id: Snowflake }; count: number };
@@ -4302,7 +4302,7 @@ interface GuildAuditLogsEntryExtraField {
   STAGE_INSTANCE_UPDATE: GuildChannel | { id: Snowflake };
 }
 
-interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
+export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
   USER: User | null;
   GUILD: Guild;
   WEBHOOK: Webhook;
