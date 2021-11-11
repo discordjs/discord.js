@@ -2643,8 +2643,7 @@ export class ApplicationCommandManager<
     null
   >;
   private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): unknown;
-  public create(command: ApplicationCommandDataResolvable): Promise<ApplicationCommandScope>;
-  public create(command: ApplicationCommandDataResolvable, guildId: Snowflake): Promise<ApplicationCommand>;
+  public create(command: ApplicationCommandDataResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope>;
   public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope | null>;
   public edit(
     command: ApplicationCommandResolvable,
@@ -3289,10 +3288,13 @@ export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType | App
 export type CommandOptionChannelResolvableType = ApplicationCommandOptionTypes.CHANNEL | 'CHANNEL';
 
 export type CommandOptionChoiceResolvableType =
-  | ApplicationCommandOptionTypes.NUMBER
-  | 'NUMBER'
   | ApplicationCommandOptionTypes.STRING
   | 'STRING'
+  | CommandOptionNumericResolvableType;
+
+export type CommandOptionNumericResolvableType =
+  | ApplicationCommandOptionTypes.NUMBER
+  | 'NUMBER'
   | ApplicationCommandOptionTypes.INTEGER
   | 'INTEGER';
 
@@ -3366,6 +3368,20 @@ export interface ApplicationCommandChoicesOption extends BaseApplicationCommandO
   autocomplete?: false;
 }
 
+export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData {
+  type: CommandOptionNumericResolvableType;
+  minValue?: number;
+  min_value?: number;
+  maxValue?: number;
+  max_value?: number;
+}
+
+export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
+  type: Exclude<CommandOptionNumericResolvableType, ApplicationCommandOptionTypes>;
+  minValue?: number;
+  maxValue?: number;
+}
+
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: 'SUB_COMMAND_GROUP' | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP;
   options?: ApplicationCommandSubCommandData[];
@@ -3399,14 +3415,16 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
-  | ApplicationCommandSubCommandData
-  | ApplicationCommandAutocompleteOption;
+  | ApplicationCommandAutocompleteOption
+  | ApplicationCommandNumericOptionData
+  | ApplicationCommandSubCommandData;
 
 export type ApplicationCommandOption =
   | ApplicationCommandSubGroup
   | ApplicationCommandNonOptions
   | ApplicationCommandChannelOption
   | ApplicationCommandChoicesOption
+  | ApplicationCommandNumericOption
   | ApplicationCommandSubCommand;
 
 export interface ApplicationCommandOptionChoice {

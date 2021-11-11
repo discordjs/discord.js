@@ -34,7 +34,7 @@ class MessageReaction {
      * A manager of the users that have given this reaction
      * @type {ReactionUserManager}
      */
-    this.users = new ReactionUserManager(this);
+    this.users = new ReactionUserManager(this, this.me ? [client.user] : []);
 
     this._emoji = new ReactionEmoji(this, data.emoji);
 

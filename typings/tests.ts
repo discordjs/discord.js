@@ -853,7 +853,8 @@ declare const applicationCommandManager: ApplicationCommandManager;
   type ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>;
 
   assertType<Promise<ApplicationCommandScope>>(applicationCommandManager.create(applicationCommandData));
-  assertType<Promise<ApplicationCommand>>(applicationCommandManager.create(applicationCommandData, '0'));
+  assertType<Promise<ApplicationCommandScope>>(applicationCommandManager.create(applicationCommandData, '0'));
+  assertType<Promise<ApplicationCommandScope>>(applicationCommandManager.create(applicationCommandData, undefined));
   assertType<Promise<ApplicationCommandScope>>(
     applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData),
   );

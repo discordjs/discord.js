@@ -136,6 +136,10 @@ class ApplicationCommand extends Base {
 
   /**
    * An option for an application command or subcommand.
+   * <info>In addition to the listed properties, when used as a parameter,
+   * API style `snake_case` properties can be used for compatibility with generators like `@discordjs/builders`.</info>
+   * <warn>Note that providing a value for the `camelCase` counterpart for any `snake_case` property
+   * will discard the provided `snake_case` property.</warn>
    * @typedef {Object} ApplicationCommandOptionData
    * @property {ApplicationCommandOptionType|number} type The type of the option
    * @property {string} name The name of the option
@@ -146,10 +150,8 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]|number[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
-   * @property {number[]} [channel_types] When the option type is channel,
-   * the API data for allowed types of channels that can be selected
-   * <warn>This is provided for compatibility with something like `@discordjs/builders`
-   * and will be discarded when `channelTypes` is present</warn>
+   * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
    */
 
   /**
@@ -261,7 +263,9 @@ class ApplicationCommand extends Base {
         existing.required ||
       option.choices?.length !== existing.choices?.length ||
       option.options?.length !== existing.options?.length ||
-      (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length
+      (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
+      (option.minValue ?? option.min_value) !== existing.minValue ||
+      (option.maxValue ?? option.max_value) !== existing.maxValue
     ) {
       return false;
     }
@@ -311,6 +315,8 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
+   * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
    */
 
   /**
@@ -330,6 +336,8 @@ class ApplicationCommand extends Base {
   static transformOption(option, received) {
     const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
+    const minValueKey = received ? 'minValue' : 'min_value';
+    const maxValueKey = received ? 'maxValue' : 'max_value';
     return {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
@@ -344,6 +352,8 @@ class ApplicationCommand extends Base {
         : option.channelTypes?.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)) ??
           // When transforming to API data, accept API data
           option.channel_types,
+      [minValueKey]: option.minValue ?? option.min_value,
+      [maxValueKey]: option.maxValue ?? option.max_value,
     };
   }
 }
