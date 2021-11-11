@@ -84,6 +84,9 @@ import {
   StageInstance,
   WebSocketShard,
   Collector,
+  GuildAuditLogsEntry,
+  GuildAuditLogs,
+  StageInstance,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
