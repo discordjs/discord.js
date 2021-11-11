@@ -79,6 +79,9 @@ import {
   Shard,
   WebSocketShard,
   Collector,
+  GuildAuditLogsEntry,
+  GuildAuditLogs,
+  StageInstance,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -1062,3 +1065,36 @@ collector.on('end', (collection, reason) => {
 });
 
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
+expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
+
+// Test audit logs
+declare const guild: Guild;
+expectType<Promise<GuildAuditLogs<'MEMBER_KICK'>>>(guild.fetchAuditLogs({ type: 'MEMBER_KICK' }));
+expectType<Promise<GuildAuditLogs<'CHANNEL_CREATE'>>>(guild.fetchAuditLogs({ type: 'CHANNEL_CREATE' }));
+expectType<Promise<GuildAuditLogs<'INTEGRATION_UPDATE'>>>(guild.fetchAuditLogs({ type: 'INTEGRATION_UPDATE' }));
+expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs({ type: 'ALL' }));
+expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs());
+
+expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
+  guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()),
+);
+
+expectType<Promise<null | undefined>>(
+  guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()?.extra),
+);
+expectType<Promise<GuildChannel | { id: Snowflake } | undefined>>(
+  guild.fetchAuditLogs({ type: 'STAGE_INSTANCE_CREATE' }).then(al => al.entries.first()?.extra),
+);
+expectType<Promise<{ channel: GuildChannel | { id: Snowflake }; count: number } | undefined>>(
+  guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' }).then(al => al.entries.first()?.extra),
+);
+
+expectType<Promise<User | null | undefined>>(
+  guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()?.target),
+);
+expectType<Promise<StageInstance | undefined>>(
+  guild.fetchAuditLogs({ type: 'STAGE_INSTANCE_CREATE' }).then(al => al.entries.first()?.target),
+);
+expectType<Promise<User | undefined>>(
+  guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' }).then(al => al.entries.first()?.target),
+);
