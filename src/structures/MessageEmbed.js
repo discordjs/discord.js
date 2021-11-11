@@ -356,15 +356,21 @@ class MessageEmbed {
   // TODO: Remove the deprecated code in the following method and typings.
   /**
    * Sets the author of this embed.
-   * @param {string|EmbedAuthorData} options The options to provide for the author.
+   * @param {string|EmbedAuthorData|null} options The options to provide for the author.
    * A string may simply be provided if only the author name is desirable.
+   * Provide `null` to remove the author data.
    * @param {string} [deprecatedIconURL] The icon URL of this author.
    * <warn>This parameter is **deprecated**. Use the `options` parameter instead.</warn>
    * @param {string} [deprecatedURL] The URL of this author.
    * <warn>This parameter is **deprecated**. Use the `options` parameter instead.</warn>
    * @returns {MessageEmbed}
    */
-  setAuthor(options = {}, deprecatedIconURL, deprecatedURL) {
+  setAuthor(options, deprecatedIconURL, deprecatedURL) {
+    if (options === null) {
+      this.author = {};
+      return this;
+    }
+
     if (typeof options === 'string') {
       options = { name: options, url: deprecatedURL, iconURL: deprecatedIconURL };
     }
