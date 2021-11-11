@@ -522,7 +522,7 @@ client.on('messageCreate', async message => {
     assertType<InteractionCollector<ButtonInteraction<'cached'>>>(buttonCollector);
     assertType<GuildTextBasedChannel>(message.channel);
     assertType<Guild>(message.guild);
-    assertType<GuildMember>(message.member);
+    assertType<GuildMember | null>(message.member);
   }
 
   assertType<TextBasedChannels>(message.channel);
