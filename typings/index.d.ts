@@ -1357,11 +1357,11 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public embeds: MessageEmbed[];
   public groupActivityApplication: ClientApplication | null;
   public guildId: Snowflake | null;
-  public readonly guild: If<Cached, Guild, null>;
+  public readonly guild: If<Cached, Guild>;
   public readonly hasThread: boolean;
   public id: Snowflake;
   public interaction: MessageInteraction | null;
-  public readonly member: If<Cached, GuildMember, null>;
+  public readonly member: GuildMember | null;
   public mentions: MessageMentions;
   public nonce: string | number | null;
   public readonly partial: false;
