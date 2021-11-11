@@ -30,7 +30,6 @@ import {
   CommandInteraction,
   CommandInteractionOption,
   CommandInteractionOptionResolver,
-  CommandOptionChoiceResolvableType,
   CommandOptionNonChoiceResolvableType,
   Constants,
   ContextMenuInteraction,
@@ -447,6 +446,66 @@ client.on('ready', async () => {
 // This is to check that stuff is the right type
 declare const assertIsPromiseMember: (m: Promise<GuildMember>) => void;
 
+const baseCommandOptionData = {
+  name: 'test',
+  description: 'test',
+};
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'STRING',
+  // @ts-expect-error
+  autocomplete: true,
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'STRING',
+  autocomplete: false,
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'STRING',
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'NUMBER',
+  // @ts-expect-error
+  autocomplete: true,
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'INTEGER',
+  // @ts-expect-error
+  autocomplete: true,
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'NUMBER',
+  autocomplete: true,
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'STRING',
+  autocomplete: true,
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'INTEGER',
+  autocomplete: true,
+});
+
 client.on('guildCreate', async g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
@@ -818,12 +877,6 @@ declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
 
   // @ts-expect-error
   applicationNonChoiceOptionData.choices;
-}
-
-declare const applicationChoiceOptionData: ApplicationCommandOptionData & { type: CommandOptionChoiceResolvableType };
-{
-  // Choices should be available.
-  applicationChoiceOptionData.choices;
 }
 
 declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;

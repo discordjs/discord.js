@@ -3313,7 +3313,6 @@ export interface BaseApplicationCommandOptionsData {
   name: string;
   description: string;
   required?: boolean;
-  autocomplete?: boolean;
 }
 
 export interface UserApplicationCommandData extends BaseApplicationCommandData {
@@ -3346,14 +3345,27 @@ export interface ApplicationCommandChannelOption extends BaseApplicationCommandO
   channelTypes?: (keyof typeof ChannelTypes)[];
 }
 
+export interface ApplicationCommandAutocompleteOption extends BaseApplicationCommandOptionsData {
+  type:
+    | 'STRING'
+    | 'NUMBER'
+    | 'INTEGER'
+    | ApplicationCommandOptionTypes.STRING
+    | ApplicationCommandOptionTypes.NUMBER
+    | ApplicationCommandOptionTypes.INTEGER;
+  autocomplete: true;
+}
+
 export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoice[];
+  autocomplete?: false;
 }
 
 export interface ApplicationCommandChoicesOption extends BaseApplicationCommandOptionsData {
   type: Exclude<CommandOptionChoiceResolvableType, ApplicationCommandOptionTypes>;
   choices?: ApplicationCommandOptionChoice[];
+  autocomplete?: false;
 }
 
 export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData {
@@ -3403,6 +3415,7 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
+  | ApplicationCommandAutocompleteOption
   | ApplicationCommandNumericOptionData
   | ApplicationCommandSubCommandData;
 
