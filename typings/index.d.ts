@@ -1177,11 +1177,11 @@ export type CacheTypeReducer<
   RawType = CachedType,
   PresentType = CachedType | RawType,
   Fallback = PresentType | null,
-> = State extends 'cached'
+> = [State] extends ['cached']
   ? CachedType
-  : State extends 'raw'
+  : [State] extends ['raw']
   ? RawType
-  : State extends 'present'
+  : [State] extends ['present']
   ? PresentType
   : Fallback;
 

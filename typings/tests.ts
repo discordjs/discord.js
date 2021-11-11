@@ -913,6 +913,7 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
+  assertType<Snowflake | null>(interaction.guildId);
   if (interaction.inCachedGuild()) {
     assertType<GuildMember>(interaction.member);
     // @ts-expect-error
