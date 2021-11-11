@@ -4224,7 +4224,7 @@ export type GuildAuditLogsActions = { [key in keyof GuildAuditLogsTypes]?: numbe
 
 export type GuildAuditLogsAction = keyof GuildAuditLogsActions;
 
-export type GuildAuditLogsActionType = 'CREATE' | 'DELETE' | 'UPDATE' | 'ALL';
+export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'ALL';
 
 interface GuildAuditLogsEntryExtraField {
   MEMBER_PRUNE: { removed: number; days: number };
@@ -4274,24 +4274,11 @@ export interface GuildAuditLogsFetchOptions<T extends GuildAuditLogsAction> {
   type?: T;
 }
 
-export type GuildAuditLogsTarget = keyof GuildAuditLogsTargets;
+export type GuildAuditLogsTarget = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'ALL' | 'UNKNOWN';
 
-export interface GuildAuditLogsTargets {
-  ALL?: string;
-  GUILD?: string;
-  CHANNEL?: string;
-  USER?: string;
-  ROLE?: string;
-  INVITE?: string;
-  WEBHOOK?: string;
-  EMOJI?: string;
-  MESSAGE?: string;
-  INTEGRATION?: string;
-  STAGE_INSTANCE?: string;
-  STICKER?: string;
-  THREAD?: string;
-  UNKNOWN?: string;
-}
+export type GuildAuditLogsTargets = {
+  [key in GuildAuditLogsTarget]?: string;
+};
 
 export type GuildBanResolvable = GuildBan | UserResolvable;
 
