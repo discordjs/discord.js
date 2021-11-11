@@ -59,7 +59,7 @@ class Sweepers {
             case 'threads':
               clonedOptions.filter = this.constructor.filterByLifetime({
                 lifetime: clonedOptions.lifetime,
-                getComparisonTimestamp: t => t.archivedTimestamp,
+                getComparisonTimestamp: t => t.archiveTimestamp,
                 excludeFromSweep: t => !t.archived,
               });
           }
@@ -146,7 +146,7 @@ class Sweepers {
     let messages = 0;
 
     for (const channel of this.client.channels.cache.values()) {
-      if (!channel.messsages || channel.messages.cache.size === 0) continue;
+      if (!channel.messages || channel.messages.cache.size === 0) continue;
       channels++;
 
       messages += channel.messages.cache.sweep(filter);
@@ -178,7 +178,7 @@ class Sweepers {
     let reactions = 0;
 
     for (const channel of this.client.channels.cache.values()) {
-      if (!channel.messsages || channel.messages.cache.size === 0) continue;
+      if (!channel.messages || channel.messages.cache.size === 0) continue;
       channels++;
 
       for (const message of channel.messages.cache.values()) {
@@ -390,13 +390,13 @@ class Sweepers {
     if (typeof props.interval !== 'number') {
       throw new TypeError('INVALID_TYPE', `sweepers.${key}.interval`, 'number');
     }
-    if (
-      ['invites', 'messages', 'threads'].includes(key) &&
-      !('filter' in props) &&
-      typeof props.lifetime !== 'number'
-    ) {
-      throw new TypeError('INVALID_TYPE', `sweepers.${key}.lifetime`, 'number');
-    } else if (typeof props.filter !== 'function') {
+    if (['invites', 'messages', 'threads'].includes(key) && !('filter' in props)) {
+      if (typeof props.lifetime !== 'number') {
+        throw new TypeError('INVALID_TYPE', `sweepers.${key}.lifetime`, 'number');
+      }
+      return;
+    }
+    if (typeof props.filter !== 'function') {
       throw new TypeError('INVALID_TYPE', `sweepers.${key}.filter`, 'function');
     }
   }
