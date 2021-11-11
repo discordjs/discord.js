@@ -38,7 +38,7 @@ pnpm add discord.js
 - [erlpack](https://github.com/discord/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discord/erlpack`)
 - [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
 - [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
-- [@discordjs/voice](https://github.com/discordjs/voice) for interacting with the Discord Voice API
+- [@discordjs/voice](https://github.com/discordjs/voice) for interacting with the Discord Voice API (`npm install @discordjs/voice`)
 
 ## Example usage
 
