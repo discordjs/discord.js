@@ -2086,6 +2086,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public readonly joined: boolean;
   public locked: boolean | null;
   public readonly manageable: boolean;
+  public readonly viewable: boolean;
   public readonly sendable: boolean;
   public memberCount: number | null;
   public messageCount: number | null;
