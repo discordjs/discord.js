@@ -169,7 +169,7 @@ class Guild extends AnonymousGuild {
 
     if ('premium_progress_bar_enabled' in data) {
       /**
-       * Whether this guild has its premium progress bar enabled (GOAL bar below the guild name on the client)
+       * Whether this guild has its premium (boost) progress bar enabled
        * @type {boolean}
        */
       this.premiumProgressBarEnabled = data.premium_progress_bar_enabled;
