@@ -103,13 +103,15 @@ class Guild extends AnonymousGuild {
      * @type {boolean}
      */
     this.deleted = false;
+    
+    /**
+     * Whether the guild is available to access. If it is not available, it indicates a server outage
+     * @type {boolean}
+     */
+    this.available = true;
 
     if (!data) return;
     if (data.unavailable) {
-      /**
-       * Whether the guild is available to access. If it is not available, it indicates a server outage
-       * @type {boolean}
-       */
       this.available = false;
     } else {
       this._patch(data);
