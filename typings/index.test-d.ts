@@ -1070,19 +1070,39 @@ expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
 // Test audit logs
 declare const guild: Guild;
 expectType<Promise<GuildAuditLogs<'MEMBER_KICK'>>>(guild.fetchAuditLogs({ type: 'MEMBER_KICK' }));
-expectType<Promise<any>>(guild.fetchAuditLogs({ type: 20 }));
+expectType<Promise<GuildAuditLogs<20>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }));
+expectType<Promise<GuildAuditLogs<20>>>(guild.fetchAuditLogs({ type: 20 }));
 expectType<Promise<GuildAuditLogs<'CHANNEL_CREATE'>>>(guild.fetchAuditLogs({ type: 'CHANNEL_CREATE' }));
-expectType<Promise<any>>(guild.fetchAuditLogs({ type: 10 }));
+expectType<Promise<GuildAuditLogs<10>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.CHANNEL_CREATE }));
+expectType<Promise<GuildAuditLogs<10>>>(guild.fetchAuditLogs({ type: 10 }));
 expectType<Promise<GuildAuditLogs<'INTEGRATION_UPDATE'>>>(guild.fetchAuditLogs({ type: 'INTEGRATION_UPDATE' }));
-expectType<Promise<any>>(guild.fetchAuditLogs({ type: 81 }));
+expectType<Promise<GuildAuditLogs<81>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.INTEGRATION_UPDATE }));
+expectType<Promise<GuildAuditLogs<81>>>(guild.fetchAuditLogs({ type: 81 }));
 expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs({ type: 'ALL' }));
+expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.ALL }));
 expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs());
 
 expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
   guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()),
 );
 expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }).then(al => al.entries.first()),
+);
+expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
   guild.fetchAuditLogs({ type: 20 }).then(al => al.entries.first()),
+);
+
+expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+  guild.fetchAuditLogs({ type: 'ALL' }).then(al => al.entries.first()),
+);
+expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.ALL }).then(al => al.entries.first()),
+);
+expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+  guild.fetchAuditLogs({ type: null }).then(al => al.entries.first()),
+);
+expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+  guild.fetchAuditLogs().then(al => al.entries.first()),
 );
 
 expectType<Promise<null | undefined>>(

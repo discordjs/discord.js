@@ -955,7 +955,11 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = 'ALL'> {
 
 export class GuildAuditLogsEntry<
   TActionRaw extends GuildAuditLogsResolvable = 'ALL',
-  TAction = TActionRaw extends keyof GuildAuditLogsIds ? GuildAuditLogsIds[TActionRaw] : TActionRaw,
+  TAction = TActionRaw extends keyof GuildAuditLogsIds
+    ? GuildAuditLogsIds[TActionRaw]
+    : TActionRaw extends null
+    ? 'ALL'
+    : TActionRaw,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
     : 'ALL',
@@ -4174,7 +4178,7 @@ export interface GuildApplicationCommandPermissionData {
   permissions: ApplicationCommandPermissionData[];
 }
 
-export type GuildAuditLogsActions = { [key in keyof GuildAuditLogsTypes]?: number } & { ALL?: null };
+export type GuildAuditLogsActions = { [Key in keyof GuildAuditLogsIds as GuildAuditLogsIds[Key]]: Key } & { ALL: null };
 
 export type GuildAuditLogsAction = keyof GuildAuditLogsActions;
 
@@ -4275,7 +4279,7 @@ export interface GuildAuditLogsIds {
   112: 'THREAD_DELETE';
 }
 
-export type GuildAuditLogsResolvable = keyof GuildAuditLogsIds | GuildAuditLogsAction;
+export type GuildAuditLogsResolvable = keyof GuildAuditLogsIds | GuildAuditLogsAction | null;
 
 export type GuildAuditLogsTarget = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'ALL' | 'UNKNOWN';
 
