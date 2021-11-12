@@ -551,7 +551,15 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    return Boolean(this.author.id === this.client.user.id && !this.deleted && (!this.guild || this.channel?.viewable));
+    const precheck = Boolean(
+      this.author.id === this.client.user.id && !this.deleted && (!this.guild || this.channel?.viewable),
+    );
+    // Regardless of permissions thread messages cannot be edited if
+    // the thread is locked.
+    if (this.channel?.isThread()) {
+      return precheck && !this.channel.locked;
+    }
+    return precheck;
   }
 
   /**
