@@ -3315,6 +3315,7 @@ export interface BaseApplicationCommandOptionsData {
   name: string;
   description: string;
   required?: boolean;
+  autocomplete?: never;
 }
 
 export interface UserApplicationCommandData extends BaseApplicationCommandData {
@@ -3347,7 +3348,7 @@ export interface ApplicationCommandChannelOption extends BaseApplicationCommandO
   channelTypes?: (keyof typeof ChannelTypes)[];
 }
 
-export interface ApplicationCommandAutocompleteOption extends BaseApplicationCommandOptionsData {
+export interface ApplicationCommandAutocompleteOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type:
     | 'STRING'
     | 'NUMBER'
@@ -3358,13 +3359,13 @@ export interface ApplicationCommandAutocompleteOption extends BaseApplicationCom
   autocomplete: true;
 }
 
-export interface ApplicationCommandChoicesData extends BaseApplicationCommandOptionsData {
+export interface ApplicationCommandChoicesData extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoice[];
   autocomplete?: false;
 }
 
-export interface ApplicationCommandChoicesOption extends BaseApplicationCommandOptionsData {
+export interface ApplicationCommandChoicesOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: Exclude<CommandOptionChoiceResolvableType, ApplicationCommandOptionTypes>;
   choices?: ApplicationCommandOptionChoice[];
   autocomplete?: false;
@@ -3396,7 +3397,13 @@ export interface ApplicationCommandSubGroup extends Omit<BaseApplicationCommandO
 
 export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: 'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND;
-  options?: (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData | ApplicationCommandChannelOptionData)[];
+  options?: (
+    | ApplicationCommandChoicesData
+    | ApplicationCommandNonOptionsData
+    | ApplicationCommandChannelOptionData
+    | ApplicationCommandAutocompleteOption
+    | ApplicationCommandNumericOptionData
+  )[];
 }
 
 export interface ApplicationCommandSubCommand extends Omit<BaseApplicationCommandOptionsData, 'required'> {

@@ -79,6 +79,8 @@ import {
   User,
   VoiceChannel,
   Shard,
+  ApplicationCommandAutocompleteOption,
+  ApplicationCommandNumericOptionData,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 
@@ -454,8 +456,8 @@ const baseCommandOptionData = {
 assertType<ApplicationCommandOptionData>({
   ...baseCommandOptionData,
   type: 'STRING',
-  // @ts-expect-error
   autocomplete: true,
+  // @ts-expect-error
   choices: [],
 });
 
@@ -475,16 +477,16 @@ assertType<ApplicationCommandOptionData>({
 assertType<ApplicationCommandOptionData>({
   ...baseCommandOptionData,
   type: 'NUMBER',
-  // @ts-expect-error
   autocomplete: true,
+  // @ts-expect-error
   choices: [],
 });
 
 assertType<ApplicationCommandOptionData>({
   ...baseCommandOptionData,
   type: 'INTEGER',
-  // @ts-expect-error
   autocomplete: true,
+  // @ts-expect-error
   choices: [],
 });
 
@@ -893,7 +895,13 @@ declare const applicationSubCommandData: ApplicationCommandSubCommandData;
 
   // Check that only subcommands can have no subcommand or subcommand group sub-options.
   assertType<
-    | (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData | ApplicationCommandChannelOptionData)[]
+    | (
+        | ApplicationCommandChoicesData
+        | ApplicationCommandNonOptionsData
+        | ApplicationCommandChannelOptionData
+        | ApplicationCommandAutocompleteOption
+        | ApplicationCommandNumericOptionData
+      )[]
     | undefined
   >(applicationSubCommandData.options);
 }
