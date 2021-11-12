@@ -890,7 +890,7 @@ export class Guild extends AnonymousGuild {
   public edit(data: GuildEditData, reason?: string): Promise<Guild>;
   public editWelcomeScreen(data: WelcomeScreenEditData): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
-  public fetchAuditLogs<T extends keyof GuildAuditLogsIds | GuildAuditLogsAction = 'ALL'>(
+  public fetchAuditLogs<T extends GuildAuditLogsResolvable = 'ALL'>(
     options?: GuildAuditLogsFetchOptions<T>,
   ): Promise<GuildAuditLogs<T>>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
@@ -937,7 +937,7 @@ export class Guild extends AnonymousGuild {
   public toJSON(): unknown;
 }
 
-export class GuildAuditLogs<T extends keyof GuildAuditLogsIds | GuildAuditLogsAction = 'ALL'> {
+export class GuildAuditLogs<T extends GuildAuditLogsResolvable = 'ALL'> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
@@ -954,7 +954,7 @@ export class GuildAuditLogs<T extends keyof GuildAuditLogsIds | GuildAuditLogsAc
 }
 
 export class GuildAuditLogsEntry<
-  TActionRaw extends keyof GuildAuditLogsIds | GuildAuditLogsAction = 'ALL',
+  TActionRaw extends GuildAuditLogsResolvable = 'ALL',
   TAction = TActionRaw extends keyof GuildAuditLogsIds ? GuildAuditLogsIds[TActionRaw] : TActionRaw,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
@@ -4174,51 +4174,58 @@ export interface GuildApplicationCommandPermissionData {
   permissions: ApplicationCommandPermissionData[];
 }
 
-export interface GuildAuditLogsTypes {
-  GUILD_UPDATE: ['GUILD', 'UPDATE'];
-  CHANNEL_CREATE: ['CHANNEL', 'CREATE'];
-  CHANNEL_UPDATE: ['CHANNEL', 'UPDATE'];
-  CHANNEL_DELETE: ['CHANNEL', 'DELETE'];
-  CHANNEL_OVERWRITE_CREATE: ['CHANNEL', 'CREATE'];
-  CHANNEL_OVERWRITE_UPDATE: ['CHANNEL', 'UPDATE'];
-  CHANNEL_OVERWRITE_DELETE: ['CHANNEL', 'DELETE'];
-  MEMBER_KICK: ['USER', 'DELETE'];
-  MEMBER_PRUNE: ['USER', 'DELETE'];
-  MEMBER_BAN_ADD: ['USER', 'DELETE'];
-  MEMBER_BAN_REMOVE: ['USER', 'CREATE'];
-  MEMBER_UPDATE: ['USER', 'UPDATE'];
-  MEMBER_ROLE_UPDATE: ['USER', 'UPDATE'];
-  MEMBER_MOVE: ['USER', 'UPDATE'];
-  MEMBER_DISCONNECT: ['USER', 'DELETE'];
-  BOT_ADD: ['USER', 'CREATE'];
-  ROLE_CREATE: ['ROLE', 'CREATE'];
-  ROLE_UPDATE: ['ROLE', 'UPDATE'];
-  ROLE_DELETE: ['ROLE', 'DELETE'];
-  INVITE_CREATE: ['INVITE', 'CREATE'];
-  INVITE_UPDATE: ['INVITE', 'UPDATE'];
-  INVITE_DELETE: ['INVITE', 'DELETE'];
-  WEBHOOK_CREATE: ['WEBHOOK', 'CREATE'];
-  WEBHOOK_UPDATE: ['WEBHOOK', 'UPDATE'];
-  WEBHOOK_DELETE: ['WEBHOOK', 'DELETE'];
-  EMOJI_CREATE: ['EMOJI', 'CREATE'];
-  EMOJI_UPDATE: ['EMOJI', 'UPDATE'];
-  EMOJI_DELETE: ['EMOJI', 'DELETE'];
-  MESSAGE_DELETE: ['MESSAGE', 'DELETE'];
-  MESSAGE_BULK_DELETE: ['MESSAGE', 'DELETE'];
-  MESSAGE_PIN: ['MESSAGE', 'CREATE'];
-  MESSAGE_UNPIN: ['MESSAGE', 'DELETE'];
-  INTEGRATION_CREATE: ['INTEGRATION', 'CREATE'];
-  INTEGRATION_UPDATE: ['INTEGRATION', 'UPDATE'];
-  INTEGRATION_DELETE: ['INTEGRATION', 'DELETE'];
-  STAGE_INSTANCE_CREATE: ['STAGE_INSTANCE', 'CREATE'];
-  STAGE_INSTANCE_UPDATE: ['STAGE_INSTANCE', 'UPDATE'];
-  STAGE_INSTANCE_DELETE: ['STAGE_INSTANCE', 'DELETE'];
-  STICKER_CREATE: ['STICKER', 'CREATE'];
-  STICKER_UPDATE: ['STICKER', 'UPDATE'];
-  STICKER_DELETE: ['STICKER', 'DELETE'];
-  THREAD_CREATE: ['THREAD', 'CREATE'];
-  THREAD_UPDATE: ['THREAD', 'UPDATE'];
-  THREAD_DELETE: ['THREAD', 'DELETE'];
+export type GuildAuditLogsActions = { [key in keyof GuildAuditLogsTypes]?: number } & { ALL?: null };
+
+export type GuildAuditLogsAction = keyof GuildAuditLogsActions;
+
+export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'ALL';
+
+export interface GuildAuditLogsEntryExtraField {
+  MEMBER_PRUNE: { removed: number; days: number };
+  MEMBER_MOVE: { channel: GuildChannel | { id: Snowflake }; count: number };
+  MESSAGE_DELETE: { channel: GuildChannel | { id: Snowflake }; count: number };
+  MESSAGE_BULK_DELETE: { channel: GuildChannel | { id: Snowflake }; count: number };
+  MESSAGE_PIN: { channel: GuildChannel | { id: Snowflake }; messageId: Snowflake };
+  MESSAGE_UNPIN: { channel: GuildChannel | { id: Snowflake }; messageId: Snowflake };
+  MEMBER_DISCONNECT: { count: number };
+  CHANNEL_OVERWRITE_CREATE:
+    | Role
+    | GuildMember
+    | { id: Snowflake; name: string; type: OverwriteTypes.role }
+    | { id: Snowflake; type: OverwriteTypes.member };
+  CHANNEL_OVERWRITE_UPDATE:
+    | Role
+    | GuildMember
+    | { id: Snowflake; name: string; type: OverwriteTypes.role }
+    | { id: Snowflake; type: OverwriteTypes.member };
+  CHANNEL_OVERWRITE_DELETE:
+    | Role
+    | GuildMember
+    | { id: Snowflake; name: string; type: OverwriteTypes.role }
+    | { id: Snowflake; type: OverwriteTypes.member };
+  STAGE_INSTANCE_CREATE: GuildChannel | { id: Snowflake };
+  STAGE_INSTANCE_DELETE: GuildChannel | { id: Snowflake };
+  STAGE_INSTANCE_UPDATE: GuildChannel | { id: Snowflake };
+}
+
+export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
+  USER: User | null;
+  GUILD: Guild;
+  WEBHOOK: Webhook;
+  INVITE: Invite | { [x: string]: unknown };
+  MESSAGE: TActionType extends 'MESSAGE_BULK_DELETE' ? Guild | { id: Snowflake } : User;
+  INTEGRATION: Integration;
+  CHANNEL: GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown };
+  THREAD: GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown };
+  STAGE_INSTANCE: StageInstance;
+  STICKER: Sticker;
+}
+
+export interface GuildAuditLogsFetchOptions<T extends GuildAuditLogsResolvable> {
+  before?: Snowflake | GuildAuditLogsEntry;
+  limit?: number;
+  user?: UserResolvable;
+  type?: T;
 }
 
 export interface GuildAuditLogsIds {
@@ -4268,65 +4275,60 @@ export interface GuildAuditLogsIds {
   112: 'THREAD_DELETE';
 }
 
-export type GuildAuditLogsActions = { [key in keyof GuildAuditLogsTypes]?: number } & { ALL?: null };
-
-export type GuildAuditLogsAction = keyof GuildAuditLogsActions;
-
-export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'ALL';
-
-export interface GuildAuditLogsEntryExtraField {
-  MEMBER_PRUNE: { removed: number; days: number };
-  MEMBER_MOVE: { channel: GuildChannel | { id: Snowflake }; count: number };
-  MESSAGE_DELETE: { channel: GuildChannel | { id: Snowflake }; count: number };
-  MESSAGE_BULK_DELETE: { channel: GuildChannel | { id: Snowflake }; count: number };
-  MESSAGE_PIN: { channel: GuildChannel | { id: Snowflake }; messageId: Snowflake };
-  MESSAGE_UNPIN: { channel: GuildChannel | { id: Snowflake }; messageId: Snowflake };
-  MEMBER_DISCONNECT: { count: number };
-  CHANNEL_OVERWRITE_CREATE:
-    | Role
-    | GuildMember
-    | { id: Snowflake; name: string; type: OverwriteTypes.role }
-    | { id: Snowflake; type: OverwriteTypes.member };
-  CHANNEL_OVERWRITE_UPDATE:
-    | Role
-    | GuildMember
-    | { id: Snowflake; name: string; type: OverwriteTypes.role }
-    | { id: Snowflake; type: OverwriteTypes.member };
-  CHANNEL_OVERWRITE_DELETE:
-    | Role
-    | GuildMember
-    | { id: Snowflake; name: string; type: OverwriteTypes.role }
-    | { id: Snowflake; type: OverwriteTypes.member };
-  STAGE_INSTANCE_CREATE: GuildChannel | { id: Snowflake };
-  STAGE_INSTANCE_DELETE: GuildChannel | { id: Snowflake };
-  STAGE_INSTANCE_UPDATE: GuildChannel | { id: Snowflake };
-}
-
-export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
-  USER: User | null;
-  GUILD: Guild;
-  WEBHOOK: Webhook;
-  INVITE: Invite | { [x: string]: unknown };
-  MESSAGE: TActionType extends 'MESSAGE_BULK_DELETE' ? Guild | { id: Snowflake } : User;
-  INTEGRATION: Integration;
-  CHANNEL: GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown };
-  THREAD: GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown };
-  STAGE_INSTANCE: StageInstance;
-  STICKER: Sticker;
-}
-
-export interface GuildAuditLogsFetchOptions<T extends keyof GuildAuditLogsIds | GuildAuditLogsAction> {
-  before?: Snowflake | GuildAuditLogsEntry;
-  limit?: number;
-  user?: UserResolvable;
-  type?: T;
-}
+export type GuildAuditLogsResolvable = keyof GuildAuditLogsIds | GuildAuditLogsAction;
 
 export type GuildAuditLogsTarget = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'ALL' | 'UNKNOWN';
 
 export type GuildAuditLogsTargets = {
   [key in GuildAuditLogsTarget]?: string;
 };
+
+export interface GuildAuditLogsTypes {
+  GUILD_UPDATE: ['GUILD', 'UPDATE'];
+  CHANNEL_CREATE: ['CHANNEL', 'CREATE'];
+  CHANNEL_UPDATE: ['CHANNEL', 'UPDATE'];
+  CHANNEL_DELETE: ['CHANNEL', 'DELETE'];
+  CHANNEL_OVERWRITE_CREATE: ['CHANNEL', 'CREATE'];
+  CHANNEL_OVERWRITE_UPDATE: ['CHANNEL', 'UPDATE'];
+  CHANNEL_OVERWRITE_DELETE: ['CHANNEL', 'DELETE'];
+  MEMBER_KICK: ['USER', 'DELETE'];
+  MEMBER_PRUNE: ['USER', 'DELETE'];
+  MEMBER_BAN_ADD: ['USER', 'DELETE'];
+  MEMBER_BAN_REMOVE: ['USER', 'CREATE'];
+  MEMBER_UPDATE: ['USER', 'UPDATE'];
+  MEMBER_ROLE_UPDATE: ['USER', 'UPDATE'];
+  MEMBER_MOVE: ['USER', 'UPDATE'];
+  MEMBER_DISCONNECT: ['USER', 'DELETE'];
+  BOT_ADD: ['USER', 'CREATE'];
+  ROLE_CREATE: ['ROLE', 'CREATE'];
+  ROLE_UPDATE: ['ROLE', 'UPDATE'];
+  ROLE_DELETE: ['ROLE', 'DELETE'];
+  INVITE_CREATE: ['INVITE', 'CREATE'];
+  INVITE_UPDATE: ['INVITE', 'UPDATE'];
+  INVITE_DELETE: ['INVITE', 'DELETE'];
+  WEBHOOK_CREATE: ['WEBHOOK', 'CREATE'];
+  WEBHOOK_UPDATE: ['WEBHOOK', 'UPDATE'];
+  WEBHOOK_DELETE: ['WEBHOOK', 'DELETE'];
+  EMOJI_CREATE: ['EMOJI', 'CREATE'];
+  EMOJI_UPDATE: ['EMOJI', 'UPDATE'];
+  EMOJI_DELETE: ['EMOJI', 'DELETE'];
+  MESSAGE_DELETE: ['MESSAGE', 'DELETE'];
+  MESSAGE_BULK_DELETE: ['MESSAGE', 'DELETE'];
+  MESSAGE_PIN: ['MESSAGE', 'CREATE'];
+  MESSAGE_UNPIN: ['MESSAGE', 'DELETE'];
+  INTEGRATION_CREATE: ['INTEGRATION', 'CREATE'];
+  INTEGRATION_UPDATE: ['INTEGRATION', 'UPDATE'];
+  INTEGRATION_DELETE: ['INTEGRATION', 'DELETE'];
+  STAGE_INSTANCE_CREATE: ['STAGE_INSTANCE', 'CREATE'];
+  STAGE_INSTANCE_UPDATE: ['STAGE_INSTANCE', 'UPDATE'];
+  STAGE_INSTANCE_DELETE: ['STAGE_INSTANCE', 'DELETE'];
+  STICKER_CREATE: ['STICKER', 'CREATE'];
+  STICKER_UPDATE: ['STICKER', 'UPDATE'];
+  STICKER_DELETE: ['STICKER', 'DELETE'];
+  THREAD_CREATE: ['THREAD', 'CREATE'];
+  THREAD_UPDATE: ['THREAD', 'UPDATE'];
+  THREAD_DELETE: ['THREAD', 'DELETE'];
+}
 
 export type GuildBanResolvable = GuildBan | UserResolvable;
 
