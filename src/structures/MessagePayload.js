@@ -177,6 +177,16 @@ class MessagePayload {
       }
     }
 
+    const attachments = this.options.files?.map((file, index) => ({
+      id: index.toString(),
+      description: file.description,
+    }));
+    if (Array.isArray(this.options.attachments)) {
+      this.options.attachments.push(...attachments);
+    } else {
+      this.options.attachments = attachments;
+    }
+
     this.data = {
       content,
       tts,
