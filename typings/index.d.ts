@@ -4111,7 +4111,6 @@ export interface GuildCreateOptions {
   systemChannelFlags?: SystemChannelFlagsResolvable;
   systemChannelId?: Snowflake | number;
   verificationLevel?: VerificationLevel | number;
-  premiumProgressBarEnabled?: boolean;
 }
 
 export interface GuildWidgetSettings {

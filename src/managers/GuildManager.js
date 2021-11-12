@@ -154,7 +154,6 @@ class GuildManager extends CachedManager {
    * @property {Snowflake|number} [systemChannelId] The system channel's id
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The flags of the system channel
    * @property {VerificationLevel} [verificationLevel] The verification level for the guild
-   * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
    */
 
   /**
@@ -177,7 +176,6 @@ class GuildManager extends CachedManager {
       systemChannelId,
       systemChannelFlags,
       verificationLevel,
-      premiumProgressBarEnabled,
     } = {},
   ) {
     icon = await DataResolver.resolveImage(icon);
@@ -231,7 +229,6 @@ class GuildManager extends CachedManager {
         afk_timeout: afkTimeout,
         system_channel_id: systemChannelId,
         system_channel_flags: systemChannelFlags,
-        premium_progress_bar_enabled: premiumProgressBarEnabled,
       },
     });
 
