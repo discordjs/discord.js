@@ -46,6 +46,5 @@
     // Completeness
     "skipLibCheck": false,
     "skipDefaultLibCheck": true
-  },
-  "exclude": ["typings/test-d/**/*"]
+  }
 }
