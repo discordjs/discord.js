@@ -59,7 +59,7 @@ const commands = [{
   description: 'Replies with Pong!'
 }]; 
 
-const rest = new REST({ version: '9' }).setToken('token');
+const rest = new REST({ version: '9' }).setToken(BOT_TOKEN);
 
 (async () => {
   try {
