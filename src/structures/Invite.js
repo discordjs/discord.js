@@ -208,6 +208,8 @@ class Invite extends Base {
     } else {
       this.stageInstance ??= null;
     }
+
+    // TODO: add support for guild_scheduled_event property
   }
 
   /**

@@ -283,6 +283,7 @@ class Client extends BaseClient {
     this.token = null;
   }
 
+  // TODO: add support for guild_scheduled_event_id query
   /**
    * Obtains an invite from Discord.
    * @param {InviteResolvable} invite Invite code or URL

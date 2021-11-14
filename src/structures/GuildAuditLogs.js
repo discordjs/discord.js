@@ -96,12 +96,12 @@ const Targets = {
  * * STICKER_CREATE: 90
  * * STICKER_UPDATE: 91
  * * STICKER_DELETE: 92
- * * THREAD_CREATE: 110
- * * THREAD_UPDATE: 111
- * * THREAD_DELETE: 112
  * * GUILD_SCHEDULED_EVENT_CREATE: 100
  * * GUILD_SCHEDULED_EVENT_UPDATE: 101
  * * GUILD_SCHEDULED_EVENT_DELETE: 102
+ * * THREAD_CREATE: 110
+ * * THREAD_UPDATE: 111
+ * * THREAD_DELETE: 112
  * @typedef {?(number|string)} AuditLogAction
  * @see {@link https://discord.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events}
  */
@@ -227,7 +227,7 @@ class GuildAuditLogs {
    * * An integration
    * * A stage instance
    * * A sticker
-   * * A guild event
+   * * A guild scheduled event
    * * A thread
    * * An object with an id key if target was deleted
    * * An object where the keys represent either the new value or the old value

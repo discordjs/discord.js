@@ -41,6 +41,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildChannelResolvable} [channel] The channel of the guild scheduled event
    */
 
+  // TODO add entity metadata property
   /**
    * Creates a new guild scheduled event.
    * @param {GuildScheduledEventCreateOptions} options Options for creating the guild scheduled event
@@ -54,7 +55,7 @@ class GuildScheduledEventManager extends CachedManager {
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
     const channelId = this.guild.channels.resolveId(channel);
 
-    const data = await this.client.api.guilds(this.guild.id).events.post({
+    const data = await this.client.api.guilds(this.guild.id, 'scheduled-events').post({
       data: {
         channel_id: channelId,
         name: options.name,
@@ -96,16 +97,16 @@ class GuildScheduledEventManager extends CachedManager {
         if (existing) return existing;
       }
 
-      const data = await this.client.api('guild-events', id).get();
+      const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', id).get();
       return this._add(data, options.cache);
     }
 
     const data = await this.client.api
-      .guilds(this.guild.id)
-      .events.get({ query: { with_user_counts: options.withUserCounts ?? true } });
+      .guilds(this.guild.id, 'scheduled-events')
+      .get({ query: { with_user_counts: options.withUserCounts ?? true } });
     return data.reduce(
-      (coll, guildScheduledEvent) =>
-        coll.set(guildScheduledEvent.id, new GuildScheduledEvent(this.client, guildScheduledEvent)),
+      (coll, rawGuildScheduledEventData) =>
+        coll.set(rawGuildScheduledEventData.id, new GuildScheduledEvent(this.client, rawGuildScheduledEventData)),
       new Collection(),
     );
   }
@@ -121,6 +122,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildChannelResolvable} [channel] The channel of the guild scheduled event
    */
 
+  // TODO add entity metadata property
   /**
    * Edits a guild scheduled event.
    * @param {GuildScheduledEventResolvable} guildScheduledEvent The guild scheduled event to edit
@@ -138,7 +140,7 @@ class GuildScheduledEventManager extends CachedManager {
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
     const channelId = this.guild.channels.resolveId(channel);
 
-    const data = await this.client.api('guild-events', guildScheduledEventId).patch({
+    const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).patch({
       data: {
         channel_id: channelId,
         name: options.name,
@@ -161,7 +163,34 @@ class GuildScheduledEventManager extends CachedManager {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
-    await this.client.api('guild-events', guildScheduledEventId).delete();
+    await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).delete();
+  }
+
+  /**
+   * Options used to fetch subscribers of a guild schedule event
+   * @typedef {Object} FetchGuildScheduledEventSubscribersOptions
+   * @property {number} [limit] The maximum numbers of users to fetch
+   * @property {boolean} [withMember] Whether to fetch guild member data of the users
+   */
+
+  // TODO: conditionally return collection of users or members
+  /**
+   * Fetches subscribers of a guild scheduled event.
+   * @param {GuildScheduledEventResolvable} guildScheduledEvent The guild scheduled event to fetch subscribers of
+   * @param {FetchGuildScheduledEventSubscribersOptions} [options] Options for fetching the subscribers
+   */
+  async fetchSubscribers(guildScheduledEvent, options) {
+    const guildScheduledEventId = this.resolveId(guildScheduledEvent);
+    if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
+
+    const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).users.get({
+      query: { limit: options?.limit, with_member: options?.withMember },
+    });
+
+    return data.reduce(
+      (coll, rawUserData) => coll.set(rawUserData.id, this.client.users._add(rawUserData)),
+      new Collection(),
+    );
   }
 }
 

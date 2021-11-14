@@ -205,8 +205,8 @@ exports.Events = {
   GUILD_SCHEDULED_EVENT_CREATE: 'guildScheduledEventCreate',
   GUILD_SCHEDULED_EVENT_UPDATE: 'guildScheduledEventUpdate',
   GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete',
-  GUILD_SCHEDULED_EVENT_USER_CREATE: 'guildScheduledEventUserCreate',
-  GUILD_SCHEDULED_EVENT_USER_DELETE: 'guildScheduledEventUserDelete',
+  GUILD_SCHEDULED_EVENT_USER_ADD: 'guildScheduledEventUserAdd',
+  GUILD_SCHEDULED_EVENT_USER_REMOVE: 'guildScheduledEventUserRemove',
 };
 
 exports.ShardEvents = {
@@ -286,8 +286,8 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * GUILD_SCHEDULED_EVENT_CREATE
  * * GUILD_SCHEDULED_EVENT_UPDATE
  * * GUILD_SCHEDULED_EVENT_DELETE
- * * GUILD_SCHEDULED_EVENT_USER_CREATE
- * * GUILD_SCHEDULED_EVENT_USER_DELETE
+ * * GUILD_SCHEDULED_EVENT_USER_ADD
+ * * GUILD_SCHEDULED_EVENT_USER_REMOVE
  * @typedef {string} WSEventType
  * @see {@link https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events}
  */
@@ -345,8 +345,8 @@ exports.WSEvents = keyMirror([
   'GUILD_SCHEDULED_EVENT_CREATE',
   'GUILD_SCHEDULED_EVENT_UPDATE',
   'GUILD_SCHEDULED_EVENT_DELETE',
-  'GUILD_SCHEDULED_EVENT_USER_CREATE',
-  'GUILD_SCHEDULED_EVENT_USER_DELETE',
+  'GUILD_SCHEDULED_EVENT_USER_ADD',
+  'GUILD_SCHEDULED_EVENT_USER_REMOVE',
 ]);
 
 /**
@@ -1135,6 +1135,15 @@ exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED'
 exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 
 /**
+ * Privacy level of a {@link GuildScheduledEvent} object:
+ * * PUBLIC
+ * * GUILD_ONLY
+ * @typedef {string} GuildScheduledEventPrivacyLevel
+ * @see {@link TODO}
+ */
+exports.GuildScheduledEventPrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
+
+/**
  * The premium tier (Server Boost level) of a guild:
  * * NONE
  * * TIER_1
@@ -1196,9 +1205,11 @@ function createEnum(keys) {
  * The value set for a guild's default message notifications.
  * @property {ExplicitContentFilterLevel} ExplicitContentFilterLevels
  * The value set for the explicit content filter levels for a guild.
- * @property {GuildScheduledEventStatus} GuildScheduledEventStatuses The status of a {@link GuildScheduledEvent}
+ * @property {GuildScheduledEventStatus} GuildScheduledEventStatuses The status of a {@link GuildScheduledEvent} object.
  * @property {GuildScheduledEventEntityType} GuildScheduledEventEntityTypes The entity type of a
- * {@link GuildScheduledEvent}
+ * {@link GuildScheduledEvent} object.
+ * @property {GuildScheduledEventPrivacyLevel} GuildScheduledEventPrivacyLevels Privacy level of a
+ * {@link GuildScheduledEvent} object.
  * @property {InteractionResponseType} InteractionResponseTypes The type of an interaction response.
  * @property {InteractionType} InteractionTypes The type of an {@link Interaction} object.
  * @property {MembershipState} MembershipStates The value set for a team member's membership state.

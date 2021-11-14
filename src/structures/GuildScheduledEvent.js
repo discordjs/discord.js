@@ -1,12 +1,15 @@
 'use strict';
 
 const Base = require('./Base');
-const GuildEventEntityMetadata = require('./GuildEventEntityMetadata');
-const { PrivacyLevels, GuildScheduledEventEntityTypes, GuildScheduledEventStatuses } = require('../util/Constants');
+const {
+  GuildScheduledEventEntityTypes,
+  GuildScheduledEventStatuses,
+  GuildScheduledEventPrivacyLevels,
+} = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
- * Represents a scheduled event of a {@link Guild}.
+ * Represents a scheduled event in a {@link Guild}.
  * @extends {Base}
  */
 class GuildScheduledEvent extends Base {
@@ -39,12 +42,18 @@ class GuildScheduledEvent extends Base {
   }
 
   _patch(data) {
-    if ('channel_id' in data) {
+    /**
+     * The id of the channel this guild scheduled event belongs to
+     * @type {?Snowflake}
+     */
+    this.channelId = data.channel_id;
+
+    if ('creator_id' in data) {
       /**
-       * The id of the channel this guild scheduled event belongs to
+       * The id of the user that created this guild scheduled event
        * @type {Snowflake}
        */
-      this.channelId = data.channel_id;
+      this.creatorId = data.creator_id;
     }
 
     /**
@@ -61,13 +70,11 @@ class GuildScheduledEvent extends Base {
       this.description = data.description;
     }
 
-    if ('image' in data) {
-      /**
-       * The image of the guild scheduled event
-       * @type {string}
-       */
-      this.image = data.image;
-    }
+    /**
+     * The image of the guild scheduled event
+     * @type {?string}
+     */
+    this.image = data.image;
 
     /**
      * The timestamp the guild scheduled event will start at
@@ -86,7 +93,7 @@ class GuildScheduledEvent extends Base {
      * The privacy level of the guild scheduled event
      * @type {PrivacyLevel}
      */
-    this.privacyLevel = PrivacyLevels[data.privacy_level];
+    this.privacyLevel = GuildScheduledEventPrivacyLevels[data.privacy_level];
 
     /**
      * The status of the guild scheduled event
@@ -106,11 +113,21 @@ class GuildScheduledEvent extends Base {
      */
     this.entityId = data.entity_id;
 
-    /**
-     * The metadata for the guild scheduled event
-     * @type {GuildEventEntityMetadata}
-     */
-    this.entityMetadata = new GuildEventEntityMetadata(data.entity_metadata);
+    if ('speaker_ids' in data.entity_metadata) {
+      /**
+       * The ids of the users who are speakers of the stage channel
+       * @type {Snowflake[]}
+       */
+      this.speakerIds = data.entity_metadata.speaker_ids;
+    }
+
+    if ('location' in data.entity_metadata) {
+      /**
+       * The location of the event
+       * @type {string}
+       */
+      this.location = data.entity_metadata.location;
+    }
 
     /**
      * The sku ids
@@ -131,6 +148,14 @@ class GuildScheduledEvent extends Base {
        * @type {number}
        */
       this.userCount = data.user_count;
+    }
+
+    if ('creator' in data) {
+      /**
+       * The user who created this guild scheduled event
+       * @type {User}
+       */
+      this.creator = this.client.users._add(data.creator);
     }
   }
 
