@@ -43,7 +43,7 @@ class GuildScheduledEvent extends Base {
 
   _patch(data) {
     /**
-     * The id of the channel this guild scheduled event belongs to
+     * The channel id in which the scheduled event will be hosted, or `null` if entity type is `EXTERNAL`
      * @type {?Snowflake}
      */
     this.channelId = data.channel_id;
@@ -102,13 +102,13 @@ class GuildScheduledEvent extends Base {
     this.status = GuildScheduledEventStatuses[data.status];
 
     /**
-     * The entity type of the guild scheduled event
+     * The type of hosting entity associated with the scheduled event
      * @type {GuildScheduledEventEntityType}
      */
     this.entityType = GuildScheduledEventEntityTypes[data.entity_type];
 
     /**
-     * The entity id
+     * The id of the hosting entity associated with the scheduled event
      * @type {?Snowflake}
      */
     this.entityId = data.entity_id;
@@ -128,19 +128,6 @@ class GuildScheduledEvent extends Base {
        */
       this.location = data.entity_metadata.location;
     }
-
-    /**
-     * The sku ids
-     * @type {Snowflake[]}
-     */
-    this.skuIds = data.sku_ids;
-
-    /**
-     * The skus
-     * TODO: will update this once more info is available
-     * @type {Object[]}
-     */
-    this.skus = data.skus;
 
     if ('user_count' in data) {
       /**
@@ -195,6 +182,8 @@ class GuildScheduledEvent extends Base {
   get scheduledEndAt() {
     return this.scheduledEndTime ? new Date(this.scheduledEndTime) : null;
   }
+
+  // TODO: Add shortcut methods for editing specific properties
 }
 
 module.exports = GuildScheduledEvent;

@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const GuildScheduledEvent = require('../structures/GuildScheduledEvent');
-const { PrivacyLevels, GuildScheduledEventEntityTypes } = require('../util/Constants');
+const { PrivacyLevels, GuildScheduledEventEntityTypes, GuildScheduledEventStatuses } = require('../util/Constants');
 
 class GuildScheduledEventManager extends CachedManager {
   constructor(guild, iterable) {
@@ -129,6 +129,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildChannelResolvable} [channel] The channel of the guild scheduled event
    * @property {UserResolvable[]} [speakers] The speakers of the guild scheduled event
    * @property {string} [location] The location of the guild scheduled event
+   * @property {GuildScheduledEventStatus|number} [status] The status of the guild scheduled event
    */
 
   /**
@@ -142,10 +143,11 @@ class GuildScheduledEventManager extends CachedManager {
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel, speakers, location } = options;
+    let { privacyLevel, entityType, channel, speakers, location, status } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
+    if (typeof status === 'string') status = GuildScheduledEventStatuses[status];
     const channelId = this.guild.channels.resolveId(channel);
 
     speakers = speakers?.map(user => this.client.users.resolveId(user));
@@ -158,6 +160,7 @@ class GuildScheduledEventManager extends CachedManager {
         scheduled_start_time: options.scheduledStartTime,
         description: options.description,
         entity_type: entityType,
+        status,
         entity_metadata: {
           speakers,
           location,

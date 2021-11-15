@@ -1169,10 +1169,10 @@ exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', '
  * * NONE
  * * STAGE_INSTANCE
  * * VOICE
- * * LOCATION
+ * * EXTERNAL
  * @typedef {string} GuildScheduledEventEntityType
  */
-exports.GuildScheduledEventEntityTypes = createEnum(['NONE', 'STAGE_INSTANCE', 'VOICE', 'LOCATION']);
+exports.GuildScheduledEventEntityTypes = createEnum(['NONE', 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
 
 exports._cleanupSymbol = Symbol('djsCleanup');
 
