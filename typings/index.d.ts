@@ -5034,6 +5034,7 @@ export interface StartThreadOptions {
   name: string;
   autoArchiveDuration?: ThreadAutoArchiveDuration;
   reason?: string;
+  rateLimitPerUser?: number;
 }
 
 export type Status = number;

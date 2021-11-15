@@ -797,6 +797,7 @@ class Message extends Base {
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration=this.channel.defaultAutoArchiveDuration] The amount of
    * time (in minutes) after which the thread should automatically archive in case of no recent activity
    * @property {string} [reason] Reason for creating the thread
+   * @property {number} rateLimitPerUser The rate limit per user (slowmode) for the thread in seconds
    */
 
   /**
