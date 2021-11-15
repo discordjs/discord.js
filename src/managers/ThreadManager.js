@@ -69,6 +69,8 @@ class ThreadManager extends CachedManager {
    * `GUILD_NEWS_THREAD`</warn>
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to the thread
    * <info>Can only be set when type will be `GUILD_PRIVATE_THREAD`</info>
+   * @property {number} [rateLimitPerUser] The amount of seconds a user has to wait before sending another
+   * message. <info>This value can be any integer between 1-21600</info>
    */
 
   /**
@@ -104,6 +106,7 @@ class ThreadManager extends CachedManager {
     type,
     invitable,
     reason,
+    rateLimitPerUser,
   } = {}) {
     let path = this.client.api.channels(this.channel.id);
     if (type && typeof type !== 'string' && typeof type !== 'number') {
@@ -133,6 +136,7 @@ class ThreadManager extends CachedManager {
         auto_archive_duration: autoArchiveDuration,
         type: resolvedType,
         invitable: resolvedType === ChannelTypes.GUILD_PRIVATE_THREAD ? invitable : undefined,
+        rate_limit_per_user: rateLimitPerUser,
       },
       reason,
     });
