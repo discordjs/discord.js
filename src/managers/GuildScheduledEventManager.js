@@ -39,9 +39,10 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
    * @property {GuildChannelResolvable} [channel] The channel of the guild scheduled event
+   * @property {UserResolvable[]} [speakers] The speakers of the guild scheduled event
+   * @property {string} [location] The location of the guild scheduled event
    */
 
-  // TODO add entity metadata property
   /**
    * Creates a new guild scheduled event.
    * @param {GuildScheduledEventCreateOptions} options Options for creating the guild scheduled event
@@ -49,11 +50,13 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async create(options) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel } = options;
+    let { privacyLevel, entityType, channel, speakers, location } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
     const channelId = this.guild.channels.resolveId(channel);
+
+    speakers = speakers?.map(user => this.client.users.resolveId(user));
 
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events').post({
       data: {
@@ -63,6 +66,10 @@ class GuildScheduledEventManager extends CachedManager {
         scheduled_start_time: options.scheduledStartTime,
         description: options.description,
         entity_type: entityType,
+        entity_metadata: {
+          speakers,
+          location,
+        },
       },
     });
 
@@ -120,9 +127,10 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityType|number} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
    * @property {GuildChannelResolvable} [channel] The channel of the guild scheduled event
+   * @property {UserResolvable[]} [speakers] The speakers of the guild scheduled event
+   * @property {string} [location] The location of the guild scheduled event
    */
 
-  // TODO add entity metadata property
   /**
    * Edits a guild scheduled event.
    * @param {GuildScheduledEventResolvable} guildScheduledEvent The guild scheduled event to edit
@@ -134,11 +142,13 @@ class GuildScheduledEventManager extends CachedManager {
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel } = options;
+    let { privacyLevel, entityType, channel, speakers, location } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
     const channelId = this.guild.channels.resolveId(channel);
+
+    speakers = speakers?.map(user => this.client.users.resolveId(user));
 
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).patch({
       data: {
@@ -148,6 +158,10 @@ class GuildScheduledEventManager extends CachedManager {
         scheduled_start_time: options.scheduledStartTime,
         description: options.description,
         entity_type: entityType,
+        entity_metadata: {
+          speakers,
+          location,
+        },
       },
     });
 
