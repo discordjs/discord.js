@@ -69,8 +69,7 @@ class ThreadManager extends CachedManager {
    * `GUILD_NEWS_THREAD`</warn>
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to the thread
    * <info>Can only be set when type will be `GUILD_PRIVATE_THREAD`</info>
-   * @property {number} [rateLimitPerUser] The amount of seconds a user has to wait before sending another
-   * message. <info>This value can be any integer between 1-21600</info>
+   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the new channel in seconds
    */
 
   /**
