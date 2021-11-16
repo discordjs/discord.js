@@ -181,7 +181,99 @@ class GuildScheduledEvent extends Base {
   get scheduledEndAt() {
     return this.scheduledEndTime ? new Date(this.scheduledEndTime) : null;
   }
-  // TODO: Add shortcut methods for editing specific properties
+
+  // TODO: add examples
+
+  /**
+   * The channel associated with this scheduled event
+   * @type {?GuildChannel}
+   * @readonly
+   */
+  get channel() {
+    return this.client.channels.resolve(this.channelId);
+  }
+
+  /**
+   * The guild this scheduled event belongs to
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.client.guilds.resolve(this.guildId);
+  }
+
+  /**
+   * Edits this guild scheduled event.
+   * @param {GuildScheduledEventEditOptions} options The options to edit the guild scheduled event
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  edit(options) {
+    return this.guild.scheduledEvents.edit(this.id, options);
+  }
+
+  /**
+   * Deletes this guild scheduled event.
+   */
+  async delete() {
+    await this.guild.scheduledEvents.delete(this.id);
+    const clone = this._clone();
+    clone.deleted = true;
+    return clone;
+  }
+
+  /**
+   * Sets a new name for the guild scheduled event.
+   * @param {string} name The new name of the guild scheduled event
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Sets a new time to schedule the event at.
+   * @param {Date} scheduledStartTime The time to schedule the event at
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  setScheduledStartTime(scheduledStartTime) {
+    return this.edit({ scheduledStartTime });
+  }
+
+  /**
+   * Sets the new privacy level of the guild scheduled event.
+   * @param {GuildScheduledEventPrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  setPrivacyLevel(privacyLevel) {
+    return this.edit({ privacyLevel });
+  }
+
+  /**
+   * Sets the new description of the guild scheduled event.
+   * @param {string} description The description of the guild scheduled event
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  setDescription(description) {
+    return this.edit({ description });
+  }
+
+  /**
+   * Sets the new status of the guild scheduled event.
+   * @param {GuildScheduledEventStatus|number} status The status of the guild scheduled event
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  setStatus(status) {
+    return this.edit({ status });
+  }
+
+  /**
+   * Sets the new location of the guild scheduled event.
+   * @param {string} location The location of the guild scheduled event
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  setLocation(location) {
+    return this.edit({ location });
+  }
 }
 
 module.exports = GuildScheduledEvent;

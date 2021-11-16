@@ -1182,6 +1182,16 @@ export class GuildScheduledEvent extends Base {
   public readonly createdAt: Date;
   public readonly scheduledStartAt: Date;
   public readonly scheduledEndAt: Date | null;
+  public readonly channel: GuildChannel | null;
+  public readonly guild: Guild | null;
+  public edit(options: GuildScheduledEventEditOptions): Promise<GuildScheduledEvent>;
+  public delete(): Promise<GuildScheduledEvent>;
+  public setName(name: string): Promise<GuildScheduledEvent>;
+  public setScheduledStartTime(scheduledStartTime: Date): Promise<GuildScheduledEvent>;
+  public setPrivacyLevel(privacyLevel: GuildScheduledEventPrivacyLevel | number): Promise<GuildScheduledEvent>;
+  public setDescription(description: string): Promise<GuildScheduledEvent>;
+  public setStatus(status: string): Promise<GuildScheduledEvent>;
+  public setLocation(location: string): Promise<GuildScheduledEvent>;
 }
 
 export class GuildTemplate extends Base {
