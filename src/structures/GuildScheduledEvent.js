@@ -107,22 +107,6 @@ class GuildScheduledEvent extends Base {
      */
     this.entityId = data.entity_id;
 
-    if ('speaker_ids' in data.entity_metadata) {
-      /**
-       * The ids of the users who are speakers of the stage channel
-       * @type {Snowflake[]}
-       */
-      this.speakerIds = data.entity_metadata.speaker_ids;
-    }
-
-    if ('location' in data.entity_metadata) {
-      /**
-       * The location of the event
-       * @type {string}
-       */
-      this.location = data.entity_metadata.location;
-    }
-
     if ('user_count' in data) {
       /**
        * The number of users who are subscribed to this guild scheduled event
@@ -137,6 +121,27 @@ class GuildScheduledEvent extends Base {
        * @type {User}
        */
       this.creator = this.client.users._add(data.creator);
+    }
+
+    if (data.entity_metadata) {
+      if ('speaker_ids' in data.entity_metadata) {
+        /**
+         * The ids of the users who are speakers of the stage channel
+         * @type {?Snowflake[]}
+         */
+        this.speakerIds = data.entity_metadata.speaker_ids;
+      }
+
+      if ('location' in data.entity_metadata) {
+        /**
+         * The location of the event
+         * @type {?string}
+         */
+        this.location = data.entity_metadata.location;
+      }
+    } else {
+      this.speakerIds ??= null;
+      this.location ??= null;
     }
   }
 
@@ -181,3 +186,8 @@ class GuildScheduledEvent extends Base {
 }
 
 module.exports = GuildScheduledEvent;
+
+/**
+ * @external APIGuildScheduledEvent
+ * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object}
+ */
