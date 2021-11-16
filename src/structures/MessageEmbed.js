@@ -3,6 +3,8 @@
 const { RangeError } = require('../errors');
 const Util = require('../util/Util');
 
+let deprecationEmittedForSetAuthor = false;
+
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
@@ -372,6 +374,18 @@ class MessageEmbed {
     }
 
     if (typeof options === 'string') {
+      if (
+        !deprecationEmittedForSetAuthor &&
+        (typeof deprecatedIconURL !== 'undefined' || typeof deprecatedURL !== 'undefined')
+      ) {
+        process.emitWarning(
+          "Passing strings for the URL or the icon's URL is deprecated. Pass a sole object instead.",
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForSetAuthor = true;
+      }
+
       options = { name: options, url: deprecatedURL, iconURL: deprecatedIconURL };
     }
 

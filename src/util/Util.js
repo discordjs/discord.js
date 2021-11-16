@@ -9,6 +9,8 @@ const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
 
+let deprecationEmittedForRemoveMentions = false;
+
 /**
  * Contains various general-purpose utility methods.
  */
@@ -578,6 +580,15 @@ class Util extends null {
    * @deprecated Use {@link BaseMessageOptions#allowedMentions} instead.
    */
   static removeMentions(str) {
+    if (!deprecationEmittedForRemoveMentions) {
+      process.emitWarning(
+        'This method is deprecated. Utilise allowed mentions when sending a message instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForRemoveMentions = true;
+    }
+
     return str.replaceAll('@', '@\u200b');
   }
 
