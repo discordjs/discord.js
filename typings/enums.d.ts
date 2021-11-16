@@ -86,6 +86,25 @@ export const enum ExplicitContentFilterLevels {
   ALL_MEMBERS = 2,
 }
 
+export const enum GuildScheduledEventEntityTypes {
+  NONE = 0,
+  STAGE_INSTANCE = 1,
+  VOICE = 2,
+  EXTERNAL = 3,
+}
+
+export const enum GuildScheduledEventPrivacyLevels {
+  PUBLIC = 1,
+  GUILD_ONLY = 2,
+}
+
+export const enum GuildScheduledEventStatuses {
+  SCHEDULED = 1,
+  ACTIVE = 2,
+  COMPLETED = 3,
+  CANCELED = 4,
+}
+
 export const enum InteractionResponseTypes {
   PONG = 1,
   CHANNEL_MESSAGE_WITH_SOURCE = 4,

@@ -80,6 +80,9 @@ import {
   StickerTypes,
   VerificationLevels,
   WebhookTypes,
+  GuildScheduledEventEntityTypes,
+  GuildScheduledEventStatuses,
+  GuildScheduledEventPrivacyLevels,
 } from './enums';
 import {
   RawActivityData,
@@ -909,6 +912,7 @@ export class Guild extends AnonymousGuild {
   public roles: RoleManager;
   public readonly rulesChannel: TextChannel | null;
   public rulesChannelId: Snowflake | null;
+  public scheduledEvents: GuildScheduledEventManager;
   public readonly shard: WebSocketShard;
   public shardId: number;
   public stageInstances: StageInstanceManager;
@@ -1149,6 +1153,31 @@ export class GuildPreview extends Base {
   public fetch(): Promise<GuildPreview>;
   public toJSON(): unknown;
   public toString(): string;
+}
+
+export class GuildScheduledEvent extends Base {
+  private constructor(client: Client, data: APIGuildScheduledEvent);
+  public id: Snowflake;
+  public guildId: Snowflake;
+  public deleted: boolean;
+  public channelId: Snowflake;
+  public creatorId: Snowflake;
+  public name: string;
+  public description: string;
+  public scheduledStartTime: number;
+  public scheduledEndTime: number | null;
+  public privacyLevel: GuildScheduledEventPrivacyLevel;
+  public status: GuildScheduledEventStatus;
+  public entityType: GuildScheduledEventEntityType;
+  public entityId: Snowflake | null;
+  public speakerIds: Snowflake[];
+  public location: string;
+  public userCount: number;
+  public creator: User;
+  public readonly createdTimestamp: number;
+  public readonly createdAt: Date;
+  public readonly scheduledStartAt: Date;
+  public readonly scheduledEndAt: Date | null;
 }
 
 export class GuildTemplate extends Base {
@@ -2774,6 +2803,9 @@ export const Constants: {
   WebhookTypes: EnumHolder<typeof WebhookTypes>;
   PremiumTiers: EnumHolder<typeof PremiumTiers>;
   ApplicationCommandTypes: EnumHolder<typeof ApplicationCommandTypes>;
+  GuildScheduledEventEntityTypes: EnumHolder<typeof GuildScheduledEventEntityTypes>;
+  GuildScheduledEventStatuses: EnumHolder<typeof GuildScheduledEventStatuses>;
+  GuildScheduledEventPrivacyLevels: EnumHolder<typeof GuildScheduledEventPrivacyLevels>;
 };
 
 export const version: string;
@@ -3019,6 +3051,57 @@ export class GuildInviteManager extends DataManager<string, Invite, InviteResolv
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
+}
+
+export class GuildScheduledEventManager extends CachedManager<
+  Snowflake,
+  GuildScheduledEvent,
+  GuildScheduledEventResolvable
+> {
+  private constructor(guild: Guild, iterable?: Iterable<any>);
+  public guild: Guild;
+  public create(options: GuildScheduledEventCreateOptions): Promise<GuildScheduledEvent>;
+  public fetch(
+    options?: GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
+  ): Promise<GuildScheduledEvent | Collection<Snowflake, GuildScheduledEvent>>;
+  public edit(
+    guildScheduledEvent: GuildScheduledEventResolvable,
+    options: GuildScheduledEventEditOptions,
+  ): Promise<GuildScheduledEvent>;
+  public delete(guildScheduledEvent: GuildScheduledEventResolvable): Promise<void>;
+  public fetchSubscribers(
+    guildScheduledEvent: GuildScheduledEventResolvable,
+    options?: FetchGuildScheduledEventSubscribersOptions,
+  ): Promise<Collection<Snowflake, User> | Collection<Snowflake, GuildMember>>;
+}
+
+export interface GuildScheduledEventCreateOptions {
+  name: string;
+  scheduledStartTime: Date;
+  privacyLevel: GuildScheduledEventPrivacyLevel | number;
+  entityType: GuildScheduledEventEntityType | number;
+  description?: string;
+  channel?: GuildChannelResolvable;
+  speakers?: UserResolvable[];
+  location?: string;
+}
+
+export interface FetchGuildScheduledEventOptions extends BaseFetchOptions {
+  guildScheduledEvent: GuildScheduledEventResolvable;
+}
+
+export interface FetchGuildScheduledEventsOptions {
+  cache?: boolean;
+  withUserCounts?: boolean;
+}
+
+export interface GuildScheduledEventEditOptions extends Partial<GuildScheduledEventCreateOptions> {
+  status?: GuildScheduledEventStatus | number;
+}
+
+export interface FetchGuildScheduledEventSubscribersOptions {
+  limit?: number;
+  withMember?: boolean;
 }
 
 export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {
@@ -3891,6 +3974,11 @@ export interface ClientEvents extends BaseClientEvents {
   stickerCreate: [sticker: Sticker];
   stickerDelete: [sticker: Sticker];
   stickerUpdate: [oldSticker: Sticker, newSticker: Sticker];
+  guildScheduledEventCreate: [guildScheduledEvent: GuildScheduledEvent];
+  guildScheduledEventUpdate: [oldGuildScheduledEvent: GuildScheduledEvent, newGuildScheduledEvent: GuildScheduledEvent];
+  guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent];
+  guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent, user: User];
+  guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent, user: User];
 }
 
 export interface ClientOptions {
@@ -4124,6 +4212,11 @@ export interface ConstantsEvents {
   GUILD_STICKER_CREATE: 'stickerCreate';
   GUILD_STICKER_DELETE: 'stickerDelete';
   GUILD_STICKER_UPDATE: 'stickerUpdate';
+  GUILD_SCHEDULED_EVENT_CREATE: 'guildScheduledEventCreate';
+  GUILD_SCHEDULED_EVENT_UPDATE: 'guildScheduledEventUpdate';
+  GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete';
+  GUILD_SCHEDULED_EVENT_USER_ADD: 'guildScheduledEventUserAdd';
+  GUILD_SCHEDULED_EVENT_USER_REMOVE: 'guildScheduledEventUserRemove';
 }
 
 export interface ConstantsOpcodes {
@@ -4627,6 +4720,14 @@ export interface GuildListMembersOptions {
   cache?: boolean;
 }
 
+export type GuildScheduledEventResolvable = Snowflake | GuildScheduledEvent;
+
+export type GuildScheduledEventEntityType = keyof typeof GuildScheduledEventEntityTypes;
+
+export type GuildScheduledEventStatus = keyof typeof GuildScheduledEventStatuses;
+
+export type GuildScheduledEventPrivacyLevel = keyof typeof GuildScheduledEventPrivacyLevels;
+
 export type GuildTemplateResolvable = string;
 
 export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
@@ -5088,7 +5189,8 @@ export type PermissionString =
   | 'USE_EXTERNAL_STICKERS'
   | 'SEND_MESSAGES_IN_THREADS'
   | 'START_EMBEDDED_ACTIVITIES'
-  | 'MODERATE_MEMBERS';
+  | 'MODERATE_MEMBERS'
+  | 'MANAGE_EVENTS';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
