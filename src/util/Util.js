@@ -582,7 +582,7 @@ class Util extends null {
   static removeMentions(str) {
     if (!deprecationEmittedForRemoveMentions) {
       process.emitWarning(
-        'This method is deprecated. Utilise allowed mentions when sending a message instead.',
+        'This method (Util.removeMentions) is deprecated. Use MessageOptions#allowedMentions instead.',
         'DeprecationWarning',
       );
 

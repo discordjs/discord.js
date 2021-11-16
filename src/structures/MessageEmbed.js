@@ -379,7 +379,8 @@ class MessageEmbed {
         (typeof deprecatedIconURL !== 'undefined' || typeof deprecatedURL !== 'undefined')
       ) {
         process.emitWarning(
-          "Passing strings for the URL or the icon's URL is deprecated. Pass a sole object instead.",
+          // eslint-disable-next-line max-len
+          "Passing strings for the URL or the icon's URL for MessageEmbed#setAuthor is deprecated. Pass a sole object instead.",
           'DeprecationWarning',
         );
 

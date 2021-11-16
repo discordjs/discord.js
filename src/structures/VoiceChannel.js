@@ -18,7 +18,11 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    */
   get editable() {
     if (!deprecationEmittedForEditable) {
-      process.emitWarning('This getter is deprecated. Use VoiceChannel#manageable instead.', 'DeprecationWarning');
+      process.emitWarning(
+        'This getter (VoiceChannel#editable) is deprecated. Use VoiceChannel#manageable instead.',
+        'DeprecationWarning',
+      );
+
       deprecationEmittedForEditable = true;
     }
 

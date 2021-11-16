@@ -1200,7 +1200,7 @@ class Guild extends AnonymousGuild {
   setChannelPositions(channelPositions) {
     if (!deprecationEmittedForSetChannelPositions) {
       process.emitWarning(
-        'This method is deprecated. Use GuildChannelManager#setPositions instead.',
+        'This method (Guild#setChannelPositions) is deprecated. Use GuildChannelManager#setPositions instead.',
         'DeprecationWarning',
       );
 
@@ -1229,7 +1229,11 @@ class Guild extends AnonymousGuild {
    */
   setRolePositions(rolePositions) {
     if (!deprecationEmittedForSetRolePositions) {
-      process.emitWarning('This method is deprecated. Use RoleManager#setPositions instead.', 'DeprecationWarning');
+      process.emitWarning(
+        'This method (Guild#setRolePositions) is deprecated. Use RoleManager#setPositions instead.',
+        'DeprecationWarning',
+      );
+
       deprecationEmittedForSetRolePositions = true;
     }
 
