@@ -536,6 +536,10 @@ export abstract class Channel extends Base {
 
 export type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ? B : A | B;
 
+export interface ClientFetchInviteOptions {
+  guildScheduledEventId?: Snowflake;
+}
+
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
   private actions: unknown;
@@ -560,7 +564,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public ws: WebSocketManager;
   public destroy(): void;
   public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
-  public fetchInvite(invite: InviteResolvable): Promise<Invite>;
+  public fetchInvite(invite: InviteResolvable, options?: ClientFetchInviteOptions): Promise<Invite>;
   public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
   public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
   public fetchSticker(id: Snowflake): Promise<Sticker>;
@@ -1381,6 +1385,7 @@ export class Invite extends Base {
   public toString(): string;
   public static INVITES_PATTERN: RegExp;
   public stageInstance: InviteStageInstance | null;
+  public guildScheduledEvent: GuildScheduledEvent | null;
 }
 
 export class InviteStageInstance extends Base {

@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const GuildScheduledEvent = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
 const InviteStageInstance = require('./InviteStageInstance');
 const { Error } = require('../errors');
@@ -209,7 +210,15 @@ class Invite extends Base {
       this.stageInstance ??= null;
     }
 
-    // TODO: add support for guild_scheduled_event property
+    if ('guild_scheduled_event' in data) {
+      /**
+       * The guild scheduled event data if there is a {@link GuildScheduledEvent} in the channel this invite is for
+       * @type {?GuildScheduledEvent}
+       */
+      this.guildScheduledEvent = new GuildScheduledEvent(this.client, data.guild_scheduled_event);
+    } else {
+      this.stageInstance ??= null;
+    }
   }
 
   /**

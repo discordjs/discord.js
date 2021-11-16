@@ -50,7 +50,7 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async create(options) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel, speakers, location } = options;
+    let { privacyLevel, entityType, channel, speakers, location, name, scheduledStartTime, description } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
@@ -61,10 +61,10 @@ class GuildScheduledEventManager extends CachedManager {
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events').post({
       data: {
         channel_id: channelId,
-        name: options.name,
+        name,
         privacy_level: privacyLevel,
-        scheduled_start_time: options.scheduledStartTime,
-        description: options.description,
+        scheduled_start_time: new Date(scheduledStartTime).toISOString(),
+        description,
         entity_type: entityType,
         entity_metadata: {
           speakers,
@@ -85,6 +85,7 @@ class GuildScheduledEventManager extends CachedManager {
   /**
    * Options used to fetch multiple guild scheduled events from a guild.
    * @typedef {Object} FetchGuildScheduledEventsOptions
+   * @property {boolean} [cache] Whether or not to cache the fetched guild scheduled events
    * @property {boolean} [withUserCounts=true] Whether the number of users subscribed to the guild scheduled event
    * should be returned
    */
@@ -111,9 +112,13 @@ class GuildScheduledEventManager extends CachedManager {
     const data = await this.client.api
       .guilds(this.guild.id, 'scheduled-events')
       .get({ query: { with_user_counts: options.withUserCounts ?? true } });
+
     return data.reduce(
       (coll, rawGuildScheduledEventData) =>
-        coll.set(rawGuildScheduledEventData.id, new GuildScheduledEvent(this.client, rawGuildScheduledEventData)),
+        coll.set(
+          rawGuildScheduledEventData.id,
+          this.guild.scheduledEvents._add(rawGuildScheduledEventData, options.cache),
+        ),
       new Collection(),
     );
   }
@@ -143,7 +148,8 @@ class GuildScheduledEventManager extends CachedManager {
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel, speakers, location, status } = options;
+    let { privacyLevel, entityType, channel, speakers, location, status, name, scheduledStartTime, description } =
+      options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
@@ -155,10 +161,10 @@ class GuildScheduledEventManager extends CachedManager {
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).patch({
       data: {
         channel_id: channelId,
-        name: options.name,
+        name,
         privacy_level: privacyLevel,
-        scheduled_start_time: options.scheduledStartTime,
-        description: options.description,
+        scheduled_start_time: new Date(scheduledStartTime).toISOString(),
+        description,
         entity_type: entityType,
         status,
         entity_metadata: {
@@ -190,11 +196,11 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {boolean} [withMember] Whether to fetch guild member data of the users
    */
 
-  // TODO: conditionally return collection of users or members
   /**
    * Fetches subscribers of a guild scheduled event.
    * @param {GuildScheduledEventResolvable} guildScheduledEvent The guild scheduled event to fetch subscribers of
    * @param {FetchGuildScheduledEventSubscribersOptions} [options] Options for fetching the subscribers
+   * @returns {Promise<Collection<Snowflake, User> | Collection<Snowflkae, GuildMember>>}
    */
   async fetchSubscribers(guildScheduledEvent, options) {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
@@ -204,7 +210,13 @@ class GuildScheduledEventManager extends CachedManager {
       query: { limit: options?.limit, with_member: options?.withMember },
     });
 
-    return data.reduce(
+    // TODO: find a way to return collection of members. (Edge case??): some users can be non-members
+    // Can't test it rn because setting privacy level to 'PUBLIC' returns error
+    // if (options?.withMember) {
+    //
+    // }
+
+    return data.users.reduce(
       (coll, rawUserData) => coll.set(rawUserData.id, this.client.users._add(rawUserData)),
       new Collection(),
     );

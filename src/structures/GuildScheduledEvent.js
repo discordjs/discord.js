@@ -127,7 +127,7 @@ class GuildScheduledEvent extends Base {
       if ('speaker_ids' in data.entity_metadata) {
         /**
          * The ids of the users who are speakers of the stage channel
-         * @type {?Snowflake[]}
+         * @type {Snowflake[]}
          */
         this.speakerIds = data.entity_metadata.speaker_ids;
       }
@@ -140,7 +140,7 @@ class GuildScheduledEvent extends Base {
         this.location = data.entity_metadata.location;
       }
     } else {
-      this.speakerIds ??= null;
+      this.speakerIds ??= [];
       this.location ??= null;
     }
   }
@@ -181,7 +181,6 @@ class GuildScheduledEvent extends Base {
   get scheduledEndAt() {
     return this.scheduledEndTime ? new Date(this.scheduledEndTime) : null;
   }
-
   // TODO: Add shortcut methods for editing specific properties
 }
 
