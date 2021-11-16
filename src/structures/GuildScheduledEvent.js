@@ -71,12 +71,6 @@ class GuildScheduledEvent extends Base {
     }
 
     /**
-     * The image of the guild scheduled event
-     * @type {?string}
-     */
-    this.image = data.image;
-
-    /**
      * The timestamp the guild scheduled event will start at
      * @type {number}
      */
@@ -139,7 +133,7 @@ class GuildScheduledEvent extends Base {
 
     if ('creator' in data) {
       /**
-       * The user who created this guild scheduled event
+       * The user that created this guild scheduled event
        * @type {User}
        */
       this.creator = this.client.users._add(data.creator);
