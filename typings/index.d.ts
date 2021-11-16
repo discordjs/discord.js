@@ -1572,6 +1572,8 @@ export class MessageEmbed {
   public addField(name: string, value: string, inline?: boolean): this;
   public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
   public setFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
+  public setAuthor(options: string | EmbedAuthorData | null): this;
+  /** @deprecated Supply a lone object of interface {@link EmbedAuthorData} instead of more parameters. */
   public setAuthor(name: string, iconURL?: string, url?: string): this;
   public setColor(color: ColorResolvable): this;
   public setDescription(description: string): this;
@@ -4006,6 +4008,12 @@ export type DynamicImageFormat = AllowedImageFormat | 'gif';
 export interface EditGuildTemplateOptions {
   name?: string;
   description?: string;
+}
+
+export interface EmbedAuthorData {
+  name: string;
+  url?: string;
+  iconURL?: string;
 }
 
 export interface EmbedField {
