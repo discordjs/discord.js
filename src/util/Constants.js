@@ -1139,7 +1139,7 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
  * * PUBLIC
  * * GUILD_ONLY
  * @typedef {string} GuildScheduledEventPrivacyLevel
- * @see {@link TODO}
+ * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-privacy-level}
  */
 exports.GuildScheduledEventPrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 
@@ -1161,6 +1161,7 @@ exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
  * * COMPLETED
  * * CANCELED
  * @typedef {string} GuildScheduledEventStatus
+ * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-status}
  */
 exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', 'COMPLETED', 'CANCELED']);
 
@@ -1171,6 +1172,7 @@ exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', '
  * * VOICE
  * * EXTERNAL
  * @typedef {string} GuildScheduledEventEntityType
+ * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-types}
  */
 exports.GuildScheduledEventEntityTypes = createEnum(['NONE', 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
 
