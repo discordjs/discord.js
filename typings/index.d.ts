@@ -5097,6 +5097,7 @@ export interface ThreadEditData {
   name?: string;
   archived?: boolean;
   autoArchiveDuration?: ThreadAutoArchiveDuration;
+  rateLimitPerUser?: number;
   locked?: boolean;
   invitable?: boolean;
 }
