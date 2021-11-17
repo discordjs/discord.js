@@ -9,11 +9,8 @@ import type {
 } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
-  ApplicationCommandChannelOptionData,
-  ApplicationCommandChoicesData,
   ApplicationCommandData,
   ApplicationCommandManager,
-  ApplicationCommandNonOptionsData,
   ApplicationCommandOptionData,
   ApplicationCommandResolvable,
   ApplicationCommandSubCommandData,
@@ -78,8 +75,6 @@ import {
   User,
   VoiceChannel,
   Shard,
-  ApplicationCommandAutocompleteOption,
-  ApplicationCommandNumericOptionData,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
