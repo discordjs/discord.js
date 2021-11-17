@@ -124,14 +124,6 @@ class GuildScheduledEvent extends Base {
     }
 
     if (data.entity_metadata) {
-      if ('speaker_ids' in data.entity_metadata) {
-        /**
-         * The ids of the users who are speakers of the stage channel
-         * @type {Snowflake[]}
-         */
-        this.speakerIds = data.entity_metadata.speaker_ids;
-      }
-
       if ('location' in data.entity_metadata) {
         /**
          * The location of the event
@@ -140,7 +132,6 @@ class GuildScheduledEvent extends Base {
         this.location = data.entity_metadata.location;
       }
     } else {
-      this.speakerIds ??= [];
       this.location ??= null;
     }
   }
@@ -181,8 +172,6 @@ class GuildScheduledEvent extends Base {
   get scheduledEndAt() {
     return this.scheduledEndTime ? new Date(this.scheduledEndTime) : null;
   }
-
-  // TODO: add examples
 
   /**
    * The channel associated with this scheduled event
