@@ -6,6 +6,8 @@ const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
+let deprecationEmittedForFetchMessage = false;
+
 /**
  * Represents a webhook.
  */
@@ -269,12 +271,21 @@ class Webhook {
    * Gets a message that was sent by this webhook.
    * @param {Snowflake|'@original'} message The id of the message to fetch
    * @param {WebhookFetchMessageOptions|boolean} [cacheOrOptions={}] The options to provide to fetch the message.
-   * A **deprecated** boolean may be passed instead to specify whether to cache the message.
+   * <warn>A **deprecated** boolean may be passed instead to specify whether to cache the message.</warn>
    * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async fetchMessage(message, cacheOrOptions = { cache: true }) {
     if (typeof cacheOrOptions === 'boolean') {
+      if (!deprecationEmittedForFetchMessage) {
+        process.emitWarning(
+          'Passing a boolean to cache the message in Webhook#fetchMessage is deprecated. Pass an object instead.',
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForFetchMessage = true;
+      }
+
       cacheOrOptions = { cache: cacheOrOptions };
     }
 
