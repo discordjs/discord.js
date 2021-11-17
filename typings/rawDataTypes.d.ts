@@ -75,6 +75,7 @@ import {
   RESTPostAPIInteractionFollowupJSONBody,
   RESTPostAPIWebhookWithTokenJSONBody,
   Snowflake,
+  APIGuildScheduledEvent,
 } from 'discord-api-types/v9';
 import { GuildChannel, Guild, PermissionOverwrites } from '.';
 
@@ -127,6 +128,8 @@ export type RawGuildMemberData =
 export type RawThreadMemberData = APIThreadMember;
 
 export type RawGuildPreviewData = APIGuildPreview;
+
+export type RawGuildScheduledEventData = APIGuildScheduledEvent;
 
 export type RawGuildTemplateData = APITemplate;
 

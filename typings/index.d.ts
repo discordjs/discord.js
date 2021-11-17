@@ -102,6 +102,7 @@ import {
   RawGuildEmojiData,
   RawGuildMemberData,
   RawGuildPreviewData,
+  RawGuildScheduledEventData,
   RawGuildTemplateData,
   RawIntegrationApplicationData,
   RawIntegrationData,
@@ -1160,7 +1161,7 @@ export class GuildPreview extends Base {
 }
 
 export class GuildScheduledEvent extends Base {
-  private constructor(client: Client, data: APIGuildScheduledEvent);
+  private constructor(client: Client, data: RawGuildScheduledEventData);
   public id: Snowflake;
   public guildId: Snowflake;
   public deleted: boolean;
@@ -3079,7 +3080,7 @@ export class GuildScheduledEventManager extends CachedManager<
   GuildScheduledEvent,
   GuildScheduledEventResolvable
 > {
-  private constructor(guild: Guild, iterable?: Iterable<any>);
+  private constructor(guild: Guild, iterable?: Iterable<RawGuildScheduledEventData>);
   public guild: Guild;
   public create(options: GuildScheduledEventCreateOptions): Promise<GuildScheduledEvent>;
   public fetch(): Promise<Collection<Snowflake, GuildScheduledEvent>>;
