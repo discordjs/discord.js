@@ -3068,6 +3068,12 @@ export class GuildInviteManager extends DataManager<string, Invite, InviteResolv
   public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
 }
 
+export type GuildScheduledEventManagerFetchResult<
+  T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
+> = T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions
+  ? GuildScheduledEvent
+  : Collection<Snowflake, GuildScheduledEvent>;
+
 export class GuildScheduledEventManager extends CachedManager<
   Snowflake,
   GuildScheduledEvent,
@@ -3076,14 +3082,16 @@ export class GuildScheduledEventManager extends CachedManager<
   private constructor(guild: Guild, iterable?: Iterable<any>);
   public guild: Guild;
   public create(options: GuildScheduledEventCreateOptions): Promise<GuildScheduledEvent>;
-  public fetch(
-    options?: GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
-  ): Promise<GuildScheduledEvent | Collection<Snowflake, GuildScheduledEvent>>;
+  public fetch(): Promise<Collection<Snowflake, GuildScheduledEvent>>;
+  public fetch<
+    T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
+  >(options?: T): Promise<GuildScheduledEventManagerFetchResult<T>>;
   public edit(
     guildScheduledEvent: GuildScheduledEventResolvable,
     options: GuildScheduledEventEditOptions,
   ): Promise<GuildScheduledEvent>;
   public delete(guildScheduledEvent: GuildScheduledEventResolvable): Promise<void>;
+  // TODO: use conditional typings once this is finalized in code
   public fetchSubscribers(
     guildScheduledEvent: GuildScheduledEventResolvable,
     options?: FetchGuildScheduledEventSubscribersOptions,
