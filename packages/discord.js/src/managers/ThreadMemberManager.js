@@ -5,6 +5,8 @@ const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
 
+let deprecationEmittedForFetchMember = false;
+
 /**
  * Manages API methods for GuildMembers and stores their cache.
  * @extends {CachedManager}
@@ -118,6 +120,14 @@ class ThreadMemberManager extends CachedManager {
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
   fetch({ member, cache = true, force = false } = {}) {
+    // eslint-disable-next-line prefer-rest-params
+    if (!deprecationEmittedForFetchMember && typeof arguments[0] === 'boolean') {
+      process.emitWarning(
+        'Passing a boolean as a parameter for ThreadMemberManager#fetch is deprecated. Pass a sole object instead.',
+        'DeprecationWarning',
+      );
+    }
+
     const id = this.resolveId(member);
     return id ? this._fetchOne(id, cache, force) : this._fetchMany(member ?? cache);
   }
