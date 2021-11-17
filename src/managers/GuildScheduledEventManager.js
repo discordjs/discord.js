@@ -38,7 +38,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {PrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
-   * @property {GuildChannelResolvable} [channel] The channel of the guild scheduled event
+   * @property {GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
    * @property {UserResolvable[]} [speakers] The speakers of the guild scheduled event
    * @property {string} [location] The location of the guild scheduled event
    */
@@ -91,7 +91,7 @@ class GuildScheduledEventManager extends CachedManager {
    */
 
   /**
-   * Obtains one or more guild scheduled events from Discord, or the guild cache if it's aready available.
+   * Obtains one or more guild scheduled events from Discord, or the guild cache if it's already available.
    * @param {GuildScheduledEventResolvable|FetchGuildScheduledEventOptions|FetchGuildScheduledEventsOptions} [options]
    * The id of the guild scheduled event or options
    * @returns {Promise<GuildScheduledEvent|Collection<Snowflake, GuildScheduledEvent>>}
@@ -131,7 +131,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
-   * @property {GuildChannelResolvable} [channel] The channel of the guild scheduled event
+   * @property {GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
    * @property {UserResolvable[]} [speakers] The speakers of the guild scheduled event
    * @property {string} [location] The location of the guild scheduled event
    * @property {GuildScheduledEventStatus|number} [status] The status of the guild scheduled event
@@ -190,7 +190,7 @@ class GuildScheduledEventManager extends CachedManager {
   }
 
   /**
-   * Options used to fetch subscribers of a guild schedule event
+   * Options used to fetch subscribers of a guild scheduled event
    * @typedef {Object} FetchGuildScheduledEventSubscribersOptions
    * @property {number} [limit] The maximum numbers of users to fetch
    * @property {boolean} [withMember] Whether to fetch guild member data of the users

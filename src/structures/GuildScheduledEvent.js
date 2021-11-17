@@ -175,7 +175,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The channel associated with this scheduled event
-   * @type {?GuildChannel}
+   * @type {?(VoiceChannel|StageChannel)}
    * @readonly
    */
   get channel() {

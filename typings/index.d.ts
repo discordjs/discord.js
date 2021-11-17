@@ -1183,7 +1183,7 @@ export class GuildScheduledEvent extends Base {
   public readonly createdAt: Date;
   public readonly scheduledStartAt: Date;
   public readonly scheduledEndAt: Date | null;
-  public readonly channel: GuildChannel | null;
+  public readonly channel: VoiceChanenl | StageChannel | null;
   public readonly guild: Guild | null;
   public edit(options: GuildScheduledEventEditOptions): Promise<GuildScheduledEvent>;
   public delete(): Promise<GuildScheduledEvent>;
@@ -3105,7 +3105,7 @@ export interface GuildScheduledEventCreateOptions {
   privacyLevel: GuildScheduledEventPrivacyLevel | number;
   entityType: GuildScheduledEventEntityType | number;
   description?: string;
-  channel?: GuildChannelResolvable;
+  channel?: GuildVoiceChannelResolvable;
   speakers?: UserResolvable[];
   location?: string;
 }
