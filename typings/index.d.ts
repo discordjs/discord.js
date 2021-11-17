@@ -1165,10 +1165,10 @@ export class GuildScheduledEvent extends Base {
   public id: Snowflake;
   public guildId: Snowflake;
   public deleted: boolean;
-  public channelId: Snowflake;
-  public creatorId: Snowflake;
+  public channelId: Snowflake | null;
+  public creatorId: Snowflake | null;
   public name: string;
-  public description: string;
+  public description: string | null;
   public scheduledStartTime: number;
   public scheduledEndTime: number | null;
   public privacyLevel: GuildScheduledEventPrivacyLevel;
@@ -1177,8 +1177,8 @@ export class GuildScheduledEvent extends Base {
   public entityId: Snowflake | null;
   public speakerIds: Snowflake[];
   public location: string;
-  public userCount: number;
-  public creator: User;
+  public userCount: number | null;
+  public creator: User | null;
   public readonly createdTimestamp: number;
   public readonly createdAt: Date;
   public readonly scheduledStartAt: Date;

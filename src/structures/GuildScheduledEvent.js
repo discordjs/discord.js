@@ -51,9 +51,11 @@ class GuildScheduledEvent extends Base {
     if ('creator_id' in data) {
       /**
        * The id of the user that created this guild scheduled event
-       * @type {Snowflake}
+       * @type {?Snowflake}
        */
       this.creatorId = data.creator_id;
+    } else {
+      this.creatorId ??= null;
     }
 
     /**
@@ -65,9 +67,11 @@ class GuildScheduledEvent extends Base {
     if ('description' in data) {
       /**
        * The description of the guild scheduled event
-       * @type {string}
+       * @type {?string}
        */
       this.description = data.description;
+    } else {
+      this.description ??= null;
     }
 
     /**
@@ -110,17 +114,21 @@ class GuildScheduledEvent extends Base {
     if ('user_count' in data) {
       /**
        * The number of users who are subscribed to this guild scheduled event
-       * @type {number}
+       * @type {?number}
        */
       this.userCount = data.user_count;
+    } else {
+      this.userCount ??= null;
     }
 
     if ('creator' in data) {
       /**
        * The user that created this guild scheduled event
-       * @type {User}
+       * @type {?User}
        */
       this.creator = this.client.users._add(data.creator);
+    } else {
+      this.creator ??= null;
     }
 
     if (data.entity_metadata) {
@@ -130,6 +138,8 @@ class GuildScheduledEvent extends Base {
          * @type {?string}
          */
         this.location = data.entity_metadata.location;
+      } else {
+        this.location ??= null;
       }
     } else {
       this.location ??= null;
