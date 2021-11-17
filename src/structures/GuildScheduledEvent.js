@@ -237,11 +237,11 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Sets a new time to schedule the event at.
-   * @param {Date} scheduledStartTime The time to schedule the event at
+   * @param {DateResolvable} scheduledStartTime The time to schedule the event at
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set start time of a guild scheduled event
-   * guildScheduledEvent.setScheduledStartTime(new Date('September 24, 2022'))
+   * guildScheduledEvent.setScheduledStartTime('September 24, 2022'))
    *  .then(guildScheduledEvent => console.log(`Set the start time to: ${guildScheduledEvent.scheduledStartTime}`))
    *  .catch(console.error);
    */

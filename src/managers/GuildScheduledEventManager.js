@@ -6,6 +6,10 @@ const { TypeError, Error } = require('../errors');
 const GuildScheduledEvent = require('../structures/GuildScheduledEvent');
 const { PrivacyLevels, GuildScheduledEventEntityTypes, GuildScheduledEventStatuses } = require('../util/Constants');
 
+/**
+ * Manages API methods for GuildScheduledEvents and stores their cache.
+ * @extends {CachedManager}
+ */
 class GuildScheduledEventManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildScheduledEvent, iterable);
@@ -34,7 +38,8 @@ class GuildScheduledEventManager extends CachedManager {
    * Options used to create a guild scheduled event.
    * @typedef {Object} GuildScheduledEventCreateOptions
    * @property {string} name The name of the guild scheduled event
-   * @property {Date} scheduledStartTime The time to schedule the event at
+   * @property {DateResolvable} scheduledStartTime The time to schedule the event at
+   * @property {DateResolvable} [scheduledEndTime] The time to end the event at
    * @property {PrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
@@ -50,7 +55,17 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async create(options) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel, speakers, location, name, scheduledStartTime, description } = options;
+    let {
+      privacyLevel,
+      entityType,
+      channel,
+      speakers,
+      location,
+      name,
+      scheduledStartTime,
+      description,
+      scheduledEndTime,
+    } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
@@ -64,6 +79,7 @@ class GuildScheduledEventManager extends CachedManager {
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: new Date(scheduledStartTime).toISOString(),
+        scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : undefined,
         description,
         entity_type: entityType,
         entity_metadata: {
@@ -127,7 +143,8 @@ class GuildScheduledEventManager extends CachedManager {
    * Options used to edit a guild scheduled event.
    * @typedef {Object} GuildScheduledEventEditOptions
    * @property {string} [name] The name of the guild scheduled event
-   * @property {Date} [scheduledStartTime] The time to schedule the event at
+   * @property {DateResolvable} [scheduledStartTime] The time to schedule the event at
+   * @property {DateResolvable} [scheduledEndTime] The time to end the event at
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
@@ -148,8 +165,18 @@ class GuildScheduledEventManager extends CachedManager {
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel, speakers, location, status, name, scheduledStartTime, description } =
-      options;
+    let {
+      privacyLevel,
+      entityType,
+      channel,
+      speakers,
+      location,
+      status,
+      name,
+      scheduledStartTime,
+      description,
+      scheduledEndTime,
+    } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
@@ -164,6 +191,7 @@ class GuildScheduledEventManager extends CachedManager {
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: scheduledStartTime ? new Date(scheduledStartTime).toISOString() : undefined,
+        scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : undefined,
         description,
         entity_type: entityType,
         status,

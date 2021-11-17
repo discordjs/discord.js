@@ -1183,12 +1183,12 @@ export class GuildScheduledEvent extends Base {
   public readonly createdAt: Date;
   public readonly scheduledStartAt: Date;
   public readonly scheduledEndAt: Date | null;
-  public readonly channel: VoiceChanenl | StageChannel | null;
+  public readonly channel: VoiceChannel | StageChannel | null;
   public readonly guild: Guild | null;
   public edit(options: GuildScheduledEventEditOptions): Promise<GuildScheduledEvent>;
   public delete(): Promise<GuildScheduledEvent>;
   public setName(name: string): Promise<GuildScheduledEvent>;
-  public setScheduledStartTime(scheduledStartTime: Date): Promise<GuildScheduledEvent>;
+  public setScheduledStartTime(scheduledStartTime: DateResolvable): Promise<GuildScheduledEvent>;
   public setPrivacyLevel(privacyLevel: GuildScheduledEventPrivacyLevel | number): Promise<GuildScheduledEvent>;
   public setDescription(description: string): Promise<GuildScheduledEvent>;
   public setStatus(status: string): Promise<GuildScheduledEvent>;
@@ -3101,7 +3101,8 @@ export class GuildScheduledEventManager extends CachedManager<
 
 export interface GuildScheduledEventCreateOptions {
   name: string;
-  scheduledStartTime: Date;
+  scheduledStartTime: DateResolvable;
+  scheduledEndTime?: DateResolvable;
   privacyLevel: GuildScheduledEventPrivacyLevel | number;
   entityType: GuildScheduledEventEntityType | number;
   description?: string;
