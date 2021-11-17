@@ -3245,7 +3245,7 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   private constructor(thread: ThreadChannel, iterable?: Iterable<RawThreadMemberData>);
   public thread: ThreadChannel;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
-  public fetch(options?: BaseFetchOptions & { member?: UserResolvable }): Promise<ThreadMember>;
+  public fetch(options?: ThreadMemberFetchOptions): Promise<ThreadMember>;
   /** @deprecated Use `fetch(options)` instead. */
   public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
@@ -3762,6 +3762,10 @@ export type Base64String = string;
 export interface BaseFetchOptions {
   cache?: boolean;
   force?: boolean;
+}
+
+export interface ThreadMemberFetchOptions extends BaseFetchOptions {
+  member?: UserResolvable;
 }
 
 export interface BaseMessageComponentOptions {

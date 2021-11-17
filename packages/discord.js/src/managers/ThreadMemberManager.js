@@ -108,8 +108,13 @@ class ThreadMemberManager extends CachedManager {
   }
 
   /**
+   * @typedef {BaseFetchOptions} ThreadMemberFetchOptions
+   * @property {UserResolvable} [member] The specific user to fetch from the thread
+   */
+
+  /**
    * Fetches member(s) for the thread from Discord, requires access to the `GUILD_MEMBERS` gateway intent.
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @param {ThreadMemberFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
   fetch({ member, cache = true, force = false } = {}) {
