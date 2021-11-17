@@ -78,6 +78,8 @@ import {
   User,
   VoiceChannel,
   Shard,
+  ApplicationCommandAutocompleteOption,
+  ApplicationCommandNumericOptionData,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -820,17 +822,6 @@ declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
     applicationSubGroupCommandData.type,
   );
   expectType<ApplicationCommandSubCommandData[] | undefined>(applicationSubGroupCommandData.options);
-}
-
-declare const applicationSubCommandData: ApplicationCommandSubCommandData;
-{
-  expectType<'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND>(applicationSubCommandData.type);
-
-  // Check that only subcommands can have no subcommand or subcommand group sub-options.
-  expectType<
-    | (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData | ApplicationCommandChannelOptionData)[]
-    | undefined
-  >(applicationSubCommandData.options);
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
