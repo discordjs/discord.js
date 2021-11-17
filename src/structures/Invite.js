@@ -217,7 +217,7 @@ class Invite extends Base {
        */
       this.guildScheduledEvent = new GuildScheduledEvent(this.client, data.guild_scheduled_event);
     } else {
-      this.stageInstance ??= null;
+      this.guildScheduledEvent ??= null;
     }
   }
 
