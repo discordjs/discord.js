@@ -206,6 +206,11 @@ class GuildScheduledEvent extends Base {
    * Edits this guild scheduled event.
    * @param {GuildScheduledEventEditOptions} options The options to edit the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
+   * @example
+   * // Edit a guild scheduled event
+   * guildScheduledEvent.edit({ name: 'Party' })
+   *  .then(guildScheduledEvent => console.log(guildScheduledEvent))
+   *  .catch(console.error);
    */
   edit(options) {
     return this.guild.scheduledEvents.edit(this.id, options);
@@ -213,6 +218,12 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Deletes this guild scheduled event.
+   * @returns {Promise<GuildScheduledEvent>}
+   * @example
+   * // Delete a guild scheduled event
+   * guildScheduledEvent.delete()
+   *  .then(guildScheduledEvent => console.log(guildScheduledEvent))
+   *  .catch(console.error);
    */
   async delete() {
     await this.guild.scheduledEvents.delete(this.id);
@@ -225,6 +236,11 @@ class GuildScheduledEvent extends Base {
    * Sets a new name for the guild scheduled event.
    * @param {string} name The new name of the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
+   * @example
+   * // Set name of a guild scheduled event
+   * guildScheduledEvent.setName('Birthday Party')
+   *  .then(guildScheduledEvent => console.log(`Set the name to: ${guildScheduledEvent.name}`))
+   *  .catch(console.error);
    */
   setName(name) {
     return this.edit({ name });
@@ -234,24 +250,25 @@ class GuildScheduledEvent extends Base {
    * Sets a new time to schedule the event at.
    * @param {Date} scheduledStartTime The time to schedule the event at
    * @returns {Promise<GuildScheduledEvent>}
+   * @example
+   * // Set start time of a guild scheduled event
+   * guildScheduledEvent.setScheduledStartTime(new Date('September 24, 2022'))
+   *  .then(guildScheduledEvent => console.log(`Set the start time to: ${guildScheduledEvent.scheduledStartTime}`))
+   *  .catch(console.error);
    */
   setScheduledStartTime(scheduledStartTime) {
     return this.edit({ scheduledStartTime });
   }
 
   /**
-   * Sets the new privacy level of the guild scheduled event.
-   * @param {GuildScheduledEventPrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
-   * @returns {Promise<GuildScheduledEvent>}
-   */
-  setPrivacyLevel(privacyLevel) {
-    return this.edit({ privacyLevel });
-  }
-
-  /**
    * Sets the new description of the guild scheduled event.
    * @param {string} description The description of the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
+   * @example
+   * // Set description of a guild scheduled event
+   * guildScheduledEvent.setDescription('A virtual birthday party')
+   *  .then(guildScheduledEvent => console.log(`Set the description to: ${guildScheduledEvent.description}`))
+   *  .catch(console.error);
    */
   setDescription(description) {
     return this.edit({ description });
@@ -261,6 +278,11 @@ class GuildScheduledEvent extends Base {
    * Sets the new status of the guild scheduled event.
    * @param {GuildScheduledEventStatus|number} status The status of the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
+   * @example
+   * // Set status of a guild scheduled event
+   * guildScheduledEvent.setStatus('ACTIVE')
+   *  .then(guildScheduledEvent => console.log(`Set the status to: ${guildScheduledEvent.status}`))
+   *  .catch(console.error);
    */
   setStatus(status) {
     return this.edit({ status });
@@ -270,6 +292,11 @@ class GuildScheduledEvent extends Base {
    * Sets the new location of the guild scheduled event.
    * @param {string} location The location of the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
+   * @example
+   * // Set location of a guild scheduled event
+   * guildScheduledEvent.setLocation('Earth')
+   *  .then(guildScheduledEvent => console.log(`Set the location to: ${guildScheduledEvent.location}`))
+   *  .catch(console.error);
    */
   setLocation(location) {
     return this.edit({ location });

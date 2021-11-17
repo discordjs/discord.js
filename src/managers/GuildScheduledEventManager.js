@@ -160,10 +160,10 @@ class GuildScheduledEventManager extends CachedManager {
 
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).patch({
       data: {
-        channel_id: channelId,
+        channel_id: channelId ?? undefined,
         name,
         privacy_level: privacyLevel,
-        scheduled_start_time: new Date(scheduledStartTime).toISOString(),
+        scheduled_start_time: scheduledStartTime ? new Date(scheduledStartTime).toISOString() : undefined,
         description,
         entity_type: entityType,
         status,
