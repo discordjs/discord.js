@@ -972,8 +972,10 @@ client.on('interactionCreate', async interaction => {
     // @ts-expect-error
     assertType<CommandInteraction<'cached'>>(interaction);
     assertType<Interaction>(interaction);
+    assertType<GuildTextBasedChannel>(interaction.channel);
   } else if (interaction.inRawGuild()) {
     assertType<APIInteractionGuildMember>(interaction.member);
+    assertType<APIInteractionDataResolvedChannel>(interaction.channel);
     // @ts-expect-error
     consumeCachedInteraction(interaction);
   } else {

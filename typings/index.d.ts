@@ -28,6 +28,7 @@ import {
   APIApplicationCommandPermission,
   APIAuditLogChange,
   APIButtonComponent,
+  APIChannel,
   APIEmbed,
   APIEmoji,
   APIInteractionDataResolvedChannel,
@@ -1190,7 +1191,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   private readonly _cacheType: Cached;
   protected constructor(client: Client, data: RawInteractionData);
   public applicationId: Snowflake;
-  public readonly channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
+  public readonly channel: CacheTypeReducer<Cached, GuildTextBasedChannel, APIInteractionDataResolvedChannel>;
   public channelId: Snowflake | null;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
@@ -1515,7 +1516,6 @@ export class MessageCollector extends Collector<Snowflake, Message> {
 
 export class MessageComponentInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
-  public readonly channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
   public readonly component: CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
