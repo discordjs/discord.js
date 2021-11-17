@@ -1081,7 +1081,6 @@ exports.InteractionResponseTypes = createEnum([
   'UPDATE_MESSAGE',
   'APPLICATION_COMMAND_AUTOCOMPLETE_RESULT',
 ]);
-/* eslint-enable max-len */
 
 /**
  * The type of a message component
@@ -1175,6 +1174,7 @@ exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', '
  * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-types}
  */
 exports.GuildScheduledEventEntityTypes = createEnum(['NONE', 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
+/* eslint-enable max-len */
 
 exports._cleanupSymbol = Symbol('djsCleanup');
 
