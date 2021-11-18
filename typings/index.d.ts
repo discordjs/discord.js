@@ -774,6 +774,14 @@ export class ContextMenuInteraction<Cached extends CacheType = CacheType> extend
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
 }
 
+export class UserContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+  public user: User;
+}
+
+export class MessageContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+  public message: Message | APIMessage;
+}
+
 export class DataResolver extends null {
   private constructor();
   public static resolveBase64(data: Base64Resolvable): string;
@@ -1217,6 +1225,8 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isCommand(): this is CommandInteraction<Cached>;
   public isAutocomplete(): this is AutocompleteInteraction<Cached>;
   public isContextMenu(): this is ContextMenuInteraction<Cached>;
+  public isUserContextMenu(): this is UserContextMenuInteracion<Cached>;
+  public isMessageContextMenu(): this is MessageContextMenuInteracion<Cached>;
   public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
 }
