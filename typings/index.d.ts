@@ -1191,7 +1191,13 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   private readonly _cacheType: Cached;
   protected constructor(client: Client, data: RawInteractionData);
   public applicationId: Snowflake;
-  public readonly channel: CacheTypeReducer<Cached, GuildTextBasedChannel, APIInteractionDataResolvedChannel>;
+  public readonly channel: CacheTypeReducer<
+    Cached,
+    GuildTextBasedChannel | null,
+    GuildTextBasedChannel | null,
+    GuildTextBasedChannel | null,
+    TextBasedChannels | null
+  >;
   public channelId: Snowflake | null;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
