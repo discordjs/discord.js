@@ -443,6 +443,18 @@ class ThreadChannel extends Channel {
   }
 
   /**
+   * Whether the thread is viewable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get viewable() {
+    if (this.client.user.id === this.guild.ownerId) return true;
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    return permissions.has(Permissions.FLAGS.VIEW_CHANNEL, false);
+  }
+
+  /**
    * Whether the client user can send messages in this thread
    * @type {boolean}
    * @readonly
