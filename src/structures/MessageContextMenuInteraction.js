@@ -3,7 +3,7 @@
 const ContextMenuInteraction = require('./ContextMenuInteraction');
 
 /**
- * Represents a user context menu interaction.
+ * Represents a message context menu interaction.
  * @extends {ContextMenuInteraction}
  */
 class MessageContextMenuInteraction extends ContextMenuInteraction {
