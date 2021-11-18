@@ -6,6 +6,7 @@ const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
+const GuildChannel = require('../structures/GuildChannel');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
 
@@ -481,12 +482,11 @@ class Util extends null {
    * @returns {Collection}
    */
   static discordSort(collection) {
-    return collection.sorted(
-      (a, b) =>
-        a.rawPosition - b.rawPosition ||
-        parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
-        parseInt(b.id.slice(10)) - parseInt(a.id.slice(10)),
-    );
+    return collection.sorted((a, b) => {
+      const aId = BigInt(a.id);
+      const bId = BigInt(b.id);
+      return a.rawPosition - b.rawPosition || Number(a instanceof GuildChannel ? aId - bId : bId - aId);
+    });
   }
 
   /**
