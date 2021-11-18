@@ -1175,7 +1175,6 @@ export class GuildScheduledEvent extends Base {
   public status: GuildScheduledEventStatus;
   public entityType: GuildScheduledEventEntityType;
   public entityId: Snowflake | null;
-  public speakerIds: Snowflake[];
   public location: string;
   public userCount: number | null;
   public creator: User | null;
@@ -3107,7 +3106,6 @@ export interface GuildScheduledEventCreateOptions {
   entityType: GuildScheduledEventEntityType | number;
   description?: string;
   channel?: GuildVoiceChannelResolvable;
-  speakers?: UserResolvable[];
   location?: string;
 }
 
