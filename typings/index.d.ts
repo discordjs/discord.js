@@ -775,11 +775,12 @@ export class ContextMenuInteraction<Cached extends CacheType = CacheType> extend
 }
 
 export class UserContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
-  public user: User;
+  public targetUser: User;
+  public targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
 }
 
 export class MessageContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
-  public message: Message | APIMessage;
+  public targetMessage: Message | APIMessage;
 }
 
 export class DataResolver extends null {

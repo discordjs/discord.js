@@ -12,7 +12,7 @@ class MessageContextMenuInteraction extends ContextMenuInteraction {
    * @type {Message|APIMessage}
    * @readonly
    */
-  get message() {
+  get targetMessage() {
     return this.options.getMessage('message');
   }
 }

@@ -12,8 +12,17 @@ class UserContextMenuInteraction extends ContextMenuInteraction {
    * @type {User}
    * @readonly
    */
-  get user() {
+  get targetUser() {
     return this.options.getUser('user');
+  }
+
+  /**
+   * The user this interaction was sent from
+   * @type {?(GuildMember|APIGuildMember)}
+   * @readonly
+   */
+  get targetMember() {
+    return this.options.getMember(this.targetId);
   }
 }
 
