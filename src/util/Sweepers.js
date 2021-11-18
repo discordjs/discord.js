@@ -45,23 +45,13 @@ class Sweepers {
         if (!('filter' in clonedOptions)) {
           switch (key) {
             case 'invites':
-              clonedOptions.filter = this.constructor.filterByLifetime({
-                lifetime: clonedOptions.lifetime,
-                getComparisonTimestamp: i => i.expiresTimestamp,
-              });
+              clonedOptions.filter = this.constructor.expiredInviteSweepFilter(clonedOptions.lifetime);
               break;
             case 'messages':
-              clonedOptions.filter = this.constructor.filterByLifetime({
-                lifetime: clonedOptions.lifetime,
-                getComparisonTimestamp: m => m.editedTimestamp ?? m.createdTimestamp,
-              });
+              clonedOptions.filter = this.constructor.outdatedMessageSweepFilter(clonedOptions.lifetime);
               break;
             case 'threads':
-              clonedOptions.filter = this.constructor.filterByLifetime({
-                lifetime: clonedOptions.lifetime,
-                getComparisonTimestamp: t => t.archiveTimestamp,
-                excludeFromSweep: t => !t.archived,
-              });
+              clonedOptions.filter = this.constructor.archivedThreadSweepFilter(clonedOptions.lifetime);
           }
         }
 
@@ -336,6 +326,43 @@ class Sweepers {
         return now - comparisonTimestamp > lifetimeMs;
       };
     };
+  }
+
+  /**
+   * Creates a sweep filter that sweeps archived threads
+   * @param {number} [lifetime=14400] How long a thread has to be archived to be valid for sweeping
+   * @returns {GlobalSweepFilter}
+   */
+  static archivedThreadSweepFilter(lifetime = 14400) {
+    return this.filterByLifetime({
+      lifetime,
+      getComparisonTimestamp: e => e.archiveTimestamp,
+      excludeFromSweep: e => !e.archived,
+    });
+  }
+
+  /**
+   * Creates a sweep filter that sweeps expired invites
+   * @param {number} [lifetime=14400] How long ago an invite has to have expired to be valid for sweeping
+   * @returns {GlobalSweepFilter}
+   */
+  static expiredInviteSweepFilter(lifetime = 14400) {
+    return this.filterByLifetime({
+      lifetime,
+      getComparisonTimestamp: i => i.expiresTimestamp,
+    });
+  }
+
+  /**
+   * Creates a sweep filter that sweeps outdated messages (edits taken into account)
+   * @param {number} [lifetime=3600] How long ago a message has to hvae been sent or  edited to be valid for sweeping
+   * @returns {GlobalSweepFilter}
+   */
+  static outdatedMessageSweepFilter(lifetime = 3600) {
+    return this.filterByLifetime({
+      lifetime,
+      getComparisonTimestamp: m => m.editedTimestamp ?? m.createdTimestamp,
+    });
   }
 
   /**
