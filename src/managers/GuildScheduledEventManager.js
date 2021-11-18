@@ -210,7 +210,7 @@ class GuildScheduledEventManager extends CachedManager {
    * Fetches subscribers of a guild scheduled event.
    * @param {GuildScheduledEventResolvable} guildScheduledEvent The guild scheduled event to fetch subscribers of
    * @param {FetchGuildScheduledEventSubscribersOptions} [options] Options for fetching the subscribers
-   * @returns {Promise<Collection<Snowflake, User> | Collection<Snowflkae, GuildMember>>}
+   * @returns {Promise<Collection<Snowflake, User> | Collection<Snowflake, GuildMember>>}
    */
   async fetchSubscribers(guildScheduledEvent, options) {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
