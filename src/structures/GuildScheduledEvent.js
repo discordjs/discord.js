@@ -296,6 +296,15 @@ class GuildScheduledEvent extends Base {
   setLocation(location) {
     return this.edit({ location });
   }
+
+  /**
+   * Fetches subscribers of this guild scheduled event.
+   * @param {FetchGuildScheduledEventSubscribersOptions} [options] Options for fetching the subscribers
+   * @returns {Promise<Collection<Snowflake, User> | Collection<Snowflake, GuildMember>>}
+   */
+  fetchSubscribers(options) {
+    return this.guild.scheduledEvents.fetchSubscribers(this.id, options);
+  }
 }
 
 module.exports = GuildScheduledEvent;

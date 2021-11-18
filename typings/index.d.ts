@@ -1192,6 +1192,10 @@ export class GuildScheduledEvent extends Base {
   public setDescription(description: string): Promise<GuildScheduledEvent>;
   public setStatus(status: string): Promise<GuildScheduledEvent>;
   public setLocation(location: string): Promise<GuildScheduledEvent>;
+  // TODO: make this conditional
+  public fetchSubscribers(
+    options?: FetchGuildScheduledEventSubscribersOptions,
+  ): Promise<Collection<Snowflake, User> | Collection<Snowflake, GuildMember>>;
 }
 
 export class GuildTemplate extends Base {
