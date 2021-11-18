@@ -13,10 +13,6 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
  * @extends {Base}
  */
 class GuildScheduledEvent extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIGuildScheduledEvent} data The data for the guild scheduled event
-   */
   constructor(client, data) {
     super(client);
 
@@ -128,7 +124,7 @@ class GuildScheduledEvent extends Base {
        */
       this.creator = this.client.users._add(data.creator);
     } else {
-      this.creator ??= null;
+      this.creator ??= this.client.users.resolve(this.creatorId);
     }
 
     if (data.entity_metadata) {
