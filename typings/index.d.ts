@@ -777,10 +777,16 @@ export class ContextMenuInteraction<Cached extends CacheType = CacheType> extend
 export class UserContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
   public targetUser: User;
   public targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
+  public inGuild(): this is UserContextMenuInteracion<'present'>;
+  public inCachedGuild(): this is UserContextMenuInteracion<'cached'>;
+  public inRawGuild(): this is UserContextMenuInteracion<'raw'>;
 }
 
 export class MessageContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
-  public targetMessage: Message | APIMessage;
+  public targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
+  public inGuild(): this is MessageContextMenuInteracion<'present'>;
+  public inCachedGuild(): this is MessageContextMenuInteracion<'cached'>;
+  public inRawGuild(): this is MessageContextMenuInteracion<'raw'>;
 }
 
 export class DataResolver extends null {
