@@ -17,7 +17,7 @@ class UserContextMenuInteraction extends ContextMenuInteraction {
   }
 
   /**
-   * The user this interaction was sent from
+   * The member this interaction was sent from
    * @type {?(GuildMember|APIGuildMember)}
    * @readonly
    */
