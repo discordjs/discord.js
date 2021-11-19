@@ -22,7 +22,7 @@ class UserContextMenuInteraction extends ContextMenuInteraction {
    * @readonly
    */
   get targetMember() {
-    return this.options.getMember(‘user’);
+    return this.options.getMember('user');
   }
 }
 
