@@ -96,6 +96,7 @@ class TextBasedChannel {
    * @typedef {Object} FileOptions
    * @property {BufferResolvable} attachment File to attach
    * @property {string} [name='file.jpg'] Filename of the attachment
+   * @property {string} description The description of the file
    */
 
   /**
@@ -128,6 +129,7 @@ class TextBasedChannel {
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg'
+   *     description: 'A description of the file'
    *   }]
    * })
    *   .then(console.log)
@@ -146,6 +148,7 @@ class TextBasedChannel {
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg'
+   *     description: 'A description of the file'
    *   }]
    * })
    *   .then(console.log)

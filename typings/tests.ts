@@ -82,6 +82,9 @@ import {
   VoiceChannel,
   Shard,
   Camelize,
+  ApplicationCommandOptionData,
+  ApplicationCommandAutocompleteOption,
+  ApplicationCommandNumericOptionData,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 
@@ -449,6 +452,66 @@ client.on('ready', async () => {
 // This is to check that stuff is the right type
 declare const assertIsPromiseMember: (m: Promise<GuildMember>) => void;
 
+const baseCommandOptionData = {
+  name: 'test',
+  description: 'test',
+};
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'STRING',
+  autocomplete: true,
+  // @ts-expect-error
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'STRING',
+  autocomplete: false,
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'STRING',
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'NUMBER',
+  autocomplete: true,
+  // @ts-expect-error
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'INTEGER',
+  autocomplete: true,
+  // @ts-expect-error
+  choices: [],
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'NUMBER',
+  autocomplete: true,
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'STRING',
+  autocomplete: true,
+});
+
+assertType<ApplicationCommandOptionData>({
+  ...baseCommandOptionData,
+  type: 'INTEGER',
+  autocomplete: true,
+});
+
 client.on('guildCreate', async g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
@@ -810,7 +873,8 @@ declare const applicationCommandManager: ApplicationCommandManager;
   type ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>;
 
   assertType<Promise<ApplicationCommandScope>>(applicationCommandManager.create(applicationCommandData));
-  assertType<Promise<ApplicationCommand>>(applicationCommandManager.create(applicationCommandData, '0'));
+  assertType<Promise<ApplicationCommandScope>>(applicationCommandManager.create(applicationCommandData, '0'));
+  assertType<Promise<ApplicationCommandScope>>(applicationCommandManager.create(applicationCommandData, undefined));
   assertType<Promise<ApplicationCommandScope>>(
     applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData),
   );
@@ -854,7 +918,13 @@ declare const applicationSubCommandData: ApplicationCommandSubCommandData;
 
   // Check that only subcommands can have no subcommand or subcommand group sub-options.
   assertType<
-    | (ApplicationCommandChoicesData | ApplicationCommandNonOptionsData | ApplicationCommandChannelOptionData)[]
+    | (
+        | ApplicationCommandChoicesData
+        | ApplicationCommandNonOptionsData
+        | ApplicationCommandChannelOptionData
+        | ApplicationCommandAutocompleteOption
+        | ApplicationCommandNumericOptionData
+      )[]
     | undefined
   >(applicationSubCommandData.options);
 }
@@ -927,6 +997,7 @@ declare const booleanValue: boolean;
 if (interaction.inGuild()) assertType<Snowflake>(interaction.guildId);
 
 client.on('interactionCreate', async interaction => {
+  assertType<Snowflake | null>(interaction.guildId);
   if (interaction.inCachedGuild()) {
     assertType<GuildMember>(interaction.member);
     // @ts-expect-error
