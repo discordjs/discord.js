@@ -1493,13 +1493,6 @@ export class MessageCollector extends Collector<Snowflake, Message> {
   public dispose(message: Message): Snowflake | null;
 }
 
-export class MessageContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
-  public targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
-  public inGuild(): this is MessageContextMenuInteracion<'present'>;
-  public inCachedGuild(): this is MessageContextMenuInteracion<'cached'>;
-  public inRawGuild(): this is MessageContextMenuInteracion<'raw'>;
-}
-
 export class MessageComponentInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
   public readonly channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
@@ -1533,6 +1526,13 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
 
   public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
+}
+
+export class MessageContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+  public targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
+  public inGuild(): this is MessageContextMenuInteracion<'present'>;
+  public inCachedGuild(): this is MessageContextMenuInteracion<'cached'>;
+  public inRawGuild(): this is MessageContextMenuInteracion<'raw'>;
 }
 
 export class MessageEmbed {
