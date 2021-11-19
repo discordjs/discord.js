@@ -2325,10 +2325,8 @@ export class WebhookClient extends WebhookMixin(BaseClient) {
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<APIMessage>;
   public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<APIMessage>;
-  /* tslint:disable:unified-signatures */
   /** @deprecated */
   public fetchMessage(message: Snowflake, cache?: boolean): Promise<APIMessage>;
-  /* tslint:enable:unified-signatures */
   public send(options: string | MessagePayload | WebhookMessageOptions): Promise<APIMessage>;
 }
 
@@ -3079,10 +3077,8 @@ export interface PartialWebhookFields {
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<Message | APIMessage>;
   fetchMessage(message: Snowflake | '@original', options?: WebhookFetchMessageOptions): Promise<Message | APIMessage>;
-  /* tslint:disable:unified-signatures */
   /** @deprecated */
   fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | APIMessage>;
-  /* tslint:enable:unified-signatures */
   send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message | APIMessage>;
 }
 
