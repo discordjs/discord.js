@@ -1192,10 +1192,9 @@ export class GuildScheduledEvent extends Base {
   public setDescription(description: string): Promise<GuildScheduledEvent>;
   public setStatus(status: string): Promise<GuildScheduledEvent>;
   public setLocation(location: string): Promise<GuildScheduledEvent>;
-  // TODO: make this conditional
-  public fetchSubscribers(
-    options?: FetchGuildScheduledEventSubscribersOptions,
-  ): Promise<Collection<Snowflake, User> | Collection<Snowflake, GuildMember>>;
+  public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
+    options?: T,
+  ): Promise<GuildScheduledEventManagerFetchSubscribersResult<T>>;
 }
 
 export class GuildTemplate extends Base {
@@ -3078,6 +3077,9 @@ export type GuildScheduledEventManagerFetchResult<
   ? GuildScheduledEvent
   : Collection<Snowflake, GuildScheduledEvent>;
 
+export type GuildScheduledEventManagerFetchSubscribersResult<T extends FetchGuildScheduledEventSubscribersOptions> =
+  T extends { withMember: true } ? Collection<Snowflake, GuildMember> : Collection<Snowflake, User>;
+
 export class GuildScheduledEventManager extends CachedManager<
   Snowflake,
   GuildScheduledEvent,
@@ -3095,11 +3097,10 @@ export class GuildScheduledEventManager extends CachedManager<
     options: GuildScheduledEventEditOptions,
   ): Promise<GuildScheduledEvent>;
   public delete(guildScheduledEvent: GuildScheduledEventResolvable): Promise<void>;
-  // TODO: use conditional typings once this is finalized in code
-  public fetchSubscribers(
+  public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
     guildScheduledEvent: GuildScheduledEventResolvable,
-    options?: FetchGuildScheduledEventSubscribersOptions,
-  ): Promise<Collection<Snowflake, User> | Collection<Snowflake, GuildMember>>;
+    options?: T,
+  ): Promise<GuildScheduledEventManagerFetchSubscribersResult<T>>;
 }
 
 export interface GuildScheduledEventCreateOptions {
@@ -3115,11 +3116,12 @@ export interface GuildScheduledEventCreateOptions {
 
 export interface FetchGuildScheduledEventOptions extends BaseFetchOptions {
   guildScheduledEvent: GuildScheduledEventResolvable;
+  withUserCount?: boolean;
 }
 
 export interface FetchGuildScheduledEventsOptions {
   cache?: boolean;
-  withUserCounts?: boolean;
+  withUserCount?: boolean;
 }
 
 export interface GuildScheduledEventEditOptions extends Partial<GuildScheduledEventCreateOptions> {

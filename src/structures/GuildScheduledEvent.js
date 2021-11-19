@@ -44,15 +44,11 @@ class GuildScheduledEvent extends Base {
      */
     this.channelId = data.channel_id;
 
-    if ('creator_id' in data) {
-      /**
-       * The id of the user that created this guild scheduled event
-       * @type {?Snowflake}
-       */
-      this.creatorId = data.creator_id;
-    } else {
-      this.creatorId ??= null;
-    }
+    /**
+     * The id of the user that created this guild scheduled event
+     * @type {?Snowflake}
+     */
+    this.creatorId = data.creator_id;
 
     /**
      * The name of the guild scheduled event

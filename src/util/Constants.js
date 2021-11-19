@@ -1135,12 +1135,11 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 
 /**
  * Privacy level of a {@link GuildScheduledEvent} object:
- * * PUBLIC
  * * GUILD_ONLY
  * @typedef {string} GuildScheduledEventPrivacyLevel
  * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-privacy-level}
  */
-exports.GuildScheduledEventPrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
+exports.GuildScheduledEventPrivacyLevels = createEnum([null, null, 'GUILD_ONLY']);
 
 /**
  * The premium tier (Server Boost level) of a guild:
@@ -1173,7 +1172,7 @@ exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', '
  * @typedef {string} GuildScheduledEventEntityType
  * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-types}
  */
-exports.GuildScheduledEventEntityTypes = createEnum(['NONE', 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
+exports.GuildScheduledEventEntityTypes = createEnum([null, 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
 /* eslint-enable max-len */
 
 exports._cleanupSymbol = Symbol('djsCleanup');

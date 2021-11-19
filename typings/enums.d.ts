@@ -87,14 +87,12 @@ export const enum ExplicitContentFilterLevels {
 }
 
 export const enum GuildScheduledEventEntityTypes {
-  NONE = 0,
   STAGE_INSTANCE = 1,
   VOICE = 2,
   EXTERNAL = 3,
 }
 
 export const enum GuildScheduledEventPrivacyLevels {
-  PUBLIC = 1,
   GUILD_ONLY = 2,
 }
 
