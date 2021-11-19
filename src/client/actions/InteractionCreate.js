@@ -4,8 +4,9 @@ const Action = require('./Action');
 const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
 const CommandInteraction = require('../../structures/CommandInteraction');
-const ContextMenuInteraction = require('../../structures/ContextMenuInteraction');
+const MessageContextMenuInteraction = require('../../structures/MessageContextMenuInteraction');
 const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
+const UserContextMenuInteraction = require('../../structures/UserContextMenuInteraction');
 const { Events, InteractionTypes, MessageComponentTypes, ApplicationCommandTypes } = require('../../util/Constants');
 
 let deprecationEmitted = false;
@@ -25,8 +26,10 @@ class InteractionCreateAction extends Action {
             InteractionType = CommandInteraction;
             break;
           case ApplicationCommandTypes.USER:
+            InteractionType = UserContextMenuInteraction;
+            break;
           case ApplicationCommandTypes.MESSAGE:
-            InteractionType = ContextMenuInteraction;
+            InteractionType = MessageContextMenuInteraction;
             break;
           default:
             client.emit(
