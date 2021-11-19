@@ -774,21 +774,6 @@ export class ContextMenuInteraction<Cached extends CacheType = CacheType> extend
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
 }
 
-export class UserContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
-  public targetUser: User;
-  public targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
-  public inGuild(): this is UserContextMenuInteracion<'present'>;
-  public inCachedGuild(): this is UserContextMenuInteracion<'cached'>;
-  public inRawGuild(): this is UserContextMenuInteracion<'raw'>;
-}
-
-export class MessageContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
-  public targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
-  public inGuild(): this is MessageContextMenuInteracion<'present'>;
-  public inCachedGuild(): this is MessageContextMenuInteracion<'cached'>;
-  public inRawGuild(): this is MessageContextMenuInteracion<'raw'>;
-}
-
 export class DataResolver extends null {
   private constructor();
   public static resolveBase64(data: Base64Resolvable): string;
@@ -1508,6 +1493,13 @@ export class MessageCollector extends Collector<Snowflake, Message> {
   public dispose(message: Message): Snowflake | null;
 }
 
+export class MessageContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+  public targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
+  public inGuild(): this is MessageContextMenuInteracion<'present'>;
+  public inCachedGuild(): this is MessageContextMenuInteracion<'cached'>;
+  public inRawGuild(): this is MessageContextMenuInteracion<'raw'>;
+}
+
 export class MessageComponentInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
   public readonly channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
@@ -2184,6 +2176,14 @@ export class User extends PartialTextBasedChannel(Base) {
   public fetch(force?: boolean): Promise<User>;
   public fetchFlags(force?: boolean): Promise<UserFlags>;
   public toString(): UserMention;
+}
+
+export class UserContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+  public targetUser: User;
+  public targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
+  public inGuild(): this is UserContextMenuInteracion<'present'>;
+  public inCachedGuild(): this is UserContextMenuInteracion<'cached'>;
+  public inRawGuild(): this is UserContextMenuInteracion<'raw'>;
 }
 
 export class UserFlags extends BitField<UserFlagsString> {
