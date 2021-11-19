@@ -1,0 +1,30 @@
+{
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": false,
+  },
+  "javascript.format.enable": false,
+  "eslint.alwaysShowStatus": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
+  "workbench.editor.highlightModifiedTabs": true,
+  "editor.cursorStyle": "line",
+  "editor.cursorSmoothCaretAnimation": true,
+  "editor.cursorBlinking": "expand",
+  "editor.minimap.enabled": false,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.cursorStyle": "line",
+  "terminal.integrated.cursorWidth": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "files.eol": "\n",
+  "editor.smoothScrolling": true,
+  "eslint.validate": [
+    "typescript",
+  ],
+  "editor.quickSuggestions": {
+    "comments": true,
+  }
+}
