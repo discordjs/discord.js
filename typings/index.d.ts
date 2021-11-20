@@ -5168,7 +5168,7 @@ export interface WebhookFetchMessageOptions {
   threadId?: Snowflake;
 }
 
-export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
+export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 'stickers'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
