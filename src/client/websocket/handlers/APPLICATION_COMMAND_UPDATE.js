@@ -14,6 +14,7 @@ module.exports = (client, { d: data }) => {
    * @event Client#applicationCommandUpdate
    * @param {?ApplicationCommand} oldCommand The command before the update
    * @param {ApplicationCommand} newCommand The command after the update
+   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
    */
   client.emit(Events.APPLICATION_COMMAND_UPDATE, oldCommand, newCommand);
 };

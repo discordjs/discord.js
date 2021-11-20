@@ -14,6 +14,7 @@ module.exports = (client, { d: data }) => {
    * Emitted when a guild application command is deleted.
    * @event Client#applicationCommandDelete
    * @param {ApplicationCommand} command The command which was deleted
+   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
    */
   client.emit(Events.APPLICATION_COMMAND_DELETE, command);
 };
