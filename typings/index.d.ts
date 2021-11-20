@@ -1528,7 +1528,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
-export class MessageContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+export class MessageContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
   public targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
   public inGuild(): this is MessageContextMenuInteracion<'present'>;
   public inCachedGuild(): this is MessageContextMenuInteracion<'cached'>;
