@@ -1217,7 +1217,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isCommand(): this is CommandInteraction<Cached>;
   public isAutocomplete(): this is AutocompleteInteraction<Cached>;
   public isContextMenu(): this is ContextMenuInteraction<Cached>;
-  public isUserContextMenu(): this is UserContextMenuInteracion<Cached>;
+  public isUserContextMenu(): this is UserContextMenuInteraction<Cached>;
   public isMessageContextMenu(): this is MessageContextMenuInteraction<Cached>;
   public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
@@ -2180,12 +2180,12 @@ export class User extends PartialTextBasedChannel(Base) {
   public toString(): UserMention;
 }
 
-export class UserContextMenuInteracion<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+export class UserContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
   public targetUser: User;
   public targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
-  public inGuild(): this is UserContextMenuInteracion<'present'>;
-  public inCachedGuild(): this is UserContextMenuInteracion<'cached'>;
-  public inRawGuild(): this is UserContextMenuInteracion<'raw'>;
+  public inGuild(): this is UserContextMenuInteraction<'present'>;
+  public inCachedGuild(): this is UserContextMenuInteraction<'cached'>;
+  public inRawGuild(): this is UserContextMenuInteraction<'raw'>;
 }
 
 export class UserFlags extends BitField<UserFlagsString> {
