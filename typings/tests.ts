@@ -81,6 +81,7 @@ import {
   Shard,
   ApplicationCommandAutocompleteOption,
   ApplicationCommandNumericOptionData,
+  MessageSelectMenu,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 
@@ -839,6 +840,13 @@ declare const reactionCollector: ReactionCollector;
 reactionCollector.on('dispose', (...args) => {
   assertType<[MessageReaction, User]>(args);
 });
+
+const selectMenuRow = new MessageActionRow<MessageSelectMenu>();
+// @ts-expect-error
+selectMenuRow.addComponents(new MessageButton());
+assertType<MessageSelectMenu[]>(selectMenuRow.components);
+// @ts-expect-error
+selectMenuRow.components = [new MessageButton()];
 
 // Make sure the properties are typed correctly, and that no backwards properties
 // (K -> V and V -> K) exist:

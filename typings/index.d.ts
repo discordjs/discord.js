@@ -1418,21 +1418,15 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public inGuild(): this is Message<true> & this;
 }
 
-export class MessageActionRow extends BaseMessageComponent {
-  public constructor(data?: MessageActionRow | MessageActionRowOptions | APIActionRowComponent);
+export type MessageActionRowComponentType<T> = T | MessageActionRowComponentResolvable[];
+
+export class MessageActionRow<T = MessageActionRowComponent> extends BaseMessageComponent {
+  public constructor(data?: MessageActionRow<T> | MessageActionRowOptions | APIActionRowComponent);
   public type: 'ACTION_ROW';
-  public components: MessageActionRowComponent[];
-  public addComponents(
-    ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
-  ): this;
-  public setComponents(
-    ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
-  ): this;
-  public spliceComponents(
-    index: number,
-    deleteCount: number,
-    ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
-  ): this;
+  public components: T[];
+  public addComponents(...components: MessageActionRowComponentType<T>[]): this;
+  public setComponents(...components: MessageActionRowComponentType<T>[]): this;
+  public spliceComponents(index: number, deleteCount: number, ...components: MessageActionRowComponentType<T>[]): this;
   public toJSON(): APIActionRowComponent;
 }
 
