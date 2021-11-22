@@ -1,3 +1,4 @@
+import type { ChildProcess } from 'child_process';
 import type {
   APIGuildMember,
   APIInteractionGuildMember,
@@ -26,6 +27,7 @@ import {
   Client,
   ClientApplication,
   ClientUser,
+  CloseEvent,
   Collection,
   CommandInteraction,
   CommandInteractionOption,
@@ -81,6 +83,8 @@ import {
   Shard,
   ApplicationCommandAutocompleteOption,
   ApplicationCommandNumericOptionData,
+  WebSocketShard,
+  Collector,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 
@@ -1123,5 +1127,26 @@ client.on('interactionCreate', async interaction => {
 });
 
 declare const shard: Shard;
+
+shard.on('death', process => {
+  assertType<ChildProcess>(process);
+});
+
+declare const webSocketShard: WebSocketShard;
+
+webSocketShard.on('close', event => {
+  assertType<CloseEvent>(event);
+});
+
+declare const collector: Collector<string, Interaction, string[]>;
+
+collector.on('collect', collected => {
+  assertType<Interaction>(collected);
+});
+
+collector.on('dispose', (vals, ...another) => {
+  assertType<Interaction>(vals);
+  assertType<string[]>(another);
+});
 
 assertType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
