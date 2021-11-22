@@ -612,7 +612,7 @@ export { Collection } from '@discordjs/collection';
 export interface CollectorEventTypes<K, V, F extends unknown[] = []> {
   collect: [V, ...F];
   dispose: [V, ...F];
-  end: [collected: Collection<K, V>];
+  end: [collected: Collection<K, V>, reason: string];
 }
 
 export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmitter {

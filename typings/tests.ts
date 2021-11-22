@@ -1140,13 +1140,19 @@ webSocketShard.on('close', event => {
 
 declare const collector: Collector<string, Interaction, string[]>;
 
-collector.on('collect', collected => {
+collector.on('collect', (collected, ...other) => {
   assertType<Interaction>(collected);
+  assertType<string[]>(other);
 });
 
-collector.on('dispose', (vals, ...another) => {
+collector.on('dispose', (vals, ...other) => {
   assertType<Interaction>(vals);
-  assertType<string[]>(another);
+  assertType<string[]>(other);
+});
+
+collector.on('end', (collection, reason) => {
+  assertType<Collection<string, Interaction>>(collection);
+  assertType<string>(reason);
 });
 
 assertType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
