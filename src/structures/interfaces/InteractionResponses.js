@@ -61,6 +61,7 @@ class InteractionResponses {
           flags: options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
         },
       },
+      auth: false,
     });
     this.deferred = true;
 
@@ -101,6 +102,7 @@ class InteractionResponses {
         data,
       },
       files,
+      auth: false,
     });
     this.replied = true;
 
@@ -179,6 +181,7 @@ class InteractionResponses {
       data: {
         type: InteractionResponseTypes.DEFERRED_MESSAGE_UPDATE,
       },
+      auth: false,
     });
     this.deferred = true;
 
@@ -213,6 +216,7 @@ class InteractionResponses {
         data,
       },
       files,
+      auth: false,
     });
     this.replied = true;
 
