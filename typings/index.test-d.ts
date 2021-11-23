@@ -1067,7 +1067,6 @@ collector.on('end', (collection, reason) => {
 });
 
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
-expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
 
 // Test audit logs
 declare const guild: Guild;
