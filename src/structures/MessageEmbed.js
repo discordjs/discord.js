@@ -3,6 +3,8 @@
 const { RangeError } = require('../errors');
 const Util = require('../util/Util');
 
+let deprecationEmittedForSetAuthor = false;
+
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
@@ -346,14 +348,50 @@ class MessageEmbed {
   }
 
   /**
+   * The options to provide for setting an author for a {@link MessageEmbed}.
+   * @typedef {Object} EmbedAuthorData
+   * @property {string} name The name of this author.
+   * @property {string} [url] The URL of this author.
+   * @property {string} [iconURL] The icon URL of this author.
+   */
+
+  // TODO: Remove the deprecated code in the following method and typings.
+  /**
    * Sets the author of this embed.
-   * @param {string} name The name of the author
-   * @param {string} [iconURL] The icon URL of the author
-   * @param {string} [url] The URL of the author
+   * @param {string|EmbedAuthorData|null} options The options to provide for the author.
+   * A string may simply be provided if only the author name is desirable.
+   * Provide `null` to remove the author data.
+   * @param {string} [deprecatedIconURL] The icon URL of this author.
+   * <warn>This parameter is **deprecated**. Use the `options` parameter instead.</warn>
+   * @param {string} [deprecatedURL] The URL of this author.
+   * <warn>This parameter is **deprecated**. Use the `options` parameter instead.</warn>
    * @returns {MessageEmbed}
    */
-  setAuthor(name, iconURL, url) {
-    this.author = { name: Util.verifyString(name, RangeError, 'EMBED_AUTHOR_NAME'), iconURL, url };
+  setAuthor(options, deprecatedIconURL, deprecatedURL) {
+    if (options === null) {
+      this.author = {};
+      return this;
+    }
+
+    if (typeof options === 'string') {
+      if (
+        !deprecationEmittedForSetAuthor &&
+        (typeof deprecatedIconURL !== 'undefined' || typeof deprecatedURL !== 'undefined')
+      ) {
+        process.emitWarning(
+          // eslint-disable-next-line max-len
+          "Passing strings for the URL or the icon's URL for MessageEmbed#setAuthor is deprecated. Pass a sole object instead.",
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForSetAuthor = true;
+      }
+
+      options = { name: options, url: deprecatedURL, iconURL: deprecatedIconURL };
+    }
+
+    const { name, url, iconURL } = options;
+    this.author = { name: Util.verifyString(name, RangeError, 'EMBED_AUTHOR_NAME'), url, iconURL };
     return this;
   }
 
