@@ -1867,6 +1867,7 @@ export class Shard extends EventEmitter {
   public worker: Worker | null;
   public eval(script: string): Promise<unknown>;
   public eval<T>(fn: (client: Client) => T): Promise<T>;
+  public eval<T, P>(fn: (client: Client, context: Serialized<P>) => T, context: P): Promise<T>;
   public fetchClientValue(prop: string): Promise<unknown>;
   public kill(): void;
   public respawn(options?: { delay?: number; timeout?: number }): Promise<ChildProcess>;
