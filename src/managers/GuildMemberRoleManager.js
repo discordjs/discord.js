@@ -44,7 +44,18 @@ class GuildMemberRoleManager extends DataManager {
   get hoist() {
     const hoistedRoles = this.cache.filter(role => role.hoist);
     if (!hoistedRoles.size) return null;
-    return hoistedRoles.reduce((prev, role) => (!prev || role.comparePositionTo(prev) > 0 ? role : prev));
+    return hoistedRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
+  }
+
+  /**
+   * The role of the member used to set their role icon
+   * @type {?Role}
+   * @readonly
+   */
+  get icon() {
+    const iconRoles = this.cache.filter(role => role.icon || role.unicodeEmoji);
+    if (!iconRoles.size) return null;
+    return iconRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
   }
 
   /**
@@ -55,7 +66,7 @@ class GuildMemberRoleManager extends DataManager {
   get color() {
     const coloredRoles = this.cache.filter(role => role.color);
     if (!coloredRoles.size) return null;
-    return coloredRoles.reduce((prev, role) => (!prev || role.comparePositionTo(prev) > 0 ? role : prev));
+    return coloredRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
   }
 
   /**
@@ -102,7 +113,7 @@ class GuildMemberRoleManager extends DataManager {
         resolvedRoles.push(resolvedRole);
       }
 
-      const newRoles = [...new Set(resolvedRoles.concat(...this.cache.values()))];
+      const newRoles = [...new Set(resolvedRoles.concat(...this.cache.keys()))];
       return this.set(newRoles, reason);
     } else {
       roleOrRoles = this.guild.roles.resolveId(roleOrRoles);

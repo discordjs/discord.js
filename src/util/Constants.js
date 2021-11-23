@@ -1,9 +1,9 @@
 'use strict';
 
 const Package = (exports.Package = require('../../package.json'));
-const { Error, RangeError } = require('../errors');
+const { Error, RangeError, TypeError } = require('../errors');
 
-exports.UserAgent = `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
+exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
   1000: 'WS_CLOSE_REQUESTED',
@@ -16,9 +16,10 @@ exports.WSCodes = {
 
 const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 
-const AllowedImageSizes = Array.from({ length: 9 }, (e, i) => 2 ** (i + 4));
+const AllowedImageSizes = [16, 32, 56, 64, 96, 128, 256, 300, 512, 600, 1024, 2048, 4096];
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
+  if (!['undefined', 'number'].includes(typeof size)) throw new TypeError('INVALID_TYPE', 'size', 'number');
   if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
   return `${root}.${format}${size ? `?size=${size}` : ''}`;
@@ -27,15 +28,15 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
 /**
  * Options for Image URLs.
  * @typedef {StaticImageURLOptions} ImageURLOptions
- * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
- * animated avatars; the default is false
+ * @property {boolean} [dynamic=false] If true, the format will dynamically change to `gif` for animated avatars.
  */
 
 /**
  * Options for static Image URLs.
  * @typedef {Object} StaticImageURLOptions
  * @property {string} [format='webp'] One of `webp`, `png`, `jpg`, `jpeg`.
- * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
+ * @property {number} [size] One of `16`, `32`, `56`, `64`, `96`, `128`, `256`, `300`, `512`, `600`, `1024`, `2048`,
+ * `4096`
  */
 
 // https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints
@@ -45,34 +46,36 @@ exports.Endpoints = {
       Emoji: (emojiId, format = 'webp') => `${root}/emojis/${emojiId}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
-      Avatar: (userId, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+      Avatar: (userId, hash, format, size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/avatars/${userId}/${hash}`, { format, size });
       },
-      Banner: (id, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+      GuildMemberAvatar: (guildId, memberId, hash, format = 'webp', size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
+        return makeImageUrl(`${root}/guilds/${guildId}/users/${memberId}/avatars/${hash}`, { format, size });
+      },
+      Banner: (id, hash, format, size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/banners/${id}/${hash}`, { format, size });
       },
-      Icon: (guildId, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
+      Icon: (guildId, hash, format, size, dynamic = false) => {
+        if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/icons/${guildId}/${hash}`, { format, size });
       },
-      AppIcon: (appId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-icons/${appId}/${hash}`, { size, format }),
-      AppAsset: (appId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/app-assets/${appId}/${hash}`, { size, format }),
-      StickerPackBanner: (bannerId, format = 'webp', size) =>
+      AppIcon: (appId, hash, options) => makeImageUrl(`${root}/app-icons/${appId}/${hash}`, options),
+      AppAsset: (appId, hash, options) => makeImageUrl(`${root}/app-assets/${appId}/${hash}`, options),
+      StickerPackBanner: (bannerId, format, size) =>
         makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerId}`, { size, format }),
-      GDMIcon: (channelId, hash, format = 'webp', size) =>
+      GDMIcon: (channelId, hash, format, size) =>
         makeImageUrl(`${root}/channel-icons/${channelId}/${hash}`, { size, format }),
-      Splash: (guildId, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/splashes/${guildId}/${hash}`, { size, format }),
-      DiscoverySplash: (guildId, hash, format = 'webp', size) =>
+      Splash: (guildId, hash, format, size) => makeImageUrl(`${root}/splashes/${guildId}/${hash}`, { size, format }),
+      DiscoverySplash: (guildId, hash, format, size) =>
         makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
-      TeamIcon: (teamId, hash, { format = 'webp', size } = {}) =>
-        makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, { size, format }),
+      TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
         `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
+      RoleIcon: (roleId, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,
@@ -122,9 +125,20 @@ exports.Opcodes = {
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
   INVALID_REQUEST_WARNING: 'invalidRequestWarning',
+  API_RESPONSE: 'apiResponse',
+  API_REQUEST: 'apiRequest',
   CLIENT_READY: 'ready',
+  /**
+   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
+   */
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
+  /**
+   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
+   */
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
+  /**
+   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
+   */
   APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
@@ -212,12 +226,12 @@ exports.ShardEvents = {
 exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION']);
 
 /**
- * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
+ * The type of a WebSocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED
- * * APPLICATION_COMMAND_CREATE
- * * APPLICATION_COMMAND_DELETE
- * * APPLICATION_COMMAND_UPDATE
+ * * APPLICATION_COMMAND_CREATE (deprecated)
+ * * APPLICATION_COMMAND_DELETE (deprecated)
+ * * APPLICATION_COMMAND_UPDATE (deprecated)
  * * GUILD_CREATE
  * * GUILD_DELETE
  * * GUILD_UPDATE
@@ -351,6 +365,16 @@ exports.InviteScopes = [
   'gdm.join',
   'webhook.incoming',
 ];
+
+// TODO: change Integration#expireBehavior to this and clean up Integration
+/**
+ * The behavior of expiring subscribers for Integrations. This can be:
+ * * REMOVE_ROLE
+ * * KICK
+ * @typedef {string} IntegrationExpireBehavior
+ * @see {@link https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors}
+ */
+exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
 
 /**
  * The type of a message, e.g. `DEFAULT`. Here are the available types:
@@ -689,6 +713,7 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * PARAMETER_EARLIER_THAN_CREATION
  * * GUILD_NOT_AVAILABLE_IN_LOCATION
  * * GUILD_MONETIZATION_REQUIRED
+ * * INSUFFICIENT_BOOSTS
  * * TWO_FACTOR_REQUIRED
  * * NO_USERS_WITH_DISCORDTAG_EXIST
  * * REACTION_BLOCKED
@@ -822,6 +847,7 @@ exports.APIErrors = {
   PARAMETER_EARLIER_THAN_CREATION: 50085,
   GUILD_NOT_AVAILABLE_IN_LOCATION: 50095,
   GUILD_MONETIZATION_REQUIRED: 50097,
+  INSUFFICIENT_BOOSTS: 50101,
   TWO_FACTOR_REQUIRED: 60003,
   NO_USERS_WITH_DISCORDTAG_EXIST: 80004,
   REACTION_BLOCKED: 90001,
@@ -951,10 +977,17 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * * PING
  * * APPLICATION_COMMAND
  * * MESSAGE_COMPONENT
+ * * APPLICATION_COMMAND_AUTOCOMPLETE
  * @typedef {string} InteractionType
  * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-type}
  */
-exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND', 'MESSAGE_COMPONENT']);
+exports.InteractionTypes = createEnum([
+  null,
+  'PING',
+  'APPLICATION_COMMAND',
+  'MESSAGE_COMPONENT',
+  'APPLICATION_COMMAND_AUTOCOMPLETE',
+]);
 
 /**
  * The type of an interaction response:
@@ -963,6 +996,7 @@ exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND', 'MES
  * * DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
  * * DEFERRED_MESSAGE_UPDATE
  * * UPDATE_MESSAGE
+ * * APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
  * @typedef {string} InteractionResponseType
  * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-response-object-interaction-callback-type}
  */
@@ -975,6 +1009,7 @@ exports.InteractionResponseTypes = createEnum([
   'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE',
   'DEFERRED_MESSAGE_UPDATE',
   'UPDATE_MESSAGE',
+  'APPLICATION_COMMAND_AUTOCOMPLETE_RESULT',
 ]);
 /* eslint-enable max-len */
 
@@ -1087,5 +1122,5 @@ function createEnum(keys) {
  * @property {StickerType} StickerTypes The value set for a sticker's type.
  * @property {VerificationLevel} VerificationLevels The value set for the verification levels for a guild.
  * @property {WebhookType} WebhookTypes The value set for a webhook's type.
- * @property {WSEventType} WSEvents The type of a websocket message event.
+ * @property {WSEventType} WSEvents The type of a WebSocket message event.
  */

@@ -24,9 +24,9 @@ class SystemChannelFlags extends BitField {}
  */
 
 /**
- * Data that can be resolved to give a sytem channel flag bitfield. This can be:
+ * Data that can be resolved to give a system channel flag bitfield. This can be:
  * * A string (see {@link SystemChannelFlags.FLAGS})
- * * A sytem channel flag
+ * * A system channel flag
  * * An instance of SystemChannelFlags
  * * An Array of SystemChannelFlagsResolvable
  * @typedef {string|number|SystemChannelFlags|SystemChannelFlagsResolvable[]} SystemChannelFlagsResolvable
@@ -37,6 +37,7 @@ class SystemChannelFlags extends BitField {}
  * * `SUPPRESS_JOIN_NOTIFICATIONS` (Suppress member join notifications)
  * * `SUPPRESS_PREMIUM_SUBSCRIPTIONS` (Suppress server boost notifications)
  * * `SUPPRESS_GUILD_REMINDER_NOTIFICATIONS` (Suppress server setup tips)
+ * * `SUPPRESS_JOIN_NOTIFICATION_REPLIES` (Hide member join sticker reply buttons)
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags}
  */
@@ -44,6 +45,7 @@ SystemChannelFlags.FLAGS = {
   SUPPRESS_JOIN_NOTIFICATIONS: 1 << 0,
   SUPPRESS_PREMIUM_SUBSCRIPTIONS: 1 << 1,
   SUPPRESS_GUILD_REMINDER_NOTIFICATIONS: 1 << 2,
+  SUPPRESS_JOIN_NOTIFICATION_REPLIES: 1 << 3,
 };
 
 module.exports = SystemChannelFlags;

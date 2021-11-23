@@ -10,11 +10,6 @@ const Permissions = require('../util/Permissions');
  * @extends {BaseGuildEmoji}
  */
 class GuildEmoji extends BaseGuildEmoji {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIEmoji} data The data for the guild emoji
-   * @param {Guild} guild The guild the guild emoji is part of
-   */
   constructor(client, data, guild) {
     super(client, data, guild);
 
@@ -31,6 +26,8 @@ class GuildEmoji extends BaseGuildEmoji {
      * @private
      */
     Object.defineProperty(this, '_roles', { value: [], writable: true });
+
+    this._patch(data);
   }
 
   /**

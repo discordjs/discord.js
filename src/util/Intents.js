@@ -24,7 +24,7 @@ class Intents extends BitField {}
  */
 
 /**
- * Numeric websocket intents. All available properties:
+ * Numeric WebSocket intents. All available properties:
  * * `GUILDS`
  * * `GUILD_MEMBERS`
  * * `GUILD_BANS`

@@ -12,6 +12,7 @@ const Role = require('../structures/Role');
 const {
   ChannelTypes,
   Events,
+  OverwriteTypes,
   VerificationLevels,
   DefaultMessageNotificationLevels,
   ExplicitContentFilterLevels,
@@ -73,7 +74,7 @@ class GuildManager extends CachedManager {
    * Partial overwrite data.
    * @typedef {Object} PartialOverwriteData
    * @property {Snowflake|number} id The id of the {@link Role} or {@link User} this overwrite belongs to
-   * @property {string} [type] The type of this overwrite
+   * @property {OverwriteType} [type] The type of this overwrite
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
    */
@@ -84,15 +85,16 @@ class GuildManager extends CachedManager {
    * @property {Snowflake|number} [id] The channel's id, used to set its parent,
    * this is a placeholder and will be replaced by the API after consumption
    * @property {Snowflake|number} [parentId] The parent id for this channel
-   * @property {ChannelType} [type] The type of the channel
+   * @property {ChannelType|number} [type] The type of the channel
    * @property {string} name The name of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
+   * @property {?string} [rtcRegion] The RTC region of the channel
    * @property {PartialOverwriteData[]} [permissionOverwrites]
    * Overwrites of the channel
-   * @property {number} [rateLimitPerUser] The rate limit per user of the channel in seconds
+   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) of the channel in seconds
    */
 
   /**
@@ -146,7 +148,7 @@ class GuildManager extends CachedManager {
    * @property {DefaultMessageNotificationLevel|number} [defaultMessageNotifications] The default message notifications
    * for the guild
    * @property {ExplicitContentFilterLevel} [explicitContentFilter] The explicit content filter level for the guild
-   * @property {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @property {?(BufferResolvable|Base64Resolvable)} [icon=null] The icon for the guild
    * @property {PartialRoleData[]} [roles=[]] The roles for this guild,
    * the first element of this array is used to change properties of the guild's everyone role.
    * @property {Snowflake|number} [systemChannelId] The system channel's id
@@ -187,22 +189,32 @@ class GuildManager extends CachedManager {
       explicitContentFilter = ExplicitContentFilterLevels[explicitContentFilter];
     }
     for (const channel of channels) {
-      if (channel.type) channel.type = ChannelTypes[channel.type.toUpperCase()];
+      channel.type &&= typeof channel.type === 'number' ? channel.type : ChannelTypes[channel.type];
       channel.parent_id = channel.parentId;
       delete channel.parentId;
+      channel.user_limit = channel.userLimit;
+      delete channel.userLimit;
+      channel.rate_limit_per_user = channel.rateLimitPerUser;
+      delete channel.rateLimitPerUser;
+      channel.rtc_region = channel.rtcRegion;
+      delete channel.rtcRegion;
+
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
-        if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow).toString();
-        if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny).toString();
+        if (typeof overwrite.type === 'string') {
+          overwrite.type = OverwriteTypes[overwrite.type];
+        }
+        overwrite.allow &&= Permissions.resolve(overwrite.allow).toString();
+        overwrite.deny &&= Permissions.resolve(overwrite.deny).toString();
       }
       channel.permission_overwrites = channel.permissionOverwrites;
       delete channel.permissionOverwrites;
     }
     for (const role of roles) {
-      if (role.color) role.color = resolveColor(role.color);
-      if (role.permissions) role.permissions = Permissions.resolve(role.permissions).toString();
+      role.color &&= resolveColor(role.color);
+      role.permissions &&= Permissions.resolve(role.permissions).toString();
     }
-    if (systemChannelFlags) systemChannelFlags = SystemChannelFlags.resolve(systemChannelFlags);
+    systemChannelFlags &&= SystemChannelFlags.resolve(systemChannelFlags);
 
     const data = await this.client.api.guilds.post({
       data: {

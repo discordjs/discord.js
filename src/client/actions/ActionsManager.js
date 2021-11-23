@@ -1,16 +1,15 @@
 'use strict';
 
-const fs = require('fs');
+const ModuleImporter = require('../../util/ModuleImporter');
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    const files = fs.readdirSync(__dirname);
+    const modules = ModuleImporter.import('./client/actions', ['Action.js', 'ActionsManager.js']);
 
-    for (const file of files) {
-      if (['Action.js', 'ActionsManager.js'].includes(file)) continue;
-      this.register(require(`./${file}`));
+    for (const module of modules) {
+      this.register(module);
     }
   }
 

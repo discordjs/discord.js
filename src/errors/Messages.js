@@ -13,7 +13,7 @@ const Messages = {
 
   WS_CLOSE_REQUESTED: 'WebSocket closed due to user request.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
-  WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
+  WS_NOT_OPEN: (data = 'data') => `WebSocket not open to send ${data}`,
   MANAGER_DESTROYED: 'Manager was destroyed.',
 
   BITFIELD_INVALID: bit => `Invalid bitfield flag or number: ${bit}.`,
@@ -47,7 +47,7 @@ const Messages = {
   EMBED_AUTHOR_NAME: 'MessageEmbed author name must be a string.',
 
   BUTTON_LABEL: 'MessageButton label must be a string',
-  BUTTON_URL: 'MessageButton url must be a string',
+  BUTTON_URL: 'MessageButton URL must be a string',
   BUTTON_CUSTOM_ID: 'MessageButton customId must be a string',
 
   SELECT_MENU_CUSTOM_ID: 'MessageSelectMenu customId must be a string',
@@ -60,11 +60,11 @@ const Messages = {
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
-  USER_NO_DMCHANNEL: 'No DM Channel exists!',
+  USER_BANNER_NOT_FETCHED: "You must fetch this user's banner before trying to generate its URL!",
+  USER_NO_DM_CHANNEL: 'No DM Channel exists!',
 
   VOICE_NOT_STAGE_CHANNEL: 'You are only allowed to do this in stage channels.',
 
-  VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
   VOICE_STATE_NOT_OWN:
     'You cannot self-deafen/mute/request to speak on VoiceStates that do not belong to the ClientUser.',
   VOICE_STATE_INVALID_TYPE: name => `${name} must be a boolean.`,
@@ -92,6 +92,7 @@ const Messages = {
   GUILD_OWNED: 'Guild is owned by the client.',
   GUILD_MEMBERS_TIMEOUT: "Members didn't arrive in time.",
   GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
+  CHANNEL_NOT_CACHED: 'Could not find the channel where this message came from in the cache!',
   STAGE_CHANNEL_RESOLVE: 'Could not resolve channel to a stage channel.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
@@ -142,6 +143,7 @@ const Messages = {
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No subcommand specified for interaction.',
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No subcommand group specified for interaction.',
+  AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION: 'No focused option for autocomplete interaction.',
 
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 

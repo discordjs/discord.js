@@ -1,8 +1,8 @@
 'use strict';
 
-const EventEmitter = require('events');
-const fs = require('fs');
-const path = require('path');
+const EventEmitter = require('node:events');
+const fs = require('node:fs');
+const path = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const Shard = require('./Shard');
 const { Error, TypeError, RangeError } = require('../errors');
@@ -166,7 +166,7 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Option used to spawn multiple shards.
+   * Options used to spawn multiple shards.
    * @typedef {Object} MultipleShardSpawnOptions
    * @property {number|string} [amount=this.totalShards] Number of shards to spawn
    * @property {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)

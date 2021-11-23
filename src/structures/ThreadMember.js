@@ -8,10 +8,6 @@ const ThreadMemberFlags = require('../util/ThreadMemberFlags');
  * @extends {Base}
  */
 class ThreadMember extends Base {
-  /**
-   * @param {ThreadChannel} thread The thread that this member is associated with
-   * @param {APIThreadMember} data The data for the thread member
-   */
   constructor(thread, data) {
     super(thread.client);
 
@@ -37,13 +33,15 @@ class ThreadMember extends Base {
   }
 
   _patch(data) {
-    this.joinedTimestamp = new Date(data.join_timestamp).getTime();
+    if ('join_timestamp' in data) this.joinedTimestamp = new Date(data.join_timestamp).getTime();
 
-    /**
-     * The flags for this thread member
-     * @type {ThreadMemberFlags}
-     */
-    this.flags = new ThreadMemberFlags(data.flags).freeze();
+    if ('flags' in data) {
+      /**
+       * The flags for this thread member
+       * @type {ThreadMemberFlags}
+       */
+      this.flags = new ThreadMemberFlags(data.flags).freeze();
+    }
   }
 
   /**
@@ -94,8 +92,3 @@ class ThreadMember extends Base {
 }
 
 module.exports = ThreadMember;
-
-/**
- * @external APIThreadMember
- * @see {@link https://discord.com/developers/docs/resources/channel#thread-member-object}
- */

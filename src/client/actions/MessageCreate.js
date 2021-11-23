@@ -10,6 +10,8 @@ class MessageCreateAction extends Action {
     const client = this.client;
     const channel = this.getChannel(data);
     if (channel) {
+      if (!channel.isText()) return {};
+
       const existing = channel.messages.cache.get(data.id);
       if (existing) return { message: existing };
       const message = channel.messages._add(data);
@@ -26,7 +28,7 @@ class MessageCreateAction extends Action {
        * Emitted whenever a message is created.
        * @event Client#message
        * @param {Message} message The created message
-       * @deprecated Use {@link Client#messageCreate} instead
+       * @deprecated Use {@link Client#event:messageCreate} instead
        */
       if (client.emit('message', message) && !deprecationEmitted) {
         deprecationEmitted = true;

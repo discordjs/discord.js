@@ -54,14 +54,14 @@ class ApplicationCommandManager extends CachedManager {
    */
 
   /**
-   * Options used to fetch data from discord
+   * Options used to fetch data from Discord
    * @typedef {Object} BaseFetchOptions
    * @property {boolean} [cache=true] Whether to cache the fetched data if it wasn't already
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**
-   * Options used to fetch Application Commands from discord
+   * Options used to fetch Application Commands from Discord
    * @typedef {BaseFetchOptions} FetchApplicationCommandOptions
    * @property {Snowflake} [guildId] The guild's id to fetch commands for, for when the guild is not cached
    */
@@ -100,7 +100,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Creates an application command.
-   * @param {ApplicationCommandData} command The command
+   * @param {ApplicationCommandData|APIApplicationCommand} command The command
    * @param {Snowflake} [guildId] The guild's id to create this command in,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}
@@ -117,12 +117,12 @@ class ApplicationCommandManager extends CachedManager {
     const data = await this.commandPath({ guildId }).post({
       data: this.constructor.transformCommand(command),
     });
-    return this._add(data, !guildId, guildId);
+    return this._add(data, true, guildId);
   }
 
   /**
    * Sets all the commands for this application or guild.
-   * @param {ApplicationCommandData[]} commands The commands
+   * @param {ApplicationCommandData[]|APIApplicationCommand[]} commands The commands
    * @param {Snowflake} [guildId] The guild's id to create the commands in,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<Collection<Snowflake, ApplicationCommand>>}
@@ -146,16 +146,13 @@ class ApplicationCommandManager extends CachedManager {
     const data = await this.commandPath({ guildId }).put({
       data: commands.map(c => this.constructor.transformCommand(c)),
     });
-    return data.reduce(
-      (coll, command) => coll.set(command.id, this._add(command, !guildId, guildId)),
-      new Collection(),
-    );
+    return data.reduce((coll, command) => coll.set(command.id, this._add(command, true, guildId)), new Collection());
   }
 
   /**
    * Edits an application command.
    * @param {ApplicationCommandResolvable} command The command to edit
-   * @param {ApplicationCommandData} data The data to update the command with
+   * @param {ApplicationCommandData|APIApplicationCommand} data The data to update the command with
    * @param {Snowflake} [guildId] The guild's id where the command registered,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}
@@ -171,8 +168,10 @@ class ApplicationCommandManager extends CachedManager {
     const id = this.resolveId(command);
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    const patched = await this.commandPath({ id, guildId }).patch({ data: this.constructor.transformCommand(data) });
-    return this._add(patched, !guildId, guildId);
+    const patched = await this.commandPath({ id, guildId }).patch({
+      data: this.constructor.transformCommand(data),
+    });
+    return this._add(patched, true, guildId);
   }
 
   /**
@@ -194,13 +193,13 @@ class ApplicationCommandManager extends CachedManager {
     await this.commandPath({ id, guildId }).delete();
 
     const cached = this.cache.get(id);
-    if (!guildId) this.cache.delete(id);
+    this.cache.delete(id);
     return cached ?? null;
   }
 
   /**
    * Transforms an {@link ApplicationCommandData} object into something that can be used with the API.
-   * @param {ApplicationCommandData} command The command to transform
+   * @param {ApplicationCommandData|APIApplicationCommand} command The command to transform
    * @returns {APIApplicationCommand}
    * @private
    */
@@ -210,7 +209,7 @@ class ApplicationCommandManager extends CachedManager {
       description: command.description,
       type: typeof command.type === 'number' ? command.type : ApplicationCommandTypes[command.type],
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
-      default_permission: command.defaultPermission,
+      default_permission: command.defaultPermission ?? command.default_permission,
     };
   }
 }

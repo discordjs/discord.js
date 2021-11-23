@@ -13,12 +13,6 @@ const Permissions = require('../util/Permissions');
  * @implements {TextBasedChannel}
  */
 class ThreadChannel extends Channel {
-  /**
-   * @param {Guild} guild The guild the thread channel is part of
-   * @param {APIChannel} data The data for the thread channel
-   * @param {Client} [client] A safety parameter for the client that instantiated this
-   * @param {boolean} [fromInteraction=false] Whether the data was from an interaction (partial)
-   */
   constructor(guild, data, client, fromInteraction = false) {
     super(guild?.client ?? client, data, false);
 
@@ -51,11 +45,13 @@ class ThreadChannel extends Channel {
   _patch(data, partial = false) {
     super._patch(data);
 
-    /**
-     * The name of the thread
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the thread
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
     if ('guild_id' in data) {
       this.guildId = data.guild_id;
@@ -144,7 +140,7 @@ class ThreadChannel extends Channel {
 
     if ('rate_limit_per_user' in data || !partial) {
       /**
-       * The ratelimit per user for this thread (in seconds)
+       * The rate limit per user (slowmode) for this thread in seconds
        * @type {?number}
        */
       this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
@@ -231,16 +227,17 @@ class ThreadChannel extends Channel {
    * Gets the overall set of permissions for a member or role in this thread's parent channel, taking overwrites into
    * account.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
+   * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
    * @returns {?Readonly<Permissions>}
    */
-  permissionsFor(memberOrRole) {
-    return this.parent?.permissionsFor(memberOrRole) ?? null;
+  permissionsFor(memberOrRole, checkAdmin) {
+    return this.parent?.permissionsFor(memberOrRole, checkAdmin) ?? null;
   }
 
   /**
    * Fetches the owner of this thread. If the thread member object isn't needed,
    * use {@link ThreadChannel#ownerId} instead.
-   * @param {FetchOwnerOptions} [options] The options for fetching the member
+   * @param {BaseFetchOptions} [options] The options for fetching the member
    * @returns {Promise<?ThreadMember>}
    */
   async fetchOwner({ cache = true, force = false } = {}) {
@@ -272,7 +269,7 @@ class ThreadChannel extends Channel {
    * @property {boolean} [archived] Whether the thread is archived
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time (in minutes) after which the thread
    * should automatically archive in case of no recent activity
-   * @property {number} [rateLimitPerUser] The ratelimit per user for the thread in seconds
+   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
    * <info>Can only be edited on `GUILD_PRIVATE_THREAD`</info>
@@ -391,9 +388,9 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Sets the rate limit per user for this thread.
-   * @param {number} rateLimitPerUser The new ratelimit in seconds
-   * @param {string} [reason] Reason for changing the thread's ratelimits
+   * Sets the rate limit per user (slowmode) for this thread.
+   * @param {number} rateLimitPerUser The new rate limit in seconds
+   * @param {string} [reason] Reason for changing the thread's rate limit
    * @returns {Promise<ThreadChannel>}
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {
@@ -415,7 +412,9 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get editable() {
-    return (this.ownerId === this.client.user.id && (this.type !== 'private_thread' || this.joined)) || this.manageable;
+    return (
+      (this.ownerId === this.client.user.id && (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined)) || this.manageable
+    );
   }
 
   /**
@@ -444,23 +443,28 @@ class ThreadChannel extends Channel {
   }
 
   /**
+   * Whether the thread is viewable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get viewable() {
+    if (this.client.user.id === this.guild.ownerId) return true;
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    return permissions.has(Permissions.FLAGS.VIEW_CHANNEL, false);
+  }
+
+  /**
    * Whether the client user can send messages in this thread
    * @type {boolean}
    * @readonly
    */
   get sendable() {
     return (
-      !this.archived &&
-      (this.type !== 'private_thread' || this.joined || this.manageable) &&
-      this.permissionsFor(this.client.user)?.any(
-        [
-          Permissions.FLAGS.SEND_MESSAGES,
-          this.type === 'GUILD_PRIVATE_THREAD'
-            ? Permissions.FLAGS.USE_PRIVATE_THREADS
-            : Permissions.FLAGS.USE_PUBLIC_THREADS,
-        ],
-        false,
-      )
+      (!(this.archived && this.locked && !this.manageable) &&
+        (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined || this.manageable) &&
+        this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS, false)) ??
+      false
     );
   }
 

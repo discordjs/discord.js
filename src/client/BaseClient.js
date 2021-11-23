@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('events');
+const EventEmitter = require('node:events');
 const RESTManager = require('../rest/RESTManager');
 const Options = require('../util/Options');
 const Util = require('../util/Util');
@@ -73,3 +73,9 @@ class BaseClient extends EventEmitter {
 }
 
 module.exports = BaseClient;
+
+/**
+ * Emitted for general debugging information.
+ * @event BaseClient#debug
+ * @param {string} info The debug information
+ */

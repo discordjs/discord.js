@@ -7,10 +7,6 @@ const { Error, TypeError } = require('../errors');
  * Represents the voice state for a Guild Member.
  */
 class VoiceState extends Base {
-  /**
-   * @param {Guild} guild The guild the voice state is part of
-   * @param {APIVoiceState} data The data for the voice state
-   */
   constructor(guild, data) {
     super(guild.client);
     /**
@@ -27,58 +23,106 @@ class VoiceState extends Base {
   }
 
   _patch(data) {
-    /**
-     * Whether this member is deafened server-wide
-     * @type {?boolean}
-     */
-    this.serverDeaf = data.deaf ?? null;
-    /**
-     * Whether this member is muted server-wide
-     * @type {?boolean}
-     */
-    this.serverMute = data.mute ?? null;
-    /**
-     * Whether this member is self-deafened
-     * @type {?boolean}
-     */
-    this.selfDeaf = data.self_deaf ?? null;
-    /**
-     * Whether this member is self-muted
-     * @type {?boolean}
-     */
-    this.selfMute = data.self_mute ?? null;
-    /**
-     * Whether this member's camera is enabled
-     * @type {?boolean}
-     */
-    this.selfVideo = data.self_video ?? null;
-    /**
-     * The session id for this member's connection
-     * @type {?string}
-     */
-    this.sessionId = data.session_id ?? null;
-    /**
-     * Whether this member is streaming using "Screen Share"
-     * @type {boolean}
-     */
-    this.streaming = data.self_stream ?? false;
-    /**
-     * The {@link VoiceChannel} or {@link StageChannel} id the member is in
-     * @type {?Snowflake}
-     */
-    this.channelId = data.channel_id ?? null;
-    /**
-     * Whether this member is suppressed from speaking. This property is specific to stage channels only.
-     * @type {boolean}
-     */
-    this.suppress = data.suppress;
-    /**
-     * The time at which the member requested to speak. This property is specific to stage channels only.
-     * @type {?number}
-     */
-    this.requestToSpeakTimestamp = data.request_to_speak_timestamp
-      ? new Date(data.request_to_speak_timestamp).getTime()
-      : null;
+    if ('deaf' in data) {
+      /**
+       * Whether this member is deafened server-wide
+       * @type {?boolean}
+       */
+      this.serverDeaf = data.deaf;
+    } else {
+      this.serverDeaf ??= null;
+    }
+
+    if ('mute' in data) {
+      /**
+       * Whether this member is muted server-wide
+       * @type {?boolean}
+       */
+      this.serverMute = data.mute;
+    } else {
+      this.serverMute ??= null;
+    }
+
+    if ('self_deaf' in data) {
+      /**
+       * Whether this member is self-deafened
+       * @type {?boolean}
+       */
+      this.selfDeaf = data.self_deaf;
+    } else {
+      this.selfDeaf ??= null;
+    }
+
+    if ('self_mute' in data) {
+      /**
+       * Whether this member is self-muted
+       * @type {?boolean}
+       */
+      this.selfMute = data.self_mute;
+    } else {
+      this.selfMute ??= null;
+    }
+
+    if ('self_video' in data) {
+      /**
+       * Whether this member's camera is enabled
+       * @type {?boolean}
+       */
+      this.selfVideo = data.self_video;
+    } else {
+      this.selfVideo ??= null;
+    }
+
+    if ('session_id' in data) {
+      /**
+       * The session id for this member's connection
+       * @type {?string}
+       */
+      this.sessionId = data.session_id;
+    } else {
+      this.sessionId ??= null;
+    }
+
+    // The self_stream is property is omitted if false, check for another property
+    // here to avoid incorrectly clearing this when partial data is specified
+    if ('self_video' in data) {
+      /**
+       * Whether this member is streaming using "Screen Share"
+       * @type {boolean}
+       */
+      this.streaming = data.self_stream ?? false;
+    } else {
+      this.streaming ??= null;
+    }
+
+    if ('channel_id' in data) {
+      /**
+       * The {@link VoiceChannel} or {@link StageChannel} id the member is in
+       * @type {?Snowflake}
+       */
+      this.channelId = data.channel_id;
+    } else {
+      this.channelId ??= null;
+    }
+
+    if ('suppress' in data) {
+      /**
+       * Whether this member is suppressed from speaking. This property is specific to stage channels only.
+       * @type {boolean}
+       */
+      this.suppress = data.suppress;
+    }
+
+    if ('request_to_speak_timestamp' in data) {
+      /**
+       * The time at which the member requested to speak. This property is specific to stage channels only.
+       * @type {?number}
+       */
+      this.requestToSpeakTimestamp = new Date(data.request_to_speak_timestamp).getTime();
+    } else {
+      this.requestToSpeakTimestamp ??= null;
+    }
+
     return this;
   }
 
@@ -125,7 +169,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setMute(mute = true, reason) {
-    return this.member?.edit({ mute }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.guild.members.edit(this.id, { mute }, reason);
   }
 
   /**
@@ -135,7 +179,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setDeaf(deaf = true, reason) {
-    return this.member?.edit({ deaf }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.guild.members.edit(this.id, { deaf }, reason);
   }
 
   /**
@@ -149,13 +193,13 @@ class VoiceState extends Base {
 
   /**
    * Moves the member to a different channel, or disconnects them from the one they're in.
-   * @param {VoiceChannelResolvable|null} channel Channel to move the member to, or `null` if you want to disconnect
-   * them from voice.
+   * @param {GuildVoiceChannelResolvable|null} channel Channel to move the member to, or `null` if you want to
+   * disconnect them from voice.
    * @param {string} [reason] Reason for moving member to another channel or disconnecting
    * @returns {Promise<GuildMember>}
    */
   setChannel(channel, reason) {
-    return this.member?.edit({ channel }, reason) ?? Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.guild.members.edit(this.id, { channel }, reason);
   }
 
   /**
@@ -229,8 +273,3 @@ class VoiceState extends Base {
 }
 
 module.exports = VoiceState;
-
-/**
- * @external APIVoiceState
- * @see {@link https://discord.com/developers/docs/resources/voice#voice-state-object}
- */

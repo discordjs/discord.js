@@ -5,7 +5,7 @@ const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const RateLimitError = require('./RateLimitError');
 const {
-  Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING },
+  Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING, API_RESPONSE, API_REQUEST },
 } = require('../util/Constants');
 const Util = require('../util/Util');
 
@@ -124,7 +124,7 @@ class RequestHandler {
       if (this.manager.client.listenerCount(RATE_LIMIT)) {
         /**
          * Emitted when the client hits a rate limit while making a request
-         * @event Client#rateLimit
+         * @event BaseClient#rateLimit
          * @param {RateLimitData} rateLimitData Object containing the rate limit info
          */
         this.manager.client.emit(RATE_LIMIT, {
@@ -162,6 +162,34 @@ class RequestHandler {
     }
     this.manager.globalRemaining--;
 
+    /**
+     * Represents a request that will or has been made to the Discord API
+     * @typedef {Object} APIRequest
+     * @property {HTTPMethod} method The HTTP method used in this request
+     * @property {string} path The full path used to make the request
+     * @property {string} route The API route identifying the rate limit for this request
+     * @property {Object} options Additional options for this request
+     * @property {number} retries The number of times this request has been attempted
+     */
+
+    if (this.manager.client.listenerCount(API_REQUEST)) {
+      /**
+       * Emitted before every API request.
+       * This event can emit several times for the same request, e.g. when hitting a rate limit.
+       * <info>This is an informational event that is emitted quite frequently,
+       * it is highly recommended to check `request.path` to filter the data.</info>
+       * @event BaseClient#apiRequest
+       * @param {APIRequest} request The request that is about to be sent
+       */
+      this.manager.client.emit(API_REQUEST, {
+        method: request.method,
+        path: request.path,
+        route: request.route,
+        options: request.options,
+        retries: request.retries,
+      });
+    }
+
     // Perform the request
     let res;
     try {
@@ -176,8 +204,31 @@ class RequestHandler {
       return this.execute(request);
     }
 
+    if (this.manager.client.listenerCount(API_RESPONSE)) {
+      /**
+       * Emitted after every API request has received a response.
+       * This event does not necessarily correlate to completion of the request, e.g. when hitting a rate limit.
+       * <info>This is an informational event that is emitted quite frequently,
+       * it is highly recommended to check `request.path` to filter the data.</info>
+       * @event BaseClient#apiResponse
+       * @param {APIRequest} request The request that triggered this response
+       * @param {Response} response The response received from the Discord API
+       */
+      this.manager.client.emit(
+        API_RESPONSE,
+        {
+          method: request.method,
+          path: request.path,
+          route: request.route,
+          options: request.options,
+          retries: request.retries,
+        },
+        res.clone(),
+      );
+    }
+
     let sublimitTimeout;
-    if (res && res.headers) {
+    if (res.headers) {
       const serverDate = res.headers.get('date');
       const limit = res.headers.get('x-ratelimit-limit');
       const remaining = res.headers.get('x-ratelimit-remaining');
@@ -197,7 +248,7 @@ class RequestHandler {
       let retryAfter = res.headers.get('retry-after');
       retryAfter = retryAfter ? Number(retryAfter) * 1_000 : -1;
       if (retryAfter > 0) {
-        // If the global ratelimit header is set, that means we hit the global rate limit
+        // If the global rate limit header is set, that means we hit the global rate limit
         if (res.headers.get('x-ratelimit-global')) {
           this.manager.globalRemaining = 0;
           this.manager.globalReset = Date.now() + retryAfter;
@@ -234,7 +285,7 @@ class RequestHandler {
         /**
          * Emitted periodically when the process sends invalid requests to let users avoid the
          * 10k invalid requests in 10 minutes threshold that causes a ban
-         * @event Client#invalidRequestWarning
+         * @event BaseClient#invalidRequestWarning
          * @param {InvalidRequestWarningData} invalidRequestWarningData Object containing the invalid request info
          */
         this.manager.client.emit(INVALID_REQUEST_WARNING, {
@@ -315,3 +366,13 @@ class RequestHandler {
 }
 
 module.exports = RequestHandler;
+
+/**
+ * @external HTTPMethod
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods}
+ */
+
+/**
+ * @external Response
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Response}
+ */

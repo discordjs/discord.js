@@ -19,8 +19,12 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
 
 /**
  * Collects interactions.
- * Will automatically stop if the message ({@link Client#messageDelete messageDelete}),
- * channel ({@link Client#channelDelete channelDelete}), or guild ({@link Client#guildDelete guildDelete}) is deleted.
+ * Will automatically stop if the message ({@link Client#event:messageDelete messageDelete} or
+ * {@link Client#event:messageDeleteBulk messageDeleteBulk}),
+ * channel ({@link Client#event:channelDelete channelDelete}), or
+ * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
+ * <info>Interaction collectors that do not specify `time` or `idle` may be prone to always running.
+ * Ensure your interaction collectors end via either of these options or manual cancellation.</info>
  * @extends {Collector}
  */
 class InteractionCollector extends Collector {
@@ -57,7 +61,7 @@ class InteractionCollector extends Collector {
       this.client.guilds.resolveId(options.guild);
 
     /**
-     * The the type of interaction to collect
+     * The type of interaction to collect
      * @type {?InteractionType}
      */
     this.interactionType =
@@ -66,7 +70,7 @@ class InteractionCollector extends Collector {
         : options.interactionType ?? null;
 
     /**
-     * The the type of component to collect
+     * The type of component to collect
      * @type {?MessageComponentType}
      */
     this.componentType =
@@ -75,7 +79,7 @@ class InteractionCollector extends Collector {
         : options.componentType ?? null;
 
     /**
-     * The users which have interacted to this collector
+     * The users that have interacted with this collector
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
@@ -89,9 +93,14 @@ class InteractionCollector extends Collector {
     this.empty = this.empty.bind(this);
     this.client.incrementMaxListeners();
 
+    const bulkDeleteListener = messages => {
+      if (messages.has(this.messageId)) this.stop('messageDelete');
+    };
+
     if (this.messageId) {
       this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
       this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+      this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
     }
 
     if (this.channelId) {
@@ -109,6 +118,7 @@ class InteractionCollector extends Collector {
     this.once('end', () => {
       this.client.removeListener(Events.INTERACTION_CREATE, this.handleCollect);
       this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+      this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
       this.client.decrementMaxListeners();

@@ -21,6 +21,21 @@ class CommandInteraction extends BaseCommandInteraction {
       this.transformResolved(data.data.resolved ?? {}),
     );
   }
+
+  /**
+   * Returns a string representation of the command interaction.
+   * This can then be copied by a user and executed again in a new command while keeping the option order.
+   * @returns {string}
+   */
+  toString() {
+    const properties = [
+      this.commandName,
+      this.options._group,
+      this.options._subcommand,
+      ...this.options._hoistedOptions.map(o => `${o.name}:${o.value}`),
+    ];
+    return `/${properties.filter(Boolean).join(' ')}`;
+  }
 }
 
 module.exports = CommandInteraction;

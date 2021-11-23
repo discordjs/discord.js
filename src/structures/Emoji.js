@@ -54,7 +54,7 @@ class Emoji extends Base {
   }
 
   /**
-   * The URL to the emoji file if its a custom emoji
+   * The URL to the emoji file if it's a custom emoji
    * @type {?string}
    * @readonly
    */

@@ -76,7 +76,7 @@ class GuildMemberManager extends CachedManager {
    * (requires `MANAGE_ROLES`)
    * @property {boolean} [mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
    * @property {boolean} [deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
-   * @property {boolean} [force] Whehter to skip the cache check and call the API directly
+   * @property {boolean} [force] Whether to skip the cache check and call the API directly
    * @property {boolean} [fetchWhenExisting=true] Whether to fetch the user if not cached and already a member
    */
 
@@ -248,7 +248,7 @@ class GuildMemberManager extends CachedManager {
       _data.channel_id = null;
       _data.channel = undefined;
     }
-    if (_data.roles) _data.roles = _data.roles.map(role => (role instanceof Role ? role.id : role));
+    _data.roles &&= _data.roles.map(role => (role instanceof Role ? role.id : role));
     let endpoint = this.client.api.guilds(this.guild.id);
     if (id === this.client.user.id) {
       const keys = Object.keys(_data);

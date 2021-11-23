@@ -21,7 +21,7 @@ class Channel extends Base {
   constructor(client, data, immediatePatch = true) {
     super(client);
 
-    const type = ChannelTypes[data.type];
+    const type = ChannelTypes[data?.type];
     /**
      * The type of the channel
      * @type {ChannelType}
@@ -116,8 +116,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is voice-based
-   * ({@link VoiceChannel} or {@link StageChannel}).
+   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
    * @returns {boolean}
    */
   isVoice() {

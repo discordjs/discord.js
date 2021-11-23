@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('events');
+const EventEmitter = require('node:events');
 const { Collection } = require('@discordjs/collection');
 const { TypeError } = require('../../errors');
 const Util = require('../../util/Util');
@@ -198,7 +198,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Options used to reset timeout and idle timer of a {@link Collector}.
+   * Options used to reset the timeout and idle timer of a {@link Collector}.
    * @typedef {Object} CollectorResetTimerOptions
    * @property {number} [time] How long to run the collector for (in milliseconds)
    * @property {number} [idle] How long to wait to stop the collector after inactivity (in milliseconds)
@@ -206,7 +206,7 @@ class Collector extends EventEmitter {
 
   /**
    * Resets the collector's timeout and idle timer.
-   * @param {CollectorResetTimerOptions} [options] Options for reseting
+   * @param {CollectorResetTimerOptions} [options] Options for resetting
    */
   resetTimer({ time, idle } = {}) {
     if (this._timeout) {

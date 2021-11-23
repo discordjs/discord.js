@@ -37,7 +37,7 @@ class Client extends BaseClient {
   constructor(options) {
     super(options);
 
-    const data = require('worker_threads').workerData ?? process.env;
+    const data = require('node:worker_threads').workerData ?? process.env;
     const defaults = Options.createDefault();
 
     if (this.options.shards === defaults.shards) {
@@ -218,7 +218,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Logs the client in, establishing a websocket connection to Discord.
+   * Logs the client in, establishing a WebSocket connection to Discord.
    * @param {string} [token=this.token] Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
@@ -606,12 +606,6 @@ module.exports = Client;
  * Emitted for general warnings.
  * @event Client#warn
  * @param {string} info The warning
- */
-
-/**
- * Emitted for general debugging information.
- * @event Client#debug
- * @param {string} info The debug information
  */
 
 /**

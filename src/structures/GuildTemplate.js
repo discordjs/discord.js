@@ -9,81 +9,91 @@ const DataResolver = require('../util/DataResolver');
  * @extends {Base}
  */
 class GuildTemplate extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIGuildTemplate} data The raw data for the template
-   */
   constructor(client, data) {
     super(client);
     this._patch(data);
   }
 
-  /**
-   * Builds or updates the template with the provided data.
-   * @param {APIGuildTemplate} data The raw data for the template
-   * @returns {GuildTemplate}
-   * @private
-   */
   _patch(data) {
-    /**
-     * The unique code of this template
-     * @type {string}
-     */
-    this.code = data.code;
+    if ('code' in data) {
+      /**
+       * The unique code of this template
+       * @type {string}
+       */
+      this.code = data.code;
+    }
 
-    /**
-     * The name of this template
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of this template
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The description of this template
-     * @type {?string}
-     */
-    this.description = data.description;
+    if ('description' in data) {
+      /**
+       * The description of this template
+       * @type {?string}
+       */
+      this.description = data.description;
+    }
 
-    /**
-     * The amount of times this template has been used
-     * @type {number}
-     */
-    this.usageCount = data.usage_count;
+    if ('usage_count' in data) {
+      /**
+       * The amount of times this template has been used
+       * @type {number}
+       */
+      this.usageCount = data.usage_count;
+    }
 
-    /**
-     * The id of the user that created this template
-     * @type {Snowflake}
-     */
-    this.creatorId = data.creator_id;
+    if ('creator_id' in data) {
+      /**
+       * The id of the user that created this template
+       * @type {Snowflake}
+       */
+      this.creatorId = data.creator_id;
+    }
 
-    /**
-     * The user that created this template
-     * @type {User}
-     */
-    this.creator = this.client.users._add(data.creator);
+    if ('creator' in data) {
+      /**
+       * The user that created this template
+       * @type {User}
+       */
+      this.creator = this.client.users._add(data.creator);
+    }
 
-    /**
-     * The time of when this template was created at
-     * @type {Date}
-     */
-    this.createdAt = new Date(data.created_at);
+    if ('created_at' in data) {
+      /**
+       * The time when this template was created at
+       * @type {Date}
+       */
+      this.createdAt = new Date(data.created_at);
+    }
 
-    /**
-     * The time of when this template was last synced to the guild
-     * @type {Date}
-     */
-    this.updatedAt = new Date(data.updated_at);
+    if ('updated_at' in data) {
+      /**
+       * The time when this template was last synced to the guild
+       * @type {Date}
+       */
+      this.updatedAt = new Date(data.updated_at);
+    }
 
-    /**
-     * The id of the guild that this template belongs to
-     * @type {Snowflake}
-     */
-    this.guildId = data.source_guild_id;
+    if ('source_guild_id' in data) {
+      /**
+       * The id of the guild that this template belongs to
+       * @type {Snowflake}
+       */
+      this.guildId = data.source_guild_id;
+    }
 
-    /**
-     * The data of the guild that this template would create
-     * @type {APIGuild}
-     */
-    this.serializedGuild = data.serialized_source_guild;
+    if ('serialized_source_guild' in data) {
+      /**
+       * The data of the guild that this template would create
+       * @type {APIGuild}
+       */
+      this.serializedGuild = data.serialized_source_guild;
+    }
 
     /**
      * Whether this template has unsynced changes
@@ -95,7 +105,7 @@ class GuildTemplate extends Base {
   }
 
   /**
-   * Creates a guild based from this template.
+   * Creates a guild based on this template.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {string} name The name of the guild
    * @param {BufferResolvable|Base64Resolvable} [icon] The icon for the guild
@@ -223,9 +233,3 @@ class GuildTemplate extends Base {
 GuildTemplate.GUILD_TEMPLATES_PATTERN = /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/gi;
 
 module.exports = GuildTemplate;
-
-/* eslint-disable max-len */
-/**
- * @external APIGuildTemplate
- * @see {@link https://discord.com/developers/docs/resources/guild-template#guild-template-object-guild-template-structure}
- */

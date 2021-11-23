@@ -13,7 +13,7 @@ class PartialGroupDMChannel extends Channel {
 
     /**
      * The name of this Group DM Channel
-     * @type {string}
+     * @type {?string}
      */
     this.name = data.name;
 
@@ -22,6 +22,18 @@ class PartialGroupDMChannel extends Channel {
      * @type {?string}
      */
     this.icon = data.icon;
+
+    /**
+     * Recipient data received in a {@link PartialGroupDMChannel}.
+     * @typedef {Object} PartialRecipient
+     * @property {string} username The username of the recipient
+     */
+
+    /**
+     * The recipients of this Group DM Channel.
+     * @type {PartialRecipient[]}
+     */
+    this.recipients = data.recipients;
   }
 
   /**

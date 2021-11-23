@@ -9,10 +9,6 @@ const { ActivityTypes, Opcodes } = require('../util/Constants');
  * @extends {Presence}
  */
 class ClientPresence extends Presence {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIPresence} [data={}] The data for the client presence
-   */
   constructor(client, data = {}) {
     super(client, Object.assign(data, { status: data.status ?? 'online', user: { id: null } }));
   }
@@ -76,3 +72,9 @@ class ClientPresence extends Presence {
 }
 
 module.exports = ClientPresence;
+
+/* eslint-disable max-len */
+/**
+ * @external APIPresence
+ * @see {@link https://discord.com/developers/docs/rich-presence/how-to#updating-presence-update-presence-payload-fields}
+ */

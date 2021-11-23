@@ -1,15 +1,50 @@
 {
+  // Mapped from https://www.typescriptlang.org/tsconfig
   "compilerOptions": {
+    // Type Checking
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    // if true: conflicts with discord-api-types
+    "exactOptionalPropertyTypes": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "strict": true,
+    "useUnknownInCatchVariables": true,
+
+    // Modules
+    "module": "CommonJS",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+
+    // Emit
     "declaration": false,
+    "importHelpers": true,
+    "importsNotUsedAsValues": "error",
+    "inlineSources": false,
+    "newLine": "lf",
+    "noEmitHelpers": true,
+    "outDir": "dist",
+    "preserveConstEnums": true,
     "removeComments": false,
-    "alwaysStrict": true,
-    "pretty": false,
-    "module": "commonjs",
-    "target": "es2019",
-    "lib": ["esnext", "esnext.array", "esnext.asynciterable", "esnext.intl", "esnext.symbol"],
     "sourceMap": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Language and Environment
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["ESNext"],
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+
+    // Output Formatting
+    "pretty": false,
+
+    // Completeness
+    "skipLibCheck": false,
     "skipDefaultLibCheck": true
   }
 }

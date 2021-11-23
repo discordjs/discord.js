@@ -9,10 +9,6 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
  * @extends {Base}
  */
 class Sticker extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APISticker | APIStickerItem} sticker The data for the sticker
-   */
   constructor(client, sticker) {
     super(client);
 
@@ -26,65 +22,101 @@ class Sticker extends Base {
      */
     this.id = sticker.id;
 
-    /**
-     * The description of the sticker
-     * @type {?string}
-     */
-    this.description = sticker.description ?? null;
+    if ('description' in sticker) {
+      /**
+       * The description of the sticker
+       * @type {?string}
+       */
+      this.description = sticker.description;
+    } else {
+      this.description ??= null;
+    }
 
-    /**
-     * The type of the sticker
-     * @type {?StickerType}
-     */
-    this.type = StickerTypes[sticker.type] ?? null;
+    if ('type' in sticker) {
+      /**
+       * The type of the sticker
+       * @type {?StickerType}
+       */
+      this.type = StickerTypes[sticker.type];
+    } else {
+      this.type ??= null;
+    }
 
-    /**
-     * The format of the sticker
-     * @type {StickerFormatType}
-     */
-    this.format = StickerFormatTypes[sticker.format_type];
+    if ('format_type' in sticker) {
+      /**
+       * The format of the sticker
+       * @type {StickerFormatType}
+       */
+      this.format = StickerFormatTypes[sticker.format_type];
+    }
 
-    /**
-     * The name of the sticker
-     * @type {string}
-     */
-    this.name = sticker.name;
+    if ('name' in sticker) {
+      /**
+       * The name of the sticker
+       * @type {string}
+       */
+      this.name = sticker.name;
+    }
 
-    /**
-     * The id of the pack the sticker is from, for standard stickers
-     * @type {?Snowflake}
-     */
-    this.packId = sticker.pack_id ?? null;
+    if ('pack_id' in sticker) {
+      /**
+       * The id of the pack the sticker is from, for standard stickers
+       * @type {?Snowflake}
+       */
+      this.packId = sticker.pack_id;
+    } else {
+      this.packId ??= null;
+    }
 
-    /**
-     * An array of tags for the sticker
-     * @type {?string[]}
-     */
-    this.tags = sticker.tags?.split(', ') ?? null;
+    if ('tags' in sticker) {
+      /**
+       * An array of tags for the sticker
+       * @type {?string[]}
+       */
+      this.tags = sticker.tags.split(', ');
+    } else {
+      this.tags ??= null;
+    }
 
-    /**
-     * Whether or not the guild sticker is available
-     * @type {?boolean}
-     */
-    this.available = sticker.available ?? null;
+    if ('available' in sticker) {
+      /**
+       * Whether or not the guild sticker is available
+       * @type {?boolean}
+       */
+      this.available = sticker.available;
+    } else {
+      this.available ??= null;
+    }
 
-    /**
-     * The id of the guild that owns this sticker
-     * @type {?Snowflake}
-     */
-    this.guildId = sticker.guild_id ?? null;
+    if ('guild_id' in sticker) {
+      /**
+       * The id of the guild that owns this sticker
+       * @type {?Snowflake}
+       */
+      this.guildId = sticker.guild_id;
+    } else {
+      this.guildId ??= null;
+    }
 
-    /**
-     * The user that uploaded the guild sticker
-     * @type {?User}
-     */
-    this.user = sticker.user ? this.client.users._add(sticker.user) : null;
+    if ('user' in sticker) {
+      /**
+       * The user that uploaded the guild sticker
+       * @type {?User}
+       */
+      this.user = this.client.users._add(sticker.user);
+    } else {
+      this.user ??= null;
+    }
 
-    /**
-     * The standard sticker's sort order within its pack
-     * @type {?number}
-     */
-    this.sortValue = sticker.sort_value ?? null;
+    if ('sort_value' in sticker) {
+      /**
+       * The standard sticker's sort order within its pack
+       * @type {?number}
+       */
+      this.sortValue = sticker.sort_value;
+    } else {
+      this.sortValue ??= null;
+    }
   }
 
   /**
@@ -125,7 +157,7 @@ class Sticker extends Base {
 
   /**
    * A link to the sticker
-   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.</info>
+   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie JSON file.</info>
    * @type {string}
    */
   get url() {
@@ -237,9 +269,4 @@ module.exports = Sticker;
 /**
  * @external APISticker
  * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-object}
- */
-
-/**
- * @external APIStickerItem
- * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-item-object}
  */

@@ -1,6 +1,6 @@
 'use strict';
 
-const { parse } = require('path');
+const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
@@ -57,7 +57,7 @@ class Util extends null {
    * Options for splitting a message.
    * @typedef {Object} SplitOptions
    * @property {number} [maxLength=2000] Maximum character length per message piece
-   * @property {string|string[]|RegExp|RegExp[]} [char='\n'] Character(s) or Regex(s) to split the message with,
+   * @property {string|string[]|RegExp|RegExp[]} [char='\n'] Character(s) or Regex(es) to split the message with,
    * an array can be used to split multiple times
    * @property {string} [prepend=''] Text to prepend to every piece except the first
    * @property {string} [append=''] Text to append to every piece except the last
@@ -309,7 +309,7 @@ class Util extends null {
     if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
     const { id, name, animated } = emoji;
     if (!id && !name) return null;
-    return { id, name, animated };
+    return { id, name, animated: Boolean(animated) };
   }
 
   /**
@@ -477,7 +477,7 @@ class Util extends null {
 
   /**
    * Sorts by Discord's position and id.
-   * @param  {Collection} collection Collection of objects to sort
+   * @param {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
   static discordSort(collection) {
@@ -522,7 +522,7 @@ class Util extends null {
 
   /**
    * Transforms a snowflake from a decimal string to a bit string.
-   * @param  {Snowflake} num Snowflake to be transformed
+   * @param {Snowflake} num Snowflake to be transformed
    * @returns {string}
    * @private
    */
@@ -543,7 +543,7 @@ class Util extends null {
 
   /**
    * Transforms a snowflake from a bit string to a decimal string.
-   * @param  {string} num Bit string to be transformed
+   * @param {string} num Bit string to be transformed
    * @returns {Snowflake}
    * @private
    */
@@ -575,6 +575,7 @@ class Util extends null {
    * Breaks user, role and everyone/here mentions by adding a zero width space after every @ character
    * @param {string} str The string to sanitize
    * @returns {string}
+   * @deprecated Use {@link BaseMessageOptions#allowedMentions} instead.
    */
   static removeMentions(str) {
     return str.replaceAll('@', '@\u200b');
@@ -582,6 +583,8 @@ class Util extends null {
 
   /**
    * The content to have all mentions replaced by the equivalent text.
+   * <warn>When {@link Util.removeMentions} is removed, this method will no longer sanitize mentions.
+   * Use {@link BaseMessageOptions#allowedMentions} instead to prevent mentions when sending a message.</warn>
    * @param {string} str The string to be converted
    * @param {TextBasedChannels} channel The channel the string was sent in
    * @returns {string}
@@ -616,7 +619,7 @@ class Util extends null {
   }
 
   /**
-   * The content to put in a codeblock with all codeblock fences replaced by the equivalent backticks.
+   * The content to put in a code block with all code block fences replaced by the equivalent backticks.
    * @param {string} text The string to be converted
    * @returns {string}
    */
