@@ -1,3 +1,4 @@
+import type { ChildProcess } from 'child_process';
 import type {
   APIInteractionGuildMember,
   APIMessage,
@@ -22,6 +23,7 @@ import {
   Client,
   ClientApplication,
   ClientUser,
+  CloseEvent,
   Collection,
   CommandInteraction,
   CommandInteractionOption,
@@ -75,6 +77,8 @@ import {
   User,
   VoiceChannel,
   Shard,
+  WebSocketShard,
+  Collector,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -1029,5 +1033,32 @@ client.on('interactionCreate', async interaction => {
 });
 
 declare const shard: Shard;
+
+shard.on('death', process => {
+  expectType<ChildProcess>(process);
+});
+
+declare const webSocketShard: WebSocketShard;
+
+webSocketShard.on('close', event => {
+  expectType<CloseEvent>(event);
+});
+
+declare const collector: Collector<string, Interaction, string[]>;
+
+collector.on('collect', (collected, ...other) => {
+  expectType<Interaction>(collected);
+  expectType<string[]>(other);
+});
+
+collector.on('dispose', (vals, ...other) => {
+  expectType<Interaction>(vals);
+  expectType<string[]>(other);
+});
+
+collector.on('end', (collection, reason) => {
+  expectType<Collection<string, Interaction>>(collection);
+  expectType<string>(reason);
+});
 
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));

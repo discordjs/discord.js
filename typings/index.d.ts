@@ -609,6 +609,12 @@ export class ClientVoiceManager {
 
 export { Collection } from '@discordjs/collection';
 
+export interface CollectorEventTypes<K, V, F extends unknown[] = []> {
+  collect: [V, ...F];
+  dispose: [V, ...F];
+  end: [collected: Collection<K, V>, reason: string];
+}
+
 export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmitter {
   protected constructor(client: Client, options?: CollectorOptions<[V, ...F]>);
   private _timeout: NodeJS.Timeout | null;
@@ -633,11 +639,15 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public abstract collect(...args: unknown[]): K | null | Promise<K | null>;
   public abstract dispose(...args: unknown[]): K | null;
 
-  public on(event: 'collect' | 'dispose', listener: (...args: [V, ...F]) => Awaitable<void>): this;
-  public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
+  public on<EventKey extends keyof CollectorEventTypes<K, V, F>>(
+    event: EventKey,
+    listener: (...args: CollectorEventTypes<K, V, F>[EventKey]) => Awaitable<void>,
+  ): this;
 
-  public once(event: 'collect' | 'dispose', listener: (...args: [V, ...F]) => Awaitable<void>): this;
-  public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
+  public once<EventKey extends keyof CollectorEventTypes<K, V, F>>(
+    event: EventKey,
+    listener: (...args: CollectorEventTypes<K, V, F>[EventKey]) => Awaitable<void>,
+  ): this;
 }
 
 export interface ApplicationCommandInteractionOptionResolver<Cached extends CacheType = CacheType>
@@ -1310,68 +1320,40 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
-// This is a general conditional type utility that allows for specific union members to be extracted given
-// a tagged union.
-export type TaggedUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V>
-  ? T
-  : T extends Record<K, infer U>
-  ? V extends U
-    ? T
-    : never
-  : never;
-
-// This creates a map of MessageComponentTypes to their respective `InteractionCollectorOptionsResolvable` variant.
-export type CollectorOptionsTypeResolver<U extends InteractionCollectorOptionsResolvable<Cached>, Cached = boolean> = {
-  readonly [T in U['componentType']]: TaggedUnion<U, 'componentType', T>;
-};
-
-// This basically says "Given a `InteractionCollectorOptionsResolvable` variant", I'll give the corresponding
-// `InteractionCollector<T>` variant back.
-export type ConditionalInteractionCollectorType<T extends InteractionCollectorOptionsResolvable | undefined> =
-  T extends InteractionCollectorOptions<infer Item>
-    ? InteractionCollector<Item>
-    : InteractionCollector<MessageComponentInteraction>;
-
-// This maps each componentType key to each variant.
-export type MappedInteractionCollectorOptions<Cached = boolean> = CollectorOptionsTypeResolver<
-  InteractionCollectorOptionsResolvable<Cached>,
-  Cached
->;
-
-// Converts mapped types to complimentary collector types.
-export type InteractionCollectorReturnType<
-  T extends MessageComponentType | MessageComponentTypes | undefined,
-  Cached extends boolean = false,
-> = T extends MessageComponentType | MessageComponentTypes
-  ? ConditionalInteractionCollectorType<MappedInteractionCollectorOptions<Cached>[T]>
-  : InteractionCollector<MessageComponentInteraction>;
-
-export type InteractionExtractor<
-  T extends MessageComponentType | MessageComponentTypes | undefined,
-  C extends boolean = false,
-> = T extends MessageComponentType | MessageComponentTypes
-  ? MappedInteractionCollectorOptions<C>[T] extends InteractionCollectorOptions<infer Item>
-    ? Item
-    : never
-  : MessageComponentInteraction;
-
-export type MessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
+export type MessageCollectorOptionsParams<T extends MessageComponentTypeResolvable> =
   | {
       componentType?: T;
-    } & MessageComponentCollectorOptions<InteractionExtractor<T>>;
+    } & MessageComponentCollectorOptions<MappedInteractionTypes[T]>;
 
-export type MessageChannelCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
+export type MessageChannelCollectorOptionsParams<T extends MessageComponentTypeResolvable> =
   | {
       componentType?: T;
-    } & MessageChannelComponentCollectorOptions<InteractionExtractor<T>>;
+    } & MessageChannelComponentCollectorOptions<MappedInteractionTypes[T]>;
 
-export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType | MessageComponentTypes | undefined> =
+export type AwaitMessageCollectorOptionsParams<T extends MessageComponentTypeResolvable> =
   | { componentType?: T } & Pick<
-      InteractionCollectorOptions<InteractionExtractor<T>>,
+      InteractionCollectorOptions<MappedInteractionTypes[T]>,
       keyof AwaitMessageComponentOptions<any>
     >;
 
 export type GuildTextBasedChannel = Exclude<TextBasedChannels, PartialDMChannel | DMChannel>;
+export interface StringMappedInteractionTypes<Cached extends CacheType = CacheType> {
+  BUTTON: ButtonInteraction<Cached>;
+  SELECT_MENU: SelectMenuInteraction<Cached>;
+  ACTION_ROW: MessageComponentInteraction<Cached>;
+}
+
+export interface EnumMappedInteractionTypes<Cached extends CacheType = CacheType> {
+  1: MessageComponentInteraction<Cached>;
+  2: ButtonInteraction<Cached>;
+  3: SelectMenuInteraction<Cached>;
+}
+
+export type WrapBooleanCache<T extends boolean> = If<T, 'cached', CacheType>;
+export type MappedInteractionTypes<Cached extends boolean = boolean> = StringMappedInteractionTypes<
+  WrapBooleanCache<Cached>
+> &
+  EnumMappedInteractionTypes<WrapBooleanCache<Cached>>;
 
 export class Message<Cached extends boolean = boolean> extends Base {
   private readonly _cacheType: Cached;
@@ -1418,14 +1400,14 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public webhookId: Snowflake | null;
   public flags: Readonly<MessageFlags>;
   public reference: MessageReference | null;
-  public awaitMessageComponent<
-    T extends MessageComponentType | MessageComponentTypes | undefined = MessageComponentTypes.ACTION_ROW,
-  >(options?: AwaitMessageCollectorOptionsParams<T>): Promise<InteractionExtractor<T, Cached>>;
+  public awaitMessageComponent<T extends MessageComponentTypeResolvable = 'ACTION_ROW'>(
+    options?: AwaitMessageCollectorOptionsParams<T>,
+  ): Promise<MappedInteractionTypes<Cached>[T]>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
-  public createMessageComponentCollector<
-    T extends MessageComponentType | MessageComponentTypes | undefined = undefined,
-  >(options?: MessageCollectorOptionsParams<T>): InteractionCollectorReturnType<T, Cached>;
+  public createMessageComponentCollector<T extends MessageComponentTypeResolvable = 'ACTION_ROW'>(
+    options?: MessageCollectorOptionsParams<T>,
+  ): InteractionCollector<MappedInteractionTypes<Cached>[T]>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
   public equals(message: Message, rawData: unknown): boolean;
@@ -1857,6 +1839,16 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
   public inRawGuild(): this is SelectMenuInteraction<'raw'>;
 }
 
+export interface ShardEventTypes {
+  spawn: [child: ChildProcess];
+  death: [child: ChildProcess];
+  disconnect: [];
+  ready: [];
+  reconnection: [];
+  error: [error: Error];
+  message: [message: any];
+}
+
 export class Shard extends EventEmitter {
   private constructor(manager: ShardingManager, id: number);
   private _evals: Map<string, Promise<unknown>>;
@@ -1875,23 +1867,22 @@ export class Shard extends EventEmitter {
   public worker: Worker | null;
   public eval(script: string): Promise<unknown>;
   public eval<T>(fn: (client: Client) => T): Promise<T>;
+  public eval<T, P>(fn: (client: Client, context: Serialized<P>) => T, context: P): Promise<T>;
   public fetchClientValue(prop: string): Promise<unknown>;
   public kill(): void;
   public respawn(options?: { delay?: number; timeout?: number }): Promise<ChildProcess>;
   public send(message: unknown): Promise<Shard>;
   public spawn(timeout?: number): Promise<ChildProcess>;
 
-  public on(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaitable<void>): this;
-  public on(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaitable<void>): this;
-  public on(event: 'error', listener: (error: Error) => Awaitable<void>): this;
-  public on(event: 'message', listener: (message: any) => Awaitable<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public on<K extends keyof ShardEventTypes>(
+    event: K,
+    listener: (...args: ShardEventTypes[K]) => Awaitable<void>,
+  ): this;
 
-  public once(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaitable<void>): this;
-  public once(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaitable<void>): this;
-  public once(event: 'error', listener: (error: Error) => Awaitable<void>): this;
-  public once(event: 'message', listener: (message: any) => Awaitable<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public once<K extends keyof ShardEventTypes>(
+    event: K,
+    listener: (...args: ShardEventTypes[K]) => Awaitable<void>,
+  ): this;
 }
 
 export class ShardClientUtil {
@@ -2099,6 +2090,7 @@ export class ThreadChannel extends TextBasedChannel(Channel) {
   public readonly joined: boolean;
   public locked: boolean | null;
   public readonly manageable: boolean;
+  public readonly viewable: boolean;
   public readonly sendable: boolean;
   public memberCount: number | null;
   public messageCount: number | null;
@@ -2379,6 +2371,14 @@ export class WebSocketManager extends EventEmitter {
   private triggerClientReady(): void;
 }
 
+export interface WebSocketShardEvents {
+  ready: [];
+  resumed: [];
+  invalidSession: [];
+  close: [event: CloseEvent];
+  allReady: [unavailableGuilds?: Set<Snowflake>];
+}
+
 export class WebSocketShard extends EventEmitter {
   private constructor(manager: WebSocketManager, id: number);
   private sequence: number;
@@ -2421,15 +2421,15 @@ export class WebSocketShard extends EventEmitter {
 
   public send(data: unknown, important?: boolean): void;
 
-  public on(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaitable<void>): this;
-  public on(event: 'close', listener: (event: CloseEvent) => Awaitable<void>): this;
-  public on(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaitable<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public on<K extends keyof WebSocketShardEvents>(
+    event: K,
+    listener: (...args: WebSocketShardEvents[K]) => Awaitable<void>,
+  ): this;
 
-  public once(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaitable<void>): this;
-  public once(event: 'close', listener: (event: CloseEvent) => Awaitable<void>): this;
-  public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaitable<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public once<K extends keyof WebSocketShardEvents>(
+    event: K,
+    listener: (...args: WebSocketShardEvents[K]) => Awaitable<void>,
+  ): this;
 }
 
 export class Widget extends Base {
@@ -3047,17 +3047,17 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   readonly lastMessage: Message | null;
   lastPinTimestamp: number | null;
   readonly lastPinAt: Date | null;
-  awaitMessageComponent<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
+  awaitMessageComponent<T extends MessageComponentTypeResolvable = 'ACTION_ROW'>(
     options?: AwaitMessageCollectorOptionsParams<T>,
-  ): Promise<InteractionExtractor<T>>;
+  ): Promise<MappedInteractionTypes[T]>;
   awaitMessages(options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
   bulkDelete(
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
-  createMessageComponentCollector<T extends MessageComponentType | MessageComponentTypes | undefined = undefined>(
+  createMessageComponentCollector<T extends MessageComponentTypeResolvable = 'ACTION_ROW'>(
     options?: MessageChannelCollectorOptionsParams<T>,
-  ): InteractionCollectorReturnType<T>;
+  ): InteractionCollector<MappedInteractionTypes[T]>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   sendTyping(): Promise<void>;
 }
@@ -4429,30 +4429,6 @@ export interface InteractionCollectorOptions<T extends Interaction, Cached exten
   message?: CacheTypeReducer<Cached, Message, APIMessage>;
 }
 
-export interface ButtonInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<Cached extends true ? ButtonInteraction<'cached'> : ButtonInteraction> {
-  componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
-}
-
-export interface SelectMenuInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<
-    Cached extends true ? SelectMenuInteraction<'cached'> : SelectMenuInteraction
-  > {
-  componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
-}
-
-export interface MessageInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<
-    Cached extends true ? MessageComponentInteraction<'cached'> : MessageComponentInteraction
-  > {
-  componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
-}
-
-export type InteractionCollectorOptionsResolvable<Cached = boolean> =
-  | MessageInteractionCollectorOptions<Cached>
-  | SelectMenuInteractionCollectorOptions<Cached>
-  | ButtonInteractionCollectorOptions<Cached>;
-
 export interface InteractionDeferReplyOptions {
   ephemeral?: boolean;
   fetchReply?: boolean;
@@ -5058,6 +5034,7 @@ export interface StartThreadOptions {
   name: string;
   autoArchiveDuration?: ThreadAutoArchiveDuration;
   reason?: string;
+  rateLimitPerUser?: number;
 }
 
 export type Status = number;
@@ -5115,6 +5092,7 @@ export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptio
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
   invitable?: AllowedThreadType extends 'GUILD_PRIVATE_THREAD' | 12 ? boolean : never;
+  rateLimitPerUser?: number;
 }
 
 export interface ThreadEditData {
@@ -5193,7 +5171,7 @@ export interface WebhookFetchMessageOptions {
   threadId?: Snowflake;
 }
 
-export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
+export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 'stickers'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
