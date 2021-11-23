@@ -210,9 +210,9 @@ class GuildChannelManager extends CachedManager {
       parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveId(r.parent) : undefined,
     }));
 
-    await this.client.api.guilds(this.id).channels.patch({ data: channelPositions });
+    await this.client.api.guilds(this.guild.id).channels.patch({ data: channelPositions });
     return this.client.actions.GuildChannelsPositionUpdate.handle({
-      guild_id: this.id,
+      guild_id: this.guild.id,
       channels: channelPositions,
     }).guild;
   }

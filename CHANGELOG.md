@@ -1,3 +1,14 @@
+## [13.3.1](https://github.com/discordjs/discord.js/compare/13.3.0...13.3.1) (2021-11-01)
+
+
+### Bug Fixes
+
+* assert channel types in message actions ([#6919](https://github.com/discordjs/discord.js/issues/6919)) ([9bd3689](https://github.com/discordjs/discord.js/commit/9bd3689fb1273956533a2d110cfc72407c58b832))
+* **MessageEmbed:** only compare image urls in #equals ([#6926](https://github.com/discordjs/discord.js/issues/6926)) ([95d2a4d](https://github.com/discordjs/discord.js/commit/95d2a4d35ef30d83a2e9ca82b88c978f35c5e1e0))
+* correctly access guild IDs inside managers ([#6927](https://github.com/discordjs/discord.js/issues/6927)) ([2d9ffb8](https://github.com/discordjs/discord.js/commit/2d9ffb8c5b1aa4f510b3448ea0eb1400ad6b85b9))
+
+
+
 # [13.3.0](https://github.com/discordjs/discord.js/compare/13.2.0...13.3.0) (2021-10-29)
 
 

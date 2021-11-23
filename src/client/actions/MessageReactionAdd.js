@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events, VoiceBasedChannelTypes } = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 const { PartialTypes } = require('../../util/Constants');
 
 /*
@@ -23,7 +23,7 @@ class MessageReactionAdd extends Action {
 
     // Verify channel
     const channel = this.getChannel(data);
-    if (!channel || VoiceBasedChannelTypes.includes(channel.type)) return false;
+    if (!channel || !channel.isText()) return false;
 
     // Verify message
     const message = this.getMessage(data, channel);

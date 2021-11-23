@@ -22,6 +22,16 @@ class MessageAttachment {
   }
 
   /**
+   * Sets the description of this attachment.
+   * @param {string} description The description of the file
+   * @returns {MessageAttachment} This attachment
+   */
+  setDescription(description) {
+    this.description = description;
+    return this;
+  }
+
+  /**
    * Sets the file of this attachment.
    * @param {BufferResolvable|Stream} attachment The file
    * @param {string} [name=null] The name of the file, if any
@@ -120,6 +130,16 @@ class MessageAttachment {
       this.contentType = data.content_type;
     } else {
       this.contentType ??= null;
+    }
+
+    if ('description' in data) {
+      /**
+       * The description (alt text) of this attachment
+       * @type {?string}
+       */
+      this.description = data.description;
+    } else {
+      this.description ??= null;
     }
 
     /**

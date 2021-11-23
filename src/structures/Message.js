@@ -551,7 +551,15 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    return Boolean(this.author.id === this.client.user.id && !this.deleted && (!this.guild || this.channel?.viewable));
+    const precheck = Boolean(
+      this.author.id === this.client.user.id && !this.deleted && (!this.guild || this.channel?.viewable),
+    );
+    // Regardless of permissions thread messages cannot be edited if
+    // the thread is locked.
+    if (this.channel?.isThread()) {
+      return precheck && !this.channel.locked;
+    }
+    return precheck;
   }
 
   /**
@@ -750,6 +758,7 @@ class Message extends Base {
    * @typedef {BaseMessageOptions} ReplyMessageOptions
    * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
+   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
   /**
@@ -797,6 +806,7 @@ class Message extends Base {
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration=this.channel.defaultAutoArchiveDuration] The amount of
    * time (in minutes) after which the thread should automatically archive in case of no recent activity
    * @property {string} [reason] Reason for creating the thread
+   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    */
 
   /**

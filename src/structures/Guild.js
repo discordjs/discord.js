@@ -34,6 +34,9 @@ const DataResolver = require('../util/DataResolver');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
 const Util = require('../util/Util');
 
+let deprecationEmittedForSetChannelPositions = false;
+let deprecationEmittedForSetRolePositions = false;
+
 /**
  * Represents a guild (or a server) on Discord.
  * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
@@ -1070,7 +1073,8 @@ class Guild extends AnonymousGuild {
    * @example
    * // Edit the guild owner
    * guild.setOwner(guild.members.cache.first())
-   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.displayName}`))
+   *  .then(guild => guild.fetchOwner())
+   *  .then(owner => console.log(`Updated the guild owner to ${owner.displayName}`))
    *  .catch(console.error);
    */
   setOwner(owner, reason) {
@@ -1194,6 +1198,15 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   setChannelPositions(channelPositions) {
+    if (!deprecationEmittedForSetChannelPositions) {
+      process.emitWarning(
+        'The Guild#setChannelPositions method is deprecated. Use GuildChannelManager#setPositions instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForSetChannelPositions = true;
+    }
+
     return this.channels.setPositions(channelPositions);
   }
 
@@ -1215,6 +1228,15 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setRolePositions(rolePositions) {
+    if (!deprecationEmittedForSetRolePositions) {
+      process.emitWarning(
+        'The Guild#setRolePositions method is deprecated. Use RoleManager#setPositions instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForSetRolePositions = true;
+    }
+
     return this.roles.setPositions(rolePositions);
   }
 
