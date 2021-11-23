@@ -58,7 +58,7 @@ jobs:
       - name: Register Problem Matcher
         run: echo "##[add-matcher].github/tsc.json"
 
-      - name: Run TypeScript compiler
+      - name: Run Type Tests
         run: npm run test:typescript
 
   docs:
