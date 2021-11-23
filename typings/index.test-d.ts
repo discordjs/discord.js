@@ -831,7 +831,7 @@ declare const applicationSubGroupCommandData: Camelize<APIApplicationCommandSubC
   expectType<ApplicationCommandOptionType.Subcommand | ApplicationCommandOptionType.SubcommandGroup>(
     applicationSubGroupCommandData.type,
   );
-  expectType<APIApplicationCommandOption[] | undefined>(applicationSubGroupCommandData.options);
+  expectAssignable<APIApplicationCommandOption[] | undefined>(applicationSubGroupCommandData.options);
 }
 
 declare const applicationSubCommandData: ApplicationCommandSubCommandData;
