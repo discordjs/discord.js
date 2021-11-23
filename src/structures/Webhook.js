@@ -6,6 +6,8 @@ const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
+let deprecationEmittedForFetchMessage = false;
+
 /**
  * Represents a webhook.
  */
@@ -22,11 +24,13 @@ class Webhook {
   }
 
   _patch(data) {
-    /**
-     * The name of the webhook
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the webhook
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
     /**
      * The token for the webhook, unavailable for follower webhooks and webhooks owned by another application.
@@ -35,11 +39,13 @@ class Webhook {
      */
     Object.defineProperty(this, 'token', { value: data.token ?? null, writable: true, configurable: true });
 
-    /**
-     * The avatar for the webhook
-     * @type {?string}
-     */
-    this.avatar = data.avatar;
+    if ('avatar' in data) {
+      /**
+       * The avatar for the webhook
+       * @type {?string}
+       */
+      this.avatar = data.avatar;
+    }
 
     /**
      * The webhook's id
@@ -47,43 +53,59 @@ class Webhook {
      */
     this.id = data.id;
 
-    /**
-     * The type of the webhook
-     * @type {WebhookType}
-     */
-    this.type = WebhookTypes[data.type];
+    if ('type' in data) {
+      /**
+       * The type of the webhook
+       * @type {WebhookType}
+       */
+      this.type = WebhookTypes[data.type];
+    }
 
-    /**
-     * The guild the webhook belongs to
-     * @type {Snowflake}
-     */
-    this.guildId = data.guild_id;
+    if ('guild_id' in data) {
+      /**
+       * The guild the webhook belongs to
+       * @type {Snowflake}
+       */
+      this.guildId = data.guild_id;
+    }
 
-    /**
-     * The channel the webhook belongs to
-     * @type {Snowflake}
-     */
-    this.channelId = data.channel_id;
+    if ('channel_id' in data) {
+      /**
+       * The channel the webhook belongs to
+       * @type {Snowflake}
+       */
+      this.channelId = data.channel_id;
+    }
 
-    /**
-     * The owner of the webhook
-     * @type {?(User|APIUser)}
-     */
-    this.owner = data.user ? this.client.users?._add(data.user) ?? data.user : null;
+    if ('user' in data) {
+      /**
+       * The owner of the webhook
+       * @type {?(User|APIUser)}
+       */
+      this.owner = this.client.users?._add(data.user) ?? data.user;
+    } else {
+      this.owner ??= null;
+    }
 
-    /**
-     * The source guild of the webhook
-     * @type {?(Guild|APIGuild)}
-     */
-    this.sourceGuild = data.source_guild
-      ? this.client.guilds?._add(data.source_guild, false) ?? data.source_guild
-      : null;
+    if ('source_guild' in data) {
+      /**
+       * The source guild of the webhook
+       * @type {?(Guild|APIGuild)}
+       */
+      this.sourceGuild = this.client.guilds?.resolve(data.source_guild.id) ?? data.source_guild;
+    } else {
+      this.sourceGuild ??= null;
+    }
 
-    /**
-     * The source channel of the webhook
-     * @type {?(Channel|APIChannel)}
-     */
-    this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel ?? null;
+    if ('source_channel' in data) {
+      /**
+       * The source channel of the webhook
+       * @type {?(NewsChannel|APIChannel)}
+       */
+      this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel;
+    } else {
+      this.sourceChannel ??= null;
+    }
   }
 
   /**
@@ -225,10 +247,11 @@ class Webhook {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    if (channel) channel = channel?.id ?? channel;
+    channel &&= channel.id ?? channel;
     const data = await this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,
+      auth: !this.token || Boolean(channel),
     });
 
     this.name = data.name;
@@ -249,12 +272,21 @@ class Webhook {
    * Gets a message that was sent by this webhook.
    * @param {Snowflake|'@original'} message The id of the message to fetch
    * @param {WebhookFetchMessageOptions|boolean} [cacheOrOptions={}] The options to provide to fetch the message.
-   * A **deprecated** boolean may be passed instead to specify whether to cache the message.
+   * <warn>A **deprecated** boolean may be passed instead to specify whether to cache the message.</warn>
    * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async fetchMessage(message, cacheOrOptions = { cache: true }) {
     if (typeof cacheOrOptions === 'boolean') {
+      if (!deprecationEmittedForFetchMessage) {
+        process.emitWarning(
+          'Passing a boolean to cache the message in Webhook#fetchMessage is deprecated. Pass an object instead.',
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForFetchMessage = true;
+      }
+
       cacheOrOptions = { cache: cacheOrOptions };
     }
 
@@ -267,6 +299,7 @@ class Webhook {
         query: {
           thread_id: cacheOrOptions.threadId,
         },
+        auth: false,
       });
     return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cacheOrOptions.cache) ?? data;
   }
@@ -297,6 +330,7 @@ class Webhook {
         query: {
           thread_id: messagePayload.options.threadId,
         },
+        auth: false,
       });
 
     const messageManager = this.client.channels?.cache.get(d.channel_id)?.messages;
@@ -316,7 +350,7 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async delete(reason) {
-    await this.client.api.webhooks(this.id, this.token).delete({ reason });
+    await this.client.api.webhooks(this.id, this.token).delete({ reason, auth: !this.token });
   }
 
   /**
@@ -335,6 +369,7 @@ class Webhook {
         query: {
           thread_id: threadId,
         },
+        auth: false,
       });
   }
 
@@ -357,7 +392,7 @@ class Webhook {
   }
 
   /**
-   * The url of this webhook
+   * The URL of this webhook
    * @type {string}
    * @readonly
    */
@@ -373,6 +408,22 @@ class Webhook {
   avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
     return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
+  }
+
+  /**
+   * Whether or not this webhook is a channel follower webhook.
+   * @returns {boolean}
+   */
+  isChannelFollower() {
+    return this.type === WebhookTypes['Channel Follower'];
+  }
+
+  /**
+   * Whether or not this webhook is an incoming webhook.
+   * @returns {boolean}
+   */
+  isIncoming() {
+    return this.type === WebhookTypes.Incoming;
   }
 
   static applyToClass(structure, ignore = []) {

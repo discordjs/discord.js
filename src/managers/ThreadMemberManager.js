@@ -92,17 +92,32 @@ class ThreadMemberManager extends CachedManager {
     return id;
   }
 
+  async _fetchOne(memberId, cache, force) {
+    if (!force) {
+      const existing = this.cache.get(memberId);
+      if (existing) return existing;
+    }
+
+    const data = await this.client.api.channels(this.thread.id, 'thread-members', memberId).get();
+    return this._add(data, cache);
+  }
+
+  async _fetchMany(cache) {
+    const raw = await this.client.api.channels(this.thread.id, 'thread-members').get();
+    return raw.reduce((col, member) => col.set(member.user_id, this._add(member, cache)), new Collection());
+  }
+
   /**
    * Fetches member(s) for the thread from Discord, requires access to the `GUILD_MEMBERS` gateway intent.
-   * @param {boolean} [cache=true] Whether or not to cache the fetched members
-   * @returns {Promise<Collection<Snowflake, ThreadMember>>}
+   * @param {UserResolvable|boolean} [member] The member to fetch. If `undefined`, all members
+   * in the thread are fetched, and will be cached based on `options.cache`. If boolean, this serves
+   * the purpose of `options.cache`.
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
-  async fetch(cache = true) {
-    const raw = await this.client.api.channels(this.thread.id, 'thread-members').get();
-    return raw.reduce((col, rawMember) => {
-      const member = this._add(rawMember, cache);
-      return col.set(member.id, member);
-    }, new Collection());
+  fetch(member, { cache = true, force = false } = {}) {
+    const id = this.resolveId(member);
+    return id ? this._fetchOne(id, cache, force) : this._fetchMany(member ?? cache);
   }
 }
 

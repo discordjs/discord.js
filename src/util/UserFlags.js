@@ -35,6 +35,7 @@ class UserFlags extends BitField {}
  * * `VERIFIED_BOT`
  * * `EARLY_VERIFIED_BOT_DEVELOPER`
  * * `DISCORD_CERTIFIED_MODERATOR`
+ * * `BOT_HTTP_INTERACTIONS`
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/user#user-object-user-flags}
  */
@@ -52,6 +53,7 @@ UserFlags.FLAGS = {
   VERIFIED_BOT: 1 << 16,
   EARLY_VERIFIED_BOT_DEVELOPER: 1 << 17,
   DISCORD_CERTIFIED_MODERATOR: 1 << 18,
+  BOT_HTTP_INTERACTIONS: 1 << 19,
 };
 
 module.exports = UserFlags;

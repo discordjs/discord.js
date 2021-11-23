@@ -14,10 +14,6 @@ let Worker = null;
  * @extends EventEmitter
  */
 class Shard extends EventEmitter {
-  /**
-   * @param {ShardingManager} manager Manager that is creating this shard
-   * @param {number} id The shard's id
-   */
   constructor(manager, id) {
     super();
 
@@ -96,7 +92,7 @@ class Shard extends EventEmitter {
      * @type {Function}
      * @private
      */
-    this._exitListener = this._handleExit.bind(this, undefined);
+    this._exitListener = null;
   }
 
   /**
@@ -109,6 +105,8 @@ class Shard extends EventEmitter {
   spawn(timeout = 30_000) {
     if (this.process) throw new Error('SHARDING_PROCESS_EXISTS', this.id);
     if (this.worker) throw new Error('SHARDING_WORKER_EXISTS', this.id);
+
+    this._exitListener = this._handleExit.bind(this, undefined, timeout);
 
     if (this.manager.mode === 'process') {
       this.process = childProcess
@@ -136,7 +134,7 @@ class Shard extends EventEmitter {
      */
     this.emit('spawn', child);
 
-    if (timeout === -1 || timeout === Infinity) return child;
+    if (timeout === -1 || timeout === Infinity) return Promise.resolve(child);
     return new Promise((resolve, reject) => {
       const cleanup = () => {
         clearTimeout(spawnTimeoutTimer);
@@ -249,7 +247,8 @@ class Shard extends EventEmitter {
         if (message?._fetchProp !== prop) return;
         child.removeListener('message', listener);
         this._fetches.delete(prop);
-        resolve(message._result);
+        if (!message._error) resolve(message._result);
+        else reject(Util.makeError(message._error));
       };
       child.on('message', listener);
 
@@ -267,11 +266,12 @@ class Shard extends EventEmitter {
   /**
    * Evaluates a script or function on the shard, in the context of the {@link Client}.
    * @param {string|Function} script JavaScript to run on the shard
+   * @param {*} [context] The context for the eval
    * @returns {Promise<*>} Result of the script execution
    */
-  eval(script) {
+  eval(script, context) {
     // Stringify the script if it's a Function
-    const _eval = typeof script === 'function' ? `(${script})(this)` : script;
+    const _eval = typeof script === 'function' ? `(${script})(this, ${JSON.stringify(context)})` : script;
 
     // Shard is dead (maybe respawning), don't cache anything and error immediately
     if (!this.process && !this.worker) return Promise.reject(new Error('SHARDING_NO_CHILD_EXISTS', this.id));
@@ -383,9 +383,11 @@ class Shard extends EventEmitter {
   /**
    * Handles the shard's process/worker exiting.
    * @param {boolean} [respawn=this.manager.respawn] Whether to spawn the shard again
+   * @param {number} [timeout] The amount in milliseconds to wait until the {@link Client}
+   * has become ready (`-1` or `Infinity` for no wait)
    * @private
    */
-  _handleExit(respawn = this.manager.respawn) {
+  _handleExit(respawn = this.manager.respawn, timeout) {
     /**
      * Emitted upon the shard's child process/worker exiting.
      * @event Shard#death
@@ -399,7 +401,7 @@ class Shard extends EventEmitter {
     this._evals.clear();
     this._fetches.clear();
 
-    if (respawn) this.spawn().catch(err => this.emit('error', err));
+    if (respawn) this.spawn(timeout).catch(err => this.emit('error', err));
   }
 }
 

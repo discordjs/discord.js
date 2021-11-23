@@ -8,10 +8,6 @@ const WidgetMember = require('./WidgetMember');
  * Represents a Widget.
  */
 class Widget extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {Object} data The raw data
-   */
   constructor(client, data) {
     super(client);
     this._patch(data);
@@ -25,11 +21,6 @@ class Widget extends Base {
    * @property {number} position Position of the channel
    */
 
-  /**
-   * Builds the widget with the provided data.
-   * @param {*} data The raw data of the widget
-   * @private
-   */
   _patch(data) {
     /**
      * The id of the guild.
@@ -37,17 +28,21 @@ class Widget extends Base {
      */
     this.id = data.id;
 
-    /**
-     * The name of the guild.
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the guild.
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The invite of the guild.
-     * @type {?string}
-     */
-    this.instantInvite = data.instant_invite;
+    if ('instant_invite' in data) {
+      /**
+       * The invite of the guild.
+       * @type {?string}
+       */
+      this.instantInvite = data.instant_invite;
+    }
 
     /**
      * The list of channels in the guild.
@@ -68,11 +63,13 @@ class Widget extends Base {
       this.members.set(member.id, new WidgetMember(this.client, member));
     }
 
-    /**
-     * The number of the members online.
-     * @type {number}
-     */
-    this.presenceCount = data.presence_count;
+    if ('presence_count' in data) {
+      /**
+       * The number of members online.
+       * @type {number}
+       */
+      this.presenceCount = data.presence_count;
+    }
   }
 
   /**

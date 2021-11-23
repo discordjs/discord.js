@@ -14,11 +14,6 @@ const DataResolver = require('../util/DataResolver');
  * @implements {TextBasedChannel}
  */
 class BaseGuildTextChannel extends GuildChannel {
-  /**
-   * @param {Guild} guild The guild the text channel is part of
-   * @param {APIChannel} data The data for the text channel
-   * @param {Client} [client] A safety parameter for the client that instantiated this
-   */
   constructor(guild, data, client) {
     super(guild, data, client, false);
 
@@ -134,7 +129,7 @@ class BaseGuildTextChannel extends GuildChannel {
   }
 
   /**
-   * Options used to create a {@link Webhook} for {@link TextChannel} and {@link NewsChannel}.
+   * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
    * @typedef {Object} ChannelWebhookCreateOptions
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
    * @property {string} [reason] Reason for creating the webhook

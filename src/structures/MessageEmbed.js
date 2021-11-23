@@ -3,6 +3,8 @@
 const { RangeError } = require('../errors');
 const Util = require('../util/Util');
 
+let deprecationEmittedForSetAuthor = false;
+
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
@@ -264,6 +266,45 @@ class MessageEmbed {
   }
 
   /**
+   * Checks if this embed is equal to another one by comparing every single one of their properties.
+   * @param {MessageEmbed|APIEmbed} embed The embed to compare with
+   * @returns {boolean}
+   */
+  equals(embed) {
+    return (
+      this.type === embed.type &&
+      this.author?.name === embed.author?.name &&
+      this.author?.url === embed.author?.url &&
+      this.author?.iconURL === (embed.author?.iconURL ?? embed.author?.icon_url) &&
+      this.color === embed.color &&
+      this.title === embed.title &&
+      this.description === embed.description &&
+      this.url === embed.url &&
+      this.timestamp === embed.timestamp &&
+      this.fields.length === embed.fields.length &&
+      this.fields.every((field, i) => this._fieldEquals(field, embed.fields[i])) &&
+      this.footer?.text === embed.footer?.text &&
+      this.footer?.iconURL === (embed.footer?.iconURL ?? embed.footer?.icon_url) &&
+      this.image?.url === embed.image?.url &&
+      this.thumbnail?.url === embed.thumbnail?.url &&
+      this.video?.url === embed.video?.url &&
+      this.provider?.name === embed.provider?.name &&
+      this.provider?.url === embed.provider?.url
+    );
+  }
+
+  /**
+   * Compares two given embed fields to see if they are equal
+   * @param {EmbedFieldData} field The first field to compare
+   * @param {EmbedFieldData} other The second field to compare
+   * @returns {boolean}
+   * @private
+   */
+  _fieldEquals(field, other) {
+    return field.name === other.name && field.value === other.value && field.inline === other.inline;
+  }
+
+  /**
    * Adds a field to the embed (max 25).
    * @param {string} name The name of this field
    * @param {string} value The value of this field
@@ -307,14 +348,50 @@ class MessageEmbed {
   }
 
   /**
+   * The options to provide for setting an author for a {@link MessageEmbed}.
+   * @typedef {Object} EmbedAuthorData
+   * @property {string} name The name of this author.
+   * @property {string} [url] The URL of this author.
+   * @property {string} [iconURL] The icon URL of this author.
+   */
+
+  // TODO: Remove the deprecated code in the following method and typings.
+  /**
    * Sets the author of this embed.
-   * @param {string} name The name of the author
-   * @param {string} [iconURL] The icon URL of the author
-   * @param {string} [url] The URL of the author
+   * @param {string|EmbedAuthorData|null} options The options to provide for the author.
+   * A string may simply be provided if only the author name is desirable.
+   * Provide `null` to remove the author data.
+   * @param {string} [deprecatedIconURL] The icon URL of this author.
+   * <warn>This parameter is **deprecated**. Use the `options` parameter instead.</warn>
+   * @param {string} [deprecatedURL] The URL of this author.
+   * <warn>This parameter is **deprecated**. Use the `options` parameter instead.</warn>
    * @returns {MessageEmbed}
    */
-  setAuthor(name, iconURL, url) {
-    this.author = { name: Util.verifyString(name, RangeError, 'EMBED_AUTHOR_NAME'), iconURL, url };
+  setAuthor(options, deprecatedIconURL, deprecatedURL) {
+    if (options === null) {
+      this.author = {};
+      return this;
+    }
+
+    if (typeof options === 'string') {
+      if (
+        !deprecationEmittedForSetAuthor &&
+        (typeof deprecatedIconURL !== 'undefined' || typeof deprecatedURL !== 'undefined')
+      ) {
+        process.emitWarning(
+          // eslint-disable-next-line max-len
+          "Passing strings for the URL or the icon's URL for MessageEmbed#setAuthor is deprecated. Pass a sole object instead.",
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForSetAuthor = true;
+      }
+
+      options = { name: options, url: deprecatedURL, iconURL: deprecatedIconURL };
+    }
+
+    const { name, url, iconURL } = options;
+    this.author = { name: Util.verifyString(name, RangeError, 'EMBED_AUTHOR_NAME'), url, iconURL };
     return this;
   }
 
@@ -452,7 +529,7 @@ class MessageEmbed {
 
   /**
    * Normalizes field input and resolves strings.
-   * @param  {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
+   * @param {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
    * @returns {EmbedField[]}
    */
   static normalizeFields(...fields) {

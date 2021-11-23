@@ -73,3 +73,9 @@ class BaseClient extends EventEmitter {
 }
 
 module.exports = BaseClient;
+
+/**
+ * Emitted for general debugging information.
+ * @event BaseClient#debug
+ * @param {string} info The debug information
+ */

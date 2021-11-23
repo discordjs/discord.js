@@ -11,6 +11,14 @@ const IntegrationApplication = require('./IntegrationApplication');
  */
 
 /**
+ * The type of an {@link Integration}. This can be:
+ * * `twitch`
+ * * `youtube`
+ * * `discord`
+ * @typedef {string} IntegrationType
+ */
+
+/**
  *  Represents a guild integration.
  */
 class Integration extends Base {
@@ -36,8 +44,8 @@ class Integration extends Base {
     this.name = data.name;
 
     /**
-     * The integration type (twitch, youtube or discord)
-     * @type {string}
+     * The integration type
+     * @type {IntegrationType}
      */
     this.type = data.type;
 
@@ -125,17 +133,21 @@ class Integration extends Base {
   }
 
   _patch(data) {
-    /**
-     * The behavior of expiring subscribers
-     * @type {?number}
-     */
-    this.expireBehavior = data.expire_behavior;
+    if ('expire_behavior' in data) {
+      /**
+       * The behavior of expiring subscribers
+       * @type {?number}
+       */
+      this.expireBehavior = data.expire_behavior;
+    }
 
-    /**
-     * The grace period before expiring subscribers
-     * @type {?number}
-     */
-    this.expireGracePeriod = data.expire_grace_period;
+    if ('expire_grace_period' in data) {
+      /**
+       * The grace period before expiring subscribers
+       * @type {?number}
+       */
+      this.expireGracePeriod = data.expire_grace_period;
+    }
 
     if ('application' in data) {
       if (this.application) {

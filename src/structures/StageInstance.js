@@ -28,35 +28,47 @@ class StageInstance extends Base {
   }
 
   _patch(data) {
-    /**
-     * The id of the guild associated with the stage channel
-     * @type {Snowflake}
-     */
-    this.guildId = data.guild_id;
+    if ('guild_id' in data) {
+      /**
+       * The id of the guild associated with the stage channel
+       * @type {Snowflake}
+       */
+      this.guildId = data.guild_id;
+    }
 
-    /**
-     * The id of the channel associated with the stage channel
-     * @type {Snowflake}
-     */
-    this.channelId = data.channel_id;
+    if ('channel_id' in data) {
+      /**
+       * The id of the channel associated with the stage channel
+       * @type {Snowflake}
+       */
+      this.channelId = data.channel_id;
+    }
 
-    /**
-     * The topic of the stage instance
-     * @type {string}
-     */
-    this.topic = data.topic;
+    if ('topic' in data) {
+      /**
+       * The topic of the stage instance
+       * @type {string}
+       */
+      this.topic = data.topic;
+    }
 
-    /**
-     * The privacy level of the stage instance
-     * @type {PrivacyLevel}
-     */
-    this.privacyLevel = PrivacyLevels[data.privacy_level];
+    if ('privacy_level' in data) {
+      /**
+       * The privacy level of the stage instance
+       * @type {PrivacyLevel}
+       */
+      this.privacyLevel = PrivacyLevels[data.privacy_level];
+    }
 
-    /**
-     * Whether or not stage discovery is disabled
-     * @type {?boolean}
-     */
-    this.discoverableDisabled = data.discoverable_disabled ?? null;
+    if ('discoverable_disabled' in data) {
+      /**
+       * Whether or not stage discovery is disabled
+       * @type {?boolean}
+       */
+      this.discoverableDisabled = data.discoverable_disabled;
+    } else {
+      this.discoverableDisabled ??= null;
+    }
   }
 
   /**

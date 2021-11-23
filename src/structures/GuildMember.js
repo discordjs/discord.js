@@ -13,11 +13,6 @@ const Permissions = require('../util/Permissions');
  * @extends {Base}
  */
 class GuildMember extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIGuildMember} data The data for the guild member
-   * @param {Guild} guild The guild the member is part of
-   */
   constructor(client, data, guild) {
     super(client);
 
@@ -34,7 +29,7 @@ class GuildMember extends Base {
     this.joinedTimestamp = null;
 
     /**
-     * The timestamp of when the member used their Nitro boost on the guild, if it was used
+     * The last timestamp this member started boosting the guild
      * @type {?number}
      */
     this.premiumSinceTimestamp = null;
@@ -100,7 +95,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get partial() {
-    return !this.joinedTimestamp;
+    return this.joinedTimestamp === null;
   }
 
   /**
@@ -151,7 +146,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The time of when the member used their Nitro boost on the guild, if it was used
+   * The last time this member started boosting the guild
    * @type {?Date}
    * @readonly
    */

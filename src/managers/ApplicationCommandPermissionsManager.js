@@ -71,9 +71,9 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * <warn>When passing these options to a manager where `guildId` is `null`,
    * `guild` is a required parameter</warn>
    * @typedef {Object} BaseApplicationCommandPermissionsOptions
-   * @param {GuildResolvable} [guild] The guild to modify / check permissions for
+   * @property {GuildResolvable} [guild] The guild to modify / check permissions for
    * <warn>Ignored when the manager has a non-null `guildId` property</warn>
-   * @param {ApplicationCommandResolvable} [command] The command to modify / check permissions for
+   * @property {ApplicationCommandResolvable} [command] The command to modify / check permissions for
    * <warn>Ignored when the manager has a non-null `commandId` property</warn>
    */
 
@@ -122,8 +122,8 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * <warn>One of `command` AND `permissions`, OR `fullPermissions` is required.
    * `fullPermissions` is not a valid option when passing to a manager where `commandId` is non-null</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} SetApplicationCommandPermissionsOptions
-   * @param {ApplicationCommandPermissionData[]} [permissions] The new permissions for the command
-   * @param {GuildApplicationCommandPermissionData[]} [fullPermissions] The new permissions for all commands
+   * @property {ApplicationCommandPermissionData[]} [permissions] The new permissions for the command
+   * @property {GuildApplicationCommandPermissionData[]} [fullPermissions] The new permissions for all commands
    * in a guild <warn>When this parameter is set, `permissions` and `command` are ignored</warn>
    */
 
@@ -200,7 +200,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * Options used to add permissions to a command
    * <warn>The `command` parameter is not optional when the managers `commandId` is `null`</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} AddApplicationCommandPermissionsOptions
-   * @param {ApplicationCommandPermissionData[]} permissions The permissions to add to the command
+   * @property {ApplicationCommandPermissionData[]} permissions The permissions to add to the command
    */
 
   /**
@@ -247,9 +247,9 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * Options used to remove permissions from a command
    * <warn>The `command` parameter is not optional when the managers `commandId` is `null`</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} RemoveApplicationCommandPermissionsOptions
-   * @param {UserResolvable|UserResolvable[]} [users] The user(s) to remove from the command permissions
+   * @property {UserResolvable|UserResolvable[]} [users] The user(s) to remove from the command permissions
    * <warn>One of `users` or `roles` is required</warn>
-   * @param {RoleResolvable|RoleResolvable[]} [roles] The role(s) to remove from the command permissions
+   * @property {RoleResolvable|RoleResolvable[]} [roles] The role(s) to remove from the command permissions
    * <warn>One of `users` or `roles` is required</warn>
    */
 
@@ -328,10 +328,10 @@ class ApplicationCommandPermissionsManager extends BaseManager {
   }
 
   /**
-   * Options used to check existance of permissions on a command
+   * Options used to check the existence of permissions on a command
    * <warn>The `command` parameter is not optional when the managers `commandId` is `null`</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} HasApplicationCommandPermissionsOptions
-   * @param {UserResolvable|RoleResolvable} permissionId The user or role to check if a permission exists for
+   * @property {UserResolvable|RoleResolvable} permissionId The user or role to check if a permission exists for
    * on this command.
    */
 

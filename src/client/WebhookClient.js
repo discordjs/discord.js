@@ -15,7 +15,7 @@ class WebhookClient extends BaseClient {
    * @typedef {Object} WebhookClientData
    * @property {Snowflake} [id] The id of the webhook
    * @property {string} [token] The token of the webhook
-   * @property {string} [url] The full url for the webhook client
+   * @property {string} [url] The full URL for the webhook client
    */
 
   /**

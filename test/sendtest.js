@@ -92,7 +92,7 @@ const tests = [
 client.on('messageCreate', async message => {
   if (message.author.id !== owner) return;
   const match = message.content.match(/^do (.+)$/);
-  if (match && match[1] === 'it') {
+  if (match?.[1] === 'it') {
     /* eslint-disable no-await-in-loop */
     for (const [i, test] of tests.entries()) {
       await message.channel.send(`**#${i}**\n\`\`\`js\n${test.toString()}\`\`\``);

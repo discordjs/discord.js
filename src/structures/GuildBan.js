@@ -7,11 +7,6 @@ const Base = require('./Base');
  * @extends {Base}
  */
 class GuildBan extends Base {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {APIBanData} data The data for the ban
-   * @param {Guild} guild The guild in which the ban is
-   */
   constructor(client, data, guild) {
     super(client);
 
@@ -25,11 +20,13 @@ class GuildBan extends Base {
   }
 
   _patch(data) {
-    /**
-     * The user this ban applies to
-     * @type {User}
-     */
-    this.user = this.client.users._add(data.user, true);
+    if ('user' in data) {
+      /**
+       * The user this ban applies to
+       * @type {User}
+       */
+      this.user = this.client.users._add(data.user, true);
+    }
 
     if ('reason' in data) {
       /**
@@ -60,8 +57,3 @@ class GuildBan extends Base {
 }
 
 module.exports = GuildBan;
-
-/**
- * @external APIBanData
- * @see {@link https://discord.com/developers/docs/resources/guild#create-guild-ban-json-params}
- */

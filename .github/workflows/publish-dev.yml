@@ -16,16 +16,27 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+          cache: npm
+
+      - name: Check previous released version
+        id: pre-release
+        run: |
+          if [[ $(npm view discord.js@dev version | grep -e "$(jq --raw-output '.version' package.json).*.$(git rev-parse --short HEAD | cut -b1-3)") ]]; \
+          then echo '::set-output name=release::false'; \
+          else echo '::set-output name=release::true'; fi
 
       - name: Install dependencies
+        if: steps.pre-release.outputs.release == 'true'
         run: npm ci --ignore-scripts
 
       - name: Deprecate old versions
+        if: steps.pre-release.outputs.release == 'true'
         run: npm deprecate discord.js@"~$(jq --raw-output '.version' package.json)" "no longer supported" || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
       - name: Publish
+        if: steps.pre-release.outputs.release == 'true'
         run: |
           npm version --git-tag-version=false $(jq --raw-output '.version' package.json).$(date +%s).$(git rev-parse --short HEAD)
           npm publish --tag dev || true

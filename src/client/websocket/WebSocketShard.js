@@ -495,7 +495,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Sets the HELLO packet timeout.
-   * @param {number} [time] If set to -1, it will clear the hello timeout timeout
+   * @param {number} [time] If set to -1, it will clear the hello timeout
    * @private
    */
   setHelloTimeout(time) {
@@ -743,7 +743,7 @@ class WebSocketShard extends EventEmitter {
       this.sessionId = null;
     }
 
-    // Step 6: reset the ratelimit data
+    // Step 6: reset the rate limit data
     this.ratelimit.remaining = this.ratelimit.total;
     this.ratelimit.queue.length = 0;
     if (this.ratelimit.timer) {

@@ -61,6 +61,7 @@ class InteractionResponses {
           flags: options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
         },
       },
+      auth: false,
     });
     this.deferred = true;
 
@@ -69,18 +70,19 @@ class InteractionResponses {
 
   /**
    * Creates a reply to this interaction.
+   * <info>Use the `fetchReply` option to get the bot's reply message.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<Message|APIMessage|void>}
    * @example
-   * // Reply to the interaction with an embed
-   * const embed = new MessageEmbed().setDescription('Pong!');
-   *
-   * interaction.reply({ embeds: [embed] })
-   *   .then(() => console.log('Reply sent.'))
+   * // Reply to the interaction and fetch the response
+   * interaction.reply({ content: 'Pong!', fetchReply: true })
+   *   .then((message) => console.log(`Reply sent with content ${message.content}`))
    *   .catch(console.error);
    * @example
-   * // Create an ephemeral reply
-   * interaction.reply({ content: 'Pong!', ephemeral: true })
+   * // Create an ephemeral reply with an embed
+   * const embed = new MessageEmbed().setDescription('Pong!');
+   *
+   * interaction.reply({ embeds: [embed], ephemeral: true })
    *   .then(() => console.log('Reply sent.'))
    *   .catch(console.error);
    */
@@ -100,6 +102,7 @@ class InteractionResponses {
         data,
       },
       files,
+      auth: false,
     });
     this.replied = true;
 
@@ -178,6 +181,7 @@ class InteractionResponses {
       data: {
         type: InteractionResponseTypes.DEFERRED_MESSAGE_UPDATE,
       },
+      auth: false,
     });
     this.deferred = true;
 
@@ -212,6 +216,7 @@ class InteractionResponses {
         data,
       },
       files,
+      auth: false,
     });
     this.replied = true;
 

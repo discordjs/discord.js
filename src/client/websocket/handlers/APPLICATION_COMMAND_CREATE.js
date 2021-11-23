@@ -12,6 +12,7 @@ module.exports = (client, { d: data }) => {
    * Emitted when a guild application command is created.
    * @event Client#applicationCommandCreate
    * @param {ApplicationCommand} command The command which was created
+   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
    */
   client.emit(Events.APPLICATION_COMMAND_CREATE, command);
 };

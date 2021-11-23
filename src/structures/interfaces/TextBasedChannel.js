@@ -65,7 +65,6 @@ class TextBasedChannel {
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to send with the message
    * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
-   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    * @property {MessageAttachment[]} [attachments] Attachments to send in the message
    */
 
@@ -73,6 +72,7 @@ class TextBasedChannel {
    * Options provided when sending or editing a message.
    * @typedef {BaseMessageOptions} MessageOptions
    * @property {ReplyOptions} [reply] The options for replying to a message
+   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
   /**
@@ -96,13 +96,14 @@ class TextBasedChannel {
    * @typedef {Object} FileOptions
    * @property {BufferResolvable} attachment File to attach
    * @property {string} [name='file.jpg'] Filename of the attachment
+   * @property {string} description The description of the file
    */
 
   /**
    * Options for sending a message with a reply.
    * @typedef {Object} ReplyOptions
-   * @param {MessageResolvable} messageReference The message to reply to (must be in the same channel and not system)
-   * @param {boolean} [failIfNotExists=true] Whether to error if the referenced message
+   * @property {MessageResolvable} messageReference The message to reply to (must be in the same channel and not system)
+   * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
    */
 
@@ -128,6 +129,7 @@ class TextBasedChannel {
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg'
+   *     description: 'A description of the file'
    *   }]
    * })
    *   .then(console.log)
@@ -146,6 +148,7 @@ class TextBasedChannel {
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg'
+   *     description: 'A description of the file'
    *   }]
    * })
    *   .then(console.log)
@@ -171,13 +174,7 @@ class TextBasedChannel {
     const { data, files } = await messagePayload.resolveFiles();
     const d = await this.client.api.channels[this.id].messages.post({ data, files });
 
-    const existing = this.messages.cache.get(d.id);
-    if (existing) {
-      const clone = existing._clone();
-      clone._patch(d);
-      return clone;
-    }
-    return this.messages._add(d);
+    return this.messages.cache.get(d.id) ?? this.messages._add(d);
   }
 
   /**

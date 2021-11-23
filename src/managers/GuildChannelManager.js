@@ -93,18 +93,8 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Options used to create a new channel in a guild.
-   * @typedef {Object} GuildChannelCreateOptions
-   * @property {ChannelType|number} [type='GUILD_TEXT'] The type of the new channel.
-   * @property {string} [topic] The topic for the new channel
-   * @property {boolean} [nsfw] Whether the new channel is nsfw
-   * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
-   * @property {number} [userLimit] Maximum amount of users allowed in the new channel (only voice)
+   * @typedef {CategoryCreateChannelOptions} GuildChannelCreateOptions
    * @property {CategoryChannelResolvable} [parent] Parent of the new channel
-   * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
-   * Permission overwrites of the new channel
-   * @property {number} [position] Position of the new channel
-   * @property {number} [rateLimitPerUser] The ratelimit per user for the new channel
-   * @property {string} [reason] Reason for creating the new channel
    */
 
   /**
@@ -131,12 +121,22 @@ class GuildChannelManager extends CachedManager {
    */
   async create(
     name,
-    { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, position, rateLimitPerUser, reason } = {},
+    {
+      type,
+      topic,
+      nsfw,
+      bitrate,
+      userLimit,
+      parent,
+      permissionOverwrites,
+      position,
+      rateLimitPerUser,
+      rtcRegion,
+      reason,
+    } = {},
   ) {
-    if (parent) parent = this.client.channels.resolveId(parent);
-    if (permissionOverwrites) {
-      permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
-    }
+    parent &&= this.client.channels.resolveId(parent);
+    permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
 
     const data = await this.client.api.guilds(this.guild.id).channels.post({
       data: {
@@ -150,6 +150,7 @@ class GuildChannelManager extends CachedManager {
         position,
         permission_overwrites: permissionOverwrites,
         rate_limit_per_user: rateLimitPerUser,
+        rtc_region: rtcRegion,
       },
       reason,
     });
@@ -192,6 +193,31 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
+   * Batch-updates the guild's channels' positions.
+   * <info>Only one channel's parent can be changed at a time</info>
+   * @param {ChannelPosition[]} channelPositions Channel positions to update
+   * @returns {Promise<Guild>}
+   * @example
+   * guild.channels.setPositions([{ channel: channelId, position: newChannelIndex }])
+   *   .then(guild => console.log(`Updated channel positions for ${guild}`))
+   *   .catch(console.error);
+   */
+  async setPositions(channelPositions) {
+    channelPositions = channelPositions.map(r => ({
+      id: this.client.channels.resolveId(r.channel),
+      position: r.position,
+      lock_permissions: r.lockPermissions,
+      parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveId(r.parent) : undefined,
+    }));
+
+    await this.client.api.guilds(this.guild.id).channels.patch({ data: channelPositions });
+    return this.client.actions.GuildChannelsPositionUpdate.handle({
+      guild_id: this.guild.id,
+      channels: channelPositions,
+    }).guild;
+  }
+
+  /**
    * Obtains all active thread channels in the guild from Discord
    * @param {boolean} [cache=true] Whether to cache the fetched data
    * @returns {Promise<FetchedThreads>}
@@ -208,8 +234,3 @@ class GuildChannelManager extends CachedManager {
 }
 
 module.exports = GuildChannelManager;
-
-/**
- * @external APIActiveThreadsList
- * @see {@link https://discord.com/developers/docs/resources/guild#list-active-threads-response-body}
- */

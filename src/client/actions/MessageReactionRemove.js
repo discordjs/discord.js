@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events, VoiceBasedChannelTypes } = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 /*
 { user_id: 'id',
@@ -20,7 +20,7 @@ class MessageReactionRemove extends Action {
 
     // Verify channel
     const channel = this.getChannel(data);
-    if (!channel || VoiceBasedChannelTypes.includes(channel.type)) return false;
+    if (!channel || !channel.isText()) return false;
 
     // Verify message
     const message = this.getMessage(data, channel);

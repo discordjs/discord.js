@@ -9,10 +9,6 @@ const Util = require('../util/Util');
  * Utilises IPC to send and receive data to/from the master process and other shards.
  */
 class ShardClientUtil {
-  /**
-   * @param {Client} client Client of the current shard
-   * @param {ShardingManagerMode} mode Mode the shard was spawned with
-   */
   constructor(client, mode) {
     /**
      * Client for the shard
@@ -179,10 +175,14 @@ class ShardClientUtil {
   async _handleMessage(message) {
     if (!message) return;
     if (message._fetchProp) {
-      const props = message._fetchProp.split('.');
-      let value = this.client;
-      for (const prop of props) value = value[prop];
-      this._respond('fetchProp', { _fetchProp: message._fetchProp, _result: value });
+      try {
+        const props = message._fetchProp.split('.');
+        let value = this.client;
+        for (const prop of props) value = value[prop];
+        this._respond('fetchProp', { _fetchProp: message._fetchProp, _result: value });
+      } catch (err) {
+        this._respond('fetchProp', { _fetchProp: message._fetchProp, _error: Util.makePlainError(err) });
+      }
     } else if (message._eval) {
       try {
         this._respond('eval', { _eval: message._eval, _result: await this.client._eval(message._eval) });

@@ -10,7 +10,7 @@ class GuildMemberUpdateAction extends Action {
       const user = client.users.cache.get(data.user.id);
       if (!user) {
         client.users._add(data.user);
-      } else if (!user.equals(data.user)) {
+      } else if (!user._equals(data.user)) {
         client.actions.UserUpdate.handle(data.user);
       }
     }
@@ -22,7 +22,6 @@ class GuildMemberUpdateAction extends Action {
         const old = member._update(data);
         /**
          * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
-         * Also emitted when the user's details (e.g. username) change.
          * @event Client#guildMemberUpdate
          * @param {GuildMember} oldMember The member before the update
          * @param {GuildMember} newMember The member after the update

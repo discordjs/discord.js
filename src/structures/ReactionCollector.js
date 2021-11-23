@@ -13,8 +13,11 @@ const { Events } = require('../util/Constants');
 
 /**
  * Collects reactions on messages.
- * Will automatically stop if the message (`'messageDelete'`),
- * channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
+ * Will automatically stop if the message ({@link Client#event:messageDelete messageDelete} or
+ * {@link Client#event:messageDeleteBulk messageDeleteBulk}),
+ * channel ({@link Client#event:channelDelete channelDelete}),
+ * thread ({@link Client#event:threadDelete threadDelete}), or
+ * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
  * @extends {Collector}
  */
 class ReactionCollector extends Collector {
@@ -32,7 +35,7 @@ class ReactionCollector extends Collector {
     this.message = message;
 
     /**
-     * The users which have reacted to this message
+     * The users that have reacted to this message
      * @type {Collection}
      */
     this.users = new Collection();
@@ -45,15 +48,22 @@ class ReactionCollector extends Collector {
 
     this.empty = this.empty.bind(this);
     this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
+    this._handleThreadDeletion = this._handleThreadDeletion.bind(this);
     this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
     this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
+
+    const bulkDeleteListener = messages => {
+      if (messages.has(this.message.id)) this.stop('messageDelete');
+    };
 
     this.client.incrementMaxListeners();
     this.client.on(Events.MESSAGE_REACTION_ADD, this.handleCollect);
     this.client.on(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
     this.client.on(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
     this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+    this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
     this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+    this.client.on(Events.THREAD_DELETE, this._handleThreadDeletion);
     this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
 
     this.once('end', () => {
@@ -61,12 +71,25 @@ class ReactionCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
       this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+      this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+      this.client.removeListener(Events.THREAD_DELETE, this._handleThreadDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
       this.client.decrementMaxListeners();
     });
 
     this.on('collect', (reaction, user) => {
+      /**
+       * Emitted whenever a reaction is newly created on a message. Will emit only when a new reaction is
+       * added to the message, as opposed to {@link Collector#collect} which will
+       * be emitted even when a reaction has already been added to the message.
+       * @event ReactionCollector#create
+       * @param {MessageReaction} reaction The reaction that was added
+       * @param {User} user The user that added the reaction
+       */
+      if (reaction.count === 1) {
+        this.emit('create', reaction, user);
+      }
       this.total++;
       this.users.set(user.id, user);
     });
@@ -81,10 +104,10 @@ class ReactionCollector extends Collector {
    * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
    * @param {User} user The user that added the reaction
-   * @returns {Promise<?(Snowflake|string)>}
+   * @returns {?(Snowflake|string)}
    * @private
    */
-  async collect(reaction, user) {
+  collect(reaction) {
     /**
      * Emitted whenever a reaction is collected.
      * @event ReactionCollector#collect
@@ -92,18 +115,6 @@ class ReactionCollector extends Collector {
      * @param {User} user The user that added the reaction
      */
     if (reaction.message.id !== this.message.id) return null;
-
-    /**
-     * Emitted whenever a reaction is newly created on a message. Will emit only when a new reaction is
-     * added to the message, as opposed to {@link Collector#collect} which which will
-     * be emitted even when a reaction has already been added to the message.
-     * @event ReactionCollector#create
-     * @param {MessageReaction} reaction The reaction that was added
-     * @param {User} user The user that added the reaction
-     */
-    if (reaction.count === 1 && (await this.filter(reaction, user, this.collected))) {
-      this.emit('create', reaction, user);
-    }
 
     return ReactionCollector.key(reaction);
   }
@@ -176,8 +187,20 @@ class ReactionCollector extends Collector {
    * @returns {void}
    */
   _handleChannelDeletion(channel) {
-    if (channel.id === this.message.channelId) {
+    if (channel.id === this.message.channelId || channel.id === this.message.channel.parentId) {
       this.stop('channelDelete');
+    }
+  }
+
+  /**
+   * Handles checking if the thread has been deleted, and if so, stops the collector with the reason 'threadDelete'.
+   * @private
+   * @param {ThreadChannel} thread The thread that was deleted
+   * @returns {void}
+   */
+  _handleThreadDeletion(thread) {
+    if (thread.id === this.message.channelId) {
+      this.stop('threadDelete');
     }
   }
 

@@ -93,9 +93,7 @@ class GuildBanManager extends CachedManager {
     if (!options) return this._fetchMany();
     const user = this.client.users.resolveId(options);
     if (user) return this._fetchSingle({ user, cache: true });
-    if (options.user) {
-      options.user = this.client.users.resolveId(options.user);
-    }
+    options.user &&= this.client.users.resolveId(options.user);
     if (!options.user) {
       if ('cache' in options) return this._fetchMany(options.cache);
       return Promise.reject(new Error('FETCH_BAN_RESOLVE_ID'));
@@ -146,10 +144,8 @@ class GuildBanManager extends CachedManager {
       .guilds(this.guild.id)
       .bans(id)
       .put({
-        data: {
-          reason: options.reason,
-          delete_message_days: options.days,
-        },
+        data: { delete_message_days: options.days },
+        reason: options.reason,
       });
     if (user instanceof GuildMember) return user;
     const _user = this.client.users.resolve(id);
@@ -163,7 +159,7 @@ class GuildBanManager extends CachedManager {
    * Unbans a user from the guild.
    * @param {UserResolvable} user The user to unban
    * @param {string} [reason] Reason for unbanning user
-   * @returns {Promise<User>}
+   * @returns {Promise<?User>}
    * @example
    * // Unban a user by id (or with a user/guild member object)
    * guild.bans.remove('84484653687267328')
