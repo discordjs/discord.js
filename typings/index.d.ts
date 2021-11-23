@@ -4428,30 +4428,6 @@ export interface InteractionCollectorOptions<T extends Interaction, Cached exten
   message?: CacheTypeReducer<Cached, Message, APIMessage>;
 }
 
-export interface ButtonInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<Cached extends true ? ButtonInteraction<'cached'> : ButtonInteraction> {
-  componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
-}
-
-export interface SelectMenuInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<
-    Cached extends true ? SelectMenuInteraction<'cached'> : SelectMenuInteraction
-  > {
-  componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
-}
-
-export interface MessageInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<
-    Cached extends true ? MessageComponentInteraction<'cached'> : MessageComponentInteraction
-  > {
-  componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
-}
-
-export type InteractionCollectorOptionsResolvable<Cached = boolean> =
-  | MessageInteractionCollectorOptions<Cached>
-  | SelectMenuInteractionCollectorOptions<Cached>
-  | ButtonInteractionCollectorOptions<Cached>;
-
 export interface InteractionDeferReplyOptions {
   ephemeral?: boolean;
   fetchReply?: boolean;
