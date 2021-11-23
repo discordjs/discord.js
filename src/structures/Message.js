@@ -758,6 +758,7 @@ class Message extends Base {
    * @typedef {BaseMessageOptions} ReplyMessageOptions
    * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
    * does not exist (creates a standard message in this case when false)
+   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
   /**

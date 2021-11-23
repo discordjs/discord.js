@@ -13,6 +13,7 @@ import {
   APIApplicationCommandOption,
   APIApplicationCommandSubCommandOptions,
 } from 'discord-api-types/v9';
+import type { ChildProcess } from 'node:child_process';
 import {
   ApplicationCommand,
   ApplicationCommandChannelOptionData,
@@ -28,6 +29,7 @@ import {
   Client,
   ClientApplication,
   ClientUser,
+  CloseEvent,
   Collection,
   CommandInteraction,
   CommandInteractionOption,
@@ -84,6 +86,8 @@ import {
   ApplicationCommandOptionData,
   ApplicationCommandAutocompleteOption,
   ApplicationCommandNumericOptionData,
+  WebSocketShard,
+  Collector,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 
@@ -1130,5 +1134,32 @@ client.on('interactionCreate', async interaction => {
 });
 
 declare const shard: Shard;
+
+shard.on('death', process => {
+  assertType<ChildProcess>(process);
+});
+
+declare const webSocketShard: WebSocketShard;
+
+webSocketShard.on('close', event => {
+  assertType<CloseEvent>(event);
+});
+
+declare const collector: Collector<string, Interaction, string[]>;
+
+collector.on('collect', (collected, ...other) => {
+  assertType<Interaction>(collected);
+  assertType<string[]>(other);
+});
+
+collector.on('dispose', (vals, ...other) => {
+  assertType<Interaction>(vals);
+  assertType<string[]>(other);
+});
+
+collector.on('end', (collection, reason) => {
+  assertType<Collection<string, Interaction>>(collection);
+  assertType<string>(reason);
+});
 
 assertType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
