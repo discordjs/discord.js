@@ -32,7 +32,6 @@ import {
   CommandInteraction,
   CommandInteractionOption,
   CommandInteractionOptionResolver,
-  CommandOptionNonChoiceResolvableType,
   Constants,
   ContextMenuInteraction,
   DMChannel,
@@ -887,21 +886,6 @@ declare const applicationCommandManager: ApplicationCommandManager;
   assertType<Promise<Collection<Snowflake, ApplicationCommand>>>(
     applicationCommandManager.set([applicationCommandData], '0'),
   );
-}
-
-declare const applicationNonChoiceOptionData: APIApplicationCommandOption & {
-  type: CommandOptionNonChoiceResolvableType;
-};
-{
-  // Options aren't allowed on this command type.
-
-  // @ts-expect-error
-  applicationNonChoiceOptionData.choices;
-}
-declare const applicationChoiceOptionData: APIApplicationCommandOption & { type: ApplicationCommandOptionType.String };
-{
-  // Choices should be available.
-  applicationChoiceOptionData.choices;
 }
 
 declare const applicationSubGroupCommandData: Camelize<APIApplicationCommandSubCommandOptions>;
