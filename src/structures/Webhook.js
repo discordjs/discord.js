@@ -249,6 +249,7 @@ class Webhook {
     const data = await this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,
+      auth: !this.token || Boolean(channel),
     });
 
     this.name = data.name;
@@ -287,6 +288,7 @@ class Webhook {
         query: {
           thread_id: cacheOrOptions.threadId,
         },
+        auth: false,
       });
     return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cacheOrOptions.cache) ?? data;
   }
@@ -317,6 +319,7 @@ class Webhook {
         query: {
           thread_id: messagePayload.options.threadId,
         },
+        auth: false,
       });
 
     const messageManager = this.client.channels?.cache.get(d.channel_id)?.messages;
@@ -336,7 +339,7 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async delete(reason) {
-    await this.client.api.webhooks(this.id, this.token).delete({ reason });
+    await this.client.api.webhooks(this.id, this.token).delete({ reason, auth: !this.token });
   }
 
   /**
@@ -355,6 +358,7 @@ class Webhook {
         query: {
           thread_id: threadId,
         },
+        auth: false,
       });
   }
 
