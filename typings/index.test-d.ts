@@ -1071,12 +1071,15 @@ declare const guild: Guild;
 expectType<Promise<GuildAuditLogs<'MEMBER_KICK'>>>(guild.fetchAuditLogs({ type: 'MEMBER_KICK' }));
 expectType<Promise<GuildAuditLogs<20>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }));
 expectType<Promise<GuildAuditLogs<20>>>(guild.fetchAuditLogs({ type: 20 }));
+
 expectType<Promise<GuildAuditLogs<'CHANNEL_CREATE'>>>(guild.fetchAuditLogs({ type: 'CHANNEL_CREATE' }));
 expectType<Promise<GuildAuditLogs<10>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.CHANNEL_CREATE }));
 expectType<Promise<GuildAuditLogs<10>>>(guild.fetchAuditLogs({ type: 10 }));
+
 expectType<Promise<GuildAuditLogs<'INTEGRATION_UPDATE'>>>(guild.fetchAuditLogs({ type: 'INTEGRATION_UPDATE' }));
 expectType<Promise<GuildAuditLogs<81>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.INTEGRATION_UPDATE }));
 expectType<Promise<GuildAuditLogs<81>>>(guild.fetchAuditLogs({ type: 81 }));
+
 expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs({ type: 'ALL' }));
 expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.ALL }));
 expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs());
@@ -1128,5 +1131,5 @@ expectType<Promise<User | undefined>>(
 
 expectType<Promise<User | undefined>>(
   // @ts-expect-error Invalid audit log ID
-  guild.fetchAuditLogs({ type: 19 }).then(al => al.entries.first()?.target),
+  guild.fetchAuditLogs({ type: 2000 }).then(al => al.entries.first()?.target),
 );
