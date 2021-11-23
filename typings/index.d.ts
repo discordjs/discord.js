@@ -1529,7 +1529,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
 }
 
 export class MessageContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
-  public targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
+  public readonly targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
   public inGuild(): this is MessageContextMenuInteraction<'present'>;
   public inCachedGuild(): this is MessageContextMenuInteraction<'cached'>;
   public inRawGuild(): this is MessageContextMenuInteraction<'raw'>;
