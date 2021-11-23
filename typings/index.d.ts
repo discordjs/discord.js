@@ -2179,8 +2179,8 @@ export class User extends PartialTextBasedChannel(Base) {
 }
 
 export class UserContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
-  public targetUser: User;
-  public targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
+  public readonly targetUser: User;
+  public readonly targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   public inGuild(): this is UserContextMenuInteraction<'present'>;
   public inCachedGuild(): this is UserContextMenuInteraction<'cached'>;
   public inRawGuild(): this is UserContextMenuInteraction<'raw'>;
