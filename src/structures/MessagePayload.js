@@ -182,7 +182,7 @@ class MessagePayload {
       description: file.description,
     }));
     if (Array.isArray(this.options.attachments)) {
-      this.options.attachments.push(...attachments);
+      this.options.attachments.push(...(attachments ?? []));
     } else {
       this.options.attachments = attachments;
     }
