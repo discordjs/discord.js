@@ -468,6 +468,13 @@ class Guild extends AnonymousGuild {
       }
     }
 
+    if (data.guild_scheduled_events) {
+      this.scheduledEvents.cache.clear();
+      for (const scheduledEvent of data.guild_scheduled_events) {
+        this.scheduledEvents._add(scheduledEvent);
+      }
+    }
+
     if (data.voice_states) {
       this.voiceStates.cache.clear();
       for (const voiceState of data.voice_states) {
