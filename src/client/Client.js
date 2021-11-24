@@ -284,7 +284,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Options used to fetch an invite from Discord.
+   * Options used when fetching an invite from Discord.
    * @typedef {Object} ClientFetchInviteOptions
    * @property {Snowflake} [guildScheduledEventId] The id of the guild scheduled event to include with
    * the invite
