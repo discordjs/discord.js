@@ -22,8 +22,8 @@ class APIRequest {
     let queryString = '';
     if (options.query) {
       const query = Object.entries(options.query)
-        .filter(([, value]) => value !== null && typeof value !== 'undefined')
-        .flatMap(([key, value]) => (Array.isArray(value) ? value.map(v => [key, v]) : [[key, value]]));
+        .filter(([ , value ]) => value !== null && typeof value !== 'undefined')
+        .flatMap(([ key, value ]) => (Array.isArray(value) ? value.map(v => [ key, v ]) : [ [ key, value ] ]));
       queryString = new URLSearchParams(query).toString();
     }
     this.path = `${path}${queryString && `?${queryString}`}`;
@@ -44,18 +44,18 @@ class APIRequest {
     };
 
     if (this.options.auth !== false) headers.Authorization = this.rest.getAuth();
-    if (this.options.reason) headers['X-Audit-Log-Reason'] = encodeURIComponent(this.options.reason);
+    if (this.options.reason) headers[ 'X-Audit-Log-Reason' ] = encodeURIComponent(this.options.reason);
     if (this.options.headers) headers = Object.assign(headers, this.options.headers);
 
     let body;
     if (this.options.files?.length) {
       body = new FormData();
-      for (const [index, file] of this.options.files.entries()) {
-        if (file?.file) body.append(file.key ?? `files[${index}]`, file.file, file.name);
+      for (const file of this.options.files) {
+        if (file?.file) body.append(file.key ?? file.name, file.file, file.name);
       }
       if (typeof this.options.data !== 'undefined') {
         if (this.options.dontUsePayloadJSON) {
-          for (const [key, value] of Object.entries(this.options.data)) body.append(key, value);
+          for (const [ key, value ] of Object.entries(this.options.data)) body.append(key, value);
         } else {
           body.append('payload_json', JSON.stringify(this.options.data));
         }
@@ -64,18 +64,22 @@ class APIRequest {
       // eslint-disable-next-line eqeqeq
     } else if (this.options.data != null) {
       body = JSON.stringify(this.options.data);
-      headers['Content-Type'] = 'application/json';
+      headers[ 'Content-Type' ] = 'application/json';
     }
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.client.options.restRequestTimeout).unref();
+
+
     return fetch(url, {
       method: this.method,
       headers,
       agent,
       body,
       signal: controller.signal,
-    }).finally(() => clearTimeout(timeout));
+    }).catch((error) => { console.error(new fetch.FetchError("\nUnable to connect to the Discord API\n\n", "NetworkError")); process.exit(0) }).finally(() => clearTimeout(timeout));
+
+
   }
 }
 
