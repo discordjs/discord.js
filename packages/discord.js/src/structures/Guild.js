@@ -36,8 +36,6 @@ const DataResolver = require('../util/DataResolver');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
 const Util = require('../util/Util');
 
-let deprecationEmittedForSetChannelPositions = false;
-let deprecationEmittedForSetRolePositions = false;
 let deprecationEmittedForDeleted = false;
 
 /**
@@ -1217,76 +1215,6 @@ class Guild extends AnonymousGuild {
    */
   setPremiumProgressBarEnabled(enabled = true, reason) {
     return this.edit({ premiumProgressBarEnabled: enabled }, reason);
-  }
-
-  /**
-   * Data that can be resolved to give a Category Channel object. This can be:
-   * * A CategoryChannel object
-   * * A Snowflake
-   * @typedef {CategoryChannel|Snowflake} CategoryChannelResolvable
-   */
-
-  /**
-   * The data needed for updating a channel's position.
-   * @typedef {Object} ChannelPosition
-   * @property {GuildChannel|Snowflake} channel Channel to update
-   * @property {number} [position] New position for the channel
-   * @property {CategoryChannelResolvable} [parent] Parent channel for this channel
-   * @property {boolean} [lockPermissions] If the overwrites should be locked to the parents overwrites
-   */
-
-  /**
-   * Batch-updates the guild's channels' positions.
-   * <info>Only one channel's parent can be changed at a time</info>
-   * @param {ChannelPosition[]} channelPositions Channel positions to update
-   * @returns {Promise<Guild>}
-   * @deprecated Use {@link GuildChannelManager#setPositions} instead
-   * @example
-   * guild.setChannelPositions([{ channel: channelId, position: newChannelIndex }])
-   *   .then(guild => console.log(`Updated channel positions for ${guild}`))
-   *   .catch(console.error);
-   */
-  setChannelPositions(channelPositions) {
-    if (!deprecationEmittedForSetChannelPositions) {
-      process.emitWarning(
-        'The Guild#setChannelPositions method is deprecated. Use GuildChannelManager#setPositions instead.',
-        'DeprecationWarning',
-      );
-
-      deprecationEmittedForSetChannelPositions = true;
-    }
-
-    return this.channels.setPositions(channelPositions);
-  }
-
-  /**
-   * The data needed for updating a guild role's position
-   * @typedef {Object} GuildRolePosition
-   * @property {RoleResolvable} role The role's id
-   * @property {number} position The position to update
-   */
-
-  /**
-   * Batch-updates the guild's role positions
-   * @param {GuildRolePosition[]} rolePositions Role positions to update
-   * @returns {Promise<Guild>}
-   * @deprecated Use {@link RoleManager#setPositions} instead
-   * @example
-   * guild.setRolePositions([{ role: roleId, position: updatedRoleIndex }])
-   *  .then(guild => console.log(`Role positions updated for ${guild}`))
-   *  .catch(console.error);
-   */
-  setRolePositions(rolePositions) {
-    if (!deprecationEmittedForSetRolePositions) {
-      process.emitWarning(
-        'The Guild#setRolePositions method is deprecated. Use RoleManager#setPositions instead.',
-        'DeprecationWarning',
-      );
-
-      deprecationEmittedForSetRolePositions = true;
-    }
-
-    return this.roles.setPositions(rolePositions);
   }
 
   /**

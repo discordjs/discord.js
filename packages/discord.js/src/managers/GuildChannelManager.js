@@ -205,6 +205,22 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
+   * Data that can be resolved to give a Category Channel object. This can be:
+   * * A CategoryChannel object
+   * * A Snowflake
+   * @typedef {CategoryChannel|Snowflake} CategoryChannelResolvable
+   */
+
+  /**
+   * The data needed for updating a channel's position.
+   * @typedef {Object} ChannelPosition
+   * @property {GuildChannel|Snowflake} channel Channel to update
+   * @property {number} [position] New position for the channel
+   * @property {CategoryChannelResolvable} [parent] Parent channel for this channel
+   * @property {boolean} [lockPermissions] If the overwrites should be locked to the parents overwrites
+   */
+
+  /**
    * Batch-updates the guild's channels' positions.
    * <info>Only one channel's parent can be changed at a time</info>
    * @param {ChannelPosition[]} channelPositions Channel positions to update
