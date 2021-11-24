@@ -68,11 +68,7 @@ class GuildScheduledEventManager extends CachedManager {
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: new Date(scheduledStartTime).toISOString(),
-        scheduled_end_time: scheduledEndTime
-          ? new Date(scheduledEndTime).toISOString()
-          : scheduledEndTime === null
-          ? scheduledEndTime
-          : undefined,
+        scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : scheduledEndTime,
         description,
         entity_type: entityType,
         entity_metadata: {
@@ -182,11 +178,7 @@ class GuildScheduledEventManager extends CachedManager {
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: scheduledStartTime ? new Date(scheduledStartTime).toISOString() : undefined,
-        scheduled_end_time: scheduledEndTime
-          ? new Date(scheduledEndTime).toISOString()
-          : scheduledEndTime === null
-          ? scheduledEndTime
-          : undefined,
+        scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : scheduledEndTime,
         description,
         entity_type: entityType,
         status,
