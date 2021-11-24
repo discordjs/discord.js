@@ -1070,13 +1070,13 @@ expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
 // Test audit logs
 declare const guild: Guild;
 expectType<Promise<GuildAuditLogs<'MEMBER_KICK'>>>(guild.fetchAuditLogs({ type: 'MEMBER_KICK' }));
-expectType<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(
+expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(
   guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }),
 );
 expectType<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }));
 
 expectType<Promise<GuildAuditLogs<'CHANNEL_CREATE'>>>(guild.fetchAuditLogs({ type: 'CHANNEL_CREATE' }));
-expectType<Promise<GuildAuditLogs<AuditLogEvent.ChannelCreate>>>(
+expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.ChannelCreate>>>(
   guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.CHANNEL_CREATE }),
 );
 expectType<Promise<GuildAuditLogs<AuditLogEvent.ChannelCreate>>>(
@@ -1084,7 +1084,7 @@ expectType<Promise<GuildAuditLogs<AuditLogEvent.ChannelCreate>>>(
 );
 
 expectType<Promise<GuildAuditLogs<'INTEGRATION_UPDATE'>>>(guild.fetchAuditLogs({ type: 'INTEGRATION_UPDATE' }));
-expectType<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
+expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
   guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.INTEGRATION_UPDATE }),
 );
 expectType<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
@@ -1101,7 +1101,7 @@ expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', '
 expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
   guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }).then(al => al.entries.first()),
 );
-expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
+expectAssignable<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
 );
 
