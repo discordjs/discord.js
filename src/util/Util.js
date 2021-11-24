@@ -483,9 +483,10 @@ class Util extends null {
    */
   static discordSort(collection) {
     return collection.sorted((a, b) => {
+      if (a.rawPosition !== b.rawPosition) return a.rawPosition - b.rawPosition;
       const aId = BigInt(a.id);
       const bId = BigInt(b.id);
-      return a.rawPosition - b.rawPosition || Number(a instanceof GuildChannel ? aId - bId : bId - aId);
+      return Number(a instanceof GuildChannel ? aId - bId : bId - aId);
     });
   }
 
