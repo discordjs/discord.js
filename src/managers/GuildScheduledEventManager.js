@@ -39,7 +39,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @typedef {Object} GuildScheduledEventCreateOptions
    * @property {string} name The name of the guild scheduled event
    * @property {DateResolvable} scheduledStartTime The time to schedule the event at
-   * @property {DateResolvable} [scheduledEndTime] The time to end the event at
+   * @property {?DateResolvable} [scheduledEndTime] The time to end the event at
    * <warn>This is required if entityType is 'EXTERNAL'</warn>
    * @property {PrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
@@ -68,7 +68,11 @@ class GuildScheduledEventManager extends CachedManager {
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: new Date(scheduledStartTime).toISOString(),
-        scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : undefined,
+        scheduled_end_time: scheduledEndTime
+          ? new Date(scheduledEndTime).toISOString()
+          : scheduledEndTime === null
+          ? scheduledEndTime
+          : undefined,
         description,
         entity_type: entityType,
         entity_metadata: {
@@ -135,7 +139,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @typedef {Object} GuildScheduledEventEditOptions
    * @property {string} [name] The name of the guild scheduled event
    * @property {DateResolvable} [scheduledStartTime] The time to schedule the event at
-   * @property {DateResolvable} [scheduledEndTime] The time to end the event at
+   * @property {?DateResolvable} [scheduledEndTime] The time to end the event at
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
@@ -178,7 +182,11 @@ class GuildScheduledEventManager extends CachedManager {
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: scheduledStartTime ? new Date(scheduledStartTime).toISOString() : undefined,
-        scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : undefined,
+        scheduled_end_time: scheduledEndTime
+          ? new Date(scheduledEndTime).toISOString()
+          : scheduledEndTime === null
+          ? scheduledEndTime
+          : undefined,
         description,
         entity_type: entityType,
         status,

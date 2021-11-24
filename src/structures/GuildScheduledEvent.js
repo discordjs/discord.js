@@ -252,6 +252,20 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
+   * Sets a new time to end the event at.
+   * @param {?DateResolvable} scheduledEndTime The time to end the event at
+   * @returns {Promise<GuildScheduledEvent>}
+   * @example
+   * // Set end time of a guild scheduled event
+   * guildScheduledEvent.setScheduledEndTime('September 25, 2022'))
+   *  .then(guildScheduledEvent => console.log(`Set the end time to: ${guildScheduledEvent.scheduledEndTime}`))
+   *  .catch(console.error);
+   */
+  setScheduledEndTime(scheduledEndTime) {
+    return this.edit({ scheduledEndTime });
+  }
+
+  /**
    * Sets the new description of the guild scheduled event.
    * @param {string} description The description of the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}

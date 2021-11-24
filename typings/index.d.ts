@@ -1184,6 +1184,7 @@ export class GuildScheduledEvent extends Base {
   public delete(): Promise<GuildScheduledEvent>;
   public setName(name: string): Promise<GuildScheduledEvent>;
   public setScheduledStartTime(scheduledStartTime: DateResolvable): Promise<GuildScheduledEvent>;
+  public setScheduledEndTime(scheduledEndTime: DateResolvable | null): Promise<GuildScheduledEvent>;
   public setPrivacyLevel(privacyLevel: GuildScheduledEventPrivacyLevel | number): Promise<GuildScheduledEvent>;
   public setDescription(description: string): Promise<GuildScheduledEvent>;
   public setStatus(status: string): Promise<GuildScheduledEvent>;
@@ -4731,7 +4732,7 @@ export interface GuildListMembersOptions {
 export interface GuildScheduledEventCreateOptions {
   name: string;
   scheduledStartTime: DateResolvable;
-  scheduledEndTime?: DateResolvable;
+  scheduledEndTime?: DateResolvable | null;
   privacyLevel: GuildScheduledEventPrivacyLevel | number;
   entityType: GuildScheduledEventEntityType | number;
   description?: string;
