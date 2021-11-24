@@ -100,6 +100,16 @@ class GenericAction {
     }
     return this.getUser(data);
   }
+
+  getScheduledEvent(data, guild) {
+    const id = data.guild_scheduled_event_id ?? data.id;
+    return this.getPayload(
+      { id, guild_id: data.guild_id ?? guild.id },
+      guild.scheduledEvents,
+      id,
+      PartialTypes.GUILD_SCHEDULED_EVENT,
+    );
+  }
 }
 
 module.exports = GenericAction;

@@ -95,6 +95,7 @@ body:
         - GUILD_MEMBER
         - MESSAGE
         - REACTION
+        - GUILD_SCHEDULED_EVENT
       multiple: true
     validations:
       required: true

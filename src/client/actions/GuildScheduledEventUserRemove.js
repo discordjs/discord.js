@@ -9,18 +9,20 @@ class GuildScheduledEventUserRemoveAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
 
     if (guild) {
-      const guildScheduledEvent = guild.scheduledEvents.cache.get(data.guild_scheduled_event_id);
-      const user = client.users.cache.get(data.user_id);
+      const guildScheduledEvent = this.getScheduledEvent(data, guild);
+      const user = this.getUser(data);
 
-      /**
-       * Emitted whenever a user unsubscribes from a guild scheduled event
-       * @event Client#guildScheduledEventUserRemove
-       * @param {GuildScheduledEvent} guildScheduledEvent The guild scheduled event
-       * @param {User} user The user who unsubscribed
-       */
-      client.emit(Events.GUILD_SCHEDULED_EVENT_USER_REMOVE, guildScheduledEvent, user);
+      if (guildScheduledEvent && user) {
+        /**
+         * Emitted whenever a user unsubscribes from a guild scheduled event
+         * @event Client#guildScheduledEventUserRemove
+         * @param {GuildScheduledEvent} guildScheduledEvent The guild scheduled event
+         * @param {User} user The user who unsubscribed
+         */
+        client.emit(Events.GUILD_SCHEDULED_EVENT_USER_REMOVE, guildScheduledEvent, user);
 
-      return { guildScheduledEvent, user };
+        return { guildScheduledEvent, user };
+      }
     }
 
     return {};
