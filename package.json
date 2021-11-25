@@ -49,7 +49,7 @@
 		"turbo": "^1.0.24-canary.2"
 	},
 	"engines": {
-		"node": ">=16.6.0"
+		"node": ">=16.9.0"
 	},
 	"workspaces": [
 		"packages/*"
