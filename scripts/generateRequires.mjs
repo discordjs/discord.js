@@ -19,7 +19,7 @@ async function writeClientActionImports() {
   const lines = ["'use strict';\n", 'class ActionsManager {', '  constructor(client) {', '    this.client = client;\n'];
 
   const actionsDirectory = new URL('../src/client/actions', import.meta.url);
-  for (const file of await readdir(actionsDirectory)) {
+  for (const file of (await readdir(actionsDirectory)).sort()) {
     if (file === 'Action.js' || file === 'ActionsManager.js') continue;
 
     lines.push(`    this.register(require('./${file.slice(0, -3)}'));`);
