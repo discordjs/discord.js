@@ -2,7 +2,7 @@
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1_420_070_400_000;
-let INCREMENT = 0n;
+let INCREMENT = BigInt(0);
 
 /**
  * A container for useful snowflake-related methods.
@@ -34,7 +34,7 @@ class SnowflakeUtil extends null {
         `"timestamp" argument must be a number (received ${isNaN(timestamp) ? 'NaN' : typeof timestamp})`,
       );
     }
-    if (INCREMENT >= 4095n) INCREMENT = 0n;
+    if (INCREMENT >= 4095n) INCREMENT = BigInt(0);
 
     // Assign WorkerId as 1 and ProcessId as 0:
     return ((BigInt(timestamp - EPOCH) << 22n) | (1n << 17n) | INCREMENT++).toString();
