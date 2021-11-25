@@ -6,7 +6,6 @@ const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
-const GuildChannel = require('../structures/GuildChannel');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
 
@@ -657,3 +656,6 @@ class Util extends null {
 }
 
 module.exports = Util;
+
+// Fixes Circular
+const GuildChannel = require('../structures/GuildChannel');
