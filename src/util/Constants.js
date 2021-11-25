@@ -1019,9 +1019,21 @@ exports.InteractionResponseTypes = createEnum([
  * * BUTTON
  * * SELECT_MENU
  * @typedef {string} MessageComponentType
+ * @deprecated Use @{@link ComponentTypes} instead
  * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
  */
 exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU']);
+
+/**
+ * The type of a message component
+ * * ACTION_ROW
+ * * BUTTON
+ * * SELECT_MENU
+ * * INPUT_TEXT
+ * @typedef {string} ComponentType
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
+ */
+exports.ComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU', 'INPUT_TEXT']);
 
 /**
  * The style of a message button
@@ -1111,6 +1123,7 @@ function createEnum(keys) {
  * @property {MembershipState} MembershipStates The value set for a team member's membership state.
  * @property {MessageButtonStyle} MessageButtonStyles The style of a message button.
  * @property {MessageComponentType} MessageComponentTypes The type of a message component.
+ * @property {ComponentType} ComponentTypes The type of a component.
  * @property {MFALevel} MFALevels The required MFA level for a guild.
  * @property {NSFWLevel} NSFWLevels NSFW level of a guild.
  * @property {OverwriteType} OverwriteTypes An overwrite type.
