@@ -2912,7 +2912,7 @@ export class MessageManager extends CachedManager<Snowflake, Message, MessageRes
   public cache: Collection<Snowflake, Message>;
   public crosspost(message: MessageResolvable): Promise<Message>;
   public delete(message: MessageResolvable): Promise<void>;
-  public edit(message: MessageResolvable, options: MessagePayload | MessageEditOptions): Promise<Message>;
+  public edit(message: MessageResolvable, options: string | MessagePayload | MessageEditOptions): Promise<Message>;
   public fetch(message: Snowflake, options?: BaseFetchOptions): Promise<Message>;
   public fetch(
     options?: ChannelLogsQueryOptions,
