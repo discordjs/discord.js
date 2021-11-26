@@ -1437,6 +1437,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public inGuild(): this is Message<true> & this;
 }
 
+/** @deprecated use {@link ActionRow} instead */
 export class MessageActionRow extends BaseMessageComponent {
   public constructor(data?: MessageActionRow | MessageActionRowOptions | APIActionRowComponent);
   public type: 'ACTION_ROW';
@@ -1452,6 +1453,16 @@ export class MessageActionRow extends BaseMessageComponent {
     deleteCount: number,
     ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
   ): this;
+  public toJSON(): APIActionRowComponent;
+}
+
+export class ActionRow<T extends BaseComponent> {
+  public constructor(data?: ActionRow<BaseComponent> | ActionRowOptions | APIActionRowComponent);
+  public type: 'ACTION_ROW';
+  public components: T[];
+  public addComponents(...components: T[] | T[][]): this;
+  public setComponents(...components: T[] | T[][]): this;
+  public spliceComponents(index: number, deleteCount: number, ...components: T[] | T[][]): this;
   public toJSON(): APIActionRowComponent;
 }
 
@@ -4794,7 +4805,7 @@ export interface MessageOptions {
   nonce?: string | number;
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions | APIEmbed)[];
-  components?: (MessageActionRow | (Required<BaseComponentOptions> & ActionRowOptions))[];
+  components?: (ActionRow<BaseComponent> | (Required<BaseComponentOptions> & ActionRowOptions))[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;

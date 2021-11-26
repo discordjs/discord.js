@@ -79,6 +79,9 @@ import {
   Shard,
   WebSocketShard,
   Collector,
+  ActionRow,
+  ButtonComponent,
+  SelectMenuComponent,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -665,6 +668,7 @@ client.on('interaction', async interaction => {
 
   const actionRow = new MessageActionRow({ components: [button] });
 
+  // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
   // @ts-expect-error
@@ -1060,5 +1064,13 @@ collector.on('end', (collection, reason) => {
   expectType<Collection<string, Interaction>>(collection);
   expectType<string>(reason);
 });
+
+const row = new ActionRow();
+row.addComponents(new ButtonComponent());
+row.addComponents(new SelectMenuComponent());
+
+declare const message: Message;
+
+message.reply({ components: [row] });
 
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
