@@ -60,7 +60,9 @@ import {
   ApplicationCommandOptionTypes,
   ApplicationCommandPermissionTypes,
   ApplicationCommandTypes,
+  ButtonStyles,
   ChannelTypes,
+  ComponentTypes,
   DefaultMessageNotificationLevels,
   ExplicitContentFilterLevels,
   InteractionResponseTypes,
@@ -415,10 +417,17 @@ export class BaseGuildVoiceChannel extends GuildChannel {
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
 }
 
+/** @deprecated use {@link BaseComponent} instead */
 export class BaseMessageComponent {
   protected constructor(data?: BaseMessageComponent | BaseMessageComponentOptions);
   public type: MessageComponentType | null;
   private static create(data: MessageComponentOptions, client?: Client | WebhookClient): MessageComponent | undefined;
+  private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
+}
+
+export class BaseComponent {
+  protected constructor(data?: BaseComponent | BaseComponentOptions);
+  public type: MessageComponentType | null;
   private static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
@@ -1468,6 +1477,7 @@ export class MessageAttachment {
   public toJSON(): unknown;
 }
 
+/** @deprecated use {@link ButtonComponent} instead */
 export class MessageButton extends BaseMessageComponent {
   public constructor(data?: MessageButton | MessageButtonOptions | APIButtonComponent);
   public customId: string | null;
@@ -1485,6 +1495,25 @@ export class MessageButton extends BaseMessageComponent {
   public setURL(url: string): this;
   public toJSON(): APIButtonComponent;
   private static resolveStyle(style: MessageButtonStyleResolvable): MessageButtonStyle;
+}
+
+export class ButtonComponent extends BaseComponent {
+  public constructor(data?: ButtonComponent | ButtonComponentOptions | APIButtonComponent);
+  public customId: string | null;
+  public disabled: boolean;
+  public emoji: APIPartialEmoji | null;
+  public label: string | null;
+  public style: ButtonStyle | null;
+  public type: 'BUTTON';
+  public url: string | null;
+  public setCustomId(customId: string): this;
+  public setDisabled(disabled?: boolean): this;
+  public setEmoji(emoji: EmojiIdentifierResolvable): this;
+  public setLabel(label: string): this;
+  public setStyle(style: ButtonComponentStyleResolvable): this;
+  public setURL(url: string): this;
+  public toJSON(): APIButtonComponent;
+  private static resolveStyle(style: ButtonComponentStyleResolvable): ButtonStyle;
 }
 
 export class MessageCollector extends Collector<Snowflake, Message> {
@@ -1656,6 +1685,7 @@ export class MessageReaction {
   public toJSON(): unknown;
 }
 
+/** @deprecated use {@link SelectMenuComponent} instead */
 export class MessageSelectMenu extends BaseMessageComponent {
   public constructor(data?: MessageSelectMenu | MessageSelectMenuOptions | APISelectMenuComponent);
   public customId: string | null;
@@ -1676,6 +1706,30 @@ export class MessageSelectMenu extends BaseMessageComponent {
     index: number,
     deleteCount: number,
     ...options: MessageSelectOptionData[] | MessageSelectOptionData[][]
+  ): this;
+  public toJSON(): APISelectMenuComponent;
+}
+
+export class SelectMenuComponent extends BaseComponent {
+  public constructor(data?: SelectMenuComponent | SelectMenuComponentOptions | APISelectMenuComponent);
+  public customId: string | null;
+  public disabled: boolean;
+  public maxValues: number | null;
+  public minValues: number | null;
+  public options: SelectMenuOption[];
+  public placeholder: string | null;
+  public type: 'SELECT_MENU';
+  public addOptions(...options: SelectMenuComponentOptionData[] | SelectMenuComponentOptionData[][]): this;
+  public setOptions(...options: SelectMenuComponentOptionData[] | SelectMenuComponentOptionData[][]): this;
+  public setCustomId(customId: string): this;
+  public setDisabled(disabled?: boolean): this;
+  public setMaxValues(maxValues: number): this;
+  public setMinValues(minValues: number): this;
+  public setPlaceholder(placeholder: string): this;
+  public spliceOptions(
+    index: number,
+    deleteCount: number,
+    ...options: SelectMenuComponentOptionData[] | SelectMenuComponentOptionData[][]
   ): this;
   public toJSON(): APISelectMenuComponent;
 }
@@ -3515,8 +3569,13 @@ export interface BaseFetchOptions {
   force?: boolean;
 }
 
+/** @deprecated use {@link BaseComponentOptions} instead */
 export interface BaseMessageComponentOptions {
   type?: MessageComponentType | MessageComponentTypes;
+}
+
+export interface BaseComponentOptions {
+  type?: ComponentType | ComponentTypes;
 }
 
 export type BitFieldResolvable<T extends string, N extends number | bigint> =
@@ -4526,16 +4585,32 @@ export type MemberMention = UserMention | `<@!${Snowflake}>`;
 
 export type MembershipState = keyof typeof MembershipStates;
 
+/** @deprecated use {@link ActionRowComponent} instead */
 export type MessageActionRowComponent = MessageButton | MessageSelectMenu;
 
+export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
+
+/** @deprecated use {@link ActionRowComponentOptions} instead */
 export type MessageActionRowComponentOptions =
   | (Required<BaseMessageComponentOptions> & MessageButtonOptions)
   | (Required<BaseMessageComponentOptions> & MessageSelectMenuOptions);
 
+export type ActionRowComponentOptions =
+  | (Required<BaseComponentOptions> & ButtonComponentOptions)
+  | (Required<BaseComponentOptions> & SelectMenuComponentOptions);
+
+/** @deprecated use {@link ActionRowComponentResolvable} instead */
 export type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
 
+export type ActionRowComponentResolvable = ActionRowComponent | ActionRowComponentOptions;
+
+/** @deprecated use {@link ActionRowOptions} instead */
 export interface MessageActionRowOptions extends BaseMessageComponentOptions {
   components: MessageActionRowComponentResolvable[];
+}
+
+export interface ActionRowOptions extends BaseComponentOptions {
+  components: ActionRowComponentResolvable[];
 }
 
 export interface MessageActivity {
@@ -4559,11 +4634,20 @@ export interface InteractionButtonOptions extends BaseButtonOptions {
   customId: string;
 }
 
+/** @deprecated use {@link ButtonComponentOptions} instead */
 export type MessageButtonOptions = InteractionButtonOptions | LinkButtonOptions;
 
+export type ButtonComponentOptions = InteractionButtonOptions | LinkButtonOptions;
+
+/** @deprecated use {@link ButtonStyle} instead */
 export type MessageButtonStyle = keyof typeof MessageButtonStyles;
 
+export type ButtonStyle = keyof typeof ButtonStyles;
+
+/** @deprecated use {@link ButtonComponentStyleResolvable} instead */
 export type MessageButtonStyleResolvable = MessageButtonStyle | MessageButtonStyles;
+
+export type ButtonComponentStyleResolvable = ButtonStyle | ButtonStyles;
 
 export interface MessageCollectorOptions extends CollectorOptions<[Message]> {
   max?: number;
@@ -4582,13 +4666,25 @@ export type MessageChannelComponentCollectorOptions<T extends MessageComponentIn
   'channel' | 'guild' | 'interactionType'
 >;
 
+/** @deprecated use {@link ComponentOptions} instead */
 export type MessageComponentOptions =
   | BaseMessageComponentOptions
   | MessageActionRowOptions
   | MessageButtonOptions
   | MessageSelectMenuOptions;
 
+export type ComponentOptions =
+  | BaseComponentOptions
+  | ActionRowOptions
+  | ButtonComponentOptions
+  | SelectMenuComponentOptions;
+
+// export type ComponentOptions = BaseComponentOptions;
+
+/** @deprecated use {@link ComponentType} instead */
 export type MessageComponentType = keyof typeof MessageComponentTypes;
+
+export type ComponentType = keyof typeof ComponentTypes;
 
 export type MessageComponentTypeResolvable = MessageComponentType | MessageComponentTypes;
 
@@ -4722,6 +4818,7 @@ export interface MessageReference {
 
 export type MessageResolvable = Message | Snowflake;
 
+/** @deprecated use {@link SelectMenuComponentOptions} instead */
 export interface MessageSelectMenuOptions extends BaseMessageComponentOptions {
   customId?: string;
   disabled?: boolean;
@@ -4731,6 +4828,16 @@ export interface MessageSelectMenuOptions extends BaseMessageComponentOptions {
   placeholder?: string;
 }
 
+export interface SelectMenuComponentOptions {
+  customId?: string;
+  disabled?: boolean;
+  maxValues?: number;
+  minValues?: number;
+  options?: MessageSelectOptionData[];
+  placeholder?: string;
+}
+
+/** @deprecated use {@link SelectMenuOption} instead */
 export interface MessageSelectOption {
   default: boolean;
   description: string | null;
@@ -4739,7 +4846,24 @@ export interface MessageSelectOption {
   value: string;
 }
 
+export interface SelectMenuOption {
+  default: boolean;
+  description: string | null;
+  emoji: APIPartialEmoji | null;
+  label: string;
+  value: string;
+}
+
+/** @deprecated use {@link SelectMenuComponentOptionData} instead */
 export interface MessageSelectOptionData {
+  default?: boolean;
+  description?: string;
+  emoji?: EmojiIdentifierResolvable;
+  label: string;
+  value: string;
+}
+
+export interface SelectMenuComponentOptionData {
   default?: boolean;
   description?: string;
   emoji?: EmojiIdentifierResolvable;

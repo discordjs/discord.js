@@ -112,6 +112,7 @@ export const enum MembershipStates {
   ACCEPTED = 2,
 }
 
+/** @deprecated use {@link ButtonStyles} instead */
 export const enum MessageButtonStyles {
   PRIMARY = 1,
   SECONDARY = 2,
@@ -120,7 +121,22 @@ export const enum MessageButtonStyles {
   LINK = 5,
 }
 
+export const enum ButtonStyles {
+  PRIMARY = 1,
+  SECONDARY = 2,
+  SUCCESS = 3,
+  DANGER = 4,
+  LINK = 5,
+}
+
+/** @deprecated use {@link ComponentTypes} instead */
 export const enum MessageComponentTypes {
+  ACTION_ROW = 1,
+  BUTTON = 2,
+  SELECT_MENU = 3,
+}
+
+export const enum ComponentTypes {
   ACTION_ROW = 1,
   BUTTON = 2,
   SELECT_MENU = 3,
