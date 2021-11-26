@@ -30,11 +30,7 @@ class MessageButton extends BaseMessageComponent {
     super({ type: 'BUTTON' });
 
     if (!emittedDeprecationNotice) {
-      process.emitWarning(
-        'MessageButton is deprecated and will be removed in a future release, please use ButtonComponent instead',
-        'DeprecationWarning',
-      );
-
+      process.emitWarning('The MessageButton class is deprecated. Use ButtonComponent instead', 'DeprecationWarning');
       emittedDeprecationNotice = true;
     }
 

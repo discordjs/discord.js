@@ -37,7 +37,7 @@ class BaseComponent {
    */
 
   /**
-   * @param {BaseComponent|BaseComponentOptions} data The options for this component
+   * @param {BaseComponent|BaseComponentOptions} [data={}] The options for this component
    */
   constructor(data = {}) {
     this.type = 'type' in data ? BaseComponent.resolveType(data.type) : null;

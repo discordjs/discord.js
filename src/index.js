@@ -89,6 +89,7 @@ exports.ClientUser = require('./structures/ClientUser');
 exports.Collector = require('./structures/interfaces/Collector');
 exports.CommandInteraction = require('./structures/CommandInteraction');
 exports.CommandInteractionOptionResolver = require('./structures/CommandInteractionOptionResolver');
+exports.Components = require('./structures/Components');
 exports.ContextMenuInteraction = require('./structures/ContextMenuInteraction');
 exports.DMChannel = require('./structures/DMChannel');
 exports.Emoji = require('./structures/Emoji');

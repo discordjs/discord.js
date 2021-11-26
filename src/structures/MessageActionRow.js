@@ -46,10 +46,7 @@ class MessageActionRow extends BaseMessageComponent {
     super({ type: 'ACTION_ROW' });
 
     if (!emittedDeprecationNotice) {
-      process.emitWarning(
-        'MessageActionRow is deprecated and will be removed in a future release, please use ActionRow instead',
-        'DeprecationWarning',
-      );
+      process.emitWarning('The MessageActionRow class is deprecated. Use ActionRow instead', 'DeprecationWarning');
 
       emittedDeprecationNotice = true;
     }

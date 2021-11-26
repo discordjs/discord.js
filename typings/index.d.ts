@@ -771,6 +771,10 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getFocused(getFull?: boolean): string | number;
 }
 
+export class Components {
+  private static create(data: ComponentOptions, client?: Client | WebhookClient): MessageComponent | undefined;
+}
+
 export class ContextMenuInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
@@ -4689,8 +4693,6 @@ export type ComponentOptions =
   | ActionRowOptions
   | ButtonComponentOptions
   | SelectMenuComponentOptions;
-
-// export type ComponentOptions = BaseComponentOptions;
 
 /** @deprecated use {@link ComponentType} instead */
 export type MessageComponentType = keyof typeof MessageComponentTypes;

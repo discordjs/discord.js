@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseComponent = require('./BaseComponent');
-const Components = require('../ComponentFactory');
+const Components = require('./Components');
 const { ComponentTypes } = require('../util/Constants');
 
 /**
