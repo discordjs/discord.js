@@ -293,7 +293,7 @@ class Message extends Base {
     /**
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
-     * * Crossposted messages (IS_CROSSPOST {@link MessageFlags#FLAGS message flag})
+     * * IS_CROSSPOST
      * * CHANNEL_FOLLOW_ADD
      * * CHANNEL_PINNED_MESSAGE
      * * REPLY
