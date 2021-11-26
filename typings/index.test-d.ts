@@ -668,8 +668,7 @@ client.on('interaction', async interaction => {
 
   const actionRow = new MessageActionRow({ components: [button] });
 
-  // @ts-expect-error
-  await interaction.reply({ content: 'Hi!', components: [actionRow] });
+  expectDeprecated(interaction.reply({ content: 'Hi!', components: [actionRow] }));
 
   // @ts-expect-error
   interaction.reply({ content: 'Hi!', components: [[button]] });

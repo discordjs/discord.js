@@ -342,10 +342,18 @@ export abstract class BaseCommandInteraction<Cached extends CacheType = CacheTyp
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
+  /** @deprecated use `editReply(string | MessagePayload | WebhookEditMessageOptions)` instead */
+  public editReply(options: string | MessagePayload | _WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  /** @deprecated use `followUp(string | MessagePayload | InteractionReplyOptions)` instead */
+  public followUp(options: string | MessagePayload | _InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  /** @deprecated use `reply(InteractionReplyOptions & { fetchReply: true })` instead` */
+  public reply(options: _InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  /** @deprecated use `reply(string | MessagePayload | InteractionReplyOptions)` instead` */
+  public reply(options: string | MessagePayload | _InteractionReplyOptions): Promise<void>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   private transformOption(
     option: APIApplicationCommandOption,
@@ -1550,10 +1558,10 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public readonly channel: CacheTypeReducer<Cached, TextBasedChannels | null>;
   public readonly component: CacheTypeReducer<
     Cached,
-    MessageActionRowComponent,
+    ActionRowComponent,
     Exclude<APIMessageComponent, APIActionRowComponent>
   > | null;
-  public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
+  public componentType: Exclude<ComponentType, 'ACTION_ROW'>;
   public customId: string;
   public channelId: Snowflake;
   public deferred: boolean;
@@ -1569,10 +1577,18 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
   public deleteReply(): Promise<void>;
+  /** @deprecated use `editReply(string | MessagePayload | WebhookEditMessageOptions)` instead */
+  public editReply(options: string | MessagePayload | _WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  /** @deprecated use `followUp(string | MessagePayload | InteractionReplyOptions)` instead */
+  public followUp(options: string | MessagePayload | _InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  /** @deprecated use `reply(InteractionReplyOptions & { fetchReply: true })` instead` */
+  public reply(options: _InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  /** @deprecated use `reply(string | MessagePayload | InteractionReplyOptions)` instead` */
+  public reply(options: string | MessagePayload | _InteractionReplyOptions): Promise<void>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
@@ -4515,6 +4531,14 @@ export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'us
   fetchReply?: boolean;
 }
 
+// TODO: This is a class used only for deprecations, it should
+// be removed for future releases.
+/** @deprecated Use {@link InteractionReplyOptions} instead  */
+export interface _InteractionReplyOptions extends Omit<_WebhookMessageOptions, 'username' | 'avatar'> {
+  ephemeral?: boolean;
+  fetchReply?: boolean;
+}
+
 export type InteractionResponseType = keyof typeof InteractionResponseTypes;
 
 export type InteractionType = keyof typeof InteractionTypes;
@@ -4815,6 +4839,13 @@ export interface MessageOptions {
   attachments?: MessageAttachment[];
 }
 
+// TODO: This is a class used only for deprecations, it should
+// be removed for future releases.
+/** @deprecated Use {@link MessageOptions} instead  */
+export interface _MessageOptions extends Omit<MessageOptions, 'components'> {
+  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
+}
+
 export type MessageReactionResolvable =
   | MessageReaction
   | Snowflake
@@ -5093,6 +5124,13 @@ export interface ReplyMessageOptions extends Omit<MessageOptions, 'reply'> {
   failIfNotExists?: boolean;
 }
 
+// TODO: This is a class used only for deprecations, it should
+// be removed for future releases.
+/** @deprecated Use {@link ReplyMessageOptions} instead  */
+export interface _ReplyMessageOptions extends Omit<_MessageOptions, 'reply'> {
+  failIfNotExists?: boolean;
+}
+
 export interface ResolvedOverwriteOptions {
   allow: Permissions;
   deny: Permissions;
@@ -5303,12 +5341,29 @@ export type WebhookEditMessageOptions = Pick<
   'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments' | 'threadId'
 >;
 
+// TODO: This is a class used only for deprecations, it should
+// be removed for future releases.
+/** @deprecated Use {@link WebhookEditMessageOptions} instead  */
+export type _WebhookEditMessageOptions = Pick<
+  _WebhookMessageOptions,
+  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments' | 'threadId'
+>;
+
 export interface WebhookFetchMessageOptions {
   cache?: boolean;
   threadId?: Snowflake;
 }
 
 export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 'stickers'> {
+  username?: string;
+  avatarURL?: string;
+  threadId?: Snowflake;
+}
+
+// TODO: This is a class used only for deprecations, it should
+// be removed for future releases.
+/** @deprecated Use {@link WebhookMessageOptions} instead  */
+export interface _WebhookMessageOptions extends Omit<_MessageOptions, 'reply' | 'stickers'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
