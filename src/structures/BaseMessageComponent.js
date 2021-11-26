@@ -3,8 +3,11 @@
 const { TypeError } = require('../errors');
 const { MessageComponentTypes, Events } = require('../util/Constants');
 
+let emittedDeprecationNotice = false;
+
 /**
  * Represents an interactive component of a Message. It should not be necessary to construct this directly.
+ * @deprecated Use {@link BaseComponent} instead
  * See {@link MessageComponent}
  */
 class BaseMessageComponent {
@@ -43,6 +46,15 @@ class BaseMessageComponent {
    * @param {BaseMessageComponent|BaseMessageComponentOptions} [data={}] The options for this component
    */
   constructor(data) {
+    if (!emittedDeprecationNotice) {
+      process.emitWarning(
+        'BaseMessageComponent is deprecated and will be removed in a future release, please use BaseComponent instead',
+        'DeprecationWarning',
+      );
+
+      emittedDeprecationNotice = true;
+    }
+
     /**
      * The type of this component
      * @type {?MessageComponentType}

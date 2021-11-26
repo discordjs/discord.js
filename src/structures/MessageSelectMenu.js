@@ -4,8 +4,11 @@ const BaseMessageComponent = require('./BaseMessageComponent');
 const { MessageComponentTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
+let emittedDeprecationNotice = false;
+
 /**
  * Represents a select menu message component
+ * @deprecated Use {@link SelectMenuComponent} instead
  * @extends {BaseMessageComponent}
  */
 class MessageSelectMenu extends BaseMessageComponent {
@@ -42,6 +45,16 @@ class MessageSelectMenu extends BaseMessageComponent {
    */
   constructor(data = {}) {
     super({ type: 'SELECT_MENU' });
+
+    if (!emittedDeprecationNotice) {
+      process.emitWarning(
+        `MessageSelectMenu is deprecated and will be removed in a future release,
+         please use SelectMenuComponent instead`,
+        'DeprecationWarning',
+      );
+
+      emittedDeprecationNotice = true;
+    }
 
     this.setup(data);
   }

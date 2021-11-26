@@ -5,8 +5,11 @@ const { RangeError } = require('../errors');
 const { MessageButtonStyles, MessageComponentTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
+let emittedDeprecationNotice = false;
+
 /**
  * Represents a button message component.
+ * @deprecated Use {@link ButtonComponent} instead
  * @extends {BaseMessageComponent}
  */
 class MessageButton extends BaseMessageComponent {
@@ -25,6 +28,15 @@ class MessageButton extends BaseMessageComponent {
    */
   constructor(data = {}) {
     super({ type: 'BUTTON' });
+
+    if (!emittedDeprecationNotice) {
+      process.emitWarning(
+        'MessageButton is deprecated and will be removed in a future release, please use ButtonComponent instead',
+        'DeprecationWarning',
+      );
+
+      emittedDeprecationNotice = true;
+    }
 
     this.setup(data);
   }

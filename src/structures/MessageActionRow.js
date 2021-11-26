@@ -3,8 +3,11 @@
 const BaseMessageComponent = require('./BaseMessageComponent');
 const { MessageComponentTypes } = require('../util/Constants');
 
+let emittedDeprecationNotice = false;
+
 /**
  * Represents an action row containing message components.
+ * @deprecated Use {@link ActionRow} instead
  * @extends {BaseMessageComponent}
  */
 class MessageActionRow extends BaseMessageComponent {
@@ -41,6 +44,15 @@ class MessageActionRow extends BaseMessageComponent {
    */
   constructor(data = {}, client = null) {
     super({ type: 'ACTION_ROW' });
+
+    if (!emittedDeprecationNotice) {
+      process.emitWarning(
+        'MessageActionRow is deprecated and will be removed in a future release, please use ActionRow instead',
+        'DeprecationWarning',
+      );
+
+      emittedDeprecationNotice = true;
+    }
 
     /**
      * The components in this action row
