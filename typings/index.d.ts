@@ -1,3 +1,4 @@
+/* tslint:disable unified-signatures */
 import {
   blockQuote,
   bold,
