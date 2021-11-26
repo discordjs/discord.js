@@ -4794,7 +4794,7 @@ export interface MessageOptions {
   nonce?: string | number;
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions | APIEmbed)[];
-  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
+  components?: (MessageActionRow | (Required<BaseComponentOptions> & ActionRowOptions))[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
