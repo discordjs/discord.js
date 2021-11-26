@@ -1,6 +1,6 @@
 'use strict';
 
-const { ComponentTypes, Events } = require('./util/Constants');
+const { ComponentTypes, Events } = require('../util/Constants');
 
 /**
  * A factory for creating and resolving components.
@@ -8,7 +8,7 @@ const { ComponentTypes, Events } = require('./util/Constants');
 class Components {
   /**
    * Constructs a MessageComponent based on the type of the incoming data
-   * @param {MessageComponentOptions} data Data for a MessageComponent
+   * @param {ComponentOptions} data Data for a Component
    * @param {Client|WebhookClient} [client] Client constructing this component
    * @returns {?MessageComponent}
    * @private

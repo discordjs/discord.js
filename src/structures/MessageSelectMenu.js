@@ -48,8 +48,7 @@ class MessageSelectMenu extends BaseMessageComponent {
 
     if (!emittedDeprecationNotice) {
       process.emitWarning(
-        `MessageSelectMenu is deprecated and will be removed in a future release,
-         please use SelectMenuComponent instead`,
+        'The MessageSelectMenu class is deprecated. Use SelectMenuComponent instead',
         'DeprecationWarning',
       );
 

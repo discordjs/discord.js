@@ -1033,7 +1033,7 @@ exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELEC
  * @typedef {string} ComponentType
  * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
  */
-exports.ComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU', 'INPUT_TEXT']);
+exports.ComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU']);
 
 /**
  * The style of a message button
@@ -1135,7 +1135,7 @@ function createEnum(keys) {
  * @property {InteractionType} InteractionTypes The type of an {@link Interaction} object.
  * @property {MembershipState} MembershipStates The value set for a team member's membership state.
  * @property {MessageButtonStyle} MessageButtonStyles The style of a message button.
- * @property {ButtonStyle} MButtonStyles The style of a button.
+ * @property {ButtonStyle} ButtonStyles The style of a button.
  * @property {MessageComponentType} MessageComponentTypes The type of a message component.
  * @property {ComponentType} ComponentTypes The type of a component.
  * @property {MFALevel} MFALevels The required MFA level for a guild.

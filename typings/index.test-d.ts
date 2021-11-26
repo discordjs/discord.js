@@ -1066,8 +1066,7 @@ collector.on('end', (collection, reason) => {
 });
 
 const row = new ActionRow();
-row.addComponents(new ButtonComponent());
-row.addComponents(new SelectMenuComponent());
+row.addComponents(new ButtonComponent(), new SelectMenuComponent());
 
 declare const message: Message;
 

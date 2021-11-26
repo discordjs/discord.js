@@ -48,7 +48,7 @@ class BaseMessageComponent {
   constructor(data) {
     if (!emittedDeprecationNotice) {
       process.emitWarning(
-        'BaseMessageComponent is deprecated and will be removed in a future release, please use BaseComponent instead',
+        'The BaseMessageComponent class is deprecated. Use BaseComponent instead',
         'DeprecationWarning',
       );
 
