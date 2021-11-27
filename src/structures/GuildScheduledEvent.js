@@ -70,14 +70,14 @@ class GuildScheduledEvent extends Base {
      * The timestamp the guild scheduled event will start at
      * @type {number}
      */
-    this.scheduledStartTime = data.scheduled_start_time;
+    this.scheduledStartTime = new Date(data.scheduled_start_time).getTime();
 
     /**
      * The timestamp the guild scheduled event will end at,
      * or `null` if the event does not have a scheduled time to end
      * @type {?number}
      */
-    this.scheduledEndTime = data.scheduled_end_time;
+    this.scheduledEndTime = data.scheduled_end_time ? new Date(data.scheduled_end_time).getTime() : null;
 
     /**
      * The privacy level of the guild scheduled event
