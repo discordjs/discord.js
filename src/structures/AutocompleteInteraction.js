@@ -99,6 +99,7 @@ class AutocompleteInteraction extends Interaction {
           choices: options,
         },
       },
+      auth: false,
     });
     this.responded = true;
   }

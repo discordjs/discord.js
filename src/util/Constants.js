@@ -723,7 +723,7 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * MESSAGE_ALREADY_HAS_THREAD
  * * THREAD_LOCKED
  * * MAXIMUM_ACTIVE_THREADS
- * * MAXIMUM_ACTIVE_ANNOUCEMENT_THREAD
+ * * MAXIMUM_ACTIVE_ANNOUNCEMENT_THREAD
  * @typedef {string} APIError
  * @see {@link https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes}
  */

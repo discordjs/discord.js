@@ -609,6 +609,12 @@ export class ClientVoiceManager {
 
 export { Collection } from '@discordjs/collection';
 
+export interface CollectorEventTypes<K, V, F extends unknown[] = []> {
+  collect: [V, ...F];
+  dispose: [V, ...F];
+  end: [collected: Collection<K, V>, reason: string];
+}
+
 export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmitter {
   protected constructor(client: Client, options?: CollectorOptions<[V, ...F]>);
   private _timeout: NodeJS.Timeout | null;
@@ -633,11 +639,15 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public abstract collect(...args: unknown[]): K | null | Promise<K | null>;
   public abstract dispose(...args: unknown[]): K | null;
 
-  public on(event: 'collect' | 'dispose', listener: (...args: [V, ...F]) => Awaitable<void>): this;
-  public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
+  public on<EventKey extends keyof CollectorEventTypes<K, V, F>>(
+    event: EventKey,
+    listener: (...args: CollectorEventTypes<K, V, F>[EventKey]) => Awaitable<void>,
+  ): this;
 
-  public once(event: 'collect' | 'dispose', listener: (...args: [V, ...F]) => Awaitable<void>): this;
-  public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => Awaitable<void>): this;
+  public once<EventKey extends keyof CollectorEventTypes<K, V, F>>(
+    event: EventKey,
+    listener: (...args: CollectorEventTypes<K, V, F>[EventKey]) => Awaitable<void>,
+  ): this;
 }
 
 export interface ApplicationCommandInteractionOptionResolver<Cached extends CacheType = CacheType>
@@ -1829,6 +1839,16 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
   public inRawGuild(): this is SelectMenuInteraction<'raw'>;
 }
 
+export interface ShardEventTypes {
+  spawn: [child: ChildProcess];
+  death: [child: ChildProcess];
+  disconnect: [];
+  ready: [];
+  reconnection: [];
+  error: [error: Error];
+  message: [message: any];
+}
+
 export class Shard extends EventEmitter {
   private constructor(manager: ShardingManager, id: number);
   private _evals: Map<string, Promise<unknown>>;
@@ -1847,23 +1867,22 @@ export class Shard extends EventEmitter {
   public worker: Worker | null;
   public eval(script: string): Promise<unknown>;
   public eval<T>(fn: (client: Client) => T): Promise<T>;
+  public eval<T, P>(fn: (client: Client, context: Serialized<P>) => T, context: P): Promise<T>;
   public fetchClientValue(prop: string): Promise<unknown>;
   public kill(): void;
   public respawn(options?: { delay?: number; timeout?: number }): Promise<ChildProcess>;
   public send(message: unknown): Promise<Shard>;
   public spawn(timeout?: number): Promise<ChildProcess>;
 
-  public on(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaitable<void>): this;
-  public on(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaitable<void>): this;
-  public on(event: 'error', listener: (error: Error) => Awaitable<void>): this;
-  public on(event: 'message', listener: (message: any) => Awaitable<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public on<K extends keyof ShardEventTypes>(
+    event: K,
+    listener: (...args: ShardEventTypes[K]) => Awaitable<void>,
+  ): this;
 
-  public once(event: 'spawn' | 'death', listener: (child: ChildProcess) => Awaitable<void>): this;
-  public once(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => Awaitable<void>): this;
-  public once(event: 'error', listener: (error: Error) => Awaitable<void>): this;
-  public once(event: 'message', listener: (message: any) => Awaitable<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public once<K extends keyof ShardEventTypes>(
+    event: K,
+    listener: (...args: ShardEventTypes[K]) => Awaitable<void>,
+  ): this;
 }
 
 export class ShardClientUtil {
@@ -2352,6 +2371,14 @@ export class WebSocketManager extends EventEmitter {
   private triggerClientReady(): void;
 }
 
+export interface WebSocketShardEvents {
+  ready: [];
+  resumed: [];
+  invalidSession: [];
+  close: [event: CloseEvent];
+  allReady: [unavailableGuilds?: Set<Snowflake>];
+}
+
 export class WebSocketShard extends EventEmitter {
   private constructor(manager: WebSocketManager, id: number);
   private sequence: number;
@@ -2394,15 +2421,15 @@ export class WebSocketShard extends EventEmitter {
 
   public send(data: unknown, important?: boolean): void;
 
-  public on(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaitable<void>): this;
-  public on(event: 'close', listener: (event: CloseEvent) => Awaitable<void>): this;
-  public on(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaitable<void>): this;
-  public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public on<K extends keyof WebSocketShardEvents>(
+    event: K,
+    listener: (...args: WebSocketShardEvents[K]) => Awaitable<void>,
+  ): this;
 
-  public once(event: 'ready' | 'resumed' | 'invalidSession', listener: () => Awaitable<void>): this;
-  public once(event: 'close', listener: (event: CloseEvent) => Awaitable<void>): this;
-  public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => Awaitable<void>): this;
-  public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public once<K extends keyof WebSocketShardEvents>(
+    event: K,
+    listener: (...args: WebSocketShardEvents[K]) => Awaitable<void>,
+  ): this;
 }
 
 export class Widget extends Base {
@@ -2885,7 +2912,7 @@ export class MessageManager extends CachedManager<Snowflake, Message, MessageRes
   public cache: Collection<Snowflake, Message>;
   public crosspost(message: MessageResolvable): Promise<Message>;
   public delete(message: MessageResolvable): Promise<void>;
-  public edit(message: MessageResolvable, options: MessagePayload | MessageEditOptions): Promise<Message>;
+  public edit(message: MessageResolvable, options: string | MessagePayload | MessageEditOptions): Promise<Message>;
   public fetch(message: Snowflake, options?: BaseFetchOptions): Promise<Message>;
   public fetch(
     options?: ChannelLogsQueryOptions,
@@ -4403,30 +4430,6 @@ export interface InteractionCollectorOptions<T extends Interaction, Cached exten
   message?: CacheTypeReducer<Cached, Message, APIMessage>;
 }
 
-export interface ButtonInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<Cached extends true ? ButtonInteraction<'cached'> : ButtonInteraction> {
-  componentType: 'BUTTON' | MessageComponentTypes.BUTTON;
-}
-
-export interface SelectMenuInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<
-    Cached extends true ? SelectMenuInteraction<'cached'> : SelectMenuInteraction
-  > {
-  componentType: 'SELECT_MENU' | MessageComponentTypes.SELECT_MENU;
-}
-
-export interface MessageInteractionCollectorOptions<Cached = boolean>
-  extends MessageComponentCollectorOptions<
-    Cached extends true ? MessageComponentInteraction<'cached'> : MessageComponentInteraction
-  > {
-  componentType: 'ACTION_ROW' | MessageComponentTypes.ACTION_ROW;
-}
-
-export type InteractionCollectorOptionsResolvable<Cached = boolean> =
-  | MessageInteractionCollectorOptions<Cached>
-  | SelectMenuInteractionCollectorOptions<Cached>
-  | ButtonInteractionCollectorOptions<Cached>;
-
 export interface InteractionDeferReplyOptions {
   ephemeral?: boolean;
   fetchReply?: boolean;
@@ -5169,7 +5172,7 @@ export interface WebhookFetchMessageOptions {
   threadId?: Snowflake;
 }
 
-export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
+export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 'stickers'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
