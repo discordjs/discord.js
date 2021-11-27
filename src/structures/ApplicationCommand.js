@@ -147,6 +147,8 @@ class ApplicationCommand extends Base {
    * @property {ChannelType[]|number[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
    * @property {number[]} [channel_types] When the option type is channel,
+   * @property {number} [minValue] When option type is number or integer the minimal allowed value
+   * @property {number} [maxValue] When option type is number or integer the maximal allowed value
    * the API data for allowed types of channels that can be selected
    * <warn>This is provided for compatibility with something like `@discordjs/builders`
    * and will be discarded when `channelTypes` is present</warn>
