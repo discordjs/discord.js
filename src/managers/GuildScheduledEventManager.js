@@ -62,7 +62,8 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async create(options) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel, name, scheduledStartTime, description, scheduledEndTime } = options;
+    let { privacyLevel, entityType, channel, name, scheduledStartTime, description, scheduledEndTime, entityMetadata } =
+      options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
@@ -77,7 +78,9 @@ class GuildScheduledEventManager extends CachedManager {
         scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : scheduledEndTime,
         description,
         entity_type: entityType,
-        entity_metadata: options.entityMetadata,
+        entity_metadata: {
+          location: entityMetadata?.location,
+        },
       },
     });
 
@@ -159,13 +162,24 @@ class GuildScheduledEventManager extends CachedManager {
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel, status, name, scheduledStartTime, description, scheduledEndTime } =
-      options;
+    let {
+      privacyLevel,
+      entityType,
+      channel,
+      status,
+      name,
+      scheduledStartTime,
+      description,
+      scheduledEndTime,
+      entityMetadata,
+    } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
     if (typeof status === 'string') status = GuildScheduledEventStatuses[status];
     const channelId = this.guild.channels.resolveId(channel);
+
+    // TODO: location cannot be undefined for EXTERNAL events
 
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).patch({
       data: {
@@ -177,7 +191,9 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         status,
-        entity_metadata: options.entityMetadata,
+        entity_metadata: {
+          location: entityMetadata?.location,
+        },
       },
     });
 
