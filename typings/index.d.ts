@@ -4658,7 +4658,8 @@ export interface MessageActivity {
   type: number;
 }
 
-export interface BaseButtonOptions extends BaseMessageComponentOptions {
+export interface BaseButtonOptions extends BaseComponentOptions {
+  type: ComponentTypes.BUTTON | 'BUTTON';
   disabled?: boolean;
   emoji?: EmojiIdentifierResolvable;
   label?: string;
@@ -4670,7 +4671,7 @@ export interface LinkButtonOptions extends BaseButtonOptions {
 }
 
 export interface InteractionButtonOptions extends BaseButtonOptions {
-  style: ExcludeEnum<typeof MessageButtonStyles, 'LINK'>;
+  style: ExcludeEnum<typeof ButtonStyles, 'LINK'>;
   customId: string;
 }
 
@@ -4827,12 +4828,20 @@ export interface MessageMentionOptions {
 
 export type MessageMentionTypes = 'roles' | 'users' | 'everyone';
 
+export type MessageActionRowComponentTypes = SelectMenuComponent | ButtonComponent;
+
+export type MessageActionRowComponentOptionTypes = SelectMenuComponentOptions | ButtonComponentOptions;
+
+export interface MessageActionRowData {
+  components: MessageActionRowComponentOptionTypes[];
+}
+
 export interface MessageOptions {
   tts?: boolean;
   nonce?: string | number;
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions | APIEmbed)[];
-  components?: (ActionRow<BaseComponent> | (Required<BaseComponentOptions> & ActionRowOptions))[];
+  components?: (ActionRow<MessageActionRowComponentTypes> | (Required<BaseComponentOptions> & MessageActionRowData))[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
@@ -4873,7 +4882,8 @@ export interface MessageSelectMenuOptions extends BaseMessageComponentOptions {
   placeholder?: string;
 }
 
-export interface SelectMenuComponentOptions {
+export interface SelectMenuComponentOptions extends BaseComponentOptions {
+  type: ComponentTypes.SELECT_MENU | 'SELECT_MENU';
   customId?: string;
   disabled?: boolean;
   maxValues?: number;

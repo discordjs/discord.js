@@ -49,6 +49,7 @@ import {
   MessageActionRow,
   MessageAttachment,
   MessageButton,
+  MessageOptions,
   MessageCollector,
   MessageComponentInteraction,
   MessageEmbed,
@@ -82,6 +83,7 @@ import {
   ActionRow,
   ButtonComponent,
   SelectMenuComponent,
+  MessageActionRowComponentTypes,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -1064,7 +1066,7 @@ collector.on('end', (collection, reason) => {
   expectType<string>(reason);
 });
 
-const row = new ActionRow();
+const row = new ActionRow<MessageActionRowComponentTypes>();
 row.addComponents(new ButtonComponent(), new SelectMenuComponent());
 
 declare const message: Message;
@@ -1072,3 +1074,23 @@ declare const message: Message;
 message.reply({ components: [row] });
 
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
+
+expectNotType<MessageOptions>({
+  components: [
+    {
+      type: 'ACTION_ROW',
+      components: [
+        {
+          type: 'ACTION_ROW',
+          style: 'DANGER',
+          label: 'Test',
+          customId: '123',
+        },
+      ],
+    },
+  ],
+});
+
+new ActionRow<MessageActionRowComponentTypes>()
+  // @ts-expect-error Cannot have a nested action row.
+  .addComponents(new ActionRow());
