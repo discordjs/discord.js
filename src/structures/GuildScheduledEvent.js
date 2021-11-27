@@ -38,17 +38,25 @@ class GuildScheduledEvent extends Base {
   }
 
   _patch(data) {
-    /**
-     * The channel id in which the scheduled event will be hosted, or `null` if entity type is `EXTERNAL`
-     * @type {?Snowflake}
-     */
-    this.channelId = data.channel_id;
+    if ('channel_id' in data) {
+      /**
+       * The channel id in which the scheduled event will be hosted, or `null` if entity type is `EXTERNAL`
+       * @type {?Snowflake}
+       */
+      this.channelId = data.channel_id;
+    } else {
+      this.channelId ??= null;
+    }
 
-    /**
-     * The id of the user that created this guild scheduled event
-     * @type {?Snowflake}
-     */
-    this.creatorId = data.creator_id;
+    if ('creator_id' in data) {
+      /**
+       * The id of the user that created this guild scheduled event
+       * @type {?Snowflake}
+       */
+      this.creatorId = data.creator_id;
+    } else {
+      this.creatorId ??= null;
+    }
 
     /**
      * The name of the guild scheduled event
@@ -97,11 +105,15 @@ class GuildScheduledEvent extends Base {
      */
     this.entityType = GuildScheduledEventEntityTypes[data.entity_type];
 
-    /**
-     * The id of the hosting entity associated with the scheduled event
-     * @type {?Snowflake}
-     */
-    this.entityId = data.entity_id;
+    if ('entity_id' in data) {
+      /**
+       * The id of the hosting entity associated with the scheduled event
+       * @type {?Snowflake}
+       */
+      this.entityId = data.entity_id;
+    } else {
+      this.entityId ??= null;
+    }
 
     if ('user_count' in data) {
       /**
