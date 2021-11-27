@@ -1389,7 +1389,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public readonly channel: If<Cached, GuildTextBasedChannel, TextBasedChannels>;
   public channelId: Snowflake;
   public readonly cleanContent: string;
-  public components: MessageActionRow[];
+  public components: ActionRow<MessageActionRowComponentTypes>[];
   public content: string;
   public readonly createdAt: Date;
   public createdTimestamp: number;

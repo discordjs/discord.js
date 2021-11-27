@@ -143,7 +143,7 @@ class Message extends Base {
     if ('components' in data) {
       /**
        * A list of MessageActionRows in the message
-       * @type {MessageActionRow[]}
+       * @type {ActionRow[]}
        */
       this.components = data.components.map(c => Components.create(c, this.client));
     } else {
