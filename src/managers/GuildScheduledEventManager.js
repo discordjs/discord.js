@@ -77,9 +77,7 @@ class GuildScheduledEventManager extends CachedManager {
         scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : scheduledEndTime,
         description,
         entity_type: entityType,
-        entity_metadata: {
-          location: options.entityMetadata?.location,
-        },
+        entity_metadata: options.entityMetadata,
       },
     });
 
@@ -179,9 +177,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         status,
-        entity_metadata: {
-          location: options.entityMetadata?.location,
-        },
+        entity_metadata: options.entityMetadata,
       },
     });
 
