@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseMessageComponent = require('./BaseMessageComponent');
+const Components = require('./Components');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
@@ -137,7 +137,7 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c => BaseMessageComponent.create(c).toJSON());
+    const components = this.options.components?.map(c => Components.create(c).toJSON());
 
     let username;
     let avatarURL;

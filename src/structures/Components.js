@@ -21,25 +21,25 @@ class Components {
 
     switch (type) {
       case ComponentTypes.ACTION_ROW: {
-        const MessageActionRow = require('./MessageActionRow');
-        component = new MessageActionRow(data, client);
+        const ActionRow = require('./ActionRow');
+        component = new ActionRow(data, client);
         break;
       }
       case ComponentTypes.BUTTON: {
-        const MessageButton = require('./MessageButton');
-        component = new MessageButton(data);
+        const ButtonComponent = require('./ButtonComponent');
+        component = new ButtonComponent(data);
         break;
       }
       case ComponentTypes.SELECT_MENU: {
-        const MessageSelectMenu = require('./MessageSelectMenu');
-        component = new MessageSelectMenu(data);
+        const SelectMenuComponent = require('./SelectMenuComponent');
+        component = new SelectMenuComponent(data);
         break;
       }
       default:
         if (client) {
           client.emit(Events.DEBUG, `[Components] Received component with unknown type: ${data.type}`);
         } else {
-          throw new TypeError('INVALID_TYPE', 'data.type', 'valid MessageComponentType');
+          throw new TypeError('INVALID_TYPE', 'data.type', 'valid ComponentType');
         }
     }
     return component;

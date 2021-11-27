@@ -2,8 +2,8 @@
 
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
-const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
+const Components = require('./Components');
 const InteractionCollector = require('./InteractionCollector');
 const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
@@ -145,7 +145,7 @@ class Message extends Base {
        * A list of MessageActionRows in the message
        * @type {MessageActionRow[]}
        */
-      this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
+      this.components = data.components.map(c => Components.create(c, this.client));
     } else {
       this.components = this.components?.slice() ?? [];
     }
