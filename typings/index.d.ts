@@ -4737,11 +4737,15 @@ export interface GuildScheduledEventCreateOptions {
   entityType: GuildScheduledEventEntityType | number;
   description?: string;
   channel?: GuildVoiceChannelResolvable;
-  location?: string;
+  entityMetadata?: GuildScheduledEventEntityMetadataOptions;
 }
 
 export interface GuildScheduledEventEditOptions extends Partial<GuildScheduledEventCreateOptions> {
   status?: GuildScheduledEventStatus | number;
+}
+
+export interface GuildScheduledEventEntityMetadataOptions {
+  location?: string;
 }
 
 export type GuildScheduledEventEntityType = keyof typeof GuildScheduledEventEntityTypes;

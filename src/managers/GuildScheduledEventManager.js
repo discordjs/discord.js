@@ -45,6 +45,13 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
    * @property {GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
+   * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
+   * guild scheduled event
+   */
+
+  /**
+   * Options used to set entity metadata of a guild scheduled event.
+   * @typedef {Object} GuildScheduledEventEntityMetadataOptions
    * @property {string} [location] The location of the guild scheduled event
    */
 
@@ -55,8 +62,7 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async create(options) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel, location, name, scheduledStartTime, description, scheduledEndTime } =
-      options;
+    let { privacyLevel, entityType, channel, name, scheduledStartTime, description, scheduledEndTime } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
@@ -72,7 +78,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         entity_metadata: {
-          location,
+          location: options.entityMetadata?.location,
         },
       },
     });
@@ -140,8 +146,8 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityType|number} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
    * @property {GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
-   * @property {string} [location] The location of the guild scheduled event
    * @property {GuildScheduledEventStatus|number} [status] The status of the guild scheduled event
+   * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    */
 
   /**
@@ -155,17 +161,8 @@ class GuildScheduledEventManager extends CachedManager {
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let {
-      privacyLevel,
-      entityType,
-      channel,
-      location,
-      status,
-      name,
-      scheduledStartTime,
-      description,
-      scheduledEndTime,
-    } = options;
+    let { privacyLevel, entityType, channel, status, name, scheduledStartTime, description, scheduledEndTime } =
+      options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
@@ -183,7 +180,7 @@ class GuildScheduledEventManager extends CachedManager {
         entity_type: entityType,
         status,
         entity_metadata: {
-          location,
+          location: options.entityMetadata?.location,
         },
       },
     });
