@@ -1180,6 +1180,7 @@ export class GuildScheduledEvent extends Base {
   public readonly scheduledEndAt: Date | null;
   public readonly channel: VoiceChannel | StageChannel | null;
   public readonly guild: Guild | null;
+  public readonly url: string;
   public edit(options: GuildScheduledEventEditOptions): Promise<GuildScheduledEvent>;
   public delete(): Promise<GuildScheduledEvent>;
   public setName(name: string): Promise<GuildScheduledEvent>;
@@ -1192,6 +1193,7 @@ export class GuildScheduledEvent extends Base {
   public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
     options?: T,
   ): Promise<GuildScheduledEventManagerFetchSubscribersResult<T>>;
+  public toString(): string;
 }
 
 export class GuildTemplate extends Base {
@@ -2715,6 +2717,7 @@ export const Constants: {
   Endpoints: {
     botGateway: string;
     invite: (root: string, code: string) => string;
+    scheduledEvent: (root: string, guildId: Snowflake, eventId: Snowflake) => string;
     CDN: (root: string) => {
       Emoji: (emojiId: Snowflake, format: DynamicImageFormat) => string;
       Asset: (name: string) => string;
@@ -4791,6 +4794,7 @@ export interface HTTPOptions {
   invite?: string;
   template?: string;
   headers?: Record<string, string>;
+  scheduledEvent?: string;
 }
 
 export interface ImageURLOptions extends Omit<StaticImageURLOptions, 'format'> {

@@ -5,6 +5,7 @@ const {
   GuildScheduledEventEntityTypes,
   GuildScheduledEventStatuses,
   GuildScheduledEventPrivacyLevels,
+  Endpoints,
 } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
@@ -206,6 +207,15 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
+   * The URL to the guild scheduled event
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return Endpoints.scheduledEvent(this.client.options.http.scheduledEvent, this.guildId, this.id);
+  }
+
+  /**
    * Edits this guild scheduled event.
    * @param {GuildScheduledEventEditOptions} options The options to edit the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
@@ -326,6 +336,17 @@ class GuildScheduledEvent extends Base {
    */
   fetchSubscribers(options) {
     return this.guild.scheduledEvents.fetchSubscribers(this.id, options);
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the event's URL instead of the object.
+   * @returns {string}
+   * @example
+   * // Logs: Event: https://discord.com/events/412345678901234567/499876543211234567
+   * console.log(`Event: ${guildScheduledEvent}`);
+   */
+  toString() {
+    return this.url;
   }
 }
 

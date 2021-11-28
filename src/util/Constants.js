@@ -79,6 +79,7 @@ exports.Endpoints = {
     };
   },
   invite: (root, code) => `${root}/${code}`,
+  scheduledEvent: (root, guildId, eventId) => `${root}/${guildId}/${eventId}`,
   botGateway: '/gateway/bot',
 };
 
