@@ -165,7 +165,7 @@ class GuildScheduledEvent extends Base {
    * @type {Date}
    * @readonly
    */
-  get cretedAt() {
+  get createdAt() {
     return new Date(this.createdTimestamp);
   }
 
