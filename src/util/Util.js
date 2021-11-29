@@ -2,6 +2,7 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
+const camelcaseKeys = require('camelcase-keys');
 const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
@@ -612,6 +613,15 @@ class Util extends null {
     });
     filter.isDefault = true;
     return filter;
+  }
+
+  /**
+   * Converts all keys within the object to camelcase.
+   * @param {Object|Array} input The object or array to
+   * @returns {Object|Array} A camel-cased version of the input.
+   */
+  static camelize(input) {
+    return camelcaseKeys(input, { deep: true });
   }
 }
 

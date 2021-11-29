@@ -2241,6 +2241,7 @@ export class Util extends null {
     reason?: string,
   ): Promise<{ id: Snowflake; position: number }[]>;
   public static splitMessage(text: string, options?: SplitOptions): string[];
+  public static camelize<T extends Record<string, any> | readonly any[]>(input: T): Camelize<T>;
 }
 
 export class Formatters extends null {
