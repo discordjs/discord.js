@@ -61,10 +61,14 @@ class BaseGuild extends Base {
    * @readonly
    */
   get nameAcronym() {
-    return this.name
+    if (this.name) {
+      return this.name
       .replace(/'s /g, ' ')
       .replace(/\w+/g, e => e[0])
       .replace(/\s/g, '');
+    } else {
+      return null;
+    }
   }
 
   /**
