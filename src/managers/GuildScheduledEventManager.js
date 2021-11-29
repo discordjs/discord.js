@@ -40,19 +40,21 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {string} name The name of the guild scheduled event
    * @property {DateResolvable} scheduledStartTime The time to schedule the event at
    * @property {?DateResolvable} [scheduledEndTime] The time to end the event at
-   * <warn>This is required if entityType is 'EXTERNAL'</warn>
+   * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
    * @property {PrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
-   * @property {GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
+   * @property {?GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
+   * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
    */
 
   /**
    * Options used to set entity metadata of a guild scheduled event.
    * @typedef {Object} GuildScheduledEventEntityMetadataOptions
    * @property {string} [location] The location of the guild scheduled event
+   * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
    */
 
   /**
@@ -67,11 +69,10 @@ class GuildScheduledEventManager extends CachedManager {
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
-    const channelId = this.guild.channels.resolveId(channel);
 
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events').post({
       data: {
-        channel_id: channelId,
+        channel_id: typeof channel === 'undefined' ? channel : this.guild.channels.resolveId(channel),
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: new Date(scheduledStartTime).toISOString(),
@@ -146,9 +147,11 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
-   * @property {GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
+   * @property {?GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
    * @property {GuildScheduledEventStatus|number} [status] The status of the guild scheduled event
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
+   * guild scheduled event
+   * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
    */
 
   /**
@@ -177,13 +180,10 @@ class GuildScheduledEventManager extends CachedManager {
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
     if (typeof status === 'string') status = GuildScheduledEventStatuses[status];
-    const channelId = this.guild.channels.resolveId(channel);
-
-    // TODO: location cannot be undefined for EXTERNAL events
 
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).patch({
       data: {
-        channel_id: channelId ?? undefined,
+        channel_id: typeof channel === 'undefined' ? channel : this.guild.channels.resolveId(channel),
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: scheduledStartTime ? new Date(scheduledStartTime).toISOString() : undefined,

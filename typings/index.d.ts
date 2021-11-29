@@ -1186,9 +1186,8 @@ export class GuildScheduledEvent extends Base {
   public setName(name: string): Promise<GuildScheduledEvent>;
   public setScheduledStartTime(scheduledStartTime: DateResolvable): Promise<GuildScheduledEvent>;
   public setScheduledEndTime(scheduledEndTime: DateResolvable | null): Promise<GuildScheduledEvent>;
-  public setPrivacyLevel(privacyLevel: GuildScheduledEventPrivacyLevel | number): Promise<GuildScheduledEvent>;
   public setDescription(description: string): Promise<GuildScheduledEvent>;
-  public setStatus(status: string): Promise<GuildScheduledEvent>;
+  public setStatus(status: GuildScheduledEventStatus): Promise<GuildScheduledEvent>;
   public setLocation(location: string): Promise<GuildScheduledEvent>;
   public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
     options?: T,
@@ -4739,7 +4738,7 @@ export interface GuildScheduledEventCreateOptions {
   privacyLevel: GuildScheduledEventPrivacyLevel | number;
   entityType: GuildScheduledEventEntityType | number;
   description?: string;
-  channel?: GuildVoiceChannelResolvable;
+  channel?: GuildVoiceChannelResolvable | null;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
 }
 

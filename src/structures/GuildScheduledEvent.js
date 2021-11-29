@@ -256,7 +256,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setName(name) {
-    return this.edit({ name });
+    return this.edit({ name, entityMetadata: { location: this.location } });
   }
 
   /**
@@ -270,7 +270,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setScheduledStartTime(scheduledStartTime) {
-    return this.edit({ scheduledStartTime });
+    return this.edit({ scheduledStartTime, entityMetadata: { location: this.location } });
   }
 
   /**
@@ -284,7 +284,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setScheduledEndTime(scheduledEndTime) {
-    return this.edit({ scheduledEndTime });
+    return this.edit({ scheduledEndTime, entityMetadata: { location: this.location } });
   }
 
   /**
@@ -298,7 +298,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setDescription(description) {
-    return this.edit({ description });
+    return this.edit({ description, entityMetadata: { location: this.location } });
   }
 
   /**
@@ -312,7 +312,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setStatus(status) {
-    return this.edit({ status });
+    return this.edit({ status, entityMetadata: { location: this.location } });
   }
 
   /**
@@ -326,7 +326,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setLocation(location) {
-    return this.edit({ location });
+    return this.edit({ entityMetadata: { location } });
   }
 
   /**
