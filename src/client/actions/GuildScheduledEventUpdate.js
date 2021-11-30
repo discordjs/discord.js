@@ -9,6 +9,7 @@ class GuildScheduledEventUpdateAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
 
     if (guild) {
+      // TODO: old one is same as the new, fix it
       const oldGuildScheduledEvent = guild.scheduledEvents.cache.get(data.id)?._clone() ?? null;
       const newGuildScheduledEvent = guild.scheduledEvents._add(data);
 
