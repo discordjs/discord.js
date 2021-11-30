@@ -875,7 +875,7 @@ class Guild extends AnonymousGuild {
       _data.description = data.description;
     }
     if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
-    if (data.premiumProgressBarEnabled) _data.premium_progress_bar_enabled = data.premiumProgressBarEnabled;
+    if ('premiumProgressBarEnabled' in data) _data.premium_progress_bar_enabled = data.premiumProgressBarEnabled;
     const newData = await this.client.api.guilds(this.id).patch({ data: _data, reason });
     return this.client.actions.GuildUpdate.handle(newData).updated;
   }
