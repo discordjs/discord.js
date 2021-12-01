@@ -1227,6 +1227,8 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isCommand(): this is CommandInteraction<Cached>;
   public isAutocomplete(): this is AutocompleteInteraction<Cached>;
   public isContextMenu(): this is ContextMenuInteraction<Cached>;
+  public isUserContextMenu(): this is UserContextMenuInteraction<Cached>;
+  public isMessageContextMenu(): this is MessageContextMenuInteraction<Cached>;
   public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
 }
@@ -1534,6 +1536,13 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
 
   public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
+}
+
+export class MessageContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+  public readonly targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
+  public inGuild(): this is MessageContextMenuInteraction<'present'>;
+  public inCachedGuild(): this is MessageContextMenuInteraction<'cached'>;
+  public inRawGuild(): this is MessageContextMenuInteraction<'raw'>;
 }
 
 export class MessageEmbed {
@@ -2186,6 +2195,14 @@ export class User extends PartialTextBasedChannel(Base) {
   public fetch(force?: boolean): Promise<User>;
   public fetchFlags(force?: boolean): Promise<UserFlags>;
   public toString(): UserMention;
+}
+
+export class UserContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+  public readonly targetUser: User;
+  public readonly targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
+  public inGuild(): this is UserContextMenuInteraction<'present'>;
+  public inCachedGuild(): this is UserContextMenuInteraction<'cached'>;
+  public inRawGuild(): this is UserContextMenuInteraction<'raw'>;
 }
 
 export class UserFlags extends BitField<UserFlagsString> {
