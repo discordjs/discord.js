@@ -4759,13 +4759,21 @@ export type GuildScheduledEventManagerFetchResult<
   : Collection<Snowflake, GuildScheduledEvent>;
 
 export type GuildScheduledEventManagerFetchSubscribersResult<T extends FetchGuildScheduledEventSubscribersOptions> =
-  T extends { withMember: true } ? Collection<Snowflake, GuildMember> : Collection<Snowflake, User>;
+  T extends { withMember: true }
+    ? Collection<Snowflake, GuildScheduledEventUser<true>>
+    : Collection<Snowflake, GuildScheduledEventUser<false>>;
 
 export type GuildScheduledEventPrivacyLevel = keyof typeof GuildScheduledEventPrivacyLevels;
 
 export type GuildScheduledEventResolvable = Snowflake | GuildScheduledEvent;
 
 export type GuildScheduledEventStatus = keyof typeof GuildScheduledEventStatuses;
+
+export interface GuildScheduledEventUser<T> {
+  guildScheduledEventId: Snowflake;
+  user: User;
+  member: T extends true ? GuildMember : null;
+}
 
 export type GuildTemplateResolvable = string;
 

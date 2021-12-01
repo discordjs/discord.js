@@ -223,10 +223,18 @@ class GuildScheduledEventManager extends CachedManager {
    */
 
   /**
+   * Represents a subscriber of a {@link GuildScheduledEvent}
+   * @typedef {Object} GuildScheduledEventUser
+   * @property {Snowflake} guildScheduledEventId The id of the guild scheduled event which the user subscribed to
+   * @property {User} user The user that subscribed to the guild scheduled event
+   * @property {?GuildMember} member The guild member associated with the user, if any
+   */
+
+  /**
    * Fetches subscribers of a guild scheduled event.
    * @param {GuildScheduledEventResolvable} guildScheduledEvent The guild scheduled event to fetch subscribers of
    * @param {FetchGuildScheduledEventSubscribersOptions} [options={}] Options for fetching the subscribers
-   * @returns {Promise<Collection<Snowflake, User> | Collection<Snowflake, GuildMember>>}
+   * @returns {Promise<Collection<Snowflake, GuildScheduledEventUser>>}
    */
   async fetchSubscribers(guildScheduledEvent, options = {}) {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
@@ -238,16 +246,13 @@ class GuildScheduledEventManager extends CachedManager {
       query: { limit, with_member: withMember, before, after },
     });
 
-    if (withMember) {
-      return data.reduce(
-        (coll, rawData) =>
-          coll.set(rawData.user.id, this.guild.members._add({ ...rawData.member, user: rawData.user })),
-        new Collection(),
-      );
-    }
-
     return data.reduce(
-      (coll, rawData) => coll.set(rawData.user.id, this.client.users._add(rawData.user)),
+      (coll, rawData) =>
+        coll.set(rawData.user.id, {
+          guildScheduledEventId: rawData.guild_scheduled_event_id,
+          user: this.client.users._add(rawData.user),
+          member: rawData.member ? this.guild.members._add({ ...rawData.member, user: rawData.user }) : null,
+        }),
       new Collection(),
     );
   }
