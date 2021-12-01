@@ -58,7 +58,6 @@
     "@types/ws": "^8.2.0",
     "discord-api-types": "^0.25.0",
     "node-fetch": "^2.6.1",
-    "type-fest": "^2.5.3",
     "ws": "^8.2.3"
   },
   "devDependencies": {

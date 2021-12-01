@@ -24,7 +24,6 @@
     "array-type": [true, "array"],
     "one-line": false,
     "no-any-union": false,
-    "void-return": false,
-    "unified-signatures": false
+    "void-return": false
   }
 }

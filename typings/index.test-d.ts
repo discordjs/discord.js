@@ -1,4 +1,5 @@
-import {
+import type { ChildProcess } from 'child_process';
+import type {
   APIInteractionGuildMember,
   APIMessage,
   APIPartialChannel,
@@ -6,21 +7,15 @@ import {
   APIInteractionDataResolvedGuildMember,
   APIInteractionDataResolvedChannel,
   APIRole,
-  ChannelType,
-  ApplicationCommandOptionType,
-  APIApplicationCommand,
-  APIApplicationCommandOption,
-  APIApplicationCommandSubCommandOptions,
 } from 'discord-api-types/v9';
-import type { ChildProcess } from 'node:child_process';
 import {
   ApplicationCommand,
-  ApplicationCommandChannelOptionData,
-  ApplicationCommandChoicesData,
+  ApplicationCommandData,
   ApplicationCommandManager,
-  ApplicationCommandNonOptionsData,
+  ApplicationCommandOptionData,
   ApplicationCommandResolvable,
   ApplicationCommandSubCommandData,
+  ApplicationCommandSubGroupData,
   BaseCommandInteraction,
   ButtonInteraction,
   CacheType,
@@ -33,6 +28,7 @@ import {
   CommandInteraction,
   CommandInteractionOption,
   CommandInteractionOptionResolver,
+  CommandOptionNonChoiceResolvableType,
   Constants,
   ContextMenuInteraction,
   DMChannel,
@@ -81,9 +77,6 @@ import {
   User,
   VoiceChannel,
   Shard,
-  Camelize,
-  ApplicationCommandAutocompleteOption,
-  ApplicationCommandNumericOptionData,
   WebSocketShard,
   Collector,
 } from '.';
@@ -693,20 +686,6 @@ client.login('absolutely-valid-token');
 // Test client conditional types
 client.on('ready', client => {
   expectType<Client<true>>(client);
-
-  // Test camelized post command data.
-  client.application.commands.create({
-    name: 'Foo',
-    description: 'Bar',
-    options: [
-      {
-        name: 'test',
-        description: 'test',
-        type: ApplicationCommandOptionType.Channel,
-        channelTypes: [ChannelType.GuildCategory],
-      },
-    ],
-  });
 });
 
 declare const loggedInClient: Client<true>;
@@ -804,7 +783,7 @@ expectType<1>(Constants.Status.CONNECTING);
 expectType<0>(Constants.Opcodes.DISPATCH);
 expectType<2>(Constants.ClientApplicationAssetTypes.BIG);
 
-declare const applicationCommandData: Camelize<APIApplicationCommand>;
+declare const applicationCommandData: ApplicationCommandData;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;
 declare const applicationCommandManager: ApplicationCommandManager;
 {
@@ -826,29 +805,22 @@ declare const applicationCommandManager: ApplicationCommandManager;
   );
 }
 
-declare const applicationSubGroupCommandData: Camelize<APIApplicationCommandSubCommandOptions>;
+declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
+  type: CommandOptionNonChoiceResolvableType;
+};
 {
-  expectType<ApplicationCommandOptionType.Subcommand | ApplicationCommandOptionType.SubcommandGroup>(
-    applicationSubGroupCommandData.type,
-  );
-  expectAssignable<APIApplicationCommandOption[] | undefined>(applicationSubGroupCommandData.options);
+  // Options aren't allowed on this command type.
+
+  // @ts-expect-error
+  applicationNonChoiceOptionData.choices;
 }
 
-declare const applicationSubCommandData: ApplicationCommandSubCommandData;
+declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
 {
-  expectType<'SUB_COMMAND' | ApplicationCommandOptionTypes.SUB_COMMAND>(applicationSubCommandData.type);
-
-  // Check that only subcommands can have no subcommand or subcommand group sub-options.
-  expectType<
-    | (
-        | ApplicationCommandChoicesData
-        | ApplicationCommandNonOptionsData
-        | ApplicationCommandChannelOptionData
-        | ApplicationCommandAutocompleteOption
-        | ApplicationCommandNumericOptionData
-      )[]
-    | undefined
-  >(applicationSubCommandData.options);
+  expectType<'SUB_COMMAND_GROUP' | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP>(
+    applicationSubGroupCommandData.type,
+  );
+  expectType<ApplicationCommandSubCommandData[] | undefined>(applicationSubGroupCommandData.options);
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
