@@ -348,6 +348,38 @@ class GuildScheduledEvent extends Base {
   toString() {
     return this.url;
   }
+
+  /**
+   * Indicates whether this guild scheduled event has an `ACTIVE` status.
+   * @returns {boolean}
+   */
+  isActive() {
+    return GuildScheduledEventStatuses[this.status] === GuildScheduledEventStatuses.ACTIVE;
+  }
+
+  /**
+   * Indicates whether this guild scheduled event has a `CANCELED` status.
+   * @returns {boolean}
+   */
+  isCanceled() {
+    return GuildScheduledEventStatuses[this.status] === GuildScheduledEventStatuses.CANCELED;
+  }
+
+  /**
+   * Indicates whether this guild scheduled event has a `COMPLETED` status.
+   * @returns {boolean}
+   */
+  isCompleted() {
+    return GuildScheduledEventStatuses[this.status] === GuildScheduledEventStatuses.COMPLETED;
+  }
+
+  /**
+   * Indicates whether this guild scheduled event has a `SCHEDULED` status.
+   * @returns {boolean}
+   */
+  isScheduled() {
+    return GuildScheduledEventStatuses[this.status] === GuildScheduledEventStatuses.SCHEDULED;
+  }
 }
 
 module.exports = GuildScheduledEvent;

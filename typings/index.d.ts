@@ -1156,7 +1156,7 @@ export class GuildPreview extends Base {
   public toString(): string;
 }
 
-export class GuildScheduledEvent extends Base {
+export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildScheduledEventStatus> extends Base {
   private constructor(client: Client, data: RawGuildScheduledEventData);
   public id: Snowflake;
   public guildId: Snowflake;
@@ -1187,12 +1187,16 @@ export class GuildScheduledEvent extends Base {
   public setScheduledStartTime(scheduledStartTime: DateResolvable): Promise<GuildScheduledEvent>;
   public setScheduledEndTime(scheduledEndTime: DateResolvable | null): Promise<GuildScheduledEvent>;
   public setDescription(description: string): Promise<GuildScheduledEvent>;
-  public setStatus(status: GuildScheduledEventStatus): Promise<GuildScheduledEvent>;
+  public setStatus(status: GuildScheduledEventSetStatusArg<S>): Promise<GuildScheduledEvent>;
   public setLocation(location: string): Promise<GuildScheduledEvent>;
   public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
     options?: T,
   ): Promise<GuildScheduledEventManagerFetchSubscribersResult<T>>;
   public toString(): string;
+  public isActive(): this is GuildScheduledEvent<'ACTIVE'>;
+  public isCanceled(): this is GuildScheduledEvent<'CANCELED'>;
+  public isCompleted(): this is GuildScheduledEvent<'COMPLETED'>;
+  public isScheduled(): this is GuildScheduledEvent<'SCHEDULED'>;
 }
 
 export class GuildTemplate extends Base {
@@ -4766,6 +4770,12 @@ export type GuildScheduledEventManagerFetchSubscribersResult<T extends FetchGuil
 export type GuildScheduledEventPrivacyLevel = keyof typeof GuildScheduledEventPrivacyLevels;
 
 export type GuildScheduledEventResolvable = Snowflake | GuildScheduledEvent;
+
+export type GuildScheduledEventSetStatusArg<T extends GuildScheduledEventStatus> = T extends 'SCHEDULED'
+  ? 'ACTIVE' | 'CANCELED'
+  : T extends 'ACTIVE'
+  ? 'COMPLETED'
+  : never;
 
 export type GuildScheduledEventStatus = keyof typeof GuildScheduledEventStatuses;
 
