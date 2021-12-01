@@ -483,11 +483,11 @@ class Util extends null {
    * @returns {Collection}
    */
   static discordSort(collection) {
+    const isGuildChannel = collection.first() instanceof GuildChannel;
     return collection.sorted(
-      (a, b) =>
-        a.rawPosition - b.rawPosition ||
-        parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
-        parseInt(b.id.slice(10)) - parseInt(a.id.slice(10)),
+      isGuildChannel
+        ? (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(a.id) - BigInt(b.id))
+        : (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(b.id) - BigInt(a.id)),
     );
   }
 
@@ -616,3 +616,6 @@ class Util extends null {
 }
 
 module.exports = Util;
+
+// Fixes Circular
+const GuildChannel = require('../structures/GuildChannel');
