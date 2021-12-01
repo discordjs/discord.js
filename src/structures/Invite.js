@@ -9,7 +9,6 @@ const Permissions = require('../util/Permissions');
 
 /**
  * Represents an invitation to a guild channel.
- * <warn>The only guaranteed properties are `code`, `channel`, and `url`. Other properties can be missing.</warn>
  * @extends {Base}
  */
 class Invite extends Base {
@@ -40,6 +39,7 @@ class Invite extends Base {
     if ('approximate_presence_count' in data) {
       /**
        * The approximate number of online members of the guild this invite is for
+       * <info>This is only available when the invite was fetched through {@link Client#fetchInvite}.</info>
        * @type {?number}
        */
       this.presenceCount = data.approximate_presence_count;
@@ -50,6 +50,7 @@ class Invite extends Base {
     if ('approximate_member_count' in data) {
       /**
        * The approximate total number of members of the guild this invite is for
+       * <info>This is only available when the invite was fetched through {@link Client#fetchInvite}.</info>
        * @type {?number}
        */
       this.memberCount = data.approximate_member_count;
@@ -60,6 +61,8 @@ class Invite extends Base {
     if ('temporary' in data) {
       /**
        * Whether or not this invite only grants temporary membership
+       * <info>This is only available when the invite was fetched through {@link GuildInviteManager#fetch}
+       * or created through {@link GuildInviteManager#create}.</info>
        * @type {?boolean}
        */
       this.temporary = data.temporary ?? null;
@@ -70,6 +73,8 @@ class Invite extends Base {
     if ('max_age' in data) {
       /**
        * The maximum age of the invite, in seconds, 0 if never expires
+       * <info>This is only available when the invite was fetched through {@link GuildInviteManager#fetch}
+       * or created through {@link GuildInviteManager#create}.</info>
        * @type {?number}
        */
       this.maxAge = data.max_age;
@@ -80,6 +85,8 @@ class Invite extends Base {
     if ('uses' in data) {
       /**
        * How many times this invite has been used
+       * <info>This is only available when the invite was fetched through {@link GuildInviteManager#fetch}
+       * or created through {@link GuildInviteManager#create}.</info>
        * @type {?number}
        */
       this.uses = data.uses;
@@ -90,6 +97,8 @@ class Invite extends Base {
     if ('max_uses' in data) {
       /**
        * The maximum uses of this invite
+       * <info>This is only available when the invite was fetched through {@link GuildInviteManager#fetch}
+       * or created through {@link GuildInviteManager#create}.</info>
        * @type {?number}
        */
       this.maxUses = data.max_uses;
@@ -147,7 +156,7 @@ class Invite extends Base {
 
     if ('channel' in data) {
       /**
-       * The channel the invite is for
+       * The channel this invite is for
        * @type {Channel}
        */
       this.channel = this.client.channels._add(data.channel, this.guild, { cache: false });
@@ -155,7 +164,7 @@ class Invite extends Base {
 
     if ('created_at' in data) {
       /**
-       * The timestamp the invite was created at
+       * The timestamp this invite was created at
        * @type {?number}
        */
       this.createdTimestamp = new Date(data.created_at).getTime();
