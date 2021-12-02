@@ -600,7 +600,7 @@ class GuildAuditLogsEntry {
               o[c.key] = c.new ?? c.old;
               return o;
             },
-            { id: data.target_id },
+            { id: data.target_id, guild_id: guild.id },
           ),
         );
     } else if (data.target_id) {
