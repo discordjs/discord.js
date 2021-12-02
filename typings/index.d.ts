@@ -1227,7 +1227,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
-  public memberPermissions: Readonly<Permissions> | null;
+  public memberPermissions: CacheTypeReducer<Cached, Readonly<Permissions>>;
   public inGuild(): this is Interaction<'present'>;
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
@@ -1546,7 +1546,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
-export class MessageContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+export class MessageContextMenuInteraction<
+  Cached extends CacheType = CacheType,
+> extends ContextMenuInteraction<Cached> {
   public readonly targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
   public inGuild(): this is MessageContextMenuInteraction<'present'>;
   public inCachedGuild(): this is MessageContextMenuInteraction<'cached'>;
