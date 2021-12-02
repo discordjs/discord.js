@@ -59,7 +59,7 @@ class Message extends Base {
      * The timestamp the message was sent at
      * @type {number}
      */
-    this.createdTimestamp = SnowflakeUtil.deconstruct(this.id).timestamp;
+    this.createdTimestamp = SnowflakeUtil.timestampFrom(this.id);
 
     if ('type' in data) {
       /**

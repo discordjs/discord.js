@@ -68,7 +68,7 @@ class Emoji extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return this.id && SnowflakeUtil.deconstruct(this.id).timestamp;
+    return this.id && SnowflakeUtil.timestampFrom(this.id);
   }
 
   /**

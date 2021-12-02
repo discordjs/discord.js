@@ -294,7 +294,7 @@ class TextBasedChannel {
     if (Array.isArray(messages) || messages instanceof Collection) {
       let messageIds = messages instanceof Collection ? [...messages.keys()] : messages.map(m => m.id ?? m);
       if (filterOld) {
-        messageIds = messageIds.filter(id => Date.now() - SnowflakeUtil.deconstruct(id).timestamp < 1_209_600_000);
+        messageIds = messageIds.filter(id => Date.now() - SnowflakeUtil.timestampFrom(id) < 1_209_600_000);
       }
       if (messageIds.length === 0) return new Collection();
       if (messageIds.length === 1) {

@@ -1546,7 +1546,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
-export class MessageContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+export class MessageContextMenuInteraction<
+  Cached extends CacheType = CacheType,
+> extends ContextMenuInteraction<Cached> {
   public readonly targetMessage: CacheTypeReducer<Cached, Message, APIMessage>;
   public inGuild(): this is MessageContextMenuInteraction<'present'>;
   public inCachedGuild(): this is MessageContextMenuInteraction<'cached'>;
@@ -1974,6 +1976,7 @@ export class SnowflakeUtil extends null {
   private constructor();
   public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
   public static generate(timestamp?: number | Date): Snowflake;
+  public static timestampFrom(snowflake: Snowflake): number;
   public static readonly EPOCH: number;
 }
 
