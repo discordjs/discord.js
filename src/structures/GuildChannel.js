@@ -460,7 +460,7 @@ class GuildChannel extends Channel {
       bitrate: this.bitrate,
       userLimit: this.userLimit,
       rateLimitPerUser: this.rateLimitPerUser,
-      position: this.position,
+      position: this.rawPosition,
       reason: null,
       ...options,
     });
