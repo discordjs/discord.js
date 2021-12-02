@@ -383,8 +383,3 @@ class GuildScheduledEvent extends Base {
 }
 
 module.exports = GuildScheduledEvent;
-
-/**
- * @external APIGuildScheduledEvent
- * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object}
- */
