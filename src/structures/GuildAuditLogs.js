@@ -603,6 +603,7 @@ class GuildAuditLogsEntry {
             { id: data.target_id, guild_id: guild.id },
           ),
         );
+      if (data.action_type === Actions.GUILD_SCHEDULED_EVENT_DELETE) this.target.deleted = true;
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
     }
