@@ -303,7 +303,8 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Sets the new status of the guild scheduled event.
-   * <info>Use this method in conjunction with status type-guards like {@link GuildScheduledEvent.isScheduled}</info>
+   * <info>If you're working with TypeScript, use this method in conjunction with status type-guards
+   * like {@link GuildScheduledEvent#isScheduled} to get only valid status as suggestion</info>
    * @param {GuildScheduledEventStatus|number} status The status of the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
    * @example
