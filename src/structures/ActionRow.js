@@ -68,8 +68,7 @@ class ActionRow extends BaseComponent {
    * @returns {ActionRow}
    */
   setComponents(...components) {
-    this.spliceComponents(0, this.components.length, components);
-    return this;
+    return this.spliceComponents(0, this.components.length, components);
   }
 
   /**
