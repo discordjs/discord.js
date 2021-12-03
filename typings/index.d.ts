@@ -1578,19 +1578,19 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
   public deleteReply(): Promise<void>;
+  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   /** @deprecated use `editReply(string | MessagePayload | WebhookEditMessageOptions)` instead */
   public editReply(options: string | MessagePayload | _WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   /** @deprecated use `followUp(string | MessagePayload | InteractionReplyOptions)` instead */
   public followUp(options: string | MessagePayload | _InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
-  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   /** @deprecated use `reply(InteractionReplyOptions & { fetchReply: true })` instead` */
   public reply(options: _InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   /** @deprecated use `reply(string | MessagePayload | InteractionReplyOptions)` instead` */
   public reply(options: string | MessagePayload | _InteractionReplyOptions): Promise<void>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
 

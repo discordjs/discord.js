@@ -86,7 +86,14 @@ import {
   MessageActionRowComponentTypes,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
-import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import {
+  expectAssignable,
+  expectDeprecated,
+  expectNotAssignable,
+  expectNotDeprecated,
+  expectNotType,
+  expectType,
+} from 'tsd';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -1090,6 +1097,11 @@ expectNotType<MessageOptions>({
     },
   ],
 });
+
+declare const compInteraction: MessageComponentInteraction;
+expectNotDeprecated(compInteraction.editReply('test'));
+expectNotDeprecated(compInteraction.reply('test'));
+expectNotDeprecated(compInteraction.followUp('test'));
 
 new ActionRow<MessageActionRowComponentTypes>()
   // @ts-expect-error Cannot have a nested action row.
