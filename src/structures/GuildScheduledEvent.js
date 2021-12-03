@@ -333,7 +333,7 @@ class GuildScheduledEvent extends Base {
   /**
    * Fetches subscribers of this guild scheduled event.
    * @param {FetchGuildScheduledEventSubscribersOptions} [options] Options for fetching the subscribers
-   * @returns {Promise<Collection<Snowflake, User> | Collection<Snowflake, GuildMember>>}
+   * @returns {Promise<Collection<Snowflake, GuildScheduledEventUser>>}
    */
   fetchSubscribers(options) {
     return this.guild.scheduledEvents.fetchSubscribers(this.id, options);
