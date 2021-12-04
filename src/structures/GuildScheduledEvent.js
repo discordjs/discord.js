@@ -265,7 +265,7 @@ class GuildScheduledEvent extends Base {
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set start time of a guild scheduled event
-   * guildScheduledEvent.setScheduledStartTime('September 24, 2022'))
+   * guildScheduledEvent.setScheduledStartTime('September 24, 2022')
    *  .then(guildScheduledEvent => console.log(`Set the start time to: ${guildScheduledEvent.scheduledStartTime}`))
    *  .catch(console.error);
    */
@@ -279,7 +279,7 @@ class GuildScheduledEvent extends Base {
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set end time of a guild scheduled event
-   * guildScheduledEvent.setScheduledEndTime('September 25, 2022'))
+   * guildScheduledEvent.setScheduledEndTime('September 25, 2022')
    *  .then(guildScheduledEvent => console.log(`Set the end time to: ${guildScheduledEvent.scheduledEndTime}`))
    *  .catch(console.error);
    */
