@@ -77,9 +77,10 @@ class GuildScheduledEvent extends Base {
 
     /**
      * The timestamp the guild scheduled event will start at
-     * @type {number}
+     * <info>This can be potentially `null` only when it's an {@link AuditLogEntryTarget}</info>
+     * @type {?number}
      */
-    this.scheduledStartTime = new Date(data.scheduled_start_time).getTime();
+    this.scheduledStartTime = data.scheduled_start_time ? new Date(data.scheduled_start_time).getTime() : null;
 
     /**
      * The timestamp the guild scheduled event will end at,

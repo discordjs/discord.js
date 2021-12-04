@@ -1165,7 +1165,7 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public creatorId: Snowflake | null;
   public name: string;
   public description: string | null;
-  public scheduledStartTime: number;
+  public scheduledStartTime: number | null;
   public scheduledEndTime: number | null;
   public privacyLevel: GuildScheduledEventPrivacyLevel;
   public status: S;
