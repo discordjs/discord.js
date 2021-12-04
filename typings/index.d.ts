@@ -1181,6 +1181,7 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public readonly channel: VoiceChannel | StageChannel | null;
   public readonly guild: Guild | null;
   public readonly url: string;
+  public createInviteUrl(invite: InviteResolvable): string;
   public edit(options: GuildScheduledEventEditOptions): Promise<GuildScheduledEvent>;
   public delete(): Promise<GuildScheduledEvent>;
   public setName(name: string): Promise<GuildScheduledEvent>;

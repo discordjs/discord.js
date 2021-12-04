@@ -7,6 +7,7 @@ const {
   GuildScheduledEventPrivacyLevels,
   Endpoints,
 } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -214,6 +215,17 @@ class GuildScheduledEvent extends Base {
    */
   get url() {
     return Endpoints.scheduledEvent(this.client.options.http.scheduledEvent, this.guildId, this.id);
+  }
+
+  /**
+   * Creates an invite url to this guild scheduled event.
+   * @param {InviteResolvable} invite The invite to the guild channel of this guild scheduled event
+   * <info>For an `EXTERNAL` guild scheduled event, this can be an invite to any guild channel</info>
+   * @returns {string}
+   */
+  createInviteUrl(invite) {
+    const code = DataResolver.resolveInviteCode(invite);
+    return `${this.client.options.http.invite}/${code}?event=${this.id}`;
   }
 
   /**
