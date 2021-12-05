@@ -189,7 +189,7 @@ class ApplicationCommand extends Base {
   }
 
   /**
-   * Edits the default permission of this ApplicationCommand.
+   * Edits the default permission of this ApplicationCommand
    * @param {boolean} [defaultPermission=true] The default permission for this command
    * @returns {Promise<ApplicationCommand>}
    */
