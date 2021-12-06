@@ -1976,6 +1976,7 @@ export class SnowflakeUtil extends null {
   private constructor();
   public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
   public static generate(timestamp?: number | Date): Snowflake;
+  public static timestampFrom(snowflake: Snowflake): number;
   public static readonly EPOCH: number;
 }
 

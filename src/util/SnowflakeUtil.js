@@ -71,6 +71,15 @@ class SnowflakeUtil extends null {
   }
 
   /**
+   * Retrieves the timestamp field's value from a Discord snowflake.
+   * @param {Snowflake} snowflake Snowflake to get the timestamp value from
+   * @returns {number}
+   */
+  static timestampFrom(snowflake) {
+    return Number(BigInt(snowflake) >> 22n) + EPOCH;
+  }
+
+  /**
    * Discord's epoch value (2015-01-01T00:00:00.000Z).
    * @type {number}
    * @readonly
