@@ -1181,7 +1181,7 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public readonly channel: VoiceChannel | StageChannel | null;
   public readonly guild: Guild | null;
   public readonly url: string;
-  public createInviteUrl(invite: InviteResolvable): string;
+  public createInviteUrl(options?: CreateGuildScheduledEventInviteUrlOptions): Promise<string>;
   public edit(options: GuildScheduledEventEditOptions): Promise<GuildScheduledEvent>;
   public delete(): Promise<GuildScheduledEvent>;
   public setName(name: string): Promise<GuildScheduledEvent>;
@@ -4250,6 +4250,10 @@ export interface ConstantsStatus {
   IDLE: 3;
   NEARLY: 4;
   DISCONNECTED: 5;
+}
+
+export interface CreateGuildScheduledEventInviteUrlOptions extends CreateInviteOptions {
+  channel?: GuildInvitableChannelResolvable;
 }
 
 export interface CreateRoleOptions extends RoleData {

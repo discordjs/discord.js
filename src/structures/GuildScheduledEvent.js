@@ -1,13 +1,13 @@
 'use strict';
 
 const Base = require('./Base');
+const { Error } = require('../errors');
 const {
   GuildScheduledEventEntityTypes,
   GuildScheduledEventStatuses,
   GuildScheduledEventPrivacyLevels,
   Endpoints,
 } = require('../util/Constants');
-const DataResolver = require('../util/DataResolver');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -218,14 +218,26 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
-   * Creates an invite url to this guild scheduled event.
-   * @param {InviteResolvable} invite The invite to the guild channel of this guild scheduled event
-   * <info>For an `EXTERNAL` guild scheduled event, this can be an invite to any guild channel</info>
-   * @returns {string}
+   * Options used to create an invite URL to a {@link GuildScheduledEvent}
+   * @typedef {CreateInviteOptions} CreateGuildScheduledEventInviteUrlOptions
+   * @property {GuildInvitableChannelResolvable} [channel] The channel to create the invite in.
+   * <warn>This is required when the `entityType` of `GuildScheduledEvent` is `EXTERNAL`, gets ignored otherwise</warn>
    */
-  createInviteUrl(invite) {
-    const code = DataResolver.resolveInviteCode(invite);
-    return `${this.client.options.http.invite}/${code}?event=${this.id}`;
+
+  /**
+   * Creates an invite URL to this guild scheduled event.
+   * @param {CreateGuildScheduledEventInviteUrlOptions} [options] The options to create the invite
+   * @returns {Promise<string>}
+   */
+  async createInviteUrl(options) {
+    let channelId = this.channelId;
+    if (this.entityType === 'EXTERNAL') {
+      if (!options?.channel) throw new Error('INVITE_OPTIONS_MISSING_CHANNEL');
+      channelId = this.guild.channels.resolveId(options.channel);
+      if (!channelId) throw new Error('GUILD_CHANNEL_RESOLVE');
+    }
+    const invite = await this.guild.invites.create(channelId, options);
+    return `${this.client.options.http.invite}/${invite.code}?event=${this.id}`;
   }
 
   /**
