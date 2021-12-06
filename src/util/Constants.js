@@ -78,7 +78,7 @@ exports.Endpoints = {
         makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
     };
   },
-  invite: (root, code) => `${root}/${code}`,
+  invite: (root, code, eventId) => (eventId ? `${root}/${code}?event=${eventId}` : `${root}/${code}`),
   scheduledEvent: (root, guildId, eventId) => `${root}/${guildId}/${eventId}`,
   botGateway: '/gateway/bot',
 };

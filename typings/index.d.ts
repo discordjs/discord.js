@@ -2720,7 +2720,7 @@ export const Constants: {
   UserAgent: string;
   Endpoints: {
     botGateway: string;
-    invite: (root: string, code: string) => string;
+    invite: (root: string, code: string, eventId?: Snowflake) => string;
     scheduledEvent: (root: string, guildId: Snowflake, eventId: Snowflake) => string;
     CDN: (root: string) => {
       Emoji: (emojiId: Snowflake, format: DynamicImageFormat) => string;

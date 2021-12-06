@@ -237,7 +237,7 @@ class GuildScheduledEvent extends Base {
       if (!channelId) throw new Error('GUILD_CHANNEL_RESOLVE');
     }
     const invite = await this.guild.invites.create(channelId, options);
-    return `${this.client.options.http.invite}/${invite.code}?event=${this.id}`;
+    return Endpoints.invite(this.client.options.http.invite, invite.code, this.id);
   }
 
   /**
