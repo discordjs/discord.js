@@ -7,7 +7,7 @@ const process = require('node:process');
 const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
 const { owner, token } = require('./auth.js');
-const { Client, Intents, MessageAttachment, MessageEmbed } = require('../src');
+const { Client, Intents, MessageAttachment, Embed } = require('../src');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
@@ -19,7 +19,7 @@ const linkA = 'https://lolisafe.moe/iiDMtAXA.png';
 const linkB = 'https://lolisafe.moe/9hSpedPh.png';
 const fileA = path.join(__dirname, 'blobReach.png');
 
-const embed = () => new MessageEmbed();
+const embed = () => new Embed();
 const attach = (attachment, name) => new MessageAttachment(attachment, name);
 
 const tests = [
@@ -71,12 +71,6 @@ const tests = [
     m.channel.send({
       embed: embed().setImage('attachment://two.png'),
       files: [attach(linkB, 'two.png')],
-    }),
-  m =>
-    m.channel.send({
-      embed: embed()
-        .setImage('attachment://two.png')
-        .attachFiles([attach(linkB, 'two.png')]),
     }),
   m => m.channel.send('x', attach(fileA)),
   m => m.channel.send({ files: [fileA] }),

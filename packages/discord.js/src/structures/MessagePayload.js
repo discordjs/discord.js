@@ -2,7 +2,7 @@
 
 const { Buffer } = require('node:buffer');
 const { createComponent } = require('@discordjs/builders');
-const MessageEmbed = require('./MessageEmbed');
+const { Embed } = require('@discordjs/builders');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
@@ -192,9 +192,7 @@ class MessagePayload {
       content,
       tts,
       nonce,
-      embeds: this.options.embeds?.map(embed =>
-        (embed instanceof MessageEmbed ? embed : new MessageEmbed(embed)).toJSON(),
-      ),
+      embeds: this.options.embeds?.map(embed => (embed instanceof Embed ? embed : new Embed(embed)).toJSON()),
       components,
       username,
       avatar_url: avatarURL,
