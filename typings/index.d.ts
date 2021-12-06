@@ -500,7 +500,7 @@ export abstract class Channel extends Base {
 export type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ? B : A | B;
 
 export class Client<Ready extends boolean = boolean> extends BaseClient {
-  public constructor(options: ClientOptions);
+  public constructor(options? : ClientOptions | {});
   private actions: unknown;
   private presence: ClientPresence;
   private _eval(script: string): unknown;
