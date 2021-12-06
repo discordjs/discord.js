@@ -8,6 +8,7 @@ import type {
   APIInteractionDataResolvedChannel,
   APIRole,
 } from 'discord-api-types/v9';
+import { AuditLogEvent } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
   ApplicationCommandData,
@@ -79,6 +80,9 @@ import {
   Shard,
   WebSocketShard,
   Collector,
+  GuildAuditLogsEntry,
+  GuildAuditLogs,
+  StageInstance,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -1062,3 +1066,85 @@ collector.on('end', (collection, reason) => {
 });
 
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
+
+// Test audit logs
+declare const guild: Guild;
+expectType<Promise<GuildAuditLogs<'MEMBER_KICK'>>>(guild.fetchAuditLogs({ type: 'MEMBER_KICK' }));
+expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }),
+);
+expectType<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }));
+
+expectType<Promise<GuildAuditLogs<'CHANNEL_CREATE'>>>(guild.fetchAuditLogs({ type: 'CHANNEL_CREATE' }));
+expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.ChannelCreate>>>(
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.CHANNEL_CREATE }),
+);
+expectType<Promise<GuildAuditLogs<AuditLogEvent.ChannelCreate>>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.ChannelCreate }),
+);
+
+expectType<Promise<GuildAuditLogs<'INTEGRATION_UPDATE'>>>(guild.fetchAuditLogs({ type: 'INTEGRATION_UPDATE' }));
+expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.INTEGRATION_UPDATE }),
+);
+expectType<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.IntegrationUpdate }),
+);
+
+expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs({ type: 'ALL' }));
+expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.ALL }));
+expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs());
+
+expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
+  guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()),
+);
+expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }).then(al => al.entries.first()),
+);
+expectAssignable<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
+);
+
+expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+  guild.fetchAuditLogs({ type: 'ALL' }).then(al => al.entries.first()),
+);
+expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.ALL }).then(al => al.entries.first()),
+);
+expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+  guild.fetchAuditLogs({ type: null }).then(al => al.entries.first()),
+);
+expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+  guild.fetchAuditLogs().then(al => al.entries.first()),
+);
+
+expectType<Promise<null | undefined>>(
+  guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()?.extra),
+);
+expectType<Promise<null | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.extra),
+);
+expectType<Promise<GuildChannel | { id: Snowflake } | undefined>>(
+  guild.fetchAuditLogs({ type: 'STAGE_INSTANCE_CREATE' }).then(al => al.entries.first()?.extra),
+);
+expectType<Promise<{ channel: GuildChannel | { id: Snowflake }; count: number } | undefined>>(
+  guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' }).then(al => al.entries.first()?.extra),
+);
+
+expectType<Promise<User | null | undefined>>(
+  guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()?.target),
+);
+expectType<Promise<User | null | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.target),
+);
+expectType<Promise<StageInstance | undefined>>(
+  guild.fetchAuditLogs({ type: 'STAGE_INSTANCE_CREATE' }).then(al => al.entries.first()?.target),
+);
+expectType<Promise<User | undefined>>(
+  guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' }).then(al => al.entries.first()?.target),
+);
+
+expectType<Promise<User | undefined>>(
+  // @ts-expect-error Invalid audit log ID
+  guild.fetchAuditLogs({ type: 2000 }).then(al => al.entries.first()?.target),
+);
