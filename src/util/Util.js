@@ -16,7 +16,7 @@ let deprecationEmittedForRemoveMentions = false;
  */
 class Util extends null {
   /**
-   * Flatten an object. Any properties that are collections will get converted to an array of keys.
+   * Static method to flatten an object. Any properties that are collections will get converted to an array of keys.
    * @param {Object} obj The object to flatten.
    * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.
    * @returns {Object}
@@ -33,23 +33,24 @@ class Util extends null {
     const out = {};
 
     for (let [prop, newProp] of Object.entries(props)) {
-      if (!newProp) continue;
-      newProp = newProp === true ? prop : newProp;
+      if (newProp) {
+        newProp = newProp === true ? prop : newProp;
 
-      const element = obj[prop];
-      const elemIsObj = isObject(element);
-      const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
+        const element = obj[prop];
+        const elemIsObj = isObject(element);
+        const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
-      // If it's a Collection, make the array of keys
-      if (element instanceof Collection) out[newProp] = Array.from(element.keys());
-      // If the valueOf is a Collection, use its array of keys
-      else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
-      // If it's an array, flatten each element
-      else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
-      // If it's an object with a primitive `valueOf`, use that value
-      else if (typeof valueOf !== 'object') out[newProp] = valueOf;
-      // If it's a primitive
-      else if (!elemIsObj) out[newProp] = element;
+        // If it's a Collection, make the variable named out to be the array of keys
+        if (element instanceof Collection) out[newProp] = Array.from(element.keys());
+        // If valueOf is a Collection, use its array of keys
+        else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
+        // If it's an array, flatten each element
+        else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
+        // If it's an object with a primitive `valueOf`, use that value
+        else if (typeof valueOf !== 'object') out[newProp] = valueOf;
+        // If it's a primitive, set out to be that primitive value
+        else if (!elemIsObj) out[newProp] = element;
+      }
     }
 
     return out;
