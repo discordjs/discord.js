@@ -105,7 +105,9 @@ class InteractionCollector extends Collector {
 
     if (this.channelId) {
       this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
+      this._handleThreadDeletion = this._handleThreadDeletion.bind(this);
       this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+      this.client.on(Events.THREAD_DELETE, this._handleThreadDeletion);
     }
 
     if (this.guildId) {
@@ -120,6 +122,7 @@ class InteractionCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
       this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+      this.client.removeListener(Events.THREAD_DELETE, this._handleThreadDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
       this.client.decrementMaxListeners();
     });
@@ -212,8 +215,20 @@ class InteractionCollector extends Collector {
    * @returns {void}
    */
   _handleChannelDeletion(channel) {
-    if (channel.id === this.channelId) {
+    if (channel.id === this.channelId || channel.threads?.cache.has(this.channelId)) {
       this.stop('channelDelete');
+    }
+  }
+
+  /**
+   * Handles checking if the thread has been deleted, and if so, stops the collector with the reason 'threadDelete'.
+   * @private
+   * @param {ThreadChannel} thread The thread that was deleted
+   * @returns {void}
+   */
+  _handleThreadDeletion(thread) {
+    if (thread.id === this.channelId) {
+      this.stop('threadDelete');
     }
   }
 
