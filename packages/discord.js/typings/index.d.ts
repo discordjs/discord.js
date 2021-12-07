@@ -3606,7 +3606,7 @@ export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationComm
 }
 
 export interface ApplicationCommandSubGroup extends Omit<BaseApplicationCommandOptionsData, 'required'> {
-  type: 'SUB_COMMAND_GROUP';
+  type: 'SubcommandGroup';
   options?: ApplicationCommandSubCommand[];
 }
 

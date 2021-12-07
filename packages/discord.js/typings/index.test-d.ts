@@ -335,7 +335,7 @@ client.on('ready', async () => {
   });
 
   // @ts-expect-error
-  await globalCommand?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
+  await globalCommand?.permissions.add({ permissions: [{ type: 'Role', id: testGuildId, permission: true }] });
   // @ts-expect-error
   await globalCommand?.permissions.has({ permissionId: testGuildId });
   // @ts-expect-error

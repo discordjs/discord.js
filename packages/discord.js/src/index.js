@@ -155,3 +155,24 @@ exports.WelcomeChannel = require('./structures/WelcomeChannel');
 exports.WelcomeScreen = require('./structures/WelcomeScreen');
 
 exports.WebSocket = require('./WebSocket');
+
+// External
+exports.ActivityType = require('discord-api-types').ActivityType;
+exports.ApplicationCommandType = require('discord-api-types').ApplicationCommandOptionType;
+exports.ApplicationCommandOptionType = require('discord-api-types').ApplicationCommandOptionType;
+exports.ApplicationCommandPermissionType = require('discord-api-types').ApplicationCommandPermissionType;
+exports.ButtonStyle = require('discord-api-types').ButtonStyle;
+exports.ChannelType = require('discord-api-types').ChannelType;
+exports.ComponentType = require('discord-api-types').ComponentType;
+exports.GuildMFALevel = require('discord-api-types').GuildMFALevel;
+exports.GuildNSFWLevel = require('discord-api-types').GuildNSFWLevel;
+exports.GuildPremiumTier = require('discord-api-types').GuildPremiumTier;
+exports.GuildVerificationLevel = require('discord-api-types').GuildVerificationLevel;
+exports.InteractionType = require('discord-api-types').InteractionType;
+exports.InteractionResponseType = require('discord-api-types').InteractionResponseType;
+exports.InviteTargetType = require('discord-api-types').InviteTargetType;
+exports.MessageType = require('discord-api-types').MessageType;
+exports.StageInstancePrivacyLevel = require('discord-api-types').StageInstancePrivacyLevel;
+exports.StickerType = require('discord-api-types').StickerType;
+exports.StickerFormatType = require('discord-api-types').StickerFormatType;
+exports.WebhookType = require('discord-api-types').WebhookType;
