@@ -747,6 +747,9 @@ declare const dmChannel: DMChannel;
 declare const threadChannel: ThreadChannel;
 declare const newsChannel: NewsChannel;
 declare const textChannel: TextChannel;
+declare const storeChannel: StoreChannel;
+declare const categoryChannel: CategoryChannel;
+declare const guild: Guild;
 declare const user: User;
 declare const guildMember: GuildMember;
 
@@ -762,6 +765,10 @@ expectType<Message | null>(dmChannel.lastMessage);
 expectType<Message | null>(threadChannel.lastMessage);
 expectType<Message | null>(newsChannel.lastMessage);
 expectType<Message | null>(textChannel.lastMessage);
+
+expectDeprecated(storeChannel.clone());
+expectDeprecated(categoryChannel.createChannel('Store', { type: 'GUILD_STORE' }));
+expectDeprecated(guild.channels.create('Store', { type: 'GUILD_STORE' }));
 
 notPropertyOf(user, 'lastMessage');
 notPropertyOf(user, 'lastMessageId');
@@ -1068,7 +1075,6 @@ collector.on('end', (collection, reason) => {
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
 
 // Test audit logs
-declare const guild: Guild;
 expectType<Promise<GuildAuditLogs<'MEMBER_KICK'>>>(guild.fetchAuditLogs({ type: 'MEMBER_KICK' }));
 expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(
   guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }),
