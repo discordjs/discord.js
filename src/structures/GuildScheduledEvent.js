@@ -219,17 +219,17 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Options used to create an invite URL to a {@link GuildScheduledEvent}
-   * @typedef {CreateInviteOptions} CreateGuildScheduledEventInviteUrlOptions
+   * @typedef {CreateInviteOptions} CreateGuildScheduledEventInviteURLOptions
    * @property {GuildInvitableChannelResolvable} [channel] The channel to create the invite in.
    * <warn>This is required when the `entityType` of `GuildScheduledEvent` is `EXTERNAL`, gets ignored otherwise</warn>
    */
 
   /**
    * Creates an invite URL to this guild scheduled event.
-   * @param {CreateGuildScheduledEventInviteUrlOptions} [options] The options to create the invite
+   * @param {CreateGuildScheduledEventInviteURLOptions} [options] The options to create the invite
    * @returns {Promise<string>}
    */
-  async createInviteUrl(options) {
+  async createInviteURL(options) {
     let channelId = this.channelId;
     if (this.entityType === 'EXTERNAL') {
       if (!options?.channel) throw new Error('INVITE_OPTIONS_MISSING_CHANNEL');
