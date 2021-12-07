@@ -138,18 +138,31 @@ class GuildScheduledEvent extends Base {
       this.creator ??= this.client.users.resolve(this.creatorId);
     }
 
-    if (data.entity_metadata) {
-      if ('location' in data.entity_metadata) {
+    /* eslint-disable max-len */
+    /**
+     * Represents the additional metadata for a {@link GuildScheduledEvent}
+     * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-metadata}
+     * @typedef {Object} GuildScheduledEventEntityMetadata
+     * @property {?string} location The location of the guild scheduled event
+     */
+    /* eslint-enable max-len */
+
+    if ('entity_metadata' in data) {
+      if (data.entity_metadata) {
         /**
-         * The location of the event
-         * @type {?string}
+         * Additional metadata
+         * @type {?GuildScheduledEventEntityMetadata}
          */
-        this.location = data.entity_metadata.location;
+        this.entityMetadata = {
+          location: data.entity_metadata.location ?? this.entityMetadata?.location ?? null,
+        };
       } else {
-        this.location ??= null;
+        this.entityMetadata = {
+          location: null,
+        };
       }
     } else {
-      this.location ??= null;
+      this.entityMetadata ??= null;
     }
   }
 
