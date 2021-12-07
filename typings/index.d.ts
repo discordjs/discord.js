@@ -4477,6 +4477,9 @@ interface GuildAuditLogsTypes {
   STICKER_CREATE: ['STICKER', 'CREATE'];
   STICKER_UPDATE: ['STICKER', 'UPDATE'];
   STICKER_DELETE: ['STICKER', 'DELETE'];
+  GUILD_SCHEDULED_EVENT_CREATE: ['GUILD_SCHEDULED_EVENT', 'CREATE'];
+  GUILD_SCHEDULED_EVENT_UPDATE: ['GUILD_SCHEDULED_EVENT', 'UPDATE'];
+  GUILD_SCHEDULED_EVENT_DELETE: ['GUILD_SCHEDULED_EVENT', 'DELETE'];
   THREAD_CREATE: ['THREAD', 'CREATE'];
   THREAD_UPDATE: ['THREAD', 'UPDATE'];
   THREAD_DELETE: ['THREAD', 'DELETE'];
@@ -4524,6 +4527,9 @@ export interface GuildAuditLogsIds {
   90: 'STICKER_CREATE';
   91: 'STICKER_UPDATE';
   92: 'STICKER_DELETE';
+  100: 'GUILD_SCHEDULED_EVENT_CREATE';
+  101: 'GUILD_SCHEDULED_EVENT_UPDATE';
+  102: 'GUILD_SCHEDULED_EVENT_DELETE';
   110: 'THREAD_CREATE';
   111: 'THREAD_UPDATE';
   112: 'THREAD_DELETE';
@@ -4574,6 +4580,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   THREAD: ThreadChannel | { id: Snowflake; [x: string]: unknown };
   STAGE_INSTANCE: StageInstance;
   STICKER: Sticker;
+  GUILD_SCHEDULED_EVENT: GuildScheduledEvent;
 }
 
 export interface GuildAuditLogsFetchOptions<T extends GuildAuditLogsResolvable> {
