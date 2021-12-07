@@ -7,11 +7,6 @@ const { deletedMessages } = require('../../structures/Message');
 const { Events } = require('../../util/Constants');
 
 class ChannelDeleteAction extends Action {
-  constructor(client) {
-    super(client);
-    this.deleted = new Map();
-  }
-
   handle(data) {
     const client = this.client;
     const channel = client.channels.cache.get(data.id);
@@ -31,8 +26,6 @@ class ChannelDeleteAction extends Action {
        */
       client.emit(Events.CHANNEL_DELETE, channel);
     }
-
-    return { channel };
   }
 }
 
