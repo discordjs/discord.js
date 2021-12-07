@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
-const Sticker = require('../structures/Sticker');
+const { Sticker } = require('../structures/Sticker');
 
 /**
  * Manages API methods for Guild Stickers and stores their cache.

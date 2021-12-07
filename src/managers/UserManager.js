@@ -1,8 +1,8 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
-const GuildMember = require('../structures/GuildMember');
-const Message = require('../structures/Message');
+const { GuildMember } = require('../structures/GuildMember');
+const { Message } = require('../structures/Message');
 const ThreadMember = require('../structures/ThreadMember');
 const User = require('../structures/User');
 

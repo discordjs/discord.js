@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
-const Message = require('../structures/Message');
+const { Message } = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
 const Util = require('../util/Util');
 

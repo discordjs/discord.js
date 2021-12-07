@@ -10,7 +10,7 @@ const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
-const Sticker = require('./Sticker');
+const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { InteractionTypes, MessageTypes, SystemMessageTypes } = require('../util/Constants');
@@ -18,6 +18,13 @@ const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
+
+/**
+ * @type {WeakSet<Message>}
+ * @private
+ * @internal
+ */
+const deletedMessages = new WeakSet();
 
 /**
  * Represents a message on Discord.
@@ -38,12 +45,6 @@ class Message extends Base {
      * @type {?Snowflake}
      */
     this.guildId = data.guild_id ?? this.channel?.guild?.id ?? null;
-
-    /**
-     * Whether this message has been deleted
-     * @type {boolean}
-     */
-    this.deleted = false;
 
     this._patch(data);
   }
@@ -346,6 +347,19 @@ class Message extends Base {
     } else {
       this.interaction ??= null;
     }
+  }
+
+  /**
+   * Whether or not the structure has been deleted
+   * @type {boolean}
+   */
+  get deleted() {
+    return deletedMessages.has(this);
+  }
+
+  set deleted(value) {
+    if (value) deletedMessages.add(this);
+    else deletedMessages.delete(this);
   }
 
   /**
@@ -942,4 +956,5 @@ class Message extends Base {
   }
 }
 
-module.exports = Message;
+exports.Message = Message;
+exports.deletedMessages = deletedMessages;

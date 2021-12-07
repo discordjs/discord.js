@@ -1,6 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
+const { deletedGuilds } = require('../../structures/Guild');
 const { Events } = require('../../util/Constants');
 
 class GuildDeleteAction extends Action {
@@ -37,7 +38,7 @@ class GuildDeleteAction extends Action {
 
       // Delete guild
       client.guilds.cache.delete(guild.id);
-      guild.deleted = true;
+      deletedGuilds.add(guild);
 
       /**
        * Emitted whenever a guild kicks the client or the guild is deleted/left.

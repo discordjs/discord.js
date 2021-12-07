@@ -83,6 +83,8 @@ import {
   GuildAuditLogsEntry,
   GuildAuditLogs,
   StageInstance,
+  Sticker,
+  Emoji,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -749,6 +751,7 @@ declare const newsChannel: NewsChannel;
 declare const textChannel: TextChannel;
 declare const storeChannel: StoreChannel;
 declare const categoryChannel: CategoryChannel;
+declare const voiceChannel: VoiceChannel;
 declare const guild: Guild;
 declare const user: User;
 declare const guildMember: GuildMember;
@@ -895,6 +898,25 @@ client.on('messageReactionAdd', async reaction => {
   if (reaction.message.partial) return expectType<string | null>(reaction.message.content);
   expectType<string>(reaction.message.content);
 });
+
+// Test .deleted deprecations
+declare const emoji: Emoji;
+declare const message: Message;
+declare const role: Role;
+declare const stageInstance: StageInstance;
+declare const sticker: Sticker;
+expectDeprecated((dmChannel.deleted = true));
+expectDeprecated((textChannel.deleted = true));
+expectDeprecated((voiceChannel.deleted = true));
+expectDeprecated((newsChannel.deleted = true));
+expectDeprecated((threadChannel.deleted = true));
+expectDeprecated((emoji.deleted = true));
+expectDeprecated((guildMember.deleted = true));
+expectDeprecated((guild.deleted = true));
+expectDeprecated((message.deleted = true));
+expectDeprecated((role.deleted = true));
+expectDeprecated((stageInstance.deleted = true));
+expectDeprecated((sticker.deleted = true));
 
 // Test interactions
 declare const interaction: Interaction;

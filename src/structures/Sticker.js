@@ -5,6 +5,13 @@ const { StickerFormatTypes, StickerTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
+ * @type {WeakSet<StageInstance>}
+ * @private
+ * @internal
+ */
+const deletedStickers = new WeakSet();
+
+/**
  * Represents a Sticker.
  * @extends {Base}
  */
@@ -138,6 +145,19 @@ class Sticker extends Base {
   }
 
   /**
+   * Whether or not the stage instance has been deleted
+   * @type {boolean}
+   */
+  get deleted() {
+    return deletedStickers.has(this);
+  }
+
+  set deleted(value) {
+    if (value) deletedStickers.add(this);
+    else deletedStickers.delete(this);
+  }
+
+  /**
    * Whether this sticker is partial
    * @type {boolean}
    * @readonly
@@ -264,7 +284,8 @@ class Sticker extends Base {
   }
 }
 
-module.exports = Sticker;
+exports.Sticker = Sticker;
+exports.deletedStickers = deletedStickers;
 
 /**
  * @external APISticker

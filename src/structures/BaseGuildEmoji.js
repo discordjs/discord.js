@@ -1,6 +1,6 @@
 'use strict';
 
-const Emoji = require('./Emoji');
+const { Emoji } = require('./Emoji');
 
 /**
  * Parent class for {@link GuildEmoji} and {@link GuildPreviewEmoji}.

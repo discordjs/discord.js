@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
-const Sticker = require('./Sticker');
+const { Sticker } = require('./Sticker');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
