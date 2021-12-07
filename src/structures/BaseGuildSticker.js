@@ -17,8 +17,6 @@ class BaseGuildSticker extends Sticker {
      */
     this.guild = guild;
 
-    this.requiresColons = null;
-    this.managed = null;
     this.available = null;
 
     this._patch(data);
