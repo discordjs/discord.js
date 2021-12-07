@@ -7,6 +7,7 @@ const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const { Error, TypeError, RangeError } = require('../errors');
 const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
+const BaseGuildStickerManager = require('../managers/BaseGuildStickerManager');
 const ChannelManager = require('../managers/ChannelManager');
 const GuildManager = require('../managers/GuildManager');
 const UserManager = require('../managers/UserManager');
@@ -197,6 +198,19 @@ class Client extends BaseClient {
       if (guild.available) for (const emoji of guild.emojis.cache.values()) emojis.cache.set(emoji.id, emoji);
     }
     return emojis;
+  }
+
+  /**
+   * All custom stickers that the client has access to, mapped by their ids
+   * @type {BaseGuildStickerManager}
+   * @readonly
+   */
+  get stickers() {
+    const stickers = new BaseGuildStickerManager(this);
+    for (const guild of this.guilds.cache.values()) {
+      if (guild.available) for (const sticker of guild.stickers.cache.values()) stickers.cache.set(sticker.id, sticker);
+    }
+    return stickers;
   }
 
   /**

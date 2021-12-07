@@ -112,6 +112,8 @@ const Messages = {
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
   MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION: guild =>
     `Client must have Manage Emojis and Stickers permission in guild ${guild} to see emoji authors.`,
+
+  STICKER_TYPE: 'Sticker must be a string or GuildSticker',
   NOT_GUILD_STICKER: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   REACTION_RESOLVE_USER: "Couldn't resolve the user id to remove from the reaction.",
