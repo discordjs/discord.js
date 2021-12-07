@@ -236,7 +236,7 @@ class Collector extends EventEmitter {
    */
   async *[Symbol.asyncIterator]() {
     const queue = [];
-    const onCollect = item => queue.push(item);
+    const onCollect = (...item) => queue.push(item);
     this.on('collect', onCollect);
 
     try {
