@@ -1,13 +1,13 @@
 'use strict';
 
 const EventEmitter = require('node:events');
+const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
 const { RPCErrorCodes } = require('discord-api-types/v9');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error } = require('../../errors');
 const { Events, ShardEvents, Status, WSCodes, WSEvents } = require('../../util/Constants');
-const Util = require('../../util/Util');
 
 const BeforeReadyWhitelist = [
   WSEvents.READY,
@@ -258,7 +258,7 @@ class WebSocketManager extends EventEmitter {
     // If we have more shards, add a 5s delay
     if (this.shardQueue.size) {
       this.debug(`Shard Queue Size: ${this.shardQueue.size}; continuing in 5 seconds...`);
-      await Util.delayFor(5_000);
+      await sleep(5_000);
       return this.createShards();
     }
 
@@ -279,7 +279,7 @@ class WebSocketManager extends EventEmitter {
       this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);
       if (error.httpStatus !== 401) {
         this.debug(`Possible network error occurred. Retrying in 5s...`);
-        await Util.delayFor(5_000);
+        await sleep(5_000);
         this.reconnecting = false;
         return this.reconnect();
       }

@@ -2257,7 +2257,6 @@ export class Util extends null {
   /** @deprecated Use {@link MessageOptions.allowedMentions} to control mentions in a message instead. */
   public static removeMentions(str: string): string;
   public static cloneObject(obj: unknown): unknown;
-  public static delayFor(ms: number): Promise<void>;
   public static discordSort<K, V extends { rawPosition: number; id: Snowflake }>(
     collection: Collection<K, V>,
   ): Collection<K, V>;
