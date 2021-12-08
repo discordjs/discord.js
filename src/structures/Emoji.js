@@ -4,6 +4,13 @@ const Base = require('./Base');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
+ * @type {WeakSet<Emoji>}
+ * @private
+ * @internal
+ */
+const deletedEmojis = new WeakSet();
+
+/**
  * Represents raw emoji data from the API
  * @typedef {APIEmoji} RawEmoji
  * @property {?Snowflake} id The emoji's id
@@ -35,12 +42,19 @@ class Emoji extends Base {
      * @type {?Snowflake}
      */
     this.id = emoji.id;
+  }
 
-    /**
-     * Whether this emoji has been deleted
-     * @type {boolean}
-     */
-    this.deleted = false;
+  /**
+   * Whether or not the structure has been deleted
+   * @type {boolean}
+   */
+  get deleted() {
+    return deletedEmojis.has(this);
+  }
+
+  set deleted(value) {
+    if (value) deletedEmojis.add(this);
+    else deletedEmojis.delete(this);
   }
 
   /**
@@ -106,7 +120,8 @@ class Emoji extends Base {
   }
 }
 
-module.exports = Emoji;
+exports.Emoji = Emoji;
+exports.deletedEmojis = deletedEmojis;
 
 /**
  * @external APIEmoji

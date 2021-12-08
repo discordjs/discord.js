@@ -1,7 +1,7 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
-const Channel = require('../structures/Channel');
+const { Channel } = require('../structures/Channel');
 const { Events, ThreadChannelTypes } = require('../util/Constants');
 
 let cacheWarningEmitted = false;

@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const Emoji = require('./Emoji');
+const { Emoji } = require('./Emoji');
 
 /**
  * Represents a channel link in a guild's welcome screen.

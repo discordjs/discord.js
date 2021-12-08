@@ -2,7 +2,7 @@
 
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
-const StageInstance = require('../structures/StageInstance');
+const { StageInstance } = require('../structures/StageInstance');
 const { PrivacyLevels } = require('../util/Constants');
 
 /**

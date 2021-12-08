@@ -38,6 +38,13 @@ let deprecationEmittedForSetChannelPositions = false;
 let deprecationEmittedForSetRolePositions = false;
 
 /**
+ * @type {WeakSet<Guild>}
+ * @private
+ * @internal
+ */
+const deletedGuilds = new WeakSet();
+
+/**
  * Represents a guild (or a server) on Discord.
  * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
  * check this with {@link Guild#available}.</info>
@@ -101,12 +108,6 @@ class Guild extends AnonymousGuild {
      */
     this.invites = new GuildInviteManager(this);
 
-    /**
-     * Whether the bot has been removed from the guild
-     * @type {boolean}
-     */
-    this.deleted = false;
-
     if (!data) return;
     if (data.unavailable) {
       /**
@@ -124,6 +125,19 @@ class Guild extends AnonymousGuild {
      * @type {number}
      */
     this.shardId = data.shardId;
+  }
+
+  /**
+   * Whether or not the structure has been deleted
+   * @type {boolean}
+   */
+  get deleted() {
+    return deletedGuilds.has(this);
+  }
+
+  set deleted(value) {
+    if (value) deletedGuilds.add(this);
+    else deletedGuilds.delete(this);
   }
 
   /**
@@ -1399,7 +1413,8 @@ class Guild extends AnonymousGuild {
   }
 }
 
-module.exports = Guild;
+exports.Guild = Guild;
+exports.deletedGuilds = deletedGuilds;
 
 /**
  * @external APIGuild

@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const Role = require('./Role');
+const { Role } = require('./Role');
 const { TypeError } = require('../errors');
 const { OverwriteTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');

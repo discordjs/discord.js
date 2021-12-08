@@ -66,7 +66,7 @@ class MessagePayload {
    */
   get isUser() {
     const User = require('./User');
-    const GuildMember = require('./GuildMember');
+    const { GuildMember } = require('./GuildMember');
     return this.target instanceof User || this.target instanceof GuildMember;
   }
 
@@ -76,7 +76,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessage() {
-    const Message = require('./Message');
+    const { Message } = require('./Message');
     return this.target instanceof Message;
   }
 
