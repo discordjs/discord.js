@@ -465,10 +465,10 @@ exports.ActivityTypes = createEnum(['PLAYING', 'STREAMING', 'LISTENING', 'WATCHI
  * * `GROUP_DM` - a group DM channel
  * * `GUILD_CATEGORY` - a guild category channel
  * * `GUILD_NEWS` - a guild news channel
+ * * `GUILD_STORE` - a guild store channel
  * <warn>Store channels are deprecated and will be removed from Discord in March 2022. See
  * [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479)
  * for more information.</warn>
- * * `GUILD_STORE` - a guild store channel
  * * `GUILD_NEWS_THREAD` - a guild news channel's public thread channel
  * * `GUILD_PUBLIC_THREAD` - a guild text channel's public thread channel
  * * `GUILD_PRIVATE_THREAD` - a guild text channel's private thread channel
