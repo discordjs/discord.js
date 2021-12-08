@@ -5,7 +5,6 @@ const MessageCollector = require('../MessageCollector');
 const MessagePayload = require('../MessagePayload');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { InteractionTypes } = require('../../util/Constants');
 const { TypeError, Error } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
 
@@ -249,7 +248,7 @@ class TextBasedChannel {
   createMessageComponentCollector(options = {}) {
     return new InteractionCollector(this.client, {
       ...options,
-      interactionType: InteractionTypes.MESSAGE_COMPONENT,
+      interactionType: InteractionType.MessageComponent,
       channel: this,
     });
   }
@@ -358,3 +357,4 @@ module.exports = TextBasedChannel;
 
 // Fixes Circular
 const MessageManager = require('../../managers/MessageManager');
+const { InteractionType } = require('discord-api-types');

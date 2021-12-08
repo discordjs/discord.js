@@ -1,9 +1,10 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { ApplicationCommandPermissionType } = require('discord-api-types');
 const BaseManager = require('./BaseManager');
 const { Error, TypeError } = require('../errors');
-const { ApplicationCommandPermissionTypes, APIErrors } = require('../util/Constants');
+const { APIErrors } = require('../util/Constants');
 
 /**
  * Manages API methods for permissions of Application Commands.
@@ -403,7 +404,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       type:
         typeof permissions.type === 'number' && !received
           ? permissions.type
-          : ApplicationCommandPermissionTypes[permissions.type],
+          : ApplicationCommandPermissionType[permissions.type],
     };
   }
 }
