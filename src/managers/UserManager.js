@@ -68,16 +68,6 @@ class UserManager extends CachedManager {
   }
 
   /**
-   * Fetches a user's flags.
-   * @param {UserResolvable} user The UserResolvable to identify
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<UserFlags>}
-   */
-  async fetchFlags(user, options) {
-    return (await this.fetch(user, options)).flags;
-  }
-
-  /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * @param {UserResolvable} user The user to fetch
    * @param {BaseFetchOptions} [options] Additional options for this fetch
@@ -92,6 +82,16 @@ class UserManager extends CachedManager {
 
     const data = await this.client.api.users(id).get();
     return this._add(data, cache);
+  }
+
+  /**
+   * Fetches a user's flags.
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @returns {Promise<UserFlags>}
+   */
+  async fetchFlags(user, options) {
+    return (await this.fetch(user, options)).flags;
   }
 
   /**
