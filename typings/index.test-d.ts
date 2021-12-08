@@ -533,6 +533,8 @@ client.on('messageCreate', async message => {
     const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
     expectType<InteractionCollector<ButtonInteraction<'cached'>>>(buttonCollector);
     expectType<GuildTextBasedChannel>(message.channel);
+    expectType<Guild>(message.guild);
+    expectType<GuildMember | null>(message.member);
   }
 
   expectType<TextBasedChannels>(message.channel);
