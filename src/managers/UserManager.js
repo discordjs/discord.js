@@ -32,6 +32,69 @@ class UserManager extends CachedManager {
    */
 
   /**
+   * Creates a DM channel between the client and a user.
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @returns {Promise<DMChannel>}
+   */
+  async createDM(user, { cache = true, force = false } = {}) {
+    const id = this.resolveId(user);
+
+    if (!force) {
+      const dmChannel = this.client.channels.cache.find(c => c.type === 'DM' && c.recipient.id === id) ?? null;
+      if (dmChannel && !dmChannel.partial) return dmChannel;
+    }
+
+    const data = await this.client.api.users(this.client.user.id).channels.post({
+      data: {
+        recipient_id: id,
+      },
+    });
+    return this.client.channels._add(data, null, { cache });
+  }
+
+  /**
+   * Deletes a DM channel (if one exists) between the client and a user. Resolves with the channel if successful.
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {Promise<DMChannel>}
+   */
+  async deleteDM(user) {
+    const id = this.resolveId(user);
+    const dmChannel = this.client.channels.cache.find(c => c.type === 'DM' && c.recipient.id === id) ?? null;
+    if (!dmChannel) throw new Error('USER_NO_DM_CHANNEL');
+    await this.client.api.channels(dmChannel.id).delete();
+    this.client.channels._remove(dmChannel.id);
+    return dmChannel;
+  }
+
+  /**
+   * Fetches a user's flags.
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @returns {Promise<UserFlags>}
+   */
+  async fetchFlags(user, options) {
+    return (await this.fetch(user, options)).flags;
+  }
+
+  /**
+   * Obtains a user from Discord, or the user cache if it's already available.
+   * @param {UserResolvable} user The user to fetch
+   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @returns {Promise<User>}
+   */
+  async fetch(user, { cache = true, force = false } = {}) {
+    const id = this.resolveId(user);
+    if (!force) {
+      const existing = this.cache.get(id);
+      if (existing && !existing.partial) return existing;
+    }
+
+    const data = await this.client.api.users(id).get();
+    return this._add(data, cache);
+  }
+
+  /**
    * Resolves a {@link UserResolvable} to a {@link User} object.
    * @param {UserResolvable} user The UserResolvable to identify
    * @returns {?User}
@@ -52,23 +115,6 @@ class UserManager extends CachedManager {
     if (user instanceof GuildMember) return user.user.id;
     if (user instanceof Message) return user.author.id;
     return super.resolveId(user);
-  }
-
-  /**
-   * Obtains a user from Discord, or the user cache if it's already available.
-   * @param {UserResolvable} user The user to fetch
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<User>}
-   */
-  async fetch(user, { cache = true, force = false } = {}) {
-    const id = this.resolveId(user);
-    if (!force) {
-      const existing = this.cache.get(id);
-      if (existing && !existing.partial) return existing;
-    }
-
-    const data = await this.client.api.users(id).get();
-    return this._add(data, cache);
   }
 }
 
