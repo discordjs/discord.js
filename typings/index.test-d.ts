@@ -752,7 +752,6 @@ declare const threadChannel: ThreadChannel;
 declare const newsChannel: NewsChannel;
 declare const textChannel: TextChannel;
 declare const storeChannel: StoreChannel;
-declare const categoryChannel: CategoryChannel;
 declare const voiceChannel: VoiceChannel;
 declare const guild: Guild;
 declare const user: User;
@@ -843,6 +842,18 @@ declare const guildApplicationCommandManager: GuildApplicationCommandManager;
 expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
 expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch(undefined, {}));
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
+
+declare const categoryChannel: CategoryChannel;
+{
+  expectType<Promise<VoiceChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_VOICE' }));
+  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_TEXT' }));
+  expectType<Promise<NewsChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_NEWS' }));
+  expectDeprecated(categoryChannel.createChannel('name', { type: 'GUILD_STORE' }));
+  expectType<Promise<StageChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_STAGE_VOICE' }));
+  expectType<Promise<TextChannel | VoiceChannel | NewsChannel | StoreChannel | StageChannel>>(
+    categoryChannel.createChannel('name', {}),
+  );
+}
 
 declare const guildChannelManager: GuildChannelManager;
 {

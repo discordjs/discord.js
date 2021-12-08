@@ -454,30 +454,49 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
   public inRawGuild(): this is ButtonInteraction<'raw'>;
 }
 
+export type KeyedEnum<K, T> = {
+  [Key in keyof K]: T | string;
+};
+
+export type EnumValueMapped<E extends KeyedEnum<T, number>, T extends Partial<Record<keyof E, unknown>>> = T & {
+  [Key in keyof T as E[Key]]: T[Key];
+};
+
+export type MappedChannelCategoryTypes = EnumValueMapped<
+  typeof ChannelTypes,
+  {
+    GUILD_NEWS: NewsChannel;
+    GUILD_VOICE: VoiceChannel;
+    GUILD_TEXT: TextChannel;
+    GUILD_STORE: StoreChannel;
+    GUILD_STAGE_VOICE: StageChannel;
+  }
+>;
+
+export type CategoryChannelTypes = ExcludeEnum<
+  typeof ChannelTypes,
+  | 'DM'
+  | 'GROUP_DM'
+  | 'UNKNOWN'
+  | 'GUILD_PUBLIC_THREAD'
+  | 'GUILD_NEWS_THREAD'
+  | 'GUILD_PRIVATE_THREAD'
+  | 'GUILD_CATEGORY'
+>;
+
 export class CategoryChannel extends GuildChannel {
   public readonly children: Collection<Snowflake, GuildChannel>;
   public type: 'GUILD_CATEGORY';
-  public createChannel(
-    name: string,
-    options: CategoryCreateChannelOptions & { type: 'GUILD_VOICE' },
-  ): Promise<VoiceChannel>;
-  public createChannel(
-    name: string,
-    options?: CategoryCreateChannelOptions & { type?: 'GUILD_TEXT' },
-  ): Promise<TextChannel>;
-  public createChannel(
-    name: string,
-    options: CategoryCreateChannelOptions & { type: 'GUILD_NEWS' },
-  ): Promise<NewsChannel>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
+  /** @deprecated */
   public createChannel(
     name: string,
     options: CategoryCreateChannelOptions & { type: 'GUILD_STORE' },
   ): Promise<StoreChannel>;
-  public createChannel(
+  public createChannel<T extends CategoryChannelTypes>(
     name: string,
-    options: CategoryCreateChannelOptions & { type: 'GUILD_STAGE_VOICE' },
-  ): Promise<StageChannel>;
+    options: CategoryCreateChannelOptions & { type: T },
+  ): Promise<MappedChannelCategoryTypes[T]>;
+
   public createChannel(
     name: string,
     options: CategoryCreateChannelOptions,
@@ -1370,17 +1389,16 @@ export interface StringMappedInteractionTypes<Cached extends CacheType = CacheTy
   ACTION_ROW: MessageComponentInteraction<Cached>;
 }
 
-export interface EnumMappedInteractionTypes<Cached extends CacheType = CacheType> {
-  1: MessageComponentInteraction<Cached>;
-  2: ButtonInteraction<Cached>;
-  3: SelectMenuInteraction<Cached>;
-}
-
 export type WrapBooleanCache<T extends boolean> = If<T, 'cached', CacheType>;
-export type MappedInteractionTypes<Cached extends boolean = boolean> = StringMappedInteractionTypes<
-  WrapBooleanCache<Cached>
-> &
-  EnumMappedInteractionTypes<WrapBooleanCache<Cached>>;
+
+export type MappedInteractionTypes<Cached extends boolean = boolean> = EnumValueMapped<
+  typeof MessageComponentTypes,
+  {
+    BUTTON: ButtonInteraction<WrapBooleanCache<Cached>>;
+    SELECT_MENU: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+    ACTION_ROW: MessageComponentInteraction<WrapBooleanCache<Cached>>;
+  }
+>;
 
 export class Message<Cached extends boolean = boolean> extends Base {
   private readonly _cacheType: Cached;
@@ -2812,6 +2830,16 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
   public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
 
+export type MappedGuildChannelTypes = EnumValueMapped<
+  typeof ChannelTypes,
+  {
+    GUILD_CATEGORY: CategoryChannel;
+  }
+> &
+  MappedChannelCategoryTypes;
+
+export type GuildChannelTypes = CategoryChannelTypes | ChannelTypes.GUILD_CATEGORY | 'GUILD_CATEGORY';
+
 export class GuildChannelManager extends CachedManager<
   Snowflake,
   GuildChannel | ThreadChannel,
@@ -2820,19 +2848,12 @@ export class GuildChannelManager extends CachedManager<
   private constructor(guild: Guild, iterable?: Iterable<RawGuildChannelData>);
   public readonly channelCountWithoutThreads: number;
   public guild: Guild;
-  public create(name: string, options: GuildChannelCreateOptions & { type: 'GUILD_VOICE' }): Promise<VoiceChannel>;
-  public create(
-    name: string,
-    options: GuildChannelCreateOptions & { type: 'GUILD_CATEGORY' },
-  ): Promise<CategoryChannel>;
-  public create(name: string, options?: GuildChannelCreateOptions & { type?: 'GUILD_TEXT' }): Promise<TextChannel>;
-  public create(name: string, options: GuildChannelCreateOptions & { type: 'GUILD_NEWS' }): Promise<NewsChannel>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
+  /** @deprecated */
   public create(name: string, options: GuildChannelCreateOptions & { type: 'GUILD_STORE' }): Promise<StoreChannel>;
-  public create(
+  public create<T extends GuildChannelTypes>(
     name: string,
-    options: GuildChannelCreateOptions & { type: 'GUILD_STAGE_VOICE' },
-  ): Promise<StageChannel>;
+    options: GuildChannelCreateOptions & { type: T },
+  ): Promise<MappedGuildChannelTypes[T]>;
   public create(
     name: string,
     options: GuildChannelCreateOptions,
