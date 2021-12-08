@@ -9,8 +9,8 @@ const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
 
-let cacheWarningEmitted = false,
-  storeChannelDeprecationEmitted = false;
+let cacheWarningEmitted = false;
+let storeChannelDeprecationEmitted = false;
 
 /**
  * Manages API methods for GuildChannels and stores their cache.
