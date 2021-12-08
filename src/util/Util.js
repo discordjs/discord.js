@@ -588,18 +588,6 @@ class Util extends null {
   }
 
   /**
-   * Creates a Promise that resolves after a specified duration.
-   * @param {number} ms How long to wait before resolving (in milliseconds)
-   * @returns {Promise<void>}
-   * @private
-   */
-  static delayFor(ms) {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  }
-
-  /**
    * Creates a sweep filter that sweeps archived threads
    * @param {number} [lifetime=14400] How long a thread has to be archived to be valid for sweeping
    * @returns {SweepFilter}

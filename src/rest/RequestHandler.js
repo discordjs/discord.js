@@ -1,5 +1,6 @@
 'use strict';
 
+const { setTimeout: sleep } = require('node:timers/promises');
 const { AsyncQueue } = require('@sapphire/async-queue');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
@@ -7,7 +8,6 @@ const RateLimitError = require('./RateLimitError');
 const {
   Events: { DEBUG, RATE_LIMIT, INVALID_REQUEST_WARNING, API_RESPONSE, API_REQUEST },
 } = require('../util/Constants');
-const Util = require('../util/Util');
 
 function parseResponse(res) {
   if (res.headers.get('content-type').startsWith('application/json')) return res.json();
@@ -145,7 +145,7 @@ class RequestHandler {
         }
         delayPromise = this.manager.globalDelay;
       } else {
-        delayPromise = Util.delayFor(timeout);
+        delayPromise = sleep(timeout);
       }
 
       // Determine whether a RateLimitError should be thrown
@@ -333,7 +333,7 @@ class RequestHandler {
 
         // If caused by a sublimit, wait it out here so other requests on the route can be handled
         if (sublimitTimeout) {
-          await Util.delayFor(sublimitTimeout);
+          await sleep(sublimitTimeout);
         }
         return this.execute(request);
       }
