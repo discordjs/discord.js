@@ -97,6 +97,16 @@ class GuildSticker extends BaseGuildSticker {
   }
 
   /**
+   * Sets the description of the sticker.
+   * @param {string} description The new description for the sticker
+   * @param {string} [reason] Reason for changing the sticker's description
+   * @returns {Promise<GuildSticker>}
+   */
+  setDescription(description, reason) {
+    return this.edit({ description }, reason);
+  }
+
+  /**
    * Sets the name of the sticker.
    * @param {string} name The new name for the sticker
    * @param {string} [reason] Reason for changing the sticker's name
@@ -104,6 +114,16 @@ class GuildSticker extends BaseGuildSticker {
    */
   setName(name, reason) {
     return this.edit({ name }, reason);
+  }
+
+  /**
+   * Sets the tags of the sticker.
+   * @param {string} tags The new tags for the sticker
+   * @param {string} [reason] Reason for changing the sticker's tags
+   * @returns {Promise<GuildSticker>}
+   */
+  setTags(tags, reason) {
+    return this.edit({ tags }, reason);
   }
 
   /**
