@@ -10,14 +10,6 @@ const Util = require('../util/Util');
 let deprecationEmittedForComparePositions = false;
 
 /**
- * @type {WeakSet<Role>}
- * @private
- * @internal
- */
-const deletedRoles = new WeakSet();
-let deprecationEmittedForDeleted = false;
-
-/**
  * Represents a role on Discord.
  * @extends {Base}
  */
@@ -149,36 +141,6 @@ class Role extends Base {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * Whether or not the role has been deleted
-   * @type {boolean}
-   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
-   */
-  get deleted() {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Role#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    return deletedRoles.has(this);
-  }
-
-  set deleted(value) {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Role#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    if (value) deletedRoles.add(this);
-    else deletedRoles.delete(this);
   }
 
   /**
@@ -504,7 +466,6 @@ class Role extends Base {
 }
 
 exports.Role = Role;
-exports.deletedRoles = deletedRoles;
 
 /**
  * @external APIRole

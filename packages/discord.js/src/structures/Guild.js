@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
@@ -35,15 +34,6 @@ const {
 const DataResolver = require('../util/DataResolver');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
 const Util = require('../util/Util');
-
-let deprecationEmittedForDeleted = false;
-
-/**
- * @type {WeakSet<Guild>}
- * @private
- * @internal
- */
-const deletedGuilds = new WeakSet();
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -132,36 +122,6 @@ class Guild extends AnonymousGuild {
      * @type {number}
      */
     this.shardId = data.shardId;
-  }
-
-  /**
-   * Whether or not the structure has been deleted
-   * @type {boolean}
-   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
-   */
-  get deleted() {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Guild#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    return deletedGuilds.has(this);
-  }
-
-  set deleted(value) {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Guild#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    if (value) deletedGuilds.add(this);
-    else deletedGuilds.delete(this);
   }
 
   /**
@@ -1357,7 +1317,6 @@ class Guild extends AnonymousGuild {
 }
 
 exports.Guild = Guild;
-exports.deletedGuilds = deletedGuilds;
 
 /**
  * @external APIGuild

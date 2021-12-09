@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
@@ -19,14 +18,6 @@ const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
-
-/**
- * @type {WeakSet<Message>}
- * @private
- * @internal
- */
-const deletedMessages = new WeakSet();
-let deprecationEmittedForDeleted = false;
 
 /**
  * Represents a message on Discord.
@@ -352,36 +343,6 @@ class Message extends Base {
   }
 
   /**
-   * Whether or not the structure has been deleted
-   * @type {boolean}
-   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
-   */
-  get deleted() {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Message#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    return deletedMessages.has(this);
-  }
-
-  set deleted(value) {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Message#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    if (value) deletedMessages.add(this);
-    else deletedMessages.delete(this);
-  }
-
-  /**
    * The channel that the message was sent in
    * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
    * @readonly
@@ -584,9 +545,7 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    const precheck = Boolean(
-      this.author.id === this.client.user.id && !deletedMessages.has(this) && (!this.guild || this.channel?.viewable),
-    );
+    const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
     // Regardless of permissions thread messages cannot be edited if
     // the thread is locked.
     if (this.channel?.isThread()) {
@@ -601,9 +560,6 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    if (deletedMessages.has(this)) {
-      return false;
-    }
     if (!this.guild) {
       return this.author.id === this.client.user.id;
     }
@@ -633,7 +589,6 @@ class Message extends Base {
     const { channel } = this;
     return Boolean(
       !this.system &&
-        !deletedMessages.has(this) &&
         (!this.guild ||
           (channel?.viewable &&
             channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
@@ -668,8 +623,7 @@ class Message extends Base {
         !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
         this.type === 'DEFAULT' &&
         channel.viewable &&
-        channel.permissionsFor(this.client.user)?.has(bitfield, false) &&
-        !deletedMessages.has(this),
+        channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
   }
 
@@ -983,4 +937,3 @@ class Message extends Base {
 }
 
 exports.Message = Message;
-exports.deletedMessages = deletedMessages;

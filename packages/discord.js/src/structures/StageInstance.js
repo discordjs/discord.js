@@ -1,17 +1,8 @@
 'use strict';
 
-const process = require('node:process');
 const Base = require('./Base');
 const { PrivacyLevels } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
-
-/**
- * @type {WeakSet<StageInstance>}
- * @private
- * @internal
- */
-const deletedStageInstances = new WeakSet();
-let deprecationEmittedForDeleted = false;
 
 /**
  * Represents a stage instance.
@@ -84,36 +75,6 @@ class StageInstance extends Base {
   }
 
   /**
-   * Whether or not the stage instance has been deleted
-   * @type {boolean}
-   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
-   */
-  get deleted() {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'StageInstance#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    return deletedStageInstances.has(this);
-  }
-
-  set deleted(value) {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'StageInstance#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    if (value) deletedStageInstances.add(this);
-    else deletedStageInstances.delete(this);
-  }
-
-  /**
    * The guild this stage instance belongs to
    * @type {?Guild}
    * @readonly
@@ -148,7 +109,6 @@ class StageInstance extends Base {
   async delete() {
     await this.guild.stageInstances.delete(this.channelId);
     const clone = this._clone();
-    deletedStageInstances.add(clone);
     return clone;
   }
 
@@ -186,4 +146,3 @@ class StageInstance extends Base {
 }
 
 exports.StageInstance = StageInstance;
-exports.deletedStageInstances = deletedStageInstances;
