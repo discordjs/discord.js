@@ -32,6 +32,16 @@ class UserManager extends CachedManager {
    */
 
   /**
+   * The DM between the client's user and this user
+   * @param {Snowflake} userId The user id
+   * @returns {?DMChannel}
+   * @private
+   */
+  dmChannel(userId) {
+    return this.client.channels.cache.find(c => c.type === 'DM' && c.recipient.id === userId) ?? null;
+  }
+
+  /**
    * Creates a DM channel between the client and a user.
    * @param {UserResolvable} user The UserResolvable to identify
    * @param {BaseFetchOptions} [options] Additional options for this fetch
@@ -41,7 +51,7 @@ class UserManager extends CachedManager {
     const id = this.resolveId(user);
 
     if (!force) {
-      const dmChannel = this.client.channels.cache.find(c => c.type === 'DM' && c.recipient.id === id) ?? null;
+      const dmChannel = this.dmChannel(id);
       if (dmChannel && !dmChannel.partial) return dmChannel;
     }
 
@@ -60,7 +70,7 @@ class UserManager extends CachedManager {
    */
   async deleteDM(user) {
     const id = this.resolveId(user);
-    const dmChannel = this.client.channels.cache.find(c => c.type === 'DM' && c.recipient.id === id) ?? null;
+    const dmChannel = this.dmChannel(id);
     if (!dmChannel) throw new Error('USER_NO_DM_CHANNEL');
     await this.client.api.channels(dmChannel.id).delete();
     this.client.channels._remove(dmChannel.id);
