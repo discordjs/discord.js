@@ -2,11 +2,11 @@
 
 const { Collection } = require('@discordjs/collection');
 const Integration = require('./Integration');
+const Invite = require('./Invite');
 const { StageInstance } = require('./StageInstance');
 const { Sticker } = require('./Sticker');
 const Webhook = require('./Webhook');
 const { OverwriteTypes, PartialTypes } = require('../util/Constants');
-const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
@@ -502,19 +502,21 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.INVITE) {
-      this.target = guild.members.fetch(guild.client.user.id).then(async me => {
-        if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
-          let change = this.changes.find(c => c.key === 'code');
-          change = change.new ?? change.old;
-          const invites = await guild.invites.fetch();
-          this.target = invites.find(i => i.code === change) ?? null;
-        } else {
-          this.target = this.changes.reduce((o, c) => {
-            o[c.key] = c.new ?? c.old;
-            return o;
-          }, {});
-        }
-      });
+      let change = this.changes.find(c => c.key === 'code');
+      change = change.new ?? change.old;
+
+      this.target =
+        guild.invites.cache.get(change) ??
+        new Invite(
+          guild.client,
+          this.changes.reduce(
+            (o, c) => {
+              o[c.key] = c.new ?? c.old;
+              return o;
+            },
+            { guild },
+          ),
+        );
     } else if (targetType === Targets.MESSAGE) {
       // Discord sends a channel id for the MESSAGE_BULK_DELETE action type.
       this.target =
