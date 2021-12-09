@@ -540,6 +540,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public generateInvite(options?: InviteGenerationOptions): string;
   public login(token?: string): Promise<string>;
   public isReady(): this is Client<true>;
+  /** @deprecated Use {@link Sweepers#sweepMessages} instead */
   public sweepMessages(lifetime?: number): number;
   public toJSON(): unknown;
 
@@ -3856,9 +3857,9 @@ export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
   makeCache?: CacheFactory;
-  /** @deprecated Use `makeCache` with a `LimitedCollection` for `MessageManager` instead. */
+  /** @deprecated Pass the value of this property as `lifetime` to `sweepers.messages` instead. */
   messageCacheLifetime?: number;
-  /** @deprecated Use `makeCache` with a `LimitedCollection` for `MessageManager` instead. */
+  /** @deprecated Pass the value of this property as `interval` to `sweepers.messages` instead. */
   messageSweepInterval?: number;
   allowedMentions?: MessageMentionOptions;
   invalidRequestWarningInterval?: number;

@@ -37,9 +37,9 @@
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
  * <warn>Overriding the cache used in `GuildManager`, `ChannelManager`, `GuildChannelManager`, `RoleManager`,
  * and `PermissionOverwriteManager` is unsupported and **will** break functionality</warn>
- * @property {number} [messageCacheLifetime=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
+ * @property {number} [messageCacheLifetime=0] DEPRECATED: Pass `lifetime` to `sweepers.messages` instead.
  * How long a message should stay in the cache until it is considered sweepable (in seconds, 0 for forever)
- * @property {number} [messageSweepInterval=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
+ * @property {number} [messageSweepInterval=0] DEPRECATED: Pass `interval` to `sweepers.messages` instead.
  * How frequently to remove messages from the cache that are older than the message cache lifetime
  * (in seconds, 0 for never)
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}

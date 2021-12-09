@@ -19,8 +19,12 @@ const { TypeError } = require('../errors/DJSError.js');
  * @property {?number} [maxSize=Infinity] The maximum size of the Collection
  * @property {?Function} [keepOverLimit=null] A function, which is passed the value and key of an entry, ran to decide
  * to keep an entry past the maximum size
- * @property {?SweepFilter} [sweepFilter=null] A function ran every `sweepInterval` to determine how to sweep
- * @property {?number} [sweepInterval=0] How frequently, in seconds, to sweep the collection.
+ * @property {?SweepFilter} [sweepFilter=null] DEPRECATED: There is no direct alternative to this,
+ * however most of its purpose is fulfilled by {@link Client#sweepers}
+ * A function ran every `sweepInterval` to determine how to sweep
+ * @property {?number} [sweepInterval=0] DEPRECATED: There is no direct alternative to this,
+ * however most of its purpose is fulfilled by {@link Client#sweepers}
+ * How frequently, in seconds, to sweep the collection.
  */
 
 /**
@@ -65,12 +69,14 @@ class LimitedCollection extends Collection {
 
     /**
      * A function called every sweep interval that returns a function passed to `sweep`.
+     * @deprecated in favor of {@link Client#sweepers}
      * @type {?SweepFilter}
      */
     this.sweepFilter = sweepFilter;
 
     /**
      * The id of the interval being used to sweep.
+     * @deprecated in favor of {@link Client#sweepers}
      * @type {?Timeout}
      */
     this.interval =

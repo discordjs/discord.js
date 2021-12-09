@@ -183,7 +183,7 @@ class Client extends BaseClient {
 
     if (this.options.messageSweepInterval > 0) {
       process.emitWarning(
-        'The message sweeping client options are deprecated, use the makeCache option with LimitedCollection instead.',
+        'The message sweeping client options are deprecated, use the global sweepers instead.',
         'DeprecationWarning',
       );
       this.sweepMessageInterval = setInterval(
@@ -409,9 +409,7 @@ class Client extends BaseClient {
       return -1;
     }
 
-    const messages = this.sweepers.sweepMessages(
-      Sweepers.filterByLifetime({ lifetime, getComparisonTimestamp: m => m.editedTimestamp ?? m.createdTimestamp })(),
-    );
+    const messages = this.sweepers.sweepMessages(Sweepers.outdatedMessageSweepFilter(lifetime)());
     this.emit(Events.DEBUG, `Swept ${messages} messages older than ${lifetime} seconds`);
     return messages;
   }
