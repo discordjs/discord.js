@@ -4310,11 +4310,11 @@ export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsT
 
 export interface GuildAuditLogsEntryExtraField {
   MEMBER_PRUNE: { removed: number; days: number };
-  MEMBER_MOVE: { channel: GuildChannel | { id: Snowflake }; count: number };
-  MESSAGE_DELETE: { channel: GuildChannel | { id: Snowflake }; count: number };
-  MESSAGE_BULK_DELETE: { channel: GuildChannel | { id: Snowflake }; count: number };
-  MESSAGE_PIN: { channel: GuildChannel | { id: Snowflake }; messageId: Snowflake };
-  MESSAGE_UNPIN: { channel: GuildChannel | { id: Snowflake }; messageId: Snowflake };
+  MEMBER_MOVE: { channel: VoiceChannel | StageChannel | { id: Snowflake }; count: number };
+  MESSAGE_DELETE: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
+  MESSAGE_BULK_DELETE: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
+  MESSAGE_PIN: { channel: GuildTextBasedChannel | { id: Snowflake }; messageId: Snowflake };
+  MESSAGE_UNPIN: { channel: GuildTextBasedChannel | { id: Snowflake }; messageId: Snowflake };
   MEMBER_DISCONNECT: { count: number };
   CHANNEL_OVERWRITE_CREATE:
     | Role
@@ -4331,9 +4331,9 @@ export interface GuildAuditLogsEntryExtraField {
     | GuildMember
     | { id: Snowflake; name: string; type: OverwriteTypes.role }
     | { id: Snowflake; type: OverwriteTypes.member };
-  STAGE_INSTANCE_CREATE: GuildChannel | { id: Snowflake };
-  STAGE_INSTANCE_DELETE: GuildChannel | { id: Snowflake };
-  STAGE_INSTANCE_UPDATE: GuildChannel | { id: Snowflake };
+  STAGE_INSTANCE_CREATE: StageChannel | { id: Snowflake };
+  STAGE_INSTANCE_DELETE: StageChannel | { id: Snowflake };
+  STAGE_INSTANCE_UPDATE: StageChannel | { id: Snowflake };
 }
 
 export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
@@ -4343,8 +4343,8 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   INVITE: Invite | { [x: string]: unknown };
   MESSAGE: TActionType extends 'MESSAGE_BULK_DELETE' ? Guild | { id: Snowflake } : User;
   INTEGRATION: Integration;
-  CHANNEL: GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown };
-  THREAD: GuildChannel | ThreadChannel | { id: Snowflake; [x: string]: unknown };
+  CHANNEL: GuildChannel | { id: Snowflake; [x: string]: unknown };
+  THREAD: ThreadChannel | { id: Snowflake; [x: string]: unknown };
   STAGE_INSTANCE: StageInstance;
   STICKER: Sticker;
 }
