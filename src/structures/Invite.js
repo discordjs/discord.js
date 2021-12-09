@@ -111,7 +111,7 @@ class Invite extends Base {
        * The user's id who created this invite
        * @type {?Snowflake}
        */
-      this.inviterId = data.inviterId;
+      this.inviterId = data.inviter_id;
     } else {
       this.inviterId ??= null;
     }
