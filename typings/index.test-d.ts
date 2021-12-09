@@ -1154,10 +1154,10 @@ expectType<Promise<null | undefined>>(
 expectType<Promise<null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.extra),
 );
-expectType<Promise<GuildChannel | { id: Snowflake } | undefined>>(
+expectType<Promise<StageChannel | { id: Snowflake } | undefined>>(
   guild.fetchAuditLogs({ type: 'STAGE_INSTANCE_CREATE' }).then(al => al.entries.first()?.extra),
 );
-expectType<Promise<{ channel: GuildChannel | { id: Snowflake }; count: number } | undefined>>(
+expectType<Promise<{ channel: GuildTextBasedChannel | { id: Snowflake }; count: number } | undefined>>(
   guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' }).then(al => al.entries.first()?.extra),
 );
 
