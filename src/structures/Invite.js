@@ -112,6 +112,7 @@ class Invite extends Base {
        * @type {?Snowflake}
        */
       this.inviterId = data.inviter_id;
+      this.inviter = this.client.users.resolve(data.inviter_id);
     } else {
       this.inviterId ??= null;
     }
@@ -121,7 +122,7 @@ class Invite extends Base {
        * The user who created this invite
        * @type {?User}
        */
-      this.inviter = this.client.users._add(data.inviter);
+      this.inviter ??= this.client.users._add(data.inviter);
       this.inviterId = data.inviter.id;
     } else {
       this.inviter ??= null;
@@ -171,6 +172,7 @@ class Invite extends Base {
        * @type {Snowflake}
        */
       this.channelId = data.channel_id;
+      this.channel = this.client.channels.cache.get(data.channel_id);
     }
 
     if ('channel' in data) {
@@ -178,7 +180,7 @@ class Invite extends Base {
        * The channel this invite is for
        * @type {Channel}
        */
-      this.channel = this.client.channels._add(data.channel, this.guild, { cache: false });
+      this.channel ??= this.client.channels._add(data.channel, this.guild, { cache: false });
       this.channelId ??= data.channel.id;
     }
 
