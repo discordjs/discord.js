@@ -42,7 +42,7 @@ class UserManager extends CachedManager {
   }
 
   /**
-   * Creates a DM channel between the client and a user.
+   * Creates a {@link DMChannel} between the client and a user.
    * @param {UserResolvable} user The UserResolvable to identify
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<DMChannel>}
@@ -64,7 +64,7 @@ class UserManager extends CachedManager {
   }
 
   /**
-   * Deletes a DM channel (if one exists) between the client and a user. Resolves with the channel if successful.
+   * Deletes a {@link DMChannel} (if one exists) between the client and a user. Resolves with the channel if successful.
    * @param {UserResolvable} user The UserResolvable to identify
    * @returns {Promise<DMChannel>}
    */
