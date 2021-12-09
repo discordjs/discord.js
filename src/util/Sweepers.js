@@ -32,31 +32,30 @@ class Sweepers {
      * A record of interval timeout that is used to sweep the indicated items, or null if not being swept
      * @type {Object<SweeperKey, ?Timeout>}
      */
-    this.intervals = {};
+    this.intervals = Object.fromEntries(SweeperKeys.map(key => [key, null]));
 
     for (const key of SweeperKeys) {
-      this.intervals[key] = null;
-      if (key in options) {
-        this._validateProperties(key);
+      if (!(key in options)) continue;
 
-        const clonedOptions = { ...this.options[key] };
+      this._validateProperties(key);
 
-        // Handle cases that have a "lifetime"
-        if (!('filter' in clonedOptions)) {
-          switch (key) {
-            case 'invites':
-              clonedOptions.filter = this.constructor.expiredInviteSweepFilter(clonedOptions.lifetime);
-              break;
-            case 'messages':
-              clonedOptions.filter = this.constructor.outdatedMessageSweepFilter(clonedOptions.lifetime);
-              break;
-            case 'threads':
-              clonedOptions.filter = this.constructor.archivedThreadSweepFilter(clonedOptions.lifetime);
-          }
+      const clonedOptions = { ...this.options[key] };
+
+      // Handle cases that have a "lifetime"
+      if (!('filter' in clonedOptions)) {
+        switch (key) {
+          case 'invites':
+            clonedOptions.filter = this.constructor.expiredInviteSweepFilter(clonedOptions.lifetime);
+            break;
+          case 'messages':
+            clonedOptions.filter = this.constructor.outdatedMessageSweepFilter(clonedOptions.lifetime);
+            break;
+          case 'threads':
+            clonedOptions.filter = this.constructor.archivedThreadSweepFilter(clonedOptions.lifetime);
         }
-
-        this._initInterval(key, `sweep${key[0].toUpperCase()}${key.slice(1)}`, clonedOptions);
       }
+
+      this._initInterval(key, `sweep${key[0].toUpperCase()}${key.slice(1)}`, clonedOptions);
     }
   }
 
@@ -417,6 +416,7 @@ class Sweepers {
     if (typeof props.interval !== 'number') {
       throw new TypeError('INVALID_TYPE', `sweepers.${key}.interval`, 'number');
     }
+    // Invites, Messages, and Threads can be provided a lifetime parameter, which we use to generate the filter
     if (['invites', 'messages', 'threads'].includes(key) && !('filter' in props)) {
       if (typeof props.lifetime !== 'number') {
         throw new TypeError('INVALID_TYPE', `sweepers.${key}.lifetime`, 'number');
@@ -436,14 +436,13 @@ class Sweepers {
    * @private
    */
   _initInterval(intervalKey, sweepKey, opts) {
-    if (opts.interval > 0 && opts.interval !== Infinity) {
-      this.intervals[intervalKey] = setInterval(() => {
-        const sweepFn = opts.filter();
-        if (sweepFn === null) return;
-        if (typeof sweepFn !== 'function') throw new TypeError('SWEEP_FILTER_RETURN');
-        this[sweepKey](sweepFn);
-      }, opts.interval * 1_000).unref();
-    }
+    if (opts.interval <= 0 || opts.interval === Infinity) return;
+    this.intervals[intervalKey] = setInterval(() => {
+      const sweepFn = opts.filter();
+      if (sweepFn === null) return;
+      if (typeof sweepFn !== 'function') throw new TypeError('SWEEP_FILTER_RETURN');
+      this[sweepKey](sweepFn);
+    }, opts.interval * 1_000).unref();
   }
 }
 
