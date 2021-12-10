@@ -230,10 +230,10 @@ class RoleManager extends CachedManager {
    *   .catch(console.error);
    */
   async delete(role, reason) {
-    const id = this.resolveId(role);
-    await this.client.api.guilds[this.guild.id].roles[id].delete({ reason });
-    this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: id });
-    return this;
+    const resolvedRole = this.resolve(role);
+    await this.client.api.guilds[this.guild.id].roles[resolvedRole.id].delete({ reason });
+    this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: resolvedRole.id });
+    return resolvedRole;
   }
 
   /**
