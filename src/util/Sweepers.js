@@ -277,7 +277,7 @@ class Sweepers {
    * @returns {void}
    */
   destroy() {
-    for (const key of Object.keys(this.intervals)) {
+    for (const key of SweeperKeys) {
       if (this.intervals[key]) clearInterval(this.intervals[key]);
     }
   }
