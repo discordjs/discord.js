@@ -1,6 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
+const { deletedGuildScheduledEvents } = require('../../structures/GuildScheduledEvent');
 const { Events } = require('../../util/Constants');
 
 class GuildScheduledEventDeleteAction extends Action {
@@ -12,7 +13,7 @@ class GuildScheduledEventDeleteAction extends Action {
       const guildScheduledEvent = guild.scheduledEvents._add(data);
       if (guildScheduledEvent) {
         guild.scheduledEvents.cache.delete(guildScheduledEvent.id);
-        guildScheduledEvent.deleted = true;
+        deletedGuildScheduledEvents.add(guildScheduledEvent);
 
         /**
          * Emitted whenever a guild scheduled event is deleted.

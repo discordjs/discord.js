@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
-const GuildScheduledEvent = require('../structures/GuildScheduledEvent');
+const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
 const { PrivacyLevels, GuildScheduledEventEntityTypes, GuildScheduledEventStatuses } = require('../util/Constants');
 
 /**

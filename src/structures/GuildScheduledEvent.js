@@ -11,6 +11,13 @@ const {
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
+ * @type {WeakSet<GuildScheduledEvent>}
+ * @private
+ * @internal
+ */
+const deletedGuildScheduledEvents = new WeakSet();
+
+/**
  * Represents a scheduled event in a {@link Guild}.
  * @extends {Base}
  */
@@ -29,12 +36,6 @@ class GuildScheduledEvent extends Base {
      * @type {Snowflake}
      */
     this.guildId = data.guild_id;
-
-    /**
-     * Whether the guild scheduled event has been deleted
-     * @type {boolean}
-     */
-    this.deleted = false;
 
     this._patch(data);
   }
@@ -213,6 +214,19 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
+   * Whether or not the guild scheduled event has been deleted
+   * @type {boolean}
+   */
+  get deleted() {
+    return deletedGuildScheduledEvents.has(this);
+  }
+
+  set deleted(value) {
+    if (value) deletedGuildScheduledEvents.add(this);
+    else deletedGuildScheduledEvents.delete(this);
+  }
+
+  /**
    * The guild this scheduled event belongs to
    * @type {?Guild}
    * @readonly
@@ -279,7 +293,7 @@ class GuildScheduledEvent extends Base {
   async delete() {
     await this.guild.scheduledEvents.delete(this.id);
     const clone = this._clone();
-    clone.deleted = true;
+    deletedGuildScheduledEvents.add(clone);
     return clone;
   }
 
@@ -422,4 +436,5 @@ class GuildScheduledEvent extends Base {
   }
 }
 
-module.exports = GuildScheduledEvent;
+exports.GuildScheduledEvent = GuildScheduledEvent;
+exports.deletedGuildScheduledEvents = deletedGuildScheduledEvents;
