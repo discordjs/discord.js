@@ -479,8 +479,7 @@ class Role extends Base {
       deprecationEmittedForComparePositions = true;
     }
 
-    if (role1.position === role2.position) return role2.id - role1.id;
-    return role1.position - role2.position;
+    return role1.guild.roles.comparePositions(role1, role2);
   }
 }
 
