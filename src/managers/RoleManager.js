@@ -219,9 +219,9 @@ class RoleManager extends CachedManager {
   }
 
   /**
-   * Deletes the role.
+   * Deletes a role.
    * @param {RoleResolvable} role The role to delete
-   * @param {string} [reason] Reason for deleting this role
+   * @param {string} [reason] Reason for deleting the role
    * @returns {Promise<Role>}
    * @example
    * // Delete a role
