@@ -145,7 +145,7 @@ class Sticker extends Base {
   }
 
   /**
-   * Whether or not the stage instance has been deleted
+   * Whether or not the sticker has been deleted
    * @type {boolean}
    */
   get deleted() {
