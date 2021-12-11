@@ -406,8 +406,9 @@ class Role extends Base {
    *   .then(deleted => console.log(`Deleted role ${deleted.name}`))
    *   .catch(console.error);
    */
-  delete(reason) {
-    return this.guild.roles.delete(this.id, reason);
+  async delete(reason) {
+    await this.guild.roles.delete(this.id, reason);
+    return this;
   }
 
   /**

@@ -222,7 +222,7 @@ class RoleManager extends CachedManager {
    * Deletes a role.
    * @param {RoleResolvable} role The role to delete
    * @param {string} [reason] Reason for deleting the role
-   * @returns {Promise<Role>}
+   * @returns {Promise<void>}
    * @example
    * // Delete a role
    * guild.roles.delete('222079219327434752', 'The role needed to go')
@@ -230,10 +230,9 @@ class RoleManager extends CachedManager {
    *   .catch(console.error);
    */
   async delete(role, reason) {
-    const resolvedRole = this.resolve(role);
-    await this.client.api.guilds[this.guild.id].roles[resolvedRole.id].delete({ reason });
-    this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: resolvedRole.id });
-    return resolvedRole;
+    const id = this.resolveId(role);
+    await this.client.api.guilds[this.guild.id].roles[id].delete({ reason });
+    this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: id });
   }
 
   /**
