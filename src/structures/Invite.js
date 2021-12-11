@@ -7,6 +7,8 @@ const { Error } = require('../errors');
 const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
+// TODO: Convert `inviter` and `channel` in this class to a getter.
+
 /**
  * Represents an invitation to a guild channel.
  * @extends {Base}
