@@ -389,6 +389,7 @@ class GuildMember extends Base {
       this.nickname === member.nickname &&
       this.avatar === member.avatar &&
       this.pending === member.pending &&
+      this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length && this._roles.every((role, i) => role === member._roles[i])))
     );
