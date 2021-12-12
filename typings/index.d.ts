@@ -4484,6 +4484,7 @@ export interface GuildMemberEditData {
   mute?: boolean;
   deaf?: boolean;
   channel?: GuildVoiceChannelResolvable | null;
+  communicationDisabledUntil?: number | null;
 }
 
 export type GuildMemberResolvable = GuildMember | UserResolvable;
