@@ -344,6 +344,24 @@ class GuildMember extends Base {
   }
 
   /**
+   * Timeouts this guild member.
+   * @param {number|null} timeout The timestamp for the member's communication to be disabled until.
+   * Provide `null` to remove the timeout.
+   * @param {string} [reason] The reason for this timeout.
+   * @returns {Promise<GuildMember>}
+   * @example
+   * // Timeout a guild member
+   * const date = new Date();
+   * const timeoutUntil = date.setUTCDate(date.getUTCDate() + 1); // 1 day
+   * guildMember.timeout(timeoutUntil, 'They deserved it')
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  timeout(timeout, reason) {
+    return this.edit({ communicationDisabledUntil: timeout }, reason);
+  }
+
+  /**
    * Fetches this GuildMember.
    * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<GuildMember>}
