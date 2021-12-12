@@ -4973,7 +4973,8 @@ export type PermissionString =
   | 'CREATE_PRIVATE_THREADS'
   | 'USE_EXTERNAL_STICKERS'
   | 'SEND_MESSAGES_IN_THREADS'
-  | 'START_EMBEDDED_ACTIVITIES';
+  | 'START_EMBEDDED_ACTIVITIES'
+  | 'MODERATE MEMBERS';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
