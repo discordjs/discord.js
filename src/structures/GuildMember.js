@@ -348,8 +348,8 @@ class GuildMember extends Base {
 
   /**
    * Timeouts this guild member.
-   * @param {number|null} timeout The timestamp or time in seconds for the member's communication to be disabled until.
-   * Provide `null` to remove the timeout.
+   * @param {Date|number|null} timeout The date, timestamp or time in seconds
+   * for the member's communication to be disabled until. Provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
    * @example
