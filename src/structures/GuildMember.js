@@ -285,17 +285,6 @@ class GuildMember extends Base {
   }
 
   /**
-   * The data for editing a guild member.
-   * @typedef {Object} GuildMemberEditData
-   * @property {?string} [nick] The nickname to set for the member
-   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
-   * @property {boolean} [mute] Whether or not the member should be muted
-   * @property {boolean} [deaf] Whether or not the member should be deafened
-   * @property {GuildVoiceChannelResolvable|null} [channel] Channel to move the member to
-   * (if they are connected to voice), or `null` if you want to disconnect them from voice
-   */
-
-  /**
    * Edits this member.
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
