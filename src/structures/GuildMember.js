@@ -53,6 +53,12 @@ class GuildMember extends Base {
      */
     this.pending = false;
 
+    /**
+     * The timestamp this member's timeout will be removed
+     * @type {?number}
+     */
+    this.communicationDisabledUntilTimestamp = null;
+
     this._roles = [];
     if (data) this._patch(data);
   }
@@ -82,6 +88,8 @@ class GuildMember extends Base {
     }
     if ('roles' in data) this._roles = data.roles;
     this.pending = data.pending ?? false;
+
+    if ('communication_disabled_until' in data) this.communicationDisabledUntil = data.communication_disabled_until;
   }
 
   _clone() {
@@ -157,6 +165,15 @@ class GuildMember extends Base {
    */
   get joinedAt() {
     return this.joinedTimestamp ? new Date(this.joinedTimestamp) : null;
+  }
+
+  /**
+   * The time this member's timeout will be removed
+   * @type {?Date}
+   * @readonly
+   */
+  get communicationDisabledUntil() {
+    return this.communicationDisabledUntilTimestamp ? new Date(this.communicationDisabledUntilTimestamp) : null;
   }
 
   /**
