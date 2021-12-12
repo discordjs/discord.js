@@ -448,6 +448,13 @@ export class BitField<S extends string, N extends number | bigint = number> {
 
 export class ButtonInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   private constructor(client: Client, data: RawMessageButtonInteractionData);
+  public readonly component: CacheTypeReducer<
+    Cached,
+    MessageButton,
+    APIButtonComponent,
+    MessageButton | APIButtonComponent,
+    MessageButton | APIButtonComponent
+  >;
   public componentType: 'BUTTON';
   public inGuild(): this is ButtonInteraction<'present'>;
   public inCachedGuild(): this is ButtonInteraction<'cached'>;
@@ -1535,8 +1542,10 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public readonly component: CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
-    Exclude<APIMessageComponent, APIActionRowComponent>
-  > | null;
+    Exclude<APIMessageComponent, APIActionRowComponent>,
+    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>,
+    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>
+  >;
   public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
   public customId: string;
   public channelId: Snowflake;
@@ -1871,6 +1880,13 @@ export class Role extends Base {
 
 export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   public constructor(client: Client, data: RawMessageSelectMenuInteractionData);
+  public readonly component: CacheTypeReducer<
+    Cached,
+    MessageSelectMenu,
+    APISelectMenuComponent,
+    MessageSelectMenu | APISelectMenuComponent,
+    MessageSelectMenu | APISelectMenuComponent
+  >;
   public componentType: 'SELECT_MENU';
   public values: string[];
   public inGuild(): this is SelectMenuInteraction<'present'>;
