@@ -90,7 +90,7 @@ class GuildMember extends Base {
     this.pending = data.pending ?? false;
 
     if ('communication_disabled_until' in data) {
-      this.communicationDisabledUntilTimestamp &&= new Date(data.communication_disabled_until).getTime();
+      this.communicationDisabledUntilTimestamp = new Date(data.communication_disabled_until).getTime();
     }
   }
 
