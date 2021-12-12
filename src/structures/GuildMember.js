@@ -347,15 +347,13 @@ class GuildMember extends Base {
 
   /**
    * Timeouts this guild member.
-   * @param {number|null} timeout The timestamp for the member's communication to be disabled until.
+   * @param {number|null} timeout The timestamp or time in seconds for the member's communication to be disabled until.
    * Provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
    * @example
-   * // Timeout a guild member
-   * const date = new Date();
-   * const timeoutUntil = date.setUTCDate(date.getUTCDate() + 1); // 1 day
-   * guildMember.timeout(timeoutUntil, 'They deserved it')
+   * // Timeout a guild member for 5 minutes
+   * guildMember.timeout(300, 'They deserved it')
    *   .then(console.log)
    *   .catch(console.error);
    */

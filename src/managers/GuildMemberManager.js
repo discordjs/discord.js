@@ -232,7 +232,7 @@ class GuildMemberManager extends CachedManager {
    * @property {boolean} [deaf] Whether or not the member should be deafened
    * @property {GuildVoiceChannelResolvable|null} [channel] Channel to move the member to
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
-   * @property {number|null} [communicationDisabledUntil] The timestamp
+   * @property {number|null} [communicationDisabledUntil] The timestamp or time in seconds
    * for the member's communication to be disabled until. Provide `null` to remove the timeout.
    */
 
@@ -262,8 +262,24 @@ class GuildMemberManager extends CachedManager {
       _data.channel = undefined;
     }
     _data.roles &&= _data.roles.map(role => (role instanceof Role ? role.id : role));
-    _data.communication_disabled_until =
-      _data.communicationDisabledUntil === null ? null : new Date(_data.communicationDisabledUntil).toISOString();
+
+    if (typeof _data.communicationDisabledUntil !== 'undefined') {
+      if (_data.communicationDisabledUntil === null) {
+        _data.communication_disabled_until = null;
+      } else {
+        let date = new Date(_data.communicationDisabledUntil);
+        if (date.getUTCFullYear() <= 2015) {
+          // Assume seconds
+          const dateFromSeconds = new Date();
+          date = new Date(
+            dateFromSeconds.setUTCSeconds(dateFromSeconds.getUTCSeconds() + _data.communicationDisabledUntil),
+          );
+        }
+
+        _data.communication_disabled_until = date.toISOString();
+      }
+    }
+
     let endpoint = this.client.api.guilds(this.guild.id);
     if (id === this.client.user.id) {
       const keys = Object.keys(_data);
