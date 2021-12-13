@@ -162,7 +162,7 @@ class GuildMemberRoleManager extends DataManager {
   }
 
   /**
-   * Sets the roles applied to the member.
+   * Sets the roles applied to the member
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role ids to apply
    * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
@@ -173,12 +173,13 @@ class GuildMemberRoleManager extends DataManager {
    *   .catch(console.error);
    * @example
    * // Remove all the roles from a member
-   * guildMember.roles.set([])
+   * guildMember.roles.set()
    *   .then(member => console.log(`Member roles is now of ${member.roles.cache.size} size`))
    *   .catch(console.error);
    */
-  set(roles, reason) {
-    return this.member.edit({ roles }, reason);
+  async set(roles = [], reason) {
+    await this.member.edit({ roles }, reason);
+return this.member;
   }
 
   clone() {
