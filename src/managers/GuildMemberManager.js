@@ -226,6 +226,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Data that can be resolved to a Date object for timeouts. This can be:
    * * A number in seconds
+   * * A DateResolvable
    * @typedef {DateResolvable} TimeoutDateResolvable
    */
 
