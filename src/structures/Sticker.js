@@ -147,6 +147,7 @@ class Sticker extends Base {
   /**
    * Whether or not the sticker has been deleted
    * @type {boolean}
+   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
    */
   get deleted() {
     return deletedStickers.has(this);
