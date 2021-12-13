@@ -44,7 +44,8 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {PrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
-   * @property {?GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
+   * @property {?GuildVoiceChannelResolvable} channel The channel of the guild scheduled event
+   * <warn>This should be `null` if `entityType` is 'EXTERNAL'</warn>
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
@@ -70,18 +71,26 @@ class GuildScheduledEventManager extends CachedManager {
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
 
+    let entity_metadata, channel_id;
+    if (entityType === 3) {
+      channel_id = null;
+      entity_metadata = { location: entityMetadata?.location };
+    } else {
+      channel_id = this.guild.channels.resolveId(channel);
+      if (!channel_id) throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
+      entity_metadata = null;
+    }
+
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events').post({
       data: {
-        channel_id: typeof channel === 'undefined' ? channel : this.guild.channels.resolveId(channel),
+        channel_id,
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: new Date(scheduledStartTime).toISOString(),
         scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : scheduledEndTime,
         description,
         entity_type: entityType,
-        entity_metadata: {
-          location: entityMetadata?.location,
-        },
+        entity_metadata,
       },
     });
 
@@ -151,7 +160,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventStatus|number} [status] The status of the guild scheduled event
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
-   * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
+   * <warn>This can be edited only if `entityType` of the associated `GuildScheduledEvent` is 'EXTERNAL'</warn>
    */
 
   /**

@@ -158,9 +158,7 @@ class GuildScheduledEvent extends Base {
           location: data.entity_metadata.location ?? this.entityMetadata?.location ?? null,
         };
       } else {
-        this.entityMetadata = {
-          location: null,
-        };
+        this.entityMetadata = null;
       }
     } else {
       this.entityMetadata ??= null;

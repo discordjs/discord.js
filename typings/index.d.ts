@@ -4756,7 +4756,7 @@ export interface GuildScheduledEventCreateOptions {
   privacyLevel: GuildScheduledEventPrivacyLevel | number;
   entityType: GuildScheduledEventEntityType | number;
   description?: string;
-  channel?: GuildVoiceChannelResolvable | null;
+  channel: GuildVoiceChannelResolvable | null;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
 }
 
