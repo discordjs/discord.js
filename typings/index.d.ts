@@ -1160,9 +1160,6 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   private constructor(client: Client, data: RawGuildScheduledEventData);
   public id: Snowflake;
   public guildId: Snowflake;
-  public get deleted(): boolean;
-  /** @deprecated Will be removed in v14 */
-  public set deleted(value: boolean);
   public channelId: Snowflake | null;
   public creatorId: Snowflake | null;
   public name: string;

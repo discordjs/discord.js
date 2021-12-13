@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { GuildScheduledEvent, deletedGuildScheduledEvents } = require('./GuildScheduledEvent');
+const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const { StageInstance } = require('./StageInstance');
@@ -603,7 +603,6 @@ class GuildAuditLogsEntry {
             { id: data.target_id, guild_id: guild.id },
           ),
         );
-      if (data.action_type === Actions.GUILD_SCHEDULED_EVENT_DELETE) deletedGuildScheduledEvents.add(this.target);
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
     }
