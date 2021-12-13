@@ -91,7 +91,7 @@ class GuildMember extends Base {
 
     if ('communication_disabled_until' in data) {
       this.communicationDisabledUntilTimestamp =
-        data.communication_disabled_until === null ? null : new Date(data.communication_disabled_until).getTime();
+        data.communication_disabled_until && new Date(data.communication_disabled_until).getTime();
     }
   }
 
