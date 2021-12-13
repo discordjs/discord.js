@@ -224,6 +224,12 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
+   * Data that can be resolved to a Date object for timeouts. This can be:
+   * * A number in seconds
+   * @typedef {DateResolvable} TimeoutDateResolvable
+   */
+
+  /**
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {?string} [nick] The nickname to set for the member
@@ -232,7 +238,7 @@ class GuildMemberManager extends CachedManager {
    * @property {boolean} [deaf] Whether or not the member should be deafened
    * @property {GuildVoiceChannelResolvable|null} [channel] Channel to move the member to
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
-   * @property {Date|number|null} [communicationDisabledUntil] The date, timestamp, or time in seconds
+   * @property {TimeoutDateResolvable|null} [communicationDisabledUntil] The date, timestamp, or time in seconds
    * for the member's communication to be disabled until. Provide `null` to remove the timeout.
    */
 

@@ -1086,7 +1086,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly voice: VoiceState;
   public avatarURL(options?: ImageURLOptions): string | null;
   public ban(options?: BanOptions): Promise<GuildMember>;
-  public timeout(timeout: Date | number | null, reason?: string): Promise<GuildMember>;
+  public timeout(timeout: TimeoutDateResolvable | null, reason?: string): Promise<GuildMember>;
   public fetch(force?: boolean): Promise<GuildMember>;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
@@ -4478,13 +4478,15 @@ export type GuildFeatures =
   | 'PRIVATE_THREADS'
   | 'ROLE_ICONS';
 
+export type TimeoutDateResolvable = DateResolvable;
+
 export interface GuildMemberEditData {
   nick?: string | null;
   roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
   mute?: boolean;
   deaf?: boolean;
   channel?: GuildVoiceChannelResolvable | null;
-  communicationDisabledUntil?: Date | number | null;
+  communicationDisabledUntil?: TimeoutDateResolvable | null;
 }
 
 export type GuildMemberResolvable = GuildMember | UserResolvable;
