@@ -329,7 +329,7 @@ class Guild extends AnonymousGuild {
        * The timestamp the client user joined the guild at
        * @type {number}
        */
-      this.joinedTimestamp = new Date(data.joined_at).getTime();
+      this.joinedTimestamp = Date.parse(data.joined_at);
     }
 
     if ('default_message_notifications' in data) {

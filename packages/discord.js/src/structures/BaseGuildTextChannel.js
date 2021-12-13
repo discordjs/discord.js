@@ -66,7 +66,7 @@ class BaseGuildTextChannel extends GuildChannel {
        * The timestamp when the last pinned message was pinned, if there was one
        * @type {?number}
        */
-      this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+      this.lastPinTimestamp = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;
     }
 
     if ('default_auto_archive_duration' in data) {

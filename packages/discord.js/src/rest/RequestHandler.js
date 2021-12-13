@@ -16,7 +16,7 @@ function parseResponse(res) {
 }
 
 function getAPIOffset(serverDate) {
-  return new Date(serverDate).getTime() - Date.now();
+  return Date.parse(serverDate) - Date.now();
 }
 
 function calculateReset(reset, resetAfter, serverDate) {
@@ -24,7 +24,7 @@ function calculateReset(reset, resetAfter, serverDate) {
   if (resetAfter) {
     return Date.now() + Number(resetAfter) * 1_000;
   }
-  return new Date(Number(reset) * 1_000).getTime() - getAPIOffset(serverDate);
+  return Number(reset) * 1_000 - getAPIOffset(serverDate);
 }
 
 /* Invalid request limiting is done on a per-IP basis, not a per-token basis.
@@ -242,7 +242,7 @@ class RequestHandler {
 
       // https://github.com/discord/discord-api-docs/issues/182
       if (!resetAfter && request.route.includes('reactions')) {
-        this.reset = new Date(serverDate).getTime() - getAPIOffset(serverDate) + 250;
+        this.reset = Date.parse(serverDate) - getAPIOffset(serverDate) + 250;
       }
 
       // Handle retryAfter, which means we have actually hit a rate limit
