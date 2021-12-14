@@ -349,7 +349,7 @@ class GuildMember extends Base {
 
   /**
    * Data that can be resolved to a Date object for timeouts. This can be:
-   * * A number in milliseconds
+   * * A number in milliseconds representing a duration
    * * A DateResolvable
    * @typedef {DateResolvable} TimeoutDateResolvable
    */
