@@ -219,6 +219,23 @@ class RoleManager extends CachedManager {
   }
 
   /**
+   * Deletes a role.
+   * @param {RoleResolvable} role The role to delete
+   * @param {string} [reason] Reason for deleting the role
+   * @returns {Promise<void>}
+   * @example
+   * // Delete a role
+   * guild.roles.delete('222079219327434752', 'The role needed to go')
+   *   .then(deleted => console.log(`Deleted role ${deleted.name}`))
+   *   .catch(console.error);
+   */
+  async delete(role, reason) {
+    const id = this.resolveId(role);
+    await this.client.api.guilds[this.guild.id].roles[id].delete({ reason });
+    this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: id });
+  }
+
+  /**
    * Batch-updates the guild's role positions
    * @param {GuildRolePosition[]} rolePositions Role positions to update
    * @returns {Promise<Guild>}
@@ -242,6 +259,25 @@ class RoleManager extends CachedManager {
       guild_id: this.guild.id,
       roles: rolePositions,
     }).guild;
+  }
+
+  /**
+   * Compares the positions of two roles.
+   * @param {RoleResolvable} role1 First role to compare
+   * @param {RoleResolvable} role2 Second role to compare
+   * @returns {number} Negative number if the first role's position is lower (second role's is higher),
+   * positive number if the first's is higher (second's is lower), 0 if equal
+   */
+  comparePositions(role1, role2) {
+    const resolvedRole1 = this.resolve(role1);
+    const resolvedRole2 = this.resolve(role2);
+    if (!resolvedRole1 || !resolvedRole2) throw new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake');
+
+    if (resolvedRole1.position === resolvedRole2.position) {
+      return Number(BigInt(resolvedRole2.id) - BigInt(resolvedRole1.id));
+    }
+
+    return resolvedRole1.position - resolvedRole2.position;
   }
 
   /**
