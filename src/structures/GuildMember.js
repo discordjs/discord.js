@@ -355,13 +355,13 @@ class GuildMember extends Base {
    */
 
   /**
-   * Timeouts this guild member.
+   * Times this guild member out.
    * @param {TimeoutDateResolvable|null} timeout The date, timestamp, or time in milliseconds
    * for the member's communication to be disabled until. Provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
    * @example
-   * // Timeout a guild member for 5 minutes
+   * // Time a guild member out for 5 minutes
    * guildMember.timeout(5 * 60 * 1000, 'They deserved it')
    *   .then(console.log)
    *   .catch(console.error);
