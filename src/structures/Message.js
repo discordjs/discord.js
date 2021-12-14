@@ -584,7 +584,7 @@ class Message extends Base {
    */
   get editable() {
     const precheck = Boolean(
-      this.author.id === this.client.user.id && !this.deleted && (!this.guild || this.channel?.viewable),
+      this.author.id === this.client.user.id && !deletedMessages.has(this) && (!this.guild || this.channel?.viewable),
     );
     // Regardless of permissions thread messages cannot be edited if
     // the thread is locked.
@@ -600,7 +600,7 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    if (this.deleted) {
+    if (deletedMessages.has(this)) {
       return false;
     }
     if (!this.guild) {
@@ -625,7 +625,7 @@ class Message extends Base {
     const { channel } = this;
     return Boolean(
       !this.system &&
-        !this.deleted &&
+        !deletedMessages.has(this) &&
         (!this.guild ||
           (channel?.viewable &&
             channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
@@ -661,7 +661,7 @@ class Message extends Base {
         this.type === 'DEFAULT' &&
         channel.viewable &&
         channel.permissionsFor(this.client.user)?.has(bitfield, false) &&
-        !this.deleted,
+        !deletedMessages.has(this),
     );
   }
 
