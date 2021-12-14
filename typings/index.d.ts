@@ -1302,6 +1302,7 @@ export class InteractionWebhook extends PartialWebhookMixin() {
 export class Invite extends Base {
   private constructor(client: Client, data: RawInviteData);
   public channel: GuildChannel | PartialGroupDMChannel;
+  public channelId: Snowflake;
   public code: string;
   public readonly deletable: boolean;
   public readonly createdAt: Date | null;
@@ -1310,6 +1311,7 @@ export class Invite extends Base {
   public readonly expiresTimestamp: number | null;
   public guild: InviteGuild | Guild | null;
   public inviter: User | null;
+  public inviterId: Snowflake | null;
   public maxAge: number | null;
   public maxUses: number | null;
   public memberCount: number;
@@ -4356,7 +4358,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   USER: User | null;
   GUILD: Guild;
   WEBHOOK: Webhook;
-  INVITE: Invite | { [x: string]: unknown };
+  INVITE: Invite;
   MESSAGE: TActionType extends 'MESSAGE_BULK_DELETE' ? Guild | { id: Snowflake } : User;
   INTEGRATION: Integration;
   CHANNEL: GuildChannel | { id: Snowflake; [x: string]: unknown };
