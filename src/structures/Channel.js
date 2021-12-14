@@ -18,6 +18,7 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
  * @internal
  */
 const deletedChannels = new WeakSet();
+let deprecationEmittedForDeleted = false;
 
 /**
  * Represents any channel on Discord.
@@ -67,12 +68,29 @@ class Channel extends Base {
   /**
    * Whether or not the structure has been deleted
    * @type {boolean}
+   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
    */
   get deleted() {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'Channel#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
     return deletedChannels.has(this);
   }
 
   set deleted(value) {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'Channel#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
     if (value) deletedChannels.add(this);
     else deletedChannels.delete(this);
   }

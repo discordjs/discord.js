@@ -10,6 +10,7 @@ const SnowflakeUtil = require('../util/SnowflakeUtil');
  * @internal
  */
 const deletedStageInstances = new WeakSet();
+let deprecationEmittedForDeleted = false;
 
 /**
  * Represents a stage instance.
@@ -84,12 +85,29 @@ class StageInstance extends Base {
   /**
    * Whether or not the stage instance has been deleted
    * @type {boolean}
+   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
    */
   get deleted() {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'StageInstance#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
     return deletedStageInstances.has(this);
   }
 
   set deleted(value) {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'StageInstance#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
     if (value) deletedStageInstances.add(this);
     else deletedStageInstances.delete(this);
   }

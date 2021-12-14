@@ -25,6 +25,7 @@ const Util = require('../util/Util');
  * @internal
  */
 const deletedMessages = new WeakSet();
+let deprecationEmittedForDeleted = false;
 
 /**
  * Represents a message on Discord.
@@ -352,12 +353,29 @@ class Message extends Base {
   /**
    * Whether or not the structure has been deleted
    * @type {boolean}
+   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
    */
   get deleted() {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'Message#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
     return deletedMessages.has(this);
   }
 
   set deleted(value) {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'Message#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
     if (value) deletedMessages.add(this);
     else deletedMessages.delete(this);
   }
