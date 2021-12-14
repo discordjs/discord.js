@@ -224,13 +224,6 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * Data that can be resolved to a Date object for timeouts. This can be:
-   * * A number in seconds
-   * * A DateResolvable
-   * @typedef {DateResolvable} TimeoutDateResolvable
-   */
-
-  /**
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {?string} [nick] The nickname to set for the member
@@ -239,8 +232,8 @@ class GuildMemberManager extends CachedManager {
    * @property {boolean} [deaf] Whether or not the member should be deafened
    * @property {GuildVoiceChannelResolvable|null} [channel] Channel to move the member to
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
-   * @property {TimeoutDateResolvable|null} [communicationDisabledUntil] The date, timestamp, or time in milliseconds
-   * for the member's communication to be disabled until. Provide `null` to remove the timeout.
+   * @property {DateResolvable|null} [communicationDisabledUntil] The date or timestamp
+   * for the member's communication to be disabled until. Provide `null` to enable communication again.
    */
 
   /**
@@ -271,18 +264,8 @@ class GuildMemberManager extends CachedManager {
     _data.roles &&= _data.roles.map(role => (role instanceof Role ? role.id : role));
 
     if (typeof _data.communicationDisabledUntil !== 'undefined') {
-      if (_data.communicationDisabledUntil === null) {
-        _data.communication_disabled_until = null;
-      } else {
-        if (
-          typeof _data.communicationDisabledUntil === 'number' &&
-          _data.communicationDisabledUntil < SnowflakeUtil.EPOCH
-        ) {
-          _data.communicationDisabledUntil += Date.now();
-        }
-
-        _data.communication_disabled_until = new Date(_data.communicationDisabledUntil).toISOString();
-      }
+      _data.communication_disabled_until =
+        _data.communicationDisabledUntil && new Date(_data.communicationDisabledUntil).toISOString();
     }
 
     let endpoint = this.client.api.guilds(this.guild.id);

@@ -6,6 +6,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Permissions = require('../util/Permissions');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * @type {WeakSet<GuildMember>}
@@ -347,6 +348,13 @@ class GuildMember extends Base {
   }
 
   /**
+   * Data that can be resolved to a Date object for timeouts. This can be:
+   * * A number in milliseconds
+   * * A DateResolvable
+   * @typedef {DateResolvable} TimeoutDateResolvable
+   */
+
+  /**
    * Timeouts this guild member.
    * @param {TimeoutDateResolvable|null} timeout The date, timestamp, or time in milliseconds
    * for the member's communication to be disabled until. Provide `null` to remove the timeout.
@@ -359,6 +367,7 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   timeout(timeout, reason) {
+    if (typeof timeout === 'number' && timeout < SnowflakeUtil.EPOCH) timeout += Date.now();
     return this.edit({ communicationDisabledUntil: timeout }, reason);
   }
 
