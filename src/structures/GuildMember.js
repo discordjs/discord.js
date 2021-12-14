@@ -91,7 +91,7 @@ class GuildMember extends Base {
 
     if ('communication_disabled_until' in data) {
       this.communicationDisabledUntilTimestamp =
-        data.communication_disabled_until && new Date(data.communication_disabled_until).getTime();
+        data.communication_disabled_until && Date.parse(data.communication_disabled_until);
     }
   }
 
@@ -176,7 +176,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get communicationDisabledUntil() {
-    return this.communicationDisabledUntilTimestamp ? new Date(this.communicationDisabledUntilTimestamp) : null;
+    return this.communicationDisabledUntilTimestamp && new Date(this.communicationDisabledUntilTimestamp);
   }
 
   /**
