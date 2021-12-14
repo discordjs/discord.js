@@ -239,7 +239,7 @@ class GuildMemberManager extends CachedManager {
    * @property {boolean} [deaf] Whether or not the member should be deafened
    * @property {GuildVoiceChannelResolvable|null} [channel] Channel to move the member to
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
-   * @property {TimeoutDateResolvable|null} [communicationDisabledUntil] The date, timestamp, or time in seconds
+   * @property {TimeoutDateResolvable|null} [communicationDisabledUntil] The date, timestamp, or time in milliseconds
    * for the member's communication to be disabled until. Provide `null` to remove the timeout.
    */
 
@@ -274,13 +274,14 @@ class GuildMemberManager extends CachedManager {
       if (_data.communicationDisabledUntil === null) {
         _data.communication_disabled_until = null;
       } else {
-        let date = new Date(_data.communicationDisabledUntil);
-        if (date.getUTCFullYear() <= 2015) {
-          // Assume seconds
-          date = new Date(Date.now() + _data.communicationDisabledUntil * 1000);
+        if (
+          typeof _data.communicationDisabledUntil === 'number' &&
+          _data.communicationDisabledUntil < SnowflakeUtil.EPOCH
+        ) {
+          _data.communicationDisabledUntil += Date.now();
         }
 
-        _data.communication_disabled_until = date.toISOString();
+        _data.communication_disabled_until = new Date(_data.communicationDisabledUntil).toISOString();
       }
     }
 
