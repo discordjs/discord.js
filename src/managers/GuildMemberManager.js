@@ -277,7 +277,7 @@ class GuildMemberManager extends CachedManager {
         let date = new Date(_data.communicationDisabledUntil);
         if (date.getUTCFullYear() <= 2015) {
           // Assume seconds
-          date = new Date(date.setTime(Date.now() + date.getTime() * 1000));
+          date = new Date(Date.now() + _data.communicationDisabledUntil * 1000);
         }
 
         _data.communication_disabled_until = date.toISOString();
