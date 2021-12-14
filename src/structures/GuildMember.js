@@ -300,10 +300,11 @@ class GuildMember extends Base {
 
   /**
    * Creates a DM channel between the client and this member.
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
-  createDM() {
-    return this.user.createDM();
+  createDM(force = false) {
+    return this.user.createDM(force);
   }
 
   /**
