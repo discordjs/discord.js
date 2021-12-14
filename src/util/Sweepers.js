@@ -135,8 +135,9 @@ class Sweepers {
     let messages = 0;
 
     for (const channel of this.client.channels.cache.values()) {
-      if (!channel.messages || channel.messages.cache.size === 0) continue;
+      if (!channel.isText()) continue;
       channels++;
+      if (channel.messages.cache.size === 0) continue;
 
       messages += channel.messages.cache.sweep(filter);
     }
@@ -167,12 +168,13 @@ class Sweepers {
     let reactions = 0;
 
     for (const channel of this.client.channels.cache.values()) {
-      if (!channel.messages || channel.messages.cache.size === 0) continue;
+      if (!channel.isText()) continue;
       channels++;
+      if (channel.messages.cache.size === 0) continue;
 
       for (const message of channel.messages.cache.values()) {
-        if (message.reactions.cache.size === 0) continue;
         messages++;
+        if (message.reactions.cache.size === 0) continue;
 
         reactions += message.reactions.cache.sweep(filter);
       }
@@ -207,8 +209,9 @@ class Sweepers {
     let threads = 0;
     let members = 0;
     for (const channel of this.client.channels.cache.values()) {
-      if (!ThreadChannelTypes.includes(channel.type) || channel.members.cache.size === 0) continue;
+      if (!ThreadChannelTypes.includes(channel.type)) continue;
       threads++;
+      if (channel.members.cache.size === 0) continue;
       members += channel.members.cache.sweep(filter);
     }
     this.client.emit(Events.CACHE_SWEEP, `Swept ${members} thread members in ${threads} threads.`);
@@ -390,8 +393,8 @@ class Sweepers {
 
     for (const guild of this.client.guilds.cache.values()) {
       const { cache } = guild[key];
-      if (cache.size === 0) continue;
       guilds++;
+      if (cache.size === 0) continue;
 
       items += cache.sweep(filter);
     }
