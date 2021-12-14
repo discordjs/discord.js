@@ -32,7 +32,7 @@ class UserManager extends CachedManager {
    */
 
   /**
-   * The DM between the client's user and this user
+   * The DM between the client's user and a user
    * @param {Snowflake} userId The user id
    * @returns {?DMChannel}
    * @private
