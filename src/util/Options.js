@@ -37,9 +37,9 @@
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
  * <warn>Overriding the cache used in `GuildManager`, `ChannelManager`, `GuildChannelManager`, `RoleManager`,
  * and `PermissionOverwriteManager` is unsupported and **will** break functionality</warn>
- * @property {number} [messageCacheLifetime=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
+ * @property {number} [messageCacheLifetime=0] DEPRECATED: Pass `lifetime` to `sweepers.messages` instead.
  * How long a message should stay in the cache until it is considered sweepable (in seconds, 0 for forever)
- * @property {number} [messageSweepInterval=0] DEPRECATED: Use `makeCache` with a `LimitedCollection` instead.
+ * @property {number} [messageSweepInterval=0] DEPRECATED: Pass `interval` to `sweepers.messages` instead.
  * How frequently to remove messages from the cache that are older than the message cache lifetime
  * (in seconds, 0 for never)
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
@@ -70,8 +70,25 @@
  * [User Agent](https://discord.com/developers/docs/reference#user-agent) header
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
+ * @property {SweeperOptions} [sweepers={}] Options for cache sweeping
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
+ */
+
+/**
+ * Options for {@link Sweepers} defining the behavior of cache sweeping
+ * @typedef {Object<SweeperKey, SweepOptions>} SweeperOptions
+ */
+
+/**
+ * Options for sweeping a single type of item from cache
+ * @typedef {Object} SweepOptions
+ * @property {number} interval The interval (in seconds) at which to perform sweeping of the item
+ * @property {number} [lifetime] How long an item should stay in cache until it is considered sweepable.
+ * <warn>This property is only valid for the `invites`, `messages`, and `threads` keys. The `filter` property
+ * is mutually exclusive to this property and takes priority</warn>
+ * @property {GlobalSweepFilter} filter The function used to determine the function passed to the sweep method
+ * <info>This property is optional when the key is `invites`, `messages`, or `threads` and `lifetime` is set</info>
  */
 
 /**
@@ -125,6 +142,7 @@ class Options extends null {
       failIfNotExists: true,
       userAgentSuffix: [],
       presence: {},
+      sweepers: {},
       ws: {
         large_threshold: 50,
         compress: false,
@@ -250,5 +268,20 @@ class Options extends null {
     };
   }
 }
+
+/**
+ * The default settings passed to {@link Options.sweepers} (for v14).
+ * The sweepers that this changes are:
+ * * `threads` - Sweep archived threads every hour, removing those archived more than 4 hours ago
+ * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
+ * `sweepers: { ...Options.defaultSweeperSettings, messages: { interval: 300, lifetime: 600 } })`</info>
+ * @type {SweeperOptions}
+ */
+Options.defaultSweeperSettings = {
+  threads: {
+    interval: 3600,
+    lifetime: 14400,
+  },
+};
 
 module.exports = Options;
