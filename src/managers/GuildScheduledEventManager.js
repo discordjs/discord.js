@@ -49,6 +49,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
+   * @property {string} [reason] The reason for creating the guild scheduled event
    */
 
   /**
@@ -65,8 +66,17 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async create(options) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { privacyLevel, entityType, channel, name, scheduledStartTime, description, scheduledEndTime, entityMetadata } =
-      options;
+    let {
+      privacyLevel,
+      entityType,
+      channel,
+      name,
+      scheduledStartTime,
+      description,
+      scheduledEndTime,
+      entityMetadata,
+      reason,
+    } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
@@ -92,6 +102,7 @@ class GuildScheduledEventManager extends CachedManager {
         entity_type: entityType,
         entity_metadata,
       },
+      reason,
     });
 
     return this._add(data);
@@ -161,6 +172,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This can be modified only if `entityType` of the `GuildScheduledEvent` to be edited is 'EXTERNAL'</warn>
+   * @property {string} [reason] The reason for editing the guild scheduled event
    */
 
   /**
@@ -184,6 +196,7 @@ class GuildScheduledEventManager extends CachedManager {
       description,
       scheduledEndTime,
       entityMetadata,
+      reason,
     } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
@@ -209,6 +222,7 @@ class GuildScheduledEventManager extends CachedManager {
         status,
         entity_metadata,
       },
+      reason,
     });
 
     return this._add(data);

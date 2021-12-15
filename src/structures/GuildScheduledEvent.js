@@ -277,6 +277,7 @@ class GuildScheduledEvent extends Base {
   /**
    * Sets a new name for the guild scheduled event.
    * @param {string} name The new name of the guild scheduled event
+   * @param {string} [reason] The reason for changing the name
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set name of a guild scheduled event
@@ -284,13 +285,14 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the name to: ${guildScheduledEvent.name}`))
    *  .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name, reason });
   }
 
   /**
    * Sets a new time to schedule the event at.
    * @param {DateResolvable} scheduledStartTime The time to schedule the event at
+   * @param {string} [reason] The reason for changing the scheduled start time
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set start time of a guild scheduled event
@@ -298,14 +300,15 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the start time to: ${guildScheduledEvent.scheduledStartTime}`))
    *  .catch(console.error);
    */
-  setScheduledStartTime(scheduledStartTime) {
-    return this.edit({ scheduledStartTime });
+  setScheduledStartTime(scheduledStartTime, reason) {
+    return this.edit({ scheduledStartTime, reason });
   }
 
   // TODO: scheduledEndTime gets reset on passing null but it hasn't been documented
   /**
    * Sets a new time to end the event at.
    * @param {DateResolvable} scheduledEndTime The time to end the event at
+   * @param {string} [reason] The reason for changing the scheduled end time
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set end time of a guild scheduled event
@@ -313,13 +316,14 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the end time to: ${guildScheduledEvent.scheduledEndTime}`))
    *  .catch(console.error);
    */
-  setScheduledEndTime(scheduledEndTime) {
-    return this.edit({ scheduledEndTime });
+  setScheduledEndTime(scheduledEndTime, reason) {
+    return this.edit({ scheduledEndTime, reason });
   }
 
   /**
    * Sets the new description of the guild scheduled event.
    * @param {string} description The description of the guild scheduled event
+   * @param {string} [reason] The reason for changing the description
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set description of a guild scheduled event
@@ -327,8 +331,8 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the description to: ${guildScheduledEvent.description}`))
    *  .catch(console.error);
    */
-  setDescription(description) {
-    return this.edit({ description });
+  setDescription(description, reason) {
+    return this.edit({ description, reason });
   }
 
   /**
@@ -336,6 +340,7 @@ class GuildScheduledEvent extends Base {
    * <info>If you're working with TypeScript, use this method in conjunction with status type-guards
    * like {@link GuildScheduledEvent#isScheduled} to get only valid status as suggestion</info>
    * @param {GuildScheduledEventStatus|number} status The status of the guild scheduled event
+   * @param {string} [reason] The reason for changing the status
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set status of a guild scheduled event
@@ -343,13 +348,14 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the status to: ${guildScheduledEvent.status}`))
    *  .catch(console.error);
    */
-  setStatus(status) {
-    return this.edit({ status });
+  setStatus(status, reason) {
+    return this.edit({ status, reason });
   }
 
   /**
    * Sets the new location of the guild scheduled event.
    * @param {string} location The location of the guild scheduled event
+   * @param {string} [reason] The reason for changing the location
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set location of a guild scheduled event
@@ -357,8 +363,8 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the location to: ${guildScheduledEvent.entityMetadata.location}`))
    *  .catch(console.error);
    */
-  setLocation(location) {
-    return this.edit({ entityMetadata: { location } });
+  setLocation(location, reason) {
+    return this.edit({ entityMetadata: { location }, reason });
   }
 
   /**

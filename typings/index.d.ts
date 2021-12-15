@@ -1183,12 +1183,12 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public createInviteURL(options?: CreateGuildScheduledEventInviteURLOptions): Promise<string>;
   public edit(options: GuildScheduledEventEditOptions): Promise<GuildScheduledEvent>;
   public delete(): Promise<GuildScheduledEvent>;
-  public setName(name: string): Promise<GuildScheduledEvent>;
-  public setScheduledStartTime(scheduledStartTime: DateResolvable): Promise<GuildScheduledEvent>;
-  public setScheduledEndTime(scheduledEndTime: DateResolvable): Promise<GuildScheduledEvent>;
-  public setDescription(description: string): Promise<GuildScheduledEvent>;
-  public setStatus(status: GuildScheduledEventSetStatusArg<S>): Promise<GuildScheduledEvent>;
-  public setLocation(location: string): Promise<GuildScheduledEvent>;
+  public setName(name: string, reason?: string): Promise<GuildScheduledEvent>;
+  public setScheduledStartTime(scheduledStartTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent>;
+  public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent>;
+  public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent>;
+  public setStatus(status: GuildScheduledEventSetStatusArg<S>, reason?: string): Promise<GuildScheduledEvent>;
+  public setLocation(location: string, reason?: string): Promise<GuildScheduledEvent>;
   public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
     options?: T,
   ): Promise<GuildScheduledEventManagerFetchSubscribersResult<T>>;
@@ -4756,6 +4756,7 @@ export interface GuildScheduledEventCreateOptions {
   description?: string;
   channel?: GuildVoiceChannelResolvable;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
+  reason?: string;
 }
 
 export interface GuildScheduledEventEditOptions extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
