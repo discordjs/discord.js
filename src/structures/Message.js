@@ -584,7 +584,10 @@ class Message extends Base {
    */
   get editable() {
     const precheck = Boolean(
-      this.author.id === this.client.user.id && !deletedMessages.has(this) && (!this.guild || this.channel?.viewable),
+      this.author.id === this.client.user.id &&
+        !deletedMessages.has(this) &&
+        !this.flags.has(MessageFlags.FLAGS.EPHEMERAL) &&
+        (!this.guildId || this.channel?.viewable),
     );
     // Regardless of permissions thread messages cannot be edited if
     // the thread is locked.
@@ -600,10 +603,10 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    if (deletedMessages.has(this)) {
+    if (deletedMessages.has(this) || this.flags.has(MessageFlags.FLAGS.EPHEMERAL)) {
       return false;
     }
-    if (!this.guild) {
+    if (!this.guildId) {
       return this.author.id === this.client.user.id;
     }
     // DMChannel does not have viewable property, so check viewable after proved that message is on a guild.
@@ -626,7 +629,8 @@ class Message extends Base {
     return Boolean(
       !this.system &&
         !deletedMessages.has(this) &&
-        (!this.guild ||
+        !this.flags.has(MessageFlags.FLAGS.EPHEMERAL) &&
+        (!this.guildId ||
           (channel?.viewable &&
             channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
     );
