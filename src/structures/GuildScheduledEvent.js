@@ -285,7 +285,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setName(name) {
-    return this.edit({ name, entityMetadata: { location: this.location } });
+    return this.edit({ name });
   }
 
   /**
@@ -299,12 +299,13 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setScheduledStartTime(scheduledStartTime) {
-    return this.edit({ scheduledStartTime, entityMetadata: { location: this.location } });
+    return this.edit({ scheduledStartTime });
   }
 
+  // TODO: scheduledEndTime gets reset on passing null but it hasn't been documented
   /**
    * Sets a new time to end the event at.
-   * @param {?DateResolvable} scheduledEndTime The time to end the event at
+   * @param {DateResolvable} scheduledEndTime The time to end the event at
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set end time of a guild scheduled event
@@ -313,7 +314,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setScheduledEndTime(scheduledEndTime) {
-    return this.edit({ scheduledEndTime, entityMetadata: { location: this.location } });
+    return this.edit({ scheduledEndTime });
   }
 
   /**
@@ -327,7 +328,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setDescription(description) {
-    return this.edit({ description, entityMetadata: { location: this.location } });
+    return this.edit({ description });
   }
 
   /**
@@ -343,7 +344,7 @@ class GuildScheduledEvent extends Base {
    *  .catch(console.error);
    */
   setStatus(status) {
-    return this.edit({ status, entityMetadata: { location: this.location } });
+    return this.edit({ status });
   }
 
   /**

@@ -1185,7 +1185,7 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public delete(): Promise<GuildScheduledEvent>;
   public setName(name: string): Promise<GuildScheduledEvent>;
   public setScheduledStartTime(scheduledStartTime: DateResolvable): Promise<GuildScheduledEvent>;
-  public setScheduledEndTime(scheduledEndTime: DateResolvable | null): Promise<GuildScheduledEvent>;
+  public setScheduledEndTime(scheduledEndTime: DateResolvable): Promise<GuildScheduledEvent>;
   public setDescription(description: string): Promise<GuildScheduledEvent>;
   public setStatus(status: GuildScheduledEventSetStatusArg<S>): Promise<GuildScheduledEvent>;
   public setLocation(location: string): Promise<GuildScheduledEvent>;
@@ -4746,18 +4746,20 @@ export interface GuildListMembersOptions {
   cache?: boolean;
 }
 
+// TODO: use conditional types for better TS support
 export interface GuildScheduledEventCreateOptions {
   name: string;
   scheduledStartTime: DateResolvable;
-  scheduledEndTime?: DateResolvable | null;
+  scheduledEndTime?: DateResolvable;
   privacyLevel: GuildScheduledEventPrivacyLevel | number;
   entityType: GuildScheduledEventEntityType | number;
   description?: string;
-  channel: GuildVoiceChannelResolvable | null;
+  channel?: GuildVoiceChannelResolvable;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
 }
 
-export interface GuildScheduledEventEditOptions extends Partial<GuildScheduledEventCreateOptions> {
+export interface GuildScheduledEventEditOptions extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
+  channel?: GuildVoiceChannelResolvable | null;
   status?: GuildScheduledEventStatus | number;
 }
 

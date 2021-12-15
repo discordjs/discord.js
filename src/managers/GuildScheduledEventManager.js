@@ -39,13 +39,13 @@ class GuildScheduledEventManager extends CachedManager {
    * @typedef {Object} GuildScheduledEventCreateOptions
    * @property {string} name The name of the guild scheduled event
    * @property {DateResolvable} scheduledStartTime The time to schedule the event at
-   * @property {?DateResolvable} [scheduledEndTime] The time to end the event at
+   * @property {DateResolvable} [scheduledEndTime] The time to end the event at
    * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
    * @property {PrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
-   * @property {?GuildVoiceChannelResolvable} channel The channel of the guild scheduled event
-   * <warn>This should be `null` if `entityType` is 'EXTERNAL'</warn>
+   * @property {GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
+   * <warn>This is required if `entityType` is 'STAGE_INSTANCE' or `VOICE`</warn>
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
@@ -73,12 +73,12 @@ class GuildScheduledEventManager extends CachedManager {
 
     let entity_metadata, channel_id;
     if (entityType === 3) {
-      channel_id = null;
+      channel_id = typeof channel === 'undefined' ? channel : null;
       entity_metadata = { location: entityMetadata?.location };
     } else {
       channel_id = this.guild.channels.resolveId(channel);
       if (!channel_id) throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
-      entity_metadata = null;
+      entity_metadata = typeof entityMetadata === 'undefined' ? entityMetadata : null;
     }
 
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events').post({
@@ -152,7 +152,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @typedef {Object} GuildScheduledEventEditOptions
    * @property {string} [name] The name of the guild scheduled event
    * @property {DateResolvable} [scheduledStartTime] The time to schedule the event at
-   * @property {?DateResolvable} [scheduledEndTime] The time to end the event at
+   * @property {DateResolvable} [scheduledEndTime] The time to end the event at
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
@@ -160,7 +160,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventStatus|number} [status] The status of the guild scheduled event
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
-   * <warn>This can be edited only if `entityType` of the associated `GuildScheduledEvent` is 'EXTERNAL'</warn>
+   * <warn>This can be modified only if `entityType` of the `GuildScheduledEvent` to be edited is 'EXTERNAL'</warn>
    */
 
   /**
@@ -190,6 +190,13 @@ class GuildScheduledEventManager extends CachedManager {
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
     if (typeof status === 'string') status = GuildScheduledEventStatuses[status];
 
+    let entity_metadata;
+    if (entityMetadata) {
+      entity_metadata = {
+        location: entityMetadata.location,
+      };
+    }
+
     const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).patch({
       data: {
         channel_id: typeof channel === 'undefined' ? channel : this.guild.channels.resolveId(channel),
@@ -200,9 +207,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         status,
-        entity_metadata: {
-          location: entityMetadata?.location,
-        },
+        entity_metadata,
       },
     });
 
