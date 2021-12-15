@@ -354,7 +354,7 @@ class GuildScheduledEvent extends Base {
    * @example
    * // Set location of a guild scheduled event
    * guildScheduledEvent.setLocation('Earth')
-   *  .then(guildScheduledEvent => console.log(`Set the location to: ${guildScheduledEvent.location}`))
+   *  .then(guildScheduledEvent => console.log(`Set the location to: ${guildScheduledEvent.entityMetadata.location}`))
    *  .catch(console.error);
    */
   setLocation(location) {
