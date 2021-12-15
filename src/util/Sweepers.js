@@ -136,9 +136,8 @@ class Sweepers {
 
     for (const channel of this.client.channels.cache.values()) {
       if (!channel.isText()) continue;
-      channels++;
-      if (channel.messages.cache.size === 0) continue;
 
+      channels++;
       messages += channel.messages.cache.sweep(filter);
     }
     this.client.emit(Events.CACHE_SWEEP, `Swept ${messages} messages in ${channels} text-based channels.`);
@@ -170,12 +169,9 @@ class Sweepers {
     for (const channel of this.client.channels.cache.values()) {
       if (!channel.isText()) continue;
       channels++;
-      if (channel.messages.cache.size === 0) continue;
 
       for (const message of channel.messages.cache.values()) {
         messages++;
-        if (message.reactions.cache.size === 0) continue;
-
         reactions += message.reactions.cache.sweep(filter);
       }
     }
@@ -211,7 +207,6 @@ class Sweepers {
     for (const channel of this.client.channels.cache.values()) {
       if (!ThreadChannelTypes.includes(channel.type)) continue;
       threads++;
-      if (channel.members.cache.size === 0) continue;
       members += channel.members.cache.sweep(filter);
     }
     this.client.emit(Events.CACHE_SWEEP, `Swept ${members} thread members in ${threads} threads.`);
@@ -393,9 +388,8 @@ class Sweepers {
 
     for (const guild of this.client.guilds.cache.values()) {
       const { cache } = guild[key];
-      guilds++;
-      if (cache.size === 0) continue;
 
+      guilds++;
       items += cache.sweep(filter);
     }
 
