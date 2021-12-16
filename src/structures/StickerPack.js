@@ -50,9 +50,9 @@ class StickerPack extends Base {
 
     /**
      * The id of the sticker pack's banner image
-     * @type {Snowflake}
+     * @type {?Snowflake}
      */
-    this.bannerId = pack.banner_asset_id;
+    this.bannerId = pack.banner_asset_id ?? null;
   }
 
   /**

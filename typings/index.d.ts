@@ -2096,7 +2096,7 @@ export class StickerPack extends Base {
   private constructor(client: Client, data: RawStickerPackData);
   public readonly createdTimestamp: number;
   public readonly createdAt: Date;
-  public bannerId: Snowflake;
+  public bannerId: Snowflake | null;
   public readonly coverSticker: Sticker | null;
   public coverStickerId: Snowflake | null;
   public description: string;
