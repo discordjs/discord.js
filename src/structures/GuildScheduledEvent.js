@@ -270,8 +270,7 @@ class GuildScheduledEvent extends Base {
    */
   async delete() {
     await this.guild.scheduledEvents.delete(this.id);
-    const clone = this._clone();
-    return clone;
+    return this;
   }
 
   /**
