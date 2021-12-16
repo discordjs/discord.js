@@ -37,13 +37,11 @@ import {
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
-  GuildChannel,
   GuildChannelManager,
   GuildEmoji,
   GuildEmojiManager,
   GuildMember,
   GuildResolvable,
-  GuildTextBasedChannel,
   Intents,
   Interaction,
   InteractionCollector,
@@ -72,7 +70,12 @@ import {
   StageChannel,
   StoreChannel,
   TextBasedChannelFields,
-  TextBasedChannels,
+  TextBasedChannel,
+  TextBasedChannelTypes,
+  VoiceBasedChannel,
+  GuildBasedChannel,
+  NonThreadGuildBasedChannel,
+  GuildTextBasedChannel,
   TextChannel,
   ThreadChannel,
   ThreadMember,
@@ -89,6 +92,7 @@ import {
   Emoji,
   MessageActionRowComponent,
   MessageSelectMenu,
+  PartialDMChannel,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -541,7 +545,7 @@ client.on('messageCreate', async message => {
     expectType<GuildMember | null>(message.member);
   }
 
-  expectType<TextBasedChannels>(message.channel);
+  expectType<TextBasedChannel>(message.channel);
   expectNotType<GuildTextBasedChannel>(message.channel);
 
   // @ts-expect-error
@@ -889,7 +893,7 @@ declare const typing: Typing;
 expectType<PartialUser>(typing.user);
 if (typing.user.partial) expectType<null>(typing.user.username);
 
-expectType<TextBasedChannels>(typing.channel);
+expectType<TextBasedChannel>(typing.channel);
 if (typing.channel.partial) expectType<undefined>(typing.channel.lastMessageId);
 
 expectType<GuildMember | null>(typing.member);
@@ -1075,7 +1079,7 @@ client.on('interactionCreate', async interaction => {
       expectAssignable<CommandInteraction>(interaction);
       expectType<Promise<Message<true>>>(interaction.reply({ fetchReply: true }));
 
-      expectType<GuildChannel | ThreadChannel>(interaction.options.getChannel('test', true));
+      expectType<GuildBasedChannel>(interaction.options.getChannel('test', true));
       expectType<Role>(interaction.options.getRole('test', true));
     } else {
       // @ts-expect-error
@@ -1085,9 +1089,7 @@ client.on('interactionCreate', async interaction => {
       expectType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
       expectType<APIInteractionDataResolvedGuildMember | GuildMember>(interaction.options.getMember('test', true));
 
-      expectType<GuildChannel | ThreadChannel | APIInteractionDataResolvedChannel>(
-        interaction.options.getChannel('test', true),
-      );
+      expectType<GuildBasedChannel | APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
       expectType<APIRole | Role>(interaction.options.getRole('test', true));
     }
 
@@ -1228,3 +1230,23 @@ expectType<Promise<User | undefined>>(
   // @ts-expect-error Invalid audit log ID
   guild.fetchAuditLogs({ type: 2000 }).then(al => al.entries.first()?.target),
 );
+
+declare const TextBasedChannel: TextBasedChannel;
+declare const TextBasedChannelTypes: TextBasedChannelTypes;
+declare const VoiceBasedChannel: VoiceBasedChannel;
+declare const GuildBasedChannel: GuildBasedChannel;
+declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
+declare const GuildTextBasedChannel: GuildTextBasedChannel;
+
+expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel>(TextBasedChannel);
+expectType<'DM' | 'GUILD_NEWS' | 'GUILD_TEXT' | 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD' | 'GUILD_NEWS_THREAD'>(
+  TextBasedChannelTypes,
+);
+expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
+expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | ThreadChannel | VoiceChannel>(
+  GuildBasedChannel,
+);
+expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | VoiceChannel>(
+  NonThreadGuildBasedChannel,
+);
+expectType<NewsChannel | TextChannel | ThreadChannel>(GuildTextBasedChannel);
