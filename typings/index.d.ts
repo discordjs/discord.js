@@ -1181,14 +1181,19 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public readonly guild: Guild | null;
   public readonly url: string;
   public createInviteURL(options?: CreateGuildScheduledEventInviteURLOptions): Promise<string>;
-  public edit(options: GuildScheduledEventEditOptions): Promise<GuildScheduledEvent>;
-  public delete(): Promise<GuildScheduledEvent>;
-  public setName(name: string, reason?: string): Promise<GuildScheduledEvent>;
-  public setScheduledStartTime(scheduledStartTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent>;
-  public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent>;
-  public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent>;
-  public setStatus(status: GuildScheduledEventSetStatusArg<S>, reason?: string): Promise<GuildScheduledEvent>;
-  public setLocation(location: string, reason?: string): Promise<GuildScheduledEvent>;
+  public edit<T extends GuildScheduledEventSetStatusArg<S>>(
+    options: GuildScheduledEventEditOptions<S, T>,
+  ): Promise<GuildScheduledEvent<T>>;
+  public delete(): Promise<GuildScheduledEvent<S>>;
+  public setName(name: string, reason?: string): Promise<GuildScheduledEvent<S>>;
+  public setScheduledStartTime(scheduledStartTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<S>>;
+  public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<S>>;
+  public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent<S>>;
+  public setStatus<T extends GuildScheduledEventSetStatusArg<S>>(
+    status: T,
+    reason?: string,
+  ): Promise<GuildScheduledEvent<T>>;
+  public setLocation(location: string, reason?: string): Promise<GuildScheduledEvent<S>>;
   public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
     options?: T,
   ): Promise<GuildScheduledEventManagerFetchSubscribersResult<T>>;
@@ -3086,10 +3091,10 @@ export class GuildScheduledEventManager extends CachedManager<
   public fetch<
     T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
   >(options?: T): Promise<GuildScheduledEventManagerFetchResult<T>>;
-  public edit(
+  public edit<S extends GuildScheduledEventStatus, T extends GuildScheduledEventSetStatusArg<S>>(
     guildScheduledEvent: GuildScheduledEventResolvable,
-    options: GuildScheduledEventEditOptions,
-  ): Promise<GuildScheduledEvent>;
+    options: GuildScheduledEventEditOptions<S, T>,
+  ): Promise<GuildScheduledEvent<T>>;
   public delete(guildScheduledEvent: GuildScheduledEventResolvable): Promise<void>;
   public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
     guildScheduledEvent: GuildScheduledEventResolvable,
@@ -4759,9 +4764,12 @@ export interface GuildScheduledEventCreateOptions {
   reason?: string;
 }
 
-export interface GuildScheduledEventEditOptions extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
+export interface GuildScheduledEventEditOptions<
+  S extends GuildScheduledEventStatus,
+  T extends GuildScheduledEventSetStatusArg<S>,
+> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
   channel?: GuildVoiceChannelResolvable | null;
-  status?: GuildScheduledEventStatus | number;
+  status?: T | number;
 }
 
 export interface GuildScheduledEventEntityMetadata {
