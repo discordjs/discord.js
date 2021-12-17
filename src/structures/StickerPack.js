@@ -85,10 +85,10 @@ class StickerPack extends Base {
   /**
    * The URL to this sticker pack's banner.
    * @param {StaticImageURLOptions} [options={}] Options for the Image URL
-   * @returns {string}
+   * @returns {?string}
    */
   bannerURL({ format, size } = {}) {
-    return this.client.rest.cdn.StickerPackBanner(this.bannerId, format, size);
+    return this.bannerId && this.client.rest.cdn.StickerPackBanner(this.bannerId, format, size);
   }
 }
 
