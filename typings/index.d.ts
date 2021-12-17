@@ -3631,6 +3631,7 @@ export type ApplicationCommandPermissionType = keyof typeof ApplicationCommandPe
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
 export type ApplicationFlagsString =
+  | 'EMBEDDED_RELEASED'
   | 'GATEWAY_PRESENCE'
   | 'GATEWAY_PRESENCE_LIMITED'
   | 'GATEWAY_GUILD_MEMBERS'
@@ -3638,7 +3639,8 @@ export type ApplicationFlagsString =
   | 'VERIFICATION_PENDING_GUILD_LIMIT'
   | 'EMBEDDED'
   | 'GATEWAY_MESSAGE_CONTENT'
-  | 'GATEWAY_MESSAGE_CONTENT_LIMITED';
+  | 'GATEWAY_MESSAGE_CONTENT_LIMITED'
+  | 'EMBEDDED_FIRST_PARTY';
 
 export interface AuditLogChange {
   key: APIAuditLogChange['key'];
