@@ -106,6 +106,10 @@ const client: Client = new Client({
     MessageManager: 200,
     // @ts-expect-error
     Message: 100,
+    GuildMemberManager: {
+      maxSize: 200,
+      keepOverLimit: member => member.id === client.user?.id,
+    },
   }),
 });
 
