@@ -324,6 +324,7 @@ export abstract class BaseCommandInteraction<Cached extends CacheType = CacheTyp
     | 'getFocused'
     | 'getMentionable'
     | 'getRole'
+    | 'getAttachment'
     | 'getNumber'
     | 'getInteger'
     | 'getString'
@@ -708,6 +709,8 @@ export interface ApplicationCommandInteractionOptionResolver<Cached extends Cach
   getMember(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['member']> | null;
   getRole(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['role']>;
   getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['role']> | null;
+  getAttachment(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['attachment']>;
+  getAttachment(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['attachment']> | null;
   getMentionable(
     name: string,
     required: true,
@@ -3996,6 +3999,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
   channel?: CacheTypeReducer<Cached, GuildChannel | ThreadChannel, APIInteractionDataResolvedChannel>;
   role?: CacheTypeReducer<Cached, Role, APIRole>;
+  attachment?: CacheTypeReducer<Cached, MessageAttachment, APIAttachment>;
   message?: GuildCacheMessage<Cached>;
 }
 
