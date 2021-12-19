@@ -222,7 +222,7 @@ class CommandInteractionOptionResolver {
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?(MessageAttachment|APIAttachment)} The value of the option, or null if not set and not required.
    */
-   getAttachment(name, required = false) {
+  getAttachment(name, required = false) {
     const option = this._getTypedOption(name, 'ATTACHMENT', ['attachment'], required);
     return option?.attachment ?? null;
   }
