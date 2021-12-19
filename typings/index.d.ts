@@ -41,6 +41,7 @@ import {
   APIPartialEmoji,
   APIPartialGuild,
   APIRole,
+  APIAttachment,
   APISelectMenuComponent,
   APITemplateSerializedSourceGuild,
   APIUser,
@@ -4014,6 +4015,7 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   channels?: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIInteractionDataResolvedChannel>>;
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
+  attachments?: Collection<Snowflake, CacheTypeReducer<Cached, MessageAttachment, APIAttachment>>;
 }
 
 export interface ConstantsClientApplicationAssetTypes {

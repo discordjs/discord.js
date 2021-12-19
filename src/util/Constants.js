@@ -1016,6 +1016,7 @@ exports.ApplicationCommandOptionTypes = createEnum([
   'ROLE',
   'MENTIONABLE',
   'NUMBER',
+  'ATTACHMENT',
 ]);
 
 /**

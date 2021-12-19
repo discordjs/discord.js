@@ -5,6 +5,7 @@ const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const { ApplicationCommandOptionTypes } = require('../util/Constants');
+const MessageAttachment = require('./MessageAttachment');
 
 /**
  * Represents a command interaction.
@@ -76,6 +77,7 @@ class BaseCommandInteraction extends Interaction {
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
    * @property {Collection<Snowflake, Channel|APIChannel>} [channels] The resolved channels
    * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
+   * @property {Collection<Snowflake, MessageAttachment|APIAttachment>} [messages] The resolved attachments
    */
 
   /**
@@ -84,7 +86,7 @@ class BaseCommandInteraction extends Interaction {
    * @returns {CommandInteractionResolvedData}
    * @private
    */
-  transformResolved({ members, users, channels, roles, messages }) {
+  transformResolved({ members, users, channels, roles, messages, attachments }) {
     const result = {};
 
     if (members) {
@@ -123,6 +125,15 @@ class BaseCommandInteraction extends Interaction {
       }
     }
 
+    if (attachments) {
+      result.attachments = new Collection();
+      for (const attachment of Object.values(attachments)) {
+        const patched = new MessageAttachment();
+        patched._patch(attachment);
+        result.attachments.set(attachment.id, patched ?? attachment);
+      }
+    }
+
     return result;
   }
 
@@ -139,6 +150,7 @@ class BaseCommandInteraction extends Interaction {
    * @property {GuildMember|APIGuildMember} [member] The resolved member
    * @property {GuildChannel|ThreadChannel|APIChannel} [channel] The resolved channel
    * @property {Role|APIRole} [role] The resolved role
+   * @property {MessageAttachment|APIAttachment} [attachment] The resolved attachment
    */
 
   /**
@@ -169,6 +181,11 @@ class BaseCommandInteraction extends Interaction {
 
       const role = resolved.roles?.[option.value];
       if (role) result.role = this.guild?.roles._add(role) ?? role;
+
+      const attachment = resolved.attachments?.[option.value];
+      const patched = new MessageAttachment();
+      patched._patch(attachment);
+      if (attachment) result.attachment = patched ?? attachment;
     }
 
     return result;
