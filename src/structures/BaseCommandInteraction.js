@@ -3,9 +3,9 @@
 const { Collection } = require('@discordjs/collection');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
+const MessageAttachment = require('./MessageAttachment');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const { ApplicationCommandOptionTypes } = require('../util/Constants');
-const MessageAttachment = require('./MessageAttachment');
 
 /**
  * Represents a command interaction.
@@ -128,8 +128,7 @@ class BaseCommandInteraction extends Interaction {
     if (attachments) {
       result.attachments = new Collection();
       for (const attachment of Object.values(attachments)) {
-        const patched = new MessageAttachment();
-        patched._patch(attachment);
+        const patched = new MessageAttachment(attachment.url, attachment.filename, attachment);
         result.attachments.set(attachment.id, patched ?? attachment);
       }
     }
@@ -183,8 +182,7 @@ class BaseCommandInteraction extends Interaction {
       if (role) result.role = this.guild?.roles._add(role) ?? role;
 
       const attachment = resolved.attachments?.[option.value];
-      const patched = new MessageAttachment();
-      patched._patch(attachment);
+      const patched = new MessageAttachment(attachment.url, attachment.filename, attachment);
       if (attachment) result.attachment = patched ?? attachment;
     }
 
