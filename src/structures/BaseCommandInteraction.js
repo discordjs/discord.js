@@ -77,7 +77,7 @@ class BaseCommandInteraction extends Interaction {
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
    * @property {Collection<Snowflake, Channel|APIChannel>} [channels] The resolved channels
    * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
-   * @property {Collection<Snowflake, MessageAttachment|APIAttachment>} [messages] The resolved attachments
+   * @property {Collection<Snowflake, MessageAttachment|APIAttachment>} [attachments] The resolved attachments
    */
 
   /**

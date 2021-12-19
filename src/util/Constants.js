@@ -1001,6 +1001,7 @@ exports.ApplicationCommandTypes = createEnum([null, 'CHAT_INPUT', 'USER', 'MESSA
  * * ROLE
  * * MENTIONABLE
  * * NUMBER
+ * * ATTACHMENT
  * @typedef {string} ApplicationCommandOptionType
  * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type}
  */
