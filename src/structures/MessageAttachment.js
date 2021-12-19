@@ -86,14 +86,6 @@ class MessageAttachment {
       this.size = data.size;
     }
 
-    if ('filename' in data) {
-      /**
-       * The name of this attachment
-       * @type {string}
-       */
-      this.name = data.filename;
-    }
-
     if ('url' in data) {
       /**
        * The URL to this attachment
