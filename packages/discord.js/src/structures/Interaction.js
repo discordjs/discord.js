@@ -74,6 +74,18 @@ class Interaction extends Base {
      * @type {?Readonly<Permissions>}
      */
     this.memberPermissions = data.member?.permissions ? new Permissions(data.member.permissions).freeze() : null;
+
+    /**
+     * The locale of the member who invoked this interaction
+     * @type {string}
+     */
+    this.locale = data.locale;
+
+    /**
+     * The preferred guild locale from where this interaction was sent
+     * @type {?string}
+     */
+    this.guildLocale = data.guild_locale ?? null;
   }
 
   /**
