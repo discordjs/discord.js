@@ -494,19 +494,21 @@ export type CategoryChannelTypes = ExcludeEnum<
 export class CategoryChannel extends GuildChannel {
   public readonly children: Collection<Snowflake, Exclude<NonThreadGuildBasedChannel, CategoryChannel>>;
   public type: 'GUILD_CATEGORY';
+
+  public createChannel<T extends Exclude<CategoryChannelTypes, 'GUILD_STORE'>>(
+    name: string,
+    options: CategoryCreateChannelOptions & { type: T },
+  ): Promise<MappedChannelCategoryTypes[T]>;
+
   /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
   public createChannel(
     name: string,
     options: CategoryCreateChannelOptions & { type: 'GUILD_STORE' },
   ): Promise<StoreChannel>;
-  public createChannel<T extends CategoryChannelTypes>(
-    name: string,
-    options: CategoryCreateChannelOptions & { type: T },
-  ): Promise<MappedChannelCategoryTypes[T]>;
 
   public createChannel(
     name: string,
-    options: CategoryCreateChannelOptions,
+    options?: CategoryCreateChannelOptions,
   ): Promise<Exclude<NonThreadGuildBasedChannel, CategoryChannel>>;
 }
 
