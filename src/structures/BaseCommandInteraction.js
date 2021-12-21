@@ -129,7 +129,7 @@ class BaseCommandInteraction extends Interaction {
       result.attachments = new Collection();
       for (const attachment of Object.values(attachments)) {
         const patched = new MessageAttachment(attachment.url, attachment.filename, attachment);
-        result.attachments.set(attachment.id, patched ?? attachment);
+        result.attachments.set(attachment.id, patched);
       }
     }
 
@@ -183,7 +183,7 @@ class BaseCommandInteraction extends Interaction {
 
       const attachment = resolved.attachments?.[option.value];
       const patched = new MessageAttachment(attachment.url, attachment.filename, attachment);
-      if (attachment) result.attachment = patched ?? attachment;
+      if (attachment) result.attachment = patched;
     }
 
     return result;
