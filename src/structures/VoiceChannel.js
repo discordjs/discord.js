@@ -46,7 +46,12 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * @readonly
    */
   get speakable() {
-    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.SPEAK, false);
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    // This flag allows speaking even if timed out
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+    if (!permissions.has(Permissions.FLAGS.SPEAK, false)) return false;
+    return this.guild.me.communicationDisabledUntilTimestamp !== null;
   }
 
   /**
