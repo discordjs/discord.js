@@ -263,10 +263,8 @@ class GuildMemberManager extends CachedManager {
     }
     _data.roles &&= _data.roles.map(role => (role instanceof Role ? role.id : role));
 
-    if (typeof _data.communicationDisabledUntil !== 'undefined') {
-      _data.communication_disabled_until =
-        _data.communicationDisabledUntil && new Date(_data.communicationDisabledUntil).toISOString();
-    }
+    _data.communication_disabled_until =
+      _data.communicationDisabledUntil && new Date(_data.communicationDisabledUntil).toISOString();
 
     let endpoint = this.client.api.guilds(this.guild.id);
     if (id === this.client.user.id) {
