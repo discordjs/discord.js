@@ -69,6 +69,8 @@ class BaseGuildVoiceChannel extends GuildChannel {
   get joinable() {
     if (!this.viewable) return false;
     const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+
     // This flag allows joining even if timed out
     if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
     if (!permissions.has(Permissions.FLAGS.CONNECT, false)) return false;
