@@ -536,6 +536,7 @@ client.on('messageCreate', async message => {
 
     const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
     expectType<InteractionCollector<ButtonInteraction<'cached'>>>(buttonCollector);
+    expectAssignable<(test: ButtonInteraction<'cached'>) => boolean | Promise<boolean>>(buttonCollector.filter);
     expectType<GuildTextBasedChannel>(message.channel);
     expectType<Guild>(message.guild);
     expectType<GuildMember | null>(message.member);
@@ -642,7 +643,7 @@ client.on('messageCreate', async message => {
 
   channel.awaitMessageComponent({
     filter: i => {
-      expectType<MessageComponentInteraction>(i);
+      expectType<MessageComponentInteraction<'cached'>>(i);
       return true;
     },
   });
@@ -650,7 +651,7 @@ client.on('messageCreate', async message => {
   channel.awaitMessageComponent({
     componentType: 'BUTTON',
     filter: i => {
-      expectType<ButtonInteraction>(i);
+      expectType<ButtonInteraction<'cached'>>(i);
       return true;
     },
   });
@@ -658,7 +659,7 @@ client.on('messageCreate', async message => {
   channel.awaitMessageComponent({
     componentType: 'SELECT_MENU',
     filter: i => {
-      expectType<SelectMenuInteraction>(i);
+      expectType<SelectMenuInteraction<'cached'>>(i);
       return true;
     },
   });

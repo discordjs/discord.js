@@ -1377,19 +1377,25 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
-export type MessageCollectorOptionsParams<T extends MessageComponentTypeResolvable> =
+export type MessageCollectorOptionsParams<T extends MessageComponentTypeResolvable, Cached extends boolean = boolean> =
   | {
       componentType?: T;
-    } & MessageComponentCollectorOptions<MappedInteractionTypes[T]>;
+    } & MessageComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
 
-export type MessageChannelCollectorOptionsParams<T extends MessageComponentTypeResolvable> =
+export type MessageChannelCollectorOptionsParams<
+  T extends MessageComponentTypeResolvable,
+  Cached extends boolean = boolean,
+> =
   | {
       componentType?: T;
-    } & MessageChannelComponentCollectorOptions<MappedInteractionTypes[T]>;
+    } & MessageChannelComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
 
-export type AwaitMessageCollectorOptionsParams<T extends MessageComponentTypeResolvable> =
+export type AwaitMessageCollectorOptionsParams<
+  T extends MessageComponentTypeResolvable,
+  Cached extends boolean = boolean,
+> =
   | { componentType?: T } & Pick<
-      InteractionCollectorOptions<MappedInteractionTypes[T]>,
+      InteractionCollectorOptions<MappedInteractionTypes<Cached>[T]>,
       keyof AwaitMessageComponentOptions<any>
     >;
 
@@ -1458,12 +1464,12 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public flags: Readonly<MessageFlags>;
   public reference: MessageReference | null;
   public awaitMessageComponent<T extends MessageComponentTypeResolvable = 'ACTION_ROW'>(
-    options?: AwaitMessageCollectorOptionsParams<T>,
+    options?: AwaitMessageCollectorOptionsParams<T, Cached>,
   ): Promise<MappedInteractionTypes<Cached>[T]>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
   public createMessageComponentCollector<T extends MessageComponentTypeResolvable = 'ACTION_ROW'>(
-    options?: MessageCollectorOptionsParams<T>,
+    options?: MessageCollectorOptionsParams<T, Cached>,
   ): InteractionCollector<MappedInteractionTypes<Cached>[T]>;
   public delete(): Promise<Message>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
@@ -3205,7 +3211,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   lastPinTimestamp: number | null;
   readonly lastPinAt: Date | null;
   awaitMessageComponent<T extends MessageComponentTypeResolvable = 'ACTION_ROW'>(
-    options?: AwaitMessageCollectorOptionsParams<T>,
+    options?: AwaitMessageCollectorOptionsParams<T, true>,
   ): Promise<MappedInteractionTypes[T]>;
   awaitMessages(options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
   bulkDelete(
@@ -3213,7 +3219,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message>>;
   createMessageComponentCollector<T extends MessageComponentTypeResolvable = 'ACTION_ROW'>(
-    options?: MessageChannelCollectorOptionsParams<T>,
+    options?: MessageChannelCollectorOptionsParams<T, true>,
   ): InteractionCollector<MappedInteractionTypes[T]>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   sendTyping(): Promise<void>;
