@@ -161,7 +161,7 @@ class InteractionResponses {
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<Message|APIMessage>}
    */
-  followUp(options) {
+  async followUp(options) {
     if (!this.deferred && !this.replied) throw new Error('INTERACTION_NOT_REPLIED');
     return this.webhook.send(options);
   }
