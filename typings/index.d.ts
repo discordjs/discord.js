@@ -1086,7 +1086,8 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly voice: VoiceState;
   public avatarURL(options?: ImageURLOptions): string | null;
   public ban(options?: BanOptions): Promise<GuildMember>;
-  public timeout(timeout: TimeoutDateResolvable | null, reason?: string): Promise<GuildMember>;
+  public disableCommunicationUntil(timeout: DateResolvable | null, reason?: string): Promise<GuildMember>;
+  public timeout(timeout: number | null, reason?: string): Promise<GuildMember>;
   public fetch(force?: boolean): Promise<GuildMember>;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
@@ -4477,8 +4478,6 @@ export type GuildFeatures =
   | 'SEVEN_DAY_THREAD_ARCHIVE'
   | 'PRIVATE_THREADS'
   | 'ROLE_ICONS';
-
-export type TimeoutDateResolvable = DateResolvable;
 
 export interface GuildMemberEditData {
   nick?: string | null;

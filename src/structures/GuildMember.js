@@ -6,7 +6,6 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * @type {WeakSet<GuildMember>}
@@ -348,15 +347,24 @@ class GuildMember extends Base {
   }
 
   /**
-   * Data that can be resolved to a Date object for timeouts. This can be:
-   * * A number in milliseconds representing a duration
-   * * A DateResolvable
-   * @typedef {DateResolvable} TimeoutDateResolvable
+   * Times this guild member out.
+   * @param {DateResolvable|null} communicationDisabledUntil The date or timestamp
+   * for the member's communication to be disabled until. Provide `null` to remove the timeout.
+   * @param {string} [reason] The reason for this timeout.
+   * @returns {Promise<GuildMember>}
+   * @example
+   * // Time a guild member out for 5 minutes
+   * guildMember.disableCommunicationUntil(Date.now() + (5 * 60 * 1000), 'They deserved it')
+   *   .then(console.log)
+   *   .catch(console.error);
    */
+  disableCommunicationUntil(communicationDisabledUntil, reason) {
+    return this.edit({ communicationDisabledUntil }, reason);
+  }
 
   /**
    * Times this guild member out.
-   * @param {TimeoutDateResolvable|null} timeout The date, timestamp, or time in milliseconds
+   * @param {number|null} timeout The time in milliseconds
    * for the member's communication to be disabled until. Provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
@@ -367,7 +375,7 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   timeout(timeout, reason) {
-    if (typeof timeout === 'number' && timeout < SnowflakeUtil.EPOCH) timeout += Date.now();
+    timeout += Date.now();
     return this.edit({ communicationDisabledUntil: timeout }, reason);
   }
 
