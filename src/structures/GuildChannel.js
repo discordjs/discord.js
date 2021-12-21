@@ -510,6 +510,7 @@ class GuildChannel extends Channel {
     if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
+
     // This flag allows managing even if timed out
     if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
     if (this.guild.members.me.communicationDisabledUntilTimestamp > Date.now()) return false;
