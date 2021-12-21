@@ -600,7 +600,7 @@ class Message extends Base {
     return Boolean(
       this.author.id === this.client.user.id ||
         (permissions?.has(Permissions.FLAGS.MANAGE_MESSAGES, false) &&
-          this.guild.me.communicationDisabledUntilTimestamp === null),
+          this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
     );
   }
 
