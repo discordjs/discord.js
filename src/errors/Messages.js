@@ -39,7 +39,7 @@ const Messages = {
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
-  INVITE_OPTIONS_MISSING_CHANNEL: 'Valid guild channel must be provided when GuildScheduledEvent is EXTERNAL.',
+  INVITE_OPTIONS_MISSING_CHANNEL: 'A valid guild channel must be provided when GuildScheduledEvent is EXTERNAL.',
 
   EMBED_TITLE: 'MessageEmbed title must be a string.',
   EMBED_FIELD_NAME: 'MessageEmbed field names must be non-empty strings.',
