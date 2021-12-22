@@ -2331,7 +2331,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
   public bannerURL(options?: ImageURLOptions): string | null;
-  public createDM(): Promise<DMChannel>;
+  public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
   public equals(user: User): boolean;
@@ -3164,7 +3164,12 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
 
 export class UserManager extends CachedManager<Snowflake, User, UserResolvable> {
   private constructor(client: Client, iterable?: Iterable<RawUserData>);
+  private dmChannel(userId: Snowflake): DMChannel | null;
+  public createDM(user: UserResolvable, options?: BaseFetchOptions): Promise<DMChannel>;
+  public deleteDM(user: UserResolvable): Promise<DMChannel>;
   public fetch(user: UserResolvable, options?: BaseFetchOptions): Promise<User>;
+  public fetchFlags(user: UserResolvable, options?: BaseFetchOptions): Promise<UserFlags>;
+  public send(user: UserResolvable, options: string | MessagePayload | MessageOptions): Promise<Message>;
 }
 
 export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, typeof VoiceState> {
