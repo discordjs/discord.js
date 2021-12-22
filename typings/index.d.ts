@@ -503,7 +503,7 @@ export class CategoryChannel extends GuildChannel {
   /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
   public createChannel(
     name: string,
-    options: CategoryCreateChannelOptions & { type: 'GUILD_STORE' },
+    options: CategoryCreateChannelOptions & { type: 'GUILD_STORE' | ChannelTypes.GUILD_STORE },
   ): Promise<StoreChannel>;
 
   public createChannel(
