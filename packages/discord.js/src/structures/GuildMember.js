@@ -282,6 +282,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get kickable() {
+    if (!this.guild.me) return new Error('GUILD_UNCACHED_ME');
     return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS);
   }
 
@@ -291,6 +292,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get bannable() {
+    if (!this.guild.me) return new Error('GUILD_UNCACHED_ME');
     return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
   }
 
