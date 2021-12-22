@@ -82,7 +82,7 @@ class GuildScheduledEventManager extends CachedManager {
     if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
 
     let entity_metadata, channel_id;
-    if (entityType === 3) {
+    if (entityType === GuildScheduledEventEntityTypes.EXTERNAL) {
       channel_id = typeof channel === 'undefined' ? channel : null;
       entity_metadata = { location: entityMetadata?.location };
     } else {
