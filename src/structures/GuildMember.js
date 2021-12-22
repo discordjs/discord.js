@@ -375,8 +375,7 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   timeout(timeout, reason) {
-    if (timeout !== null) timeout += Date.now();
-    return this.edit({ communicationDisabledUntil: timeout }, reason);
+    return this.disableCommunicationUntil(timeout && Date.now() + timeout, reason);
   }
 
   /**
