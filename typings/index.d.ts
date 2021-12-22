@@ -1096,10 +1096,13 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public guild: Guild;
   public readonly id: Snowflake;
   public pending: boolean;
+  public readonly communicationDisabledUntil: Date | null;
+  public communicationDisabledUntilTimestamp: number | null;
   public readonly joinedAt: Date | null;
   public joinedTimestamp: number | null;
   public readonly kickable: boolean;
   public readonly manageable: boolean;
+  public readonly moderatable: boolean;
   public nickname: string | null;
   public readonly partial: false;
   public readonly permissions: Readonly<Permissions>;
@@ -1111,6 +1114,8 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly voice: VoiceState;
   public avatarURL(options?: ImageURLOptions): string | null;
   public ban(options?: BanOptions): Promise<GuildMember>;
+  public disableCommunicationUntil(timeout: DateResolvable | null, reason?: string): Promise<GuildMember>;
+  public timeout(timeout: number | null, reason?: string): Promise<GuildMember>;
   public fetch(force?: boolean): Promise<GuildMember>;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
@@ -4590,6 +4595,7 @@ export interface GuildMemberEditData {
   mute?: boolean;
   deaf?: boolean;
   channel?: GuildVoiceChannelResolvable | null;
+  communicationDisabledUntil?: DateResolvable | null;
 }
 
 export type GuildMemberResolvable = GuildMember | UserResolvable;
@@ -5080,7 +5086,8 @@ export type PermissionString =
   | 'CREATE_PRIVATE_THREADS'
   | 'USE_EXTERNAL_STICKERS'
   | 'SEND_MESSAGES_IN_THREADS'
-  | 'START_EMBEDDED_ACTIVITIES';
+  | 'START_EMBEDDED_ACTIVITIES'
+  | 'MODERATE_MEMBERS';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 

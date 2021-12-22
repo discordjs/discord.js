@@ -610,9 +610,16 @@ class Message extends Base {
     if (!this.channel?.viewable) {
       return false;
     }
+
+    const permissions = this.channel?.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    // This flag allows deleting even if timed out
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+
     return Boolean(
       this.author.id === this.client.user.id ||
-        this.channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false),
+        (permissions.has(Permissions.FLAGS.MANAGE_MESSAGES, false) &&
+          this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
     );
   }
 
