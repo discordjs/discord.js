@@ -75,14 +75,14 @@ class GuildScheduledEvent extends Base {
      * <info>This can be potentially `null` only when it's an {@link AuditLogEntryTarget}</info>
      * @type {?number}
      */
-    this.scheduledStartTimestamp = data.scheduled_start_time ? new Date(data.scheduled_start_time).getTime() : null;
+    this.scheduledStartTimestamp = data.scheduled_start_time ? Date.parse(data.scheduled_start_time) : null;
 
     /**
      * The timestamp the guild scheduled event will end at,
      * or `null` if the event does not have a scheduled time to end
      * @type {?number}
      */
-    this.scheduledEndTimestamp = data.scheduled_end_time ? new Date(data.scheduled_end_time).getTime() : null;
+    this.scheduledEndTimestamp = data.scheduled_end_time ? Date.parse(data.scheduled_end_time) : null;
 
     /**
      * The privacy level of the guild scheduled event
@@ -192,7 +192,7 @@ class GuildScheduledEvent extends Base {
    * @readonly
    */
   get scheduledEndAt() {
-    return this.scheduledEndTimestamp ? new Date(this.scheduledEndTimestamp) : null;
+    return this.scheduledEndTimestamp && new Date(this.scheduledEndTimestamp);
   }
 
   /**
