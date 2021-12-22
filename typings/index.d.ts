@@ -1075,6 +1075,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public joinedTimestamp: number | null;
   public readonly kickable: boolean;
   public readonly manageable: boolean;
+  public readonly moderatable: boolean;
   public nickname: string | null;
   public readonly partial: false;
   public readonly permissions: Readonly<Permissions>;

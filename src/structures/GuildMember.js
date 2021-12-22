@@ -276,6 +276,15 @@ class GuildMember extends Base {
   }
 
   /**
+   * Whether this member is moderatable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get moderatable() {
+    return this.manageable && (this.guild.me?.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS) ?? false);
+  }
+
+  /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {GuildChannelResolvable} channel The guild channel to use as context
