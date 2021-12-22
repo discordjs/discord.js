@@ -506,6 +506,9 @@ class Client extends BaseClient {
     if (typeof options.failIfNotExists !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'failIfNotExists', 'a boolean');
     }
+    if (typeof options.emitUserUpdatesPerGuild !== 'boolean') {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'emitUserUpdatesPerGuild', 'a boolean');
+    }
   }
 }
 

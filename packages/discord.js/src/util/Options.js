@@ -33,6 +33,8 @@ const { DefaultRestOptions } = require('@discordjs/rest');
  * @property {number} [waitGuildTimeout=15_000] Time in milliseconds that Clients with the GUILDS intent should wait for
  * missing guilds to be received before starting the bot. If not specified, the default is 15 seconds.
  * @property {SweeperOptions} [sweepers={}] Options for cache sweeping
+ * @property {boolean} [emitUserUpdatesPerGuild=false] Emits the guildMemberUpdate event on every guild on USER_UPDATE
+ * ws events. Note that this may increase memory usage.
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {RESTOptions} [rest] Options for the REST manager
  */
@@ -77,6 +79,7 @@ class Options extends null {
       failIfNotExists: true,
       presence: {},
       sweepers: this.defaultSweeperSettings,
+      emitUserUpdatesPerGuild: false,
       ws: {
         large_threshold: 50,
         compress: false,

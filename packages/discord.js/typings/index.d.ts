@@ -3565,6 +3565,7 @@ export interface ClientOptions {
   intents: BitFieldResolvable<GatewayIntentsString, number>;
   waitGuildTimeout?: number;
   sweepers?: SweeperOptions;
+  emitUserUpdatesPerGuild?: boolean;
   ws?: WebSocketOptions;
   rest?: Partial<RESTOptions>;
 }

@@ -29,7 +29,7 @@ class GuildMemberUpdateAction extends Action {
          * @param {GuildMember} newMember The member after the update
          */
         if (shard.status === Status.READY && (!member.equals(old) || !old.user._equals(data.user))) {
-          client.emit(Events.GUILD_MEMBER_UPDATE, old, member);
+          client.emit(Events.GuildMemberUpdate, old, member);
         }
       } else {
         const newMember = guild.members._add(data);
