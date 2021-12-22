@@ -110,7 +110,6 @@ class UserManager extends CachedManager {
    * @param {string|MessagePayload|MessageOptions} options The options to provide
    * @returns {Promise<Message>}
    */
-
   async send(user, options) {
     return (await this.createDM(user)).send(options);
   }
