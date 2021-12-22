@@ -73,8 +73,11 @@ class BaseGuildVoiceChannel extends GuildChannel {
 
     // This flag allows joining even if timed out
     if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
-    if (!permissions.has(Permissions.FLAGS.CONNECT, false)) return false;
-    return this.guild.me.communicationDisabledUntilTimestamp < Date.now();
+
+    return (
+      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      permissions.has(Permissions.FLAGS.CONNECT, false)
+    );
   }
 
   /**
