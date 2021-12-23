@@ -115,6 +115,7 @@
  * @property {string} [invite='https://discord.gg'] Base URL of invites
  * @property {string} [template='https://discord.new'] Base URL of templates
  * @property {Object} [headers] Additional headers to send for all API requests
+ * @property {string} [scheduledEvent='https://discord.com/events'] Base URL of guild scheduled events
  */
 
 /**
@@ -160,6 +161,7 @@ class Options extends null {
         cdn: 'https://cdn.discordapp.com',
         invite: 'https://discord.gg',
         template: 'https://discord.new',
+        scheduledEvent: 'https://discord.com/events',
       },
     };
   }

@@ -78,7 +78,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
     };
   },
-  invite: (root, code) => `${root}/${code}`,
+  invite: (root, code, eventId) => (eventId ? `${root}/${code}?event=${eventId}` : `${root}/${code}`),
+  scheduledEvent: (root, guildId, eventId) => `${root}/${guildId}/${eventId}`,
   botGateway: '/gateway/bot',
 };
 
@@ -202,6 +203,11 @@ exports.Events = {
   GUILD_STICKER_CREATE: 'stickerCreate',
   GUILD_STICKER_DELETE: 'stickerDelete',
   GUILD_STICKER_UPDATE: 'stickerUpdate',
+  GUILD_SCHEDULED_EVENT_CREATE: 'guildScheduledEventCreate',
+  GUILD_SCHEDULED_EVENT_UPDATE: 'guildScheduledEventUpdate',
+  GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete',
+  GUILD_SCHEDULED_EVENT_USER_ADD: 'guildScheduledEventUserAdd',
+  GUILD_SCHEDULED_EVENT_USER_REMOVE: 'guildScheduledEventUserRemove',
 };
 
 exports.ShardEvents = {
@@ -220,11 +226,12 @@ exports.ShardEvents = {
  * * GUILD_MEMBER
  * * MESSAGE
  * * REACTION
+ * * GUILD_SCHEDULED_EVENT
  * <warn>Partials require you to put checks in place when handling data. See the "Partial Structures" topic on the
  * [guide](https://discordjs.guide/popular-topics/partials.html) for more information.</warn>
  * @typedef {string} PartialType
  */
-exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION']);
+exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION', 'GUILD_SCHEDULED_EVENT']);
 
 /**
  * The type of a WebSocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
@@ -278,6 +285,11 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * STAGE_INSTANCE_UPDATE
  * * STAGE_INSTANCE_DELETE
  * * GUILD_STICKERS_UPDATE
+ * * GUILD_SCHEDULED_EVENT_CREATE
+ * * GUILD_SCHEDULED_EVENT_UPDATE
+ * * GUILD_SCHEDULED_EVENT_DELETE
+ * * GUILD_SCHEDULED_EVENT_USER_ADD
+ * * GUILD_SCHEDULED_EVENT_USER_REMOVE
  * @typedef {string} WSEventType
  * @see {@link https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events}
  */
@@ -332,6 +344,11 @@ exports.WSEvents = keyMirror([
   'STAGE_INSTANCE_UPDATE',
   'STAGE_INSTANCE_DELETE',
   'GUILD_STICKERS_UPDATE',
+  'GUILD_SCHEDULED_EVENT_CREATE',
+  'GUILD_SCHEDULED_EVENT_UPDATE',
+  'GUILD_SCHEDULED_EVENT_DELETE',
+  'GUILD_SCHEDULED_EVENT_USER_ADD',
+  'GUILD_SCHEDULED_EVENT_USER_REMOVE',
 ]);
 
 /**
@@ -705,6 +722,7 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * MAXIMUM_THREAD_PARTICIPANTS
  * * MAXIMUM_NON_GUILD_MEMBERS_BANS
  * * MAXIMUM_BAN_FETCHES
+ * * MAXIMUM_NUMBER_OF_UNCOMPLETED_GUILD_SCHEDULED_EVENTS_REACHED
  * * MAXIMUM_NUMBER_OF_STICKERS_REACHED
  * * MAXIMUM_PRUNE_REQUESTS
  * * MAXIMUM_GUILD_WIDGET_SETTINGS_UPDATE
@@ -776,6 +794,8 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * LOTTIE_ANIMATION_MAXIMUM_DIMENSIONS_EXCEEDED
  * * STICKER_FRAME_RATE_IS_TOO_SMALL_OR_TOO_LARGE
  * * STICKER_ANIMATION_DURATION_EXCEEDS_MAXIMUM_OF_5_SECONDS
+ * * CANNOT_UPDATE_A_FINISHED_EVENT
+ * * FAILED_TO_CREATE_STAGE_NEEDED_FOR_STAGE_EVENT
  * @typedef {string} APIError
  * @see {@link https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes}
  */
@@ -849,6 +869,7 @@ exports.APIErrors = {
   MAXIMUM_THREAD_PARTICIPANTS: 30033,
   MAXIMUM_NON_GUILD_MEMBERS_BANS: 30035,
   MAXIMUM_BAN_FETCHES: 30037,
+  MAXIMUM_NUMBER_OF_UNCOMPLETED_GUILD_SCHEDULED_EVENTS_REACHED: 30038,
   MAXIMUM_NUMBER_OF_STICKERS_REACHED: 30039,
   MAXIMUM_PRUNE_REQUESTS: 30040,
   MAXIMUM_GUILD_WIDGET_SETTINGS_UPDATE: 30042,
@@ -920,6 +941,8 @@ exports.APIErrors = {
   LOTTIE_ANIMATION_MAXIMUM_DIMENSIONS_EXCEEDED: 170005,
   STICKER_FRAME_RATE_IS_TOO_SMALL_OR_TOO_LARGE: 170006,
   STICKER_ANIMATION_DURATION_EXCEEDS_MAXIMUM_OF_5_SECONDS: 170007,
+  CANNOT_UPDATE_A_FINISHED_EVENT: 180000,
+  FAILED_TO_CREATE_STAGE_NEEDED_FOR_STAGE_EVENT: 180002,
 };
 
 /**
@@ -1066,7 +1089,6 @@ exports.InteractionResponseTypes = createEnum([
   'UPDATE_MESSAGE',
   'APPLICATION_COMMAND_AUTOCOMPLETE_RESULT',
 ]);
-/* eslint-enable max-len */
 
 /**
  * The type of a message component
@@ -1120,6 +1142,14 @@ exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED'
 exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 
 /**
+ * Privacy level of a {@link GuildScheduledEvent} object:
+ * * GUILD_ONLY
+ * @typedef {string} GuildScheduledEventPrivacyLevel
+ * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-privacy-level}
+ */
+exports.GuildScheduledEventPrivacyLevels = createEnum([null, null, 'GUILD_ONLY']);
+
+/**
  * The premium tier (Server Boost level) of a guild:
  * * NONE
  * * TIER_1
@@ -1129,6 +1159,29 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
  * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-premium-tier}
  */
 exports.PremiumTiers = createEnum(['NONE', 'TIER_1', 'TIER_2', 'TIER_3']);
+
+/**
+ * The status of a {@link GuildScheduledEvent}:
+ * * SCHEDULED
+ * * ACTIVE
+ * * COMPLETED
+ * * CANCELED
+ * @typedef {string} GuildScheduledEventStatus
+ * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-status}
+ */
+exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', 'COMPLETED', 'CANCELED']);
+
+/**
+ * The entity type of a {@link GuildScheduledEvent}:
+ * * NONE
+ * * STAGE_INSTANCE
+ * * VOICE
+ * * EXTERNAL
+ * @typedef {string} GuildScheduledEventEntityType
+ * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-types}
+ */
+exports.GuildScheduledEventEntityTypes = createEnum([null, 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
+/* eslint-enable max-len */
 
 exports._cleanupSymbol = Symbol('djsCleanup');
 
@@ -1161,6 +1214,11 @@ function createEnum(keys) {
  * The value set for a guild's default message notifications.
  * @property {ExplicitContentFilterLevel} ExplicitContentFilterLevels
  * The value set for the explicit content filter levels for a guild.
+ * @property {GuildScheduledEventStatus} GuildScheduledEventStatuses The status of a {@link GuildScheduledEvent} object.
+ * @property {GuildScheduledEventEntityType} GuildScheduledEventEntityTypes The entity type of a
+ * {@link GuildScheduledEvent} object.
+ * @property {GuildScheduledEventPrivacyLevel} GuildScheduledEventPrivacyLevels Privacy level of a
+ * {@link GuildScheduledEvent} object.
  * @property {InteractionResponseType} InteractionResponseTypes The type of an interaction response.
  * @property {InteractionType} InteractionTypes The type of an {@link Interaction} object.
  * @property {MembershipState} MembershipStates The value set for a team member's membership state.

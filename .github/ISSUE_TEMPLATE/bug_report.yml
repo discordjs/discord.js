@@ -95,6 +95,7 @@ body:
         - GUILD_MEMBER
         - MESSAGE
         - REACTION
+        - GUILD_SCHEDULED_EVENT
       multiple: true
     validations:
       required: true
@@ -122,6 +123,7 @@ body:
         - DIRECT_MESSAGES
         - DIRECT_MESSAGE_REACTIONS
         - DIRECT_MESSAGE_TYPING
+        - GUILD_SCHEDULED_EVENTS
       multiple: true
     validations:
       required: true

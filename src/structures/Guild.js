@@ -15,6 +15,7 @@ const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildInviteManager = require('../managers/GuildInviteManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
+const GuildScheduledEventManager = require('../managers/GuildScheduledEventManager');
 const GuildStickerManager = require('../managers/GuildStickerManager');
 const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
@@ -108,6 +109,12 @@ class Guild extends AnonymousGuild {
      * @type {GuildInviteManager}
      */
     this.invites = new GuildInviteManager(this);
+
+    /**
+     * A manager of the scheduled events of this guild
+     * @type {GuildScheduledEventManager}
+     */
+    this.scheduledEvents = new GuildScheduledEventManager(this);
 
     if (!data) return;
     if (data.unavailable) {
@@ -458,6 +465,13 @@ class Guild extends AnonymousGuild {
       this.stageInstances.cache.clear();
       for (const stageInstance of data.stage_instances) {
         this.stageInstances._add(stageInstance);
+      }
+    }
+
+    if (data.guild_scheduled_events) {
+      this.scheduledEvents.cache.clear();
+      for (const scheduledEvent of data.guild_scheduled_events) {
+        this.scheduledEvents._add(scheduledEvent);
       }
     }
 
