@@ -112,6 +112,7 @@ class Options extends null {
    */
   static createDefault() {
     return {
+      waitGuildTimeout: 15_000,
       shardCount: 1,
       makeCache: this.cacheWithLimits(this.defaultMakeCacheSettings),
       messageCacheLifetime: 0,
