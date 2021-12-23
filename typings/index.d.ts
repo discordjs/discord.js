@@ -4005,7 +4005,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
   channel?: CacheTypeReducer<Cached, GuildChannel | ThreadChannel, APIInteractionDataResolvedChannel>;
   role?: CacheTypeReducer<Cached, Role, APIRole>;
-  attachment?: CacheTypeReducer<Cached, MessageAttachment, APIAttachment>;
+  attachment?: CacheTypeReducer<Cached, MessageAttachment>;
   message?: GuildCacheMessage<Cached>;
 }
 
@@ -4015,7 +4015,7 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   channels?: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIInteractionDataResolvedChannel>>;
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
-  attachments?: Collection<Snowflake, CacheTypeReducer<Cached, MessageAttachment, APIAttachment>>;
+  attachments?: Collection<Snowflake, CacheTypeReducer<Cached, MessageAttachment>>;
 }
 
 export interface ConstantsClientApplicationAssetTypes {
