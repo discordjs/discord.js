@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
-const Role = require('../structures/Role');
+const { Role } = require('../structures/Role');
 const { OverwriteTypes } = require('../util/Constants');
 
 let cacheWarningEmitted = false;

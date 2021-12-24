@@ -1,6 +1,6 @@
 'use strict';
 
-const Channel = require('./Channel');
+const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
@@ -439,7 +439,15 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get manageable() {
-    return this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_THREADS, false);
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    // This flag allows managing even if timed out
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+
+    return (
+      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      permissions.has(Permissions.FLAGS.MANAGE_THREADS, false)
+    );
   }
 
   /**
@@ -460,11 +468,16 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get sendable() {
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    // This flag allows sending even if timed out
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+
     return (
-      (!(this.archived && this.locked && !this.manageable) &&
-        (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined || this.manageable) &&
-        this.permissionsFor(this.client.user)?.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS, false)) ??
-      false
+      !(this.archived && this.locked && !this.manageable) &&
+      (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined || this.manageable) &&
+      permissions.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS, false) &&
+      this.guild.me.communicationDisabledUntilTimestamp < Date.now()
     );
   }
 

@@ -1,12 +1,13 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
-const StageInstance = require('./StageInstance');
-const Sticker = require('./Sticker');
+const Invite = require('./Invite');
+const { StageInstance } = require('./StageInstance');
+const { Sticker } = require('./Sticker');
 const Webhook = require('./Webhook');
 const { OverwriteTypes, PartialTypes } = require('../util/Constants');
-const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
@@ -24,6 +25,7 @@ const Util = require('../util/Util');
  * * STAGE_INSTANCE
  * * STICKER
  * * THREAD
+ * * GUILD_SCHEDULED_EVENT
  * @typedef {string} AuditLogTargetType
  */
 
@@ -35,6 +37,7 @@ const Util = require('../util/Util');
 const Targets = {
   ALL: 'ALL',
   GUILD: 'GUILD',
+  GUILD_SCHEDULED_EVENT: 'GUILD_SCHEDULED_EVENT',
   CHANNEL: 'CHANNEL',
   USER: 'USER',
   ROLE: 'ROLE',
@@ -93,6 +96,9 @@ const Targets = {
  * * STICKER_CREATE: 90
  * * STICKER_UPDATE: 91
  * * STICKER_DELETE: 92
+ * * GUILD_SCHEDULED_EVENT_CREATE: 100
+ * * GUILD_SCHEDULED_EVENT_UPDATE: 101
+ * * GUILD_SCHEDULED_EVENT_DELETE: 102
  * * THREAD_CREATE: 110
  * * THREAD_UPDATE: 111
  * * THREAD_DELETE: 112
@@ -148,6 +154,9 @@ const Actions = {
   STICKER_CREATE: 90,
   STICKER_UPDATE: 91,
   STICKER_DELETE: 92,
+  GUILD_SCHEDULED_EVENT_CREATE: 100,
+  GUILD_SCHEDULED_EVENT_UPDATE: 101,
+  GUILD_SCHEDULED_EVENT_DELETE: 102,
   THREAD_CREATE: 110,
   THREAD_UPDATE: 111,
   THREAD_DELETE: 112,
@@ -218,11 +227,12 @@ class GuildAuditLogs {
    * * An integration
    * * A stage instance
    * * A sticker
+   * * A guild scheduled event
    * * A thread
    * * An object with an id key if target was deleted
    * * An object where the keys represent either the new value or the old value
-   * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker)}
-   * AuditLogEntryTarget
+   * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
+   * GuildScheduledEvent)} AuditLogEntryTarget
    */
 
   /**
@@ -242,7 +252,7 @@ class GuildAuditLogs {
     if (target < 83) return Targets.INTEGRATION;
     if (target < 86) return Targets.STAGE_INSTANCE;
     if (target < 100) return Targets.STICKER;
-    if (target < 110) return Targets.UNKNOWN;
+    if (target < 110) return Targets.GUILD_SCHEDULED_EVENT;
     if (target < 120) return Targets.THREAD;
     return Targets.UNKNOWN;
   }
@@ -276,6 +286,7 @@ class GuildAuditLogs {
         Actions.INTEGRATION_CREATE,
         Actions.STAGE_INSTANCE_CREATE,
         Actions.STICKER_CREATE,
+        Actions.GUILD_SCHEDULED_EVENT_CREATE,
         Actions.THREAD_CREATE,
       ].includes(action)
     ) {
@@ -300,6 +311,7 @@ class GuildAuditLogs {
         Actions.INTEGRATION_DELETE,
         Actions.STAGE_INSTANCE_DELETE,
         Actions.STICKER_DELETE,
+        Actions.GUILD_SCHEDULED_EVENT_DELETE,
         Actions.THREAD_DELETE,
       ].includes(action)
     ) {
@@ -321,6 +333,7 @@ class GuildAuditLogs {
         Actions.INTEGRATION_UPDATE,
         Actions.STAGE_INSTANCE_UPDATE,
         Actions.STICKER_UPDATE,
+        Actions.GUILD_SCHEDULED_EVENT_UPDATE,
         Actions.THREAD_UPDATE,
       ].includes(action)
     ) {
@@ -502,19 +515,21 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.INVITE) {
-      this.target = guild.members.fetch(guild.client.user.id).then(async me => {
-        if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
-          let change = this.changes.find(c => c.key === 'code');
-          change = change.new ?? change.old;
-          const invites = await guild.invites.fetch();
-          this.target = invites.find(i => i.code === change) ?? null;
-        } else {
-          this.target = this.changes.reduce((o, c) => {
-            o[c.key] = c.new ?? c.old;
-            return o;
-          }, {});
-        }
-      });
+      let change = this.changes.find(c => c.key === 'code');
+      change = change.new ?? change.old;
+
+      this.target =
+        guild.invites.cache.get(change) ??
+        new Invite(
+          guild.client,
+          this.changes.reduce(
+            (o, c) => {
+              o[c.key] = c.new ?? c.old;
+              return o;
+            },
+            { guild },
+          ),
+        );
     } else if (targetType === Targets.MESSAGE) {
       // Discord sends a channel id for the MESSAGE_BULK_DELETE action type.
       this.target =
@@ -575,6 +590,19 @@ class GuildAuditLogsEntry {
             { id: data.target_id },
           ),
         );
+    } else if (targetType === Targets.GUILD_SCHEDULED_EVENT) {
+      this.target =
+        guild.scheduledEvents.cache.get(data.target_id) ??
+        new GuildScheduledEvent(
+          guild.client,
+          this.changes.reduce(
+            (o, c) => {
+              o[c.key] = c.new ?? c.old;
+              return o;
+            },
+            { id: data.target_id, guild_id: guild.id },
+          ),
+        );
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
     }
@@ -586,7 +614,7 @@ class GuildAuditLogsEntry {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.timestampFrom(this.id);
   }
 
   /**

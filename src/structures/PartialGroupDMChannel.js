@@ -1,6 +1,6 @@
 'use strict';
 
-const Channel = require('./Channel');
+const { Channel } = require('./Channel');
 const { Error } = require('../errors');
 
 /**

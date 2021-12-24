@@ -1,10 +1,8 @@
 'use strict';
 
-const Util = require('./Util');
-
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1_420_070_400_000;
-let INCREMENT = 0;
+let INCREMENT = BigInt(0);
 
 /**
  * A container for useful snowflake-related methods.
@@ -36,11 +34,10 @@ class SnowflakeUtil extends null {
         `"timestamp" argument must be a number (received ${isNaN(timestamp) ? 'NaN' : typeof timestamp})`,
       );
     }
-    if (INCREMENT >= 4095) INCREMENT = 0;
-    const BINARY = `${(timestamp - EPOCH).toString(2).padStart(42, '0')}0000100000${(INCREMENT++)
-      .toString(2)
-      .padStart(12, '0')}`;
-    return Util.binaryToId(BINARY);
+    if (INCREMENT >= 4095n) INCREMENT = BigInt(0);
+
+    // Assign WorkerId as 1 and ProcessId as 0:
+    return ((BigInt(timestamp - EPOCH) << 22n) | (1n << 17n) | INCREMENT++).toString();
   }
 
   /**
@@ -60,17 +57,26 @@ class SnowflakeUtil extends null {
    * @returns {DeconstructedSnowflake}
    */
   static deconstruct(snowflake) {
-    const BINARY = Util.idToBinary(snowflake).toString(2).padStart(64, '0');
+    const bigIntSnowflake = BigInt(snowflake);
     return {
-      timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
+      timestamp: Number(bigIntSnowflake >> 22n) + EPOCH,
       get date() {
         return new Date(this.timestamp);
       },
-      workerId: parseInt(BINARY.substring(42, 47), 2),
-      processId: parseInt(BINARY.substring(47, 52), 2),
-      increment: parseInt(BINARY.substring(52, 64), 2),
-      binary: BINARY,
+      workerId: Number((bigIntSnowflake >> 17n) & 0b11111n),
+      processId: Number((bigIntSnowflake >> 12n) & 0b11111n),
+      increment: Number(bigIntSnowflake & 0b111111111111n),
+      binary: bigIntSnowflake.toString(2).padStart(64, '0'),
     };
+  }
+
+  /**
+   * Retrieves the timestamp field's value from a Discord snowflake.
+   * @param {Snowflake} snowflake Snowflake to get the timestamp value from
+   * @returns {number}
+   */
+  static timestampFrom(snowflake) {
+    return Number(BigInt(snowflake) >> 22n) + EPOCH;
   }
 
   /**

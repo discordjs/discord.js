@@ -2,13 +2,13 @@
 
 const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
-const Guild = require('../structures/Guild');
+const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
 const GuildEmoji = require('../structures/GuildEmoji');
-const GuildMember = require('../structures/GuildMember');
+const { GuildMember } = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const OAuth2Guild = require('../structures/OAuth2Guild');
-const Role = require('../structures/Role');
+const { Role } = require('../structures/Role');
 const {
   ChannelTypes,
   Events,

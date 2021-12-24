@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const DataManager = require('./DataManager');
 const { TypeError } = require('../errors');
-const Role = require('../structures/Role');
+const { Role } = require('../structures/Role');
 
 /**
  * Manages API methods for roles of a GuildMember and stores their cache.

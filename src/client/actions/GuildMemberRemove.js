@@ -1,6 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
+const { deletedGuildMembers } = require('../../structures/GuildMember');
 const { Events, Status } = require('../../util/Constants');
 
 class GuildMemberRemoveAction extends Action {
@@ -12,7 +13,7 @@ class GuildMemberRemoveAction extends Action {
       member = this.getMember({ user: data.user }, guild);
       guild.memberCount--;
       if (member) {
-        member.deleted = true;
+        deletedGuildMembers.add(member);
         guild.members.cache.delete(member.id);
         /**
          * Emitted whenever a member leaves a guild, or is kicked.

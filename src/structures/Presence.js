@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const Emoji = require('./Emoji');
+const { Emoji } = require('./Emoji');
 const ActivityFlags = require('../util/ActivityFlags');
 const { ActivityTypes } = require('../util/Constants');
 const Util = require('../util/Util');

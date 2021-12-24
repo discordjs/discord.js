@@ -4,6 +4,14 @@ const Base = require('./Base');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
+ * @type {WeakSet<Emoji>}
+ * @private
+ * @internal
+ */
+const deletedEmojis = new WeakSet();
+let deprecationEmittedForDeleted = false;
+
+/**
  * Represents raw emoji data from the API
  * @typedef {APIEmoji} RawEmoji
  * @property {?Snowflake} id The emoji's id
@@ -35,12 +43,36 @@ class Emoji extends Base {
      * @type {?Snowflake}
      */
     this.id = emoji.id;
+  }
 
-    /**
-     * Whether this emoji has been deleted
-     * @type {boolean}
-     */
-    this.deleted = false;
+  /**
+   * Whether or not the structure has been deleted
+   * @type {boolean}
+   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
+   */
+  get deleted() {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'Emoji#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
+    return deletedEmojis.has(this);
+  }
+
+  set deleted(value) {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'Emoji#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
+    if (value) deletedEmojis.add(this);
+    else deletedEmojis.delete(this);
   }
 
   /**
@@ -68,7 +100,7 @@ class Emoji extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return this.id && SnowflakeUtil.deconstruct(this.id).timestamp;
+    return this.id && SnowflakeUtil.timestampFrom(this.id);
   }
 
   /**
@@ -106,7 +138,8 @@ class Emoji extends Base {
   }
 }
 
-module.exports = Emoji;
+exports.Emoji = Emoji;
+exports.deletedEmojis = deletedEmojis;
 
 /**
  * @external APIEmoji

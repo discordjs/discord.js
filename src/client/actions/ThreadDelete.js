@@ -1,6 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
+const { deletedChannels } = require('../../structures/Channel');
+const { deletedMessages } = require('../../structures/Message');
 const { Events } = require('../../util/Constants');
 
 class ThreadDeleteAction extends Action {
@@ -10,9 +12,9 @@ class ThreadDeleteAction extends Action {
 
     if (thread) {
       client.channels._remove(thread.id);
-      thread.deleted = true;
+      deletedChannels.add(thread);
       for (const message of thread.messages.cache.values()) {
-        message.deleted = true;
+        deletedMessages.add(message);
       }
 
       /**

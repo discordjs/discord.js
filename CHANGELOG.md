@@ -1,3 +1,55 @@
+# [13.4.0](https://github.com/discordjs/discord.js/compare/13.3.1...13.4.0) (2021-12-24)
+
+
+### Bug Fixes
+
+* **BaseMessageComponent:** don't create new class instances ([#7140](https://github.com/discordjs/discord.js/issues/7140)) ([e6f41b5](https://github.com/discordjs/discord.js/commit/e6f41b578a62dba4a4941c342f7b9fd01b2d6254))
+* Make the followUp function error more clear ([#7129](https://github.com/discordjs/discord.js/issues/7129)) ([b763dab](https://github.com/discordjs/discord.js/commit/b763dabaa941826e635e630526ef227a16d69eec))
+* **ActionsManager:** revert to manual requires ([#7034](https://github.com/discordjs/discord.js/issues/7034)) ([0193efa](https://github.com/discordjs/discord.js/commit/0193efae714c7c8f5b6a52b27277cb65cae9971e))
+* **GuildAuditLog:** Remove `Promise`s in constructor ([#7089](https://github.com/discordjs/discord.js/issues/7089)) ([9cf44d1](https://github.com/discordjs/discord.js/commit/9cf44d1c0e2cffdf285c73d151e7d8e0f5dbbb9a))
+* **GuildChannel:** default to `this.rawPosition` in `clone()` ([#7057](https://github.com/discordjs/discord.js/issues/7057)) ([5fcda73](https://github.com/discordjs/discord.js/commit/5fcda73d9f383bb27f8b9f141921b6f0b7e25b4d))
+* **InteractionCollector:** handle thread (and parent) deletion ([#7070](https://github.com/discordjs/discord.js/issues/7070)) ([b5cd288](https://github.com/discordjs/discord.js/commit/b5cd2884b6277ac48c6d0663cf4916b249cda15b))
+* **MessageManager:** Allow a string for `edit()` ([#7033](https://github.com/discordjs/discord.js/issues/7033)) ([54f937d](https://github.com/discordjs/discord.js/commit/54f937d82c4159d85e348dfb63b28f9f0c554805))
+* **MessageManager:** do not use `client.emojis` ([#7039](https://github.com/discordjs/discord.js/issues/7039)) ([fd63139](https://github.com/discordjs/discord.js/commit/fd63139b41a7e97ecd633c36162c0e591df972bc))
+* **MessagePayload:** prevent spread of `undefined` ([#7029](https://github.com/discordjs/discord.js/issues/7029)) ([fabd343](https://github.com/discordjs/discord.js/commit/fabd34381ce14a399204b0bf8fd1dde4bcb8628e))
+* **MessageReaction:** Cache myself when `MessageReaction#me` is `true`. ([#6956](https://github.com/discordjs/discord.js/issues/6956)) ([b001e19](https://github.com/discordjs/discord.js/commit/b001e194f117ca8cfc9bcc9eb62dd7aab07988f7))
+* **ReactionCollector:** check for channel.threads ([#7069](https://github.com/discordjs/discord.js/issues/7069)) ([3846f0d](https://github.com/discordjs/discord.js/commit/3846f0d97cf3ef81c578c0544e00dae3d1a5d994))
+* **ShardingManager:** fix respawnAll not passing delay correctly ([#7084](https://github.com/discordjs/discord.js/issues/7084)) ([de61fe4](https://github.com/discordjs/discord.js/commit/de61fe485476102c106eb455d0c5e1f36fbf07df))
+* **StickerPack:** Nullify `bannerId` ([#7119](https://github.com/discordjs/discord.js/issues/7119)) ([6bb03f2](https://github.com/discordjs/discord.js/commit/6bb03f2c3450261e6c5330a9abede1bb1d33e84d))
+* avoid sending bot auth on token endpoints ([#7022](https://github.com/discordjs/discord.js/issues/7022)) ([7efeff4](https://github.com/discordjs/discord.js/commit/7efeff461fd542fcd50a5615320be680a2e72026))
+* Interaction channel type should be `GuildTextBasedChannels` when in guild ([#6998](https://github.com/discordjs/discord.js/issues/6998)) ([da86bd4](https://github.com/discordjs/discord.js/commit/da86bd4fa309bbf47e3b39d6669bf746cecf94da))
+* webhook typeguards should use string comparisons ([#7127](https://github.com/discordjs/discord.js/issues/7127)) ([645b3f8](https://github.com/discordjs/discord.js/commit/645b3f84f47f966e4c314bf6a9fcb216a503e6f8))
+* **Message:** remove usage of `.deleted` ([#7109](https://github.com/discordjs/discord.js/issues/7109)) ([a0fe0ac](https://github.com/discordjs/discord.js/commit/a0fe0acbf1c0134d88d9fc519506cf33116288cc))
+* **Sharding:** properly handle errors in fetchClientValues ([#6990](https://github.com/discordjs/discord.js/issues/6990)) ([c0ba2d4](https://github.com/discordjs/discord.js/commit/c0ba2d46d0796c95598673f77f04b180280afb57))
+* **StoreChannel:** mark as deprecated ([#7072](https://github.com/discordjs/discord.js/issues/7072)) ([5ec542d](https://github.com/discordjs/discord.js/commit/5ec542d61fc47e6f150d96f5f4578ae2901d1cc7))
+* **Util:** fix sorting for GuildChannels ([#7002](https://github.com/discordjs/discord.js/issues/7002)) ([c07207f](https://github.com/discordjs/discord.js/commit/c07207f219268010ace0dc6c35b518e990b2865b))
+* **VoiceState:** set streaming to false when the stream ended ([#6992](https://github.com/discordjs/discord.js/issues/6992)) ([fdb09cb](https://github.com/discordjs/discord.js/commit/fdb09cbe03d45f72fe3413fde0debf5a79c69824))
+
+
+### Features
+
+* add support for GuildScheduledEvent ([#6493](https://github.com/discordjs/discord.js/issues/6493)) ([1316fd4](https://github.com/discordjs/discord.js/commit/1316fd4c6ad47729f566d3dd088bb3c144f4bf8e))
+* **GuildMember:** Add timeouts ([#7104](https://github.com/discordjs/discord.js/issues/7104)) ([aa7c1b2](https://github.com/discordjs/discord.js/commit/aa7c1b2081eb77659afd65c2f917afbcab3a162f))
+* add `UserContextMenuInteraction` and `MessageContextMenuInteraction` ([#7003](https://github.com/discordjs/discord.js/issues/7003)) ([4fe063f](https://github.com/discordjs/discord.js/commit/4fe063f0d00562b5987447a6b2b5900b64faec96))
+* add API error code 20029 ([#7078](https://github.com/discordjs/discord.js/issues/7078)) ([f410536](https://github.com/discordjs/discord.js/commit/f410536c515ed3cf5ca9b528a302dd68a0ea22f8))
+* Add API error code 50055 ([#7068](https://github.com/discordjs/discord.js/issues/7068)) ([f028aea](https://github.com/discordjs/discord.js/commit/f028aea33317b845ace2c2079ed9e8dbd4aad09c))
+* Add API error code 50109 ([#7112](https://github.com/discordjs/discord.js/issues/7112)) ([55960cc](https://github.com/discordjs/discord.js/commit/55960cc77827dfd4b95b91ad1259bedd69f092ea))
+* export Sweepers ([#7117](https://github.com/discordjs/discord.js/issues/7117)) ([b9b60a3](https://github.com/discordjs/discord.js/commit/b9b60a37b33aed2f85ef1e6cb6ae54481e946b92))
+* **ApplicationCommand:** add setX methods for easier editing ([#7063](https://github.com/discordjs/discord.js/issues/7063)) ([7f980e3](https://github.com/discordjs/discord.js/commit/7f980e38b6838eaa0537d11e4d0848660c784a0c))
+* **ApplicationCommand:** add support for min and max values ([#6855](https://github.com/discordjs/discord.js/issues/6855)) ([c30a818](https://github.com/discordjs/discord.js/commit/c30a818ca9cf93b5e6157d8a5caca4576eeb3222))
+* **ApplicationFlags:** add message content intent flags ([#6888](https://github.com/discordjs/discord.js/issues/6888)) ([e94073a](https://github.com/discordjs/discord.js/commit/e94073a6ab6630d4b1c582b456e8118f5fdaf866))
+* **Client:** add global sweepers ([#6825](https://github.com/discordjs/discord.js/issues/6825)) ([d1ef2f5](https://github.com/discordjs/discord.js/commit/d1ef2f5e8b02d9a1a9051c08c181a8ac82ec616f))
+* **Guild:** add premiumProgressbarEnabled ([#6887](https://github.com/discordjs/discord.js/issues/6887)) ([552d89f](https://github.com/discordjs/discord.js/commit/552d89fd4e536745bb51ade13cf500e94b871b9f))
+* **MessageAttachment:** description (alt text) support ([#6871](https://github.com/discordjs/discord.js/issues/6871)) ([5e0a7d5](https://github.com/discordjs/discord.js/commit/5e0a7d51fce3b67ba5a0e573fdc00a83693ad008))
+* **Shard:** add eval context ([#7011](https://github.com/discordjs/discord.js/issues/7011)) ([77aff08](https://github.com/discordjs/discord.js/commit/77aff08345cd2b76ca350ba8086717623f028534))
+* **SnowflakeUtil:** add `timestampFrom` ([#7058](https://github.com/discordjs/discord.js/issues/7058)) ([8b200c0](https://github.com/discordjs/discord.js/commit/8b200c0fee0cadf65244b1a84ccb6f244b9bfc7e))
+* **SystemChannelFlags:** add new flag ([#6870](https://github.com/discordjs/discord.js/issues/6870)) ([49e3ce2](https://github.com/discordjs/discord.js/commit/49e3ce21339e19912ba853f00bc2d68ab117f29f))
+* **ThreadChannel:** add `ThreadChannel#viewable` ([#6975](https://github.com/discordjs/discord.js/issues/6975)) ([db09d79](https://github.com/discordjs/discord.js/commit/db09d7942333dffad4fba875567758550d65bfef))
+* **ThreadManager:** add slowmode option on thread creation ([#6989](https://github.com/discordjs/discord.js/issues/6989)) ([493e4f9](https://github.com/discordjs/discord.js/commit/493e4f9350a53f005416ce3d1552d3e776e42854))
+* add new activity flags ([#6699](https://github.com/discordjs/discord.js/issues/6699)) ([47d74eb](https://github.com/discordjs/discord.js/commit/47d74ebf810fbf07cf79fde193a77171be24e74b))
+
+
+
 ## [13.3.1](https://github.com/discordjs/discord.js/compare/13.3.0...13.3.1) (2021-11-01)
 
 

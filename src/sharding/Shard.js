@@ -2,6 +2,7 @@
 
 const EventEmitter = require('node:events');
 const path = require('node:path');
+const { setTimeout: sleep } = require('node:timers/promises');
 const { Error } = require('../errors');
 const Util = require('../util/Util');
 let childProcess = null;
@@ -201,7 +202,7 @@ class Shard extends EventEmitter {
    */
   async respawn({ delay = 500, timeout = 30_000 } = {}) {
     this.kill();
-    if (delay > 0) await Util.delayFor(delay);
+    if (delay > 0) await sleep(delay);
     return this.spawn(timeout);
   }
 

@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
-const Sticker = require('./Sticker');
+const { Sticker } = require('./Sticker');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -50,9 +50,9 @@ class StickerPack extends Base {
 
     /**
      * The id of the sticker pack's banner image
-     * @type {Snowflake}
+     * @type {?Snowflake}
      */
-    this.bannerId = pack.banner_asset_id;
+    this.bannerId = pack.banner_asset_id ?? null;
   }
 
   /**
@@ -61,7 +61,7 @@ class StickerPack extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.timestampFrom(this.id);
   }
 
   /**
@@ -85,10 +85,10 @@ class StickerPack extends Base {
   /**
    * The URL to this sticker pack's banner.
    * @param {StaticImageURLOptions} [options={}] Options for the Image URL
-   * @returns {string}
+   * @returns {?string}
    */
   bannerURL({ format, size } = {}) {
-    return this.client.rest.cdn.StickerPackBanner(this.bannerId, format, size);
+    return this.bannerId && this.client.rest.cdn.StickerPackBanner(this.bannerId, format, size);
   }
 }
 

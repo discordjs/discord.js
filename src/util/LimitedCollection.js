@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { _cleanupSymbol } = require('./Constants.js');
+const Sweepers = require('./Sweepers.js');
 const { TypeError } = require('../errors/DJSError.js');
 
 /**
@@ -18,8 +19,12 @@ const { TypeError } = require('../errors/DJSError.js');
  * @property {?number} [maxSize=Infinity] The maximum size of the Collection
  * @property {?Function} [keepOverLimit=null] A function, which is passed the value and key of an entry, ran to decide
  * to keep an entry past the maximum size
- * @property {?SweepFilter} [sweepFilter=null] A function ran every `sweepInterval` to determine how to sweep
- * @property {?number} [sweepInterval=0] How frequently, in seconds, to sweep the collection.
+ * @property {?SweepFilter} [sweepFilter=null] DEPRECATED: There is no direct alternative to this,
+ * however most of its purpose is fulfilled by {@link Client#sweepers}
+ * A function ran every `sweepInterval` to determine how to sweep
+ * @property {?number} [sweepInterval=0] DEPRECATED: There is no direct alternative to this,
+ * however most of its purpose is fulfilled by {@link Client#sweepers}
+ * How frequently, in seconds, to sweep the collection.
  */
 
 /**
@@ -64,12 +69,14 @@ class LimitedCollection extends Collection {
 
     /**
      * A function called every sweep interval that returns a function passed to `sweep`.
+     * @deprecated in favor of {@link Client#sweepers}
      * @type {?SweepFilter}
      */
     this.sweepFilter = sweepFilter;
 
     /**
      * The id of the interval being used to sweep.
+     * @deprecated in favor of {@link Client#sweepers}
      * @type {?Timeout}
      */
     this.interval =
@@ -98,19 +105,9 @@ class LimitedCollection extends Collection {
   }
 
   /**
-   * Options for generating a filter function based on lifetime
-   * @typedef {Object} LifetimeFilterOptions
-   * @property {number} [lifetime=14400] How long, in seconds, an entry should stay in the collection
-   * before it is considered sweepable.
-   * @property {Function} [getComparisonTimestamp=e => e?.createdTimestamp] A function that takes an entry, key,
-   * and the collection and returns a timestamp to compare against in order to determine the lifetime of the entry.
-   * @property {Function} [excludeFromSweep=() => false] A function that takes an entry, key, and the collection
-   * and returns a boolean, `true` when the entry should not be checked for sweepability.
-   */
-
-  /**
    * Create a sweepFilter function that uses a lifetime to determine sweepability.
    * @param {LifetimeFilterOptions} [options={}] The options used to generate the filter function
+   * @deprecated Use {@link Sweepers.filterByLifetime} instead
    * @returns {SweepFilter}
    */
   static filterByLifetime({
@@ -118,28 +115,7 @@ class LimitedCollection extends Collection {
     getComparisonTimestamp = e => e?.createdTimestamp,
     excludeFromSweep = () => false,
   } = {}) {
-    if (typeof lifetime !== 'number') {
-      throw new TypeError('INVALID_TYPE', 'lifetime', 'number');
-    }
-    if (typeof getComparisonTimestamp !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'getComparisonTimestamp', 'function');
-    }
-    if (typeof excludeFromSweep !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'excludeFromSweep', 'function');
-    }
-    return () => {
-      if (lifetime <= 0) return null;
-      const lifetimeMs = lifetime * 1_000;
-      const now = Date.now();
-      return (entry, key, coll) => {
-        if (excludeFromSweep(entry, key, coll)) {
-          return false;
-        }
-        const comparisonTimestamp = getComparisonTimestamp(entry, key, coll);
-        if (!comparisonTimestamp || typeof comparisonTimestamp !== 'number') return false;
-        return now - comparisonTimestamp > lifetimeMs;
-      };
-    };
+    return Sweepers.filterByLifetime({ lifetime, getComparisonTimestamp, excludeFromSweep });
   }
 
   [_cleanupSymbol]() {

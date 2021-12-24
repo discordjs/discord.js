@@ -13,6 +13,14 @@ const { ChannelTypes, ThreadChannelTypes, VoiceBasedChannelTypes } = require('..
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
+ * @type {WeakSet<Channel>}
+ * @private
+ * @internal
+ */
+const deletedChannels = new WeakSet();
+let deprecationEmittedForDeleted = false;
+
+/**
  * Represents any channel on Discord.
  * @extends {Base}
  * @abstract
@@ -27,12 +35,6 @@ class Channel extends Base {
      * @type {ChannelType}
      */
     this.type = type ?? 'UNKNOWN';
-
-    /**
-     * Whether the channel has been deleted
-     * @type {boolean}
-     */
-    this.deleted = false;
 
     if (data && immediatePatch) this._patch(data);
   }
@@ -51,7 +53,7 @@ class Channel extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.timestampFrom(this.id);
   }
 
   /**
@@ -61,6 +63,36 @@ class Channel extends Base {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * Whether or not the structure has been deleted
+   * @type {boolean}
+   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
+   */
+  get deleted() {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'Channel#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
+    return deletedChannels.has(this);
+  }
+
+  set deleted(value) {
+    if (!deprecationEmittedForDeleted) {
+      deprecationEmittedForDeleted = true;
+      process.emitWarning(
+        'Channel#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
+        'DeprecationWarning',
+      );
+    }
+
+    if (value) deletedChannels.add(this);
+    else deletedChannels.delete(this);
   }
 
   /**
@@ -197,7 +229,8 @@ class Channel extends Base {
   }
 }
 
-module.exports = Channel;
+exports.Channel = Channel;
+exports.deletedChannels = deletedChannels;
 
 /**
  * @external APIChannel

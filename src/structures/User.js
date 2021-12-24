@@ -127,7 +127,7 @@ class User extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.timestampFrom(this.id);
   }
 
   /**
@@ -207,7 +207,7 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.cache.find(c => c.type === 'DM' && c.recipient.id === this.id) ?? null;
+    return this.client.users.dmChannel(this.id);
   }
 
   /**
@@ -215,30 +215,16 @@ class User extends Base {
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
-  async createDM(force = false) {
-    if (!force) {
-      const { dmChannel } = this;
-      if (dmChannel && !dmChannel.partial) return dmChannel;
-    }
-
-    const data = await this.client.api.users(this.client.user.id).channels.post({
-      data: {
-        recipient_id: this.id,
-      },
-    });
-    return this.client.channels._add(data);
+  createDM(force = false) {
+    return this.client.users.createDM(this.id, force);
   }
 
   /**
    * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
-  async deleteDM() {
-    const { dmChannel } = this;
-    if (!dmChannel) throw new Error('USER_NO_DM_CHANNEL');
-    await this.client.api.channels(dmChannel.id).delete();
-    this.client.channels._remove(dmChannel.id);
-    return dmChannel;
+  deleteDM() {
+    return this.client.users.deleteDM(this.id);
   }
 
   /**
@@ -285,11 +271,8 @@ class User extends Base {
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<UserFlags>}
    */
-  async fetchFlags(force = false) {
-    if (this.flags && !force) return this.flags;
-    const data = await this.client.api.users(this.id).get();
-    this._patch(data);
-    return this.flags;
+  fetchFlags(force = false) {
+    return this.client.users.fetchFlags(this.id, { force });
   }
 
   /**

@@ -103,7 +103,7 @@ class ApplicationCommand extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.timestampFrom(this.id);
   }
 
   /**
@@ -168,6 +168,42 @@ class ApplicationCommand extends Base {
    */
   edit(data) {
     return this.manager.edit(this, data, this.guildId);
+  }
+
+  /**
+   * Edits the name of this ApplicationCommand
+   * @param {string} name The new name of the command
+   * @returns {Promise<ApplicationCommand>}
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Edits the description of this ApplicationCommand
+   * @param {string} description The new description of the command
+   * @returns {Promise<ApplicationCommand>}
+   */
+  setDescription(description) {
+    return this.edit({ description });
+  }
+
+  /**
+   * Edits the default permission of this ApplicationCommand
+   * @param {boolean} [defaultPermission=true] The default permission for this command
+   * @returns {Promise<ApplicationCommand>}
+   */
+  setDefaultPermission(defaultPermission = true) {
+    return this.edit({ defaultPermission });
+  }
+
+  /**
+   * Edits the options of this ApplicationCommand
+   * @param {ApplicationCommandOptionData[]} options The options to set for this command
+   * @returns {Promise<ApplicationCommand>}
+   */
+  setOptions(options) {
+    return this.edit({ options });
   }
 
   /**
