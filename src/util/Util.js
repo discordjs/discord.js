@@ -529,7 +529,11 @@ class Util extends null {
    * @deprecated Use {@link BaseMessageOptions#allowedMentions} instead.
    */
   static removeMentions(str) {
-    if (!deprecationEmittedForRemoveMentions) {
+    return Util._removeMentions(str, false);
+  }
+
+  static _removeMentions(str, fromCleanContent) {
+    if (!deprecationEmittedForRemoveMentions && !fromCleanContent) {
       process.emitWarning(
         'The Util.removeMentions method is deprecated. Use MessageOptions#allowedMentions instead.',
         'DeprecationWarning',
@@ -555,15 +559,15 @@ class Util extends null {
         const id = input.replace(/<|!|>|@/g, '');
         if (channel.type === 'DM') {
           const user = channel.client.users.cache.get(id);
-          return user ? Util.removeMentions(`@${user.username}`) : input;
+          return user ? Util._removeMentions(`@${user.username}`, true) : input;
         }
 
         const member = channel.guild.members.cache.get(id);
         if (member) {
-          return Util.removeMentions(`@${member.displayName}`);
+          return Util._removeMentions(`@${member.displayName}`, true);
         } else {
           const user = channel.client.users.cache.get(id);
-          return user ? Util.removeMentions(`@${user.username}`) : input;
+          return user ? Util._removeMentions(`@${user.username}`, true) : input;
         }
       })
       .replace(/<#[0-9]+>/g, input => {
