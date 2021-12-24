@@ -31,7 +31,7 @@ class Permissions extends BitField {
    * @returns {string[]}
    */
   missing(bits, checkAdmin = true) {
-    return checkAdmin && this.has(this.constructor.FLAGS.ADMINISTRATOR) ? [] : super.missing(bits, checkAdmin);
+    return checkAdmin && this.has(this.constructor.FLAGS.ADMINISTRATOR) ? [] : super.missing(bits);
   }
 
   /**
@@ -52,6 +52,14 @@ class Permissions extends BitField {
    */
   has(permission, checkAdmin = true) {
     return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.has(permission);
+  }
+
+  /**
+   * Gets an {@link Array} of bitfield names based on the permissions available.
+   * @returns {string[]}
+   */
+  toArray() {
+    return super.toArray(false);
   }
 }
 
