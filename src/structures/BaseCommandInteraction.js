@@ -182,8 +182,7 @@ class BaseCommandInteraction extends Interaction {
       if (role) result.role = this.guild?.roles._add(role) ?? role;
 
       const attachment = resolved.attachments?.[option.value];
-      const patched = new MessageAttachment(attachment.url, attachment.filename, attachment);
-      if (attachment) result.attachment = patched;
+      if (attachment) result.attachment = new MessageAttachment(attachment.url, attachment.filename, attachment);
     }
 
     return result;
