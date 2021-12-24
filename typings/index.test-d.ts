@@ -857,10 +857,10 @@ declare const categoryChannel: CategoryChannel;
   expectType<Promise<VoiceChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_VOICE' }));
   expectType<Promise<TextChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_TEXT' }));
   expectType<Promise<NewsChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_NEWS' }));
-  expectDeprecated(categoryChannel.createChannel('name', { type: 'GUILD_STORE' }));
+  expectType<Promise<StoreChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_STORE' }));
   expectType<Promise<StageChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_STAGE_VOICE' }));
-  expectType<Promise<Exclude<NonThreadGuildBasedChannel, CategoryChannel>>>(categoryChannel.createChannel('name', {}));
-  expectType<Promise<Exclude<NonThreadGuildBasedChannel, CategoryChannel>>>(categoryChannel.createChannel('name'));
+  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name', {}));
+  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name'));
 }
 
 declare const guildChannelManager: GuildChannelManager;
