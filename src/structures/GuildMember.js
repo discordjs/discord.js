@@ -303,7 +303,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Whether this member is already under time out
+   * Whether this member is currently timed out
    * @returns {boolean}
    */
   isTimedOut() {
