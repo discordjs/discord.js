@@ -306,11 +306,8 @@ class GuildMember extends Base {
    * Whether this member is currently timed out
    * @returns {boolean}
    */
-  isTimedOut() {
-    return (
-      typeof this.communicationDisabledUntilTimestamp === 'number' &&
-      this.communicationDisabledUntilTimestamp > Date.now()
-    );
+  isCommunicationDisabled() {
+    return this.communicationDisabledUntilTimestamp > Date.now();
   }
 
   /**
