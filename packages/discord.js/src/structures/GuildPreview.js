@@ -109,7 +109,7 @@ class GuildPreview extends Base {
      * @type {Collection<Snowflake, Sticker>}
      */
     this.stickers = data.stickers.reduce(
-      (stickers, sticker) => stickers.set(sticker.id, new Sticker(this.client, sticker, this)),
+      (stickers, sticker) => stickers.set(sticker.id, new Sticker(this.client, sticker)),
       new Collection(),
     );
   }
