@@ -538,6 +538,10 @@ class Util extends null {
       deprecationEmittedForRemoveMentions = true;
     }
 
+    return Util._removeMentions(str);
+  }
+
+  static _removeMentions(str) {
     return str.replaceAll('@', '@\u200b');
   }
 
@@ -555,15 +559,15 @@ class Util extends null {
         const id = input.replace(/<|!|>|@/g, '');
         if (channel.type === 'DM') {
           const user = channel.client.users.cache.get(id);
-          return user ? Util.removeMentions(`@${user.username}`) : input;
+          return user ? Util._removeMentions(`@${user.username}`) : input;
         }
 
         const member = channel.guild.members.cache.get(id);
         if (member) {
-          return Util.removeMentions(`@${member.displayName}`);
+          return Util._removeMentions(`@${member.displayName}`);
         } else {
           const user = channel.client.users.cache.get(id);
-          return user ? Util.removeMentions(`@${user.username}`) : input;
+          return user ? Util._removeMentions(`@${user.username}`) : input;
         }
       })
       .replace(/<#[0-9]+>/g, input => {
