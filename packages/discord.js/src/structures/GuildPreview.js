@@ -103,6 +103,15 @@ class GuildPreview extends Base {
     for (const emoji of data.emojis) {
       this.emojis.set(emoji.id, new GuildPreviewEmoji(this.client, emoji, this));
     }
+
+    /**
+     * Collection of stickers belonging to this guild
+     * @type {Collection<Snowflake, Sticker>}
+     */
+    this.stickers = data.stickers.reduce(
+      (stickers, sticker) => stickers.set(sticker.id, new Sticker(this.client, sticker, this)),
+      new Collection(),
+    );
   }
   /**
    * The timestamp this guild was created at
