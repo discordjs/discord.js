@@ -1851,7 +1851,7 @@ export class Permissions extends BitField<PermissionString, bigint> {
   public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
   public missing(bits: BitFieldResolvable<PermissionString, bigint>, checkAdmin?: boolean): PermissionString[];
   public serialize(checkAdmin?: boolean): Record<PermissionString, boolean>;
-  public toArray(checkAdmin?: boolean): PermissionString[];
+  public toArray(): PermissionString[];
 
   public static ALL: bigint;
   public static DEFAULT: bigint;
