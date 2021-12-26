@@ -4316,7 +4316,7 @@ export interface EmbedFieldData {
 }
 
 export interface EmbedFooterData {
-  name: string;
+  text: string;
   iconURL?: string;
 }
 
