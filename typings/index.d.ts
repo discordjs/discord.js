@@ -1125,7 +1125,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
   public isCommunicationDisabled(): this is GuildMember & {
     communicationDisabledUntilTimestamp: number;
-    communicationDisabledUntil: Date;
+    readonly communicationDisabledUntil: Date;
   };
   public kick(reason?: string): Promise<GuildMember>;
   public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;
