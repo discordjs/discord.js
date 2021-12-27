@@ -2,7 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { setTimeout: sleep } = require('node:timers');
+const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
 const fetch = require('node-fetch');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
