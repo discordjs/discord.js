@@ -1,6 +1,7 @@
 'use strict';
 
 let erlpack;
+const { Buffer } = require('node:buffer');
 
 try {
   erlpack = require('erlpack');

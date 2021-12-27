@@ -1,5 +1,6 @@
 'use strict';
 
+const process = require('node:process');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const { WebhookTypes } = require('../util/Constants');

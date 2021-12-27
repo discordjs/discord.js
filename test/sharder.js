@@ -1,5 +1,6 @@
 'use strict';
 
+const process = require('node:process');
 const { token } = require('./auth');
 const Discord = require('../src');
 

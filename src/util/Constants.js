@@ -1,5 +1,6 @@
 'use strict';
 
+const process = require('node:process');
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError, TypeError } = require('../errors');
 

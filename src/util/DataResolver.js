@@ -1,5 +1,6 @@
 'use strict';
 
+const { Buffer } = require('node:buffer');
 const fs = require('node:fs');
 const path = require('node:path');
 const stream = require('node:stream');

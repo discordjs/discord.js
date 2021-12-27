@@ -1,5 +1,6 @@
 'use strict';
 
+const { setTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { Error, TypeError, RangeError } = require('../errors');

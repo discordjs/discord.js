@@ -1,5 +1,6 @@
 'use strict';
 
+const process = require('node:process');
 const { Error } = require('../errors');
 const { Events } = require('../util/Constants');
 const Util = require('../util/Util');
