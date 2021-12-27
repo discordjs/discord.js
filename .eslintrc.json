@@ -177,23 +177,23 @@
       "error",
       {
         "name": "Buffer",
-        "message": "Import Buffer from `node:buffer` instead of using the global"
+        "message": "Import Buffer from `node:buffer` instead"
       },
       {
         "name": "process",
-        "message": "Import process from `node:process` instead of using the global"
+        "message": "Import process from `node:process` instead"
       },
       {
         "name": "setTimeout",
-        "message": "Import setTimeout from `node:timers` instead of using the global"
+        "message": "Import setTimeout from `node:timers` instead"
       },
       {
         "name": "setInterval",
-        "message": "Import setInterval from `node:timers` instead of using the global"
+        "message": "Import setInterval from `node:timers` instead"
       },
       {
         "name": "setImmediate",
-        "message": "Import setImmediate from `node:timers` instead of using the global"
+        "message": "Import setImmediate from `node:timers` instead"
       }
     ]
   }
