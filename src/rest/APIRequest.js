@@ -1,6 +1,7 @@
 'use strict';
 
 const https = require('node:https');
+const { setTimeout } = require('node:timers');
 const FormData = require('form-data');
 const fetch = require('node-fetch');
 const { UserAgent } = require('../util/Constants');

@@ -1,5 +1,7 @@
 'use strict';
 
+const process = require('node:process');
+
 /**
  * Rate limit data
  * @typedef {Object} RateLimitData

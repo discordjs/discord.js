@@ -1,5 +1,6 @@
 'use strict';
 
+const process = require('node:process');
 const Base = require('./Base');
 const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');

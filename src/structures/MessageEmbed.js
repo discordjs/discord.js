@@ -1,5 +1,6 @@
 'use strict';
 
+const process = require('node:process');
 const { RangeError } = require('../errors');
 const Util = require('../util/Util');
 

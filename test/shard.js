@@ -1,5 +1,7 @@
 'use strict';
 
+const process = require('node:process');
+const { setTimeout } = require('node:timers');
 const { token } = require('./auth.json');
 const { Client, Intents } = require('../src');
 
