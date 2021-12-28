@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-# [13.4.0]([5ec04e0](5ec04e077bbbb9799f3ef135cade84b77346ef20)...[bf346e7](bf346e7fdfacfe8a70afbd639b24fa5f985305c8))- (2021-12-24)
+# [13.4.0](5ec04e077bbbb9799f3ef135cade84b77346ef20...bf346e7fdfacfe8a70afbd639b24fa5f985305c8) - (2021-12-24)
 
 ## Bug Fixes
 
@@ -99,7 +99,7 @@ All notable changes to this project will be documented in this file.
 - Unify ApplicationCommandManager#create overloads (#6970) ([8e881d2](8e881d2b9611a3786db6f5e95f25439e0a82f22c))
 - **Events:** Rest events can be emitted on BaseClient (#6936) ([c297829](c297829d54a801fdb1a4cb3350e223f3c6a5e9e9))
 
-# [13.3.1]([0238da4](0238da45c5e50352645a8d02678eafa791db31ba)...[5ec04e0](5ec04e077bbbb9799f3ef135cade84b77346ef20))- (2021-11-01)
+# [13.3.1](0238da45c5e50352645a8d02678eafa791db31ba...5ec04e077bbbb9799f3ef135cade84b77346ef20) - (2021-11-01)
 
 ## Bug Fixes
 
@@ -115,7 +115,7 @@ All notable changes to this project will be documented in this file.
 
 - Improve toJSON methods for message components & embeds (#6925) ([204aee7](204aee799acf08ac5b5c782a7a602c25db19354d))
 
-# [13.3.0]([26340ac](26340acad946989e9a8825966b76c506d82fc641)...[0238da4](0238da45c5e50352645a8d02678eafa791db31ba))- (2021-10-29)
+# [13.3.0](26340acad946989e9a8825966b76c506d82fc641...0238da45c5e50352645a8d02678eafa791db31ba) - (2021-10-29)
 
 ## Bug Fixes
 
@@ -193,7 +193,7 @@ All notable changes to this project will be documented in this file.
 - **WelcomeChannelData:** Allow store channels (#6778) ([45ebea3](45ebea3216b8013969b74ecfbb06de3d43c09385))
 - Make embed author and footer props `name` and `text` required (#6779) ([a84e51b](a84e51b767c47ea06bd30fb490931f700c810952))
 
-# [13.2.0]([d0bc4d7](d0bc4d7ff037035d4f315a0286b06f0a1ade29c1)...[26340ac](26340acad946989e9a8825966b76c506d82fc641))- (2021-10-05)
+# [13.2.0](d0bc4d7ff037035d4f315a0286b06f0a1ade29c1...26340acad946989e9a8825966b76c506d82fc641) - (2021-10-05)
 
 ## Bug Fixes
 
@@ -350,7 +350,7 @@ All notable changes to this project will be documented in this file.
 - **GuildChannel:** Added missing typing (#6454) ([f294d1e](f294d1eff207ded337ccff6413824bb6ea60b4c7))
 - Message#_patch typings return type (#6433) ([81bb68d](81bb68d3beb266fb0b508da959468a3a6f11c24c))
 
-# [13.1.0]([622f398](622f398f4b36b00d0a347b548f63524703c2d395)...[d0bc4d7](d0bc4d7ff037035d4f315a0286b06f0a1ade29c1))- (2021-08-12)
+# [13.1.0](622f398f4b36b00d0a347b548f63524703c2d395...d0bc4d7ff037035d4f315a0286b06f0a1ade29c1) - (2021-08-12)
 
 ## Bug Fixes
 
@@ -398,7 +398,7 @@ All notable changes to this project will be documented in this file.
 - **Events:** Renamed `messageReactionAdd`'s reaction parameter (#6371) ([006edca](006edca410f5df53f3272f7a402f2305f73ad14b))
 - **ImageURLOptions:** Allow 'gif' format (#6342) ([5f1def3](5f1def37930605bea47e2cc50eff3d134b9c0c66))
 
-# [13.0.1]([cfde127](cfde127072ae06b63f17ba19b3e0d28fddef97d6)...[622f398](622f398f4b36b00d0a347b548f63524703c2d395))- (2021-08-07)
+# [13.0.1](cfde127072ae06b63f17ba19b3e0d28fddef97d6...622f398f4b36b00d0a347b548f63524703c2d395) - (2021-08-07)
 
 ## Bug Fixes
 
@@ -413,7 +413,7 @@ All notable changes to this project will be documented in this file.
 
 - **Util:** Fix cleanContent parameter type (#6321) ([60ace9a](60ace9a2d4cd2844a862f03f33d3be81b56f352b))
 
-# [13.0.0]- (2021-08-06)
+# [13.0.0] - (2021-08-06)
 
 ## Bug Fixes
 

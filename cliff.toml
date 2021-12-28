@@ -8,9 +8,9 @@ body = """
     # [{{ version | trim_start_matches(pat="v") }}]\
     {% if previous %}\
         {% if previous.commit_id %}\
-            ([{{ previous.commit_id | truncate(length=7, end="") }}]({{ previous.commit_id }})...[{{ commit_id | truncate(length=7, end="") }}]({{ commit_id }}))\
+            ({{ previous.commit_id }}...{{ commit_id }})\
         {% endif %}\
-    {% endif %}\
+    {% endif %} \
     - ({{ timestamp | date(format="%Y-%m-%d") }})
 {% else %}\
     # [unreleased]
