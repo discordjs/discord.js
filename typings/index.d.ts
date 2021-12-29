@@ -469,9 +469,10 @@ export type KeyedEnum<K, T> = {
   [Key in keyof K]: T | string;
 };
 
-export type EnumValueMapped<E extends KeyedEnum<T, number>, T extends Partial<Record<keyof E, unknown>>> = T & {
-  [Key in keyof T as E[Key]]: T[Key];
-};
+export type EnumValueMapped<E extends KeyedEnum<T, number>, T extends Partial<Record<keyof E, unknown>>> = T &
+  {
+    [Key in keyof T as E[Key]]: T[Key];
+  };
 
 export type MappedChannelCategoryTypes = EnumValueMapped<
   typeof ChannelTypes,
@@ -1122,6 +1123,10 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
   public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
+  public isCommunicationDisabled(): this is GuildMember & {
+    communicationDisabledUntilTimestamp: number;
+    readonly communicationDisabledUntil: Date;
+  };
   public kick(reason?: string): Promise<GuildMember>;
   public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;
   public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;

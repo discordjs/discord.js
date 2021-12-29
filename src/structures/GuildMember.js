@@ -304,6 +304,14 @@ class GuildMember extends Base {
   }
 
   /**
+   * Whether this member is currently timed out
+   * @returns {boolean}
+   */
+  isCommunicationDisabled() {
+    return this.communicationDisabledUntilTimestamp > Date.now();
+  }
+
+  /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {GuildChannelResolvable} channel The guild channel to use as context
