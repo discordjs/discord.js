@@ -13,7 +13,7 @@
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
     "docs:test": "docgen --source src --custom docs/index.yml",
     "prepublishOnly": "npm run test",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+    "changelog": "git cliff --prepend CHANGELOG.md"
   },
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",
@@ -50,7 +50,7 @@
   },
   "homepage": "https://discord.js.org",
   "dependencies": {
-    "@discordjs/builders": "^0.10.0",
+    "@discordjs/builders": "^0.11.0",
     "@discordjs/collection": "^0.4.0",
     "@sapphire/async-queue": "^1.1.9",
     "@types/node-fetch": "^2.5.12",
@@ -61,12 +61,12 @@
     "ws": "^8.4.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^15.0.0",
-    "@commitlint/config-angular": "^15.0.0",
+    "@commitlint/cli": "^16.0.1",
+    "@commitlint/config-angular": "^16.0.0",
     "@discordjs/docgen": "^0.11.0",
     "@favware/npm-deprecate": "^1.0.4",
     "@types/node": "^16.11.12",
-    "conventional-changelog-cli": "^2.1.1",
+    "conventional-changelog-cli": "^2.2.2",
     "dtslint": "^4.2.1",
     "eslint": "^8.5.0",
     "eslint-config-prettier": "^8.3.0",
