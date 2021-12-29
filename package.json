@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "13.5.0-dev",
+  "version": "13.5.0",
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "npm run lint && npm run docs:test && npm run lint:typings && npm run test:typescript",
@@ -13,7 +13,7 @@
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
     "docs:test": "docgen --source src --custom docs/index.yml",
     "prepublishOnly": "npm run test",
-    "changelog": "git cliff --prepend CHANGELOG.md"
+    "changelog": "git cliff --prepend CHANGELOG.md -l"
   },
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",

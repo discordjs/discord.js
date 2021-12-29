@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# [13.5.0](https://github.com/discordjs/discord.js/compare/13.4.0...13.5.0) - (2021-12-29)
+
+## Bug Fixes
+
+- **GuildMemberManager:** Nick endpoint (#7151) ([d0c3961](https://github.com/discordjs/discord.js/commit/d0c3961aef41f17773fb14d06213df3fcb7fc8d2))
+- **Permissions:** ToArray shouldn't check admin (#7144) ([fc4292e](https://github.com/discordjs/discord.js/commit/fc4292e2e9ad381eb0ed07ef5e80a4251a5c4e9d))
+- Remove deprecation warning on `Message#cleanContent` (#7143) ([7e5f16b](https://github.com/discordjs/discord.js/commit/7e5f16b6b3060820446a325f4eb06dd60faee5a9))
+
+## Features
+
+- **GuildMember:** Add method to check timeout (#7146) ([baacd6b](https://github.com/discordjs/discord.js/commit/baacd6ba6979f11e1af38804df15468c29ec09e3))
+- **ClientOptions:** WaitGuildTimeout amount client option (#6576) ([2bfc638](https://github.com/discordjs/discord.js/commit/2bfc638a5cd0e4c0b2e69971d30828b51ab3c563))
+
+## Refactor
+
+- **MessageEmbed:** Deprecate strings for `setAuthor()` (completely) and `setFooter()` (#7153) ([3496516](https://github.com/discordjs/discord.js/commit/3496516dc99149705754ed56f3e9dfe711d3926d))
+- Import timers, `process`, and `Buffer` from `node:` (#7157) ([3c62bd2](https://github.com/discordjs/discord.js/commit/3c62bd2d47dbd52b6b431014be87f584ae3d5309))
+
 # [13.4.0](https://github.com/discordjs/discord.js/compare/13.3.1...13.4.0) - (2021-12-24)
 
 ## Bug Fixes
