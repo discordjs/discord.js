@@ -1694,11 +1694,13 @@ export class MessageEmbed {
   public addField(name: string, value: string, inline?: boolean): this;
   public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
   public setFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
-  public setAuthor(options: string | EmbedAuthorData | null): this;
-  /** @deprecated Supply a lone object of interface {@link EmbedAuthorData} instead of more parameters. */
+  public setAuthor(options: EmbedAuthorData | null): this;
+  /** @deprecated Supply a lone object of interface {@link EmbedAuthorData} instead. */
   public setAuthor(name: string, iconURL?: string, url?: string): this;
   public setColor(color: ColorResolvable): this;
   public setDescription(description: string): this;
+  public setFooter(options: EmbedFooterData | null): this;
+  /** @deprecated Supply a lone object of interface {@link EmbedFooterData} instead. */
   public setFooter(text: string, iconURL?: string): this;
   public setImage(url: string): this;
   public setThumbnail(url: string): this;
@@ -4316,6 +4318,11 @@ export interface EmbedFieldData {
   name: string;
   value: string;
   inline?: boolean;
+}
+
+export interface EmbedFooterData {
+  text: string;
+  iconURL?: string;
 }
 
 export type EmojiIdentifierResolvable = string | EmojiResolvable;
