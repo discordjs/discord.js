@@ -722,7 +722,7 @@ export interface ApplicationCommandInteractionOptionResolver<Cached extends Cach
 
 export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
-  public inGuild(): this is CommandInteraction<'cached' | 'raw'>;
+  public inGuild(): this is CommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is CommandInteraction<'cached'>;
   public inRawGuild(): this is CommandInteraction<'raw'>;
   public toString(): string;
@@ -735,7 +735,7 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public commandName: string;
   public responded: boolean;
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
-  public inGuild(): this is AutocompleteInteraction<'cached' | 'raw'>;
+  public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
   public inRawGuild(): this is AutocompleteInteraction<'raw'>;
   private transformOption(option: APIApplicationCommandOption): CommandInteractionOption;
