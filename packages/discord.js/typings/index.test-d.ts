@@ -942,7 +942,28 @@ expectDeprecated(sticker.deleted);
 // Test interactions
 declare const interaction: Interaction;
 declare const booleanValue: boolean;
-if (interaction.inGuild()) expectType<Snowflake>(interaction.guildId);
+if (interaction.inGuild()) {
+  expectType<Snowflake>(interaction.guildId);
+} else {
+  expectType<Snowflake | null>(interaction.guildId);
+}
+
+client.on('interactionCreate', interaction => {
+  // This is for testing never type resolution
+  if (!interaction.inGuild()) {
+    return;
+  }
+
+  if (interaction.inRawGuild()) {
+    expectNotType<never>(interaction);
+    return;
+  }
+
+  if (interaction.inCachedGuild()) {
+    expectNotType<never>(interaction);
+    return;
+  }
+});
 
 client.on('interactionCreate', async interaction => {
   if (interaction.inCachedGuild()) {
