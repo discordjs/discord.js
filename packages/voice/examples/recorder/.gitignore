@@ -1,0 +1,4 @@
+package-lock.json
+auth.json
+tsconfig.tsbuildinfo
+recordings/*.ogg

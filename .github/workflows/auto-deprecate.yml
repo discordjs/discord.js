@@ -11,16 +11,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v16
+      - name: Install node.js v16
         uses: actions/setup-node@v2
         with:
           node-version: 16
-          cache: npm
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: yarn --immutable
 
       - name: Deprecate versions
-        run: 'npm exec --no npm-deprecate -- --name "*dev*" --package "discord.js"'
+        run: 'yarn npm-deprecate --name "*dev*" --package "discord.js"'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

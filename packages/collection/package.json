@@ -1,0 +1,75 @@
+{
+	"name": "@discordjs/collection",
+	"version": "0.4.0",
+	"description": "Utility data structure used in discord.js",
+	"scripts": {
+		"test": "jest --pass-with-no-tests",
+		"build": "tsup",
+		"lint": "eslint src --ext mjs,js,ts",
+		"lint:fix": "eslint src --ext mjs,js,ts --fix",
+		"format": "prettier --write **/*.{ts,js,json,yml,yaml}",
+		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
+		"prepublishOnly": "yarn build && yarn lint && yarn test",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ../../cliff.toml -r ../../ --include-path './*'"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js"
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"map",
+		"collection",
+		"utility"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"devDependencies": {
+		"@babel/core": "^7.16.5",
+		"@babel/preset-env": "^7.16.5",
+		"@babel/preset-typescript": "^7.16.5",
+		"@discordjs/ts-docgen": "^0.3.4",
+		"@types/jest": "^27.0.3",
+		"@types/node": "^16.11.6",
+		"@typescript-eslint/eslint-plugin": "^5.8.0",
+		"@typescript-eslint/parser": "^5.8.0",
+		"eslint": "^8.5.0",
+		"eslint-config-marine": "^9.1.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"jest": "^27.4.5",
+		"prettier": "^2.5.1",
+		"standard-version": "^9.3.2",
+		"tsup": "^5.11.8",
+		"typedoc": "^0.22.10",
+		"typescript": "^4.5.4"
+	},
+	"engines": {
+		"node": ">=16.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

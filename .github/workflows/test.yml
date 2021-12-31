@@ -2,80 +2,30 @@ name: Tests
 on: [push, pull_request]
 jobs:
   lint:
-    name: ESLint
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v16
+      - name: Install node.js v16
         uses: actions/setup-node@v2
         with:
           node-version: 16
-          cache: npm
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run ESLint
-        run: npm run lint
-
-  typings:
-    name: TSLint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Install Node v16
-        uses: actions/setup-node@v2
+      - name: Turbo cache
+        id: turbo-cache
+        uses: actions/cache@v2
         with:
-          node-version: 16
-          cache: npm
+          path: .turbo
+          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-${{ github.ref_name }}-
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn --immutable
 
-      - name: Run TSLint
-        run: npm run lint:typings
-
-  typescript:
-    name: TypeScript
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Install Node v16
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Register Problem Matcher
-        run: echo "##[add-matcher].github/tsc.json"
-
-      - name: Run Type Tests
-        run: npm run test:typescript
-
-  docs:
-    name: Documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Install Node v16
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Test documentation
-        run: npm run docs:test
+      - name: Run eslint
+        run: yarn lint --cache-dir=".turbo"

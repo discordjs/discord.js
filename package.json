@@ -1,88 +1,105 @@
 {
-  "name": "discord.js",
-  "version": "14.0.0-dev",
-  "description": "A powerful library for interacting with the Discord API",
-  "scripts": {
-    "test": "npm run lint && npm run docs:test && npm run lint:typings && npm run test:typescript",
-    "test:typescript": "tsc --noEmit && tsd",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
-    "lint:typings": "tslint typings/index.d.ts",
-    "format": "prettier --write src/**/*.js typings/**/*.ts",
-    "prepare": "is-ci || husky install",
-    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
-    "docs:test": "docgen --source src --custom docs/index.yml",
-    "prepublishOnly": "npm run test",
-    "changelog": "git cliff --prepend CHANGELOG.md -l"
-  },
-  "main": "./src/index.js",
-  "types": "./typings/index.d.ts",
-  "files": [
-    "src",
-    "typings"
-  ],
-  "directories": {
-    "lib": "src",
-    "test": "test"
-  },
-  "contributors": [
-    "Crawl <icrawltogo@gmail.com>",
-    "Amish Shah <amishshah.2k@gmail.com>",
-    "Vlad Frangu <kingdgrizzle@gmail.com>",
-    "SpaceEEC <spaceeec@yahoo.com>",
-    "Antonio Roman <kyradiscord@gmail.com>"
-  ],
-  "license": "Apache-2.0",
-  "keywords": [
-    "discord",
-    "api",
-    "bot",
-    "client",
-    "node",
-    "discordapp"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/discordjs/discord.js.git"
-  },
-  "bugs": {
-    "url": "https://github.com/discordjs/discord.js/issues"
-  },
-  "homepage": "https://discord.js.org",
-  "dependencies": {
-    "@discordjs/builders": "^0.11.0",
-    "@discordjs/collection": "^0.4.0",
-    "@sapphire/async-queue": "^1.1.9",
-    "@types/node-fetch": "^2.5.12",
-    "@types/ws": "^8.2.2",
-    "discord-api-types": "^0.26.0",
-    "form-data": "^4.0.0",
-    "node-fetch": "^2.6.1",
-    "ws": "^8.4.0"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^16.0.1",
-    "@commitlint/config-angular": "^16.0.0",
-    "@discordjs/docgen": "^0.11.0",
-    "@favware/npm-deprecate": "^1.0.4",
-    "@types/node": "^16.11.12",
-    "conventional-changelog-cli": "^2.2.2",
-    "dtslint": "^4.2.1",
-    "eslint": "^8.5.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.4",
-    "is-ci": "^3.0.1",
-    "jest": "^27.4.5",
-    "lint-staged": "^12.1.4",
-    "prettier": "^2.5.1",
-    "tsd": "^0.19.0",
-    "tslint": "^6.1.3",
-    "typescript": "^4.5.4"
-  },
-  "engines": {
-    "node": ">=16.6.0",
-    "npm": ">=7.0.0"
-  }
+	"name": "@discordjs/discord.js",
+	"version": "0.0.0",
+	"description": "A powerful library for interacting with the Discord API",
+	"private": true,
+	"scripts": {
+		"build": "turbo run build",
+		"test": "turbo run test",
+		"lint": "turbo run lint",
+		"lint:fix": "turbo run lint:fix",
+		"format": "turbo run format",
+		"fmt": "turbo run format",
+		"postinstall": "is-ci || husky install",
+		"docs": "turbo run docs",
+		"changelog": "turbo run changelog",
+		"update": "yarn upgrade-interactive --latest"
+	},
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Antonio Roman <kyradiscord@gmail.com>"
+	],
+	"keywords": [
+		"discord",
+		"api",
+		"bot",
+		"client",
+		"node",
+		"discordapp"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"devDependencies": {
+		"@commitlint/cli": "^16.0.1",
+		"@commitlint/config-angular": "^16.0.0",
+		"@favware/npm-deprecate": "^1.0.4",
+		"conventional-changelog-cli": "^2.2.2",
+		"husky": "^7.0.4",
+		"lint-staged": "^12.1.4",
+		"prettier": "^2.5.1",
+		"turbo": "^1.0.24-canary.2"
+	},
+	"engines": {
+		"node": ">=16.6.0"
+	},
+	"workspaces": [
+		"packages/*"
+	],
+	"turbo": {
+		"baseBranch": "origin/main",
+		"pipeline": {
+			"build": {
+				"dependsOn": [
+					"^build"
+				],
+				"outputs": [
+					"dist/**",
+					"docs/docs.json"
+				]
+			},
+			"test": {
+				"dependsOn": [
+					"^build"
+				],
+				"outputs": []
+			},
+			"lint": {
+				"dependsOn": [
+					"^build"
+				],
+				"outputs": []
+			},
+			"lint:fix": {
+				"dependsOn": [
+					"^build"
+				],
+				"outputs": []
+			},
+			"format": {
+				"outputs": []
+			},
+			"docs": {
+				"outputs": [
+					"docs/docs.json"
+				]
+			},
+			"changelog": {
+				"dependsOn": [
+					"^build"
+				],
+				"outputs": [
+					"CHANGELOG.md"
+				]
+			}
+		}
+	}
 }

@@ -11,34 +11,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v16
+      - name: Install node.js v16
         uses: actions/setup-node@v2
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-          cache: npm
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
 
       - name: Check previous released version
         id: pre-release
         run: |
-          if [[ $(npm view discord.js@dev version | grep -e "$(jq --raw-output '.version' package.json).*.$(git rev-parse --short HEAD | cut -b1-3)") ]]; \
+          if [[ $(npm view discord.js@dev version | grep -e "$(jq --raw-output '.version' packages/discord.js/package.json).*.$(git rev-parse --short HEAD | cut -b1-3)") ]]; \
           then echo '::set-output name=release::false'; \
           else echo '::set-output name=release::true'; fi
 
       - name: Install dependencies
         if: steps.pre-release.outputs.release == 'true'
-        run: npm ci --ignore-scripts
+        run: yarn --immutable
 
       - name: Deprecate old versions
         if: steps.pre-release.outputs.release == 'true'
-        run: npm deprecate discord.js@"~$(jq --raw-output '.version' package.json)" "no longer supported" || true
+        run: npm deprecate discord.js@"~$(jq --raw-output '.version' packages/discord.js/package.json)" "no longer supported" || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
       - name: Publish
         if: steps.pre-release.outputs.release == 'true'
         run: |
-          npm version --git-tag-version=false $(jq --raw-output '.version' package.json).$(date +%s).$(git rev-parse --short HEAD)
-          npm publish --tag dev || true
+          npm version --git-tag-version=false $(jq --raw-output '.version' packages/discord.js/package.json).$(date +%s).$(git rev-parse --short HEAD)
+          yarn publish --tag dev || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

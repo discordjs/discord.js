@@ -1,0 +1,88 @@
+{
+	"name": "@discordjs/builders",
+	"version": "0.11.0",
+	"description": "A set of builders that you can use when creating your bot",
+	"scripts": {
+		"build": "tsup",
+		"test": "jest --pass-with-no-tests",
+		"lint": "eslint src --ext mjs,js,ts",
+		"lint:fix": "eslint src --ext mjs,js,ts --fix",
+		"format": "prettier --write **/*.{ts,js,json,yml,yaml}",
+		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
+		"prepublishOnly": "yarn build && yarn lint && yarn test",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ../../cliff.toml -r ../../ --include-path './*'"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js"
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"bot",
+		"client",
+		"node",
+		"discordapp",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@sindresorhus/is": "^4.2.0",
+		"discord-api-types": "^0.26.0",
+		"ts-mixer": "^6.0.0",
+		"tslib": "^2.3.1",
+		"zod": "^3.11.6"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.16.5",
+		"@babel/plugin-proposal-decorators": "^7.16.5",
+		"@babel/preset-env": "^7.16.5",
+		"@babel/preset-typescript": "^7.16.5",
+		"@discordjs/ts-docgen": "^0.3.4",
+		"@types/jest": "^27.0.3",
+		"@types/node": "^16.11.6",
+		"@typescript-eslint/eslint-plugin": "^5.8.0",
+		"@typescript-eslint/parser": "^5.8.0",
+		"babel-plugin-transform-typescript-metadata": "^0.3.2",
+		"eslint": "^8.5.0",
+		"eslint-config-marine": "^9.1.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"jest": "^27.4.5",
+		"prettier": "^2.5.1",
+		"standard-version": "^9.3.2",
+		"tsup": "^5.11.8",
+		"typedoc": "^0.22.10",
+		"typescript": "^4.5.4"
+	},
+	"engines": {
+		"node": ">=16.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
