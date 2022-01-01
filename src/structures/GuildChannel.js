@@ -510,6 +510,11 @@ class GuildChannel extends Channel {
     if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
+
+    // This flag allows managing even if timed out
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+    if (this.guild.me.communicationDisabledUntilTimestamp > Date.now()) return false;
+
     const bitfield = VoiceBasedChannelTypes.includes(this.type)
       ? Permissions.FLAGS.MANAGE_CHANNELS | Permissions.FLAGS.CONNECT
       : Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.MANAGE_CHANNELS;

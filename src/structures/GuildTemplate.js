@@ -1,5 +1,6 @@
 'use strict';
 
+const { setTimeout } = require('node:timers');
 const Base = require('./Base');
 const { Events } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');

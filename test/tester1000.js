@@ -1,5 +1,6 @@
 'use strict';
 
+const process = require('node:process');
 const { token, prefix, owner } = require('./auth.js');
 const { Client, Intents } = require('../src');
 

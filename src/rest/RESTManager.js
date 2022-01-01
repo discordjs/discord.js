@@ -1,5 +1,6 @@
 'use strict';
 
+const { setInterval } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');

@@ -22,6 +22,11 @@ class ActionsManager {
     this.register(require('./GuildRoleDelete'));
     this.register(require('./GuildRoleUpdate'));
     this.register(require('./GuildRolesPositionUpdate'));
+    this.register(require('./GuildScheduledEventCreate'));
+    this.register(require('./GuildScheduledEventDelete'));
+    this.register(require('./GuildScheduledEventUpdate'));
+    this.register(require('./GuildScheduledEventUserAdd'));
+    this.register(require('./GuildScheduledEventUserRemove'));
     this.register(require('./GuildStickerCreate'));
     this.register(require('./GuildStickerDelete'));
     this.register(require('./GuildStickerUpdate'));

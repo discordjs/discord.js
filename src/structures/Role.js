@@ -1,5 +1,6 @@
 'use strict';
 
+const process = require('node:process');
 const Base = require('./Base');
 const { Error } = require('../errors');
 const Permissions = require('../util/Permissions');

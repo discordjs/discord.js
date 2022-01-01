@@ -1,9 +1,13 @@
 'use strict';
 
+const process = require('node:process');
 const { RangeError } = require('../errors');
 const Util = require('../util/Util');
 
 let deprecationEmittedForSetAuthor = false;
+let deprecationEmittedForSetFooter = false;
+
+// TODO: Remove the deprecated code for `setAuthor()` and `setFooter()`.
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
@@ -355,11 +359,9 @@ class MessageEmbed {
    * @property {string} [iconURL] The icon URL of this author.
    */
 
-  // TODO: Remove the deprecated code in the following method and typings.
   /**
    * Sets the author of this embed.
    * @param {string|EmbedAuthorData|null} options The options to provide for the author.
-   * A string may simply be provided if only the author name is desirable.
    * Provide `null` to remove the author data.
    * @param {string} [deprecatedIconURL] The icon URL of this author.
    * <warn>This parameter is **deprecated**. Use the `options` parameter instead.</warn>
@@ -374,13 +376,9 @@ class MessageEmbed {
     }
 
     if (typeof options === 'string') {
-      if (
-        !deprecationEmittedForSetAuthor &&
-        (typeof deprecatedIconURL !== 'undefined' || typeof deprecatedURL !== 'undefined')
-      ) {
+      if (!deprecationEmittedForSetAuthor) {
         process.emitWarning(
-          // eslint-disable-next-line max-len
-          "Passing strings for the URL or the icon's URL for MessageEmbed#setAuthor is deprecated. Pass a sole object instead.",
+          'Passing strings for MessageEmbed#setAuthor is deprecated. Pass a sole object instead.',
           'DeprecationWarning',
         );
 
@@ -416,12 +414,40 @@ class MessageEmbed {
   }
 
   /**
+   * The options to provide for setting a footer for a {@link MessageEmbed}.
+   * @typedef {Object} EmbedFooterData
+   * @property {string} text The text of the footer.
+   * @property {string} [iconURL] The icon URL of the footer.
+   */
+
+  /**
    * Sets the footer of this embed.
-   * @param {string} text The text of the footer
-   * @param {string} [iconURL] The icon URL of the footer
+   * @param {string|EmbedFooterData|null} options The options to provide for the footer.
+   * Provide `null` to remove the footer data.
+   * @param {string} [deprecatedIconURL] The icon URL of this footer.
+   * <warn>This parameter is **deprecated**. Use the `options` parameter instead.</warn>
    * @returns {MessageEmbed}
    */
-  setFooter(text, iconURL) {
+  setFooter(options, deprecatedIconURL) {
+    if (options === null) {
+      this.footer = {};
+      return this;
+    }
+
+    if (typeof options === 'string') {
+      if (!deprecationEmittedForSetFooter) {
+        process.emitWarning(
+          'Passing strings for MessageEmbed#setFooter is deprecated. Pass a sole object instead.',
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForSetFooter = true;
+      }
+
+      options = { text: options, iconURL: deprecatedIconURL };
+    }
+
+    const { text, iconURL } = options;
     this.footer = { text: Util.verifyString(text, RangeError, 'EMBED_FOOTER_TEXT'), iconURL };
     return this;
   }

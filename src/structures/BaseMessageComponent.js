@@ -66,17 +66,17 @@ class BaseMessageComponent {
     switch (type) {
       case MessageComponentTypes.ACTION_ROW: {
         const MessageActionRow = require('./MessageActionRow');
-        component = new MessageActionRow(data, client);
+        component = data instanceof MessageActionRow ? data : new MessageActionRow(data, client);
         break;
       }
       case MessageComponentTypes.BUTTON: {
         const MessageButton = require('./MessageButton');
-        component = new MessageButton(data);
+        component = data instanceof MessageButton ? data : new MessageButton(data);
         break;
       }
       case MessageComponentTypes.SELECT_MENU: {
         const MessageSelectMenu = require('./MessageSelectMenu');
-        component = new MessageSelectMenu(data);
+        component = data instanceof MessageSelectMenu ? data : new MessageSelectMenu(data);
         break;
       }
       default:

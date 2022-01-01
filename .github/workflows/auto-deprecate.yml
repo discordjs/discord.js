@@ -1,11 +1,11 @@
-name: NPM auto deprecate
+name: npm auto deprecate
 on:
   workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'
 jobs:
   auto-deprecate:
-    name: NPM auto deprecate
+    name: npm auto deprecate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

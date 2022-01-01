@@ -1,5 +1,7 @@
 'use strict';
 
+const process = require('node:process');
+const { setInterval } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
@@ -284,17 +286,27 @@ class Client extends BaseClient {
   }
 
   /**
+   * Options used when fetching an invite from Discord.
+   * @typedef {Object} ClientFetchInviteOptions
+   * @property {Snowflake} [guildScheduledEventId] The id of the guild scheduled event to include with
+   * the invite
+   */
+
+  /**
    * Obtains an invite from Discord.
    * @param {InviteResolvable} invite Invite code or URL
+   * @param {ClientFetchInviteOptions} [options] Options for fetching the invite
    * @returns {Promise<Invite>}
    * @example
    * client.fetchInvite('https://discord.gg/djs')
    *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`))
    *   .catch(console.error);
    */
-  async fetchInvite(invite) {
+  async fetchInvite(invite, options) {
     const code = DataResolver.resolveInviteCode(invite);
-    const data = await this.api.invites(code).get({ query: { with_counts: true, with_expiration: true } });
+    const data = await this.api.invites(code).get({
+      query: { with_counts: true, with_expiration: true, guild_scheduled_event_id: options?.guildScheduledEventId },
+    });
     return new Invite(this, data);
   }
 
@@ -561,6 +573,9 @@ class Client extends BaseClient {
     }
     if (!Array.isArray(options.partials)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
+    }
+    if (typeof options.waitGuildTimeout !== 'number' || isNaN(options.waitGuildTimeout)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'waitGuildTimeout', 'a number');
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');

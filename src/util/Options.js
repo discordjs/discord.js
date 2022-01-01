@@ -1,5 +1,7 @@
 'use strict';
 
+const process = require('node:process');
+
 /**
  * Rate limit data
  * @typedef {Object} RateLimitData
@@ -70,6 +72,8 @@
  * [User Agent](https://discord.com/developers/docs/reference#user-agent) header
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
+ * @property {number} [waitGuildTimeout=15_000] Time in milliseconds that Clients with the GUILDS intent should wait for
+ * missing guilds to be recieved before starting the bot. If not specified, the default is 15 seconds.
  * @property {SweeperOptions} [sweepers={}] Options for cache sweeping
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
@@ -115,6 +119,7 @@
  * @property {string} [invite='https://discord.gg'] Base URL of invites
  * @property {string} [template='https://discord.new'] Base URL of templates
  * @property {Object} [headers] Additional headers to send for all API requests
+ * @property {string} [scheduledEvent='https://discord.com/events'] Base URL of guild scheduled events
  */
 
 /**
@@ -127,6 +132,7 @@ class Options extends null {
    */
   static createDefault() {
     return {
+      waitGuildTimeout: 15_000,
       shardCount: 1,
       makeCache: this.cacheWithLimits(this.defaultMakeCacheSettings),
       messageCacheLifetime: 0,
@@ -160,6 +166,7 @@ class Options extends null {
         cdn: 'https://cdn.discordapp.com',
         invite: 'https://discord.gg',
         template: 'https://discord.new',
+        scheduledEvent: 'https://discord.com/events',
       },
     };
   }

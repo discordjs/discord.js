@@ -1,5 +1,6 @@
 'use strict';
 
+const { setInterval } = require('node:timers');
 const { Events, ThreadChannelTypes, SweeperKeys } = require('./Constants');
 const { TypeError } = require('../errors/DJSError.js');
 
@@ -352,7 +353,7 @@ class Sweepers {
 
   /**
    * Creates a sweep filter that sweeps outdated messages (edits taken into account)
-   * @param {number} [lifetime=3600] How long ago a message has to hvae been sent or  edited to be valid for sweeping
+   * @param {number} [lifetime=3600] How long ago a message has to have been sent or edited to be valid for sweeping
    * @returns {GlobalSweepFilter}
    */
   static outdatedMessageSweepFilter(lifetime = 3600) {
