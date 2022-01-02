@@ -58,6 +58,7 @@ class StageInstance extends Base {
       /**
        * Whether or not stage discovery is disabled
        * @type {?boolean}
+       * @deprecated See https://github.com/discord/discord-api-docs/pull/4296 for more information
        */
       this.discoverableDisabled = data.discoverable_disabled;
     } else {
