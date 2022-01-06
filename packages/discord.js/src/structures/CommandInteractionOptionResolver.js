@@ -85,7 +85,7 @@ class CommandInteractionOptionResolver {
    * Gets an option by name and property and checks its type.
    * @param {string} name The name of the option.
    * @param {ApplicationCommandOptionType} type The type of the option.
-   * @param {string[]} properties The properties to check for for `required`.
+   * @param {string[]} properties The properties to check for `required`.
    * @param {boolean} required Whether to throw an error if the option is not found.
    * @returns {?CommandInteractionOption} The option, if found.
    * @private
@@ -196,12 +196,11 @@ class CommandInteractionOptionResolver {
   /**
    * Gets a member option.
    * @param {string} name The name of the option.
-   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?(GuildMember|APIGuildMember)}
-   * The value of the option, or null if not set and not required.
+   * The value of the option, or null if the user is not present in the guild or not set and not required.
    */
-  getMember(name, required = false) {
-    const option = this._getTypedOption(name, 'USER', ['member'], required);
+  getMember(name) {
+    const option = this._getTypedOption(name, 'USER', ['member'], false);
     return option?.member ?? null;
   }
 

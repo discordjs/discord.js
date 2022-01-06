@@ -1,16 +1,17 @@
 import type { ChildProcess } from 'child_process';
 import type {
+  APIButtonComponent,
+  APIInteractionDataResolvedChannel,
+  APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
   APIMessage,
   APIPartialChannel,
   APIPartialGuild,
-  APIInteractionDataResolvedGuildMember,
-  APIInteractionDataResolvedChannel,
   APIRole,
-  APIButtonComponent,
   APISelectMenuComponent,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
+import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import {
   ApplicationCommand,
   ApplicationCommandData,
@@ -28,6 +29,7 @@ import {
   ClientUser,
   CloseEvent,
   Collection,
+  Collector,
   CommandInteraction,
   CommandInteractionOption,
   CommandInteractionOptionResolver,
@@ -35,27 +37,36 @@ import {
   Constants,
   ContextMenuInteraction,
   DMChannel,
+  Emoji,
   Guild,
   GuildApplicationCommandManager,
+  GuildAuditLogs,
+  GuildAuditLogsEntry,
+  GuildBasedChannel,
   GuildChannelManager,
   GuildEmoji,
   GuildEmojiManager,
   GuildMember,
   GuildResolvable,
+  GuildTextBasedChannel,
   Intents,
   Interaction,
   InteractionCollector,
   LimitedCollection,
   Message,
   MessageActionRow,
+  MessageActionRowComponent,
   MessageAttachment,
   MessageButton,
   MessageCollector,
   MessageComponentInteraction,
   MessageEmbed,
   MessageReaction,
+  MessageSelectMenu,
   NewsChannel,
+  NonThreadGuildBasedChannel,
   Options,
+  PartialDMChannel,
   PartialTextBasedChannelFields,
   PartialUser,
   Permissions,
@@ -64,38 +75,27 @@ import {
   RoleManager,
   SelectMenuInteraction,
   Serialized,
+  Shard,
   ShardClientUtil,
   ShardingManager,
   Snowflake,
   StageChannel,
+  StageInstance,
+  Sticker,
   StoreChannel,
-  TextBasedChannelFields,
   TextBasedChannel,
+  TextBasedChannelFields,
   TextBasedChannelTypes,
-  VoiceBasedChannel,
-  GuildBasedChannel,
-  NonThreadGuildBasedChannel,
-  GuildTextBasedChannel,
   TextChannel,
   ThreadChannel,
   ThreadMember,
   Typing,
   User,
+  VoiceBasedChannel,
   VoiceChannel,
-  Shard,
   WebSocketShard,
-  Collector,
-  GuildAuditLogsEntry,
-  GuildAuditLogs,
-  StageInstance,
-  Sticker,
-  Emoji,
-  MessageActionRowComponent,
-  MessageSelectMenu,
-  PartialDMChannel,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
-import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -1064,7 +1064,6 @@ client.on('interactionCreate', async interaction => {
       expectAssignable<CommandInteraction>(interaction);
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
-      expectType<APIInteractionDataResolvedGuildMember>(interaction.options.getMember('test', true));
 
       expectType<APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
       expectType<APIRole>(interaction.options.getRole('test', true));
@@ -1087,7 +1086,6 @@ client.on('interactionCreate', async interaction => {
       expectType<CommandInteraction>(interaction);
       expectType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
-      expectType<APIInteractionDataResolvedGuildMember | GuildMember>(interaction.options.getMember('test', true));
 
       expectType<GuildBasedChannel | APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
       expectType<APIRole | Role>(interaction.options.getRole('test', true));
