@@ -48,10 +48,10 @@ import {
   RESTPostAPIApplicationCommandsJSONBody,
   Snowflake,
 } from 'discord-api-types/v9';
-import { Response } from 'node-fetch';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { AgentOptions } from 'node:https';
+import { Response } from 'node-fetch';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
 import * as WebSocket from 'ws';
@@ -645,7 +645,6 @@ export class ClientVoiceManager {
 }
 
 export { Collection } from '@discordjs/collection';
-export { Snowflake };
 
 export interface CollectorEventTypes<K, V, F extends unknown[] = []> {
   collect: [V, ...F];
@@ -5459,6 +5458,8 @@ export interface ShardingManagerOptions {
   token?: string;
   execArgv?: string[];
 }
+
+export { Snowflake };
 
 export interface SplitOptions {
   maxLength?: number;
