@@ -3988,7 +3988,6 @@ export interface ClientOptions {
   allowedMentions?: MessageMentionOptions;
   invalidRequestWarningInterval?: number;
   partials?: PartialTypes[];
-  restWsBridgeTimeout?: number;
   restTimeOffset?: number;
   restRequestTimeout?: number;
   restGlobalRateLimit?: number;
