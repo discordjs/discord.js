@@ -27,6 +27,7 @@ export const enum ApplicationCommandOptionTypes {
   ROLE = 8,
   MENTIONABLE = 9,
   NUMBER = 10,
+  ATTACHMENT = 11,
 }
 
 export const enum ApplicationCommandPermissionTypes {
