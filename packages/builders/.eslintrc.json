@@ -1,0 +1,16 @@
+{
+	"root": true,
+	"extends": "marine/prettier/node",
+	"parserOptions": {
+		"project": "./tsconfig.eslint.json",
+		"extraFileExtensions": [".mjs"]
+	},
+	"ignorePatterns": ["**/dist/*"],
+	"env": {
+		"jest": true
+	},
+	"rules": {
+		"no-redeclare": 0,
+		"@typescript-eslint/naming-convention": 0
+	}
+}

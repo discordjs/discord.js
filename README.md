@@ -24,7 +24,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 
-**Node.js 16.6.0 or newer is required.**  
+**Node.js 16.6.0 or newer is required.**
 
 ```sh-session
 npm install discord.js
@@ -43,6 +43,7 @@ pnpm add discord.js
 ## Example usage
 
 Install all required dependencies:
+
 ```sh-session
 npm install discord.js @discordjs/rest discord-api-types
 yarn add discord.js @discordjs/rest discord-api-types
@@ -50,48 +51,49 @@ pnpm add discord.js @discordjs/rest discord-api-types
 ```
 
 Register a slash command against the Discord API:
+
 ```js
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
-const commands = [{
-  name: 'ping',
-  description: 'Replies with Pong!'
-}]; 
+const commands = [
+	{
+		name: 'ping',
+		description: 'Replies with Pong!',
+	},
+];
 
 const rest = new REST({ version: '9' }).setToken('token');
 
 (async () => {
-  try {
-    console.log('Started refreshing application (/) commands.');
+	try {
+		console.log('Started refreshing application (/) commands.');
 
-    await rest.put(
-      Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
-      { body: commands },
-    );
+		await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });
 
-    console.log('Successfully reloaded application (/) commands.');
-  } catch (error) {
-    console.error(error);
-  }
+		console.log('Successfully reloaded application (/) commands.');
+	} catch (error) {
+		console.error(error);
+	}
 })();
 ```
 
 Afterwards we can create a quite simple example bot:
+
 ```js
 const { Client, Intents } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+	console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isCommand()) return;
+client.on('interactionCreate', async (interaction) => {
+	if (!interaction.isCommand()) return;
 
-  if (interaction.commandName === 'ping') {
-    await interaction.reply('Pong!');
-  }
+	if (interaction.commandName === 'ping') {
+		await interaction.reply('Pong!');
+	}
 });
 
 client.login('token');
