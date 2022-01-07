@@ -12,15 +12,15 @@ import type { Component } from './Component';
 
 export class ButtonComponent implements Component {
 	public readonly type = ComponentType.Button as const;
-	public readonly style?: ButtonStyle;
+	public readonly style!: ButtonStyle;
 	public readonly label?: string;
 	public readonly emoji?: APIMessageComponentEmoji;
 	public readonly disabled?: boolean;
-	public readonly customId?: string;
-	public readonly url?: string;
+	public readonly custom_id!: string;
+	public readonly url!: string;
 
 	public constructor(data?: APIButtonComponent) {
-		this.style = data?.style;
+		this.style = data?.style as ButtonStyle;
 		this.label = data?.label;
 		this.emoji = data?.emoji;
 		this.disabled = data?.disabled;
@@ -29,7 +29,7 @@ export class ButtonComponent implements Component {
 		if (data?.style === ButtonStyle.Link) {
 			this.url = data.url;
 		} else {
-			this.customId = data?.custom_id;
+			this.custom_id = data?.custom_id as string;
 		}
 	}
 
@@ -59,7 +59,7 @@ export class ButtonComponent implements Component {
 	 */
 	public setCustomId(customId: string) {
 		customIdValidator.parse(customId);
-		Reflect.set(this, 'customId', customId);
+		Reflect.set(this, 'custom_id', customId);
 		return this;
 	}
 
@@ -94,15 +94,9 @@ export class ButtonComponent implements Component {
 	}
 
 	public toJSON(): APIButtonComponent {
-		validateRequiredButtonParameters(this.style!, this.label, this.emoji, this.customId, this.url);
+		validateRequiredButtonParameters(this.style, this.label, this.emoji, this.custom_id, this.url);
 		return {
-			type: this.type,
-			style: this.style!,
-			label: this.label,
-			url: this.url!,
-			emoji: this.emoji,
-			disabled: this.disabled,
-			custom_id: this.customId!,
+			...this,
 		};
 	}
 }

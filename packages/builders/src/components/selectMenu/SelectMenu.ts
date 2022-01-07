@@ -16,17 +16,17 @@ export class SelectMenuComponent implements Component {
 	public readonly type = ComponentType.SelectMenu as const;
 	public readonly options: SelectMenuOption[];
 	public readonly placeholder?: string;
-	public readonly minValues?: number;
-	public readonly maxValues?: number;
-	public readonly customId?: string;
+	public readonly min_values?: number;
+	public readonly max_values?: number;
+	public readonly custom_id!: string;
 	public readonly disabled?: boolean;
 
 	public constructor(data?: APISelectMenuComponent) {
 		this.options = data?.options.map((option) => new SelectMenuOption(option)) ?? [];
 		this.placeholder = data?.placeholder;
-		this.minValues = data?.min_values;
-		this.maxValues = data?.max_values;
-		this.customId = data?.custom_id;
+		this.min_values = data?.min_values;
+		this.max_values = data?.max_values;
+		this.custom_id = data?.custom_id as string;
 		this.disabled = data?.disabled;
 	}
 
@@ -46,7 +46,7 @@ export class SelectMenuComponent implements Component {
 	 */
 	public setMinValues(minValues: number) {
 		minMaxValidator.parse(minValues);
-		Reflect.set(this, 'minValues', minValues);
+		Reflect.set(this, 'min_values', minValues);
 		return this;
 	}
 
@@ -56,7 +56,7 @@ export class SelectMenuComponent implements Component {
 	 */
 	public setMaxValues(maxValues: number) {
 		minMaxValidator.parse(maxValues);
-		Reflect.set(this, 'maxValues', maxValues);
+		Reflect.set(this, 'max_values', maxValues);
 		return this;
 	}
 
@@ -66,7 +66,7 @@ export class SelectMenuComponent implements Component {
 	 */
 	public setCustomId(customId: string) {
 		customIdValidator.parse(customId);
-		Reflect.set(this, 'customId', customId);
+		Reflect.set(this, 'custom_id', customId);
 		return this;
 	}
 
@@ -100,15 +100,10 @@ export class SelectMenuComponent implements Component {
 	}
 
 	public toJSON(): APISelectMenuComponent {
-		validateRequiredSelectMenuParameters(this.options, this.customId);
+		validateRequiredSelectMenuParameters(this.options, this.custom_id);
 		return {
-			type: this.type,
-			custom_id: this.customId!,
+			...this,
 			options: this.options.map((option) => option.toJSON()),
-			placeholder: this.placeholder,
-			min_values: this.minValues,
-			max_values: this.maxValues,
-			disabled: this.disabled,
 		};
 	}
 }

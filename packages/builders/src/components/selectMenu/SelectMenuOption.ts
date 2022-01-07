@@ -10,15 +10,15 @@ import {
  * Represents an option within a select menu component
  */
 export class SelectMenuOption {
-	public readonly label?: string;
-	public readonly value?: string;
+	public readonly label!: string;
+	public readonly value!: string;
 	public readonly description?: string;
 	public readonly emoji?: APIMessageComponentEmoji;
 	public readonly default?: boolean;
 
 	public constructor(data?: APISelectMenuOption) {
-		this.label = data?.label;
-		this.value = data?.value;
+		this.label = data?.label as string;
+		this.value = data?.value as string;
 		this.description = data?.description;
 		this.emoji = data?.emoji;
 		this.default = data?.default;
@@ -75,11 +75,7 @@ export class SelectMenuOption {
 	public toJSON(): APISelectMenuOption {
 		validateRequiredSelectMenuOptionParameters(this.label, this.value);
 		return {
-			label: this.label!,
-			value: this.value!,
-			description: this.description,
-			emoji: this.emoji,
-			default: this.default,
+			...this,
 		};
 	}
 }
