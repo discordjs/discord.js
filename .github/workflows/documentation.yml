@@ -58,6 +58,7 @@ jobs:
     name: Upload Documentation
     needs: build
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         package: ['builders', 'collection', 'discord.js', 'voice']
@@ -94,4 +95,4 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .
           git commit -m "Docs build for ${BRANCH_OR_TAG} ${BRANCH_NAME}: ${SHA}" || true
-          git push -f
+          git push
