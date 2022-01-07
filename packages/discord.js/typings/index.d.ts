@@ -545,8 +545,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public readonly emojis: BaseGuildEmojiManager;
   public guilds: GuildManager;
   public options: ClientOptions;
-  public readyAt: If<Ready, Date>;
-  public readonly readyTimestamp: If<Ready, number>;
   public readonly readyAt: If<Ready, Date>;
   public readyTimestamp: If<Ready, number>;
   public sweepers: Sweepers;
