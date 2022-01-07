@@ -416,7 +416,7 @@ exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
  * * GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING
  * * THREAD_CREATED
  * * REPLY
- * * APPLICATION_COMMAND
+ * * CHAT_INPUT_COMMAND
  * * THREAD_STARTER_MESSAGE
  * * GUILD_INVITE_REMINDER
  * * CONTEXT_MENU_COMMAND
@@ -444,7 +444,7 @@ exports.MessageTypes = [
   'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING',
   'THREAD_CREATED',
   'REPLY',
-  'APPLICATION_COMMAND',
+  'CHAT_INPUT_COMMAND',
   'THREAD_STARTER_MESSAGE',
   'GUILD_INVITE_REMINDER',
   'CONTEXT_MENU_COMMAND',
@@ -489,12 +489,12 @@ exports.SweeperKeys = [
  * The types of messages that are `System`. The available types are `MessageTypes` excluding:
  * * DEFAULT
  * * REPLY
- * * APPLICATION_COMMAND
+ * * CHAT_INPUT_COMMAND
  * * CONTEXT_MENU_COMMAND
  * @typedef {string} SystemMessageType
  */
 exports.SystemMessageTypes = exports.MessageTypes.filter(
-  type => type && !['DEFAULT', 'REPLY', 'APPLICATION_COMMAND', 'CONTEXT_MENU_COMMAND'].includes(type),
+  type => type && !['DEFAULT', 'REPLY', 'CHAT_INPUT_COMMAND', 'CONTEXT_MENU_COMMAND'].includes(type),
 );
 
 /**
