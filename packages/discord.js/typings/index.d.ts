@@ -670,7 +670,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public handleDispose(...args: unknown[]): Promise<void>;
   public stop(reason?: string): void;
   public resetTimer(options?: CollectorResetTimerOptions): void;
-  public [Symbol.asyncIterator](): AsyncIterableIterator<V>;
+  public [Symbol.asyncIterator](): AsyncIterableIterator<[V, ...F]>;
   public toJSON(): unknown;
 
   protected listener: (...args: any[]) => void;

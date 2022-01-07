@@ -794,10 +794,22 @@ messageCollector.on('collect', (...args) => {
   expectType<[Message]>(args);
 });
 
+(async () => {
+  for await (const value of messageCollector) {
+    expectType<[Message<boolean>]>(value);
+  }
+})();
+
 declare const reactionCollector: ReactionCollector;
 reactionCollector.on('dispose', (...args) => {
   expectType<[MessageReaction, User]>(args);
 });
+
+(async () => {
+  for await (const value of reactionCollector) {
+    expectType<[MessageReaction, User]>(value);
+  }
+})();
 
 // Make sure the properties are typed correctly, and that no backwards properties
 // (K -> V and V -> K) exist:
@@ -1168,6 +1180,12 @@ collector.on('end', (collection, reason) => {
   expectType<Collection<string, Interaction>>(collection);
   expectType<string>(reason);
 });
+
+(async () => {
+  for await (const value of collector) {
+    expectType<[Interaction, ...string[]]>(value);
+  }
+})();
 
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
 
