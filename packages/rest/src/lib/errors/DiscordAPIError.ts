@@ -1,4 +1,4 @@
-import type { InternalRequest, RawAttachment } from '../RequestManager';
+import type { InternalRequest, RawFile } from '../RequestManager';
 
 interface DiscordErrorFieldInformation {
 	code: string;
@@ -23,7 +23,7 @@ export interface OAuthErrorData {
 }
 
 export interface RequestBody {
-	attachments: RawAttachment[] | undefined;
+	files: RawFile[] | undefined;
 	json: unknown | undefined;
 }
 
@@ -56,11 +56,11 @@ export class DiscordAPIError extends Error {
 		public status: number,
 		public method: string,
 		public url: string,
-		bodyData: Pick<InternalRequest, 'attachments' | 'body'>,
+		bodyData: Pick<InternalRequest, 'files' | 'body'>,
 	) {
 		super(DiscordAPIError.getMessage(rawError));
 
-		this.requestBody = { attachments: bodyData.attachments, json: bodyData.body };
+		this.requestBody = { files: bodyData.files, json: bodyData.body };
 	}
 
 	/**

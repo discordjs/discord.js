@@ -168,7 +168,7 @@ export class SequentialHandler {
 		routeId: RouteData,
 		url: string,
 		options: RequestInit,
-		bodyData: Pick<InternalRequest, 'attachments' | 'body'>,
+		bodyData: Pick<InternalRequest, 'files' | 'body'>,
 	): Promise<unknown> {
 		let queue = this.#asyncQueue;
 		let queueType = QueueType.Standard;
@@ -225,7 +225,7 @@ export class SequentialHandler {
 		routeId: RouteData,
 		url: string,
 		options: RequestInit,
-		bodyData: Pick<InternalRequest, 'attachments' | 'body'>,
+		bodyData: Pick<InternalRequest, 'files' | 'body'>,
 		retries = 0,
 	): Promise<unknown> {
 		/*

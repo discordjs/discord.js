@@ -12,21 +12,21 @@ import { DefaultRestOptions, DefaultUserAgent } from './utils/constants';
 let agent: Agent | null = null;
 
 /**
- * Represents an attachment to be added to the request
+ * Represents a file to be added to the request
  */
-export interface RawAttachment {
+export interface RawFile {
 	/**
 	 * The name of the file
 	 */
 	fileName: string;
 	/**
-	 * An explicit key to use for key of the formdata field for this attachment.
-	 * When not provided, the index of the file in the attachments array is used in the form `files[${index}]`.
+	 * An explicit key to use for key of the formdata field for this file.
+	 * When not provided, the index of the file in the files array is used in the form `files[${index}]`.
 	 * If you wish to alter the placeholder snowflake, you must provide this property in the same form (`files[${placeholder}]`)
 	 */
 	key?: string;
 	/**
-	 * The actual data for the attachment
+	 * The actual data for the file
 	 */
 	rawBuffer: Buffer;
 }
@@ -36,13 +36,9 @@ export interface RawAttachment {
  */
 export interface RequestData {
 	/**
-	 * Whether to append JSON data to form data instead of `payload_json` when sending attachments
+	 * Whether to append JSON data to form data instead of `payload_json` when sending files
 	 */
 	appendToFormData?: boolean;
-	/**
-	 * Files to be attached to this request
-	 */
-	attachments?: RawAttachment[] | undefined;
 	/**
 	 * If this request needs the `Authorization` header
 	 * @default true
@@ -59,12 +55,16 @@ export interface RequestData {
 	 */
 	body?: BodyInit | unknown;
 	/**
+	 * Files to be attached to this request
+	 */
+	files?: RawFile[] | undefined;
+	/**
 	 * Additional headers to add to this request
 	 */
 	headers?: Record<string, string>;
 	/**
 	 * Whether to pass-through the body property directly to `fetch()`.
-	 * <warn>This only applies when attachments is NOT present</warn>
+	 * <warn>This only applies when files is NOT present</warn>
 	 */
 	passThroughBody?: boolean;
 	/**
@@ -212,7 +212,7 @@ export class RequestManager extends EventEmitter {
 		const { url, fetchOptions } = this.resolveRequest(request);
 
 		// Queue the request
-		return handler.queueRequest(routeId, url, fetchOptions, { body: request.body, attachments: request.attachments });
+		return handler.queueRequest(routeId, url, fetchOptions, { body: request.body, files: request.files });
 	}
 
 	/**
@@ -275,12 +275,12 @@ export class RequestManager extends EventEmitter {
 		let finalBody: RequestInit['body'];
 		let additionalHeaders: Record<string, string> = {};
 
-		if (request.attachments?.length) {
+		if (request.files?.length) {
 			const formData = new FormData();
 
 			// Attach all files to the request
-			for (const [index, attachment] of request.attachments.entries()) {
-				formData.append(attachment.key ?? `files[${index}]`, attachment.rawBuffer, attachment.fileName);
+			for (const [index, file] of request.files.entries()) {
+				formData.append(file.key ?? `files[${index}]`, file.rawBuffer, file.fileName);
 			}
 
 			// If a JSON body was added as well, attach it to the form data, using payload_json unless otherwise specified
