@@ -23,6 +23,7 @@ export * from './interactions/slashCommands/options/integer';
 export * from './interactions/slashCommands/options/mentionable';
 export * from './interactions/slashCommands/options/number';
 export * from './interactions/slashCommands/options/role';
+export * from './interactions/slashCommands/options/attachment';
 export * from './interactions/slashCommands/options/string';
 export * from './interactions/slashCommands/options/user';
 
