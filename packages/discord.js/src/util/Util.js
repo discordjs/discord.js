@@ -561,18 +561,6 @@ class Util extends null {
   static cleanCodeBlockContent(text) {
     return text.replaceAll('```', '`\u200b``');
   }
-
-  /**
-   * Creates a sweep filter that sweeps archived threads
-   * @param {number} [lifetime=14400] How long a thread has to be archived to be valid for sweeping
-   * @deprecated When not using with `makeCache` use `Sweepers.archivedThreadSweepFilter` instead
-   * @returns {SweepFilter}
-   */
-  static archivedThreadSweepFilter(lifetime = 14400) {
-    const filter = require('./Sweepers').archivedThreadSweepFilter(lifetime);
-    filter.isDefault = true;
-    return filter;
-  }
 }
 
 module.exports = Util;

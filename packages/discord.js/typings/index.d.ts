@@ -567,8 +567,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public generateInvite(options?: InviteGenerationOptions): string;
   public login(token?: string): Promise<string>;
   public isReady(): this is Client<true>;
-  /** @deprecated Use {@link Sweepers#sweepMessages} instead */
-  public sweepMessages(lifetime?: number): number;
   public toJSON(): unknown;
 
   public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
@@ -1428,13 +1426,6 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public constructor(options?: LimitedCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
   public maxSize: number;
   public keepOverLimit: ((value: V, key: K, collection: this) => boolean) | null;
-  /** @deprecated Use Global Sweepers instead */
-  public interval: NodeJS.Timeout | null;
-  /** @deprecated Use Global Sweepers instead */
-  public sweepFilter: SweepFilter<K, V> | null;
-
-  /** @deprecated Use `Sweepers.filterByLifetime` instead */
-  public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
 export type MessageCollectorOptionsParams<T extends MessageComponentTypeResolvable, Cached extends boolean = boolean> =
@@ -2417,8 +2408,6 @@ export class UserFlags extends BitField<UserFlagsString> {
 
 export class Util extends null {
   private constructor();
-  /** @deprecated When not using with `makeCache` use `Sweepers.archivedThreadSweepFilter` instead */
-  public static archivedThreadSweepFilter<K, V>(lifetime?: number): SweepFilter<K, V>;
   public static basename(path: string, ext?: string): string;
   public static cleanContent(str: string, channel: TextBasedChannel): string;
   public static cloneObject(obj: unknown): unknown;
@@ -3986,10 +3975,6 @@ export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
   makeCache?: CacheFactory;
-  /** @deprecated Pass the value of this property as `lifetime` to `sweepers.messages` instead. */
-  messageCacheLifetime?: number;
-  /** @deprecated Pass the value of this property as `interval` to `sweepers.messages` instead. */
-  messageSweepInterval?: number;
   allowedMentions?: MessageMentionOptions;
   invalidRequestWarningInterval?: number;
   partials?: PartialTypes[];
@@ -5502,10 +5487,6 @@ export type SweeperKey = keyof SweeperDefinitions;
 
 export type CollectionSweepFilter<K, V> = (value: V, key: K, collection: Collection<K, V>) => boolean;
 
-export type SweepFilter<K, V> = (
-  collection: LimitedCollection<K, V>,
-) => ((value: V, key: K, collection: LimitedCollection<K, V>) => boolean) | null;
-
 export interface SweepOptions<K, V> {
   interval: number;
   filter: GlobalSweepFilter<K, V>;
@@ -5543,10 +5524,6 @@ export type SweeperOptions = {
 export interface LimitedCollectionOptions<K, V> {
   maxSize?: number;
   keepOverLimit?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
-  /** @deprecated Use Global Sweepers instead */
-  sweepFilter?: SweepFilter<K, V>;
-  /** @deprecated Use Global Sweepers instead */
-  sweepInterval?: number;
 }
 
 export type AnyChannel =

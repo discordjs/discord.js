@@ -45,7 +45,6 @@ import {
   Intents,
   Interaction,
   InteractionCollector,
-  LimitedCollection,
   Message,
   MessageActionRow,
   MessageAttachment,
@@ -107,14 +106,9 @@ const client: Client = new Client({
     MessageManager: 200,
     // @ts-expect-error
     Message: 100,
-    ThreadManager: {
-      maxSize: 1000,
-      keepOverLimit: (x: ThreadChannel) => x.id === '123',
-      sweepInterval: 5000,
-      sweepFilter: LimitedCollection.filterByLifetime({
-        getComparisonTimestamp: (x: ThreadChannel) => x.archiveTimestamp ?? 0,
-        excludeFromSweep: (x: ThreadChannel) => !x.archived,
-      }),
+    GuildMemberManager: {
+      maxSize: 200,
+      keepOverLimit: member => member.id === client.user?.id,
     },
   }),
 });
