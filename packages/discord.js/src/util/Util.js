@@ -7,7 +7,6 @@ const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
-const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
 
 let deprecationEmittedForRemoveMentions = false;
@@ -335,7 +334,7 @@ class Util extends null {
   static mergeDefault(def, given) {
     if (!given) return def;
     for (const key in def) {
-      if (!has(given, key) || given[key] === undefined) {
+      if (!Object.hasOwn(given, key) || given[key] === undefined) {
         given[key] = def[key];
       } else if (given[key] === Object(given[key])) {
         given[key] = Util.mergeDefault(def[key], given[key]);

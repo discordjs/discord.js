@@ -15,7 +15,7 @@
 
 ## Installation
 
-**Node.js 16.6.0 or newer is required.**
+**Node.js 16.9.0 or newer is required.**
 
 ```sh-session
 npm install @discordjs/builders
