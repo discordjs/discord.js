@@ -1,6 +1,5 @@
 'use strict';
 
-const { setTimeout } = require('node:timers');
 const Action = require('./Action');
 const { deletedGuilds } = require('../../structures/Guild');
 const { Events } = require('../../util/Constants');
