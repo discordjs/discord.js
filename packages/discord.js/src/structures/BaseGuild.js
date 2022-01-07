@@ -1,7 +1,7 @@
 'use strict';
 
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * The base class for {@link Guild}, {@link OAuth2Guild} and {@link InviteGuild}.
@@ -43,7 +43,7 @@ class BaseGuild extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**

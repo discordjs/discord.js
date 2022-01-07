@@ -2073,13 +2073,11 @@ export interface FetchRecommendedShardsOptions {
   multipleOf?: number;
 }
 
-export class SnowflakeUtil extends null {
-  private constructor();
-  public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
-  public static generate(timestamp?: number | Date): Snowflake;
-  public static timestampFrom(snowflake: Snowflake): number;
-  public static readonly EPOCH: number;
-}
+export {
+  DiscordSnowflake as SnowflakeUtil,
+  SnowflakeGenerateOptions,
+  DeconstructedSnowflake,
+} from '@sapphire/snowflake';
 
 export class StageChannel extends BaseGuildVoiceChannel {
   public topic: string | null;
@@ -4233,15 +4231,6 @@ export interface CrosspostedChannel {
 }
 
 export type DateResolvable = Date | number | string;
-
-export interface DeconstructedSnowflake {
-  timestamp: number;
-  readonly date: Date;
-  workerId: number;
-  processId: number;
-  increment: number;
-  binary: string;
-}
 
 export type DefaultMessageNotificationLevel = keyof typeof DefaultMessageNotificationLevels;
 

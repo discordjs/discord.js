@@ -1,9 +1,9 @@
 'use strict';
 
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const { Error } = require('../errors');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
 /**
@@ -128,7 +128,7 @@ class Role extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**

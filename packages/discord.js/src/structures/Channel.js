@@ -1,5 +1,6 @@
 'use strict';
 
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 let CategoryChannel;
 let DMChannel;
@@ -10,7 +11,6 @@ let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
 const { ChannelTypes, ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents any channel on Discord.
@@ -45,7 +45,7 @@ class Channel extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**

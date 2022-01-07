@@ -1,11 +1,11 @@
 'use strict';
 
 const process = require('node:process');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 let deprecationEmittedForFetchMessage = false;
 
@@ -380,7 +380,7 @@ class Webhook {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**

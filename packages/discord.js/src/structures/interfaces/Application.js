@@ -1,7 +1,7 @@
 'use strict';
 
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ClientApplicationAssetTypes, Endpoints } = require('../../util/Constants');
-const SnowflakeUtil = require('../../util/SnowflakeUtil');
 const Base = require('../Base');
 
 const AssetTypes = Object.keys(ClientApplicationAssetTypes);
@@ -60,7 +60,7 @@ class Application extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**
