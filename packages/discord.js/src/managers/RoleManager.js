@@ -227,7 +227,7 @@ class RoleManager extends CachedManager {
    * @example
    * // Delete a role
    * guild.roles.delete('222079219327434752', 'The role needed to go')
-   *   .then(deleted => console.log(`Deleted role ${deleted.name}`))
+   *   .then(() => console.log('Deleted the role'))
    *   .catch(console.error);
    */
   async delete(role, reason) {
