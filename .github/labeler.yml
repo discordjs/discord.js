@@ -1,6 +1,3 @@
-chore:
-  - '*'
-
 'packages:builders':
   - packages/builders/*
   - packages/builders/**/*
