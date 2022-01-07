@@ -236,6 +236,13 @@ class RoleManager extends CachedManager {
     this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: id });
   }
 
+  /*
+   * The data needed for updating a guild role's position
+   * @typedef {Object} GuildRolePosition
+   * @property {RoleResolvable} role The role's id
+   * @property {number} position The position to update
+   */
+
   /**
    * Batch-updates the guild's role positions
    * @param {GuildRolePosition[]} rolePositions Role positions to update

@@ -946,8 +946,6 @@ export class Guild extends AnonymousGuild {
   public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
   public setBanner(banner: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
-  /** @deprecated Use {@link GuildChannelManager.setPositions} instead */
-  public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
   public setDefaultMessageNotifications(
     defaultMessageNotifications: DefaultMessageNotificationLevel | number,
     reason?: string,
@@ -965,8 +963,6 @@ export class Guild extends AnonymousGuild {
   public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
   public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
-  /** @deprecated Use {@link RoleManager.setPositions} instead */
-  public setRolePositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
