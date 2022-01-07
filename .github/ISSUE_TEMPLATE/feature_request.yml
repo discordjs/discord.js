@@ -1,5 +1,5 @@
 name: Feature request
-description: Request a new feature (documented features of the official Discord developer API only!)
+description: Request a new feature (discord.js accepts documented features of the official Discord developer API only!)
 labels: [feature request]
 body:
   - type: markdown
@@ -8,6 +8,18 @@ body:
         We can only implement features that Discord publishes, documents and merges into the Discord API documentation.
         We do not implement unreleased features.
         Use Discord for questions: https://discord.gg/djs
+  - type: dropdown
+    id: package
+    attributes:
+      label: Which package is the feature request for?
+      options:
+        - discord.js
+        - builders
+        - collection
+        - rest
+        - voice
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:

@@ -1,12 +1,23 @@
 name: Bug report
-description: Report incorrect or unexpected behavior of discord.js
+description: Report incorrect or unexpected behavior of a package
 labels: [bug, need repro]
 body:
   - type: markdown
     attributes:
       value: |
         Use Discord for questions: https://discord.gg/djs
-        If you are reporting a voice issue, please post your issue at https://github.com/discordjs/voice/issues
+  - type: dropdown
+    id: package
+    attributes:
+      label: Which package is this bug report for?
+      options:
+        - discord.js
+        - builders
+        - collection
+        - rest
+        - voice
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
@@ -30,28 +41,16 @@ body:
       description: Include a reproducible, minimal code sample. This will be automatically formatted into code, so no need for backticks.
       render: typescript
       placeholder: |
-        const { Client, Intents } = require('discord.js');
-        const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-
-        client.on('ready', () => {
-          console.log(`Logged in as ${client.user.tag}!`);
-        });
-
-        client.on('interactionCreate', async interaction => {
-          if (!interaction.isCommand()) return;
-
-          if (interaction.commandName === 'ping') {
-            await interaction.reply('Pong!');
-          }
-        });
-
-        client.login('token');
+        Your code sample should be...
+        ... Minimal - Use as little code as possible that still produces the same problem (and is understandable)
+        ... Complete - Provide all parts someone else needs to reproduce your problem
+        ... Reproducible - Test the code you're about to provide to make sure it reproduces the problem
   - type: input
     id: djs-version
     attributes:
-      label: discord.js version
-      description: Which version of discord.js are you using? Run `npm list discord.js` in your project directory and paste the output.
-      placeholder: 13.x.x (we no longer support version 12 or earlier)
+      label: Package version
+      description: Which version of are you using? Run `npm list <package>` in your project directory and paste the output.
+      placeholder: We no longer support version 12 or earlier of discord.js
     validations:
       required: true
   - type: input
@@ -89,6 +88,7 @@ body:
 
         Tip: you can select multiple items
       options:
+        - Not applicable (subpackage bug)
         - No Partials
         - USER
         - CHANNEL
@@ -104,10 +104,12 @@ body:
     attributes:
       label: Which gateway intents are you subscribing to?
       description: |
-        Check your Client constructor for the `intents` key.
+        Check your Client constructor options for the `intents` key.
 
         Tip: you can select multiple items
       options:
+        - Not applicable (subpackage bug)
+        - No Intents
         - GUILDS
         - GUILD_MEMBERS
         - GUILD_BANS
@@ -131,8 +133,8 @@ body:
     id: dev-release
     attributes:
       label: I have tested this issue on a development release
-      placeholder: d23280c
+      placeholder: d23280c (commit hash)
       description: |
-        The issue might already be fixed in a development release. This is not required, but helps us greatly.
-        To install the latest development release run `npm i discord.js@dev` in your project directory.
+        The issue might already be fixed in a development release or main. This is not required, but helps us greatly.
+        [discord.js only] To install the latest development release run `npm i discord.js@dev` in your project directory.
         Run `npm list discord.js` and use the last part of the printed information (`d23280c` for `discord.js@xx.x.x-dev.1530234593.d23280c`)
