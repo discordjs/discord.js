@@ -94,4 +94,4 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .
           git commit -m "Docs build for ${BRANCH_OR_TAG} ${BRANCH_NAME}: ${SHA}" || true
-          git push
+          git push -f
