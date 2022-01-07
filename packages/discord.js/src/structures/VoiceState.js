@@ -88,7 +88,7 @@ class VoiceState extends Base {
     if ('self_video' in data) {
       /**
        * Whether this member is streaming using "Screen Share"
-       * @type {boolean}
+       * @type {?boolean}
        */
       this.streaming = data.self_stream ?? false;
     } else {
@@ -108,9 +108,11 @@ class VoiceState extends Base {
     if ('suppress' in data) {
       /**
        * Whether this member is suppressed from speaking. This property is specific to stage channels only.
-       * @type {boolean}
+       * @type {?boolean}
        */
       this.suppress = data.suppress;
+    } else {
+      this.suppress ??= null;
     }
 
     if ('request_to_speak_timestamp' in data) {
