@@ -375,11 +375,11 @@ class Sweepers {
    * Sweep a direct sub property of all guilds
    * @param {string} key The name of the property
    * @param {Function} filter Filter function passed to sweep
-   * @param {SweepEventOptions} [eventOptions] Options for the Client event emitted here
+   * @param {SweepEventOptions} [eventOptions={}] Options for the Client event emitted here
    * @returns {Object} Object containing the number of guilds swept and the number of items swept
    * @private
    */
-  _sweepGuildDirectProp(key, filter, { emit = true, outputName }) {
+  _sweepGuildDirectProp(key, filter, { emit = true, outputName } = {}) {
     if (typeof filter !== 'function') {
       throw new TypeError('INVALID_TYPE', 'filter', 'function');
     }
