@@ -5602,6 +5602,7 @@ export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptio
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
   invitable?: AllowedThreadType extends 'GUILD_PRIVATE_THREAD' | 12 ? boolean : never;
+  rateLimitPerUser?: number;
 }
 
 export interface ThreadEditData {
