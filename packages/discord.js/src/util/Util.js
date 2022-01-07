@@ -1,15 +1,12 @@
 'use strict';
 
 const { parse } = require('node:path');
-const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
-
-let deprecationEmittedForRemoveMentions = false;
 
 /**
  * Contains various general-purpose utility methods.
@@ -521,34 +518,8 @@ class Util extends null {
     const res = parse(path);
     return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
   }
-
-  /**
-   * Breaks user, role and everyone/here mentions by adding a zero width space after every @ character
-   * @param {string} str The string to sanitize
-   * @returns {string}
-   * @deprecated Use {@link BaseMessageOptions#allowedMentions} instead.
-   */
-  static removeMentions(str) {
-    if (!deprecationEmittedForRemoveMentions) {
-      process.emitWarning(
-        'The Util.removeMentions method is deprecated. Use MessageOptions#allowedMentions instead.',
-        'DeprecationWarning',
-      );
-
-      deprecationEmittedForRemoveMentions = true;
-    }
-
-    return Util._removeMentions(str);
-  }
-
-  static _removeMentions(str) {
-    return str.replaceAll('@', '@\u200b');
-  }
-
   /**
    * The content to have all mentions replaced by the equivalent text.
-   * <warn>When {@link Util.removeMentions} is removed, this method will no longer sanitize mentions.
-   * Use {@link BaseMessageOptions#allowedMentions} instead to prevent mentions when sending a message.</warn>
    * @param {string} str The string to be converted
    * @param {TextBasedChannels} channel The channel the string was sent in
    * @returns {string}
@@ -559,15 +530,15 @@ class Util extends null {
         const id = input.replace(/<|!|>|@/g, '');
         if (channel.type === 'DM') {
           const user = channel.client.users.cache.get(id);
-          return user ? Util._removeMentions(`@${user.username}`) : input;
+          return user ? `@${user.username}` : input;
         }
 
         const member = channel.guild.members.cache.get(id);
         if (member) {
-          return Util._removeMentions(`@${member.displayName}`);
+          return `@${member.displayName}`;
         } else {
           const user = channel.client.users.cache.get(id);
-          return user ? Util._removeMentions(`@${user.username}`) : input;
+          return user ? `@${user.username}` : input;
         }
       })
       .replace(/<#[0-9]+>/g, input => {
