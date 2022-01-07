@@ -2,6 +2,15 @@ export * as EmbedAssertions from './messages/embed/Assertions';
 export * from './messages/embed/Embed';
 export * from './messages/formatters';
 
+export * as ComponentAssertions from './components/Assertions';
+export * from './components/ActionRow';
+export * from './components/Button';
+export * from './components/Component';
+export * from './components/Components';
+export * from './components/Button';
+export * from './components/selectMenu/SelectMenu';
+export * from './components/selectMenu/SelectMenuOption';
+
 export * as SlashCommandAssertions from './interactions/slashCommands/Assertions';
 export * from './interactions/slashCommands/SlashCommandBuilder';
 export * from './interactions/slashCommands/SlashCommandSubcommands';
