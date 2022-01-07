@@ -86,7 +86,7 @@ class BaseCommandInteraction extends Interaction {
    * @returns {CommandInteractionResolvedData}
    * @private
    */
-   transformResolved({ members, users, channels, roles, messages, attachments }) {
+  transformResolved({ members, users, channels, roles, messages, attachments }) {
     const result = {};
 
     if (members) {
