@@ -8,7 +8,7 @@ test('Unauthorized', () => {
 		'PATCH',
 		'https://discord.com/api/v9/guilds/:id',
 		{
-			attachments: undefined,
+			files: undefined,
 			body: undefined,
 		},
 	);
@@ -19,7 +19,7 @@ test('Unauthorized', () => {
 	expect(error.name).toBe('DiscordAPIError[0]');
 	expect(error.status).toBe(401);
 	expect(error.url).toBe('https://discord.com/api/v9/guilds/:id');
-	expect(error.requestBody.attachments).toBe(undefined);
+	expect(error.requestBody.files).toBe(undefined);
 	expect(error.requestBody.json).toBe(undefined);
 });
 
@@ -37,7 +37,7 @@ test('Invalid Form Body Error (error.{property}._errors.{index})', () => {
 		'PATCH',
 		'https://discord.com/api/v9/users/@me',
 		{
-			attachments: undefined,
+			files: undefined,
 			body: {
 				username: 'a',
 			},
@@ -52,7 +52,7 @@ test('Invalid Form Body Error (error.{property}._errors.{index})', () => {
 	expect(error.name).toBe('DiscordAPIError[50035]');
 	expect(error.status).toBe(400);
 	expect(error.url).toBe('https://discord.com/api/v9/users/@me');
-	expect(error.requestBody.attachments).toBe(undefined);
+	expect(error.requestBody.files).toBe(undefined);
 	expect(error.requestBody.json).toStrictEqual({ username: 'a' });
 });
 
