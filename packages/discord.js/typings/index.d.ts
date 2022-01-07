@@ -3889,12 +3889,6 @@ export interface BaseClientEvents {
 }
 
 export interface ClientEvents extends BaseClientEvents {
-  /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
-  applicationCommandCreate: [command: ApplicationCommand];
-  /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
-  applicationCommandDelete: [command: ApplicationCommand];
-  /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
-  applicationCommandUpdate: [oldCommand: ApplicationCommand | null, newCommand: ApplicationCommand];
   cacheSweep: [message: string];
   channelCreate: [channel: NonThreadGuildBasedChannel];
   channelDelete: [channel: DMChannel | NonThreadGuildBasedChannel];
@@ -4147,12 +4141,6 @@ export interface ConstantsEvents {
   API_RESPONSE: 'apiResponse';
   API_REQUEST: 'apiRequest';
   CLIENT_READY: 'ready';
-  /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
-  APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
-  /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
-  APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
-  /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
-  APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate';
   GUILD_CREATE: 'guildCreate';
   GUILD_DELETE: 'guildDelete';
   GUILD_UPDATE: 'guildUpdate';
@@ -5716,9 +5704,6 @@ export interface WelcomeScreenEditData {
 export type WSEventType =
   | 'READY'
   | 'RESUMED'
-  | 'APPLICATION_COMMAND_CREATE'
-  | 'APPLICATION_COMMAND_DELETE'
-  | 'APPLICATION_COMMAND_UPDATE'
   | 'GUILD_CREATE'
   | 'GUILD_DELETE'
   | 'GUILD_UPDATE'
