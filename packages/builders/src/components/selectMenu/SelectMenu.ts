@@ -13,7 +13,7 @@ import { SelectMenuOption } from './SelectMenuOption';
  * Represents a select menu component
  */
 export class SelectMenuComponent implements Component {
-	public readonly type = ComponentType.SelectMenu;
+	public readonly type = ComponentType.SelectMenu as const;
 	public readonly options: SelectMenuOption[];
 	public readonly placeholder?: string;
 	public readonly minValues?: number;
