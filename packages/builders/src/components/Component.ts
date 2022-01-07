@@ -1,13 +1,13 @@
 import type { JSONEncodable } from '../util/jsonEncodable';
-import type { APIBaseMessageComponent, APIMessageComponent, ComponentType } from 'discord-api-types/v9';
+import type { APIBaseComponent, APIMessageComponent, ComponentType } from 'discord-api-types/v9';
 
 /**
  * Represents a discord component
  */
 export abstract class Component<
-	DataType extends Partial<APIBaseMessageComponent<ComponentType>> & {
+	DataType extends Partial<APIBaseComponent<ComponentType>> & {
 		type: ComponentType;
-	} = APIBaseMessageComponent<ComponentType>,
+	} = APIBaseComponent<ComponentType>,
 > implements JSONEncodable<APIMessageComponent>
 {
 	/**
