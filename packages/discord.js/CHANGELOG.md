@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# [13.5.1](https://github.com/discordjs/discord.js/compare/13.5.0...13.5.1) - (2022-01-07)
+
+## Bug Fixes
+
+- **sweepers:** Provide default for object param (#7182) ([2dabd82](https://github.com/discordjs/discord.js/commit/2dabd82e26134b5050f694f3a9f6524cd3d0c75c))
+
+## Documentation
+
+- **Sweepers:** Fix typo (#7165) ([780b7ed](https://github.com/discordjs/discord.js/commit/780b7ed39f173a77fd9eae396133980826926906))
+
 # [13.5.0](https://github.com/discordjs/discord.js/compare/13.4.0...13.5.0) - (2021-12-29)
 
 ## Bug Fixes
