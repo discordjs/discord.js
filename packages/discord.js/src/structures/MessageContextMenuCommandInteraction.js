@@ -1,12 +1,12 @@
 'use strict';
 
-const ContextMenuInteraction = require('./ContextMenuInteraction');
+const ContextMenuCommandInteraction = require('./ContextMenuInteraction');
 
 /**
  * Represents a message context menu interaction.
  * @extends {ContextMenuInteraction}
  */
-class MessageContextMenuInteraction extends ContextMenuInteraction {
+class MessageContextMenuCommandInteraction extends ContextMenuCommandInteraction {
   /**
    * The message this interaction was sent from
    * @type {Message|APIMessage}
@@ -17,4 +17,4 @@ class MessageContextMenuInteraction extends ContextMenuInteraction {
   }
 }
 
-module.exports = MessageContextMenuInteraction;
+module.exports = MessageContextMenuCommandInteraction;

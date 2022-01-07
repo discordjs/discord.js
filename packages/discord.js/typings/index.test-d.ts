@@ -19,7 +19,7 @@ import {
   ApplicationCommandResolvable,
   ApplicationCommandSubCommandData,
   ApplicationCommandSubGroupData,
-  BaseCommandInteraction,
+  CommandInteraction,
   ButtonInteraction,
   CacheType,
   CategoryChannel,
@@ -28,12 +28,12 @@ import {
   ClientUser,
   CloseEvent,
   Collection,
-  CommandInteraction,
+  ChatInputCommandInteraction,
   CommandInteractionOption,
   CommandInteractionOptionResolver,
   CommandOptionNonChoiceResolvableType,
   Constants,
-  ContextMenuInteraction,
+  ContextMenuCommandInteraction,
   DMChannel,
   Guild,
   GuildApplicationCommandManager,
@@ -980,7 +980,7 @@ client.on('interactionCreate', interaction => {
 client.on('interactionCreate', async interaction => {
   if (interaction.inCachedGuild()) {
     expectAssignable<GuildMember>(interaction.member);
-    expectNotType<CommandInteraction<'cached'>>(interaction);
+    expectNotType<ChatInputCommandInteraction<'cached'>>(interaction);
     expectAssignable<Interaction>(interaction);
   } else if (interaction.inRawGuild()) {
     expectAssignable<APIInteractionGuildMember>(interaction.member);
@@ -991,16 +991,16 @@ client.on('interactionCreate', async interaction => {
   }
 
   if (interaction.isContextMenu()) {
-    expectType<ContextMenuInteraction>(interaction);
+    expectType<ContextMenuCommandInteraction>(interaction);
     if (interaction.inCachedGuild()) {
-      expectAssignable<ContextMenuInteraction>(interaction);
+      expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectAssignable<Guild>(interaction.guild);
-      expectAssignable<BaseCommandInteraction<'cached'>>(interaction);
+      expectAssignable<CommandInteraction<'cached'>>(interaction);
     } else if (interaction.inRawGuild()) {
-      expectAssignable<ContextMenuInteraction>(interaction);
+      expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectType<null>(interaction.guild);
     } else if (interaction.inGuild()) {
-      expectAssignable<ContextMenuInteraction>(interaction);
+      expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectType<Guild | null>(interaction.guild);
     }
   }
@@ -1091,10 +1091,10 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.isCommand()) {
+  if (interaction.isChatInputCommand()) {
     if (interaction.inRawGuild()) {
       expectNotAssignable<Interaction<'cached'>>(interaction);
-      expectAssignable<CommandInteraction>(interaction);
+      expectAssignable<ChatInputCommandInteraction>(interaction);
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
       expectType<APIInteractionDataResolvedGuildMember>(interaction.options.getMember('test', true));
@@ -1109,7 +1109,7 @@ client.on('interactionCreate', async interaction => {
       expectType<ButtonInteraction<'cached'>>(btn);
 
       expectType<GuildMember | null>(interaction.options.getMember('test'));
-      expectAssignable<CommandInteraction>(interaction);
+      expectAssignable<ChatInputCommandInteraction>(interaction);
       expectType<Promise<Message<true>>>(interaction.reply({ fetchReply: true }));
 
       expectType<GuildBasedChannel>(interaction.options.getChannel('test', true));
@@ -1117,7 +1117,7 @@ client.on('interactionCreate', async interaction => {
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);
-      expectType<CommandInteraction>(interaction);
+      expectType<ChatInputCommandInteraction>(interaction);
       expectType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
       expectType<APIInteractionDataResolvedGuildMember | GuildMember>(interaction.options.getMember('test', true));
@@ -1126,7 +1126,7 @@ client.on('interactionCreate', async interaction => {
       expectType<APIRole | Role>(interaction.options.getRole('test', true));
     }
 
-    expectType<CommandInteraction>(interaction);
+    expectType<ChatInputCommandInteraction>(interaction);
     expectType<Omit<CommandInteractionOptionResolver<CacheType>, 'getFocused' | 'getMessage'>>(interaction.options);
     expectType<readonly CommandInteractionOption[]>(interaction.options.data);
 
