@@ -197,7 +197,7 @@ class Client extends BaseClient {
    * @readonly
    */
   get uptime() {
-    return this.readyTimestamp ? Date.now() - this.readyTimestamp : null;
+    return this.readyTimestamp && Date.now() - this.readyTimestamp;
   }
 
   /**
