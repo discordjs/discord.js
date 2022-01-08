@@ -4790,7 +4790,7 @@ export interface GuildScheduledEventUser<T> {
 
 export type GuildTemplateResolvable = string;
 
-export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
+export type GuildVoiceChannelResolvable = VoiceBasedChannel | BaseGuildVoiceChannel | Snowflake;
 
 export type HexColorString = `#${string}`;
 
