@@ -3,9 +3,6 @@
 const handlers = Object.fromEntries([
   ['READY', require('./READY')],
   ['RESUMED', require('./RESUMED')],
-  ['APPLICATION_COMMAND_CREATE', require('./APPLICATION_COMMAND_CREATE')],
-  ['APPLICATION_COMMAND_DELETE', require('./APPLICATION_COMMAND_DELETE')],
-  ['APPLICATION_COMMAND_UPDATE', require('./APPLICATION_COMMAND_UPDATE')],
   ['GUILD_CREATE', require('./GUILD_CREATE')],
   ['GUILD_DELETE', require('./GUILD_DELETE')],
   ['GUILD_UPDATE', require('./GUILD_UPDATE')],

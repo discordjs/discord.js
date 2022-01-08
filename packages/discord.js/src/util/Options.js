@@ -39,11 +39,6 @@ const process = require('node:process');
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
  * <warn>Overriding the cache used in `GuildManager`, `ChannelManager`, `GuildChannelManager`, `RoleManager`,
  * and `PermissionOverwriteManager` is unsupported and **will** break functionality</warn>
- * @property {number} [messageCacheLifetime=0] DEPRECATED: Pass `lifetime` to `sweepers.messages` instead.
- * How long a message should stay in the cache until it is considered sweepable (in seconds, 0 for forever)
- * @property {number} [messageSweepInterval=0] DEPRECATED: Pass `interval` to `sweepers.messages` instead.
- * How frequently to remove messages from the cache that are older than the message cache lifetime
- * (in seconds, 0 for never)
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
  * @property {number} [invalidRequestWarningInterval=0] The number of invalid REST requests (those that return
  * 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings). That is, if set to 500,
@@ -52,8 +47,6 @@ const process = require('node:process');
  * they're missing all the data for a particular structure. See the "Partial Structures" topic on the
  * [guide](https://discordjs.guide/popular-topics/partials.html) for some
  * important usage information, as partials require you to put checks in place when handling data.
- * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
- * corresponding WebSocket events
  * @property {number} [restTimeOffset=500] Extra time in milliseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {number} [restRequestTimeout=15000] Time to wait before cancelling a REST request, in milliseconds
@@ -135,11 +128,8 @@ class Options extends null {
       waitGuildTimeout: 15_000,
       shardCount: 1,
       makeCache: this.cacheWithLimits(this.defaultMakeCacheSettings),
-      messageCacheLifetime: 0,
-      messageSweepInterval: 0,
       invalidRequestWarningInterval: 0,
       partials: [],
-      restWsBridgeTimeout: 5_000,
       restRequestTimeout: 15_000,
       restGlobalRateLimit: 0,
       retryLimit: 1,
@@ -148,7 +138,7 @@ class Options extends null {
       failIfNotExists: true,
       userAgentSuffix: [],
       presence: {},
-      sweepers: {},
+      sweepers: this.defaultSweeperSettings,
       ws: {
         large_threshold: 50,
         compress: false,
@@ -179,32 +169,14 @@ class Options extends null {
    * If LimitedCollectionOptions are provided for a manager, it uses those settings to form a LimitedCollection.
    * @returns {CacheFactory}
    * @example
-   * // Store up to 200 messages per channel and discard archived threads if they were archived more than 4 hours ago.
-   * // Note archived threads will remain in the guild and client caches with these settings
+   * // Store up to 200 messages per channel and 200 members per guild, always keeping the client member.
    * Options.cacheWithLimits({
    *    MessageManager: 200,
-   *    ThreadManager: {
-   *      sweepInterval: 3600,
-   *      sweepFilter: LimitedCollection.filterByLifetime({
-   *        getComparisonTimestamp: e => e.archiveTimestamp,
-   *        excludeFromSweep: e => !e.archived,
-   *      }),
+   *    GuildMemberManager: {
+   *      maxSize: 200,
+   *      keepOverLimit: (member) => member.id === client.user.id,
    *    },
    *  });
-   * @example
-   * // Sweep messages every 5 minutes, removing messages that have not been edited or created in the last 30 minutes
-   * Options.cacheWithLimits({
-   *   // Keep default thread sweeping behavior
-   *   ...Options.defaultMakeCacheSettings,
-   *   // Override MessageManager
-   *   MessageManager: {
-   *     sweepInterval: 300,
-   *     sweepFilter: LimitedCollection.filterByLifetime({
-   *       lifetime: 1800,
-   *       getComparisonTimestamp: e => e.editedTimestamp ?? e.createdTimestamp,
-   *     })
-   *   }
-   * });
    */
   static cacheWithLimits(settings = {}) {
     const { Collection } = require('@discordjs/collection');
@@ -222,15 +194,9 @@ class Options extends null {
         }
         return new LimitedCollection({ maxSize: setting });
       }
-      /* eslint-disable eqeqeq */
-      const noSweeping =
-        setting.sweepFilter == null ||
-        setting.sweepInterval == null ||
-        setting.sweepInterval <= 0 ||
-        setting.sweepInterval === Infinity;
+      /* eslint-disable-next-line eqeqeq */
       const noLimit = setting.maxSize == null || setting.maxSize === Infinity;
-      /* eslint-enable eqeqeq */
-      if (noSweeping && noLimit) {
+      if (noLimit) {
         return new Collection();
       }
       return new LimitedCollection(setting);
@@ -260,18 +226,6 @@ class Options extends null {
   static get defaultMakeCacheSettings() {
     return {
       MessageManager: 200,
-      ChannelManager: {
-        sweepInterval: 3600,
-        sweepFilter: require('./Util').archivedThreadSweepFilter(),
-      },
-      GuildChannelManager: {
-        sweepInterval: 3600,
-        sweepFilter: require('./Util').archivedThreadSweepFilter(),
-      },
-      ThreadManager: {
-        sweepInterval: 3600,
-        sweepFilter: require('./Util').archivedThreadSweepFilter(),
-      },
     };
   }
 }

@@ -20,7 +20,7 @@ import {
   ApplicationCommandResolvable,
   ApplicationCommandSubCommandData,
   ApplicationCommandSubGroupData,
-  BaseCommandInteraction,
+  CommandInteraction,
   ButtonInteraction,
   CacheType,
   CategoryChannel,
@@ -30,12 +30,12 @@ import {
   CloseEvent,
   Collection,
   Collector,
-  CommandInteraction,
+  ChatInputCommandInteraction,
   CommandInteractionOption,
   CommandInteractionOptionResolver,
   CommandOptionNonChoiceResolvableType,
   Constants,
-  ContextMenuInteraction,
+  ContextMenuCommandInteraction,
   DMChannel,
   Emoji,
   Guild,
@@ -52,7 +52,6 @@ import {
   Intents,
   Interaction,
   InteractionCollector,
-  LimitedCollection,
   Message,
   MessageActionRow,
   MessageActionRowComponent,
@@ -107,14 +106,9 @@ const client: Client = new Client({
     MessageManager: 200,
     // @ts-expect-error
     Message: 100,
-    ThreadManager: {
-      maxSize: 1000,
-      keepOverLimit: (x: ThreadChannel) => x.id === '123',
-      sweepInterval: 5000,
-      sweepFilter: LimitedCollection.filterByLifetime({
-        getComparisonTimestamp: (x: ThreadChannel) => x.archiveTimestamp ?? 0,
-        excludeFromSweep: (x: ThreadChannel) => !x.archived,
-      }),
+    GuildMemberManager: {
+      maxSize: 200,
+      keepOverLimit: member => member.id === client.user?.id,
     },
   }),
 });
@@ -794,10 +788,22 @@ messageCollector.on('collect', (...args) => {
   expectType<[Message]>(args);
 });
 
+(async () => {
+  for await (const value of messageCollector) {
+    expectType<[Message<boolean>]>(value);
+  }
+})();
+
 declare const reactionCollector: ReactionCollector;
 reactionCollector.on('dispose', (...args) => {
   expectType<[MessageReaction, User]>(args);
 });
+
+(async () => {
+  for await (const value of reactionCollector) {
+    expectType<[MessageReaction, User]>(value);
+  }
+})();
 
 // Make sure the properties are typed correctly, and that no backwards properties
 // (K -> V and V -> K) exist:
@@ -942,12 +948,33 @@ expectDeprecated(sticker.deleted);
 // Test interactions
 declare const interaction: Interaction;
 declare const booleanValue: boolean;
-if (interaction.inGuild()) expectType<Snowflake>(interaction.guildId);
+if (interaction.inGuild()) {
+  expectType<Snowflake>(interaction.guildId);
+} else {
+  expectType<Snowflake | null>(interaction.guildId);
+}
+
+client.on('interactionCreate', interaction => {
+  // This is for testing never type resolution
+  if (!interaction.inGuild()) {
+    return;
+  }
+
+  if (interaction.inRawGuild()) {
+    expectNotType<never>(interaction);
+    return;
+  }
+
+  if (interaction.inCachedGuild()) {
+    expectNotType<never>(interaction);
+    return;
+  }
+});
 
 client.on('interactionCreate', async interaction => {
   if (interaction.inCachedGuild()) {
     expectAssignable<GuildMember>(interaction.member);
-    expectNotType<CommandInteraction<'cached'>>(interaction);
+    expectNotType<ChatInputCommandInteraction<'cached'>>(interaction);
     expectAssignable<Interaction>(interaction);
   } else if (interaction.inRawGuild()) {
     expectAssignable<APIInteractionGuildMember>(interaction.member);
@@ -958,16 +985,16 @@ client.on('interactionCreate', async interaction => {
   }
 
   if (interaction.isContextMenu()) {
-    expectType<ContextMenuInteraction>(interaction);
+    expectType<ContextMenuCommandInteraction>(interaction);
     if (interaction.inCachedGuild()) {
-      expectAssignable<ContextMenuInteraction>(interaction);
+      expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectAssignable<Guild>(interaction.guild);
-      expectAssignable<BaseCommandInteraction<'cached'>>(interaction);
+      expectAssignable<CommandInteraction<'cached'>>(interaction);
     } else if (interaction.inRawGuild()) {
-      expectAssignable<ContextMenuInteraction>(interaction);
+      expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectType<null>(interaction.guild);
     } else if (interaction.inGuild()) {
-      expectAssignable<ContextMenuInteraction>(interaction);
+      expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectType<Guild | null>(interaction.guild);
     }
   }
@@ -1058,10 +1085,10 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.isCommand()) {
+  if (interaction.isChatInputCommand()) {
     if (interaction.inRawGuild()) {
       expectNotAssignable<Interaction<'cached'>>(interaction);
-      expectAssignable<CommandInteraction>(interaction);
+      expectAssignable<ChatInputCommandInteraction>(interaction);
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
 
@@ -1075,7 +1102,7 @@ client.on('interactionCreate', async interaction => {
       expectType<ButtonInteraction<'cached'>>(btn);
 
       expectType<GuildMember | null>(interaction.options.getMember('test'));
-      expectAssignable<CommandInteraction>(interaction);
+      expectAssignable<ChatInputCommandInteraction>(interaction);
       expectType<Promise<Message<true>>>(interaction.reply({ fetchReply: true }));
 
       expectType<GuildBasedChannel>(interaction.options.getChannel('test', true));
@@ -1083,7 +1110,7 @@ client.on('interactionCreate', async interaction => {
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);
-      expectType<CommandInteraction>(interaction);
+      expectType<ChatInputCommandInteraction>(interaction);
       expectType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
 
@@ -1091,7 +1118,7 @@ client.on('interactionCreate', async interaction => {
       expectType<APIRole | Role>(interaction.options.getRole('test', true));
     }
 
-    expectType<CommandInteraction>(interaction);
+    expectType<ChatInputCommandInteraction>(interaction);
     expectType<Omit<CommandInteractionOptionResolver<CacheType>, 'getFocused' | 'getMessage'>>(interaction.options);
     expectType<readonly CommandInteractionOption[]>(interaction.options.data);
 
@@ -1145,6 +1172,12 @@ collector.on('end', (collection, reason) => {
   expectType<Collection<string, Interaction>>(collection);
   expectType<string>(reason);
 });
+
+(async () => {
+  for await (const value of collector) {
+    expectType<[Interaction, ...string[]]>(value);
+  }
+})();
 
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
 

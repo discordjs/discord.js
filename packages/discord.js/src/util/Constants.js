@@ -130,18 +130,6 @@ exports.Events = {
   API_RESPONSE: 'apiResponse',
   API_REQUEST: 'apiRequest',
   CLIENT_READY: 'ready',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
-  APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
-  APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
-  APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -238,9 +226,6 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * The type of a WebSocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED
- * * APPLICATION_COMMAND_CREATE (deprecated)
- * * APPLICATION_COMMAND_DELETE (deprecated)
- * * APPLICATION_COMMAND_UPDATE (deprecated)
  * * GUILD_CREATE
  * * GUILD_DELETE
  * * GUILD_UPDATE
@@ -297,9 +282,6 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
 exports.WSEvents = keyMirror([
   'READY',
   'RESUMED',
-  'APPLICATION_COMMAND_CREATE',
-  'APPLICATION_COMMAND_DELETE',
-  'APPLICATION_COMMAND_UPDATE',
   'GUILD_CREATE',
   'GUILD_DELETE',
   'GUILD_UPDATE',
@@ -416,7 +398,7 @@ exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
  * * GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING
  * * THREAD_CREATED
  * * REPLY
- * * APPLICATION_COMMAND
+ * * CHAT_INPUT_COMMAND
  * * THREAD_STARTER_MESSAGE
  * * GUILD_INVITE_REMINDER
  * * CONTEXT_MENU_COMMAND
@@ -444,7 +426,7 @@ exports.MessageTypes = [
   'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING',
   'THREAD_CREATED',
   'REPLY',
-  'APPLICATION_COMMAND',
+  'CHAT_INPUT_COMMAND',
   'THREAD_STARTER_MESSAGE',
   'GUILD_INVITE_REMINDER',
   'CONTEXT_MENU_COMMAND',
@@ -489,12 +471,12 @@ exports.SweeperKeys = [
  * The types of messages that are `System`. The available types are `MessageTypes` excluding:
  * * DEFAULT
  * * REPLY
- * * APPLICATION_COMMAND
+ * * CHAT_INPUT_COMMAND
  * * CONTEXT_MENU_COMMAND
  * @typedef {string} SystemMessageType
  */
 exports.SystemMessageTypes = exports.MessageTypes.filter(
-  type => type && !['DEFAULT', 'REPLY', 'APPLICATION_COMMAND', 'CONTEXT_MENU_COMMAND'].includes(type),
+  type => type && !['DEFAULT', 'REPLY', 'CHAT_INPUT_COMMAND', 'CONTEXT_MENU_COMMAND'].includes(type),
 );
 
 /**
@@ -1183,8 +1165,6 @@ exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', '
  */
 exports.GuildScheduledEventEntityTypes = createEnum([null, 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
 /* eslint-enable max-len */
-
-exports._cleanupSymbol = Symbol('djsCleanup');
 
 function keyMirror(arr) {
   let tmp = Object.create(null);

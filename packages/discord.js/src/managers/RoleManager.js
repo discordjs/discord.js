@@ -227,7 +227,7 @@ class RoleManager extends CachedManager {
    * @example
    * // Delete a role
    * guild.roles.delete('222079219327434752', 'The role needed to go')
-   *   .then(deleted => console.log(`Deleted role ${deleted.name}`))
+   *   .then(() => console.log('Deleted the role'))
    *   .catch(console.error);
    */
   async delete(role, reason) {
@@ -235,6 +235,13 @@ class RoleManager extends CachedManager {
     await this.client.api.guilds[this.guild.id].roles[id].delete({ reason });
     this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: id });
   }
+
+  /*
+   * The data needed for updating a guild role's position
+   * @typedef {Object} GuildRolePosition
+   * @property {RoleResolvable} role The role's id
+   * @property {number} position The position to update
+   */
 
   /**
    * Batch-updates the guild's role positions

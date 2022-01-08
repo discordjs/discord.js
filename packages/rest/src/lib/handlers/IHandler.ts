@@ -6,6 +6,6 @@ export interface IHandler {
 		routeId: RouteData,
 		url: string,
 		options: RequestInit,
-		bodyData: Pick<InternalRequest, 'attachments' | 'body'>,
+		bodyData: Pick<InternalRequest, 'files' | 'body'>,
 	): Promise<unknown>;
 }

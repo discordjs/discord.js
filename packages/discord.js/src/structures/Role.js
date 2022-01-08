@@ -7,8 +7,6 @@ const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
-let deprecationEmittedForComparePositions = false;
-
 /**
  * @type {WeakSet<Role>}
  * @private
@@ -479,27 +477,6 @@ class Role extends Base {
       ...super.toJSON({ createdTimestamp: true }),
       permissions: this.permissions.toJSON(),
     };
-  }
-
-  /**
-   * Compares the positions of two roles.
-   * @param {Role} role1 First role to compare
-   * @param {Role} role2 Second role to compare
-   * @returns {number} Negative number if the first role's position is lower (second role's is higher),
-   * positive number if the first's is higher (second's is lower), 0 if equal
-   * @deprecated Use {@link RoleManager#comparePositions} instead.
-   */
-  static comparePositions(role1, role2) {
-    if (!deprecationEmittedForComparePositions) {
-      process.emitWarning(
-        'The Role.comparePositions method is deprecated. Use RoleManager#comparePositions instead.',
-        'DeprecationWarning',
-      );
-
-      deprecationEmittedForComparePositions = true;
-    }
-
-    return role1.guild.roles.comparePositions(role1, role2);
   }
 }
 
