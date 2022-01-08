@@ -1,9 +1,9 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const TeamMember = require('./TeamMember');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents a Client OAuth2 Application Team.
@@ -76,7 +76,7 @@ class Team extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**

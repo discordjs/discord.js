@@ -1,9 +1,9 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const { Sticker } = require('./Sticker');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents a pack of standard stickers.
@@ -61,7 +61,7 @@ class StickerPack extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**

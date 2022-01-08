@@ -52,6 +52,7 @@
     "@discordjs/builders": "^0.11.0",
     "@discordjs/collection": "^0.4.0",
     "@sapphire/async-queue": "^1.1.9",
+    "@sapphire/snowflake": "^3.0.0",
     "@types/node-fetch": "^2.5.12",
     "@types/ws": "^8.2.2",
     "discord-api-types": "^0.26.1",

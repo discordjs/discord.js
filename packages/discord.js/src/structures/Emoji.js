@@ -1,7 +1,7 @@
 'use strict';
 
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents raw emoji data from the API
@@ -62,7 +62,7 @@ class Emoji extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return this.id && SnowflakeUtil.timestampFrom(this.id);
+    return this.id && DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**
