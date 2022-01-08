@@ -629,8 +629,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param other The other Collection to filter against
 	 */
-	public intersect<T>(other: Collection<K, T>): Collection<K, T | V> {
-		const coll = new this.constructor[Symbol.species]<K, T | V>();
+	public intersect<T>(other: Collection<K, T>): Collection<K, T> {
+		const coll = new this.constructor[Symbol.species]<K, T>();
 		for (const [k, v] of other) {
 			if (this.has(k) && Object.is(v, this.get(k))) {
 				coll.set(k, v);
