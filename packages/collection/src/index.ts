@@ -625,7 +625,7 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * The intersect method returns a new structure containing items where the keys are present in both original structures.
+	 * The intersect method returns a new structure containing items where the keys and values are present in both original structures.
 	 *
 	 * @param other The other Collection to filter against
 	 */
