@@ -1,0 +1,78 @@
+{
+	"name": "@discordjs/sharder",
+	"version": "0.0.1",
+	"description": "The sharding manager for discord.js",
+	"scripts": {
+		"test": "vitest run",
+		"build": "tsup",
+		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
+		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
+		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
+		"prepack": "yarn build && yarn lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/sharder/*'",
+		"release": "cliff-jumper"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"typings": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js",
+		"types": "./dist/index.d.ts"
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Antonio Roman <kyradiscord@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"sharder",
+		"shardmanager",
+		"discordapp"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@discordjs/rest": "workspace:^",
+		"@sapphire/utilities": "^3.7.0",
+		"discord-api-types": "^0.36.1",
+		"tslib": "^2.4.0",
+		"zod": "^3.11.6"
+	},
+	"devDependencies": {
+		"@discordjs/docgen": "workspace:^",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^1.8.5",
+		"@microsoft/api-extractor": "^7.28.3",
+		"c8": "^7.11.3",
+		"eslint": "^8.19.0",
+		"prettier": "^2.7.1",
+		"tsup": "^6.1.3",
+		"typescript": "^4.7.4",
+		"vitest": "^0.17.0"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
