@@ -1246,7 +1246,7 @@ class Guild extends AnonymousGuild {
   async leave() {
     if (this.ownerId === this.client.user.id) throw new Error('GUILD_OWNED');
     await this.client.api.users('@me').guilds(this.id).delete();
-    return this.client.actions.GuildDelete.handle({ id: this.id }).guild;
+    return this;
   }
 
   /**
@@ -1260,7 +1260,7 @@ class Guild extends AnonymousGuild {
    */
   async delete() {
     await this.client.api.guilds(this.id).delete();
-    return this.client.actions.GuildDelete.handle({ id: this.id }).guild;
+    return this;
   }
 
   /**

@@ -321,7 +321,7 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
   Message | APIMessage
 >;
 
-export abstract class BaseCommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
+export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
@@ -345,9 +345,9 @@ export abstract class BaseCommandInteraction<Cached extends CacheType = CacheTyp
   public ephemeral: boolean | null;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public inGuild(): this is BaseCommandInteraction<'raw' | 'cached'>;
-  public inCachedGuild(): this is BaseCommandInteraction<'cached'>;
-  public inRawGuild(): this is BaseCommandInteraction<'raw'>;
+  public inGuild(): this is CommandInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is CommandInteraction<'cached'>;
+  public inRawGuild(): this is CommandInteraction<'raw'>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
@@ -569,8 +569,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public generateInvite(options?: InviteGenerationOptions): string;
   public login(token?: string): Promise<string>;
   public isReady(): this is Client<true>;
-  /** @deprecated Use {@link Sweepers#sweepMessages} instead */
-  public sweepMessages(lifetime?: number): number;
   public toJSON(): unknown;
 
   public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
@@ -724,11 +722,11 @@ export interface ApplicationCommandInteractionOptionResolver<Cached extends Cach
   ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
 }
 
-export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
+export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
-  public inGuild(): this is CommandInteraction<'raw' | 'cached'>;
-  public inCachedGuild(): this is CommandInteraction<'cached'>;
-  public inRawGuild(): this is CommandInteraction<'raw'>;
+  public inGuild(): this is ChatInputCommandInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is ChatInputCommandInteraction<'cached'>;
+  public inRawGuild(): this is ChatInputCommandInteraction<'raw'>;
   public toString(): string;
 }
 
@@ -804,7 +802,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getFocused(getFull?: boolean): string | number;
 }
 
-export class ContextMenuInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
+export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
     | 'getFocused'
@@ -820,9 +818,9 @@ export class ContextMenuInteraction<Cached extends CacheType = CacheType> extend
   >;
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
-  public inGuild(): this is ContextMenuInteraction<'raw' | 'cached'>;
-  public inCachedGuild(): this is ContextMenuInteraction<'cached'>;
-  public inRawGuild(): this is ContextMenuInteraction<'raw'>;
+  public inGuild(): this is ContextMenuCommandInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is ContextMenuCommandInteraction<'cached'>;
+  public inRawGuild(): this is ContextMenuCommandInteraction<'raw'>;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
 }
 
@@ -1332,13 +1330,16 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public inGuild(): this is Interaction<'raw' | 'cached'>;
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
-  public isApplicationCommand(): this is BaseCommandInteraction<Cached>;
+  public isApplicationCommand(): this is CommandInteraction<Cached>;
   public isButton(): this is ButtonInteraction<Cached>;
   public isCommand(): this is CommandInteraction<Cached>;
+  public isChatInputCommand(): this is ChatInputCommandInteraction<Cached>;
+  public isContextMenuCommand(): this is ContextMenuCommandInteraction<Cached>;
+  public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isAutocomplete(): this is AutocompleteInteraction<Cached>;
-  public isContextMenu(): this is ContextMenuInteraction<Cached>;
-  public isUserContextMenu(): this is UserContextMenuInteraction<Cached>;
-  public isMessageContextMenu(): this is MessageContextMenuInteraction<Cached>;
+  public isContextMenu(): this is ContextMenuCommandInteraction<Cached>;
+  public isUserContextMenu(): this is UserContextMenuCommandInteraction<Cached>;
+  public isMessageContextMenu(): this is MessageContextMenuCommandInteraction<Cached>;
   public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
 }
@@ -1429,13 +1430,6 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
   public constructor(options?: LimitedCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
   public maxSize: number;
   public keepOverLimit: ((value: V, key: K, collection: this) => boolean) | null;
-  /** @deprecated Use Global Sweepers instead */
-  public interval: NodeJS.Timeout | null;
-  /** @deprecated Use Global Sweepers instead */
-  public sweepFilter: SweepFilter<K, V> | null;
-
-  /** @deprecated Use `Sweepers.filterByLifetime` instead */
-  public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): SweepFilter<K, V>;
 }
 
 export type MessageCollectorOptionsParams<T extends MessageComponentTypeResolvable, Cached extends boolean = boolean> =
@@ -1660,13 +1654,13 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public static resolveType(type: MessageComponentTypeResolvable): MessageComponentType;
 }
 
-export class MessageContextMenuInteraction<
+export class MessageContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
-> extends ContextMenuInteraction<Cached> {
+> extends ContextMenuCommandInteraction<Cached> {
   public readonly targetMessage: NonNullable<CommandInteractionOption<Cached>['message']>;
-  public inGuild(): this is MessageContextMenuInteraction<'raw' | 'cached'>;
-  public inCachedGuild(): this is MessageContextMenuInteraction<'cached'>;
-  public inRawGuild(): this is MessageContextMenuInteraction<'raw'>;
+  public inGuild(): this is MessageContextMenuCommandInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is MessageContextMenuCommandInteraction<'cached'>;
+  public inRawGuild(): this is MessageContextMenuCommandInteraction<'raw'>;
 }
 
 export class MessageEmbed {
@@ -2391,7 +2385,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly tag: string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
-  public bannerURL(options?: ImageURLOptions): string | null;
+  public bannerURL(options?: ImageURLOptions): string | null | undefined;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
@@ -2401,12 +2395,14 @@ export class User extends PartialTextBasedChannel(Base) {
   public toString(): UserMention;
 }
 
-export class UserContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
+export class UserContextMenuCommandInteraction<
+  Cached extends CacheType = CacheType,
+> extends ContextMenuCommandInteraction<Cached> {
   public readonly targetUser: User;
   public readonly targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
-  public inGuild(): this is UserContextMenuInteraction<'raw' | 'cached'>;
-  public inCachedGuild(): this is UserContextMenuInteraction<'cached'>;
-  public inRawGuild(): this is UserContextMenuInteraction<'raw'>;
+  public inGuild(): this is UserContextMenuCommandInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is UserContextMenuCommandInteraction<'cached'>;
+  public inRawGuild(): this is UserContextMenuCommandInteraction<'raw'>;
 }
 
 export class UserFlags extends BitField<UserFlagsString> {
@@ -2416,8 +2412,6 @@ export class UserFlags extends BitField<UserFlagsString> {
 
 export class Util extends null {
   private constructor();
-  /** @deprecated When not using with `makeCache` use `Sweepers.archivedThreadSweepFilter` instead */
-  public static archivedThreadSweepFilter<K, V>(lifetime?: number): SweepFilter<K, V>;
   public static basename(path: string, ext?: string): string;
   public static cleanContent(str: string, channel: TextBasedChannel): string;
   public static cloneObject(obj: unknown): unknown;
@@ -3990,14 +3984,9 @@ export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
   makeCache?: CacheFactory;
-  /** @deprecated Pass the value of this property as `lifetime` to `sweepers.messages` instead. */
-  messageCacheLifetime?: number;
-  /** @deprecated Pass the value of this property as `interval` to `sweepers.messages` instead. */
-  messageSweepInterval?: number;
   allowedMentions?: MessageMentionOptions;
   invalidRequestWarningInterval?: number;
   partials?: PartialTypes[];
-  restWsBridgeTimeout?: number;
   restTimeOffset?: number;
   restRequestTimeout?: number;
   restGlobalRateLimit?: number;
@@ -5509,10 +5498,6 @@ export type SweeperKey = keyof SweeperDefinitions;
 
 export type CollectionSweepFilter<K, V> = (value: V, key: K, collection: Collection<K, V>) => boolean;
 
-export type SweepFilter<K, V> = (
-  collection: LimitedCollection<K, V>,
-) => ((value: V, key: K, collection: LimitedCollection<K, V>) => boolean) | null;
-
 export interface SweepOptions<K, V> {
   interval: number;
   filter: GlobalSweepFilter<K, V>;
@@ -5550,10 +5535,6 @@ export type SweeperOptions = {
 export interface LimitedCollectionOptions<K, V> {
   maxSize?: number;
   keepOverLimit?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
-  /** @deprecated Use Global Sweepers instead */
-  sweepFilter?: SweepFilter<K, V>;
-  /** @deprecated Use Global Sweepers instead */
-  sweepInterval?: number;
 }
 
 export type AnyChannel =

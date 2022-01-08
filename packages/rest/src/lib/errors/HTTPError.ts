@@ -21,10 +21,10 @@ export class HTTPError extends Error {
 		public status: number,
 		public method: string,
 		public url: string,
-		bodyData: Pick<InternalRequest, 'attachments' | 'body'>,
+		bodyData: Pick<InternalRequest, 'files' | 'body'>,
 	) {
 		super(message);
 
-		this.requestBody = { attachments: bodyData.attachments, json: bodyData.body };
+		this.requestBody = { files: bodyData.files, json: bodyData.body };
 	}
 }

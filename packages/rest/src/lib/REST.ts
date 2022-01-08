@@ -142,7 +142,7 @@ export interface APIRequest {
 	/**
 	 * The data that was used to form the body of this request
 	 */
-	data: Pick<InternalRequest, 'attachments' | 'body'>;
+	data: Pick<InternalRequest, 'files' | 'body'>;
 	/**
 	 * The number of times this request has been attempted
 	 */

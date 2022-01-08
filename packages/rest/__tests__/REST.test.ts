@@ -38,7 +38,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 	.reply(200, (_, body) => body)
 	.post('/postEcho')
 	.reply(200, (_, body) => body)
-	.post('/postAttachment')
+	.post('/postFile')
 	.times(5)
 	.reply(200, (_, body) => ({
 		body: body
@@ -109,16 +109,16 @@ test('getReason encoded', async () => {
 	expect(await api.get('/getReason', { reason: '😄' })).toStrictEqual({ reason: '%F0%9F%98%84' });
 });
 
-test('postAttachment empty', async () => {
-	expect(await api.post('/postAttachment', { attachments: [] })).toStrictEqual({
+test('postFile empty', async () => {
+	expect(await api.post('/postFile', { files: [] })).toStrictEqual({
 		body: '',
 	});
 });
 
-test('postAttachment attachment', async () => {
+test('postFile file', async () => {
 	expect(
-		await api.post('/postAttachment', {
-			attachments: [{ fileName: 'out.txt', rawBuffer: Buffer.from('Hello') }],
+		await api.post('/postFile', {
+			files: [{ fileName: 'out.txt', rawBuffer: Buffer.from('Hello') }],
 		}),
 	).toStrictEqual({
 		body: [
@@ -130,10 +130,10 @@ test('postAttachment attachment', async () => {
 	});
 });
 
-test('postAttachment attachment and JSON', async () => {
+test('postFile file and JSON', async () => {
 	expect(
-		await api.post('/postAttachment', {
-			attachments: [{ fileName: 'out.txt', rawBuffer: Buffer.from('Hello') }],
+		await api.post('/postFile', {
+			files: [{ fileName: 'out.txt', rawBuffer: Buffer.from('Hello') }],
 			body: { foo: 'bar' },
 		}),
 	).toStrictEqual({
@@ -149,14 +149,14 @@ test('postAttachment attachment and JSON', async () => {
 	});
 });
 
-test('postAttachment attachments and JSON', async () => {
+test('postFile files and JSON', async () => {
 	expect(
-		await api.post('/postAttachment', {
-			attachments: [
+		await api.post('/postFile', {
+			files: [
 				{ fileName: 'out.txt', rawBuffer: Buffer.from('Hello') },
 				{ fileName: 'out.txt', rawBuffer: Buffer.from('Hi') },
 			],
-			body: { attachments: [{ id: 0, description: 'test' }] },
+			body: { files: [{ id: 0, description: 'test' }] },
 		}),
 	).toStrictEqual({
 		body: [
@@ -170,15 +170,15 @@ test('postAttachment attachments and JSON', async () => {
 			'Hi',
 			'Content-Disposition: form-data; name="payload_json"',
 			'',
-			'{"attachments":[{"id":0,"description":"test"}]}',
+			'{"files":[{"id":0,"description":"test"}]}',
 		].join('\n'),
 	});
 });
 
-test('postAttachment sticker and JSON', async () => {
+test('postFile sticker and JSON', async () => {
 	expect(
-		await api.post('/postAttachment', {
-			attachments: [{ key: 'file', fileName: 'sticker.png', rawBuffer: Buffer.from('Sticker') }],
+		await api.post('/postFile', {
+			files: [{ key: 'file', fileName: 'sticker.png', rawBuffer: Buffer.from('Sticker') }],
 			body: { foo: 'bar' },
 			appendToFormData: true,
 		}),
@@ -242,7 +242,7 @@ test('Request and Response Events', async () => {
 			method: 'get',
 			path: '/request',
 			route: '/request',
-			data: { attachments: undefined, body: undefined },
+			data: { files: undefined, body: undefined },
 			retries: 0,
 		}) as APIRequest,
 	);
@@ -251,7 +251,7 @@ test('Request and Response Events', async () => {
 			method: 'get',
 			path: '/request',
 			route: '/request',
-			data: { attachments: undefined, body: undefined },
+			data: { files: undefined, body: undefined },
 			retries: 0,
 		}) as APIRequest,
 		expect.objectContaining({ status: 200, statusText: 'OK' }) as Response,

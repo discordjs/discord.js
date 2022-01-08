@@ -22,8 +22,8 @@ class GuildChannelManager extends CachedManager {
     super(guild.client, GuildChannel, iterable);
     const defaultCaching =
       this._cache.constructor.name === 'Collection' ||
-      ((this._cache.maxSize === undefined || this._cache.maxSize === Infinity) &&
-        (this._cache.sweepFilter === undefined || this._cache.sweepFilter.isDefault));
+      this._cache.maxSize === undefined ||
+      this._cache.maxSize === Infinity;
     if (!cacheWarningEmitted && !defaultCaching) {
       cacheWarningEmitted = true;
       process.emitWarning(

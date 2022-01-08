@@ -137,43 +137,43 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link BaseCommandInteraction}.
-   * @returns {boolean}
-   */
-  isApplicationCommand() {
-    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND;
-  }
-
-  /**
    * Indicates whether this interaction is a {@link CommandInteraction}.
    * @returns {boolean}
    */
   isCommand() {
+    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND;
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link ChatInputCommandInteraction}.
+   * @returns {boolean}
+   */
+  isChatInputCommand() {
     return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId === 'undefined';
   }
 
   /**
-   * Indicates whether this interaction is a {@link ContextMenuInteraction}
+   * Indicates whether this interaction is a {@link ContextMenuCommandInteraction}
    * @returns {boolean}
    */
-  isContextMenu() {
+  isContextMenuCommand() {
     return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId !== 'undefined';
   }
 
   /**
-   * Indicates whether this interaction is a {@link UserContextMenuInteraction}
+   * Indicates whether this interaction is a {@link UserContextMenuCommandInteraction}
    * @returns {boolean}
    */
-  isUserContextMenu() {
-    return this.isContextMenu() && ApplicationCommandTypes[this.targetType] === ApplicationCommandTypes.USER;
+  isUserContextMenuCommand() {
+    return this.isContextMenuCommand() && ApplicationCommandTypes[this.targetType] === ApplicationCommandTypes.USER;
   }
 
   /**
-   * Indicates whether this interaction is a {@link MessageContextMenuInteraction}
+   * Indicates whether this interaction is a {@link MessageContextMenuCommandInteraction}
    * @returns {boolean}
    */
-  isMessageContextMenu() {
-    return this.isContextMenu() && ApplicationCommandTypes[this.targetType] === ApplicationCommandTypes.MESSAGE;
+  isMessageContextMenuCommand() {
+    return this.isContextMenuCommand() && ApplicationCommandTypes[this.targetType] === ApplicationCommandTypes.MESSAGE;
   }
 
   /**
