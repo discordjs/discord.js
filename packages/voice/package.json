@@ -76,6 +76,7 @@
 		"prettier": "^2.4.1",
 		"standard-version": "^9.3.2",
 		"tsup": "^5.11.11",
+		"tweetnacl": "^1.0.3",
 		"typedoc": "^0.22.8",
 		"typescript": "^4.4.4"
 	},
