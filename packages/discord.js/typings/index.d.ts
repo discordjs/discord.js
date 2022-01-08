@@ -3213,8 +3213,7 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   private constructor(thread: ThreadChannel, iterable?: Iterable<RawThreadMemberData>);
   public thread: ThreadChannel;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
-  public fetch(member?: UserResolvable, options?: BaseFetchOptions): Promise<ThreadMember>;
-  /** @deprecated Use `fetch(member, options)` instead. */
+  public fetch(options?: ThreadMemberFetchOptions): Promise<ThreadMember>;
   public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
 }
@@ -3730,6 +3729,10 @@ export type Base64String = string;
 export interface BaseFetchOptions {
   cache?: boolean;
   force?: boolean;
+}
+
+export interface ThreadMemberFetchOptions extends BaseFetchOptions {
+  member?: UserResolvable;
 }
 
 export interface BaseMessageComponentOptions {
