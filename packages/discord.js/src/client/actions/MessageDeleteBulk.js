@@ -2,7 +2,6 @@
 
 const { Collection } = require('@discordjs/collection');
 const Action = require('./Action');
-const { deletedMessages } = require('../../structures/Message');
 const { Events } = require('../../util/Constants');
 
 class MessageDeleteBulkAction extends Action {
@@ -25,7 +24,6 @@ class MessageDeleteBulkAction extends Action {
           false,
         );
         if (message) {
-          deletedMessages.add(message);
           messages.set(message.id, message);
           channel.messages.cache.delete(id);
         }

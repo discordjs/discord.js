@@ -1,20 +1,11 @@
 'use strict';
 
-const process = require('node:process');
 const Base = require('./Base');
 const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Permissions = require('../util/Permissions');
-
-/**
- * @type {WeakSet<GuildMember>}
- * @private
- * @internal
- */
-const deletedGuildMembers = new WeakSet();
-let deprecationEmittedForDeleted = false;
 
 /**
  * Represents a member of a guild on Discord.
@@ -101,36 +92,6 @@ class GuildMember extends Base {
     const clone = super._clone();
     clone._roles = this._roles.slice();
     return clone;
-  }
-
-  /**
-   * Whether or not the structure has been deleted
-   * @type {boolean}
-   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
-   */
-  get deleted() {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'GuildMember#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    return deletedGuildMembers.has(this);
-  }
-
-  set deleted(value) {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'GuildMember#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    if (value) deletedGuildMembers.add(this);
-    else deletedGuildMembers.delete(this);
   }
 
   /**
@@ -478,7 +439,6 @@ class GuildMember extends Base {
 TextBasedChannel.applyToClass(GuildMember);
 
 exports.GuildMember = GuildMember;
-exports.deletedGuildMembers = deletedGuildMembers;
 
 /**
  * @external APIGuildMember

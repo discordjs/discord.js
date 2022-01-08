@@ -518,8 +518,6 @@ export abstract class Channel extends Base {
   public constructor(client: Client, data?: RawChannelData, immediatePatch?: boolean);
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
-  /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
-  public deleted: boolean;
   public id: Snowflake;
   public readonly partial: false;
   public type: keyof typeof ChannelTypes;
@@ -855,8 +853,6 @@ export class Emoji extends Base {
   public animated: boolean | null;
   public readonly createdAt: Date | null;
   public readonly createdTimestamp: number | null;
-  /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
-  public deleted: boolean;
   public id: Snowflake | null;
   public name: string | null;
   public readonly identifier: string;
@@ -881,8 +877,6 @@ export class Guild extends AnonymousGuild {
   public channels: GuildChannelManager;
   public commands: GuildApplicationCommandManager;
   public defaultMessageNotifications: DefaultMessageNotificationLevel | number;
-  /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
-  public deleted: boolean;
   public discoverySplash: string | null;
   public emojis: GuildEmojiManager;
   public explicitContentFilter: ExplicitContentFilterLevel;
@@ -1083,8 +1077,6 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   private constructor(client: Client, data: RawGuildMemberData, guild: Guild);
   public avatar: string | null;
   public readonly bannable: boolean;
-  /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
-  public deleted: boolean;
   public readonly displayColor: number;
   public readonly displayHexColor: HexColorString;
   public readonly displayName: string;
@@ -1485,8 +1477,6 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public createdTimestamp: number;
   public readonly crosspostable: boolean;
   public readonly deletable: boolean;
-  /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
-  public deleted: boolean;
   public readonly editable: boolean;
   public readonly editedAt: Date | null;
   public editedTimestamp: number | null;
@@ -1919,8 +1909,6 @@ export class Role extends Base {
   public color: number;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
-  /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
-  public deleted: boolean;
   public readonly editable: boolean;
   public guild: Guild;
   public readonly hexColor: HexColorString;
@@ -2103,8 +2091,6 @@ export class StageChannel extends BaseGuildVoiceChannel {
 export class StageInstance extends Base {
   private constructor(client: Client, data: RawStageInstanceData, channel: StageChannel);
   public id: Snowflake;
-  /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
-  public deleted: boolean;
   public guildId: Snowflake;
   public channelId: Snowflake;
   public topic: string;
@@ -2121,8 +2107,6 @@ export class StageInstance extends Base {
 
 export class Sticker extends Base {
   private constructor(client: Client, data: RawStickerData);
-  /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
-  public deleted: boolean;
   public readonly createdTimestamp: number;
   public readonly createdAt: Date;
   public available: boolean | null;

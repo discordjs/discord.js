@@ -87,8 +87,6 @@ import {
   GuildAuditLogsEntry,
   GuildAuditLogs,
   StageInstance,
-  Sticker,
-  Emoji,
   MessageActionRowComponent,
   MessageSelectMenu,
   PartialDMChannel,
@@ -925,25 +923,6 @@ client.on('messageReactionAdd', async reaction => {
   if (reaction.message.partial) return expectType<string | null>(reaction.message.content);
   expectType<string>(reaction.message.content);
 });
-
-// Test .deleted deprecations
-declare const emoji: Emoji;
-declare const message: Message;
-declare const role: Role;
-declare const stageInstance: StageInstance;
-declare const sticker: Sticker;
-expectDeprecated(dmChannel.deleted);
-expectDeprecated(textChannel.deleted);
-expectDeprecated(voiceChannel.deleted);
-expectDeprecated(newsChannel.deleted);
-expectDeprecated(threadChannel.deleted);
-expectDeprecated(emoji.deleted);
-expectDeprecated(guildMember.deleted);
-expectDeprecated(guild.deleted);
-expectDeprecated(message.deleted);
-expectDeprecated(role.deleted);
-expectDeprecated(stageInstance.deleted);
-expectDeprecated(sticker.deleted);
 
 // Test interactions
 declare const interaction: Interaction;
