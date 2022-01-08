@@ -17,10 +17,10 @@ import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSu
 import type { DiscordGatewayAdapterLibraryMethods } from '../src/util/adapter';
 import EventEmitter from 'node:events';
 
-jest.mock('../audio/AudioPlayer');
-jest.mock('../audio/PlayerSubscription');
-jest.mock('../DataStore');
-jest.mock('../networking/Networking');
+jest.mock('../src/audio/AudioPlayer');
+jest.mock('../src/audio/PlayerSubscription');
+jest.mock('../src/DataStore');
+jest.mock('../src/networking/Networking');
 
 const DataStore = _DataStore as unknown as jest.Mocked<typeof _DataStore>;
 const Networking = _Networking as unknown as jest.Mocked<typeof _Networking>;
