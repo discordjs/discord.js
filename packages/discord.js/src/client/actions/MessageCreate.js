@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
 
