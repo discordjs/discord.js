@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const Action = require('./Action');
 const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
