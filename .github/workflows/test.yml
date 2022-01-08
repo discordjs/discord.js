@@ -29,3 +29,9 @@ jobs:
 
       - name: Run eslint
         run: yarn lint --cache-dir=".turbo"
+
+      - name: Run tests
+        run: yarn test --cache-dir=".turbo"
+
+      - name: Run build
+        run: yarn build --cache-dir=".turbo"
