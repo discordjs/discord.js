@@ -16,6 +16,17 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Turbo cache
+        id: turbo-cache
+        uses: actions/cache@v2
+        with:
+          path: .turbo
+          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-${{ github.ref_name }}-
 
       - name: Check previous released version
         id: pre-release
@@ -27,6 +38,9 @@ jobs:
       - name: Install dependencies
         if: steps.pre-release.outputs.release == 'true'
         run: yarn --immutable
+
+      - name: Build dependencies
+        run: yarn build --cache-dir=".turbo"
 
       - name: Deprecate old versions
         if: steps.pre-release.outputs.release == 'true'
