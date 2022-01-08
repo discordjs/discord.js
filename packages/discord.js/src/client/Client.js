@@ -162,11 +162,10 @@ class Client extends BaseClient {
     this.application = null;
 
     /**
-     * Time at which the client was last regarded as being in the `READY` state
-     * (each time the client disconnects and successfully reconnects, this will be overwritten)
-     * @type {?Date}
+     * Timestamp of the time the client was last `READY` at
+     * @type {?number}
      */
-    this.readyAt = null;
+    this.readyTimestamp = null;
   }
 
   /**
@@ -183,12 +182,13 @@ class Client extends BaseClient {
   }
 
   /**
-   * Timestamp of the time the client was last `READY` at
-   * @type {?number}
+   * Time at which the client was last regarded as being in the `READY` state
+   * (each time the client disconnects and successfully reconnects, this will be overwritten)
+   * @type {?Date}
    * @readonly
    */
-  get readyTimestamp() {
-    return this.readyAt?.getTime() ?? null;
+  get readyAt() {
+    return this.readyTimestamp && new Date(this.readyTimestamp);
   }
 
   /**
@@ -197,7 +197,7 @@ class Client extends BaseClient {
    * @readonly
    */
   get uptime() {
-    return this.readyAt ? Date.now() - this.readyAt : null;
+    return this.readyTimestamp && Date.now() - this.readyTimestamp;
   }
 
   /**

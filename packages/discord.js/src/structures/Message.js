@@ -186,7 +186,7 @@ class Message extends Base {
        * The timestamp the message was last edited at (if applicable)
        * @type {?number}
        */
-      this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+      this.editedTimestamp = Date.parse(data.edited_timestamp);
     } else {
       this.editedTimestamp ??= null;
     }
@@ -424,7 +424,7 @@ class Message extends Base {
    * @readonly
    */
   get editedAt() {
-    return this.editedTimestamp ? new Date(this.editedTimestamp) : null;
+    return this.editedTimestamp && new Date(this.editedTimestamp);
   }
 
   /**
@@ -943,8 +943,8 @@ class Message extends Base {
     if (equal && rawData) {
       equal =
         this.mentions.everyone === message.mentions.everyone &&
-        this.createdTimestamp === new Date(rawData.timestamp).getTime() &&
-        this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
+        this.createdTimestamp === Date.parse(rawData.timestamp) &&
+        this.editedTimestamp === Date.parse(rawData.edited_timestamp);
     }
 
     return equal;

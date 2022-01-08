@@ -4,7 +4,7 @@ const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
-  const time = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+  const time = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;
 
   if (channel) {
     // Discord sends null for last_pin_timestamp if the last pinned message was removed

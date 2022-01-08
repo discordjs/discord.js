@@ -99,7 +99,7 @@ class ThreadChannel extends Channel {
        * created</info>
        * @type {?number}
        */
-      this.archiveTimestamp = new Date(data.thread_metadata.archive_timestamp).getTime();
+      this.archiveTimestamp = Date.parse(data.thread_metadata.archive_timestamp);
     } else {
       this.locked ??= null;
       this.archived ??= null;
@@ -133,7 +133,7 @@ class ThreadChannel extends Channel {
        * The timestamp when the last pinned message was pinned, if there was one
        * @type {?number}
        */
-      this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+      this.lastPinTimestamp = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;
     } else {
       this.lastPinTimestamp ??= null;
     }
@@ -192,8 +192,7 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get archivedAt() {
-    if (!this.archiveTimestamp) return null;
-    return new Date(this.archiveTimestamp);
+    return this.archiveTimestamp && new Date(this.archiveTimestamp);
   }
 
   /**

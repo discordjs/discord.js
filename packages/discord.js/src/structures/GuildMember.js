@@ -84,9 +84,9 @@ class GuildMember extends Base {
     } else if (typeof this.avatar !== 'string') {
       this.avatar = null;
     }
-    if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if ('joined_at' in data) this.joinedTimestamp = Date.parse(data.joined_at);
     if ('premium_since' in data) {
-      this.premiumSinceTimestamp = data.premium_since ? new Date(data.premium_since).getTime() : null;
+      this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
     }
     if ('roles' in data) this._roles = data.roles;
     this.pending = data.pending ?? false;
@@ -186,7 +186,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get joinedAt() {
-    return this.joinedTimestamp ? new Date(this.joinedTimestamp) : null;
+    return this.joinedTimestamp && new Date(this.joinedTimestamp);
   }
 
   /**
@@ -204,7 +204,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get premiumSince() {
-    return this.premiumSinceTimestamp ? new Date(this.premiumSinceTimestamp) : null;
+    return this.premiumSinceTimestamp && new Date(this.premiumSinceTimestamp);
   }
 
   /**

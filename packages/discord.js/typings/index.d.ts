@@ -545,8 +545,8 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public readonly emojis: BaseGuildEmojiManager;
   public guilds: GuildManager;
   public options: ClientOptions;
-  public readyAt: If<Ready, Date>;
-  public readonly readyTimestamp: If<Ready, number>;
+  public readonly readyAt: If<Ready, Date>;
+  public readyTimestamp: If<Ready, number>;
   public sweepers: Sweepers;
   public shard: ShardClientUtil | null;
   public token: If<Ready, string, string | null>;
@@ -1200,8 +1200,8 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
 
 export class GuildTemplate extends Base {
   private constructor(client: Client, data: RawGuildTemplateData);
-  public readonly createdTimestamp: number;
-  public readonly updatedTimestamp: number;
+  public createdTimestamp: number;
+  public updatedTimestamp: number;
   public readonly url: string;
   public code: string;
   public name: string;
@@ -1209,8 +1209,8 @@ export class GuildTemplate extends Base {
   public usageCount: number;
   public creator: User;
   public creatorId: Snowflake;
-  public createdAt: Date;
-  public updatedAt: Date;
+  public readonly createdAt: Date;
+  public readonly updatedAt: Date;
   public guild: Guild | null;
   public guildId: Snowflake;
   public serializedGuild: APITemplateSerializedSourceGuild;
