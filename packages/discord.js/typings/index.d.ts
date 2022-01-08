@@ -1259,7 +1259,7 @@ export class Integration extends Base {
   public readonly roles: Collection<Snowflake, Role>;
   public readonly syncedAt: Date | null;
   public syncedTimestamp: number | null;
-  public syncing: boolean | undefined;
+  public syncing: boolean | null;
   public type: IntegrationType;
   public user: User | null;
   public subscriberCount: number | null;
