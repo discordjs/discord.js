@@ -4,7 +4,7 @@ const process = require('node:process');
 const Action = require('./Action');
 const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
-const CommandInteraction = require('../../structures/CommandInteraction');
+const ChatInputCommandInteraction = require('../../structures/ChatInputCommandInteraction');
 const MessageContextMenuCommandInteraction = require('../../structures/MessageContextMenuCommandInteraction');
 const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
 const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
@@ -24,7 +24,7 @@ class InteractionCreateAction extends Action {
       case InteractionTypes.APPLICATION_COMMAND:
         switch (data.data.type) {
           case ApplicationCommandTypes.CHAT_INPUT:
-            InteractionType = CommandInteraction;
+            InteractionType = ChatInputCommandInteraction;
             break;
           case ApplicationCommandTypes.USER:
             InteractionType = UserContextMenuCommandInteraction;
