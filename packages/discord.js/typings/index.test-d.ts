@@ -1,17 +1,16 @@
 import type { ChildProcess } from 'child_process';
 import type {
-  APIButtonComponent,
-  APIInteractionDataResolvedChannel,
-  APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
   APIMessage,
   APIPartialChannel,
   APIPartialGuild,
+  APIInteractionDataResolvedGuildMember,
+  APIInteractionDataResolvedChannel,
   APIRole,
+  APIButtonComponent,
   APISelectMenuComponent,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
-import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import {
   ApplicationCommand,
   ApplicationCommandData,
@@ -36,16 +35,13 @@ import {
   Constants,
   ContextMenuCommandInteraction,
   DMChannel,
-  Emoji,
   Guild,
   GuildApplicationCommandManager,
-  GuildBasedChannel,
   GuildChannelManager,
   GuildEmoji,
   GuildEmojiManager,
   GuildMember,
   GuildResolvable,
-  GuildTextBasedChannel,
   Intents,
   Interaction,
   InteractionCollector,
@@ -58,7 +54,6 @@ import {
   MessageEmbed,
   MessageReaction,
   NewsChannel,
-  NonThreadGuildBasedChannel,
   Options,
   PartialTextBasedChannelFields,
   PartialUser,
@@ -68,23 +63,25 @@ import {
   RoleManager,
   SelectMenuInteraction,
   Serialized,
-  Shard,
   ShardClientUtil,
   ShardingManager,
   Snowflake,
   StageChannel,
-  Sticker,
   StoreChannel,
-  TextBasedChannel,
   TextBasedChannelFields,
+  TextBasedChannel,
   TextBasedChannelTypes,
+  VoiceBasedChannel,
+  GuildBasedChannel,
+  NonThreadGuildBasedChannel,
+  GuildTextBasedChannel,
   TextChannel,
   ThreadChannel,
   ThreadMember,
   Typing,
   User,
-  VoiceBasedChannel,
   VoiceChannel,
+  Shard,
   WebSocketShard,
   Collector,
   GuildAuditLogsEntry,
@@ -95,6 +92,7 @@ import {
   PartialDMChannel,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
+import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;

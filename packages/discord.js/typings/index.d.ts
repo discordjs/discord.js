@@ -63,9 +63,6 @@ import {
   ChannelTypes,
   DefaultMessageNotificationLevels,
   ExplicitContentFilterLevels,
-  GuildScheduledEventEntityTypes,
-  GuildScheduledEventPrivacyLevels,
-  GuildScheduledEventStatuses,
   InteractionResponseTypes,
   InteractionTypes,
   InviteTargetType,
@@ -82,6 +79,9 @@ import {
   StickerTypes,
   VerificationLevels,
   WebhookTypes,
+  GuildScheduledEventEntityTypes,
+  GuildScheduledEventStatuses,
+  GuildScheduledEventPrivacyLevels,
 } from './enums';
 import {
   RawActivityData,
