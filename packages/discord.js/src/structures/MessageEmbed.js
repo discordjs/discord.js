@@ -515,7 +515,7 @@ class MessageEmbed {
       type: 'rich',
       description: this.description,
       url: this.url,
-      timestamp: this.createdAt?.toISOString(),
+      timestamp: this.createdAt?.toISOString?.(),
       color: this.color,
       fields: this.fields,
       thumbnail: this.thumbnail,
