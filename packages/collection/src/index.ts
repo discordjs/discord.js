@@ -632,7 +632,7 @@ export class Collection<K, V> extends Map<K, V> {
 	public intersect<T>(other: Collection<K, T>): Collection<K, T | V> {
 		const coll = new this.constructor[Symbol.species]<K, T | V>();
 		for (const [k, v] of other) {
-			if (this.has(k) && Object.is(v, other.get(k))) {
+			if (this.has(k) && Object.is(v, this.get(k))) {
 				coll.set(k, v);
 			}
 		}
