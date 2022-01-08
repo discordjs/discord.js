@@ -193,6 +193,15 @@ class Sweepers {
   }
 
   /**
+   * Sweeps all guild stickers and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine which stickers will be removed from the caches.
+   * @returns {number} Amount of stickers that were removed from the caches
+   */
+  sweepStickers(filter) {
+    return this._sweepGuildDirectProp('stickers', filter).items;
+  }
+
+  /**
    * Sweeps all thread members and removes the ones which are indicated by the filter.
    * <info>It is highly recommended to keep the client thread member cached</info>
    * @param {Function} filter The function used to determine which thread members will be removed from the caches.
