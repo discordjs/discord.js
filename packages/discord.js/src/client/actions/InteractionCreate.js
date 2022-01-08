@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const Action = require('./Action');
 const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
@@ -9,8 +8,6 @@ const MessageContextMenuCommandInteraction = require('../../structures/MessageCo
 const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
 const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
 const { Events, InteractionTypes, MessageComponentTypes, ApplicationCommandTypes } = require('../../util/Constants');
-
-let deprecationEmitted = false;
 
 class InteractionCreateAction extends Action {
   handle(data) {
@@ -72,17 +69,6 @@ class InteractionCreateAction extends Action {
      * @param {Interaction} interaction The interaction which was created
      */
     client.emit(Events.INTERACTION_CREATE, interaction);
-
-    /**
-     * Emitted when an interaction is created.
-     * @event Client#interaction
-     * @param {Interaction} interaction The interaction which was created
-     * @deprecated Use {@link Client#event:interactionCreate} instead
-     */
-    if (client.emit('interaction', interaction) && !deprecationEmitted) {
-      deprecationEmitted = true;
-      process.emitWarning('The interaction event is deprecated. Use interactionCreate instead', 'DeprecationWarning');
-    }
   }
 }
 
