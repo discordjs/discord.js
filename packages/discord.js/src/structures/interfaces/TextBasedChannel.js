@@ -49,7 +49,7 @@ class TextBasedChannel {
    * @readonly
    */
   get lastPinAt() {
-    return this.lastPinTimestamp ? new Date(this.lastPinTimestamp) : null;
+    return this.lastPinTimestamp && new Date(this.lastPinTimestamp);
   }
 
   /**

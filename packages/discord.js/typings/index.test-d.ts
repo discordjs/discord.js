@@ -29,7 +29,6 @@ import {
   ClientUser,
   CloseEvent,
   Collection,
-  Collector,
   ChatInputCommandInteraction,
   CommandInteractionOption,
   CommandInteractionOptionResolver,
@@ -40,8 +39,6 @@ import {
   Emoji,
   Guild,
   GuildApplicationCommandManager,
-  GuildAuditLogs,
-  GuildAuditLogsEntry,
   GuildBasedChannel,
   GuildChannelManager,
   GuildEmoji,
@@ -54,18 +51,15 @@ import {
   InteractionCollector,
   Message,
   MessageActionRow,
-  MessageActionRowComponent,
   MessageAttachment,
   MessageButton,
   MessageCollector,
   MessageComponentInteraction,
   MessageEmbed,
   MessageReaction,
-  MessageSelectMenu,
   NewsChannel,
   NonThreadGuildBasedChannel,
   Options,
-  PartialDMChannel,
   PartialTextBasedChannelFields,
   PartialUser,
   Permissions,
@@ -79,7 +73,6 @@ import {
   ShardingManager,
   Snowflake,
   StageChannel,
-  StageInstance,
   Sticker,
   StoreChannel,
   TextBasedChannel,
@@ -93,6 +86,13 @@ import {
   VoiceBasedChannel,
   VoiceChannel,
   WebSocketShard,
+  Collector,
+  GuildAuditLogsEntry,
+  GuildAuditLogs,
+  StageInstance,
+  MessageActionRowComponent,
+  MessageSelectMenu,
+  PartialDMChannel,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 
@@ -463,8 +463,8 @@ client.on('guildCreate', async g => {
   if (!channel) return;
 
   if (channel.isThread()) {
-    const fetchedMember = await channel.members.fetch('12345678');
-    expectType<ThreadMember>(fetchedMember);
+    const fetchedMember = await channel.members.fetch({ member: '12345678' });
+    assertType<ThreadMember>(fetchedMember);
     const fetchedMemberCol = await channel.members.fetch(true);
     expectDeprecated(await channel.members.fetch(true));
     expectType<Collection<Snowflake, ThreadMember>>(fetchedMemberCol);
@@ -925,25 +925,6 @@ client.on('messageReactionAdd', async reaction => {
   if (reaction.message.partial) return expectType<string | null>(reaction.message.content);
   expectType<string>(reaction.message.content);
 });
-
-// Test .deleted deprecations
-declare const emoji: Emoji;
-declare const message: Message;
-declare const role: Role;
-declare const stageInstance: StageInstance;
-declare const sticker: Sticker;
-expectDeprecated(dmChannel.deleted);
-expectDeprecated(textChannel.deleted);
-expectDeprecated(voiceChannel.deleted);
-expectDeprecated(newsChannel.deleted);
-expectDeprecated(threadChannel.deleted);
-expectDeprecated(emoji.deleted);
-expectDeprecated(guildMember.deleted);
-expectDeprecated(guild.deleted);
-expectDeprecated(message.deleted);
-expectDeprecated(role.deleted);
-expectDeprecated(stageInstance.deleted);
-expectDeprecated(sticker.deleted);
 
 // Test interactions
 declare const interaction: Interaction;

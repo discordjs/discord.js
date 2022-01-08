@@ -1,17 +1,8 @@
 'use strict';
 
-const process = require('node:process');
 const Base = require('./Base');
 const { StickerFormatTypes, StickerTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
-
-/**
- * @type {WeakSet<StageInstance>}
- * @private
- * @internal
- */
-const deletedStickers = new WeakSet();
-let deprecationEmittedForDeleted = false;
 
 /**
  * Represents a Sticker.
@@ -147,36 +138,6 @@ class Sticker extends Base {
   }
 
   /**
-   * Whether or not the sticker has been deleted
-   * @type {boolean}
-   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
-   */
-  get deleted() {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Sticker#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    return deletedStickers.has(this);
-  }
-
-  set deleted(value) {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Sticker#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    if (value) deletedStickers.add(this);
-    else deletedStickers.delete(this);
-  }
-
-  /**
    * Whether this sticker is partial
    * @type {boolean}
    * @readonly
@@ -304,7 +265,6 @@ class Sticker extends Base {
 }
 
 exports.Sticker = Sticker;
-exports.deletedStickers = deletedStickers;
 
 /**
  * @external APISticker

@@ -5,7 +5,7 @@ const CommandInteractionOptionResolver = require('./CommandInteractionOptionReso
 
 /**
  * Represents a command interaction.
- * @extends {BaseCommandInteraction}
+ * @extends {CommandInteraction}
  */
 class ChatInputCommandInteraction extends CommandInteraction {
   constructor(client, data) {

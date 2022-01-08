@@ -367,7 +367,6 @@ exports.InviteScopes = [
   'webhook.incoming',
 ];
 
-// TODO: change Integration#expireBehavior to this and clean up Integration
 /**
  * The behavior of expiring subscribers for Integrations. This can be:
  * * REMOVE_ROLE

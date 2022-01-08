@@ -192,12 +192,12 @@ class Invite extends Base {
        * The timestamp this invite was created at
        * @type {?number}
        */
-      this.createdTimestamp = new Date(data.created_at).getTime();
+      this.createdTimestamp = Date.parse(data.created_at);
     } else {
       this.createdTimestamp ??= null;
     }
 
-    if ('expires_at' in data) this._expiresTimestamp = new Date(data.expires_at).getTime();
+    if ('expires_at' in data) this._expiresTimestamp = Date.parse(data.expires_at);
     else this._expiresTimestamp ??= null;
 
     if ('stage_instance' in data) {
@@ -227,7 +227,7 @@ class Invite extends Base {
    * @readonly
    */
   get createdAt() {
-    return this.createdTimestamp ? new Date(this.createdTimestamp) : null;
+    return this.createdTimestamp && new Date(this.createdTimestamp);
   }
 
   /**
@@ -263,8 +263,7 @@ class Invite extends Base {
    * @readonly
    */
   get expiresAt() {
-    const { expiresTimestamp } = this;
-    return expiresTimestamp ? new Date(expiresTimestamp) : null;
+    return this.expiresTimestamp && new Date(this.expiresTimestamp);
   }
 
   /**
