@@ -462,7 +462,7 @@ client.on('guildCreate', async g => {
 
   if (channel.isThread()) {
     const fetchedMember = await channel.members.fetch({ member: '12345678' });
-    assertType<ThreadMember>(fetchedMember);
+    expectType<ThreadMember>(fetchedMember);
     const fetchedMemberCol = await channel.members.fetch(true);
     expectDeprecated(await channel.members.fetch(true));
     expectType<Collection<Snowflake, ThreadMember>>(fetchedMemberCol);
