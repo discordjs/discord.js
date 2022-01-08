@@ -1,10 +1,10 @@
 'use strict';
 
-const ContextMenuCommandInteraction = require('./ContextMenuInteraction');
+const ContextMenuCommandInteraction = require('./ContextMenuCommandInteraction');
 
 /**
  * Represents a message context menu interaction.
- * @extends {ContextMenuInteraction}
+ * @extends {ContextMenuCommandInteraction}
  */
 class MessageContextMenuCommandInteraction extends ContextMenuCommandInteraction {
   /**

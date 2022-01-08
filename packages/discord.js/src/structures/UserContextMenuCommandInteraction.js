@@ -1,6 +1,6 @@
 'use strict';
 
-const ContextMenuCommandInteraction = require('./ContextMenuInteraction');
+const ContextMenuCommandInteraction = require('./ContextMenuCommandInteraction');
 
 /**
  * Represents a user context menu interaction.
