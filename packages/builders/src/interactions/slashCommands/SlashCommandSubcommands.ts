@@ -13,7 +13,7 @@ import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 /**
  * Represents a folder for subcommands
  *
- * For more information, go to https://discord.com/developers/docs/interactions/slash-commands#subcommands-and-subcommand-groups
+ * For more information, go to https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups
  */
 @mix(SharedNameAndDescription)
 export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationCommandOptions {
@@ -75,7 +75,7 @@ export interface SlashCommandSubcommandGroupBuilder extends SharedNameAndDescrip
 /**
  * Represents a subcommand
  *
- * For more information, go to https://discord.com/developers/docs/interactions/slash-commands#subcommands-and-subcommand-groups
+ * For more information, go to https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups
  */
 @mix(SharedNameAndDescription, SharedSlashCommandOptions)
 export class SlashCommandSubcommandBuilder implements ToAPIApplicationCommandOptions {
