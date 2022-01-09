@@ -11,4 +11,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Automatically label Issues/PRs
-        uses: fuxingloh/multi-labeler@v1
+        uses: fuxingloh/multi-labeler@v1.5.1
