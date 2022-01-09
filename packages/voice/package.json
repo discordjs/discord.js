@@ -4,7 +4,7 @@
 	"description": "Implementation of the Discord Voice API for node.js",
 	"scripts": {
 		"build": "tsup && node scripts/postbuild.mjs",
-		"test": " jest --pass-with-no-tests --collect-coverage",
+		"test": "jest --pass-with-no-tests --collect-coverage",
 		"lint": "eslint src --ext mjs,js,ts",
 		"lint:fix": "eslint src --ext mjs,js,ts --fix",
 		"format": "prettier --write .",
