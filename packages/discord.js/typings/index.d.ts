@@ -504,7 +504,10 @@ export class CategoryChannel extends GuildChannel {
     name: string,
     options: CategoryCreateChannelOptions & { type: 'GuildStore' | ChannelType.GuildStore },
   ): Promise<StoreChannel>;
-  public createChannel(name: string, options?: CategoryCreateChannelOptions): Promise<TextChannel>;
+  public createChannel(
+    name: string,
+    options?: CategoryCreateChannelOptions,
+  ): Promise<Exclude<NonThreadGuildBasedChannel, CategoryChannel>>;
 }
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
@@ -1137,7 +1140,7 @@ export class GuildPreview extends Base {
   public toString(): string;
 }
 
-export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildScheduledEventStatus> extends Base {
+export class GuildScheduledEvent<S extends GuildScheduledEventStatusKey = GuildScheduledEventStatusKey> extends Base {
   private constructor(client: Client, data: RawGuildScheduledEventData);
   public id: Snowflake;
   public guildId: Snowflake;
@@ -1179,10 +1182,10 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
     options?: T,
   ): Promise<GuildScheduledEventManagerFetchSubscribersResult<T>>;
   public toString(): string;
-  public isActive(): this is GuildScheduledEvent<'ACTIVE'>;
-  public isCanceled(): this is GuildScheduledEvent<'CANCELED'>;
-  public isCompleted(): this is GuildScheduledEvent<'COMPLETED'>;
-  public isScheduled(): this is GuildScheduledEvent<'SCHEDULED'>;
+  public isActive(): this is GuildScheduledEvent<'Active'>;
+  public isCanceled(): this is GuildScheduledEvent<'Canceled'>;
+  public isCompleted(): this is GuildScheduledEvent<'Completed'>;
+  public isScheduled(): this is GuildScheduledEvent<'Scheduled'>;
 }
 
 export class GuildTemplate extends Base {
@@ -2769,29 +2772,6 @@ export const Constants: {
   InviteScopes: InviteScope[];
   MessageTypes: MessageType[];
   SystemMessageTypes: SystemMessageType[];
-  ActivityTypes: EnumHolder<typeof ActivityTypes>;
-  StickerTypes: EnumHolder<typeof StickerTypes>;
-  StickerFormatTypes: EnumHolder<typeof StickerFormatTypes>;
-  OverwriteTypes: EnumHolder<typeof OverwriteTypes>;
-  ExplicitContentFilterLevels: EnumHolder<typeof ExplicitContentFilterLevels>;
-  DefaultMessageNotificationLevels: EnumHolder<typeof DefaultMessageNotificationLevels>;
-  VerificationLevels: EnumHolder<typeof VerificationLevels>;
-  MembershipStates: EnumHolder<typeof MembershipStates>;
-  ApplicationCommandOptionTypes: EnumHolder<typeof ApplicationCommandOptionTypes>;
-  ApplicationCommandPermissionTypes: EnumHolder<typeof ApplicationCommandPermissionTypes>;
-  InteractionTypes: EnumHolder<typeof InteractionTypes>;
-  InteractionResponseTypes: EnumHolder<typeof InteractionResponseTypes>;
-  MessageComponentTypes: EnumHolder<typeof MessageComponentTypes>;
-  MessageButtonStyles: EnumHolder<typeof MessageButtonStyles>;
-  MFALevels: EnumHolder<typeof MFALevels>;
-  NSFWLevels: EnumHolder<typeof NSFWLevels>;
-  PrivacyLevels: EnumHolder<typeof PrivacyLevels>;
-  WebhookTypes: EnumHolder<typeof WebhookTypes>;
-  PremiumTiers: EnumHolder<typeof PremiumTiers>;
-  ApplicationCommandTypes: EnumHolder<typeof ApplicationCommandTypes>;
-  GuildScheduledEventEntityTypes: EnumHolder<typeof GuildScheduledEventEntityTypes>;
-  GuildScheduledEventStatuses: EnumHolder<typeof GuildScheduledEventStatuses>;
-  GuildScheduledEventPrivacyLevels: EnumHolder<typeof GuildScheduledEventPrivacyLevels>;
 };
 
 export const version: string;
@@ -3051,7 +3031,7 @@ export class GuildScheduledEventManager extends CachedManager<
   public fetch<
     T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
   >(options?: T): Promise<GuildScheduledEventManagerFetchResult<T>>;
-  public edit<S extends GuildScheduledEventStatus, T extends GuildScheduledEventSetStatusArg<S>>(
+  public edit<S extends GuildScheduledEventStatusKey, T extends GuildScheduledEventSetStatusArg<S>>(
     guildScheduledEvent: GuildScheduledEventResolvable,
     options: GuildScheduledEventEditOptions<S, T>,
   ): Promise<GuildScheduledEvent<T>>;
@@ -4539,13 +4519,15 @@ export interface GuildListMembersOptions {
   cache?: boolean;
 }
 
+export type GuildScheduledEventPrivacyLevelKey = keyof typeof GuildScheduledEventPrivacyLevel;
+
 // TODO: use conditional types for better TS support
 export interface GuildScheduledEventCreateOptions {
   name: string;
   scheduledStartTime: DateResolvable;
   scheduledEndTime?: DateResolvable;
-  privacyLevel: GuildScheduledEventPrivacyLevel | number;
-  entityType: GuildScheduledEventEntityType | number;
+  privacyLevel: GuildScheduledEventPrivacyLevel | GuildScheduledEventPrivacyLevelKey;
+  entityType: GuildScheduledEventEntityType | GuildScheduledEventEntityTypeKey;
   description?: string;
   channel?: GuildVoiceChannelResolvable;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
@@ -4553,7 +4535,7 @@ export interface GuildScheduledEventCreateOptions {
 }
 
 export interface GuildScheduledEventEditOptions<
-  S extends GuildScheduledEventStatus,
+  S extends GuildScheduledEventStatusKey,
   T extends GuildScheduledEventSetStatusArg<S>,
 > extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
   channel?: GuildVoiceChannelResolvable | null;
@@ -4568,7 +4550,7 @@ export interface GuildScheduledEventEntityMetadataOptions {
   location?: string;
 }
 
-export type GuildScheduledEventEntityType = keyof typeof GuildScheduledEventEntityTypes;
+export type GuildScheduledEventEntityTypeKey = keyof typeof GuildScheduledEventEntityType;
 
 export type GuildScheduledEventManagerFetchResult<
   T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
@@ -4581,17 +4563,15 @@ export type GuildScheduledEventManagerFetchSubscribersResult<T extends FetchGuil
     ? Collection<Snowflake, GuildScheduledEventUser<true>>
     : Collection<Snowflake, GuildScheduledEventUser<false>>;
 
-export type GuildScheduledEventPrivacyLevel = keyof typeof GuildScheduledEventPrivacyLevels;
-
 export type GuildScheduledEventResolvable = Snowflake | GuildScheduledEvent;
 
-export type GuildScheduledEventSetStatusArg<T extends GuildScheduledEventStatus> = T extends 'SCHEDULED'
-  ? 'ACTIVE' | 'CANCELED'
-  : T extends 'ACTIVE'
-  ? 'COMPLETED'
+export type GuildScheduledEventSetStatusArg<T extends GuildScheduledEventStatusKey> = T extends 'Scheduled'
+  ? 'Active' | 'Canceled'
+  : T extends 'Active'
+  ? 'Completed'
   : never;
 
-export type GuildScheduledEventStatus = keyof typeof GuildScheduledEventStatuses;
+export type GuildScheduledEventStatusKey = keyof typeof GuildScheduledEventStatus;
 
 export interface GuildScheduledEventUser<T> {
   guildScheduledEventId: Snowflake;
