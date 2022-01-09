@@ -1,5 +1,6 @@
 'use strict';
 
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const { Error } = require('../errors');
 const {
@@ -8,7 +9,6 @@ const {
   GuildScheduledEventPrivacyLevels,
   Endpoints,
 } = require('../util/Constants');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents a scheduled event in a {@link Guild}.
@@ -164,7 +164,7 @@ class GuildScheduledEvent extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**
