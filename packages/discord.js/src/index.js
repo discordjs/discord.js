@@ -172,6 +172,7 @@ exports.InteractionType = require('discord-api-types/v9').InteractionType;
 exports.InteractionResponseType = require('discord-api-types/v9').InteractionResponseType;
 exports.InviteTargetType = require('discord-api-types/v9').InviteTargetType;
 exports.MessageType = require('discord-api-types/v9').MessageType;
+exports.RESTJSONErrorCodes = require('discord-api-types/v9').RESTJSONErrorCodes;
 exports.StageInstancePrivacyLevel = require('discord-api-types/v9').StageInstancePrivacyLevel;
 exports.StickerType = require('discord-api-types/v9').StickerType;
 exports.StickerFormatType = require('discord-api-types/v9').StickerFormatType;
