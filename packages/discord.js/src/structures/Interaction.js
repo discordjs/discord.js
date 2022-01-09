@@ -149,7 +149,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isChatInputCommand() {
-    return InteractionType[this.type] === InteractionType.APPLICATION_COMMAND && typeof this.targetId === 'undefined';
+    return InteractionType[this.type] === InteractionType.ApplicationCommand && typeof this.targetId === 'undefined';
   }
 
   /**

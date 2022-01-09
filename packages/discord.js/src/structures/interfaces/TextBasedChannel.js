@@ -6,6 +6,7 @@ const MessagePayload = require('../MessagePayload');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { TypeError, Error } = require('../../errors');
+const { InteractionType } = require('discord-api-types/v9');
 const InteractionCollector = require('../InteractionCollector');
 
 /**
@@ -357,4 +358,3 @@ module.exports = TextBasedChannel;
 
 // Fixes Circular
 const MessageManager = require('../../managers/MessageManager');
-const { InteractionType } = require('discord-api-types/v9');
