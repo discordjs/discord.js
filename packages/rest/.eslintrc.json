@@ -1,0 +1,15 @@
+{
+	"root": true,
+	"extends": "marine/prettier/node",
+	"parserOptions": {
+		"project": "./tsconfig.eslint.json"
+	},
+	"ignorePatterns": ["**/dist/*"],
+	"env": {
+		"jest": true
+	},
+	"rules": {
+		"no-redeclare": 0,
+		"@typescript-eslint/naming-convention": 0
+	}
+}

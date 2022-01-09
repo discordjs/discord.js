@@ -1,0 +1,89 @@
+{
+	"name": "@discordjs/voice",
+	"version": "0.7.5",
+	"description": "Implementation of the Discord Voice API for node.js",
+	"scripts": {
+		"build": "tsup && node scripts/postbuild.mjs",
+		"test": " jest --pass-with-no-tests --collect-coverage",
+		"lint": "eslint src --ext mjs,js,ts",
+		"lint:fix": "eslint src --ext mjs,js,ts --fix",
+		"format": "prettier --write **/*.{ts,js,json,yml,yaml}",
+		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
+		"prepublishOnly": "yarn build && yarn lint && yarn test",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ../../cliff.toml -r ../../ --include-path './*'"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"typings": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js"
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Antonio Roman <kyradiscord@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"discord.js",
+		"audio",
+		"voice",
+		"streaming"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@types/ws": "^8.2.0",
+		"discord-api-types": "^0.26.1",
+		"prism-media": "^1.3.2",
+		"tiny-typed-emitter": "^2.1.0",
+		"tslib": "^2.3.1",
+		"ws": "^8.2.3"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.16.0",
+		"@babel/preset-env": "^7.16.0",
+		"@babel/preset-typescript": "^7.16.0",
+		"@discordjs/ts-docgen": "^0.3.2",
+		"@types/jest": "^27.0.2",
+		"@types/node": "^16.11.7",
+		"@typescript-eslint/eslint-plugin": "^5.9.0",
+		"@typescript-eslint/parser": "^5.9.0",
+		"eslint": "^8.2.0",
+		"eslint-config-marine": "^9.0.6",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"jest": "^27.4.7",
+		"jest-websocket-mock": "^2.2.1",
+		"mock-socket": "^9.0.7",
+		"prettier": "^2.4.1",
+		"standard-version": "^9.3.2",
+		"tsup": "^5.11.11",
+		"tweetnacl": "^1.0.3",
+		"typedoc": "^0.22.8",
+		"typescript": "^4.4.4"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

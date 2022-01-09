@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    // Output Formatting
+    "pretty": false,
+
+    // Completeness
+    "skipDefaultLibCheck": true
+  }
+}
