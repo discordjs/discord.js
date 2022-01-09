@@ -963,7 +963,7 @@ client.on('interactionCreate', async interaction => {
     expectNotAssignable<Interaction<'cached'>>(interaction);
   }
 
-  if (interaction.isContextMenu()) {
+  if (interaction.isContextMenuCommand()) {
     expectType<ContextMenuCommandInteraction>(interaction);
     if (interaction.inCachedGuild()) {
       expectAssignable<ContextMenuCommandInteraction>(interaction);
