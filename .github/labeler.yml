@@ -5,11 +5,8 @@ labels:
     sync: true
     matcher:
       files:
-        any:
-          - '*'
-        all:
-          - '!packages/*'
-          - '!packages/**/*'
+        any: ['*']
+        all: ['!packages/*', '!packages/**/*']
 
   - label: 'semver:major'
     sync: true
@@ -30,46 +27,34 @@ labels:
     sync: true
     matcher:
       body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*builders"
-      files:
-        - 'packages/builders/*'
-        - 'packages/builders/**/*'
+      files: ['packages/builders/*', 'packages/builders/**/*']
 
   - label: 'packages:collection'
     sync: true
     matcher:
       body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*collection"
-      files:
-        - 'packages/collection/*'
-        - 'packages/collection/**/*'
+      files: ['packages/collection/*', 'packages/collection/**/*']
 
   - label: 'packages:discord.js'
     sync: true
     matcher:
       body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*discord\\.js"
-      files:
-        - 'packages/discord.js/*'
-        - 'packages/discord.js/**/*'
+      files: ['packages/discord.js/*', 'packages/discord.js/**/*']
 
   - label: 'packages:rest'
     sync: true
     matcher:
       body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*rest"
-      files:
-        - 'packages/rest/*'
-        - 'packages/rest/**/*'
+      files: ['packages/rest/*', 'packages/rest/**/*']
 
   - label: 'packages:voice'
     sync: true
     matcher:
       body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*voice"
-      files:
-        - 'packages/voice/*'
-        - 'packages/voice/**/*'
+      files: ['packages/voice/*', 'packages/voice/**/*']
 
   - label: 'packages:ws'
     sync: true
     matcher:
       body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*ws"
-      files:
-        - 'packages/ws/*'
-        - 'packages/ws/**/*'
+      files: ['packages/ws/*', 'packages/ws/**/*']
