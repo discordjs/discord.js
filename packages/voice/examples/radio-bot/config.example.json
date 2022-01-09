@@ -1,0 +1,6 @@
+{
+	"token": "discord_bot_token",
+	"device": "audio_hw_device_id",
+	"type": "pulse",
+	"maxTransmissionGap": 5000
+}

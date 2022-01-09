@@ -1,0 +1,99 @@
+name: Documentation
+on:
+  push:
+    branches:
+      - 'main'
+      - 'stable'
+      - '!docs'
+    tags:
+      - '*'
+jobs:
+  build:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'discordjs'
+    outputs:
+      BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
+      BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
+      SHA: ${{ steps.env.outputs.SHA }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install node.js v16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Turbo cache
+        id: turbo-cache
+        uses: actions/cache@v2
+        with:
+          path: .turbo
+          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-${{ github.ref_name }}-
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Build docs
+        run: yarn docs --cache-dir=".turbo"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: docs
+          path: packages/*/docs/docs.json
+
+      - name: Set outputs for upload job
+        id: env
+        run: |
+          echo "::set-output name=BRANCH_NAME::${GITHUB_REF_NAME}"
+          echo "::set-output name=BRANCH_OR_TAG::${GITHUB_REF_TYPE}"
+          echo "::set-output name=SHA::${GITHUB_SHA}"
+
+  upload:
+    name: Upload Documentation
+    needs: build
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        package: ['builders', 'collection', 'discord.js', 'voice']
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ needs.build.outputs.BRANCH_NAME }}
+      BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
+      SHA: ${{ needs.build.outputs.SHA }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: docs
+          path: docs
+
+      - name: Checkout docs repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'discordjs/docs'
+          token: ${{ secrets.DJS_DOCS }}
+          path: 'out'
+
+      - name: Move docs to correct directory
+        env:
+          PACKAGE: ${{ matrix.package }}
+        run: |
+          mkdir -p out/${PACKAGE}
+          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
+
+      - name: Commit and push
+        run: |
+          cd out
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .
+          git commit -m "Docs build for ${BRANCH_OR_TAG} ${BRANCH_NAME}: ${SHA}" || true
+          git push
