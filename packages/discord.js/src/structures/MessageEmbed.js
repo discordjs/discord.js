@@ -88,8 +88,8 @@ class MessageEmbed {
      * @type {?number}
      */
     // Date.parse() cannot be used here because data.timestamp might be a number
-    // Additionally, the nullish coalescing operator cannot be used here as we're checking for 0
-    this.timestamp = new Date(data.timestamp).getTime() || null;
+    // eslint-disable-next-line eqeqeq
+    this.timestamp = data.timestamp != null ? new Date(data.timestamp).getTime() : null;
 
     /**
      * Represents a field of a MessageEmbed
@@ -242,7 +242,7 @@ class MessageEmbed {
    * @readonly
    */
   get createdAt() {
-    return this.timestamp && new Date(this.timestamp);
+    return typeof this.timestamp === 'number' ? new Date(this.timestamp) : null;
   }
 
   /**
