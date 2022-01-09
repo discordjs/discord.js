@@ -1,12 +1,13 @@
 name: 'Issue/PR Labeler'
 on:
-  pull_request_target:
+  pull_request:
   issues:
     types:
       - opened
       - edited
 jobs:
   triage:
+    name: Triage
     runs-on: ubuntu-latest
     steps:
       - name: Automatically label Issues/PRs

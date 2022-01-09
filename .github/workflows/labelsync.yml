@@ -9,8 +9,8 @@ on:
     paths:
       - '.github/labels.yml'
 jobs:
-  labeler:
-    name: Labeler
+  labelsync:
+    name: Label sync
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

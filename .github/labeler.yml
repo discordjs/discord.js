@@ -14,22 +14,22 @@ labels:
   - label: 'semver:major'
     sync: true
     matcher:
-      title: '^.*(\(?.*\)?)!:'
+      title: "^.*(\\(?.*\\)?)!:"
 
   - label: 'semver:minor'
     sync: true
     matcher:
-      title: '^feat(\(?.*\))?:'
+      title: "^feat(\\(?.*\\))?:"
 
   - label: 'semver:patch'
     sync: true
     matcher:
-      title: '^fix(\(?.*\))?:'
+      title: "^fix(\\(?.*\\))?:"
 
   - label: 'packages:builders'
     sync: true
     matcher:
-      body: '(\s|.)*### Which package is this bug report for\?(\s|.)*builders'
+      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*builders"
       files:
         - 'packages/builders/*'
         - 'packages/builders/**/*'
@@ -37,7 +37,7 @@ labels:
   - label: 'packages:collection'
     sync: true
     matcher:
-      body: '(\s|.)*### Which package is this bug report for\?(\s|.)*collection'
+      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*collection"
       files:
         - 'packages/collection/*'
         - 'packages/collection/**/*'
@@ -45,7 +45,7 @@ labels:
   - label: 'packages:discord.js'
     sync: true
     matcher:
-      body: '(\s|.)*### Which package is this bug report for\?(\s|.)*discord\.js'
+      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*discord\\.js"
       files:
         - 'packages/discord.js/*'
         - 'packages/discord.js/**/*'
@@ -53,7 +53,7 @@ labels:
   - label: 'packages:rest'
     sync: true
     matcher:
-      body: '(\s|.)*### Which package is this bug report for\?(\s|.)*rest'
+      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*rest"
       files:
         - 'packages/rest/*'
         - 'packages/rest/**/*'
@@ -61,7 +61,7 @@ labels:
   - label: 'packages:voice'
     sync: true
     matcher:
-      body: '(\s|.)*### Which package is this bug report for\?(\s|.)*voice'
+      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*voice"
       files:
         - 'packages/voice/*'
         - 'packages/voice/**/*'
@@ -69,7 +69,7 @@ labels:
   - label: 'packages:ws'
     sync: true
     matcher:
-      body: '(\s|.)*### Which package is this bug report for\?(\s|.)*ws'
+      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*ws"
       files:
         - 'packages/ws/*'
         - 'packages/ws/**/*'
