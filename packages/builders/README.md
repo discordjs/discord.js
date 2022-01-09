@@ -8,7 +8,7 @@
 		<a href="https://discord.gg/djs"><img src="https://img.shields.io/discord/222078108977594368?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/builders"><img src="https://img.shields.io/npm/v/@discordjs/builders.svg?maxAge=3600" alt="npm version" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/builders"><img src="https://img.shields.io/npm/dt/@discordjs/builders.svg?maxAge=3600" alt="npm downloads" /></a>
-		<a href="https://github.com/discordjs/builders/actions"><img src="https://github.com/discordjs/builders/workflows/Tests/badge.svg" alt="Build status" /></a>
+		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/test.yml/badge.svg" alt="Build status" /></a>
 		<a href="https://codecov.io/gh/discordjs/builders"><img src="https://codecov.io/gh/discordjs/builders/branch/main/graph/badge.svg" alt="Code coverage" /></a>
 	</p>
 </div>
@@ -37,7 +37,7 @@ Here are some examples for the builders and utilities you can find in this packa
   See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
 - [Discord API Discord server](https://discord.gg/discord-api)
-- [GitHub](https://github.com/discordjs/builders)
+- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/builders)
 - [npm](https://www.npmjs.com/package/@discordjs/builders)
 - [Related libraries](https://discord.com/developers/docs/topics/community-resources#libraries)
 
@@ -45,7 +45,7 @@ Here are some examples for the builders and utilities you can find in this packa
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs/builders).  
-See [the contribution guide](https://github.com/discordjs/builders/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
 
