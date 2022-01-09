@@ -17,18 +17,18 @@ class InteractionCreateAction extends Action {
     // Resolve and cache partial channels for Interaction#channel getter
     this.getChannel(data);
 
-    let _InteractionType;
+    let InteractionClass;
     switch (data.type) {
       case InteractionType.ApplicationCommand:
         switch (data.data.type) {
           case ApplicationCommandType.ChatInput:
-            _InteractionType = ChatInputCommandInteraction;
+            InteractionClass = ChatInputCommandInteraction;
             break;
           case ApplicationCommandType.User:
-            _InteractionType = UserContextMenuCommandInteraction;
+            InteractionClass = UserContextMenuCommandInteraction;
             break;
           case ApplicationCommandType.Message:
-            _InteractionType = MessageContextMenuCommandInteraction;
+            InteractionClass = MessageContextMenuCommandInteraction;
             break;
           default:
             client.emit(
@@ -41,10 +41,10 @@ class InteractionCreateAction extends Action {
       case InteractionType.MessageComponent:
         switch (data.data.component_type) {
           case ComponentType.Button:
-            _InteractionType = ButtonInteraction;
+            InteractionClass = ButtonInteraction;
             break;
           case ComponentType.SelectMenu:
-            _InteractionType = SelectMenuInteraction;
+            InteractionClass = SelectMenuInteraction;
             break;
           default:
             client.emit(
@@ -55,14 +55,14 @@ class InteractionCreateAction extends Action {
         }
         break;
       case InteractionType.ApplicationCommandAutocomplete:
-        _InteractionType = AutocompleteInteraction;
+        InteractionClass = AutocompleteInteraction;
         break;
       default:
         client.emit(Events.DEBUG, `[INTERACTION] Received interaction with unknown type: ${data.type}`);
         return;
     }
 
-    const interaction = new _InteractionType(client, data);
+    const interaction = new InteractionClass(client, data);
 
     /**
      * Emitted when an interaction is created.
