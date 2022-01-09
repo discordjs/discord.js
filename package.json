@@ -67,33 +67,20 @@
 				]
 			},
 			"test": {
-				"outputs": [
-					"coverage/**"
-				]
-			},
-			"rest#test": {
 				"dependsOn": [
-					"build"
+					"^build"
 				],
-				"outputs": [
-					"coverage/**"
-				]
-			},
-			"lint": {
 				"outputs": []
 			},
-			"rest#lint": {
+			"lint": {
 				"dependsOn": [
-					"build"
+					"^build"
 				],
 				"outputs": []
 			},
 			"lint:fix": {
-				"outputs": []
-			},
-			"rest#lint:fix": {
 				"dependsOn": [
-					"build"
+					"^build"
 				],
 				"outputs": []
 			},
