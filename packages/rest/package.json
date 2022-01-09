@@ -4,7 +4,7 @@
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"build": "tsup && tsc --emitDeclarationOnly --incremental",
-		"test": " jest --pass-with-no-tests --collect-coverage",
+		"test": "jest --pass-with-no-tests --collect-coverage",
 		"lint": "eslint src __tests__ --ext mjs,js,ts",
 		"lint:fix": "eslint src __tests__ --ext mjs,js,ts --fix",
 		"format": "prettier --write .",
