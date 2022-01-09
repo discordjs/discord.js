@@ -5,7 +5,6 @@
     "pretty": false,
 
     // Completeness
-    "skipDefaultLibCheck": true,
-    "skipLibCheck": false
+    "skipDefaultLibCheck": true
   }
 }
