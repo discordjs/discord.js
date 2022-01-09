@@ -2459,7 +2459,6 @@ export class VoiceRegion {
   public id: string;
   public name: string;
   public optimal: boolean;
-  public vip: boolean;
   public toJSON(): unknown;
 }
 
