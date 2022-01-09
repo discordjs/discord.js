@@ -1,6 +1,6 @@
 'use strict';
 
-const { InteractionResponseType } = require('discord-api-types');
+const { InteractionResponseType } = require('discord-api-types/v9');
 const { Error } = require('../../errors');
 const MessageFlags = require('../../util/MessageFlags');
 const MessagePayload = require('../MessagePayload');

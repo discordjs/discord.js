@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType } = require('discord-api-types');
+const { ChannelType } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');

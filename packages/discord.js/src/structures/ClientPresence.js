@@ -1,6 +1,6 @@
 'use strict';
 
-const { ActivityType } = require('discord-api-types');
+const { ActivityType } = require('discord-api-types/v9');
 const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
 const { Opcodes } = require('../util/Constants');

@@ -1,6 +1,6 @@
 'use strict';
 
-const { GuildVerificationLevel, GuildNSFWLevel } = require('discord-api-types');
+const { GuildVerificationLevel, GuildNSFWLevel } = require('discord-api-types/v9');
 const BaseGuild = require('./BaseGuild');
 
 /**

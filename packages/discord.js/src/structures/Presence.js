@@ -1,6 +1,6 @@
 'use strict';
 
-const { ActivityType } = require('discord-api-types');
+const { ActivityType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Emoji } = require('./Emoji');
 const ActivityFlags = require('../util/ActivityFlags');

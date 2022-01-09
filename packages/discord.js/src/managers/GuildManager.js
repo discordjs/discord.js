@@ -1,7 +1,5 @@
 'use strict';
 
-const process = require('node:process');
-const { setTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const {
   GuildVerificationLevel,
@@ -9,7 +7,9 @@ const {
   GuildExplicitContentFilter,
   ChannelType,
   OverwriteType,
-} = require('discord-api-types');
+} = require('discord-api-types/v9');
+const process = require('node:process');
+const { setTimeout } = require('node:timers');
 const CachedManager = require('./CachedManager');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');

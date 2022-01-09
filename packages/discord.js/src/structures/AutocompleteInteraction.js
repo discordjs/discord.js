@@ -1,6 +1,6 @@
 'use strict';
 
-const { ApplicationCommandOptionType, InteractionResponseType } = require('discord-api-types');
+const { ApplicationCommandOptionType, InteractionResponseType } = require('discord-api-types/v9');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 const Interaction = require('./Interaction');
 

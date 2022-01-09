@@ -1,8 +1,8 @@
 'use strict';
 
-const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { OverwriteType } = require('discord-api-types');
+const { OverwriteType } = require('discord-api-types/v9');
+const process = require('node:process');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');

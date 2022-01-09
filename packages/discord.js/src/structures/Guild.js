@@ -8,7 +8,7 @@ const {
   GuildDefaultMessageNotifications,
   GuildVerificationLevel,
   ChannelType,
-} = require('discord-api-types');
+} = require('discord-api-types/v9');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');

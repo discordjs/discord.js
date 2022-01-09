@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { ApplicationCommandPermissionType } = require('discord-api-types');
+const { ApplicationCommandPermissionType } = require('discord-api-types/v9');
 const BaseManager = require('./BaseManager');
 const { Error, TypeError } = require('../errors');
 const { APIErrors } = require('../util/Constants');

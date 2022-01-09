@@ -1,6 +1,6 @@
 'use strict';
 
-const { TeamMemberMembershipState } = require('discord-api-types');
+const { TeamMemberMembershipState } = require('discord-api-type/v9');
 const Base = require('./Base');
 
 /**

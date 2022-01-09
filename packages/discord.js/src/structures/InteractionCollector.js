@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { InteractionType, ComponentType } = require('discord-api-types');
+const { InteractionType, ComponentType } = require('discord-api-types/v9');
 const Collector = require('./interfaces/Collector');
 const { Events } = require('../util/Constants');
 

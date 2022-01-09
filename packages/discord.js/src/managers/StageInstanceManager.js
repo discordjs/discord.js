@@ -1,6 +1,6 @@
 'use strict';
 
-const { GuildScheduledEventPrivacyLevel } = require('discord-api-types');
+const { GuildScheduledEventPrivacyLevel } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const { StageInstance } = require('../structures/StageInstance');
