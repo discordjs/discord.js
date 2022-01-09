@@ -7,7 +7,7 @@
 		"build": "tsup",
 		"lint": "eslint src --ext mjs,js,ts",
 		"lint:fix": "eslint src --ext mjs,js,ts --fix",
-		"format": "prettier --write **/*.{ts,js,json,yml,yaml}",
+		"format": "prettier --write .",
 		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ../../cliff.toml -r ../../ --include-path './*'"

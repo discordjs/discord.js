@@ -7,7 +7,7 @@
 		"test": " jest --pass-with-no-tests --collect-coverage",
 		"lint": "eslint src __tests__ --ext mjs,js,ts",
 		"lint:fix": "eslint src __tests__ --ext mjs,js,ts --fix",
-		"format": "prettier --write **/*.{ts,js,json,yml,yaml}",
+		"format": "prettier --write .",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ../../cliff.toml -r ../../ --include-path './*'"
 	},
