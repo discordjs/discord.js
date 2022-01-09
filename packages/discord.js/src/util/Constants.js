@@ -29,12 +29,29 @@ function makeImageUrl(root, { hash, format = 'webp', forceStatic = false, size }
 }
 
 /**
+ * A list of allowed image sizes:
+ * * 16
+ * * 32
+ * * 56
+ * * 64
+ * * 96
+ * * 128
+ * * 256
+ * * 300
+ * * 512
+ * * 600
+ * * 1024
+ * * 2048
+ * * 4096
+ * @typedef {number} ImageSize
+ */
+
+/**
  * Options for image URLs.
  * @typedef {Object} ImageURLOptions
  * @property {string} [format] One of `webp`, `png`, `jpg`, `jpeg`.
  * @property {boolean} [forceStatic=false] If `true`, the format will be as specified or `webp`.
- * @property {number} [size] One of `16`, `32`, `56`, `64`, `96`, `128`, `256`, `300`, `512`, `600`, `1024`, `2048`,
- * `4096`.
+ * @property {ImageSize} [size] An allowed image size.
  */
 
 // https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints

@@ -2698,7 +2698,7 @@ export const Constants: {
     invite: (root: string, code: string, eventId?: Snowflake) => string;
     scheduledEvent: (root: string, guildId: Snowflake, eventId: Snowflake) => string;
     CDN: (root: string) => {
-      Emoji: (emojiId: Snowflake, format: DynamicImageFormat) => string;
+      Emoji: (emojiId: Snowflake, format: "gif" | "png") => string;
       Asset: (name: string) => string;
       DefaultAvatar: (discriminator: number) => string;
       Avatar: (userId: Snowflake, hash: string, options: ImageURLOptions) => string;
@@ -4186,8 +4186,6 @@ export type DateResolvable = Date | number | string;
 
 export type DefaultMessageNotificationLevel = keyof typeof DefaultMessageNotificationLevels;
 
-export type DynamicImageFormat = AllowedImageFormat | 'gif';
-
 export interface EditGuildTemplateOptions {
   name?: string;
   description?: string;
@@ -4743,7 +4741,7 @@ export interface HTTPOptions {
 }
 
 export interface ImageURLOptions {
-  format?: DynamicImageFormat;
+  format?: AllowedImageFormat;
   forceStatic?: boolean;
   size?: AllowedImageSize;
 }
