@@ -1,60 +1,27 @@
-version: v1
+chore:
+  - any: ['*']
+    all: ['!packages/*', '!packages/**/*']
 
-labels:
-  - label: 'chore'
-    sync: true
-    matcher:
-      files:
-        any: ['*']
-        all: ['!packages/*', '!packages/**/*']
+'packages:builders':
+  - packages/builders/*
+  - packages/builders/**/*
 
-  - label: 'semver:major'
-    sync: true
-    matcher:
-      title: "^.*(\\(?.*\\)?)!:"
+'packages:collection':
+  - packages/collection/*
+  - packages/collection/**/*
 
-  - label: 'semver:minor'
-    sync: true
-    matcher:
-      title: "^feat(\\(?.*\\))?:"
+'packages:discord.js':
+  - packages/discord.js/*
+  - packages/discord.js/**/*
 
-  - label: 'semver:patch'
-    sync: true
-    matcher:
-      title: "^fix(\\(?.*\\))?:"
+'packages:rest':
+  - packages/rest/*
+  - packages/rest/**/*
 
-  - label: 'packages:builders'
-    sync: true
-    matcher:
-      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*builders"
-      files: ['packages/builders/*', 'packages/builders/**/*']
+'packages:voice':
+  - packages/voice/*
+  - packages/voice/**/*
 
-  - label: 'packages:collection'
-    sync: true
-    matcher:
-      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*collection"
-      files: ['packages/collection/*', 'packages/collection/**/*']
-
-  - label: 'packages:discord.js'
-    sync: true
-    matcher:
-      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*discord\\.js"
-      files: ['packages/discord.js/*', 'packages/discord.js/**/*']
-
-  - label: 'packages:rest'
-    sync: true
-    matcher:
-      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*rest"
-      files: ['packages/rest/*', 'packages/rest/**/*']
-
-  - label: 'packages:voice'
-    sync: true
-    matcher:
-      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*voice"
-      files: ['packages/voice/*', 'packages/voice/**/*']
-
-  - label: 'packages:ws'
-    sync: true
-    matcher:
-      body: "(\\s|.)*### Which package is this bug report for\\?(\\s|.)*ws"
-      files: ['packages/ws/*', 'packages/ws/**/*']
+'packages:ws':
+  - packages/ws/*
+  - packages/ws/**/*
