@@ -18,51 +18,51 @@ const { TypeError } = require('../errors/DJSError.js');
  * @param {Iterable} [iterable=null] Optional entries passed to the Map constructor.
  */
 class LimitedCollection extends Collection {
-  constructor(options = {}, iterable) {
-    if (typeof options !== 'object' || options === null) {
-      throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    }
-    const { maxSize = Infinity, keepOverLimit = null } = options;
+	constructor(options = {}, iterable) {
+		if (typeof options !== 'object' || options === null) {
+			throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+		}
+		const { maxSize = Infinity, keepOverLimit = null } = options;
 
-    if (typeof maxSize !== 'number') {
-      throw new TypeError('INVALID_TYPE', 'maxSize', 'number');
-    }
-    if (keepOverLimit !== null && typeof keepOverLimit !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'keepOverLimit', 'function');
-    }
+		if (typeof maxSize !== 'number') {
+			throw new TypeError('INVALID_TYPE', 'maxSize', 'number');
+		}
+		if (keepOverLimit !== null && typeof keepOverLimit !== 'function') {
+			throw new TypeError('INVALID_TYPE', 'keepOverLimit', 'function');
+		}
 
-    super(iterable);
+		super(iterable);
 
-    /**
-     * The max size of the Collection.
-     * @type {number}
-     */
-    this.maxSize = maxSize;
+		/**
+		 * The max size of the Collection.
+		 * @type {number}
+		 */
+		this.maxSize = maxSize;
 
-    /**
-     * A function called to check if an entry should be kept when the Collection is at max size.
-     * @type {?Function}
-     */
-    this.keepOverLimit = keepOverLimit;
-  }
+		/**
+		 * A function called to check if an entry should be kept when the Collection is at max size.
+		 * @type {?Function}
+		 */
+		this.keepOverLimit = keepOverLimit;
+	}
 
-  set(key, value) {
-    if (this.maxSize === 0) return this;
-    if (this.size >= this.maxSize && !this.has(key)) {
-      for (const [k, v] of this.entries()) {
-        const keep = this.keepOverLimit?.(v, k, this) ?? false;
-        if (!keep) {
-          this.delete(k);
-          break;
-        }
-      }
-    }
-    return super.set(key, value);
-  }
+	set(key, value) {
+		if (this.maxSize === 0) return this;
+		if (this.size >= this.maxSize && !this.has(key)) {
+			for (const [k, v] of this.entries()) {
+				const keep = this.keepOverLimit?.(v, k, this) ?? false;
+				if (!keep) {
+					this.delete(k);
+					break;
+				}
+			}
+		}
+		return super.set(key, value);
+	}
 
-  static get [Symbol.species]() {
-    return Collection;
-  }
+	static get [Symbol.species]() {
+		return Collection;
+	}
 }
 
 module.exports = LimitedCollection;

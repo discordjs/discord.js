@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = (client, packet) => {
-  client.actions.GuildScheduledEventCreate.handle(packet.d);
+	client.actions.GuildScheduledEventCreate.handle(packet.d);
 };

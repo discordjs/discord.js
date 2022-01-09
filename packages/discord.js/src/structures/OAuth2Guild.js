@@ -8,21 +8,21 @@ const Permissions = require('../util/Permissions');
  * @extends {BaseGuild}
  */
 class OAuth2Guild extends BaseGuild {
-  constructor(client, data) {
-    super(client, data);
+	constructor(client, data) {
+		super(client, data);
 
-    /**
-     * Whether the client user is the owner of the guild
-     * @type {boolean}
-     */
-    this.owner = data.owner;
+		/**
+		 * Whether the client user is the owner of the guild
+		 * @type {boolean}
+		 */
+		this.owner = data.owner;
 
-    /**
-     * The permissions that the client user has in this guild
-     * @type {Readonly<Permissions>}
-     */
-    this.permissions = new Permissions(BigInt(data.permissions)).freeze();
-  }
+		/**
+		 * The permissions that the client user has in this guild
+		 * @type {Readonly<Permissions>}
+		 */
+		this.permissions = new Permissions(BigInt(data.permissions)).freeze();
+	}
 }
 
 module.exports = OAuth2Guild;

@@ -2,80 +2,80 @@
 // To prevent them from showing up in an editor, they are imported from here instead of exporting them there directly.
 
 import {
-  APIApplication,
-  APIApplicationCommand,
-  APIApplicationCommandInteraction,
-  APIAttachment,
-  APIAuditLog,
-  APIAuditLogEntry,
-  APIBan,
-  APIChannel,
-  APIEmoji,
-  APIExtendedInvite,
-  APIGuild,
-  APIGuildIntegration,
-  APIGuildIntegrationApplication,
-  APIGuildMember,
-  APIGuildPreview,
-  APIGuildWelcomeScreen,
-  APIGuildWelcomeScreenChannel,
-  APIGuildWidget,
-  APIGuildWidgetMember,
-  APIInteractionDataResolvedChannel,
-  APIInteractionDataResolvedGuildMember,
-  APIInteractionGuildMember,
-  APIInvite,
-  APIInviteStageInstance,
-  APIMessage,
-  APIMessageButtonInteractionData,
-  APIMessageComponentInteraction,
-  APIMessageSelectMenuInteractionData,
-  APIOverwrite,
-  APIPartialChannel,
-  APIPartialEmoji,
-  APIPartialGuild,
-  APIReaction,
-  APIRole,
-  APIStageInstance,
-  APISticker,
-  APIStickerItem,
-  APIStickerPack,
-  APITeam,
-  APITeamMember,
-  APITemplate,
-  APIThreadMember,
-  APIUnavailableGuild,
-  APIUser,
-  APIVoiceRegion,
-  APIWebhook,
-  GatewayActivity,
-  GatewayActivityAssets,
-  GatewayActivityEmoji,
-  GatewayGuildBanAddDispatchData,
-  GatewayGuildMemberAddDispatchData,
-  GatewayGuildMemberUpdateDispatchData,
-  GatewayInteractionCreateDispatchData,
-  GatewayInviteCreateDispatchData,
-  GatewayInviteDeleteDispatchData,
-  GatewayMessageReactionAddDispatchData,
-  GatewayMessageUpdateDispatchData,
-  GatewayPresenceUpdate,
-  GatewayReadyDispatchData,
-  GatewayTypingStartDispatchData,
-  GatewayVoiceState,
-  RESTAPIPartialCurrentUserGuild,
-  RESTGetAPIWebhookWithTokenResult,
-  RESTPatchAPIChannelMessageJSONBody,
-  RESTPatchAPICurrentGuildMemberNicknameJSONBody,
-  RESTPatchAPIInteractionFollowupJSONBody,
-  RESTPatchAPIInteractionOriginalResponseJSONBody,
-  RESTPatchAPIWebhookWithTokenJSONBody,
-  RESTPostAPIChannelMessageJSONBody,
-  RESTPostAPIInteractionCallbackFormDataBody,
-  RESTPostAPIInteractionFollowupJSONBody,
-  RESTPostAPIWebhookWithTokenJSONBody,
-  Snowflake,
-  APIGuildScheduledEvent,
+	APIApplication,
+	APIApplicationCommand,
+	APIApplicationCommandInteraction,
+	APIAttachment,
+	APIAuditLog,
+	APIAuditLogEntry,
+	APIBan,
+	APIChannel,
+	APIEmoji,
+	APIExtendedInvite,
+	APIGuild,
+	APIGuildIntegration,
+	APIGuildIntegrationApplication,
+	APIGuildMember,
+	APIGuildPreview,
+	APIGuildWelcomeScreen,
+	APIGuildWelcomeScreenChannel,
+	APIGuildWidget,
+	APIGuildWidgetMember,
+	APIInteractionDataResolvedChannel,
+	APIInteractionDataResolvedGuildMember,
+	APIInteractionGuildMember,
+	APIInvite,
+	APIInviteStageInstance,
+	APIMessage,
+	APIMessageButtonInteractionData,
+	APIMessageComponentInteraction,
+	APIMessageSelectMenuInteractionData,
+	APIOverwrite,
+	APIPartialChannel,
+	APIPartialEmoji,
+	APIPartialGuild,
+	APIReaction,
+	APIRole,
+	APIStageInstance,
+	APISticker,
+	APIStickerItem,
+	APIStickerPack,
+	APITeam,
+	APITeamMember,
+	APITemplate,
+	APIThreadMember,
+	APIUnavailableGuild,
+	APIUser,
+	APIVoiceRegion,
+	APIWebhook,
+	GatewayActivity,
+	GatewayActivityAssets,
+	GatewayActivityEmoji,
+	GatewayGuildBanAddDispatchData,
+	GatewayGuildMemberAddDispatchData,
+	GatewayGuildMemberUpdateDispatchData,
+	GatewayInteractionCreateDispatchData,
+	GatewayInviteCreateDispatchData,
+	GatewayInviteDeleteDispatchData,
+	GatewayMessageReactionAddDispatchData,
+	GatewayMessageUpdateDispatchData,
+	GatewayPresenceUpdate,
+	GatewayReadyDispatchData,
+	GatewayTypingStartDispatchData,
+	GatewayVoiceState,
+	RESTAPIPartialCurrentUserGuild,
+	RESTGetAPIWebhookWithTokenResult,
+	RESTPatchAPIChannelMessageJSONBody,
+	RESTPatchAPICurrentGuildMemberNicknameJSONBody,
+	RESTPatchAPIInteractionFollowupJSONBody,
+	RESTPatchAPIInteractionOriginalResponseJSONBody,
+	RESTPatchAPIWebhookWithTokenJSONBody,
+	RESTPostAPIChannelMessageJSONBody,
+	RESTPostAPIInteractionCallbackFormDataBody,
+	RESTPostAPIInteractionFollowupJSONBody,
+	RESTPostAPIWebhookWithTokenJSONBody,
+	Snowflake,
+	APIGuildScheduledEvent,
 } from 'discord-api-types/v9';
 import { GuildChannel, Guild, PermissionOverwrites } from '.';
 
@@ -88,20 +88,20 @@ export type RawIntegrationApplicationData = APIGuildIntegrationApplication | Par
 export type RawApplicationCommandData = APIApplicationCommand;
 
 export type RawChannelData =
-  | RawGuildChannelData
-  | RawThreadChannelData
-  | RawDMChannelData
-  | RawPartialGroupDMChannelData;
+	| RawGuildChannelData
+	| RawThreadChannelData
+	| RawDMChannelData
+	| RawPartialGroupDMChannelData;
 export type RawDMChannelData = APIChannel | APIInteractionDataResolvedChannel;
 export type RawGuildChannelData = APIChannel | APIInteractionDataResolvedChannel | Required<APIPartialChannel>;
 export type RawPartialGroupDMChannelData = APIChannel | Required<APIPartialChannel>;
 export type RawThreadChannelData = APIChannel | APIInteractionDataResolvedChannel;
 
 export type RawEmojiData =
-  | RawGuildEmojiData
-  | RawReactionEmojiData
-  | GatewayActivityEmoji
-  | Omit<Partial<APIPartialEmoji>, 'animated'>;
+	| RawGuildEmojiData
+	| RawReactionEmojiData
+	| GatewayActivityEmoji
+	| Omit<Partial<APIPartialEmoji>, 'animated'>;
 export type RawGuildEmojiData = APIEmoji;
 export type RawReactionEmojiData = APIEmoji | APIPartialEmoji;
 
@@ -118,13 +118,13 @@ export type RawInviteGuildData = APIPartialGuild;
 export type RawOAuth2GuildData = RESTAPIPartialCurrentUserGuild;
 
 export type RawGuildMemberData =
-  | APIGuildMember
-  | APIInteractionGuildMember
-  | APIInteractionDataResolvedGuildMember
-  | GatewayGuildMemberAddDispatchData
-  | GatewayGuildMemberUpdateDispatchData
-  | Required<RESTPatchAPICurrentGuildMemberNicknameJSONBody>
-  | { user: { id: Snowflake } };
+	| APIGuildMember
+	| APIInteractionGuildMember
+	| APIInteractionDataResolvedGuildMember
+	| GatewayGuildMemberAddDispatchData
+	| GatewayGuildMemberUpdateDispatchData
+	| Required<RESTPatchAPICurrentGuildMemberNicknameJSONBody>
+	| { user: { id: Snowflake } };
 export type RawThreadMemberData = APIThreadMember;
 
 export type RawGuildPreviewData = APIGuildPreview;
@@ -142,10 +142,10 @@ export type RawMessageButtonInteractionData = APIMessageButtonInteractionData;
 export type RawMessageSelectMenuInteractionData = APIMessageSelectMenuInteractionData;
 
 export type RawInviteData =
-  | APIExtendedInvite
-  | APIInvite
-  | (GatewayInviteCreateDispatchData & { channel: GuildChannel; guild: Guild })
-  | (GatewayInviteDeleteDispatchData & { channel: GuildChannel; guild: Guild });
+	| APIExtendedInvite
+	| APIInvite
+	| (GatewayInviteCreateDispatchData & { channel: GuildChannel; guild: Guild })
+	| (GatewayInviteDeleteDispatchData & { channel: GuildChannel; guild: Guild });
 
 export type RawInviteStageInstance = APIInviteStageInstance;
 
@@ -155,14 +155,14 @@ export type RawPartialMessageData = GatewayMessageUpdateDispatchData;
 export type RawMessageAttachmentData = APIAttachment;
 
 export type RawMessagePayloadData =
-  | RESTPostAPIChannelMessageJSONBody
-  | RESTPatchAPIChannelMessageJSONBody
-  | RESTPostAPIWebhookWithTokenJSONBody
-  | RESTPatchAPIWebhookWithTokenJSONBody
-  | RESTPostAPIInteractionCallbackFormDataBody
-  | RESTPatchAPIInteractionOriginalResponseJSONBody
-  | RESTPostAPIInteractionFollowupJSONBody
-  | RESTPatchAPIInteractionFollowupJSONBody;
+	| RESTPostAPIChannelMessageJSONBody
+	| RESTPatchAPIChannelMessageJSONBody
+	| RESTPostAPIWebhookWithTokenJSONBody
+	| RESTPatchAPIWebhookWithTokenJSONBody
+	| RESTPostAPIInteractionCallbackFormDataBody
+	| RESTPatchAPIInteractionOriginalResponseJSONBody
+	| RESTPostAPIInteractionFollowupJSONBody
+	| RESTPatchAPIInteractionFollowupJSONBody;
 
 export type RawMessageReactionData = APIReaction | GatewayMessageReactionAddDispatchData;
 
@@ -175,8 +175,8 @@ export type RawRoleData = APIRole;
 export type RawRichPresenceAssets = GatewayActivityAssets;
 
 export type RawStageInstanceData =
-  | APIStageInstance
-  | (Partial<APIStageInstance> & Pick<APIStageInstance, 'id' | 'channel_id' | 'guild_id'>);
+	| APIStageInstance
+	| (Partial<APIStageInstance> & Pick<APIStageInstance, 'id' | 'channel_id' | 'guild_id'>);
 
 export type RawStickerData = APISticker | APIStickerItem;
 
@@ -189,17 +189,17 @@ export type RawTeamMemberData = APITeamMember;
 export type RawTypingData = GatewayTypingStartDispatchData;
 
 export type RawUserData =
-  | (APIUser & { member?: Omit<APIGuildMember, 'user'> })
-  | (GatewayPresenceUpdate['user'] & Pick<APIUser, 'username'>);
+	| (APIUser & { member?: Omit<APIGuildMember, 'user'> })
+	| (GatewayPresenceUpdate['user'] & Pick<APIUser, 'username'>);
 
 export type RawVoiceRegionData = APIVoiceRegion;
 
 export type RawVoiceStateData = GatewayVoiceState | Omit<GatewayVoiceState, 'guild_id'>;
 
 export type RawWebhookData =
-  | APIWebhook
-  | RESTGetAPIWebhookWithTokenResult
-  | (Partial<APIWebhook> & Required<Pick<APIWebhook, 'id' | 'guild_id'>>);
+	| APIWebhook
+	| RESTGetAPIWebhookWithTokenResult
+	| (Partial<APIWebhook> & Required<Pick<APIWebhook, 'id' | 'guild_id'>>);
 
 export type RawWelcomeChannelData = APIGuildWelcomeScreenChannel;
 

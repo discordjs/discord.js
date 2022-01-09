@@ -7,21 +7,21 @@ const BaseGuildEmoji = require('./BaseGuildEmoji');
  * @extends {BaseGuildEmoji}
  */
 class GuildPreviewEmoji extends BaseGuildEmoji {
-  /**
-   * The public guild this emoji is part of
-   * @type {GuildPreview}
-   * @name GuildPreviewEmoji#guild
-   */
+	/**
+	 * The public guild this emoji is part of
+	 * @type {GuildPreview}
+	 * @name GuildPreviewEmoji#guild
+	 */
 
-  constructor(client, data, guild) {
-    super(client, data, guild);
+	constructor(client, data, guild) {
+		super(client, data, guild);
 
-    /**
-     * The roles this emoji is active for
-     * @type {Snowflake[]}
-     */
-    this.roles = data.roles;
-  }
+		/**
+		 * The roles this emoji is active for
+		 * @type {Snowflake[]}
+		 */
+		this.roles = data.roles;
+	}
 }
 
 module.exports = GuildPreviewEmoji;

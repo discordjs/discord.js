@@ -35,14 +35,14 @@ class MessageFlags extends BitField {}
  * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-flags}
  */
 MessageFlags.FLAGS = {
-  CROSSPOSTED: 1 << 0,
-  IS_CROSSPOST: 1 << 1,
-  SUPPRESS_EMBEDS: 1 << 2,
-  SOURCE_MESSAGE_DELETED: 1 << 3,
-  URGENT: 1 << 4,
-  HAS_THREAD: 1 << 5,
-  EPHEMERAL: 1 << 6,
-  LOADING: 1 << 7,
+	CROSSPOSTED: 1 << 0,
+	IS_CROSSPOST: 1 << 1,
+	SUPPRESS_EMBEDS: 1 << 2,
+	SOURCE_MESSAGE_DELETED: 1 << 3,
+	URGENT: 1 << 4,
+	HAS_THREAD: 1 << 5,
+	EPHEMERAL: 1 << 6,
+	LOADING: 1 << 7,
 };
 
 module.exports = MessageFlags;

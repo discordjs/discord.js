@@ -8,53 +8,53 @@ const { Emoji } = require('./Emoji');
  * @extends {Base}
  */
 class WelcomeChannel extends Base {
-  constructor(guild, data) {
-    super(guild.client);
+	constructor(guild, data) {
+		super(guild.client);
 
-    /**
-     * The guild for this welcome channel
-     * @type {Guild|InviteGuild}
-     */
-    this.guild = guild;
+		/**
+		 * The guild for this welcome channel
+		 * @type {Guild|InviteGuild}
+		 */
+		this.guild = guild;
 
-    /**
-     * The description of this welcome channel
-     * @type {string}
-     */
-    this.description = data.description;
+		/**
+		 * The description of this welcome channel
+		 * @type {string}
+		 */
+		this.description = data.description;
 
-    /**
-     * The raw emoji data
-     * @type {Object}
-     * @private
-     */
-    this._emoji = {
-      name: data.emoji_name,
-      id: data.emoji_id,
-    };
+		/**
+		 * The raw emoji data
+		 * @type {Object}
+		 * @private
+		 */
+		this._emoji = {
+			name: data.emoji_name,
+			id: data.emoji_id,
+		};
 
-    /**
-     * The id of this welcome channel
-     * @type {Snowflake}
-     */
-    this.channelId = data.channel_id;
-  }
+		/**
+		 * The id of this welcome channel
+		 * @type {Snowflake}
+		 */
+		this.channelId = data.channel_id;
+	}
 
-  /**
-   * The channel of this welcome channel
-   * @type {?(TextChannel|NewsChannel|StoreChannel)}
-   */
-  get channel() {
-    return this.client.channels.resolve(this.channelId);
-  }
+	/**
+	 * The channel of this welcome channel
+	 * @type {?(TextChannel|NewsChannel|StoreChannel)}
+	 */
+	get channel() {
+		return this.client.channels.resolve(this.channelId);
+	}
 
-  /**
-   * The emoji of this welcome channel
-   * @type {GuildEmoji|Emoji}
-   */
-  get emoji() {
-    return this.client.emojis.resolve(this._emoji.id) ?? new Emoji(this.client, this._emoji);
-  }
+	/**
+	 * The emoji of this welcome channel
+	 * @type {GuildEmoji|Emoji}
+	 */
+	get emoji() {
+		return this.client.emojis.resolve(this._emoji.id) ?? new Emoji(this.client, this._emoji);
+	}
 }
 
 module.exports = WelcomeChannel;
