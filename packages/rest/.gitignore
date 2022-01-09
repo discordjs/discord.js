@@ -1,0 +1,30 @@
+# Packages
+node_modules/
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Env
+.env
+
+# Dist
+dist/
+typings/
+docs/
+
+# Miscellaneous
+.tmp/
+coverage/
+tsconfig.tsbuildinfo
+.turbo
+
+# Yarn files
+.yarn/install-state.gz
+.yarn/build-state.yml
