@@ -252,7 +252,7 @@ export class SequentialHandler {
 				// Set RateLimitData based on the route-specific limit
 				limit = this.limit;
 				timeout = this.timeToReset;
-				delay = sleep(timeout, undefined, { ref: false });
+				delay = sleep(timeout);
 			}
 			const rateLimitData: RateLimitData = {
 				timeToReset: timeout,
