@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { opus, VolumeTransformer } from 'prism-media';
 import { PassThrough, Readable } from 'node:stream';
 import { SILENCE_FRAME } from '../AudioPlayer';

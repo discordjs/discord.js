@@ -1,11 +1,11 @@
 'use strict';
 
+const fetch = require('node-fetch');
 const fs = require('node:fs');
 const path = require('node:path');
 const process = require('node:process');
 const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
-const fetch = require('node-fetch');
 const { owner, token } = require('./auth.js');
 const { Client, Intents, MessageAttachment, MessageEmbed } = require('../src');
 

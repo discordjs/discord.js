@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import { addAudioPlayer, deleteAudioPlayer } from '../DataStore';
 import { Awaited, noop } from '../util/util';
 import { VoiceConnection, VoiceConnectionStatus } from '../VoiceConnection';
@@ -162,6 +163,19 @@ export type AudioPlayerEvents = {
 		newState: AudioPlayerState & { status: status },
 	) => Awaited<void>;
 };
+
+/**
+ * Stringifies an AudioPlayerState instance.
+ *
+ * @param state - The state to stringify
+ */
+function stringifyState(state: AudioPlayerState) {
+	return JSON.stringify({
+		...state,
+		resource: Reflect.has(state, 'resource'),
+		stepTimeout: Reflect.has(state, 'stepTimeout'),
+	});
+}
 
 /**
  * Used to play audio resources (i.e. tracks, streams) to voice connections.
@@ -604,19 +618,6 @@ export class AudioPlayer extends TypedEmitter<AudioPlayerEvents> {
 		state.playbackDuration += 20;
 		receivers.forEach((connection) => connection.prepareAudioPacket(packet));
 	}
-}
-
-/**
- * Stringifies an AudioPlayerState instance.
- *
- * @param state - The state to stringify
- */
-function stringifyState(state: AudioPlayerState) {
-	return JSON.stringify({
-		...state,
-		resource: Reflect.has(state, 'resource'),
-		stepTimeout: Reflect.has(state, 'stepTimeout'),
-	});
 }
 
 /**

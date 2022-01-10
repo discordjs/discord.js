@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import EventEmitter from 'node:events';
 import { VoiceConnection, VoiceConnectionStatus } from '../../VoiceConnection';
 import { entersState } from '../entersState';

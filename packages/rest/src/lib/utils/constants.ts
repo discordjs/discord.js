@@ -1,9 +1,9 @@
 import { APIVersion } from 'discord-api-types/v9';
 import type { RESTOptions } from '../REST';
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
 const Package = require('../../../package.json');
 
-// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+// eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
 export const DefaultUserAgent = `DiscordBot (${Package.homepage}, ${Package.version})`;
 
 export const DefaultRestOptions: Required<RESTOptions> = {

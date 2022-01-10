@@ -158,6 +158,41 @@ export interface NetworkingEvents {
 }
 
 /**
+ * Stringifies a NetworkingState.
+ *
+ * @param state - The state to stringify
+ */
+function stringifyState(state: NetworkingState) {
+	return JSON.stringify({
+		...state,
+		ws: Reflect.has(state, 'ws'),
+		udp: Reflect.has(state, 'udp'),
+	});
+}
+
+/**
+ * Chooses an encryption mode from a list of given options. Chooses the most preferred option.
+ *
+ * @param options - The available encryption options
+ */
+function chooseEncryptionMode(options: string[]): string {
+	const option = options.find((option) => SUPPORTED_ENCRYPTION_MODES.includes(option));
+	if (!option) {
+		throw new Error(`No compatible encryption modes. Available include: ${options.join(', ')}`);
+	}
+	return option;
+}
+
+/**
+ * Returns a random number that is in the range of n bits.
+ *
+ * @param n - The number of bits
+ */
+function randomNBit(n: number) {
+	return Math.floor(Math.random() * 2 ** n);
+}
+
+/**
  * Manages the networking required to maintain a voice connection and dispatch audio packets
  */
 export class Networking extends TypedEmitter<NetworkingEvents> {
@@ -348,12 +383,16 @@ export class Networking extends TypedEmitter<NetworkingEvents> {
 	 * @param packet - The received packet
 	 */
 	private onWsPacket(packet: any) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		if (packet.op === VoiceOpcodes.Hello && this.state.code !== NetworkingStatusCode.Closed) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
 			this.state.ws.setHeartbeatInterval(packet.d.heartbeat_interval);
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		} else if (packet.op === VoiceOpcodes.Ready && this.state.code === NetworkingStatusCode.Identifying) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 			const { ip, port, ssrc, modes } = packet.d;
 
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			const udp = new VoiceUDPSocket({ ip, port });
 			udp.on('error', this.onChildError);
 			udp.on('debug', this.onUdpDebug);
@@ -387,19 +426,23 @@ export class Networking extends TypedEmitter<NetworkingEvents> {
 				code: NetworkingStatusCode.UdpHandshaking,
 				udp,
 				connectionData: {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					ssrc,
 				},
 			};
 		} else if (
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			packet.op === VoiceOpcodes.SessionDescription &&
 			this.state.code === NetworkingStatusCode.SelectingProtocol
 		) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 			const { mode: encryptionMode, secret_key: secretKey } = packet.d;
 			this.state = {
 				...this.state,
 				code: NetworkingStatusCode.Ready,
 				connectionData: {
 					...this.state.connectionData,
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					encryptionMode,
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 					secretKey: new Uint8Array(secretKey),
@@ -411,6 +454,7 @@ export class Networking extends TypedEmitter<NetworkingEvents> {
 					packetsPlayed: 0,
 				},
 			};
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		} else if (packet.op === VoiceOpcodes.Resumed && this.state.code === NetworkingStatusCode.Resuming) {
 			this.state = {
 				...this.state,
@@ -556,39 +600,4 @@ export class Networking extends TypedEmitter<NetworkingEvents> {
 		}
 		return [secretbox.methods.close(opusPacket, nonce, secretKey)];
 	}
-}
-
-/**
- * Returns a random number that is in the range of n bits.
- *
- * @param n - The number of bits
- */
-function randomNBit(n: number) {
-	return Math.floor(Math.random() * 2 ** n);
-}
-
-/**
- * Stringifies a NetworkingState.
- *
- * @param state - The state to stringify
- */
-function stringifyState(state: NetworkingState) {
-	return JSON.stringify({
-		...state,
-		ws: Reflect.has(state, 'ws'),
-		udp: Reflect.has(state, 'udp'),
-	});
-}
-
-/**
- * Chooses an encryption mode from a list of given options. Chooses the most preferred option.
- *
- * @param options - The available encryption options
- */
-function chooseEncryptionMode(options: string[]): string {
-	const option = options.find((option) => SUPPORTED_ENCRYPTION_MODES.includes(option));
-	if (!option) {
-		throw new Error(`No compatible encryption modes. Available include: ${options.join(', ')}`);
-	}
-	return option;
 }

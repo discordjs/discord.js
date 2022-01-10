@@ -10,17 +10,17 @@ export interface DiscordGatewayAdapterLibraryMethods {
 	 *
 	 * @param data - The inner data of the VOICE_SERVER_UPDATE payload
 	 */
-	onVoiceServerUpdate(data: GatewayVoiceServerUpdateDispatchData): void;
+	onVoiceServerUpdate: (data: GatewayVoiceServerUpdateDispatchData) => void;
 	/**
 	 * Call this when you receive a VOICE_STATE_UPDATE payload that is relevant to the adapter.
 	 *
 	 * @param data - The inner data of the VOICE_STATE_UPDATE payload
 	 */
-	onVoiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): void;
+	onVoiceStateUpdate: (data: GatewayVoiceStateUpdateDispatchData) => void;
 	/**
 	 * Call this when the adapter can no longer be used (e.g. due to a disconnect from the main gateway)
 	 */
-	destroy(): void;
+	destroy: () => void;
 }
 
 /**
@@ -34,12 +34,12 @@ export interface DiscordGatewayAdapterImplementerMethods {
 	 *
 	 * @returns `false` if the payload definitely failed to send - in this case, the voice connection disconnects
 	 */
-	sendPayload(payload: any): boolean;
+	sendPayload: (payload: any) => boolean;
 	/**
 	 * This will be called by @discordjs/voice when the adapter can safely be destroyed as it will no
 	 * longer be used.
 	 */
-	destroy(): void;
+	destroy: () => void;
 }
 
 /**

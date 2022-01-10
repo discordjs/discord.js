@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { AudioResource } from '../../audio/AudioResource';
 import { createAudioPlayer, AudioPlayerStatus, AudioPlayer, SILENCE_FRAME } from '../AudioPlayer';
@@ -372,7 +374,7 @@ test('play() throws when playing a resource that has already ended', async () =>
 	expect(resource.playStream.readableEnded).toBe(true);
 	player.stop(true);
 	expect(player.state.status).toBe(AudioPlayerStatus.Idle);
-	expect(() => player.play(resource)).toThrow();
+	expect(() => player?.play(resource)).toThrow();
 });
 
 test('Propagates errors from streams', async () => {
