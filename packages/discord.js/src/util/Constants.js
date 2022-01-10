@@ -23,8 +23,7 @@ function makeImageUrl(root, { hash, format = 'webp', forceStatic = false, size }
   if (!['undefined', 'number'].includes(typeof size)) throw new TypeError('INVALID_TYPE', 'size', 'number');
   if (!AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
-  if (forceStatic) format ??= 'webp';
-  else if (hash?.startsWith('a_')) format = 'gif';
+  if (!forceStatic && hash?.startsWith('a_')) format = 'gif';
   return `${root}${hash ? `/${hash}` : ''}.${format}${size ? `?size=${size}` : ''}`;
 }
 
