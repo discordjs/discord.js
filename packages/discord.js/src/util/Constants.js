@@ -29,7 +29,7 @@ function makeImageUrl(root, { hash, format = 'webp', forceStatic = false, size }
 }
 
 /**
- * A list of allowed image sizes:
+ * A list of image sizes:
  * * 16
  * * 32
  * * 56
