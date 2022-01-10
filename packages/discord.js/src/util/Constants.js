@@ -47,9 +47,18 @@ function makeImageUrl(root, { hash, format = 'webp', forceStatic = false, size }
  */
 
 /**
+ * A list of image formats:
+ * * webp
+ * * png
+ * * jpg
+ * * jpeg
+ * @typedef {string} ImageFormat
+ */
+
+/**
  * Options for image URLs.
  * @typedef {Object} ImageURLOptions
- * @property {string} [format] One of `webp`, `png`, `jpg`, `jpeg`.
+ * @property {string} [ImageFormat] An image format.
  * @property {boolean} [forceStatic=false] If `true`, the format will be as specified or `webp`.
  * @property {ImageSize} [size] An image size.
  */
