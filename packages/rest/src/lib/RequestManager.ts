@@ -8,8 +8,6 @@ import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
 import type { RESTOptions, RestEvents } from './REST';
 import { DefaultRestOptions, DefaultUserAgent } from './utils/constants';
-import type { ReadStream } from 'fs';
-import type { ServerResponse } from 'http';
 
 let agent: Agent | null = null;
 
@@ -30,7 +28,7 @@ export interface RawFile {
 	/**
 	 * The actual data for the file
 	 */
-	fileData: string | number | boolean | Buffer | ReadStream | ServerResponse;
+	fileData: string | number | boolean | Buffer;
 }
 
 /**
