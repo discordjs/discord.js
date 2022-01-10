@@ -192,6 +192,7 @@ class Guild extends AnonymousGuild {
      * * PARTNERED
      * * PREVIEW_ENABLED
      * * PRIVATE_THREADS
+     * * ROLE_ICONS
      * * ROLE_SUBSCRIPTIONS_ENABLED
      * * SEVEN_DAY_THREAD_ARCHIVE
      * * THREE_DAY_THREAD_ARCHIVE
@@ -200,14 +201,6 @@ class Guild extends AnonymousGuild {
      * * VERIFIED
      * * VIP_REGIONS
      * * WELCOME_SCREEN_ENABLED
-     * * TICKETED_EVENTS_ENABLED
-     * * MONETIZATION_ENABLED
-     * * MORE_STICKERS
-     * * THREE_DAY_THREAD_ARCHIVE
-     * * SEVEN_DAY_THREAD_ARCHIVE
-     * * PRIVATE_THREADS
-     * * ROLE_ICONS
-     * * ROLE_SUBSCRIPTIONS_ENABLED
      * @typedef {string} Features
      * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-features}
      */
