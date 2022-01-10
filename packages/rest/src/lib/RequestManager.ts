@@ -8,6 +8,8 @@ import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
 import type { RESTOptions, RestEvents } from './REST';
 import { DefaultRestOptions, DefaultUserAgent } from './utils/constants';
+import type { ReadStream } from 'fs';
+import type { ServerResponse } from 'http';
 
 let agent: Agent | null = null;
 
@@ -28,7 +30,7 @@ export interface RawFile {
 	/**
 	 * The actual data for the file
 	 */
-	rawBuffer: Buffer;
+	fileData: string | number | boolean | Buffer | ReadStream | ServerResponse;
 }
 
 /**
@@ -280,7 +282,7 @@ export class RequestManager extends EventEmitter {
 
 			// Attach all files to the request
 			for (const [index, file] of request.files.entries()) {
-				formData.append(file.key ?? `files[${index}]`, file.rawBuffer, file.fileName);
+				formData.append(file.key ?? `files[${index}]`, file.fileData, file.fileName);
 			}
 
 			// If a JSON body was added as well, attach it to the form data, using payload_json unless otherwise specified
