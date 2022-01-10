@@ -179,12 +179,11 @@ class User extends Base {
 
   /**
    * A link to the user's banner. See {@link User#banner} for more info
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   bannerURL(options = {}) {
-    if (!this.banner) return this.banner;
-    return this.client.rest.cdn.Banner(this.id, this.banner, options);
+    return this.banner && this.client.rest.cdn.Banner(this.id, this.banner, options);
   }
 
   /**
