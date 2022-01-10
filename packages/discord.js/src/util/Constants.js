@@ -51,7 +51,7 @@ function makeImageUrl(root, { hash, format = 'webp', forceStatic = false, size }
  * @typedef {Object} ImageURLOptions
  * @property {string} [format] One of `webp`, `png`, `jpg`, `jpeg`.
  * @property {boolean} [forceStatic=false] If `true`, the format will be as specified or `webp`.
- * @property {ImageSize} [size] An allowed image size.
+ * @property {ImageSize} [size] An image size.
  */
 
 // https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints
