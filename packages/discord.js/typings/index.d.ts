@@ -1973,7 +1973,7 @@ export class Shard extends EventEmitter {
   private _fetches: Map<string, Promise<unknown>>;
   private _handleExit(respawn?: boolean, timeout?: number): void;
   private _handleMessage(message: unknown): void;
-  private incrementMaxListeners(emitter: EventEmitter | ChildProcess): void
+  private incrementMaxListeners(emitter: EventEmitter | ChildProcess): void;
   private decrementMaxListeners(emitter: EventEmitter | ChildProcess): void
 
   public args: string[];
