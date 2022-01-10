@@ -2009,7 +2009,7 @@ export class ShardClientUtil {
   private _handleMessage(message: unknown): void;
   private _respond(type: string, message: unknown): void;
   private incrementMaxListeners(emitter: EventEmitter | ChildProcess): void
-  private decrementMaxListeners(emitter: EventEmitter | ChildProcess): void
+  private decrementMaxListeners(emitter: EventEmitter | ChildProcess): void;
 
   public client: Client;
   public readonly count: number;
