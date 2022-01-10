@@ -261,7 +261,7 @@ class ShardClientUtil {
 
   /**
    * Decrements max listeners by one for a given emitter, if they are not zero.
-   * @param {EventEmitter | process} emitter The emitter that emits the events.
+   * @param {EventEmitter|process} emitter The emitter that emits the events.
    * @private
    */
   decrementMaxListeners(emitter) {
