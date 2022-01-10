@@ -1,7 +1,6 @@
 'use strict';
 
 const process = require('node:process');
-const { EventEmitter } = require('node:stream');
 const { Error } = require('../errors');
 const { Events } = require('../util/Constants');
 const Util = require('../util/Util');
@@ -250,7 +249,7 @@ class ShardClientUtil {
 
   /**
    * Increments max listeners by one for a given emitter, if they are not zero.
-   * @param {EventEmitter | process} emitter
+   * @param {EventEmitter | process} emitter The emitter that emits the events.
    * @private
    */
   incrementMaxListeners(emitter) {
@@ -262,7 +261,7 @@ class ShardClientUtil {
 
   /**
    * Decrements max listeners by one for a given emitter, if they are not zero.
-   * @param {EventEmitter | process} emitter
+   * @param {EventEmitter | process} emitter The emitter that emits the events.
    * @private
    */
   decrementMaxListeners(emitter) {
