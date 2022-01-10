@@ -417,6 +417,7 @@ class Shard extends EventEmitter {
 
   /**
    * Increments max listeners by one for a given emitter, if they are not zero.
+   * @param {EventEmitter | process} emitter
    * @private
    */
   incrementMaxListeners(emitter) {
@@ -428,6 +429,7 @@ class Shard extends EventEmitter {
 
   /**
    * Decrements max listeners by one for a given emitter, if they are not zero.
+   * @param {EventEmitter | process} emitter
    * @private
    */
   decrementMaxListeners(emitter) {
