@@ -4658,7 +4658,7 @@ export type GuildFeatures =
   | 'VANITY_URL'
   | 'VERIFIED'
   | 'VIP_REGIONS'
-  | 'WELCOME_SCREEN_ENABLED'
+  | 'WELCOME_SCREEN_ENABLED';
 
 export interface GuildMemberEditData {
   nick?: string | null;
