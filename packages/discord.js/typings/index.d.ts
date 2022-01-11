@@ -1059,7 +1059,7 @@ export abstract class GuildChannel extends Channel {
   public setName(name: string, reason?: string): Promise<this>;
   public setParent(channel: CategoryChannelResolvable | null, options?: SetParentOptions): Promise<this>;
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
-  public isTextBased(): this is TextChannel | NewsChannel | ThreadChannel;
+  public isTextBased(): this is GuildBasedChannel & TextBasedChannel;
 }
 
 export class GuildEmoji extends BaseGuildEmoji {
