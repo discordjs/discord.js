@@ -13,7 +13,7 @@ export interface CollectionConstructor {
  * Represents an immutable version of a collection
  */
 export type ReadonlyCollection<K, V> = ReadonlyMap<K, V> &
-	Omit<Collection<K, V>, 'forEach' | 'ensure' | 'sweep' | 'sort' | 'get' | 'set' | 'delete'>;
+	Omit<Collection<K, V>, 'forEach' | 'ensure' | 'reverse' | 'sweep' | 'sort' | 'get' | 'set' | 'delete'>;
 
 /**
  * Separate interface for the constructor so that emitted js does not have a constructor that overwrites itself
