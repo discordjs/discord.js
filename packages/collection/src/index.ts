@@ -10,6 +10,12 @@ export interface CollectionConstructor {
 }
 
 /**
+ * Represents an immutable version of a collection
+ */
+export type ReadonlyCollection<K, V> = ReadonlyMap<K, V> &
+	Omit<Collection<K, V>, 'forEach' | 'ensure' | 'sweep' | 'sort'>;
+
+/**
  * Separate interface for the constructor so that emitted js does not have a constructor that overwrites itself
  *
  * @internal
@@ -557,7 +563,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @example
 	 * const newColl = someColl.clone();
 	 */
-	public clone() {
+	public clone(): Collection<K, V> {
 		return new this.constructor[Symbol.species](this);
 	}
 
@@ -569,7 +575,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @example
 	 * const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
 	 */
-	public concat(...collections: Collection<K, V>[]) {
+	public concat(...collections: ReadonlyCollection<K, V>[]) {
 		const newColl = this.clone();
 		for (const coll of collections) {
 			for (const [key, val] of coll) newColl.set(key, val);
@@ -586,7 +592,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @returns Whether the collections have identical contents
 	 */
-	public equals(collection: Collection<K, V>) {
+	public equals(collection: ReadonlyCollection<K, V>) {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (!collection) return false; // runtime check
 		if (this === collection) return true;
@@ -629,7 +635,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param other The other Collection to filter against
 	 */
-	public intersect<T>(other: Collection<K, T>): Collection<K, T> {
+	public intersect<T>(other: ReadonlyCollection<K, T>): Collection<K, T> {
 		const coll = new this.constructor[Symbol.species]<K, T>();
 		for (const [k, v] of other) {
 			if (this.has(k)) coll.set(k, v);
@@ -642,7 +648,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param other The other Collection to filter against
 	 */
-	public difference<T>(other: Collection<K, T>): Collection<K, V | T> {
+	public difference<T>(other: ReadonlyCollection<K, T>): Collection<K, V | T> {
 		const coll = new this.constructor[Symbol.species]<K, V | T>();
 		for (const [k, v] of other) {
 			if (!this.has(k)) coll.set(k, v);
