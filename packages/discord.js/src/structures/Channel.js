@@ -127,7 +127,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is a {@link PartialGroupDMChannel}
+   * Indicates whether this channel is a {@link PartialGroupDMChannel}.
    * @returns {boolean}
    */
   isGroupDM() {
@@ -143,7 +143,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is a {@link NewsChannel}
+   * Indicates whether this channel is a {@link NewsChannel}.
    * @returns {boolean}
    */
   isNews() {
@@ -151,7 +151,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is a {@link StoreChannel}
+   * Indicates whether this channel is a {@link StoreChannel}.
    * @returns {boolean}
    */
   isStore() {
