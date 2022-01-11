@@ -625,14 +625,16 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * The intersect method returns a new structure containing items where the keys are present in both original structures.
+	 * The intersect method returns a new structure containing items where the keys and values are present in both original structures.
 	 *
 	 * @param other The other Collection to filter against
 	 */
 	public intersect<T>(other: Collection<K, T>): Collection<K, T> {
 		const coll = new this.constructor[Symbol.species]<K, T>();
 		for (const [k, v] of other) {
-			if (this.has(k)) coll.set(k, v);
+			if (this.has(k) && Object.is(v, this.get(k))) {
+				coll.set(k, v);
+			}
 		}
 		return coll;
 	}
