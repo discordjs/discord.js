@@ -809,7 +809,6 @@ expectType<'messageCreate'>(Constants.Events.MESSAGE_CREATE);
 expectType<'close'>(Constants.ShardEvents.CLOSE);
 expectType<1>(Constants.Status.CONNECTING);
 expectType<0>(Constants.Opcodes.DISPATCH);
-expectType<2>(Constants.ClientApplicationAssetTypes.BIG);
 
 declare const applicationCommandData: ApplicationCommandData;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;

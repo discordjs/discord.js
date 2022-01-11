@@ -573,11 +573,6 @@ exports.ThreadChannelTypes = ['GUILD_NEWS_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD
  */
 exports.VoiceBasedChannelTypes = ['GUILD_VOICE', 'GUILD_STAGE_VOICE'];
 
-exports.ClientApplicationAssetTypes = {
-  SMALL: 1,
-  BIG: 2,
-};
-
 exports.Colors = {
   DEFAULT: 0x000000,
   WHITE: 0xffffff,

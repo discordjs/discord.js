@@ -200,7 +200,6 @@ export abstract class Application extends Base {
   public id: Snowflake;
   public name: string | null;
   public coverURL(options?: StaticImageURLOptions): string | null;
-  public fetchAssets(): Promise<ApplicationAsset[]>;
   public iconURL(options?: StaticImageURLOptions): string | null;
   public toJSON(): unknown;
   public toString(): string | null;
@@ -2776,7 +2775,6 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelTypes[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
-  ClientApplicationAssetTypes: ConstantsClientApplicationAssetTypes;
   IntegrationExpireBehaviors: IntegrationExpireBehaviors[];
   InviteScopes: InviteScope[];
   MessageTypes: MessageType[];
@@ -3502,12 +3500,6 @@ export interface APIRequest {
   route: string;
 }
 
-export interface ApplicationAsset {
-  name: string;
-  id: Snowflake;
-  type: 'BIG' | 'SMALL';
-}
-
 export interface BaseApplicationCommandData {
   name: string;
   defaultPermission?: boolean;
@@ -4065,11 +4057,6 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   channels?: Collection<Snowflake, CacheTypeReducer<Cached, AnyChannel, APIInteractionDataResolvedChannel>>;
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
-}
-
-export interface ConstantsClientApplicationAssetTypes {
-  SMALL: 1;
-  BIG: 2;
 }
 
 export interface ConstantsColors {
