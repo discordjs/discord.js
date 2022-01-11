@@ -955,12 +955,17 @@ client.on('interactionCreate', async interaction => {
     expectAssignable<GuildMember>(interaction.member);
     expectNotType<ChatInputCommandInteraction<'cached'>>(interaction);
     expectAssignable<Interaction>(interaction);
+    expectType<string>(interaction.guildLocale);
   } else if (interaction.inRawGuild()) {
     expectAssignable<APIInteractionGuildMember>(interaction.member);
     expectNotAssignable<Interaction<'cached'>>(interaction);
+    expectType<string>(interaction.guildLocale);
+  } else if (interaction.inGuild()) {
+    expectType<string>(interaction.guildLocale);
   } else {
     expectType<APIInteractionGuildMember | GuildMember | null>(interaction.member);
     expectNotAssignable<Interaction<'cached'>>(interaction);
+    expectType<string | null>(interaction.guildId);
   }
 
   if (interaction.isContextMenuCommand()) {

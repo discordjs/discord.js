@@ -1316,6 +1316,8 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public user: User;
   public version: number;
   public memberPermissions: CacheTypeReducer<Cached, Readonly<Permissions>>;
+  public locale: string;
+  public guildLocale: CacheTypeReducer<Cached, string, string, string>;
   public inGuild(): this is Interaction<'raw' | 'cached'>;
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
