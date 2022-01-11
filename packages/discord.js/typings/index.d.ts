@@ -5557,3 +5557,30 @@ export type InternalDiscordGatewayAdapterCreator = (
 ) => InternalDiscordGatewayAdapterImplementerMethods;
 
 //#endregion
+
+// External
+export {
+  ActivityType,
+  ApplicationCommandType,
+  ApplicationCommandOptionType,
+  ApplicationCommandPermissionType,
+  ButtonStyle,
+  ChannelType,
+  ComponentType,
+  GuildMFALevel,
+  GuildNSFWLevel,
+  GuildPremiumTier,
+  GuildScheduledEventEntityType,
+  GuildScheduledEventPrivacyLevel,
+  GuildScheduledEventStatus,
+  GuildVerificationLevel,
+  InteractionType,
+  InteractionResponseType,
+  InviteTargetType,
+  MessageType,
+  RESTJSONErrorCodes,
+  StageInstancePrivacyLevel,
+  StickerType,
+  StickerFormatType,
+  WebhookType,
+} from 'discord-api-types/v9';
