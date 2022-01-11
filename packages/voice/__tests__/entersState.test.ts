@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import EventEmitter from 'node:events';
-import { VoiceConnection, VoiceConnectionStatus } from '../../VoiceConnection';
-import { entersState } from '../entersState';
+import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
+import { entersState } from '../src/util/entersState';
 
 function createFakeVoiceConnection(status = VoiceConnectionStatus.Signalling) {
 	const vc = new EventEmitter() as any;

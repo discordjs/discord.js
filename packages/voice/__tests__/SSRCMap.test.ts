@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import EventEmitter, { once } from 'node:events';
-import { SSRCMap, VoiceUserData } from '../SSRCMap';
+import { SSRCMap, VoiceUserData } from '../src/receive/SSRCMap';
 
 function onceOrThrow<T extends EventEmitter>(target: T, event: string, after: number) {
 	return new Promise((resolve, reject) => {

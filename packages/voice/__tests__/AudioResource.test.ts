@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { opus, VolumeTransformer } from 'prism-media';
 import { PassThrough, Readable } from 'node:stream';
-import { SILENCE_FRAME } from '../AudioPlayer';
-import { AudioResource, createAudioResource, NO_CONSTRAINT, VOLUME_CONSTRAINT } from '../AudioResource';
-import { Edge, findPipeline as _findPipeline, StreamType, TransformerType } from '../TransformerGraph';
+import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
+import { AudioResource, createAudioResource, NO_CONSTRAINT, VOLUME_CONSTRAINT } from '../src/audio/AudioResource';
+import { Edge, findPipeline as _findPipeline, StreamType, TransformerType } from '../src/audio/TransformerGraph';
 
 jest.mock('prism-media');
-jest.mock('../TransformerGraph');
+jest.mock('../src/audio/TransformerGraph');
 
 function wait() {
 	return new Promise((resolve) => process.nextTick(resolve));

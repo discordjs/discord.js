@@ -1,4 +1,4 @@
-import { Edge, findPipeline, StreamType, TransformerType } from '../TransformerGraph';
+import { Edge, findPipeline, StreamType, TransformerType } from '../src/audio/TransformerGraph';
 
 const noConstraint = () => true;
 

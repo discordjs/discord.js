@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { VoiceReceiver } from '../VoiceReceiver';
-import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../../VoiceConnection';
-import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from './fixtures/rtp';
+import { VoiceReceiver } from '../src/receive/VoiceReceiver';
+import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
+import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
 import { once } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import { methods } from '../../util/Secretbox';
+import { methods } from '../src/util/Secretbox';
 
-jest.mock('../../VoiceConnection');
-jest.mock('../SSRCMap');
+jest.mock('../src/VoiceConnection');
+jest.mock('../src/receive/SSRCMap');
 
 const openSpy = jest.spyOn(methods, 'open');
 

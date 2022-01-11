@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSocket as _createSocket } from 'node:dgram';
 import EventEmitter, { once } from 'node:events';
-import { VoiceUDPSocket } from '../VoiceUDPSocket';
+import { VoiceUDPSocket } from '../src/networking/VoiceUDPSocket';
 
 jest.mock('node:dgram');
 jest.useFakeTimers();

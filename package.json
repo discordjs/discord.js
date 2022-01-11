@@ -7,7 +7,6 @@
 		"build": "turbo run build",
 		"test": "turbo run test",
 		"lint": "turbo run lint",
-		"lint:fix": "turbo run lint:fix",
 		"format": "turbo run format",
 		"fmt": "turbo run format",
 		"postinstall": "is-ci || husky install",
@@ -44,7 +43,6 @@
 		"@favware/npm-deprecate": "^1.0.4",
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^7.0.4",
-		"lint-staged": "^12.1.7",
 		"prettier": "^2.5.1",
 		"turbo": "1.0.24"
 	},
@@ -75,12 +73,6 @@
 				]
 			},
 			"lint": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": []
-			},
-			"lint:fix": {
 				"dependsOn": [
 					"^build"
 				],

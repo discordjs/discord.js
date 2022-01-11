@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { AudioResource } from '../../audio/AudioResource';
-import { createAudioPlayer, AudioPlayerStatus, AudioPlayer, SILENCE_FRAME } from '../AudioPlayer';
+import { AudioResource } from '../src/audio/AudioResource';
+import { createAudioPlayer, AudioPlayerStatus, AudioPlayer, SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { Readable } from 'node:stream';
-import { addAudioPlayer, deleteAudioPlayer } from '../../DataStore';
-import { NoSubscriberBehavior } from '../..';
-import { VoiceConnection, VoiceConnectionStatus } from '../../VoiceConnection';
+import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
+import { NoSubscriberBehavior } from '../src';
+import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import { once } from 'node:events';
-import { AudioPlayerError } from '../AudioPlayerError';
+import { AudioPlayerError } from '../src/audio/AudioPlayerError';
 
-jest.mock('../../DataStore');
-jest.mock('../../VoiceConnection');
-jest.mock('../AudioPlayerError');
+jest.mock('../src/DataStore');
+jest.mock('../src/VoiceConnection');
+jest.mock('../src/audio/AudioPlayerError');
 
 const addAudioPlayerMock = addAudioPlayer as unknown as jest.Mock<typeof addAudioPlayer>;
 const deleteAudioPlayerMock = deleteAudioPlayer as unknown as jest.Mock<typeof deleteAudioPlayer>;
