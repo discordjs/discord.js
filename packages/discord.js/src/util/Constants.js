@@ -29,28 +29,28 @@ function makeImageUrl(root, { hash, format = 'webp', forceStatic = false, size }
 
 /**
  * A list of image sizes:
- * * 16
- * * 32
- * * 56
- * * 64
- * * 96
- * * 128
- * * 256
- * * 300
- * * 512
- * * 600
- * * 1024
- * * 2048
- * * 4096
+ * * `16`
+ * * `32`
+ * * `56`
+ * * `64`
+ * * `96`
+ * * `128`
+ * * `256`
+ * * `300`
+ * * `512`
+ * * `600`
+ * * `1024`
+ * * `2048`
+ * * `4096`
  * @typedef {number} ImageSize
  */
 
 /**
  * A list of image formats:
- * * webp
- * * png
- * * jpg
- * * jpeg
+ * * `webp`
+ * * `png`
+ * * `jpg`
+ * * `jpeg`
  * @typedef {string} ImageFormat
  */
 
