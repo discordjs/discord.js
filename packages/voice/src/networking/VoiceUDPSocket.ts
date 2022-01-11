@@ -25,6 +25,25 @@ export interface VoiceUDPSocketEvents {
 }
 
 /**
+ * Parses the response from Discord to aid with local IP discovery.
+ *
+ * @param message - The received message
+ */
+export function parseLocalPacket(message: Buffer): SocketConfig {
+	const packet = Buffer.from(message);
+
+	const ip = packet.slice(8, packet.indexOf(0, 8)).toString('utf-8');
+
+	if (!isIPv4(ip)) {
+		throw new Error('Malformed IP address');
+	}
+
+	const port = packet.readUInt16BE(packet.length - 2);
+
+	return { ip, port };
+}
+
+/**
  * The interval in milliseconds at which keep alive datagrams are sent.
  */
 const KEEP_ALIVE_INTERVAL = 5e3;
@@ -190,23 +209,4 @@ export class VoiceUDPSocket extends TypedEmitter<VoiceUDPSocketEvents> {
 			this.send(discoveryBuffer);
 		});
 	}
-}
-
-/**
- * Parses the response from Discord to aid with local IP discovery.
- *
- * @param message - The received message
- */
-export function parseLocalPacket(message: Buffer): SocketConfig {
-	const packet = Buffer.from(message);
-
-	const ip = packet.slice(8, packet.indexOf(0, 8)).toString('utf-8');
-
-	if (!isIPv4(ip)) {
-		throw new Error('Malformed IP address');
-	}
-
-	const port = packet.readUInt16BE(packet.length - 2);
-
-	return { ip, port };
 }

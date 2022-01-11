@@ -73,10 +73,12 @@ export class Collection<K, V> extends Map<K, V> {
 	public first(): V | undefined;
 	public first(amount: number): V[];
 	public first(amount?: number): V | V[] | undefined {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		if (typeof amount === 'undefined') return this.values().next().value;
 		if (amount < 0) return this.last(amount * -1);
 		amount = Math.min(this.size, amount);
 		const iter = this.values();
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return Array.from({ length: amount }, (): V => iter.next().value);
 	}
 
@@ -91,10 +93,12 @@ export class Collection<K, V> extends Map<K, V> {
 	public firstKey(): K | undefined;
 	public firstKey(amount: number): K[];
 	public firstKey(amount?: number): K | K[] | undefined {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		if (typeof amount === 'undefined') return this.keys().next().value;
 		if (amount < 0) return this.lastKey(amount * -1);
 		amount = Math.min(this.size, amount);
 		const iter = this.keys();
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return Array.from({ length: amount }, (): K => iter.next().value);
 	}
 
@@ -398,6 +402,7 @@ export class Collection<K, V> extends Map<K, V> {
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
 		const iter = this.entries();
 		return Array.from({ length: this.size }, (): T => {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			const [key, value] = iter.next().value;
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			return fn(value, key, this);

@@ -41,6 +41,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 	.post('/postFile')
 	.times(5)
 	.reply(200, (_, body) => ({
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		body: body
 			.replace(/\r\n/g, '\n')
 			.replace(/-+\d+-*\n?/g, '')

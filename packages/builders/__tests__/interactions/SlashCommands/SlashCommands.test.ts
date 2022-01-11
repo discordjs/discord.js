@@ -178,14 +178,14 @@ describe('Slash Commands', () => {
 				expect(() =>
 					getBuilder().addStringOption(
 						// @ts-expect-error Checking if check works JS-side too
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
 						getStringOption().setAutocomplete(true).addChoice('Fancy Pants', 'fp_1'),
 					),
 				).toThrowError();
 
 				expect(() =>
 					getBuilder().addStringOption(
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
 						getStringOption()
 							.setAutocomplete(true)
 							// @ts-expect-error Checking if check works JS-side too
@@ -200,7 +200,7 @@ describe('Slash Commands', () => {
 				expect(() =>
 					getBuilder().addStringOption(
 						// @ts-expect-error Checking if check works JS-side too
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
 						getStringOption().addChoice('Fancy Pants', 'fp_1').setAutocomplete(true),
 					),
 				).toThrowError();
@@ -384,6 +384,7 @@ describe('Slash Commands', () => {
 			test('GIVEN builder with a subcommand that tries to add an invalid result THEN throw error', () => {
 				expect(() =>
 					// @ts-expect-error Checking if check works JS-side too
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
 					getNamedBuilder().addSubcommand(getSubcommand()).addInteger(getInteger()),
 				).toThrowError();
 			});

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import EventEmitter, { once } from 'node:events';
 import { SSRCMap, VoiceUserData } from '../SSRCMap';
 

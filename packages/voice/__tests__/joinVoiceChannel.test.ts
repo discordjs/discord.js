@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { joinVoiceChannel } from '../src/joinVoiceChannel';
 import * as VoiceConnection from '../src/VoiceConnection';
 

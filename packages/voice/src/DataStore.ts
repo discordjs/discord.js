@@ -125,6 +125,7 @@ function audioCycleStep() {
 	// eslint-disable-next-line @typescript-eslint/dot-notation
 	available.forEach((player) => player['_stepDispatch']());
 
+	// eslint-disable-next-line @typescript-eslint/no-use-before-define
 	prepareNextAudioFrame(available);
 }
 

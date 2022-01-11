@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import EventEmitter, { once } from 'node:events';
 import WS from 'jest-websocket-mock';

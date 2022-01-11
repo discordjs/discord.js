@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { GatewayOpcodes } from 'discord-api-types/v9';
 import * as DataStore from '../src/DataStore';

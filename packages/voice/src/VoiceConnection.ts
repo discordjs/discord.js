@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v9';
 import type { CreateVoiceConnectionOptions } from '.';
 import type { AudioPlayer } from './audio/AudioPlayer';
@@ -261,11 +262,11 @@ export class VoiceConnection extends TypedEmitter<VoiceConnectionEvents> {
 	 */
 	public set state(newState: VoiceConnectionState) {
 		const oldState = this._state;
-		const oldNetworking: Networking | undefined = Reflect.get(oldState, 'networking');
-		const newNetworking: Networking | undefined = Reflect.get(newState, 'networking');
+		const oldNetworking = Reflect.get(oldState, 'networking') as Networking | undefined;
+		const newNetworking = Reflect.get(newState, 'networking') as Networking | undefined;
 
-		const oldSubscription: PlayerSubscription | undefined = Reflect.get(oldState, 'subscription');
-		const newSubscription: PlayerSubscription | undefined = Reflect.get(newState, 'subscription');
+		const oldSubscription = Reflect.get(oldState, 'subscription') as PlayerSubscription | undefined;
+		const newSubscription = Reflect.get(newState, 'subscription') as PlayerSubscription | undefined;
 
 		if (oldNetworking !== newNetworking) {
 			if (oldNetworking) {
@@ -365,6 +366,7 @@ export class VoiceConnection extends TypedEmitter<VoiceConnectionEvents> {
 			newUdp?.on('message', this.receiver.onUdpMessage);
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		this.receiver.connectionData = Reflect.get(newState, 'connectionData') ?? {};
 	}
 
