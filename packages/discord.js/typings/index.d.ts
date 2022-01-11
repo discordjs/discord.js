@@ -3,8 +3,10 @@ import {
   ActionRowComponent,
   blockQuote,
   bold,
+  ButtonComponent,
   channelMention,
   codeBlock,
+  Component,
   formatEmoji,
   hideLinkEmbed,
   hyperlink,
@@ -13,6 +15,7 @@ import {
   memberNicknameMention,
   quote,
   roleMention,
+  SelectMenuComponent,
   spoiler,
   strikethrough,
   time,
@@ -449,10 +452,10 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
   private constructor(client: Client, data: RawMessageButtonInteractionData);
   public readonly component: CacheTypeReducer<
     Cached,
-    MessageButton,
+    ButtonComponent,
     APIButtonComponent,
-    MessageButton | APIButtonComponent,
-    MessageButton | APIButtonComponent
+    ButtonComponent | APIButtonComponent,
+    ButtonComponent | APIButtonComponent
   >;
   public componentType: 'Button';
   public inGuild(): this is ButtonInteraction<'raw' | 'cached'>;
@@ -1522,7 +1525,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
   public removeAttachments(): Promise<Message>;
   public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message>;
-  public resolveComponent(customId: string): MessageActionRowComponent | null;
+  public resolveComponent(customId: string): ActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<ThreadChannel>;
   public suppressEmbeds(suppress?: boolean): Promise<Message>;
   public toJSON(): unknown;
@@ -1571,10 +1574,10 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
   public readonly component: CacheTypeReducer<
     Cached,
-    MessageActionRowComponent,
+    ActionRowComponent,
     Exclude<APIMessageComponent, APIActionRowComponent>,
-    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>,
-    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>
+    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>,
+    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>
   >;
   public componentType: Exclude<keyof typeof ComponentType, 'ActionRow'>;
   public customId: string;
@@ -1885,10 +1888,10 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
   public constructor(client: Client, data: RawMessageSelectMenuInteractionData);
   public readonly component: CacheTypeReducer<
     Cached,
-    MessageSelectMenu,
+    SelectMenuComponent,
     APISelectMenuComponent,
-    MessageSelectMenu | APISelectMenuComponent,
-    MessageSelectMenu | APISelectMenuComponent
+    SelectMenuComponent | APISelectMenuComponent,
+    SelectMenuComponent | APISelectMenuComponent
   >;
   public componentType: 'SelectMenu';
   public values: string[];
@@ -4630,16 +4633,14 @@ export type MemberMention = UserMention | `<@!${Snowflake}>`;
 
 export type TeamMemberMembershipStateKey = keyof typeof TeamMemberMembershipState;
 
-export type MessageActionRowComponent = MessageButton | MessageSelectMenu;
-
-export type MessageActionRowComponentOptions =
+export type ActionRowComponentOptions =
   | (Required<BaseMessageComponentOptions> & MessageButtonOptions)
   | (Required<BaseMessageComponentOptions> & MessageSelectMenuOptions);
 
-export type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
+export type MessageActionRowComponentResolvable = ActionRowComponent | ActionRowComponentOptions;
 
-export interface MessageActionRowOptions extends BaseMessageComponentOptions {
-  components: MessageActionRowComponentResolvable[];
+export interface ActionRowOptions extends BaseMessageComponentOptions {
+  components: ActionRowComponent[];
 }
 
 export interface MessageActivity {
@@ -4674,7 +4675,7 @@ export interface MessageCollectorOptions extends CollectorOptions<[Message]> {
   maxProcessed?: number;
 }
 
-export type MessageComponent = BaseMessageComponent | MessageActionRow | MessageButton | MessageSelectMenu;
+export type MessageComponent = Component | ActionRow<ActionRowComponent> | ButtonComponent | SelectMenuComponent;
 
 export type MessageComponentCollectorOptions<T extends MessageComponentInteraction> = Omit<
   InteractionCollectorOptions<T>,
@@ -4688,7 +4689,7 @@ export type MessageChannelComponentCollectorOptions<T extends MessageComponentIn
 
 export type MessageComponentOptions =
   | BaseMessageComponentOptions
-  | MessageActionRowOptions
+  | ActionRowOptions
   | MessageButtonOptions
   | MessageSelectMenuOptions;
 
@@ -4703,7 +4704,7 @@ export interface MessageEditOptions {
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
-  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
+  components?: (ActionRow<ActionRowComponent> | (Required<BaseMessageComponentOptions> & ActionRowOptions))[];
 }
 
 export interface MessageEmbedAuthor {
@@ -4802,7 +4803,7 @@ export interface MessageOptions {
   nonce?: string | number;
   content?: string | null;
   embeds?: (MessageEmbed | MessageEmbedOptions | APIEmbed)[];
-  components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
+  components?: (ActionRow<ActionRowComponent> | (Required<BaseMessageComponentOptions> & ActionRowOptions))[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;
@@ -5479,4 +5480,4 @@ export {
   StickerFormatType,
   WebhookType,
 } from 'discord-api-types/v9';
-export { ActionRow, ButtonComponent, SelectMenuComponent } from '@discordjs/builders';
+export { ActionRow, ButtonComponent, SelectMenuComponent, ActionRowComponent } from '@discordjs/builders';
