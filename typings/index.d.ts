@@ -469,10 +469,9 @@ export type KeyedEnum<K, T> = {
   [Key in keyof K]: T | string;
 };
 
-export type EnumValueMapped<E extends KeyedEnum<T, number>, T extends Partial<Record<keyof E, unknown>>> = T &
-  {
-    [Key in keyof T as E[Key]]: T[Key];
-  };
+export type EnumValueMapped<E extends KeyedEnum<T, number>, T extends Partial<Record<keyof E, unknown>>> = T & {
+  [Key in keyof T as E[Key]]: T[Key];
+};
 
 export type MappedChannelCategoryTypes = EnumValueMapped<
   typeof ChannelTypes,
@@ -1330,6 +1329,8 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public user: User;
   public version: number;
   public memberPermissions: CacheTypeReducer<Cached, Readonly<Permissions>>;
+  public locale: string;
+  public guildLocale: CacheTypeReducer<Cached, string, string, string>;
   public inGuild(): this is Interaction<'present'>;
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
