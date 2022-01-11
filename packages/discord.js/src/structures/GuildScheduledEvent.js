@@ -1,14 +1,14 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const {
+  GuildScheduledEventPrivacyLevel,
+  GuildScheduledEventStatus,
+  GuildScheduledEventEntityType,
+} = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Error } = require('../errors');
-const {
-  GuildScheduledEventEntityTypes,
-  GuildScheduledEventStatuses,
-  GuildScheduledEventPrivacyLevels,
-  Endpoints,
-} = require('../util/Constants');
+const { Endpoints } = require('../util/Constants');
 
 /**
  * Represents a scheduled event in a {@link Guild}.
@@ -88,19 +88,19 @@ class GuildScheduledEvent extends Base {
      * The privacy level of the guild scheduled event
      * @type {PrivacyLevel}
      */
-    this.privacyLevel = GuildScheduledEventPrivacyLevels[data.privacy_level];
+    this.privacyLevel = GuildScheduledEventPrivacyLevel[data.privacy_level];
 
     /**
      * The status of the guild scheduled event
      * @type {GuildScheduledEventStatus}
      */
-    this.status = GuildScheduledEventStatuses[data.status];
+    this.status = GuildScheduledEventStatus[data.status];
 
     /**
      * The type of hosting entity associated with the scheduled event
      * @type {GuildScheduledEventEntityType}
      */
-    this.entityType = GuildScheduledEventEntityTypes[data.entity_type];
+    this.entityType = GuildScheduledEventEntityType[data.entity_type];
 
     if ('entity_id' in data) {
       /**
@@ -391,7 +391,7 @@ class GuildScheduledEvent extends Base {
    * @returns {boolean}
    */
   isActive() {
-    return GuildScheduledEventStatuses[this.status] === GuildScheduledEventStatuses.ACTIVE;
+    return GuildScheduledEventStatus[this.status] === GuildScheduledEventStatus.Active;
   }
 
   /**
@@ -399,7 +399,7 @@ class GuildScheduledEvent extends Base {
    * @returns {boolean}
    */
   isCanceled() {
-    return GuildScheduledEventStatuses[this.status] === GuildScheduledEventStatuses.CANCELED;
+    return GuildScheduledEventStatus[this.status] === GuildScheduledEventStatus.Canceled;
   }
 
   /**
@@ -407,7 +407,7 @@ class GuildScheduledEvent extends Base {
    * @returns {boolean}
    */
   isCompleted() {
-    return GuildScheduledEventStatuses[this.status] === GuildScheduledEventStatuses.COMPLETED;
+    return GuildScheduledEventStatus[this.status] === GuildScheduledEventStatus.Completed;
   }
 
   /**
@@ -415,7 +415,7 @@ class GuildScheduledEvent extends Base {
    * @returns {boolean}
    */
   isScheduled() {
-    return GuildScheduledEventStatuses[this.status] === GuildScheduledEventStatuses.SCHEDULED;
+    return GuildScheduledEventStatus[this.status] === GuildScheduledEventStatus.Scheduled;
   }
 }
 

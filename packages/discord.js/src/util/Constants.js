@@ -582,6 +582,5 @@ function createEnum(keys) {
 /**
  * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
  * @property {Status} Status The available statuses of the client.
- * @property {VerificationLevel} VerificationLevels The value set for the verification levels for a guild.
  * @property {WSEventType} WSEvents The type of a WebSocket message event.
  */

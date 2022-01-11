@@ -2763,7 +2763,6 @@ export const Constants: {
   Colors: ConstantsColors;
   Status: ConstantsStatus;
   Opcodes: ConstantsOpcodes;
-  APIErrors: RESTJSONErrorCodes;
   ThreadChannelTypes: ThreadChannelTypeKey[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
