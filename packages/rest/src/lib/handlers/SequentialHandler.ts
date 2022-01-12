@@ -355,7 +355,16 @@ export class SequentialHandler {
 			// Let library users know when rate limit buckets have been updated
 			this.debug(['Received bucket hash update', `  Old Hash  : ${this.hash}`, `  New Hash  : ${hash}`].join('\n'));
 			// This queue will eventually be eliminated via attrition
-			this.manager.hashes.set(`${method}:${routeId.bucketRoute}`, hash);
+			this.manager.hashes.set(`${method}:${routeId.bucketRoute}`, { value: hash, lastAccess: Date.now() });
+		} else if (hash) {
+			// Handle the case where hash value doesn't change
+			// Fetch the hash data from the manager
+			const hashData = this.manager.hashes.get(`${method}:${routeId.bucketRoute}`);
+
+			// When fetched, update the last access of the hash
+			if (hashData) {
+				hashData.lastAccess = Date.now();
+			}
 		}
 
 		// Handle retryAfter, which means we have actually hit a rate limit
