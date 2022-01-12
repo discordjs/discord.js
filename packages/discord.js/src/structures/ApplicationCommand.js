@@ -1,9 +1,9 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { ApplicationCommandType, ApplicationCommandOptionType, ChannelType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
-const { ApplicationCommandOptionTypes, ApplicationCommandTypes, ChannelTypes } = require('../util/Constants');
 
 /**
  * Represents an application command.
@@ -48,7 +48,7 @@ class ApplicationCommand extends Base {
      * The type of this application command
      * @type {ApplicationCommandType}
      */
-    this.type = ApplicationCommandTypes[data.type];
+    this.type = ApplicationCommandType[data.type];
 
     this._patch(data);
   }
@@ -233,7 +233,7 @@ class ApplicationCommand extends Base {
     if (command.id && this.id !== command.id) return false;
 
     // Check top level parameters
-    const commandType = typeof command.type === 'string' ? command.type : ApplicationCommandTypes[command.type];
+    const commandType = typeof command.type === 'string' ? command.type : ApplicationCommandType[command.type];
     if (
       command.name !== this.name ||
       ('description' in command && command.description !== this.description) ||
@@ -289,7 +289,7 @@ class ApplicationCommand extends Base {
    * @private
    */
   static _optionEquals(existing, option, enforceOptionOrder = false) {
-    const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
+    const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionType[option.type];
     if (
       option.name !== existing.name ||
       optionType !== existing.type ||
@@ -326,7 +326,7 @@ class ApplicationCommand extends Base {
 
     if (existing.channelTypes) {
       const newTypes = (option.channelTypes ?? option.channel_types).map(type =>
-        typeof type === 'number' ? ChannelTypes[type] : type,
+        typeof type === 'number' ? ChannelType[type] : type,
       );
       for (const type of existing.channelTypes) {
         if (!newTypes.includes(type)) return false;
@@ -370,12 +370,12 @@ class ApplicationCommand extends Base {
    * @private
    */
   static transformOption(option, received) {
-    const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionTypes[option.type];
+    const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionType[option.type];
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
     return {
-      type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
+      type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionType[option.type],
       name: option.name,
       description: option.description,
       required:
@@ -384,8 +384,8 @@ class ApplicationCommand extends Base {
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),
       [channelTypesKey]: received
-        ? option.channel_types?.map(type => ChannelTypes[type])
-        : option.channelTypes?.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)) ??
+        ? option.channel_types?.map(type => ChannelType[type])
+        : option.channelTypes?.map(type => (typeof type === 'string' ? ChannelType[type] : type)) ??
           // When transforming to API data, accept API data
           option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,

@@ -1,7 +1,7 @@
 'use strict';
 
+const { TeamMemberMembershipState } = require('discord-api-types/v9');
 const Base = require('./Base');
-const { MembershipStates } = require('../util/Constants');
 
 /**
  * Represents a Client OAuth2 Application Team Member.
@@ -32,9 +32,9 @@ class TeamMember extends Base {
     if ('membership_state' in data) {
       /**
        * The permissions this Team Member has with regard to the team
-       * @type {MembershipState}
+       * @type {TeamMemberMembershipState}
        */
-      this.membershipState = MembershipStates[data.membership_state];
+      this.membershipState = TeamMemberMembershipState[data.membership_state];
     }
 
     if ('user' in data) {

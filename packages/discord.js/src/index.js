@@ -155,3 +155,28 @@ exports.WelcomeChannel = require('./structures/WelcomeChannel');
 exports.WelcomeScreen = require('./structures/WelcomeScreen');
 
 exports.WebSocket = require('./WebSocket');
+
+// External
+exports.ActivityType = require('discord-api-types/v9').ActivityType;
+exports.ApplicationCommandType = require('discord-api-types/v9').ApplicationCommandOptionType;
+exports.ApplicationCommandOptionType = require('discord-api-types/v9').ApplicationCommandOptionType;
+exports.ApplicationCommandPermissionType = require('discord-api-types/v9').ApplicationCommandPermissionType;
+exports.ButtonStyle = require('discord-api-types/v9').ButtonStyle;
+exports.ChannelType = require('discord-api-types/v9').ChannelType;
+exports.ComponentType = require('discord-api-types/v9').ComponentType;
+exports.GuildMFALevel = require('discord-api-types/v9').GuildMFALevel;
+exports.GuildNSFWLevel = require('discord-api-types/v9').GuildNSFWLevel;
+exports.GuildPremiumTier = require('discord-api-types/v9').GuildPremiumTier;
+exports.GuildScheduledEventEntityType = require('discord-api-types/v9').GuildScheduledEventEntityType;
+exports.GuildScheduledEventPrivacyLevel = require('discord-api-types/v9').GuildScheduledEventPrivacyLevel;
+exports.GuildScheduledEventStatus = require('discord-api-types/v9').GuildScheduledEventStatus;
+exports.GuildVerificationLevel = require('discord-api-types/v9').GuildVerificationLevel;
+exports.InteractionType = require('discord-api-types/v9').InteractionType;
+exports.InteractionResponseType = require('discord-api-types/v9').InteractionResponseType;
+exports.InviteTargetType = require('discord-api-types/v9').InviteTargetType;
+exports.MessageType = require('discord-api-types/v9').MessageType;
+exports.RESTJSONErrorCodes = require('discord-api-types/v9').RESTJSONErrorCodes;
+exports.StageInstancePrivacyLevel = require('discord-api-types/v9').StageInstancePrivacyLevel;
+exports.StickerType = require('discord-api-types/v9').StickerType;
+exports.StickerFormatType = require('discord-api-types/v9').StickerFormatType;
+exports.WebhookType = require('discord-api-types/v9').WebhookType;

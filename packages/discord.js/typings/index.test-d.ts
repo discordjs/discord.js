@@ -9,6 +9,7 @@ import type {
   APIRole,
   APIButtonComponent,
   APISelectMenuComponent,
+  ApplicationCommandOptionType,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
 import {
@@ -91,7 +92,6 @@ import {
   MessageSelectMenu,
   PartialDMChannel,
 } from '.';
-import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 
 // Test type transformation:
@@ -144,7 +144,7 @@ client.on('ready', async () => {
   await globalPermissionsManager?.add({
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   await globalPermissionsManager?.has({ command: globalCommandId, guild: testGuildId, permissionId: testGuildId });
   await globalPermissionsManager?.fetch({ guild: testGuildId });
@@ -160,17 +160,17 @@ client.on('ready', async () => {
   await globalPermissionsManager?.set({
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   await globalPermissionsManager?.set({
     guild: testGuildId,
-    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] }],
+    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'Role', id: testGuildId, permission: true }] }],
   });
 
   // @ts-expect-error
   await globalPermissionsManager?.add({
     command: globalCommandId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
   await globalPermissionsManager?.has({ command: globalCommandId, permissionId: testGuildId });
@@ -187,23 +187,23 @@ client.on('ready', async () => {
   // @ts-expect-error
   await globalPermissionsManager?.set({
     command: globalCommandId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
   await globalPermissionsManager?.set({
-    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] }],
+    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'Role', id: testGuildId, permission: true }] }],
   });
   // @ts-expect-error
   await globalPermissionsManager?.set({
     command: globalCommandId,
     guild: testGuildId,
-    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] }],
+    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'Role', id: testGuildId, permission: true }] }],
   });
 
   // @ts-expect-error
   await globalPermissionsManager?.add({
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
   await globalPermissionsManager?.has({ guild: testGuildId, permissionId: testGuildId });
@@ -216,13 +216,13 @@ client.on('ready', async () => {
   // @ts-expect-error
   await globalPermissionsManager?.set({
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
 
   // Permissions from guild manager
   await guildPermissionsManager?.add({
     command: globalCommandId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   await guildPermissionsManager?.has({ command: globalCommandId, permissionId: testGuildId });
   await guildPermissionsManager?.fetch({});
@@ -232,17 +232,17 @@ client.on('ready', async () => {
   await guildPermissionsManager?.remove({ command: globalCommandId, roles: [testGuildId], users: [testUserId] });
   await guildPermissionsManager?.set({
     command: globalCommandId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   await guildPermissionsManager?.set({
-    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] }],
+    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'Role', id: testGuildId, permission: true }] }],
   });
 
   await guildPermissionsManager?.add({
     command: globalCommandId,
     // @ts-expect-error
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
   await guildPermissionsManager?.has({ command: globalCommandId, guild: testGuildId, permissionId: testGuildId });
@@ -265,16 +265,16 @@ client.on('ready', async () => {
   await guildPermissionsManager?.set({
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   await guildPermissionsManager?.set({
     // @ts-expect-error
     guild: testGuildId,
-    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] }],
+    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'Role', id: testGuildId, permission: true }] }],
   });
 
   // @ts-expect-error
-  await guildPermissionsManager?.add({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
+  await guildPermissionsManager?.add({ permissions: [{ type: 'Role', id: testGuildId, permission: true }] });
   // @ts-expect-error
   await guildPermissionsManager?.has({ permissionId: testGuildId });
   // @ts-expect-error
@@ -284,17 +284,17 @@ client.on('ready', async () => {
   // @ts-expect-error
   await guildPermissionsManager?.remove({ roles: [testGuildId], users: [testUserId] });
   // @ts-expect-error
-  await guildPermissionsManager?.set({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
+  await guildPermissionsManager?.set({ permissions: [{ type: 'Role', id: testGuildId, permission: true }] });
   // @ts-expect-error
   await guildPermissionsManager?.set({
     command: globalCommandId,
-    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] }],
+    fullPermissions: [{ id: globalCommandId, permissions: [{ type: 'Role', id: testGuildId, permission: true }] }],
   });
 
   // Permissions from cached global ApplicationCommand
   await globalCommand?.permissions.add({
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   await globalCommand?.permissions.has({ guild: testGuildId, permissionId: testGuildId });
   await globalCommand?.permissions.fetch({ guild: testGuildId });
@@ -303,14 +303,14 @@ client.on('ready', async () => {
   await globalCommand?.permissions.remove({ guild: testGuildId, roles: [testGuildId], users: [testUserId] });
   await globalCommand?.permissions.set({
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
 
   await globalCommand?.permissions.add({
     // @ts-expect-error
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
   await globalCommand?.permissions.has({ command: globalCommandId, guild: testGuildId, permissionId: testGuildId });
@@ -331,11 +331,11 @@ client.on('ready', async () => {
     // @ts-expect-error
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
 
   // @ts-expect-error
-  await globalCommand?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
+  await globalCommand?.permissions.add({ permissions: [{ type: 'Role', id: testGuildId, permission: true }] });
   // @ts-expect-error
   await globalCommand?.permissions.has({ permissionId: testGuildId });
   // @ts-expect-error
@@ -347,21 +347,21 @@ client.on('ready', async () => {
   // @ts-expect-error
   await globalCommand?.permissions.remove({ roles: [testGuildId], users: [testUserId] });
   // @ts-expect-error
-  await globalCommand?.permissions.set({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
+  await globalCommand?.permissions.set({ permissions: [{ type: 'Role', id: testGuildId, permission: true }] });
 
   // Permissions from cached guild ApplicationCommand
-  await guildCommandFromGlobal?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
+  await guildCommandFromGlobal?.permissions.add({ permissions: [{ type: 'Role', id: testGuildId, permission: true }] });
   await guildCommandFromGlobal?.permissions.has({ permissionId: testGuildId });
   await guildCommandFromGlobal?.permissions.fetch({});
   await guildCommandFromGlobal?.permissions.remove({ roles: [testGuildId] });
   await guildCommandFromGlobal?.permissions.remove({ users: [testUserId] });
   await guildCommandFromGlobal?.permissions.remove({ roles: [testGuildId], users: [testUserId] });
-  await guildCommandFromGlobal?.permissions.set({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
+  await guildCommandFromGlobal?.permissions.set({ permissions: [{ type: 'Role', id: testGuildId, permission: true }] });
 
   await guildCommandFromGlobal?.permissions.add({
     // @ts-expect-error
     command: globalCommandId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
   await guildCommandFromGlobal?.permissions.has({ command: guildCommandId, permissionId: testGuildId });
@@ -378,13 +378,13 @@ client.on('ready', async () => {
   await guildCommandFromGlobal?.permissions.set({
     // @ts-expect-error
     command: guildCommandId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
 
   await guildCommandFromGlobal?.permissions.add({
     // @ts-expect-error
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
   await guildCommandFromGlobal?.permissions.has({ guild: testGuildId, permissionId: testGuildId });
@@ -397,21 +397,21 @@ client.on('ready', async () => {
   await guildCommandFromGlobal?.permissions.set({
     // @ts-expect-error
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
 
-  await guildCommandFromGuild?.permissions.add({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
+  await guildCommandFromGuild?.permissions.add({ permissions: [{ type: 'Role', id: testGuildId, permission: true }] });
   await guildCommandFromGuild?.permissions.has({ permissionId: testGuildId });
   await guildCommandFromGuild?.permissions.fetch({});
   await guildCommandFromGuild?.permissions.remove({ roles: [testGuildId] });
   await guildCommandFromGuild?.permissions.remove({ users: [testUserId] });
   await guildCommandFromGuild?.permissions.remove({ roles: [testGuildId], users: [testUserId] });
-  await guildCommandFromGuild?.permissions.set({ permissions: [{ type: 'ROLE', id: testGuildId, permission: true }] });
+  await guildCommandFromGuild?.permissions.set({ permissions: [{ type: 'Role', id: testGuildId, permission: true }] });
 
   await guildCommandFromGuild?.permissions.add({
     // @ts-expect-error
     command: globalCommandId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
   await guildCommandFromGuild?.permissions.has({ command: guildCommandId, permissionId: testGuildId });
@@ -428,13 +428,13 @@ client.on('ready', async () => {
   await guildCommandFromGuild?.permissions.set({
     // @ts-expect-error
     command: guildCommandId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
 
   await guildCommandFromGuild?.permissions.add({
     // @ts-expect-error
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
   // @ts-expect-error
   await guildCommandFromGuild?.permissions.has({ guild: testGuildId, permissionId: testGuildId });
@@ -447,7 +447,7 @@ client.on('ready', async () => {
   await guildCommandFromGuild?.permissions.set({
     // @ts-expect-error
     guild: testGuildId,
-    permissions: [{ type: 'ROLE', id: testGuildId, permission: true }],
+    permissions: [{ type: 'Role', id: testGuildId, permission: true }],
   });
 
   client.application?.commands.permissions.set({
@@ -526,11 +526,11 @@ client.on('messageCreate', async message => {
 
   if (message.inGuild()) {
     expectAssignable<Message<true>>(message);
-    const component = await message.awaitMessageComponent({ componentType: 'BUTTON' });
+    const component = await message.awaitMessageComponent({ componentType: 'Button' });
     expectType<ButtonInteraction<'cached'>>(component);
     expectType<Message<true>>(await component.reply({ fetchReply: true }));
 
-    const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
+    const buttonCollector = message.createMessageComponentCollector({ componentType: 'Button' });
     expectType<InteractionCollector<ButtonInteraction<'cached'>>>(buttonCollector);
     expectAssignable<(test: ButtonInteraction<'cached'>) => boolean | Promise<boolean>>(buttonCollector.filter);
     expectType<GuildTextBasedChannel>(message.channel);
@@ -549,15 +549,15 @@ client.on('messageCreate', async message => {
   // Check collector creations.
 
   // Verify that buttons interactions are inferred.
-  const buttonCollector = message.createMessageComponentCollector({ componentType: 'BUTTON' });
-  expectAssignable<Promise<ButtonInteraction>>(message.awaitMessageComponent({ componentType: 'BUTTON' }));
-  expectAssignable<Promise<ButtonInteraction>>(channel.awaitMessageComponent({ componentType: 'BUTTON' }));
+  const buttonCollector = message.createMessageComponentCollector({ componentType: 'Button' });
+  expectAssignable<Promise<ButtonInteraction>>(message.awaitMessageComponent({ componentType: 'Button' }));
+  expectAssignable<Promise<ButtonInteraction>>(channel.awaitMessageComponent({ componentType: 'Button' }));
   expectAssignable<InteractionCollector<ButtonInteraction>>(buttonCollector);
 
   // Verify that select menus interaction are inferred.
-  const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU' });
-  expectAssignable<Promise<SelectMenuInteraction>>(message.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
-  expectAssignable<Promise<SelectMenuInteraction>>(channel.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
+  const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'SelectMenu' });
+  expectAssignable<Promise<SelectMenuInteraction>>(message.awaitMessageComponent({ componentType: 'SelectMenu' }));
+  expectAssignable<Promise<SelectMenuInteraction>>(channel.awaitMessageComponent({ componentType: 'SelectMenu' }));
   expectAssignable<InteractionCollector<SelectMenuInteraction>>(selectMenuCollector);
 
   // Verify that message component interactions are default collected types.
@@ -586,7 +586,7 @@ client.on('messageCreate', async message => {
   });
 
   message.createMessageComponentCollector({
-    componentType: 'BUTTON',
+    componentType: 'Button',
     filter: i => {
       expectType<ButtonInteraction>(i);
       return true;
@@ -594,7 +594,7 @@ client.on('messageCreate', async message => {
   });
 
   message.createMessageComponentCollector({
-    componentType: 'SELECT_MENU',
+    componentType: 'SelectMenu',
     filter: i => {
       expectType<SelectMenuInteraction>(i);
       return true;
@@ -609,7 +609,7 @@ client.on('messageCreate', async message => {
   });
 
   message.awaitMessageComponent({
-    componentType: 'BUTTON',
+    componentType: 'Button',
     filter: i => {
       expectType<ButtonInteraction>(i);
       return true;
@@ -617,7 +617,7 @@ client.on('messageCreate', async message => {
   });
 
   message.awaitMessageComponent({
-    componentType: 'SELECT_MENU',
+    componentType: 'SelectMenu',
     filter: i => {
       expectType<SelectMenuInteraction>(i);
       return true;
@@ -645,7 +645,7 @@ client.on('messageCreate', async message => {
   });
 
   channel.awaitMessageComponent({
-    componentType: 'BUTTON',
+    componentType: 'Button',
     filter: i => {
       expectType<ButtonInteraction<'cached'>>(i);
       return true;
@@ -653,7 +653,7 @@ client.on('messageCreate', async message => {
   });
 
   channel.awaitMessageComponent({
-    componentType: 'SELECT_MENU',
+    componentType: 'SelectMenu',
     filter: i => {
       expectType<SelectMenuInteraction<'cached'>>(i);
       return true;
@@ -772,8 +772,8 @@ expectType<Message | null>(newsChannel.lastMessage);
 expectType<Message | null>(textChannel.lastMessage);
 
 expectDeprecated(storeChannel.clone());
-expectDeprecated(categoryChannel.createChannel('Store', { type: 'GUILD_STORE' }));
-expectDeprecated(guild.channels.create('Store', { type: 'GUILD_STORE' }));
+expectDeprecated(categoryChannel.createChannel('Store', { type: 'GuildStore' }));
+expectDeprecated(guild.channels.create('Store', { type: 'GuildStore' }));
 
 notPropertyOf(user, 'lastMessage');
 notPropertyOf(user, 'lastMessageId');
@@ -844,9 +844,7 @@ declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
 
 declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
 {
-  expectType<'SUB_COMMAND_GROUP' | ApplicationCommandOptionTypes.SUB_COMMAND_GROUP>(
-    applicationSubGroupCommandData.type,
-  );
+  expectType<'SubcommandGroup' | ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
   expectType<ApplicationCommandSubCommandData[] | undefined>(applicationSubGroupCommandData.options);
 }
 
@@ -857,25 +855,25 @@ expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'
 
 declare const categoryChannel: CategoryChannel;
 {
-  expectType<Promise<VoiceChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_VOICE' }));
-  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_TEXT' }));
-  expectType<Promise<NewsChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_NEWS' }));
-  expectType<Promise<StoreChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_STORE' }));
-  expectType<Promise<StageChannel>>(categoryChannel.createChannel('name', { type: 'GUILD_STAGE_VOICE' }));
-  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name', {}));
-  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name'));
+  expectType<Promise<VoiceChannel>>(categoryChannel.createChannel('name', { type: 'GuildVoice' }));
+  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name', { type: 'GuildText' }));
+  expectType<Promise<NewsChannel>>(categoryChannel.createChannel('name', { type: 'GuildNews' }));
+  expectDeprecated(categoryChannel.createChannel('name', { type: 'GuildStore' }));
+  expectType<Promise<StageChannel>>(categoryChannel.createChannel('name', { type: 'GuildStageVoice' }));
+  expectType<Promise<Exclude<NonThreadGuildBasedChannel, CategoryChannel>>>(categoryChannel.createChannel('name', {}));
+  expectType<Promise<Exclude<NonThreadGuildBasedChannel, CategoryChannel>>>(categoryChannel.createChannel('name'));
 }
 
 declare const guildChannelManager: GuildChannelManager;
 {
   type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel;
 
-  expectType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: 'GUILD_VOICE' }));
-  expectType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: 'GUILD_CATEGORY' }));
-  expectType<Promise<TextChannel>>(guildChannelManager.create('name', { type: 'GUILD_TEXT' }));
-  expectType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: 'GUILD_NEWS' }));
-  expectType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: 'GUILD_STORE' }));
-  expectType<Promise<StageChannel>>(guildChannelManager.create('name', { type: 'GUILD_STAGE_VOICE' }));
+  expectType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: 'GuildVoice' }));
+  expectType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: 'GuildCategory' }));
+  expectType<Promise<TextChannel>>(guildChannelManager.create('name', { type: 'GuildText' }));
+  expectType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: 'GuildNews' }));
+  expectType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: 'GuildStore' }));
+  expectType<Promise<StageChannel>>(guildChannelManager.create('name', { type: 'GuildStageVoice' }));
 
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
@@ -1080,7 +1078,7 @@ client.on('interactionCreate', async interaction => {
       expectType<APIRole>(interaction.options.getRole('test', true));
     } else if (interaction.inCachedGuild()) {
       const msg = await interaction.reply({ fetchReply: true });
-      const btn = await msg.awaitMessageComponent({ componentType: 'BUTTON' });
+      const btn = await msg.awaitMessageComponent({ componentType: 'Button' });
 
       expectType<Message<true>>(msg);
       expectType<ButtonInteraction<'cached'>>(btn);
@@ -1167,79 +1165,79 @@ collector.on('end', (collection, reason) => {
 expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
 
 // Test audit logs
-expectType<Promise<GuildAuditLogs<'MEMBER_KICK'>>>(guild.fetchAuditLogs({ type: 'MEMBER_KICK' }));
+expectType<Promise<GuildAuditLogs<'MemberKick'>>>(guild.fetchAuditLogs({ type: 'MemberKick' }));
 expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(
-  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }),
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MemberKick }),
 );
 expectType<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }));
 
-expectType<Promise<GuildAuditLogs<'CHANNEL_CREATE'>>>(guild.fetchAuditLogs({ type: 'CHANNEL_CREATE' }));
+expectType<Promise<GuildAuditLogs<'ChannelCreate'>>>(guild.fetchAuditLogs({ type: 'ChannelCreate' }));
 expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.ChannelCreate>>>(
-  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.CHANNEL_CREATE }),
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.ChannelCreate }),
 );
 expectType<Promise<GuildAuditLogs<AuditLogEvent.ChannelCreate>>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.ChannelCreate }),
 );
 
-expectType<Promise<GuildAuditLogs<'INTEGRATION_UPDATE'>>>(guild.fetchAuditLogs({ type: 'INTEGRATION_UPDATE' }));
+expectType<Promise<GuildAuditLogs<'IntegrationUpdate'>>>(guild.fetchAuditLogs({ type: 'IntegrationUpdate' }));
 expectAssignable<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
-  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.INTEGRATION_UPDATE }),
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.IntegrationUpdate }),
 );
 expectType<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.IntegrationUpdate }),
 );
 
-expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs({ type: 'ALL' }));
-expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.ALL }));
-expectType<Promise<GuildAuditLogs<'ALL'>>>(guild.fetchAuditLogs());
+expectType<Promise<GuildAuditLogs<'All'>>>(guild.fetchAuditLogs({ type: 'All' }));
+expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.All }));
+expectType<Promise<GuildAuditLogs<'All'>>>(guild.fetchAuditLogs());
 
-expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
-  guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()),
+expectType<Promise<GuildAuditLogsEntry<'MemberKick', 'MemberKick', 'Delete', 'User'> | undefined>>(
+  guild.fetchAuditLogs({ type: 'MemberKick' }).then(al => al.entries.first()),
 );
-expectType<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
-  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MEMBER_KICK }).then(al => al.entries.first()),
+expectType<Promise<GuildAuditLogsEntry<'MemberKick', 'MemberKick', 'Delete', 'User'> | undefined>>(
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.MemberKick }).then(al => al.entries.first()),
 );
-expectAssignable<Promise<GuildAuditLogsEntry<'MEMBER_KICK', 'MEMBER_KICK', 'DELETE', 'USER'> | undefined>>(
+expectAssignable<Promise<GuildAuditLogsEntry<'MemberKick', 'MemberKick', 'Delete', 'User'> | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
 );
 
-expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
-  guild.fetchAuditLogs({ type: 'ALL' }).then(al => al.entries.first()),
+expectType<Promise<GuildAuditLogsEntry<'All', 'All', 'All', 'Unknown'> | undefined>>(
+  guild.fetchAuditLogs({ type: 'All' }).then(al => al.entries.first()),
 );
-expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
-  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.ALL }).then(al => al.entries.first()),
+expectType<Promise<GuildAuditLogsEntry<'All', 'All', 'All', 'Unknown'> | undefined>>(
+  guild.fetchAuditLogs({ type: GuildAuditLogs.Actions.All }).then(al => al.entries.first()),
 );
-expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<'All', 'All', 'All', 'Unknown'> | undefined>>(
   guild.fetchAuditLogs({ type: null }).then(al => al.entries.first()),
 );
-expectType<Promise<GuildAuditLogsEntry<'ALL', 'ALL', 'ALL', 'UNKNOWN'> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<'All', 'All', 'All', 'Unknown'> | undefined>>(
   guild.fetchAuditLogs().then(al => al.entries.first()),
 );
 
 expectType<Promise<null | undefined>>(
-  guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()?.extra),
+  guild.fetchAuditLogs({ type: 'MemberKick' }).then(al => al.entries.first()?.extra),
 );
 expectType<Promise<null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.extra),
 );
 expectType<Promise<StageChannel | { id: Snowflake } | undefined>>(
-  guild.fetchAuditLogs({ type: 'STAGE_INSTANCE_CREATE' }).then(al => al.entries.first()?.extra),
+  guild.fetchAuditLogs({ type: 'StageInstanceCreate' }).then(al => al.entries.first()?.extra),
 );
 expectType<Promise<{ channel: GuildTextBasedChannel | { id: Snowflake }; count: number } | undefined>>(
-  guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' }).then(al => al.entries.first()?.extra),
+  guild.fetchAuditLogs({ type: 'MessageDelete' }).then(al => al.entries.first()?.extra),
 );
 
 expectType<Promise<User | null | undefined>>(
-  guild.fetchAuditLogs({ type: 'MEMBER_KICK' }).then(al => al.entries.first()?.target),
+  guild.fetchAuditLogs({ type: 'MemberKick' }).then(al => al.entries.first()?.target),
 );
 expectType<Promise<User | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.target),
 );
 expectType<Promise<StageInstance | undefined>>(
-  guild.fetchAuditLogs({ type: 'STAGE_INSTANCE_CREATE' }).then(al => al.entries.first()?.target),
+  guild.fetchAuditLogs({ type: 'StageInstanceCreate' }).then(al => al.entries.first()?.target),
 );
 expectType<Promise<User | undefined>>(
-  guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' }).then(al => al.entries.first()?.target),
+  guild.fetchAuditLogs({ type: 'MessageDelete' }).then(al => al.entries.first()?.target),
 );
 
 expectType<Promise<User | undefined>>(
@@ -1255,7 +1253,7 @@ declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
 declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
 expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel>(TextBasedChannel);
-expectType<'DM' | 'GUILD_NEWS' | 'GUILD_TEXT' | 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD' | 'GUILD_NEWS_THREAD'>(
+expectType<'DM' | 'GuildNews' | 'GuildText' | 'GuildPublicThread' | 'GuildPrivateThread' | 'GuildNewsThread'>(
   TextBasedChannelTypes,
 );
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);

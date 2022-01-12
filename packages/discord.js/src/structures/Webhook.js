@@ -2,9 +2,9 @@
 
 const process = require('node:process');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { WebhookType } = require('discord-api-types/v9');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
-const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 
 let deprecationEmittedForFetchMessage = false;
@@ -59,7 +59,7 @@ class Webhook {
        * The type of the webhook
        * @type {WebhookType}
        */
-      this.type = WebhookTypes[data.type];
+      this.type = WebhookType[data.type];
     }
 
     if ('guild_id' in data) {
@@ -415,7 +415,7 @@ class Webhook {
    * @returns {boolean}
    */
   isChannelFollower() {
-    return this.type === 'Channel Follower';
+    return this.type === 'ChannelFollower';
   }
 
   /**
