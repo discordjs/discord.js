@@ -233,7 +233,7 @@ class Interaction extends Base {
    */
   isRespondable() {
     const thisType = InteractionType[this.type];
-    return thisType !== InteractionType.Ping || thisType !== InteractionType.ApplicationCommandAutocomplete;
+    return thisType !== InteractionType.Ping && thisType !== InteractionType.ApplicationCommandAutocomplete;
   }
 }
 
