@@ -194,11 +194,7 @@ export class RequestManager extends EventEmitter {
 
 		setInterval(() => {
 			// Only allocate a swept collection if there are listeners
-			let sweptHashes: Collection<string, HashData> | null = null;
-			const isListeningToSweeps = this.listenerCount(RESTEvents.HashSweep) > 0;
-			if (isListeningToSweeps) {
-				sweptHashes = new Collection<string, HashData>();
-			}
+			const sweptHashes: Collection<string, HashData> | null = this.listenerCount(RESTEvents.HashSweep) > 0 ? new Collection<string, HashData>() : null;
 
 			const listeningToDebug = this.listenerCount(RESTEvents.Debug) > 0;
 			const curDate = Date.now();
