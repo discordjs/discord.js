@@ -2,13 +2,14 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
+const { ChannelType } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const ThreadManager = require('./ThreadManager');
 const { Error } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
-const { ChannelTypes, ThreadChannelTypes } = require('../util/Constants');
+const { ThreadChannelTypes } = require('../util/Constants');
 
 let cacheWarningEmitted = false;
 let storeChannelDeprecationEmitted = false;
@@ -139,9 +140,9 @@ class GuildChannelManager extends CachedManager {
   ) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
-    const intType = typeof type === 'number' ? type : ChannelTypes[type] ?? ChannelTypes.GUILD_TEXT;
+    const intType = typeof type === 'number' ? type : ChannelType[type] ?? ChannelType.GuildText;
 
-    if (intType === ChannelTypes.GUILD_STORE && !storeChannelDeprecationEmitted) {
+    if (intType === ChannelType.GuildStore && !storeChannelDeprecationEmitted) {
       storeChannelDeprecationEmitted = true;
       process.emitWarning(
         // eslint-disable-next-line max-len

@@ -1,11 +1,11 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { ApplicationCommandType } = require('discord-api-types/v9');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const MessageAttachment = require('./MessageAttachment');
 const InteractionResponses = require('./interfaces/InteractionResponses');
-const { ApplicationCommandOptionTypes } = require('../util/Constants');
 
 /**
  * Represents a command interaction.
@@ -20,7 +20,7 @@ class CommandInteraction extends Interaction {
     /**
      * The id of the channel this interaction was sent in
      * @type {Snowflake}
-     * @name BaseCommandInteraction#channelId
+     * @name CommandInteraction#channelId
      */
 
     /**
@@ -162,7 +162,7 @@ class CommandInteraction extends Interaction {
   transformOption(option, resolved) {
     const result = {
       name: option.name,
-      type: ApplicationCommandOptionTypes[option.type],
+      type: ApplicationCommandType[option.type],
     };
 
     if ('value' in option) result.value = option.value;

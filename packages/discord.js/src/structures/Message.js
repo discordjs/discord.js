@@ -1,7 +1,8 @@
 'use strict';
 
-const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { MessageType, InteractionType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
@@ -14,19 +15,10 @@ const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
-const { InteractionTypes, MessageTypes, SystemMessageTypes } = require('../util/Constants');
+const { SystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
-
-/**
- * @type {WeakSet<Message>}
- * @private
- * @internal
- */
-const deletedMessages = new WeakSet();
-let deprecationEmittedForDeleted = false;
 
 /**
  * Represents a message on Discord.
@@ -62,14 +54,14 @@ class Message extends Base {
      * The timestamp the message was sent at
      * @type {number}
      */
-    this.createdTimestamp = SnowflakeUtil.timestampFrom(this.id);
+    this.createdTimestamp = DiscordSnowflake.timestampFrom(this.id);
 
     if ('type' in data) {
       /**
        * The type of the message
        * @type {?MessageType}
        */
-      this.type = MessageTypes[data.type];
+      this.type = MessageType[data.type];
 
       /**
        * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
@@ -186,7 +178,7 @@ class Message extends Base {
        * The timestamp the message was last edited at (if applicable)
        * @type {?number}
        */
-      this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+      this.editedTimestamp = Date.parse(data.edited_timestamp);
     } else {
       this.editedTimestamp ??= null;
     }
@@ -342,43 +334,13 @@ class Message extends Base {
        */
       this.interaction = {
         id: data.interaction.id,
-        type: InteractionTypes[data.interaction.type],
+        type: InteractionType[data.interaction.type],
         commandName: data.interaction.name,
         user: this.client.users._add(data.interaction.user),
       };
     } else {
       this.interaction ??= null;
     }
-  }
-
-  /**
-   * Whether or not the structure has been deleted
-   * @type {boolean}
-   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
-   */
-  get deleted() {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Message#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    return deletedMessages.has(this);
-  }
-
-  set deleted(value) {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Message#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    if (value) deletedMessages.add(this);
-    else deletedMessages.delete(this);
   }
 
   /**
@@ -424,7 +386,7 @@ class Message extends Base {
    * @readonly
    */
   get editedAt() {
-    return this.editedTimestamp ? new Date(this.editedTimestamp) : null;
+    return this.editedTimestamp && new Date(this.editedTimestamp);
   }
 
   /**
@@ -541,7 +503,7 @@ class Message extends Base {
   createMessageComponentCollector(options = {}) {
     return new InteractionCollector(this.client, {
       ...options,
-      interactionType: InteractionTypes.MESSAGE_COMPONENT,
+      interactionType: InteractionType.MessageComponent,
       message: this,
     });
   }
@@ -584,9 +546,7 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    const precheck = Boolean(
-      this.author.id === this.client.user.id && !deletedMessages.has(this) && (!this.guild || this.channel?.viewable),
-    );
+    const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
     // Regardless of permissions thread messages cannot be edited if
     // the thread is locked.
     if (this.channel?.isThread()) {
@@ -601,9 +561,6 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    if (deletedMessages.has(this)) {
-      return false;
-    }
     if (!this.guild) {
       return this.author.id === this.client.user.id;
     }
@@ -633,7 +590,6 @@ class Message extends Base {
     const { channel } = this;
     return Boolean(
       !this.system &&
-        !deletedMessages.has(this) &&
         (!this.guild ||
           (channel?.viewable &&
             channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
@@ -668,8 +624,7 @@ class Message extends Base {
         !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
         this.type === 'DEFAULT' &&
         channel.viewable &&
-        channel.permissionsFor(this.client.user)?.has(bitfield, false) &&
-        !deletedMessages.has(this),
+        channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
   }
 
@@ -943,8 +898,8 @@ class Message extends Base {
     if (equal && rawData) {
       equal =
         this.mentions.everyone === message.mentions.everyone &&
-        this.createdTimestamp === new Date(rawData.timestamp).getTime() &&
-        this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
+        this.createdTimestamp === Date.parse(rawData.timestamp) &&
+        this.editedTimestamp === Date.parse(rawData.edited_timestamp);
     }
 
     return equal;
@@ -983,4 +938,3 @@ class Message extends Base {
 }
 
 exports.Message = Message;
-exports.deletedMessages = deletedMessages;

@@ -1,13 +1,20 @@
-import { demuxProbe } from '../demuxProbe';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { demuxProbe } from '../src/util/demuxProbe';
 import { opus as _opus } from 'prism-media';
 import { Readable } from 'node:stream';
-import { StreamType } from '../../audio';
+import { StreamType } from '../src/audio';
 import EventEmitter, { once } from 'node:events';
 
 jest.mock('prism-media');
 
 const WebmDemuxer = _opus.WebmDemuxer as unknown as jest.Mock<_opus.WebmDemuxer>;
 const OggDemuxer = _opus.OggDemuxer as unknown as jest.Mock<_opus.OggDemuxer>;
+
+function nextTick() {
+	return new Promise((resolve) => process.nextTick(resolve));
+}
 
 async function* gen(n: number) {
 	for (let i = 0; i < n; i++) {
@@ -35,10 +42,6 @@ async function collectStream(stream: Readable): Promise<Buffer> {
 		output = Buffer.concat([output, data]);
 	}
 	return output;
-}
-
-function nextTick() {
-	return new Promise((resolve) => process.nextTick(resolve));
 }
 
 describe('demuxProbe', () => {

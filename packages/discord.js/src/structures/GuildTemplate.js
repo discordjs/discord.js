@@ -66,18 +66,18 @@ class GuildTemplate extends Base {
 
     if ('created_at' in data) {
       /**
-       * The time when this template was created at
-       * @type {Date}
+       * The timestamp of when this template was created at
+       * @type {number}
        */
-      this.createdAt = new Date(data.created_at);
+      this.createdTimestamp = Date.parse(data.created_at);
     }
 
     if ('updated_at' in data) {
       /**
-       * The time when this template was last synced to the guild
-       * @type {Date}
+       * The timestamp of when this template was last synced to the guild
+       * @type {number}
        */
-      this.updatedAt = new Date(data.updated_at);
+      this.updatedTimestamp = Date.parse(data.updated_at);
     }
 
     if ('source_guild_id' in data) {
@@ -180,21 +180,21 @@ class GuildTemplate extends Base {
   }
 
   /**
-   * The timestamp of when this template was created at
-   * @type {number}
+   * The time when this template was created at
+   * @type {Date}
    * @readonly
    */
-  get createdTimestamp() {
-    return this.createdAt.getTime();
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
-   * The timestamp of when this template was last synced to the guild
-   * @type {number}
+   * The time when this template was last synced to the guild
+   * @type {Date}
    * @readonly
    */
-  get updatedTimestamp() {
-    return this.updatedAt.getTime();
+  get updatedAt() {
+    return new Date(this.updatedTimestamp);
   }
 
   /**

@@ -107,6 +107,7 @@ export class VoiceWebSocket extends TypedEmitter<VoiceWebSocketEvents> {
 
 		let packet: any;
 		try {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			packet = JSON.parse(event.data);
 		} catch (error) {
 			const e = error as Error;
@@ -114,6 +115,7 @@ export class VoiceWebSocket extends TypedEmitter<VoiceWebSocketEvents> {
 			return;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		if (packet.op === VoiceOpcodes.HeartbeatAck) {
 			this.lastHeartbeatAck = Date.now();
 			this.missedHeartbeats = 0;

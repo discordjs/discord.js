@@ -1,8 +1,8 @@
 'use strict';
 
+const { ApplicationCommandType } = require('discord-api-types/v9');
 const CommandInteraction = require('./CommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { ApplicationCommandOptionTypes, ApplicationCommandTypes } = require('../util/Constants');
 
 /**
  * Represents a context menu interaction.
@@ -31,7 +31,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
      * The type of the target of the interaction; either USER or MESSAGE
      * @type {ApplicationCommandType}
      */
-    this.targetType = ApplicationCommandTypes[data.data.type];
+    this.targetType = ApplicationCommandType[data.data.type];
   }
 
   /**
@@ -45,7 +45,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
 
     if (resolved.users?.[target_id]) {
       result.push(
-        this.transformOption({ name: 'user', type: ApplicationCommandOptionTypes.USER, value: target_id }, resolved),
+        this.transformOption({ name: 'user', type: ApplicationCommandType.User, value: target_id }, resolved),
       );
     }
 

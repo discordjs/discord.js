@@ -28,7 +28,7 @@ export interface RawFile {
 	/**
 	 * The actual data for the file
 	 */
-	rawBuffer: Buffer;
+	fileData: string | number | boolean | Buffer;
 }
 
 /**
@@ -126,20 +126,20 @@ export interface RouteData {
 }
 
 export interface RequestManager {
-	on<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void): this;
-	on<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void): this;
+	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
+		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
 
-	once<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void): this;
-	once<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void): this;
+	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
+		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
 
-	emit<K extends keyof RestEvents>(event: K, ...args: RestEvents[K]): boolean;
-	emit<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, ...args: any[]): boolean;
+	emit: (<K extends keyof RestEvents>(event: K, ...args: RestEvents[K]) => boolean) &
+		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, ...args: any[]) => boolean);
 
-	off<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void): this;
-	off<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void): this;
+	off: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
+		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
 
-	removeAllListeners<K extends keyof RestEvents>(event?: K): this;
-	removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>): this;
+	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
+		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
 }
 
 /**
@@ -280,7 +280,7 @@ export class RequestManager extends EventEmitter {
 
 			// Attach all files to the request
 			for (const [index, file] of request.files.entries()) {
-				formData.append(file.key ?? `files[${index}]`, file.rawBuffer, file.fileName);
+				formData.append(file.key ?? `files[${index}]`, file.fileData, file.fileName);
 			}
 
 			// If a JSON body was added as well, attach it to the form data, using payload_json unless otherwise specified

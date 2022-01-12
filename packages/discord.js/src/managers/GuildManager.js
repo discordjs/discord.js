@@ -3,6 +3,13 @@
 const process = require('node:process');
 const { setTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
+const {
+  GuildVerificationLevel,
+  GuildDefaultMessageNotifications,
+  GuildExplicitContentFilter,
+  ChannelType,
+  OverwriteType,
+} = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
@@ -11,14 +18,7 @@ const { GuildMember } = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const OAuth2Guild = require('../structures/OAuth2Guild');
 const { Role } = require('../structures/Role');
-const {
-  ChannelTypes,
-  Events,
-  OverwriteTypes,
-  VerificationLevels,
-  DefaultMessageNotificationLevels,
-  ExplicitContentFilterLevels,
-} = require('../util/Constants');
+const { Events } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Permissions = require('../util/Permissions');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
@@ -182,16 +182,16 @@ class GuildManager extends CachedManager {
   ) {
     icon = await DataResolver.resolveImage(icon);
     if (typeof verificationLevel === 'string') {
-      verificationLevel = VerificationLevels[verificationLevel];
+      verificationLevel = GuildVerificationLevel[verificationLevel];
     }
     if (typeof defaultMessageNotifications === 'string') {
-      defaultMessageNotifications = DefaultMessageNotificationLevels[defaultMessageNotifications];
+      defaultMessageNotifications = GuildDefaultMessageNotifications[defaultMessageNotifications];
     }
     if (typeof explicitContentFilter === 'string') {
-      explicitContentFilter = ExplicitContentFilterLevels[explicitContentFilter];
+      explicitContentFilter = GuildExplicitContentFilter[explicitContentFilter];
     }
     for (const channel of channels) {
-      channel.type &&= typeof channel.type === 'number' ? channel.type : ChannelTypes[channel.type];
+      channel.type &&= typeof channel.type === 'number' ? channel.type : ChannelType[channel.type];
       channel.parent_id = channel.parentId;
       delete channel.parentId;
       channel.user_limit = channel.userLimit;
@@ -204,7 +204,7 @@ class GuildManager extends CachedManager {
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
         if (typeof overwrite.type === 'string') {
-          overwrite.type = OverwriteTypes[overwrite.type];
+          overwrite.type = OverwriteType[overwrite.type];
         }
         overwrite.allow &&= Permissions.resolve(overwrite.allow).toString();
         overwrite.deny &&= Permissions.resolve(overwrite.deny).toString();

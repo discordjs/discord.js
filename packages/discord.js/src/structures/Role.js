@@ -1,21 +1,10 @@
 'use strict';
 
-const process = require('node:process');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const { Error } = require('../errors');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
-
-let deprecationEmittedForComparePositions = false;
-
-/**
- * @type {WeakSet<Role>}
- * @private
- * @internal
- */
-const deletedRoles = new WeakSet();
-let deprecationEmittedForDeleted = false;
 
 /**
  * Represents a role on Discord.
@@ -139,7 +128,7 @@ class Role extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**
@@ -149,36 +138,6 @@ class Role extends Base {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * Whether or not the role has been deleted
-   * @type {boolean}
-   * @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091
-   */
-  get deleted() {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Role#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    return deletedRoles.has(this);
-  }
-
-  set deleted(value) {
-    if (!deprecationEmittedForDeleted) {
-      deprecationEmittedForDeleted = true;
-      process.emitWarning(
-        'Role#deleted is deprecated, see https://github.com/discordjs/discord.js/issues/7091.',
-        'DeprecationWarning',
-      );
-    }
-
-    if (value) deletedRoles.add(this);
-    else deletedRoles.delete(this);
   }
 
   /**
@@ -480,31 +439,9 @@ class Role extends Base {
       permissions: this.permissions.toJSON(),
     };
   }
-
-  /**
-   * Compares the positions of two roles.
-   * @param {Role} role1 First role to compare
-   * @param {Role} role2 Second role to compare
-   * @returns {number} Negative number if the first role's position is lower (second role's is higher),
-   * positive number if the first's is higher (second's is lower), 0 if equal
-   * @deprecated Use {@link RoleManager#comparePositions} instead.
-   */
-  static comparePositions(role1, role2) {
-    if (!deprecationEmittedForComparePositions) {
-      process.emitWarning(
-        'The Role.comparePositions method is deprecated. Use RoleManager#comparePositions instead.',
-        'DeprecationWarning',
-      );
-
-      deprecationEmittedForComparePositions = true;
-    }
-
-    return role1.guild.roles.comparePositions(role1, role2);
-  }
 }
 
 exports.Role = Role;
-exports.deletedRoles = deletedRoles;
 
 /**
  * @external APIRole

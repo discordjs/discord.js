@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/dot-notation */
 import {
@@ -17,10 +20,10 @@ import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSu
 import type { DiscordGatewayAdapterLibraryMethods } from '../src/util/adapter';
 import EventEmitter from 'node:events';
 
-jest.mock('../audio/AudioPlayer');
-jest.mock('../audio/PlayerSubscription');
-jest.mock('../DataStore');
-jest.mock('../networking/Networking');
+jest.mock('../src/audio/AudioPlayer');
+jest.mock('../src/audio/PlayerSubscription');
+jest.mock('../src/DataStore');
+jest.mock('../src/networking/Networking');
 
 const DataStore = _DataStore as unknown as jest.Mocked<typeof _DataStore>;
 const Networking = _Networking as unknown as jest.Mocked<typeof _Networking>;

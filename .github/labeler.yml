@@ -1,3 +1,7 @@
+chore:
+  - any: ['*']
+    all: ['!packages/*', '!packages/**/*']
+
 'packages:builders':
   - packages/builders/*
   - packages/builders/**/*

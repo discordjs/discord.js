@@ -27,5 +27,11 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
-      - name: Run eslint
+      - name: ESLint
         run: yarn lint --cache-dir=".turbo"
+
+      - name: Tests
+        run: yarn test --cache-dir=".turbo"
+
+      - name: Build
+        run: yarn build --cache-dir=".turbo"

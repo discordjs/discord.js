@@ -19,6 +19,15 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
+      - name: Turbo cache
+        id: turbo-cache
+        uses: actions/cache@v2
+        with:
+          path: .turbo
+          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-${{ github.ref_name }}-
+
       - name: Check previous released version
         id: pre-release
         run: |
@@ -30,6 +39,9 @@ jobs:
         if: steps.pre-release.outputs.release == 'true'
         run: yarn --immutable
 
+      - name: Build dependencies
+        run: yarn build --cache-dir=".turbo"
+
       - name: Deprecate old versions
         if: steps.pre-release.outputs.release == 'true'
         run: npm deprecate discord.js@"~$(jq --raw-output '.version' packages/discord.js/package.json)" "no longer supported" || true
@@ -39,7 +51,7 @@ jobs:
       - name: Publish
         if: steps.pre-release.outputs.release == 'true'
         run: |
-          npm version --git-tag-version=false $(jq --raw-output '.version' packages/discord.js/package.json).$(date +%s).$(git rev-parse --short HEAD)
-          yarn publish --tag dev || true
+          yarn workspace discord.js version --no-git-tag-version --new-version $(jq --raw-output '.version' packages/discord.js/package.json).$(date +%s).$(git rev-parse --short HEAD)
+          yarn workspace discord.js publish --tag dev || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

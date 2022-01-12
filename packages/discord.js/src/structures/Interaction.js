@@ -1,9 +1,9 @@
 'use strict';
 
+const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v9');
 const Base = require('./Base');
-const { InteractionTypes, MessageComponentTypes, ApplicationCommandTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents an interaction.
@@ -17,7 +17,7 @@ class Interaction extends Base {
      * The interaction's type
      * @type {InteractionType}
      */
-    this.type = InteractionTypes[data.type];
+    this.type = InteractionType[data.type];
 
     /**
      * The interaction's id
@@ -74,6 +74,18 @@ class Interaction extends Base {
      * @type {?Readonly<Permissions>}
      */
     this.memberPermissions = data.member?.permissions ? new Permissions(data.member.permissions).freeze() : null;
+
+    /**
+     * The locale of the user who invoked this interaction
+     * @type {string}
+     */
+    this.locale = data.locale;
+
+    /**
+     * The preferred locale from the guild this interaction was sent in
+     * @type {?string}
+     */
+    this.guildLocale = data.guild_locale ?? null;
   }
 
   /**
@@ -82,7 +94,7 @@ class Interaction extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return SnowflakeUtil.timestampFrom(this.id);
+    return DiscordSnowflake.timestampFrom(this.id);
   }
 
   /**
@@ -141,7 +153,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isCommand() {
-    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND;
+    return InteractionType[this.type] === InteractionType.ApplicationCommand;
   }
 
   /**
@@ -149,7 +161,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isChatInputCommand() {
-    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId === 'undefined';
+    return InteractionType[this.type] === InteractionType.ApplicationCommand && typeof this.targetId === 'undefined';
   }
 
   /**
@@ -157,7 +169,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isContextMenuCommand() {
-    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND && typeof this.targetId !== 'undefined';
+    return InteractionType[this.type] === InteractionType.ApplicationCommand && typeof this.targetId !== 'undefined';
   }
 
   /**
@@ -165,7 +177,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isUserContextMenuCommand() {
-    return this.isContextMenuCommand() && ApplicationCommandTypes[this.targetType] === ApplicationCommandTypes.USER;
+    return this.isContextMenuCommand() && ApplicationCommandType[this.targetType] === ApplicationCommandType.User;
   }
 
   /**
@@ -173,7 +185,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isMessageContextMenuCommand() {
-    return this.isContextMenuCommand() && ApplicationCommandTypes[this.targetType] === ApplicationCommandTypes.MESSAGE;
+    return this.isContextMenuCommand() && ApplicationCommandType[this.targetType] === ApplicationCommandType.Message;
   }
 
   /**
@@ -181,7 +193,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isAutocomplete() {
-    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND_AUTOCOMPLETE;
+    return InteractionType[this.type] === InteractionType.ApplicationCommandAutocomplete;
   }
 
   /**
@@ -189,7 +201,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isMessageComponent() {
-    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT;
+    return InteractionType[this.type] === InteractionType.MessageComponent;
   }
 
   /**
@@ -198,8 +210,8 @@ class Interaction extends Base {
    */
   isButton() {
     return (
-      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
-      MessageComponentTypes[this.componentType] === MessageComponentTypes.BUTTON
+      InteractionType[this.type] === InteractionType.MessageComponent &&
+      ComponentType[this.componentType] === ComponentType.Button
     );
   }
 
@@ -209,8 +221,8 @@ class Interaction extends Base {
    */
   isSelectMenu() {
     return (
-      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
-      MessageComponentTypes[this.componentType] === MessageComponentTypes.SELECT_MENU
+      InteractionType[this.type] === InteractionType.MessageComponent &&
+      ComponentType[this.componentType] === ComponentType.SelectMenu
     );
   }
 }

@@ -111,13 +111,16 @@ class ShardClientUtil {
       const listener = message => {
         if (message?._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
         parent.removeListener('message', listener);
+        this.decrementMaxListeners(parent);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
       };
+      this.incrementMaxListeners(parent);
       parent.on('message', listener);
 
       this.send({ _sFetchProp: prop, _sFetchPropShard: shard }).catch(err => {
         parent.removeListener('message', listener);
+        this.decrementMaxListeners(parent);
         reject(err);
       });
     });
@@ -146,13 +149,15 @@ class ShardClientUtil {
       const listener = message => {
         if (message?._sEval !== script || message._sEvalShard !== options.shard) return;
         parent.removeListener('message', listener);
+        this.decrementMaxListeners(parent);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
       };
+      this.incrementMaxListeners(parent);
       parent.on('message', listener);
-
       this.send({ _sEval: script, _sEvalShard: options.shard }).catch(err => {
         parent.removeListener('message', listener);
+        this.decrementMaxListeners(parent);
         reject(err);
       });
     });
@@ -240,6 +245,30 @@ class ShardClientUtil {
     const shard = Number(BigInt(guildId) >> 22n) % shardCount;
     if (shard < 0) throw new Error('SHARDING_SHARD_MISCALCULATION', shard, guildId, shardCount);
     return shard;
+  }
+
+  /**
+   * Increments max listeners by one for a given emitter, if they are not zero.
+   * @param {EventEmitter|process} emitter The emitter that emits the events.
+   * @private
+   */
+  incrementMaxListeners(emitter) {
+    const maxListeners = emitter.getMaxListeners();
+    if (maxListeners !== 0) {
+      emitter.setMaxListeners(maxListeners + 1);
+    }
+  }
+
+  /**
+   * Decrements max listeners by one for a given emitter, if they are not zero.
+   * @param {EventEmitter|process} emitter The emitter that emits the events.
+   * @private
+   */
+  decrementMaxListeners(emitter) {
+    const maxListeners = emitter.getMaxListeners();
+    if (maxListeners !== 0) {
+      emitter.setMaxListeners(maxListeners - 1);
+    }
   }
 }
 

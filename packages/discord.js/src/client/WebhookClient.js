@@ -30,7 +30,7 @@ class WebhookClient extends BaseClient {
     if ('url' in data) {
       const url = data.url.match(
         // eslint-disable-next-line no-useless-escape
-        /^https?:\/\/(?:canary|ptb)?\.?discord\.com\/api\/webhooks(?:\/v[0-9]\d*)?\/([^\/]+)\/([^\/]+)/i,
+        /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i,
       );
 
       if (!url || url.length <= 1) throw new Error('WEBHOOK_URL_INVALID');

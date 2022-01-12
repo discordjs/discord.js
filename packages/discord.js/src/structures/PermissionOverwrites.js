@@ -1,9 +1,9 @@
 'use strict';
 
+const { OverwriteType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Role } = require('./Role');
 const { TypeError } = require('../errors');
-const { OverwriteTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
 /**
@@ -37,7 +37,7 @@ class PermissionOverwrites extends Base {
        * The type of this overwrite
        * @type {OverwriteType}
        */
-      this.type = typeof data.type === 'number' ? OverwriteTypes[data.type] : data.type;
+      this.type = typeof data.type === 'number' ? OverwriteType[data.type] : data.type;
     }
 
     if ('deny' in data) {
@@ -71,7 +71,7 @@ class PermissionOverwrites extends Base {
    *   .catch(console.error);
    */
   async edit(options, reason) {
-    await this.channel.permissionOverwrites.upsert(this.id, options, { type: OverwriteTypes[this.type], reason }, this);
+    await this.channel.permissionOverwrites.upsert(this.id, options, { type: OverwriteType[this.type], reason }, this);
     return this;
   }
 
@@ -88,7 +88,7 @@ class PermissionOverwrites extends Base {
   toJSON() {
     return {
       id: this.id,
-      type: OverwriteTypes[this.type],
+      type: OverwriteType[this.type],
       allow: this.allow,
       deny: this.deny,
     };
@@ -171,10 +171,10 @@ class PermissionOverwrites extends Base {
    */
   static resolve(overwrite, guild) {
     if (overwrite instanceof this) return overwrite.toJSON();
-    if (typeof overwrite.id === 'string' && overwrite.type in OverwriteTypes) {
+    if (typeof overwrite.id === 'string' && overwrite.type in OverwriteType) {
       return {
         id: overwrite.id,
-        type: OverwriteTypes[overwrite.type],
+        type: OverwriteType[overwrite.type],
         allow: Permissions.resolve(overwrite.allow ?? Permissions.defaultBit).toString(),
         deny: Permissions.resolve(overwrite.deny ?? Permissions.defaultBit).toString(),
       };
@@ -182,7 +182,7 @@ class PermissionOverwrites extends Base {
 
     const userOrRole = guild.roles.resolve(overwrite.id) ?? guild.client.users.resolve(overwrite.id);
     if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
-    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
+    const type = userOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
 
     return {
       id: userOrRole.id,

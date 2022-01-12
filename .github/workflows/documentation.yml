@@ -11,6 +11,7 @@ jobs:
   build:
     name: Build documentation
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'discordjs'
     outputs:
       BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
       BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}

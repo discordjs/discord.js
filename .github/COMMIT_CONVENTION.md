@@ -15,13 +15,13 @@ Messages must be matched by the following regex:
 Appears under "Features" header, `GuildMember` subheader:
 
 ```
-feat(GuildMember): add 'tag' method
+feat(guildmember): add 'tag' method
 ```
 
 Appears under "Bug Fixes" header, `Guild` subheader, with a link to issue #28:
 
 ```
-fix(Guild): handle events correctly
+fix(guild): handle events correctly
 
 close #28
 ```
@@ -37,7 +37,7 @@ BREAKING CHANGE: The 'bar' option has been removed.
 The following commit and commit `667ecc1` do not appear in the changelog if they are under the same release. If not, the revert commit appears under the "Reverts" header.
 
 ```
-revert: feat(Managers): add Managers
+revert: feat(managers): add Managers
 
 This reverts commit 667ecc1654a317a13331b17617d973392f415f02.
 ```

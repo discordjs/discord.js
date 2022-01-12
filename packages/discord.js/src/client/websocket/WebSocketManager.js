@@ -374,7 +374,7 @@ class WebSocketManager extends EventEmitter {
   triggerClientReady() {
     this.status = Status.READY;
 
-    this.client.readyAt = new Date();
+    this.client.readyTimestamp = Date.now();
 
     /**
      * Emitted when the client becomes ready to start working.

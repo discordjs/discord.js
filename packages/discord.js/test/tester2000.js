@@ -48,7 +48,7 @@ const commands = {
   ping: message => message.channel.send('pong'),
 };
 
-client.on('message', message => {
+client.on('messageCreate', message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   message.content = message.content.replace(prefix, '').trim().split(' ');

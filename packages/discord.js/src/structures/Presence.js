@@ -1,9 +1,9 @@
 'use strict';
 
+const { ActivityType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Emoji } = require('./Emoji');
 const ActivityFlags = require('../util/ActivityFlags');
-const { ActivityTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
@@ -168,7 +168,7 @@ class Activity {
      * The activity status's type
      * @type {ActivityType}
      */
-    this.type = typeof data.type === 'number' ? ActivityTypes[data.type] : data.type;
+    this.type = typeof data.type === 'number' ? ActivityType[data.type] : data.type;
 
     /**
      * If the activity is being streamed, a link to the stream
@@ -271,7 +271,7 @@ class Activity {
      * Creation date of the activity
      * @type {number}
      */
-    this.createdTimestamp = new Date(data.created_at).getTime();
+    this.createdTimestamp = Date.parse(data.created_at);
   }
 
   /**
@@ -351,13 +351,21 @@ class RichPresenceAssets {
    * @returns {?string}
    */
   smallImageURL({ format, size } = {}) {
-    return (
-      this.smallImage &&
-      this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.smallImage, {
-        format,
-        size,
-      })
-    );
+    if (!this.smallImage) return null;
+    if (this.smallImage.includes(':')) {
+      const [platform, id] = this.smallImage.split(':');
+      switch (platform) {
+        case 'mp':
+          return `https://media.discordapp.net/${id}`;
+        default:
+          return null;
+      }
+    }
+
+    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.smallImage, {
+      format,
+      size,
+    });
   }
 
   /**
@@ -367,11 +375,22 @@ class RichPresenceAssets {
    */
   largeImageURL({ format, size } = {}) {
     if (!this.largeImage) return null;
-    if (/^spotify:/.test(this.largeImage)) {
-      return `https://i.scdn.co/image/${this.largeImage.slice(8)}`;
-    } else if (/^twitch:/.test(this.largeImage)) {
-      return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${this.largeImage.slice(7)}.png`;
+    if (this.largeImage.includes(':')) {
+      const [platform, id] = this.largeImage.split(':');
+      switch (platform) {
+        case 'mp':
+          return `https://media.discordapp.net/${id}`;
+        case 'spotify':
+          return `https://i.scdn.co/image/${id}`;
+        case 'youtube':
+          return `https://i.ytimg.com/vi/${id}/hqdefault_live.jpg`;
+        case 'twitch':
+          return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${id}.png`;
+        default:
+          return null;
+      }
     }
+
     return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.largeImage, {
       format,
       size,

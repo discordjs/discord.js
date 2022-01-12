@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('node:events');
+const { TypeError } = require('../errors');
 const RESTManager = require('../rest/RESTManager');
 const Options = require('../util/Options');
 const Util = require('../util/Util');
@@ -12,6 +13,10 @@ const Util = require('../util/Util');
 class BaseClient extends EventEmitter {
   constructor(options = {}) {
     super();
+
+    if (typeof options !== 'object' || options === null) {
+      throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    }
 
     /**
      * The options the client was instantiated with
