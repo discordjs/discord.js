@@ -158,7 +158,7 @@ exports.WebSocket = require('./WebSocket');
 
 // External
 exports.ActivityType = require('discord-api-types/v9').ActivityType;
-exports.ApplicationCommandType = require('discord-api-types/v9').ApplicationCommandOptionType;
+exports.ApplicationCommandType = require('discord-api-types/v9').ApplicationCommandType;
 exports.ApplicationCommandOptionType = require('discord-api-types/v9').ApplicationCommandOptionType;
 exports.ApplicationCommandPermissionType = require('discord-api-types/v9').ApplicationCommandPermissionType;
 exports.ButtonStyle = require('discord-api-types/v9').ButtonStyle;
