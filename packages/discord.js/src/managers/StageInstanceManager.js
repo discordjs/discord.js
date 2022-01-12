@@ -49,7 +49,7 @@ class StageInstanceManager extends CachedManager {
    * // Create a stage instance
    * guild.stageInstances.create('1234567890123456789', {
    *  topic: 'A very creative topic',
-   *  privacyLevel: 'GuildOnly'
+   *  privacyLevel: 'GUILD_ONLY'
    * })
    *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error);

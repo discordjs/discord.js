@@ -2773,6 +2773,7 @@ export const Constants: {
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   IntegrationExpireBehaviors: IntegrationExpireBehaviors[];
   InviteScopes: InviteScope[];
+  MessageTypes: MessageType[];
   SystemMessageTypes: SystemMessageType[];
 };
 
@@ -3314,9 +3315,13 @@ export type AllowedImageSize = 16 | 32 | 56 | 64 | 96 | 128 | 256 | 300 | 512 | 
 
 export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
 
-export type AllowedThreadTypeForNewsChannel = 'GuildNewsThread' | 10;
+export type AllowedThreadTypeForNewsChannel = 'GUILD_NEWS_THREAD' | ChannelType.GuildNewsThread;
 
-export type AllowedThreadTypeForTextChannel = 'GuildPublicThread' | 'GuildPrivateThread' | 11 | 12;
+export type AllowedThreadTypeForTextChannel =
+  | 'GUILD_PUBLIC_THREAD'
+  | 'GUILD_PRIVATE_THREAD'
+  | ChannelType.GuildPublicThread
+  | ChannelType.GuildPrivateThread;
 
 export interface APIRequest {
   method: 'get' | 'post' | 'delete' | 'patch' | 'put';
@@ -3390,7 +3395,7 @@ export interface ApplicationCommandChannelOptionData extends BaseApplicationComm
 }
 
 export interface ApplicationCommandChannelOption extends BaseApplicationCommandOptionsData {
-  type: 'Channel';
+  type: 'CHANNEL';
   channelTypes?: (keyof typeof ChannelType)[];
 }
 
@@ -5247,7 +5252,10 @@ export type SystemChannelFlagsString =
 
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
-export type SystemMessageType = Exclude<MessageType, 'Default' | 'Reply' | 'ChatInputCommand' | 'ContextMenuCommand'>;
+export type SystemMessageType = Exclude<
+  MessageType,
+  'DEFAULT' | 'REPLY' | 'CHAT_INPUT_COMMAND' | 'CONTEXT_MENU_COMMAND'
+>;
 
 export type StageChannelResolvable = StageChannel | Snowflake;
 
@@ -5333,7 +5341,7 @@ export type ThreadChannelTypeKey = 'GuildNewsThread' | 'GuildPublicThread' | 'Gu
 export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptions {
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
-  invitable?: AllowedThreadType extends 'GuildPrivateThread' | 12 ? boolean : never;
+  invitable?: AllowedThreadType extends 'GUILD_PRIVATE_THREAD' | ChannelType.GuildPrivateThread ? boolean : never;
   rateLimitPerUser?: number;
 }
 

@@ -57,7 +57,7 @@ client.on('messageCreate', message => {
   if (true) {
     if (message.content === 'makechann') {
       if (message.channel.guild) {
-        message.channel.guild.channels.create('hi', { type: 'GuildText' }).then(console.log);
+        message.channel.guild.channels.create('hi', { type: 'GUILD_TEXT' }).then(console.log);
       }
     }
 

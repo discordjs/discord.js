@@ -113,7 +113,7 @@ class GuildChannelManager extends CachedManager {
    * @example
    * // Create a new channel with permission overwrites
    * guild.channels.create('new-voice', {
-   *   type: 'GuildVoice',
+   *   type: 'GUILD_VOICE',
    *   permissionOverwrites: [
    *      {
    *        id: message.author.id,

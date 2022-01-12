@@ -289,10 +289,10 @@ class Message extends Base {
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
      * * Crossposted messages (IS_CROSSPOST {@link MessageFlags.FLAGS message flag})
-     * * ChannelFollowAdd
-     * * ChannelPinnedMessage
-     * * Reply
-     * * ThreadStarterMessage
+     * * CHANNEL_FOLLOW_ADD
+     * * CHANNEL_PINNED_MESSAGE
+     * * REPLY
+     * * THREAD_STARTER_MESSAGE
      * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
      * @property {Snowflake} channelId The channel's id the message was referenced
@@ -620,9 +620,9 @@ class Message extends Base {
       (this.author.id === this.client.user.id ? Permissions.defaultBit : Permissions.FLAGS.MANAGE_MESSAGES);
     const { channel } = this;
     return Boolean(
-      channel?.type === 'GuildNews' &&
+      channel?.type === 'GUILD_NEWS' &&
         !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
-        this.type === 'Default' &&
+        this.type === 'DEFAULT' &&
         channel.viewable &&
         channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
@@ -662,7 +662,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === 'GuildNews') {
+   * if (message.channel.type === 'GUILD_NEWS') {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
@@ -812,7 +812,7 @@ class Message extends Base {
    */
   startThread(options = {}) {
     if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
-    if (!['GuildText', 'GuildNews'].includes(this.channel.type)) {
+    if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
     if (this.hasThread) return Promise.reject(new Error('MESSAGE_EXISTING_THREAD'));
