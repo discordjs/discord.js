@@ -169,6 +169,23 @@ class Invite extends Base {
       this.targetType ??= null;
     }
 
+    /**
+     * The type of the invite
+     * * 0: GUILD
+     * * 1: GROUP_DM
+     * @type {number} InviteType
+     */
+
+    if ('type' in data) {
+      /**
+       * The type of channel the invite belongs too
+       * @type {?InviteType}
+       */
+      this.type = data.type;
+    } else {
+      this.type ??= null;
+    }
+
     if ('channel_id' in data) {
       /**
        * The channel's id this invite is for
