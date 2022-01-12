@@ -200,6 +200,7 @@ export class RequestManager extends EventEmitter {
 				sweptHashes = new Collection<string, HashData>();
 			}
 
+			const listeningToDebug = this.listenerCount(RESTEvents.Debug) > 0;
 			const curDate = Date.now();
 
 			// Begin sweep hash based on lifetimes
@@ -212,12 +213,12 @@ export class RequestManager extends EventEmitter {
 
 				// Add hash to collection of swept hashes
 				if (shouldSweep && isListeningToSweeps) {
-					if (this.listenerCount(RESTEvents.Debug)) {
-						this.emit(RESTEvents.Debug, `Hash ${v.value} for ${k} swept due to lifetime being exceeded`);
-					}
-
 					// Add to swept hashes
 					sweptHashes!.set(k, v);
+				}
+
+				if (listeningToDebug) {
+					this.emit(RESTEvents.Debug, `Hash ${v.value} for ${k} swept due to lifetime being exceeded`);
 				}
 
 				return shouldSweep;
