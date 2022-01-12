@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v9';
 import {
 	defaultValidator,
@@ -18,8 +17,10 @@ export class SelectMenuOption {
 	public readonly default?: boolean;
 
 	public constructor(data?: APISelectMenuOption) {
+		/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 		this.label = data?.label as string;
 		this.value = data?.value as string;
+		/* eslint-enable @typescript-eslint/non-nullable-type-assertion-style */
 		this.description = data?.description;
 		this.emoji = data?.emoji;
 		this.default = data?.default;

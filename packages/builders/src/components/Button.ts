@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 import { APIButtonComponent, APIMessageComponentEmoji, ButtonStyle, ComponentType } from 'discord-api-types/v9';
 import {
 	buttonLabelValidator,
@@ -21,6 +20,7 @@ export class ButtonComponent implements Component {
 	public readonly url!: string;
 
 	public constructor(data?: APIButtonComponent) {
+		/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 		this.style = data?.style as ButtonStyle;
 		this.label = data?.label;
 		this.emoji = data?.emoji;
@@ -32,6 +32,8 @@ export class ButtonComponent implements Component {
 		} else {
 			this.custom_id = data?.custom_id as string;
 		}
+
+		/* eslint-enable @typescript-eslint/non-nullable-type-assertion-style */
 	}
 
 	/**

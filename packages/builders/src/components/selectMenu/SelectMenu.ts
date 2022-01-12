@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 import { APISelectMenuComponent, ComponentType } from 'discord-api-types/v9';
 import {
 	customIdValidator,
@@ -27,7 +26,9 @@ export class SelectMenuComponent implements Component {
 		this.placeholder = data?.placeholder;
 		this.min_values = data?.min_values;
 		this.max_values = data?.max_values;
+		/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 		this.custom_id = data?.custom_id as string;
+		/* eslint-enable @typescript-eslint/non-nullable-type-assertion-style */
 		this.disabled = data?.disabled;
 	}
 
