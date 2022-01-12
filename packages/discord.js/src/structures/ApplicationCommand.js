@@ -295,7 +295,7 @@ class ApplicationCommand extends Base {
       optionType !== existing.type ||
       option.description !== existing.description ||
       option.autocomplete !== existing.autocomplete ||
-      (option.required ?? (['SUB_COMMAND', 'SUB_COMMAND_GROUP'].includes(optionType) ? undefined : false)) !==
+      (option.required ?? (['Subcommand', 'SubcommandGroup'].includes(optionType) ? undefined : false)) !==
         existing.required ||
       option.choices?.length !== existing.choices?.length ||
       option.options?.length !== existing.options?.length ||
@@ -379,7 +379,7 @@ class ApplicationCommand extends Base {
       name: option.name,
       description: option.description,
       required:
-        option.required ?? (stringType === 'SUB_COMMAND' || stringType === 'SUB_COMMAND_GROUP' ? undefined : false),
+        option.required ?? (stringType === 'Subcommand' || stringType === 'SubcommandGroup' ? undefined : false),
       autocomplete: option.autocomplete,
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),

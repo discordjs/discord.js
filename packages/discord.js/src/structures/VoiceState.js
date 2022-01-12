@@ -217,7 +217,7 @@ class VoiceState extends Base {
    * @returns {Promise<void>}
    */
   async setRequestToSpeak(request = true) {
-    if (this.channel?.type !== 'GUILD_STAGE_VOICE') throw new Error('VOICE_NOT_STAGE_CHANNEL');
+    if (this.channel?.type !== 'GuildStageVoice') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
     if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
 
@@ -249,7 +249,7 @@ class VoiceState extends Base {
   async setSuppressed(suppressed = true) {
     if (typeof suppressed !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
 
-    if (this.channel?.type !== 'GUILD_STAGE_VOICE') throw new Error('VOICE_NOT_STAGE_CHANNEL');
+    if (this.channel?.type !== 'GuildStageVoice') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
 

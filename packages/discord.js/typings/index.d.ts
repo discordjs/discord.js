@@ -2773,7 +2773,6 @@ export const Constants: {
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   IntegrationExpireBehaviors: IntegrationExpireBehaviors[];
   InviteScopes: InviteScope[];
-  MessageTypes: MessageType[];
   SystemMessageTypes: SystemMessageType[];
 };
 
@@ -3315,9 +3314,9 @@ export type AllowedImageSize = 16 | 32 | 56 | 64 | 96 | 128 | 256 | 300 | 512 | 
 
 export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
 
-export type AllowedThreadTypeForNewsChannel = 'GUILD_NEWS_THREAD' | 10;
+export type AllowedThreadTypeForNewsChannel = 'GuildNewsThread' | 10;
 
-export type AllowedThreadTypeForTextChannel = 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD' | 11 | 12;
+export type AllowedThreadTypeForTextChannel = 'GuildPublicThread' | 'GuildPrivateThread' | 11 | 12;
 
 export interface APIRequest {
   method: 'get' | 'post' | 'delete' | 'patch' | 'put';
@@ -3391,7 +3390,7 @@ export interface ApplicationCommandChannelOptionData extends BaseApplicationComm
 }
 
 export interface ApplicationCommandChannelOption extends BaseApplicationCommandOptionsData {
-  type: 'CHANNEL';
+  type: 'Channel';
   channelTypes?: (keyof typeof ChannelType)[];
 }
 
@@ -4206,7 +4205,7 @@ interface GuildAuditLogsTypes {
   ChannelDelete: ['Channel', 'Delete'];
   ChannelOverwriteCreate: ['Channel', 'Create'];
   ChannelOverwriteUpdate: ['Channel', 'Update'];
-  ChannelOverwriteDelete: ['CHANNEL', 'Delete'];
+  ChannelOverwriteDelete: ['Channel', 'Delete'];
   MemberKick: ['User', 'Delete'];
   MemberPrune: ['User', 'Delete'];
   MemberBanAdd: ['User', 'Delete'];
@@ -5248,10 +5247,7 @@ export type SystemChannelFlagsString =
 
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
-export type SystemMessageType = Exclude<
-  MessageType,
-  'DEFAULT' | 'REPLY' | 'CHAT_INPUT_COMMAND' | 'CONTEXT_MENU_COMMAND'
->;
+export type SystemMessageType = Exclude<MessageType, 'Default' | 'Reply' | 'ChatInputCommand' | 'ContextMenuCommand'>;
 
 export type StageChannelResolvable = StageChannel | Snowflake;
 
@@ -5337,7 +5333,7 @@ export type ThreadChannelTypeKey = 'GuildNewsThread' | 'GuildPublicThread' | 'Gu
 export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptions {
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
-  invitable?: AllowedThreadType extends 'GUILD_PRIVATE_THREAD' | 12 ? boolean : never;
+  invitable?: AllowedThreadType extends 'GuildPrivateThread' | 12 ? boolean : never;
   rateLimitPerUser?: number;
 }
 

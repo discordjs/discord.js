@@ -238,7 +238,7 @@ class Guild extends AnonymousGuild {
     if ('premium_tier' in data) {
       /**
        * The premium tier of this guild
-       * @type {PremiumTier}
+       * @type {GuildPremiumTier}
        */
       this.premiumTier = GuildPremiumTier[data.premium_tier];
     }
@@ -1306,8 +1306,8 @@ class Guild extends AnonymousGuild {
     return Util.discordSort(
       this.channels.cache.filter(
         c =>
-          (['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(channel.type)
-            ? ['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(c.type)
+          (['GuildText', 'GuildNews', 'GuildStore'].includes(channel.type)
+            ? ['GuildText', 'GuildNews', 'GuildStore'].includes(c.type)
             : c.type === channel.type) &&
           (category || c.parent === channel.parent),
       ),

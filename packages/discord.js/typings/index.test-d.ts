@@ -575,7 +575,7 @@ client.on('messageCreate', async message => {
   // Verify that interaction collector options can't be used.
 
   // @ts-expect-error
-  const interactionOptions = message.createMessageComponentCollector({ interactionType: 'APPLICATION_COMMAND' });
+  const interactionOptions = message.createMessageComponentCollector({ interactionType: 'ApplicationCommand' });
 
   // Make sure filter parameters are properly inferred.
   message.createMessageComponentCollector({

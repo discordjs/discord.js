@@ -1,6 +1,7 @@
 'use strict';
 
 const process = require('node:process');
+const { MessageType } = require('discord-api-types/v9');
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError, TypeError } = require('../errors');
 
@@ -74,7 +75,7 @@ exports.Endpoints = {
         makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
       TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
-        `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
+        `${root}/stickers/${stickerId}.${stickerFormat === 'Lottie' ? 'json' : 'png'}`,
       RoleIcon: (roleId, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
     };
@@ -377,61 +378,6 @@ exports.InviteScopes = [
 exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
 
 /**
- * The type of a message, e.g. `DEFAULT`. Here are the available types:
- * * DEFAULT
- * * RECIPIENT_ADD
- * * RECIPIENT_REMOVE
- * * CALL
- * * CHANNEL_NAME_CHANGE
- * * CHANNEL_ICON_CHANGE
- * * CHANNEL_PINNED_MESSAGE
- * * GUILD_MEMBER_JOIN
- * * USER_PREMIUM_GUILD_SUBSCRIPTION
- * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
- * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
- * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
- * * CHANNEL_FOLLOW_ADD
- * * GUILD_DISCOVERY_DISQUALIFIED
- * * GUILD_DISCOVERY_REQUALIFIED
- * * GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING
- * * GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING
- * * THREAD_CREATED
- * * REPLY
- * * CHAT_INPUT_COMMAND
- * * THREAD_STARTER_MESSAGE
- * * GUILD_INVITE_REMINDER
- * * CONTEXT_MENU_COMMAND
- * @typedef {string} MessageType
- * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-types}
- */
-exports.MessageTypes = [
-  'DEFAULT',
-  'RECIPIENT_ADD',
-  'RECIPIENT_REMOVE',
-  'CALL',
-  'CHANNEL_NAME_CHANGE',
-  'CHANNEL_ICON_CHANGE',
-  'CHANNEL_PINNED_MESSAGE',
-  'GUILD_MEMBER_JOIN',
-  'USER_PREMIUM_GUILD_SUBSCRIPTION',
-  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1',
-  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
-  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
-  'CHANNEL_FOLLOW_ADD',
-  null,
-  'GUILD_DISCOVERY_DISQUALIFIED',
-  'GUILD_DISCOVERY_REQUALIFIED',
-  'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING',
-  'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING',
-  'THREAD_CREATED',
-  'REPLY',
-  'CHAT_INPUT_COMMAND',
-  'THREAD_STARTER_MESSAGE',
-  'GUILD_INVITE_REMINDER',
-  'CONTEXT_MENU_COMMAND',
-];
-
-/**
  * The name of an item to be swept in Sweepers
  * * `applicationCommands` - both global and guild commands
  * * `bans`
@@ -468,14 +414,14 @@ exports.SweeperKeys = [
 
 /**
  * The types of messages that are `System`. The available types are `MessageTypes` excluding:
- * * DEFAULT
- * * REPLY
- * * CHAT_INPUT_COMMAND
- * * CONTEXT_MENU_COMMAND
+ * * Default
+ * * Reply
+ * * ChatInputCommand
+ * * ContextMenuCommand
  * @typedef {string} SystemMessageType
  */
-exports.SystemMessageTypes = exports.MessageTypes.filter(
-  type => type && !['DEFAULT', 'REPLY', 'CHAT_INPUT_COMMAND', 'CONTEXT_MENU_COMMAND'].includes(type),
+exports.SystemMessageTypes = MessageType.filter(
+  type => type && !['Default', 'Reply', 'ChatInputCommand', 'ContextMenuCommand'].includes(type),
 );
 
 /**
@@ -490,38 +436,38 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(
 /**
  * The types of channels that are text-based. The available types are:
  * * DM
- * * GUILD_TEXT
- * * GUILD_NEWS
- * * GUILD_NEWS_THREAD
- * * GUILD_PUBLIC_THREAD
- * * GUILD_PRIVATE_THREAD
+ * * GuildText
+ * * GuildNews
+ * * GuildNewsThread
+ * * GuildPublicThread
+ * * GuildPrivateThread
  * @typedef {string} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
   'DM',
-  'GUILD_TEXT',
-  'GUILD_NEWS',
-  'GUILD_NEWS_THREAD',
-  'GUILD_PUBLIC_THREAD',
-  'GUILD_PRIVATE_THREAD',
+  'GuildText',
+  'GuildNews',
+  'GuildNewsThread',
+  'GuildPublicThread',
+  'GuildPrivateThread',
 ];
 
 /**
  * The types of channels that are threads. The available types are:
- * * GUILD_NEWS_THREAD
- * * GUILD_PUBLIC_THREAD
- * * GUILD_PRIVATE_THREAD
+ * * GuildNewsThread
+ * * GuildPublicThread
+ * * GuildPrivateThread
  * @typedef {string} ThreadChannelTypes
  */
-exports.ThreadChannelTypes = ['GUILD_NEWS_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'];
+exports.ThreadChannelTypes = ['GuildNewsThread', 'GuildPublicThread', 'GuildPrivateThread'];
 
 /**
  * The types of channels that are voice-based. The available types are:
- * * GUILD_VOICE
- * * GUILD_STAGE_VOICE
+ * * GuildVoice
+ * * GuildStageVoice
  * @typedef {string} VoiceBasedChannelTypes
  */
-exports.VoiceBasedChannelTypes = ['GUILD_VOICE', 'GUILD_STAGE_VOICE'];
+exports.VoiceBasedChannelTypes = ['GuildVoice', 'GuildStageVoice'];
 
 exports.Colors = {
   DEFAULT: 0x000000,

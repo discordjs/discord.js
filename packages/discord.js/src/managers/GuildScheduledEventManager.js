@@ -44,15 +44,15 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {string} name The name of the guild scheduled event
    * @property {DateResolvable} scheduledStartTime The time to schedule the event at
    * @property {DateResolvable} [scheduledEndTime] The time to end the event at
-   * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
+   * <warn>This is required if `entityType` is 'External'</warn>
    * @property {PrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
    * @property {GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
-   * <warn>This is required if `entityType` is 'STAGE_INSTANCE' or `VOICE`</warn>
+   * <warn>This is required if `entityType` is 'StageInstance' or `VOICE`</warn>
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
-   * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
+   * <warn>This is required if `entityType` is 'External'</warn>
    * @property {string} [reason] The reason for creating the guild scheduled event
    */
 
@@ -60,7 +60,7 @@ class GuildScheduledEventManager extends CachedManager {
    * Options used to set entity metadata of a guild scheduled event.
    * @typedef {Object} GuildScheduledEventEntityMetadataOptions
    * @property {string} [location] The location of the guild scheduled event
-   * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
+   * <warn>This is required if `entityType` is 'External'</warn>
    */
 
   /**
@@ -175,7 +175,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventStatus|number} [status] The status of the guild scheduled event
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
-   * <warn>This can be modified only if `entityType` of the `GuildScheduledEvent` to be edited is 'EXTERNAL'</warn>
+   * <warn>This can be modified only if `entityType` of the `GuildScheduledEvent` to be edited is 'External</warn>
    * @property {string} [reason] The reason for editing the guild scheduled event
    */
 

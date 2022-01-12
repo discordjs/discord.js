@@ -1,5 +1,6 @@
 'use strict';
 
+const { InviteTargetType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
@@ -151,20 +152,12 @@ class Invite extends Base {
       this.targetApplication ??= null;
     }
 
-    /**
-     * The type of the invite target:
-     * * 1: STREAM
-     * * 2: EMBEDDED_APPLICATION
-     * @typedef {number} TargetType
-     * @see {@link https://discord.com/developers/docs/resources/invite#invite-object-invite-target-types}
-     */
-
     if ('target_type' in data) {
       /**
        * The target type
-       * @type {?TargetType}
+       * @type {?InviteTargetType}
        */
-      this.targetType = data.target_type;
+      this.targetType = InviteTargetType[data.target_type];
     } else {
       this.targetType ??= null;
     }
