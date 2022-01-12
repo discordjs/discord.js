@@ -232,7 +232,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isRespondable() {
-	return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(InteractionType[this.type])
+    return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(InteractionType[this.type]);
   }
 }
 
