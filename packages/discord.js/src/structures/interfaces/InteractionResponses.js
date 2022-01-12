@@ -1,7 +1,7 @@
 'use strict';
 
+const { InteractionResponseType } = require('discord-api-types/v9');
 const { Error } = require('../../errors');
-const { InteractionResponseTypes } = require('../../util/Constants');
 const MessageFlags = require('../../util/MessageFlags');
 const MessagePayload = require('../MessagePayload');
 
@@ -56,7 +56,7 @@ class InteractionResponses {
     this.ephemeral = options.ephemeral ?? false;
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
-        type: InteractionResponseTypes.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+        type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
           flags: options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
         },
@@ -98,7 +98,7 @@ class InteractionResponses {
 
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
-        type: InteractionResponseTypes.CHANNEL_MESSAGE_WITH_SOURCE,
+        type: InteractionResponseType.ChannelMessageWithSource,
         data,
       },
       files,
@@ -180,7 +180,7 @@ class InteractionResponses {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
-        type: InteractionResponseTypes.DEFERRED_MESSAGE_UPDATE,
+        type: InteractionResponseType.DeferredMessageUpdate,
       },
       auth: false,
     });
@@ -213,7 +213,7 @@ class InteractionResponses {
 
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
-        type: InteractionResponseTypes.UPDATE_MESSAGE,
+        type: InteractionResponseType.UpdateMessage,
         data,
       },
       files,

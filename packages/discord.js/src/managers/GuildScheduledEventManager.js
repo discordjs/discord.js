@@ -1,10 +1,14 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const {
+  GuildScheduledEventPrivacyLevel,
+  GuildScheduledEventEntityType,
+  GuildScheduledEventStatus,
+} = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
-const { PrivacyLevels, GuildScheduledEventEntityTypes, GuildScheduledEventStatuses } = require('../util/Constants');
 
 /**
  * Manages API methods for GuildScheduledEvents and stores their cache.
@@ -78,11 +82,11 @@ class GuildScheduledEventManager extends CachedManager {
       reason,
     } = options;
 
-    if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
-    if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
+    if (typeof privacyLevel === 'string') privacyLevel = GuildScheduledEventPrivacyLevel[privacyLevel];
+    if (typeof entityType === 'string') entityType = GuildScheduledEventEntityType[entityType];
 
     let entity_metadata, channel_id;
-    if (entityType === GuildScheduledEventEntityTypes.EXTERNAL) {
+    if (entityType === GuildScheduledEventEntityType.External) {
       channel_id = typeof channel === 'undefined' ? channel : null;
       entity_metadata = { location: entityMetadata?.location };
     } else {
@@ -199,9 +203,9 @@ class GuildScheduledEventManager extends CachedManager {
       reason,
     } = options;
 
-    if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
-    if (typeof entityType === 'string') entityType = GuildScheduledEventEntityTypes[entityType];
-    if (typeof status === 'string') status = GuildScheduledEventStatuses[status];
+    if (typeof privacyLevel === 'string') privacyLevel = GuildScheduledEventPrivacyLevel[privacyLevel];
+    if (typeof entityType === 'string') entityType = GuildScheduledEventEntityType[entityType];
+    if (typeof status === 'string') status = GuildScheduledEventStatus[status];
 
     let entity_metadata;
     if (entityMetadata) {

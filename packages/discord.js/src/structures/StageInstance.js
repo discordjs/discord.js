@@ -1,8 +1,8 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { StageInstancePrivacyLevel } = require('discord-api-types/v9');
 const Base = require('./Base');
-const { PrivacyLevels } = require('../util/Constants');
 
 /**
  * Represents a stage instance.
@@ -49,9 +49,9 @@ class StageInstance extends Base {
     if ('privacy_level' in data) {
       /**
        * The privacy level of the stage instance
-       * @type {PrivacyLevel}
+       * @type {StageInstancePrivacyLevel}
        */
-      this.privacyLevel = PrivacyLevels[data.privacy_level];
+      this.privacyLevel = StageInstancePrivacyLevel[data.privacy_level];
     }
 
     if ('discoverable_disabled' in data) {

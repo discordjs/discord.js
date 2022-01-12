@@ -1,6 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { ChannelType } = require('discord-api-types/v9');
 const Base = require('./Base');
 let CategoryChannel;
 let DMChannel;
@@ -10,7 +11,7 @@ let StoreChannel;
 let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
-const { ChannelTypes, ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
+const { ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
@@ -21,7 +22,7 @@ class Channel extends Base {
   constructor(client, data, immediatePatch = true) {
     super(client);
 
-    const type = ChannelTypes[data?.type];
+    const type = ChannelType[data?.type];
     /**
      * The type of the channel
      * @type {ChannelType}
@@ -137,9 +138,9 @@ class Channel extends Base {
 
     let channel;
     if (!data.guild_id && !guild) {
-      if ((data.recipients && data.type !== ChannelTypes.GROUP_DM) || data.type === ChannelTypes.DM) {
+      if ((data.recipients && data.type !== ChannelType.GroupDM) || data.type === ChannelType.DM) {
         channel = new DMChannel(client, data);
-      } else if (data.type === ChannelTypes.GROUP_DM) {
+      } else if (data.type === ChannelType.GroupDM) {
         const PartialGroupDMChannel = require('./PartialGroupDMChannel');
         channel = new PartialGroupDMChannel(client, data);
       }
@@ -148,33 +149,33 @@ class Channel extends Base {
 
       if (guild || allowUnknownGuild) {
         switch (data.type) {
-          case ChannelTypes.GUILD_TEXT: {
+          case ChannelType.GuildText: {
             channel = new TextChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_VOICE: {
+          case ChannelType.GuildVoice: {
             channel = new VoiceChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_CATEGORY: {
+          case ChannelType.GuildCategory: {
             channel = new CategoryChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_NEWS: {
+          case ChannelType.GuildNews: {
             channel = new NewsChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_STORE: {
+          case ChannelType.GuildStore: {
             channel = new StoreChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_STAGE_VOICE: {
+          case ChannelType.GuildStageVoice: {
             channel = new StageChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_NEWS_THREAD:
-          case ChannelTypes.GUILD_PUBLIC_THREAD:
-          case ChannelTypes.GUILD_PRIVATE_THREAD: {
+          case ChannelType.GuildNewsThread:
+          case ChannelType.GuildPublicThread:
+          case ChannelType.GuildPrivateThread: {
             channel = new ThreadChannel(guild, data, client, fromInteraction);
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;

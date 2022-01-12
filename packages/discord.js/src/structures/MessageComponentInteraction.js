@@ -1,9 +1,9 @@
 'use strict';
 
+const { ComponentType } = require('discord-api-types/v9');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
-const { MessageComponentTypes } = require('../util/Constants');
 
 /**
  * Represents a message component interaction.
@@ -84,11 +84,11 @@ class MessageComponentInteraction extends Interaction {
   /**
    * Resolves the type of a MessageComponent
    * @param {MessageComponentTypeResolvable} type The type to resolve
-   * @returns {MessageComponentType}
+   * @returns {ComponentType}
    * @private
    */
   static resolveType(type) {
-    return typeof type === 'string' ? type : MessageComponentTypes[type];
+    return typeof type === 'string' ? type : ComponentType[type];
   }
 
   // These are here only for documentation purposes - they are implemented by InteractionResponses

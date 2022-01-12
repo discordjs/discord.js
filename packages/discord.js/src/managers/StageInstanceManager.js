@@ -1,9 +1,9 @@
 'use strict';
 
+const { GuildScheduledEventPrivacyLevel } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const { StageInstance } = require('../structures/StageInstance');
-const { PrivacyLevels } = require('../util/Constants');
 
 /**
  * Manages API methods for {@link StageInstance} objects and holds their cache.
@@ -60,7 +60,7 @@ class StageInstanceManager extends CachedManager {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     let { topic, privacyLevel } = options;
 
-    privacyLevel &&= typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
+    privacyLevel &&= typeof privacyLevel === 'number' ? privacyLevel : GuildScheduledEventPrivacyLevel[privacyLevel];
 
     const data = await this.client.api['stage-instances'].post({
       data: {
@@ -122,7 +122,7 @@ class StageInstanceManager extends CachedManager {
 
     let { topic, privacyLevel } = options;
 
-    privacyLevel &&= typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
+    privacyLevel &&= typeof privacyLevel === 'number' ? privacyLevel : GuildScheduledEventPrivacyLevel[privacyLevel];
 
     const data = await this.client.api('stage-instances', channelId).patch({
       data: {

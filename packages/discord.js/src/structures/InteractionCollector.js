@@ -1,9 +1,9 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { InteractionType, ComponentType } = require('discord-api-types/v9');
 const Collector = require('./interfaces/Collector');
 const { Events } = require('../util/Constants');
-const { InteractionTypes, MessageComponentTypes } = require('../util/Constants');
 
 /**
  * @typedef {CollectorOptions} InteractionCollectorOptions
@@ -66,7 +66,7 @@ class InteractionCollector extends Collector {
      */
     this.interactionType =
       typeof options.interactionType === 'number'
-        ? InteractionTypes[options.interactionType]
+        ? InteractionType[options.interactionType]
         : options.interactionType ?? null;
 
     /**
@@ -74,9 +74,7 @@ class InteractionCollector extends Collector {
      * @type {?MessageComponentType}
      */
     this.componentType =
-      typeof options.componentType === 'number'
-        ? MessageComponentTypes[options.componentType]
-        : options.componentType ?? null;
+      typeof options.componentType === 'number' ? ComponentType[options.componentType] : options.componentType ?? null;
 
     /**
      * The users that have interacted with this collector

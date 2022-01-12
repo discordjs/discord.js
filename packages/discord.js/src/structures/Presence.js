@@ -1,9 +1,9 @@
 'use strict';
 
+const { ActivityType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Emoji } = require('./Emoji');
 const ActivityFlags = require('../util/ActivityFlags');
-const { ActivityTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
@@ -168,7 +168,7 @@ class Activity {
      * The activity status's type
      * @type {ActivityType}
      */
-    this.type = typeof data.type === 'number' ? ActivityTypes[data.type] : data.type;
+    this.type = typeof data.type === 'number' ? ActivityType[data.type] : data.type;
 
     /**
      * If the activity is being streamed, a link to the stream

@@ -2,11 +2,11 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
+const { OverwriteType } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const { Role } = require('../structures/Role');
-const { OverwriteTypes } = require('../util/Constants');
 
 let cacheWarningEmitted = false;
 
@@ -94,7 +94,7 @@ class PermissionOverwriteManager extends CachedManager {
     if (typeof type !== 'number') {
       userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
       if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
-      type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
+      type = userOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
     }
 
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options, existing);

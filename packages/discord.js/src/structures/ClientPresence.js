@@ -1,8 +1,9 @@
 'use strict';
 
+const { ActivityType } = require('discord-api-types/v9');
 const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
-const { ActivityTypes, Opcodes } = require('../util/Constants');
+const { Opcodes } = require('../util/Constants');
 
 /**
  * Represents the client's presence.
@@ -52,7 +53,7 @@ class ClientPresence extends Presence {
         activity.type ??= 0;
 
         data.activities.push({
-          type: typeof activity.type === 'number' ? activity.type : ActivityTypes[activity.type],
+          type: typeof activity.type === 'number' ? activity.type : ActivityType[activity.type],
           name: activity.name,
           url: activity.url,
         });
@@ -61,7 +62,7 @@ class ClientPresence extends Presence {
       data.activities.push(
         ...this.activities.map(a => ({
           name: a.name,
-          type: ActivityTypes[a.type],
+          type: ActivityType[a.type],
           url: a.url ?? undefined,
         })),
       );
