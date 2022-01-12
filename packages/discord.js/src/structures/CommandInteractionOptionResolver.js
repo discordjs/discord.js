@@ -38,12 +38,12 @@ class CommandInteractionOptionResolver {
     this._hoistedOptions = options;
 
     // Hoist subcommand group if present
-    if (this._hoistedOptions[0]?.type === 'SUB_COMMAND_GROUP') {
+    if (this._hoistedOptions[0]?.type === 'SubcommandGroup') {
       this._group = this._hoistedOptions[0].name;
       this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
     // Hoist subcommand if present
-    if (this._hoistedOptions[0]?.type === 'SUB_COMMAND') {
+    if (this._hoistedOptions[0]?.type === 'Subcommand') {
       this._subcommand = this._hoistedOptions[0].name;
       this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
