@@ -1,7 +1,7 @@
 'use strict';
 
+const { ComponentType } = require('discord-api-types/v9');
 const BaseMessageComponent = require('./BaseMessageComponent');
-const { MessageComponentTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
@@ -41,7 +41,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @param {MessageSelectMenu|MessageSelectMenuOptions} [data={}] MessageSelectMenu to clone or raw data
    */
   constructor(data = {}) {
-    super({ type: 'SELECT_MENU' });
+    super({ type: 'SelectMenu' });
 
     this.setup(data);
   }
@@ -179,7 +179,7 @@ class MessageSelectMenu extends BaseMessageComponent {
       min_values: this.minValues,
       max_values: this.maxValues ?? (this.minValues ? this.options.length : undefined),
       options: this.options,
-      type: typeof this.type === 'string' ? MessageComponentTypes[this.type] : this.type,
+      type: typeof this.type === 'string' ? ComponentType[this.type] : this.type,
     };
   }
 
