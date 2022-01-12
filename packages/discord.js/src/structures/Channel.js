@@ -3,7 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType } = require('discord-api-types/v9');
 const Base = require('./Base');
-const { ThreadChannelType } = require('../util/Constants');
+const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;
 let DMChannel;
 let NewsChannel;
@@ -163,7 +163,7 @@ class Channel extends Base {
    * @returns {boolean}
    */
   isThread() {
-    return ThreadChannelType.includes(this.type);
+    return ThreadChannelTypes.includes(this.type);
   }
 
   /**
