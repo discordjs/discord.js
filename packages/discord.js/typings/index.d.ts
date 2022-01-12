@@ -188,7 +188,7 @@ export abstract class AnonymousGuild extends BaseGuild {
   protected constructor(client: Client, data: RawAnonymousGuildData, immediatePatch?: boolean);
   public banner: string | null;
   public description: string | null;
-  public nsfwLevel: GuildNSFWLevel;
+  public nsfwLevel: GuildNSFWLevelKey;
   public splash: string | null;
   public vanityURLCode: string | null;
   public verificationLevel: GuildVerificationLevelKey;
@@ -500,10 +500,7 @@ export class CategoryChannel extends GuildChannel {
     name: string,
     options: CategoryCreateChannelOptions & { type: 'GuildStore' | ChannelType.GuildStore },
   ): Promise<StoreChannel>;
-  public createChannel(
-    name: string,
-    options?: CategoryCreateChannelOptions,
-  ): Promise<Exclude<NonThreadGuildBasedChannel, CategoryChannel>>;
+  public createChannel(name: string, options?: CategoryCreateChannelOptions): Promise<TextChannel>;
 }
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
@@ -1339,7 +1336,7 @@ export class InteractionCollector<T extends Interaction> extends Collector<Snowf
   private _handleGuildDeletion(guild: Guild): void;
 
   public channelId: Snowflake | null;
-  public componentType: MessageComponentTypeKey | null;
+  public componentType: ComponentTypeKey | null;
   public readonly endReason: string | null;
   public guildId: Snowflake | null;
   public interactionType: InteractionType | null;
@@ -1498,7 +1495,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public system: boolean;
   public readonly thread: ThreadChannel | null;
   public tts: boolean;
-  public type: MessageType;
+  public type: MessageTypeKey;
   public readonly url: string;
   public webhookId: Snowflake | null;
   public flags: Readonly<MessageFlags>;
@@ -1600,7 +1597,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
 
-  public static resolveType(type: MessageComponentTypeResolvable): MessageComponentTypeKey;
+  public static resolveType(type: MessageComponentTypeResolvable): ComponentTypeKey;
 }
 
 export class MessageContextMenuCommandInteraction<
@@ -2799,7 +2796,7 @@ export class ApplicationCommandPermissionsManager<
   private static transformPermissions(
     permissions: ApplicationCommandPermissionData,
     received: true,
-  ): Omit<APIApplicationCommandPermission, 'type'> & { type: keyof ApplicationCommandPermissionType };
+  ): Omit<APIApplicationCommandPermission, 'type'> & { type: keyof typeof ApplicationCommandPermissionType };
   private static transformPermissions(permissions: ApplicationCommandPermissionData): APIApplicationCommandPermission;
 }
 
@@ -3465,7 +3462,7 @@ export interface ThreadMemberFetchOptions extends BaseFetchOptions {
 }
 
 export interface BaseMessageComponentOptions {
-  type?: MessageComponentTypeKey | ComponentType;
+  type?: ComponentTypeKey | ComponentType;
 }
 
 export type BitFieldResolvable<T extends string, N extends number | bigint> =
@@ -4523,7 +4520,7 @@ export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 export interface InteractionCollectorOptions<T extends Interaction, Cached extends CacheType = CacheType>
   extends CollectorOptions<[T]> {
   channel?: TextBasedChannel;
-  componentType?: ComponentType | MessageComponentTypeKey;
+  componentType?: ComponentType | ComponentTypeKey;
   guild?: Guild;
   interactionType?: InteractionTypeKey | InteractionType;
   max?: number;
@@ -4690,9 +4687,9 @@ export type MessageComponentOptions =
   | MessageButtonOptions
   | MessageSelectMenuOptions;
 
-export type MessageComponentTypeKey = keyof typeof ComponentType;
+export type ComponentTypeKey = keyof typeof ComponentType;
 
-export type MessageComponentTypeResolvable = MessageComponentTypeKey | ComponentType;
+export type MessageComponentTypeResolvable = ComponentTypeKey | ComponentType;
 
 export interface MessageEditOptions {
   attachments?: MessageAttachment[];
