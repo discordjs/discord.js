@@ -6,7 +6,7 @@ const { Events } = require('../../util/Constants');
 class MessageReactionRemoveEmoji extends Action {
   handle(data) {
     const channel = this.getChannel(data);
-    if (!channel || !channel.isText()) return false;
+    if (!channel || !channel.isTextBased()) return false;
 
     const message = this.getMessage(data, channel);
     if (!message) return false;

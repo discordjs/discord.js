@@ -3,6 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType } = require('discord-api-types/v9');
 const Base = require('./Base');
+const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;
 let DMChannel;
 let NewsChannel;
@@ -11,7 +12,6 @@ let StoreChannel;
 let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
-const { ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
@@ -103,19 +103,59 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   * Indicates whether this channel is a {@link TextChannel}.
    * @returns {boolean}
    */
   isText() {
-    return 'messages' in this;
+    return this.type === ChannelType[ChannelType.GuildText];
   }
 
   /**
-   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
+   * Indicates whether this channel is a {@link DMChannel}.
+   * @returns {boolean}
+   */
+  isDM() {
+    return this.type === ChannelType[ChannelType.DM];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link VoiceChannel}.
    * @returns {boolean}
    */
   isVoice() {
-    return VoiceBasedChannelTypes.includes(this.type);
+    return this.type === ChannelType[ChannelType.GuildVoice];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link PartialGroupDMChannel}.
+   * @returns {boolean}
+   */
+  isGroupDM() {
+    return this.type === ChannelType[ChannelType.GroupDM];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link CategoryChannel}.
+   * @returns {boolean}
+   */
+  isCategory() {
+    return this.type === ChannelType[ChannelType.GuildCategory];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link NewsChannel}.
+   * @returns {boolean}
+   */
+  isNews() {
+    return this.type === ChannelType[ChannelType.GuildNews];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link StoreChannel}.
+   * @returns {boolean}
+   */
+  isStore() {
+    return this.type === ChannelType[ChannelType.GuildStore];
   }
 
   /**
@@ -124,6 +164,30 @@ class Channel extends Base {
    */
   isThread() {
     return ThreadChannelTypes.includes(this.type);
+  }
+
+  /**
+   * Indicates whether this channel is a {@link StageChannel}.
+   * @returns {boolean}
+   */
+  isStage() {
+    return this.type === ChannelType[ChannelType.GuildStageVoice];
+  }
+
+  /**
+   * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   * @returns {boolean}
+   */
+  isTextBased() {
+    return 'messages' in this;
+  }
+
+  /**
+   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
+   * @returns {boolean}
+   */
+  isVoiceBased() {
+    return 'bitrate' in this;
   }
 
   static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {

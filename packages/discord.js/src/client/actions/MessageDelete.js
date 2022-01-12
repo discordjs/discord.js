@@ -9,7 +9,7 @@ class MessageDeleteAction extends Action {
     const channel = this.getChannel(data);
     let message;
     if (channel) {
-      if (!channel.isText()) return {};
+      if (!channel.isTextBased()) return {};
 
       message = this.getMessage(data, channel);
       if (message) {

@@ -520,9 +520,17 @@ export abstract class Channel extends Base {
   public type: keyof typeof ChannelType;
   public delete(): Promise<this>;
   public fetch(force?: boolean): Promise<this>;
-  public isText(): this is TextBasedChannel;
-  public isVoice(): this is BaseGuildVoiceChannel;
+  public isText(): this is TextChannel;
+  public isDM(): this is DMChannel;
+  public isVoice(): this is VoiceChannel;
+  public isGroupDM(): this is PartialGroupDMChannel;
+  public isCategory(): this is CategoryChannel;
+  public isNews(): this is NewsChannel;
+  public isStore(): this is StoreChannel;
   public isThread(): this is ThreadChannel;
+  public isStage(): this is StageChannel;
+  public isTextBased(): this is TextBasedChannel;
+  public isVoiceBased(): this is VoiceBasedChannel;
   public toString(): ChannelMention;
 }
 
@@ -1051,7 +1059,7 @@ export abstract class GuildChannel extends Channel {
   public setName(name: string, reason?: string): Promise<this>;
   public setParent(channel: CategoryChannelResolvable | null, options?: SetParentOptions): Promise<this>;
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
-  public isText(): this is TextChannel | NewsChannel;
+  public isTextBased(): this is GuildBasedChannel & TextBasedChannel;
 }
 
 export class GuildEmoji extends BaseGuildEmoji {

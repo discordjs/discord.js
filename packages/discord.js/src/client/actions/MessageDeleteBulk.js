@@ -10,7 +10,7 @@ class MessageDeleteBulkAction extends Action {
     const channel = client.channels.cache.get(data.channel_id);
 
     if (channel) {
-      if (!channel.isText()) return {};
+      if (!channel.isTextBased()) return {};
 
       const ids = data.ids;
       const messages = new Collection();

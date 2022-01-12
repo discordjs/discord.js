@@ -136,7 +136,7 @@ class Sweepers {
     let messages = 0;
 
     for (const channel of this.client.channels.cache.values()) {
-      if (!channel.isText()) continue;
+      if (!channel.isTextBased()) continue;
 
       channels++;
       messages += channel.messages.cache.sweep(filter);
@@ -168,7 +168,7 @@ class Sweepers {
     let reactions = 0;
 
     for (const channel of this.client.channels.cache.values()) {
-      if (!channel.isText()) continue;
+      if (!channel.isTextBased()) continue;
       channels++;
 
       for (const message of channel.messages.cache.values()) {
