@@ -56,6 +56,7 @@ import {
   InteractionResponseType,
   InteractionType,
   InviteTargetType,
+  InviteType,
   MessageType,
   RESTPostAPIApplicationCommandsJSONBody,
   Snowflake,
@@ -1383,6 +1384,7 @@ export class Invite extends Base {
   public targetApplication: IntegrationApplication | null;
   public targetUser: User | null;
   public targetType: InviteTargetType | null;
+  public type: InviteTypeKey | null;
   public temporary: boolean | null;
   public readonly url: string;
   public uses: number | null;
@@ -4669,6 +4671,8 @@ export interface InviteGenerationOptions {
   scopes: InviteScope[];
 }
 
+export type InviteTypeKey = keyof typeof InviteType;
+
 export type GuildInvitableChannelResolvable =
   | TextChannel
   | VoiceChannel
@@ -5569,6 +5573,7 @@ export {
   InteractionType,
   InteractionResponseType,
   InviteTargetType,
+  InviteType,
   MessageType,
   RESTJSONErrorCodes,
   StageInstancePrivacyLevel,

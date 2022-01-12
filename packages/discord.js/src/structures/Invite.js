@@ -1,5 +1,6 @@
 'use strict';
 
+const { InviteType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
@@ -169,19 +170,12 @@ class Invite extends Base {
       this.targetType ??= null;
     }
 
-    /**
-     * The type of the invite
-     * * 0: GUILD
-     * * 1: GROUP_DM
-     * @type {number} InviteType
-     */
-
     if ('type' in data) {
       /**
-       * The type of channel the invite belongs too
+       * The type of channel this invite belongs too
        * @type {?InviteType}
        */
-      this.type = data.type;
+      this.type = InviteType[data.type];
     } else {
       this.type ??= null;
     }
