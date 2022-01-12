@@ -11,5 +11,5 @@ export interface Component {
 	/**
 	 * Converts this component to an API-compatible JSON object
 	 */
-	toJSON(): APIMessageComponent;
+	toJSON: () => APIMessageComponent;
 }

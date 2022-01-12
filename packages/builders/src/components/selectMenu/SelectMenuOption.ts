@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v9';
 import {
 	defaultValidator,

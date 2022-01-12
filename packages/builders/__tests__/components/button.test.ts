@@ -102,9 +102,9 @@ describe('Button Components', () => {
 
 			expect(() => buttonComponent().setStyle(24)).toThrowError();
 			expect(() => buttonComponent().setLabel(longStr)).toThrowError();
-			// @ts-ignore
+			// @ts-expect-error
 			expect(() => buttonComponent().setDisabled(0)).toThrowError();
-			// @ts-ignore
+			// @ts-expect-error
 			expect(() => buttonComponent().setEmoji('foo')).toThrowError();
 
 			expect(() => buttonComponent().setURL('foobar')).toThrowError();
