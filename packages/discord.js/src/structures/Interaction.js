@@ -226,6 +226,15 @@ class Interaction extends Base {
       ComponentType[this.componentType] === ComponentType.SelectMenu
     );
   }
+
+  /**
+   * Indicates whether this interaction can be replied to or not.
+   * @returns {boolean}
+   */
+  isRespondable() {
+    const thisType = InteractionType[this.type];
+    return thisType !== InteractionType.Ping || thisType !== InteractionType.ApplicationCommandAutocomplete;
+  }
 }
 
 module.exports = Interaction;
