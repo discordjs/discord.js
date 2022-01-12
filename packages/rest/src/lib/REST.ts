@@ -77,13 +77,13 @@ export interface RESTOptions {
 	 */
 	version: string;
 	/**
-	 * The amount of time in milliseconds that passes between each hash sweep
-	 * @default 3_600_000
+	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 4h)
+	 * @default 14_400_000
 	 */
 	hashSweepInterval: number;
 	/**
-	 * The maximum amount of time a hash can exist in milliseconds without being hit with a request
-	 * @default 21_600_000
+	 * The maximum amount of time a hash can exist in milliseconds without being hit with a request (defaults to 24h)
+	 * @default 86_400_000
 	 */
 	hashLifetime: number;
 }

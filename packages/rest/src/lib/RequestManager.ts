@@ -192,40 +192,40 @@ export class RequestManager extends EventEmitter {
 		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = this.options.globalRequestsPerSecond;
 
-		setInterval(() => {
-			// Only allocate a swept collection if there are listeners
-			const sweptHashes: Collection<string, HashData> | null =
-				this.listenerCount(RESTEvents.HashSweep) > 0 ? new Collection<string, HashData>() : null;
+		if (options.hashSweepInterval !== 0 && options.hashSweepInterval !== Infinity) {
+			setInterval(() => {
+				// Only allocate a swept collection if there are listeners
+				const sweptHashes: Collection<string, HashData> | null =
+					this.listenerCount(RESTEvents.HashSweep) > 1 ? new Collection<string, HashData>() : null;
 
-			const listeningToDebug = this.listenerCount(RESTEvents.Debug) > 0;
-			const curDate = Date.now();
+				const curDate = Date.now();
 
-			// Begin sweep hash based on lifetimes
-			this.hashes.sweep((v, k) => {
-				// `-1` indicates a global hash
-				if (v.lastAccess === -1) return false;
+				// Begin sweep hash based on lifetimes
+				this.hashes.sweep((v, k) => {
+					// `-1` indicates a global hash
+					if (v.lastAccess === -1) return false;
 
-				// Check if lifetime has been exceeded
-				const shouldSweep = Math.floor(curDate - v.lastAccess) > this.options.hashLifetime;
+					// Check if lifetime has been exceeded
+					const shouldSweep = Math.floor(curDate - v.lastAccess) > this.options.hashLifetime;
 
-				// Add hash to collection of swept hashes
-				if (shouldSweep && sweptHashes) {
-					// Add to swept hashes
-					sweptHashes.set(k, v);
-				}
+					// Add hash to collection of swept hashes
+					if (shouldSweep && sweptHashes) {
+						// Add to swept hashes
+						sweptHashes.set(k, v);
+					}
 
-				if (listeningToDebug) {
+					// Emit debug information
 					this.emit(RESTEvents.Debug, `Hash ${v.value} for ${k} swept due to lifetime being exceeded`);
+
+					return shouldSweep;
+				});
+
+				// Fire event
+				if (sweptHashes) {
+					this.emit(RESTEvents.HashSweep, sweptHashes);
 				}
-
-				return shouldSweep;
-			});
-
-			// Fire event
-			if (sweptHashes) {
-				this.emit(RESTEvents.HashSweep, sweptHashes);
-			}
-		}, this.options.hashSweepInterval).unref();
+			}, this.options.hashSweepInterval).unref();
+		}
 	}
 
 	/**
