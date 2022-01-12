@@ -1,13 +1,12 @@
 'use strict';
 
-/* eslint-disable import/order */
-const MessageCollector = require('../MessageCollector');
-const MessagePayload = require('../MessagePayload');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { TypeError, Error } = require('../../errors');
 const { InteractionType } = require('discord-api-types/v9');
+const { TypeError, Error } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
+const MessageCollector = require('../MessageCollector');
+const MessagePayload = require('../MessagePayload');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -357,4 +356,5 @@ class TextBasedChannel {
 module.exports = TextBasedChannel;
 
 // Fixes Circular
+// eslint-disable-next-line import/order
 const MessageManager = require('../../managers/MessageManager');
