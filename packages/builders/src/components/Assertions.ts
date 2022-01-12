@@ -17,7 +17,7 @@ export const disabledValidator = z.boolean();
 
 export const buttonLabelValidator = z.string().nonempty().max(80);
 
-export const buttonStyleValidator = z.number().min(ButtonStyle.Primary).max(ButtonStyle.Link);
+export const buttonStyleValidator = z.number().int().min(ButtonStyle.Primary).max(ButtonStyle.Link);
 
 export const placeholderValidator = z.string().max(100);
 export const minMaxValidator = z.number().max(25).min(0);
