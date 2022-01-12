@@ -1338,7 +1338,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
   public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
-  public isRespondable(): this is InteractionResponses<Cached>;
+  public isReplyable(): this is InteractionResponses<Cached>;
 }
 
 export class InteractionCollector<T extends Interaction> extends Collector<Snowflake, T> {

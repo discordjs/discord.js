@@ -231,7 +231,7 @@ class Interaction extends Base {
    * Indicates whether this interaction can be replied to or not.
    * @returns {boolean}
    */
-  isRespondable() {
+  isReplyable() {
     return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(InteractionType[this.type]);
   }
 }
