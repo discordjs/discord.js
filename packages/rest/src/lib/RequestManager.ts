@@ -194,7 +194,8 @@ export class RequestManager extends EventEmitter {
 
 		setInterval(() => {
 			// Only allocate a swept collection if there are listeners
-			const sweptHashes: Collection<string, HashData> | null = this.listenerCount(RESTEvents.HashSweep) > 0 ? new Collection<string, HashData>() : null;
+			const sweptHashes: Collection<string, HashData> | null =
+				this.listenerCount(RESTEvents.HashSweep) > 0 ? new Collection<string, HashData>() : null;
 
 			const listeningToDebug = this.listenerCount(RESTEvents.Debug) > 0;
 			const curDate = Date.now();
@@ -208,9 +209,9 @@ export class RequestManager extends EventEmitter {
 				const shouldSweep = Math.floor(curDate - v.lastAccess) > this.options.hashLifetime;
 
 				// Add hash to collection of swept hashes
-				if (shouldSweep && isListeningToSweeps) {
+				if (shouldSweep && sweptHashes) {
 					// Add to swept hashes
-					sweptHashes!.set(k, v);
+					sweptHashes.set(k, v);
 				}
 
 				if (listeningToDebug) {
@@ -221,8 +222,8 @@ export class RequestManager extends EventEmitter {
 			});
 
 			// Fire event
-			if (isListeningToSweeps) {
-				this.emit(RESTEvents.HashSweep, sweptHashes ?? new Collection<string, HashData>());
+			if (sweptHashes) {
+				this.emit(RESTEvents.HashSweep, sweptHashes);
 			}
 		}, this.options.hashSweepInterval).unref();
 	}
