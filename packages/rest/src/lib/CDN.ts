@@ -14,7 +14,7 @@ export interface BaseImageURLOptions {
 }
 
 export interface ImageURLOptions extends BaseImageURLOptions {
-	dynamic?: boolean;
+	forceStatic?: boolean;
 }
 
 export interface MakeURLOptions {
@@ -189,9 +189,9 @@ export class CDN {
 	private dynamicMakeURL(
 		route: string,
 		hash: string,
-		{ dynamic = false, ...options }: Readonly<ImageURLOptions> = {},
+		{ forceStatic = false, ...options }: Readonly<ImageURLOptions> = {},
 	): string {
-		return this.makeURL(route, dynamic && hash.startsWith('a_') ? { ...options, extension: 'gif' } : options);
+		return this.makeURL(route, !forceStatic && hash.startsWith('a_') ? { ...options, extension: 'gif' } : options);
 	}
 
 	/**
