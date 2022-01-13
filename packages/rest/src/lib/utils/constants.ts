@@ -19,8 +19,9 @@ export const DefaultRestOptions: Required<RESTOptions> = {
 	timeout: 15_000,
 	userAgentAppendix: `Node.js ${process.version}`,
 	version: APIVersion,
-	hashSweepInterval: 14_400_000,
+	hashSweepInterval: 14_400_000, // 4 Hours
 	hashLifetime: 86_400_000, // 24 Hours
+	handlerSweepInterval: 3_600_000, // 1 Hour
 };
 
 /**
@@ -33,6 +34,7 @@ export const enum RESTEvents {
 	Request = 'request',
 	Response = 'response',
 	HashSweep = 'hashSweep',
+	HandlerSweep = 'handlerSweep',
 }
 
 export const ALLOWED_EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg', 'gif'] as const;

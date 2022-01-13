@@ -195,12 +195,11 @@ export class RequestManager extends EventEmitter {
 		if (options.hashSweepInterval !== 0 && options.hashSweepInterval !== Infinity) {
 			setInterval(() => {
 				// Only allocate a swept collection if there are listeners
-				const sweptHashes: Collection<string, HashData> | null =
-					this.listenerCount(RESTEvents.HashSweep) > 1 ? new Collection<string, HashData>() : null;
+				const sweptHashes: Collection<string, HashData> = new Collection<string, HashData>();
 
 				const curDate = Date.now();
 
-				// Begin sweep hash based on lifetimes
+				// Begin sweeping hash based on lifetimes
 				this.hashes.sweep((v, k) => {
 					// `-1` indicates a global hash
 					if (v.lastAccess === -1) return false;
@@ -209,7 +208,7 @@ export class RequestManager extends EventEmitter {
 					const shouldSweep = Math.floor(curDate - v.lastAccess) > this.options.hashLifetime;
 
 					// Add hash to collection of swept hashes
-					if (shouldSweep && sweptHashes) {
+					if (shouldSweep) {
 						// Add to swept hashes
 						sweptHashes.set(k, v);
 					}
@@ -221,10 +220,30 @@ export class RequestManager extends EventEmitter {
 				});
 
 				// Fire event
-				if (sweptHashes) {
-					this.emit(RESTEvents.HashSweep, sweptHashes);
-				}
+				this.emit(RESTEvents.HashSweep, sweptHashes);
 			}, this.options.hashSweepInterval).unref();
+		}
+
+		if (options.handlerSweepInterval !== 0 && options.handlerSweepInterval !== Infinity) {
+			setInterval(() => {
+				const sweptHandlers: Collection<string, IHandler> = new Collection<string, IHandler>();
+
+				// Begin sweeping handlers based on activity
+				this.handlers.sweep((v, k) => {
+					const { inactive } = v;
+
+					// Collect inactive handlers
+					if (inactive) {
+						sweptHandlers.set(k, v);
+					}
+
+					this.emit(RESTEvents.Debug, `Handler ${v.id} for ${k} swept due to being inactive`);
+					return inactive;
+				});
+
+				// Fire event
+				this.emit(RESTEvents.HandlerSweep, sweptHandlers);
+			}, this.options.handlerSweepInterval).unref();
 		}
 	}
 

@@ -6,6 +6,7 @@ import type { AgentOptions } from 'node:https';
 import type { RequestInit, Response } from 'node-fetch';
 import type { HashData } from '../index';
 import type Collection from '@discordjs/collection';
+import type { IHandler } from './handlers/IHandler';
 
 /**
  * Options to be passed when creating the REST instance
@@ -86,6 +87,11 @@ export interface RESTOptions {
 	 * @default 86_400_000
 	 */
 	hashLifetime: number;
+	/**
+	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 1h)
+	 * @default 3_600_000
+	 */
+	handlerSweepInterval: number;
 }
 
 /**
@@ -181,6 +187,7 @@ export interface RestEvents {
 	newListener: [name: string, listener: (...args: any) => void];
 	removeListener: [name: string, listener: (...args: any) => void];
 	hashSweep: [sweptHashes: Collection<string, HashData>];
+	handlerSweep: [sweptHandlers: Collection<string, IHandler>];
 }
 
 export interface REST {
