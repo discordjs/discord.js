@@ -192,7 +192,19 @@ export class RequestManager extends EventEmitter {
 		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = this.options.globalRequestsPerSecond;
 
-		if (options.hashSweepInterval !== 0 && options.hashSweepInterval !== Infinity) {
+		// Start sweepers
+		this.setupSweepers();
+	}
+
+	private setupSweepers() {
+		const validateMaxInterval = (interval: number) => {
+			if (interval > 14_400_000) {
+				throw new Error('Cannot set an interval greate than 4 hours');
+			}
+		};
+
+		if (this.options.hashSweepInterval !== 0 && this.options.hashSweepInterval !== Infinity) {
+			validateMaxInterval(this.options.hashSweepInterval);
 			setInterval(() => {
 				// Only allocate a swept collection if there are listeners
 				const sweptHashes: Collection<string, HashData> = new Collection<string, HashData>();
@@ -224,7 +236,8 @@ export class RequestManager extends EventEmitter {
 			}, this.options.hashSweepInterval).unref();
 		}
 
-		if (options.handlerSweepInterval !== 0 && options.handlerSweepInterval !== Infinity) {
+		if (this.options.handlerSweepInterval !== 0 && this.options.handlerSweepInterval !== Infinity) {
+			validateMaxInterval(this.options.handlerSweepInterval);
 			setInterval(() => {
 				const sweptHandlers: Collection<string, IHandler> = new Collection<string, IHandler>();
 
