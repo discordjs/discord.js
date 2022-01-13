@@ -155,7 +155,7 @@ export interface InvalidRequestWarningData {
 	 */
 	count: number;
 	/**
-	 * Time in ms remaining before the count resets
+	 * Time in milliseconds remaining before the count resets
 	 */
 	remainingTime: number;
 }
