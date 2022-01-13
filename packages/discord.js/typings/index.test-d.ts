@@ -91,7 +91,6 @@ import {
   ActionRow,
   ButtonComponent,
   SelectMenuComponent,
-  MessageComponent,
   ActionRowComponent,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
