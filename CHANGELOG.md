@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# [13.6.0](https://github.com/discordjs/discord.js/compare/13.5.1...13.6.0) - (2022-01-13)
+
+## Documentation
+
+- **interaction:** Add locale list link (#7261) ([1f4e633](https://github.com/discordjs/discord.js/commit/1f4e633ce3bd0a2398e49d3a9f6eb5ddd5e09ab9))
+
+## Features
+
+- Add Locales to Interactions (#7131) ([233084a](https://github.com/discordjs/discord.js/commit/233084a6018e77b7f9d94446683eef38790ed277))
+
 # [13.5.1](https://github.com/discordjs/discord.js/compare/13.5.0...13.5.1) - (2022-01-07)
 
 ## Bug Fixes
