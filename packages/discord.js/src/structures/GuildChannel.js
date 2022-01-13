@@ -299,18 +299,7 @@ class GuildChannel extends Channel {
     data.parent &&= this.client.channels.resolveId(data.parent);
 
     if (typeof data.position !== 'undefined') {
-      const updatedChannels = await Util.setPosition(
-        this,
-        data.position,
-        false,
-        this.guild._sortedChannels(this),
-        this.client.api.guilds(this.guild.id).channels,
-        reason,
-      );
-      this.client.actions.GuildChannelsPositionUpdate.handle({
-        guild_id: this.guild.id,
-        channels: updatedChannels,
-      });
+      await this.setPosition(data.position, { reason });
     }
 
     let permission_overwrites;
