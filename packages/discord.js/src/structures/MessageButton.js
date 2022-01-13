@@ -1,8 +1,8 @@
 'use strict';
 
+const { ButtonStyle, ComponentType } = require('discord-api-types/v9');
 const BaseMessageComponent = require('./BaseMessageComponent');
 const { RangeError } = require('../errors');
-const { MessageButtonStyles, MessageComponentTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
@@ -138,8 +138,8 @@ class MessageButton extends BaseMessageComponent {
       disabled: this.disabled,
       emoji: this.emoji,
       label: this.label,
-      style: MessageButtonStyles[this.style],
-      type: MessageComponentTypes[this.type],
+      style: ButtonStyle[this.style],
+      type: ComponentType[this.type],
       url: this.url,
     };
   }
@@ -158,7 +158,7 @@ class MessageButton extends BaseMessageComponent {
    * @private
    */
   static resolveStyle(style) {
-    return typeof style === 'string' ? style : MessageButtonStyles[style];
+    return typeof style === 'string' ? style : ButtonStyle[style];
   }
 }
 

@@ -1,7 +1,8 @@
 'use strict';
 
+const { ComponentType } = require('discord-api-types/v9');
 const { TypeError } = require('../errors');
-const { MessageComponentTypes, Events } = require('../util/Constants');
+const { Events } = require('../util/Constants');
 
 /**
  * Represents an interactive component of a Message. It should not be necessary to construct this directly.
@@ -61,20 +62,20 @@ class BaseMessageComponent {
     let component;
     let type = data.type;
 
-    if (typeof type === 'string') type = MessageComponentTypes[type];
+    if (typeof type === 'string') type = ComponentType[type];
 
     switch (type) {
-      case MessageComponentTypes.ACTION_ROW: {
+      case ComponentType.ActionRow: {
         const MessageActionRow = require('./MessageActionRow');
         component = data instanceof MessageActionRow ? data : new MessageActionRow(data, client);
         break;
       }
-      case MessageComponentTypes.BUTTON: {
+      case ComponentType.Button: {
         const MessageButton = require('./MessageButton');
         component = data instanceof MessageButton ? data : new MessageButton(data);
         break;
       }
-      case MessageComponentTypes.SELECT_MENU: {
+      case ComponentType.SelectMenu: {
         const MessageSelectMenu = require('./MessageSelectMenu');
         component = data instanceof MessageSelectMenu ? data : new MessageSelectMenu(data);
         break;
@@ -96,7 +97,7 @@ class BaseMessageComponent {
    * @private
    */
   static resolveType(type) {
-    return typeof type === 'string' ? type : MessageComponentTypes[type];
+    return typeof type === 'string' ? type : ComponentType[type];
   }
 }
 

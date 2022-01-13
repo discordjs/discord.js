@@ -1,7 +1,7 @@
 'use strict';
 
+const { ComponentType } = require('discord-api-types/v9');
 const BaseMessageComponent = require('./BaseMessageComponent');
-const { MessageComponentTypes } = require('../util/Constants');
 
 /**
  * Represents an action row containing message components.
@@ -88,7 +88,7 @@ class MessageActionRow extends BaseMessageComponent {
   toJSON() {
     return {
       components: this.components.map(c => c.toJSON()),
-      type: MessageComponentTypes[this.type],
+      type: ComponentType[this.type],
     };
   }
 }
