@@ -170,6 +170,7 @@
     "prefer-rest-params": "error",
     "prefer-spread": "error",
     "prefer-template": "error",
+    "prefer-object-has-own": "error",
     "rest-spread-spacing": "error",
     "template-curly-spacing": "error",
     "yield-star-spacing": "error",
