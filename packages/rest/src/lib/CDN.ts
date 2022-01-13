@@ -201,8 +201,13 @@ export class CDN {
 	 */
 	private makeURL(
 		route: string,
-		{ allowedExtensions = ALLOWED_EXTENSIONS, extension = 'png', size }: Readonly<MakeURLOptions> = {},
+		{ allowedExtensions = ALLOWED_EXTENSIONS, extension = 'webp', size }: Readonly<MakeURLOptions> = {},
 	): string {
+		// Stickers cannot have a `.webp` extension
+		if (route.startsWith('/stickers/')) {
+			extension = 'png';
+		}
+
 		extension = String(extension).toLowerCase();
 
 		if (!allowedExtensions.includes(extension)) {
