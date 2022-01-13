@@ -1,6 +1,6 @@
 'use strict';
 
-const { ApplicationCommandType } = require('discord-api-types/v9');
+const { ApplicationCommandType, ApplicationCommandOptionType } = require('discord-api-types/v9');
 const CommandInteraction = require('./CommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 
@@ -45,7 +45,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
 
     if (resolved.users?.[target_id]) {
       result.push(
-        this.transformOption({ name: 'user', type: ApplicationCommandType.User, value: target_id }, resolved),
+        this.transformOption({ name: 'user', type: ApplicationCommandOptionType.User, value: target_id }, resolved),
       );
     }
 

@@ -3323,9 +3323,13 @@ export type AllowedImageSize = 16 | 32 | 56 | 64 | 96 | 128 | 256 | 300 | 512 | 
 
 export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
 
-export type AllowedThreadTypeForNewsChannel = 'GUILD_NEWS_THREAD' | 10;
+export type AllowedThreadTypeForNewsChannel = 'GUILD_NEWS_THREAD' | ChannelType.GuildNewsThread;
 
-export type AllowedThreadTypeForTextChannel = 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD' | 11 | 12;
+export type AllowedThreadTypeForTextChannel =
+  | 'GUILD_PUBLIC_THREAD'
+  | 'GUILD_PRIVATE_THREAD'
+  | ChannelType.GuildPublicThread
+  | ChannelType.GuildPrivateThread;
 
 export interface APIRequest {
   method: 'get' | 'post' | 'delete' | 'patch' | 'put';
@@ -4214,7 +4218,7 @@ interface GuildAuditLogsTypes {
   ChannelDelete: ['Channel', 'Delete'];
   ChannelOverwriteCreate: ['Channel', 'Create'];
   ChannelOverwriteUpdate: ['Channel', 'Update'];
-  ChannelOverwriteDelete: ['CHANNEL', 'Delete'];
+  ChannelOverwriteDelete: ['Channel', 'Delete'];
   MemberKick: ['User', 'Delete'];
   MemberPrune: ['User', 'Delete'];
   MemberBanAdd: ['User', 'Delete'];
@@ -5345,7 +5349,7 @@ export type ThreadChannelTypeKey = 'GuildNewsThread' | 'GuildPublicThread' | 'Gu
 export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptions {
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
-  invitable?: AllowedThreadType extends 'GUILD_PRIVATE_THREAD' | 12 ? boolean : never;
+  invitable?: AllowedThreadType extends 'GUILD_PRIVATE_THREAD' | ChannelType.GuildPrivateThread ? boolean : never;
   rateLimitPerUser?: number;
 }
 

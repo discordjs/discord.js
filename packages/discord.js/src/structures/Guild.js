@@ -238,7 +238,7 @@ class Guild extends AnonymousGuild {
     if ('premium_tier' in data) {
       /**
        * The premium tier of this guild
-       * @type {PremiumTier}
+       * @type {GuildPremiumTier}
        */
       this.premiumTier = GuildPremiumTier[data.premium_tier];
     }
