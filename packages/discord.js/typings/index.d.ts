@@ -5480,4 +5480,10 @@ export {
   StickerFormatType,
   WebhookType,
 } from 'discord-api-types/v9';
-export { ActionRow, ButtonComponent, SelectMenuComponent, ActionRowComponent } from '@discordjs/builders';
+export {
+  ActionRow,
+  ButtonComponent,
+  SelectMenuComponent,
+  SelectMenuOption,
+  ActionRowComponent,
+} from '@discordjs/builders';
