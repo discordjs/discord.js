@@ -1,7 +1,7 @@
 'use strict';
 
-const { createComponent } = require('@discordjs/builders');
 const { Buffer } = require('node:buffer');
+const { createComponent } = require('@discordjs/builders');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
