@@ -228,7 +228,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction can be replied to or not.
+   * Indicates whether this interaction can be replied to.
    * @returns {boolean}
    */
   isRepliable() {
