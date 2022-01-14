@@ -196,6 +196,14 @@
       {
         "name": "setImmediate",
         "message": "Import setImmediate from `node:timers` instead"
+      },
+      {
+        "name": "clearTimeout",
+        "message": "Import clearTimeout from `node:timers` instead"
+      },
+      {
+        "name": "clearInterval",
+        "message": "Import clearInterval from `node:timers` instead"
       }
     ]
   }

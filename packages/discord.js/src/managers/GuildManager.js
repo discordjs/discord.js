@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { setTimeout } = require('node:timers');
+const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const {
   GuildVerificationLevel,
