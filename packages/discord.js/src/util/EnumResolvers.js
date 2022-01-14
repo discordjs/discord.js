@@ -1,6 +1,6 @@
 'use strict';
 
-const { ApplicationCommandType, InteractionType, ComponentType } = require('discord-api-types/v9');
+const { ApplicationCommandType, InteractionType, ComponentType, ButtonStyle } = require('discord-api-types/v9');
 
 class EnumResolvers extends null {
   static unknownKeyStrategy(val) {
@@ -48,6 +48,23 @@ class EnumResolvers extends null {
         return EnumResolvers.unknownKeyStrategy(key);
     }
   }
+
+  static resolveButtonStyle(key) {
+    switch (key) {
+      case 'PRIMARY':
+        return ButtonStyle.Primary;
+      case 'SECONDARY':
+        return ButtonStyle.Secondary;
+      case 'SUCCESS':
+        return ButtonStyle.Success;
+      case 'DANGER':
+        return ButtonStyle.Danger;
+      case 'LINK':
+        return ButtonStyle.Link;
+      default:
+        return EnumResolvers.unknownKeyStrategy(key);
+    }
+  }
 }
 
 // Precondition logic wrapper
@@ -66,7 +83,7 @@ function preconditioner(func) {
 }
 
 // Injects wrapper into class static methods.
-function bindPreconditioner(obj) {
+function applyPreconditioner(obj) {
   Object.getOwnPropertyNames(obj).forEach(name => {
     console.log(name);
     if (typeof obj[name] !== 'function') {
@@ -77,7 +94,7 @@ function bindPreconditioner(obj) {
   });
 }
 
-// Bind precondition logic
-bindPreconditioner(EnumResolvers);
+// Apply precondition logic
+applyPreconditioner(EnumResolvers);
 
 module.exports = EnumResolvers;
