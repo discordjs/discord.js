@@ -199,7 +199,7 @@ export class RequestManager extends EventEmitter {
 	private setupSweepers() {
 		const validateMaxInterval = (interval: number) => {
 			if (interval > 14_400_000) {
-				throw new Error('Cannot set an interval greate than 4 hours');
+				throw new Error('Cannot set an interval greater than 4 hours');
 			}
 		};
 
