@@ -184,6 +184,9 @@ export class RequestManager extends EventEmitter {
 	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#token: string | null = null;
 
+	private hashTimer!: NodeJS.Timer;
+	private handlerTimer!: NodeJS.Timer;
+
 	public readonly options: RESTOptions;
 
 	public constructor(options: Partial<RESTOptions>) {
@@ -205,11 +208,11 @@ export class RequestManager extends EventEmitter {
 
 		if (this.options.hashSweepInterval !== 0 && this.options.hashSweepInterval !== Infinity) {
 			validateMaxInterval(this.options.hashSweepInterval);
-			setInterval(() => {
-				// Only allocate a swept collection if there are listeners
+			this.hashTimer = setInterval(() => {
+				// Only allocate a swept collection for event.
 				const sweptHashes: Collection<string, HashData> = new Collection<string, HashData>();
 
-				const curDate = Date.now();
+				const currentDate = Date.now();
 
 				// Begin sweeping hash based on lifetimes
 				this.hashes.sweep((v, k) => {
@@ -217,7 +220,7 @@ export class RequestManager extends EventEmitter {
 					if (v.lastAccess === -1) return false;
 
 					// Check if lifetime has been exceeded
-					const shouldSweep = Math.floor(curDate - v.lastAccess) > this.options.hashLifetime;
+					const shouldSweep = Math.floor(currentDate - v.lastAccess) > this.options.hashLifetime;
 
 					// Add hash to collection of swept hashes
 					if (shouldSweep) {
@@ -238,7 +241,7 @@ export class RequestManager extends EventEmitter {
 
 		if (this.options.handlerSweepInterval !== 0 && this.options.handlerSweepInterval !== Infinity) {
 			validateMaxInterval(this.options.handlerSweepInterval);
-			setInterval(() => {
+			this.handlerTimer = setInterval(() => {
 				const sweptHandlers: Collection<string, IHandler> = new Collection<string, IHandler>();
 
 				// Begin sweeping handlers based on activity
@@ -401,6 +404,20 @@ export class RequestManager extends EventEmitter {
 		};
 
 		return { url, fetchOptions };
+	}
+
+	/**
+	 * Stops the hash sweeping interval
+	 */
+	public clearHashSweeper() {
+		return clearInterval(this.hashTimer);
+	}
+
+	/**
+	 * Stops the request handler sweeping interval
+	 */
+	public clearHandlerSweeper() {
+		return clearInterval(this.handlerTimer);
 	}
 
 	/**
