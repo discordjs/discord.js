@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('node:events');
+const { clearInterval } = require('node:timers');
 const { TypeError } = require('../errors');
 const RESTManager = require('../rest/RESTManager');
 const Options = require('../util/Options');

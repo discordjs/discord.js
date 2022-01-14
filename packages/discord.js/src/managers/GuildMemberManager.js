@@ -1,7 +1,7 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { setTimeout } = require('node:timers');
+const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const CachedManager = require('./CachedManager');

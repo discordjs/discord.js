@@ -3,7 +3,7 @@
 const EventEmitter = require('node:events');
 const path = require('node:path');
 const process = require('node:process');
-const { setTimeout } = require('node:timers');
+const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Error } = require('../errors');
 const Util = require('../util/Util');
