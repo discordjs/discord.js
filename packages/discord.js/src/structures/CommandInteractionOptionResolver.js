@@ -133,7 +133,7 @@ class CommandInteractionOptionResolver {
    * @returns {?boolean} The value of the option, or null if not set and not required.
    */
   getBoolean(name, required = false) {
-    const option = this._getTypedOption(name, 'BOOLEAN', ['value'], required);
+    const option = this._getTypedOption(name, 'Boolean', ['value'], required);
     return option?.value ?? null;
   }
 
@@ -145,7 +145,7 @@ class CommandInteractionOptionResolver {
    * The value of the option, or null if not set and not required.
    */
   getChannel(name, required = false) {
-    const option = this._getTypedOption(name, 'CHANNEL', ['channel'], required);
+    const option = this._getTypedOption(name, 'Channel', ['channel'], required);
     return option?.channel ?? null;
   }
 
@@ -156,7 +156,7 @@ class CommandInteractionOptionResolver {
    * @returns {?string} The value of the option, or null if not set and not required.
    */
   getString(name, required = false) {
-    const option = this._getTypedOption(name, 'STRING', ['value'], required);
+    const option = this._getTypedOption(name, 'String', ['value'], required);
     return option?.value ?? null;
   }
 
@@ -167,7 +167,7 @@ class CommandInteractionOptionResolver {
    * @returns {?number} The value of the option, or null if not set and not required.
    */
   getInteger(name, required = false) {
-    const option = this._getTypedOption(name, 'INTEGER', ['value'], required);
+    const option = this._getTypedOption(name, 'Integer', ['value'], required);
     return option?.value ?? null;
   }
 
@@ -178,7 +178,7 @@ class CommandInteractionOptionResolver {
    * @returns {?number} The value of the option, or null if not set and not required.
    */
   getNumber(name, required = false) {
-    const option = this._getTypedOption(name, 'NUMBER', ['value'], required);
+    const option = this._getTypedOption(name, 'Number', ['value'], required);
     return option?.value ?? null;
   }
 
@@ -189,7 +189,7 @@ class CommandInteractionOptionResolver {
    * @returns {?User} The value of the option, or null if not set and not required.
    */
   getUser(name, required = false) {
-    const option = this._getTypedOption(name, 'USER', ['user'], required);
+    const option = this._getTypedOption(name, 'User', ['user'], required);
     return option?.user ?? null;
   }
 
@@ -201,7 +201,7 @@ class CommandInteractionOptionResolver {
    * The value of the option, or null if not set and not required.
    */
   getMember(name, required = false) {
-    const option = this._getTypedOption(name, 'USER', ['member'], required);
+    const option = this._getTypedOption(name, 'User', ['member'], required);
     return option?.member ?? null;
   }
 
@@ -212,7 +212,7 @@ class CommandInteractionOptionResolver {
    * @returns {?(Role|APIRole)} The value of the option, or null if not set and not required.
    */
   getRole(name, required = false) {
-    const option = this._getTypedOption(name, 'ROLE', ['role'], required);
+    const option = this._getTypedOption(name, 'Role', ['role'], required);
     return option?.role ?? null;
   }
 
@@ -224,7 +224,7 @@ class CommandInteractionOptionResolver {
    * The value of the option, or null if not set and not required.
    */
   getMentionable(name, required = false) {
-    const option = this._getTypedOption(name, 'MENTIONABLE', ['user', 'member', 'role'], required);
+    const option = this._getTypedOption(name, 'Mentionable', ['user', 'member', 'role'], required);
     return option?.member ?? option?.user ?? option?.role ?? null;
   }
 
