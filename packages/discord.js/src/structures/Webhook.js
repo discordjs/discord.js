@@ -403,12 +403,11 @@ class Webhook {
 
   /**
    * A link to the webhook's avatar.
-   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  avatarURL({ format, size } = {}) {
-    if (!this.avatar) return null;
-    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
+  avatarURL(options = {}) {
+    return this.avatar && this.client.rest.cdn.Avatar(this.id, this.avatar, options);
   }
 
   /**

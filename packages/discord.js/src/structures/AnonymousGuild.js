@@ -68,20 +68,20 @@ class AnonymousGuild extends BaseGuild {
 
   /**
    * The URL to this guild's banner.
-   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  bannerURL({ format, size } = {}) {
-    return this.banner && this.client.rest.cdn.Banner(this.id, this.banner, format, size);
+  bannerURL(options = {}) {
+    return this.banner && this.client.rest.cdn.Banner(this.id, this.banner, options);
   }
 
   /**
    * The URL to this guild's invite splash image.
-   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  splashURL({ format, size } = {}) {
-    return this.splash && this.client.rest.cdn.Splash(this.id, this.splash, format, size);
+  splashURL(options = {}) {
+    return this.splash && this.client.rest.cdn.Splash(this.id, this.splash, options);
   }
 }
 

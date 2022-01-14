@@ -123,12 +123,11 @@ class GuildMember extends Base {
 
   /**
    * A link to the member's guild avatar.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  avatarURL({ format, size, dynamic } = {}) {
-    if (!this.avatar) return null;
-    return this.client.rest.cdn.GuildMemberAvatar(this.guild.id, this.id, this.avatar, format, size, dynamic);
+  avatarURL(options = {}) {
+    return this.avatar && this.client.rest.cdn.GuildMemberAvatar(this.guild.id, this.id, this.avatar, options);
   }
 
   /**

@@ -188,8 +188,8 @@ export abstract class AnonymousGuild extends BaseGuild {
   public splash: string | null;
   public vanityURLCode: string | null;
   public verificationLevel: GuildVerificationLevelKey;
-  public bannerURL(options?: StaticImageURLOptions): string | null;
-  public splashURL(options?: StaticImageURLOptions): string | null;
+  public bannerURL(options?: ImageURLOptions): string | null;
+  public splashURL(options?: ImageURLOptions): string | null;
 }
 
 export abstract class Application extends Base {
@@ -200,8 +200,8 @@ export abstract class Application extends Base {
   public icon: string | null;
   public id: Snowflake;
   public name: string | null;
-  public coverURL(options?: StaticImageURLOptions): string | null;
-  public iconURL(options?: StaticImageURLOptions): string | null;
+  public coverURL(options?: ImageURLOptions): string | null;
+  public iconURL(options?: ImageURLOptions): string | null;
   public toJSON(): unknown;
   public toString(): string | null;
 }
@@ -923,7 +923,7 @@ export class Guild extends AnonymousGuild {
   public readonly maximumBitrate: number;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
   public delete(): Promise<Guild>;
-  public discoverySplashURL(options?: StaticImageURLOptions): string | null;
+  public discoverySplashURL(options?: ImageURLOptions): string | null;
   public edit(data: GuildEditData, reason?: string): Promise<Guild>;
   public editWelcomeScreen(data: WelcomeScreenEditData): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
@@ -1139,9 +1139,9 @@ export class GuildPreview extends Base {
   public id: Snowflake;
   public name: string;
   public splash: string | null;
-  public discoverySplashURL(options?: StaticImageURLOptions): string | null;
+  public discoverySplashURL(options?: ImageURLOptions): string | null;
   public iconURL(options?: ImageURLOptions): string | null;
-  public splashURL(options?: StaticImageURLOptions): string | null;
+  public splashURL(options?: ImageURLOptions): string | null;
   public fetch(): Promise<GuildPreview>;
   public toJSON(): unknown;
   public toString(): string;
@@ -1817,7 +1817,7 @@ export class PartialGroupDMChannel extends Channel {
   public name: string | null;
   public icon: string | null;
   public recipients: PartialRecipient[];
-  public iconURL(options?: StaticImageURLOptions): string | null;
+  public iconURL(options?: ImageURLOptions): string | null;
 }
 
 export class PermissionOverwrites extends Base {
@@ -1905,8 +1905,8 @@ export class RichPresenceAssets {
   public largeText: string | null;
   public smallImage: Snowflake | null;
   public smallText: string | null;
-  public largeImageURL(options?: StaticImageURLOptions): string | null;
-  public smallImageURL(options?: StaticImageURLOptions): string | null;
+  public largeImageURL(options?: ImageURLOptions): string | null;
+  public smallImageURL(options?: ImageURLOptions): string | null;
 }
 
 export class Role extends Base {
@@ -1933,7 +1933,7 @@ export class Role extends Base {
   public delete(reason?: string): Promise<Role>;
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
-  public iconURL(options?: StaticImageURLOptions): string | null;
+  public iconURL(options?: ImageURLOptions): string | null;
   public permissionsIn(channel: NonThreadGuildBasedChannel | Snowflake, checkAdmin?: boolean): Readonly<Permissions>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
@@ -2150,7 +2150,7 @@ export class StickerPack extends Base {
   public name: string;
   public skuId: Snowflake;
   public stickers: Collection<Snowflake, Sticker>;
-  public bannerURL(options?: StaticImageURLOptions): string | null;
+  public bannerURL(options?: ImageURLOptions): string | null;
 }
 
 /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
@@ -2243,7 +2243,7 @@ export class Team extends Base {
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
 
-  public iconURL(options?: StaticImageURLOptions): string | null;
+  public iconURL(options?: ImageURLOptions): string | null;
   public toJSON(): unknown;
   public toString(): string;
 }
@@ -2503,7 +2503,7 @@ export class VoiceState extends Base {
 export class Webhook extends WebhookMixin() {
   private constructor(client: Client, data?: RawWebhookData);
   public avatar: string;
-  public avatarURL(options?: StaticImageURLOptions): string | null;
+  public avatarURL(options?: ImageURLOptions): string | null;
   public channelId: Snowflake;
   public client: Client;
   public guildId: Snowflake;
@@ -2704,59 +2704,22 @@ export const Constants: {
     invite: (root: string, code: string, eventId?: Snowflake) => string;
     scheduledEvent: (root: string, guildId: Snowflake, eventId: Snowflake) => string;
     CDN: (root: string) => {
-      Emoji: (emojiId: Snowflake, format: DynamicImageFormat) => string;
+      Emoji: (emojiId: Snowflake, format: 'gif' | 'png') => string;
       Asset: (name: string) => string;
       DefaultAvatar: (discriminator: number) => string;
-      Avatar: (
-        userId: Snowflake,
-        hash: string,
-        format: DynamicImageFormat,
-        size: AllowedImageSize,
-        dynamic: boolean,
-      ) => string;
-      Banner: (
-        id: Snowflake,
-        hash: string,
-        format: DynamicImageFormat,
-        size: AllowedImageSize,
-        dynamic: boolean,
-      ) => string;
-      GuildMemberAvatar: (
-        guildId: Snowflake,
-        memberId: Snowflake,
-        hash: string,
-        format?: DynamicImageFormat,
-        size?: AllowedImageSize,
-        dynamic?: boolean,
-      ) => string;
-      Icon: (
-        guildId: Snowflake,
-        hash: string,
-        format: DynamicImageFormat,
-        size: AllowedImageSize,
-        dynamic: boolean,
-      ) => string;
-      AppIcon: (
-        appId: Snowflake,
-        hash: string,
-        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
-      ) => string;
-      AppAsset: (
-        appId: Snowflake,
-        hash: string,
-        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
-      ) => string;
-      StickerPackBanner: (bannerId: Snowflake, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      GDMIcon: (channelId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      Splash: (guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      DiscoverySplash: (guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      TeamIcon: (
-        teamId: Snowflake,
-        hash: string,
-        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
-      ) => string;
-      Sticker: (stickerId: Snowflake, stickerFormat: StickerFormatType) => string;
-      RoleIcon: (roleId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      Avatar: (userId: Snowflake, hash: string, options: ImageURLOptions) => string;
+      Banner: (id: Snowflake, hash: string, options: ImageURLOptions) => string;
+      GuildMemberAvatar: (guildId: Snowflake, memberId: Snowflake, hash: string, options: ImageURLOptions) => string;
+      Icon: (guildId: Snowflake, hash: string, options: ImageURLOptions) => string;
+      AppIcon: (appId: Snowflake, hash: string, options: ImageURLOptions) => string;
+      AppAsset: (appId: Snowflake, hash: string, options: ImageURLOptions) => string;
+      StickerPackBanner: (bannerId: Snowflake, options: ImageURLOptions) => string;
+      GDMIcon: (channelId: Snowflake, hash: string, options: ImageURLOptions) => string;
+      Splash: (guildId: Snowflake, hash: string, options: ImageURLOptions) => string;
+      DiscoverySplash: (guildId: Snowflake, hash: string, options: ImageURLOptions) => string;
+      TeamIcon: (teamId: Snowflake, hash: string, options: ImageURLOptions) => string;
+      Sticker: (stickerId: Snowflake, format: StickerFormatType) => string;
+      RoleIcon: (roleId: Snowflake, hash: string, options: ImageURLOptions) => string;
     };
   };
   WSCodes: {
@@ -4056,8 +4019,6 @@ export type DateResolvable = Date | number | string;
 
 export type GuildDefaultMessageNotificationsKey = keyof typeof GuildDefaultMessageNotifications;
 
-export type DynamicImageFormat = AllowedImageFormat | 'gif';
-
 export interface EditGuildTemplateOptions {
   name?: string;
   description?: string;
@@ -4612,9 +4573,10 @@ export interface HTTPOptions {
   scheduledEvent?: string;
 }
 
-export interface ImageURLOptions extends Omit<StaticImageURLOptions, 'format'> {
-  dynamic?: boolean;
-  format?: DynamicImageFormat;
+export interface ImageURLOptions {
+  format?: AllowedImageFormat;
+  forceStatic?: boolean;
+  size?: AllowedImageSize;
 }
 
 export interface IntegrationAccount {
@@ -5228,11 +5190,6 @@ export interface SplitOptions {
   char?: string | string[] | RegExp | RegExp[];
   prepend?: string;
   append?: string;
-}
-
-export interface StaticImageURLOptions {
-  format?: AllowedImageFormat;
-  size?: AllowedImageSize;
 }
 
 export type StageInstanceResolvable = StageInstance | Snowflake;

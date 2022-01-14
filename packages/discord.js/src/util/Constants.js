@@ -15,68 +15,76 @@ exports.WSCodes = {
   4014: 'DISALLOWED_INTENTS',
 };
 
-const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
+const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg'];
 
 const AllowedImageSizes = [16, 32, 56, 64, 96, 128, 256, 300, 512, 600, 1024, 2048, 4096];
 
-function makeImageUrl(root, { format = 'webp', size } = {}) {
+function makeImageUrl(root, { hash, format = 'webp', forceStatic = false, size } = {}) {
   if (!['undefined', 'number'].includes(typeof size)) throw new TypeError('INVALID_TYPE', 'size', 'number');
-  if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
+  if (!AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
-  return `${root}.${format}${size ? `?size=${size}` : ''}`;
+  if (!forceStatic && hash?.startsWith('a_')) format = 'gif';
+  return `${root}${hash ? `/${hash}` : ''}.${format}${size ? `?size=${size}` : ''}`;
 }
 
 /**
- * Options for Image URLs.
- * @typedef {StaticImageURLOptions} ImageURLOptions
- * @property {boolean} [dynamic=false] If true, the format will dynamically change to `gif` for animated avatars.
+ * A list of image sizes:
+ * * `16`
+ * * `32`
+ * * `56`
+ * * `64`
+ * * `96`
+ * * `128`
+ * * `256`
+ * * `300`
+ * * `512`
+ * * `600`
+ * * `1024`
+ * * `2048`
+ * * `4096`
+ * @typedef {number} ImageSize
  */
 
 /**
- * Options for static Image URLs.
- * @typedef {Object} StaticImageURLOptions
- * @property {string} [format='webp'] One of `webp`, `png`, `jpg`, `jpeg`.
- * @property {number} [size] One of `16`, `32`, `56`, `64`, `96`, `128`, `256`, `300`, `512`, `600`, `1024`, `2048`,
- * `4096`
+ * A list of image formats:
+ * * `webp`
+ * * `png`
+ * * `jpg`
+ * * `jpeg`
+ * @typedef {string} ImageFormat
+ */
+
+/**
+ * Options for image URLs.
+ * @typedef {Object} ImageURLOptions
+ * @property {ImageFormat} [format='webp'] An image format.
+ * @property {boolean} [forceStatic=false] If `true`, the format will be as specified.
+ * If `false`, `format` may be a `gif` if animated.
+ * @property {ImageSize} [size] An image size.
  */
 
 // https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints
 exports.Endpoints = {
   CDN(root) {
     return {
-      Emoji: (emojiId, format = 'webp') => `${root}/emojis/${emojiId}.${format}`,
-      Asset: name => `${root}/assets/${name}`,
+      Emoji: (emojiId, format) => `${root}/emojis/${emojiId}.${format}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
-      Avatar: (userId, hash, format, size, dynamic = false) => {
-        if (dynamic && hash.startsWith('a_')) format = 'gif';
-        return makeImageUrl(`${root}/avatars/${userId}/${hash}`, { format, size });
-      },
-      GuildMemberAvatar: (guildId, memberId, hash, format = 'webp', size, dynamic = false) => {
-        if (dynamic && hash.startsWith('a_')) format = 'gif';
-        return makeImageUrl(`${root}/guilds/${guildId}/users/${memberId}/avatars/${hash}`, { format, size });
-      },
-      Banner: (id, hash, format, size, dynamic = false) => {
-        if (dynamic && hash.startsWith('a_')) format = 'gif';
-        return makeImageUrl(`${root}/banners/${id}/${hash}`, { format, size });
-      },
-      Icon: (guildId, hash, format, size, dynamic = false) => {
-        if (dynamic && hash.startsWith('a_')) format = 'gif';
-        return makeImageUrl(`${root}/icons/${guildId}/${hash}`, { format, size });
-      },
-      AppIcon: (appId, hash, options) => makeImageUrl(`${root}/app-icons/${appId}/${hash}`, options),
-      AppAsset: (appId, hash, options) => makeImageUrl(`${root}/app-assets/${appId}/${hash}`, options),
-      StickerPackBanner: (bannerId, format, size) =>
-        makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerId}`, { size, format }),
-      GDMIcon: (channelId, hash, format, size) =>
-        makeImageUrl(`${root}/channel-icons/${channelId}/${hash}`, { size, format }),
-      Splash: (guildId, hash, format, size) => makeImageUrl(`${root}/splashes/${guildId}/${hash}`, { size, format }),
-      DiscoverySplash: (guildId, hash, format, size) =>
-        makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
-      TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
-      Sticker: (stickerId, stickerFormat) =>
-        `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
-      RoleIcon: (roleId, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
+      Avatar: (userId, hash, options) => makeImageUrl(`${root}/avatars/${userId}`, { hash, ...options }),
+      GuildMemberAvatar: (guildId, memberId, hash, options) =>
+        makeImageUrl(`${root}/guilds/${guildId}/users/${memberId}/avatars`, { hash, ...options }),
+      Banner: (id, hash, options) => makeImageUrl(`${root}/banners/${id}`, { hash, ...options }),
+      Icon: (guildId, hash, options) => makeImageUrl(`${root}/icons/${guildId}`, { hash, ...options }),
+      AppIcon: (appId, hash, options) => makeImageUrl(`${root}/app-icons/${appId}`, { hash, ...options }),
+      AppAsset: (appId, hash, options) => makeImageUrl(`${root}/app-assets/${appId}`, { hash, ...options }),
+      StickerPackBanner: (bannerId, options) =>
+        makeImageUrl(`${root}/app-assets/710982414301790216/store/${bannerId}`, options),
+      GDMIcon: (channelId, hash, options) => makeImageUrl(`${root}/channel-icons/${channelId}`, { hash, ...options }),
+      Splash: (guildId, hash, options) => makeImageUrl(`${root}/splashes/${guildId}`, { hash, ...options }),
+      DiscoverySplash: (guildId, hash, options) =>
+        makeImageUrl(`${root}/discovery-splashes/${guildId}`, { hash, ...options }),
+      TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}`, { hash, ...options }),
+      Sticker: (stickerId, format) => `${root}/stickers/${stickerId}.${format === 'LOTTIE' ? 'json' : 'png'}`,
+      RoleIcon: (roleId, hash, options) => makeImageUrl(`${root}/role-icons/${roleId}`, { hash, ...options }),
     };
   },
   invite: (root, code, eventId) => (eventId ? `${root}/${code}?event=${eventId}` : `${root}/${code}`),

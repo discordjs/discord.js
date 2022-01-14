@@ -480,11 +480,11 @@ class Guild extends AnonymousGuild {
 
   /**
    * The URL to this guild's discovery splash image.
-   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  discoverySplashURL({ format, size } = {}) {
-    return this.discoverySplash && this.client.rest.cdn.DiscoverySplash(this.id, this.discoverySplash, format, size);
+  discoverySplashURL(options = {}) {
+    return this.discoverySplash && this.client.rest.cdn.DiscoverySplash(this.id, this.discoverySplash, options);
   }
 
   /**
