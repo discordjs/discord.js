@@ -210,7 +210,7 @@ export class RequestManager extends EventEmitter {
 			validateMaxInterval(this.options.hashSweepInterval);
 			this.hashTimer = setInterval(() => {
 				// Only allocate a swept collection for event.
-				const sweptHashes: Collection<string, HashData> = new Collection<string, HashData>();
+				const sweptHashes = new Collection<string, HashData>();
 
 				const currentDate = Date.now();
 
@@ -242,7 +242,7 @@ export class RequestManager extends EventEmitter {
 		if (this.options.handlerSweepInterval !== 0 && this.options.handlerSweepInterval !== Infinity) {
 			validateMaxInterval(this.options.handlerSweepInterval);
 			this.handlerTimer = setInterval(() => {
-				const sweptHandlers: Collection<string, IHandler> = new Collection<string, IHandler>();
+				const sweptHandlers = new Collection<string, IHandler>();
 
 				// Begin sweeping handlers based on activity
 				this.handlers.sweep((v, k) => {
