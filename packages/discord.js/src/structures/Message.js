@@ -140,7 +140,7 @@ class Message extends Base {
        * A list of MessageActionRows in the message
        * @type {ActionRow[]}
        */
-      this.components = data.components.map(createComponent);
+      this.components = data.components.map(c => createComponent(c));
     } else {
       this.components = this.components?.slice() ?? [];
     }
