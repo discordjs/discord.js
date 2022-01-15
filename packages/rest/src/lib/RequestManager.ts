@@ -209,9 +209,7 @@ export class RequestManager extends EventEmitter {
 		if (this.options.hashSweepInterval !== 0 && this.options.hashSweepInterval !== Infinity) {
 			validateMaxInterval(this.options.hashSweepInterval);
 			this.hashTimer = setInterval(() => {
-				// Only allocate a swept collection for event.
 				const sweptHashes = new Collection<string, HashData>();
-
 				const currentDate = Date.now();
 
 				// Begin sweeping hash based on lifetimes
@@ -410,14 +408,14 @@ export class RequestManager extends EventEmitter {
 	 * Stops the hash sweeping interval
 	 */
 	public clearHashSweeper() {
-		return clearInterval(this.hashTimer);
+		clearInterval(this.hashTimer);
 	}
 
 	/**
 	 * Stops the request handler sweeping interval
 	 */
 	public clearHandlerSweeper() {
-		return clearInterval(this.handlerTimer);
+		clearInterval(this.handlerTimer);
 	}
 
 	/**
