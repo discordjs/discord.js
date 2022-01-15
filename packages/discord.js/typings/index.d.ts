@@ -2739,8 +2739,15 @@ export const Constants: {
   Colors: ConstantsColors;
   Status: ConstantsStatus;
   Opcodes: ConstantsOpcodes;
-  ThreadChannelTypes: ThreadChannelTypeKey[];
-  TextBasedChannelTypes: TextBasedChannelTypes[];
+  ThreadChannelTypes: ('GUILD_NEWS_THREAD' | 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD')[];
+  TextBasedChannelTypes: (
+    | 'DM'
+    | 'GUILD_TEXT'
+    | 'GUILD_NEWS'
+    | 'GUILD_NEWS_THREAD'
+    | 'GUILD_PUBLIC_THREAD'
+    | 'GUILD_PRIVATE_THREAD'
+  )[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   IntegrationExpireBehaviors: IntegrationExpireBehaviors[];
   InviteScopes: InviteScope[];
