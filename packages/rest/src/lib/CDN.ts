@@ -187,7 +187,6 @@ export class CDN {
 	 * @param extension The extension of the sticker
 	 */
 	public sticker(stickerId: string, extension?: StickerExtension): string {
-		// Stickers cannot have a `.webp` extension
 		return this.makeURL(`/stickers/${stickerId}`, {
 			allowedExtensions: ALLOWED_STICKER_EXTENSIONS,
 			extension: extension ?? 'png', // Stickers cannot have a `.webp` extension, so we default to a `.png`
