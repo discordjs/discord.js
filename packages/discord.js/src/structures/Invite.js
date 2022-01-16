@@ -119,6 +119,7 @@ class Invite extends Base {
     }
 
     if ('inviter' in data) {
+      this.client.users._add(data.inviter);
       this.inviterId = data.inviter.id;
     }
 
