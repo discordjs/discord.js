@@ -1,6 +1,6 @@
 'use strict';
 
-const { Routes, PermissionFlagsBits } = require('discord-api-types/v9');
+const { PermissionFlagsBits } = require('discord-api-types/v9');
 const BaseGuildEmoji = require('./BaseGuildEmoji');
 const { Error } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
@@ -72,18 +72,8 @@ class GuildEmoji extends BaseGuildEmoji {
    * Fetches the author for this emoji
    * @returns {Promise<User>}
    */
-  async fetchAuthor() {
-    if (this.managed) {
-      throw new Error('EMOJI_MANAGED');
-    } else {
-      if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-      if (!this.guild.me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers)) {
-        throw new Error('MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION', this.guild);
-      }
-    }
-    const data = await this.client.rest.get(Routes.guildEmoji(this.guild.id, this.id));
-    this._patch(data);
-    return this.author;
+  fetchAuthor() {
+    return this.guild.emojis.fetchAuthor(this);
   }
 
   /**

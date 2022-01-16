@@ -1,9 +1,9 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v9');
+const { Routes, PermissionFlagsBits } = require('discord-api-types/v9');
 const BaseGuildEmojiManager = require('./BaseGuildEmojiManager');
-const { TypeError } = require('../errors');
+const { Error, TypeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 
 /**
@@ -139,6 +139,29 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       return clone;
     }
     return this._add(newData);
+  }
+
+  /**
+   * Fetches the author for this emoji
+   * @param {EmojiResolvable} emoji The emoji to fetch the author of
+   * @returns {Promise<User>}
+   */
+  async fetchAuthor(emoji) {
+    emoji = this.resolve(emoji);
+    if (!emoji) throw new TypeError('INVALID_TYPE', 'emoji', 'EmojiResolvable', true);
+    if (emoji.managed) {
+      throw new Error('EMOJI_MANAGED');
+    }
+
+    const { me } = this.guild;
+    if (!me) throw new Error('GUILD_UNCACHED_ME');
+    if (!me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers)) {
+      throw new Error('MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION', this.guild);
+    }
+
+    const data = await this.client.rest.get(Routes.guildEmoji(this.guild.id, emoji.id));
+    emoji._patch(data);
+    return emoji.author;
   }
 }
 

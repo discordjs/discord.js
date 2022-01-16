@@ -2784,12 +2784,24 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
     name: string,
     options: GuildChannelCreateOptions & { type: ChannelType.GuildStore },
   ): Promise<StoreChannel>;
-
   public create(name: string, options?: GuildChannelCreateOptions): Promise<TextChannel>;
+  public createWebhook(
+    channel: GuildChannelResolvable,
+    name: string,
+    options?: ChannelWebhookCreateOptions,
+  ): Promise<Webhook>;
+  public edit(channel: GuildChannelResolvable, data: ChannelData, reason?: string): Promise<GuildChannel>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<NonThreadGuildBasedChannel | null>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, NonThreadGuildBasedChannel>>;
+  public fetchWebhooks(channel: GuildChannelResolvable): Promise<Collection<Snowflake, Webhook>>;
+  public setPosition(
+    channel: GuildChannelResolvable,
+    position: number,
+    options?: SetChannelPositionOptions,
+  ): Promise<GuildChannel>;
   public setPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
   public fetchActiveThreads(cache?: boolean): Promise<FetchedThreads>;
+  public delete(channel: GuildChannelResolvable, reason?: string): Promise<void>;
 }
 
 export class GuildEmojiManager extends BaseGuildEmojiManager {
@@ -2802,6 +2814,7 @@ export class GuildEmojiManager extends BaseGuildEmojiManager {
   ): Promise<GuildEmoji>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildEmoji>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildEmoji>>;
+  public fetchAuthor(emoji: EmojiResolvable): Promise<User>;
   public delete(emoji: EmojiResolvable, reason?: string): Promise<void>;
   public edit(emoji: EmojiResolvable, data: GuildEmojiEditData, reason?: string): Promise<GuildEmoji>;
 }
@@ -2902,6 +2915,7 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
   public delete(sticker: StickerResolvable, reason?: string): Promise<void>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Sticker>;
   public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Sticker>>;
+  public fetchUser(sticker: StickerResolvable): Promise<User | null>;
 }
 
 export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
@@ -3002,6 +3016,7 @@ export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> 
   public create(options?: CreateRoleOptions): Promise<Role>;
   public edit(role: RoleResolvable, options: RoleData, reason?: string): Promise<Role>;
   public delete(role: RoleResolvable, reason?: string): Promise<void>;
+  public setPosition(role: RoleResolvable, position: number, options?: SetRolePositionOptions): Promise<Role>;
   public setPositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
   public comparePositions(role1: RoleResolvable, role2: RoleResolvable): number;
 }
