@@ -24,7 +24,7 @@ export interface BaseImageURLOptions {
 }
 
 /**
- * The options used for image URLs with dynamic content
+ * The options used for image URLs with animated content
  */
 export interface ImageURLOptions extends BaseImageURLOptions {
 	/**
