@@ -8,19 +8,48 @@ import {
 	StickerExtension,
 } from './utils/constants';
 
+/**
+ * The options used for image URLs
+ */
 export interface BaseImageURLOptions {
+	/**
+	 * The extension to use for the image URL
+	 * @default 'webp'
+	 */
 	extension?: ImageExtension;
+	/**
+	 * The size specified in the image URL
+	 */
 	size?: ImageSize;
 }
 
+/**
+ * The options used for image URLs with dynamic content
+ */
 export interface ImageURLOptions extends BaseImageURLOptions {
+	/**
+	 * Whether or not to prefer the static version of an image asset.
+	 */
 	forceStatic?: boolean;
 }
 
+/**
+ * The options to use when making a CDN URL
+ */
 export interface MakeURLOptions {
+	/**
+	 * The extension to use for the image URL
+	 * @default 'webp'
+	 */
 	extension?: string | undefined;
+	/**
+	 * The size specified in the image URL
+	 */
 	size?: ImageSize;
-	allowedExtensions?: readonly string[];
+	/**
+	 * The allowed extensions that can be used
+	 */
+	allowedExtensions?: ReadonlyArray<string>;
 }
 
 /**
