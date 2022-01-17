@@ -36,7 +36,7 @@ class ShardingManager extends EventEmitter {
    * @property {boolean} [respawn=true] Whether shards should automatically respawn upon exiting
    * @property {string[]} [shardArgs=[]] Arguments to pass to the shard script when spawning
    * (only available when mode is set to 'process')
-   * @property {string} [execArgv=[]] Arguments to pass to the shard script executable when spawning
+   * @property {string[]} [execArgv=[]] Arguments to pass to the shard script executable when spawning
    * (only available when mode is set to 'process')
    * @property {string} [token] Token to use for automatic shard count and passing to shards
    */
