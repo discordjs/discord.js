@@ -210,6 +210,9 @@ class ShardClientUtil {
       error.stack = err.stack;
       /**
        * Emitted when the client encounters an error.
+       * <warn>Errors thrown within this event do not have a catch handler, it is
+       * recommended to not use async functions as `error` event handlers. See the
+       * [Node.js docs](https://nodejs.org/api/events.html#capture-rejections-of-promises) for details.</warn>
        * @event Client#error
        * @param {Error} error The error encountered
        */
