@@ -105,13 +105,12 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    * Deletes an emoji.
    * @param {EmojiResolvable} emoji The Emoji resolvable to delete
    * @param {string} reason Reason for deleting the emoji
-   * @returns {?Promise<GuildEmoji>}
+   * @returns {?Promise<void>}
    */
   async delete(emoji, reason) {
-    const resolvedEmoji = this.resolve(emoji);
-    if (!resolvedEmoji) throw new TypeError('EMOJI_RESOLVE');
-    await this.client.api.guilds(this.guild.id).emojis(resolvedEmoji.id).delete({ reason });
-    return resolvedEmoji;
+    const id = this.resolveId(emoji);
+    if (!id) throw new TypeError('EMOJI_RESOLVE');
+    await this.client.api.guilds(this.guild.id).emojis(id).delete({ reason });
   }
 
   /**
@@ -122,12 +121,12 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    * @returns {Promise<GuildEmoji>}
    */
   async edit(emoji, data, reason) {
-    const resolvedEmoji = this.resolve(emoji);
-    if (!resolvedEmoji) throw new TypeError('EMOJI_RESOLVE');
-    const roles = data.roles?.map(r => r.id ?? r);
+    emoji = this.resolve(emoji);
+    if (!emoji) throw new TypeError('EMOJI_RESOLVE');
+    const roles = data.roles?.map(r => this.guild.roles.resolveId(r) ?? r);
     const newData = await this.client.api
       .guilds(this.guild.id)
-      .emojis(resolvedEmoji.id)
+      .emojis(emoji.id)
       .patch({
         data: {
           name: data.name,
@@ -135,7 +134,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
         },
         reason,
       });
-    const clone = resolvedEmoji._clone();
+    const clone = emoji._clone();
     clone._patch(newData);
     return clone;
   }
