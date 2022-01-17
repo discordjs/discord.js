@@ -1,5 +1,5 @@
 import type { ChildProcess } from 'child_process';
-import type {
+import {
   APIInteractionGuildMember,
   APIMessage,
   APIPartialChannel,
@@ -10,6 +10,7 @@ import type {
   APIButtonComponent,
   APISelectMenuComponent,
   ApplicationCommandOptionType,
+  ComponentType,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
 import {
@@ -47,9 +48,7 @@ import {
   Interaction,
   InteractionCollector,
   Message,
-  MessageActionRow,
   MessageAttachment,
-  MessageButton,
   MessageCollector,
   MessageComponentInteraction,
   MessageEmbed,
@@ -88,9 +87,11 @@ import {
   GuildAuditLogsEntry,
   GuildAuditLogs,
   StageInstance,
-  MessageActionRowComponent,
-  MessageSelectMenu,
   PartialDMChannel,
+  ActionRow,
+  ButtonComponent,
+  SelectMenuComponent,
+  ActionRowComponent,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 
@@ -668,11 +669,11 @@ client.on('interactionCreate', async interaction => {
 
   if (!interaction.isCommand()) return;
 
-  void new MessageActionRow();
+  void new ActionRow<ActionRowComponent>();
 
-  const button = new MessageButton();
+  const button = new ButtonComponent();
 
-  const actionRow = new MessageActionRow({ components: [button] });
+  const actionRow = new ActionRow({ type: ComponentType.ActionRow, components: [button] });
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
@@ -993,11 +994,11 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.isButton()) {
     expectType<ButtonInteraction>(interaction);
-    expectType<MessageButton | APIButtonComponent>(interaction.component);
+    expectType<ButtonComponent | APIButtonComponent>(interaction.component);
     expectType<Message | APIMessage>(interaction.message);
     if (interaction.inCachedGuild()) {
       expectAssignable<ButtonInteraction>(interaction);
-      expectType<MessageButton>(interaction.component);
+      expectType<ButtonComponent>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
       expectAssignable<Promise<Message>>(interaction.reply({ fetchReply: true }));
@@ -1009,7 +1010,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       expectAssignable<ButtonInteraction>(interaction);
-      expectType<MessageButton | APIButtonComponent>(interaction.component);
+      expectType<ButtonComponent | APIButtonComponent>(interaction.component);
       expectType<Message | APIMessage>(interaction.message);
       expectAssignable<Guild | null>(interaction.guild);
       expectType<Promise<APIMessage | Message>>(interaction.reply({ fetchReply: true }));
@@ -1018,11 +1019,11 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.isMessageComponent()) {
     expectType<MessageComponentInteraction>(interaction);
-    expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
+    expectType<ActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message | APIMessage>(interaction.message);
     if (interaction.inCachedGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
-      expectType<MessageActionRowComponent>(interaction.component);
+      expectType<ActionRowComponent>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
       expectAssignable<Promise<Message>>(interaction.reply({ fetchReply: true }));
@@ -1034,7 +1035,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
-      expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
+      expectType<ActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
       expectType<Message | APIMessage>(interaction.message);
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<APIMessage | Message>>(interaction.reply({ fetchReply: true }));
@@ -1043,11 +1044,11 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.isSelectMenu()) {
     expectType<SelectMenuInteraction>(interaction);
-    expectType<MessageSelectMenu | APISelectMenuComponent>(interaction.component);
+    expectType<SelectMenuComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message | APIMessage>(interaction.message);
     if (interaction.inCachedGuild()) {
       expectAssignable<SelectMenuInteraction>(interaction);
-      expectType<MessageSelectMenu>(interaction.component);
+      expectType<SelectMenuComponent>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
       expectType<Promise<Message<true>>>(interaction.reply({ fetchReply: true }));
@@ -1059,7 +1060,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       expectAssignable<SelectMenuInteraction>(interaction);
-      expectType<MessageSelectMenu | APISelectMenuComponent>(interaction.component);
+      expectType<SelectMenuComponent | APISelectMenuComponent>(interaction.component);
       expectType<Message | APIMessage>(interaction.message);
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));

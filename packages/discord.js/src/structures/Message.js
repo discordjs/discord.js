@@ -1,10 +1,10 @@
 'use strict';
 
+const { createComponent } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { MessageType, InteractionType } = require('discord-api-types/v9');
 const Base = require('./Base');
-const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
 const InteractionCollector = require('./InteractionCollector');
 const MessageAttachment = require('./MessageAttachment');
@@ -138,9 +138,9 @@ class Message extends Base {
     if ('components' in data) {
       /**
        * A list of MessageActionRows in the message
-       * @type {MessageActionRow[]}
+       * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
+      this.components = data.components.map(c => createComponent(c));
     } else {
       this.components = this.components?.slice() ?? [];
     }
