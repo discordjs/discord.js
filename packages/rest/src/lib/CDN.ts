@@ -8,19 +8,48 @@ import {
 	StickerExtension,
 } from './utils/constants';
 
+/**
+ * The options used for image URLs
+ */
 export interface BaseImageURLOptions {
+	/**
+	 * The extension to use for the image URL
+	 * @default 'webp'
+	 */
 	extension?: ImageExtension;
+	/**
+	 * The size specified in the image URL
+	 */
 	size?: ImageSize;
 }
 
+/**
+ * The options used for image URLs with animated content
+ */
 export interface ImageURLOptions extends BaseImageURLOptions {
-	dynamic?: boolean;
+	/**
+	 * Whether or not to prefer the static version of an image asset.
+	 */
+	forceStatic?: boolean;
 }
 
+/**
+ * The options to use when making a CDN URL
+ */
 export interface MakeURLOptions {
+	/**
+	 * The extension to use for the image URL
+	 * @default 'webp'
+	 */
 	extension?: string | undefined;
+	/**
+	 * The size specified in the image URL
+	 */
 	size?: ImageSize;
-	allowedExtensions?: readonly string[];
+	/**
+	 * The allowed extensions that can be used
+	 */
+	allowedExtensions?: ReadonlyArray<string>;
 }
 
 /**
@@ -158,7 +187,10 @@ export class CDN {
 	 * @param extension The extension of the sticker
 	 */
 	public sticker(stickerId: string, extension?: StickerExtension): string {
-		return this.makeURL(`/stickers/${stickerId}`, { allowedExtensions: ALLOWED_STICKER_EXTENSIONS, extension });
+		return this.makeURL(`/stickers/${stickerId}`, {
+			allowedExtensions: ALLOWED_STICKER_EXTENSIONS,
+			extension: extension ?? 'png', // Stickers cannot have a `.webp` extension, so we default to a `.png`
+		});
 	}
 
 	/**
@@ -189,9 +221,9 @@ export class CDN {
 	private dynamicMakeURL(
 		route: string,
 		hash: string,
-		{ dynamic = false, ...options }: Readonly<ImageURLOptions> = {},
+		{ forceStatic = false, ...options }: Readonly<ImageURLOptions> = {},
 	): string {
-		return this.makeURL(route, dynamic && hash.startsWith('a_') ? { ...options, extension: 'gif' } : options);
+		return this.makeURL(route, !forceStatic && hash.startsWith('a_') ? { ...options, extension: 'gif' } : options);
 	}
 
 	/**
@@ -201,7 +233,7 @@ export class CDN {
 	 */
 	private makeURL(
 		route: string,
-		{ allowedExtensions = ALLOWED_EXTENSIONS, extension = 'png', size }: Readonly<MakeURLOptions> = {},
+		{ allowedExtensions = ALLOWED_EXTENSIONS, extension = 'webp', size }: Readonly<MakeURLOptions> = {},
 	): string {
 		extension = String(extension).toLowerCase();
 
