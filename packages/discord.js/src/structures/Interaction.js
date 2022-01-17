@@ -226,6 +226,14 @@ class Interaction extends Base {
       ComponentType[this.componentType] === ComponentType.SelectMenu
     );
   }
+
+  /**
+   * Indicates whether this interaction can be replied to.
+   * @returns {boolean}
+   */
+  isRepliable() {
+    return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(InteractionType[this.type]);
+  }
 }
 
 module.exports = Interaction;

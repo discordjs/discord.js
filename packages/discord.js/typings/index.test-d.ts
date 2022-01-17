@@ -92,6 +92,7 @@ import {
   ButtonComponent,
   SelectMenuComponent,
   ActionRowComponent,
+  InteractionResponseFields,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 
@@ -1123,6 +1124,16 @@ client.on('interactionCreate', async interaction => {
     expectType<string | null>(interaction.options.getSubcommandGroup());
     expectType<string | null>(interaction.options.getSubcommandGroup(booleanValue));
     expectType<string | null>(interaction.options.getSubcommandGroup(false));
+  }
+
+  if (interaction.isRepliable()) {
+    expectAssignable<InteractionResponseFields>(interaction);
+    interaction.reply('test');
+  }
+
+  if (interaction.isChatInputCommand() && interaction.isRepliable()) {
+    expectAssignable<CommandInteraction>(interaction);
+    expectAssignable<InteractionResponseFields>(interaction);
   }
 });
 
