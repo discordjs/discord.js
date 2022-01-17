@@ -16,6 +16,7 @@ exports.BitField = require('./util/BitField');
 exports.Collection = require('@discordjs/collection').Collection;
 exports.Constants = require('./util/Constants');
 exports.DataResolver = require('./util/DataResolver');
+exports.EnumResolvers = require('./util/EnumResolvers');
 exports.DiscordAPIError = require('./rest/DiscordAPIError');
 exports.Formatters = require('./util/Formatters');
 exports.HTTPError = require('./rest/HTTPError');
