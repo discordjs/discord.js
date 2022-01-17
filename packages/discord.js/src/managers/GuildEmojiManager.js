@@ -105,7 +105,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    * Deletes an emoji.
    * @param {EmojiResolvable} emoji The Emoji resolvable to delete
    * @param {string} [reason] Reason for deleting the emoji
-   * @returns {?Promise<void>}
+   * @returns {Promise<void>}
    */
   async delete(emoji, reason) {
     const id = this.resolveId(emoji);
