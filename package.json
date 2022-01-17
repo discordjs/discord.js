@@ -82,6 +82,9 @@
 				"outputs": []
 			},
 			"docs": {
+				"dependsOn": [
+					"^build"
+				],
 				"outputs": [
 					"docs/docs.json"
 				]
