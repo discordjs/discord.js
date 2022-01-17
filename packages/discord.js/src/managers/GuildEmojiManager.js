@@ -123,7 +123,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   async edit(emoji, data, reason) {
     emoji = this.resolve(emoji);
     if (!emoji) throw new TypeError('INVALID_TYPE', 'emoji', 'EmojiResolvable', true);
-    const roles = data.roles?.map(r => this.guild.roles.resolveId(r) ?? r);
+    const roles = data.roles?.map(r => this.guild.roles.resolveId(r));
     const newData = await this.client.api
       .guilds(this.guild.id)
       .emojis(emoji.id)
