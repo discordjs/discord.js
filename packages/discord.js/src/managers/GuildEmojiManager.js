@@ -121,12 +121,12 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    * @returns {Promise<GuildEmoji>}
    */
   async edit(emoji, data, reason) {
-    emoji = this.resolve(emoji);
-    if (!emoji) throw new TypeError('INVALID_TYPE', 'emoji', 'EmojiResolvable', true);
-    const roles = data.roles?.map(r => this.guild.roles.resolveId(r) ?? r);
+    const id = this.resolve(emoji);
+    if (!id) throw new TypeError('INVALID_TYPE', 'emoji', 'EmojiResolvable', true);
+    const roles = data.roles?.map(r => this.guild.roles.resolveId(r));
     const newData = await this.client.api
       .guilds(this.guild.id)
-      .emojis(emoji.id)
+      .emojis(id)
       .patch({
         data: {
           name: data.name,
@@ -134,9 +134,13 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
         },
         reason,
       });
-    const clone = emoji._clone();
-    clone._patch(newData);
-    return clone;
+    const existing = this.cache.get(id);
+    if (existing) {
+      const clone = emoji._clone();
+      clone._patch(newData);
+      return clone;
+    }
+    return this._add(newData);
   }
 }
 
