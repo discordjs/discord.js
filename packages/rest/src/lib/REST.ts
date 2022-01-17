@@ -4,6 +4,9 @@ import { InternalRequest, RequestData, RequestManager, RequestMethod, RouteLike 
 import { DefaultRestOptions, RESTEvents } from './utils/constants';
 import type { AgentOptions } from 'node:https';
 import type { RequestInit, Response } from 'node-fetch';
+import type { HashData } from './RequestManager';
+import type Collection from '@discordjs/collection';
+import type { IHandler } from './handlers/IHandler';
 
 /**
  * Options to be passed when creating the REST instance
@@ -74,6 +77,21 @@ export interface RESTOptions {
 	 * @default '9'
 	 */
 	version: string;
+	/**
+	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 4h)
+	 * @default 14_400_000
+	 */
+	hashSweepInterval: number;
+	/**
+	 * The maximum amount of time a hash can exist in milliseconds without being hit with a request (defaults to 24h)
+	 * @default 86_400_000
+	 */
+	hashLifetime: number;
+	/**
+	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 1h)
+	 * @default 3_600_000
+	 */
+	handlerSweepInterval: number;
 }
 
 /**
@@ -168,6 +186,8 @@ export interface RestEvents {
 	response: [request: APIRequest, response: Response];
 	newListener: [name: string, listener: (...args: any) => void];
 	removeListener: [name: string, listener: (...args: any) => void];
+	hashSweep: [sweptHashes: Collection<string, HashData>];
+	handlerSweep: [sweptHandlers: Collection<string, IHandler>];
 }
 
 export interface REST {
@@ -197,7 +217,8 @@ export class REST extends EventEmitter {
 		this.requestManager = new RequestManager(options)
 			.on(RESTEvents.Debug, this.emit.bind(this, RESTEvents.Debug))
 			.on(RESTEvents.RateLimited, this.emit.bind(this, RESTEvents.RateLimited))
-			.on(RESTEvents.InvalidRequestWarning, this.emit.bind(this, RESTEvents.InvalidRequestWarning));
+			.on(RESTEvents.InvalidRequestWarning, this.emit.bind(this, RESTEvents.InvalidRequestWarning))
+			.on(RESTEvents.HashSweep, this.emit.bind(this, RESTEvents.HashSweep));
 
 		this.on('newListener', (name, listener) => {
 			if (name === RESTEvents.Request || name === RESTEvents.Response) this.requestManager.on(name, listener);

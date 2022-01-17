@@ -7,7 +7,7 @@ import type { RequestInit, BodyInit } from 'node-fetch';
 import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
 import type { RESTOptions, RestEvents } from './REST';
-import { DefaultRestOptions, DefaultUserAgent } from './utils/constants';
+import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants';
 
 let agent: Agent | null = null;
 
@@ -125,6 +125,16 @@ export interface RouteData {
 	original: RouteLike;
 }
 
+/**
+ * Represents a hash and its associated fields
+ *
+ * @internal
+ */
+export interface HashData {
+	value: string;
+	lastAccess: number;
+}
+
 export interface RequestManager {
 	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
 		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
@@ -164,7 +174,7 @@ export class RequestManager extends EventEmitter {
 	/**
 	 * API bucket hashes that are cached from provided routes
 	 */
-	public readonly hashes = new Collection<string, string>();
+	public readonly hashes = new Collection<string, HashData>();
 
 	/**
 	 * Request handlers created from the bucket hash and the major parameters
@@ -174,6 +184,9 @@ export class RequestManager extends EventEmitter {
 	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#token: string | null = null;
 
+	private hashTimer!: NodeJS.Timer;
+	private handlerTimer!: NodeJS.Timer;
+
 	public readonly options: RESTOptions;
 
 	public constructor(options: Partial<RESTOptions>) {
@@ -181,6 +194,71 @@ export class RequestManager extends EventEmitter {
 		this.options = { ...DefaultRestOptions, ...options };
 		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = this.options.globalRequestsPerSecond;
+
+		// Start sweepers
+		this.setupSweepers();
+	}
+
+	private setupSweepers() {
+		const validateMaxInterval = (interval: number) => {
+			if (interval > 14_400_000) {
+				throw new Error('Cannot set an interval greater than 4 hours');
+			}
+		};
+
+		if (this.options.hashSweepInterval !== 0 && this.options.hashSweepInterval !== Infinity) {
+			validateMaxInterval(this.options.hashSweepInterval);
+			this.hashTimer = setInterval(() => {
+				const sweptHashes = new Collection<string, HashData>();
+				const currentDate = Date.now();
+
+				// Begin sweeping hash based on lifetimes
+				this.hashes.sweep((v, k) => {
+					// `-1` indicates a global hash
+					if (v.lastAccess === -1) return false;
+
+					// Check if lifetime has been exceeded
+					const shouldSweep = Math.floor(currentDate - v.lastAccess) > this.options.hashLifetime;
+
+					// Add hash to collection of swept hashes
+					if (shouldSweep) {
+						// Add to swept hashes
+						sweptHashes.set(k, v);
+					}
+
+					// Emit debug information
+					this.emit(RESTEvents.Debug, `Hash ${v.value} for ${k} swept due to lifetime being exceeded`);
+
+					return shouldSweep;
+				});
+
+				// Fire event
+				this.emit(RESTEvents.HashSweep, sweptHashes);
+			}, this.options.hashSweepInterval).unref();
+		}
+
+		if (this.options.handlerSweepInterval !== 0 && this.options.handlerSweepInterval !== Infinity) {
+			validateMaxInterval(this.options.handlerSweepInterval);
+			this.handlerTimer = setInterval(() => {
+				const sweptHandlers = new Collection<string, IHandler>();
+
+				// Begin sweeping handlers based on activity
+				this.handlers.sweep((v, k) => {
+					const { inactive } = v;
+
+					// Collect inactive handlers
+					if (inactive) {
+						sweptHandlers.set(k, v);
+					}
+
+					this.emit(RESTEvents.Debug, `Handler ${v.id} for ${k} swept due to being inactive`);
+					return inactive;
+				});
+
+				// Fire event
+				this.emit(RESTEvents.HandlerSweep, sweptHandlers);
+			}, this.options.handlerSweepInterval).unref();
+		}
 	}
 
 	/**
@@ -201,12 +279,15 @@ export class RequestManager extends EventEmitter {
 		// Generalize the endpoint to its route data
 		const routeId = RequestManager.generateRouteData(request.fullRoute, request.method);
 		// Get the bucket hash for the generic route, or point to a global route otherwise
-		const hash =
-			this.hashes.get(`${request.method}:${routeId.bucketRoute}`) ?? `Global(${request.method}:${routeId.bucketRoute})`;
+		const hash = this.hashes.get(`${request.method}:${routeId.bucketRoute}`) ?? {
+			value: `Global(${request.method}:${routeId.bucketRoute})`,
+			lastAccess: -1,
+		};
 
 		// Get the request handler for the obtained hash, with its major parameter
 		const handler =
-			this.handlers.get(`${hash}:${routeId.majorParameter}`) ?? this.createHandler(hash, routeId.majorParameter);
+			this.handlers.get(`${hash.value}:${routeId.majorParameter}`) ??
+			this.createHandler(hash.value, routeId.majorParameter);
 
 		// Resolve the request into usable fetch/node-fetch options
 		const { url, fetchOptions } = this.resolveRequest(request);
@@ -321,6 +402,20 @@ export class RequestManager extends EventEmitter {
 		};
 
 		return { url, fetchOptions };
+	}
+
+	/**
+	 * Stops the hash sweeping interval
+	 */
+	public clearHashSweeper() {
+		clearInterval(this.hashTimer);
+	}
+
+	/**
+	 * Stops the request handler sweeping interval
+	 */
+	public clearHandlerSweeper() {
+		clearInterval(this.handlerTimer);
 	}
 
 	/**
