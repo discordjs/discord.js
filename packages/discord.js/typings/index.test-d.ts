@@ -1119,8 +1119,8 @@ client.on('interactionCreate', async interaction => {
     expectType<string | null>(interaction.options.getSubcommand(booleanValue));
     expectType<string | null>(interaction.options.getSubcommand(false));
 
-    expectType<string>(interaction.options.getSubcommandGroup());
     expectType<string>(interaction.options.getSubcommandGroup(true));
+    expectType<string | null>(interaction.options.getSubcommandGroup());
     expectType<string | null>(interaction.options.getSubcommandGroup(booleanValue));
     expectType<string | null>(interaction.options.getSubcommandGroup(false));
   }
