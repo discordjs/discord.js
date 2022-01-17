@@ -113,7 +113,6 @@ const Messages = {
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
-  EMOJI_RESOLVE: 'Could not resolve the emoji.',
   MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION: guild =>
     `Client must have Manage Emojis and Stickers permission in guild ${guild} to see emoji authors.`,
   NOT_GUILD_STICKER: 'Sticker is a standard (non-guild) sticker and has no author.',
