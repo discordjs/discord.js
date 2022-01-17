@@ -136,7 +136,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       });
     const existing = this.cache.get(id);
     if (existing) {
-      const clone = emoji._clone();
+      const clone = existing._clone();
       clone._patch(newData);
       return clone;
     }
