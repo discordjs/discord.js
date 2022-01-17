@@ -1073,7 +1073,6 @@ client.on('interactionCreate', async interaction => {
       expectAssignable<ChatInputCommandInteraction>(interaction);
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
-      expectType<APIInteractionDataResolvedGuildMember>(interaction.options.getMember('test', true));
 
       expectType<APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
       expectType<APIRole>(interaction.options.getRole('test', true));
@@ -1096,7 +1095,6 @@ client.on('interactionCreate', async interaction => {
       expectType<ChatInputCommandInteraction>(interaction);
       expectType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
-      expectType<APIInteractionDataResolvedGuildMember | GuildMember>(interaction.options.getMember('test', true));
 
       expectType<GuildBasedChannel | APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
       expectType<APIRole | Role>(interaction.options.getRole('test', true));
