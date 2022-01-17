@@ -1368,8 +1368,8 @@ export class InteractionWebhook extends PartialWebhookMixin() {
 
 export class Invite extends Base {
   private constructor(client: Client, data: RawInviteData);
-  public channel: NonThreadGuildBasedChannel | PartialGroupDMChannel;
-  public channelId: Snowflake;
+  public readonly channel: NonThreadGuildBasedChannel | PartialGroupDMChannel;
+  public channelId: Snowflake | null;
   public code: string;
   public readonly deletable: boolean;
   public readonly createdAt: Date | null;
@@ -1377,7 +1377,7 @@ export class Invite extends Base {
   public readonly expiresAt: Date | null;
   public readonly expiresTimestamp: number | null;
   public guild: InviteGuild | Guild | null;
-  public inviter: User | null;
+  public readonly inviter: User | null;
   public inviterId: Snowflake | null;
   public maxAge: number | null;
   public maxUses: number | null;
