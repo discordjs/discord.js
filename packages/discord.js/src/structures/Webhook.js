@@ -273,7 +273,7 @@ class Webhook {
    * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
-  async fetchMessage(message, { cache = true, threadId } = { cache: true }) {
+  async fetchMessage(message, { cache = true, threadId } = {}) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     const data = await this.client.api
