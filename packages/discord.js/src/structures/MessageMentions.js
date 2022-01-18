@@ -184,17 +184,22 @@ class MessageMentions {
    * @returns {boolean}
    */
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
-    if (!ignoreEveryone && this.everyone) return true;
-    const { GuildMember } = require('./GuildMember');
-    if (!ignoreRoles && data instanceof GuildMember) {
-      for (const role of this.roles.values()) if (data.roles.cache.has(role.id)) return true;
+    const user = this.client.users.resolve(data),
+      role = this.guild ? this.guild.roles.resolve(data) : null,
+      channel = this.client.channels.resolve(data),
+      isDirect = user ?? role ?? channel;
+
+    if (!ignoreDirect && isDirect) {
+      if (this.users.has(user?.id)) return true;
+      if (!ignoreRoles && this.roles.has(role?.id)) return true;
+      if (this.channels.has(channel?.id)) return true;
     }
-
-    if (!ignoreDirect) {
-      const id =
-        this.guild?.roles.resolveId(data) ?? this.client.channels.resolveId(data) ?? this.client.users.resolveId(data);
-
-      return typeof id === 'string' && (this.users.has(id) || this.channels.has(id) || this.roles.has(id));
+    if (user && !ignoreEveryone && this.everyone) return true;
+    if (!ignoreRoles) {
+      const member = this.guild ? this.guild.members.resolve(data) : null;
+      if (member) {
+        for (const mentionedRole of this.roles.values()) if (member.roles.cache.has(mentionedRole.id)) return true;
+      }
     }
 
     return false;
