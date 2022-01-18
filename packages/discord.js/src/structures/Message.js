@@ -3,7 +3,7 @@
 const { createComponent } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { MessageType, InteractionType } = require('discord-api-types/v9');
+const { InteractionType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
 const InteractionCollector = require('./InteractionCollector');
@@ -61,7 +61,7 @@ class Message extends Base {
        * The type of the message
        * @type {?MessageType}
        */
-      this.type = MessageType[data.type];
+      this.type = data.type;
 
       /**
        * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
@@ -334,7 +334,7 @@ class Message extends Base {
        */
       this.interaction = {
         id: data.interaction.id,
-        type: InteractionType[data.interaction.type],
+        type: data.interaction.type,
         commandName: data.interaction.name,
         user: this.client.users._add(data.interaction.user),
       };

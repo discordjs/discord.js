@@ -233,13 +233,12 @@ class ApplicationCommand extends Base {
     if (command.id && this.id !== command.id) return false;
 
     // Check top level parameters
-    const commandType = typeof command.type === 'string' ? command.type : ApplicationCommandType[command.type];
     if (
       command.name !== this.name ||
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
       ('autocomplete' in command && command.autocomplete !== this.autocomplete) ||
-      (commandType && commandType !== this.type) ||
+      (command.type && command.type !== this.type) ||
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
@@ -289,14 +288,15 @@ class ApplicationCommand extends Base {
    * @private
    */
   static _optionEquals(existing, option, enforceOptionOrder = false) {
-    const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionType[option.type];
     if (
       option.name !== existing.name ||
-      optionType !== existing.type ||
+      option.type !== existing.type ||
       option.description !== existing.description ||
       option.autocomplete !== existing.autocomplete ||
-      (option.required ?? (['SUB_COMMAND', 'SUB_COMMAND_GROUP'].includes(optionType) ? undefined : false)) !==
-        existing.required ||
+      (option.required ??
+        ([ApplicationCommandOptionType.Subcommand, ApplicationCommandOptionType.SubcommandGroup].includes(option.type)
+          ? undefined
+          : false)) !== existing.required ||
       option.choices?.length !== existing.choices?.length ||
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
@@ -325,11 +325,8 @@ class ApplicationCommand extends Base {
     }
 
     if (existing.channelTypes) {
-      const newTypes = (option.channelTypes ?? option.channel_types).map(type =>
-        typeof type === 'number' ? ChannelType[type] : type,
-      );
       for (const type of existing.channelTypes) {
-        if (!newTypes.includes(type)) return false;
+        if (!option.channelTypes.includes(type)) return false;
       }
     }
 

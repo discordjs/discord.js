@@ -1,6 +1,6 @@
 'use strict';
 
-const { ApplicationCommandOptionType, InteractionResponseType } = require('discord-api-types/v9');
+const { InteractionResponseType } = require('discord-api-types/v9');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 const Interaction = require('./Interaction');
 
@@ -64,7 +64,7 @@ class AutocompleteInteraction extends Interaction {
   transformOption(option) {
     const result = {
       name: option.name,
-      type: ApplicationCommandOptionType[option.type],
+      type: option.type,
     };
 
     if ('value' in option) result.value = option.value;

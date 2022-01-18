@@ -2,7 +2,6 @@
 
 const process = require('node:process');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { WebhookType } = require('discord-api-types/v9');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const DataResolver = require('../util/DataResolver');
@@ -59,7 +58,7 @@ class Webhook {
        * The type of the webhook
        * @type {WebhookType}
        */
-      this.type = WebhookType[data.type];
+      this.type = data.type;
     }
 
     if ('guild_id' in data) {

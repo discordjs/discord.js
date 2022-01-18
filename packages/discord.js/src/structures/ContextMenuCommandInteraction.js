@@ -1,6 +1,6 @@
 'use strict';
 
-const { ApplicationCommandType, ApplicationCommandOptionType } = require('discord-api-types/v9');
+const { ApplicationCommandOptionType } = require('discord-api-types/v9');
 const CommandInteraction = require('./CommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 
@@ -29,9 +29,9 @@ class ContextMenuCommandInteraction extends CommandInteraction {
 
     /**
      * The type of the target of the interaction; either USER or MESSAGE
-     * @type {ApplicationCommandType}
+     * @type {ApplicationCommandType.User|ApplicationCommandType.Message}
      */
-    this.targetType = ApplicationCommandType[data.data.type];
+    this.targetType = data.data.type;
   }
 
   /**

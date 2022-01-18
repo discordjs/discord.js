@@ -27,7 +27,8 @@ class Channel extends Base {
      * The type of the channel
      * @type {ChannelType}
      */
-    this.type = type ?? 'UNKNOWN';
+    // TODO: Better way of handling unknown?
+    this.type = type ?? -1;
 
     if (data && immediatePatch) this._patch(data);
   }
