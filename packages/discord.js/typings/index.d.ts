@@ -737,7 +737,6 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
   public inRawGuild(): this is AutocompleteInteraction<'raw'>;
-  private transformOption(option: APIApplicationCommandOption): CommandInteractionOption;
   public respond(options: ApplicationCommandOptionChoice[]): Promise<void>;
 }
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType } = require('discord-api-types');
+const { ChannelType } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError } = require('../errors');

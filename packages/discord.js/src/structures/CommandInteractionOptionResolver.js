@@ -1,6 +1,6 @@
 'use strict';
 
-const { ApplicationCommandOptionType } = require('discord-api-types');
+const { ApplicationCommandOptionType } = require('discord-api-types/v9');
 const { TypeError } = require('../errors');
 
 /**
