@@ -196,7 +196,7 @@ class MessageMentions {
     }
     if (user && !ignoreEveryone && this.everyone) return true;
     if (!ignoreRoles) {
-      const member = this.guild ? this.guild.members.resolve(data) : null;
+      const member = this.guild?.members.resolve(data) ?? null;
       if (member) {
         for (const mentionedRole of this.roles.values()) if (member.roles.cache.has(mentionedRole.id)) return true;
       }
