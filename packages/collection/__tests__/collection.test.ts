@@ -460,3 +460,57 @@ describe('ensure() tests', () => {
 		expect(coll.size).toStrictEqual(2);
 	});
 });
+
+describe('merge() tests', () => {
+	const cL = new Collection([['L', 1], ['LR', 2]]);
+	const cR = new Collection([['R', 3], ['LR', 4]]);
+
+	test('merges two collection, with all keys together', () => {
+		const c = cL.merge(
+			cR,
+			(x) => ({ keep: true, value: `L${x}` }),
+			(y) => ({ keep: true, value: `R${y}` }),
+			(x, y) => ({ keep: true, value: `LR${x},${y}` })
+		);
+		expect(c.get('L')).toStrictEqual('L1');
+		expect(c.get('R')).toStrictEqual('R3');
+		expect(c.get('LR')).toStrictEqual('LR2,4');
+		expect(c.size).toStrictEqual(3);
+	});
+
+	test('merges two collection, removing left entries', () => {
+		const c = cL.merge(
+			cR,
+			() => ({ keep: false }),
+			(y) => ({ keep: true, value: `R${y}` }),
+			(x, y) => ({ keep: true, value: `LR${x},${y}` })
+		);
+		expect(c.get('R')).toStrictEqual('R3');
+		expect(c.get('LR')).toStrictEqual('LR2,4');
+		expect(c.size).toStrictEqual(2);
+	});
+
+	test('merges two collection, removing right entries', () => {
+		const c = cL.merge(
+			cR,
+			(x) => ({ keep: true, value: `L${x}` }),
+			() => ({ keep: false }),
+			(x, y) => ({ keep: true, value: `LR${x},${y}` })
+		);
+		expect(c.get('L')).toStrictEqual('L1');
+		expect(c.get('LR')).toStrictEqual('LR2,4');
+		expect(c.size).toStrictEqual(2);
+	});
+
+	test('merges two collection, removing in-both entries', () => {
+		const c = cL.merge(
+			cR,
+			(x) => ({ keep: true, value: `L${x}` }),
+			(y) => ({ keep: true, value: `R${y}` }),
+			() => ({ keep: false })
+		);
+		expect(c.get('L')).toStrictEqual('L1');
+		expect(c.get('R')).toStrictEqual('R3');
+		expect(c.size).toStrictEqual(2);
+	});
+});

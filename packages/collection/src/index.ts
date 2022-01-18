@@ -667,6 +667,54 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * Merges two Collections together into a new Collection.
+	 * @param other The other Collection to merge with
+	 * @param whenInSelf Function getting the result if the entry only exists in this Collection
+	 * @param whenInOther Function getting the result if the entry only exists in the other Collection
+	 * @param whenInBoth Function getting the result if the entry exists in both Collections
+	 *
+	 * @example
+	 * // Sums up the entries in two collections.
+	 * coll.merge(
+	 *  other,
+	 *  x => ({ keep: true, value: x }),
+	 *  y => ({ keep: true, value: y }),
+	 *  (x, y) => ({ keep: true, value: x + y }),
+	 * );
+	 *
+	 * @example
+	 * // Intersects two collections in a left-biased manner.
+	 * coll.merge(
+	 *  other,
+	 *  x => ({ keep: false }),
+	 *  y => ({ keep: false }),
+	 *  (x, _) => ({ keep: true, value: x }),
+	 * );
+	 */
+	public merge<T, R>(
+		other: ReadonlyCollection<K, T>,
+		whenInSelf: (value: V, key: K) => Keep<R>,
+		whenInOther: (valueOther: T, key: K) => Keep<R>,
+		whenInBoth: (value: V, valueOther: T, key: K) => Keep<R>
+	): Collection<K, R> {
+		const coll = new this.constructor[Symbol.species]<K, R>();
+		const keys = new Set([...this.keys(), ...other.keys()]);
+		for (const k of keys) {
+			if (this.has(k) && other.has(k)) {
+				const r = whenInBoth(this.get(k)!, other.get(k)!, k);
+				if (r.keep) coll.set(k, r.value);
+			} else if (this.has(k)) {
+				const r = whenInSelf(this.get(k)!, k);
+				if (r.keep) coll.set(k, r.value);
+			} else if (other.has(k)) {
+				const r = whenInOther(other.get(k)!, k);
+				if (r.keep) coll.set(k, r.value);
+			}
+		}
+		return coll;
+	}
+
+	/**
 	 * The sorted method sorts the items of a collection and returns it.
 	 * The sort is not necessarily stable in Node 10 or older.
 	 * The default sort order is according to string Unicode code points.
