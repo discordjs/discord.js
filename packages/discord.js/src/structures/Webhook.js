@@ -2,6 +2,7 @@
 
 const process = require('node:process');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { WebhookType } = require('discord-api-types/v9');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const DataResolver = require('../util/DataResolver');
@@ -414,7 +415,7 @@ class Webhook {
    * @returns {boolean}
    */
   isChannelFollower() {
-    return this.type === 'ChannelFollower';
+    return this.type === WebhookType.ChannelFollower;
   }
 
   /**
@@ -422,7 +423,7 @@ class Webhook {
    * @returns {boolean}
    */
   isIncoming() {
-    return this.type === 'Incoming';
+    return this.type === WebhookType.Incoming;
   }
 
   static applyToClass(structure, ignore = []) {

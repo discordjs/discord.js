@@ -92,7 +92,7 @@ class ThreadManager extends CachedManager {
    *   .create({
    *      name: 'mod-talk',
    *      autoArchiveDuration: 60,
-   *      type: 'GUILD_PRIVATE_THREAD',
+   *      type: ChannelType.GuildPrivateThread,
    *      reason: 'Needed a separate thread for moderation',
    *    })
    *   .then(threadChannel => console.log(threadChannel))
@@ -111,13 +111,14 @@ class ThreadManager extends CachedManager {
     if (type && typeof type !== 'string' && typeof type !== 'number') {
       throw new TypeError('INVALID_TYPE', 'type', 'ThreadChannelType or Number');
     }
-    let resolvedType = this.channel.type === 'GUILD_NEWS' ? ChannelType.GuildNewsThread : ChannelType.GuildPublicThread;
+    let resolvedType =
+      this.channel.type === ChannelType.GuildNews ? ChannelType.GuildNewsThread : ChannelType.GuildPublicThread;
     if (startMessage) {
       const startMessageId = this.channel.messages.resolveId(startMessage);
       if (!startMessageId) throw new TypeError('INVALID_TYPE', 'startMessage', 'MessageResolvable');
       path = path.messages(startMessageId);
-    } else if (this.channel.type !== 'GUILD_NEWS') {
-      resolvedType = typeof type === 'string' ? ChannelType[type] : type ?? resolvedType;
+    } else if (this.channel.type !== ChannelType.GuildNews) {
+      resolvedType = type ?? resolvedType;
     }
     if (autoArchiveDuration === 'MAX') {
       autoArchiveDuration = 1440;

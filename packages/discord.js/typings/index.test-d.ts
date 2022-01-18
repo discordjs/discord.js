@@ -13,6 +13,7 @@ import {
   ComponentType,
   ApplicationCommandPermissionType,
   ChannelType,
+  InteractionType,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
 import {
@@ -618,9 +619,10 @@ client.on('messageCreate', async message => {
   expectType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollectorChannel);
 
   // Verify that interaction collector options can't be used.
-
-  // @ts-expect-error
-  const interactionOptions = message.createMessageComponentCollector({ interactionType: 'APPLICATION_COMMAND' });
+  message.createMessageComponentCollector({
+    // @ts-expect-error
+    interactionType: InteractionType.ApplicationCommand,
+  });
 
   // Make sure filter parameters are properly inferred.
   message.createMessageComponentCollector({

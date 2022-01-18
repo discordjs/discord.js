@@ -2620,8 +2620,6 @@ export class WelcomeScreen extends Base {
 
 export type EnumHolder<T> = { [P in keyof T]: T[P] };
 
-export type ExcludeEnum<T, K extends keyof T> = Exclude<keyof T | T[keyof T], K | T[K]>;
-
 export const Constants: {
   Package: {
     name: string;
@@ -3204,7 +3202,7 @@ export type ActivitiesOptions = Omit<ActivityOptions, 'shardId'>;
 export interface ActivityOptions {
   name?: string;
   url?: string;
-  type?: ExcludeEnum<typeof ActivityType, 'Custom'>;
+  type?: Exclude<ActivityType, ActivityType.Custom>;
   shardId?: number | readonly number[];
 }
 
@@ -3297,7 +3295,7 @@ export interface ApplicationCommandChannelOptionData extends BaseApplicationComm
 }
 
 export interface ApplicationCommandChannelOption extends BaseApplicationCommandOptionsData {
-  type: 'CHANNEL';
+  type: ApplicationCommandOptionType.Channel;
   channelTypes?: (keyof typeof ChannelType)[];
 }
 
@@ -4268,9 +4266,13 @@ export type GuildChannelResolvable = Snowflake | GuildBasedChannel;
 
 export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
   parent?: CategoryChannelResolvable;
-  type?: ExcludeEnum<
-    typeof ChannelType,
-    'DM' | 'GroupDM' | 'GuildPublicThread' | 'GuildNewsThread' | 'GuildPrivateThread'
+  type?: Exclude<
+    ChannelType,
+    | ChannelType.DM
+    | ChannelType.GroupDM
+    | ChannelType.GuildPublicThread
+    | ChannelType.GuildNewsThread
+    | ChannelType.GuildPrivateThread
   >;
 }
 
@@ -4637,7 +4639,7 @@ export interface LinkButtonOptions extends BaseButtonOptions {
 }
 
 export interface InteractionButtonOptions extends BaseButtonOptions {
-  style: ExcludeEnum<typeof ButtonStyle, 'Link'>;
+  style: Exclude<ButtonStyle, ButtonStyle.Link>;
   customId: string;
 }
 
@@ -4928,16 +4930,16 @@ export type PresenceResolvable = Presence | UserResolvable | Snowflake;
 export interface PartialChannelData {
   id?: Snowflake | number;
   parentId?: Snowflake | number;
-  type?: ExcludeEnum<
-    typeof ChannelType,
-    | 'DM'
-    | 'GroupDM'
-    | 'GuildNews'
-    | 'GuildStore'
-    | 'GuildNewsThread'
-    | 'GuildPublicThread'
-    | 'GuildPrivateThread'
-    | 'GuildStageVoice'
+  type?: Exclude<
+    ChannelType,
+    | ChannelType.DM
+    | ChannelType.GroupDM
+    | ChannelType.GuildNews
+    | ChannelType.GuildStore
+    | ChannelType.GuildNewsThread
+    | ChannelType.GuildPublicThread
+    | ChannelType.GuildPrivateThread
+    | ChannelType.GuildStageVoice
   >;
   name: string;
   topic?: string;
@@ -5117,7 +5119,7 @@ export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlags
 
 export type SystemMessageType = Exclude<
   MessageType,
-  'DEFAULT' | 'REPLY' | 'CHAT_INPUT_COMMAND' | 'CONTEXT_MENU_COMMAND'
+  MessageType.Default | MessageType.Reply | MessageType.ChatInputCommand | MessageType.ContextMenuCommand
 >;
 
 export type StageChannelResolvable = StageChannel | Snowflake;
@@ -5207,7 +5209,7 @@ export type ThreadChannelType =
 export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptions {
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
-  invitable?: AllowedThreadType extends 'GUILD_PRIVATE_THREAD' | ChannelType.GuildPrivateThread ? boolean : never;
+  invitable?: AllowedThreadType extends ChannelType.GuildPrivateThread ? boolean : never;
   rateLimitPerUser?: number;
 }
 

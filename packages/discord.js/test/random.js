@@ -6,6 +6,7 @@ const request = require('superagent');
 const ytdl = require('ytdl-core');
 const { token, song } = require('./auth.js');
 const { Client, Intents } = require('../src');
+const { ChannelType } = require('discord-api-types/v9');
 
 console.time('magic');
 
@@ -57,7 +58,7 @@ client.on('messageCreate', message => {
   if (true) {
     if (message.content === 'makechann') {
       if (message.channel.guild) {
-        message.channel.guild.channels.create('hi', { type: 'GUILD_TEXT' }).then(console.log);
+        message.channel.guild.channels.create('hi', { type: ChannelType.GuildText }).then(console.log);
       }
     }
 

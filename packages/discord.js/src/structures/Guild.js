@@ -1290,8 +1290,8 @@ class Guild extends AnonymousGuild {
     return Util.discordSort(
       this.channels.cache.filter(
         c =>
-          (['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(channel.type)
-            ? ['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(c.type)
+          ([ChannelType.GuildText, ChannelType.GuildNews, ChannelType.GuildStore].includes(channel.type)
+            ? [ChannelType.GuildText, ChannelType.GuildNews, ChannelType.GuildStore].includes(c.type)
             : c.type === channel.type) &&
           (category || c.parent === channel.parent),
       ),

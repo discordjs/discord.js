@@ -158,7 +158,7 @@ class ClientUser extends User {
    * @returns {ClientPresence}
    * @example
    * // Set the client user's activity
-   * client.user.setActivity('discord.js', { type: 'WATCHING' });
+   * client.user.setActivity('discord.js', { type: ActivityType.Watching });
    */
   setActivity(name, options = {}) {
     if (!name) return this.setPresence({ activities: [], shardId: options.shardId });

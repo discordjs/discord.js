@@ -368,16 +368,19 @@ class ApplicationCommand extends Base {
    * @private
    */
   static transformOption(option, received) {
-    const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionType[option.type];
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
     return {
-      type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionType[option.type],
+      type: option.type,
       name: option.name,
       description: option.description,
       required:
-        option.required ?? (stringType === 'SUB_COMMAND' || stringType === 'SUB_COMMAND_GROUP' ? undefined : false),
+        option.required ??
+        (option.type === ApplicationCommandOptionType.Subcommand ||
+        option.type === ApplicationCommandOptionType.SubcommandGroup
+          ? undefined
+          : false),
       autocomplete: option.autocomplete,
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),

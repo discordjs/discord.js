@@ -14,7 +14,7 @@ class NewsChannel extends BaseGuildTextChannel {
    * @param {string} [reason] Reason for creating the webhook
    * @returns {Promise<NewsChannel>}
    * @example
-   * if (channel.type === 'GUILD_NEWS') {
+   * if (channel.type === ChannelType.GuildNews) {
    *   channel.addFollower('222197033908436994', 'Important announcements')
    *     .then(() => console.log('Added follower'))
    *     .catch(console.error);
