@@ -325,8 +325,9 @@ class ApplicationCommand extends Base {
     }
 
     if (existing.channelTypes) {
+      const newTypes = option.channelTypes ?? option.channel_types;
       for (const type of existing.channelTypes) {
-        if (!option.channelTypes.includes(type)) return false;
+        if (!newTypes.includes(type)) return false;
       }
     }
 

@@ -22,13 +22,11 @@ class Channel extends Base {
   constructor(client, data, immediatePatch = true) {
     super(client);
 
-    const type = ChannelType[data?.type];
     /**
      * The type of the channel
      * @type {ChannelType}
      */
-    // TODO: Better way of handling unknown?
-    this.type = type ?? -1;
+    this.type = data.type;
 
     if (data && immediatePatch) this._patch(data);
   }

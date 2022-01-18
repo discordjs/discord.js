@@ -833,14 +833,18 @@ export class DataResolver extends null {
 
 export class EnumResolvers extends null {
   private constructor();
-  public static resolveChannelType(key: string | number): ChannelType;
-  public static resolveInteractionType(key: string | number): InteractionType;
-  public static resolveApplicationCommandType(key: string | number): ApplicationCommandType;
-  public static resolveApplicationCommandOptionType(key: string | number): ApplicationCommandOptionType;
-  public static resolveApplicationCommandPermissionType(key: string | number): ApplicationCommandPermissionType;
-  public static resolveComponentType(key: string | number): ComponentType;
-  public static resolveButtonStyle(key: string | number): ButtonStyle;
-  public static resolveMessageType(key: string | number): MessageType;
+  public static resolveChannelType(key: string | ChannelType): ChannelType;
+  public static resolveInteractionType(key: string | InteractionType): InteractionType;
+  public static resolveApplicationCommandType(key: string | ApplicationCommandType): ApplicationCommandType;
+  public static resolveApplicationCommandOptionType(
+    key: string | ApplicationCommandOptionType,
+  ): ApplicationCommandOptionType;
+  public static resolveApplicationCommandPermissionType(
+    key: string | ApplicationCommandPermissionType,
+  ): ApplicationCommandPermissionType;
+  public static resolveComponentType(key: string | ComponentType): ComponentType;
+  public static resolveButtonStyle(key: string | ButtonStyle): ButtonStyle;
+  public static resolveMessageType(key: string | MessageType): MessageType;
 }
 
 export class DiscordAPIError extends Error {
@@ -2836,14 +2840,17 @@ export type MappedGuildChannelTypes = {
   [ChannelType.GuildCategory]: CategoryChannel;
 } & MappedChannelCategoryTypes;
 
-export type GuildChannelTypes = CategoryChannelType | ChannelType.GuildCategory | 'GuildCategory';
+export type GuildChannelTypes = CategoryChannelType | ChannelType.GuildCategory;
 
 export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChannel, GuildChannelResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildChannelData>);
   public readonly channelCountWithoutThreads: number;
   public guild: Guild;
   /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public create(name: string, options: GuildChannelCreateOptions & { type: 'GuildStore' }): Promise<StoreChannel>;
+  public create(
+    name: string,
+    options: GuildChannelCreateOptions & { type: ChannelType.GuildStore },
+  ): Promise<StoreChannel>;
   /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
   public create<T extends CategoryChannelType | ChannelType.GuildCategory>(
     name: string,

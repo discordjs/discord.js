@@ -1,6 +1,7 @@
 'use strict';
 
 const process = require('node:process');
+const { ChannelType } = require('discord-api-types');
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError, TypeError } = require('../errors');
 
@@ -497,21 +498,21 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(
 
 /**
  * The types of channels that are text-based. The available types are:
- * * DM
- * * GUILD_TEXT
- * * GUILD_NEWS
- * * GUILD_NEWS_THREAD
- * * GUILD_PUBLIC_THREAD
- * * GUILD_PRIVATE_THREAD
- * @typedef {string} TextBasedChannelTypes
+ * * `ChannelType.DM`
+ * * `ChannelType.GuildText`
+ * * `ChannelType.GuildNews`
+ * * `ChannelType.GuildNewsThread`
+ * * `ChannelType.GuildPublicThread`
+ * * `ChannelType.GuildPrivateThread`
+ * @typedef {ChannelType} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
-  'DM',
-  'GUILD_TEXT',
-  'GUILD_NEWS',
-  'GUILD_NEWS_THREAD',
-  'GUILD_PUBLIC_THREAD',
-  'GUILD_PRIVATE_THREAD',
+  ChannelType.DM,
+  ChannelType.GuildText,
+  ChannelType.GuildNews,
+  ChannelType.GuildNewsThread,
+  ChannelType.GuildPublicThread,
+  ChannelType.GuildPrivateThread,
 ];
 
 /**

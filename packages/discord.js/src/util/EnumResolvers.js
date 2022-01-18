@@ -12,11 +12,15 @@ const {
 } = require('discord-api-types/v9');
 
 function unknownKeyStrategy(val) {
-  console.log(`Could not resolve enum value for ${val}`);
-  return -1;
+  throw new Error(`Could not resolve enum value for ${val}`);
 }
 
 class EnumResolvers extends null {
+  /**
+   * Resolves enum key to `ChannelType` enum value
+   * @param {string|ChannelType} key The key to resolve
+   * @returns {ChannelType}
+   */
   static resolveChannelType(key) {
     switch (key) {
       case 'GUILD_TEXT':
@@ -44,6 +48,11 @@ class EnumResolvers extends null {
     }
   }
 
+  /**
+   * Resolves enum key to `InteractionType` enum value
+   * @param {string|InteractionType} key The key to resolve
+   * @returns {InteractionType}
+   */
   static resolveInteractionType(key) {
     switch (key) {
       case 'PING':
@@ -59,6 +68,11 @@ class EnumResolvers extends null {
     }
   }
 
+  /**
+   * Resolves enum key to `ApplicationCommandType` enum value
+   * @param {string|ApplicationCommandType} key The key to resolve
+   * @returns {ApplicationCommandType}
+   */
   static resolveApplicationCommandType(key) {
     switch (key) {
       case 'CHAT_INPUT':
@@ -72,6 +86,11 @@ class EnumResolvers extends null {
     }
   }
 
+  /**
+   * Resolves enum key to `ApplicationCommandOptionType` enum value
+   * @param {string|ApplicationCommandOptionType} key The key to resolve
+   * @returns {ApplicationCommandOptionType}
+   */
   static resolveApplicationCommandOptionType(key) {
     switch (key) {
       case 'SUB_COMMAND':
@@ -90,11 +109,20 @@ class EnumResolvers extends null {
         return ApplicationCommandOptionType.Channel;
       case 'ROLE':
         return ApplicationCommandOptionType.Role;
+      case 'NUMBER':
+        return ApplicationCommandOptionType.Number;
+      case 'MENTIONABLE':
+        return ApplicationCommandOptionType.Mentionable;
       default:
         return unknownKeyStrategy(key);
     }
   }
 
+  /**
+   * Resolves enum key to `ApplicationCommandPermissionType` enum value
+   * @param {string|ApplicationCommandPermissionType} key The key to resolve
+   * @returns {ApplicationCommandPermissionType}
+   */
   static resolveApplicationCommandPermissionType(key) {
     switch (key) {
       case 'ROLE':
@@ -106,6 +134,11 @@ class EnumResolvers extends null {
     }
   }
 
+  /**
+   * Resolves enum key to `ComponentType` enum value
+   * @param {string|ComponentType} key The key to resolve
+   * @returns {ComponentType}
+   */
   static resolveComponentType(key) {
     switch (key) {
       case 'ACTION_ROW':
@@ -119,6 +152,11 @@ class EnumResolvers extends null {
     }
   }
 
+  /**
+   * Resolves enum key to `ButtonStyle` enum value
+   * @param {string|ButtonStyle} key The key to resolve
+   * @returns {ButtonStyle}
+   */
   static resolveButtonStyle(key) {
     switch (key) {
       case 'PRIMARY':
@@ -136,6 +174,11 @@ class EnumResolvers extends null {
     }
   }
 
+  /**
+   * Resolves enum key to `MessageType` enum value
+   * @param {string|MessageType} key The key to lookup
+   * @returns {MessageType}
+   */
   static resolveMessageType(key) {
     switch (key) {
       case 'DEFAULT':
@@ -207,14 +250,13 @@ function preconditioner(func) {
 
 // Injects wrapper into class static methods.
 function applyPreconditioner(obj) {
-  Object.getOwnPropertyNames(obj).forEach(name => {
-    console.log(name);
+  for (const name in Object.getOwnPropertyNames(obj)) {
     if (typeof obj[name] !== 'function') {
       return;
     }
 
     obj[name] = preconditioner(obj[name]);
-  });
+  }
 }
 
 // Apply precondition logic

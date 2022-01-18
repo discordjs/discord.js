@@ -137,7 +137,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    *  permissions: [
    *    {
    *      id: '876543210987654321',
-   *      type: 'USER',
+   *      type: ApplicationCommandOptionType.User,
    *      permission: false,
    *    },
    * ]})
@@ -150,7 +150,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    *     id: '123456789012345678',
    *     permissions: [{
    *       id: '876543210987654321',
-   *       type: 'USER',
+   *       type: ApplicationCommandOptionType.User,
    *       permission: false,
    *     }],
    *   },
@@ -212,7 +212,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * guild.commands.permissions.add({ command: '123456789012345678', permissions: [
    *   {
    *     id: '876543211234567890',
-   *     type: 'ROLE',
+   *     type: ApplicationCommandPermissionType.Role,
    *     permission: false
    *   },
    * ]})

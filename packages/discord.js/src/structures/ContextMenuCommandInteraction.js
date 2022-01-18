@@ -28,8 +28,8 @@ class ContextMenuCommandInteraction extends CommandInteraction {
     this.targetId = data.data.target_id;
 
     /**
-     * The type of the target of the interaction; either USER or MESSAGE
-     * @type {ApplicationCommandType.User|ApplicationCommandType.Message}
+     * The type of the target of the interaction; either `.User` or `.Message`
+     * @type {ApplicationCommandType}
      */
     this.targetType = data.data.type;
   }

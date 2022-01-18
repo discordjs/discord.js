@@ -115,7 +115,7 @@ class MessageMentions {
           this.crosspostedChannels.set(d.id, {
             channelId: d.id,
             guildId: d.guild_id,
-            type: d.type ?? -1,
+            type: d.type,
             name: d.name,
           });
         }
