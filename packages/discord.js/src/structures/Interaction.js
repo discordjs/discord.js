@@ -162,7 +162,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isChatInputCommand() {
-    return this.type === InteractionType.ApplicationCommand && typeof this.targetId === 'undefined';
+    return this.isCommand() && typeof this.targetId === 'undefined';
   }
 
   /**
@@ -170,7 +170,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isContextMenuCommand() {
-    return this.type === InteractionType.ApplicationCommand && typeof this.targetId !== 'undefined';
+    return this.isCommand() && typeof this.targetId !== 'undefined';
   }
 
   /**
@@ -210,7 +210,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isButton() {
-    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.Button;
+    return this.isMessageComponent() && this.componentType === ComponentType.Button;
   }
 
   /**
@@ -218,7 +218,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isSelectMenu() {
-    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.SelectMenu;
+    return this.isMessageComponent() && this.componentType === ComponentType.SelectMenu;
   }
 
   /**
