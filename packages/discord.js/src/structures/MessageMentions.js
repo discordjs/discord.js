@@ -185,7 +185,7 @@ class MessageMentions {
    */
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
     const user = this.client.users.resolve(data),
-      role = this.guild ? this.guild.roles.resolve(data) : null,
+      role = this.guild?.roles.resolve(data) ?? null,
       channel = this.client.channels.resolve(data),
       isDirect = user ?? role ?? channel;
 
