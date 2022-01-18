@@ -13,7 +13,7 @@ const Util = require('../util/Util');
  */
 class BaseClient extends EventEmitter {
   constructor(options = {}) {
-    super();
+    super({ captureRejections: true });
 
     if (typeof options !== 'object' || options === null) {
       throw new TypeError('INVALID_TYPE', 'options', 'object', true);
