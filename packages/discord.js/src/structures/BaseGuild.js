@@ -1,6 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { Routes } = require('discord-api-types/v9');
 const Base = require('./Base');
 
 /**
@@ -91,7 +92,7 @@ class BaseGuild extends Base {
    * @returns {?string}
    */
   iconURL(options = {}) {
-    return this.icon && this.client.rest.cdn.Icon(this.id, this.icon, options);
+    return this.icon && this.client.rest.cdn.icon(this.id, this.icon, options);
   }
 
   /**
@@ -99,7 +100,9 @@ class BaseGuild extends Base {
    * @returns {Promise<Guild>}
    */
   async fetch() {
-    const data = await this.client.api.guilds(this.id).get({ query: { with_counts: true } });
+    const data = await this.client.rest.get(Routes.guild(this.id), {
+      query: new URLSearchParams({ with_counts: true }),
+    });
     return this.client.guilds._add(data);
   }
 

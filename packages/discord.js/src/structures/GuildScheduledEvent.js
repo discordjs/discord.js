@@ -1,10 +1,9 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { GuildScheduledEventStatus, GuildScheduledEventEntityType } = require('discord-api-types/v9');
+const { GuildScheduledEventStatus, GuildScheduledEventEntityType, RouteBases } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Error } = require('../errors');
-const { Endpoints } = require('../util/Constants');
 
 /**
  * Represents a scheduled event in a {@link Guild}.
@@ -216,7 +215,7 @@ class GuildScheduledEvent extends Base {
    * @readonly
    */
   get url() {
-    return Endpoints.scheduledEvent(this.client.options.http.scheduledEvent, this.guildId, this.id);
+    return `${RouteBases.scheduledEvent}/${this.guildId}/${this.id}`;
   }
 
   /**
@@ -240,7 +239,7 @@ class GuildScheduledEvent extends Base {
       if (!channelId) throw new Error('GUILD_CHANNEL_RESOLVE');
     }
     const invite = await this.guild.invites.create(channelId, options);
-    return Endpoints.invite(this.client.options.http.invite, invite.code, this.id);
+    return `${RouteBases.invite}/${invite.code}?event=${this.id}`;
   }
 
   /**

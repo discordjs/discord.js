@@ -3,6 +3,7 @@
 const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
+const { Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
@@ -199,8 +200,8 @@ class GuildManager extends CachedManager {
     }
     systemChannelFlags &&= SystemChannelFlags.resolve(systemChannelFlags);
 
-    const data = await this.client.api.guilds.post({
-      data: {
+    const data = await this.client.rest.post(Routes.guilds(), {
+      body: {
         name,
         icon,
         verification_level: verificationLevel,
@@ -266,11 +267,13 @@ class GuildManager extends CachedManager {
         if (existing) return existing;
       }
 
-      const data = await this.client.api.guilds(id).get({ query: { with_counts: options.withCounts ?? true } });
+      const data = await this.client.rest.get(Routes.guild(id), {
+        query: new URLSearchParams({ with_counts: options.withCounts ?? true }),
+      });
       return this._add(data, options.cache);
     }
 
-    const data = await this.client.api.users('@me').guilds.get({ query: options });
+    const data = await this.client.rest.get(Routes.userGuilds(), { query: new URLSearchParams(options) });
     return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
   }
 }

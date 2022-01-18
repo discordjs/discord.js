@@ -1,11 +1,11 @@
 'use strict';
 
+const { RouteBases, Routes } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
 const InviteStageInstance = require('./InviteStageInstance');
 const { Error } = require('../errors');
-const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
 /**
@@ -267,7 +267,7 @@ class Invite extends Base {
    * @readonly
    */
   get url() {
-    return Endpoints.invite(this.client.options.http.invite, this.code);
+    return `${RouteBases.invite}/${this.code}`;
   }
 
   /**
@@ -276,7 +276,7 @@ class Invite extends Base {
    * @returns {Promise<Invite>}
    */
   async delete(reason) {
-    await this.client.api.invites[this.code].delete({ reason });
+    await this.client.rest.delete(Routes.invite(this.code), { reason });
     return this;
   }
 

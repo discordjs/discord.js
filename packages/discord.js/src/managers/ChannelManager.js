@@ -1,6 +1,7 @@
 'use strict';
 
 const process = require('node:process');
+const { Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { Channel } = require('../structures/Channel');
 const { Events, ThreadChannelTypes } = require('../util/Constants');
@@ -112,7 +113,7 @@ class ChannelManager extends CachedManager {
       if (existing && !existing.partial) return existing;
     }
 
-    const data = await this.client.api.channels(id).get();
+    const data = await this.client.rest.get(Routes.channel(id));
     return this._add(data, null, { cache, allowUnknownGuild });
   }
 }

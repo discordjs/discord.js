@@ -2,7 +2,7 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { OverwriteType } = require('discord-api-types/v9');
+const { OverwriteType, Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
@@ -99,13 +99,10 @@ class PermissionOverwriteManager extends CachedManager {
 
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options, existing);
 
-    await this.client.api
-      .channels(this.channel.id)
-      .permissions(userOrRoleId)
-      .put({
-        data: { id: userOrRoleId, type, allow, deny },
-        reason,
-      });
+    await this.client.rest.put(Routes.channelPermission(this.channel.id, userOrRoleId), {
+      body: { id: userOrRoleId, type, allow, deny },
+      reason,
+    });
     return this.channel;
   }
 
@@ -157,7 +154,7 @@ class PermissionOverwriteManager extends CachedManager {
     const userOrRoleId = this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole);
     if (!userOrRoleId) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
 
-    await this.client.api.channels(this.channel.id).permissions(userOrRoleId).delete({ reason });
+    await this.client.rest.delete(Routes.channelPermission(this.channel.id, userOrRoleId), { reason });
     return this.channel;
   }
 }

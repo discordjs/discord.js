@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError } = require('../errors');
@@ -322,8 +322,8 @@ class ThreadChannel extends Channel {
         autoArchiveDuration = 4320;
       }
     }
-    const newData = await this.client.api.channels(this.id).patch({
-      data: {
+    const newData = await this.client.rest.patch(Routes.channel(this.id), {
+      body: {
         name: (data.name ?? this.name).trim(),
         archived: data.archived,
         auto_archive_duration: autoArchiveDuration,
@@ -540,7 +540,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   async delete(reason) {
-    await this.client.api.channels(this.id).delete({ reason });
+    await this.client.rest.delete(Routes.channel(this.id), { reason });
     return this;
   }
 

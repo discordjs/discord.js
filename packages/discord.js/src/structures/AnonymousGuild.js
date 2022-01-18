@@ -71,7 +71,7 @@ class AnonymousGuild extends BaseGuild {
    * @returns {?string}
    */
   bannerURL(options = {}) {
-    return this.banner && this.client.rest.cdn.Banner(this.id, this.banner, options);
+    return this.banner && this.client.rest.cdn.banner(this.id, this.banner, options);
   }
 
   /**
@@ -80,7 +80,7 @@ class AnonymousGuild extends BaseGuild {
    * @returns {?string}
    */
   splashURL(options = {}) {
-    return this.splash && this.client.rest.cdn.Splash(this.id, this.splash, options);
+    return this.splash && this.client.rest.cdn.splash(this.id, this.splash, options);
   }
 }
 

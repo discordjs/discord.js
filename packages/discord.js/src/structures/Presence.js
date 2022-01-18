@@ -361,7 +361,7 @@ class RichPresenceAssets {
       }
     }
 
-    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.smallImage, options);
+    return this.activity.presence.client.rest.cdn.appAsset(this.activity.applicationId, this.smallImage, options);
   }
 
   /**
@@ -387,7 +387,7 @@ class RichPresenceAssets {
       }
     }
 
-    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.largeImage, options);
+    return this.activity.presence.client.rest.cdn.appAsset(this.activity.applicationId, this.largeImage, options);
   }
 }
 

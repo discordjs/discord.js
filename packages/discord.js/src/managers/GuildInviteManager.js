@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
 const Invite = require('../structures/Invite');
@@ -155,12 +156,12 @@ class GuildInviteManager extends CachedManager {
   }
 
   async _fetchMany(cache) {
-    const data = await this.client.api.guilds(this.guild.id).invites.get();
+    const data = await this.client.rest.get(Routes.guildInvites(this.guild.id));
     return data.reduce((col, invite) => col.set(invite.code, this._add(invite, cache)), new Collection());
   }
 
   async _fetchChannelMany(channelId, cache) {
-    const data = await this.client.api.channels(channelId).invites.get();
+    const data = await this.client.rest.get(Routes.channelInvites(channelId));
     return data.reduce((col, invite) => col.set(invite.code, this._add(invite, cache)), new Collection());
   }
 
@@ -182,8 +183,8 @@ class GuildInviteManager extends CachedManager {
     const id = this.guild.channels.resolveId(channel);
     if (!id) throw new Error('GUILD_CHANNEL_RESOLVE');
 
-    const invite = await this.client.api.channels(id).invites.post({
-      data: {
+    const invite = await this.client.rest.post(Routes.channelInvites(id), {
+      body: {
         temporary,
         max_age: maxAge,
         max_uses: maxUses,
@@ -206,7 +207,7 @@ class GuildInviteManager extends CachedManager {
   async delete(invite, reason) {
     const code = DataResolver.resolveInviteCode(invite);
 
-    await this.client.api.invites(code).delete({ reason });
+    await this.client.rest.delete(Routes.invite(code), { reason });
   }
 }
 

@@ -2,10 +2,9 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType, RouteBases, Routes } = require('discord-api-types/v9');
 const fetch = require('node-fetch');
-const { Colors, Endpoints } = require('./Constants');
-const Options = require('./Options');
+const { Colors } = require('./Constants');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
 
@@ -269,8 +268,7 @@ class Util extends null {
    */
   static async fetchRecommendedShards(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
-    const defaults = Options.createDefault();
-    const response = await fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
+    const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
     });
@@ -495,16 +493,17 @@ class Util extends null {
    * @param {number} position New position for the object
    * @param {boolean} relative Whether `position` is relative to its current position
    * @param {Collection<string, Channel|Role>} sorted A collection of the objects sorted properly
-   * @param {APIRouter} route Route to call PATCH on
+   * @param {Client} client The client to use to patch the data
+   * @param {string} route Route to call PATCH on
    * @param {string} [reason] Reason for the change
    * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
-  static async setPosition(item, position, relative, sorted, route, reason) {
+  static async setPosition(item, position, relative, sorted, client, route, reason) {
     let updatedItems = [...sorted.values()];
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
-    await route.patch({ data: updatedItems, reason });
+    await client.rest.patch(route, { body: updatedItems, reason });
     return updatedItems;
   }
 

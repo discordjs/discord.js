@@ -1,5 +1,6 @@
 'use strict';
 
+const { Routes } = require('discord-api-types/v9');
 const BaseGuildEmoji = require('./BaseGuildEmoji');
 const { Error } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
@@ -81,7 +82,7 @@ class GuildEmoji extends BaseGuildEmoji {
         throw new Error('MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION', this.guild);
       }
     }
-    const data = await this.client.api.guilds(this.guild.id).emojis(this.id).get();
+    const data = await this.client.rest.get(Routes.guildEmoji(this.guild.id, this.id));
     this._patch(data);
     return this.author;
   }

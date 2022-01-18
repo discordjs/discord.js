@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { Routes } = require('discord-api-types/v9');
 const Base = require('./Base');
 const GuildPreviewEmoji = require('./GuildPreviewEmoji');
 const { Sticker } = require('./Sticker');
@@ -138,7 +139,7 @@ class GuildPreview extends Base {
    * @returns {?string}
    */
   splashURL(options = {}) {
-    return this.splash && this.client.rest.cdn.Splash(this.id, this.splash, options);
+    return this.splash && this.client.rest.cdn.splash(this.id, this.splash, options);
   }
 
   /**
@@ -147,7 +148,7 @@ class GuildPreview extends Base {
    * @returns {?string}
    */
   discoverySplashURL(options = {}) {
-    return this.discoverySplash && this.client.rest.cdn.DiscoverySplash(this.id, this.discoverySplash, options);
+    return this.discoverySplash && this.client.rest.cdn.discoverySplash(this.id, this.discoverySplash, options);
   }
 
   /**
@@ -156,7 +157,7 @@ class GuildPreview extends Base {
    * @returns {?string}
    */
   iconURL(options = {}) {
-    return this.icon && this.client.rest.cdn.Icon(this.id, this.icon, options);
+    return this.icon && this.client.rest.cdn.icon(this.id, this.icon, options);
   }
 
   /**
@@ -164,7 +165,7 @@ class GuildPreview extends Base {
    * @returns {Promise<GuildPreview>}
    */
   async fetch() {
-    const data = await this.client.api.guilds(this.id).preview.get();
+    const data = await this.client.rest.get(Routes.guildPreview(this.id));
     this._patch(data);
     return this;
   }
