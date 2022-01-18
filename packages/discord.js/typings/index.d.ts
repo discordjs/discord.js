@@ -499,7 +499,6 @@ export class CategoryChannel extends GuildChannel {
     name: string,
     options: CategoryCreateChannelOptions & { type: T },
   ): Promise<MappedChannelCategoryTypes[T]>;
-
   /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
   public createChannel(
     name: string,
@@ -2837,17 +2836,18 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   private constructor(guild: Guild, iterable?: Iterable<RawGuildChannelData>);
   public readonly channelCountWithoutThreads: number;
   public guild: Guild;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public create(
-    name: string,
-    options: GuildChannelCreateOptions & { type: ChannelType.GuildStore },
-  ): Promise<StoreChannel>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public create<T extends CategoryChannelType | ChannelType.GuildCategory>(
+
+  public create<T extends Exclude<GuildChannelTypes, ChannelType.GuildStore>>(
     name: string,
     options: GuildChannelCreateOptions & { type: T },
   ): Promise<MappedGuildChannelTypes[T]>;
-  public create(name: string, options: GuildChannelCreateOptions): Promise<NonThreadGuildBasedChannel>;
+  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
+  public create(
+    name: string,
+    options: GuildChannelCreateOptions & { type: ChannelType.GuildStore | 'GuildStore' },
+  ): Promise<StoreChannel>;
+
+  public create(name: string, options?: GuildChannelCreateOptions): Promise<TextChannel>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<NonThreadGuildBasedChannel | null>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, NonThreadGuildBasedChannel>>;
   public setPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
