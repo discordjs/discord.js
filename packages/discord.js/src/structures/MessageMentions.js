@@ -185,7 +185,7 @@ class MessageMentions {
    */
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
     const user = this.client.users.resolve(data);
-    const role = this.guild?.roles.resolve(data) ?? null;
+    const role = this.guild?.roles.resolve(data);
     const channel = this.client.channels.resolve(data);
     const isDirect = user ?? role ?? channel;
 
@@ -196,7 +196,7 @@ class MessageMentions {
     }
     if (user && !ignoreEveryone && this.everyone) return true;
     if (!ignoreRoles) {
-      const member = this.guild?.members.resolve(data) ?? null;
+      const member = this.guild?.members.resolve(data);
       if (member) {
         for (const mentionedRole of this.roles.values()) if (member.roles.cache.has(mentionedRole.id)) return true;
       }
