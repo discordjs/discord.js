@@ -311,7 +311,7 @@ class GuildChannel extends Channel {
     if (data.lockPermissions) {
       if (data.parent) {
         const newParent = this.guild.channels.resolve(data.parent);
-        if (newParent?.type === 'GuildCategory') {
+        if (newParent?.type === ChannelType.GuildCategory) {
           permission_overwrites = newParent.permissionOverwrites.cache.map(o =>
             PermissionOverwrites.resolve(o, this.guild),
           );
@@ -326,7 +326,7 @@ class GuildChannel extends Channel {
     const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name ?? this.name).trim(),
-        type: ChannelType[data.type],
+        type: data.type,
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate ?? this.bitrate,

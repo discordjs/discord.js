@@ -1,7 +1,6 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { ApplicationCommandOptionType } = require('discord-api-types/v9');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
@@ -151,7 +150,7 @@ class CommandInteraction extends Interaction {
   transformOption(option, resolved) {
     const result = {
       name: option.name,
-      type: ApplicationCommandOptionType[option.type],
+      type: option.type,
     };
 
     if ('value' in option) result.value = option.value;

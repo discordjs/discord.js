@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ApplicationCommandType, ApplicationCommandOptionType, ChannelType } = require('discord-api-types/v9');
+const { ApplicationCommandOptionType, ChannelType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
 
@@ -48,7 +48,7 @@ class ApplicationCommand extends Base {
      * The type of this application command
      * @type {ApplicationCommandType}
      */
-    this.type = ApplicationCommandType[data.type];
+    this.type = data.type;
 
     this._patch(data);
   }

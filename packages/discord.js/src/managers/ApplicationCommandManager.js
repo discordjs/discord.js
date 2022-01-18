@@ -1,7 +1,6 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { ApplicationCommandType } = require('discord-api-types/v9');
 const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
@@ -207,7 +206,7 @@ class ApplicationCommandManager extends CachedManager {
     return {
       name: command.name,
       description: command.description,
-      type: typeof command.type === 'number' ? command.type : ApplicationCommandType[command.type],
+      type: command.type,
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
       default_permission: command.defaultPermission ?? command.default_permission,
     };

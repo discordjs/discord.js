@@ -741,7 +741,6 @@ class Guild extends AnonymousGuild {
    */
   async fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
-    if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
     const data = await this.client.api.guilds(this.id)['audit-logs'].get({
       query: {
@@ -1287,12 +1286,11 @@ class Guild extends AnonymousGuild {
    */
   _sortedChannels(channel) {
     const category = channel.type === ChannelType.GuildCategory;
+    const channelTypes = [ChannelType.GuildText, ChannelType.GuildNews, ChannelType.GuildStore];
     return Util.discordSort(
       this.channels.cache.filter(
         c =>
-          ([ChannelType.GuildText, ChannelType.GuildNews, ChannelType.GuildStore].includes(channel.type)
-            ? [ChannelType.GuildText, ChannelType.GuildNews, ChannelType.GuildStore].includes(c.type)
-            : c.type === channel.type) &&
+          (channelTypes.includes(channel.type) ? channelTypes.includes(c.type) : c.type === channel.type) &&
           (category || c.parent === channel.parent),
       ),
     );

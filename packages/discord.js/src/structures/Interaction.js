@@ -154,7 +154,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isCommand() {
-    return InteractionType[this.type] === InteractionType.ApplicationCommand;
+    return this.type === InteractionType.ApplicationCommand;
   }
 
   /**
@@ -218,10 +218,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isSelectMenu() {
-    return (
-      InteractionType[this.type] === InteractionType.MessageComponent &&
-      ComponentType[this.componentType] === ComponentType.SelectMenu
-    );
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.SelectMenu;
   }
 
   /**

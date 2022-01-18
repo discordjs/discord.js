@@ -71,7 +71,7 @@ class PermissionOverwrites extends Base {
    *   .catch(console.error);
    */
   async edit(options, reason) {
-    await this.channel.permissionOverwrites.upsert(this.id, options, { type: OverwriteType[this.type], reason }, this);
+    await this.channel.permissionOverwrites.upsert(this.id, options, { type: this.type, reason }, this);
     return this;
   }
 
