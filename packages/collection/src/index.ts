@@ -695,7 +695,7 @@ export class Collection<K, V> extends Map<K, V> {
 		other: ReadonlyCollection<K, T>,
 		whenInSelf: (value: V, key: K) => Keep<R>,
 		whenInOther: (valueOther: T, key: K) => Keep<R>,
-		whenInBoth: (value: V, valueOther: T, key: K) => Keep<R>
+		whenInBoth: (value: V, valueOther: T, key: K) => Keep<R>,
 	): Collection<K, R> {
 		const coll = new this.constructor[Symbol.species]<K, R>();
 		const keys = new Set([...this.keys(), ...other.keys()]);
@@ -738,7 +738,36 @@ export class Collection<K, V> extends Map<K, V> {
 	private static defaultSort<V>(firstValue: V, secondValue: V): number {
 		return Number(firstValue > secondValue) || Number(firstValue === secondValue) - 1;
 	}
+
+	/**
+	 * Creates a Collection from a list of entries.
+	 * @param entries The list of entries
+	 * @param combine Function to combine an existing entry with a new one
+	 *
+	 * @example
+	 * Collection.combineEntries([["a", 1], ["b", 2], ["a", 2]], (x, y) => x + y);
+	 * // returns Collection { "a" => 3, "b" => 2 }
+	 */
+	public static combineEntries<K, V>(
+		entries: Iterable<[K, V]>,
+		combine: (firstValue: V, secondValue: V, key: K) => V,
+	): Collection<K, V> {
+		const coll = new Collection<K, V>();
+		for (const [k, v] of entries) {
+			if (coll.has(k)) {
+				coll.set(k, combine(coll.get(k)!, v, k));
+			} else {
+				coll.set(k, v);
+			}
+		}
+		return coll;
+	}
 }
+
+/**
+ * @internal
+ */
+export type Keep<V> = { keep: true; value: V } | { keep: false };
 
 /**
  * @internal

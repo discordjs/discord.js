@@ -462,15 +462,21 @@ describe('ensure() tests', () => {
 });
 
 describe('merge() tests', () => {
-	const cL = new Collection([['L', 1], ['LR', 2]]);
-	const cR = new Collection([['R', 3], ['LR', 4]]);
+	const cL = new Collection([
+		['L', 1],
+		['LR', 2],
+	]);
+	const cR = new Collection([
+		['R', 3],
+		['LR', 4],
+	]);
 
 	test('merges two collection, with all keys together', () => {
 		const c = cL.merge(
 			cR,
 			(x) => ({ keep: true, value: `L${x}` }),
 			(y) => ({ keep: true, value: `R${y}` }),
-			(x, y) => ({ keep: true, value: `LR${x},${y}` })
+			(x, y) => ({ keep: true, value: `LR${x},${y}` }),
 		);
 		expect(c.get('L')).toStrictEqual('L1');
 		expect(c.get('R')).toStrictEqual('R3');
@@ -483,7 +489,7 @@ describe('merge() tests', () => {
 			cR,
 			() => ({ keep: false }),
 			(y) => ({ keep: true, value: `R${y}` }),
-			(x, y) => ({ keep: true, value: `LR${x},${y}` })
+			(x, y) => ({ keep: true, value: `LR${x},${y}` }),
 		);
 		expect(c.get('R')).toStrictEqual('R3');
 		expect(c.get('LR')).toStrictEqual('LR2,4');
@@ -495,7 +501,7 @@ describe('merge() tests', () => {
 			cR,
 			(x) => ({ keep: true, value: `L${x}` }),
 			() => ({ keep: false }),
-			(x, y) => ({ keep: true, value: `LR${x},${y}` })
+			(x, y) => ({ keep: true, value: `LR${x},${y}` }),
 		);
 		expect(c.get('L')).toStrictEqual('L1');
 		expect(c.get('LR')).toStrictEqual('LR2,4');
@@ -507,10 +513,42 @@ describe('merge() tests', () => {
 			cR,
 			(x) => ({ keep: true, value: `L${x}` }),
 			(y) => ({ keep: true, value: `R${y}` }),
-			() => ({ keep: false })
+			() => ({ keep: false }),
 		);
 		expect(c.get('L')).toStrictEqual('L1');
 		expect(c.get('R')).toStrictEqual('R3');
 		expect(c.size).toStrictEqual(2);
+	});
+});
+
+describe('combineEntries() tests', () => {
+	test('it adds entries together', () => {
+		const c = Collection.combineEntries(
+			[
+				['a', 1],
+				['b', 2],
+				['a', 2],
+			],
+			(x, y) => x + y,
+		);
+		expect([...c]).toStrictEqual([
+			['a', 3],
+			['b', 2],
+		]);
+	});
+
+	test('it really goes through all the entries', () => {
+		const c = Collection.combineEntries(
+			[
+				['a', [1]],
+				['b', [2]],
+				['a', [2]],
+			],
+			(x, y) => x.concat(y),
+		);
+		expect([...c]).toStrictEqual([
+			['a', [1, 2]],
+			['b', [2]],
+		]);
 	});
 });
