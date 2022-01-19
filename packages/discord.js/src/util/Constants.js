@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { ChannelType, MessageType } = require('discord-api-types/v9');
+const { ChannelType, MessageType, StickerFormatType } = require('discord-api-types/v9');
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError, TypeError } = require('../errors');
 
@@ -84,7 +84,8 @@ exports.Endpoints = {
       DiscoverySplash: (guildId, hash, options) =>
         makeImageUrl(`${root}/discovery-splashes/${guildId}`, { hash, ...options }),
       TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}`, { hash, ...options }),
-      Sticker: (stickerId, format) => `${root}/stickers/${stickerId}.${format === 'LOTTIE' ? 'json' : 'png'}`,
+      Sticker: (stickerId, format) =>
+        `${root}/stickers/${stickerId}.${format === StickerFormatType.Lottie ? 'json' : 'png'}`,
       RoleIcon: (roleId, hash, options) => makeImageUrl(`${root}/role-icons/${roleId}`, { hash, ...options }),
     };
   },
