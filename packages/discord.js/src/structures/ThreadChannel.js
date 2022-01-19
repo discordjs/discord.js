@@ -101,6 +101,17 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.archiveTimestamp = Date.parse(data.thread_metadata.archive_timestamp);
+
+      if ('create_timestamp' in data.thread_metadata) {
+        /**
+         * The timestamp when this thread was created. This isn't available for threads
+         * created before 2022-01-09
+         * @type {?number}
+         */
+        this.createTimestamp = Date.parse(data.thread_metadata.create_timestamp);
+      } else {
+        this.createTimestamp = null;
+      }
     } else {
       this.locked ??= null;
       this.archived ??= null;
