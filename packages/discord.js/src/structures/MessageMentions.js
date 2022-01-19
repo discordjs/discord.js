@@ -179,7 +179,8 @@ class MessageMentions {
 
   /**
    * Checks if a user, guild member, role, or channel is mentioned.
-   * Takes into account user mentions, role mentions, channel mentions, replied user mention, and `@everyone`/`@here` mentions.
+   * Takes into account user mentions, role mentions, channel mentions,
+   * replied user mention, and `@everyone`/`@here` mentions.
    * @param {UserResolvable|RoleResolvable|ChannelResolvable} data The User/Role/Channel to check for
    * @param {MessageMentionsHasOptions} [options] The options for the check
    * @returns {boolean}
