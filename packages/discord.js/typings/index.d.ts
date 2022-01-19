@@ -2844,7 +2844,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
   public create(
     name: string,
-    options: GuildChannelCreateOptions & { type: ChannelType.GuildStore | 'GuildStore' },
+    options: GuildChannelCreateOptions & { type: ChannelType.GuildStore },
   ): Promise<StoreChannel>;
 
   public create(name: string, options?: GuildChannelCreateOptions): Promise<TextChannel>;
