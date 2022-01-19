@@ -1,13 +1,10 @@
 'use strict';
 
-const process = require('node:process');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { WebhookType } = require('discord-api-types/v9');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const DataResolver = require('../util/DataResolver');
-
-let deprecationEmittedForFetchMessage = false;
 
 /**
  * Represents a webhook.
@@ -272,25 +269,11 @@ class Webhook {
   /**
    * Gets a message that was sent by this webhook.
    * @param {Snowflake|'@original'} message The id of the message to fetch
-   * @param {WebhookFetchMessageOptions|boolean} [cacheOrOptions={}] The options to provide to fetch the message.
-   * <warn>A **deprecated** boolean may be passed instead to specify whether to cache the message.</warn>
+   * @param {WebhookFetchMessageOptions} [options={}] The options to provide to fetch the message.
    * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
-  async fetchMessage(message, cacheOrOptions = { cache: true }) {
-    if (typeof cacheOrOptions === 'boolean') {
-      if (!deprecationEmittedForFetchMessage) {
-        process.emitWarning(
-          'Passing a boolean to cache the message in Webhook#fetchMessage is deprecated. Pass an object instead.',
-          'DeprecationWarning',
-        );
-
-        deprecationEmittedForFetchMessage = true;
-      }
-
-      cacheOrOptions = { cache: cacheOrOptions };
-    }
-
+  async fetchMessage(message, { cache = true, threadId } = {}) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     const data = await this.client.api
@@ -298,11 +281,11 @@ class Webhook {
       .messages(message)
       .get({
         query: {
-          thread_id: cacheOrOptions.threadId,
+          thread_id: threadId,
         },
         auth: false,
       });
-    return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cacheOrOptions.cache) ?? data;
+    return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ?? data;
   }
 
   /**
