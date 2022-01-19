@@ -915,6 +915,8 @@ declare const guildChannelManager: GuildChannelManager;
 {
   type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel;
 
+  expectType<Promise<TextChannel>>(guildChannelManager.create('name'));
+  expectType<Promise<TextChannel>>(guildChannelManager.create('name', {}));
   expectType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildVoice }));
   expectType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildCategory }));
   expectType<Promise<TextChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildText }));
