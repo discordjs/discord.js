@@ -110,7 +110,7 @@ class ThreadChannel extends Channel {
          */
         this.createTimestamp = Date.parse(data.thread_metadata.create_timestamp);
       } else {
-        this.createTimestamp = null;
+        this.createTimestamp ??= null;
       }
     } else {
       this.locked ??= null;
