@@ -2617,8 +2617,6 @@ export class WelcomeScreen extends Base {
 
 //#region Constants
 
-export type EnumHolder<T> = { [P in keyof T]: T[P] };
-
 export const Constants: {
   Package: {
     name: string;
