@@ -41,6 +41,7 @@ jobs:
         run: yarn --immutable
 
       - name: Build dependencies
+        if: steps.pre-release.outputs.release == 'true'
         run: yarn build --cache-dir=".turbo"
 
       - name: Deprecate old versions
