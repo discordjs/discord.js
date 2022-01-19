@@ -21,12 +21,31 @@ const sublimitIntervals = {
 const sublimit = { body: { name: 'newname' } };
 const noSublimit = { body: { bitrate: 40000 } };
 
+function startSublimitIntervals() {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (!sublimitIntervals.reset) {
+		sublimitResetAfter = Date.now() + 250;
+		sublimitIntervals.reset = setInterval(() => {
+			sublimitRequests = 0;
+			sublimitResetAfter = Date.now() + 250;
+		}, 250);
+	}
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	if (!sublimitIntervals.retry) {
+		retryAfter = Date.now() + 1000;
+		sublimitIntervals.retry = setInterval(() => {
+			sublimitHits = 0;
+			retryAfter = Date.now() + 1000;
+		}, 1000);
+	}
+}
+
 nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 	.persist()
 	.replyDate()
 	.get('/standard')
 	.times(3)
-	.reply(function handler(): nock.ReplyFnResult {
+	.reply((): nock.ReplyFnResult => {
 		const response = Date.now() >= resetAfter ? 204 : 429;
 		resetAfter = Date.now() + 250;
 		if (response === 204) {
@@ -62,8 +81,8 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 		];
 	})
 	.get('/triggerGlobal')
-	.reply(function handler(): nock.ReplyFnResult {
-		return [
+	.reply(
+		(): nock.ReplyFnResult => [
 			204,
 			{ global: true },
 			{
@@ -71,12 +90,12 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 				'retry-after': '1',
 				via: '1.1 google',
 			},
-		];
-	})
+		],
+	)
 	.get('/regularRequest')
 	.reply(204, { test: true })
 	.patch('/channels/:id', (body) => ['name', 'topic'].some((key) => Reflect.has(body as Record<string, unknown>, key)))
-	.reply(function handler(): nock.ReplyFnResult {
+	.reply((): nock.ReplyFnResult => {
 		sublimitHits += 1;
 		sublimitRequests += 1;
 		const response = 2 - sublimitHits >= 0 && 10 - sublimitRequests >= 0 ? 204 : 429;
@@ -113,7 +132,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 	.patch('/channels/:id', (body) =>
 		['name', 'topic'].every((key) => !Reflect.has(body as Record<string, unknown>, key)),
 	)
-	.reply(function handler(): nock.ReplyFnResult {
+	.reply((): nock.ReplyFnResult => {
 		sublimitRequests += 1;
 		const response = 10 - sublimitRequests >= 0 ? 204 : 429;
 		startSublimitIntervals();
@@ -148,7 +167,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 	})
 	.get('/unexpected')
 	.times(2)
-	.reply(function handler(): nock.ReplyFnResult {
+	.reply((): nock.ReplyFnResult => {
 		if (unexpected429) {
 			unexpected429 = false;
 			return [
@@ -164,7 +183,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 	})
 	.get('/unexpected-cf')
 	.times(2)
-	.reply(function handler(): nock.ReplyFnResult {
+	.reply((): nock.ReplyFnResult => {
 		if (unexpected429cf) {
 			unexpected429cf = false;
 			return [
@@ -179,7 +198,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 	})
 	.get('/temp')
 	.times(2)
-	.reply(function handler(): nock.ReplyFnResult {
+	.reply((): nock.ReplyFnResult => {
 		if (serverOutage) {
 			serverOutage = false;
 			return [500];
@@ -345,22 +364,3 @@ test('Reject on RateLimit', async () => {
 test('malformedRequest', async () => {
 	expect(await api.get('/malformedRequest')).toBe(null);
 });
-
-function startSublimitIntervals() {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (!sublimitIntervals.reset) {
-		sublimitResetAfter = Date.now() + 250;
-		sublimitIntervals.reset = setInterval(() => {
-			sublimitRequests = 0;
-			sublimitResetAfter = Date.now() + 250;
-		}, 250);
-	}
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (!sublimitIntervals.retry) {
-		retryAfter = Date.now() + 1000;
-		sublimitIntervals.retry = setInterval(() => {
-			sublimitHits = 0;
-			retryAfter = Date.now() + 1000;
-		}, 1000);
-	}
-}

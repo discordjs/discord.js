@@ -5,21 +5,6 @@ import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOp
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
 
-export function validateRequiredParameters(
-	name: string,
-	description: string,
-	options: ToAPIApplicationCommandOptions[],
-) {
-	// Assert name matches all conditions
-	validateName(name);
-
-	// Assert description conditions
-	validateDescription(description);
-
-	// Assert options conditions
-	validateMaxOptionsLength(options);
-}
-
 const namePredicate = z
 	.string()
 	.min(1)
@@ -36,6 +21,27 @@ export function validateDescription(description: unknown): asserts description i
 	descriptionPredicate.parse(description);
 }
 
+const maxArrayLengthPredicate = z.unknown().array().max(25);
+
+export function validateMaxOptionsLength(options: unknown): asserts options is ToAPIApplicationCommandOptions[] {
+	maxArrayLengthPredicate.parse(options);
+}
+
+export function validateRequiredParameters(
+	name: string,
+	description: string,
+	options: ToAPIApplicationCommandOptions[],
+) {
+	// Assert name matches all conditions
+	validateName(name);
+
+	// Assert description conditions
+	validateDescription(description);
+
+	// Assert options conditions
+	validateMaxOptionsLength(options);
+}
+
 const booleanPredicate = z.boolean();
 
 export function validateDefaultPermission(value: unknown): asserts value is boolean {
@@ -44,12 +50,6 @@ export function validateDefaultPermission(value: unknown): asserts value is bool
 
 export function validateRequired(required: unknown): asserts required is boolean {
 	booleanPredicate.parse(required);
-}
-
-const maxArrayLengthPredicate = z.unknown().array().max(25);
-
-export function validateMaxOptionsLength(options: unknown): asserts options is ToAPIApplicationCommandOptions[] {
-	maxArrayLengthPredicate.parse(options);
 }
 
 export function validateMaxChoicesLength(choices: APIApplicationCommandOptionChoice[]) {

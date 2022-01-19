@@ -252,7 +252,7 @@ export class SequentialHandler {
 				// Set RateLimitData based on the route-specific limit
 				limit = this.limit;
 				timeout = this.timeToReset;
-				delay = sleep(timeout, undefined, { ref: false });
+				delay = sleep(timeout);
 			}
 			const rateLimitData: RateLimitData = {
 				timeToReset: timeout,
@@ -304,11 +304,12 @@ export class SequentialHandler {
 		try {
 			// node-fetch typings are a bit weird, so we have to cast to any to get the correct signature
 			// Type 'AbortSignal' is not assignable to type 'import("discord.js-modules/node_modules/@types/node-fetch/externals").AbortSignal'
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			res = await fetch(url, { ...options, signal: controller.signal as any });
 		} catch (error: unknown) {
 			// Retry the specified number of times for possible timed out requests
 			if (error instanceof Error && error.name === 'AbortError' && retries !== this.manager.options.retries) {
-				return this.runRequest(routeId, url, options, bodyData, ++retries);
+				return await this.runRequest(routeId, url, options, bodyData, ++retries);
 			}
 
 			throw error;
@@ -354,7 +355,16 @@ export class SequentialHandler {
 			// Let library users know when rate limit buckets have been updated
 			this.debug(['Received bucket hash update', `  Old Hash  : ${this.hash}`, `  New Hash  : ${hash}`].join('\n'));
 			// This queue will eventually be eliminated via attrition
-			this.manager.hashes.set(`${method}:${routeId.bucketRoute}`, hash);
+			this.manager.hashes.set(`${method}:${routeId.bucketRoute}`, { value: hash, lastAccess: Date.now() });
+		} else if (hash) {
+			// Handle the case where hash value doesn't change
+			// Fetch the hash data from the manager
+			const hashData = this.manager.hashes.get(`${method}:${routeId.bucketRoute}`);
+
+			// When fetched, update the last access of the hash
+			if (hashData) {
+				hashData.lastAccess = Date.now();
+			}
 		}
 
 		// Handle retryAfter, which means we have actually hit a rate limit

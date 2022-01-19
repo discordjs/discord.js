@@ -1,10 +1,11 @@
 'use strict';
 
+const { ChannelType } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
-const { ChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
+const { VoiceBasedChannelTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
@@ -298,18 +299,7 @@ class GuildChannel extends Channel {
     data.parent &&= this.client.channels.resolveId(data.parent);
 
     if (typeof data.position !== 'undefined') {
-      const updatedChannels = await Util.setPosition(
-        this,
-        data.position,
-        false,
-        this.guild._sortedChannels(this),
-        this.client.api.guilds(this.guild.id).channels,
-        reason,
-      );
-      this.client.actions.GuildChannelsPositionUpdate.handle({
-        guild_id: this.guild.id,
-        channels: updatedChannels,
-      });
+      await this.setPosition(data.position, { reason });
     }
 
     let permission_overwrites;
@@ -321,7 +311,7 @@ class GuildChannel extends Channel {
     if (data.lockPermissions) {
       if (data.parent) {
         const newParent = this.guild.channels.resolve(data.parent);
-        if (newParent?.type === 'GUILD_CATEGORY') {
+        if (newParent?.type === 'GuildCategory') {
           permission_overwrites = newParent.permissionOverwrites.cache.map(o =>
             PermissionOverwrites.resolve(o, this.guild),
           );
@@ -336,7 +326,7 @@ class GuildChannel extends Channel {
     const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name ?? this.name).trim(),
-        type: ChannelTypes[data.type],
+        type: ChannelType[data.type],
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate ?? this.bitrate,

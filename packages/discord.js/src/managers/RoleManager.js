@@ -7,7 +7,7 @@ const { TypeError } = require('../errors');
 const { Role } = require('../structures/Role');
 const DataResolver = require('../util/DataResolver');
 const Permissions = require('../util/Permissions');
-const { resolveColor, setPosition } = require('../util/Util');
+const { resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
 
@@ -180,19 +180,7 @@ class RoleManager extends CachedManager {
     if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
 
     if (typeof data.position === 'number') {
-      const updatedRoles = await setPosition(
-        role,
-        data.position,
-        false,
-        this.guild._sortedRoles(),
-        this.client.api.guilds(this.guild.id).roles,
-        reason,
-      );
-
-      this.client.actions.GuildRolesPositionUpdate.handle({
-        guild_id: this.guild.id,
-        roles: updatedRoles,
-      });
+      await role.setPosition(data.position, { reason });
     }
 
     let icon = data.icon;

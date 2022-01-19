@@ -1,4 +1,4 @@
-import { methods } from '../Secretbox';
+import { methods } from '../src/util/Secretbox';
 
 jest.mock('tweetnacl');
 

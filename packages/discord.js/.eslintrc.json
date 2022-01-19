@@ -170,6 +170,7 @@
     "prefer-rest-params": "error",
     "prefer-spread": "error",
     "prefer-template": "error",
+    "prefer-object-has-own": "error",
     "rest-spread-spacing": "error",
     "template-curly-spacing": "error",
     "yield-star-spacing": "error",
@@ -195,6 +196,14 @@
       {
         "name": "setImmediate",
         "message": "Import setImmediate from `node:timers` instead"
+      },
+      {
+        "name": "clearTimeout",
+        "message": "Import clearTimeout from `node:timers` instead"
+      },
+      {
+        "name": "clearInterval",
+        "message": "Import clearInterval from `node:timers` instead"
       }
     ]
   }

@@ -1,7 +1,7 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { setTimeout } = require('node:timers');
+const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const CachedManager = require('./CachedManager');
@@ -266,7 +266,10 @@ class GuildMemberManager extends CachedManager {
     _data.roles &&= _data.roles.map(role => (role instanceof Role ? role.id : role));
 
     _data.communication_disabled_until =
-      _data.communicationDisabledUntil && new Date(_data.communicationDisabledUntil).toISOString();
+      // eslint-disable-next-line eqeqeq
+      _data.communicationDisabledUntil != null
+        ? new Date(_data.communicationDisabledUntil).toISOString()
+        : _data.communicationDisabledUntil;
 
     let endpoint = this.client.api.guilds(this.guild.id);
     if (id === this.client.user.id) {

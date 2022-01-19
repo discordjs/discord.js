@@ -62,7 +62,7 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        package: ['builders', 'collection', 'discord.js', 'voice']
+        package: ['builders', 'collection', 'discord.js', 'rest', 'voice']
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: ${{ needs.build.outputs.BRANCH_NAME }}

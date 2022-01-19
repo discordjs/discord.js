@@ -1,9 +1,9 @@
 'use strict';
 
+const { ActivityType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Emoji } = require('./Emoji');
 const ActivityFlags = require('../util/ActivityFlags');
-const { ActivityTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
@@ -168,7 +168,7 @@ class Activity {
      * The activity status's type
      * @type {ActivityType}
      */
-    this.type = typeof data.type === 'number' ? ActivityTypes[data.type] : data.type;
+    this.type = typeof data.type === 'number' ? ActivityType[data.type] : data.type;
 
     /**
      * If the activity is being streamed, a link to the stream
@@ -347,10 +347,10 @@ class RichPresenceAssets {
 
   /**
    * Gets the URL of the small image asset
-   * @param {StaticImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  smallImageURL({ format, size } = {}) {
+  smallImageURL(options = {}) {
     if (!this.smallImage) return null;
     if (this.smallImage.includes(':')) {
       const [platform, id] = this.smallImage.split(':');
@@ -362,18 +362,15 @@ class RichPresenceAssets {
       }
     }
 
-    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.smallImage, {
-      format,
-      size,
-    });
+    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.smallImage, options);
   }
 
   /**
    * Gets the URL of the large image asset
-   * @param {StaticImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  largeImageURL({ format, size } = {}) {
+  largeImageURL(options = {}) {
     if (!this.largeImage) return null;
     if (this.largeImage.includes(':')) {
       const [platform, id] = this.largeImage.split(':');
@@ -391,10 +388,7 @@ class RichPresenceAssets {
       }
     }
 
-    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.largeImage, {
-      format,
-      size,
-    });
+    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationId, this.largeImage, options);
   }
 }
 

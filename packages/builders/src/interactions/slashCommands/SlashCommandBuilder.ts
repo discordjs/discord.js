@@ -133,5 +133,5 @@ export interface SlashCommandOptionsOnlyBuilder
 		Pick<SlashCommandBuilder, 'toJSON'> {}
 
 export interface ToAPIApplicationCommandOptions {
-	toJSON(): APIApplicationCommandOption;
+	toJSON: () => APIApplicationCommandOption;
 }

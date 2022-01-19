@@ -1,7 +1,9 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { ChannelType } = require('discord-api-types/v9');
 const Base = require('./Base');
+const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;
 let DMChannel;
 let NewsChannel;
@@ -10,7 +12,6 @@ let StoreChannel;
 let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
-const { ChannelTypes, ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
@@ -21,7 +22,7 @@ class Channel extends Base {
   constructor(client, data, immediatePatch = true) {
     super(client);
 
-    const type = ChannelTypes[data?.type];
+    const type = ChannelType[data?.type];
     /**
      * The type of the channel
      * @type {ChannelType}
@@ -102,19 +103,59 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   * Indicates whether this channel is a {@link TextChannel}.
    * @returns {boolean}
    */
   isText() {
-    return 'messages' in this;
+    return this.type === ChannelType[ChannelType.GuildText];
   }
 
   /**
-   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
+   * Indicates whether this channel is a {@link DMChannel}.
+   * @returns {boolean}
+   */
+  isDM() {
+    return this.type === ChannelType[ChannelType.DM];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link VoiceChannel}.
    * @returns {boolean}
    */
   isVoice() {
-    return VoiceBasedChannelTypes.includes(this.type);
+    return this.type === ChannelType[ChannelType.GuildVoice];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link PartialGroupDMChannel}.
+   * @returns {boolean}
+   */
+  isGroupDM() {
+    return this.type === ChannelType[ChannelType.GroupDM];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link CategoryChannel}.
+   * @returns {boolean}
+   */
+  isCategory() {
+    return this.type === ChannelType[ChannelType.GuildCategory];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link NewsChannel}.
+   * @returns {boolean}
+   */
+  isNews() {
+    return this.type === ChannelType[ChannelType.GuildNews];
+  }
+
+  /**
+   * Indicates whether this channel is a {@link StoreChannel}.
+   * @returns {boolean}
+   */
+  isStore() {
+    return this.type === ChannelType[ChannelType.GuildStore];
   }
 
   /**
@@ -123,6 +164,30 @@ class Channel extends Base {
    */
   isThread() {
     return ThreadChannelTypes.includes(this.type);
+  }
+
+  /**
+   * Indicates whether this channel is a {@link StageChannel}.
+   * @returns {boolean}
+   */
+  isStage() {
+    return this.type === ChannelType[ChannelType.GuildStageVoice];
+  }
+
+  /**
+   * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   * @returns {boolean}
+   */
+  isTextBased() {
+    return 'messages' in this;
+  }
+
+  /**
+   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
+   * @returns {boolean}
+   */
+  isVoiceBased() {
+    return 'bitrate' in this;
   }
 
   static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
@@ -137,9 +202,9 @@ class Channel extends Base {
 
     let channel;
     if (!data.guild_id && !guild) {
-      if ((data.recipients && data.type !== ChannelTypes.GROUP_DM) || data.type === ChannelTypes.DM) {
+      if ((data.recipients && data.type !== ChannelType.GroupDM) || data.type === ChannelType.DM) {
         channel = new DMChannel(client, data);
-      } else if (data.type === ChannelTypes.GROUP_DM) {
+      } else if (data.type === ChannelType.GroupDM) {
         const PartialGroupDMChannel = require('./PartialGroupDMChannel');
         channel = new PartialGroupDMChannel(client, data);
       }
@@ -148,33 +213,33 @@ class Channel extends Base {
 
       if (guild || allowUnknownGuild) {
         switch (data.type) {
-          case ChannelTypes.GUILD_TEXT: {
+          case ChannelType.GuildText: {
             channel = new TextChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_VOICE: {
+          case ChannelType.GuildVoice: {
             channel = new VoiceChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_CATEGORY: {
+          case ChannelType.GuildCategory: {
             channel = new CategoryChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_NEWS: {
+          case ChannelType.GuildNews: {
             channel = new NewsChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_STORE: {
+          case ChannelType.GuildStore: {
             channel = new StoreChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_STAGE_VOICE: {
+          case ChannelType.GuildStageVoice: {
             channel = new StageChannel(guild, data, client);
             break;
           }
-          case ChannelTypes.GUILD_NEWS_THREAD:
-          case ChannelTypes.GUILD_PUBLIC_THREAD:
-          case ChannelTypes.GUILD_PRIVATE_THREAD: {
+          case ChannelType.GuildNewsThread:
+          case ChannelType.GuildPublicThread:
+          case ChannelType.GuildPrivateThread: {
             channel = new ThreadChannel(guild, data, client, fromInteraction);
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;

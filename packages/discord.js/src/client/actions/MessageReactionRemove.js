@@ -20,7 +20,7 @@ class MessageReactionRemove extends Action {
 
     // Verify channel
     const channel = this.getChannel(data);
-    if (!channel || !channel.isText()) return false;
+    if (!channel || !channel.isTextBased()) return false;
 
     // Verify message
     const message = this.getMessage(data, channel);

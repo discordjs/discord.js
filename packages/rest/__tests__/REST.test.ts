@@ -41,6 +41,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 	.post('/postFile')
 	.times(5)
 	.reply(200, (_, body) => ({
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		body: body
 			.replace(/\r\n/g, '\n')
 			.replace(/-+\d+-*\n?/g, '')
@@ -115,10 +116,10 @@ test('postFile empty', async () => {
 	});
 });
 
-test('postFile file', async () => {
+test('postFile file (string)', async () => {
 	expect(
 		await api.post('/postFile', {
-			files: [{ fileName: 'out.txt', rawBuffer: Buffer.from('Hello') }],
+			files: [{ fileName: 'out.txt', fileData: 'Hello' }],
 		}),
 	).toStrictEqual({
 		body: [
@@ -133,7 +134,7 @@ test('postFile file', async () => {
 test('postFile file and JSON', async () => {
 	expect(
 		await api.post('/postFile', {
-			files: [{ fileName: 'out.txt', rawBuffer: Buffer.from('Hello') }],
+			files: [{ fileName: 'out.txt', fileData: Buffer.from('Hello') }],
 			body: { foo: 'bar' },
 		}),
 	).toStrictEqual({
@@ -153,8 +154,8 @@ test('postFile files and JSON', async () => {
 	expect(
 		await api.post('/postFile', {
 			files: [
-				{ fileName: 'out.txt', rawBuffer: Buffer.from('Hello') },
-				{ fileName: 'out.txt', rawBuffer: Buffer.from('Hi') },
+				{ fileName: 'out.txt', fileData: Buffer.from('Hello') },
+				{ fileName: 'out.txt', fileData: Buffer.from('Hi') },
 			],
 			body: { files: [{ id: 0, description: 'test' }] },
 		}),
@@ -178,7 +179,7 @@ test('postFile files and JSON', async () => {
 test('postFile sticker and JSON', async () => {
 	expect(
 		await api.post('/postFile', {
-			files: [{ key: 'file', fileName: 'sticker.png', rawBuffer: Buffer.from('Sticker') }],
+			files: [{ key: 'file', fileName: 'sticker.png', fileData: Buffer.from('Sticker') }],
 			body: { foo: 'bar' },
 			appendToFormData: true,
 		}),

@@ -151,7 +151,7 @@ export class AudioResource<T = unknown> {
 			this.silenceRemaining--;
 			return SILENCE_FRAME;
 		}
-		const packet: Buffer | null = this.playStream.read();
+		const packet = this.playStream.read() as Buffer | null;
 		if (packet) {
 			this.playbackDuration += 20;
 		}

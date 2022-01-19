@@ -140,12 +140,11 @@ class User extends Base {
 
   /**
    * A link to the user's avatar.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  avatarURL({ format, size, dynamic } = {}) {
-    if (!this.avatar) return null;
-    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size, dynamic);
+  avatarURL(options = {}) {
+    return this.avatar && this.client.rest.cdn.Avatar(this.id, this.avatar, options);
   }
 
   /**
@@ -180,12 +179,11 @@ class User extends Base {
 
   /**
    * A link to the user's banner. See {@link User#banner} for more info
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  bannerURL({ format, size, dynamic } = {}) {
-    if (!this.banner) return this.banner;
-    return this.client.rest.cdn.Banner(this.id, this.banner, format, size, dynamic);
+  bannerURL(options = {}) {
+    return this.banner && this.client.rest.cdn.Banner(this.id, this.banner, options);
   }
 
   /**

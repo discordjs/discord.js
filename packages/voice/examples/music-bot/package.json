@@ -7,7 +7,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"lint": "eslint src --ext .ts",
 		"lint:fix": "eslint src --ext .ts --fix",
-		"prettier": "prettier --write **/*.{ts,js,json,yml,yaml}",
+		"prettier": "prettier --write .",
 		"build": "tsc",
 		"build:check": "tsc --noEmit --incremental false"
 	},

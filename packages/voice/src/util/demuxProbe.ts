@@ -48,16 +48,19 @@ export function demuxProbe(
 ): Promise<ProbeInfo> {
 	return new Promise((resolve, reject) => {
 		// Preconditions
-		if (stream.readableObjectMode) reject(new Error('Cannot probe a readable stream in object mode'));
-		if (stream.readableEnded) reject(new Error('Cannot probe a stream that has ended'));
+		if (stream.readableObjectMode) return reject(new Error('Cannot probe a readable stream in object mode'));
+		if (stream.readableEnded) return reject(new Error('Cannot probe a stream that has ended'));
 
 		let readBuffer = Buffer.alloc(0);
 
 		let resolved: StreamType | undefined = undefined;
 
 		const finish = (type: StreamType) => {
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
 			stream.off('data', onData);
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
 			stream.off('close', onClose);
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
 			stream.off('end', onClose);
 			stream.pause();
 			resolved = type;

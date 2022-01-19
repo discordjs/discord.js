@@ -9,10 +9,7 @@
 
 		// Emit
 		"outDir": "./dist",
-		"sourceRoot": "./",
-
-		// Projects
-		"composite": true
+		"sourceRoot": "./"
 	},
 	"include": ["src/**/*.ts"]
 }

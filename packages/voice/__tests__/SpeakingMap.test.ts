@@ -1,5 +1,5 @@
-import { noop } from '../../util/util';
-import { SpeakingMap } from '../SpeakingMap';
+import { noop } from '../src/util/util';
+import { SpeakingMap } from '../src/receive/SpeakingMap';
 
 jest.useFakeTimers();
 

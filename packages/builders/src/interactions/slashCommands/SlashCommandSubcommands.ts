@@ -48,8 +48,10 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 		validateMaxOptionsLength(options);
 
 		// Get the final result
+		// eslint-disable-next-line @typescript-eslint/no-use-before-define
 		const result = typeof input === 'function' ? input(new SlashCommandSubcommandBuilder()) : input;
 
+		// eslint-disable-next-line @typescript-eslint/no-use-before-define
 		assertReturnOfBuilder(result, SlashCommandSubcommandBuilder);
 
 		// Push it

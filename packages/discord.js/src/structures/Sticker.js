@@ -1,8 +1,8 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { StickerType, StickerFormatType } = require('discord-api-types/v9');
 const Base = require('./Base');
-const { StickerFormatTypes, StickerTypes } = require('../util/Constants');
 
 /**
  * Represents a Sticker.
@@ -37,7 +37,7 @@ class Sticker extends Base {
        * The type of the sticker
        * @type {?StickerType}
        */
-      this.type = StickerTypes[sticker.type];
+      this.type = StickerType[sticker.type];
     } else {
       this.type ??= null;
     }
@@ -47,7 +47,7 @@ class Sticker extends Base {
        * The format of the sticker
        * @type {StickerFormatType}
        */
-      this.format = StickerFormatTypes[sticker.format_type];
+      this.format = StickerFormatType[sticker.format_type];
     }
 
     if ('name' in sticker) {

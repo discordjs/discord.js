@@ -1,7 +1,7 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const BaseMessageComponent = require('./BaseMessageComponent');
+const { createComponent } = require('@discordjs/builders');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
@@ -138,7 +138,7 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c => BaseMessageComponent.create(c).toJSON());
+    const components = this.options.components?.map(c => createComponent(c).toJSON());
 
     let username;
     let avatarURL;

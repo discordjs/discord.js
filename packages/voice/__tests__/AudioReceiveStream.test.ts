@@ -1,5 +1,5 @@
-import { SILENCE_FRAME } from '../../audio/AudioPlayer';
-import { AudioReceiveStream, EndBehaviorType } from '../AudioReceiveStream';
+import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
+import { AudioReceiveStream, EndBehaviorType } from '../src/receive/AudioReceiveStream';
 
 const DUMMY_BUFFER = Buffer.allocUnsafe(16);
 

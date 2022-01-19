@@ -1,9 +1,9 @@
 import { APIVersion } from 'discord-api-types/v9';
 import type { RESTOptions } from '../REST';
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
 const Package = require('../../../package.json');
 
-// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+// eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
 export const DefaultUserAgent = `DiscordBot (${Package.homepage}, ${Package.version})`;
 
 export const DefaultRestOptions: Required<RESTOptions> = {
@@ -19,6 +19,9 @@ export const DefaultRestOptions: Required<RESTOptions> = {
 	timeout: 15_000,
 	userAgentAppendix: `Node.js ${process.version}`,
 	version: APIVersion,
+	hashSweepInterval: 14_400_000, // 4 Hours
+	hashLifetime: 86_400_000, // 24 Hours
+	handlerSweepInterval: 3_600_000, // 1 Hour
 };
 
 /**
@@ -30,6 +33,8 @@ export const enum RESTEvents {
 	RateLimited = 'rateLimited',
 	Request = 'request',
 	Response = 'response',
+	HashSweep = 'hashSweep',
+	HandlerSweep = 'handlerSweep',
 }
 
 export const ALLOWED_EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg', 'gif'] as const;

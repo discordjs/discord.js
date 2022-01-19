@@ -100,6 +100,48 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
     for (const emoji of data) emojis.set(emoji.id, this._add(emoji, cache));
     return emojis;
   }
+
+  /**
+   * Deletes an emoji.
+   * @param {EmojiResolvable} emoji The Emoji resolvable to delete
+   * @param {string} [reason] Reason for deleting the emoji
+   * @returns {Promise<void>}
+   */
+  async delete(emoji, reason) {
+    const id = this.resolveId(emoji);
+    if (!id) throw new TypeError('INVALID_TYPE', 'emoji', 'EmojiResolvable', true);
+    await this.client.api.guilds(this.guild.id).emojis(id).delete({ reason });
+  }
+
+  /**
+   * Edits an emoji.
+   * @param {EmojiResolvable} emoji The Emoji resolvable to edit
+   * @param {GuildEmojiEditData} data The new data for the emoji
+   * @param {string} [reason] Reason for editing this emoji
+   * @returns {Promise<GuildEmoji>}
+   */
+  async edit(emoji, data, reason) {
+    const id = this.resolveId(emoji);
+    if (!id) throw new TypeError('INVALID_TYPE', 'emoji', 'EmojiResolvable', true);
+    const roles = data.roles?.map(r => this.guild.roles.resolveId(r));
+    const newData = await this.client.api
+      .guilds(this.guild.id)
+      .emojis(id)
+      .patch({
+        data: {
+          name: data.name,
+          roles,
+        },
+        reason,
+      });
+    const existing = this.cache.get(id);
+    if (existing) {
+      const clone = existing._clone();
+      clone._patch(newData);
+      return clone;
+    }
+    return this._add(newData);
+  }
 }
 
 module.exports = GuildEmojiManager;
