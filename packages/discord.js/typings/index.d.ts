@@ -2398,8 +2398,6 @@ export class Formatters extends null {
 }
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
-  /** @deprecated Use manageable instead */
-  public readonly editable: boolean;
   public readonly speakable: boolean;
   public type: 'GuildVoice';
   public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
