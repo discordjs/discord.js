@@ -41,11 +41,13 @@ class ReactionUserManager extends CachedManager {
    */
   async fetch({ limit = 100, after } = {}) {
     const message = this.reaction.message;
+    const query = new URLSearchParams({ limit });
+    if (after) {
+      query.set('after', after);
+    }
     const data = await this.client.rest.get(
       Routes.channelMessageReaction(message.channelId, message.id, this.reaction.emoji.identifier),
-      {
-        query: new URLSearchParams({ limit, after }),
-      },
+      { query },
     );
     const users = new Collection();
     for (const rawUser of data) {

@@ -224,9 +224,11 @@ class GuildMemberManager extends CachedManager {
    * @returns {Promise<Collection<Snowflake, GuildMember>>}
    */
   async list({ after, limit = 1, cache = true } = {}) {
-    const data = await this.client.rest.get(Routes.guildMembers(this.guild.id), {
-      query: new URLSearchParams({ after, limit }),
-    });
+    const query = new URLSearchParams({ limit });
+    if (after) {
+      query.set('after', after);
+    }
+    const data = await this.client.rest.get(Routes.guildMembers(this.guild.id), { query });
     return data.reduce((col, member) => col.set(member.user.id, this._add(member, cache)), new Collection());
   }
 

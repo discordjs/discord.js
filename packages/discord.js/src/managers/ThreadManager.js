@@ -212,21 +212,31 @@ class ThreadManager extends CachedManager {
     }
     let timestamp;
     let id;
+    const query = new URLSearchParams();
     if (typeof before !== 'undefined') {
       if (before instanceof ThreadChannel || /^\d{16,19}$/.test(String(before))) {
         id = this.resolveId(before);
         timestamp = this.resolve(before)?.archivedAt?.toISOString();
+        const toUse = type === 'private' && !fetchAll ? id : timestamp;
+        if (toUse) {
+          query.set('before', toUse);
+        }
       } else {
         try {
           timestamp = new Date(before).toISOString();
+          if (type === 'public' || fetchAll) {
+            query.set('before', timestamp);
+          }
         } catch {
           throw new TypeError('INVALID_TYPE', 'before', 'DateResolvable or ThreadChannelResolvable');
         }
       }
     }
-    const raw = await this.client.rest.get(path, {
-      query: new URLSearchParams({ before: type === 'private' && !fetchAll ? id : timestamp, limit }),
-    });
+
+    if (limit) {
+      query.set('limit', limit);
+    }
+    const raw = await this.client.rest.get(path, { query: Array.from(query).length > 0 ? query : undefined });
     return this.constructor._mapThreads(raw, this.client, { parent: this.channel, cache });
   }
 

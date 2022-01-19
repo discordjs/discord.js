@@ -265,8 +265,26 @@ class GuildScheduledEventManager extends CachedManager {
 
     let { limit, withMember, before, after } = options;
 
+    const query = new URLSearchParams();
+
+    if (limit) {
+      query.set('limit', limit);
+    }
+
+    if (withMember) {
+      query.set('with_member', withMember);
+    }
+
+    if (before) {
+      query.set('before', before);
+    }
+
+    if (after) {
+      query.set('after', after);
+    }
+
     const data = await this.client.rest.get(Routes.guildScheduledEventUsers(this.guild.id, guildScheduledEventId), {
-      query: new URLSearchParams({ limit, with_member: withMember, before, after }),
+      query: Array.from(query).length > 0 ? query : undefined,
     });
 
     return data.reduce(

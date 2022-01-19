@@ -276,13 +276,14 @@ class Client extends BaseClient {
    */
   async fetchInvite(invite, options) {
     const code = DataResolver.resolveInviteCode(invite);
-    const data = await this.rest.get(Routes.invite(code), {
-      query: new URLSearchParams({
-        with_counts: true,
-        with_expiration: true,
-        guild_scheduled_event_id: options?.guildScheduledEventId,
-      }),
+    const query = new URLSearchParams({
+      with_counts: true,
+      with_expiration: true,
     });
+    if (options?.guildScheduledEventId) {
+      query.set('guild_scheduled_event_id', options.guildScheduledEventId);
+    }
+    const data = await this.rest.get(Routes.invite(code), { query });
     return new Invite(this, data);
   }
 

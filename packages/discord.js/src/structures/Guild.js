@@ -9,7 +9,7 @@ const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
-const { Error } = require('../errors');
+const { Error, TypeError } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
@@ -742,14 +742,27 @@ class Guild extends AnonymousGuild {
   async fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
 
-    const data = await this.client.rest.get(Routes.guildAuditLog(this.id), {
-      query: new URLSearchParams({
-        before: options.before,
-        limit: options.limit,
-        user_id: this.client.users.resolveId(options.user),
-        action_type: options.type,
-      }),
-    });
+    const query = new URLSearchParams();
+
+    if (options.before) {
+      query.set('before', options.before);
+    }
+
+    if (options.limit) {
+      query.set('limit', options.limit);
+    }
+
+    if (options.user) {
+      const id = this.client.user.resolveId(options.user);
+      if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+      query.set('user_id', id);
+    }
+
+    if (options.type) {
+      query.set('action_type', options.type);
+    }
+
+    const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
     return GuildAuditLogs.build(this, data);
   }
 

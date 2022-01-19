@@ -199,13 +199,14 @@ class Webhook {
       messagePayload = MessagePayload.create(this, options).resolveBody();
     }
 
+    const query = new URLSearchParams({ wait: true });
+
+    if (messagePayload.options.threadId) {
+      query.set('thread_id', messagePayload.options.threadId);
+    }
+
     const { body, files } = await messagePayload.resolveFiles();
-    const d = await this.client.rest.post(Routes.webhook(this.id, this.token), {
-      body,
-      files,
-      query: new URLSearchParams({ thread_id: messagePayload.options.threadId, wait: true }),
-      auth: false,
-    });
+    const d = await this.client.rest.post(Routes.webhook(this.id, this.token), { body, files, query, auth: false });
     return this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? d;
   }
 
@@ -288,9 +289,11 @@ class Webhook {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     const data = await this.client.rest.get(Routes.webhookMessage(this.id, this.token, message), {
-      query: new URLSearchParams({
-        thread_id: threadId,
-      }),
+      query: threadId
+        ? new URLSearchParams({
+            thread_id: threadId,
+          })
+        : undefined,
       auth: false,
     });
     return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ?? data;
@@ -318,9 +321,11 @@ class Webhook {
       {
         body,
         files,
-        query: new URLSearchParams({
-          thread_id: messagePayload.options.threadId,
-        }),
+        query: messagePayload.options.threadId
+          ? new URLSearchParams({
+              thread_id: messagePayload.options.threadId,
+            })
+          : undefined,
         auth: false,
       },
     );
@@ -357,9 +362,11 @@ class Webhook {
     await this.client.rest.delete(
       Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id),
       {
-        query: new URLSearchParams({
-          thread_id: threadId,
-        }),
+        query: threadId
+          ? new URLSearchParams({
+              thread_id: threadId,
+            })
+          : undefined,
         auth: false,
       },
     );
