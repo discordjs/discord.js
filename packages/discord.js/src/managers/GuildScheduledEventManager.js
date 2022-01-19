@@ -271,7 +271,7 @@ class GuildScheduledEventManager extends CachedManager {
       query.set('limit', limit);
     }
 
-    if (withMember) {
+    if (typeof withMember !== 'undefined') {
       query.set('with_member', withMember);
     }
 
