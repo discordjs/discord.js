@@ -2795,11 +2795,6 @@ export class ApplicationCommandPermissionsManager<
     },
   ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
   private permissionsPath(guildId: Snowflake, commandId?: Snowflake): unknown;
-  private static transformPermissions(
-    permissions: ApplicationCommandPermissionData,
-    received: true,
-  ): Omit<APIApplicationCommandPermission, 'type'> & { type: keyof typeof ApplicationCommandPermissionType };
-  private static transformPermissions(permissions: ApplicationCommandPermissionData): APIApplicationCommandPermission;
 }
 
 export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
