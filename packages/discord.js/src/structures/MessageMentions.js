@@ -172,22 +172,24 @@ class MessageMentions {
    * Options used to check for a mention.
    * @typedef {Object} MessageMentionsHasOptions
    * @property {boolean} [ignoreDirect=false] Whether to ignore direct mentions to the item
-   * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to a guild member
+   * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to the item
+   * @property {boolean} [ignoreRepliedUser=false] Whether to ignore replied user mention to the item
    * @property {boolean} [ignoreEveryone=false] Whether to ignore everyone/here mentions
    */
 
   /**
    * Checks if a user, guild member, role, or channel is mentioned.
-   * Takes into account user mentions, role mentions, and `@everyone`/`@here` mentions.
+   * Takes into account user mentions, role mentions, channel mentions, replied user mention, and `@everyone`/`@here` mentions.
    * @param {UserResolvable|RoleResolvable|ChannelResolvable} data The User/Role/Channel to check for
    * @param {MessageMentionsHasOptions} [options] The options for the check
    * @returns {boolean}
    */
-  has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
+  has(data, { ignoreDirect = false, ignoreRoles = false, ignoreRepliedUser = true, ignoreEveryone = false } = {}) {
     const user = this.client.users.resolve(data);
     const role = this.guild?.roles.resolve(data);
     const channel = this.client.channels.resolve(data);
 
+    if (!ignoreRepliedUser && this.repliedUser?.id === user?.id) return true;
     if (!ignoreDirect) {
       if (this.users.has(user?.id)) return true;
       if (!ignoreRoles && this.roles.has(role?.id)) return true;
