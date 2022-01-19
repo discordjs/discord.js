@@ -110,7 +110,7 @@ class ThreadChannel extends Channel {
          */
         this.createdTimestamp = Date.parse(data.thread_metadata.create_timestamp);
       } else {
-        this.createTimestamp ??= null;
+        this.createdTimestamp ??= null;
       }
     } else {
       this.createdTimestamp ??= null;
@@ -206,6 +206,15 @@ class ThreadChannel extends Channel {
    */
   get archivedAt() {
     return this.archiveTimestamp && new Date(this.archiveTimestamp);
+  }
+
+  /**
+   * The time the thread was created at
+   * @type {?Date}
+   * @readonly
+   */
+  get createdAt() {
+    return this.createdTimestamp === null ? null : super.createdAt;
   }
 
   /**
