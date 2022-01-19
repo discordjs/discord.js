@@ -140,9 +140,8 @@ class GuildChannelManager extends CachedManager {
   ) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
-    const intType = typeof type === 'number' ? type : ChannelType[type] ?? ChannelType.GuildText;
 
-    if (intType === ChannelType.GuildStore && !storeChannelDeprecationEmitted) {
+    if (type === ChannelType.GuildStore && !storeChannelDeprecationEmitted) {
       storeChannelDeprecationEmitted = true;
       process.emitWarning(
         // eslint-disable-next-line max-len
@@ -155,7 +154,7 @@ class GuildChannelManager extends CachedManager {
       data: {
         name,
         topic,
-        type: intType,
+        type,
         nsfw,
         bitrate,
         user_limit: userLimit,
