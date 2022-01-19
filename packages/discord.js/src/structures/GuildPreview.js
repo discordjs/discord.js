@@ -4,6 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const GuildPreviewEmoji = require('./GuildPreviewEmoji');
+const { Sticker } = require('./Sticker');
 
 /**
  * Represents the data about the guild any bot can preview, connected to the specified guild.
@@ -103,6 +104,15 @@ class GuildPreview extends Base {
     for (const emoji of data.emojis) {
       this.emojis.set(emoji.id, new GuildPreviewEmoji(this.client, emoji, this));
     }
+
+    /**
+     * Collection of stickers belonging to this guild
+     * @type {Collection<Snowflake, Sticker>}
+     */
+    this.stickers = data.stickers.reduce(
+      (stickers, sticker) => stickers.set(sticker.id, new Sticker(this.client, sticker)),
+      new Collection(),
+    );
   }
   /**
    * The timestamp this guild was created at
