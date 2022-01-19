@@ -187,9 +187,8 @@ class MessageMentions {
     const user = this.client.users.resolve(data);
     const role = this.guild?.roles.resolve(data);
     const channel = this.client.channels.resolve(data);
-    const isDirect = user ?? role ?? channel;
 
-    if (!ignoreDirect && isDirect) {
+    if (!ignoreDirect) {
       if (this.users.has(user?.id)) return true;
       if (!ignoreRoles && this.roles.has(role?.id)) return true;
       if (this.channels.has(channel?.id)) return true;
