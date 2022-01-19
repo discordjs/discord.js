@@ -184,7 +184,7 @@ class MessageMentions {
    * @param {MessageMentionsHasOptions} [options] The options for the check
    * @returns {boolean}
    */
-  has(data, { ignoreDirect = false, ignoreRoles = false, ignoreRepliedUser = true, ignoreEveryone = false } = {}) {
+  has(data, { ignoreDirect = false, ignoreRoles = false, ignoreRepliedUser = false, ignoreEveryone = false } = {}) {
     const user = this.client.users.resolve(data);
     const role = this.guild?.roles.resolve(data);
     const channel = this.client.channels.resolve(data);
