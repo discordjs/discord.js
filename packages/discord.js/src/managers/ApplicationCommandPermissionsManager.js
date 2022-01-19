@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { ApplicationCommandPermissionType, RESTJSONErrorCodes } = require('discord-api-types/v9');
+const { RESTJSONErrorCodes } = require('discord-api-types/v9');
 const BaseManager = require('./BaseManager');
 const { Error, TypeError } = require('../errors');
 
@@ -96,7 +96,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
     const { guildId, commandId } = this._validateOptions(guild, command);
     if (commandId) {
       const data = await this.permissionsPath(guildId, commandId).get();
-      return data.permissions.map(perm => this.constructor.transformPermissions(perm, true));
+      return data.permissions.map(perm => this.constructor.transformPermissions(perm));
     }
 
     const data = await this.permissionsPath(guildId).get();
@@ -104,7 +104,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       (coll, perm) =>
         coll.set(
           perm.id,
-          perm.permissions.map(p => this.constructor.transformPermissions(p, true)),
+          perm.permissions.map(p => this.constructor.transformPermissions(p)),
         ),
       new Collection(),
     );
@@ -137,7 +137,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    *  permissions: [
    *    {
    *      id: '876543210987654321',
-   *      type: 'USER',
+   *      type: ApplicationCommandOptionType.User,
    *      permission: false,
    *    },
    * ]})
@@ -150,7 +150,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    *     id: '123456789012345678',
    *     permissions: [{
    *       id: '876543210987654321',
-   *       type: 'USER',
+   *       type: ApplicationCommandOptionType.User,
    *       permission: false,
    *     }],
    *   },
@@ -168,7 +168,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       const data = await this.permissionsPath(guildId, commandId).put({
         data: { permissions: permissions.map(perm => this.constructor.transformPermissions(perm)) },
       });
-      return data.permissions.map(perm => this.constructor.transformPermissions(perm, true));
+      return data.permissions.map(perm => this.constructor.transformPermissions(perm));
     }
 
     if (!Array.isArray(fullPermissions)) {
@@ -190,7 +190,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       (coll, perm) =>
         coll.set(
           perm.id,
-          perm.permissions.map(p => this.constructor.transformPermissions(p, true)),
+          perm.permissions.map(p => this.constructor.transformPermissions(p)),
         ),
       new Collection(),
     );
@@ -212,7 +212,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * guild.commands.permissions.add({ command: '123456789012345678', permissions: [
    *   {
    *     id: '876543211234567890',
-   *     type: 'ROLE',
+   *     type: ApplicationCommandPermissionType.Role,
    *     permission: false
    *   },
    * ]})
@@ -396,14 +396,11 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * @returns {APIApplicationCommandPermissions}
    * @private
    */
-  static transformPermissions(permissions, received) {
+  static transformPermissions(permissions) {
     return {
       id: permissions.id,
       permission: permissions.permission,
-      type:
-        typeof permissions.type === 'number' && !received
-          ? permissions.type
-          : ApplicationCommandPermissionType[permissions.type],
+      type: permissions.type,
     };
   }
 }

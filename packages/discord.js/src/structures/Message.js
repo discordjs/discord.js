@@ -3,7 +3,7 @@
 const { createComponent } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { MessageType, InteractionType } = require('discord-api-types/v9');
+const { InteractionType, ChannelType, MessageType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
 const InteractionCollector = require('./InteractionCollector');
@@ -15,7 +15,7 @@ const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
-const { SystemMessageTypes } = require('../util/Constants');
+const { NonSystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
@@ -61,13 +61,13 @@ class Message extends Base {
        * The type of the message
        * @type {?MessageType}
        */
-      this.type = MessageType[data.type];
+      this.type = data.type;
 
       /**
        * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
        * @type {?boolean}
        */
-      this.system = SystemMessageTypes.includes(this.type);
+      this.system = !NonSystemMessageTypes.includes(this.type);
     } else {
       this.system ??= null;
       this.type ??= null;
@@ -334,7 +334,7 @@ class Message extends Base {
        */
       this.interaction = {
         id: data.interaction.id,
-        type: InteractionType[data.interaction.type],
+        type: data.interaction.type,
         commandName: data.interaction.name,
         user: this.client.users._add(data.interaction.user),
       };
@@ -620,9 +620,9 @@ class Message extends Base {
       (this.author.id === this.client.user.id ? Permissions.defaultBit : Permissions.FLAGS.MANAGE_MESSAGES);
     const { channel } = this;
     return Boolean(
-      channel?.type === 'GUILD_NEWS' &&
+      channel?.type === ChannelType.GuildNews &&
         !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
-        this.type === 'DEFAULT' &&
+        this.type === MessageType.Default &&
         channel.viewable &&
         channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
@@ -662,7 +662,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === 'GUILD_NEWS') {
+   * if (message.channel.type === ChannelType.GuildNews) {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
@@ -812,7 +812,7 @@ class Message extends Base {
    */
   startThread(options = {}) {
     if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
-    if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
+    if (![ChannelType.GuildText, ChannelType.GuildNews].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
     if (this.hasThread) return Promise.reject(new Error('MESSAGE_EXISTING_THREAD'));

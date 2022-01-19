@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ApplicationCommandType, ApplicationCommandOptionType, ChannelType } = require('discord-api-types/v9');
+const { ApplicationCommandOptionType, ChannelType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
 
@@ -48,7 +48,7 @@ class ApplicationCommand extends Base {
      * The type of this application command
      * @type {ApplicationCommandType}
      */
-    this.type = ApplicationCommandType[data.type];
+    this.type = data.type;
 
     this._patch(data);
   }
@@ -233,13 +233,12 @@ class ApplicationCommand extends Base {
     if (command.id && this.id !== command.id) return false;
 
     // Check top level parameters
-    const commandType = typeof command.type === 'string' ? command.type : ApplicationCommandType[command.type];
     if (
       command.name !== this.name ||
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
       ('autocomplete' in command && command.autocomplete !== this.autocomplete) ||
-      (commandType && commandType !== this.type) ||
+      (command.type && command.type !== this.type) ||
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
@@ -289,14 +288,15 @@ class ApplicationCommand extends Base {
    * @private
    */
   static _optionEquals(existing, option, enforceOptionOrder = false) {
-    const optionType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionType[option.type];
     if (
       option.name !== existing.name ||
-      optionType !== existing.type ||
+      option.type !== existing.type ||
       option.description !== existing.description ||
       option.autocomplete !== existing.autocomplete ||
-      (option.required ?? (['SUB_COMMAND', 'SUB_COMMAND_GROUP'].includes(optionType) ? undefined : false)) !==
-        existing.required ||
+      (option.required ??
+        ([ApplicationCommandOptionType.Subcommand, ApplicationCommandOptionType.SubcommandGroup].includes(option.type)
+          ? undefined
+          : false)) !== existing.required ||
       option.choices?.length !== existing.choices?.length ||
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
@@ -325,9 +325,7 @@ class ApplicationCommand extends Base {
     }
 
     if (existing.channelTypes) {
-      const newTypes = (option.channelTypes ?? option.channel_types).map(type =>
-        typeof type === 'number' ? ChannelType[type] : type,
-      );
+      const newTypes = option.channelTypes ?? option.channel_types;
       for (const type of existing.channelTypes) {
         if (!newTypes.includes(type)) return false;
       }
@@ -370,16 +368,19 @@ class ApplicationCommand extends Base {
    * @private
    */
   static transformOption(option, received) {
-    const stringType = typeof option.type === 'string' ? option.type : ApplicationCommandOptionType[option.type];
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
     return {
-      type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionType[option.type],
+      type: option.type,
       name: option.name,
       description: option.description,
       required:
-        option.required ?? (stringType === 'SUB_COMMAND' || stringType === 'SUB_COMMAND_GROUP' ? undefined : false),
+        option.required ??
+        (option.type === ApplicationCommandOptionType.Subcommand ||
+        option.type === ApplicationCommandOptionType.SubcommandGroup
+          ? undefined
+          : false),
       autocomplete: option.autocomplete,
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),

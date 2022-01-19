@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert');
+const { ChannelType } = require('discord-api-types/v9');
 const { token } = require('./auth');
 const { Client, Intents } = require('../src');
 
@@ -10,7 +11,7 @@ client.on('ready', async () => {
   try {
     const guild = await client.guilds.create('testing', {
       channels: [
-        { name: 'afk channel', type: 'GUILD_VOICE', id: 0 },
+        { name: 'afk channel', type: ChannelType.GuildVoice, id: 0 },
         { name: 'system-channel', id: 1 },
       ],
       afkChannelId: 0,

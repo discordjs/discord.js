@@ -1,6 +1,5 @@
 'use strict';
 
-const { ComponentType } = require('discord-api-types/v9');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
@@ -34,9 +33,9 @@ class MessageComponentInteraction extends Interaction {
 
     /**
      * The type of component which was interacted with
-     * @type {string}
+     * @type {ComponentType}
      */
-    this.componentType = MessageComponentInteraction.resolveType(data.data.component_type);
+    this.componentType = data.data.component_type;
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -79,16 +78,6 @@ class MessageComponentInteraction extends Interaction {
     return this.message.components
       .flatMap(row => row.components)
       .find(component => (component.customId ?? component.custom_id) === this.customId);
-  }
-
-  /**
-   * Resolves the type of a MessageComponent
-   * @param {MessageComponentTypeResolvable} type The type to resolve
-   * @returns {ComponentType}
-   * @private
-   */
-  static resolveType(type) {
-    return typeof type === 'string' ? type : ComponentType[type];
   }
 
   // These are here only for documentation purposes - they are implemented by InteractionResponses

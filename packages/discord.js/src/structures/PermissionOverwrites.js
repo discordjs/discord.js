@@ -37,7 +37,7 @@ class PermissionOverwrites extends Base {
        * The type of this overwrite
        * @type {OverwriteType}
        */
-      this.type = typeof data.type === 'number' ? OverwriteType[data.type] : data.type;
+      this.type = data.type;
     }
 
     if ('deny' in data) {
@@ -71,7 +71,7 @@ class PermissionOverwrites extends Base {
    *   .catch(console.error);
    */
   async edit(options, reason) {
-    await this.channel.permissionOverwrites.upsert(this.id, options, { type: OverwriteType[this.type], reason }, this);
+    await this.channel.permissionOverwrites.upsert(this.id, options, { type: this.type, reason }, this);
     return this;
   }
 
@@ -88,7 +88,7 @@ class PermissionOverwrites extends Base {
   toJSON() {
     return {
       id: this.id,
-      type: OverwriteType[this.type],
+      type: this.type,
       allow: this.allow,
       deny: this.deny,
     };
@@ -174,7 +174,7 @@ class PermissionOverwrites extends Base {
     if (typeof overwrite.id === 'string' && overwrite.type in OverwriteType) {
       return {
         id: overwrite.id,
-        type: OverwriteType[overwrite.type],
+        type: overwrite.type,
         allow: Permissions.resolve(overwrite.allow ?? Permissions.defaultBit).toString(),
         deny: Permissions.resolve(overwrite.deny ?? Permissions.defaultBit).toString(),
       };

@@ -1,5 +1,6 @@
 'use strict';
 
+const { ChannelType } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
@@ -14,7 +15,7 @@ class DMChannel extends Channel {
     super(client, data);
 
     // Override the channel type so partials have a known type
-    this.type = 'DM';
+    this.type = ChannelType.DM;
 
     /**
      * A manager of the messages belonging to this channel

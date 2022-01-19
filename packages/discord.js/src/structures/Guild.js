@@ -1,14 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const {
-  GuildPremiumTier,
-  GuildMFALevel,
-  GuildExplicitContentFilter,
-  GuildDefaultMessageNotifications,
-  GuildVerificationLevel,
-  ChannelType,
-} = require('discord-api-types/v9');
+const { GuildPremiumTier, ChannelType } = require('discord-api-types/v9');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
@@ -240,7 +233,7 @@ class Guild extends AnonymousGuild {
        * The premium tier of this guild
        * @type {GuildPremiumTier}
        */
-      this.premiumTier = GuildPremiumTier[data.premium_tier];
+      this.premiumTier = data.premium_tier;
     }
 
     if ('premium_subscription_count' in data) {
@@ -270,9 +263,9 @@ class Guild extends AnonymousGuild {
     if ('explicit_content_filter' in data) {
       /**
        * The explicit content filter level of the guild
-       * @type {ExplicitContentFilterLevel}
+       * @type {GuildExplicitContentFilter}
        */
-      this.explicitContentFilter = GuildExplicitContentFilter[data.explicit_content_filter];
+      this.explicitContentFilter = data.explicit_content_filter;
     }
 
     if ('mfa_level' in data) {
@@ -280,7 +273,7 @@ class Guild extends AnonymousGuild {
        * The required MFA level for this guild
        * @type {MFALevel}
        */
-      this.mfaLevel = GuildMFALevel[data.mfa_level];
+      this.mfaLevel = data.mfa_level;
     }
 
     if ('joined_at' in data) {
@@ -296,7 +289,7 @@ class Guild extends AnonymousGuild {
        * The default message notification level of the guild
        * @type {GuildDefaultMessageNotifications}
        */
-      this.defaultMessageNotifications = GuildDefaultMessageNotifications[data.default_message_notifications];
+      this.defaultMessageNotifications = data.default_message_notifications;
     }
 
     if ('system_channel_flags' in data) {
@@ -566,7 +559,7 @@ class Guild extends AnonymousGuild {
       return 384_000;
     }
 
-    switch (GuildPremiumTier[this.premiumTier]) {
+    switch (this.premiumTier) {
       case GuildPremiumTier.Tier1:
         return 128_000;
       case GuildPremiumTier.Tier2:
@@ -748,7 +741,6 @@ class Guild extends AnonymousGuild {
    */
   async fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
-    if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
     const data = await this.client.api.guilds(this.id)['audit-logs'].get({
       query: {
@@ -817,10 +809,7 @@ class Guild extends AnonymousGuild {
     const _data = {};
     if (data.name) _data.name = data.name;
     if (typeof data.verificationLevel !== 'undefined') {
-      _data.verification_level =
-        typeof data.verificationLevel === 'number'
-          ? data.verificationLevel
-          : GuildVerificationLevel[data.verificationLevel];
+      _data.verification_level = data.verificationLevel;
     }
     if (typeof data.afkChannel !== 'undefined') {
       _data.afk_channel_id = this.client.channels.resolveId(data.afkChannel);
@@ -837,16 +826,10 @@ class Guild extends AnonymousGuild {
     }
     if (typeof data.banner !== 'undefined') _data.banner = await DataResolver.resolveImage(data.banner);
     if (typeof data.explicitContentFilter !== 'undefined') {
-      _data.explicit_content_filter =
-        typeof data.explicitContentFilter === 'number'
-          ? data.explicitContentFilter
-          : GuildExplicitContentFilter[data.explicitContentFilter];
+      _data.explicit_content_filter = data.explicitContentFilter;
     }
     if (typeof data.defaultMessageNotifications !== 'undefined') {
-      _data.default_message_notifications =
-        typeof data.defaultMessageNotifications === 'number'
-          ? data.defaultMessageNotifications
-          : GuildDefaultMessageNotifications[data.defaultMessageNotifications];
+      _data.default_message_notifications = data.defaultMessageNotifications;
     }
     if (typeof data.systemChannelFlags !== 'undefined') {
       _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
@@ -1303,12 +1286,11 @@ class Guild extends AnonymousGuild {
    */
   _sortedChannels(channel) {
     const category = channel.type === ChannelType.GuildCategory;
+    const channelTypes = [ChannelType.GuildText, ChannelType.GuildNews, ChannelType.GuildStore];
     return Util.discordSort(
       this.channels.cache.filter(
         c =>
-          (['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(channel.type)
-            ? ['GUILD_TEXT', 'GUILD_NEWS', 'GUILD_STORE'].includes(c.type)
-            : c.type === channel.type) &&
+          (channelTypes.includes(channel.type) ? channelTypes.includes(c.type) : c.type === channel.type) &&
           (category || c.parent === channel.parent),
       ),
     );

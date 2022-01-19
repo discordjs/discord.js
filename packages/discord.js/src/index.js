@@ -17,6 +17,7 @@ exports.Collection = require('@discordjs/collection').Collection;
 exports.Constants = require('./util/Constants');
 exports.DataResolver = require('./util/DataResolver');
 exports.DiscordAPIError = require('./rest/DiscordAPIError');
+exports.EnumResolvers = require('./util/EnumResolvers');
 exports.Formatters = require('./util/Formatters');
 exports.HTTPError = require('./rest/HTTPError');
 exports.Intents = require('./util/Intents');

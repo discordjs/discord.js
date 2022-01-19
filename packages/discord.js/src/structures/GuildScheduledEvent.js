@@ -236,7 +236,7 @@ class GuildScheduledEvent extends Base {
    */
   async createInviteURL(options) {
     let channelId = this.channelId;
-    if (this.entityType === 'EXTERNAL') {
+    if (this.entityType === GuildScheduledEventEntityType.External) {
       if (!options?.channel) throw new Error('INVITE_OPTIONS_MISSING_CHANNEL');
       channelId = this.guild.channels.resolveId(options.channel);
       if (!channelId) throw new Error('GUILD_CHANNEL_RESOLVE');
@@ -343,7 +343,7 @@ class GuildScheduledEvent extends Base {
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Set status of a guild scheduled event
-   * guildScheduledEvent.setStatus('ACTIVE')
+   * guildScheduledEvent.setStatus(GuildScheduledEventStatus.Active)
    *  .then(guildScheduledEvent => console.log(`Set the status to: ${guildScheduledEvent.status}`))
    *  .catch(console.error);
    */

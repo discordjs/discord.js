@@ -338,19 +338,19 @@ class GuildAuditLogsEntry {
       case AuditLogEvent.ChannelOverwriteCreate:
       case AuditLogEvent.ChannelOverwriteUpdate:
       case AuditLogEvent.ChannelOverwriteDelete:
-        switch (Number(data.options.type)) {
+        switch (data.options.type) {
           case OverwriteType.Role:
             this.extra = guild.roles.cache.get(data.options.id) ?? {
               id: data.options.id,
               name: data.options.role_name,
-              type: OverwriteType[OverwriteType.Role],
+              type: OverwriteType.Role,
             };
             break;
 
           case OverwriteType.Member:
             this.extra = guild.members.cache.get(data.options.id) ?? {
               id: data.options.id,
-              type: OverwriteType[OverwriteType.Member],
+              type: OverwriteType.Member,
             };
             break;
 

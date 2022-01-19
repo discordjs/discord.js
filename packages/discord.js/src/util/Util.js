@@ -2,6 +2,7 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
+const { ChannelType } = require('discord-api-types/v9');
 const fetch = require('node-fetch');
 const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
@@ -528,7 +529,7 @@ class Util extends null {
     str = str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
-        if (channel.type === 'DM') {
+        if (channel.type === ChannelType.DM) {
           const user = channel.client.users.cache.get(id);
           return user ? `@${user.username}` : input;
         }
@@ -546,7 +547,7 @@ class Util extends null {
         return mentionedChannel ? `#${mentionedChannel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
-        if (channel.type === 'DM') return input;
+        if (channel.type === ChannelType.DM) return input;
         const role = channel.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });

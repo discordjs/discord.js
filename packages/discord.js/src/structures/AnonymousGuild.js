@@ -1,6 +1,5 @@
 'use strict';
 
-const { GuildVerificationLevel, GuildNSFWLevel } = require('discord-api-types/v9');
 const BaseGuild = require('./BaseGuild');
 
 /**
@@ -44,9 +43,9 @@ class AnonymousGuild extends BaseGuild {
     if ('verification_level' in data) {
       /**
        * The verification level of the guild
-       * @type {VerificationLevel}
+       * @type {GuildVerificationLevel}
        */
-      this.verificationLevel = GuildVerificationLevel[data.verification_level];
+      this.verificationLevel = data.verification_level;
     }
 
     if ('vanity_url_code' in data) {
@@ -60,9 +59,9 @@ class AnonymousGuild extends BaseGuild {
     if ('nsfw_level' in data) {
       /**
        * The NSFW level of this guild
-       * @type {NSFWLevel}
+       * @type {GuildNSFWLevel}
        */
-      this.nsfwLevel = GuildNSFWLevel[data.nsfw_level];
+      this.nsfwLevel = data.nsfw_level;
     }
   }
 
