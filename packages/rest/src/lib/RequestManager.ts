@@ -2,14 +2,13 @@ import Collection from '@discordjs/collection';
 import FormData from 'form-data';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { EventEmitter } from 'node:events';
-import { Agent } from 'node:https';
+import { Agent as httpsAgent } from 'node:https';
+import { Agent as httpAgent } from 'node:http';
 import type { RequestInit, BodyInit } from 'node-fetch';
 import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
 import type { RESTOptions, RestEvents } from './REST';
 import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants';
-
-let agent: Agent | null = null;
 
 /**
  * Represents a file to be added to the request
@@ -186,6 +185,7 @@ export class RequestManager extends EventEmitter {
 
 	private hashTimer!: NodeJS.Timer;
 	private handlerTimer!: NodeJS.Timer;
+	private agent: httpsAgent | httpAgent | null = null;
 
 	public readonly options: RESTOptions;
 
@@ -318,7 +318,9 @@ export class RequestManager extends EventEmitter {
 	private resolveRequest(request: InternalRequest): { url: string; fetchOptions: RequestInit } {
 		const { options } = this;
 
-		agent ??= new Agent({ ...options.agent, keepAlive: true });
+		this.agent ??= options.api.startsWith('https')
+			? new httpsAgent({ ...options.agent, keepAlive: true })
+			: new httpAgent({ ...options.agent, keepAlive: true });
 
 		let query = '';
 
@@ -394,7 +396,7 @@ export class RequestManager extends EventEmitter {
 		}
 
 		const fetchOptions = {
-			agent,
+			agent: this.agent,
 			body: finalBody,
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
