@@ -6,7 +6,7 @@ const BitField = require('./BitField');
  * Data structure that makes it easy to interact with a {@link Message#flags} bitfield.
  * @extends {BitField}
  */
-class MessageFlags extends BitField {}
+class MessageFlagsBitfield extends BitField {}
 
 /**
  * @name MessageFlags
@@ -34,7 +34,7 @@ class MessageFlags extends BitField {}
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-flags}
  */
-MessageFlags.FLAGS = {
+MessageFlagsBitfield.FLAGS = {
   CROSSPOSTED: 1 << 0,
   IS_CROSSPOST: 1 << 1,
   SUPPRESS_EMBEDS: 1 << 2,
@@ -45,4 +45,4 @@ MessageFlags.FLAGS = {
   LOADING: 1 << 7,
 };
 
-module.exports = MessageFlags;
+module.exports = MessageFlagsBitfield;

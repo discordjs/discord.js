@@ -2,7 +2,7 @@
 
 const { InteractionResponseType, Routes } = require('discord-api-types/v9');
 const { Error } = require('../../errors');
-const MessageFlags = require('../../util/MessageFlags');
+const MessageFlagsBitfield = require('../../util/MessageFlagsBitfield');
 const MessagePayload = require('../MessagePayload');
 
 /**
@@ -60,7 +60,7 @@ class InteractionResponses {
       body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
-          flags: options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
+          flags: options.ephemeral ? MessageFlagsBitfield.FLAGS.EPHEMERAL : undefined,
         },
       },
       auth: false,

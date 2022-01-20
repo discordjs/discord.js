@@ -15,7 +15,7 @@ const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { NonSystemMessageTypes } = require('../util/Constants');
-const MessageFlags = require('../util/MessageFlags');
+const MessageFlagsBitfield = require('../util/MessageFlagsBitfield');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
@@ -279,9 +279,9 @@ class Message extends Base {
        * Flags that are applied to the message
        * @type {Readonly<MessageFlags>}
        */
-      this.flags = new MessageFlags(data.flags).freeze();
+      this.flags = new MessageFlagsBitfield(data.flags).freeze();
     } else {
-      this.flags = new MessageFlags(this.flags).freeze();
+      this.flags = new MessageFlagsBitfield(this.flags).freeze();
     }
 
     /**
@@ -403,7 +403,7 @@ class Message extends Base {
    * @readonly
    */
   get hasThread() {
-    return this.flags.has(MessageFlags.FLAGS.HAS_THREAD);
+    return this.flags.has(MessageFlagsBitfield.FLAGS.HAS_THREAD);
   }
 
   /**
@@ -620,7 +620,7 @@ class Message extends Base {
     const { channel } = this;
     return Boolean(
       channel?.type === ChannelType.GuildNews &&
-        !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
+        !this.flags.has(MessageFlagsBitfield.FLAGS.CROSSPOSTED) &&
         this.type === MessageType.Default &&
         channel.viewable &&
         channel.permissionsFor(this.client.user)?.has(bitfield, false),
@@ -844,12 +844,12 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   suppressEmbeds(suppress = true) {
-    const flags = new MessageFlags(this.flags.bitfield);
+    const flags = new MessageFlagsBitfield(this.flags.bitfield);
 
     if (suppress) {
-      flags.add(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+      flags.add(MessageFlagsBitfield.FLAGS.SUPPRESS_EMBEDS);
     } else {
-      flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+      flags.remove(MessageFlagsBitfield.FLAGS.SUPPRESS_EMBEDS);
     }
 
     return this.edit({ flags });
