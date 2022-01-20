@@ -324,7 +324,10 @@ export class RequestManager extends EventEmitter {
 
 		// If a query option is passed, use it
 		if (request.query) {
-			query = `?${request.query.toString()}`;
+			const resolvedQuery = request.query.toString();
+			if (resolvedQuery !== '') {
+				query = `?${resolvedQuery}`;
+			}
 		}
 
 		// Create the required headers
