@@ -2239,8 +2239,8 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel) {
   public type: ThreadChannelType;
   public readonly unarchivable: boolean;
   public isPrivate(): this is this & {
-    createdTimestamp: number;
-    createdAt: Date;
+    readonly createdTimestamp: number;
+    readonly createdAt: Date;
     type: ChannelType.GuildPrivateThread;
   };
   public delete(reason?: string): Promise<this>;
