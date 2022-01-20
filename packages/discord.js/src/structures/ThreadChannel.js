@@ -214,7 +214,8 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get createdAt() {
-    return this.createdTimestamp && new Date(this.createdTimestamp);
+    // Private threads can rely on their ID for creation date
+    return (this.createdTimestamp ??= this.type === ChannelType.PrivateThread ? super.createdTimestamp : null);
   }
 
   /**
