@@ -214,7 +214,7 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get createdAt() {
-    return this.createdTimestamp === null ? null : super.createdAt;
+    return this.createdTimestamp === null ? null : new Date(this.createdTimestamp);
   }
 
   /**
