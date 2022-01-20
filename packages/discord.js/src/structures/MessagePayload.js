@@ -151,8 +151,10 @@ class MessagePayload {
     if (typeof this.options.flags !== 'undefined' || this.isMessage || this.isMessageManager) {
       // eslint-disable-next-line eqeqeq
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags?.bitfield;
-    } else if (isInteraction && this.options.ephemeral) {
-      flags = MessageFlags.FLAGS.EPHEMERAL;
+    }
+
+    if (isInteraction && this.options.ephemeral) {
+      flags |= MessageFlags.FLAGS.EPHEMERAL;
     }
 
     let allowedMentions =
