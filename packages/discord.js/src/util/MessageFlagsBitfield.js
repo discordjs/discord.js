@@ -9,7 +9,7 @@ const BitField = require('./BitField');
 class MessageFlagsBitfield extends BitField {}
 
 /**
- * @name MessageFlags
+ * @name MessageFlagsBitfield
  * @kind constructor
  * @memberof MessageFlags
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
@@ -18,7 +18,7 @@ class MessageFlagsBitfield extends BitField {}
 /**
  * Bitfield of the packed bits
  * @type {number}
- * @name MessageFlags#bitfield
+ * @name MessageFlagsBitfield#bitfield
  */
 
 module.exports = MessageFlagsBitfield;

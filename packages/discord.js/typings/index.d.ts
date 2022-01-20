@@ -176,7 +176,6 @@ export class Activity {
 }
 
 export class ActivityFlags extends BitField<ActivityFlagsString> {
-  public static FLAGS: Record<ActivityFlagsString, number>;
   public static resolve(bit?: BitFieldResolvable<ActivityFlagsString, number>): number;
 }
 
@@ -256,7 +255,6 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
 export type ApplicationResolvable = Application | Activity | Snowflake;
 
 export class ApplicationFlags extends BitField<ApplicationFlagsString> {
-  public static FLAGS: Record<ApplicationFlagsString, number>;
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
@@ -411,12 +409,8 @@ export class BitField<S extends string, N extends number | bigint = number> {
   public has(bit: BitFieldResolvable<S, N>): boolean;
   public missing(bits: BitFieldResolvable<S, N>, ...hasParams: readonly unknown[]): S[];
   public remove(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
-  public serialize(...hasParams: readonly unknown[]): Record<S, boolean>;
-  public toArray(...hasParams: readonly unknown[]): S[];
   public toJSON(): N extends number ? number : string;
   public valueOf(): N;
-  public [Symbol.iterator](): IterableIterator<S>;
-  public static FLAGS: Record<string, number | bigint>;
   public static resolve(bit?: BitFieldResolvable<string, number | bigint>): number | bigint;
 }
 
@@ -1252,7 +1246,6 @@ export class IntegrationApplication extends Application {
 }
 
 export class Intents extends BitField<IntentsString> {
-  public static FLAGS: Record<IntentsString, number>;
   public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
 }
 
@@ -1742,13 +1735,10 @@ export class Permissions extends BitField<PermissionString, bigint> {
   public any(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
   public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
   public missing(bits: BitFieldResolvable<PermissionString, bigint>, checkAdmin?: boolean): PermissionString[];
-  public serialize(checkAdmin?: boolean): Record<PermissionString, boolean>;
-  public toArray(): PermissionString[];
 
   public static ALL: bigint;
   public static DEFAULT: bigint;
   public static STAGE_MODERATOR: bigint;
-  public static FLAGS: PermissionFlags;
   public static resolve(permission?: PermissionResolvable): bigint;
 }
 
@@ -2129,7 +2119,6 @@ export class Sweepers {
 }
 
 export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
-  public static FLAGS: Record<SystemChannelFlagsString, number>;
   public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString, number>): number;
 }
 
@@ -2240,7 +2229,6 @@ export class ThreadMember extends Base {
 }
 
 export class ThreadMemberFlags extends BitField<ThreadMemberFlagsString> {
-  public static FLAGS: Record<ThreadMemberFlagsString, number>;
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
@@ -2271,7 +2259,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public discriminator: string;
   public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
-  public flags: Readonly<UserFlags> | null;
+  public flags: Readonly<UserFlagsBitField> | null;
   public readonly hexAccentColor: HexColorString | null | undefined;
   public id: Snowflake;
   public readonly partial: false;
@@ -2285,7 +2273,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public displayAvatarURL(options?: ImageURLOptions): string;
   public equals(user: User): boolean;
   public fetch(force?: boolean): Promise<User>;
-  public fetchFlags(force?: boolean): Promise<UserFlags>;
+  public fetchFlags(force?: boolean): Promise<UserFlagsBitField>;
   public toString(): UserMention;
 }
 
@@ -2299,8 +2287,7 @@ export class UserContextMenuCommandInteraction<
   public inRawGuild(): this is UserContextMenuCommandInteraction<'raw'>;
 }
 
-export class UserFlags extends BitField<UserFlagsString> {
-  public static FLAGS: Record<UserFlagsString, number>;
+export class UserFlagsBitField extends BitField<UserFlagsString> {
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
@@ -3060,7 +3047,7 @@ export class UserManager extends CachedManager<Snowflake, User, UserResolvable> 
   public createDM(user: UserResolvable, options?: BaseFetchOptions): Promise<DMChannel>;
   public deleteDM(user: UserResolvable): Promise<DMChannel>;
   public fetch(user: UserResolvable, options?: BaseFetchOptions): Promise<User>;
-  public fetchFlags(user: UserResolvable, options?: BaseFetchOptions): Promise<UserFlags>;
+  public fetchFlags(user: UserResolvable, options?: BaseFetchOptions): Promise<UserFlagsBitField>;
   public send(user: UserResolvable, options: string | MessagePayload | MessageOptions): Promise<Message>;
 }
 
@@ -5313,22 +5300,26 @@ export {
   ButtonStyle,
   ChannelType,
   ComponentType,
+  GatewayIntentBits,
   GuildMFALevel,
   GuildNSFWLevel,
   GuildPremiumTier,
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
   GuildScheduledEventStatus,
+  GuildSystemChannelFlags,
   GuildVerificationLevel,
   InteractionType,
   InteractionResponseType,
   InviteTargetType,
   MessageType,
   MessageFlags,
+  PermissionFlagsBits,
   RESTJSONErrorCodes,
   StageInstancePrivacyLevel,
   StickerType,
   StickerFormatType,
+  UserFlags,
   WebhookType,
 } from 'discord-api-types/v9';
 export {

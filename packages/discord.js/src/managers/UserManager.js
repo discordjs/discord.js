@@ -95,7 +95,7 @@ class UserManager extends CachedManager {
    * Fetches a user's flags.
    * @param {UserResolvable} user The UserResolvable to identify
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<UserFlags>}
+   * @returns {Promise<UserFlagsBitField>}
    */
   async fetchFlags(user, options) {
     return (await this.fetch(user, options)).flags;
