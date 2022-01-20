@@ -5,7 +5,7 @@ import { SharedNameAndDescription } from './NameAndDescription';
 export abstract class ApplicationCommandOptionBase extends SharedNameAndDescription {
 	public abstract readonly type: ApplicationCommandOptionType;
 
-	public readonly required = false;
+	public readonly required: boolean = false;
 
 	/**
 	 * Marks the option as required
