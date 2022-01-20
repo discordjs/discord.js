@@ -109,17 +109,16 @@ class ThreadChannel extends Channel {
          * @type {?number}
          */
         this.createdTimestamp = Date.parse(data.thread_metadata.create_timestamp);
-      } else {
-        this.createdTimestamp ??= null;
       }
     } else {
-      this.createdTimestamp ??= null;
       this.locked ??= null;
       this.archived ??= null;
       this.autoArchiveDuration ??= null;
       this.archiveTimestamp ??= null;
       this.invitable ??= null;
     }
+
+    this.createdTimestamp ??= this.type === ChannelType.PrivateThread ? super.createdTimestamp : null;
 
     if ('owner_id' in data) {
       /**
