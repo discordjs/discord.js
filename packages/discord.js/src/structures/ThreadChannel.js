@@ -526,7 +526,7 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Whether or not this thread is a private thread or not
+   * Whether this thread is a private thread
    * @returns {boolean}
    */
   isPrivate() {
