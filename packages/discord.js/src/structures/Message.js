@@ -21,7 +21,7 @@ const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { NonSystemMessageTypes } = require('../util/Constants');
-const MessageFlagsBitfield = require('../util/MessageFlagsBitfield');
+const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
@@ -285,9 +285,9 @@ class Message extends Base {
        * Flags that are applied to the message
        * @type {Readonly<MessageFlags>}
        */
-      this.flags = new MessageFlagsBitfield(data.flags).freeze();
+      this.flags = new MessageFlagsBitField(data.flags).freeze();
     } else {
-      this.flags = new MessageFlagsBitfield(this.flags).freeze();
+      this.flags = new MessageFlagsBitField(this.flags).freeze();
     }
 
     /**
@@ -850,7 +850,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   suppressEmbeds(suppress = true) {
-    const flags = new MessageFlagsBitfield(this.flags.bitfield);
+    const flags = new MessageFlagsBitField(this.flags.bitfield);
 
     if (suppress) {
       flags.add(MessageFlags.SuppressEmbeds);

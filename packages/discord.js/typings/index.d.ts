@@ -1466,7 +1466,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public type: MessageType;
   public readonly url: string;
   public webhookId: Snowflake | null;
-  public flags: Readonly<MessageFlagsBitfield>;
+  public flags: Readonly<MessageFlagsBitField>;
   public reference: MessageReference | null;
   public awaitMessageComponent<T extends ComponentType = ComponentType.ActionRow>(
     options?: AwaitMessageCollectorOptionsParams<T, Cached>,
@@ -1620,7 +1620,7 @@ export class MessageEmbed {
   public static normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
 }
 
-export class MessageFlagsBitfield extends BitField<MessageFlagsString> {
+export class MessageFlagsBitField extends BitField<MessageFlagsString> {
   public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
 }
 
