@@ -4671,6 +4671,7 @@ export interface MessageOptions {
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
   attachments?: MessageAttachment[];
+  flags?: BitFieldResolvable<'SUPPRESS_EMBEDS' | 'EPHEMERAL', number>;
 }
 
 export type MessageReactionResolvable =
@@ -5180,10 +5181,11 @@ export interface WebhookFetchMessageOptions {
   threadId?: Snowflake;
 }
 
-export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 'stickers'> {
+export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 'stickers' | 'flags'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
+  flags?: BitFieldResolvable<'SUPPRESS_EMBEDS', number>;
 }
 
 export interface WebSocketOptions {
