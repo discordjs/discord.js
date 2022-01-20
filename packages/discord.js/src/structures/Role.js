@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes } = require('discord-api-types/v9');
+const { Routes, PermissionFlagsBits } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Error } = require('../errors');
 const Permissions = require('../util/Permissions');
@@ -167,7 +167,7 @@ class Role extends Base {
   get editable() {
     if (this.managed) return false;
     const clientMember = this.guild.members.resolve(this.client.user);
-    if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return false;
+    if (!clientMember.permissions.has(PermissionFlagsBits.ManageRoles)) return false;
     return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
 
@@ -286,7 +286,7 @@ class Role extends Base {
    * @returns {Promise<Role>}
    * @example
    * // Set the permissions of the role
-   * role.setPermissions([Permissions.FLAGS.KICK_MEMBERS, Permissions.FLAGS.BAN_MEMBERS])
+   * role.setPermissions([PermissionFlagsBits.KickMember, PermissionFlagsBits.BanMembers])
    *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
    * @example

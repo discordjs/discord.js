@@ -117,7 +117,7 @@ class GuildChannelManager extends CachedManager {
    *   permissionOverwrites: [
    *      {
    *        id: message.author.id,
-   *        deny: [Permissions.FLAGS.VIEW_CHANNEL],
+   *        deny: [PermissionFlagsBits.ViewChannel],
    *     },
    *   ],
    * })

@@ -14,6 +14,8 @@ import {
   ApplicationCommandPermissionType,
   ChannelType,
   InteractionType,
+  GatewayIntentBits,
+  PermissionFlagsBits,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
 import {
@@ -105,7 +107,7 @@ declare const serialize: <T>(value: T) => Serialized<T>;
 declare const notPropertyOf: <T, P extends PropertyKey>(value: T, property: P & Exclude<P, keyof T>) => void;
 
 const client: Client = new Client({
-  intents: Intents.FLAGS.GUILDS,
+  intents: GatewayIntentBits.Guilds,
   makeCache: Options.cacheWithLimits({
     MessageManager: 200,
     // @ts-expect-error
@@ -772,8 +774,8 @@ expectType<{}>(
     ]),
   ),
 );
-expectType<string>(serialize(new Permissions(Permissions.FLAGS.ATTACH_FILES)));
-expectType<number>(serialize(new Intents(Intents.FLAGS.GUILDS)));
+expectType<string>(serialize(new Permissions(PermissionFlagsBits.AttachFiles)));
+expectType<number>(serialize(new Intents(GatewayIntentBits.Guilds)));
 expectAssignable<unknown>(
   serialize(
     new Collection([

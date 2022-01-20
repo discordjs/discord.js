@@ -1,8 +1,7 @@
 'use strict';
 
-const { InteractionResponseType, Routes } = require('discord-api-types/v9');
+const { InteractionResponseType, MessageFlags, Routes } = require('discord-api-types/v9');
 const { Error } = require('../../errors');
-const MessageFlagsBitfield = require('../../util/MessageFlagsBitfield');
 const MessagePayload = require('../MessagePayload');
 
 /**
@@ -60,7 +59,7 @@ class InteractionResponses {
       body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
-          flags: options.ephemeral ? MessageFlagsBitfield.FLAGS.EPHEMERAL : undefined,
+          flags: options.ephemeral ? MessageFlags.Ephemeral : undefined,
         },
       },
       auth: false,

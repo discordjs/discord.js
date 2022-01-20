@@ -1,14 +1,15 @@
 'use strict';
 
-const fetch = require('node-fetch');
 const fs = require('node:fs');
 const path = require('node:path');
 const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
+const { GatewayIntentBits } = require('discord-api-types/v9');
+const fetch = require('node-fetch');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
-const { Client, Intents, MessageAttachment, Embed, WebhookClient } = require('../src');
+const { Client, MessageAttachment, Embed, WebhookClient } = require('../src');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
 const buffer = l => fetch(l).then(res => res.buffer());
 const read = util.promisify(fs.readFile);

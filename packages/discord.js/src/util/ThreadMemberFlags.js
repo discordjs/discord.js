@@ -21,10 +21,4 @@ class ThreadMemberFlags extends BitField {}
  * @name ThreadMemberFlags#bitfield
  */
 
-/**
- * Numeric thread member flags. There are currently no bitflags relevant to bots for this.
- * @type {Object<string, number>}
- */
-ThreadMemberFlags.FLAGS = {};
-
 module.exports = ThreadMemberFlags;

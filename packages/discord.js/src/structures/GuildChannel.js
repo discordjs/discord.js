@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, Routes } = require('discord-api-types/v9');
+const { ChannelType, Routes, PermissionFlagsBits } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
@@ -203,7 +203,7 @@ class GuildChannel extends Channel {
     const roles = member.roles.cache;
     const permissions = new Permissions(roles.map(role => role.permissions));
 
-    if (checkAdmin && permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+    if (checkAdmin && permissions.has(PermissionFlagsBits.Administrator)) {
       return new Permissions(Permissions.ALL).freeze();
     }
 
@@ -227,7 +227,7 @@ class GuildChannel extends Channel {
    * @private
    */
   rolePermissions(role, checkAdmin) {
-    if (checkAdmin && role.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+    if (checkAdmin && role.permissions.has(PermissionFlagsBits.Administrator)) {
       return new Permissions(Permissions.ALL).freeze();
     }
 
@@ -260,7 +260,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get members() {
-    return this.guild.members.cache.filter(m => this.permissionsFor(m).has(Permissions.FLAGS.VIEW_CHANNEL, false));
+    return this.guild.members.cache.filter(m => this.permissionsFor(m).has(PermissionFlagsBits.ViewChannel, false));
   }
 
   /**
@@ -503,12 +503,12 @@ class GuildChannel extends Channel {
     if (!permissions) return false;
 
     // This flag allows managing even if timed out
-    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
     if (this.guild.me.communicationDisabledUntilTimestamp > Date.now()) return false;
 
     const bitfield = VoiceBasedChannelTypes.includes(this.type)
-      ? Permissions.FLAGS.MANAGE_CHANNELS | Permissions.FLAGS.CONNECT
-      : Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.MANAGE_CHANNELS;
+      ? PermissionFlagsBits.ManageChannels | PermissionFlagsBits.Connect
+      : PermissionFlagsBits.ViewChannel | PermissionFlagsBits.ManageChannels;
     return permissions.has(bitfield, false);
   }
 
@@ -521,7 +521,7 @@ class GuildChannel extends Channel {
     if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
-    return permissions.has(Permissions.FLAGS.VIEW_CHANNEL, false);
+    return permissions.has(PermissionFlagsBits.ViewChannel, false);
   }
 
   /**

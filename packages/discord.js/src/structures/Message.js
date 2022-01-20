@@ -3,7 +3,13 @@
 const { createComponent, Embed } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { InteractionType, ChannelType, MessageType } = require('discord-api-types/v9');
+const {
+  InteractionType,
+  ChannelType,
+  MessageType,
+  MessageFlags,
+  PermissionFlagsBits,
+} = require('discord-api-types/v9');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
 const InteractionCollector = require('./InteractionCollector');
@@ -287,7 +293,7 @@ class Message extends Base {
     /**
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
-     * * Crossposted messages (IS_CROSSPOST {@link MessageFlags.FLAGS message flag})
+     * * Crossposted messages (IS_CROSSPOST {@link MessageFlags message flag})
      * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.ChannelPinnedMessage}
      * * {@link MessageType.Reply}
@@ -403,7 +409,7 @@ class Message extends Base {
    * @readonly
    */
   get hasThread() {
-    return this.flags.has(MessageFlagsBitfield.FLAGS.HAS_THREAD);
+    return this.flags.has(MessageFlags.HasThread);
   }
 
   /**
@@ -571,11 +577,11 @@ class Message extends Base {
     const permissions = this.channel?.permissionsFor(this.client.user);
     if (!permissions) return false;
     // This flag allows deleting even if timed out
-    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return Boolean(
       this.author.id === this.client.user.id ||
-        (permissions.has(Permissions.FLAGS.MANAGE_MESSAGES, false) &&
+        (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
           this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
     );
   }
@@ -591,7 +597,7 @@ class Message extends Base {
       !this.system &&
         (!this.guild ||
           (channel?.viewable &&
-            channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
+            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
     );
   }
 
@@ -615,12 +621,12 @@ class Message extends Base {
    */
   get crosspostable() {
     const bitfield =
-      Permissions.FLAGS.SEND_MESSAGES |
-      (this.author.id === this.client.user.id ? Permissions.defaultBit : Permissions.FLAGS.MANAGE_MESSAGES);
+      PermissionFlagsBits.SendMessages |
+      (this.author.id === this.client.user.id ? Permissions.defaultBit : PermissionFlagsBits.ManageMessages);
     const { channel } = this;
     return Boolean(
       channel?.type === ChannelType.GuildNews &&
-        !this.flags.has(MessageFlagsBitfield.FLAGS.CROSSPOSTED) &&
+        !this.flags.has(MessageFlags.Crossposted) &&
         this.type === MessageType.Default &&
         channel.viewable &&
         channel.permissionsFor(this.client.user)?.has(bitfield, false),
@@ -847,9 +853,9 @@ class Message extends Base {
     const flags = new MessageFlagsBitfield(this.flags.bitfield);
 
     if (suppress) {
-      flags.add(MessageFlagsBitfield.FLAGS.SUPPRESS_EMBEDS);
+      flags.add(MessageFlags.SuppressEmbeds);
     } else {
-      flags.remove(MessageFlagsBitfield.FLAGS.SUPPRESS_EMBEDS);
+      flags.remove(MessageFlags.SuppressEmbeds);
     }
 
     return this.edit({ flags });

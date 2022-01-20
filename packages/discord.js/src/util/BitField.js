@@ -48,11 +48,10 @@ class BitField {
   /**
    * Gets all given bits that are missing from the bitfield.
    * @param {BitFieldResolvable} bits Bit(s) to check for
-   * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {string[]}
    */
-  missing(bits, ...hasParams) {
-    return new this.constructor(bits).remove(this).toArray(...hasParams);
+  missing(bits) {
+    return new this.constructor(bits).remove(this);
   }
 
   /**
@@ -93,27 +92,6 @@ class BitField {
     return this;
   }
 
-  /**
-   * Gets an object mapping field names to a {@link boolean} indicating whether the
-   * bit is available.
-   * @param {...*} hasParams Additional parameters for the has method, if any
-   * @returns {Object}
-   */
-  serialize(...hasParams) {
-    const serialized = {};
-    for (const [flag, bit] of Object.entries(this.constructor.FLAGS)) serialized[flag] = this.has(bit, ...hasParams);
-    return serialized;
-  }
-
-  /**
-   * Gets an {@link Array} of bitfield names based on the bits available.
-   * @param {...*} hasParams Additional parameters for the has method, if any
-   * @returns {string[]}
-   */
-  toArray(...hasParams) {
-    return Object.keys(this.constructor.FLAGS).filter(bit => this.has(bit, ...hasParams));
-  }
-
   toJSON() {
     return typeof this.bitfield === 'number' ? this.bitfield : this.bitfield.toString();
   }
@@ -122,17 +100,12 @@ class BitField {
     return this.bitfield;
   }
 
-  *[Symbol.iterator]() {
-    yield* this.toArray();
-  }
-
   /**
    * Data that can be resolved to give a bitfield. This can be:
-   * * A bit number (this can be a number literal or a value taken from {@link BitField.FLAGS})
-   * * A string bit number
+   * * A bit number (this can be a number literal or a value taken from an enum value)
    * * An instance of BitField
    * * An Array of BitFieldResolvable
-   * @typedef {number|string|bigint|BitField|BitFieldResolvable[]} BitFieldResolvable
+   * @typedef {number|bigint|BitField|BitFieldResolvable[]} BitFieldResolvable
    */
 
   /**
@@ -145,21 +118,9 @@ class BitField {
     if (typeof defaultBit === typeof bit && bit >= defaultBit) return bit;
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, defaultBit);
-    if (typeof bit === 'string') {
-      if (typeof this.FLAGS[bit] !== 'undefined') return this.FLAGS[bit];
-      if (!isNaN(bit)) return typeof defaultBit === 'bigint' ? BigInt(bit) : Number(bit);
-    }
     throw new RangeError('BITFIELD_INVALID', bit);
   }
 }
-
-/**
- * Numeric bitfield flags.
- * <info>Defined in extension classes</info>
- * @type {Object}
- * @abstract
- */
-BitField.FLAGS = {};
 
 /**
  * @type {number|bigint}

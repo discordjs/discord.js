@@ -1,5 +1,6 @@
 'use strict';
 
+const { PermissionFlagsBits } = require('discord-api-types/v9');
 const Base = require('./Base');
 const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
@@ -243,7 +244,7 @@ class GuildMember extends Base {
    */
   get kickable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS);
+    return this.manageable && this.guild.me.permissions.has(PermissionFlagsBits.KickMembers);
   }
 
   /**
@@ -253,7 +254,7 @@ class GuildMember extends Base {
    */
   get bannable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
+    return this.manageable && this.guild.me.permissions.has(PermissionFlagsBits.BanMembers);
   }
 
   /**
@@ -262,7 +263,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get moderatable() {
-    return this.manageable && (this.guild.me?.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS) ?? false);
+    return this.manageable && (this.guild.me?.permissions.has(PermissionFlagsBits.ModerateMembers) ?? false);
   }
 
   /**
