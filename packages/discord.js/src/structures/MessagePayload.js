@@ -1,11 +1,10 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { createComponent } = require('@discordjs/builders');
-const { Embed } = require('@discordjs/builders');
+const { createComponent, Embed } = require('@discordjs/builders');
+const { MessageFlags } = require('discord-api-types/v9');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
-const MessageFlags = require('../util/MessageFlags');
 const Util = require('../util/Util');
 
 /**
@@ -154,7 +153,7 @@ class MessagePayload {
     }
 
     if (isInteraction && this.options.ephemeral) {
-      flags |= MessageFlags.FLAGS.EPHEMERAL;
+      flags |= MessageFlags.Ephemeral;
     }
 
     let allowedMentions =
