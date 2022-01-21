@@ -404,6 +404,22 @@ class Webhook {
   }
 
   /**
+   * Whether or not this webhook is created by a user
+   * @returns {boolean}
+   */
+  isUserCreated() {
+    return Boolean(this.owner);
+  }
+
+  /**
+   * Whether or not this webhook is created by an application and not a user
+   * @returns {boolean}
+   */
+  isApplicationCreated() {
+    return Boolean(this.applicationId);
+  }
+
+  /**
    * Whether or not this webhook is a channel follower webhook.
    * @returns {boolean}
    */
