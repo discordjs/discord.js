@@ -2453,7 +2453,7 @@ export class Webhook extends WebhookMixin() {
   public sourceChannel: NewsChannel | APIPartialChannel | null;
   public token: string | null;
   public type: WebhookType;
-  public application_id?: Snowflake;
+  public applicationId: Snowflake | null;
   public isIncoming(): this is this & { token: string };
   public isChannelFollower(): this is this & {
     sourceGuild: Guild | APIPartialGuild;
