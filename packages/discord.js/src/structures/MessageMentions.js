@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { ChannelType } = require('discord-api-types');
 const Util = require('../util/Util');
 
 /**
@@ -160,6 +161,20 @@ class MessageMentions {
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
       const chan = this.client.channels.cache.get(matches[1]);
+      if (
+        ![
+          ChannelType.GuildText,
+          ChannelType.GuildVoice,
+          ChannelType.GuildNews,
+          ChannelType.GuildNewsThread,
+          ChannelType.GuildPublicThread,
+          ChannelType.GuildPrivateThread,
+          ChannelType.GuildStageVoice,
+        ].includes(chan.type)
+      ) {
+        // Go onto the next channel, as this one is not a text channel
+        continue;
+      }
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;
