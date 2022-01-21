@@ -1677,11 +1677,11 @@ export class MessageMentions {
     everyone: boolean,
     repliedUser?: APIUser | User,
   );
-  private _channels: Collection<Snowflake, TextBasedChannel> | null;
+  private _channels: Collection<Snowflake, Exclude<TextBasedChannel, DMChannel> | VoiceBasedChannel> | null;
   private readonly _content: string;
   private _members: Collection<Snowflake, GuildMember> | null;
 
-  public readonly channels: Collection<Snowflake, TextBasedChannel>;
+  public readonly channels: Collection<Snowflake, Exclude<TextBasedChannel, DMChannel> | VoiceBasedChannel>;
   public readonly client: Client;
   public everyone: boolean;
   public readonly guild: Guild;
