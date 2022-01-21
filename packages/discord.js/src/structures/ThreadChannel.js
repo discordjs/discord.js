@@ -118,7 +118,7 @@ class ThreadChannel extends Channel {
       this.invitable ??= null;
     }
 
-    this.createdTimestamp ??= this.type === ChannelType.PrivateThread ? super.createdTimestamp : null;
+    this.createdTimestamp ??= this.type === ChannelType.GuildPrivateThread ? super.createdTimestamp : null;
 
     if ('owner_id' in data) {
       /**
