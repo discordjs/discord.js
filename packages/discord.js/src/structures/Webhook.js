@@ -404,7 +404,7 @@ class Webhook {
   }
 
   /**
-   * Whether or not this webhook is created by a user
+   * Whether or not this webhook is created by a user.
    * @returns {boolean}
    */
   isUserCreated() {
@@ -412,7 +412,7 @@ class Webhook {
   }
 
   /**
-   * Whether or not this webhook is created by an application and not a user
+   * Whether or not this webhook is created by an application and not a user.
    * @returns {boolean}
    */
   isApplicationCreated() {
