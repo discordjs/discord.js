@@ -85,6 +85,16 @@ class Webhook {
       this.owner ??= null;
     }
 
+    if ('application_id' in data) {
+      /**
+       * The application that created this webhook
+       * @type {?Snowflake}
+       */
+      this.applicationId = data.application_id;
+    } else {
+      this.applicationId ??= null;
+    }
+
     if ('source_guild' in data) {
       /**
        * The source guild of the webhook
