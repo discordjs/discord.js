@@ -55,7 +55,7 @@
     "@types/ws": "^8.2.2",
     "discord-api-types": "^0.26.1",
     "form-data": "^4.0.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "ws": "^8.4.0"
   },
   "devDependencies": {
