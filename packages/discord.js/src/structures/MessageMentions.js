@@ -1,7 +1,6 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { ChannelType } = require('discord-api-types');
 const Util = require('../util/Util');
 
 /**
