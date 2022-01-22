@@ -11,7 +11,7 @@ export function parseResponse(res: Response): Promise<unknown> {
 		return res.json();
 	}
 
-	return res.buffer();
+	return res.arrayBuffer();
 }
 
 /**
