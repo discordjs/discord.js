@@ -205,11 +205,13 @@ test('urlEncoded', async () => {
 		['code', 'very-invalid-code'],
 	]);
 	expect(
-		new Uint8Array(await api.post('/urlEncoded', {
-			body,
-			passThroughBody: true,
-			auth: false,
-		}) as ArrayBuffer),
+		new Uint8Array(
+			(await api.post('/urlEncoded', {
+				body,
+				passThroughBody: true,
+				auth: false,
+			})) as ArrayBuffer,
+		),
 	).toStrictEqual(new Uint8Array(Buffer.from(body.toString())));
 });
 
