@@ -391,6 +391,22 @@ describe('Embed', () => {
 			).toThrowError();
 		});
 
+		test('GIVEN an embed using Embed#setFields THEN returns valid toJSON data', () => {
+			const embed = new Embed();
+
+			expect(() =>
+				embed.setFields(...Array.from({ length: 25 }, () => ({ name: 'foo', value: 'bar' }))),
+			).not.toThrowError();
+		});
+
+		test('GIVEN an embed using Embed#setFields that sets more than 25 fields THEN throws error', () => {
+			const embed = new Embed();
+
+			expect(() =>
+				embed.setFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' }))),
+			).toThrowError();
+		});
+
 		describe('GIVEN invalid field amount THEN throws error', () => {
 			test('', () => {
 				const embed = new Embed();
