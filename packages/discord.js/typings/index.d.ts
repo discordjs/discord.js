@@ -468,19 +468,8 @@ export type CategoryChannelType = Exclude<
 >;
 
 export class CategoryChannel extends GuildChannel {
-  public readonly children: Collection<Snowflake, Exclude<NonThreadGuildBasedChannel, CategoryChannel>>;
+  public readonly children: CategoryChannelChildManager;
   public type: ChannelType.GuildCategory;
-
-  public createChannel<T extends Exclude<CategoryChannelType, ChannelType.GuildStore>>(
-    name: string,
-    options: CategoryCreateChannelOptions & { type: T },
-  ): Promise<MappedChannelCategoryTypes[T]>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public createChannel(
-    name: string,
-    options: CategoryCreateChannelOptions & { type: ChannelType.GuildStore },
-  ): Promise<StoreChannel>;
-  public createChannel(name: string, options?: CategoryCreateChannelOptions): Promise<TextChannel>;
 }
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
@@ -2740,6 +2729,23 @@ export class ApplicationCommandPermissionsManager<
 export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
   protected constructor(client: Client, iterable?: Iterable<RawGuildEmojiData>);
   public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
+}
+
+export class CategoryChannelChildManager extends CachedManager<Snowflake, GuildChannel, GuildChannelResolvable> {
+  private constructor(guild: Guild, iterable?: Iterable<RawGuildChannelData>);
+
+  public channel: CategoryChannel;
+  public guild: Guild;
+  public create<T extends Exclude<CategoryChannelType, ChannelType.GuildStore>>(
+    name: string,
+    options: CategoryCreateChannelOptions & { type: T },
+  ): Promise<MappedChannelCategoryTypes[T]>;
+  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
+  public create(
+    name: string,
+    options: CategoryCreateChannelOptions & { type: ChannelType.GuildStore },
+  ): Promise<StoreChannel>;
+  public create(name: string, options?: CategoryCreateChannelOptions): Promise<TextChannel>;
 }
 
 export class ChannelManager extends CachedManager<Snowflake, AnyChannel, ChannelResolvable> {
