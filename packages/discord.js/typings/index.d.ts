@@ -1575,51 +1575,6 @@ export class MessageContextMenuCommandInteraction<
   public inRawGuild(): this is MessageContextMenuCommandInteraction<'raw'>;
 }
 
-export class MessageEmbed {
-  private _fieldEquals(field: EmbedField, other: EmbedField): boolean;
-
-  public constructor(data?: MessageEmbed | MessageEmbedOptions | APIEmbed);
-  public author: MessageEmbedAuthor | null;
-  public color: number | null;
-  public readonly createdAt: Date | null;
-  public description: string | null;
-  public fields: EmbedField[];
-  public footer: MessageEmbedFooter | null;
-  public readonly hexColor: HexColorString | null;
-  public image: MessageEmbedImage | null;
-  public readonly length: number;
-  public provider: MessageEmbedProvider | null;
-  public thumbnail: MessageEmbedThumbnail | null;
-  public timestamp: number | null;
-  public title: string | null;
-  /** @deprecated */
-  public type: string;
-  public url: string | null;
-  public readonly video: MessageEmbedVideo | null;
-  public addField(name: string, value: string, inline?: boolean): this;
-  public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
-  public setFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
-  public setAuthor(options: EmbedAuthorData | null): this;
-  /** @deprecated Supply a lone object of interface {@link EmbedAuthorData} instead. */
-  public setAuthor(name: string, iconURL?: string, url?: string): this;
-  public setColor(color: ColorResolvable): this;
-  public setDescription(description: string): this;
-  public setFooter(options: EmbedFooterData | null): this;
-  /** @deprecated Supply a lone object of interface {@link EmbedFooterData} instead. */
-  public setFooter(text: string, iconURL?: string): this;
-  public setImage(url: string): this;
-  public setThumbnail(url: string): this;
-  public setTimestamp(timestamp?: Date | number | null): this;
-  public setTitle(title: string): this;
-  public setURL(url: string): this;
-  public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
-  public equals(embed: MessageEmbed | APIEmbed): boolean;
-  public toJSON(): APIEmbed;
-
-  public static normalizeField(name: string, value: string, inline?: boolean): Required<EmbedFieldData>;
-  public static normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
-}
-
 export class MessageFlagsBitField extends BitField<MessageFlagsString> {
   public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
 }

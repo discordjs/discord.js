@@ -412,7 +412,6 @@ class Client extends BaseClient {
    * });
    * console.log(`Generated bot invite link: ${link}`);
    */
-
   generateInvite(options = {}) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     if (!this.application) throw new Error('CLIENT_NOT_READY', 'generate an invite link');

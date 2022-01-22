@@ -48,7 +48,7 @@ class BitField {
   /**
    * Gets all given bits that are missing from the bitfield.
    * @param {BitFieldResolvable} bits Bit(s) to check for
-   * @returns {string[]}
+   * @returns {BitField[]}
    */
   missing(bits) {
     return new this.constructor(bits).remove(this);
@@ -114,13 +114,11 @@ class BitField {
    * @returns {number|bigint}
    */
   static resolve(bit) {
-    console.log(bit);
     const { defaultBit } = this;
     if (typeof defaultBit === typeof bit && bit >= defaultBit) return bit;
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, defaultBit);
     if (typeof bit === 'string') {
-      // If (typeof this.FLAGS[bit] !== 'undefined') return this.FLAGS[bit];
       if (!isNaN(bit)) return typeof defaultBit === 'bigint' ? BigInt(bit) : Number(bit);
     }
     throw new RangeError('BITFIELD_INVALID', bit);
