@@ -58,6 +58,7 @@ class ClientUser extends User {
     if (typeof data.avatar !== 'undefined') data.avatar = await DataResolver.resolveImage(data.avatar);
     const newData = await this.client.rest.patch(Routes.user(), { body: data });
     this.client.token = newData.token;
+    this.client.rest.setToken(newData.token);
     const { updated } = this.client.actions.UserUpdate.handle(newData);
     return updated ?? this;
   }

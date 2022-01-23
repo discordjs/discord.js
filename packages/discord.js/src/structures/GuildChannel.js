@@ -412,7 +412,7 @@ class GuildChannel extends Channel {
       relative,
       this.guild._sortedChannels(this),
       this.client,
-      Routes.guildChannels(this.guildl.id),
+      Routes.guildChannels(this.guild.id),
       reason,
     );
     this.client.actions.GuildChannelsPositionUpdate.handle({

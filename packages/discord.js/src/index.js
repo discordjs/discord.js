@@ -178,3 +178,6 @@ exports.ActionRow = require('@discordjs/builders').ActionRow;
 exports.ButtonComponent = require('@discordjs/builders').ButtonComponent;
 exports.SelectMenuComponent = require('@discordjs/builders').SelectMenuComponent;
 exports.SelectMenuOption = require('@discordjs/builders').SelectMenuOption;
+exports.DiscordAPIError = require('@discordjs/rest').DiscordAPIError;
+exports.HTTPError = require('@discordjs/rest').HTTPError;
+exports.RateLimitError = require('@discordjs/rest').RateLimitError;

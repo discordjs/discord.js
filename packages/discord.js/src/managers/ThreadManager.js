@@ -236,7 +236,7 @@ class ThreadManager extends CachedManager {
     if (limit) {
       query.set('limit', limit);
     }
-    const raw = await this.client.rest.get(path, { query: Array.from(query).length > 0 ? query : undefined });
+    const raw = await this.client.rest.get(path, { query });
     return this.constructor._mapThreads(raw, this.client, { parent: this.channel, cache });
   }
 

@@ -5291,3 +5291,4 @@ export {
   SelectMenuOption,
   ActionRowComponent,
 } from '@discordjs/builders';
+export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
