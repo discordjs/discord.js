@@ -408,10 +408,7 @@ class Webhook {
    * @returns {boolean}
    */
   isUserCreated() {
-    if (this.type !== WebhookType.Incoming) return false;
-    if (!this.owner) return false;
-    if (this.owner.bot) return false;
-    return true;
+    return Boolean(this.type === WebhookType.Incoming && this.owner && !this.owner.bot)
   }
 
   /**
