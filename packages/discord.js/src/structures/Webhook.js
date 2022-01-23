@@ -408,15 +408,18 @@ class Webhook {
    * @returns {boolean}
    */
   isUserCreated() {
-    return Boolean(this.owner);
+    if (this.type !== WebhookType.Incoming) return false;
+    if (!this.owner) return false;
+    if (this.owner.bot) return false;
+    return true;
   }
 
   /**
-   * Whether this webhook is created by an application and not a user.
+   * Whether this webhook is created by an application.
    * @returns {boolean}
    */
   isApplicationCreated() {
-    return Boolean(this.applicationId);
+    return this.type === WebhookType.Application;
   }
 
   /**
