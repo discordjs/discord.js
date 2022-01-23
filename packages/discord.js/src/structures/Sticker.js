@@ -156,7 +156,7 @@ class Sticker extends Base {
 
   /**
    * A link to the sticker
-   * <info>If the sticker's format is {@link StickerFormatType.Lottie Lottie}, it returns
+   * <info>If the sticker's format is {@link StickerFormatType.Lottie}, it returns
    * the URL of the Lottie JSON file.</info>
    * @type {string}
    */

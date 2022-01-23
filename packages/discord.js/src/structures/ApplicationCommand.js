@@ -150,10 +150,10 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
-   * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer Integer} or
-   * {@link ApplicationCommandOptionType.Number Number} option
-   * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer Integer} or
-   * {@link ApplicationCommandOptionType.Number Number} option
+   * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
+   * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
    */
 
   /**
@@ -351,10 +351,10 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
-   * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer Integer} or
-   * {@link ApplicationCommandOptionType.Number Number} option
-   * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer Integer} or
-   * {@link ApplicationCommandOptionType.Number Number} option
+   * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
+   * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
    */
 
   /**

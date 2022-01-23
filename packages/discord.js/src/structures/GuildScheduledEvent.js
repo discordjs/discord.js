@@ -33,7 +33,7 @@ class GuildScheduledEvent extends Base {
     if ('channel_id' in data) {
       /**
        * The channel id in which the scheduled event will be hosted,
-       * or `null` if entity type is {@link GuildScheduledEventEntityType.External External}
+       * or `null` if entity type is {@link GuildScheduledEventEntityType.External}
        * @type {?Snowflake}
        */
       this.channelId = data.channel_id;
@@ -224,7 +224,7 @@ class GuildScheduledEvent extends Base {
    * @typedef {CreateInviteOptions} CreateGuildScheduledEventInviteURLOptions
    * @property {GuildInvitableChannelResolvable} [channel] The channel to create the invite in.
    * <warn>This is required when the `entityType` of `GuildScheduledEvent` is
-   * {@link GuildScheduledEventEntityType.External External}, gets ignored otherwise</warn>
+   * {@link GuildScheduledEventEntityType.External}, gets ignored otherwise</warn>
    */
 
   /**
@@ -385,7 +385,7 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
-   * Indicates whether this guild scheduled event has an {@link GuildScheduledEventStatus.Active Active} status.
+   * Indicates whether this guild scheduled event has an {@link GuildScheduledEventStatus.Active} status.
    * @returns {boolean}
    */
   isActive() {
@@ -393,7 +393,7 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
-   * Indicates whether this guild scheduled event has a {@link GuildScheduledEventStatus.Canceled Canceled} status.
+   * Indicates whether this guild scheduled event has a {@link GuildScheduledEventStatus.Canceled} status.
    * @returns {boolean}
    */
   isCanceled() {
@@ -401,7 +401,7 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
-   * Indicates whether this guild scheduled event has a {@link GuildScheduledEventStatus.Completed Completed} status.
+   * Indicates whether this guild scheduled event has a {@link GuildScheduledEventStatus.Completed} status.
    * @returns {boolean}
    */
   isCompleted() {
@@ -409,7 +409,7 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
-   * Indicates whether this guild scheduled event has a {@link GuildScheduledEventStatus.Scheduled Scheduled} status.
+   * Indicates whether this guild scheduled event has a {@link GuildScheduledEventStatus.Scheduled} status.
    * @returns {boolean}
    */
   isScheduled() {
