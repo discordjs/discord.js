@@ -2458,12 +2458,12 @@ export class Webhook extends WebhookMixin() {
     type: WebhookType.Incoming;
     applicationId: null;
     owner: User | APIUser;
-    token: null;
+    token: string | null;
   };
   public isApplicationCreated(): this is this & {
     type: WebhookType.Incoming;
     applicationId: Snowflake;
-    owner: null;
+    owner: User | APIUser;
   };
   public isIncoming(): this is this & {
     type: WebhookType.Incoming;
@@ -2474,6 +2474,8 @@ export class Webhook extends WebhookMixin() {
     sourceGuild: Guild | APIPartialGuild;
     sourceChannel: NewsChannel | APIPartialChannel;
     token: null;
+    applicationId: null;
+    owner: User | APIUser;
   };
 }
 
