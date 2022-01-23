@@ -423,10 +423,10 @@ exports.SweeperKeys = [
 
 /**
  * The types of messages that are not `System`. The available types are:
- * * `MessageType.Default`
- * * `MessageType.Reply`
- * * `MessageType.ChatInputCommand`
- * * `MessageType.ContextMenuCommand`
+ * * {@link MessageType.Default Default}
+ * * {@link MessageType.Reply Reply}
+ * * {@link MessageType.ChatInputCommand ChatInputCommand}
+ * * {@link MessageType.ContextMenuCommand ContextMenuCommand}
  * @typedef {MessageType[]} NonSystemMessageTypes
  */
 exports.NonSystemMessageTypes = [
@@ -447,12 +447,12 @@ exports.NonSystemMessageTypes = [
 
 /**
  * The types of channels that are text-based. The available types are:
- * * `ChannelType.DM`
- * * `ChannelType.GuildText`
- * * `ChannelType.GuildNews`
- * * `ChannelType.GuildNewsThread`
- * * `ChannelType.GuildPublicThread`
- * * `ChannelType.GuildPrivateThread`
+ * * {@link ChannelType.DM DM}
+ * * {@link ChannelType.GuildText GuildText}
+ * * {@link ChannelType.GuildNews GuildNews}
+ * * {@link ChannelType.GuildNewsThread GuildNewsThread}
+ * * {@link ChannelType.GuildPublicThread GuildPublicThread}
+ * * {@link ChannelType.GuildPrivateThread GuildPrivateThread}
  * @typedef {ChannelType} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
@@ -466,9 +466,9 @@ exports.TextBasedChannelTypes = [
 
 /**
  * The types of channels that are threads. The available types are:
- * * `ChannelType.GuildNewsThread`
- * * `ChannelType.GuildPublicThread`
- * * `ChannelType.GuildPrivateThread`
+ * * {@link ChannelType.GuildNewsThread GuildNewsThread}
+ * * {@link ChannelType.GuildPublicThread GuildPublicThread}
+ * * {@link ChannelType.GuildPrivateThread GuildPrivateThread}
  * @typedef {ChannelType[]} ThreadChannelTypes
  */
 exports.ThreadChannelTypes = [
@@ -479,8 +479,8 @@ exports.ThreadChannelTypes = [
 
 /**
  * The types of channels that are voice-based. The available types are:
- * * `ChannelType.GuildVoice`
- * * `ChannelType.GuildStageVoice`
+ * * {@link ChannelType.GuildVoice GuildVoice}
+ * * {@link ChannelType.GuildStageVoice GuildStageVoice}
  * @typedef {ChannelType[]} VoiceBasedChannelTypes
  */
 exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];

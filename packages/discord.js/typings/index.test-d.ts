@@ -891,7 +891,7 @@ declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
 
 declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
 {
-  expectType<'SubcommandGroup' | ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
+  expectType<ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
   expectType<ApplicationCommandSubCommandData[] | undefined>(applicationSubGroupCommandData.options);
 }
 
