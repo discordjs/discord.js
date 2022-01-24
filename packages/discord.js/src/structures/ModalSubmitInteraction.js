@@ -24,9 +24,9 @@ class ModalSubmitInteraction extends Interaction {
 
     /**
      * The components within the modal
-     * @type {ActionRow<ModalActionRowComponent>[]}
+     * @type {Array<ActionRow<ModalActionRowComponent>>}
      */
-    this.components = data?.data?.components?.map(c => ModalSubmitInteraction.transformComponent(c)) ?? [];
+    this.components = data.data.components?.map(c => ModalSubmitInteraction.transformComponent(c)) ?? [];
   }
 
   /**
