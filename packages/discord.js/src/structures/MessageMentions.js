@@ -172,8 +172,8 @@ class MessageMentions {
    * Options used to check for a mention.
    * @typedef {Object} MessageMentionsHasOptions
    * @property {boolean} [ignoreDirect=false] Whether to ignore direct mentions to the item
-   * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to the item
-   * @property {boolean} [ignoreRepliedUser=false] Whether to ignore replied user mention to the item
+   * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to the guild member
+   * @property {boolean} [ignoreRepliedUser=false] Whether to ignore replied user mention to the user
    * @property {boolean} [ignoreEveryone=false] Whether to ignore everyone/here mentions
    */
 
@@ -193,7 +193,7 @@ class MessageMentions {
     if (!ignoreRepliedUser && this.users.has(this.repliedUser?.id) && this.repliedUser?.id === user?.id) return true;
     if (!ignoreDirect) {
       if (this.users.has(user?.id)) return true;
-      if (!ignoreRoles && this.roles.has(role?.id)) return true;
+      if (this.roles.has(role?.id)) return true;
       if (this.channels.has(channel?.id)) return true;
     }
     if (user && !ignoreEveryone && this.everyone) return true;
