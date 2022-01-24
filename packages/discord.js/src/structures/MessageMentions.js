@@ -173,7 +173,7 @@ class MessageMentions {
    * @typedef {Object} MessageMentionsHasOptions
    * @property {boolean} [ignoreDirect=false] Whether to ignore direct mentions to the item
    * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to a guild member
-   * @property {boolean} [ignoreRepliedUser=false] Whether to ignore replied user mention to a user
+   * @property {boolean} [ignoreRepliedUser=false] Whether to ignore replied user mention to an user
    * @property {boolean} [ignoreEveryone=false] Whether to ignore `@everyone`/`@here` mentions
    */
 
