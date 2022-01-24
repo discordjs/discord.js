@@ -1,4 +1,4 @@
-import type { ComponentType } from 'discord-api-types';
+import type { APIMessageComponent, ComponentType } from 'discord-api-types';
 import type { Component } from '..';
 import { customIdValidator } from './Assertions';
 
@@ -80,8 +80,8 @@ export class InputTextComponent implements Component {
 	}
 
 	// TODO: use dapi types
-	// @ts-expect-error
-	public toJSON(): unknown {
+	public toJSON(): APIMessageComponent {
+		// @ts-expect-error
 		return {
 			...this,
 		};
