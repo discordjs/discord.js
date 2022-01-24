@@ -174,11 +174,11 @@ class MessageMentions {
    * @property {boolean} [ignoreDirect=false] Whether to ignore direct mentions to the item
    * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to the guild member
    * @property {boolean} [ignoreRepliedUser=false] Whether to ignore replied user mention to the user
-   * @property {boolean} [ignoreEveryone=false] Whether to ignore everyone/here mentions
+   * @property {boolean} [ignoreEveryone=false] Whether to ignore `@everyone`/`@here` mentions
    */
 
   /**
-   * Checks if a user, guild member, role, or channel is mentioned.
+   * Checks if a user, guild member, thread member, role, or channel is mentioned.
    * Takes into account user mentions, role mentions, channel mentions,
    * replied user mention, and `@everyone`/`@here` mentions.
    * @param {UserResolvable|RoleResolvable|ChannelResolvable} data The User/Role/Channel to check for
