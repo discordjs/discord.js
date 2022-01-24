@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/collection",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"description": "Utility data structure used in discord.js",
 	"scripts": {
 		"test": "jest --pass-with-no-tests",
@@ -9,7 +9,7 @@
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
 		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ./cliff.toml -r ../../ --include-path 'packages/collection/*'"
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/collection/*'"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -47,15 +47,15 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@babel/core": "^7.16.5",
-		"@babel/preset-env": "^7.16.8",
+		"@babel/core": "^7.16.12",
+		"@babel/preset-env": "^7.16.11",
 		"@babel/preset-typescript": "^7.16.5",
 		"@discordjs/ts-docgen": "^0.3.4",
 		"@types/jest": "^27.0.3",
 		"@types/node": "^16.11.6",
-		"@typescript-eslint/eslint-plugin": "^5.9.1",
-		"@typescript-eslint/parser": "^5.9.1",
-		"eslint": "^8.5.0",
+		"@typescript-eslint/eslint-plugin": "^5.10.0",
+		"@typescript-eslint/parser": "^5.10.0",
+		"eslint": "^8.7.0",
 		"eslint-config-marine": "^9.3.2",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^4.0.0",
@@ -63,8 +63,8 @@
 		"prettier": "^2.5.1",
 		"standard-version": "^9.3.2",
 		"tsup": "^5.11.11",
-		"typedoc": "^0.22.10",
-		"typescript": "^4.5.4"
+		"typedoc": "^0.22.11",
+		"typescript": "^4.5.5"
 	},
 	"engines": {
 		"node": ">=16.9.0"

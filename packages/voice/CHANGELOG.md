@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# [0.8.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.7.5...@discordjs/voice@0.8.0) (2021-12-08)
+
+## Refactor
+
+- PresenceUpdate and demuxProbe (#7248) ([1745973](https://github.com/discordjs/discord.js/commit/174597302408f13c5bb685e2fb02ae2137cb481d))
+
+## Testing
+
+- **voice:** Fix tests ([62c74b8](https://github.com/discordjs/discord.js/commit/62c74b8333066465e5bd295b8b102b35a506751d))
+- Fix voice secretbox tests ([4a2dbd6](https://github.com/discordjs/discord.js/commit/4a2dbd62382f904d596b34da0116d50e724b81c4))
+- Fix voice tests ([b593bd3](https://github.com/discordjs/discord.js/commit/b593bd32a98282a92fa28f2fb0a8ef239866622c))
+
 # [0.7.5](https://github.com/discordjs/voice/compare/v0.7.4...v0.7.5) (2021-11-12)
 
 ## Bug Fixes

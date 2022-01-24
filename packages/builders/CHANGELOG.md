@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+# [0.12.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.11.0...@discordjs/builders@0.12.0) (2021-12-08)
+
+## Bug Fixes
+
+- **builders:** Dont export `Button` component stuff twice (#7289) ([86d9d06](https://github.com/discordjs/discord.js/commit/86d9d0674347c08d056cd054cb4ce4253195bf94))
+
+## Documentation
+
+- **SlashCommandSubcommands:** Updating old links from Discord developer portal (#7224) ([bd7a6f2](https://github.com/discordjs/discord.js/commit/bd7a6f265212624199fb0b2ddc8ece39759c63de))
+
+## Features
+
+- Add components to /builders (#7195) ([2bb40fd](https://github.com/discordjs/discord.js/commit/2bb40fd767cf5918e3ba422ff73082734bfa05b0))
+
+## Typings
+
+- Make `required` a boolean (#7307) ([c10afea](https://github.com/discordjs/discord.js/commit/c10afeadc702ab98bec5e077b3b92494a9596f9c))
+
 # [0.11.0](https://github.com/discordjs/builders/compare/v0.10.0...v0.11.0) (2021-12-29)
 
 ## Bug Fixes

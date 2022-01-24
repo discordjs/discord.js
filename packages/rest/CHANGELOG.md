@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+# [0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.2.0...@discordjs/rest@0.3.0) (2021-12-08)
+
+## Bug Fixes
+
+- **rest:** Don't add empty query (#7308) ([d0fa5aa](https://github.com/discordjs/discord.js/commit/d0fa5aaa26d316608120bca3050e14eefbe2f93b))
+- **rest:** Use http agent when protocol is not https (#7309) ([d8ea572](https://github.com/discordjs/discord.js/commit/d8ea572fb8a51f2f6a902c4926e814017d115708))
+- `ref` delay for rate limited requests (#7239) ([ed0cfd9](https://github.com/discordjs/discord.js/commit/ed0cfd91edc3a2b23a34a8ecd9db38baa12b52fa))
+
+## Documentation
+
+- Fix a typo and use milliseconds instead of ms (#7251) ([0dd56af](https://github.com/discordjs/discord.js/commit/0dd56afe1cdf16f1e7d9afe1f8c29c31d1833a25))
+
+## Features
+
+- Rest hash and handler sweeping (#7255) ([3bb4829](https://github.com/discordjs/discord.js/commit/3bb48298004d292214c6cb8f927c2fea78a42952))
+- Rest docs (#7281) ([9054f2f](https://github.com/discordjs/discord.js/commit/9054f2f7ad7f246431e5f53403535bf301c27a80))
+
+## Refactor
+
+- **files:** File data can be much more than buffer (#7238) ([86ab526](https://github.com/discordjs/discord.js/commit/86ab526d493415b14b79b51d08c3677897d219ee))
+- **rest:** Rename attachment to file (#7199) ([c969cbf](https://github.com/discordjs/discord.js/commit/c969cbf6524093757d47108b6a55e62dcb210e8b))
+
+## Testing
+
+- **voice:** Fix tests ([62c74b8](https://github.com/discordjs/discord.js/commit/62c74b8333066465e5bd295b8b102b35a506751d))
+
 # [0.2.0-canary.0](https://github.com/discordjs/discord.js-modules/compare/@discordjs/rest@0.1.1-canary.0...@discordjs/rest@0.2.0-canary.0) (2021-12-08)
 
 ## Bug Fixes

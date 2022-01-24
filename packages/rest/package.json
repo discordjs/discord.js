@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/rest",
-	"version": "0.2.0-canary.0",
+	"version": "0.3.0",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"build": "tsup && tsc --emitDeclarationOnly --incremental",
@@ -9,7 +9,7 @@
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
 		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'"
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -51,34 +51,34 @@
 	"dependencies": {
 		"@discordjs/collection": "^0.4.0",
 		"@sapphire/async-queue": "^1.1.9",
-		"@sapphire/snowflake": "^3.0.0",
+		"@sapphire/snowflake": "^3.0.1",
 		"discord-api-types": "^0.26.1",
 		"form-data": "^4.0.0",
 		"node-fetch": "^2.6.5",
 		"tslib": "^2.3.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.16.7",
+		"@babel/core": "^7.16.12",
 		"@babel/plugin-proposal-decorators": "^7.16.7",
-		"@babel/preset-env": "^7.16.8",
+		"@babel/preset-env": "^7.16.11",
 		"@babel/preset-typescript": "^7.16.7",
 		"@discordjs/ts-docgen": "^0.3.4",
 		"@types/jest": "^27.4.0",
 		"@types/node-fetch": "^2.5.10",
-		"@typescript-eslint/eslint-plugin": "^5.9.1",
-		"@typescript-eslint/parser": "^5.9.1",
+		"@typescript-eslint/eslint-plugin": "^5.10.0",
+		"@typescript-eslint/parser": "^5.10.0",
 		"babel-plugin-const-enum": "^1.2.0",
 		"babel-plugin-transform-typescript-metadata": "^0.3.2",
-		"eslint": "^8.5.0",
+		"eslint": "^8.7.0",
 		"eslint-config-marine": "^9.3.2",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^4.0.0",
 		"jest": "^27.4.7",
-		"nock": "^13.2.1",
+		"nock": "^13.2.2",
 		"prettier": "^2.5.1",
 		"tsup": "^5.11.11",
-		"typedoc": "^0.22.10",
-		"typescript": "^4.5.4"
+		"typedoc": "^0.22.11",
+		"typescript": "^4.5.5"
 	},
 	"engines": {
 		"node": ">=16.9.0"

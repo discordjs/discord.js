@@ -50,19 +50,19 @@
     "@discordjs/builders": "^0.11.0",
     "@discordjs/collection": "^0.4.0",
     "@sapphire/async-queue": "^1.1.9",
-    "@sapphire/snowflake": "^3.0.0",
+    "@sapphire/snowflake": "^3.0.1",
     "@types/node-fetch": "^2.5.12",
     "@types/ws": "^8.2.2",
     "discord-api-types": "^0.26.1",
     "form-data": "^4.0.0",
     "node-fetch": "^2.6.1",
-    "ws": "^8.4.0"
+    "ws": "^8.4.2"
   },
   "devDependencies": {
     "@discordjs/docgen": "^0.11.0",
     "@types/node": "^16.11.12",
     "dtslint": "^4.2.1",
-    "eslint": "^8.5.0",
+    "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
@@ -72,7 +72,7 @@
     "prettier": "^2.5.1",
     "tsd": "^0.19.0",
     "tslint": "^6.1.3",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.5"
   },
   "engines": {
     "node": ">=16.9.0"
