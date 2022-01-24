@@ -49,12 +49,12 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/collection": "^0.4.0",
+		"@discordjs/collection": "^0.5.0",
 		"@sapphire/async-queue": "^1.1.9",
 		"@sapphire/snowflake": "^3.0.1",
 		"discord-api-types": "^0.26.1",
 		"form-data": "^4.0.0",
-		"node-fetch": "^2.6.5",
+		"node-fetch": "^2.6.7",
 		"tslib": "^2.3.1"
 	},
 	"devDependencies": {
@@ -64,7 +64,7 @@
 		"@babel/preset-typescript": "^7.16.7",
 		"@discordjs/ts-docgen": "^0.3.4",
 		"@types/jest": "^27.4.0",
-		"@types/node-fetch": "^2.5.10",
+		"@types/node-fetch": "^2.5.12",
 		"@typescript-eslint/eslint-plugin": "^5.10.0",
 		"@typescript-eslint/parser": "^5.10.0",
 		"babel-plugin-const-enum": "^1.2.0",
