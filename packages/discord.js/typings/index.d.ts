@@ -7,6 +7,7 @@ import {
   channelMention,
   codeBlock,
   Component,
+  Embed,
   formatEmoji,
   hideLinkEmbed,
   hyperlink,
@@ -1489,7 +1490,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public readonly editable: boolean;
   public readonly editedAt: Date | null;
   public editedTimestamp: number | null;
-  public embeds: MessageEmbed[];
+  public embeds: Embed[];
   public groupActivityApplication: ClientApplication | null;
   public guildId: If<Cached, Snowflake>;
   public readonly guild: If<Cached, Guild>;
@@ -1617,51 +1618,6 @@ export class MessageContextMenuCommandInteraction<
   public inGuild(): this is MessageContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MessageContextMenuCommandInteraction<'cached'>;
   public inRawGuild(): this is MessageContextMenuCommandInteraction<'raw'>;
-}
-
-export class MessageEmbed {
-  private _fieldEquals(field: EmbedField, other: EmbedField): boolean;
-
-  public constructor(data?: MessageEmbed | MessageEmbedOptions | APIEmbed);
-  public author: MessageEmbedAuthor | null;
-  public color: number | null;
-  public readonly createdAt: Date | null;
-  public description: string | null;
-  public fields: EmbedField[];
-  public footer: MessageEmbedFooter | null;
-  public readonly hexColor: HexColorString | null;
-  public image: MessageEmbedImage | null;
-  public readonly length: number;
-  public provider: MessageEmbedProvider | null;
-  public thumbnail: MessageEmbedThumbnail | null;
-  public timestamp: number | null;
-  public title: string | null;
-  /** @deprecated */
-  public type: string;
-  public url: string | null;
-  public readonly video: MessageEmbedVideo | null;
-  public addField(name: string, value: string, inline?: boolean): this;
-  public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
-  public setFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
-  public setAuthor(options: EmbedAuthorData | null): this;
-  /** @deprecated Supply a lone object of interface {@link EmbedAuthorData} instead. */
-  public setAuthor(name: string, iconURL?: string, url?: string): this;
-  public setColor(color: ColorResolvable): this;
-  public setDescription(description: string): this;
-  public setFooter(options: EmbedFooterData | null): this;
-  /** @deprecated Supply a lone object of interface {@link EmbedFooterData} instead. */
-  public setFooter(text: string, iconURL?: string): this;
-  public setImage(url: string): this;
-  public setThumbnail(url: string): this;
-  public setTimestamp(timestamp?: Date | number | null): this;
-  public setTitle(title: string): this;
-  public setURL(url: string): this;
-  public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
-  public equals(embed: MessageEmbed | APIEmbed): boolean;
-  public toJSON(): APIEmbed;
-
-  public static normalizeField(name: string, value: string, inline?: boolean): Required<EmbedFieldData>;
-  public static normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
 }
 
 export class MessageFlags extends BitField<MessageFlagsString> {
@@ -4657,64 +4613,11 @@ export type MessageComponentOptions =
 export interface MessageEditOptions {
   attachments?: MessageAttachment[];
   content?: string | null;
-  embeds?: (MessageEmbed | MessageEmbedOptions | APIEmbed)[] | null;
+  embeds?: (Embed | APIEmbed)[] | null;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (ActionRow<ActionRowComponent> | (Required<BaseMessageComponentOptions> & ActionRowOptions))[];
-}
-
-export interface MessageEmbedAuthor {
-  name: string;
-  url?: string;
-  iconURL?: string;
-  proxyIconURL?: string;
-}
-
-export interface MessageEmbedFooter {
-  text: string;
-  iconURL?: string;
-  proxyIconURL?: string;
-}
-
-export interface MessageEmbedImage {
-  url: string;
-  proxyURL?: string;
-  height?: number;
-  width?: number;
-}
-
-export interface MessageEmbedOptions {
-  title?: string;
-  description?: string;
-  url?: string;
-  timestamp?: Date | number;
-  color?: ColorResolvable;
-  fields?: EmbedFieldData[];
-  author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string };
-  thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
-  image?: Partial<MessageEmbedImage> & { proxy_url?: string };
-  video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
-  footer?: Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string };
-}
-
-export interface MessageEmbedProvider {
-  name: string;
-  url: string;
-}
-
-export interface MessageEmbedThumbnail {
-  url: string;
-  proxyURL?: string;
-  height?: number;
-  width?: number;
-}
-
-export interface MessageEmbedVideo {
-  url?: string;
-  proxyURL?: string;
-  height?: number;
-  width?: number;
 }
 
 export interface MessageEvent {
@@ -4755,11 +4658,13 @@ export interface MessageMentionOptions {
 
 export type MessageMentionTypes = 'roles' | 'users' | 'everyone';
 
+export { Embed };
+
 export interface MessageOptions {
   tts?: boolean;
   nonce?: string | number;
   content?: string | null;
-  embeds?: (MessageEmbed | MessageEmbedOptions | APIEmbed)[];
+  embeds?: (Embed | APIEmbed)[];
   components?: (ActionRow<ActionRowComponent> | (Required<BaseMessageComponentOptions> & ActionRowOptions))[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];

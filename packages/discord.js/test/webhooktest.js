@@ -6,7 +6,7 @@ const path = require('node:path');
 const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
-const { Client, Intents, MessageAttachment, MessageEmbed, WebhookClient } = require('../src');
+const { Client, Intents, MessageAttachment, Embed, WebhookClient } = require('../src');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
@@ -18,7 +18,7 @@ const linkA = 'https://lolisafe.moe/iiDMtAXA.png';
 const linkB = 'https://lolisafe.moe/9hSpedPh.png';
 const fileA = path.join(__dirname, 'blobReach.png');
 
-const embed = () => new MessageEmbed();
+const embed = () => new Embed();
 const attach = (attachment, name) => new MessageAttachment(attachment, name);
 
 const tests = [
@@ -62,24 +62,6 @@ const tests = [
     hook.send({
       embeds: [embed().setImage('attachment://two.png')],
       files: [attach(linkB, 'two.png')],
-    }),
-  (m, hook) =>
-    hook.send({
-      embeds: [
-        embed()
-          .setImage('attachment://two.png')
-          .attachFiles([attach(linkB, 'two.png')]),
-      ],
-    }),
-  async (m, hook) =>
-    hook.send(['x', 'y', 'z'], {
-      code: 'js',
-      embeds: [
-        embed()
-          .setImage('attachment://two.png')
-          .attachFiles([attach(linkB, 'two.png')]),
-      ],
-      files: [{ attachment: await buffer(linkA) }],
     }),
 
   (m, hook) => hook.send('x', attach(fileA)),

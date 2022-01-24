@@ -54,7 +54,6 @@ import {
   MessageAttachment,
   MessageCollector,
   MessageComponentInteraction,
-  MessageEmbed,
   MessageReaction,
   NewsChannel,
   Options,
@@ -99,6 +98,7 @@ import {
   ThreadChannelType,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import { Embed } from '@discordjs/builders';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -561,7 +561,7 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({ embeds: [] }));
 
   const attachment = new MessageAttachment('file.png');
-  const embed = new MessageEmbed();
+  const embed = new Embed();
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
   assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));

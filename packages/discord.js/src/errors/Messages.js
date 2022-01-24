@@ -41,13 +41,6 @@ const Messages = {
 
   INVITE_OPTIONS_MISSING_CHANNEL: 'A valid guild channel must be provided when GuildScheduledEvent is EXTERNAL.',
 
-  EMBED_TITLE: 'MessageEmbed title must be a string.',
-  EMBED_FIELD_NAME: 'MessageEmbed field names must be non-empty strings.',
-  EMBED_FIELD_VALUE: 'MessageEmbed field values must be non-empty strings.',
-  EMBED_FOOTER_TEXT: 'MessageEmbed footer text must be a string.',
-  EMBED_DESCRIPTION: 'MessageEmbed description must be a string.',
-  EMBED_AUTHOR_NAME: 'MessageEmbed author name must be a string.',
-
   BUTTON_LABEL: 'MessageButton label must be a string',
   BUTTON_URL: 'MessageButton URL must be a string',
   BUTTON_CUSTOM_ID: 'MessageButton customId must be a string',

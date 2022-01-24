@@ -118,7 +118,7 @@ class Webhook {
   /**
    * Options that can be passed into editMessage.
    * @typedef {Object} WebhookEditMessageOptions
-   * @property {MessageEmbed[]|APIEmbed[]} [embeds] See {@link WebhookMessageOptions#embeds}
+   * @property {Embed[]|APIEmbed[]} [embeds] See {@link WebhookMessageOptions#embeds}
    * @property {string} [content] See {@link BaseMessageOptions#content}
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] See {@link BaseMessageOptions#files}
    * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
