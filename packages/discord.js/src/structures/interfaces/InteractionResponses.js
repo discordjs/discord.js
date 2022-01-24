@@ -225,6 +225,20 @@ class InteractionResponses {
     return options.fetchReply ? this.fetchReply() : undefined;
   }
 
+  /**
+   * Presents a modal component
+   * @param {APIModal} modal The modal to present
+   */
+  async presentModal(modal) {
+    await this.client.api.interactions(this.id, this.token).callback.post({
+      data: {
+        // TODO: use dapi types
+        type: 9,
+        data: modal.toJSON(),
+      },
+    });
+  }
+
   static applyToClass(structure, ignore = []) {
     const props = [
       'deferReply',
@@ -235,6 +249,7 @@ class InteractionResponses {
       'followUp',
       'deferUpdate',
       'update',
+      'presentModal',
     ];
 
     for (const prop of props) {

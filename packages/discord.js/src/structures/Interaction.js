@@ -192,6 +192,15 @@ class Interaction extends Base {
   }
 
   /**
+   * Indicates whether this interaction is a {@link ModalSubmitInteraction}
+   * @returns {boolean}
+   */
+  isModalSubmit() {
+    // TODO: Use dapi enum
+    return this.type === 5;
+  }
+
+  /**
    * Indicates whether this interaction is an {@link AutocompleteInteraction}
    * @returns {boolean}
    */

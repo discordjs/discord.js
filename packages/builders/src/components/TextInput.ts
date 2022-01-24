@@ -11,6 +11,8 @@ export class InputTextComponent implements Component {
 	public readonly style!: number;
 	public readonly min_length?: number;
 	public readonly max_length?: number;
+	public readonly placeholder?: string;
+	public readonly value?: string;
 
 	/**
 	 * Sets the custom id for this input text
@@ -53,8 +55,27 @@ export class InputTextComponent implements Component {
 	 * Sets the maximum length of text for this input text
 	 * @param maxLength The maximum length of text for this input text
 	 */
-	public setAxLength(maxLength: number) {
+	public setMaxLength(maxLength: number) {
 		Reflect.set(this, 'max_length', maxLength);
+		return this;
+	}
+
+	/**
+	 * Sets the placeholder of this input text
+	 * @param placeholder The placeholder of this input text
+	 */
+	public setPlaceholder(placeholder: string) {
+		Reflect.set(this, 'placeholder', placeholder);
+		return this;
+	}
+
+	/**
+	 * Sets the value of this input text
+	 * @param value The value for this input text
+	 * @returns
+	 */
+	public setValue(value: string) {
+		Reflect.set(this, 'value', value);
 		return this;
 	}
 
