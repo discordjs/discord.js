@@ -171,6 +171,15 @@ export class Embed implements APIEmbed {
 	}
 
 	/**
+	 * Sets the embed's fields (max 25).
+	 * @param fields The fields to set
+	 */
+	public setFields(...fields: APIEmbedField[]) {
+		this.spliceFields(0, this.fields.length, ...fields);
+		return this;
+	}
+
+	/**
 	 * Sets the author of this embed
 	 *
 	 * @param options The options for the author
