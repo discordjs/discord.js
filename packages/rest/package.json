@@ -54,7 +54,7 @@
 		"@sapphire/snowflake": "^3.0.1",
 		"discord-api-types": "^0.26.1",
 		"form-data": "^4.0.0",
-		"node-fetch": "^2.6.5",
+		"node-fetch": "^2.6.7",
 		"tslib": "^2.3.1"
 	},
 	"devDependencies": {
