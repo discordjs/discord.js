@@ -1,6 +1,7 @@
 [changelog]
 header = """
 # Changelog
+
 All notable changes to this project will be documented in this file.\n
 """
 body = """
@@ -54,7 +55,7 @@ commit_parsers = [
     { body = ".*security", group = "Security"},
 ]
 filter_commits = true
-tag_pattern = "[0-9]*"
+tag_pattern = "@discordjs\\/voice@.*"
 skip_tags = "v[0-9]*|11|12"
 ignore_tags = ""
 topo_order = false
