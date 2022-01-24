@@ -1,5 +1,5 @@
-import { ActionRow, createComponent, ModalActionRowComponent } from '..';
-import { customIdValidator } from './Assertions';
+import { ActionRow, createComponent, ModalActionRowComponent } from '../..';
+import { customIdValidator } from '../../components/Assertions';
 
 export class Modal {
 	public readonly title!: string;
