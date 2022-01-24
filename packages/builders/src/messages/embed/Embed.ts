@@ -41,62 +41,62 @@ export class Embed implements APIEmbed {
 	/**
 	 * An array of fields of this embed
 	 */
-	public fields: APIEmbedField[];
+	public readonly fields: APIEmbedField[];
 
 	/**
 	 * The embed title
 	 */
-	public title?: string;
+	public readonly title?: string;
 
 	/**
 	 * The embed description
 	 */
-	public description?: string;
+	public readonly description?: string;
 
 	/**
 	 * The embed url
 	 */
-	public url?: string;
+	public readonly url?: string;
 
 	/**
 	 * The embed color
 	 */
-	public color?: number;
+	public readonly color?: number;
 
 	/**
 	 * The timestamp of the embed in the ISO format
 	 */
-	public timestamp?: string;
+	public readonly timestamp?: string;
 
 	/**
 	 * The embed thumbnail data
 	 */
-	public thumbnail?: APIEmbedThumbnail;
+	public readonly thumbnail?: APIEmbedThumbnail;
 
 	/**
 	 * The embed image data
 	 */
-	public image?: APIEmbedImage;
+	public readonly image?: APIEmbedImage;
 
 	/**
 	 * Received video data
 	 */
-	public video?: APIEmbedVideo;
+	public readonly video?: APIEmbedVideo;
 
 	/**
 	 * The embed author data
 	 */
-	public author?: APIEmbedAuthor;
+	public readonly author?: APIEmbedAuthor;
 
 	/**
 	 * Received data about the embed provider
 	 */
-	public provider?: APIEmbedProvider;
+	public readonly provider?: APIEmbedProvider;
 
 	/**
 	 * The embed footer data
 	 */
-	public footer?: APIEmbedFooter;
+	public readonly footer?: APIEmbedFooter;
 
 	public constructor(data: APIEmbed = {}) {
 		this.title = data.title;
@@ -186,7 +186,7 @@ export class Embed implements APIEmbed {
 	 */
 	public setAuthor(options: AuthorOptions | null): this {
 		if (options === null) {
-			this.author = undefined;
+			Reflect.set(this, 'author', undefined);
 			return this;
 		}
 
@@ -196,7 +196,7 @@ export class Embed implements APIEmbed {
 		urlPredicate.parse(iconURL);
 		urlPredicate.parse(url);
 
-		this.author = { name, url, icon_url: iconURL };
+		Reflect.set(this, 'author', { name, url, icon_url: iconURL });
 		return this;
 	}
 
@@ -209,7 +209,7 @@ export class Embed implements APIEmbed {
 		// Data assertions
 		colorPredicate.parse(color);
 
-		this.color = color ?? undefined;
+		Reflect.set(this, 'color', color ?? undefined);
 		return this;
 	}
 
@@ -222,7 +222,7 @@ export class Embed implements APIEmbed {
 		// Data assertions
 		descriptionPredicate.parse(description);
 
-		this.description = description ?? undefined;
+		Reflect.set(this, 'description', description ?? undefined);
 		return this;
 	}
 
@@ -233,7 +233,7 @@ export class Embed implements APIEmbed {
 	 */
 	public setFooter(options: FooterOptions | null): this {
 		if (options === null) {
-			this.footer = undefined;
+			Reflect.set(this, 'footer', undefined);
 			return this;
 		}
 
@@ -242,7 +242,7 @@ export class Embed implements APIEmbed {
 		footerTextPredicate.parse(text);
 		urlPredicate.parse(iconURL);
 
-		this.footer = { text, icon_url: iconURL };
+		Reflect.set(this, 'footer', { text, icon_url: iconURL });
 		return this;
 	}
 
@@ -255,7 +255,7 @@ export class Embed implements APIEmbed {
 		// Data assertions
 		urlPredicate.parse(url);
 
-		this.image = url ? { url } : undefined;
+		Reflect.set(this, 'image', url ? { url } : undefined);
 		return this;
 	}
 
@@ -268,7 +268,7 @@ export class Embed implements APIEmbed {
 		// Data assertions
 		urlPredicate.parse(url);
 
-		this.thumbnail = url ? { url } : undefined;
+		Reflect.set(this, 'thumbnail', url ? { url } : undefined);
 		return this;
 	}
 
@@ -281,7 +281,7 @@ export class Embed implements APIEmbed {
 		// Data assertions
 		timestampPredicate.parse(timestamp);
 
-		this.timestamp = timestamp ? new Date(timestamp).toISOString() : undefined;
+		Reflect.set(this, 'timestamp', timestamp ? new Date(timestamp).toISOString() : undefined);
 		return this;
 	}
 
@@ -294,7 +294,7 @@ export class Embed implements APIEmbed {
 		// Data assertions
 		titlePredicate.parse(title);
 
-		this.title = title ?? undefined;
+		Reflect.set(this, 'title', title ?? undefined);
 		return this;
 	}
 
@@ -307,7 +307,7 @@ export class Embed implements APIEmbed {
 		// Data assertions
 		urlPredicate.parse(url);
 
-		this.url = url ?? undefined;
+		Reflect.set(this, 'url', url ?? undefined);
 		return this;
 	}
 
