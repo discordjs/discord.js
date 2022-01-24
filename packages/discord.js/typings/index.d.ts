@@ -1720,7 +1720,7 @@ export interface PartialInputTextData {
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   private constructor(client: Client, data: unknown);
   public customId: string;
-  public components: PartialInputTextData[];
+  public components: PartialInputTextData[][];
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
