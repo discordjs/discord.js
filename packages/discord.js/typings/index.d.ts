@@ -2458,7 +2458,6 @@ export class Webhook extends WebhookMixin() {
     type: WebhookType.Incoming;
     applicationId: null;
     owner: User | APIUser;
-    token: string | null;
   };
   public isApplicationCreated(): this is this & {
     type: WebhookType.Application;
