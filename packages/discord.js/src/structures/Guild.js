@@ -971,7 +971,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the verification level of the guild.
-   * @param {VerificationLevel|number} verificationLevel The new verification level of the guild
+   * @param {VerificationLevel} verificationLevel The new verification level of the guild
    * @param {string} [reason] Reason for changing the guild's verification level
    * @returns {Promise<Guild>}
    * @example

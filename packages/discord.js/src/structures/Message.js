@@ -288,10 +288,10 @@ class Message extends Base {
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
      * * Crossposted messages (IS_CROSSPOST {@link MessageFlags.FLAGS message flag})
-     * * CHANNEL_FOLLOW_ADD
-     * * CHANNEL_PINNED_MESSAGE
-     * * REPLY
-     * * THREAD_STARTER_MESSAGE
+     * * {@link MessageType.ChannelFollowAdd}
+     * * {@link MessageType.ChannelPinnedMessage}
+     * * {@link MessageType.Reply}
+     * * {@link MessageType.ThreadStarterMessage}
      * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
      * @property {Snowflake} channelId The channel's id the message was referenced
@@ -482,7 +482,7 @@ class Message extends Base {
 
   /**
    * @typedef {CollectorOptions} MessageComponentCollectorOptions
-   * @property {MessageComponentType} [componentType] The type of component to listen for
+   * @property {ComponentType} [componentType] The type of component to listen for
    * @property {number} [max] The maximum total amount of interactions to collect
    * @property {number} [maxComponents] The maximum number of components to collect
    * @property {number} [maxUsers] The maximum number of users to interact
@@ -512,7 +512,7 @@ class Message extends Base {
    * @typedef {Object} AwaitMessageComponentOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
-   * @property {MessageComponentType} [componentType] The type of component interaction to collect
+   * @property {ComponentType} [componentType] The type of component interaction to collect
    */
 
   /**

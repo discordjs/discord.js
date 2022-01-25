@@ -64,11 +64,12 @@ class ThreadManager extends CachedManager {
    * @typedef {StartThreadOptions} ThreadCreateOptions
    * @property {MessageResolvable} [startMessage] The message to start a thread from. <warn>If this is defined then type
    * of thread gets automatically defined and cannot be changed. The provided `type` field will be ignored</warn>
-   * @property {ThreadChannelTypes|number} [type] The type of thread to create. Defaults to `GUILD_PUBLIC_THREAD` if
-   * created in a {@link TextChannel} <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
-   * `GUILD_NEWS_THREAD`</warn>
+   * @property {ThreadChannelTypes|number} [type] The type of thread to create.
+   * Defaults to {@link ChannelType.GuildPublicThread} if created in a {@link TextChannel}
+   * <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
+   * {@link ChannelType.GuildNewsThread}</warn>
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to the thread
-   * <info>Can only be set when type will be `GUILD_PRIVATE_THREAD`</info>
+   * <info>Can only be set when type will be {@link ChannelType.GuildPrivateThread}</info>
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the new channel in seconds
    */
 

@@ -9,6 +9,16 @@ const {
   ChannelType,
   ApplicationCommandPermissionType,
   MessageType,
+  GuildNSFWLevel,
+  GuildVerificationLevel,
+  GuildDefaultMessageNotifications,
+  GuildExplicitContentFilter,
+  GuildPremiumTier,
+  GuildScheduledEventStatus,
+  StageInstancePrivacyLevel,
+  GuildMFALevel,
+  TeamMemberMembershipState,
+  GuildScheduledEventEntityType,
 } = require('discord-api-types/v9');
 
 function unknownKeyStrategy(val) {
@@ -17,7 +27,7 @@ function unknownKeyStrategy(val) {
 
 class EnumResolvers extends null {
   /**
-   * Resolves enum key to `ChannelType` enum value
+   * Resolves enum key to {@link ChannelType} enum value
    * @param {string|ChannelType} key The key to resolve
    * @returns {ChannelType}
    */
@@ -49,7 +59,7 @@ class EnumResolvers extends null {
   }
 
   /**
-   * Resolves enum key to `InteractionType` enum value
+   * Resolves enum key to {@link InteractionType} enum value
    * @param {string|InteractionType} key The key to resolve
    * @returns {InteractionType}
    */
@@ -69,7 +79,7 @@ class EnumResolvers extends null {
   }
 
   /**
-   * Resolves enum key to `ApplicationCommandType` enum value
+   * Resolves enum key to {@link ApplicationCommandType} enum value
    * @param {string|ApplicationCommandType} key The key to resolve
    * @returns {ApplicationCommandType}
    */
@@ -87,7 +97,7 @@ class EnumResolvers extends null {
   }
 
   /**
-   * Resolves enum key to `ApplicationCommandOptionType` enum value
+   * Resolves enum key to {@link ApplicationCommandOptionType} enum value
    * @param {string|ApplicationCommandOptionType} key The key to resolve
    * @returns {ApplicationCommandOptionType}
    */
@@ -119,7 +129,7 @@ class EnumResolvers extends null {
   }
 
   /**
-   * Resolves enum key to `ApplicationCommandPermissionType` enum value
+   * Resolves enum key to {@link ApplicationCommandPermissionType} enum value
    * @param {string|ApplicationCommandPermissionType} key The key to resolve
    * @returns {ApplicationCommandPermissionType}
    */
@@ -135,7 +145,7 @@ class EnumResolvers extends null {
   }
 
   /**
-   * Resolves enum key to `ComponentType` enum value
+   * Resolves enum key to {@link ComponentType} enum value
    * @param {string|ComponentType} key The key to resolve
    * @returns {ComponentType}
    */
@@ -153,7 +163,7 @@ class EnumResolvers extends null {
   }
 
   /**
-   * Resolves enum key to `ButtonStyle` enum value
+   * Resolves enum key to {@link ButtonStyle} enum value
    * @param {string|ButtonStyle} key The key to resolve
    * @returns {ButtonStyle}
    */
@@ -175,7 +185,7 @@ class EnumResolvers extends null {
   }
 
   /**
-   * Resolves enum key to `MessageType` enum value
+   * Resolves enum key to {@link MessageType} enum value
    * @param {string|MessageType} key The key to lookup
    * @returns {MessageType}
    */
@@ -227,6 +237,188 @@ class EnumResolvers extends null {
         return MessageType.GuildInviteReminder;
       case 'CONTEXT_MENU_COMMAND':
         return MessageType.ContextMenuCommand;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link GuildNSFWLevel} enum value
+   * @param {string|GuildNSFWLevel} key The key to lookup
+   * @returns {GuildNSFWLevel}
+   */
+  static resolveGuildNSFWLevel(key) {
+    switch (key) {
+      case 'DEFAULT':
+        return GuildNSFWLevel.Default;
+      case 'EXPLICIT':
+        return GuildNSFWLevel.Explicit;
+      case 'SAFE':
+        return GuildNSFWLevel.Safe;
+      case 'AGE_RESTRICTED':
+        return GuildNSFWLevel.AgeRestricted;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link GuildVerificationLevel} enum value
+   * @param {string|GuildVerificationLevel} key The key to lookup
+   * @returns {GuildVerificationLevel}
+   */
+  static resolveGuildVerificationLevel(key) {
+    switch (key) {
+      case 'NONE':
+        return GuildVerificationLevel.None;
+      case 'LOW':
+        return GuildVerificationLevel.Low;
+      case 'MEDIUM':
+        return GuildVerificationLevel.Medium;
+      case 'HIGH':
+        return GuildVerificationLevel.High;
+      case 'VERY_HIGH':
+        return GuildVerificationLevel.VeryHigh;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link GuildDefaultMessageNotifications} enum value
+   * @param {string|GuildDefaultMessageNotifications} key The key to lookup
+   * @returns {GuildDefaultMessageNotifications}
+   */
+  static resolveGuildDefaultMessageNotifications(key) {
+    switch (key) {
+      case 'ALL_MESSAGES':
+        return GuildDefaultMessageNotifications.AllMessages;
+      case 'ONLY_MENTIONS':
+        return GuildDefaultMessageNotifications.OnlyMentions;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link GuildExplicitContentFilter} enum value
+   * @param {string|GuildExplicitContentFilter} key The key to lookup
+   * @returns {GuildExplicitContentFilter}
+   */
+  static resolveGuildExplicitContentFilter(key) {
+    switch (key) {
+      case 'DISABLED':
+        return GuildExplicitContentFilter.Disabled;
+      case 'MEMBERS_WITHOUT_ROLES':
+        return GuildExplicitContentFilter.MembersWithoutRoles;
+      case 'ALL_MEMBERS':
+        return GuildExplicitContentFilter.AllMembers;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link GuildPremiumTier} enum value
+   * @param {string|GuildPremiumTier} key The key to lookup
+   * @returns {GuildPremiumTier}
+   */
+  static resolveGuildPremiumTier(key) {
+    switch (key) {
+      case 'NONE':
+        return GuildPremiumTier.None;
+      case 'TIER_1':
+        return GuildPremiumTier.Tier1;
+      case 'TIER_2':
+        return GuildPremiumTier.Tier2;
+      case 'TIER_3':
+        return GuildPremiumTier.Tier3;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link GuildScheduledEventStatus} enum value
+   * @param {string|GuildScheduledEventStatus} key The key to lookup
+   * @returns {GuildScheduledEventStatus}
+   */
+  static resolveGuildScheduledEventStatus(key) {
+    switch (key) {
+      case 'SCHEDULED':
+        return GuildScheduledEventStatus.Scheduled;
+      case 'ACTIVE':
+        return GuildScheduledEventStatus.Active;
+      case 'COMPLETED':
+        return GuildScheduledEventStatus.Completed;
+      case 'CANCELED':
+        return GuildScheduledEventStatus.Canceled;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link StageInstancePrivacyLevel} enum value
+   * @param {string|StageInstancePrivacyLevel} key The key to lookup
+   * @returns {StageInstancePrivacyLevel}
+   */
+  static resolveStageInstancePrivacyLevel(key) {
+    switch (key) {
+      case 'PUBLIC':
+        return StageInstancePrivacyLevel.Public;
+      case 'GUILD_ONLY':
+        return StageInstancePrivacyLevel.GuildOnly;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link GuildMFALevel} enum value
+   * @param {string|GuildMFALevel} key The key to lookup
+   * @returns {GuildMFALevel}
+   */
+  static resolveGuildMFALevel(key) {
+    switch (key) {
+      case 'NONE':
+        return GuildMFALevel.None;
+      case 'ELEVATED':
+        return GuildMFALevel.Elevated;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link TeamMemberMembershipState} enum value
+   * @param {string|TeamMemberMembershipState} key The key to lookup
+   * @returns {TeamMemberMembershipState}
+   */
+  static resolveTeamMemberMembershipState(key) {
+    switch (key) {
+      case 'INVITED':
+        return TeamMemberMembershipState.Invited;
+      case 'ACCEPTED':
+        return TeamMemberMembershipState.Accepted;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * Resolves enum key to {@link GuildScheduledEventEntityType} enum value
+   * @param {string|GuildScheduledEventEntityType} key The key to lookup
+   * @returns {GuildScheduledEventEntityType}
+   */
+  static resolveGuildScheduledEventEntityType(key) {
+    switch (key) {
+      case 'STAGE_INSTANCE':
+        return GuildScheduledEventEntityType.StageInstance;
+      case 'VOICE':
+        return GuildScheduledEventEntityType.Voice;
+      case 'EXTERNAL':
+        return GuildScheduledEventEntityType.External;
       default:
         return unknownKeyStrategy(key);
     }

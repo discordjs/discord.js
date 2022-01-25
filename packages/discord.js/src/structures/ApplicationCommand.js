@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ApplicationCommandOptionType, ChannelType } = require('discord-api-types/v9');
+const { ApplicationCommandOptionType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
 
@@ -141,17 +141,19 @@ class ApplicationCommand extends Base {
    * <warn>Note that providing a value for the `camelCase` counterpart for any `snake_case` property
    * will discard the provided `snake_case` property.</warn>
    * @typedef {Object} ApplicationCommandOptionData
-   * @property {ApplicationCommandOptionType|number} type The type of the option
+   * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
    * @property {string} description The description of the option
    * @property {boolean} [autocomplete] Whether the option is an autocomplete option
    * @property {boolean} [required] Whether the option is required
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
-   * @property {ChannelType[]|number[]} [channelTypes] When the option type is channel,
+   * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
-   * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
-   * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
+   * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
    */
 
   /**
@@ -349,8 +351,10 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
-   * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
-   * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
+   * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
    */
 
   /**
@@ -384,11 +388,7 @@ class ApplicationCommand extends Base {
       autocomplete: option.autocomplete,
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o, received)),
-      [channelTypesKey]: received
-        ? option.channel_types?.map(type => ChannelType[type])
-        : option.channelTypes?.map(type => (typeof type === 'string' ? ChannelType[type] : type)) ??
-          // When transforming to API data, accept API data
-          option.channel_types,
+      [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,
     };

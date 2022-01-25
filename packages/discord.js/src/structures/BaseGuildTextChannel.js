@@ -187,9 +187,10 @@ class BaseGuildTextChannel extends GuildChannel {
    * @property {number} [maxUses=0] Maximum number of uses
    * @property {boolean} [unique=false] Create a unique invite, or use an existing one with similar settings
    * @property {UserResolvable} [targetUser] The user whose stream to display for this invite,
-   * required if `targetType` is `STREAM`, the user must be streaming in the channel
+   * required if `targetType` is {@link InviteTargetType.Stream}, the user must be streaming in the channel
    * @property {ApplicationResolvable} [targetApplication] The embedded application to open for this invite,
-   * required if `targetType` is `EMBEDDED_APPLICATION`, the application must have the `EMBEDDED` flag
+   * required if `targetType` is {@link InviteTargetType.Stream}, the application must have the
+   * {@link InviteTargetType.EmbeddedApplication} flag
    * @property {InviteTargetType} [targetType] The type of the target for this voice channel invite
    * @property {string} [reason] The reason for creating the invite
    */
