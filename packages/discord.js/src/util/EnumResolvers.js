@@ -417,7 +417,7 @@ class EnumResolvers extends null {
         return GuildScheduledEventEntityType.StageInstance;
       case 'VOICE':
         return GuildScheduledEventEntityType.Voice;
-      case 'External':
+      case 'EXTERNAL':
         return GuildScheduledEventEntityType.External;
       default:
         return unknownKeyStrategy(key);
