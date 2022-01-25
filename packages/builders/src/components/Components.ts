@@ -1,9 +1,9 @@
 import { APIMessageComponent, ComponentType } from 'discord-api-types/v9';
 import { ActionRow, ButtonComponent, Component, SelectMenuComponent } from '../index';
-import type { ActionRowComponent } from './ActionRow';
+import type { MessageComponent } from './ActionRow';
 
 export interface MappedComponentTypes {
-	[ComponentType.ActionRow]: ActionRow<ActionRowComponent>;
+	[ComponentType.ActionRow]: ActionRow;
 	[ComponentType.Button]: ButtonComponent;
 	[ComponentType.SelectMenu]: SelectMenuComponent;
 }
@@ -15,14 +15,15 @@ export interface MappedComponentTypes {
 export function createComponent<T extends keyof MappedComponentTypes>(
 	data: APIMessageComponent & { type: T },
 ): MappedComponentTypes[T];
-export function createComponent(data: APIMessageComponent): Component {
+export function createComponent<C extends MessageComponent>(data: C): C;
+export function createComponent(data: APIMessageComponent | MessageComponent): Component {
 	switch (data.type) {
 		case ComponentType.ActionRow:
-			return new ActionRow(data);
+			return data instanceof ActionRow ? data : new ActionRow(data);
 		case ComponentType.Button:
-			return new ButtonComponent(data);
+			return data instanceof ButtonComponent ? data : new ButtonComponent(data);
 		case ComponentType.SelectMenu:
-			return new SelectMenuComponent(data);
+			return data instanceof SelectMenuComponent ? data : new SelectMenuComponent(data);
 		default:
 			// @ts-expect-error
 			throw new Error(`Cannot serialize component type: ${data.type as number}`);
