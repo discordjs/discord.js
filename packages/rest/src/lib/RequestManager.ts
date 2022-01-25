@@ -17,7 +17,7 @@ export interface RawFile {
 	/**
 	 * The name of the file
 	 */
-	fileName: string;
+	name: string;
 	/**
 	 * An explicit key to use for key of the formdata field for this file.
 	 * When not provided, the index of the file in the files array is used in the form `files[${index}]`.
@@ -27,7 +27,7 @@ export interface RawFile {
 	/**
 	 * The actual data for the file
 	 */
-	fileData: string | number | boolean | Buffer;
+	data: string | number | boolean | Buffer;
 }
 
 /**
@@ -366,7 +366,7 @@ export class RequestManager extends EventEmitter {
 
 			// Attach all files to the request
 			for (const [index, file] of request.files.entries()) {
-				formData.append(file.key ?? `files[${index}]`, file.fileData, file.fileName);
+				formData.append(file.key ?? `files[${index}]`, file.data, file.name);
 			}
 
 			// If a JSON body was added as well, attach it to the form data, using payload_json unless otherwise specified
