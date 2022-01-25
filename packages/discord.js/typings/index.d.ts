@@ -2461,7 +2461,7 @@ export class Webhook extends WebhookMixin() {
     token: string | null;
   };
   public isApplicationCreated(): this is this & {
-    type: WebhookType.Incoming;
+    type: WebhookType.Application;
     applicationId: Snowflake;
     owner: User | APIUser;
   };
