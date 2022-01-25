@@ -19,6 +19,7 @@ const {
   GuildMFALevel,
   TeamMemberMembershipState,
   GuildScheduledEventEntityType,
+  IntegrationExpireBehavior,
 } = require('discord-api-types/v9');
 
 function unknownKeyStrategy(val) {
@@ -27,8 +28,23 @@ function unknownKeyStrategy(val) {
 
 class EnumResolvers extends null {
   /**
+   * A string that can be resolved to a {@link ChannelType} enum value. Here are the available types:
+   * * GUILD_TEXT
+   * * DM
+   * * GUILD_VOICE
+   * * GROUP_DM
+   * * GUILD_CATEGORY
+   * * GUILD_NEWS
+   * * GUILD_NEWS_THREAD
+   * * GUILD_PUBLIC_THREAD
+   * * GUILD_PRIVATE_THREAD
+   * * GUILD_STAGE_VOICE
+   * @typedef {string} ChannelTypeEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link ChannelType} enum value
-   * @param {string|ChannelType} key The key to resolve
+   * @param {ChannelTypeEnumResolvable|ChannelType} key The key to resolve
    * @returns {ChannelType}
    */
   static resolveChannelType(key) {
@@ -59,8 +75,17 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to an {@link InteractionType} enum value. Here are the available types:
+   * * PING
+   * * APPLICATION_COMMAND
+   * * MESSAGE_COMPONENT
+   * * APPLICATION_COMMAND_AUTOCOMPLETE
+   * @typedef {string} InteractionTypeEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link InteractionType} enum value
-   * @param {string|InteractionType} key The key to resolve
+   * @param {InteractionTypeEnumResolvable|InteractionType} key The key to resolve
    * @returns {InteractionType}
    */
   static resolveInteractionType(key) {
@@ -79,8 +104,16 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to an {@link ApplicationCommandType} enum value. Here are the available types:
+   * * CHAT_INPUT
+   * * USER
+   * * MESSAGE
+   * @typedef {string} ApplicationCommandTypeEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link ApplicationCommandType} enum value
-   * @param {string|ApplicationCommandType} key The key to resolve
+   * @param {ApplicationCommandTypeEnumResolvable|ApplicationCommandType} key The key to resolve
    * @returns {ApplicationCommandType}
    */
   static resolveApplicationCommandType(key) {
@@ -97,8 +130,23 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to an {@link ApplicationCommandOptionType} enum value. Here are the available types:
+   * * SUB_COMMAND
+   * * SUB_COMMAND_GROUP
+   * * STRING
+   * * INTEGER
+   * * BOOLEAN
+   * * USER
+   * * CHANNEL
+   * * ROLE
+   * * NUMBER
+   * * MENTIONABLE
+   * @typedef {string} ApplicationCommandOptionTypeEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link ApplicationCommandOptionType} enum value
-   * @param {string|ApplicationCommandOptionType} key The key to resolve
+   * @param {ApplicationCommandOptionTypeEnumResolvable|ApplicationCommandOptionType} key The key to resolve
    * @returns {ApplicationCommandOptionType}
    */
   static resolveApplicationCommandOptionType(key) {
@@ -129,8 +177,16 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to an {@link ApplicationCommandPermissionType} enum value.
+   * Here are the available types:
+   * * ROLE
+   * * USER
+   * @typedef {string} ApplicationCommandPermissionTypeEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link ApplicationCommandPermissionType} enum value
-   * @param {string|ApplicationCommandPermissionType} key The key to resolve
+   * @param {ApplicationCommandPermissionTypeEnumResolvable|ApplicationCommandPermissionType} key The key to resolve
    * @returns {ApplicationCommandPermissionType}
    */
   static resolveApplicationCommandPermissionType(key) {
@@ -145,8 +201,16 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link ComponentType} enum value. Here are the available types:
+   * * ACTION_ROW
+   * * BUTTON
+   * * SELECT_MENU
+   * @typedef {string} ComponentTypeEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link ComponentType} enum value
-   * @param {string|ComponentType} key The key to resolve
+   * @param {ComponentTypeEnumResolvable|ComponentType} key The key to resolve
    * @returns {ComponentType}
    */
   static resolveComponentType(key) {
@@ -163,8 +227,18 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link ButtonStyle} enum value. Here are the available types:
+   * * PRIMARY
+   * * SECONDARY
+   * * SUCCESS
+   * * DANGER
+   * * LINK
+   * @typedef {string} ButtonStyleEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link ButtonStyle} enum value
-   * @param {string|ButtonStyle} key The key to resolve
+   * @param {ButtonStyleEnumResolvable|ButtonStyle} key The key to resolve
    * @returns {ButtonStyle}
    */
   static resolveButtonStyle(key) {
@@ -185,8 +259,36 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link MessageType} enum value. Here are the available types:
+   * * DEFAULT
+   * * RECIPIENT_ADD
+   * * RECIPIENT_REMOVE
+   * * CALL
+   * * CHANNEL_NAME_CHANGE
+   * * CHANNEL_ICON_CHANGE
+   * * CHANNEL_PINNED_MESSAGE
+   * * GUILD_MEMBER_JOIN
+   * * USER_PREMIUM_GUILD_SUBSCRIPTION
+   * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
+   * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
+   * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
+   * * CHANNEL_FOLLOW_ADD
+   * * GUILD_DISCOVERY_DISQUALIFIED
+   * * GUILD_DISCOVERY_REQUALIFIED
+   * * GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING
+   * * GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING
+   * * THREAD_CREATED
+   * * REPLY
+   * * CHAT_INPUT_COMMAND
+   * * THREAD_STARTER_MESSAGE
+   * * GUILD_INVITE_REMINDER
+   * * CONTEXT_MENU_COMMAND
+   * @typedef {string} MessageTypeEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link MessageType} enum value
-   * @param {string|MessageType} key The key to lookup
+   * @param {MessageTypeEnumResolvable|MessageType} key The key to lookup
    * @returns {MessageType}
    */
   static resolveMessageType(key) {
@@ -243,8 +345,17 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link GuildNSFWLevel} enum value. Here are the available types:
+   * * DEFAULT
+   * * EXPLICIT
+   * * SAFE
+   * * AGE_RESTRICTED
+   * @typedef {string} GuildNSFWLevelEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link GuildNSFWLevel} enum value
-   * @param {string|GuildNSFWLevel} key The key to lookup
+   * @param {GuildNSFWLevelEnumResolvable|GuildNSFWLevel} key The key to lookup
    * @returns {GuildNSFWLevel}
    */
   static resolveGuildNSFWLevel(key) {
@@ -263,8 +374,18 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link GuildVerificationLevel} enum value. Here are the available types:
+   * * NONE
+   * * LOW
+   * * MEDIUM
+   * * HIGH
+   * * VERY_HIGH
+   * @typedef {string} GuildVerificationLevelEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link GuildVerificationLevel} enum value
-   * @param {string|GuildVerificationLevel} key The key to lookup
+   * @param {GuildVerificationLevelEnumResolvable|GuildVerificationLevel} key The key to lookup
    * @returns {GuildVerificationLevel}
    */
   static resolveGuildVerificationLevel(key) {
@@ -285,8 +406,16 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link GuildDefaultMessageNotifications} enum value.
+   * Here are the available types:
+   * * ALL_MESSAGES
+   * * ONLY_MENTIONS
+   * @typedef {string} GuildDefaultMessageNotificationsEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link GuildDefaultMessageNotifications} enum value
-   * @param {string|GuildDefaultMessageNotifications} key The key to lookup
+   * @param {GuildDefaultMessageNotificationsEnumResolvable|GuildDefaultMessageNotifications} key The key to lookup
    * @returns {GuildDefaultMessageNotifications}
    */
   static resolveGuildDefaultMessageNotifications(key) {
@@ -301,8 +430,16 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link GuildExplicitContentFilter} enum value. Here are the available types:
+   * * DISABLED
+   * * MEMBERS_WITHOUT_ROLES
+   * * ALL_MEMBERS
+   * @typedef {string} GuildExplicitContentFilterEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link GuildExplicitContentFilter} enum value
-   * @param {string|GuildExplicitContentFilter} key The key to lookup
+   * @param {GuildExplicitContentFilterEnumResolvable|GuildExplicitContentFilter} key The key to lookup
    * @returns {GuildExplicitContentFilter}
    */
   static resolveGuildExplicitContentFilter(key) {
@@ -319,8 +456,17 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link GuildPremiumTier} enum value. Here are the available types:
+   * * NONE
+   * * TIER_1
+   * * TIER_2
+   * * TIER_3
+   * @typedef {string} GuildPremiumTierEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link GuildPremiumTier} enum value
-   * @param {string|GuildPremiumTier} key The key to lookup
+   * @param {GuildPremiumTierEnumResolvable|GuildPremiumTier} key The key to lookup
    * @returns {GuildPremiumTier}
    */
   static resolveGuildPremiumTier(key) {
@@ -339,8 +485,17 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link GuildScheduledEventStatus} enum value. Here are the available types:
+   * * SCHEDULED
+   * * ACTIVE
+   * * COMPLETED
+   * * CANCELED
+   * @typedef {string} GuildScheduledEventStatusEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link GuildScheduledEventStatus} enum value
-   * @param {string|GuildScheduledEventStatus} key The key to lookup
+   * @param {GuildScheduledEventStatusEnumResolvable|GuildScheduledEventStatus} key The key to lookup
    * @returns {GuildScheduledEventStatus}
    */
   static resolveGuildScheduledEventStatus(key) {
@@ -359,8 +514,15 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link StageInstancePrivacyLevel} enum value. Here are the available types:
+   * * PUBLIC
+   * * GUILD_ONLY
+   * @typedef {string} StageInstancePrivacyLevelEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link StageInstancePrivacyLevel} enum value
-   * @param {string|StageInstancePrivacyLevel} key The key to lookup
+   * @param {StageInstancePrivacyLevelEnumResolvable|StageInstancePrivacyLevel} key The key to lookup
    * @returns {StageInstancePrivacyLevel}
    */
   static resolveStageInstancePrivacyLevel(key) {
@@ -375,8 +537,15 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link GuildMFALevel} enum value. Here are the available types:
+   * * NONE
+   * * ELEVATED
+   * @typedef {string} GuildMFALevelEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link GuildMFALevel} enum value
-   * @param {string|GuildMFALevel} key The key to lookup
+   * @param {GuildMFALevelEnumResolvable|GuildMFALevel} key The key to lookup
    * @returns {GuildMFALevel}
    */
   static resolveGuildMFALevel(key) {
@@ -391,8 +560,15 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link TeamMemberMembershipState} enum value. Here are the available types:
+   * * INVITED
+   * * ACCEPTED
+   * @typedef {string} TeamMemberMembershipStateEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link TeamMemberMembershipState} enum value
-   * @param {string|TeamMemberMembershipState} key The key to lookup
+   * @param {TeamMemberMembershipStateEnumResolvable|TeamMemberMembershipState} key The key to lookup
    * @returns {TeamMemberMembershipState}
    */
   static resolveTeamMemberMembershipState(key) {
@@ -407,8 +583,16 @@ class EnumResolvers extends null {
   }
 
   /**
+   * A string that can be resolved to a {@link GuildScheduledEventEntityType} enum value. Here are the available types:
+   * * STAGE_INSTANCE
+   * * VOICE
+   * * EXTERNAL
+   * @typedef {string} GuildScheduledEventEntityTypeEnumResolvable
+   */
+
+  /**
    * Resolves enum key to {@link GuildScheduledEventEntityType} enum value
-   * @param {string|GuildScheduledEventEntityType} key The key to lookup
+   * @param {GuildScheduledEventEntityTypeEnumResolvable|GuildScheduledEventEntityType} key The key to lookup
    * @returns {GuildScheduledEventEntityType}
    */
   static resolveGuildScheduledEventEntityType(key) {
@@ -419,6 +603,29 @@ class EnumResolvers extends null {
         return GuildScheduledEventEntityType.Voice;
       case 'EXTERNAL':
         return GuildScheduledEventEntityType.External;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * A string that can be resolved to a {@link IntegrationExpireBehavior} enum value. Here are the available types:
+   * * REMOVE_ROLE
+   * * KICK
+   * @typedef {string} IntegrationExpireBehaviorEnumResolvable
+   */
+
+  /**
+   * Resolves enum key to {@link IntegrationExpireBehavior} enum value
+   * @param {IntegrationExpireBehaviorEnumResolvable|IntegrationExpireBehavior} key The key to lookup
+   * @returns {IntegrationExpireBehavior}
+   */
+  static resolveIntegrationExpireBehavior(key) {
+    switch (key) {
+      case 'REMOVE_ROLE':
+        return IntegrationExpireBehavior.RemoveRole;
+      case 'KICK':
+        return IntegrationExpireBehavior.Kick;
       default:
         return unknownKeyStrategy(key);
     }

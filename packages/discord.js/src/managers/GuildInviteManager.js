@@ -1,7 +1,6 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { InviteTargetType } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
 const Invite = require('../structures/Invite');
@@ -191,7 +190,7 @@ class GuildInviteManager extends CachedManager {
         unique,
         target_user_id: this.client.users.resolveId(targetUser),
         target_application_id: targetApplication?.id ?? targetApplication?.applicationId ?? targetApplication,
-        target_type: InviteTargetType[targetType],
+        target_type: targetType,
       },
       reason,
     });

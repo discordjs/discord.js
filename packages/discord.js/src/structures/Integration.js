@@ -2,7 +2,6 @@
 
 const Base = require('./Base');
 const IntegrationApplication = require('./IntegrationApplication');
-const { IntegrationExpireBehaviors } = require('../util/Constants');
 
 /**
  * The information account for an integration
@@ -156,7 +155,7 @@ class Integration extends Base {
        * The behavior of expiring subscribers
        * @type {?IntegrationExpireBehavior}
        */
-      this.expireBehavior = IntegrationExpireBehaviors[data.expire_behavior];
+      this.expireBehavior = data.expire_behavior;
     } else {
       this.expireBehavior ??= null;
     }

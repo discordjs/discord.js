@@ -77,6 +77,7 @@ import {
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
   GuildScheduledEventStatus,
+  IntegrationExpireBehavior,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -827,32 +828,47 @@ export class DataResolver extends null {
 
 export class EnumResolvers extends null {
   private constructor();
-  public static resolveChannelType(key: string | ChannelType): ChannelType;
-  public static resolveInteractionType(key: string | InteractionType): InteractionType;
-  public static resolveApplicationCommandType(key: string | ApplicationCommandType): ApplicationCommandType;
+  public static resolveChannelType(key: ChannelTypeEnumResolvable | ChannelType): ChannelType;
+  public static resolveInteractionType(key: InteractionTypeEnumResolvable | InteractionType): InteractionType;
+  public static resolveApplicationCommandType(
+    key: ApplicationCommandTypeEnumResolvable | ApplicationCommandType,
+  ): ApplicationCommandType;
   public static resolveApplicationCommandOptionType(
-    key: string | ApplicationCommandOptionType,
+    key: ApplicationCommandOptionTypeEnumResolvable | ApplicationCommandOptionType,
   ): ApplicationCommandOptionType;
   public static resolveApplicationCommandPermissionType(
-    key: string | ApplicationCommandPermissionType,
+    key: ApplicationCommandPermissionTypeEnumResolvable | ApplicationCommandPermissionType,
   ): ApplicationCommandPermissionType;
-  public static resolveComponentType(key: string | ComponentType): ComponentType;
-  public static resolveButtonStyle(key: string | ButtonStyle): ButtonStyle;
-  public static resolveMessageType(key: string | MessageType): MessageType;
-  public static resolveGuildNSFWLevel(key: string | GuildNSFWLevel): GuildNSFWLevel;
-  public static resolveGuildVerificationLevel(key: string | GuildVerificationLevel): GuildVerificationLevel;
+  public static resolveComponentType(key: ComponentTypeEnumResolvable | ComponentType): ComponentType;
+  public static resolveButtonStyle(key: ButtonStyleEnumResolvable | ButtonStyle): ButtonStyle;
+  public static resolveMessageType(key: MessageTypeEnumResolvable | MessageType): MessageType;
+  public static resolveGuildNSFWLevel(key: GuildNSFWLevelEnumResolvable | GuildNSFWLevel): GuildNSFWLevel;
+  public static resolveGuildVerificationLevel(
+    key: GuildVerificationLevelEnumResolvable | GuildVerificationLevel,
+  ): GuildVerificationLevel;
   public static resolveGuildDefaultMessageNotifications(
-    key: string | GuildDefaultMessageNotifications,
+    key: GuildDefaultMessageNotificationsEnumResolvable | GuildDefaultMessageNotifications,
   ): GuildDefaultMessageNotifications;
-  public static resolveGuildExplicitContentFilter(key: string | GuildExplicitContentFilter): GuildExplicitContentFilter;
-  public static resolveGuildPremiumTier(key: string | GuildPremiumTier): GuildPremiumTier;
-  public static resolveGuildScheduledEventStatus(key: string | GuildScheduledEventStatus): GuildScheduledEventStatus;
-  public static resolveStageInstancePrivacyLevel(key: string | StageInstancePrivacyLevel): StageInstancePrivacyLevel;
-  public static resolveGuildMFALevel(key: string | GuildMFALevel): GuildMFALevel;
-  public static resolveTeamMemberMembershipState(key: string | TeamMemberMembershipState): TeamMemberMembershipState;
+  public static resolveGuildExplicitContentFilter(
+    key: GuildExplicitContentFilterEnumResolvable | GuildExplicitContentFilter,
+  ): GuildExplicitContentFilter;
+  public static resolveGuildPremiumTier(key: GuildPremiumTierEnumResolvable | GuildPremiumTier): GuildPremiumTier;
+  public static resolveGuildScheduledEventStatus(
+    key: GuildScheduledEventStatusEnumResolvable | GuildScheduledEventStatus,
+  ): GuildScheduledEventStatus;
+  public static resolveStageInstancePrivacyLevel(
+    key: StageInstancePrivacyLevelEnumResolvable | StageInstancePrivacyLevel,
+  ): StageInstancePrivacyLevel;
+  public static resolveGuildMFALevel(key: GuildMFALevelEnumResolvable | GuildMFALevel): GuildMFALevel;
+  public static resolveTeamMemberMembershipState(
+    key: TeamMemberMembershipStateEnumResolvable | TeamMemberMembershipState,
+  ): TeamMemberMembershipState;
   public static resolveGuildScheduledEventEntityType(
-    key: string | GuildScheduledEventEntityType,
+    key: GuildScheduledEventEntityTypeEnumResolvable | GuildScheduledEventEntityType,
   ): GuildScheduledEventEntityType;
+  public static resolveIntegrationExpireBehavior(
+    key: IntegrationExpireBehaviorEnumResolvable | IntegrationExpireBehavior,
+  ): IntegrationExpireBehavior;
 }
 
 export class DiscordAPIError extends Error {
@@ -1266,7 +1282,7 @@ export class Integration extends Base {
   public account: IntegrationAccount;
   public application: IntegrationApplication | null;
   public enabled: boolean;
-  public expireBehavior: IntegrationExpireBehaviors | null;
+  public expireBehavior: IntegrationExpireBehavior | null;
   public expireGracePeriod: number | null;
   public guild: Guild;
   public id: Snowflake | string;
@@ -2662,7 +2678,6 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
-  IntegrationExpireBehaviors: IntegrationExpireBehaviors[];
   InviteScopes: InviteScope[];
   MessageTypes: MessageType[];
   SystemMessageTypes: SystemMessageType[];
@@ -3940,6 +3955,91 @@ export type EmojiIdentifierResolvable = string | EmojiResolvable;
 
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
 
+export type ChannelTypeEnumResolvable =
+  | 'GUILD_TEXT'
+  | 'DM'
+  | 'GUILD_VOICE'
+  | 'GROUP_DM'
+  | 'GUILD_CATEGORY'
+  | 'GUILD_NEWS'
+  | 'GUILD_NEWS_THREAD'
+  | 'GUILD_PUBLIC_THREAD'
+  | 'GUILD_PRIVATE_THREAD'
+  | 'GUILD_STAGE_VOICE';
+
+export type InteractionTypeEnumResolvable =
+  | 'PING'
+  | 'APPLICATION_COMMAND'
+  | 'MESSAGE_COMPONENT'
+  | 'APPLICATION_COMMAND_AUTOCOMPLETE';
+
+export type ApplicationCommandTypeEnumResolvable = 'CHAT_INPUT' | 'USER' | 'MESSAGE';
+
+export type ApplicationCommandOptionTypeEnumResolvable =
+  | 'SUB_COMMAND'
+  | 'SUB_COMMAND_GROUP'
+  | 'STRING'
+  | 'INTEGER'
+  | 'BOOLEAN'
+  | 'USER'
+  | 'CHANNEL'
+  | 'ROLE'
+  | 'NUMBER'
+  | 'MENTIONABLE';
+
+export type ApplicationCommandPermissionTypeEnumResolvable = 'ROLE' | 'USER';
+
+export type ComponentTypeEnumResolvable = 'ACTION_ROW' | 'BUTTON' | 'SELECT_MENU';
+
+export type ButtonStyleEnumResolvable = 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
+
+export type MessageTypeEnumResolvable =
+  | 'DEFAULT'
+  | 'RECIPIENT_ADD'
+  | 'RECIPIENT_REMOVE'
+  | 'CALL'
+  | 'CHANNEL_NAME_CHANGE'
+  | 'CHANNEL_ICON_CHANGE'
+  | 'CHANNEL_PINNED_MESSAGE'
+  | 'GUILD_MEMBER_JOIN'
+  | 'USER_PREMIUM_GUILD_SUBSCRIPTION'
+  | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
+  | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2'
+  | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3'
+  | 'CHANNEL_FOLLOW_ADD'
+  | 'GUILD_DISCOVERY_DISQUALIFIED'
+  | 'GUILD_DISCOVERY_REQUALIFIED'
+  | 'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING'
+  | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
+  | 'THREAD_CREATED'
+  | 'REPLY'
+  | 'CHAT_INPUT_COMMAND'
+  | 'THREAD_STARTER_MESSAGE'
+  | 'GUILD_INVITE_REMINDER'
+  | 'CONTEXT_MENU_COMMAND';
+
+export type GuildNSFWLevelEnumResolvable = 'DEFAULT' | 'EXPLICIT' | 'SAFE' | 'AGE_RESTRICTED';
+
+export type GuildVerificationLevelEnumResolvable = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
+
+export type GuildDefaultMessageNotificationsEnumResolvable = 'ALL_MESSAGES' | 'ONLY_MENTIONS';
+
+export type GuildExplicitContentFilterEnumResolvable = 'DISABLED' | 'MEMBERS_WITHOUT_ROLES' | 'ALL_MEMBERS';
+
+export type GuildPremiumTierEnumResolvable = 'NONE' | 'TIER_1' | 'TIER_2' | 'TIER_3';
+
+export type GuildScheduledEventStatusEnumResolvable = 'SCHEDULED' | 'ACTIVE' | 'COMPLETED' | 'CANCELED';
+
+export type StageInstancePrivacyLevelEnumResolvable = 'PUBLIC' | 'GUILD_ONLY';
+
+export type GuildMFALevelEnumResolvable = 'NONE' | 'ELEVATED';
+
+export type TeamMemberMembershipStateEnumResolvable = 'INVITED' | 'ACCEPTED';
+
+export type GuildScheduledEventEntityTypeEnumResolvable = 'STAGE_INSTANCE' | 'VOICE' | 'EXTERNAL';
+
+export type IntegrationExpireBehaviorEnumResolvable = 'REMOVE_ROLE' | 'KICK';
+
 export interface ErrorEvent {
   error: unknown;
   message: string;
@@ -4544,8 +4644,6 @@ export interface CreateInviteOptions {
   targetUser?: UserResolvable;
   targetType?: InviteTargetType;
 }
-
-export type IntegrationExpireBehaviors = 'REMOVE_ROLE' | 'KICK';
 
 export type InviteResolvable = string;
 
