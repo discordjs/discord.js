@@ -700,13 +700,16 @@ export class Collection<K, V> extends Map<K, V> {
 		const coll = new this.constructor[Symbol.species]<K, R>();
 		const keys = new Set([...this.keys(), ...other.keys()]);
 		for (const k of keys) {
-			if (this.has(k) && other.has(k)) {
+			const hasInSelf = this.has(k);
+			const hasInOther = other.has(k);
+
+			if (hasInSelf && hasInOther) {
 				const r = whenInBoth(this.get(k)!, other.get(k)!, k);
 				if (r.keep) coll.set(k, r.value);
-			} else if (this.has(k)) {
+			} else if (hasInSelf) {
 				const r = whenInSelf(this.get(k)!, k);
 				if (r.keep) coll.set(k, r.value);
-			} else if (other.has(k)) {
+			} else if (hasInOther) {
 				const r = whenInOther(other.get(k)!, k);
 				if (r.keep) coll.set(k, r.value);
 			}
