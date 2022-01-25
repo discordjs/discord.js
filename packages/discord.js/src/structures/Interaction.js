@@ -78,7 +78,7 @@ class Interaction extends Base {
     /**
      * The locale of the user who invoked this interaction
      * @type {string}
-     * @see {@link https://discord.com/developers/docs/dispatch/field-values#predefined-field-values-accepted-locales}
+     * @see {@link https://discord.com/developers/docs/reference#locales}
      */
     this.locale = data.locale;
 
