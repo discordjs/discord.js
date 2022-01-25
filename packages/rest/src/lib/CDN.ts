@@ -213,6 +213,20 @@ export class CDN {
 	}
 
 	/**
+	 * Generates a cover image for a guild scheduled event.
+	 * @param scheduledEventId The scheduled event id
+	 * @param coverHash The hash provided by discord for this cover image
+	 * @param options Optional options for the cover image
+	 */
+	public guildScheduledEventCover(
+		scheduledEventId: string,
+		coverHash: string,
+		options?: Readonly<BaseImageURLOptions>,
+	): string {
+		return this.makeURL(`/guild-events/${scheduledEventId}/${coverHash}`, options);
+	}
+
+	/**
 	 * Constructs the URL for the resource, checking whether or not `hash` starts with `a_` if `dynamic` is set to `true`.
 	 * @param route The base cdn route
 	 * @param hash The hash provided by Discord for this icon
