@@ -3553,7 +3553,7 @@ export interface ClientOptions {
   waitGuildTimeout?: number;
   sweepers?: SweeperOptions;
   ws?: WebSocketOptions;
-  rest?: RESTOptions;
+  rest?: Partial<RESTOptions>;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
