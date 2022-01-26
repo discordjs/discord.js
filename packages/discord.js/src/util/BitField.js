@@ -1,5 +1,6 @@
 'use strict';
 
+const { PermissionFlagsBits } = require('discord-api-types');
 const { RangeError } = require('../errors');
 
 /**
@@ -50,8 +51,8 @@ class BitField {
    * @param {BitFieldResolvable} bits Bit(s) to check for
    * @returns {BitField[]}
    */
-  missing(bits) {
-    return new this.constructor(bits).remove(this);
+  missing(bits, ...hasParams) {
+    return new this.constructor(bits).remove(this).toArray(...hasParams);
   }
 
   /**
@@ -92,8 +93,33 @@ class BitField {
     return this;
   }
 
+  /**
+   * Gets an object mapping field names to a {@link boolean} indicating whether the
+   * bit is available.
+   * @param {...*} hasParams Additional parameters for the has method, if any
+   * @returns {Object}
+   */
+  serialize(...hasParams) {
+    const serialized = {};
+    for (const [flag, bit] of Object.entries(PermissionFlagsBits)) serialized[flag] = this.has(bit, ...hasParams);
+    return serialized;
+  }
+
+  /**
+   * Gets an {@link Array} of bitfield names based on the bits available.
+   * @param {...*} hasParams Additional parameters for the has method, if any
+   * @returns {string[]}
+   */
+  toArray(...hasParams) {
+    return Object.keys(PermissionFlagsBits).filter(bit => this.has(bit, ...hasParams));
+  }
+
   toJSON() {
     return typeof this.bitfield === 'number' ? this.bitfield : this.bitfield.toString();
+  }
+
+  *[Symbol.iterator]() {
+    yield* this.toArray();
   }
 
   valueOf() {
