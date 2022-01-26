@@ -2731,7 +2731,11 @@ export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, 
   public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
 }
 
-export class CategoryChannelChildManager extends CachedManager<Snowflake, GuildChannel, GuildChannelResolvable> {
+export class CategoryChannelChildManager extends CachedManager<
+  Snowflake,
+  NonCategoryGuildBasedChannel,
+  GuildChannelResolvable
+> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildChannelData>);
 
   public channel: CategoryChannel;
@@ -4935,6 +4939,8 @@ export type TextBasedChannelTypes = TextBasedChannel['type'];
 export type VoiceBasedChannel = Extract<AnyChannel, { bitrate: number }>;
 
 export type GuildBasedChannel = Extract<AnyChannel, { guild: Guild }>;
+
+export type NonCategoryGuildBasedChannel = Exclude<GuildBasedChannel, CategoryChannel>;
 
 export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, ThreadChannel>;
 
