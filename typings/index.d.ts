@@ -1187,6 +1187,8 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public readonly channel: VoiceChannel | StageChannel | null;
   public readonly guild: Guild | null;
   public readonly url: string;
+  public readonly image: string | null;
+  public coverImageURL(options?: Readonly<BaseImageURLOptions>): string | null;
   public createInviteURL(options?: CreateGuildScheduledEventInviteURLOptions): Promise<string>;
   public edit<T extends GuildScheduledEventSetStatusArg<S>>(
     options: GuildScheduledEventEditOptions<S, T>,
