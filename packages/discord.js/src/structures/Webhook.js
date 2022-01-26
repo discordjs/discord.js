@@ -314,7 +314,7 @@ class Webhook {
     if (options instanceof MessagePayload) messagePayload = options;
     else messagePayload = MessagePayload.create(this, options);
 
-    const { body, files } = await messagePayload.resolveData().resolveFiles();
+    const { body, files } = await messagePayload.resolveBody().resolveFiles();
 
     const d = await this.client.rest.patch(
       Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id),
