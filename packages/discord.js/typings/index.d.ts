@@ -2193,7 +2193,8 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel) {
   public readonly archivedAt: Date | null;
   public archiveTimestamp: number | null;
   public readonly createdAt: Date | null;
-  public createdTimestamp: number | null;
+  private _createdTimestamp: number | null;
+  public readonly createdTimestamp: number | null;
   public autoArchiveDuration: ThreadAutoArchiveDuration | null;
   public readonly editable: boolean;
   public guild: Guild;
