@@ -1,6 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { Routes, StickerFormatType } = require('discord-api-types/v9');
 const Base = require('./Base');
 
 /**
@@ -161,7 +162,7 @@ class Sticker extends Base {
    * @type {string}
    */
   get url() {
-    return this.client.rest.cdn.Sticker(this.id, this.format);
+    return this.client.rest.cdn.sticker(this.id, this.format === StickerFormatType.Lottie ? 'json' : 'png');
   }
 
   /**
@@ -169,7 +170,7 @@ class Sticker extends Base {
    * @returns {Promise<Sticker>}
    */
   async fetch() {
-    const data = await this.client.api.stickers(this.id).get();
+    const data = await this.client.rest.get(Routes.sticker(this.id));
     this._patch(data);
     return this;
   }
@@ -190,7 +191,7 @@ class Sticker extends Base {
     if (this.partial) await this.fetch();
     if (!this.guildId) throw new Error('NOT_GUILD_STICKER');
 
-    const data = await this.client.api.guilds(this.guildId).stickers(this.id).get();
+    const data = await this.client.rest.get(Routes.guildSticker(this.guildId, this.id));
     this._patch(data);
     return this.user;
   }

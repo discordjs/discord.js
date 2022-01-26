@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { GuildScheduledEventEntityType } = require('discord-api-types/v9');
+const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
@@ -89,8 +89,8 @@ class GuildScheduledEventManager extends CachedManager {
       entity_metadata = typeof entityMetadata === 'undefined' ? entityMetadata : null;
     }
 
-    const data = await this.client.api.guilds(this.guild.id, 'scheduled-events').post({
-      data: {
+    const data = await this.client.rest.post(Routes.guildScheduledEvents(this.guild.id), {
+      body: {
         channel_id,
         name,
         privacy_level: privacyLevel,
@@ -136,15 +136,15 @@ class GuildScheduledEventManager extends CachedManager {
         if (existing) return existing;
       }
 
-      const data = await this.client.api
-        .guilds(this.guild.id, 'scheduled-events', id)
-        .get({ query: { with_user_count: options.withUserCount ?? true } });
+      const data = await this.client.rest.get(Routes.guildScheduledEvent(this.guild.id, id), {
+        query: new URLSearchParams({ with_user_count: options.withUserCount ?? true }),
+      });
       return this._add(data, options.cache);
     }
 
-    const data = await this.client.api
-      .guilds(this.guild.id, 'scheduled-events')
-      .get({ query: { with_user_count: options.withUserCount ?? true } });
+    const data = await this.client.rest.get(Routes.guildScheduledEvents(this.guild.id), {
+      query: new URLSearchParams({ with_user_count: options.withUserCount ?? true }),
+    });
 
     return data.reduce(
       (coll, rawGuildScheduledEventData) =>
@@ -205,8 +205,8 @@ class GuildScheduledEventManager extends CachedManager {
       };
     }
 
-    const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).patch({
-      data: {
+    const data = await this.client.rest.patch(Routes.guildScheduledEvent(this.guild.id, guildScheduledEventId), {
+      body: {
         channel_id: typeof channel === 'undefined' ? channel : this.guild.channels.resolveId(channel),
         name,
         privacy_level: privacyLevel,
@@ -232,7 +232,7 @@ class GuildScheduledEventManager extends CachedManager {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
-    await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).delete();
+    await this.client.rest.delete(Routes.guildScheduledEvent(this.guild.id, guildScheduledEventId));
   }
 
   /**
@@ -265,8 +265,26 @@ class GuildScheduledEventManager extends CachedManager {
 
     let { limit, withMember, before, after } = options;
 
-    const data = await this.client.api.guilds(this.guild.id, 'scheduled-events', guildScheduledEventId).users.get({
-      query: { limit, with_member: withMember, before, after },
+    const query = new URLSearchParams();
+
+    if (limit) {
+      query.set('limit', limit);
+    }
+
+    if (typeof withMember !== 'undefined') {
+      query.set('with_member', withMember);
+    }
+
+    if (before) {
+      query.set('before', before);
+    }
+
+    if (after) {
+      query.set('after', after);
+    }
+
+    const data = await this.client.rest.get(Routes.guildScheduledEventUsers(this.guild.id, guildScheduledEventId), {
+      query,
     });
 
     return data.reduce(

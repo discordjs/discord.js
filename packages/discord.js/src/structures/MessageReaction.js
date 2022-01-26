@@ -1,5 +1,6 @@
 'use strict';
 
+const { Routes } = require('discord-api-types/v9');
 const GuildEmoji = require('./GuildEmoji');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserManager = require('../managers/ReactionUserManager');
@@ -56,11 +57,9 @@ class MessageReaction {
    * @returns {Promise<MessageReaction>}
    */
   async remove() {
-    await this.client.api
-      .channels(this.message.channelId)
-      .messages(this.message.id)
-      .reactions(this._emoji.identifier)
-      .delete();
+    await this.client.rest.delete(
+      Routes.channelMessageReaction(this.message.channelId, this.message.id, this._emoji.identifier),
+    );
     return this;
   }
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;
@@ -88,7 +88,7 @@ class Channel extends Base {
    *   .catch(console.error);
    */
   async delete() {
-    await this.client.api.channels(this.id).delete();
+    await this.client.rest.delete(Routes.channel(this.id));
     return this;
   }
 

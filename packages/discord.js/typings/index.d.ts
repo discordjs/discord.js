@@ -26,6 +26,7 @@ import {
   userMention,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
+import { ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
 import {
   APIActionRowComponent,
   APIApplicationCommand,
@@ -81,8 +82,6 @@ import {
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { AgentOptions } from 'node:https';
-import { Response } from 'node-fetch';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
 import * as WebSocket from 'ws';
@@ -270,45 +269,11 @@ export abstract class Base {
 
 export class BaseClient extends EventEmitter {
   public constructor(options?: ClientOptions | WebhookClientOptions);
-  private readonly api: unknown;
-  private rest: unknown;
   private decrementMaxListeners(): void;
   private incrementMaxListeners(): void;
 
-  public on<K extends keyof BaseClientEvents>(
-    event: K,
-    listener: (...args: BaseClientEvents[K]) => Awaitable<void>,
-  ): this;
-  public on<S extends string | symbol>(
-    event: Exclude<S, keyof BaseClientEvents>,
-    listener: (...args: any[]) => Awaitable<void>,
-  ): this;
-
-  public once<K extends keyof BaseClientEvents>(
-    event: K,
-    listener: (...args: BaseClientEvents[K]) => Awaitable<void>,
-  ): this;
-  public once<S extends string | symbol>(
-    event: Exclude<S, keyof BaseClientEvents>,
-    listener: (...args: any[]) => Awaitable<void>,
-  ): this;
-
-  public emit<K extends keyof BaseClientEvents>(event: K, ...args: BaseClientEvents[K]): boolean;
-  public emit<S extends string | symbol>(event: Exclude<S, keyof BaseClientEvents>, ...args: unknown[]): boolean;
-
-  public off<K extends keyof BaseClientEvents>(
-    event: K,
-    listener: (...args: BaseClientEvents[K]) => Awaitable<void>,
-  ): this;
-  public off<S extends string | symbol>(
-    event: Exclude<S, keyof BaseClientEvents>,
-    listener: (...args: any[]) => Awaitable<void>,
-  ): this;
-
-  public removeAllListeners<K extends keyof BaseClientEvents>(event?: K): this;
-  public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof BaseClientEvents>): this;
-
   public options: ClientOptions | WebhookClientOptions;
+  public rest: REST;
   public destroy(): void;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
 }
@@ -819,8 +784,7 @@ export class DataResolver extends null {
   private constructor();
   public static resolveBase64(data: Base64Resolvable): string;
   public static resolveCode(data: string, regx: RegExp): string;
-  public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer | Stream>;
-  public static resolveFileAsBuffer(resource: BufferResolvable | Stream): Promise<Buffer>;
+  public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer>;
   public static resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string | null>;
   public static resolveInviteCode(data: InviteResolvable): string;
   public static resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
@@ -869,17 +833,6 @@ export class EnumResolvers extends null {
   public static resolveIntegrationExpireBehavior(
     key: IntegrationExpireBehaviorEnumResolvable | IntegrationExpireBehavior,
   ): IntegrationExpireBehavior;
-}
-
-export class DiscordAPIError extends Error {
-  private constructor(error: unknown, status: number, request: unknown);
-  private static flattenErrors(obj: unknown, key: string): string[];
-
-  public code: number;
-  public method: string;
-  public path: string;
-  public httpStatus: number;
-  public requestData: HTTPErrorData;
 }
 
 export class DMChannel extends TextBasedChannelMixin(Channel, ['bulkDelete']) {
@@ -1259,22 +1212,6 @@ export class GuildPreviewEmoji extends BaseGuildEmoji {
   private constructor(client: Client, data: RawGuildEmojiData, guild: GuildPreview);
   public guild: GuildPreview;
   public roles: Snowflake[];
-}
-
-export class HTTPError extends Error {
-  private constructor(message: string, name: string, code: number, request: unknown);
-  public code: number;
-  public method: string;
-  public name: string;
-  public path: string;
-  public requestData: HTTPErrorData;
-}
-
-// tslint:disable-next-line:no-empty-interface - Merge RateLimitData into RateLimitError to not have to type it again
-export interface RateLimitError extends RateLimitData {}
-export class RateLimitError extends Error {
-  private constructor(data: RateLimitData);
-  public name: 'RateLimitError';
 }
 
 export class Integration extends Base {
@@ -1680,13 +1617,13 @@ export class MessageMentions {
 
 export class MessagePayload {
   public constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
-  public data: RawMessagePayloadData | null;
+  public body: RawMessagePayloadData | null;
   public readonly isUser: boolean;
   public readonly isWebhook: boolean;
   public readonly isMessage: boolean;
   public readonly isMessageManager: boolean;
   public readonly isInteraction: boolean;
-  public files: HTTPAttachmentData[] | null;
+  public files: RawFile[] | null;
   public options: MessageOptions | WebhookMessageOptions;
   public target: MessageTarget;
 
@@ -1695,12 +1632,10 @@ export class MessagePayload {
     options: string | MessageOptions | WebhookMessageOptions,
     extra?: MessageOptions | WebhookMessageOptions,
   ): MessagePayload;
-  public static resolveFile(
-    fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment,
-  ): Promise<HTTPAttachmentData>;
+  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<RawFile>;
 
   public makeContent(): string | undefined;
-  public resolveData(): this;
+  public resolveBody(): this;
   public resolveFiles(): Promise<this>;
 }
 
@@ -2355,7 +2290,8 @@ export class Util extends null {
     position: number,
     relative: boolean,
     sorted: Collection<Snowflake, T>,
-    route: unknown,
+    client: Client,
+    route: string,
     reason?: string,
   ): Promise<{ id: Snowflake; position: number }[]>;
   public static splitMessage(text: string, options?: SplitOptions): string[];
@@ -2636,29 +2572,6 @@ export const Constants: {
     [key: string]: unknown;
   };
   UserAgent: string;
-  Endpoints: {
-    botGateway: string;
-    invite: (root: string, code: string, eventId?: Snowflake) => string;
-    scheduledEvent: (root: string, guildId: Snowflake, eventId: Snowflake) => string;
-    CDN: (root: string) => {
-      Emoji: (emojiId: Snowflake, format: 'gif' | 'png') => string;
-      Asset: (name: string) => string;
-      DefaultAvatar: (discriminator: number) => string;
-      Avatar: (userId: Snowflake, hash: string, options: ImageURLOptions) => string;
-      Banner: (id: Snowflake, hash: string, options: ImageURLOptions) => string;
-      GuildMemberAvatar: (guildId: Snowflake, memberId: Snowflake, hash: string, options: ImageURLOptions) => string;
-      Icon: (guildId: Snowflake, hash: string, options: ImageURLOptions) => string;
-      AppIcon: (appId: Snowflake, hash: string, options: ImageURLOptions) => string;
-      AppAsset: (appId: Snowflake, hash: string, options: ImageURLOptions) => string;
-      StickerPackBanner: (bannerId: Snowflake, options: ImageURLOptions) => string;
-      GDMIcon: (channelId: Snowflake, hash: string, options: ImageURLOptions) => string;
-      Splash: (guildId: Snowflake, hash: string, options: ImageURLOptions) => string;
-      DiscoverySplash: (guildId: Snowflake, hash: string, options: ImageURLOptions) => string;
-      TeamIcon: (teamId: Snowflake, hash: string, options: ImageURLOptions) => string;
-      Sticker: (stickerId: Snowflake, format: StickerFormatType) => string;
-      RoleIcon: (roleId: Snowflake, hash: string, options: ImageURLOptions) => string;
-    };
-  };
   WSCodes: {
     1000: 'WS_CLOSE_REQUESTED';
     4004: 'TOKEN_INVALID';
@@ -2726,7 +2639,7 @@ export class ApplicationCommandManager<
     PermissionsGuildType,
     null
   >;
-  private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): unknown;
+  private commandPath({ id, guildId }: { id?: Snowflake; guildId?: Snowflake }): string;
   public create(command: ApplicationCommandDataResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope>;
   public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope | null>;
   public edit(
@@ -2797,7 +2710,7 @@ export class ApplicationCommandPermissionsManager<
       fullPermissions: GuildApplicationCommandPermissionData[];
     },
   ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
-  private permissionsPath(guildId: Snowflake, commandId?: Snowflake): unknown;
+  private permissionsPath(guildId: Snowflake, commandId?: Snowflake): string;
 }
 
 export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
@@ -3208,23 +3121,11 @@ export interface AddGuildMemberOptions {
   fetchWhenExisting?: boolean;
 }
 
-export type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg';
-
-export type AllowedImageSize = 16 | 32 | 56 | 64 | 96 | 128 | 256 | 300 | 512 | 600 | 1024 | 2048 | 4096;
-
 export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
 
 export type AllowedThreadTypeForNewsChannel = ChannelType.GuildNewsThread;
 
 export type AllowedThreadTypeForTextChannel = ChannelType.GuildPublicThread | ChannelType.GuildPrivateThread;
-
-export interface APIRequest {
-  method: 'get' | 'post' | 'delete' | 'patch' | 'put';
-  options: unknown;
-  path: string;
-  retries: number;
-  route: string;
-}
 
 export interface BaseApplicationCommandData {
   name: string;
@@ -3554,15 +3455,7 @@ export interface ChannelWebhookCreateOptions {
   reason?: string;
 }
 
-export interface BaseClientEvents {
-  apiResponse: [request: APIRequest, response: Response];
-  apiRequest: [request: APIRequest];
-  debug: [message: string];
-  rateLimit: [rateLimitData: RateLimitData];
-  invalidRequestWarning: [invalidRequestWarningData: InvalidRequestWarningData];
-}
-
-export interface ClientEvents extends BaseClientEvents {
+export interface ClientEvents {
   cacheSweep: [message: string];
   channelCreate: [channel: NonThreadGuildBasedChannel];
   channelDelete: [channel: DMChannel | NonThreadGuildBasedChannel];
@@ -3571,6 +3464,7 @@ export interface ClientEvents extends BaseClientEvents {
     oldChannel: DMChannel | NonThreadGuildBasedChannel,
     newChannel: DMChannel | NonThreadGuildBasedChannel,
   ];
+  debug: [message: string];
   warn: [message: string];
   emojiCreate: [emoji: GuildEmoji];
   emojiDelete: [emoji: GuildEmoji];
@@ -3652,22 +3546,14 @@ export interface ClientOptions {
   shardCount?: number;
   makeCache?: CacheFactory;
   allowedMentions?: MessageMentionOptions;
-  invalidRequestWarningInterval?: number;
   partials?: PartialTypes[];
-  restTimeOffset?: number;
-  restRequestTimeout?: number;
-  restGlobalRateLimit?: number;
-  restSweepInterval?: number;
-  retryLimit?: number;
   failIfNotExists?: boolean;
-  userAgentSuffix?: string[];
   presence?: PresenceData;
   intents: BitFieldResolvable<IntentsString, number>;
   waitGuildTimeout?: number;
   sweepers?: SweeperOptions;
   ws?: WebSocketOptions;
-  http?: HTTPOptions;
-  rejectOnRateLimit?: string[] | ((data: RateLimitData) => boolean | Promise<boolean>);
+  rest?: RESTOptions;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -3796,10 +3682,6 @@ export interface ConstantsColors {
 }
 
 export interface ConstantsEvents {
-  RATE_LIMIT: 'rateLimit';
-  INVALID_REQUEST_WARNING: 'invalidRequestWarning';
-  API_RESPONSE: 'apiResponse';
-  API_REQUEST: 'apiRequest';
   CLIENT_READY: 'ready';
   GUILD_CREATE: 'guildCreate';
   GUILD_DELETE: 'guildDelete';
@@ -4537,35 +4419,6 @@ export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
 
 export type HexColorString = `#${string}`;
 
-export interface HTTPAttachmentData {
-  attachment: string | Buffer | Stream;
-  name: string;
-  file: Buffer | Stream;
-}
-
-export interface HTTPErrorData {
-  json: unknown;
-  files: HTTPAttachmentData[];
-}
-
-export interface HTTPOptions {
-  agent?: Omit<AgentOptions, 'keepAlive'>;
-  api?: string;
-  version?: number;
-  host?: string;
-  cdn?: string;
-  invite?: string;
-  template?: string;
-  headers?: Record<string, string>;
-  scheduledEvent?: string;
-}
-
-export interface ImageURLOptions {
-  format?: AllowedImageFormat;
-  forceStatic?: boolean;
-  size?: AllowedImageSize;
-}
-
 export interface IntegrationAccount {
   id: string | Snowflake;
   name: string;
@@ -5004,20 +4857,6 @@ export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
 export type PresenceStatus = PresenceStatusData | 'offline';
 
-export interface RateLimitData {
-  timeout: number;
-  limit: number;
-  method: string;
-  path: string;
-  route: string;
-  global: boolean;
-}
-
-export interface InvalidRequestWarningData {
-  count: number;
-  remainingTime: number;
-}
-
 export interface ReactionCollectorOptions extends CollectorOptions<[MessageReaction, User]> {
   max?: number;
   maxEmojis?: number;
@@ -5270,10 +5109,7 @@ export interface WebhookClientDataURL {
   url: string;
 }
 
-export type WebhookClientOptions = Pick<
-  ClientOptions,
-  'allowedMentions' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http'
->;
+export type WebhookClientOptions = Pick<ClientOptions, 'allowedMentions' | 'rest'>;
 
 export interface WebhookEditData {
   name?: string;
@@ -5455,3 +5291,4 @@ export {
   SelectMenuOption,
   ActionRowComponent,
 } from '@discordjs/builders';
+export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';

@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { InteractionType } = require('discord-api-types/v9');
+const { InteractionType, Routes } = require('discord-api-types/v9');
 const { TypeError, Error } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
 const MessageCollector = require('../MessageCollector');
@@ -166,13 +166,13 @@ class TextBasedChannel {
     let messagePayload;
 
     if (options instanceof MessagePayload) {
-      messagePayload = options.resolveData();
+      messagePayload = options.resolveBody();
     } else {
-      messagePayload = MessagePayload.create(this, options).resolveData();
+      messagePayload = MessagePayload.create(this, options).resolveBody();
     }
 
-    const { data, files } = await messagePayload.resolveFiles();
-    const d = await this.client.api.channels[this.id].messages.post({ data, files });
+    const { body, files } = await messagePayload.resolveFiles();
+    const d = await this.client.rest.post(Routes.channelMessages(this.id), { body, files });
 
     return this.messages.cache.get(d.id) ?? this.messages._add(d);
   }
@@ -185,7 +185,7 @@ class TextBasedChannel {
    * channel.sendTyping();
    */
   async sendTyping() {
-    await this.client.api.channels(this.id).typing.post();
+    await this.client.rest.post(Routes.channelTyping(this.id));
   }
 
   /**
@@ -298,7 +298,7 @@ class TextBasedChannel {
       }
       if (messageIds.length === 0) return new Collection();
       if (messageIds.length === 1) {
-        await this.client.api.channels(this.id).messages(messageIds[0]).delete();
+        await this.client.rest.delete(Routes.channelMessage(this.id, messageIds[0]));
         const message = this.client.actions.MessageDelete.getMessage(
           {
             message_id: messageIds[0],
@@ -307,7 +307,7 @@ class TextBasedChannel {
         );
         return message ? new Collection([[message.id, message]]) : new Collection();
       }
-      await this.client.api.channels[this.id].messages['bulk-delete'].post({ data: { messages: messageIds } });
+      await this.client.rest.post(Routes.channelBulkDelete(this.id), { body: { messages: messageIds } });
       return messageIds.reduce(
         (col, id) =>
           col.set(

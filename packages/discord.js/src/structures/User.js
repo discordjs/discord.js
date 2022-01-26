@@ -144,7 +144,7 @@ class User extends Base {
    * @returns {?string}
    */
   avatarURL(options = {}) {
-    return this.avatar && this.client.rest.cdn.Avatar(this.id, this.avatar, options);
+    return this.avatar && this.client.rest.cdn.avatar(this.id, this.avatar, options);
   }
 
   /**
@@ -153,7 +153,7 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    return this.client.rest.cdn.DefaultAvatar(this.discriminator % 5);
+    return this.client.rest.cdn.defaultAvatar(this.discriminator % 5);
   }
 
   /**
@@ -183,7 +183,7 @@ class User extends Base {
    * @returns {?string}
    */
   bannerURL(options = {}) {
-    return this.banner && this.client.rest.cdn.Banner(this.id, this.banner, options);
+    return this.banner && this.client.rest.cdn.banner(this.id, this.banner, options);
   }
 
   /**

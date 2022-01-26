@@ -1,6 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { Routes } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Error } = require('../errors');
 const Permissions = require('../util/Permissions');
@@ -364,7 +365,8 @@ class Role extends Base {
       position,
       relative,
       this.guild._sortedRoles(),
-      this.client.api.guilds(this.guild.id).roles,
+      this.client,
+      Routes.guildRoles(this.guild.id),
       reason,
     );
     this.client.actions.GuildRolesPositionUpdate.handle({
@@ -395,7 +397,7 @@ class Role extends Base {
    * @returns {?string}
    */
   iconURL(options = {}) {
-    return this.icon && this.client.rest.cdn.RoleIcon(this.id, this.icon, options);
+    return this.icon && this.client.rest.cdn.roleIcon(this.id, this.icon, options);
   }
 
   /**

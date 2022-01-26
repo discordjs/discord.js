@@ -1,6 +1,6 @@
 'use strict';
 
-const { InteractionResponseType } = require('discord-api-types/v9');
+const { InteractionResponseType, Routes } = require('discord-api-types/v9');
 const { Error } = require('../../errors');
 const MessageFlags = require('../../util/MessageFlags');
 const MessagePayload = require('../MessagePayload');
@@ -56,8 +56,8 @@ class InteractionResponses {
   async deferReply(options = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     this.ephemeral = options.ephemeral ?? false;
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
           flags: options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
@@ -96,10 +96,10 @@ class InteractionResponses {
     if (options instanceof MessagePayload) messagePayload = options;
     else messagePayload = MessagePayload.create(this, options);
 
-    const { data, files } = await messagePayload.resolveData().resolveFiles();
+    const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
 
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
         type: InteractionResponseType.ChannelMessageWithSource,
         data,
       },
@@ -180,8 +180,8 @@ class InteractionResponses {
    */
   async deferUpdate(options = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
         type: InteractionResponseType.DeferredMessageUpdate,
       },
       auth: false,
@@ -211,10 +211,10 @@ class InteractionResponses {
     if (options instanceof MessagePayload) messagePayload = options;
     else messagePayload = MessagePayload.create(this, options);
 
-    const { data, files } = await messagePayload.resolveData().resolveFiles();
+    const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
 
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
         type: InteractionResponseType.UpdateMessage,
         data,
       },

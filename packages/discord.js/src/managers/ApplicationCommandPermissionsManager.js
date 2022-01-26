@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { RESTJSONErrorCodes } = require('discord-api-types/v9');
+const { RESTJSONErrorCodes, Routes } = require('discord-api-types/v9');
 const BaseManager = require('./BaseManager');
 const { Error, TypeError } = require('../errors');
 
@@ -43,11 +43,15 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * The APIRouter path to the commands
    * @param {Snowflake} guildId The guild's id to use in the path,
    * @param {Snowflake} [commandId] The application command's id
-   * @returns {Object}
+   * @returns {string}
    * @private
    */
   permissionsPath(guildId, commandId) {
-    return this.client.api.applications(this.client.application.id).guilds(guildId).commands(commandId).permissions;
+    if (commandId) {
+      return Routes.applicationCommandPermissions(this.client.application.id, guildId, commandId);
+    }
+
+    return Routes.guildApplicationCommandsPermissions(this.client.application.id, guildId);
   }
 
   /**
@@ -95,11 +99,11 @@ class ApplicationCommandPermissionsManager extends BaseManager {
   async fetch({ guild, command } = {}) {
     const { guildId, commandId } = this._validateOptions(guild, command);
     if (commandId) {
-      const data = await this.permissionsPath(guildId, commandId).get();
+      const data = await this.client.rest.get(this.permissionsPath(guildId, commandId));
       return data.permissions;
     }
 
-    const data = await this.permissionsPath(guildId).get();
+    const data = await this.client.rest.get(this.permissionsPath(guildId));
     return data.reduce((coll, perm) => coll.set(perm.id, perm.permissions), new Collection());
   }
 
@@ -158,7 +162,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       if (!Array.isArray(permissions)) {
         throw new TypeError('INVALID_TYPE', 'permissions', 'Array of ApplicationCommandPermissionData', true);
       }
-      const data = await this.permissionsPath(guildId, commandId).put({ data: { permissions } });
+      const data = await this.client.rest.put(this.permissionsPath(guildId, commandId), { body: { permissions } });
       return data.permissions;
     }
 
@@ -166,7 +170,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       throw new TypeError('INVALID_TYPE', 'fullPermissions', 'Array of GuildApplicationCommandPermissionData', true);
     }
 
-    const data = await this.permissionsPath(guildId).put({ data: fullPermissions });
+    const data = await this.client.rest.put(this.permissionsPath(guildId), { body: fullPermissions });
     return data.reduce((coll, perm) => coll.set(perm.id, perm.permissions), new Collection());
   }
 

@@ -127,7 +127,7 @@ class GuildMember extends Base {
    * @returns {?string}
    */
   avatarURL(options = {}) {
-    return this.avatar && this.client.rest.cdn.GuildMemberAvatar(this.guild.id, this.id, this.avatar, options);
+    return this.avatar && this.client.rest.cdn.guildMemberAvatar(this.guild.id, this.id, this.avatar, options);
   }
 
   /**

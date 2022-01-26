@@ -1,5 +1,6 @@
 'use strict';
 
+const { Routes } = require('discord-api-types/v9');
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
@@ -96,7 +97,7 @@ class ClientApplication extends Application {
    * @returns {Promise<ClientApplication>}
    */
   async fetch() {
-    const app = await this.client.api.oauth2.applications('@me').get();
+    const app = await this.client.rest.get(Routes.oauth2CurrentApplication());
     this._patch(app);
     return this;
   }

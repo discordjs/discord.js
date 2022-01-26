@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
@@ -323,8 +323,8 @@ class GuildChannel extends Channel {
       }
     }
 
-    const newData = await this.client.api.channels(this.id).patch({
-      data: {
+    const newData = await this.client.rest.patch(Routes.channel(this.id), {
+      body: {
         name: (data.name ?? this.name).trim(),
         type: data.type,
         topic: data.topic,
@@ -411,7 +411,8 @@ class GuildChannel extends Channel {
       position,
       relative,
       this.guild._sortedChannels(this),
-      this.client.api.guilds(this.guild.id).channels,
+      this.client,
+      Routes.guildChannels(this.guild.id),
       reason,
     );
     this.client.actions.GuildChannelsPositionUpdate.handle({
@@ -534,7 +535,7 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   async delete(reason) {
-    await this.client.api.channels(this.id).delete({ reason });
+    await this.client.rest.delete(Routes.channel(this.id), { reason });
     return this;
   }
 }

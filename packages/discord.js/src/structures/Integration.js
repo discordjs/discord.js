@@ -1,5 +1,6 @@
 'use strict';
 
+const { Routes } = require('discord-api-types/v9');
 const Base = require('./Base');
 const IntegrationApplication = require('./IntegrationApplication');
 
@@ -191,7 +192,7 @@ class Integration extends Base {
    * @param {string} [reason] Reason for deleting this integration
    */
   async delete(reason) {
-    await this.client.api.guilds(this.guild.id).integrations(this.id).delete({ reason });
+    await this.client.rest.delete(Routes.guildIntegration(this.guild.id, this.id), { reason });
     return this;
   }
 
