@@ -378,15 +378,6 @@ exports.InviteScopes = [
 ];
 
 /**
- * The behavior of expiring subscribers for Integrations. This can be:
- * * REMOVE_ROLE
- * * KICK
- * @typedef {string} IntegrationExpireBehavior
- * @see {@link https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors}
- */
-exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
-
-/**
  * The name of an item to be swept in Sweepers
  * * `applicationCommands` - both global and guild commands
  * * `bans`
@@ -524,16 +515,6 @@ function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
   return tmp;
-}
-
-function createEnum(keys) {
-  const obj = {};
-  for (const [index, key] of keys.entries()) {
-    if (key === null) continue;
-    obj[key] = index;
-    obj[index] = key;
-  }
-  return obj;
 }
 
 /**
