@@ -162,7 +162,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The URL of this scheduled event's cover image
-   * @param {BaseMakeURLOptions} [options={}] Options for image URL
+   * @param {BaseImageURLOptions} [options={}] Options for image URL
    * @returns {?string}
    */
   coverImageURL(options = {}) {
