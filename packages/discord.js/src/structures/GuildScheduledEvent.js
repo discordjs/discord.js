@@ -160,7 +160,6 @@ class GuildScheduledEvent extends Base {
     this.image = data.image ?? null;
   }
 
-  // TODO: Update for /rest merge if needed.
   /**
    * The URL of this scheduled event's cover image
    * @param {BaseMakeURLOptions} [options={}] Options for image URL
