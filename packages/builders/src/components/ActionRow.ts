@@ -3,6 +3,8 @@ import type { ButtonComponent, SelectMenuComponent } from '..';
 import type { Component } from './Component';
 import { createComponent } from './Components';
 
+export type MessageComponent = ActionRowComponent | ActionRow;
+
 export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
 
 // TODO: Add valid form component types
@@ -10,7 +12,7 @@ export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
 /**
  * Represents an action row component
  */
-export class ActionRow<T extends ActionRowComponent> implements Component {
+export class ActionRow<T extends ActionRowComponent = ActionRowComponent> implements Component {
 	public readonly components: T[] = [];
 	public readonly type = ComponentType.ActionRow;
 
