@@ -58,6 +58,12 @@ class Interaction extends Base {
     this.user = this.client.users._add(data.user ?? data.member.user);
 
     /**
+     * The id of the user which sent this interaction
+     * @type {?Snowflake}
+     */
+    this.userId = data.user?.id ?? null;
+
+    /**
      * If this interaction was sent in a guild, the member which sent it
      * @type {?(GuildMember|APIGuildMember)}
      */

@@ -1292,6 +1292,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public readonly token: string;
   public type: InteractionType;
   public user: User;
+  public userId: Snowflake | null;
   public version: number;
   public memberPermissions: CacheTypeReducer<Cached, Readonly<Permissions>>;
   public locale: string;
