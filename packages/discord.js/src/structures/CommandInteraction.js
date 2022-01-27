@@ -34,6 +34,12 @@ class CommandInteraction extends Interaction {
     this.commandName = data.data.name;
 
     /**
+     * The invoked application command's type
+     * @type {ApplicationCommandType}
+     */
+    this.commandType = data.data.type;
+
+    /**
      * Whether the reply to this interaction has been deferred
      * @type {boolean}
      */

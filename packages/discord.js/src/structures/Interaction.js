@@ -162,7 +162,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isChatInputCommand() {
-    return this.isCommand() && typeof this.targetId === 'undefined';
+    return this.isCommand() && this.commandType === ApplicationCommandType.ChatInput;
   }
 
   /**
@@ -170,7 +170,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isContextMenuCommand() {
-    return this.isCommand() && typeof this.targetId !== 'undefined';
+    return this.isCommand() && [ApplicationCommandType.User, ApplicationCommandType.Message].includes(this.commandType);
   }
 
   /**
@@ -178,7 +178,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isUserContextMenuCommand() {
-    return this.isContextMenuCommand() && this.targetType === ApplicationCommandType.User;
+    return this.isContextMenuCommand() && this.commandType === ApplicationCommandType.User;
   }
 
   /**
@@ -186,7 +186,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isMessageContextMenuCommand() {
-    return this.isContextMenuCommand() && this.targetType === ApplicationCommandType.Message;
+    return this.isContextMenuCommand() && this.commandType === ApplicationCommandType.Message;
   }
 
   /**
