@@ -1,5 +1,6 @@
 'use strict';
 
+const { GuildSystemChannelFlags } = require('discord-api-types');
 const BitField = require('./BitField');
 
 /**
@@ -8,28 +9,34 @@ const BitField = require('./BitField');
  * and by setting their corresponding flags you are disabling them</info>
  * @extends {BitField}
  */
-class SystemChannelFlags extends BitField {}
+class SystemChannelFlagsBitField extends BitField {}
 
 /**
- * @name SystemChannelFlags
+ * @name SystemChannelFlagsBitField
  * @kind constructor
- * @memberof SystemChannelFlags
+ * @memberof SystemChannelFlagsBitField
  * @param {SystemChannelFlagsResolvable} [bits=0] Bit(s) to read from
  */
 
 /**
  * Bitfield of the packed bits
  * @type {number}
- * @name SystemChannelFlags#bitfield
+ * @name SystemChannelFlagsBitField#bitfield
  */
 
 /**
  * Data that can be resolved to give a system channel flag bitfield. This can be:
- * * A string (see {@link GuildSystemChannelFlags})
+ * * A string (see {@link SystemChannelFlagsBitField.FLAGS})
  * * A system channel flag
- * * An instance of SystemChannelFlags
+ * * An instance of SystemChannelFlagsBitField
  * * An Array of SystemChannelFlagsResolvable
- * @typedef {string|number|SystemChannelFlags|SystemChannelFlagsResolvable[]} SystemChannelFlagsResolvable
+ * @typedef {string|number|SystemChannelFlagsBitField|SystemChannelFlagsResolvable[]} SystemChannelFlagsResolvable
  */
 
-module.exports = SystemChannelFlags;
+/**
+ * Numeric system channel flags.
+ * @type {GuildSystemChannelFlags}
+ */
+SystemChannelFlagsBitField.FLAGS = GuildSystemChannelFlags;
+
+module.exports = SystemChannelFlagsBitField;

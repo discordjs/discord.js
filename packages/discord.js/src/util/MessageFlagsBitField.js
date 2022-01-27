@@ -1,5 +1,6 @@
 'use strict';
 
+const { MessageFlags } = require('discord-api-types/v9');
 const BitField = require('./BitField');
 
 /**
@@ -9,16 +10,22 @@ const BitField = require('./BitField');
 class MessageFlagsBitField extends BitField {}
 
 /**
- * @name MessageFlagsBitfield
+ * @name MessageFlagsBitField
  * @kind constructor
- * @memberof MessageFlags
+ * @memberof MessageFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */
 
 /**
  * Bitfield of the packed bits
  * @type {number}
- * @name MessageFlagsBitfield#bitfield
+ * @name MessageFlagsBitField#bitfield
  */
+
+/**
+ * Numeric message flags.
+ * @type {MessageFlags}
+ */
+MessageFlagsBitField.FLAGS = MessageFlags;
 
 module.exports = MessageFlagsBitField;

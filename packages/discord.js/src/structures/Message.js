@@ -283,7 +283,7 @@ class Message extends Base {
     if ('flags' in data) {
       /**
        * Flags that are applied to the message
-       * @type {Readonly<MessageFlags>}
+       * @type {Readonly<MessageFlagsBitField>}
        */
       this.flags = new MessageFlagsBitField(data.flags).freeze();
     } else {

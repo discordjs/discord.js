@@ -1,4 +1,6 @@
 'use strict';
+
+const { UserFlags } = require('discord-api-types/v9');
 const BitField = require('./BitField');
 
 /**
@@ -19,5 +21,11 @@ class UserFlagsBitField extends BitField {}
  * @type {number}
  * @name UserFlagsBitField#bitfield
  */
+
+/**
+ * Numeric user flags.
+ * @type {UserFlags}
+ */
+UserFlagsBitField.FLAGS = UserFlags;
 
 module.exports = UserFlagsBitField;

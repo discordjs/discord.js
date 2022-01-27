@@ -15,7 +15,7 @@ const { Role } = require('../structures/Role');
 const { Events } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Permissions = require('../util/Permissions');
-const SystemChannelFlags = require('../util/SystemChannelFlags');
+const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const { resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
@@ -198,7 +198,7 @@ class GuildManager extends CachedManager {
       role.color &&= resolveColor(role.color);
       role.permissions &&= Permissions.resolve(role.permissions).toString();
     }
-    systemChannelFlags &&= SystemChannelFlags.resolve(systemChannelFlags);
+    systemChannelFlags &&= SystemChannelFlagsBitField.resolve(systemChannelFlags);
 
     const data = await this.client.rest.post(Routes.guilds(), {
       body: {
