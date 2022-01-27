@@ -261,20 +261,20 @@ test('Handle standard rate limits', async () => {
 	const [a, b, c] = [api.get('/standard'), api.get('/standard'), api.get('/standard')];
 
 	expect(await a).toStrictEqual(Buffer.alloc(0));
-	const previous1 = Date.now();
+	const previous1 = performance.now();
 	expect(await b).toStrictEqual(Buffer.alloc(0));
-	const previous2 = Date.now();
+	const previous2 = performance.now();
 	expect(await c).toStrictEqual(Buffer.alloc(0));
-	const now = Date.now();
+	const now = performance.now();
 	expect(previous2).toBeGreaterThanOrEqual(previous1 + 250);
 	expect(now).toBeGreaterThanOrEqual(previous2 + 250);
 });
 
 test('Handle global rate limits', async () => {
-	const earlier = Date.now();
+	const earlier = performance.now();
 	expect(await api.get('/triggerGlobal')).toStrictEqual({ global: true });
 	expect(await api.get('/regularRequest')).toStrictEqual({ test: true });
-	expect(Date.now()).toBeGreaterThanOrEqual(earlier + 100);
+	expect(performance.now()).toBeGreaterThanOrEqual(earlier + 100);
 });
 
 test('Handle sublimits', async () => {
