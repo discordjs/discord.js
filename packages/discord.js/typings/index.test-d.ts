@@ -49,7 +49,7 @@ import {
   GuildEmojiManager,
   GuildMember,
   GuildResolvable,
-  Intents,
+  IntentsBitField,
   Interaction,
   InteractionCollector,
   Message,
@@ -775,7 +775,7 @@ expectType<{}>(
   ),
 );
 expectType<string>(serialize(new Permissions(PermissionFlagsBits.AttachFiles)));
-expectType<number>(serialize(new Intents(GatewayIntentBits.Guilds)));
+expectType<number>(serialize(new IntentsBitField(GatewayIntentBits.Guilds)));
 expectAssignable<unknown>(
   serialize(
     new Collection([

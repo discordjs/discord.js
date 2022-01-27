@@ -24,7 +24,7 @@ const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
 const { Events, InviteScopes, Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Intents = require('../util/Intents');
+const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
 const Permissions = require('../util/Permissions');
 const Sweepers = require('../util/Sweepers');
@@ -480,7 +480,7 @@ class Client extends BaseClient {
     if (typeof options.intents === 'undefined') {
       throw new TypeError('CLIENT_MISSING_INTENTS');
     } else {
-      options.intents = Intents.resolve(options.intents);
+      options.intents = IntentsBitField.resolve(options.intents);
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
