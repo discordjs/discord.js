@@ -26,6 +26,9 @@ function unknownKeyStrategy(val) {
   throw new Error(`Could not resolve enum value for ${val}`);
 }
 
+/**
+ * Holds a bunch of methods to resolve enum values to readable strings.
+ */
 class EnumResolvers extends null {
   /**
    * A string that can be resolved to a {@link ChannelType} enum value. Here are the available types:
