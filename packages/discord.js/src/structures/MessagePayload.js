@@ -4,8 +4,8 @@ const { Buffer } = require('node:buffer');
 const { createComponent, Embed } = require('@discordjs/builders');
 const { MessageFlags } = require('discord-api-types/v9');
 const { RangeError } = require('../errors');
-const BitField = require('../util/BitField');
 const DataResolver = require('../util/DataResolver');
+const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const Util = require('../util/Util');
 
 /**
@@ -143,7 +143,10 @@ class MessagePayload {
     let flags;
     if (typeof this.options.flags !== 'undefined' || this.isMessage || this.isMessageManager) {
       // eslint-disable-next-line eqeqeq
-      flags = this.options.flags != null ? new BitField(this.options.flags).bitfield : this.target.flags?.bitfield;
+      flags =
+        this.options.flags !== null
+          ? new MessageFlagsBitField(this.options.flags).bitfield
+          : this.target.flags?.bitfield;
     }
 
     if (isInteraction && this.options.ephemeral) {

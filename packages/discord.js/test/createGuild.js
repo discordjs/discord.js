@@ -1,7 +1,7 @@
 'use strict';
 
-const { ChannelType, GatewayIntentBits } = require('discord-api-types/v9');
 const assert = require('node:assert');
+const { ChannelType, GatewayIntentBits } = require('discord-api-types/v9');
 const { token } = require('./auth');
 const { Client } = require('../src');
 
