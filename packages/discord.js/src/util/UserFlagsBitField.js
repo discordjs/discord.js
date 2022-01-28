@@ -26,6 +26,6 @@ class UserFlagsBitField extends BitField {}
  * Numeric user flags.
  * @type {UserFlags}
  */
-UserFlagsBitField.flags = UserFlags;
+UserFlagsBitField.Flags = UserFlags;
 
 module.exports = UserFlagsBitField;

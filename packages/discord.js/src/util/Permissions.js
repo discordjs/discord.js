@@ -18,7 +18,7 @@ class Permissions extends BitField {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * * A string (see {@link Permissions.flags})
+   * * A string (see {@link Permissions.Flags})
    * * A permission number
    * * An instance of Permissions
    * * An Array of PermissionResolvable
@@ -32,7 +32,7 @@ class Permissions extends BitField {
    * @returns {string[]}
    */
   missing(bits, checkAdmin = true) {
-    return checkAdmin && this.has(this.constructor.flags.Administrator) ? [] : super.missing(bits);
+    return checkAdmin && this.has(this.constructor.Flags.Administrator) ? [] : super.missing(bits);
   }
 
   /**
@@ -42,7 +42,7 @@ class Permissions extends BitField {
    * @returns {boolean}
    */
   any(permission, checkAdmin = true) {
-    return (checkAdmin && super.has(this.constructor.flags.Administrator)) || super.any(permission);
+    return (checkAdmin && super.has(this.constructor.Flags.Administrator)) || super.any(permission);
   }
 
   /**
@@ -52,7 +52,7 @@ class Permissions extends BitField {
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
-    return (checkAdmin && super.has(this.constructor.flags.Administrator)) || super.has(permission);
+    return (checkAdmin && super.has(this.constructor.Flags.Administrator)) || super.has(permission);
   }
 
   /**
@@ -69,7 +69,7 @@ class Permissions extends BitField {
  * @type {PermissionFlagsBits}
  * @see {@link https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags}
  */
-Permissions.flags = PermissionFlagsBits;
+Permissions.Flags = PermissionFlagsBits;
 
 /**
  * Bitfield representing every permission combined

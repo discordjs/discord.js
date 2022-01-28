@@ -26,6 +26,6 @@ class MessageFlagsBitField extends BitField {}
  * Numeric message flags.
  * @type {MessageFlags}
  */
-MessageFlagsBitField.flags = MessageFlags;
+MessageFlagsBitField.Flags = MessageFlags;
 
 module.exports = MessageFlagsBitField;

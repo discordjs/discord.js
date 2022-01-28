@@ -20,6 +20,6 @@ class ActivityFlagsBitField extends BitField {}
  * Numeric activity flags.
  * @type {ActivityFlags}
  */
-ActivityFlagsBitField.flags = ActivityFlags;
+ActivityFlagsBitField.Flags = ActivityFlags;
 
 module.exports = ActivityFlagsBitField;
