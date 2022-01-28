@@ -1,8 +1,7 @@
 'use strict';
 
-const { InteractionResponseType, Routes } = require('discord-api-types/v9');
+const { InteractionResponseType, MessageFlags, Routes } = require('discord-api-types/v9');
 const { Error } = require('../../errors');
-const MessageFlags = require('../../util/MessageFlags');
 const MessagePayload = require('../MessagePayload');
 
 /**
@@ -29,7 +28,7 @@ class InteractionResponses {
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * Only `SUPPRESS_EMBEDS` and `EPHEMERAL` can be set.
+   * Only `MessageFlags.SuppressEmbeds` and `MessageFlags.Ephemeral` can be set.
    */
 
   /**
@@ -60,7 +59,7 @@ class InteractionResponses {
       body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
-          flags: options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined,
+          flags: options.ephemeral ? MessageFlags.Ephemeral : undefined,
         },
       },
       auth: false,

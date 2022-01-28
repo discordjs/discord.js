@@ -1,12 +1,11 @@
 'use strict';
 
-const { ChannelType, Routes } = require('discord-api-types/v9');
+const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
-const Permissions = require('../util/Permissions');
 
 /**
  * Represents a thread channel on Discord.
@@ -254,7 +253,7 @@ class ThreadChannel extends Channel {
    * account.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
    * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
-   * @returns {?Readonly<Permissions>}
+   * @returns {?Readonly<PermissionsBitField>}
    */
   permissionsFor(memberOrRole, checkAdmin) {
     return this.parent?.permissionsFor(memberOrRole, checkAdmin) ?? null;
@@ -457,8 +456,8 @@ class ThreadChannel extends Channel {
       !this.joined &&
       this.permissionsFor(this.client.user)?.has(
         this.type === ChannelType.GuildPrivateThread
-          ? Permissions.FLAGS.MANAGE_THREADS
-          : Permissions.FLAGS.VIEW_CHANNEL,
+          ? PermissionFlagsBits.ManageThreads
+          : PermissionFlagsBits.ViewChannel,
         false,
       )
     );
@@ -473,11 +472,11 @@ class ThreadChannel extends Channel {
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
     // This flag allows managing even if timed out
-    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return (
       this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
-      permissions.has(Permissions.FLAGS.MANAGE_THREADS, false)
+      permissions.has(PermissionFlagsBits.ManageThreads, false)
     );
   }
 
@@ -490,7 +489,7 @@ class ThreadChannel extends Channel {
     if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
-    return permissions.has(Permissions.FLAGS.VIEW_CHANNEL, false);
+    return permissions.has(PermissionFlagsBits.ViewChannel, false);
   }
 
   /**
@@ -502,12 +501,12 @@ class ThreadChannel extends Channel {
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
     // This flag allows sending even if timed out
-    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return (
       !(this.archived && this.locked && !this.manageable) &&
       (this.type !== ChannelType.GuildPrivateThread || this.joined || this.manageable) &&
-      permissions.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS, false) &&
+      permissions.has(PermissionFlagsBits.SendMessagesInThreads, false) &&
       this.guild.me.communicationDisabledUntilTimestamp < Date.now()
     );
   }

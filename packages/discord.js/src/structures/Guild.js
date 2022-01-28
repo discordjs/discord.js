@@ -22,9 +22,10 @@ const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
-const { PartialTypes, Status } = require('../util/Constants');
+const { Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const SystemChannelFlags = require('../util/SystemChannelFlags');
+const Partials = require('../util/Partials');
+const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const Util = require('../util/Util');
 
 /**
@@ -295,9 +296,9 @@ class Guild extends AnonymousGuild {
     if ('system_channel_flags' in data) {
       /**
        * The value set for the guild's system channel flags
-       * @type {Readonly<SystemChannelFlags>}
+       * @type {Readonly<SystemChannelFlagsBitField>}
        */
-      this.systemChannelFlags = new SystemChannelFlags(data.system_channel_flags).freeze();
+      this.systemChannelFlags = new SystemChannelFlagsBitField(data.system_channel_flags).freeze();
     }
 
     if ('max_members' in data) {
@@ -543,7 +544,7 @@ class Guild extends AnonymousGuild {
   get me() {
     return (
       this.members.resolve(this.client.user.id) ??
-      (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)
+      (this.client.options.partials.includes(Partials.GuildMember)
         ? this.members._add({ user: { id: this.client.user.id } }, true)
         : null)
     );
@@ -845,7 +846,7 @@ class Guild extends AnonymousGuild {
       _data.default_message_notifications = data.defaultMessageNotifications;
     }
     if (typeof data.systemChannelFlags !== 'undefined') {
-      _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
+      _data.system_channel_flags = SystemChannelFlagsBitField.resolve(data.systemChannelFlags);
     }
     if (typeof data.rulesChannel !== 'undefined') {
       _data.rules_channel_id = this.client.channels.resolveId(data.rulesChannel);

@@ -81,8 +81,8 @@ const rest = new REST({ version: '9' }).setToken('token');
 Afterwards we can create a quite simple example bot:
 
 ```js
-const { Client, Intents } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const { Client, GatewayIntentBits } = require('discord.js');
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);

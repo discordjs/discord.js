@@ -14,8 +14,8 @@ const OAuth2Guild = require('../structures/OAuth2Guild');
 const { Role } = require('../structures/Role');
 const { Events } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Permissions = require('../util/Permissions');
-const SystemChannelFlags = require('../util/SystemChannelFlags');
+const PermissionsBitField = require('../util/PermissionsBitField');
+const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const { resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
@@ -188,17 +188,17 @@ class GuildManager extends CachedManager {
 
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
-        overwrite.allow &&= Permissions.resolve(overwrite.allow).toString();
-        overwrite.deny &&= Permissions.resolve(overwrite.deny).toString();
+        overwrite.allow &&= PermissionsBitField.resolve(overwrite.allow).toString();
+        overwrite.deny &&= PermissionsBitField.resolve(overwrite.deny).toString();
       }
       channel.permission_overwrites = channel.permissionOverwrites;
       delete channel.permissionOverwrites;
     }
     for (const role of roles) {
       role.color &&= resolveColor(role.color);
-      role.permissions &&= Permissions.resolve(role.permissions).toString();
+      role.permissions &&= PermissionsBitField.resolve(role.permissions).toString();
     }
-    systemChannelFlags &&= SystemChannelFlags.resolve(systemChannelFlags);
+    systemChannelFlags &&= SystemChannelFlagsBitField.resolve(systemChannelFlags);
 
     const data = await this.client.rest.post(Routes.guilds(), {
       body: {

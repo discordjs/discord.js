@@ -4,7 +4,7 @@ const { OverwriteType } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Role } = require('./Role');
 const { TypeError } = require('../errors');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
@@ -43,17 +43,17 @@ class PermissionOverwrites extends Base {
     if ('deny' in data) {
       /**
        * The permissions that are denied for the user or role.
-       * @type {Readonly<Permissions>}
+       * @type {Readonly<PermissionsBitField>}
        */
-      this.deny = new Permissions(BigInt(data.deny)).freeze();
+      this.deny = new PermissionsBitField(BigInt(data.deny)).freeze();
     }
 
     if ('allow' in data) {
       /**
        * The permissions that are allowed for the user or role.
-       * @type {Readonly<Permissions>}
+       * @type {Readonly<PermissionsBitField>}
        */
-      this.allow = new Permissions(BigInt(data.allow)).freeze();
+      this.allow = new PermissionsBitField(BigInt(data.allow)).freeze();
     }
   }
 
@@ -98,9 +98,9 @@ class PermissionOverwrites extends Base {
    * An object mapping permission flags to `true` (enabled), `null` (unset) or `false` (disabled).
    * ```js
    * {
-   *  'SEND_MESSAGES': true,
-   *  'EMBED_LINKS': null,
-   *  'ATTACH_FILES': false,
+   *  'SendMessages': true,
+   *  'EmbedLinks': null,
+   *  'AttachFiles': false,
    * }
    * ```
    * @typedef {Object} PermissionOverwriteOptions
@@ -108,8 +108,8 @@ class PermissionOverwrites extends Base {
 
   /**
    * @typedef {Object} ResolvedOverwriteOptions
-   * @property {Permissions} allow The allowed permissions
-   * @property {Permissions} deny The denied permissions
+   * @property {PermissionsBitField} allow The allowed permissions
+   * @property {PermissionsBitField} deny The denied permissions
    */
 
   /**
@@ -119,8 +119,8 @@ class PermissionOverwrites extends Base {
    * @returns {ResolvedOverwriteOptions}
    */
   static resolveOverwriteOptions(options, { allow, deny } = {}) {
-    allow = new Permissions(allow);
-    deny = new Permissions(deny);
+    allow = new PermissionsBitField(allow);
+    deny = new PermissionsBitField(deny);
 
     for (const [perm, value] of Object.entries(options)) {
       if (value === true) {
@@ -175,8 +175,8 @@ class PermissionOverwrites extends Base {
       return {
         id: overwrite.id,
         type: overwrite.type,
-        allow: Permissions.resolve(overwrite.allow ?? Permissions.defaultBit).toString(),
-        deny: Permissions.resolve(overwrite.deny ?? Permissions.defaultBit).toString(),
+        allow: PermissionsBitField.resolve(overwrite.allow ?? PermissionsBitField.defaultBit).toString(),
+        deny: PermissionsBitField.resolve(overwrite.deny ?? PermissionsBitField.defaultBit).toString(),
       };
     }
 
@@ -187,8 +187,8 @@ class PermissionOverwrites extends Base {
     return {
       id: userOrRole.id,
       type,
-      allow: Permissions.resolve(overwrite.allow ?? Permissions.defaultBit).toString(),
-      deny: Permissions.resolve(overwrite.deny ?? Permissions.defaultBit).toString(),
+      allow: PermissionsBitField.resolve(overwrite.allow ?? PermissionsBitField.defaultBit).toString(),
+      deny: PermissionsBitField.resolve(overwrite.deny ?? PermissionsBitField.defaultBit).toString(),
     };
   }
 }

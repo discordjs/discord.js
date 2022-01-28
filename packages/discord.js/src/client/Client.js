@@ -24,9 +24,9 @@ const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
 const { Events, InviteScopes, Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Intents = require('../util/Intents');
+const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 const Sweepers = require('../util/Sweepers');
 
 /**
@@ -404,9 +404,9 @@ class Client extends BaseClient {
    * @example
    * const link = client.generateInvite({
    *   permissions: [
-   *     Permissions.FLAGS.SEND_MESSAGES,
-   *     Permissions.FLAGS.MANAGE_GUILD,
-   *     Permissions.FLAGS.MENTION_EVERYONE,
+   *     PermissionFlagsBits.SendMessages,
+   *     PermissionFlagsBits.ManageGuild,
+   *     PermissionFlagsBits.MentionEveryone,
    *   ],
    *   scopes: ['bot'],
    * });
@@ -437,7 +437,7 @@ class Client extends BaseClient {
     query.set('scope', scopes.join(' '));
 
     if (options.permissions) {
-      const permissions = Permissions.resolve(options.permissions);
+      const permissions = PermissionsBitField.resolve(options.permissions);
       if (permissions) query.set('permissions', permissions);
     }
 
@@ -480,7 +480,7 @@ class Client extends BaseClient {
     if (typeof options.intents === 'undefined') {
       throw new TypeError('CLIENT_MISSING_INTENTS');
     } else {
-      options.intents = Intents.resolve(options.intents);
+      options.intents = IntentsBitField.resolve(options.intents);
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');

@@ -136,20 +136,6 @@ exports.ShardEvents = {
 };
 
 /**
- * The type of Structure allowed to be a partial:
- * * USER
- * * CHANNEL (only affects DMChannels)
- * * GUILD_MEMBER
- * * MESSAGE
- * * REACTION
- * * GUILD_SCHEDULED_EVENT
- * <warn>Partials require you to put checks in place when handling data. See the "Partial Structures" topic on the
- * [guide](https://discordjs.guide/popular-topics/partials.html) for more information.</warn>
- * @typedef {string} PartialType
- */
-exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION', 'GUILD_SCHEDULED_EVENT']);
-
-/**
  * The type of a WebSocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED

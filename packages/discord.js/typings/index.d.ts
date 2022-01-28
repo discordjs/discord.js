@@ -79,6 +79,14 @@ import {
   GuildScheduledEventPrivacyLevel,
   GuildScheduledEventStatus,
   IntegrationExpireBehavior,
+  ApplicationFlags,
+  PermissionFlagsBits,
+  ThreadMemberFlags,
+  UserFlags,
+  MessageFlags,
+  GuildSystemChannelFlags,
+  GatewayIntentBits,
+  ActivityFlags,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -155,7 +163,7 @@ export class Activity {
   public createdTimestamp: number;
   public details: string | null;
   public emoji: Emoji | null;
-  public flags: Readonly<ActivityFlags>;
+  public flags: Readonly<ActivityFlagsBitField>;
   public id: string;
   public name: string;
   public party: {
@@ -175,8 +183,10 @@ export class Activity {
   public equals(activity: Activity): boolean;
 }
 
-export class ActivityFlags extends BitField<ActivityFlagsString> {
-  public static FLAGS: Record<ActivityFlagsString, number>;
+export type ActivityFlagsString = keyof typeof ActivityFlags;
+
+export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
+  public static flags: ActivityFlags;
   public static resolve(bit?: BitFieldResolvable<ActivityFlagsString, number>): number;
 }
 
@@ -255,8 +265,8 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
 
 export type ApplicationResolvable = Application | Activity | Snowflake;
 
-export class ApplicationFlags extends BitField<ApplicationFlagsString> {
-  public static FLAGS: Record<ApplicationFlagsString, number>;
+export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
+  public static flags: ApplicationFlags;
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
@@ -401,6 +411,8 @@ export class BaseGuildVoiceChannel extends GuildChannel {
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
 }
 
+export type EnumLike<E, V> = Record<keyof E, V>;
+
 export class BitField<S extends string, N extends number | bigint = number> {
   public constructor(bits?: BitFieldResolvable<S, N>);
   public bitfield: N;
@@ -416,7 +428,7 @@ export class BitField<S extends string, N extends number | bigint = number> {
   public toJSON(): N extends number ? number : string;
   public valueOf(): N;
   public [Symbol.iterator](): IterableIterator<S>;
-  public static FLAGS: Record<string, number | bigint>;
+  public static Flags: EnumLike<unknown, number | bigint>;
   public static resolve(bit?: BitFieldResolvable<string, number | bigint>): number | bigint;
 }
 
@@ -563,7 +575,7 @@ export class ClientApplication extends Application {
   public botRequireCodeGrant: boolean | null;
   public commands: ApplicationCommandManager;
   public cover: string | null;
-  public flags: Readonly<ApplicationFlags>;
+  public flags: Readonly<ApplicationFlagsBitField>;
   public owner: User | Team | null;
   public readonly partial: boolean;
   public rpcOrigins: string[];
@@ -902,7 +914,7 @@ export class Guild extends AnonymousGuild {
   public stageInstances: StageInstanceManager;
   public stickers: GuildStickerManager;
   public readonly systemChannel: TextChannel | null;
-  public systemChannelFlags: Readonly<SystemChannelFlags>;
+  public systemChannelFlags: Readonly<SystemChannelFlagsBitField>;
   public systemChannelId: Snowflake | null;
   public vanityURLUses: number | null;
   public readonly voiceAdapterCreator: InternalDiscordGatewayAdapterCreator;
@@ -1015,8 +1027,8 @@ export class GuildBan extends Base {
 
 export abstract class GuildChannel extends Channel {
   public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
-  private memberPermissions(member: GuildMember, checkAdmin: boolean): Readonly<Permissions>;
-  private rolePermissions(role: Role, checkAdmin: boolean): Readonly<Permissions>;
+  private memberPermissions(member: GuildMember, checkAdmin: boolean): Readonly<PermissionsBitField>;
+  private rolePermissions(role: Role, checkAdmin: boolean): Readonly<PermissionsBitField>;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public readonly calculatedPosition: number;
@@ -1039,11 +1051,11 @@ export abstract class GuildChannel extends Channel {
   public edit(data: ChannelData, reason?: string): Promise<this>;
   public equals(channel: GuildChannel): boolean;
   public lockPermissions(): Promise<this>;
-  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<Permissions>;
+  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: GuildMemberResolvable | RoleResolvable,
     checkAdmin?: boolean,
-  ): Readonly<Permissions> | null;
+  ): Readonly<PermissionsBitField> | null;
   public setName(name: string, reason?: string): Promise<this>;
   public setParent(channel: CategoryChannelResolvable | null, options?: SetParentOptions): Promise<this>;
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
@@ -1085,7 +1097,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly moderatable: boolean;
   public nickname: string | null;
   public readonly partial: false;
-  public readonly permissions: Readonly<Permissions>;
+  public readonly permissions: Readonly<PermissionsBitField>;
   public readonly premiumSince: Date | null;
   public premiumSinceTimestamp: number | null;
   public readonly presence: Presence | null;
@@ -1106,7 +1118,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
     readonly communicationDisabledUntil: Date;
   };
   public kick(reason?: string): Promise<GuildMember>;
-  public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;
+  public permissionsIn(channel: GuildChannelResolvable): Readonly<PermissionsBitField>;
   public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
   public toJSON(): unknown;
   public toString(): MemberMention;
@@ -1251,9 +1263,11 @@ export class IntegrationApplication extends Application {
   public verifyKey: string | null;
 }
 
-export class Intents extends BitField<IntentsString> {
-  public static FLAGS: Record<IntentsString, number>;
-  public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
+export type GatewayIntentsString = keyof typeof GatewayIntentBits;
+
+export class IntentsBitField extends BitField<GatewayIntentsString> {
+  public static flags: GatewayIntentBits;
+  public static resolve(bit?: BitFieldResolvable<GatewayIntentsString, number>): number;
 }
 
 export type CacheType = 'cached' | 'raw' | undefined;
@@ -1295,7 +1309,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
-  public memberPermissions: CacheTypeReducer<Cached, Readonly<Permissions>>;
+  public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
   public locale: string;
   public guildLocale: CacheTypeReducer<Cached, string, string, string>;
   public inGuild(): this is Interaction<'raw' | 'cached'>;
@@ -1473,7 +1487,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public type: MessageType;
   public readonly url: string;
   public webhookId: Snowflake | null;
-  public flags: Readonly<MessageFlags>;
+  public flags: Readonly<MessageFlagsBitField>;
   public reference: MessageReference | null;
   public awaitMessageComponent<T extends ComponentType = ComponentType.ActionRow>(
     options?: AwaitMessageCollectorOptionsParams<T, Cached>,
@@ -1582,8 +1596,10 @@ export class MessageContextMenuCommandInteraction<
   public inRawGuild(): this is MessageContextMenuCommandInteraction<'raw'>;
 }
 
-export class MessageFlags extends BitField<MessageFlagsString> {
-  public static FLAGS: Record<MessageFlagsString, number>;
+export type MessageFlagsString = keyof typeof MessageFlags;
+
+export class MessageFlagsBitField extends BitField<MessageFlagsString> {
+  public static flags: MessageFlags;
   public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
 }
 
@@ -1666,7 +1682,7 @@ export class NewsChannel extends BaseGuildTextChannel {
 export class OAuth2Guild extends BaseGuild {
   private constructor(client: Client, data: RawOAuth2GuildData);
   public owner: boolean;
-  public permissions: Readonly<Permissions>;
+  public permissions: Readonly<PermissionsBitField>;
 }
 
 export class PartialGroupDMChannel extends Channel {
@@ -1679,9 +1695,9 @@ export class PartialGroupDMChannel extends Channel {
 
 export class PermissionOverwrites extends Base {
   private constructor(client: Client, data: RawPermissionOverwriteData, channel: NonThreadGuildBasedChannel);
-  public allow: Readonly<Permissions>;
+  public allow: Readonly<PermissionsBitField>;
   public readonly channel: NonThreadGuildBasedChannel;
-  public deny: Readonly<Permissions>;
+  public deny: Readonly<PermissionsBitField>;
   public id: Snowflake;
   public type: OverwriteType;
   public edit(options: PermissionOverwriteOptions, reason?: string): Promise<PermissionOverwrites>;
@@ -1694,17 +1710,19 @@ export class PermissionOverwrites extends Base {
   public static resolve(overwrite: OverwriteResolvable, guild: Guild): APIOverwrite;
 }
 
-export class Permissions extends BitField<PermissionString, bigint> {
+export type PermissionsString = keyof typeof PermissionFlagsBits;
+
+export class PermissionsBitField extends BitField<PermissionsString, bigint> {
   public any(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
   public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
-  public missing(bits: BitFieldResolvable<PermissionString, bigint>, checkAdmin?: boolean): PermissionString[];
-  public serialize(checkAdmin?: boolean): Record<PermissionString, boolean>;
-  public toArray(): PermissionString[];
+  public missing(bits: BitFieldResolvable<PermissionsString, bigint>, checkAdmin?: boolean): PermissionsString[];
+  public serialize(checkAdmin?: boolean): Record<PermissionsString, boolean>;
+  public toArray(): PermissionsString[];
 
-  public static ALL: bigint;
-  public static DEFAULT: bigint;
-  public static STAGE_MODERATOR: bigint;
-  public static FLAGS: PermissionFlags;
+  public static All: bigint;
+  public static Default: bigint;
+  public static StageModerator: bigint;
+  public static flags: typeof PermissionFlagsBits;
   public static resolve(permission?: PermissionResolvable): bigint;
 }
 
@@ -1780,7 +1798,7 @@ export class Role extends Base {
   public readonly members: Collection<Snowflake, GuildMember>;
   public mentionable: boolean;
   public name: string;
-  public permissions: Readonly<Permissions>;
+  public permissions: Readonly<PermissionsBitField>;
   public readonly position: number;
   public rawPosition: number;
   public tags: RoleTagData | null;
@@ -1791,7 +1809,10 @@ export class Role extends Base {
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
   public iconURL(options?: ImageURLOptions): string | null;
-  public permissionsIn(channel: NonThreadGuildBasedChannel | Snowflake, checkAdmin?: boolean): Readonly<Permissions>;
+  public permissionsIn(
+    channel: NonThreadGuildBasedChannel | Snowflake,
+    checkAdmin?: boolean,
+  ): Readonly<PermissionsBitField>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
   public setMentionable(mentionable?: boolean, reason?: string): Promise<Role>;
@@ -2084,8 +2105,10 @@ export class Sweepers {
   ): GlobalSweepFilter<SweeperDefinitions['messages'][0], SweeperDefinitions['messages'][1]>;
 }
 
-export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
-  public static FLAGS: Record<SystemChannelFlagsString, number>;
+export type SystemChannelFlagsString = keyof typeof GuildSystemChannelFlags;
+
+export class SystemChannelFlagsBitField extends BitField<SystemChannelFlagsString> {
+  public static flags: GuildSystemChannelFlags;
   public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString, number>): number;
 }
 
@@ -2164,11 +2187,11 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel) {
   public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
   public join(): Promise<ThreadChannel>;
   public leave(): Promise<ThreadChannel>;
-  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<Permissions>;
+  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: GuildMemberResolvable | RoleResolvable,
     checkAdmin?: boolean,
-  ): Readonly<Permissions> | null;
+  ): Readonly<PermissionsBitField> | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
   public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
@@ -2184,7 +2207,7 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel) {
 
 export class ThreadMember extends Base {
   private constructor(thread: ThreadChannel, data?: RawThreadMemberData);
-  public flags: ThreadMemberFlags;
+  public flags: ThreadMemberFlagsBitField;
   public readonly guildMember: GuildMember | null;
   public id: Snowflake;
   public readonly joinedAt: Date | null;
@@ -2195,8 +2218,10 @@ export class ThreadMember extends Base {
   public remove(reason?: string): Promise<ThreadMember>;
 }
 
-export class ThreadMemberFlags extends BitField<ThreadMemberFlagsString> {
-  public static FLAGS: Record<ThreadMemberFlagsString, number>;
+export type ThreadMemberFlagsString = keyof typeof ThreadMemberFlags;
+
+export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString> {
+  public static flags: ThreadMemberFlags;
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
@@ -2227,7 +2252,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public discriminator: string;
   public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
-  public flags: Readonly<UserFlags> | null;
+  public flags: Readonly<UserFlagsBitField> | null;
   public readonly hexAccentColor: HexColorString | null | undefined;
   public id: Snowflake;
   public readonly partial: false;
@@ -2241,7 +2266,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public displayAvatarURL(options?: ImageURLOptions): string;
   public equals(user: User): boolean;
   public fetch(force?: boolean): Promise<User>;
-  public fetchFlags(force?: boolean): Promise<UserFlags>;
+  public fetchFlags(force?: boolean): Promise<UserFlagsBitField>;
   public toString(): UserMention;
 }
 
@@ -2255,8 +2280,10 @@ export class UserContextMenuCommandInteraction<
   public inRawGuild(): this is UserContextMenuCommandInteraction<'raw'>;
 }
 
-export class UserFlags extends BitField<UserFlagsString> {
-  public static FLAGS: Record<UserFlagsString, number>;
+export type UserFlagsString = keyof typeof UserFlags;
+
+export class UserFlagsBitField extends BitField<UserFlagsString> {
+  public static flags: UserFlags;
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
@@ -2582,9 +2609,6 @@ export const Constants: {
   };
   Events: ConstantsEvents;
   ShardEvents: ConstantsShardEvents;
-  PartialTypes: {
-    [K in PartialTypes]: K;
-  };
   WSEvents: {
     [K in WSEventType]: K;
   };
@@ -3016,7 +3040,7 @@ export class UserManager extends CachedManager<Snowflake, User, UserResolvable> 
   public createDM(user: UserResolvable, options?: BaseFetchOptions): Promise<DMChannel>;
   public deleteDM(user: UserResolvable): Promise<DMChannel>;
   public fetch(user: UserResolvable, options?: BaseFetchOptions): Promise<User>;
-  public fetchFlags(user: UserResolvable, options?: BaseFetchOptions): Promise<UserFlags>;
+  public fetchFlags(user: UserResolvable, options?: BaseFetchOptions): Promise<UserFlagsBitField>;
   public send(user: UserResolvable, options: string | MessagePayload | MessageOptions): Promise<Message>;
 }
 
@@ -3090,17 +3114,6 @@ export interface WebhookFields extends PartialWebhookFields {
 //#endregion
 
 //#region Typedefs
-
-export type ActivityFlagsString =
-  | 'INSTANCE'
-  | 'JOIN'
-  | 'SPECTATE'
-  | 'JOIN_REQUEST'
-  | 'SYNC'
-  | 'PLAY'
-  | 'PARTY_PRIVACY_FRIENDS'
-  | 'PARTY_PRIVACY_VOICE_CHANNEL'
-  | 'EMBEDDED';
 
 export type ActivitiesOptions = Omit<ActivityOptions, 'shardId'>;
 
@@ -3294,15 +3307,7 @@ export interface ApplicationCommandPermissions extends ApplicationCommandPermiss
 
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
-export type ApplicationFlagsString =
-  | 'GATEWAY_PRESENCE'
-  | 'GATEWAY_PRESENCE_LIMITED'
-  | 'GATEWAY_GUILD_MEMBERS'
-  | 'GATEWAY_GUILD_MEMBERS_LIMITED'
-  | 'VERIFICATION_PENDING_GUILD_LIMIT'
-  | 'EMBEDDED'
-  | 'GATEWAY_MESSAGE_CONTENT'
-  | 'GATEWAY_MESSAGE_CONTENT_LIMITED';
+export type ApplicationFlagsString = keyof typeof ApplicationFlags;
 
 export interface AuditLogChange {
   key: APIAuditLogChange['key'];
@@ -3548,10 +3553,10 @@ export interface ClientOptions {
   shardCount?: number;
   makeCache?: CacheFactory;
   allowedMentions?: MessageMentionOptions;
-  partials?: PartialTypes[];
+  partials?: Partials[];
   failIfNotExists?: boolean;
   presence?: PresenceData;
-  intents: BitFieldResolvable<IntentsString, number>;
+  intents: BitFieldResolvable<GatewayIntentsString, number>;
   waitGuildTimeout?: number;
   sweepers?: SweeperOptions;
   ws?: WebSocketOptions;
@@ -4450,30 +4455,12 @@ export type InteractionDeferUpdateOptions = Omit<InteractionDeferReplyOptions, '
 export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL' | 'flags'> {
   ephemeral?: boolean;
   fetchReply?: boolean;
-  flags?: BitFieldResolvable<'SUPPRESS_EMBEDS' | 'EPHEMERAL', number>;
+  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds' | 'Ephemeral'>, number>;
 }
 
 export interface InteractionUpdateOptions extends MessageEditOptions {
   fetchReply?: boolean;
 }
-
-export type IntentsString =
-  | 'GUILDS'
-  | 'GUILD_MEMBERS'
-  | 'GUILD_BANS'
-  | 'GUILD_EMOJIS_AND_STICKERS'
-  | 'GUILD_INTEGRATIONS'
-  | 'GUILD_WEBHOOKS'
-  | 'GUILD_INVITES'
-  | 'GUILD_VOICE_STATES'
-  | 'GUILD_PRESENCES'
-  | 'GUILD_MESSAGES'
-  | 'GUILD_MESSAGE_REACTIONS'
-  | 'GUILD_MESSAGE_TYPING'
-  | 'DIRECT_MESSAGES'
-  | 'DIRECT_MESSAGE_REACTIONS'
-  | 'DIRECT_MESSAGE_TYPING'
-  | 'GUILD_SCHEDULED_EVENTS';
 
 export interface InviteGenerationOptions {
   permissions?: PermissionResolvable;
@@ -4603,16 +4590,6 @@ export interface MessageEvent {
   target: WebSocket;
 }
 
-export type MessageFlagsString =
-  | 'CROSSPOSTED'
-  | 'IS_CROSSPOST'
-  | 'SUPPRESS_EMBEDS'
-  | 'SOURCE_MESSAGE_DELETED'
-  | 'URGENT'
-  | 'HAS_THREAD'
-  | 'EPHEMERAL'
-  | 'LOADING';
-
 export interface MessageInteraction {
   id: Snowflake;
   type: InteractionType;
@@ -4649,7 +4626,7 @@ export interface MessageOptions {
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
   attachments?: MessageAttachment[];
-  flags?: BitFieldResolvable<'SUPPRESS_EMBEDS', number>;
+  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, number>;
 }
 
 export type MessageReactionResolvable =
@@ -4725,56 +4702,13 @@ export interface OverwriteData {
 
 export type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
-export type PermissionFlags = Record<PermissionString, bigint>;
+export type PermissionFlags = Record<keyof typeof PermissionFlagsBits, bigint>;
 
-export type PermissionOverwriteOptions = Partial<Record<PermissionString, boolean | null>>;
+export type PermissionOverwriteOptions = Partial<Record<keyof typeof PermissionFlagsBits, boolean | null>>;
 
-export type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
+export type PermissionResolvable = BitFieldResolvable<keyof typeof PermissionFlagsBits, bigint>;
 
 export type PermissionOverwriteResolvable = UserResolvable | RoleResolvable | PermissionOverwrites;
-
-export type PermissionString =
-  | 'CREATE_INSTANT_INVITE'
-  | 'KICK_MEMBERS'
-  | 'BAN_MEMBERS'
-  | 'ADMINISTRATOR'
-  | 'MANAGE_CHANNELS'
-  | 'MANAGE_GUILD'
-  | 'ADD_REACTIONS'
-  | 'VIEW_AUDIT_LOG'
-  | 'PRIORITY_SPEAKER'
-  | 'STREAM'
-  | 'VIEW_CHANNEL'
-  | 'SEND_MESSAGES'
-  | 'SEND_TTS_MESSAGES'
-  | 'MANAGE_MESSAGES'
-  | 'EMBED_LINKS'
-  | 'ATTACH_FILES'
-  | 'READ_MESSAGE_HISTORY'
-  | 'MENTION_EVERYONE'
-  | 'USE_EXTERNAL_EMOJIS'
-  | 'VIEW_GUILD_INSIGHTS'
-  | 'CONNECT'
-  | 'SPEAK'
-  | 'MUTE_MEMBERS'
-  | 'DEAFEN_MEMBERS'
-  | 'MOVE_MEMBERS'
-  | 'USE_VAD'
-  | 'CHANGE_NICKNAME'
-  | 'MANAGE_NICKNAMES'
-  | 'MANAGE_ROLES'
-  | 'MANAGE_WEBHOOKS'
-  | 'MANAGE_EMOJIS_AND_STICKERS'
-  | 'USE_APPLICATION_COMMANDS'
-  | 'REQUEST_TO_SPEAK'
-  | 'MANAGE_THREADS'
-  | 'CREATE_PUBLIC_THREADS'
-  | 'CREATE_PRIVATE_THREADS'
-  | 'USE_EXTERNAL_STICKERS'
-  | 'SEND_MESSAGES_IN_THREADS'
-  | 'START_EMBEDDED_ACTIVITIES'
-  | 'MODERATE_MEMBERS'
-  | 'MANAGE_EVENTS';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
@@ -4852,7 +4786,14 @@ export interface PartialRoleData extends RoleData {
   id?: Snowflake | number;
 }
 
-export type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION' | 'GUILD_SCHEDULED_EVENT';
+export enum Partials {
+  User,
+  Channel,
+  GuildMember,
+  Message,
+  Reaction,
+  GuildScheduledEvent,
+}
 
 export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
 
@@ -4876,8 +4817,8 @@ export interface ReplyMessageOptions extends Omit<MessageOptions, 'reply'> {
 }
 
 export interface ResolvedOverwriteOptions {
-  allow: Permissions;
-  deny: Permissions;
+  allow: PermissionsBitField;
+  deny: PermissionsBitField;
 }
 
 export interface RoleData {
@@ -4954,12 +4895,6 @@ export interface StartThreadOptions {
 export type Status = number;
 
 export type StickerResolvable = Sticker | Snowflake;
-
-export type SystemChannelFlagsString =
-  | 'SUPPRESS_JOIN_NOTIFICATIONS'
-  | 'SUPPRESS_PREMIUM_SUBSCRIPTIONS'
-  | 'SUPPRESS_GUILD_REMINDER_NOTIFICATIONS'
-  | 'SUPPRESS_JOIN_NOTIFICATION_REPLIES';
 
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
@@ -5068,25 +5003,7 @@ export interface ThreadEditData {
   invitable?: boolean;
 }
 
-export type ThreadMemberFlagsString = '';
-
 export type ThreadMemberResolvable = ThreadMember | UserResolvable;
-
-export type UserFlagsString =
-  | 'STAFF'
-  | 'PARTNER'
-  | 'HYPESQUAD'
-  | 'BUG_HUNTER_LEVEL_1'
-  | 'HYPESQUAD_ONLINE_HOUSE_1'
-  | 'HYPESQUAD_ONLINE_HOUSE_2'
-  | 'HYPESQUAD_ONLINE_HOUSE_3'
-  | 'PREMIUM_EARLY_SUPPORTER'
-  | 'TEAM_PSEUDO_USER'
-  | 'BUG_HUNTER_LEVEL_2'
-  | 'VERIFIED_BOT'
-  | 'VERIFIED_DEVELOPER'
-  | 'CERTIFIED_MODERATOR'
-  | 'BOT_HTTP_INTERACTIONS';
 
 export type UserMention = `<@${Snowflake}>`;
 
@@ -5264,6 +5181,7 @@ export type InternalDiscordGatewayAdapterCreator = (
 // External
 export {
   ActivityType,
+  ActivityFlags,
   ApplicationCommandType,
   ApplicationCommandOptionType,
   ApplicationCommandPermissionType,
@@ -5273,6 +5191,7 @@ export {
   GuildMFALevel,
   GuildNSFWLevel,
   GuildPremiumTier,
+  GatewayIntentBits,
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
   GuildScheduledEventStatus,
@@ -5281,10 +5200,15 @@ export {
   InteractionResponseType,
   InviteTargetType,
   MessageType,
+  MessageFlags,
+  PermissionFlagsBits,
   RESTJSONErrorCodes,
   StageInstancePrivacyLevel,
   StickerType,
   StickerFormatType,
+  GuildSystemChannelFlags,
+  ThreadMemberFlags,
+  UserFlags,
   WebhookType,
 } from 'discord-api-types/v9';
 export {

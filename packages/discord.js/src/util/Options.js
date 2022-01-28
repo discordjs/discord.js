@@ -23,7 +23,7 @@ const { DefaultRestOptions } = require('@discordjs/rest');
  * <warn>Overriding the cache used in `GuildManager`, `ChannelManager`, `GuildChannelManager`, `RoleManager`,
  * and `PermissionOverwriteManager` is unsupported and **will** break functionality</warn>
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
- * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
+ * @property {Partials[]} [partials] Structures allowed to be partial. This means events can be emitted even when
  * they're missing all the data for a particular structure. See the "Partial Structures" topic on the
  * [guide](https://discordjs.guide/popular-topics/partials.html) for some
  * important usage information, as partials require you to put checks in place when handling data.

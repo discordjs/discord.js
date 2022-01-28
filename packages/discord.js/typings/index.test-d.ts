@@ -14,6 +14,8 @@ import {
   ApplicationCommandPermissionType,
   ChannelType,
   InteractionType,
+  GatewayIntentBits,
+  PermissionFlagsBits,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
 import {
@@ -47,7 +49,7 @@ import {
   GuildEmojiManager,
   GuildMember,
   GuildResolvable,
-  Intents,
+  IntentsBitField,
   Interaction,
   InteractionCollector,
   Message,
@@ -59,7 +61,7 @@ import {
   Options,
   PartialTextBasedChannelFields,
   PartialUser,
-  Permissions,
+  PermissionsBitField,
   ReactionCollector,
   Role,
   RoleManager,
@@ -105,7 +107,7 @@ declare const serialize: <T>(value: T) => Serialized<T>;
 declare const notPropertyOf: <T, P extends PropertyKey>(value: T, property: P & Exclude<P, keyof T>) => void;
 
 const client: Client = new Client({
-  intents: Intents.FLAGS.GUILDS,
+  intents: GatewayIntentBits.Guilds,
   makeCache: Options.cacheWithLimits({
     MessageManager: 200,
     // @ts-expect-error
@@ -719,7 +721,7 @@ client.on('interactionCreate', async interaction => {
 
   const button = new ButtonComponent();
 
-  const actionRow = new ActionRow({ type: ComponentType.ActionRow, components: [button] });
+  const actionRow = new ActionRow<ActionRowComponent>({ type: ComponentType.ActionRow, components: [button] });
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
@@ -772,8 +774,8 @@ expectType<{}>(
     ]),
   ),
 );
-expectType<string>(serialize(new Permissions(Permissions.FLAGS.ATTACH_FILES)));
-expectType<number>(serialize(new Intents(Intents.FLAGS.GUILDS)));
+expectType<string>(serialize(new PermissionsBitField(PermissionFlagsBits.AttachFiles)));
+expectType<number>(serialize(new IntentsBitField(GatewayIntentBits.Guilds)));
 expectAssignable<unknown>(
   serialize(
     new Collection([

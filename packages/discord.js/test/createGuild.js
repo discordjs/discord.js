@@ -1,11 +1,11 @@
 'use strict';
 
 const assert = require('node:assert');
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType, GatewayIntentBits } = require('discord-api-types/v9');
 const { token } = require('./auth');
-const { Client, Intents } = require('../src');
+const { Client } = require('../src');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
 client.on('ready', async () => {
   try {
