@@ -26,14 +26,6 @@ class ContextMenuCommandInteraction extends CommandInteraction {
      * @type {Snowflake}
      */
     this.targetId = data.data.target_id;
-
-    /**
-     * The type of the target of the interaction; either {@link ApplicationCommandType.User}
-     * or {@link ApplicationCommandType.Message}
-     * @type {ApplicationCommandType.User|ApplicationCommandType.Message}
-     * @deprecated Use {@link CommandInteraction.commandType} instead
-     */
-    this.targetType = data.data.type;
   }
 
   /**
