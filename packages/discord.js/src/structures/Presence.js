@@ -333,13 +333,13 @@ class RichPresenceAssets {
 
     /**
      * The large image asset's id
-     * @type {?string}
+     * @type {?Snowflake|string}
      */
     this.largeImage = assets.large_image ?? null;
 
     /**
      * The small image asset's id
-     * @type {?string}
+     * @type {?Snowflake|string}
      */
     this.smallImage = assets.small_image ?? null;
   }
@@ -394,9 +394,9 @@ class RichPresenceAssets {
 
   /**
    * Tests whether an image key is a URL or not
-   * @private
    * @param {string} imageKey The image key to test
    * @returns {boolean}
+   * @private
    */
   static _isURLImage(imageKey) {
     const URLRegex = /(https?|ftp|file):\/\//gm;

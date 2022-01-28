@@ -1776,9 +1776,9 @@ export class ReactionEmoji extends Emoji {
 
 export class RichPresenceAssets {
   private constructor(activity: Activity, assets: RawRichPresenceAssets);
-  public largeImage: string | null;
+  public largeImage: Snowflake | string | null;
   public largeText: string | null;
-  public smallImage: string | null;
+  public smallImage: Snowflake | string | null;
   public smallText: string | null;
   public largeImageURL(options?: ImageURLOptions): string | null;
   public smallImageURL(options?: ImageURLOptions): string | null;
