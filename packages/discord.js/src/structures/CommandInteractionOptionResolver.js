@@ -1,5 +1,6 @@
 'use strict';
 
+const { ApplicationCommandOptionType } = require('discord-api-types/v9');
 const { TypeError } = require('../errors');
 
 /**
@@ -223,7 +224,7 @@ class CommandInteractionOptionResolver {
    * @returns {?MessageAttachment} The value of the option, or null if not set and not required.
    */
   getAttachment(name, required = false) {
-    const option = this._getTypedOption(name, 'ATTACHMENT', ['attachment'], required);
+    const option = this._getTypedOption(name, ApplicationCommandOptionType.Attachment, ['attachment'], required);
     return option?.attachment ?? null;
   }
 
