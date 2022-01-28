@@ -1783,6 +1783,7 @@ export class RichPresenceAssets {
   public largeImageURL(options?: ImageURLOptions): string | null;
   public smallImageURL(options?: ImageURLOptions): string | null;
   private _isURLImage(imageKey: string): boolean;
+  public static URL_PATTERN: RegExp;
 }
 
 export class Role extends Base {

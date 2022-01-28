@@ -333,13 +333,13 @@ class RichPresenceAssets {
 
     /**
      * The large image asset's id
-     * @type {?Snowflake|string}
+     * @type {?(Snowflake|string)}
      */
     this.largeImage = assets.large_image ?? null;
 
     /**
      * The small image asset's id
-     * @type {?Snowflake|string}
+     * @type {?(Snowflake|string)}
      */
     this.smallImage = assets.small_image ?? null;
   }
@@ -399,10 +399,15 @@ class RichPresenceAssets {
    * @private
    */
   static _isURLImage(imageKey) {
-    const URLRegex = /(https?|ftp|file):\/\//gm;
-    return URLRegex.test(imageKey);
+    return RichPresenceAssets.URL_PATTERN.test(imageKey);
   }
 }
+
+/**
+ * Regular expression that matches images URLs from image keys
+ * @type {RegExp}
+ */
+RichPresenceAssets.URL_PATTERN = /(https?|ftp|file):\/\//gm;
 
 exports.Presence = Presence;
 exports.Activity = Activity;
