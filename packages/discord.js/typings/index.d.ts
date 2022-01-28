@@ -1688,6 +1688,7 @@ export class OAuth2Guild extends BaseGuild {
 
 export class PartialGroupDMChannel extends Channel {
   private constructor(client: Client, data: RawPartialGroupDMChannelData);
+  public type: ChannelType.GroupDM;
   public name: string | null;
   public icon: string | null;
   public recipients: PartialRecipient[];
