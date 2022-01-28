@@ -502,6 +502,7 @@ export abstract class Channel extends Base {
   public isThread(): this is ThreadChannel;
   public isStage(): this is StageChannel;
   public isTextBased(): this is TextBasedChannel;
+  public isDMBased(): this is PartialGroupDMChannel | DMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
   public toString(): ChannelMention;
 }
