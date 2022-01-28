@@ -22,7 +22,7 @@ const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { NonSystemMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 const Util = require('../util/Util');
 
 /**
@@ -622,7 +622,7 @@ class Message extends Base {
   get crosspostable() {
     const bitfield =
       PermissionFlagsBits.SendMessages |
-      (this.author.id === this.client.user.id ? Permissions.defaultBit : PermissionFlagsBits.ManageMessages);
+      (this.author.id === this.client.user.id ? PermissionsBitField.defaultBit : PermissionFlagsBits.ManageMessages);
     const { channel } = this;
     return Boolean(
       channel?.type === ChannelType.GuildNews &&

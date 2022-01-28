@@ -6,7 +6,7 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const { VoiceBasedChannelTypes } = require('../util/Constants');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 const Util = require('../util/Util');
 
 /**
@@ -122,11 +122,11 @@ class GuildChannel extends Channel {
       // Handle empty overwrite
       if (
         (!channelVal &&
-          parentVal.deny.bitfield === Permissions.defaultBit &&
-          parentVal.allow.bitfield === Permissions.defaultBit) ||
+          parentVal.deny.bitfield === PermissionsBitField.defaultBit &&
+          parentVal.allow.bitfield === PermissionsBitField.defaultBit) ||
         (!parentVal &&
-          channelVal.deny.bitfield === Permissions.defaultBit &&
-          channelVal.allow.bitfield === Permissions.defaultBit)
+          channelVal.deny.bitfield === PermissionsBitField.defaultBit &&
+          channelVal.allow.bitfield === PermissionsBitField.defaultBit)
       ) {
         return true;
       }
@@ -155,7 +155,7 @@ class GuildChannel extends Channel {
    * Gets the overall set of permissions for a member or role in this channel, taking into account channel overwrites.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
    * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
-   * @returns {?Readonly<Permissions>}
+   * @returns {?Readonly<PermissionsBitField>}
    */
   permissionsFor(memberOrRole, checkAdmin = true) {
     const member = this.guild.members.resolve(memberOrRole);
@@ -194,28 +194,30 @@ class GuildChannel extends Channel {
    * Gets the overall set of permissions for a member in this channel, taking into account channel overwrites.
    * @param {GuildMember} member The member to obtain the overall permissions for
    * @param {boolean} checkAdmin=true Whether having `ADMINISTRATOR` will return all permissions
-   * @returns {Readonly<Permissions>}
+   * @returns {Readonly<PermissionsBitField>}
    * @private
    */
   memberPermissions(member, checkAdmin) {
-    if (checkAdmin && member.id === this.guild.ownerId) return new Permissions(Permissions.All).freeze();
+    if (checkAdmin && member.id === this.guild.ownerId) {
+      return new PermissionsBitField(PermissionsBitField.All).freeze();
+    }
 
     const roles = member.roles.cache;
-    const permissions = new Permissions(roles.map(role => role.permissions));
+    const permissions = new PermissionsBitField(roles.map(role => role.permissions));
 
     if (checkAdmin && permissions.has(PermissionFlagsBits.Administrator)) {
-      return new Permissions(Permissions.All).freeze();
+      return new PermissionsBitField(PermissionsBitField.All).freeze();
     }
 
     const overwrites = this.overwritesFor(member, true, roles);
 
     return permissions
-      .remove(overwrites.everyone?.deny ?? Permissions.defaultBit)
-      .add(overwrites.everyone?.allow ?? Permissions.defaultBit)
-      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.deny) : Permissions.defaultBit)
-      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allow) : Permissions.defaultBit)
-      .remove(overwrites.member?.deny ?? Permissions.defaultBit)
-      .add(overwrites.member?.allow ?? Permissions.defaultBit)
+      .remove(overwrites.everyone?.deny ?? PermissionsBitField.defaultBit)
+      .add(overwrites.everyone?.allow ?? PermissionsBitField.defaultBit)
+      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.deny) : PermissionsBitField.defaultBit)
+      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allow) : PermissionsBitField.defaultBit)
+      .remove(overwrites.member?.deny ?? PermissionsBitField.defaultBit)
+      .add(overwrites.member?.allow ?? PermissionsBitField.defaultBit)
       .freeze();
   }
 
@@ -223,22 +225,22 @@ class GuildChannel extends Channel {
    * Gets the overall set of permissions for a role in this channel, taking into account channel overwrites.
    * @param {Role} role The role to obtain the overall permissions for
    * @param {boolean} checkAdmin Whether having `ADMINISTRATOR` will return all permissions
-   * @returns {Readonly<Permissions>}
+   * @returns {Readonly<PermissionsBitField>}
    * @private
    */
   rolePermissions(role, checkAdmin) {
     if (checkAdmin && role.permissions.has(PermissionFlagsBits.Administrator)) {
-      return new Permissions(Permissions.All).freeze();
+      return new PermissionsBitField(PermissionsBitField.All).freeze();
     }
 
     const everyoneOverwrites = this.permissionOverwrites.cache.get(this.guild.id);
     const roleOverwrites = this.permissionOverwrites.cache.get(role.id);
 
     return role.permissions
-      .remove(everyoneOverwrites?.deny ?? Permissions.defaultBit)
-      .add(everyoneOverwrites?.allow ?? Permissions.defaultBit)
-      .remove(roleOverwrites?.deny ?? Permissions.defaultBit)
-      .add(roleOverwrites?.allow ?? Permissions.defaultBit)
+      .remove(everyoneOverwrites?.deny ?? PermissionsBitField.defaultBit)
+      .add(everyoneOverwrites?.allow ?? PermissionsBitField.defaultBit)
+      .remove(roleOverwrites?.deny ?? PermissionsBitField.defaultBit)
+      .add(roleOverwrites?.allow ?? PermissionsBitField.defaultBit)
       .freeze();
   }
 

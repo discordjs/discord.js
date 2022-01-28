@@ -1027,8 +1027,8 @@ export class GuildBan extends Base {
 
 export abstract class GuildChannel extends Channel {
   public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
-  private memberPermissions(member: GuildMember, checkAdmin: boolean): Readonly<Permissions>;
-  private rolePermissions(role: Role, checkAdmin: boolean): Readonly<Permissions>;
+  private memberPermissions(member: GuildMember, checkAdmin: boolean): Readonly<PermissionsBitField>;
+  private rolePermissions(role: Role, checkAdmin: boolean): Readonly<PermissionsBitField>;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public readonly calculatedPosition: number;
@@ -1051,11 +1051,11 @@ export abstract class GuildChannel extends Channel {
   public edit(data: ChannelData, reason?: string): Promise<this>;
   public equals(channel: GuildChannel): boolean;
   public lockPermissions(): Promise<this>;
-  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<Permissions>;
+  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: GuildMemberResolvable | RoleResolvable,
     checkAdmin?: boolean,
-  ): Readonly<Permissions> | null;
+  ): Readonly<PermissionsBitField> | null;
   public setName(name: string, reason?: string): Promise<this>;
   public setParent(channel: CategoryChannelResolvable | null, options?: SetParentOptions): Promise<this>;
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
@@ -1097,7 +1097,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly moderatable: boolean;
   public nickname: string | null;
   public readonly partial: false;
-  public readonly permissions: Readonly<Permissions>;
+  public readonly permissions: Readonly<PermissionsBitField>;
   public readonly premiumSince: Date | null;
   public premiumSinceTimestamp: number | null;
   public readonly presence: Presence | null;
@@ -1118,7 +1118,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
     readonly communicationDisabledUntil: Date;
   };
   public kick(reason?: string): Promise<GuildMember>;
-  public permissionsIn(channel: GuildChannelResolvable): Readonly<Permissions>;
+  public permissionsIn(channel: GuildChannelResolvable): Readonly<PermissionsBitField>;
   public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
   public toJSON(): unknown;
   public toString(): MemberMention;
@@ -1309,7 +1309,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public type: InteractionType;
   public user: User;
   public version: number;
-  public memberPermissions: CacheTypeReducer<Cached, Readonly<Permissions>>;
+  public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
   public locale: string;
   public guildLocale: CacheTypeReducer<Cached, string, string, string>;
   public inGuild(): this is Interaction<'raw' | 'cached'>;
@@ -1682,7 +1682,7 @@ export class NewsChannel extends BaseGuildTextChannel {
 export class OAuth2Guild extends BaseGuild {
   private constructor(client: Client, data: RawOAuth2GuildData);
   public owner: boolean;
-  public permissions: Readonly<Permissions>;
+  public permissions: Readonly<PermissionsBitField>;
 }
 
 export class PartialGroupDMChannel extends Channel {
@@ -1695,9 +1695,9 @@ export class PartialGroupDMChannel extends Channel {
 
 export class PermissionOverwrites extends Base {
   private constructor(client: Client, data: RawPermissionOverwriteData, channel: NonThreadGuildBasedChannel);
-  public allow: Readonly<Permissions>;
+  public allow: Readonly<PermissionsBitField>;
   public readonly channel: NonThreadGuildBasedChannel;
-  public deny: Readonly<Permissions>;
+  public deny: Readonly<PermissionsBitField>;
   public id: Snowflake;
   public type: OverwriteType;
   public edit(options: PermissionOverwriteOptions, reason?: string): Promise<PermissionOverwrites>;
@@ -1712,7 +1712,7 @@ export class PermissionOverwrites extends Base {
 
 export type PermissionsString = keyof typeof PermissionFlagsBits;
 
-export class Permissions extends BitField<PermissionsString, bigint> {
+export class PermissionsBitField extends BitField<PermissionsString, bigint> {
   public any(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
   public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
   public missing(bits: BitFieldResolvable<PermissionsString, bigint>, checkAdmin?: boolean): PermissionsString[];
@@ -1798,7 +1798,7 @@ export class Role extends Base {
   public readonly members: Collection<Snowflake, GuildMember>;
   public mentionable: boolean;
   public name: string;
-  public permissions: Readonly<Permissions>;
+  public permissions: Readonly<PermissionsBitField>;
   public readonly position: number;
   public rawPosition: number;
   public tags: RoleTagData | null;
@@ -1809,7 +1809,10 @@ export class Role extends Base {
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
   public iconURL(options?: ImageURLOptions): string | null;
-  public permissionsIn(channel: NonThreadGuildBasedChannel | Snowflake, checkAdmin?: boolean): Readonly<Permissions>;
+  public permissionsIn(
+    channel: NonThreadGuildBasedChannel | Snowflake,
+    checkAdmin?: boolean,
+  ): Readonly<PermissionsBitField>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
   public setMentionable(mentionable?: boolean, reason?: string): Promise<Role>;
@@ -2184,11 +2187,11 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel) {
   public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
   public join(): Promise<ThreadChannel>;
   public leave(): Promise<ThreadChannel>;
-  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<Permissions>;
+  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: GuildMemberResolvable | RoleResolvable,
     checkAdmin?: boolean,
-  ): Readonly<Permissions> | null;
+  ): Readonly<PermissionsBitField> | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
   public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
@@ -4821,8 +4824,8 @@ export interface ReplyMessageOptions extends Omit<MessageOptions, 'reply'> {
 }
 
 export interface ResolvedOverwriteOptions {
-  allow: Permissions;
-  deny: Permissions;
+  allow: PermissionsBitField;
+  deny: PermissionsBitField;
 }
 
 export interface RoleData {

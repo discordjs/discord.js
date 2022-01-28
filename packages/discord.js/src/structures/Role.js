@@ -4,7 +4,7 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, PermissionFlagsBits } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Error } = require('../errors');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 const Util = require('../util/Util');
 
 /**
@@ -77,9 +77,9 @@ class Role extends Base {
     if ('permissions' in data) {
       /**
        * The permissions of the role
-       * @type {Readonly<Permissions>}
+       * @type {Readonly<PermissionsBitField>}
        */
-      this.permissions = new Permissions(BigInt(data.permissions)).freeze();
+      this.permissions = new PermissionsBitField(BigInt(data.permissions)).freeze();
     }
 
     if ('managed' in data) {
@@ -226,7 +226,7 @@ class Role extends Base {
    * taking into account permission overwrites.
    * @param {GuildChannel|Snowflake} channel The guild channel to use as context
    * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
-   * @returns {Readonly<Permissions>}
+   * @returns {Readonly<PermissionsBitField>}
    */
   permissionsIn(channel, checkAdmin = true) {
     channel = this.guild.channels.resolve(channel);
@@ -286,7 +286,7 @@ class Role extends Base {
    * @returns {Promise<Role>}
    * @example
    * // Set the permissions of the role
-   * role.setPermissions([PermissionFlagsBits.KickMember, PermissionFlagsBits.BanMembers])
+   * role.setPermissions([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers])
    *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
    * @example

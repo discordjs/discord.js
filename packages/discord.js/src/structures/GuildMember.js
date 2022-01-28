@@ -6,7 +6,7 @@ const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Represents a member of a guild on Discord.
@@ -215,12 +215,12 @@ class GuildMember extends Base {
 
   /**
    * The overall set of permissions for this member, taking only roles and owner status into account
-   * @type {Readonly<Permissions>}
+   * @type {Readonly<PermissionsBitField>}
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerId) return new Permissions(Permissions.All).freeze();
-    return new Permissions(this.roles.cache.map(role => role.permissions)).freeze();
+    if (this.user.id === this.guild.ownerId) return new PermissionsBitField(PermissionsBitField.All).freeze();
+    return new PermissionsBitField(this.roles.cache.map(role => role.permissions)).freeze();
   }
 
   /**
@@ -278,7 +278,7 @@ class GuildMember extends Base {
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {GuildChannelResolvable} channel The guild channel to use as context
-   * @returns {Readonly<Permissions>}
+   * @returns {Readonly<PermissionsBitField>}
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);

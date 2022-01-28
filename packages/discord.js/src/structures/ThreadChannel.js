@@ -253,7 +253,7 @@ class ThreadChannel extends Channel {
    * account.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
    * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
-   * @returns {?Readonly<Permissions>}
+   * @returns {?Readonly<PermissionsBitField>}
    */
   permissionsFor(memberOrRole, checkAdmin) {
     return this.parent?.permissionsFor(memberOrRole, checkAdmin) ?? null;

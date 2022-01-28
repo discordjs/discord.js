@@ -3,7 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v9');
 const Base = require('./Base');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Represents an interaction.
@@ -71,9 +71,11 @@ class Interaction extends Base {
 
     /**
      * The permissions of the member, if one exists, in the channel this interaction was executed in
-     * @type {?Readonly<Permissions>}
+     * @type {?Readonly<PermissionsBitField>}
      */
-    this.memberPermissions = data.member?.permissions ? new Permissions(data.member.permissions).freeze() : null;
+    this.memberPermissions = data.member?.permissions
+      ? new PermissionsBitField(data.member.permissions).freeze()
+      : null;
 
     /**
      * The locale of the user who invoked this interaction

@@ -9,7 +9,7 @@ const BitField = require('./BitField');
  * that override their default permissions.
  * @extends {BitField}
  */
-class Permissions extends BitField {
+class PermissionsBitField extends BitField {
   /**
    * Bitfield of the packed bits
    * @type {bigint}
@@ -18,11 +18,11 @@ class Permissions extends BitField {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * * A string (see {@link Permissions.Flags})
+   * * A string (see {@link PermissionsBitField.Flags})
    * * A permission number
    * * An instance of Permissions
    * * An Array of PermissionResolvable
-   * @typedef {string|bigint|Permissions|PermissionResolvable[]} PermissionResolvable
+   * @typedef {string|bigint|PermissionsBitField|PermissionResolvable[]} PermissionResolvable
    */
 
   /**
@@ -32,7 +32,7 @@ class Permissions extends BitField {
    * @returns {string[]}
    */
   missing(bits, checkAdmin = true) {
-    return checkAdmin && this.has(this.constructor.Flags.Administrator) ? [] : super.missing(bits);
+    return checkAdmin && this.has(PermissionFlagsBits.Administrator) ? [] : super.missing(bits);
   }
 
   /**
@@ -42,7 +42,7 @@ class Permissions extends BitField {
    * @returns {boolean}
    */
   any(permission, checkAdmin = true) {
-    return (checkAdmin && super.has(this.constructor.Flags.Administrator)) || super.any(permission);
+    return (checkAdmin && super.has(PermissionFlagsBits.Administrator)) || super.any(permission);
   }
 
   /**
@@ -52,7 +52,7 @@ class Permissions extends BitField {
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
-    return (checkAdmin && super.has(this.constructor.Flags.Administrator)) || super.has(permission);
+    return (checkAdmin && super.has(PermissionFlagsBits.Administrator)) || super.has(permission);
   }
 
   /**
@@ -69,27 +69,27 @@ class Permissions extends BitField {
  * @type {PermissionFlagsBits}
  * @see {@link https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags}
  */
-Permissions.Flags = PermissionFlagsBits;
+PermissionsBitField.Flags = PermissionFlagsBits;
 
 /**
  * Bitfield representing every permission combined
  * @type {bigint}
  */
-Permissions.All = Object.values(PermissionFlagsBits).reduce((all, p) => all | p, 0n);
+PermissionsBitField.All = Object.values(PermissionFlagsBits).reduce((all, p) => all | p, 0n);
 
 /**
  * Bitfield representing the default permissions for users
  * @type {bigint}
  */
-Permissions.Default = BigInt(104324673);
+PermissionsBitField.Default = BigInt(104324673);
 
 /**
  * Bitfield representing the permissions required for moderators of stage channels
  * @type {bigint}
  */
-Permissions.StageModerator =
+PermissionsBitField.StageModerator =
   PermissionFlagsBits.ManageChannels | PermissionFlagsBits.MuteMembers | PermissionFlagsBits.MoveMembers;
 
-Permissions.defaultBit = BigInt(0);
+PermissionsBitField.defaultBit = BigInt(0);
 
-module.exports = Permissions;
+module.exports = PermissionsBitField;

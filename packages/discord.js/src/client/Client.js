@@ -26,7 +26,7 @@ const { Events, InviteScopes, Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 const Sweepers = require('../util/Sweepers');
 
 /**
@@ -437,7 +437,7 @@ class Client extends BaseClient {
     query.set('scope', scopes.join(' '));
 
     if (options.permissions) {
-      const permissions = Permissions.resolve(options.permissions);
+      const permissions = PermissionsBitField.resolve(options.permissions);
       if (permissions) query.set('permissions', permissions);
     }
 

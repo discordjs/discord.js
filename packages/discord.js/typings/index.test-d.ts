@@ -61,7 +61,7 @@ import {
   Options,
   PartialTextBasedChannelFields,
   PartialUser,
-  Permissions,
+  PermissionsBitField,
   ReactionCollector,
   Role,
   RoleManager,
@@ -774,7 +774,7 @@ expectType<{}>(
     ]),
   ),
 );
-expectType<string>(serialize(new Permissions(PermissionFlagsBits.AttachFiles)));
+expectType<string>(serialize(new PermissionsBitField(PermissionFlagsBits.AttachFiles)));
 expectType<number>(serialize(new IntentsBitField(GatewayIntentBits.Guilds)));
 expectAssignable<unknown>(
   serialize(

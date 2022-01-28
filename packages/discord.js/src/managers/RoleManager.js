@@ -7,7 +7,7 @@ const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const { Role } = require('../structures/Role');
 const DataResolver = require('../util/DataResolver');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 const { resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
@@ -137,7 +137,7 @@ class RoleManager extends CachedManager {
   async create(options = {}) {
     let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
     color &&= resolveColor(color);
-    if (typeof permissions !== 'undefined') permissions = new Permissions(permissions);
+    if (typeof permissions !== 'undefined') permissions = new PermissionsBitField(permissions);
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
       icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
@@ -195,7 +195,7 @@ class RoleManager extends CachedManager {
       name: data.name,
       color: typeof data.color === 'undefined' ? undefined : resolveColor(data.color),
       hoist: data.hoist,
-      permissions: typeof data.permissions === 'undefined' ? undefined : new Permissions(data.permissions),
+      permissions: typeof data.permissions === 'undefined' ? undefined : new PermissionsBitField(data.permissions),
       mentionable: data.mentionable,
       icon,
       unicode_emoji: data.unicodeEmoji,
