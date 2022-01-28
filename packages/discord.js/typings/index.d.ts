@@ -1266,7 +1266,7 @@ export class IntegrationApplication extends Application {
 export type GatewayIntentsString = keyof typeof GatewayIntentBits;
 
 export class IntentsBitField extends BitField<GatewayIntentsString> {
-  public static flags: GatewayIntentBits;
+  public static Flags: GatewayIntentBits;
   public static resolve(bit?: BitFieldResolvable<GatewayIntentsString, number>): number;
 }
 
