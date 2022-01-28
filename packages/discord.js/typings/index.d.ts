@@ -86,6 +86,7 @@ import {
   MessageFlags,
   GuildSystemChannelFlags,
   GatewayIntentBits,
+  ActivityFlags,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -162,7 +163,7 @@ export class Activity {
   public createdTimestamp: number;
   public details: string | null;
   public emoji: Emoji | null;
-  public flags: Readonly<ActivityFlags>;
+  public flags: Readonly<ActivityFlagsBitField>;
   public id: string;
   public name: string;
   public party: {
@@ -182,8 +183,10 @@ export class Activity {
   public equals(activity: Activity): boolean;
 }
 
-export class ActivityFlags extends BitField<ActivityFlagsString> {
-  public static FLAGS: Record<ActivityFlagsString, number>;
+export type ActivityFlagsString = keyof typeof ActivityFlags;
+
+export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
+  public static FLAGS: ActivityFlags;
   public static resolve(bit?: BitFieldResolvable<ActivityFlagsString, number>): number;
 }
 
@@ -3108,17 +3111,6 @@ export interface WebhookFields extends PartialWebhookFields {
 //#endregion
 
 //#region Typedefs
-
-export type ActivityFlagsString =
-  | 'INSTANCE'
-  | 'JOIN'
-  | 'SPECTATE'
-  | 'JOIN_REQUEST'
-  | 'SYNC'
-  | 'PLAY'
-  | 'PARTY_PRIVACY_FRIENDS'
-  | 'PARTY_PRIVACY_VOICE_CHANNEL'
-  | 'EMBEDDED';
 
 export type ActivitiesOptions = Omit<ActivityOptions, 'shardId'>;
 

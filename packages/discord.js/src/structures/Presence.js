@@ -2,7 +2,7 @@
 
 const Base = require('./Base');
 const { Emoji } = require('./Emoji');
-const ActivityFlags = require('../util/ActivityFlags');
+const ActivityFlagsBitField = require('../util/ActivityFlagsBitField');
 const Util = require('../util/Util');
 
 /**
@@ -244,9 +244,9 @@ class Activity {
 
     /**
      * Flags that describe the activity
-     * @type {Readonly<ActivityFlags>}
+     * @type {Readonly<ActivityFlagsBitField>}
      */
-    this.flags = new ActivityFlags(data.flags).freeze();
+    this.flags = new ActivityFlagsBitField(data.flags).freeze();
 
     /**
      * Emoji for a custom activity

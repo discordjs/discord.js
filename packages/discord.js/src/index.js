@@ -9,7 +9,7 @@ exports.ShardingManager = require('./sharding/ShardingManager');
 exports.WebhookClient = require('./client/WebhookClient');
 
 // Utilities
-exports.ActivityFlags = require('./util/ActivityFlags');
+exports.ActivityFlagsBitField = require('./util/ActivityFlagsBitField');
 exports.ApplicationFlagsBitField = require('./util/ApplicationFlagsBitField');
 exports.BaseManager = require('./managers/BaseManager');
 exports.BitField = require('./util/BitField');

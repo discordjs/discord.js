@@ -1,6 +1,6 @@
 'use strict';
 
-const { GuildSystemChannelFlags } = require('discord-api-types');
+const { GuildSystemChannelFlags } = require('discord-api-types/v9');
 const BitField = require('./BitField');
 
 /**
