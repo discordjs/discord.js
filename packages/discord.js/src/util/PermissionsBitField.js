@@ -20,7 +20,7 @@ class PermissionsBitField extends BitField {
    * Data that can be resolved to give a permission number. This can be:
    * * A string (see {@link PermissionsBitField.Flags})
    * * A permission number
-   * * An instance of Permissions
+   * * An instance of {@link PermissionsBitField}
    * * An Array of PermissionResolvable
    * @typedef {string|bigint|PermissionsBitField|PermissionResolvable[]} PermissionResolvable
    */

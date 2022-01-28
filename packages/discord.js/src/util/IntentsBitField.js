@@ -19,7 +19,7 @@ class IntentsBitField extends BitField {}
  * Data that can be resolved to give a permission number. This can be:
  * * A string (see {@link IntentsBitField.Flags})
  * * An intents flag
- * * An instance of Intents
+ * * An instance of {@link IntentsBitField}
  * * An array of IntentsResolvable
  * @typedef {string|number|IntentsBitField|IntentsResolvable[]} IntentsResolvable
  */
