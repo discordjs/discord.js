@@ -286,7 +286,7 @@ class GuildMemberManager extends CachedManager {
     } else {
       endpoint = Routes.guildMember(this.guild.id, id);
     }
-    const d = await endpoint.patch({ data: _data, reason });
+    const d = await this.client.rest.patch(endpoint, { body: _data, reason });
 
     const clone = this.cache.get(id)?._clone();
     clone?._patch(d);
