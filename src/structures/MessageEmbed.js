@@ -430,7 +430,7 @@ class MessageEmbed {
    */
   setFooter(options, deprecatedIconURL) {
     if (options === null) {
-      this.footer = {};
+      this.footer = undefined;
       return this;
     }
 
