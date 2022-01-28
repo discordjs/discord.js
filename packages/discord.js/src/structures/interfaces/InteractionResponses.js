@@ -28,7 +28,7 @@ class InteractionResponses {
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * Only `SUPPRESS_EMBEDS` and `EPHEMERAL` can be set.
+   * Only `MessageFlags.SuppressEmbeds` and `MessageFlags.Ephemeral` can be set.
    */
 
   /**
