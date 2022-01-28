@@ -1776,12 +1776,13 @@ export class ReactionEmoji extends Emoji {
 
 export class RichPresenceAssets {
   private constructor(activity: Activity, assets: RawRichPresenceAssets);
-  public largeImage: Snowflake | null;
+  public largeImage: string | null;
   public largeText: string | null;
-  public smallImage: Snowflake | null;
+  public smallImage: string | null;
   public smallText: string | null;
   public largeImageURL(options?: ImageURLOptions): string | null;
   public smallImageURL(options?: ImageURLOptions): string | null;
+  private _isURLImage(imageKey: string): boolean;
 }
 
 export class Role extends Base {

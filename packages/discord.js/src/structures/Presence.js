@@ -333,13 +333,13 @@ class RichPresenceAssets {
 
     /**
      * The large image asset's id
-     * @type {?Snowflake}
+     * @type {?string}
      */
     this.largeImage = assets.large_image ?? null;
 
     /**
      * The small image asset's id
-     * @type {?Snowflake}
+     * @type {?string}
      */
     this.smallImage = assets.small_image ?? null;
   }
@@ -351,6 +351,7 @@ class RichPresenceAssets {
    */
   smallImageURL(options = {}) {
     if (!this.smallImage) return null;
+    if (RichPresenceAssets._isURLImage(this.smallImage)) return this.smallImage;
     if (this.smallImage.includes(':')) {
       const [platform, id] = this.smallImage.split(':');
       switch (platform) {
@@ -371,6 +372,7 @@ class RichPresenceAssets {
    */
   largeImageURL(options = {}) {
     if (!this.largeImage) return null;
+    if (RichPresenceAssets._isURLImage(this.largeImage)) return this.largeImage;
     if (this.largeImage.includes(':')) {
       const [platform, id] = this.largeImage.split(':');
       switch (platform) {
@@ -388,6 +390,17 @@ class RichPresenceAssets {
     }
 
     return this.activity.presence.client.rest.cdn.appAsset(this.activity.applicationId, this.largeImage, options);
+  }
+
+  /**
+   * Tests whether an image key is a URL or not
+   * @private
+   * @param {string} imageKey The image key to test
+   * @returns {boolean}
+   */
+  static _isURLImage(imageKey) {
+    const URLRegex = /(https?|ftp|file):\/\//gm;
+    return URLRegex.test(imageKey);
   }
 }
 
