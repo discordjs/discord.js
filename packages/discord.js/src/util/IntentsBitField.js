@@ -17,7 +17,7 @@ class IntentsBitField extends BitField {}
 
 /**
  * Data that can be resolved to give a permission number. This can be:
- * * A string (see {@link IntentsBitField.FLAGS})
+ * * A string (see {@link IntentsBitField.flags})
  * * An intents flag
  * * An instance of Intents
  * * An array of IntentsResolvable
@@ -28,6 +28,6 @@ class IntentsBitField extends BitField {}
  * Numeric WebSocket intents
  * @type {GatewayIntentBits}
  */
-IntentsBitField.FLAGS = GatewayIntentBits;
+IntentsBitField.flags = GatewayIntentBits;
 
 module.exports = IntentsBitField;

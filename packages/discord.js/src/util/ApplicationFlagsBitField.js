@@ -26,6 +26,6 @@ class ApplicationFlagsBitField extends BitField {}
  * Numeric application flags. All available properties:
  * @type {ApplicationFlags}
  */
-ApplicationFlagsBitField.FLAGS = ApplicationFlags;
+ApplicationFlagsBitField.flags = ApplicationFlags;
 
 module.exports = ApplicationFlagsBitField;

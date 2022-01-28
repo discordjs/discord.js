@@ -18,7 +18,7 @@ class Permissions extends BitField {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * * A string (see {@link Permissions.FLAGS})
+   * * A string (see {@link Permissions.flags})
    * * A permission number
    * * An instance of Permissions
    * * An Array of PermissionResolvable
@@ -32,7 +32,7 @@ class Permissions extends BitField {
    * @returns {string[]}
    */
   missing(bits, checkAdmin = true) {
-    return checkAdmin && this.has(this.constructor.FLAGS.ADMINISTRATOR) ? [] : super.missing(bits);
+    return checkAdmin && this.has(this.constructor.flags.Administrator) ? [] : super.missing(bits);
   }
 
   /**
@@ -42,7 +42,7 @@ class Permissions extends BitField {
    * @returns {boolean}
    */
   any(permission, checkAdmin = true) {
-    return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.any(permission);
+    return (checkAdmin && super.has(this.constructor.flags.Administrator)) || super.any(permission);
   }
 
   /**
@@ -52,7 +52,7 @@ class Permissions extends BitField {
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
-    return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.has(permission);
+    return (checkAdmin && super.has(this.constructor.flags.Administrator)) || super.has(permission);
   }
 
   /**
@@ -69,25 +69,25 @@ class Permissions extends BitField {
  * @type {PermissionFlagsBits}
  * @see {@link https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags}
  */
-Permissions.FLAGS = PermissionFlagsBits;
+Permissions.flags = PermissionFlagsBits;
 
 /**
  * Bitfield representing every permission combined
  * @type {bigint}
  */
-Permissions.ALL = Object.values(PermissionFlagsBits).reduce((all, p) => all | p, 0n);
+Permissions.All = Object.values(PermissionFlagsBits).reduce((all, p) => all | p, 0n);
 
 /**
  * Bitfield representing the default permissions for users
  * @type {bigint}
  */
-Permissions.DEFAULT = BigInt(104324673);
+Permissions.Default = BigInt(104324673);
 
 /**
  * Bitfield representing the permissions required for moderators of stage channels
  * @type {bigint}
  */
-Permissions.STAGE_MODERATOR =
+Permissions.StageModerator =
   PermissionFlagsBits.ManageChannels | PermissionFlagsBits.MuteMembers | PermissionFlagsBits.MoveMembers;
 
 Permissions.defaultBit = BigInt(0);

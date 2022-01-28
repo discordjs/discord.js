@@ -26,7 +26,7 @@ class SystemChannelFlagsBitField extends BitField {}
 
 /**
  * Data that can be resolved to give a system channel flag bitfield. This can be:
- * * A string (see {@link SystemChannelFlagsBitField.FLAGS})
+ * * A string (see {@link SystemChannelFlagsBitField.flags})
  * * A system channel flag
  * * An instance of SystemChannelFlagsBitField
  * * An Array of SystemChannelFlagsResolvable
@@ -37,6 +37,6 @@ class SystemChannelFlagsBitField extends BitField {}
  * Numeric system channel flags.
  * @type {GuildSystemChannelFlags}
  */
-SystemChannelFlagsBitField.FLAGS = GuildSystemChannelFlags;
+SystemChannelFlagsBitField.flags = GuildSystemChannelFlags;
 
 module.exports = SystemChannelFlagsBitField;

@@ -186,7 +186,7 @@ export class Activity {
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
 export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
-  public static FLAGS: ActivityFlags;
+  public static flags: ActivityFlags;
   public static resolve(bit?: BitFieldResolvable<ActivityFlagsString, number>): number;
 }
 
@@ -266,7 +266,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
 export type ApplicationResolvable = Application | Activity | Snowflake;
 
 export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
-  public static FLAGS: ApplicationFlags;
+  public static flags: ApplicationFlags;
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
@@ -428,7 +428,7 @@ export class BitField<S extends string, N extends number | bigint = number> {
   public toJSON(): N extends number ? number : string;
   public valueOf(): N;
   public [Symbol.iterator](): IterableIterator<S>;
-  public static FLAGS: EnumLike<unknown, number | bigint>;
+  public static flags: EnumLike<unknown, number | bigint>;
   public static resolve(bit?: BitFieldResolvable<string, number | bigint>): number | bigint;
 }
 
@@ -1266,7 +1266,7 @@ export class IntegrationApplication extends Application {
 export type GatewayIntentsString = keyof typeof GatewayIntentBits;
 
 export class IntentsBitField extends BitField<GatewayIntentsString> {
-  public static FLAGS: GatewayIntentBits;
+  public static flags: GatewayIntentBits;
   public static resolve(bit?: BitFieldResolvable<GatewayIntentsString, number>): number;
 }
 
@@ -1599,7 +1599,7 @@ export class MessageContextMenuCommandInteraction<
 export type MessageFlagsString = keyof typeof MessageFlags;
 
 export class MessageFlagsBitField extends BitField<MessageFlagsString> {
-  public static FLAGS: MessageFlags;
+  public static flags: MessageFlags;
   public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
 }
 
@@ -1719,10 +1719,10 @@ export class Permissions extends BitField<PermissionsString, bigint> {
   public serialize(checkAdmin?: boolean): Record<PermissionsString, boolean>;
   public toArray(): PermissionsString[];
 
-  public static ALL: bigint;
-  public static DEFAULT: bigint;
-  public static STAGE_MODERATOR: bigint;
-  public static FLAGS: typeof PermissionFlagsBits;
+  public static All: bigint;
+  public static Default: bigint;
+  public static StageModerator: bigint;
+  public static flags: typeof PermissionFlagsBits;
   public static resolve(permission?: PermissionResolvable): bigint;
 }
 
@@ -2105,7 +2105,7 @@ export class Sweepers {
 export type SystemChannelFlagsString = keyof typeof GuildSystemChannelFlags;
 
 export class SystemChannelFlagsBitField extends BitField<SystemChannelFlagsString> {
-  public static FLAGS: GuildSystemChannelFlags;
+  public static flags: GuildSystemChannelFlags;
   public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString, number>): number;
 }
 
@@ -2218,7 +2218,7 @@ export class ThreadMember extends Base {
 export type ThreadMemberFlagsString = keyof typeof ThreadMemberFlags;
 
 export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString> {
-  public static FLAGS: ThreadMemberFlags;
+  public static flags: ThreadMemberFlags;
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
@@ -2280,7 +2280,7 @@ export class UserContextMenuCommandInteraction<
 export type UserFlagsString = keyof typeof UserFlags;
 
 export class UserFlagsBitField extends BitField<UserFlagsString> {
-  public static FLAGS: UserFlags;
+  public static flags: UserFlags;
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
@@ -5185,6 +5185,7 @@ export type InternalDiscordGatewayAdapterCreator = (
 // External
 export {
   ActivityType,
+  ActivityFlags,
   ApplicationCommandType,
   ApplicationCommandOptionType,
   ApplicationCommandPermissionType,
@@ -5194,6 +5195,7 @@ export {
   GuildMFALevel,
   GuildNSFWLevel,
   GuildPremiumTier,
+  GatewayIntentBits,
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
   GuildScheduledEventStatus,
@@ -5202,10 +5204,15 @@ export {
   InteractionResponseType,
   InviteTargetType,
   MessageType,
+  MessageFlags,
+  PermissionFlagsBits,
   RESTJSONErrorCodes,
   StageInstancePrivacyLevel,
   StickerType,
   StickerFormatType,
+  GuildSystemChannelFlags,
+  ThreadMemberFlags,
+  UserFlags,
   WebhookType,
 } from 'discord-api-types/v9';
 export {

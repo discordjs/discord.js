@@ -198,13 +198,13 @@ class GuildChannel extends Channel {
    * @private
    */
   memberPermissions(member, checkAdmin) {
-    if (checkAdmin && member.id === this.guild.ownerId) return new Permissions(Permissions.ALL).freeze();
+    if (checkAdmin && member.id === this.guild.ownerId) return new Permissions(Permissions.All).freeze();
 
     const roles = member.roles.cache;
     const permissions = new Permissions(roles.map(role => role.permissions));
 
     if (checkAdmin && permissions.has(PermissionFlagsBits.Administrator)) {
-      return new Permissions(Permissions.ALL).freeze();
+      return new Permissions(Permissions.All).freeze();
     }
 
     const overwrites = this.overwritesFor(member, true, roles);
@@ -228,7 +228,7 @@ class GuildChannel extends Channel {
    */
   rolePermissions(role, checkAdmin) {
     if (checkAdmin && role.permissions.has(PermissionFlagsBits.Administrator)) {
-      return new Permissions(Permissions.ALL).freeze();
+      return new Permissions(Permissions.All).freeze();
     }
 
     const everyoneOverwrites = this.permissionOverwrites.cache.get(this.guild.id);
