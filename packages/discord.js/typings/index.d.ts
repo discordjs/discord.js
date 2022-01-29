@@ -186,7 +186,7 @@ export class Activity {
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
 export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
-  public static Flags: ActivityFlags;
+  public static Flags: typeof ActivityFlags;
   public static resolve(bit?: BitFieldResolvable<ActivityFlagsString, number>): number;
 }
 
@@ -266,7 +266,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
 export type ApplicationResolvable = Application | Activity | Snowflake;
 
 export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
-  public static Flags: ApplicationFlags;
+  public static Flags: typeof ApplicationFlags;
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
@@ -1266,7 +1266,7 @@ export class IntegrationApplication extends Application {
 export type GatewayIntentsString = keyof typeof GatewayIntentBits;
 
 export class IntentsBitField extends BitField<GatewayIntentsString> {
-  public static Flags: GatewayIntentBits;
+  public static Flags: typeof GatewayIntentBits;
   public static resolve(bit?: BitFieldResolvable<GatewayIntentsString, number>): number;
 }
 
@@ -1599,7 +1599,7 @@ export class MessageContextMenuCommandInteraction<
 export type MessageFlagsString = keyof typeof MessageFlags;
 
 export class MessageFlagsBitField extends BitField<MessageFlagsString> {
-  public static Flags: MessageFlags;
+  public static Flags: typeof MessageFlags;
   public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
 }
 
@@ -2108,7 +2108,7 @@ export class Sweepers {
 export type SystemChannelFlagsString = keyof typeof GuildSystemChannelFlags;
 
 export class SystemChannelFlagsBitField extends BitField<SystemChannelFlagsString> {
-  public static Flags: GuildSystemChannelFlags;
+  public static Flags: typeof GuildSystemChannelFlags;
   public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString, number>): number;
 }
 
@@ -2221,7 +2221,7 @@ export class ThreadMember extends Base {
 export type ThreadMemberFlagsString = keyof typeof ThreadMemberFlags;
 
 export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString> {
-  public static Flags: ThreadMemberFlags;
+  public static Flags: typeof ThreadMemberFlags;
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
@@ -2283,7 +2283,7 @@ export class UserContextMenuCommandInteraction<
 export type UserFlagsString = keyof typeof UserFlags;
 
 export class UserFlagsBitField extends BitField<UserFlagsString> {
-  public static Flags: UserFlags;
+  public static Flags: typeof UserFlags;
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
