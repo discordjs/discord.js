@@ -33,5 +33,6 @@ export function hasSublimit(bucketRoute: string, body?: unknown, method?: string
 		return ['name', 'topic'].some((key) => Reflect.has(castedBody, key));
 	}
 
-	return false;
+	// If we are checking if a request has a sublimit on a route not checked above, sublimit all requests to avoid a flood of 429s
+	return true;
 }

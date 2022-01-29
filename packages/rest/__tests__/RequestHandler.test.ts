@@ -166,7 +166,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 		];
 	})
 	.get('/unexpected')
-	.times(2)
+	.times(3)
 	.reply((): nock.ReplyFnResult => {
 		if (unexpected429) {
 			unexpected429 = false;
@@ -310,9 +310,22 @@ test('Handle sublimits', async () => {
 });
 
 test('Handle unexpected 429', async () => {
-	const previous = Date.now();
-	expect(await api.get('/unexpected')).toStrictEqual({ test: true });
-	expect(Date.now()).toBeGreaterThanOrEqual(previous + 1000);
+	const previous = performance.now();
+	let firstResolvedTime: number;
+	let secondResolvedTime: number;
+	const unexepectedSublimit = api.get('/unexpected').then((res) => {
+		firstResolvedTime = performance.now();
+		return res;
+	});
+	const queuedSublimit = api.get('/unexpected').then((res) => {
+		secondResolvedTime = performance.now();
+		return res;
+	});
+
+	expect(await unexepectedSublimit).toStrictEqual({ test: true });
+	expect(await queuedSublimit).toStrictEqual({ test: true });
+	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1000);
+	expect(secondResolvedTime).toBeGreaterThan(firstResolvedTime);
 });
 
 test('Handle unexpected 429 cloudflare', async () => {
