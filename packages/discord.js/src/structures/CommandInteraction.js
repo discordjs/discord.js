@@ -137,7 +137,9 @@ class CommandInteraction extends Interaction {
    * @typedef {Object} CommandInteractionOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
-   * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandType.Integer} or {@link ApplicationCommandType.Number} option
+   * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a 
+   * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandType.Integer} or 
+   * {@link ApplicationCommandType.Number} option
    * @property {string|number|boolean} [value] The value of the option
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)
