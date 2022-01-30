@@ -31,6 +31,12 @@ class AutocompleteInteraction extends Interaction {
     this.commandName = data.data.name;
 
     /**
+     * The invoked application command's type
+     * @type {ApplicationCommandType.ChatInput}
+     */
+    this.commandType = data.data.type;
+
+    /**
      * Whether this interaction has already received a response
      * @type {boolean}
      */

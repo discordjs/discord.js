@@ -326,6 +326,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
+  public commandType: ApplicationCommandType;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public replied: boolean;
@@ -705,6 +706,7 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
+  public commandType: ApplicationCommandType.ChatInput;
   public responded: boolean;
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
   public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
@@ -785,7 +787,6 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
     | 'getSubcommand'
   >;
   public targetId: Snowflake;
-  public targetType: Exclude<ApplicationCommandType, ApplicationCommandType.ChatInput>;
   public inGuild(): this is ContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ContextMenuCommandInteraction<'cached'>;
   public inRawGuild(): this is ContextMenuCommandInteraction<'raw'>;
