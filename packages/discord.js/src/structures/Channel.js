@@ -182,6 +182,14 @@ class Channel extends Base {
   }
 
   /**
+   * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link GroupDMChannel}).
+   * @returns {boolean}
+   */
+  isDMBased() {
+    return [ChannelType.DM, ChannelType.GroupDM].includes(this.type);
+  }
+
+  /**
    * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
    * @returns {boolean}
    */

@@ -503,6 +503,7 @@ export abstract class Channel extends Base {
   public isThread(): this is ThreadChannel;
   public isStage(): this is StageChannel;
   public isTextBased(): this is TextBasedChannel;
+  public isDMBased(): this is PartialGroupDMChannel | DMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
   public toString(): ChannelMention;
 }
@@ -1688,6 +1689,7 @@ export class OAuth2Guild extends BaseGuild {
 
 export class PartialGroupDMChannel extends Channel {
   private constructor(client: Client, data: RawPartialGroupDMChannelData);
+  public type: ChannelType.GroupDM;
   public name: string | null;
   public icon: string | null;
   public recipients: PartialRecipient[];
