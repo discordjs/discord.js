@@ -2613,7 +2613,6 @@ export const Constants: {
   WSEvents: {
     [K in WSEventType]: K;
   };
-  Status: Status;
   ThreadChannelTypes: ThreadChannelType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
