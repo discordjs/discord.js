@@ -29,7 +29,7 @@ const { DefaultRestOptions } = require('@discordjs/rest');
  * important usage information, as partials require you to put checks in place when handling data.
  * @property {boolean} [failIfNotExists=true] Default value for {@link ReplyMessageOptions#failIfNotExists}
  * @property {PresenceData} [presence={}] Presence data to use upon login
- * @property {IntentsResolvable} intents Intents to enable for this connection
+ * @property {GatewayIntentBits} intents Intents to enable for this connection
  * @property {number} [waitGuildTimeout=15_000] Time in milliseconds that Clients with the GUILDS intent should wait for
  * missing guilds to be received before starting the bot. If not specified, the default is 15 seconds.
  * @property {SweeperOptions} [sweepers={}] Options for cache sweeping
