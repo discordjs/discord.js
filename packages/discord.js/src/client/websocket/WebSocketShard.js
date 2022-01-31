@@ -4,7 +4,8 @@ const EventEmitter = require('node:events');
 const { setTimeout, setInterval, clearTimeout, clearInterval } = require('node:timers');
 const { GatewayIntentBits } = require('discord-api-types/v9');
 const WebSocket = require('../../WebSocket');
-const { Status, Events, ShardEvents, Opcodes, WSEvents } = require('../../util/Constants');
+const { Status, ShardEvents, Opcodes, WSEvents } = require('../../util/Constants');
+const Events = require('../../util/Events');
 const IntentsBitField = require('../../util/IntentsBitField');
 
 const STATUS_KEYS = Object.keys(Status);
@@ -294,10 +295,10 @@ class WebSocketShard extends EventEmitter {
     try {
       packet = WebSocket.unpack(raw);
     } catch (err) {
-      this.manager.client.emit(Events.SHARD_ERROR, err, this.id);
+      this.manager.client.emit(Events.ShardError, err, this.id);
       return;
     }
-    this.manager.client.emit(Events.RAW, packet, this.id);
+    this.manager.client.emit(Events.Raw, packet, this.id);
     if (packet.op === Opcodes.DISPATCH) this.manager.emit(packet.t, packet.d, this.id);
     this.onPacket(packet);
   }
@@ -317,7 +318,7 @@ class WebSocketShard extends EventEmitter {
      * @param {Error} error The encountered error
      * @param {number} shardId The shard that encountered this error
      */
-    this.manager.client.emit(Events.SHARD_ERROR, error, this.id);
+    this.manager.client.emit(Events.ShardError, error, this.id);
   }
 
   /**
@@ -671,7 +672,7 @@ class WebSocketShard extends EventEmitter {
     }
 
     this.connection.send(WebSocket.pack(data), err => {
-      if (err) this.manager.client.emit(Events.SHARD_ERROR, err, this.id);
+      if (err) this.manager.client.emit(Events.ShardError, err, this.id);
     });
   }
 

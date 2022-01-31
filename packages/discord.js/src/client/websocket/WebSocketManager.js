@@ -8,7 +8,8 @@ const { Routes, RPCErrorCodes } = require('discord-api-types/v9');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error } = require('../../errors');
-const { Events, ShardEvents, Status, WSCodes, WSEvents } = require('../../util/Constants');
+const { ShardEvents, Status, WSCodes, WSEvents } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 const BeforeReadyWhitelist = [
   WSEvents.READY,
@@ -118,7 +119,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   debug(message, shard) {
-    this.client.emit(Events.DEBUG, `[WS => ${shard ? `Shard ${shard.id}` : 'Manager'}] ${message}`);
+    this.client.emit(Events.Debug, `[WS => ${shard ? `Shard ${shard.id}` : 'Manager'}] ${message}`);
   }
 
   /**
@@ -183,7 +184,7 @@ class WebSocketManager extends EventEmitter {
          * @param {number} id The shard id that turned ready
          * @param {?Set<Snowflake>} unavailableGuilds Set of unavailable guild ids, if any
          */
-        this.client.emit(Events.SHARD_READY, shard.id, unavailableGuilds);
+        this.client.emit(Events.ShardReady, shard.id, unavailableGuilds);
 
         if (!this.shardQueue.size) this.reconnecting = false;
         this.checkShardsReady();
@@ -197,7 +198,7 @@ class WebSocketManager extends EventEmitter {
            * @param {CloseEvent} event The WebSocket close event
            * @param {number} id The shard id that disconnected
            */
-          this.client.emit(Events.SHARD_DISCONNECT, event, shard.id);
+          this.client.emit(Events.ShardDisconnect, event, shard.id);
           this.debug(WSCodes[event.code], shard);
           return;
         }
@@ -212,7 +213,7 @@ class WebSocketManager extends EventEmitter {
          * @event Client#shardReconnecting
          * @param {number} id The shard id that is attempting to reconnect
          */
-        this.client.emit(Events.SHARD_RECONNECTING, shard.id);
+        this.client.emit(Events.ShardReconnecting, shard.id);
 
         this.shardQueue.add(shard);
 
@@ -226,13 +227,13 @@ class WebSocketManager extends EventEmitter {
       });
 
       shard.on(ShardEvents.INVALID_SESSION, () => {
-        this.client.emit(Events.SHARD_RECONNECTING, shard.id);
+        this.client.emit(Events.ShardReconnecting, shard.id);
       });
 
       shard.on(ShardEvents.DESTROYED, () => {
         this.debug('Shard was destroyed but no WebSocket connection was present! Reconnecting...', shard);
 
-        this.client.emit(Events.SHARD_RECONNECTING, shard.id);
+        this.client.emit(Events.ShardReconnecting, shard.id);
 
         this.shardQueue.add(shard);
         this.reconnect();
@@ -285,14 +286,14 @@ class WebSocketManager extends EventEmitter {
         return this.reconnect();
       }
       // If we get an error at this point, it means we cannot reconnect anymore
-      if (this.client.listenerCount(Events.INVALIDATED)) {
+      if (this.client.listenerCount(Events.Invalidated)) {
         /**
          * Emitted when the client's session becomes invalidated.
          * You are expected to handle closing the process gracefully and preventing a boot loop
          * if you are listening to this event.
          * @event Client#invalidated
          */
-        this.client.emit(Events.INVALIDATED);
+        this.client.emit(Events.Invalidated);
         // Destroy just the shards. This means you have to handle the cleanup yourself
         this.destroy();
       } else {
@@ -381,7 +382,7 @@ class WebSocketManager extends EventEmitter {
      * @event Client#ready
      * @param {Client} client The client
      */
-    this.client.emit(Events.CLIENT_READY, this.client);
+    this.client.emit(Events.ClientReady, this.client);
 
     this.handlePacket();
   }

@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class GuildBanAdd extends Action {
   handle(data) {
@@ -13,7 +13,7 @@ class GuildBanAdd extends Action {
      * @event Client#guildBanAdd
      * @param {GuildBan} ban The ban that occurred
      */
-    if (guild) client.emit(Events.GUILD_BAN_ADD, guild.bans._add(data));
+    if (guild) client.emit(Events.GuildBanAdd, guild.bans._add(data));
   }
 }
 

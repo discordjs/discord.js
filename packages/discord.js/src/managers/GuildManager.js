@@ -12,8 +12,8 @@ const { GuildMember } = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const OAuth2Guild = require('../structures/OAuth2Guild');
 const { Role } = require('../structures/Role');
-const { Events } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
+const Events = require('../util/Events');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const { resolveColor } = require('../util/Util');
@@ -222,16 +222,16 @@ class GuildManager extends CachedManager {
       const handleGuild = guild => {
         if (guild.id === data.id) {
           clearTimeout(timeout);
-          this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+          this.client.removeListener(Events.GuildCreate, handleGuild);
           this.client.decrementMaxListeners();
           resolve(guild);
         }
       };
       this.client.incrementMaxListeners();
-      this.client.on(Events.GUILD_CREATE, handleGuild);
+      this.client.on(Events.GuildCreate, handleGuild);
 
       const timeout = setTimeout(() => {
-        this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+        this.client.removeListener(Events.GuildCreate, handleGuild);
         this.client.decrementMaxListeners();
         resolve(this.client.guilds._add(data));
       }, 10_000).unref();

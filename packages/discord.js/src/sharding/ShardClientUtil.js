@@ -2,7 +2,7 @@
 
 const process = require('node:process');
 const { Error } = require('../errors');
-const { Events } = require('../util/Constants');
+const Events = require('../util/Events');
 const Util = require('../util/Util');
 
 /**
@@ -216,7 +216,7 @@ class ShardClientUtil {
        * @event Client#error
        * @param {Error} error The error encountered
        */
-      this.client.emit(Events.ERROR, error);
+      this.client.emit(Events.Error, error);
     });
   }
 
@@ -231,7 +231,7 @@ class ShardClientUtil {
       this._singleton = new this(client, mode);
     } else {
       client.emit(
-        Events.WARN,
+        Events.Warn,
         'Multiple clients created in child process/worker; only the first will handle sharding helpers.',
       );
     }

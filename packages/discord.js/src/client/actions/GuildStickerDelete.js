@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class GuildStickerDeleteAction extends Action {
   handle(sticker) {
@@ -11,7 +11,7 @@ class GuildStickerDeleteAction extends Action {
      * @event Client#stickerDelete
      * @param {Sticker} sticker The sticker that was deleted
      */
-    this.client.emit(Events.GUILD_STICKER_DELETE, sticker);
+    this.client.emit(Events.GuildStickerDelete, sticker);
     return { sticker };
   }
 }

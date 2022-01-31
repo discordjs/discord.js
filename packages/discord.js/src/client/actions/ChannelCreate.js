@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class ChannelCreateAction extends Action {
   handle(data) {
@@ -14,7 +14,7 @@ class ChannelCreateAction extends Action {
        * @event Client#channelCreate
        * @param {GuildChannel} channel The channel that was created
        */
-      client.emit(Events.CHANNEL_CREATE, channel);
+      client.emit(Events.ChannelCreate, channel);
     }
     return { channel };
   }

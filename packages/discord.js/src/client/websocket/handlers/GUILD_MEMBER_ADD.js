@@ -1,6 +1,7 @@
 'use strict';
 
-const { Events, Status } = require('../../../util/Constants');
+const { Status } = require('../../../util/Constants');
+const Events = require('../../../util/Events');
 
 module.exports = (client, { d: data }, shard) => {
   const guild = client.guilds.cache.get(data.guild_id);
@@ -13,7 +14,7 @@ module.exports = (client, { d: data }, shard) => {
        * @event Client#guildMemberAdd
        * @param {GuildMember} member The member that has joined a guild
        */
-      client.emit(Events.GUILD_MEMBER_ADD, member);
+      client.emit(Events.GuildMemberAdd, member);
     }
   }
 };

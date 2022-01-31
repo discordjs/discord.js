@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class InviteCreateAction extends Action {
   handle(data) {
@@ -20,7 +20,7 @@ class InviteCreateAction extends Action {
      * @event Client#inviteCreate
      * @param {Invite} invite The invite that was created
      */
-    client.emit(Events.INVITE_CREATE, invite);
+    client.emit(Events.InviteCreate, invite);
     return { invite };
   }
 }

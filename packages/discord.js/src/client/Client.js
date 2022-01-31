@@ -22,8 +22,9 @@ const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
-const { Events, InviteScopes, Status } = require('../util/Constants');
+const { InviteScopes, Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
+const Events = require('../util/Events');
 const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
 const PermissionsBitField = require('../util/PermissionsBitField');
@@ -213,7 +214,7 @@ class Client extends BaseClient {
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.rest.setToken(token);
     this.emit(
-      Events.DEBUG,
+      Events.Debug,
       `Provided token: ${token
         .split('.')
         .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
@@ -224,7 +225,7 @@ class Client extends BaseClient {
       this.options.ws.presence = this.presence._parse(this.options.presence);
     }
 
-    this.emit(Events.DEBUG, 'Preparing to connect to the gateway...');
+    this.emit(Events.Debug, 'Preparing to connect to the gateway...');
 
     try {
       await this.ws.connect();

@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class MessageDeleteAction extends Action {
   handle(data) {
@@ -19,7 +19,7 @@ class MessageDeleteAction extends Action {
          * @event Client#messageDelete
          * @param {Message} message The deleted message
          */
-        client.emit(Events.MESSAGE_DELETE, message);
+        client.emit(Events.MessageDelete, message);
       }
     }
 

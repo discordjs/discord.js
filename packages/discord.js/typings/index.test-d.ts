@@ -98,6 +98,7 @@ import {
   ActionRowComponent,
   InteractionResponseFields,
   ThreadChannelType,
+  Events,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -854,7 +855,7 @@ reactionCollector.on('dispose', (...args) => {
 
 // Make sure the properties are typed correctly, and that no backwards properties
 // (K -> V and V -> K) exist:
-expectType<'messageCreate'>(Constants.Events.MESSAGE_CREATE);
+expectType<'messageCreate'>(Events.MessageCreate);
 expectType<'close'>(Constants.ShardEvents.CLOSE);
 expectType<1>(Constants.Status.CONNECTING);
 expectType<0>(Constants.Opcodes.DISPATCH);
