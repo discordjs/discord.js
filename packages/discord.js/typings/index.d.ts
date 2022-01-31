@@ -2615,7 +2615,6 @@ export const Constants: {
   WSEvents: {
     [K in WSEventType]: K;
   };
-  Colors: ConstantsColors;
   Status: ConstantsStatus;
   Opcodes: ConstantsOpcodes;
   ThreadChannelTypes: ThreadChannelType[];
@@ -3658,37 +3657,37 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
 }
 
-export interface ConstantsColors {
-  DEFAULT: 0x000000;
-  WHITE: 0xffffff;
-  AQUA: 0x1abc9c;
-  GREEN: 0x57f287;
-  BLUE: 0x3498db;
-  YELLOW: 0xfee75c;
-  PURPLE: 0x9b59b6;
-  LUMINOUS_VIVID_PINK: 0xe91e63;
-  FUCHSIA: 0xeb459e;
-  GOLD: 0xf1c40f;
-  ORANGE: 0xe67e22;
-  RED: 0xed4245;
-  GREY: 0x95a5a6;
-  NAVY: 0x34495e;
-  DARK_AQUA: 0x11806a;
-  DARK_GREEN: 0x1f8b4c;
-  DARK_BLUE: 0x206694;
-  DARK_PURPLE: 0x71368a;
-  DARK_VIVID_PINK: 0xad1457;
-  DARK_GOLD: 0xc27c0e;
-  DARK_ORANGE: 0xa84300;
-  DARK_RED: 0x992d22;
-  DARK_GREY: 0x979c9f;
-  DARKER_GREY: 0x7f8c8d;
-  LIGHT_GREY: 0xbcc0c0;
-  DARK_NAVY: 0x2c3e50;
-  BLURPLE: 0x5865f2;
-  GREYPLE: 0x99aab5;
-  DARK_BUT_NOT_BLACK: 0x2c2f33;
-  NOT_QUITE_BLACK: 0x23272a;
+export enum Colors {
+  Default = 0x000000,
+  White = 0xffffff,
+  Aqua = 0x1abc9c,
+  Green = 0x57f287,
+  Blue = 0x3498db,
+  Yellow = 0xfee75c,
+  Purple = 0x9b59b6,
+  LuminousVividPink = 0xe91e63,
+  Fuchsia = 0xeb459e,
+  Gold = 0xf1c40f,
+  Orange = 0xe67e22,
+  Red = 0xed4245,
+  Grey = 0x95a5a6,
+  Navy = 0x34495e,
+  DarkAqua = 0x11806a,
+  DarkGreen = 0x1f8b4c,
+  DarkBlue = 0x206694,
+  DarkPurple = 0x71368a,
+  DarkVividPink = 0xad1457,
+  DarkGold = 0xc27c0e,
+  DarkOrange = 0xa84300,
+  DarkRed = 0x992d22,
+  DarkGrey = 0x979c9f,
+  DarkerGrey = 0x7f8c8d,
+  LightGrey = 0xbcc0c0,
+  DarkNavy = 0x2c3e50,
+  Blurple = 0x5865f2,
+  Greyple = 0x99aab5,
+  DarkButNotBlack = 0x2c2f33,
+  NotQuiteBlack = 0x23272a,
 }
 
 export interface ConstantsEvents {
