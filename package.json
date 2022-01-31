@@ -44,7 +44,7 @@
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^7.0.4",
 		"prettier": "^2.5.1",
-		"turbo": "1.0.28"
+		"turbo": "1.1.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
@@ -52,51 +52,5 @@
 	"workspaces": [
 		"packages/*"
 	],
-	"turbo": {
-		"baseBranch": "origin/main",
-		"pipeline": {
-			"build": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": [
-					"dist/**",
-					"docs/docs.json"
-				]
-			},
-			"test": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": [
-					"coverage/**"
-				]
-			},
-			"lint": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": []
-			},
-			"format": {
-				"outputs": []
-			},
-			"docs": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": [
-					"docs/docs.json"
-				]
-			},
-			"changelog": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": [
-					"CHANGELOG.md"
-				]
-			}
-		}
-	}
+	"packageManager": "yarn@1.22.17"
 }
