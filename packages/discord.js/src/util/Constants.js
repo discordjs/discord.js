@@ -16,55 +16,6 @@ exports.WSCodes = {
 };
 
 /**
- * The current status of the client. Here are the available statuses:
- * * READY: 0
- * * CONNECTING: 1
- * * RECONNECTING: 2
- * * IDLE: 3
- * * NEARLY: 4
- * * DISCONNECTED: 5
- * * WAITING_FOR_GUILDS: 6
- * * IDENTIFYING: 7
- * * RESUMING: 8
- * @typedef {number} Status
- */
-exports.Status = {
-  READY: 0,
-  CONNECTING: 1,
-  RECONNECTING: 2,
-  IDLE: 3,
-  NEARLY: 4,
-  DISCONNECTED: 5,
-  WAITING_FOR_GUILDS: 6,
-  IDENTIFYING: 7,
-  RESUMING: 8,
-};
-
-exports.Opcodes = {
-  DISPATCH: 0,
-  HEARTBEAT: 1,
-  IDENTIFY: 2,
-  STATUS_UPDATE: 3,
-  VOICE_STATE_UPDATE: 4,
-  VOICE_GUILD_PING: 5,
-  RESUME: 6,
-  RECONNECT: 7,
-  REQUEST_GUILD_MEMBERS: 8,
-  INVALID_SESSION: 9,
-  HELLO: 10,
-  HEARTBEAT_ACK: 11,
-};
-
-exports.ShardEvents = {
-  CLOSE: 'close',
-  DESTROYED: 'destroyed',
-  INVALID_SESSION: 'invalidSession',
-  READY: 'ready',
-  RESUMED: 'resumed',
-  ALL_READY: 'allReady',
-};
-
-/**
  * The type of a WebSocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED

@@ -1,8 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const { Status } = require('../../util/Constants');
 const Events = require('../../util/Events');
+const Status = require('../../util/Status');
 
 class GuildMemberRemoveAction extends Action {
   handle(data, shard) {
@@ -19,7 +19,7 @@ class GuildMemberRemoveAction extends Action {
          * @event Client#guildMemberRemove
          * @param {GuildMember} member The member that has left/been kicked from the guild
          */
-        if (shard.status === Status.READY) client.emit(Events.GuildMemberRemove, member);
+        if (shard.status === Status.Ready) client.emit(Events.GuildMemberRemove, member);
       }
       guild.voiceStates.cache.delete(data.user.id);
     }

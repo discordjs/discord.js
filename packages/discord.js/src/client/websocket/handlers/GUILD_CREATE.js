@@ -1,7 +1,7 @@
 'use strict';
 
-const { Status } = require('../../../util/Constants');
 const Events = require('../../../util/Events');
+const Status = require('../../../util/Status');
 
 module.exports = (client, { d: data }, shard) => {
   let guild = client.guilds.cache.get(data.id);
@@ -14,7 +14,7 @@ module.exports = (client, { d: data }, shard) => {
     // A new guild
     data.shardId = shard.id;
     guild = client.guilds._add(data);
-    if (client.ws.status === Status.READY) {
+    if (client.ws.status === Status.Ready) {
       /**
        * Emitted whenever the client joins a guild.
        * @event Client#guildCreate

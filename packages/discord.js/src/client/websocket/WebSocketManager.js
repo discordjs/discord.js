@@ -8,8 +8,10 @@ const { Routes, RPCErrorCodes } = require('discord-api-types/v9');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error } = require('../../errors');
-const { ShardEvents, Status, WSCodes, WSEvents } = require('../../util/Constants');
+const { WSCodes, WSEvents } = require('../../util/Constants');
 const Events = require('../../util/Events');
+const ShardEvents = require('../../util/ShardEvents');
+const Status = require('../../util/Status');
 
 const BeforeReadyWhitelist = [
   WSEvents.READY,
@@ -85,7 +87,7 @@ class WebSocketManager extends EventEmitter {
      * The current status of this WebSocketManager
      * @type {Status}
      */
-    this.status = Status.IDLE;
+    this.status = Status.Idle;
 
     /**
      * If this manager was destroyed. It will prevent shards from reconnecting
@@ -177,7 +179,7 @@ class WebSocketManager extends EventEmitter {
     this.shardQueue.delete(shard);
 
     if (!shard.eventsAttached) {
-      shard.on(ShardEvents.ALL_READY, unavailableGuilds => {
+      shard.on(ShardEvents.AllReady, unavailableGuilds => {
         /**
          * Emitted when a shard turns ready.
          * @event Client#shardReady
@@ -190,7 +192,7 @@ class WebSocketManager extends EventEmitter {
         this.checkShardsReady();
       });
 
-      shard.on(ShardEvents.CLOSE, event => {
+      shard.on(ShardEvents.Close, event => {
         if (event.code === 1_000 ? this.destroyed : UNRECOVERABLE_CLOSE_CODES.includes(event.code)) {
           /**
            * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
@@ -226,11 +228,11 @@ class WebSocketManager extends EventEmitter {
         }
       });
 
-      shard.on(ShardEvents.INVALID_SESSION, () => {
+      shard.on(ShardEvents.InvalidSession, () => {
         this.client.emit(Events.ShardReconnecting, shard.id);
       });
 
-      shard.on(ShardEvents.DESTROYED, () => {
+      shard.on(ShardEvents.Destroyed, () => {
         this.debug('Shard was destroyed but no WebSocket connection was present! Reconnecting...', shard);
 
         this.client.emit(Events.ShardReconnecting, shard.id);
@@ -273,7 +275,7 @@ class WebSocketManager extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async reconnect() {
-    if (this.reconnecting || this.status !== Status.READY) return false;
+    if (this.reconnecting || this.status !== Status.Ready) return false;
     this.reconnecting = true;
     try {
       await this.createShards();
@@ -334,7 +336,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   handlePacket(packet, shard) {
-    if (packet && this.status !== Status.READY) {
+    if (packet && this.status !== Status.Ready) {
       if (!BeforeReadyWhitelist.includes(packet.t)) {
         this.packetQueue.push({ packet, shard });
         return false;
@@ -360,7 +362,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   checkShardsReady() {
-    if (this.status === Status.READY) return;
+    if (this.status === Status.Ready) return;
     if (this.shards.size !== this.totalShards || this.shards.some(s => s.status !== Status.READY)) {
       return;
     }
@@ -373,7 +375,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   triggerClientReady() {
-    this.status = Status.READY;
+    this.status = Status.Ready;
 
     this.client.readyTimestamp = Date.now();
 

@@ -2,7 +2,7 @@
 
 const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
-const { Opcodes } = require('../util/Constants');
+const Opcodes = require('../util/Opcodes');
 
 /**
  * Represents the client's presence.
@@ -22,13 +22,13 @@ class ClientPresence extends Presence {
     const packet = this._parse(presence);
     this._patch(packet);
     if (typeof presence.shardId === 'undefined') {
-      this.client.ws.broadcast({ op: Opcodes.STATUS_UPDATE, d: packet });
+      this.client.ws.broadcast({ op: Opcodes.StatusUpdate, d: packet });
     } else if (Array.isArray(presence.shardId)) {
       for (const shardId of presence.shardId) {
-        this.client.ws.shards.get(shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
+        this.client.ws.shards.get(shardId).send({ op: Opcodes.StatusUpdate, d: packet });
       }
     } else {
-      this.client.ws.shards.get(presence.shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
+      this.client.ws.shards.get(presence.shardId).send({ op: Opcodes.StatusUpdate, d: packet });
     }
     return this;
   }

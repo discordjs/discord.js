@@ -2610,12 +2610,10 @@ export const Constants: {
     4010: 'SHARDING_INVALID';
     4011: 'SHARDING_REQUIRED';
   };
-  ShardEvents: ConstantsShardEvents;
   WSEvents: {
     [K in WSEventType]: K;
   };
-  Status: ConstantsStatus;
-  Opcodes: ConstantsOpcodes;
+  Status: Status;
   ThreadChannelTypes: ThreadChannelType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
@@ -3760,36 +3758,37 @@ export enum Events {
   GuildScheduledEventUserRemove = 'guildScheduledEventUserRemove',
 }
 
-export interface ConstantsOpcodes {
-  DISPATCH: 0;
-  HEARTBEAT: 1;
-  IDENTIFY: 2;
-  STATUS_UPDATE: 3;
-  VOICE_STATE_UPDATE: 4;
-  VOICE_GUILD_PING: 5;
-  RESUME: 6;
-  RECONNECT: 7;
-  REQUEST_GUILD_MEMBERS: 8;
-  INVALID_SESSION: 9;
-  HELLO: 10;
-  HEARTBEAT_ACK: 11;
+export enum Opcodes {
+  Dispatch = 0,
+  Heartbeat = 1,
+  Identify = 2,
+  StatusUpdate = 3,
+  VoiceStateUpdate = 4,
+  VoiceGuildPing = 5,
+  Resume = 6,
+  Reconnect = 7,
+  RequestGuildMembers = 8,
+  InvalidSession = 9,
+  Hello = 10,
+  HeartbeatAck = 11,
 }
 
-export interface ConstantsShardEvents {
-  CLOSE: 'close';
-  DESTROYED: 'destroyed';
-  INVALID_SESSION: 'invalidSession';
-  READY: 'ready';
-  RESUMED: 'resumed';
+export enum ShardEvents {
+  Close = 'close',
+  Destroyed = 'destroyed',
+  InvalidSession = 'invalidSession',
+  Ready = 'ready',
+  Resumed = 'resumed',
+  AllReady = 'allReady',
 }
 
-export interface ConstantsStatus {
-  READY: 0;
-  CONNECTING: 1;
-  RECONNECTING: 2;
-  IDLE: 3;
-  NEARLY: 4;
-  DISCONNECTED: 5;
+export enum Status {
+  Ready = 0,
+  Connecting = 1,
+  Reconnecting = 2,
+  Idle = 3,
+  Nearly = 4,
+  Disconnected = 5,
 }
 
 export interface CreateGuildScheduledEventInviteURLOptions extends CreateInviteOptions {
@@ -4867,7 +4866,7 @@ export interface StartThreadOptions {
   rateLimitPerUser?: number;
 }
 
-export type Status = number;
+export type ClientStatus = number;
 
 export type StickerResolvable = Sticker | Snowflake;
 

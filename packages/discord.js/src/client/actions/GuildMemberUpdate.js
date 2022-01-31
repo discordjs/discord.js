@@ -1,8 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const { Status } = require('../../util/Constants');
 const Events = require('../../util/Events');
+const Status = require('../../util/Status');
 
 class GuildMemberUpdateAction extends Action {
   handle(data, shard) {
@@ -27,7 +27,7 @@ class GuildMemberUpdateAction extends Action {
          * @param {GuildMember} oldMember The member before the update
          * @param {GuildMember} newMember The member after the update
          */
-        if (shard.status === Status.READY && !member.equals(old)) client.emit(Events.GuildMemberUpdate, old, member);
+        if (shard.status === Status.Ready && !member.equals(old)) client.emit(Events.GuildMemberUpdate, old, member);
       } else {
         const newMember = guild.members._add(data);
         /**
