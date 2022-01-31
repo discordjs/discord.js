@@ -90,6 +90,7 @@ class MessageComponentInteraction extends Interaction {
   followUp() {}
   deferUpdate() {}
   update() {}
+  isRepliable() {}
 }
 
 InteractionResponses.applyToClass(MessageComponentInteraction);

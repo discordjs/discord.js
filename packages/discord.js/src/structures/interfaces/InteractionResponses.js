@@ -225,6 +225,14 @@ class InteractionResponses {
     return options.fetchReply ? this.fetchReply() : undefined;
   }
 
+  /**
+   * Indicates whether this interaction can be replied to.
+   * @returns {boolean}
+   */
+  isRepliable() {
+    return !(this.deferred || this.replied);
+  }
+
   static applyToClass(structure, ignore = []) {
     const props = [
       'deferReply',
@@ -235,6 +243,7 @@ class InteractionResponses {
       'followUp',
       'deferUpdate',
       'update',
+      'isRepliable',
     ];
 
     for (const prop of props) {

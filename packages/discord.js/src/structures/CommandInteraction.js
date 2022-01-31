@@ -187,6 +187,7 @@ class CommandInteraction extends Interaction {
   editReply() {}
   deleteReply() {}
   followUp() {}
+  isRepliable() {}
 }
 
 InteractionResponses.applyToClass(CommandInteraction, ['deferUpdate', 'update']);
