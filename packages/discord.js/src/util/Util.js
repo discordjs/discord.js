@@ -4,7 +4,7 @@ const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v9');
 const fetch = require('node-fetch');
-const { Colors } = require('./Constants');
+const Colors = require('./Colors');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
 
@@ -419,37 +419,37 @@ class Util extends null {
    * [255, 0, 255] // purple
    * ```
    * or one of the following strings:
-   * - `DEFAULT`
-   * - `WHITE`
-   * - `AQUA`
-   * - `GREEN`
-   * - `BLUE`
-   * - `YELLOW`
-   * - `PURPLE`
-   * - `LUMINOUS_VIVID_PINK`
-   * - `FUCHSIA`
-   * - `GOLD`
-   * - `ORANGE`
-   * - `RED`
-   * - `GREY`
-   * - `NAVY`
-   * - `DARK_AQUA`
-   * - `DARK_GREEN`
-   * - `DARK_BLUE`
-   * - `DARK_PURPLE`
-   * - `DARK_VIVID_PINK`
-   * - `DARK_GOLD`
-   * - `DARK_ORANGE`
-   * - `DARK_RED`
-   * - `DARK_GREY`
-   * - `DARKER_GREY`
-   * - `LIGHT_GREY`
-   * - `DARK_NAVY`
-   * - `BLURPLE`
-   * - `GREYPLE`
-   * - `DARK_BUT_NOT_BLACK`
-   * - `NOT_QUITE_BLACK`
-   * - `RANDOM`
+   * - `Default`
+   * - `White`
+   * - `Aqua`
+   * - `Green`
+   * - `Blue`
+   * - `Yellow`
+   * - `Purple`
+   * - `LuminousVividPink`
+   * - `Fuchsia`
+   * - `Gold`
+   * - `Orange`
+   * - `Red`
+   * - `Grey`
+   * - `Navy`
+   * - `DarkAqua`
+   * - `DarkGreen`
+   * - `DarkBlue`
+   * - `DarkPurple`
+   * - `DarkVividPink`
+   * - `DarkGold`
+   * - `DarkOrange`
+   * - `DarkRed`
+   * - `DarkGrey`
+   * - `DarkerGrey`
+   * - `LightGrey`
+   * - `DarkNavy`
+   * - `Blurple`
+   * - `Greyple`
+   * - `DarkButNotBlack`
+   * - `NotQuiteBlack`
+   * - `Random`
    * @typedef {string|number|number[]} ColorResolvable
    */
 
@@ -460,8 +460,8 @@ class Util extends null {
    */
   static resolveColor(color) {
     if (typeof color === 'string') {
-      if (color === 'RANDOM') return Math.floor(Math.random() * (0xffffff + 1));
-      if (color === 'DEFAULT') return 0;
+      if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
+      if (color === 'Default') return 0;
       color = Colors[color] ?? parseInt(color.replace('#', ''), 16);
     } else if (Array.isArray(color)) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
