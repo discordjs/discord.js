@@ -263,7 +263,11 @@ class GuildMember extends Base {
    * @readonly
    */
   get moderatable() {
-    return this.manageable && (this.guild.me?.permissions.has(PermissionFlagsBits.ModerateMembers) ?? false);
+    return (
+      this.manageable &&
+      !this.permissions.has(PermissionFlagsBits.Administrator) &&
+      (this.guild.me?.permissions.has(PermissionFlagsBits.ModerateMembers) ?? false)
+    );
   }
 
   /**
