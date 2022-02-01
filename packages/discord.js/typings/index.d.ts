@@ -5196,5 +5196,7 @@ export {
   UnsafeSelectMenuOption,
   ActionRowComponent,
   UnsafeEmbed,
+  Modal,
+  InputTextComponent,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';

@@ -1,6 +1,7 @@
 'use strict';
 
 const Interaction = require('./Interaction');
+const ModalSubmitFieldsResolver = require('./ModalSubmitFieldsResolver');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 
 /**
@@ -24,9 +25,15 @@ class ModalSubmitInteraction extends Interaction {
 
     /**
      * The components within the modal
-     * @type {Array<ActionRow<ModalActionRowComponent>>}
+     * @type {Array<ActionRow<PartialInputTextData>>}
      */
     this.components = data.data.components?.map(c => ModalSubmitInteraction.transformComponent(c)) ?? [];
+
+    /**
+     * The fields within the modal
+     * @type {ModalSubmitFieldsResolver}
+     */
+    this.fields = new ModalSubmitFieldsResolver(this.components);
   }
 
   /**

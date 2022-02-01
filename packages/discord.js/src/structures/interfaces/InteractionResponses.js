@@ -230,9 +230,9 @@ class InteractionResponses {
    * @param {APIModal} modal The modal to present
    */
   async presentModal(modal) {
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
-        // TODO: use dapi types
+    console.log(modal.toJSON());
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
         type: 9,
         data: modal.toJSON(),
       },
