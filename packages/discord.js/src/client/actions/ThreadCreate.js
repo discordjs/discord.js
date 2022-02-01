@@ -14,7 +14,7 @@ class ThreadCreateAction extends Action {
        * @event Client#threadCreate
        * @param {ThreadChannel} thread The thread that was created
        */
-      client.emit(Events.THREAD_CREATE, thread);
+      client.emit(Events.THREAD_CREATE, thread, data.newly_created ?? false);
     }
     return { thread };
   }
