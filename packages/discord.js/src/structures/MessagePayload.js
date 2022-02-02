@@ -197,7 +197,7 @@ class MessagePayload {
       content,
       tts,
       nonce,
-      embeds: this.options.embeds?.map(embed => (embed instanceof Embed ? embed : decamelize(embed))),
+      embeds: this.options.embeds?.map(embed => (embed instanceof Embed ? embed.toJSON() : decamelize(embed))),
       components,
       username,
       avatar_url: avatarURL,
