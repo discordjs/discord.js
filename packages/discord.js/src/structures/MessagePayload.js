@@ -132,13 +132,7 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c => {
-      if ('toJSON' in c) {
-        c.toJSON();
-      }
-
-      return decamelize(c);
-    });
+    const components = this.options.components?.map(c => ('toJSON' in c ? c.toJSON() : decamelize(c)));
 
     let username;
     let avatarURL;
