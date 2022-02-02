@@ -13,6 +13,7 @@ class ThreadCreateAction extends Action {
        * Emitted whenever a thread is created or when the client user is added to a thread.
        * @event Client#threadCreate
        * @param {ThreadChannel} thread The thread that was created
+       * @param {boolean} newlyCreated Whether or not the thread was created or not
        */
       client.emit(Events.THREAD_CREATE, thread, data.newly_created ?? false);
     }
