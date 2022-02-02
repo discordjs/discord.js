@@ -19,7 +19,7 @@ export class ButtonComponent implements Component {
 	public readonly custom_id!: string;
 	public readonly url!: string;
 
-	public constructor(data?: APIButtonComponent) {
+	public constructor(data?: APIButtonComponent & { type?: ComponentType.Button }) {
 		/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
 		this.style = data?.style as ButtonStyle;
 		this.label = data?.label;
