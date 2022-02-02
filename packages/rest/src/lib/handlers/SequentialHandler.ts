@@ -239,7 +239,7 @@ export class SequentialHandler {
 			let delay: Promise<void>;
 
 			if (isGlobal) {
-				// Set RateLimitData based on the globl limit
+				// Set RateLimitData based on the global limit
 				limit = this.manager.options.globalRequestsPerSecond;
 				timeout = this.manager.globalReset + this.manager.options.offset - Date.now();
 				// If this is the first task to reach the global timeout, set the global delay

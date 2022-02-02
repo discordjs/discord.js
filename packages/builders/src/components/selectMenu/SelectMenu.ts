@@ -43,7 +43,7 @@ export class SelectMenuComponent implements Component {
 	}
 
 	/**
-	 * Sets thes minimum values that must be selected in the select menu
+	 * Sets the minimum values that must be selected in the select menu
 	 * @param minValues The minimum values that must be selected
 	 */
 	public setMinValues(minValues: number) {
@@ -53,7 +53,7 @@ export class SelectMenuComponent implements Component {
 	}
 
 	/**
-	 * Sets thes maximum values that must be selected in the select menu
+	 * Sets the maximum values that must be selected in the select menu
 	 * @param minValues The maximum values that must be selected
 	 */
 	public setMaxValues(maxValues: number) {
