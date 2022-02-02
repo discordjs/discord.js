@@ -21,7 +21,7 @@ export class SelectMenuComponent implements Component {
 	public readonly custom_id!: string;
 	public readonly disabled?: boolean;
 
-	public constructor(data?: APISelectMenuComponent) {
+	public constructor(data?: APISelectMenuComponent & { type?: ComponentType.SelectMenu }) {
 		this.options = data?.options.map((option) => new SelectMenuOption(option)) ?? [];
 		this.placeholder = data?.placeholder;
 		this.min_values = data?.min_values;
