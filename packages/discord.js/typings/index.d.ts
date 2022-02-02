@@ -4615,8 +4615,6 @@ export interface MessageMentionOptions {
 
 export type MessageMentionTypes = 'roles' | 'users' | 'everyone';
 
-export { Embed };
-
 export interface MessageOptions {
   tts?: boolean;
   nonce?: string | number;
@@ -5216,8 +5214,13 @@ export {
 export {
   ActionRow,
   ButtonComponent,
+  UnsafeButtonComponent,
   SelectMenuComponent,
+  UnsafeSelectMenuComponent,
   SelectMenuOption,
+  UnsafeSelectMenuOption,
   ActionRowComponent,
+  Embed,
+  UnsafeEmbed,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
