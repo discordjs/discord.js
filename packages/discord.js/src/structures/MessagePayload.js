@@ -1,8 +1,9 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { createComponent, Embed } = require('@discordjs/builders');
+const { Embed } = require('@discordjs/builders');
 const { MessageFlags } = require('discord-api-types/v9');
+const { decamelize } = require('humps');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
@@ -131,7 +132,13 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c => createComponent(c).toJSON());
+    const components = this.options.components?.map(c => {
+      if ('toJSON' in c) {
+        c.toJSON();
+      }
+
+      return decamelize(c);
+    });
 
     let username;
     let avatarURL;
@@ -190,7 +197,7 @@ class MessagePayload {
       content,
       tts,
       nonce,
-      embeds: this.options.embeds?.map(embed => (embed instanceof Embed ? embed : new Embed(embed)).toJSON()),
+      embeds: this.options.embeds?.map(embed => (embed instanceof Embed ? embed : decamelize(embed))),
       components,
       username,
       avatar_url: avatarURL,
