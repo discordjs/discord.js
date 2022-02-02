@@ -7,8 +7,8 @@
     "test:typescript": "tsc --noEmit && tsd",
     "lint": "prettier --check . && eslint src && tslint typings/index.d.ts",
     "format": "prettier --write . && eslint src --fix",
-    "docs": "docgen --source ./src --custom ./docs/index.yml --output ./docs/docs.json",
-    "docs:test": "docgen --source ./src --custom ./docs/index.yml",
+    "docs": "docgen --source ./src --custom ./docs/index.yml --root ../../ --output ./docs/docs.json",
+    "docs:test": "docgen --source ./src --custom ./docs/index.yml --root ../../",
     "prepublishOnly": "yarn lint && yarn test",
     "changelog": "git cliff --prepend ./CHANGELOG.md -l -c ./cliff.toml -r ../../ --include-path 'packages/discord.js/*'"
   },
