@@ -346,10 +346,10 @@ class RichPresenceAssets {
 
   /**
    * Gets the URL of the small image asset
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  smallImageURL(options = {}) {
+  smallImageUrl(options = {}) {
     if (!this.smallImage) return null;
     if (this.smallImage.includes(':')) {
       const [platform, id] = this.smallImage.split(':');
@@ -366,10 +366,10 @@ class RichPresenceAssets {
 
   /**
    * Gets the URL of the large image asset
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  largeImageURL(options = {}) {
+  largeImageUrl(options = {}) {
     if (!this.largeImage) return null;
     if (this.largeImage.includes(':')) {
       const [platform, id] = this.largeImage.split(':');

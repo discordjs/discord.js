@@ -135,28 +135,28 @@ class GuildPreview extends Base {
 
   /**
    * The URL to this guild's splash.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  splashURL(options = {}) {
+  splashUrl(options = {}) {
     return this.splash && this.client.rest.cdn.splash(this.id, this.splash, options);
   }
 
   /**
    * The URL to this guild's discovery splash.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  discoverySplashURL(options = {}) {
+  discoverySplashUrl(options = {}) {
     return this.discoverySplash && this.client.rest.cdn.discoverySplash(this.id, this.discoverySplash, options);
   }
 
   /**
    * The URL to this guild's icon.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  iconURL(options = {}) {
+  iconUrl(options = {}) {
     return this.icon && this.client.rest.cdn.icon(this.id, this.icon, options);
   }
 
@@ -183,8 +183,8 @@ class GuildPreview extends Base {
 
   toJSON() {
     const json = super.toJSON();
-    json.iconURL = this.iconURL();
-    json.splashURL = this.splashURL();
+    json.iconUrl = this.iconUrl();
+    json.splashUrl = this.splashUrl();
     return json;
   }
 }

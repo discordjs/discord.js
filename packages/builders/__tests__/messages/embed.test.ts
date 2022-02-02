@@ -101,9 +101,9 @@ describe('Embed', () => {
 			});
 		});
 
-		test('GIVEN an embed using Embed#setURL THEN returns valid toJSON data', () => {
+		test('GIVEN an embed using Embed#setUrl THEN returns valid toJSON data', () => {
 			const embed = new Embed();
-			embed.setURL('https://discord.js.org/');
+			embed.setUrl('https://discord.js.org/');
 
 			expect(embed.toJSON()).toStrictEqual({
 				...emptyEmbed,
@@ -113,7 +113,7 @@ describe('Embed', () => {
 
 		test('GIVEN an embed with a pre-defined title THEN unset title THEN return valid toJSON data', () => {
 			const embed = new Embed({ url: 'https://discord.js.org' });
-			embed.setURL(null);
+			embed.setUrl(null);
 
 			expect(embed.toJSON()).toStrictEqual({ ...emptyEmbed });
 		});
@@ -121,7 +121,7 @@ describe('Embed', () => {
 		test('GIVEN an embed with an invalid URL THEN throws error', () => {
 			const embed = new Embed();
 
-			expect(() => embed.setURL('owo')).toThrowError();
+			expect(() => embed.setUrl('owo')).toThrowError();
 		});
 	});
 
@@ -271,7 +271,7 @@ describe('Embed', () => {
 			const embed = new Embed();
 			embed.setAuthor({
 				name: 'Wumpus',
-				iconURL: 'https://discord.js.org/static/logo.svg',
+				iconUrl: 'https://discord.js.org/static/logo.svg',
 				url: 'https://discord.js.org',
 			});
 
@@ -310,7 +310,7 @@ describe('Embed', () => {
 
 		test('GIVEN an embed using Embed#setAuthor THEN returns valid toJSON data', () => {
 			const embed = new Embed();
-			embed.setFooter({ text: 'Wumpus', iconURL: 'https://discord.js.org/static/logo.svg' });
+			embed.setFooter({ text: 'Wumpus', iconUrl: 'https://discord.js.org/static/logo.svg' });
 
 			expect(embed.toJSON()).toStrictEqual({
 				...emptyEmbed,

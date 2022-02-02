@@ -393,10 +393,10 @@ class Role extends Base {
 
   /**
    * A link to the role's icon
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  iconURL(options = {}) {
+  iconUrl(options = {}) {
     return this.icon && this.client.rest.cdn.roleIcon(this.id, this.icon, options);
   }
 

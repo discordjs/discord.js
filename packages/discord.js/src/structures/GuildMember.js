@@ -124,21 +124,21 @@ class GuildMember extends Base {
 
   /**
    * A link to the member's guild avatar.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  avatarURL(options = {}) {
+  avatarUrl(options = {}) {
     return this.avatar && this.client.rest.cdn.guildMemberAvatar(this.guild.id, this.id, this.avatar, options);
   }
 
   /**
    * A link to the member's guild avatar if they have one.
-   * Otherwise, a link to their {@link User#displayAvatarURL} will be returned.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * Otherwise, a link to their {@link User#displayAvatarUrl} will be returned.
+   * @param {ImageUrlOptions} [options={}] Options for the Image URL
    * @returns {string}
    */
-  displayAvatarURL(options) {
-    return this.avatarURL(options) ?? this.user.displayAvatarURL(options);
+  displayAvatarUrl(options) {
+    return this.avatarUrl(options) ?? this.user.displayAvatarUrl(options);
   }
 
   /**
@@ -428,8 +428,8 @@ class GuildMember extends Base {
       displayName: true,
       roles: true,
     });
-    json.avatarURL = this.avatarURL();
-    json.displayAvatarURL = this.displayAvatarURL();
+    json.avatarUrl = this.avatarUrl();
+    json.displayAvatarUrl = this.displayAvatarUrl();
     return json;
   }
 

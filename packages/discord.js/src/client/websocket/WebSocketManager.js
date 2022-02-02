@@ -128,7 +128,7 @@ class WebSocketManager extends EventEmitter {
   async connect() {
     const invalidToken = new Error(WSCodes[4004]);
     const {
-      url: gatewayURL,
+      url: gatewayUrl,
       shards: recommendedShards,
       session_start_limit: sessionStartLimit,
     } = await this.client.rest.get(Routes.gatewayBot()).catch(error => {
@@ -138,14 +138,14 @@ class WebSocketManager extends EventEmitter {
     const { total, remaining } = sessionStartLimit;
 
     this.debug(`Fetched Gateway Information
-    URL: ${gatewayURL}
+    URL: ${gatewayUrl}
     Recommended Shards: ${recommendedShards}`);
 
     this.debug(`Session Limit Information
     Total: ${total}
     Remaining: ${remaining}`);
 
-    this.gateway = `${gatewayURL}/`;
+    this.gateway = `${gatewayUrl}/`;
 
     let { shards } = this.client.options;
 

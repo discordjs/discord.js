@@ -50,7 +50,7 @@ export class ButtonComponent implements Component {
 	 * Sets the URL for this button
 	 * @param url The URL to open when this button is clicked
 	 */
-	public setURL(url: string) {
+	public setUrl(url: string) {
 		urlValidator.parse(url);
 		Reflect.set(this, 'url', url);
 		return this;

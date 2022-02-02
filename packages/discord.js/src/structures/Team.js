@@ -90,10 +90,10 @@ class Team extends Base {
 
   /**
    * A link to the team's icon.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  iconURL(options = {}) {
+  iconUrl(options = {}) {
     return this.icon && this.client.rest.cdn.teamIcon(this.id, this.icon, options);
   }
 

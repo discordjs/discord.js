@@ -85,7 +85,7 @@ class WidgetMember extends Base {
      * The avatar URL of the member.
      * @type {string}
      */
-    this.avatarURL = data.avatar_url;
+    this.avatarUrl = data.avatar_url;
 
     /**
      * The activity of the member.

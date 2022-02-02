@@ -134,10 +134,10 @@ class MessagePayload {
     const components = this.options.components?.map(c => createComponent(c).toJSON());
 
     let username;
-    let avatarURL;
+    let avatarUrl;
     if (isWebhook) {
       username = this.options.username ?? this.target.name;
-      if (this.options.avatarURL) avatarURL = this.options.avatarURL;
+      if (this.options.avatarUrl) avatarUrl = this.options.avatarUrl;
     }
 
     let flags;
@@ -193,7 +193,7 @@ class MessagePayload {
       embeds: this.options.embeds?.map(embed => (embed instanceof Embed ? embed : new Embed(embed)).toJSON()),
       components,
       username,
-      avatar_url: avatarURL,
+      avatar_url: avatarUrl,
       allowed_mentions:
         typeof content === 'undefined' && typeof message_reference === 'undefined' ? undefined : allowedMentions,
       flags,

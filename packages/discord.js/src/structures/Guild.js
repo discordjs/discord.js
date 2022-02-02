@@ -349,7 +349,7 @@ class Guild extends AnonymousGuild {
      * <info>You will need to fetch this parameter using {@link Guild#fetchVanityData} if you want to receive it</info>
      * @type {?number}
      */
-    this.vanityURLUses ??= null;
+    this.vanityUrlUses ??= null;
 
     if ('rules_channel_id' in data) {
       /**
@@ -474,10 +474,10 @@ class Guild extends AnonymousGuild {
 
   /**
    * The URL to this guild's discovery splash image.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  discoverySplashURL(options = {}) {
+  discoverySplashUrl(options = {}) {
     return this.discoverySplash && this.client.rest.cdn.discoverySplash(this.id, this.discoverySplash, options);
   }
 
@@ -653,8 +653,8 @@ class Guild extends AnonymousGuild {
       throw new Error('VANITY_URL');
     }
     const data = await this.client.rest.get(Routes.guildVanityUrl(this.id));
-    this.vanityURLCode = data.code;
-    this.vanityURLUses = data.uses;
+    this.vanityUrlCode = data.code;
+    this.vanityUrlUses = data.uses;
 
     return data;
   }
@@ -1254,10 +1254,10 @@ class Guild extends AnonymousGuild {
       presences: false,
       voiceStates: false,
     });
-    json.iconURL = this.iconURL();
-    json.splashURL = this.splashURL();
-    json.discoverySplashURL = this.discoverySplashURL();
-    json.bannerURL = this.bannerURL();
+    json.iconUrl = this.iconUrl();
+    json.splashUrl = this.splashUrl();
+    json.discoverySplashUrl = this.discoverySplashUrl();
+    json.bannerUrl = this.bannerUrl();
     return json;
   }
 

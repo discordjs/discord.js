@@ -49,7 +49,7 @@ describe('Button Components', () => {
 				button.toJSON();
 			}).not.toThrowError();
 
-			expect(() => buttonComponent().setURL('https://google.com')).not.toThrowError();
+			expect(() => buttonComponent().setUrl('https://google.com')).not.toThrowError();
 		});
 
 		test('GIVEN invalid fields THEN build does throw', () => {
@@ -63,7 +63,7 @@ describe('Button Components', () => {
 					.setStyle(ButtonStyle.Primary)
 					.setDisabled(true)
 					.setLabel('test')
-					.setURL('https://google.com')
+					.setUrl('https://google.com')
 					.setEmoji({ name: 'test' });
 
 				button.toJSON();
@@ -91,7 +91,7 @@ describe('Button Components', () => {
 			}).toThrowError();
 
 			expect(() => {
-				const button = buttonComponent().setStyle(ButtonStyle.Primary).setLabel('test').setURL('https://google.com');
+				const button = buttonComponent().setStyle(ButtonStyle.Primary).setLabel('test').setUrl('https://google.com');
 				button.toJSON();
 			}).toThrowError();
 
@@ -107,7 +107,7 @@ describe('Button Components', () => {
 			// @ts-expect-error
 			expect(() => buttonComponent().setEmoji('foo')).toThrowError();
 
-			expect(() => buttonComponent().setURL('foobar')).toThrowError();
+			expect(() => buttonComponent().setUrl('foobar')).toThrowError();
 		});
 
 		test('GiVEN valid input THEN valid JSON outputs are given', () => {
@@ -140,7 +140,7 @@ describe('Button Components', () => {
 
 			expect(new ButtonComponent(linkData).toJSON()).toEqual(linkData);
 
-			expect(buttonComponent().setLabel(linkData.label).setDisabled(true).setURL(linkData.url));
+			expect(buttonComponent().setLabel(linkData.label).setDisabled(true).setUrl(linkData.url));
 		});
 	});
 });

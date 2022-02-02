@@ -71,19 +71,19 @@ class Application extends Base {
 
   /**
    * A link to the application's icon.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  iconURL(options = {}) {
+  iconUrl(options = {}) {
     return this.icon && this.client.rest.cdn.appIcon(this.id, this.icon, options);
   }
 
   /**
    * A link to this application's cover image.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  coverURL(options = {}) {
+  coverUrl(options = {}) {
     return this.cover && this.client.rest.cdn.appIcon(this.id, this.cover, options);
   }
 

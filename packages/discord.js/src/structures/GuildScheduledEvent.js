@@ -162,10 +162,10 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The URL of this scheduled event's cover image
-   * @param {BaseImageURLOptions} [options={}] Options for image URL
+   * @param {BaseImageUrlOptions} [options={}] Options for image URL
    * @returns {?string}
    */
-  coverImageURL(options = {}) {
+  coverImageUrl(options = {}) {
     return this.image && this.client.rest.cdn.guildScheduledEventCover(this.id, this.image, options);
   }
 
@@ -235,7 +235,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Options used to create an invite URL to a {@link GuildScheduledEvent}
-   * @typedef {CreateInviteOptions} CreateGuildScheduledEventInviteURLOptions
+   * @typedef {CreateInviteOptions} CreateGuildScheduledEventInviteUrlOptions
    * @property {GuildInvitableChannelResolvable} [channel] The channel to create the invite in.
    * <warn>This is required when the `entityType` of `GuildScheduledEvent` is
    * {@link GuildScheduledEventEntityType.External}, gets ignored otherwise</warn>
@@ -243,10 +243,10 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Creates an invite URL to this guild scheduled event.
-   * @param {CreateGuildScheduledEventInviteURLOptions} [options] The options to create the invite
+   * @param {CreateGuildScheduledEventInviteUrlOptions} [options] The options to create the invite
    * @returns {Promise<string>}
    */
-  async createInviteURL(options) {
+  async createInviteUrl(options) {
     let channelId = this.channelId;
     if (this.entityType === GuildScheduledEventEntityType.External) {
       if (!options?.channel) throw new Error('INVITE_OPTIONS_MISSING_CHANNEL');

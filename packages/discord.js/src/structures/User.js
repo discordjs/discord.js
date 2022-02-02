@@ -140,10 +140,10 @@ class User extends Base {
 
   /**
    * A link to the user's avatar.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  avatarURL(options = {}) {
+  avatarUrl(options = {}) {
     return this.avatar && this.client.rest.cdn.avatar(this.id, this.avatar, options);
   }
 
@@ -152,18 +152,18 @@ class User extends Base {
    * @type {string}
    * @readonly
    */
-  get defaultAvatarURL() {
+  get defaultAvatarUrl() {
     return this.client.rest.cdn.defaultAvatar(this.discriminator % 5);
   }
 
   /**
    * A link to the user's avatar if they have one.
    * Otherwise a link to their default avatar will be returned.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageUrlOptions} [options={}] Options for the Image URL
    * @returns {string}
    */
-  displayAvatarURL(options) {
-    return this.avatarURL(options) ?? this.defaultAvatarURL;
+  displayAvatarUrl(options) {
+    return this.avatarUrl(options) ?? this.defaultAvatarUrl;
   }
 
   /**
@@ -179,10 +179,10 @@ class User extends Base {
 
   /**
    * A link to the user's banner. See {@link User#banner} for more info
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageUrlOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  bannerURL(options = {}) {
+  bannerUrl(options = {}) {
     return this.banner && this.client.rest.cdn.banner(this.id, this.banner, options);
   }
 
@@ -293,15 +293,15 @@ class User extends Base {
     const json = super.toJSON(
       {
         createdTimestamp: true,
-        defaultAvatarURL: true,
+        defaultAvatarUrl: true,
         hexAccentColor: true,
         tag: true,
       },
       ...props,
     );
-    json.avatarURL = this.avatarURL();
-    json.displayAvatarURL = this.displayAvatarURL();
-    json.bannerURL = this.banner ? this.bannerURL() : this.banner;
+    json.avatarUrl = this.avatarUrl();
+    json.displayAvatarUrl = this.displayAvatarUrl();
+    json.bannerUrl = this.banner ? this.bannerUrl() : this.banner;
     return json;
   }
 

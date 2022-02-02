@@ -26,7 +26,7 @@ import {
   userMention,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
-import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
+import { BaseImageUrlOptions, ImageUrlOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
 import {
   APIActionRowComponent,
   APIApplicationCommand,
@@ -196,10 +196,10 @@ export abstract class AnonymousGuild extends BaseGuild {
   public description: string | null;
   public nsfwLevel: GuildNSFWLevel;
   public splash: string | null;
-  public vanityURLCode: string | null;
+  public vanityUrlCode: string | null;
   public verificationLevel: GuildVerificationLevel;
-  public bannerURL(options?: ImageURLOptions): string | null;
-  public splashURL(options?: ImageURLOptions): string | null;
+  public bannerUrl(options?: ImageUrlOptions): string | null;
+  public splashUrl(options?: ImageUrlOptions): string | null;
 }
 
 export abstract class Application extends Base {
@@ -210,8 +210,8 @@ export abstract class Application extends Base {
   public icon: string | null;
   public id: Snowflake;
   public name: string | null;
-  public coverURL(options?: ImageURLOptions): string | null;
-  public iconURL(options?: ImageURLOptions): string | null;
+  public coverUrl(options?: ImageUrlOptions): string | null;
+  public iconUrl(options?: ImageUrlOptions): string | null;
   public toJSON(): unknown;
   public toString(): string | null;
 }
@@ -363,7 +363,7 @@ export abstract class BaseGuild extends Base {
   public readonly partnered: boolean;
   public readonly verified: boolean;
   public fetch(): Promise<Guild>;
-  public iconURL(options?: ImageURLOptions): string | null;
+  public iconUrl(options?: ImageUrlOptions): string | null;
   public toString(): string;
 }
 
@@ -918,7 +918,7 @@ export class Guild extends AnonymousGuild {
   public readonly systemChannel: TextChannel | null;
   public systemChannelFlags: Readonly<SystemChannelFlagsBitField>;
   public systemChannelId: Snowflake | null;
-  public vanityURLUses: number | null;
+  public vanityUrlUses: number | null;
   public readonly voiceAdapterCreator: InternalDiscordGatewayAdapterCreator;
   public readonly voiceStates: VoiceStateManager;
   public readonly widgetChannel: TextChannel | null;
@@ -927,7 +927,7 @@ export class Guild extends AnonymousGuild {
   public readonly maximumBitrate: number;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
   public delete(): Promise<Guild>;
-  public discoverySplashURL(options?: ImageURLOptions): string | null;
+  public discoverySplashUrl(options?: ImageUrlOptions): string | null;
   public edit(data: GuildEditData, reason?: string): Promise<Guild>;
   public editWelcomeScreen(data: WelcomeScreenEditData): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
@@ -1106,14 +1106,14 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public readonly roles: GuildMemberRoleManager;
   public user: User;
   public readonly voice: VoiceState;
-  public avatarURL(options?: ImageURLOptions): string | null;
+  public avatarUrl(options?: ImageUrlOptions): string | null;
   public ban(options?: BanOptions): Promise<GuildMember>;
   public disableCommunicationUntil(timeout: DateResolvable | null, reason?: string): Promise<GuildMember>;
   public timeout(timeout: number | null, reason?: string): Promise<GuildMember>;
   public fetch(force?: boolean): Promise<GuildMember>;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
-  public displayAvatarURL(options?: ImageURLOptions): string;
+  public displayAvatarUrl(options?: ImageUrlOptions): string;
   public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
   public isCommunicationDisabled(): this is GuildMember & {
     communicationDisabledUntilTimestamp: number;
@@ -1142,9 +1142,9 @@ export class GuildPreview extends Base {
   public id: Snowflake;
   public name: string;
   public splash: string | null;
-  public discoverySplashURL(options?: ImageURLOptions): string | null;
-  public iconURL(options?: ImageURLOptions): string | null;
-  public splashURL(options?: ImageURLOptions): string | null;
+  public discoverySplashUrl(options?: ImageUrlOptions): string | null;
+  public iconUrl(options?: ImageUrlOptions): string | null;
+  public splashUrl(options?: ImageUrlOptions): string | null;
   public fetch(): Promise<GuildPreview>;
   public toJSON(): unknown;
   public toString(): string;
@@ -1175,8 +1175,8 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public readonly guild: Guild | null;
   public readonly url: string;
   public readonly image: string | null;
-  public coverImageURL(options?: Readonly<BaseImageURLOptions>): string | null;
-  public createInviteURL(options?: CreateGuildScheduledEventInviteURLOptions): Promise<string>;
+  public coverImageUrl(options?: Readonly<BaseImageUrlOptions>): string | null;
+  public createInviteUrl(options?: CreateGuildScheduledEventInviteUrlOptions): Promise<string>;
   public edit<T extends GuildScheduledEventSetStatusArg<S>>(
     options: GuildScheduledEventEditOptions<S, T>,
   ): Promise<GuildScheduledEvent<T>>;
@@ -1256,8 +1256,8 @@ export class Integration extends Base {
 export class IntegrationApplication extends Application {
   private constructor(client: Client, data: RawIntegrationApplicationData);
   public bot: User | null;
-  public termsOfServiceURL: string | null;
-  public privacyPolicyURL: string | null;
+  public termsOfServiceUrl: string | null;
+  public privacyPolicyUrl: string | null;
   public rpcOrigins: string[];
   public summary: string | null;
   public hook: boolean | null;
@@ -1528,7 +1528,7 @@ export class MessageAttachment {
   public height: number | null;
   public id: Snowflake;
   public name: string | null;
-  public proxyURL: string;
+  public proxyUrl: string;
   public size: number;
   public readonly spoiler: boolean;
   public url: string;
@@ -1692,7 +1692,7 @@ export class PartialGroupDMChannel extends Channel {
   public name: string | null;
   public icon: string | null;
   public recipients: PartialRecipient[];
-  public iconURL(options?: ImageURLOptions): string | null;
+  public iconUrl(options?: ImageUrlOptions): string | null;
 }
 
 export class PermissionOverwrites extends Base {
@@ -1782,8 +1782,8 @@ export class RichPresenceAssets {
   public largeText: string | null;
   public smallImage: Snowflake | null;
   public smallText: string | null;
-  public largeImageURL(options?: ImageURLOptions): string | null;
-  public smallImageURL(options?: ImageURLOptions): string | null;
+  public largeImageUrl(options?: ImageUrlOptions): string | null;
+  public smallImageUrl(options?: ImageUrlOptions): string | null;
 }
 
 export class Role extends Base {
@@ -1810,7 +1810,7 @@ export class Role extends Base {
   public delete(reason?: string): Promise<Role>;
   public edit(data: RoleData, reason?: string): Promise<Role>;
   public equals(role: Role): boolean;
-  public iconURL(options?: ImageURLOptions): string | null;
+  public iconUrl(options?: ImageUrlOptions): string | null;
   public permissionsIn(
     channel: NonThreadGuildBasedChannel | Snowflake,
     checkAdmin?: boolean,
@@ -2031,7 +2031,7 @@ export class StickerPack extends Base {
   public name: string;
   public skuId: Snowflake;
   public stickers: Collection<Snowflake, Sticker>;
-  public bannerURL(options?: ImageURLOptions): string | null;
+  public bannerUrl(options?: ImageUrlOptions): string | null;
 }
 
 /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
@@ -2126,7 +2126,7 @@ export class Team extends Base {
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
 
-  public iconURL(options?: ImageURLOptions): string | null;
+  public iconUrl(options?: ImageUrlOptions): string | null;
   public toJSON(): unknown;
   public toString(): string;
 }
@@ -2252,7 +2252,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public discriminator: string;
-  public readonly defaultAvatarURL: string;
+  public readonly defaultAvatarUrl: string;
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlagsBitField> | null;
   public readonly hexAccentColor: HexColorString | null | undefined;
@@ -2261,11 +2261,11 @@ export class User extends PartialTextBasedChannel(Base) {
   public system: boolean;
   public readonly tag: string;
   public username: string;
-  public avatarURL(options?: ImageURLOptions): string | null;
-  public bannerURL(options?: ImageURLOptions): string | null | undefined;
+  public avatarUrl(options?: ImageUrlOptions): string | null;
+  public bannerUrl(options?: ImageUrlOptions): string | null | undefined;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
-  public displayAvatarURL(options?: ImageURLOptions): string;
+  public displayAvatarUrl(options?: ImageUrlOptions): string;
   public equals(user: User): boolean;
   public fetch(force?: boolean): Promise<User>;
   public fetchFlags(force?: boolean): Promise<UserFlagsBitField>;
@@ -2397,7 +2397,7 @@ export class VoiceState extends Base {
 export class Webhook extends WebhookMixin() {
   private constructor(client: Client, data?: RawWebhookData);
   public avatar: string;
-  public avatarURL(options?: ImageURLOptions): string | null;
+  public avatarUrl(options?: ImageUrlOptions): string | null;
   public channelId: Snowflake;
   public client: Client;
   public guildId: Snowflake;
@@ -2558,7 +2558,7 @@ export class WidgetMember extends Base {
   public selfMute: boolean | null;
   public suppress: boolean | null;
   public channelId: Snowflake | null;
-  public avatarURL: string;
+  public avatarUrl: string;
   public activity: WidgetActivity | null;
 }
 
@@ -3793,7 +3793,7 @@ export interface ConstantsStatus {
   DISCONNECTED: 5;
 }
 
-export interface CreateGuildScheduledEventInviteURLOptions extends CreateInviteOptions {
+export interface CreateGuildScheduledEventInviteUrlOptions extends CreateInviteOptions {
   channel?: GuildInvitableChannelResolvable;
 }
 
@@ -3823,7 +3823,7 @@ export interface EditGuildTemplateOptions {
 export interface EmbedAuthorData {
   name: string;
   url?: string;
-  iconURL?: string;
+  iconUrl?: string;
 }
 
 export interface EmbedField {
@@ -3840,7 +3840,7 @@ export interface EmbedFieldData {
 
 export interface EmbedFooterData {
   text: string;
-  iconURL?: string;
+  iconUrl?: string;
 }
 
 export type EmojiIdentifierResolvable = string | EmojiResolvable;
@@ -4454,7 +4454,7 @@ export interface InteractionDeferReplyOptions {
 
 export type InteractionDeferUpdateOptions = Omit<InteractionDeferReplyOptions, 'ephemeral'>;
 
-export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL' | 'flags'> {
+export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarUrl' | 'flags'> {
   ephemeral?: boolean;
   fetchReply?: boolean;
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds' | 'Ephemeral'>, number>;
@@ -5020,14 +5020,14 @@ export type VoiceBasedChannelTypes = VoiceBasedChannel['type'];
 
 export type VoiceChannelResolvable = Snowflake | VoiceChannel;
 
-export type WebhookClientData = WebhookClientDataIdWithToken | WebhookClientDataURL;
+export type WebhookClientData = WebhookClientDataIdWithToken | WebhookClientDataUrl;
 
 export interface WebhookClientDataIdWithToken {
   id: Snowflake;
   token: string;
 }
 
-export interface WebhookClientDataURL {
+export interface WebhookClientDataUrl {
   url: string;
 }
 
@@ -5051,7 +5051,7 @@ export interface WebhookFetchMessageOptions {
 
 export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 'stickers'> {
   username?: string;
-  avatarURL?: string;
+  avatarUrl?: string;
   threadId?: Snowflake;
 }
 

@@ -98,16 +98,16 @@ test('teamIcon default', () => {
 	expect(cdn.teamIcon(id, hash)).toBe(`${base}/team-icons/${id}/${hash}.webp`);
 });
 
-test('makeURL throws on invalid size', () => {
+test('makeUrl throws on invalid size', () => {
 	// @ts-expect-error: Invalid size
 	expect(() => cdn.avatar(id, animatedHash, { size: 5 })).toThrow(RangeError);
 });
 
-test('makeURL throws on invalid extension', () => {
+test('makeUrl throws on invalid extension', () => {
 	// @ts-expect-error: Invalid extension
 	expect(() => cdn.avatar(id, animatedHash, { extension: 'tif', forceStatic: true })).toThrow(RangeError);
 });
 
-test('makeURL valid size', () => {
+test('makeUrl valid size', () => {
 	expect(cdn.avatar(id, animatedHash, { size: 512 })).toBe(`${base}/avatars/${id}/${animatedHash}.gif?size=512`);
 });

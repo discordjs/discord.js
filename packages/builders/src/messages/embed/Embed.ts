@@ -26,12 +26,12 @@ import {
 export interface AuthorOptions {
 	name: string;
 	url?: string;
-	iconURL?: string;
+	iconUrl?: string;
 }
 
 export interface FooterOptions {
 	text: string;
-	iconURL?: string;
+	iconUrl?: string;
 }
 
 /**
@@ -190,13 +190,13 @@ export class Embed implements APIEmbed {
 			return this;
 		}
 
-		const { name, iconURL, url } = options;
+		const { name, iconUrl, url } = options;
 		// Data assertions
 		authorNamePredicate.parse(name);
-		urlPredicate.parse(iconURL);
+		urlPredicate.parse(iconUrl);
 		urlPredicate.parse(url);
 
-		Reflect.set(this, 'author', { name, url, icon_url: iconURL });
+		Reflect.set(this, 'author', { name, url, icon_url: iconUrl });
 		return this;
 	}
 
@@ -237,12 +237,12 @@ export class Embed implements APIEmbed {
 			return this;
 		}
 
-		const { text, iconURL } = options;
+		const { text, iconUrl } = options;
 		// Data assertions
 		footerTextPredicate.parse(text);
-		urlPredicate.parse(iconURL);
+		urlPredicate.parse(iconUrl);
 
-		Reflect.set(this, 'footer', { text, icon_url: iconURL });
+		Reflect.set(this, 'footer', { text, icon_url: iconUrl });
 		return this;
 	}
 
@@ -303,7 +303,7 @@ export class Embed implements APIEmbed {
 	 *
 	 * @param url The URL
 	 */
-	public setURL(url: string | null): this {
+	public setUrl(url: string | null): this {
 		// Data assertions
 		urlPredicate.parse(url);
 

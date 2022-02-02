@@ -99,7 +99,7 @@ class MessageAttachment {
        * The Proxy URL to this attachment
        * @type {string}
        */
-      this.proxyURL = data.proxy_url;
+      this.proxyUrl = data.proxy_url;
     }
 
     if ('height' in data) {

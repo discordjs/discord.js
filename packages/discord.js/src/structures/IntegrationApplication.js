@@ -25,9 +25,9 @@ class IntegrationApplication extends Application {
        * The URL of the application's terms of service
        * @type {?string}
        */
-      this.termsOfServiceURL = data.terms_of_service_url;
+      this.termsOfServiceUrl = data.terms_of_service_url;
     } else {
-      this.termsOfServiceURL ??= null;
+      this.termsOfServiceUrl ??= null;
     }
 
     if ('privacy_policy_url' in data) {
@@ -35,9 +35,9 @@ class IntegrationApplication extends Application {
        * The URL of the application's privacy policy
        * @type {?string}
        */
-      this.privacyPolicyURL = data.privacy_policy_url;
+      this.privacyPolicyUrl = data.privacy_policy_url;
     } else {
-      this.privacyPolicyURL ??= null;
+      this.privacyPolicyUrl ??= null;
     }
 
     if ('rpc_origins' in data) {
