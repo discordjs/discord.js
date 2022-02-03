@@ -9,11 +9,6 @@ const choicesPredicate = z
 	.array();
 const booleanPredicate = z.boolean();
 
-export interface ChoiceData<T extends number | string> {
-	name: string;
-	value: T;
-}
-
 export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends string | number> {
 	public readonly choices?: APIApplicationCommandOptionChoice<T>[];
 	public readonly autocomplete?: boolean;
@@ -26,7 +21,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	 *
 	 * @param choice The choice to add
 	 */
-	public addChoice(choice: ChoiceData<T>): Omit<this, 'setAutocomplete'> {
+	public addChoice(choice: APIApplicationCommandOptionChoice<T>): Omit<this, 'setAutocomplete'> {
 		const { name, value } = choice;
 
 		if (this.autocomplete) {
@@ -59,7 +54,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	 *
 	 * @param choices The choices to add
 	 */
-	public addChoices(...choices: ChoiceData<T>[]): Omit<this, 'setAutocomplete'> {
+	public addChoices(...choices: APIApplicationCommandOptionChoice<T>[]): Omit<this, 'setAutocomplete'> {
 		if (this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
@@ -70,7 +65,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 		return this;
 	}
 
-	public setChoices<Input extends ChoiceData<T>[]>(
+	public setChoices<Input extends APIApplicationCommandOptionChoice<T>[]>(
 		...choices: Input
 	): Input extends []
 		? this & Pick<ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T>, 'setAutocomplete'>
