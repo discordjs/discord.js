@@ -93,7 +93,7 @@ class InteractionCollector extends Collector {
     if (this.messageId) {
       this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
       this.client.on(Events.MessageDelete, this._handleMessageDeletion);
-      this.client.on(Events.MessageDelete, bulkDeleteListener);
+      this.client.on(Events.MessageBulkDelete, bulkDeleteListener);
     }
 
     if (this.channelId) {
