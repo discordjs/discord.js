@@ -11,6 +11,6 @@ module.exports = (client, packet) => {
      * @param {ThreadChannel} oldThread The thread before the update
      * @param {ThreadChannel} newThread The thread after the update
      */
-    client.emit(Events.ThreadCreate, old, updated);
+    client.emit(Events.ThreadUpdate, old, updated);
   }
 };
