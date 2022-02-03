@@ -13,6 +13,7 @@ export interface ChoiceData<T extends number | string> {
 	name: string;
 	value: T;
 }
+
 export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends string | number> {
 	public readonly choices?: APIApplicationCommandOptionChoice<T>[];
 	public readonly autocomplete?: boolean;
