@@ -34,7 +34,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> implem
 	 * Sets the components in this action row
 	 * @param components The components to set this row to
 	 */
-	public setComponents(components: T[]) {
+	public setComponents(...components: T[]) {
 		Reflect.set(this, 'components', [...components]);
 		return this;
 	}

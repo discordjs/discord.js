@@ -4,9 +4,15 @@ import { validateMaxChoicesLength } from '../Assertions';
 
 const stringPredicate = z.string().min(1).max(100);
 const numberPredicate = z.number().gt(-Infinity).lt(Infinity);
-const choicesPredicate = z.tuple([stringPredicate, z.union([stringPredicate, numberPredicate])]).array();
+const choicesPredicate = z
+	.object({ name: stringPredicate, value: z.union([stringPredicate, numberPredicate]) })
+	.array();
 const booleanPredicate = z.boolean();
 
+export interface ChoiceData<T extends number | string> {
+	name: string;
+	value: T;
+}
 export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends string | number> {
 	public readonly choices?: APIApplicationCommandOptionChoice<T>[];
 	public readonly autocomplete?: boolean;
@@ -17,10 +23,11 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	/**
 	 * Adds a choice for this option
 	 *
-	 * @param name The name of the choice
-	 * @param value The value of the choice
+	 * @param choice The choice to add
 	 */
-	public addChoice(name: string, value: T): Omit<this, 'setAutocomplete'> {
+	public addChoice(choice: ChoiceData<T>): Omit<this, 'setAutocomplete'> {
+		const { name, value } = choice;
+
 		if (this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
@@ -51,19 +58,19 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	 *
 	 * @param choices The choices to add
 	 */
-	public addChoices(choices: [name: string, value: T][]): Omit<this, 'setAutocomplete'> {
+	public addChoices(...choices: ChoiceData<T>[]): Omit<this, 'setAutocomplete'> {
 		if (this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
 		choicesPredicate.parse(choices);
 
-		for (const [label, value] of choices) this.addChoice(label, value);
+		for (const { name, value } of choices) this.addChoice({ name, value });
 		return this;
 	}
 
-	public setChoices<Input extends [name: string, value: T][]>(
-		choices: Input,
+	public setChoices<Input extends ChoiceData<T>[]>(
+		...choices: Input
 	): Input extends []
 		? this & Pick<ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T>, 'setAutocomplete'>
 		: Omit<this, 'setAutocomplete'> {
@@ -74,7 +81,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 		choicesPredicate.parse(choices);
 
 		Reflect.set(this, 'choices', []);
-		for (const [label, value] of choices) this.addChoice(label, value);
+		for (const { name, value } of choices) this.addChoice({ name, value });
 
 		return this;
 	}
