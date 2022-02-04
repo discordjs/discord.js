@@ -231,15 +231,6 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * The URL to the channel
-   * @type {string}
-   * @readonly
-   */
-  get url() {
-    return `https://discord.com/channels/${this.guild.id}/${this.parent.id}/${this.id}`;
-  }
-
-  /**
    * Makes the client user join the thread.
    * @returns {Promise<ThreadChannel>}
    */
