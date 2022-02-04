@@ -9,8 +9,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        folder: ['builders', 'collection', 'discord.js', 'rest', 'voice']
-        package: ['@discordjs/builders', '@discordjs/collection', 'discord.js', '@discordjs/rest', '@discordjs/voice']
+        include:
+          - package: '@discordjs/builders'
+            folder: 'builders'
+          - package: '@discordjs/collection'
+            folder: 'collection'
+          - package: 'discord.js'
+            folder: 'discord.js'
+          - package: '@discordjs/rest'
+            folder: 'rest'
+          - package: '@discordjs/voice'
+            folder: 'voice'
     runs-on: ubuntu-latest
     if: github.repository_owner == 'discordjs'
     steps:
