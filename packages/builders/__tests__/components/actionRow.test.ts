@@ -5,7 +5,7 @@ describe('Action Row Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
 			expect(() => new ActionRow().addComponents(new ButtonComponent())).not.toThrowError();
-			expect(() => new ActionRow().setComponents([new ButtonComponent()])).not.toThrowError();
+			expect(() => new ActionRow().setComponents(new ButtonComponent())).not.toThrowError();
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
