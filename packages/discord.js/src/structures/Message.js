@@ -449,8 +449,8 @@ class Message extends Base {
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
-   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId';
-   * const collector = message.createReactionCollector({ filter, time: 15_000 });
+   * const reactionFilter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId';
+   * const collector = message.createReactionCollector({ filter: reactionFilter, time: 15_000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -471,8 +471,8 @@ class Message extends Base {
    * @returns {Promise<Collection<string | Snowflake, MessageReaction>>}
    * @example
    * // Create a reaction collector
-   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId'
-   * message.awaitReactions({ filter, time: 15_000 })
+   * const reactionFilter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId'
+   * message.awaitReactions({ filter: reactionFilter, time: 15_000 })
    *   .then(collected => console.log(`Collected ${collected.size} reactions`))
    *   .catch(console.error);
    */
@@ -500,8 +500,8 @@ class Message extends Base {
    * @returns {InteractionCollector}
    * @example
    * // Create a message component interaction collector
-   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-   * const collector = message.createMessageComponentCollector({ filter, time: 15_000 });
+   * const interactionFilter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * const collector = message.createMessageComponentCollector({ filter: interactionFilter, time: 15_000 });
    * collector.on('collect', i => console.log(`Collected ${i.customId}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -528,8 +528,8 @@ class Message extends Base {
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
-   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-   * message.awaitMessageComponent({ filter, time: 15_000 })
+   * const interactionFilter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * message.awaitMessageComponent({ filter: interactionFilter, time: 15_000 })
    *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */
