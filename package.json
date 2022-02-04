@@ -12,7 +12,7 @@
 		"postinstall": "is-ci || husky install",
 		"docs": "turbo run docs",
 		"changelog": "turbo run changelog",
-		"update": "yarn upgrade-interactive --latest"
+		"update": "yarn upgrade-interactive"
 	},
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
@@ -44,7 +44,7 @@
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^7.0.4",
 		"prettier": "^2.5.1",
-		"turbo": "1.1.1"
+		"turbo": "1.1.2"
 	},
 	"engines": {
 		"node": ">=16.9.0"
@@ -52,5 +52,5 @@
 	"workspaces": [
 		"packages/*"
 	],
-	"packageManager": "yarn@1.22.17"
+	"packageManager": "yarn@3.1.1"
 }

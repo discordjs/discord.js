@@ -9,6 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        folder: ['builders', 'collection', 'discord.js', 'rest', 'voice']
         package: ['@discordjs/builders', '@discordjs/collection', 'discord.js', '@discordjs/rest', '@discordjs/voice']
     runs-on: ubuntu-latest
     if: github.repository_owner == 'discordjs'
@@ -36,7 +37,7 @@ jobs:
       - name: Check previous released version
         id: pre-release
         run: |
-          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(jq --raw-output '.version' packages/${{ matrix.package }}/package.json).*.$(git rev-parse --short HEAD | cut -b1-3)") ]]; \
+          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json).*.$(git rev-parse --short HEAD | cut -b1-3)") ]]; \
           then echo '::set-output name=release::false'; \
           else echo '::set-output name=release::true'; fi
 
@@ -50,14 +51,14 @@ jobs:
 
       - name: Deprecate old versions
         if: steps.pre-release.outputs.release == 'true'
-        run: npm deprecate ${{ matrix.package }}@"~$(jq --raw-output '.version' packages/${{ matrix.package }}/package.json)" "no longer supported" || true
+        run: npm deprecate ${{ matrix.package }}@"~$(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json)" "no longer supported" || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
       - name: Publish
         if: steps.pre-release.outputs.release == 'true'
         run: |
-          yarn workspace ${{ matrix.package }} version --no-git-tag-version --new-version $(jq --raw-output '.version' packages/${{ matrix.package }}/package.json).$(date +%s).$(git rev-parse --short HEAD)
+          yarn workspace ${{ matrix.package }} version --no-git-tag-version --new-version $(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json).$(date +%s).$(git rev-parse --short HEAD)
           yarn workspace ${{ matrix.package }} publish --tag dev || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
