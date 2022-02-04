@@ -3,33 +3,45 @@ import {
 	ButtonStyle,
 	type APIMessageComponentEmoji,
 	type APIButtonComponent,
+	APIButtonComponentWithURL,
+	APIButtonComponentWithCustomId,
 } from 'discord-api-types/v9';
-import type { Component } from '../Component';
+import { Component } from '../Component';
 
-export class UnsafeButtonComponent implements Component {
-	public readonly type = ComponentType.Button as const;
-	public readonly style!: ButtonStyle;
-	public readonly label?: string;
-	public readonly emoji?: APIMessageComponentEmoji;
-	public readonly disabled?: boolean;
-	public readonly custom_id!: string;
-	public readonly url!: string;
+export class UnsafeButtonComponent extends Component {
+	protected declare data: APIButtonComponent;
 
 	public constructor(data?: APIButtonComponent & { type?: ComponentType.Button }) {
-		/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
-		this.style = data?.style as ButtonStyle;
-		this.label = data?.label;
-		this.emoji = data?.emoji;
-		this.disabled = data?.disabled;
+		super(data);
+		this.data.type ??= ComponentType.Button;
+	}
 
-		// This if/else makes typescript happy
-		if (data?.style === ButtonStyle.Link) {
-			this.url = data.url;
-		} else {
-			this.custom_id = data?.custom_id as string;
-		}
+	public get type(): ComponentType.Button {
+		return this.data.type;
+	}
 
-		/* eslint-enable @typescript-eslint/non-nullable-type-assertion-style */
+	public get style() {
+		return this.data.style;
+	}
+
+	public get label() {
+		return this.data.label;
+	}
+
+	public get emoji() {
+		return this.data.emoji;
+	}
+
+	public get disabled() {
+		return this.data.disabled;
+	}
+
+	public get customId() {
+		return (this.data as APIButtonComponentWithCustomId).custom_id;
+	}
+
+	public get url() {
+		return (this.data as APIButtonComponentWithURL).url;
 	}
 
 	/**
@@ -37,7 +49,7 @@ export class UnsafeButtonComponent implements Component {
 	 * @param style The style of the button
 	 */
 	public setStyle(style: ButtonStyle) {
-		Reflect.set(this, 'style', style);
+		this.data.style = style;
 		return this;
 	}
 
@@ -46,7 +58,7 @@ export class UnsafeButtonComponent implements Component {
 	 * @param url The URL to open when this button is clicked
 	 */
 	public setURL(url: string) {
-		Reflect.set(this, 'url', url);
+		(this.data as APIButtonComponentWithURL).url = url;
 		return this;
 	}
 
@@ -55,7 +67,7 @@ export class UnsafeButtonComponent implements Component {
 	 * @param customId The custom ID to use for this button
 	 */
 	public setCustomId(customId: string) {
-		Reflect.set(this, 'custom_id', customId);
+		(this.data as APIButtonComponentWithCustomId).custom_id = customId;
 		return this;
 	}
 
@@ -64,7 +76,7 @@ export class UnsafeButtonComponent implements Component {
 	 * @param emoji The emoji to display on this button
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
-		Reflect.set(this, 'emoji', emoji);
+		this.data.emoji = emoji;
 		return this;
 	}
 
@@ -73,7 +85,7 @@ export class UnsafeButtonComponent implements Component {
 	 * @param disabled Whether or not to disable this button or not
 	 */
 	public setDisabled(disabled: boolean) {
-		Reflect.set(this, 'disabled', disabled);
+		this.data.disabled = disabled;
 		return this;
 	}
 
@@ -82,13 +94,13 @@ export class UnsafeButtonComponent implements Component {
 	 * @param label The label to display on this button
 	 */
 	public setLabel(label: string) {
-		Reflect.set(this, 'label', label);
+		this.data.label = label;
 		return this;
 	}
 
 	public toJSON(): APIButtonComponent {
 		return {
-			...this,
+			...this.data,
 		};
 	}
 }

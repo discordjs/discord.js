@@ -1,14 +1,4 @@
-import type {
-	APIEmbed,
-	APIEmbedAuthor,
-	APIEmbedField,
-	APIEmbedFooter,
-	APIEmbedImage,
-	APIEmbedProvider,
-	APIEmbedThumbnail,
-	APIEmbedVideo,
-} from 'discord-api-types/v9';
-import type { JSONEncodable } from '../../util/jsonEncodable';
+import type { APIEmbed, APIEmbedField } from 'discord-api-types/v9';
 
 export interface AuthorOptions {
 	name: string;
@@ -21,81 +11,98 @@ export interface FooterOptions {
 	iconURL?: string;
 }
 
-export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
+export class UnsafeEmbed implements APIEmbed {
+	protected data!: APIEmbed;
+
+	public constructor(data: APIEmbed = {}) {
+		this.data = data;
+		this.data.fields = data.fields ?? [];
+
+		if (data.timestamp) this.data.timestamp = new Date(data.timestamp).toISOString();
+	}
+
 	/**
 	 * An array of fields of this embed
 	 */
-	public readonly fields: APIEmbedField[];
+	public get fields() {
+		return this.data.fields ?? [];
+	}
 
 	/**
 	 * The embed title
 	 */
-	public readonly title?: string;
+	public get title() {
+		return this.data.title;
+	}
 
 	/**
 	 * The embed description
 	 */
-	public readonly description?: string;
+	public get description() {
+		return this.data.description;
+	}
 
 	/**
 	 * The embed url
 	 */
-	public readonly url?: string;
+	public get url() {
+		return this.data.url;
+	}
 
 	/**
 	 * The embed color
 	 */
-	public readonly color?: number;
+	public get color() {
+		return this.data.color;
+	}
 
 	/**
 	 * The timestamp of the embed in the ISO format
 	 */
-	public readonly timestamp?: string;
+	public get timestamp() {
+		return this.data.timestamp;
+	}
 
 	/**
 	 * The embed thumbnail data
 	 */
-	public readonly thumbnail?: APIEmbedThumbnail;
+	public get thumbnail() {
+		return this.data.thumbnail;
+	}
 
 	/**
 	 * The embed image data
 	 */
-	public readonly image?: APIEmbedImage;
+	public get image() {
+		return this.data.image;
+	}
 
 	/**
 	 * Received video data
 	 */
-	public readonly video?: APIEmbedVideo;
+	public get video() {
+		return this.data.video;
+	}
 
 	/**
 	 * The embed author data
 	 */
-	public readonly author?: APIEmbedAuthor;
+	public get author() {
+		return this.data.author;
+	}
 
 	/**
 	 * Received data about the embed provider
 	 */
-	public readonly provider?: APIEmbedProvider;
+	public get provider() {
+		return this.data.provider;
+	}
 
 	/**
 	 * The embed footer data
 	 */
-	public readonly footer?: APIEmbedFooter;
-
-	public constructor(data: APIEmbed = {}) {
-		this.title = data.title;
-		this.description = data.description;
-		this.url = data.url;
-		this.color = data.color;
-		this.thumbnail = data.thumbnail;
-		this.image = data.image;
-		this.video = data.video;
-		this.author = data.author;
-		this.provider = data.provider;
-		this.footer = data.footer;
-		this.fields = data.fields ?? [];
-
-		if (data.timestamp) this.timestamp = new Date(data.timestamp).toISOString();
+	public get footer() {
+		return this.data.footer;
 	}
 
 	/**
@@ -158,11 +165,11 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 */
 	public setAuthor(options: AuthorOptions | null): this {
 		if (options === null) {
-			Reflect.set(this, 'author', undefined);
+			this.data.author = undefined;
 			return this;
 		}
 
-		Reflect.set(this, 'author', { name: options.name, url: options.url, icon_url: options.iconURL });
+		this.data.author = { name: options.name, url: options.url, icon_url: options.iconURL };
 		return this;
 	}
 
@@ -172,7 +179,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param color The color of the embed
 	 */
 	public setColor(color: number | null): this {
-		Reflect.set(this, 'color', color ?? undefined);
+		this.data.color = color ?? undefined;
 		return this;
 	}
 
@@ -182,7 +189,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param description The description
 	 */
 	public setDescription(description: string | null): this {
-		Reflect.set(this, 'description', description ?? undefined);
+		this.data.description = description ?? undefined;
 		return this;
 	}
 
@@ -193,11 +200,11 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 */
 	public setFooter(options: FooterOptions | null): this {
 		if (options === null) {
-			Reflect.set(this, 'footer', undefined);
+			this.data.footer = undefined;
 			return this;
 		}
 
-		Reflect.set(this, 'footer', { text: options.text, icon_url: options.iconURL });
+		this.data.footer = { text: options.text, icon_url: options.iconURL };
 		return this;
 	}
 
@@ -207,7 +214,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param url The URL of the image
 	 */
 	public setImage(url: string | null): this {
-		Reflect.set(this, 'image', url ? { url } : undefined);
+		this.data.image = url ? { url } : undefined;
 		return this;
 	}
 
@@ -217,7 +224,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param url The URL of the thumbnail
 	 */
 	public setThumbnail(url: string | null): this {
-		Reflect.set(this, 'thumbnail', url ? { url } : undefined);
+		this.data.thumbnail = url ? { url } : undefined;
 		return this;
 	}
 
@@ -227,7 +234,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param timestamp The timestamp or date
 	 */
 	public setTimestamp(timestamp: number | Date | null = Date.now()): this {
-		Reflect.set(this, 'timestamp', timestamp ? new Date(timestamp).toISOString() : undefined);
+		this.data.timestamp = timestamp ? new Date(timestamp).toISOString() : undefined;
 		return this;
 	}
 
@@ -237,7 +244,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param title The title
 	 */
 	public setTitle(title: string | null): this {
-		Reflect.set(this, 'title', title ?? undefined);
+		this.data.title = title ?? undefined;
 		return this;
 	}
 
@@ -247,7 +254,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param url The URL
 	 */
 	public setURL(url: string | null): this {
-		Reflect.set(this, 'url', url ?? undefined);
+		this.data.url = url ?? undefined;
 		return this;
 	}
 
@@ -255,7 +262,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * Transforms the embed to a plain object
 	 */
 	public toJSON(): APIEmbed {
-		return { ...this };
+		return { ...this.data };
 	}
 
 	/**

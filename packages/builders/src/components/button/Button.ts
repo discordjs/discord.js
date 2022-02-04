@@ -36,7 +36,7 @@ export class ButtonComponent extends UnsafeButtonComponent {
 	}
 
 	public override toJSON(): APIButtonComponent {
-		validateRequiredButtonParameters(this.style, this.label, this.emoji, this.custom_id, this.url);
+		validateRequiredButtonParameters(this.style, this.label, this.emoji, this.customId, this.url);
 		return super.toJSON();
 	}
 }

@@ -1,6 +1,6 @@
-import { APIActionRowComponent, ComponentType } from 'discord-api-types/v9';
+import { type APIActionRowComponent, ComponentType } from 'discord-api-types/v9';
 import type { ButtonComponent, SelectMenuComponent } from '..';
-import type { Component } from './Component';
+import { Component } from './Component';
 import { createComponent } from './Components';
 
 export type MessageComponent = ActionRowComponent | ActionRow;
@@ -12,12 +12,18 @@ export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
 /**
  * Represents an action row component
  */
-export class ActionRow<T extends ActionRowComponent = ActionRowComponent> implements Component {
+export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends Component {
+	protected declare data: APIActionRowComponent;
 	public readonly components: T[] = [];
-	public readonly type = ComponentType.ActionRow;
 
 	public constructor(data?: APIActionRowComponent & { type?: ComponentType.ActionRow }) {
+		super(data);
+		this.data.type ??= ComponentType.ActionRow;
 		this.components = (data?.components.map(createComponent) ?? []) as T[];
+	}
+
+	public get type(): ComponentType.ActionRow {
+		return this.data.type;
 	}
 
 	/**
@@ -35,13 +41,14 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> implem
 	 * @param components The components to set this row to
 	 */
 	public setComponents(components: T[]) {
-		Reflect.set(this, 'components', [...components]);
+		this.components.slice(0, this.components.length);
+		this.components.push(...components);
 		return this;
 	}
 
 	public toJSON(): APIActionRowComponent {
 		return {
-			...this,
+			...this.data,
 			components: this.components.map((component) => component.toJSON()),
 		};
 	}
