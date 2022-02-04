@@ -63,7 +63,7 @@ class Channel extends Base {
    * @readonly
    */
   get url() {
-    return `https://discord.com/channels/${this.isDMBased() ? '@me' : this.guild.id}/${this.id}`;
+    return `https://discord.com/channels/${this.isDMBased() ? '@me' : this.guildId}/${this.id}`;
   }
 
   /**
