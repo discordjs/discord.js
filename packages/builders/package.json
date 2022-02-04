@@ -63,7 +63,6 @@
 		"@babel/preset-env": "^7.16.11",
 		"@babel/preset-typescript": "^7.16.5",
 		"@discordjs/ts-docgen": "^0.3.4",
-		"@swc/core": "^1.2.136",
 		"@types/jest": "^27.0.3",
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "^5.10.2",
