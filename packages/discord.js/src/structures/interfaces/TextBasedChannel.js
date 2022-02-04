@@ -194,8 +194,8 @@ class TextBasedChannel {
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const filter = m => m.content.includes('discord');
-   * const collector = channel.createMessageCollector({ filter, time: 15_000 });
+   * const messageFilter = m => m.content.includes('discord');
+   * const collector = channel.createMessageCollector({ filter: messageFilter, time: 15_000 });
    * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -216,9 +216,9 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Await !vote messages
-   * const filter = m => m.content.startsWith('!vote');
+   * const messageFilter = m => m.content.startsWith('!vote');
    * // Errors: ['time'] treats ending because of the time limit as an error
-   * channel.awaitMessages({ filter, max: 4, time: 60_000, errors: ['time'] })
+   * channel.awaitMessages({ filter: messageFilter, max: 4, time: 60_000, errors: ['time'] })
    *   .then(collected => console.log(collected.size))
    *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
@@ -241,8 +241,8 @@ class TextBasedChannel {
    * @returns {InteractionCollector}
    * @example
    * // Create a button interaction collector
-   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-   * const collector = channel.createMessageComponentCollector({ filter, time: 15_000 });
+   * const interactionFilter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * const collector = channel.createMessageComponentCollector({ filter: interactionFilter, time: 15_000 });
    * collector.on('collect', i => console.log(`Collected ${i.customId}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -261,8 +261,8 @@ class TextBasedChannel {
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
-   * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-   * channel.awaitMessageComponent({ filter, time: 15_000 })
+   * const messageFilter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
+   * channel.awaitMessageComponent({ filter: messageFilter, time: 15_000 })
    *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */
