@@ -33,7 +33,7 @@ class BaseGuild extends Base {
 
     /**
      * An array of features available to this guild
-     * @type {Features[]}
+     * @type {GuildFeature[]}
      */
     this.features = data.features;
   }
