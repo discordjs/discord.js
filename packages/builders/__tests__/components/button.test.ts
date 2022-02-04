@@ -5,7 +5,7 @@ import {
 	ComponentType,
 } from 'discord-api-types/v9';
 import { buttonLabelValidator, buttonStyleValidator } from '../../src/components/Assertions';
-import { ButtonComponent } from '../../src/components/Button';
+import { ButtonComponent } from '../../src/components/button/Button';
 
 const buttonComponent = () => new ButtonComponent();
 

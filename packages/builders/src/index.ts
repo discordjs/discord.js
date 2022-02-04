@@ -1,14 +1,18 @@
 export * as EmbedAssertions from './messages/embed/Assertions';
 export * from './messages/embed/Embed';
 export * from './messages/formatters';
+export * from './messages/embed/UnsafeEmbed';
 
 export * as ComponentAssertions from './components/Assertions';
 export * from './components/ActionRow';
-export * from './components/Button';
+export * from './components/button/Button';
 export * from './components/Component';
 export * from './components/Components';
 export * from './components/selectMenu/SelectMenu';
 export * from './components/selectMenu/SelectMenuOption';
+export * from './components/button/UnsafeButton';
+export * from './components/selectMenu/UnsafeSelectMenu';
+export * from './components/selectMenu/UnsafeSelectMenuOption';
 
 export * as SlashCommandAssertions from './interactions/slashCommands/Assertions';
 export * from './interactions/slashCommands/SlashCommandBuilder';

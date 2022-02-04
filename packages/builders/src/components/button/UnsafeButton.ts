@@ -1,16 +1,12 @@
-import { APIButtonComponent, APIMessageComponentEmoji, ButtonStyle, ComponentType } from 'discord-api-types/v9';
 import {
-	buttonLabelValidator,
-	buttonStyleValidator,
-	customIdValidator,
-	disabledValidator,
-	emojiValidator,
-	urlValidator,
-	validateRequiredButtonParameters,
-} from './Assertions';
-import type { Component } from './Component';
+	ComponentType,
+	ButtonStyle,
+	type APIMessageComponentEmoji,
+	type APIButtonComponent,
+} from 'discord-api-types/v9';
+import type { Component } from '../Component';
 
-export class ButtonComponent implements Component {
+export class UnsafeButtonComponent implements Component {
 	public readonly type = ComponentType.Button as const;
 	public readonly style!: ButtonStyle;
 	public readonly label?: string;
@@ -41,7 +37,6 @@ export class ButtonComponent implements Component {
 	 * @param style The style of the button
 	 */
 	public setStyle(style: ButtonStyle) {
-		buttonStyleValidator.parse(style);
 		Reflect.set(this, 'style', style);
 		return this;
 	}
@@ -51,7 +46,6 @@ export class ButtonComponent implements Component {
 	 * @param url The URL to open when this button is clicked
 	 */
 	public setURL(url: string) {
-		urlValidator.parse(url);
 		Reflect.set(this, 'url', url);
 		return this;
 	}
@@ -61,7 +55,6 @@ export class ButtonComponent implements Component {
 	 * @param customId The custom ID to use for this button
 	 */
 	public setCustomId(customId: string) {
-		customIdValidator.parse(customId);
 		Reflect.set(this, 'custom_id', customId);
 		return this;
 	}
@@ -71,7 +64,6 @@ export class ButtonComponent implements Component {
 	 * @param emoji The emoji to display on this button
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
-		emojiValidator.parse(emoji);
 		Reflect.set(this, 'emoji', emoji);
 		return this;
 	}
@@ -81,7 +73,6 @@ export class ButtonComponent implements Component {
 	 * @param disabled Whether or not to disable this button or not
 	 */
 	public setDisabled(disabled: boolean) {
-		disabledValidator.parse(disabled);
 		Reflect.set(this, 'disabled', disabled);
 		return this;
 	}
@@ -91,13 +82,11 @@ export class ButtonComponent implements Component {
 	 * @param label The label to display on this button
 	 */
 	public setLabel(label: string) {
-		buttonLabelValidator.parse(label);
 		Reflect.set(this, 'label', label);
 		return this;
 	}
 
 	public toJSON(): APIButtonComponent {
-		validateRequiredButtonParameters(this.style, this.label, this.emoji, this.custom_id, this.url);
 		return {
 			...this,
 		};
