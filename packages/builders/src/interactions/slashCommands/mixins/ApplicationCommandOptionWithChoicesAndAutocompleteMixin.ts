@@ -61,7 +61,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 
 		choicesPredicate.parse(choices);
 
-		for (const { name, value } of choices) this.addChoice({ name, value });
+		for (const entry of choices) this.addChoice(entry);
 		return this;
 	}
 
@@ -77,7 +77,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 		choicesPredicate.parse(choices);
 
 		Reflect.set(this, 'choices', []);
-		for (const { name, value } of choices) this.addChoice({ name, value });
+		for (const entry of choices) this.addChoice(entry);
 
 		return this;
 	}
