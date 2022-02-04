@@ -230,6 +230,15 @@ class ThreadChannel extends Channel {
     return this.guild.channels.resolve(this.parentId);
   }
 
+    /**
+     * The URL to the channel
+     * @type {String}
+     * @readonly
+     */
+    get url() {
+      return `https://discord.com/channels/${this.guild.id}/${this.parent.id}/${this.id}`;
+    }
+
   /**
    * Makes the client user join the thread.
    * @returns {Promise<ThreadChannel>}

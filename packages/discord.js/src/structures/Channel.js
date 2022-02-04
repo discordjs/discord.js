@@ -58,6 +58,15 @@ class Channel extends Base {
   }
 
   /**
+   * The URL to the channel
+   * @type {String}
+   * @readonly
+   */
+  get url() {
+    return `https://discord.com/channels/${this.isDM() ? "@me" : this.guild.id}/${this.id}`;
+  }
+
+  /**
    * Whether this Channel is a partial
    * <info>This is always false outside of DM channels.</info>
    * @type {boolean}
