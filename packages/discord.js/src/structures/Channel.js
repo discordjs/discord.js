@@ -59,11 +59,11 @@ class Channel extends Base {
 
   /**
    * The URL to the channel
-   * @type {String}
+   * @type {string}
    * @readonly
    */
   get url() {
-    return `https://discord.com/channels/${this.isDM() ? "@me" : this.guild.id}/${this.id}`;
+    return `https://discord.com/channels/${this.isDM() ? '@me' : this.guild.id}/${this.id}`;
   }
 
   /**
