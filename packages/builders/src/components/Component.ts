@@ -4,9 +4,20 @@ import type { JSONEncodable } from '../util/jsonEncodable';
 /**
  * Represents a discord component
  */
-export interface Component extends JSONEncodable<APIMessageComponent> {
+export abstract class Component implements JSONEncodable<APIMessageComponent> {
+	/**
+	 * The api data associated with this component
+	 */
+	protected data!: APIMessageComponent;
+
 	/**
 	 * The type of this component
 	 */
-	readonly type: ComponentType;
+	public abstract readonly type: ComponentType;
+
+	public constructor(data: APIMessageComponent & { type?: ComponentType } = {} as APIMessageComponent) {
+		this.data = data;
+	}
+
+	public abstract toJSON(): APIMessageComponent;
 }

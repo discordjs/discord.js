@@ -12,7 +12,12 @@ module.exports = {
 				modules: 'commonjs',
 			},
 		],
-		'@babel/preset-typescript',
+		[
+			'@babel/preset-typescript',
+			{
+				allowDeclareFields: true,
+			},
+		],
 	],
 	plugins: ['babel-plugin-transform-typescript-metadata', ['@babel/plugin-proposal-decorators', { legacy: true }]],
 };

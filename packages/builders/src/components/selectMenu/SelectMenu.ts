@@ -33,7 +33,7 @@ export class SelectMenuComponent extends UnsafeSelectMenuComponent {
 	}
 
 	public override toJSON(): APISelectMenuComponent {
-		validateRequiredSelectMenuParameters(this.options, this.custom_id);
+		validateRequiredSelectMenuParameters(this.options, this.customId);
 		return super.toJSON();
 	}
 }
