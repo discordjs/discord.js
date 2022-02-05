@@ -70,4 +70,4 @@ jobs:
           yarn workspace ${{ matrix.package }} version $(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json).$(date +%s).$(git rev-parse --short HEAD)
           yarn workspace ${{ matrix.package }} npm publish --tag dev || true
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
