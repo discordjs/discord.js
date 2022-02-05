@@ -1,18 +1,31 @@
-import type { APIEmbed, APIEmbedField } from 'discord-api-types/v9';
+import type { APIEmbed, APIEmbedField, APIEmbedVideo } from 'discord-api-types/v9';
 
-export interface AuthorOptions {
+export interface EmbedAuthorData {
 	name: string;
 	url?: string;
 	iconURL?: string;
+	proxyIconURL?: string;
 }
 
-export interface FooterOptions {
+export type EmbedAuthorOptions = Omit<EmbedAuthorData, 'proxyIconURL'>;
+
+export interface EmbedFooterData {
 	text: string;
 	iconURL?: string;
+	proxyIconURL?: string;
+}
+
+export type EmbedFooterOptions = Omit<EmbedFooterData, 'proxyIconURL'>;
+
+export interface EmbedImageData {
+	url: string;
+	proxyURL?: string;
+	height?: number;
+	width?: number;
 }
 
 export class UnsafeEmbed {
-	protected data!: APIEmbed;
+	protected data: APIEmbed;
 
 	public constructor(data: APIEmbed = {}) {
 		this.data = { fields: [], ...data };
@@ -64,43 +77,47 @@ export class UnsafeEmbed {
 	/**
 	 * The embed thumbnail data
 	 */
-	public get thumbnail() {
+	public get thumbnail(): EmbedImageData | undefined {
+		if (!this.data.thumbnail) return undefined;
 		return {
-			url: this.data.thumbnail?.url,
-			proxyURL: this.data.thumbnail?.proxy_url,
-			height: this.data.thumbnail?.height,
-			width: this.data.thumbnail?.width,
+			url: this.data.thumbnail.url,
+			proxyURL: this.data.thumbnail.proxy_url,
+			height: this.data.thumbnail.height,
+			width: this.data.thumbnail.width,
 		};
 	}
 
 	/**
 	 * The embed image data
 	 */
-	public get image() {
+	public get image(): EmbedImageData | undefined {
+		if (!this.data.image) return undefined;
 		return {
-			url: this.data.image?.url,
-			proxyURL: this.data.image?.proxy_url,
-			height: this.data.image?.height,
-			width: this.data.image?.width,
+			url: this.data.image.url,
+			proxyURL: this.data.image.proxy_url,
+			height: this.data.image.height,
+			width: this.data.image.width,
 		};
 	}
 
 	/**
 	 * Received video data
 	 */
-	public get video() {
+	public get video(): APIEmbedVideo | undefined {
+		if (!this.data.video) return undefined;
 		return this.data.video;
 	}
 
 	/**
 	 * The embed author data
 	 */
-	public get author() {
+	public get author(): EmbedAuthorData | undefined {
+		if (!this.data.author) return undefined;
 		return {
-			name: this.data.author?.name,
-			url: this.data.author?.url,
-			iconURL: this.data.author?.icon_url,
-			proxyIconURL: this.data.author?.proxy_icon_url,
+			name: this.data.author.name,
+			url: this.data.author.url,
+			iconURL: this.data.author.icon_url,
+			proxyIconURL: this.data.author.proxy_icon_url,
 		};
 	}
 
@@ -114,11 +131,12 @@ export class UnsafeEmbed {
 	/**
 	 * The embed footer data
 	 */
-	public get footer() {
+	public get footer(): EmbedFooterData | undefined {
+		if (!this.data.footer) return undefined;
 		return {
-			text: this.data.footer?.text,
-			iconURL: this.data.footer?.icon_url,
-			proxyIconURL: this.data.footer?.proxy_icon_url,
+			text: this.data.footer.text,
+			iconURL: this.data.footer.icon_url,
+			proxyIconURL: this.data.footer.proxy_icon_url,
 		};
 	}
 
@@ -130,8 +148,8 @@ export class UnsafeEmbed {
 			(this.title?.length ?? 0) +
 			(this.description?.length ?? 0) +
 			this.fields.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) +
-			(this.footer.text?.length ?? 0) +
-			(this.author.name?.length ?? 0)
+			(this.footer?.text.length ?? 0) +
+			(this.author?.name.length ?? 0)
 		);
 	}
 
@@ -180,7 +198,7 @@ export class UnsafeEmbed {
 	 *
 	 * @param options The options for the author
 	 */
-	public setAuthor(options: AuthorOptions | null): this {
+	public setAuthor(options: EmbedAuthorOptions | null): this {
 		if (options === null) {
 			this.data.author = undefined;
 			return this;
@@ -215,7 +233,7 @@ export class UnsafeEmbed {
 	 *
 	 * @param options The options for the footer
 	 */
-	public setFooter(options: FooterOptions | null): this {
+	public setFooter(options: EmbedFooterOptions | null): this {
 		if (options === null) {
 			this.data.footer = undefined;
 			return this;

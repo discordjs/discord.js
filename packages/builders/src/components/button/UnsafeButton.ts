@@ -8,9 +8,7 @@ import {
 } from 'discord-api-types/v9';
 import { Component } from '../Component';
 
-export class UnsafeButtonComponent extends Component {
-	protected declare data: APIButtonComponent;
-
+export class UnsafeButtonComponent extends Component<APIButtonComponent> {
 	public constructor(data?: APIButtonComponent) {
 		super({ type: ComponentType.Button, ...data });
 	}

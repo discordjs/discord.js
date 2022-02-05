@@ -12,8 +12,7 @@ export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
 /**
  * Represents an action row component
  */
-export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends Component {
-	protected declare data: APIActionRowComponent;
+export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends Component<APIActionRowComponent> {
 	public readonly components: T[] = [];
 
 	public constructor(data?: APIActionRowComponent & { type?: ComponentType.ActionRow }) {
