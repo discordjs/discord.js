@@ -4,14 +4,13 @@ const { Buffer } = require('node:buffer');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes } = require('discord-api-types/v9');
+const { Routes, GatewayOpcodes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { Error, TypeError, RangeError } = require('../errors');
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
 const Events = require('../util/Events');
-const Opcodes = require('../util/Opcodes');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -431,7 +430,7 @@ class GuildMemberManager extends CachedManager {
       if (!query && !user_ids) query = '';
       if (nonce.length > 32) throw new RangeError('MEMBER_FETCH_NONCE_LENGTH');
       this.guild.shard.send({
-        op: Opcodes.RequestGuildMembers,
+        op: GatewayOpcodes.RequestGuildMembers,
         d: {
           guild_id: this.guild.id,
           presences,

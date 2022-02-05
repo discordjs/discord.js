@@ -2,12 +2,11 @@
 
 const EventEmitter = require('node:events');
 const { setTimeout, setInterval, clearTimeout, clearInterval } = require('node:timers');
-const { GatewayIntentBits } = require('discord-api-types/v9');
+const { GatewayIntentBits, GatewayOpcodes } = require('discord-api-types/v9');
 const WebSocket = require('../../WebSocket');
 const { WSEvents } = require('../../util/Constants');
 const Events = require('../../util/Events');
 const IntentsBitField = require('../../util/IntentsBitField');
-const Opcodes = require('../../util/Opcodes');
 const ShardEvents = require('../../util/ShardEvents');
 const Status = require('../../util/Status');
 
@@ -302,7 +301,7 @@ class WebSocketShard extends EventEmitter {
       return;
     }
     this.manager.client.emit(Events.Raw, packet, this.id);
-    if (packet.op === Opcodes.Dispatch) this.manager.emit(packet.t, packet.d, this.id);
+    if (packet.op === GatewayOpcodes.Dispatch) this.manager.emit(packet.t, packet.d, this.id);
     this.onPacket(packet);
   }
 
@@ -414,16 +413,16 @@ class WebSocketShard extends EventEmitter {
     if (packet.s > this.sequence) this.sequence = packet.s;
 
     switch (packet.op) {
-      case Opcodes.Hello:
+      case GatewayOpcodes.Hello:
         this.setHelloTimeout(-1);
         this.setHeartbeatTimer(packet.d.heartbeat_interval);
         this.identify();
         break;
-      case Opcodes.Reconnect:
+      case GatewayOpcodes.Reconnect:
         this.debug('[RECONNECT] Discord asked us to reconnect');
         this.destroy({ closeCode: 4_000 });
         break;
-      case Opcodes.InvalidSession:
+      case GatewayOpcodes.InvalidSession:
         this.debug(`[INVALID SESSION] Resumable: ${packet.d}.`);
         // If we can resume the session, do so immediately
         if (packet.d) {
@@ -439,10 +438,10 @@ class WebSocketShard extends EventEmitter {
         // Finally, emit the INVALID_SESSION event
         this.emit(ShardEvents.InvalidSession);
         break;
-      case Opcodes.HeartbeatAck:
+      case GatewayOpcodes.HeartbeatAck:
         this.ackHeartbeat();
         break;
-      case Opcodes.Heartbeat:
+      case GatewayOpcodes.Heartbeat:
         this.sendHeartbeat('HeartbeatRequest', true);
         break;
       default:
@@ -576,7 +575,7 @@ class WebSocketShard extends EventEmitter {
     this.debug(`[${tag}] Sending a heartbeat.`);
     this.lastHeartbeatAcked = false;
     this.lastPingTimestamp = Date.now();
-    this.send({ op: Opcodes.Heartbeat, d: this.sequence }, true);
+    this.send({ op: GatewayOpcodes.Heartbeat, d: this.sequence }, true);
   }
 
   /**
@@ -621,7 +620,7 @@ class WebSocketShard extends EventEmitter {
     };
 
     this.debug(`[IDENTIFY] Shard ${this.id}/${client.options.shardCount} with intents: ${d.intents}`);
-    this.send({ op: Opcodes.Identify, d }, true);
+    this.send({ op: GatewayOpcodes.Identify, d }, true);
   }
 
   /**
@@ -645,7 +644,7 @@ class WebSocketShard extends EventEmitter {
       seq: this.closeSequence,
     };
 
-    this.send({ op: Opcodes.Resume, d }, true);
+    this.send({ op: GatewayOpcodes.Resume, d }, true);
   }
 
   /**
