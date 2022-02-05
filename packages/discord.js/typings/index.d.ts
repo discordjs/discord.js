@@ -3757,21 +3757,6 @@ export declare const Events: {
   GuildScheduledEventUserRemove: 'guildScheduledEventUserRemove';
 };
 
-export enum Opcodes {
-  Dispatch = 0,
-  Heartbeat = 1,
-  Identify = 2,
-  StatusUpdate = 3,
-  VoiceStateUpdate = 4,
-  VoiceGuildPing = 5,
-  Resume = 6,
-  Reconnect = 7,
-  RequestGuildMembers = 8,
-  InvalidSession = 9,
-  Hello = 10,
-  HeartbeatAck = 11,
-}
-
 export enum ShardEvents {
   Close = 'close',
   Destroyed = 'destroyed',

@@ -100,7 +100,6 @@ import {
   Events,
   ShardEvents,
   Status,
-  Opcodes,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -860,7 +859,6 @@ reactionCollector.on('dispose', (...args) => {
 expectAssignable<'messageCreate'>(Events.MessageCreate);
 expectAssignable<'close'>(ShardEvents.Close);
 expectAssignable<1>(Status.Connecting);
-expectAssignable<0>(Opcodes.Dispatch);
 
 declare const applicationCommandData: ApplicationCommandData;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;
