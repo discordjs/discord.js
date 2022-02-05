@@ -62,7 +62,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 		return this;
 	}
 
-	public setChoices(choices: [name: string, value: T][]) {
+	public setChoices(choices: [name: string, value: T][]): this {
 		if (choices.length > 0 && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
@@ -79,7 +79,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	 * Marks the option as autocompletable
 	 * @param autocomplete If this option should be autocompletable
 	 */
-	public setAutocomplete(autocomplete: boolean) {
+	public setAutocomplete(autocomplete: boolean): this {
 		// Assert that you actually passed a boolean
 		booleanPredicate.parse(autocomplete);
 
