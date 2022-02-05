@@ -2,9 +2,8 @@
 
 const EventEmitter = require('node:events');
 const { setTimeout, setInterval, clearTimeout, clearInterval } = require('node:timers');
-const { GatewayIntentBits, GatewayOpcodes } = require('discord-api-types/v9');
+const { GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes } = require('discord-api-types/v9');
 const WebSocket = require('../../WebSocket');
-const { WSEvents } = require('../../util/Constants');
 const Events = require('../../util/Events');
 const IntentsBitField = require('../../util/IntentsBitField');
 const ShardEvents = require('../../util/ShardEvents');
@@ -380,7 +379,7 @@ class WebSocketShard extends EventEmitter {
     }
 
     switch (packet.t) {
-      case WSEvents.READY:
+      case GatewayDispatchEvents.Ready:
         /**
          * Emitted when the shard receives the READY payload and is now waiting for guilds
          * @event WebSocketShard#ready
@@ -394,7 +393,7 @@ class WebSocketShard extends EventEmitter {
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat('ReadyHeartbeat');
         break;
-      case WSEvents.RESUMED: {
+      case GatewayDispatchEvents.Resumed: {
         /**
          * Emitted when the shard resumes successfully
          * @event WebSocketShard#resumed
@@ -446,7 +445,7 @@ class WebSocketShard extends EventEmitter {
         break;
       default:
         this.manager.handlePacket(packet, this);
-        if (this.status === Status.WaitingForGuilds && packet.t === WSEvents.GUILD_CREATE) {
+        if (this.status === Status.WaitingForGuilds && packet.t === GatewayDispatchEvents.GuildCreate) {
           this.expectedGuilds.delete(packet.d.id);
           this.checkReady();
         }

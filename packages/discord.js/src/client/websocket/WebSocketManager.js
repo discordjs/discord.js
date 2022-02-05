@@ -4,30 +4,35 @@ const EventEmitter = require('node:events');
 const { setImmediate } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
-const { Routes, RPCErrorCodes } = require('discord-api-types/v9');
+const { GatewayCloseCodes, GatewayDispatchEvents, Routes } = require('discord-api-types/v9');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error } = require('../../errors');
-const { WSCodes, WSEvents } = require('../../util/Constants');
 const Events = require('../../util/Events');
 const ShardEvents = require('../../util/ShardEvents');
 const Status = require('../../util/Status');
 
 const BeforeReadyWhitelist = [
-  WSEvents.READY,
-  WSEvents.RESUMED,
-  WSEvents.GUILD_CREATE,
-  WSEvents.GUILD_DELETE,
-  WSEvents.GUILD_MEMBERS_CHUNK,
-  WSEvents.GUILD_MEMBER_ADD,
-  WSEvents.GUILD_MEMBER_REMOVE,
+  GatewayDispatchEvents.Ready,
+  GatewayDispatchEvents.Resumed,
+  GatewayDispatchEvents.GuildCreate,
+  GatewayDispatchEvents.GuildDelete,
+  GatewayDispatchEvents.GuildMembersChunk,
+  GatewayDispatchEvents.GuildMemberAdd,
+  GatewayDispatchEvents.GuildMemberRemove,
 ];
 
-const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(1).map(Number);
+const UNRECOVERABLE_CLOSE_CODES = [
+  GatewayCloseCodes.AuthenticationFailed,
+  GatewayCloseCodes.InvalidShard,
+  GatewayCloseCodes.ShardingRequired,
+  GatewayCloseCodes.InvalidIntents,
+  GatewayCloseCodes.DisallowedIntents,
+];
 const UNRESUMABLE_CLOSE_CODES = [
-  RPCErrorCodes.UnknownError,
-  RPCErrorCodes.InvalidPermissions,
-  RPCErrorCodes.InvalidClientId,
+  GatewayCloseCodes.UnknownError,
+  GatewayCloseCodes.AlreadyAuthenticated,
+  GatewayCloseCodes.InvalidSeq,
 ];
 
 /**
@@ -129,7 +134,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   async connect() {
-    const invalidToken = new Error(WSCodes[4004]);
+    const invalidToken = new Error(GatewayCloseCodes[GatewayCloseCodes.AuthenticationFailed]);
     const {
       url: gatewayURL,
       shards: recommendedShards,
@@ -201,7 +206,7 @@ class WebSocketManager extends EventEmitter {
            * @param {number} id The shard id that disconnected
            */
           this.client.emit(Events.ShardDisconnect, event, shard.id);
-          this.debug(WSCodes[event.code], shard);
+          this.debug(GatewayCloseCodes[event.code], shard);
           return;
         }
 
@@ -250,7 +255,7 @@ class WebSocketManager extends EventEmitter {
       await shard.connect();
     } catch (error) {
       if (error?.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
-        throw new Error(WSCodes[error.code]);
+        throw new Error(GatewayCloseCodes[error.code]);
         // Undefined if session is invalid, error event for regular closes
       } else if (!error || error.code) {
         this.debug('Failed to connect to the gateway, requeueing...', shard);
