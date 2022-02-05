@@ -19,7 +19,8 @@ import { AuthorOptions, FooterOptions, UnsafeEmbed } from './UnsafeEmbed';
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
 export class Embed extends UnsafeEmbed {
-	public override addFields(...fields: APIEmbedField[]): this {
+	public override addFields(...fields: APIEmbedField[] | APIEmbedField[][]): this {
+		fields = fields.flat(2);
 		// Ensure adding these fields won't exceed the 25 field limit
 		validateFieldLength(this.fields, fields.length);
 

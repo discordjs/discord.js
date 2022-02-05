@@ -25,8 +25,8 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> implem
 	 * @param components The components to add to this action row.
 	 * @returns
 	 */
-	public addComponents(...components: T[]) {
-		this.components.push(...components);
+	public addComponents(...components: T[] | T[][]) {
+		this.components.push(...(components.flat(2) as T[]));
 		return this;
 	}
 
@@ -34,8 +34,8 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> implem
 	 * Sets the components in this action row
 	 * @param components The components to set this row to
 	 */
-	public setComponents(components: T[]) {
-		Reflect.set(this, 'components', [...components]);
+	public setComponents(...components: T[] | T[][]) {
+		Reflect.set(this, 'components', [...components.flat(2)]);
 		return this;
 	}
 

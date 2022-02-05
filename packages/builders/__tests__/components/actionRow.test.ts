@@ -5,6 +5,8 @@ describe('Action Row Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
 			expect(() => new ActionRow().addComponents(new ButtonComponent())).not.toThrowError();
+			expect(() => new ActionRow().addComponents([new ButtonComponent()])).not.toThrowError();
+			expect(() => new ActionRow().setComponents(new ButtonComponent())).not.toThrowError();
 			expect(() => new ActionRow().setComponents([new ButtonComponent()])).not.toThrowError();
 		});
 
@@ -89,8 +91,17 @@ describe('Action Row Components', () => {
 					new SelectMenuOption().setLabel('two').setValue('two'),
 				]);
 
+			// addComponents
 			expect(new ActionRow().addComponents(button).toJSON()).toEqual(rowWithButtonData);
+			expect(new ActionRow().addComponents([button]).toJSON()).toEqual(rowWithButtonData);
 			expect(new ActionRow().addComponents(selectMenu).toJSON()).toEqual(rowWithSelectMenuData);
+			expect(new ActionRow().addComponents([selectMenu]).toJSON()).toEqual(rowWithSelectMenuData);
+
+			// setComponents
+			expect(new ActionRow().setComponents(button).toJSON()).toEqual(rowWithButtonData);
+			expect(new ActionRow().setComponents([button]).toJSON()).toEqual(rowWithButtonData);
+			expect(new ActionRow().setComponents(selectMenu).toJSON()).toEqual(rowWithSelectMenuData);
+			expect(new ActionRow().setComponents([selectMenu]).toJSON()).toEqual(rowWithSelectMenuData);
 		});
 	});
 });

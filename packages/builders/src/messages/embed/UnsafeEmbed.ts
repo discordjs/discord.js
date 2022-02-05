@@ -125,8 +125,8 @@ export class UnsafeEmbed implements APIEmbed {
 	 *
 	 * @param fields The fields to add
 	 */
-	public addFields(...fields: APIEmbedField[]): this {
-		this.fields.push(...Embed.normalizeFields(...fields));
+	public addFields(...fields: APIEmbedField[] | APIEmbedField[][]): this {
+		this.fields.push(...Embed.normalizeFields(...fields.flat(2)));
 		return this;
 	}
 
@@ -146,8 +146,8 @@ export class UnsafeEmbed implements APIEmbed {
 	 * Sets the embed's fields (max 25).
 	 * @param fields The fields to set
 	 */
-	public setFields(...fields: APIEmbedField[]) {
-		this.spliceFields(0, this.fields.length, ...fields);
+	public setFields(...fields: APIEmbedField[] | APIEmbedField[][]) {
+		this.spliceFields(0, this.fields.length, ...fields.flat(2));
 		return this;
 	}
 

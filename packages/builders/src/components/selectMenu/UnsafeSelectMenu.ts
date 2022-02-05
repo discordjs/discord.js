@@ -75,8 +75,8 @@ export class UnsafeSelectMenuComponent implements Component {
 	 * @param options The options to add to this select menu
 	 * @returns
 	 */
-	public addOptions(...options: SelectMenuOption[]) {
-		this.options.push(...options);
+	public addOptions(...options: SelectMenuOption[] | SelectMenuOption[][]) {
+		this.options.push(...options.flat(2));
 		return this;
 	}
 
@@ -84,8 +84,8 @@ export class UnsafeSelectMenuComponent implements Component {
 	 * Sets the options on this select menu
 	 * @param options The options to set on this select menu
 	 */
-	public setOptions(options: SelectMenuOption[]) {
-		Reflect.set(this, 'options', [...options]);
+	public setOptions(...options: SelectMenuOption[] | SelectMenuOption[][]) {
+		Reflect.set(this, 'options', [...options.flat(2)]);
 		return this;
 	}
 
