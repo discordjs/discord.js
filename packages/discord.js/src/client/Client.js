@@ -22,11 +22,13 @@ const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
-const { Events, InviteScopes, Status } = require('../util/Constants');
+const { InviteScopes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
+const Events = require('../util/Events');
 const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const Status = require('../util/Status');
 const Sweepers = require('../util/Sweepers');
 
 /**
@@ -213,7 +215,7 @@ class Client extends BaseClient {
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.rest.setToken(token);
     this.emit(
-      Events.DEBUG,
+      Events.Debug,
       `Provided token: ${token
         .split('.')
         .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
@@ -224,7 +226,7 @@ class Client extends BaseClient {
       this.options.ws.presence = this.presence._parse(this.options.presence);
     }
 
-    this.emit(Events.DEBUG, 'Preparing to connect to the gateway...');
+    this.emit(Events.Debug, 'Preparing to connect to the gateway...');
 
     try {
       await this.ws.connect();
@@ -241,7 +243,7 @@ class Client extends BaseClient {
    * @returns {boolean}
    */
   isReady() {
-    return this.ws.status === Status.READY;
+    return this.ws.status === Status.Ready;
   }
 
   /**

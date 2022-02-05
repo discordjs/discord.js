@@ -2610,14 +2610,9 @@ export const Constants: {
     4010: 'SHARDING_INVALID';
     4011: 'SHARDING_REQUIRED';
   };
-  Events: ConstantsEvents;
-  ShardEvents: ConstantsShardEvents;
   WSEvents: {
     [K in WSEventType]: K;
   };
-  Colors: ConstantsColors;
-  Status: ConstantsStatus;
-  Opcodes: ConstantsOpcodes;
   ThreadChannelTypes: ThreadChannelType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
@@ -3601,37 +3596,37 @@ export interface CollectorResetTimerOptions {
 }
 
 export type ColorResolvable =
-  | 'DEFAULT'
-  | 'WHITE'
-  | 'AQUA'
-  | 'GREEN'
-  | 'BLUE'
-  | 'YELLOW'
-  | 'PURPLE'
-  | 'LUMINOUS_VIVID_PINK'
-  | 'FUCHSIA'
-  | 'GOLD'
-  | 'ORANGE'
-  | 'RED'
-  | 'GREY'
-  | 'DARKER_GREY'
-  | 'NAVY'
-  | 'DARK_AQUA'
-  | 'DARK_GREEN'
-  | 'DARK_BLUE'
-  | 'DARK_PURPLE'
-  | 'DARK_VIVID_PINK'
-  | 'DARK_GOLD'
-  | 'DARK_ORANGE'
-  | 'DARK_RED'
-  | 'DARK_GREY'
-  | 'LIGHT_GREY'
-  | 'DARK_NAVY'
-  | 'BLURPLE'
-  | 'GREYPLE'
-  | 'DARK_BUT_NOT_BLACK'
-  | 'NOT_QUITE_BLACK'
-  | 'RANDOM'
+  | 'Default'
+  | 'White'
+  | 'Aqua'
+  | 'Green'
+  | 'Blue'
+  | 'Yellow'
+  | 'Purple'
+  | 'LuminousVividPink'
+  | 'Fuchsia'
+  | 'Gold'
+  | 'Orange'
+  | 'Red'
+  | 'Grey'
+  | 'Navy'
+  | 'DarkAqua'
+  | 'DarkGreen'
+  | 'DarkBlue'
+  | 'DarkPurple'
+  | 'DarkVividPink'
+  | 'DarkGold'
+  | 'DarkOrange'
+  | 'DarkRed'
+  | 'DarkGrey'
+  | 'DarkerGrey'
+  | 'LightGrey'
+  | 'DarkNavy'
+  | 'Blurple'
+  | 'Greyple'
+  | 'DarkButNotBlack'
+  | 'NotQuiteBlack'
+  | 'Random'
   | readonly [number, number, number]
   | number
   | HexColorString;
@@ -3658,140 +3653,126 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
 }
 
-export interface ConstantsColors {
-  DEFAULT: 0x000000;
-  WHITE: 0xffffff;
-  AQUA: 0x1abc9c;
-  GREEN: 0x57f287;
-  BLUE: 0x3498db;
-  YELLOW: 0xfee75c;
-  PURPLE: 0x9b59b6;
-  LUMINOUS_VIVID_PINK: 0xe91e63;
-  FUCHSIA: 0xeb459e;
-  GOLD: 0xf1c40f;
-  ORANGE: 0xe67e22;
-  RED: 0xed4245;
-  GREY: 0x95a5a6;
-  NAVY: 0x34495e;
-  DARK_AQUA: 0x11806a;
-  DARK_GREEN: 0x1f8b4c;
-  DARK_BLUE: 0x206694;
-  DARK_PURPLE: 0x71368a;
-  DARK_VIVID_PINK: 0xad1457;
-  DARK_GOLD: 0xc27c0e;
-  DARK_ORANGE: 0xa84300;
-  DARK_RED: 0x992d22;
-  DARK_GREY: 0x979c9f;
-  DARKER_GREY: 0x7f8c8d;
-  LIGHT_GREY: 0xbcc0c0;
-  DARK_NAVY: 0x2c3e50;
-  BLURPLE: 0x5865f2;
-  GREYPLE: 0x99aab5;
-  DARK_BUT_NOT_BLACK: 0x2c2f33;
-  NOT_QUITE_BLACK: 0x23272a;
+export declare const Colors: {
+  Default: 0x000000;
+  White: 0xffffff;
+  Aqua: 0x1abc9c;
+  Green: 0x57f287;
+  Blue: 0x3498db;
+  Yellow: 0xfee75c;
+  Purple: 0x9b59b6;
+  LuminousVividPink: 0xe91e63;
+  Fuchsia: 0xeb459e;
+  Gold: 0xf1c40f;
+  Orange: 0xe67e22;
+  Red: 0xed4245;
+  Grey: 0x95a5a6;
+  Navy: 0x34495e;
+  DarkAqua: 0x11806a;
+  DarkGreen: 0x1f8b4c;
+  DarkBlue: 0x206694;
+  DarkPurple: 0x71368a;
+  DarkVividPink: 0xad1457;
+  DarkGold: 0xc27c0e;
+  DarkOrange: 0xa84300;
+  DarkRed: 0x992d22;
+  DarkGrey: 0x979c9f;
+  DarkerGrey: 0x7f8c8d;
+  LightGrey: 0xbcc0c0;
+  DarkNavy: 0x2c3e50;
+  Blurple: 0x5865f2;
+  Greyple: 0x99aab5;
+  DarkButNotBlack: 0x2c2f33;
+  NotQuiteBlack: 0x23272a;
+};
+
+export declare const Events: {
+  ClientReady: 'ready';
+  GuildCreate: 'guildCreate';
+  GuildDelete: 'guildDelete';
+  GuildUpdate: 'guildUpdate';
+  GuildUnavailable: 'guildUnavailable';
+  GuildMemberAdd: 'guildMemberAdd';
+  GuildMemberRemove: 'guildMemberRemove';
+  GuildMemberUpdate: 'guildMemberUpdate';
+  GuildMemberAvailable: 'guildMemberAvailable';
+  GuildMembersChunk: 'guildMembersChunk';
+  GuildIntegrationsUpdate: 'guildIntegrationsUpdate';
+  GuildRoleCreate: 'roleCreate';
+  GuildRoleDelete: 'roleDelete';
+  InviteCreate: 'inviteCreate';
+  InviteDelete: 'inviteDelete';
+  GuildRoleUpdate: 'roleUpdate';
+  GuildEmojiCreate: 'emojiCreate';
+  GuildEmojiDelete: 'emojiDelete';
+  GuildEmojiUpdate: 'emojiUpdate';
+  GuildBanAdd: 'guildBanAdd';
+  GuildBanRemove: 'guildBanRemove';
+  ChannelCreate: 'channelCreate';
+  ChannelDelete: 'channelDelete';
+  ChannelUpdate: 'channelUpdate';
+  ChannelPinsUpdate: 'channelPinsUpdate';
+  MessageCreate: 'messageCreate';
+  MessageDelete: 'messageDelete';
+  MessageUpdate: 'messageUpdate';
+  MessageBulkDelete: 'messageDeleteBulk';
+  MessageReactionAdd: 'messageReactionAdd';
+  MessageReactionRemove: 'messageReactionRemove';
+  MessageReactionRemoveAll: 'messageReactionRemoveAll';
+  MessageReactionRemoveEmoji: 'messageReactionRemoveEmoji';
+  ThreadCreate: 'threadCreate';
+  ThreadDelete: 'threadDelete';
+  ThreadUpdate: 'threadUpdate';
+  ThreadListSync: 'threadListSync';
+  ThreadMemberUpdate: 'threadMemberUpdate';
+  ThreadMembersUpdate: 'threadMembersUpdate';
+  UserUpdate: 'userUpdate';
+  PresenceUpdate: 'presenceUpdate';
+  VoiceServerUpdate: 'voiceServerUpdate';
+  VoiceStateUpdate: 'voiceStateUpdate';
+  TypingStart: 'typingStart';
+  WebhooksUpdate: 'webhookUpdate';
+  InteractionCreate: 'interactionCreate';
+  Error: 'error';
+  Warn: 'warn';
+  Debug: 'debug';
+  CacheSweep: 'cacheSweep';
+  ShardDisconnect: 'shardDisconnect';
+  ShardError: 'shardError';
+  ShardReconnecting: 'shardReconnecting';
+  ShardReady: 'shardReady';
+  ShardResume: 'shardResume';
+  Invalidated: 'invalidated';
+  Raw: 'raw';
+  StageInstanceCreate: 'stageInstanceCreate';
+  StageInstanceUpdate: 'stageInstanceUpdate';
+  StageInstanceDelete: 'stageInstanceDelete';
+  GuildStickerCreate: 'stickerCreate';
+  GuildStickerDelete: 'stickerDelete';
+  GuildStickerUpdate: 'stickerUpdate';
+  GuildScheduledEventCreate: 'guildScheduledEventCreate';
+  GuildScheduledEventUpdate: 'guildScheduledEventUpdate';
+  GuildScheduledEventDelete: 'guildScheduledEventDelete';
+  GuildScheduledEventUserAdd: 'guildScheduledEventUserAdd';
+  GuildScheduledEventUserRemove: 'guildScheduledEventUserRemove';
+};
+
+export enum ShardEvents {
+  Close = 'close',
+  Destroyed = 'destroyed',
+  InvalidSession = 'invalidSession',
+  Ready = 'ready',
+  Resumed = 'resumed',
+  AllReady = 'allReady',
 }
 
-export interface ConstantsEvents {
-  CLIENT_READY: 'ready';
-  GUILD_CREATE: 'guildCreate';
-  GUILD_DELETE: 'guildDelete';
-  GUILD_UPDATE: 'guildUpdate';
-  INVITE_CREATE: 'inviteCreate';
-  INVITE_DELETE: 'inviteDelete';
-  GUILD_UNAVAILABLE: 'guildUnavailable';
-  GUILD_MEMBER_ADD: 'guildMemberAdd';
-  GUILD_MEMBER_REMOVE: 'guildMemberRemove';
-  GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
-  GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable';
-  GUILD_MEMBERS_CHUNK: 'guildMembersChunk';
-  GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
-  GUILD_ROLE_CREATE: 'roleCreate';
-  GUILD_ROLE_DELETE: 'roleDelete';
-  GUILD_ROLE_UPDATE: 'roleUpdate';
-  GUILD_EMOJI_CREATE: 'emojiCreate';
-  GUILD_EMOJI_DELETE: 'emojiDelete';
-  GUILD_EMOJI_UPDATE: 'emojiUpdate';
-  GUILD_BAN_ADD: 'guildBanAdd';
-  GUILD_BAN_REMOVE: 'guildBanRemove';
-  CHANNEL_CREATE: 'channelCreate';
-  CHANNEL_DELETE: 'channelDelete';
-  CHANNEL_UPDATE: 'channelUpdate';
-  CHANNEL_PINS_UPDATE: 'channelPinsUpdate';
-  MESSAGE_CREATE: 'messageCreate';
-  MESSAGE_DELETE: 'messageDelete';
-  MESSAGE_UPDATE: 'messageUpdate';
-  MESSAGE_BULK_DELETE: 'messageDeleteBulk';
-  MESSAGE_REACTION_ADD: 'messageReactionAdd';
-  MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
-  MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
-  MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji';
-  THREAD_CREATE: 'threadCreate';
-  THREAD_DELETE: 'threadDelete';
-  THREAD_UPDATE: 'threadUpdate';
-  THREAD_LIST_SYNC: 'threadListSync';
-  THREAD_MEMBER_UPDATE: 'threadMemberUpdate';
-  THREAD_MEMBERS_UPDATE: 'threadMembersUpdate';
-  USER_UPDATE: 'userUpdate';
-  PRESENCE_UPDATE: 'presenceUpdate';
-  VOICE_SERVER_UPDATE: 'voiceServerUpdate';
-  VOICE_STATE_UPDATE: 'voiceStateUpdate';
-  TYPING_START: 'typingStart';
-  WEBHOOKS_UPDATE: 'webhookUpdate';
-  INTERACTION_CREATE: 'interactionCreate';
-  ERROR: 'error';
-  WARN: 'warn';
-  DEBUG: 'debug';
-  CACHE_SWEEP: 'cacheSweep';
-  SHARD_DISCONNECT: 'shardDisconnect';
-  SHARD_ERROR: 'shardError';
-  SHARD_RECONNECTING: 'shardReconnecting';
-  SHARD_READY: 'shardReady';
-  SHARD_RESUME: 'shardResume';
-  INVALIDATED: 'invalidated';
-  RAW: 'raw';
-  STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
-  STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate';
-  STAGE_INSTANCE_DELETE: 'stageInstanceDelete';
-  GUILD_STICKER_CREATE: 'stickerCreate';
-  GUILD_STICKER_DELETE: 'stickerDelete';
-  GUILD_STICKER_UPDATE: 'stickerUpdate';
-  GUILD_SCHEDULED_EVENT_CREATE: 'guildScheduledEventCreate';
-  GUILD_SCHEDULED_EVENT_UPDATE: 'guildScheduledEventUpdate';
-  GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete';
-  GUILD_SCHEDULED_EVENT_USER_ADD: 'guildScheduledEventUserAdd';
-  GUILD_SCHEDULED_EVENT_USER_REMOVE: 'guildScheduledEventUserRemove';
-}
-
-export interface ConstantsOpcodes {
-  DISPATCH: 0;
-  HEARTBEAT: 1;
-  IDENTIFY: 2;
-  STATUS_UPDATE: 3;
-  VOICE_STATE_UPDATE: 4;
-  VOICE_GUILD_PING: 5;
-  RESUME: 6;
-  RECONNECT: 7;
-  REQUEST_GUILD_MEMBERS: 8;
-  INVALID_SESSION: 9;
-  HELLO: 10;
-  HEARTBEAT_ACK: 11;
-}
-
-export interface ConstantsShardEvents {
-  CLOSE: 'close';
-  DESTROYED: 'destroyed';
-  INVALID_SESSION: 'invalidSession';
-  READY: 'ready';
-  RESUMED: 'resumed';
-}
-
-export interface ConstantsStatus {
-  READY: 0;
-  CONNECTING: 1;
-  RECONNECTING: 2;
-  IDLE: 3;
-  NEARLY: 4;
-  DISCONNECTED: 5;
+export enum Status {
+  Ready = 0,
+  Connecting = 1,
+  Reconnecting = 2,
+  Idle = 3,
+  Nearly = 4,
+  Disconnected = 5,
 }
 
 export interface CreateGuildScheduledEventInviteURLOptions extends CreateInviteOptions {
@@ -4869,7 +4850,7 @@ export interface StartThreadOptions {
   rateLimitPerUser?: number;
 }
 
-export type Status = number;
+export type ClientStatus = number;
 
 export type StickerResolvable = Sticker | Snowflake;
 
@@ -5170,6 +5151,7 @@ export {
   GuildNSFWLevel,
   GuildPremiumTier,
   GatewayIntentBits,
+  GatewayOpcodes,
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
   GuildScheduledEventStatus,

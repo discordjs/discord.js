@@ -8,7 +8,7 @@ const ChatInputCommandInteraction = require('../../structures/ChatInputCommandIn
 const MessageContextMenuCommandInteraction = require('../../structures/MessageContextMenuCommandInteraction');
 const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
 const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class InteractionCreateAction extends Action {
   handle(data) {
@@ -32,7 +32,7 @@ class InteractionCreateAction extends Action {
             break;
           default:
             client.emit(
-              Events.DEBUG,
+              Events.Debug,
               `[INTERACTION] Received application command interaction with unknown type: ${data.data.type}`,
             );
             return;
@@ -48,7 +48,7 @@ class InteractionCreateAction extends Action {
             break;
           default:
             client.emit(
-              Events.DEBUG,
+              Events.Debug,
               `[INTERACTION] Received component interaction with unknown type: ${data.data.component_type}`,
             );
             return;
@@ -58,7 +58,7 @@ class InteractionCreateAction extends Action {
         InteractionClass = AutocompleteInteraction;
         break;
       default:
-        client.emit(Events.DEBUG, `[INTERACTION] Received interaction with unknown type: ${data.type}`);
+        client.emit(Events.Debug, `[INTERACTION] Received interaction with unknown type: ${data.type}`);
         return;
     }
 
@@ -69,7 +69,7 @@ class InteractionCreateAction extends Action {
      * @event Client#interactionCreate
      * @param {Interaction} interaction The interaction which was created
      */
-    client.emit(Events.INTERACTION_CREATE, interaction);
+    client.emit(Events.InteractionCreate, interaction);
   }
 }
 

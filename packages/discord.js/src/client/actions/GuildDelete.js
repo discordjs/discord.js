@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class GuildDeleteAction extends Action {
   handle(data) {
@@ -18,7 +18,7 @@ class GuildDeleteAction extends Action {
          * @event Client#guildUnavailable
          * @param {Guild} guild The guild that has become unavailable
          */
-        client.emit(Events.GUILD_UNAVAILABLE, guild);
+        client.emit(Events.GuildUnavailable, guild);
 
         // Stops the GuildDelete packet thinking a guild was actually deleted,
         // handles emitting of event itself
@@ -36,7 +36,7 @@ class GuildDeleteAction extends Action {
        * @event Client#guildDelete
        * @param {Guild} guild The guild that was deleted
        */
-      client.emit(Events.GUILD_DELETE, guild);
+      client.emit(Events.GuildDelete, guild);
     }
   }
 }

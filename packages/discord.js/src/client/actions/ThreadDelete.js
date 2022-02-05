@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class ThreadDeleteAction extends Action {
   handle(data) {
@@ -16,7 +16,7 @@ class ThreadDeleteAction extends Action {
        * @event Client#threadDelete
        * @param {ThreadChannel} thread The thread that was deleted
        */
-      client.emit(Events.THREAD_DELETE, thread);
+      client.emit(Events.ThreadDelete, thread);
     }
 
     return { thread };

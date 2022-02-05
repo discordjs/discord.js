@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class UserUpdateAction extends Action {
   handle(data) {
@@ -18,7 +18,7 @@ class UserUpdateAction extends Action {
        * @param {User} oldUser The user before the update
        * @param {User} newUser The user after the update
        */
-      client.emit(Events.USER_UPDATE, oldUser, newUser);
+      client.emit(Events.UserUpdate, oldUser, newUser);
       return {
         old: oldUser,
         updated: newUser,

@@ -128,7 +128,7 @@ class RoleManager extends CachedManager {
    * // Create a new role with data and a reason
    * guild.roles.create({
    *   name: 'Super Cool Blue People',
-   *   color: 'BLUE',
+   *   color: Colors.Blue,
    *   reason: 'we needed a role for Super Cool People',
    * })
    *   .then(console.log)

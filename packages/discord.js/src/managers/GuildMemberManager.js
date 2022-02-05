@@ -4,13 +4,13 @@ const { Buffer } = require('node:buffer');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes } = require('discord-api-types/v9');
+const { Routes, GatewayOpcodes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { Error, TypeError, RangeError } = require('../errors');
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
-const { Events, Opcodes } = require('../util/Constants');
+const Events = require('../util/Events');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -430,7 +430,7 @@ class GuildMemberManager extends CachedManager {
       if (!query && !user_ids) query = '';
       if (nonce.length > 32) throw new RangeError('MEMBER_FETCH_NONCE_LENGTH');
       this.guild.shard.send({
-        op: Opcodes.REQUEST_GUILD_MEMBERS,
+        op: GatewayOpcodes.RequestGuildMembers,
         d: {
           guild_id: this.guild.id,
           presences,
@@ -451,7 +451,7 @@ class GuildMemberManager extends CachedManager {
         }
         if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || i === chunk.count) {
           clearTimeout(timeout);
-          this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+          this.client.removeListener(Events.GuildMembersChunk, handler);
           this.client.decrementMaxListeners();
           let fetched = fetchedMembers;
           if (user_ids && !Array.isArray(user_ids) && fetched.size) fetched = fetched.first();
@@ -459,12 +459,12 @@ class GuildMemberManager extends CachedManager {
         }
       };
       const timeout = setTimeout(() => {
-        this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+        this.client.removeListener(Events.GuildMembersChunk, handler);
         this.client.decrementMaxListeners();
         reject(new Error('GUILD_MEMBERS_TIMEOUT'));
       }, time).unref();
       this.client.incrementMaxListeners();
-      this.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
+      this.client.on(Events.GuildMembersChunk, handler);
     });
   }
 }

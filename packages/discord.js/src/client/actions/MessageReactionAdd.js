@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 const Partials = require('../../util/Partials');
 
 /*
@@ -46,7 +46,7 @@ class MessageReactionAdd extends Action {
      * @param {MessageReaction} messageReaction The reaction object
      * @param {User} user The user that applied the guild or reaction emoji
      */
-    this.client.emit(Events.MESSAGE_REACTION_ADD, reaction, user);
+    this.client.emit(Events.MessageReactionAdd, reaction, user);
 
     return { message, reaction, user };
   }

@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class ThreadMemberUpdateAction extends Action {
   handle(data) {
@@ -21,7 +21,7 @@ class ThreadMemberUpdateAction extends Action {
        * @param {ThreadMember} oldMember The member before the update
        * @param {ThreadMember} newMember The member after the update
        */
-      client.emit(Events.THREAD_MEMBER_UPDATE, old, member);
+      client.emit(Events.ThreadMemberUpdate, old, member);
     }
     return {};
   }
