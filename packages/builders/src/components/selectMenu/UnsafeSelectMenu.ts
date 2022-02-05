@@ -1,17 +1,19 @@
-import { ComponentType, type APISelectMenuComponent } from 'discord-api-types/v9';
+import { APISelectMenuOption, ComponentType, type APISelectMenuComponent } from 'discord-api-types/v9';
 import { Component } from '../Component';
 import { UnsafeSelectMenuOption } from './UnsafeSelectMenuOption';
 
 /**
  * Represents a non-validated select menu component
  */
-export class UnsafeSelectMenuComponent extends Component {
-	protected declare data: APISelectMenuComponent;
+export class UnsafeSelectMenuComponent extends Component<Omit<APISelectMenuComponent, 'options'>> {
 	public readonly options: UnsafeSelectMenuOption[] = [];
 
-	public constructor(data?: APISelectMenuComponent) {
-		super({ type: ComponentType.SelectMenu, options: [], ...data });
-		this.options = this.data.options.map((o) => new UnsafeSelectMenuOption(o));
+	public constructor(
+		data?: APISelectMenuComponent & { type?: ComponentType.SelectMenu; options?: APISelectMenuOption[] },
+	) {
+		super({ type: ComponentType.SelectMenu, ...data });
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		this.options = data?.options?.map((o) => new UnsafeSelectMenuOption(o)) ?? [];
 	}
 
 	public get type(): ComponentType.SelectMenu {

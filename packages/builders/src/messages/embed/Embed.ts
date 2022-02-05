@@ -13,7 +13,7 @@ import {
 	urlPredicate,
 	validateFieldLength,
 } from './Assertions';
-import { AuthorOptions, FooterOptions, UnsafeEmbed } from './UnsafeEmbed';
+import { EmbedAuthorOptions, EmbedFooterOptions, UnsafeEmbed } from './UnsafeEmbed';
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
@@ -35,7 +35,7 @@ export class Embed extends UnsafeEmbed {
 		return super.spliceFields(index, deleteCount, ...embedFieldsArrayPredicate.parse(fields));
 	}
 
-	public override setAuthor(options: AuthorOptions | null): this {
+	public override setAuthor(options: EmbedAuthorOptions | null): this {
 		if (options === null) {
 			return super.setAuthor(null);
 		}
@@ -58,7 +58,7 @@ export class Embed extends UnsafeEmbed {
 		return super.setDescription(descriptionPredicate.parse(description));
 	}
 
-	public override setFooter(options: FooterOptions | null): this {
+	public override setFooter(options: EmbedFooterOptions | null): this {
 		if (options === null) {
 			return super.setFooter(null);
 		}
