@@ -10,9 +10,7 @@ export class UnsafeSelectMenuComponent extends Component {
 	public readonly options: UnsafeSelectMenuOption[] = [];
 
 	public constructor(data?: APISelectMenuComponent) {
-		super(data);
-		this.data.type ??= ComponentType.SelectMenu;
-		this.data.options ??= [];
+		super({ type: ComponentType.SelectMenu, options: [], ...data });
 		this.options = this.data.options.map((o) => new UnsafeSelectMenuOption(o));
 	}
 
@@ -100,8 +98,7 @@ export class UnsafeSelectMenuComponent extends Component {
 	 * @param options The options to set on this select menu
 	 */
 	public setOptions(options: UnsafeSelectMenuOption[]) {
-		this.options.splice(0, this.options.length);
-		this.options.push(...options);
+		this.options.splice(0, this.options.length, ...options);
 		return this;
 	}
 

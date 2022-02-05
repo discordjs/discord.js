@@ -11,13 +11,11 @@ export interface FooterOptions {
 	iconURL?: string;
 }
 
-export class UnsafeEmbed implements APIEmbed {
+export class UnsafeEmbed {
 	protected data!: APIEmbed;
 
 	public constructor(data: APIEmbed = {}) {
-		this.data = data;
-		this.data.fields = data.fields ?? [];
-
+		this.data = { fields: [], ...data };
 		if (data.timestamp) this.data.timestamp = new Date(data.timestamp).toISOString();
 	}
 
@@ -67,14 +65,24 @@ export class UnsafeEmbed implements APIEmbed {
 	 * The embed thumbnail data
 	 */
 	public get thumbnail() {
-		return this.data.thumbnail;
+		return {
+			url: this.data.thumbnail?.url,
+			proxyURL: this.data.thumbnail?.proxy_url,
+			height: this.data.thumbnail?.height,
+			width: this.data.thumbnail?.width,
+		};
 	}
 
 	/**
 	 * The embed image data
 	 */
 	public get image() {
-		return this.data.image;
+		return {
+			url: this.data.image?.url,
+			proxyURL: this.data.image?.proxy_url,
+			height: this.data.image?.height,
+			width: this.data.image?.width,
+		};
 	}
 
 	/**
@@ -88,7 +96,12 @@ export class UnsafeEmbed implements APIEmbed {
 	 * The embed author data
 	 */
 	public get author() {
-		return this.data.author;
+		return {
+			name: this.data.author?.name,
+			url: this.data.author?.url,
+			iconURL: this.data.author?.icon_url,
+			proxyIconURL: this.data.author?.proxy_icon_url,
+		};
 	}
 
 	/**
@@ -102,7 +115,11 @@ export class UnsafeEmbed implements APIEmbed {
 	 * The embed footer data
 	 */
 	public get footer() {
-		return this.data.footer;
+		return {
+			text: this.data.footer?.text,
+			iconURL: this.data.footer?.icon_url,
+			proxyIconURL: this.data.footer?.proxy_icon_url,
+		};
 	}
 
 	/**
@@ -113,8 +130,8 @@ export class UnsafeEmbed implements APIEmbed {
 			(this.title?.length ?? 0) +
 			(this.description?.length ?? 0) +
 			this.fields.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) +
-			(this.footer?.text.length ?? 0) +
-			(this.author?.name.length ?? 0)
+			(this.footer.text?.length ?? 0) +
+			(this.author.name?.length ?? 0)
 		);
 	}
 
