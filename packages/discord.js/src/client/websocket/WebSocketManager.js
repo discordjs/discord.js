@@ -29,11 +29,7 @@ const UNRECOVERABLE_CLOSE_CODES = [
   GatewayCloseCodes.InvalidIntents,
   GatewayCloseCodes.DisallowedIntents,
 ];
-const UNRESUMABLE_CLOSE_CODES = [
-  GatewayCloseCodes.UnknownError,
-  GatewayCloseCodes.AlreadyAuthenticated,
-  GatewayCloseCodes.InvalidSeq,
-];
+const UNRESUMABLE_CLOSE_CODES = [1000, GatewayCloseCodes.AlreadyAuthenticated, GatewayCloseCodes.InvalidSeq];
 
 /**
  * The WebSocket manager for this client.
