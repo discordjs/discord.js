@@ -161,6 +161,7 @@ exports.ButtonStyle = require('discord-api-types/v9').ButtonStyle;
 exports.ChannelType = require('discord-api-types/v9').ChannelType;
 exports.ComponentType = require('discord-api-types/v9').ComponentType;
 exports.GatewayIntentBits = require('discord-api-types/v9').GatewayIntentBits;
+exports.GuildFeature = require('discord-api-types/v9').GuildFeature;
 exports.GuildMFALevel = require('discord-api-types/v9').GuildMFALevel;
 exports.GuildNSFWLevel = require('discord-api-types/v9').GuildNSFWLevel;
 exports.GuildPremiumTier = require('discord-api-types/v9').GuildPremiumTier;
