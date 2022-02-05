@@ -11,9 +11,8 @@ import { Component } from '../Component';
 export class UnsafeButtonComponent extends Component {
 	protected declare data: APIButtonComponent;
 
-	public constructor(data?: APIButtonComponent & { type?: ComponentType.Button }) {
-		super(data);
-		this.data.type ??= ComponentType.Button;
+	public constructor(data?: APIButtonComponent) {
+		super({ type: ComponentType.Button, ...data });
 	}
 
 	public get type(): ComponentType.Button {

@@ -17,8 +17,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 	public readonly components: T[] = [];
 
 	public constructor(data?: APIActionRowComponent & { type?: ComponentType.ActionRow }) {
-		super(data);
-		this.data.type ??= ComponentType.ActionRow;
+		super({ type: ComponentType.ActionRow, ...data });
 		this.components = (data?.components.map(createComponent) ?? []) as T[];
 	}
 
@@ -41,8 +40,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 	 * @param components The components to set this row to
 	 */
 	public setComponents(components: T[]) {
-		this.components.slice(0, this.components.length);
-		this.components.push(...components);
+		this.components.splice(0, this.components.length, ...components);
 		return this;
 	}
 
