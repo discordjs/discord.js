@@ -23,7 +23,7 @@ export abstract class Component<
 	 */
 	public abstract toJSON(): APIMessageComponent;
 
-	public constructor(data: APIBaseMessageComponent<ComponentType>) {
-		this.data = data as DataType;
+	public constructor(data: DataType) {
+		this.data = data;
 	}
 }
