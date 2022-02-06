@@ -149,11 +149,11 @@ class User extends Base {
 
   /**
    * A link to the user's default avatar
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
-   * @returns {string}
+   * @type {string}
+   * @readonly
    */
-  defaultAvatarURL(options = {}) {
-    return this.client.rest.cdn.defaultAvatar(this.discriminator % 5, options);
+  get defaultAvatarURL() {
+    return this.client.rest.cdn.defaultAvatar(this.discriminator % 5);
   }
 
   /**
@@ -163,7 +163,7 @@ class User extends Base {
    * @returns {string}
    */
   displayAvatarURL(options) {
-    return this.avatarURL(options) ?? this.defaultAvatarURL(options);
+    return this.avatarURL(options) ?? this.defaultAvatarURL;
   }
 
   /**

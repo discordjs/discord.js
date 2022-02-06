@@ -2253,6 +2253,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public discriminator: string;
+  public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlagsBitField> | null;
   public readonly hexAccentColor: HexColorString | null | undefined;
@@ -2265,7 +2266,6 @@ export class User extends PartialTextBasedChannel(Base) {
   public bannerURL(options?: ImageURLOptions): string | null | undefined;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
-  public defaultAvatarURL(options?: ImageURLOptions): string;
   public displayAvatarURL(options?: ImageURLOptions): string;
   public equals(user: User): boolean;
   public fetch(force?: boolean): Promise<User>;
