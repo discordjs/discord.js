@@ -111,9 +111,10 @@ export class CDN {
 	/**
 	 * Generates the default avatar URL for a discriminator.
 	 * @param discriminator The discriminator modulo 5
+	 * @param options Optional options for the icon
 	 */
-	public defaultAvatar(discriminator: number): string {
-		return this.makeURL(`/embed/avatars/${discriminator}`);
+	public defaultAvatar(discriminator: number, options?: Readonly<ImageURLOptions>): string {
+		return this.makeURL(`/embed/avatars/${discriminator}`, options);
 	}
 
 	/**
