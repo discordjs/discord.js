@@ -12,12 +12,14 @@ export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
 /**
  * Represents an action row component
  */
-export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends Component<APIActionRowComponent> {
+export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends Component<
+	Omit<APIActionRowComponent, 'components'>
+> {
 	public readonly components: T[] = [];
 
-	public constructor(data?: APIActionRowComponent & { type?: ComponentType.ActionRow }) {
+	public constructor({ components, ...data }: Omit<APIActionRowComponent, 'type'>) {
 		super({ type: ComponentType.ActionRow, ...data });
-		this.components = (data?.components.map(createComponent) ?? []) as T[];
+		this.components = components.map(createComponent) as T[];
 	}
 
 	public get type(): ComponentType.ActionRow {

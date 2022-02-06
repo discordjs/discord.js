@@ -36,7 +36,7 @@ export class UnsafeEmbed {
 	 * An array of fields of this embed
 	 */
 	public get fields() {
-		return this.data.fields ?? [];
+		return this.data.fields!;
 	}
 
 	/**

@@ -9,8 +9,8 @@ import {
 import { Component } from '../Component';
 
 export class UnsafeButtonComponent extends Component<APIButtonComponent> {
-	public constructor(data?: APIButtonComponent) {
-		super({ type: ComponentType.Button, ...data });
+	public constructor(data?: Omit<APIButtonComponent, 'type'>) {
+		super({ type: ComponentType.Button, ...data } as APIButtonComponent);
 	}
 
 	public get type(): ComponentType.Button {
