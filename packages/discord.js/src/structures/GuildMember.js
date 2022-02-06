@@ -264,8 +264,8 @@ class GuildMember extends Base {
    */
   get moderatable() {
     return (
-      this.manageable &&
       !this.permissions.has(PermissionFlagsBits.Administrator) &&
+      this.manageable &&
       (this.guild.me?.permissions.has(PermissionFlagsBits.ModerateMembers) ?? false)
     );
   }
