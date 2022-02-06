@@ -182,7 +182,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link GroupDMChannel}).
+   * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link PartialGroupDMChannel}).
    * @returns {boolean}
    */
   isDMBased() {
