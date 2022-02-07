@@ -28,7 +28,7 @@ export class UnsafeEmbed {
 	protected data: APIEmbed;
 
 	public constructor(data: APIEmbed = {}) {
-		this.data = { fields: [], ...data };
+		this.data = { ...data };
 		if (data.timestamp) this.data.timestamp = new Date(data.timestamp).toISOString();
 	}
 
@@ -36,7 +36,7 @@ export class UnsafeEmbed {
 	 * An array of fields of this embed
 	 */
 	public get fields() {
-		return this.data.fields!;
+		return this.data.fields;
 	}
 
 	/**
@@ -147,7 +147,7 @@ export class UnsafeEmbed {
 		return (
 			(this.title?.length ?? 0) +
 			(this.description?.length ?? 0) +
-			this.fields.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) +
+			(this.fields ?? []).reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) +
 			(this.footer?.text.length ?? 0) +
 			(this.author?.name.length ?? 0)
 		);
@@ -168,7 +168,8 @@ export class UnsafeEmbed {
 	 * @param fields The fields to add
 	 */
 	public addFields(...fields: APIEmbedField[]): this {
-		this.fields.push(...UnsafeEmbed.normalizeFields(...fields));
+		if (!this.data.fields) this.data.fields = [];
+		this.fields?.push(...UnsafeEmbed.normalizeFields(...fields));
 		return this;
 	}
 
@@ -180,7 +181,7 @@ export class UnsafeEmbed {
 	 * @param fields The replacing field objects
 	 */
 	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
-		this.fields.splice(index, deleteCount, ...UnsafeEmbed.normalizeFields(...fields));
+		this.fields?.splice(index, deleteCount, ...UnsafeEmbed.normalizeFields(...fields));
 		return this;
 	}
 
@@ -189,7 +190,7 @@ export class UnsafeEmbed {
 	 * @param fields The fields to set
 	 */
 	public setFields(...fields: APIEmbedField[]) {
-		this.spliceFields(0, this.fields.length, ...fields);
+		this.spliceFields(0, this.fields?.length ?? 0, ...fields);
 		return this;
 	}
 
