@@ -17,7 +17,7 @@ export class UnsafeSelectMenuComponent extends Component<Omit<APISelectMenuCompo
 		// We don't destructure directly in the constructor because it can't properly
 		// handle possibly-undefined data, which causes invalid destructure runtime errors.
 		if (data?.options) {
-			const { options: initOptions, ...initData } = data;
+			const { options, ...initData } = data;
 			super({ type: ComponentType.SelectMenu, ...initData });
 		} else {
 			super({ type: ComponentType.SelectMenu, ...data! });
@@ -69,7 +69,7 @@ export class UnsafeSelectMenuComponent extends Component<Omit<APISelectMenuCompo
 	}
 
 	/**
-	 * Sets thes maximum values that must be selected in the select menu
+	 * Sets the maximum values that must be selected in the select menu
 	 * @param minValues The maximum values that must be selected
 	 */
 	public setMaxValues(maxValues: number) {

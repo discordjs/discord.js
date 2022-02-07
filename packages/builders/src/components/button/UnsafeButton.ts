@@ -8,8 +8,12 @@ import {
 } from 'discord-api-types/v9';
 import { Component } from '../Component';
 
+export interface ButtonComponentData extends Omit<APIButtonComponent, 'type'> {
+	type?: ComponentType.Button;
+}
+
 export class UnsafeButtonComponent extends Component<APIButtonComponent> {
-	public constructor(data?: Omit<APIButtonComponent, 'type'>) {
+	public constructor(data?: ButtonComponentData) {
 		super({ type: ComponentType.Button, ...data } as APIButtonComponent);
 	}
 
