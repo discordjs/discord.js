@@ -132,6 +132,7 @@ class MessagePayload {
     }
 
     const components = this.options.components?.map(c => createComponent(c).toJSON());
+    console.log(components);
 
     let username;
     let avatarURL;
