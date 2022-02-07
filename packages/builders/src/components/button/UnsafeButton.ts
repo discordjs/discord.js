@@ -12,36 +12,53 @@ export interface ButtonComponentData extends Omit<APIButtonComponent, 'type'> {
 	type?: ComponentType.Button;
 }
 
+/**
+ * Represents a non-validated button component
+ */
 export class UnsafeButtonComponent extends Component<APIButtonComponent> {
 	public constructor(data?: ButtonComponentData) {
 		super({ type: ComponentType.Button, ...data } as APIButtonComponent);
 	}
 
-	public get type(): ComponentType.Button {
-		return this.data.type;
-	}
-
+	/**
+	 * The style of this button
+	 */
 	public get style() {
 		return this.data.style;
 	}
 
+	/**
+	 * The label of this button
+	 */
 	public get label() {
 		return this.data.label;
 	}
 
+	/**
+	 * The emoji used in this button
+	 */
 	public get emoji() {
 		return this.data.emoji;
 	}
 
+	/**
+	 * Whether or not this button is disabled
+	 */
 	public get disabled() {
 		return this.data.disabled;
 	}
 
-	public get customId() {
+	/**
+	 * The custom ID of this button (only defined on non-link buttons)
+	 */
+	public get customId(): string | undefined {
 		return (this.data as APIButtonComponentWithCustomId).custom_id;
 	}
 
-	public get url() {
+	/**
+	 * The URL of this button (only defined on link buttons)
+	 */
+	public get url(): string | undefined {
 		return (this.data as APIButtonComponentWithURL).url;
 	}
 

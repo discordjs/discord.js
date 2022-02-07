@@ -26,26 +26,37 @@ export class UnsafeSelectMenuComponent extends Component<Omit<APISelectMenuCompo
 		this.options = data?.options?.map((o) => new UnsafeSelectMenuOption(o)) ?? [];
 	}
 
-	public get type(): ComponentType.SelectMenu {
-		return this.data.type;
-	}
-
+	/**
+	 * The placeholder for this select menu
+	 */
 	public get placeholder() {
 		return this.data.placeholder;
 	}
 
+	/**
+	 * The maximum amount of options that can be selected
+	 */
 	public get maxValues() {
 		return this.data.max_values;
 	}
 
+	/**
+	 * The minimum amount of options that must be selected
+	 */
 	public get minValues() {
 		return this.data.min_values;
 	}
 
+	/**
+	 * The custom ID of this select menu
+	 */
 	public get customId() {
 		return this.data.custom_id;
 	}
 
+	/**
+	 * Whether or not this select menu is disabled
+	 */
 	public get disabled() {
 		return this.data.disabled;
 	}

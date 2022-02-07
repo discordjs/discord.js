@@ -16,7 +16,7 @@ import {
 import { EmbedAuthorOptions, EmbedFooterOptions, UnsafeEmbed } from './UnsafeEmbed';
 
 /**
- * Represents an embed in a message (image/video preview, rich embed, etc.)
+ * Represents a validated embed in a message (image/video preview, rich embed, etc.)
  */
 export class Embed extends UnsafeEmbed {
 	public override addFields(...fields: APIEmbedField[]): this {
