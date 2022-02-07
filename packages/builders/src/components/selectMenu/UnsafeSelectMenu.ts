@@ -1,16 +1,29 @@
-import { ComponentType, type APISelectMenuComponent } from 'discord-api-types/v9';
+import { APISelectMenuOption, ComponentType, type APISelectMenuComponent } from 'discord-api-types/v9';
 import { Component } from '../Component';
 import { UnsafeSelectMenuOption } from './UnsafeSelectMenuOption';
+
+export interface SelectMenuComponentData extends Omit<APISelectMenuComponent, 'type' | 'options'> {
+	type?: ComponentType.SelectMenu;
+	options?: APISelectMenuOption[];
+}
 
 /**
  * Represents a non-validated select menu component
  */
 export class UnsafeSelectMenuComponent extends Component<Omit<APISelectMenuComponent, 'options'>> {
-	public readonly options: UnsafeSelectMenuOption[] = [];
+	public readonly options: UnsafeSelectMenuOption[];
 
-	public constructor({ options, ...data }: Omit<APISelectMenuComponent, 'type'>) {
-		super({ type: ComponentType.SelectMenu, ...data });
-		this.options = options.map((o) => new UnsafeSelectMenuOption(o));
+	public constructor(data?: SelectMenuComponentData) {
+		// We don't destructure directly in the constructor because it can't properly
+		// handle possibly-undefined data, which causes invalid destructure runtime errors.
+		if (data?.options) {
+			const { options: initOptions, ...initData } = data;
+			super({ type: ComponentType.SelectMenu, ...initData });
+		} else {
+			super({ type: ComponentType.SelectMenu, ...data! });
+		}
+
+		this.options = data?.options?.map((o) => new UnsafeSelectMenuOption(o)) ?? [];
 	}
 
 	public get type(): ComponentType.SelectMenu {
