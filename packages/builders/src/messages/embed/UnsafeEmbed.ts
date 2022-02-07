@@ -8,7 +8,7 @@ import type {
 	APIEmbedThumbnail,
 	APIEmbedVideo,
 } from 'discord-api-types/v9';
-import { Embed } from './Embed';
+import type { JSONEncodable } from '../../util/jsonEncodable';
 
 export interface AuthorOptions {
 	name: string;
@@ -21,7 +21,7 @@ export interface FooterOptions {
 	iconURL?: string;
 }
 
-export class UnsafeEmbed implements APIEmbed {
+export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	/**
 	 * An array of fields of this embed
 	 */
@@ -126,7 +126,7 @@ export class UnsafeEmbed implements APIEmbed {
 	 * @param fields The fields to add
 	 */
 	public addFields(...fields: APIEmbedField[]): this {
-		this.fields.push(...Embed.normalizeFields(...fields));
+		this.fields.push(...UnsafeEmbed.normalizeFields(...fields));
 		return this;
 	}
 
@@ -138,7 +138,7 @@ export class UnsafeEmbed implements APIEmbed {
 	 * @param fields The replacing field objects
 	 */
 	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
-		this.fields.splice(index, deleteCount, ...Embed.normalizeFields(...fields));
+		this.fields.splice(index, deleteCount, ...UnsafeEmbed.normalizeFields(...fields));
 		return this;
 	}
 
