@@ -1,9 +1,7 @@
 import { Embed } from '../../src';
 import type { APIEmbed } from 'discord-api-types/v9';
 
-const emptyEmbed: APIEmbed = {
-	fields: [],
-};
+const emptyEmbed: APIEmbed = {};
 
 const alpha = 'abcdefghijklmnopqrstuvwxyz';
 
