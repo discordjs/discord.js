@@ -37,7 +37,7 @@ test('channelIcon default', () => {
 });
 
 test('defaultAvatar default', () => {
-	expect(cdn.defaultAvatar(defaultAvatar)).toBe(`${base}/embed/avatars/${defaultAvatar}.webp`);
+	expect(cdn.defaultAvatar(defaultAvatar)).toBe(`${base}/embed/avatars/${defaultAvatar}.png`);
 });
 
 test('discoverySplash default', () => {
