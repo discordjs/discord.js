@@ -28,3 +28,5 @@ export * from './interactions/slashCommands/options/user';
 
 export * as ContextMenuCommandAssertions from './interactions/contextMenuCommands/Assertions';
 export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder';
+
+export * from './util/jsonEncodable';

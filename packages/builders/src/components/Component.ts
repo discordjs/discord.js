@@ -1,15 +1,12 @@
 import type { APIMessageComponent, ComponentType } from 'discord-api-types/v9';
+import type { JSONEncodable } from '../util/jsonEncodable';
 
 /**
  * Represents a discord component
  */
-export interface Component {
+export interface Component extends JSONEncodable<APIMessageComponent> {
 	/**
 	 * The type of this component
 	 */
 	readonly type: ComponentType;
-	/**
-	 * Converts this component to an API-compatible JSON object
-	 */
-	toJSON: () => APIMessageComponent;
 }
