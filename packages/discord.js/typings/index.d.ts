@@ -2374,6 +2374,13 @@ export class Formatters extends null {
   public static userMention: typeof userMention;
 }
 
+export type ComponentData = ActionRowComponentData | ButtonComponentData | SelectMenuComponentData;
+
+export class Components extends null {
+  private constructor();
+  public static transformJSON(data: ComponentData | APIMessageComponent): APIMessageComponent;
+}
+
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public readonly speakable: boolean;
   public type: ChannelType.GuildVoice;
