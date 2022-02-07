@@ -1,9 +1,9 @@
 'use strict';
 
-const Builders = require('@discordjs/builders');
+const { SelectMenuComponent: BuildersSelectMenuComponent } = require('@discordjs/builders');
 const Components = require('../util/Components');
 
-class SelectMenuComponent extends Builders.SelectMenuComponent {
+class SelectMenuComponent extends BuildersSelectMenuComponent {
   constructor(data) {
     super(Components.transformJSON(data));
   }
