@@ -4517,7 +4517,7 @@ export interface MessageActivity {
 
 export interface BaseButtonComponentData extends BaseComponentData {
   disabled?: boolean;
-  emoji?: EmojiIdentifierResolvable;
+  emoji?: APIMessageComponentEmoji;
   label?: string;
 }
 
