@@ -1,9 +1,10 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { createComponent, Embed } = require('@discordjs/builders');
+const { Embed, isJSONEncodable } = require('@discordjs/builders');
 const { MessageFlags } = require('discord-api-types/v9');
 const { RangeError } = require('../errors');
+const Components = require('../util/Components');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const Util = require('../util/Util');
@@ -131,8 +132,9 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c => createComponent(c).toJSON());
-    console.log(components);
+    const components = this.options.components?.map(c =>
+      isJSONEncodable(c) ? c.toJSON() : Components.transformJSON(c),
+    );
 
     let username;
     let avatarURL;
