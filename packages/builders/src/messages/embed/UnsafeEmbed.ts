@@ -104,7 +104,6 @@ export class UnsafeEmbed {
 	 * Received video data
 	 */
 	public get video(): APIEmbedVideo | undefined {
-		if (!this.data.video) return undefined;
 		return this.data.video;
 	}
 
@@ -145,11 +144,11 @@ export class UnsafeEmbed {
 	 */
 	public get length(): number {
 		return (
-			(this.title?.length ?? 0) +
-			(this.description?.length ?? 0) +
-			(this.fields ?? []).reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) +
-			(this.footer?.text.length ?? 0) +
-			(this.author?.name.length ?? 0)
+			(this.data.title?.length ?? 0) +
+			(this.data.description?.length ?? 0) +
+			(this.data.fields ?? []).reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) +
+			(this.data.footer?.text.length ?? 0) +
+			(this.data.author?.name.length ?? 0)
 		);
 	}
 
@@ -168,8 +167,8 @@ export class UnsafeEmbed {
 	 * @param fields The fields to add
 	 */
 	public addFields(...fields: APIEmbedField[]): this {
-		if (!this.data.fields) this.data.fields = [];
-		this.fields?.push(...UnsafeEmbed.normalizeFields(...fields));
+		this.data.fields ??= [];
+		this.data.fields.push(...UnsafeEmbed.normalizeFields(...fields));
 		return this;
 	}
 
@@ -181,7 +180,7 @@ export class UnsafeEmbed {
 	 * @param fields The replacing field objects
 	 */
 	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
-		this.fields?.splice(index, deleteCount, ...UnsafeEmbed.normalizeFields(...fields));
+		this.data.fields?.splice(index, deleteCount, ...UnsafeEmbed.normalizeFields(...fields));
 		return this;
 	}
 
