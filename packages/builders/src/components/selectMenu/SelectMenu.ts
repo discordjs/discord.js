@@ -9,7 +9,7 @@ import {
 import { UnsafeSelectMenuComponent } from './UnsafeSelectMenu';
 
 /**
- * Represents a select menu component
+ * Represents a validated select menu component
  */
 export class SelectMenuComponent extends UnsafeSelectMenuComponent {
 	public override setPlaceholder(placeholder: string) {

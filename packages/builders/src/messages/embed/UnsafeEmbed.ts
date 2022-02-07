@@ -1,29 +1,41 @@
-import type { APIEmbed, APIEmbedField, APIEmbedVideo } from 'discord-api-types/v9';
+import type {
+	APIEmbed,
+	APIEmbedAuthor,
+	APIEmbedField,
+	APIEmbedFooter,
+	APIEmbedImage,
+	APIEmbedVideo,
+} from 'discord-api-types/v9';
 
-export interface EmbedAuthorData {
-	name: string;
-	url?: string;
+export interface IconData {
+	/**
+	 * The url of the icon
+	 */
 	iconURL?: string;
+	/**
+	 * The proxy url of the icon
+	 */
 	proxyIconURL?: string;
 }
+
+export type EmbedAuthorData = Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'> & IconData;
 
 export type EmbedAuthorOptions = Omit<EmbedAuthorData, 'proxyIconURL'>;
 
-export interface EmbedFooterData {
-	text: string;
-	iconURL?: string;
-	proxyIconURL?: string;
-}
+export type EmbedFooterData = Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'> & IconData;
 
 export type EmbedFooterOptions = Omit<EmbedFooterData, 'proxyIconURL'>;
 
-export interface EmbedImageData {
-	url: string;
+export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
+	/**
+	 * The proxy URL for the image
+	 */
 	proxyURL?: string;
-	height?: number;
-	width?: number;
 }
 
+/**
+ * Represents a non-validated embed in a message (image/video preview, rich embed, etc.)
+ */
 export class UnsafeEmbed {
 	protected data: APIEmbed;
 

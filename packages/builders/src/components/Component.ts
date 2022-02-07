@@ -14,16 +14,18 @@ export abstract class Component<
 	protected data: DataType;
 
 	/**
-	 * The type of this component
-	 */
-	public abstract readonly type: ComponentType;
-
-	/**
 	 * Converts this component to an API-compatible JSON object
 	 */
 	public abstract toJSON(): APIMessageComponent;
 
 	public constructor(data: DataType) {
 		this.data = data;
+	}
+
+	/**
+	 * The type of this component
+	 */
+	public get type(): DataType['type'] {
+		return this.data.type;
 	}
 }

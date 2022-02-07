@@ -36,10 +36,6 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 		this.components = (data?.components?.map(createComponent) ?? []) as T[];
 	}
 
-	public get type(): ComponentType.ActionRow {
-		return this.data.type;
-	}
-
 	/**
 	 * Adds components to this action row.
 	 * @param components The components to add to this action row.

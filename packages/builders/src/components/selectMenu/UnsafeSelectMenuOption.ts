@@ -6,22 +6,37 @@ import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-
 export class UnsafeSelectMenuOption {
 	public constructor(protected data: APISelectMenuOption = {} as APISelectMenuOption) {}
 
+	/**
+	 * The label for this option
+	 */
 	public get label() {
 		return this.data.label;
 	}
 
+	/**
+	 * The value for this option
+	 */
 	public get value() {
 		return this.data.value;
 	}
 
+	/**
+	 * The description for this option
+	 */
 	public get description() {
 		return this.data.description;
 	}
 
+	/**
+	 * The emoji for this option
+	 */
 	public get emoji() {
 		return this.data.emoji;
 	}
 
+	/**
+	 * Whether or not this option is selected by default
+	 */
 	public get default() {
 		return this.data.default;
 	}

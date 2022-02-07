@@ -8,7 +8,7 @@ import {
 import { UnsafeSelectMenuOption } from './UnsafeSelectMenuOption';
 
 /**
- * Represents an option within a select menu component
+ * Represents a validated option within a select menu component
  */
 export class SelectMenuOption extends UnsafeSelectMenuOption {
 	public override setDescription(description: string) {
