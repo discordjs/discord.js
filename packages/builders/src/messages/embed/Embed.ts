@@ -21,7 +21,7 @@ import { EmbedAuthorOptions, EmbedFooterOptions, UnsafeEmbed } from './UnsafeEmb
 export class Embed extends UnsafeEmbed {
 	public override addFields(...fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(this.fields ?? [], fields.length);
+		validateFieldLength(this.fields, fields.length);
 
 		// Data assertions
 		return super.addFields(...embedFieldsArrayPredicate.parse(fields));
@@ -29,7 +29,7 @@ export class Embed extends UnsafeEmbed {
 
 	public override spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(this.fields ?? [], fields.length - deleteCount);
+		validateFieldLength(this.fields, fields.length - deleteCount);
 
 		// Data assertions
 		return super.spliceFields(index, deleteCount, ...embedFieldsArrayPredicate.parse(fields));

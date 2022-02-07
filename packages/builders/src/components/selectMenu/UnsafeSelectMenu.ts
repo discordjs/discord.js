@@ -14,16 +14,9 @@ export class UnsafeSelectMenuComponent extends Component<Omit<APISelectMenuCompo
 	public readonly options: UnsafeSelectMenuOption[];
 
 	public constructor(data?: SelectMenuComponentData) {
-		// We don't destructure directly in the constructor because it can't properly
-		// handle possibly-undefined data, which causes invalid destructure runtime errors.
-		if (data?.options) {
-			const { options, ...initData } = data;
-			super({ type: ComponentType.SelectMenu, ...initData });
-		} else {
-			super({ type: ComponentType.SelectMenu, ...data! });
-		}
-
-		this.options = data?.options?.map((o) => new UnsafeSelectMenuOption(o)) ?? [];
+		const { options, ...initData } = data ?? {};
+		super({ type: ComponentType.SelectMenu, ...initData } as APISelectMenuComponent);
+		this.options = options?.map((o) => new UnsafeSelectMenuOption(o)) ?? [];
 	}
 
 	/**

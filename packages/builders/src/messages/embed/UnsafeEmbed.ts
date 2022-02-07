@@ -158,7 +158,7 @@ export class UnsafeEmbed {
 		return (
 			(this.data.title?.length ?? 0) +
 			(this.data.description?.length ?? 0) +
-			(this.data.fields ?? []).reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) +
+			(this.data.fields?.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) ?? 0) +
 			(this.data.footer?.text.length ?? 0) +
 			(this.data.author?.name.length ?? 0)
 		);
@@ -179,8 +179,9 @@ export class UnsafeEmbed {
 	 * @param fields The fields to add
 	 */
 	public addFields(...fields: APIEmbedField[]): this {
-		this.data.fields ??= [];
-		this.data.fields.push(...UnsafeEmbed.normalizeFields(...fields));
+		fields = UnsafeEmbed.normalizeFields(...fields);
+		if (this.data.fields) this.data.fields.push(...fields);
+		else this.data.fields = fields;
 		return this;
 	}
 
@@ -192,7 +193,9 @@ export class UnsafeEmbed {
 	 * @param fields The replacing field objects
 	 */
 	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
-		this.data.fields?.splice(index, deleteCount, ...UnsafeEmbed.normalizeFields(...fields));
+		fields = UnsafeEmbed.normalizeFields(...fields);
+		if (this.data.fields) this.data.fields.splice(index, deleteCount, ...fields);
+		else this.data.fields = fields;
 		return this;
 	}
 

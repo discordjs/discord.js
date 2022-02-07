@@ -22,18 +22,9 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 > {
 	public readonly components: T[];
 
-	public constructor(data?: ActionRowData) {
-		// We don't destructure directly in the constructor because it can't properly
-		// handle possibly-undefined data, which causes invalid destructure runtime errors.
-		if (data?.components) {
-			const { components: initComponents, ...initData } = data;
-			super({ type: ComponentType.ActionRow, ...initData });
-		} else {
-			super({ type: ComponentType.ActionRow, ...data });
-		}
-
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		this.components = (data?.components?.map(createComponent) ?? []) as T[];
+	public constructor({ components, ...data }: ActionRowData = {}) {
+		super({ type: ComponentType.ActionRow, ...data });
+		this.components = (components?.map(createComponent) ?? []) as T[];
 	}
 
 	/**
