@@ -247,17 +247,17 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public setOptions(options: ApplicationCommandOptionData[]): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(
     command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
-    enforceOptionorder?: boolean,
+    enforceOptionOrder?: boolean,
   ): boolean;
   public static optionsEqual(
     existing: ApplicationCommandOption[],
     options: ApplicationCommandOption[] | ApplicationCommandOptionData[] | APIApplicationCommandOption[],
-    enforceOptionorder?: boolean,
+    enforceOptionOrder?: boolean,
   ): boolean;
   private static _optionEquals(
     existing: ApplicationCommandOption,
     options: ApplicationCommandOption | ApplicationCommandOptionData | APIApplicationCommandOption,
-    enforceOptionorder?: boolean,
+    enforceOptionOrder?: boolean,
   ): boolean;
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
   private static transformCommand(command: ApplicationCommandData): RESTPostAPIApplicationCommandsJSONBody;
@@ -798,7 +798,7 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
 export class DataResolver extends null {
   private constructor();
   public static resolveBase64(data: Base64Resolvable): string;
-  public static resolveCode(data: string, regx: RegExp): string;
+  public static resolveCode(data: string, regex: RegExp): string;
   public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer>;
   public static resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string | null>;
   public static resolveInviteCode(data: InviteResolvable): string;
@@ -4074,10 +4074,10 @@ interface GuildAuditLogsTypes {
   StageInstanceDelete: ['StageInstance', 'Delete'];
   StickerCreate: ['Sticker', 'Create'];
   StickerUpdate: ['Sticker', 'Update'];
-  StickerDelete: ['Sticket', 'Delete'];
-  GUILD_SCHEDULED_EVENT_CREATE: ['GuildScheduledEvent', 'Create'];
-  GUILD_SCHEDULED_EVENT_UPDATE: ['GuildScheduledEvent', 'Update'];
-  GUILD_SCHEDULED_EVENT_DELETE: ['GuildScheduledEvent', 'Delete'];
+  StickerDelete: ['Sticker', 'Delete'];
+  GuildScheduledEventCreate: ['GuildScheduledEvent', 'Create'];
+  GuildScheduledEventUpdate: ['GuildScheduledEvent', 'Update'];
+  GuildScheduledEventDelete: ['GuildScheduledEvent', 'Delete'];
   ThreadCreate: ['Thread', 'Create'];
   ThreadUpdate: ['Thread', 'Update'];
   ThreadDelete: ['Thread', 'Delete'];
