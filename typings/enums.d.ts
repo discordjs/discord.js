@@ -104,6 +104,11 @@ export const enum GuildScheduledEventStatuses {
   CANCELED = 4,
 }
 
+export const enum InputTextStyles {
+  SHORT = 1,
+  LONG = 2,
+}
+
 export const enum InteractionResponseTypes {
   PONG = 1,
   CHANNEL_MESSAGE_WITH_SOURCE = 4,
@@ -111,6 +116,7 @@ export const enum InteractionResponseTypes {
   DEFERRED_MESSAGE_UPDATE = 6,
   UPDATE_MESSAGE = 7,
   APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8,
+  MODAL = 9,
 }
 
 export const enum InteractionTypes {
@@ -118,6 +124,7 @@ export const enum InteractionTypes {
   APPLICATION_COMMAND = 2,
   MESSAGE_COMPONENT = 3,
   APPLICATION_COMMAND_AUTOCOMPLETE = 4,
+  MODAL_SUBMIT = 5,
 }
 
 export const enum InviteTargetType {
@@ -142,6 +149,12 @@ export const enum MessageComponentTypes {
   ACTION_ROW = 1,
   BUTTON = 2,
   SELECT_MENU = 3,
+  INPUT_TEXT = 4,
+}
+
+export const enum ModalComponentTypes {
+  ACTION_ROW = 1,
+  INPUT_TEXT = 4,
 }
 
 export const enum MFALevels {

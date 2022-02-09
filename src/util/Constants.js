@@ -1062,6 +1062,15 @@ exports.ApplicationCommandOptionTypes = createEnum([
 exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 
 /**
+ * The style of an input text component
+ * * SHORT
+ * * LONG
+ * @typedef {string} InputTextStyle
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#text-inputs-text-input-styles}
+ */
+exports.InputTextStyles = createEnum([null, 'SHORT', 'LONG']);
+
+/**
  * The type of an {@link Interaction} object:
  * * PING
  * * APPLICATION_COMMAND
@@ -1076,6 +1085,7 @@ exports.InteractionTypes = createEnum([
   'APPLICATION_COMMAND',
   'MESSAGE_COMPONENT',
   'APPLICATION_COMMAND_AUTOCOMPLETE',
+  'MODAL_SUBMIT',
 ]);
 
 /**
@@ -1099,6 +1109,7 @@ exports.InteractionResponseTypes = createEnum([
   'DEFERRED_MESSAGE_UPDATE',
   'UPDATE_MESSAGE',
   'APPLICATION_COMMAND_AUTOCOMPLETE_RESULT',
+  'MODAL',
 ]);
 
 /**
@@ -1109,7 +1120,7 @@ exports.InteractionResponseTypes = createEnum([
  * @typedef {string} MessageComponentType
  * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
  */
-exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU']);
+exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU', 'INPUT_TEXT']);
 
 /**
  * The style of a message button

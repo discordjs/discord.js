@@ -4,6 +4,7 @@ const { Error } = require('../../errors');
 const { InteractionResponseTypes } = require('../../util/Constants');
 const MessageFlags = require('../../util/MessageFlags');
 const MessagePayload = require('../MessagePayload');
+const Modal = require('../Modal');
 
 /**
  * Interface for classes that support shared interaction response types.
@@ -226,6 +227,21 @@ class InteractionResponses {
     return options.fetchReply ? this.fetchReply() : undefined;
   }
 
+  /**
+   * Presents a modal component
+   * @param {Modal|ModalOptions} modal The modal to present
+   * @returns {Promise<void>}
+   */
+  async presentModal(modal) {
+    const _modal = modal instanceof Modal ? modal : new Modal(modal);
+    await this.client.api.interactions(this.id, this.token).callback.post({
+      data: {
+        type: InteractionResponseTypes.MODAL,
+        data: _modal.toJSON(),
+      },
+    });
+  }
+
   static applyToClass(structure, ignore = []) {
     const props = [
       'deferReply',
@@ -236,6 +252,7 @@ class InteractionResponses {
       'followUp',
       'deferUpdate',
       'update',
+      'presentModal',
     ];
 
     for (const prop of props) {
