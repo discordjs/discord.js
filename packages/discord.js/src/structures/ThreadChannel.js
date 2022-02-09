@@ -539,7 +539,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   async delete(reason) {
-    await this.client.rest.delete(Routes.channel(this.id), { reason });
+    await this.guild.channels.delete(this.id, reason);
     return this;
   }
 

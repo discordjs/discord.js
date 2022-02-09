@@ -9,6 +9,7 @@ const { Role } = require('../structures/Role');
 const DataResolver = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { resolveColor } = require('../util/Util');
+const Util = require('../util/Util');
 
 let cacheWarningEmitted = false;
 
@@ -160,7 +161,7 @@ class RoleManager extends CachedManager {
       guild_id: this.guild.id,
       role: data,
     });
-    if (position) return role.setPosition(position, reason);
+    if (position) return this.setPosition(role, position, { reason });
     return role;
   }
 
@@ -181,7 +182,7 @@ class RoleManager extends CachedManager {
     if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
 
     if (typeof data.position === 'number') {
-      await role.setPosition(data.position, { reason });
+      await this.setPosition(role, data.position, { reason });
     }
 
     let icon = data.icon;
@@ -225,7 +226,39 @@ class RoleManager extends CachedManager {
     this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: id });
   }
 
-  /*
+  /**
+   * Sets the new position of the role.
+   * @param {RoleResolvable} role The role to change the position of
+   * @param {number} position The new position for the role
+   * @param {SetRolePositionOptions} [options] Options for setting the position
+   * @returns {Promise<Role>}
+   * @example
+   * // Set the position of the role
+   * guild.roles.setPosition('222197033908436994', 1)
+   *   .then(updated => console.log(`Role position: ${updated.position}`))
+   *   .catch(console.error);
+   */
+  async setPosition(role, position, { relative, reason } = {}) {
+    role = this.resolve(role);
+    if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
+    const updatedRoles = await Util.setPosition(
+      role,
+      position,
+      relative,
+      this.guild._sortedRoles(),
+      this.client,
+      Routes.guildRoles(this.guild.id),
+      reason,
+    );
+
+    this.client.actions.GuildRolesPositionUpdate.handle({
+      guild_id: this.guild.id,
+      roles: updatedRoles,
+    });
+    return role;
+  }
+
+  /**
    * The data needed for updating a guild role's position
    * @typedef {Object} GuildRolePosition
    * @property {RoleResolvable} role The role's id
