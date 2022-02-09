@@ -104,11 +104,6 @@ export const enum GuildScheduledEventStatuses {
   CANCELED = 4,
 }
 
-export const enum InputTextStyles {
-  SHORT = 1,
-  LONG = 2,
-}
-
 export const enum InteractionResponseTypes {
   PONG = 1,
   CHANNEL_MESSAGE_WITH_SOURCE = 4,
@@ -195,6 +190,11 @@ export const enum StickerFormatTypes {
 export const enum StickerTypes {
   STANDARD = 1,
   GUILD = 2,
+}
+
+export const enum TextInputStyles {
+  SHORT = 1,
+  PARAGRAPH = 2,
 }
 
 export const enum VerificationLevels {

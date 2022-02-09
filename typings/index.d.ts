@@ -64,7 +64,6 @@ import {
   ChannelTypes,
   DefaultMessageNotificationLevels,
   ExplicitContentFilterLevels,
-  InputTextStyles,
   InteractionResponseTypes,
   InteractionTypes,
   InviteTargetType,
@@ -80,6 +79,7 @@ import {
   PrivacyLevels,
   StickerFormatTypes,
   StickerTypes,
+  TextInputStyles,
   VerificationLevels,
   WebhookTypes,
   GuildScheduledEventEntityTypes,
@@ -1264,28 +1264,6 @@ export class RateLimitError extends Error {
   public name: 'RateLimitError';
 }
 
-export class InputTextComponent extends BaseMessageComponent {
-  public constructor(data?: InputTextComponent | InputTextComponentOptions);
-  public customId: string | null;
-  public label: string | null;
-  public required: boolean;
-  public maxLength: number | null;
-  public minLength: number | null;
-  public placeholder: string | null;
-  public style: InputTextStyle;
-  public value: string | null;
-  public setCustomId(customId: string): this;
-  public setLabel(label: string): this;
-  public setRequired(required: boolean): this;
-  public setMaxLength(maxLength: number): this;
-  public setMinLength(minLength: number): this;
-  public setPlaceholder(placeholder: string): this;
-  public setStyle(style: InputTextStyleResolvable): this;
-  public setValue(value: string): this;
-  public toJSON(): unknown;
-  public static resolveStyle(style: InputTextStyleResolvable): InputTextStyle;
-}
-
 export class Integration extends Base {
   private constructor(client: Client, data: RawIntegrationData, guild: Guild);
   public account: IntegrationAccount;
@@ -2375,6 +2353,28 @@ export class TextChannel extends BaseGuildTextChannel {
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 }
 
+export class TextInputComponent extends BaseMessageComponent {
+  public constructor(data?: TextInputComponent | TextInputComponentOptions);
+  public customId: string | null;
+  public label: string | null;
+  public required: boolean;
+  public maxLength: number | null;
+  public minLength: number | null;
+  public placeholder: string | null;
+  public style: TextInputStyle;
+  public value: string | null;
+  public setCustomId(customId: string): this;
+  public setLabel(label: string): this;
+  public setRequired(required: boolean): this;
+  public setMaxLength(maxLength: number): this;
+  public setMinLength(minLength: number): this;
+  public setPlaceholder(placeholder: string): this;
+  public setStyle(style: TextInputStyleResolvable): this;
+  public setValue(value: string): this;
+  public toJSON(): unknown;
+  public static resolveStyle(style: TextInputStyleResolvable): TextInputStyle;
+}
+
 export class ThreadChannel extends TextBasedChannelMixin(Channel) {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
@@ -2917,12 +2917,12 @@ export const Constants: {
   MembershipStates: EnumHolder<typeof MembershipStates>;
   ApplicationCommandOptionTypes: EnumHolder<typeof ApplicationCommandOptionTypes>;
   ApplicationCommandPermissionTypes: EnumHolder<typeof ApplicationCommandPermissionTypes>;
-  InputTextStyles: EnumHolder<typeof InputTextStyles>;
   InteractionTypes: EnumHolder<typeof InteractionTypes>;
   InteractionResponseTypes: EnumHolder<typeof InteractionResponseTypes>;
   MessageComponentTypes: EnumHolder<typeof MessageComponentTypes>;
   MessageButtonStyles: EnumHolder<typeof MessageButtonStyles>;
   ModalComponentTypes: EnumHolder<typeof ModalComponentTypes>;
+  TextInputStyles: EnumHolder<typeof TextInputStyles>;
   MFALevels: EnumHolder<typeof MFALevels>;
   NSFWLevels: EnumHolder<typeof NSFWLevels>;
   PrivacyLevels: EnumHolder<typeof PrivacyLevels>;
@@ -4961,25 +4961,6 @@ export interface ImageURLOptions extends Omit<StaticImageURLOptions, 'format'> {
   format?: DynamicImageFormat;
 }
 
-export interface InputTextComponentOptions extends BaseMessageComponentOptions {
-  customId?: string;
-  label?: string;
-  minLength?: number;
-  maxLength?: number;
-  placeholder?: string;
-  required?: boolean;
-  style?: InputTextStyleResolvable;
-  value?: string;
-}
-
-export type InputTextStyle = keyof typeof InputTextStyles;
-
-export type InputTextStyleResolvable = InputTextStyle | InputTextStyles;
-export interface IntegrationAccount {
-  id: string | Snowflake;
-  name: string;
-}
-
 export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 
 export interface InteractionCollectorOptions<T extends Interaction, Cached extends CacheType = CacheType>
@@ -5101,9 +5082,9 @@ export type MessageActionRowComponentOptions =
 
 export type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
 
-export type ModalActionRowComponent = InputTextComponent;
+export type ModalActionRowComponent = TextInputComponent;
 
-export type ModalActionRowComponentOptions = InputTextComponentOptions;
+export type ModalActionRowComponentOptions = TextInputComponentOptions;
 
 export type ModalActionRowComponentResolvable = ModalActionRowComponent | ModalActionRowComponentOptions;
 
@@ -5715,6 +5696,25 @@ export type AnyChannel =
 export type TextBasedChannel = Extract<AnyChannel, { messages: MessageManager }>;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
+
+export interface TextInputComponentOptions extends BaseMessageComponentOptions {
+  customId?: string;
+  label?: string;
+  minLength?: number;
+  maxLength?: number;
+  placeholder?: string;
+  required?: boolean;
+  style?: TextInputStyleResolvable;
+  value?: string;
+}
+
+export type TextInputStyle = keyof typeof TextInputStyles;
+
+export type TextInputStyleResolvable = TextInputStyle | TextInputStyles;
+export interface IntegrationAccount {
+  id: string | Snowflake;
+  name: string;
+}
 
 export type VoiceBasedChannel = Extract<AnyChannel, { bitrate: number }>;
 

@@ -1062,15 +1062,6 @@ exports.ApplicationCommandOptionTypes = createEnum([
 exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 
 /**
- * The style of an input text component
- * * SHORT
- * * LONG
- * @typedef {string} InputTextStyle
- * @see {@link https://discord.com/developers/docs/interactions/message-components#text-inputs-text-input-styles}
- */
-exports.InputTextStyles = createEnum([null, 'SHORT', 'LONG']);
-
-/**
  * The type of an {@link Interaction} object:
  * * PING
  * * APPLICATION_COMMAND
@@ -1162,6 +1153,15 @@ exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED'
  * @see {@link https://discord.com/developers/docs/resources/stage-instance#stage-instance-object-privacy-level}
  */
 exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
+
+/**
+ * The style of an input text component
+ * * SHORT
+ * * LONG
+ * @typedef {string} TextInputStyle
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#text-inputs-text-input-styles}
+ */
+exports.TextInputStyles = createEnum([null, 'SHORT', 'PARAGRAPH']);
 
 /**
  * Privacy level of a {@link GuildScheduledEvent} object:

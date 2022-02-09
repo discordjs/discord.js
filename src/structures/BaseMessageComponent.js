@@ -19,7 +19,7 @@ class BaseMessageComponent {
    * * MessageActionRowOptions
    * * MessageButtonOptions
    * * MessageSelectMenuOptions
-   * * InputTextComponentOptions
+   * * TextInputComponentOptions
    * @typedef {MessageActionRowOptions|MessageButtonOptions|MessageSelectMenuOptions} MessageComponentOptions
    */
 
@@ -28,7 +28,7 @@ class BaseMessageComponent {
    * * MessageActionRow
    * * MessageButton
    * * MessageSelectMenu
-   * * InputTextComponent
+   * * TextInputComponent
    * @typedef {MessageActionRow|MessageButton|MessageSelectMenu} MessageComponent
    * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
    */
@@ -82,8 +82,8 @@ class BaseMessageComponent {
         break;
       }
       case MessageComponentTypes.INPUT_TEXT: {
-        const InputTextComponent = require('./InputTextComponent');
-        component = data instanceof InputTextComponent ? data : new InputTextComponent(data);
+        const TextInputComponent = require('./TextInputComponent');
+        component = data instanceof TextInputComponent ? data : new TextInputComponent(data);
         break;
       }
       default:

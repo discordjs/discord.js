@@ -144,7 +144,7 @@ export type RawMessageButtonInteractionData = APIMessageButtonInteractionData;
 export type RawMessageSelectMenuInteractionData = APIMessageSelectMenuInteractionData;
 
 // TODO: Replace with discord-api-types definition
-export type RawInputTextComponentData = {
+export type RawTextInputComponentData = {
   type: MessageComponentTypes.INPUT_TEXT;
   custom_id: string;
   value: string;
@@ -153,7 +153,7 @@ export type RawInputTextComponentData = {
 // TODO: Replace with discord-api-types definition
 export type RawModalActionRowComponentData = {
   custom_id: string;
-  components: RawInputTextComponentData;
+  components: RawTextInputComponentData;
 };
 
 // TODO: Replace with discord-api-types definition
