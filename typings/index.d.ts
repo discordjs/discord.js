@@ -2366,7 +2366,7 @@ export class TextInputComponent extends BaseMessageComponent {
   public value: string | null;
   public setCustomId(customId: string): this;
   public setLabel(label: string): this;
-  public setRequired(required: boolean): this;
+  public setRequired(required?: boolean): this;
   public setMaxLength(maxLength: number): this;
   public setMinLength(minLength: number): this;
   public setPlaceholder(placeholder: string): this;
