@@ -8,7 +8,7 @@ class Modal {
    * @typedef {object} ModalOptions
    * @property {string} [customId] A unique string to be sent in the interaction when clicked
    * @property {string} [title] The title to be displayed on this modal
-   * @property {ModalActionRow[]|ModalActionRow[]} [components]
+   * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
    * Action rows containing interactive components for the modal (input text components)
    */
 
@@ -18,8 +18,8 @@ class Modal {
    */
   constructor(data = {}, client = null) {
     /**
-     * A list of ModalActionRows in the modal
-     * @type {ModalActionRow[]}
+     * A list of MessageActionRows in the modal
+     * @type {MessageActionRow[]}
      */
     this.components = data.components?.map(c => BaseMessageComponent.create(c, client)) ?? [];
 
@@ -38,7 +38,7 @@ class Modal {
 
   /**
    * Adds components to the modal.
-   * @param {...ModalActionRowResolvable[]} components The components to add
+   * @param {...MessageActionRowResolvable[]} components The components to add
    * @returns {Modal}
    */
   addComponents(...components) {
@@ -48,7 +48,7 @@ class Modal {
 
   /**
    * Sets the components of the modal.
-   * @param {...ModalActionRowResolvable[]} components The components to set
+   * @param {...MessageActionRowResolvable[]} components The components to set
    * @returns {Modal}
    */
   setComponents(...components) {
@@ -70,7 +70,7 @@ class Modal {
    * Removes, replaces, and inserts components in the modal.
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of components to remove
-   * @param {...ModalActionRowResolvable[]} [components] The replacing components
+   * @param {...MessageActionRowResolvable[]} [components] The replacing components
    * @returns {Modal}
    */
   spliceComponents(index, deleteCount, ...components) {

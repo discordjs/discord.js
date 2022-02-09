@@ -16,7 +16,7 @@ class ModalSubmitInteraction extends Interaction {
 
     /**
      * The inputs within the modal
-     * @type {Array<ModalActionRow<ModalActionRowComponent>>}
+     * @type {Array<MessageActionRow<MessageActionRowComponent>>}
      */
     this.components = data.data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
   }
