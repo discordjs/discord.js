@@ -16,14 +16,14 @@ class ModalSubmitInteraction extends Interaction {
     this.customId = data.data.custom_id;
 
     /**
-     * @typedef {object} PartialTextInputData
+     * @typedef {Object} PartialTextInputData
      * @property {string} [customId] A unique string to be sent in the interaction when submitted
      * @property {MessageComponentType} [type] The type of this component
      * @property {string} [value] Value of this text input component
      */
 
     /**
-     * @typedef {object} PartialModalActionRow
+     * @typedef {Object} PartialModalActionRow
      * @property {MessageComponentType} [type] The type of this component
      * @property {PartialTextInputData[]} [components] Partial text input components
      */

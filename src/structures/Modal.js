@@ -5,7 +5,7 @@ const Util = require('../util/Util');
 
 class Modal {
   /**
-   * @typedef {object} ModalOptions
+   * @typedef {Object} ModalOptions
    * @property {string} [customId] A unique string to be sent in the interaction when clicked
    * @property {string} [title] The title to be displayed on this modal
    * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
