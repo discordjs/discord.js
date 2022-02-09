@@ -35,7 +35,7 @@ export class UnsafeSelectMenuOption {
 	}
 
 	/**
-	 * Whether or not this option is selected by default
+	 * Whether this option is selected by default
 	 */
 	public get default() {
 		return this.data.default;
@@ -70,7 +70,7 @@ export class UnsafeSelectMenuOption {
 
 	/**
 	 * Sets whether this option is selected by default
-	 * @param isDefault Whether or not this option is selected by default
+	 * @param isDefault Whether this option is selected by default
 	 */
 	public setDefault(isDefault: boolean) {
 		this.data.default = isDefault;

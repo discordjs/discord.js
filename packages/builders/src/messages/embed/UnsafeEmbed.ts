@@ -9,11 +9,11 @@ import type {
 
 export interface IconData {
 	/**
-	 * The url of the icon
+	 * The URL of the icon
 	 */
 	iconURL?: string;
 	/**
-	 * The proxy url of the icon
+	 * The proxy URL of the icon
 	 */
 	proxyIconURL?: string;
 }
@@ -66,7 +66,7 @@ export class UnsafeEmbed {
 	}
 
 	/**
-	 * The embed url
+	 * The embed URL
 	 */
 	public get url() {
 		return this.data.url;
@@ -80,7 +80,7 @@ export class UnsafeEmbed {
 	}
 
 	/**
-	 * The timestamp of the embed in the ISO format
+	 * The timestamp of the embed in an ISO 8601 format
 	 */
 	public get timestamp() {
 		return this.data.timestamp;

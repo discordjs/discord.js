@@ -48,7 +48,7 @@ export class UnsafeSelectMenuComponent extends Component<Omit<APISelectMenuCompo
 	}
 
 	/**
-	 * Whether or not this select menu is disabled
+	 * Whether this select menu is disabled
 	 */
 	public get disabled() {
 		return this.data.disabled;
@@ -83,7 +83,7 @@ export class UnsafeSelectMenuComponent extends Component<Omit<APISelectMenuCompo
 
 	/**
 	 * Sets the custom Id for this select menu
-	 * @param customId The custom ID to use for this select menu
+	 * @param customId The custom id to use for this select menu
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;

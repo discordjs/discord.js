@@ -42,14 +42,14 @@ export class UnsafeButtonComponent extends Component<APIButtonComponent> {
 	}
 
 	/**
-	 * Whether or not this button is disabled
+	 * Whether this button is disabled
 	 */
 	public get disabled() {
 		return this.data.disabled;
 	}
 
 	/**
-	 * The custom ID of this button (only defined on non-link buttons)
+	 * The custom id of this button (only defined on non-link buttons)
 	 */
 	public get customId(): string | undefined {
 		return (this.data as APIButtonComponentWithCustomId).custom_id;
@@ -82,7 +82,7 @@ export class UnsafeButtonComponent extends Component<APIButtonComponent> {
 
 	/**
 	 * Sets the custom Id for this button
-	 * @param customId The custom ID to use for this button
+	 * @param customId The custom id to use for this button
 	 */
 	public setCustomId(customId: string) {
 		(this.data as APIButtonComponentWithCustomId).custom_id = customId;
