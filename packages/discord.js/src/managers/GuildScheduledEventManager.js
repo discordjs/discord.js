@@ -51,7 +51,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This is required if `entityType` is {@link GuildScheduledEventEntityType.External}</warn>
-   * @property {?(BufferResolvable|Base64Resolvable)} [image] the cover image of the scheduled event
+   * @property {?(BufferResolvable|Base64Resolvable)} [image] The cover image of the guild scheduled event
    * @property {string} [reason] The reason for creating the guild scheduled event
    */
 
@@ -175,7 +175,7 @@ class GuildScheduledEventManager extends CachedManager {
    * guild scheduled event
    * <warn>This can be modified only if `entityType` of the `GuildScheduledEvent` to be edited is
    * {@link GuildScheduledEventEntityType.External}</warn>
-   * @property {?(BufferResolvable|Base64Resolvable)} [image] the cover image of the scheduled event
+   * @property {?(BufferResolvable|Base64Resolvable)} [image] The cover image of the guild scheduled event
    * @property {string} [reason] The reason for editing the guild scheduled event
    */
 
