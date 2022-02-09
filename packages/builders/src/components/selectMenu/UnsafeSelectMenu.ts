@@ -41,7 +41,7 @@ export class UnsafeSelectMenuComponent extends Component<Omit<APISelectMenuCompo
 	}
 
 	/**
-	 * The custom ID of this select menu
+	 * The custom id of this select menu
 	 */
 	public get customId() {
 		return this.data.custom_id;

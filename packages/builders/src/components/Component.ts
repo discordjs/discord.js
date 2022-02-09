@@ -9,7 +9,7 @@ export abstract class Component<
 > implements JSONEncodable<APIMessageComponent>
 {
 	/**
-	 * The api data associated with this component
+	 * The API data associated with this component
 	 */
 	protected data: DataType;
 
