@@ -102,7 +102,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         entity_metadata,
-        image: image && await DataResolver.resolveImage(image),
+        image: image && (await DataResolver.resolveImage(image)),
       },
       reason,
     });
@@ -221,7 +221,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         status,
-        image: image && await DataResolver.resolveImage(image),
+        image: image && (await DataResolver.resolveImage(image)),
         entity_metadata,
       },
       reason,
