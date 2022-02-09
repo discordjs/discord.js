@@ -1337,5 +1337,5 @@ const selectMenu = new SelectMenuComponent({
 });
 
 new ActionRow({
-  components: [selectMenu, button],
+  components: [selectMenu.toJSON(), button.toJSON()],
 });
