@@ -1,3 +1,4 @@
+import type { APIModalInteractionResponseCallbackData } from 'discord-api-types/v9';
 import { ActionRow, createComponent, ModalActionRowComponent } from '../..';
 import { customIdValidator } from '../../components/Assertions';
 
@@ -6,16 +7,12 @@ export class Modal {
 	public readonly custom_id!: string;
 	public readonly components: ActionRow<ModalActionRowComponent>[] = [];
 
-	// TODO: Use dapi types
-	public constructor(data?: any) {
-		/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-		/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-		this.title = data?.title;
-		this.custom_id = data?.custom_id;
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-		this.components = data?.components.map(createComponent) ?? [];
-		/* eslint-enable @typescript-eslint/no-unsafe-assignment */
-		/* eslint-enable @typescript-eslint/no-unsafe-member-access */
+	public constructor(data?: APIModalInteractionResponseCallbackData) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+		this.title = data?.title!;
+		// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+		this.custom_id = data?.custom_id!;
+		this.components = (data?.components.map(createComponent) ?? []) as ActionRow<ModalActionRowComponent>[];
 	}
 
 	/**

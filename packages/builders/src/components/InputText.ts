@@ -1,14 +1,12 @@
-import type { APIMessageComponent, ComponentType } from 'discord-api-types';
+import { ComponentType, TextInputStyle, APITextInputComponent } from 'discord-api-types/v9';
 import type { Component } from '..';
 import { customIdValidator } from './Assertions';
 
-export class InputTextComponent implements Component {
-	// TODO: use dapi enum
-	public readonly type: ComponentType = 4;
+export class TextInputComponent implements Component {
+	public readonly type: ComponentType.TextInput = ComponentType.TextInput;
 	public readonly custom_id!: string;
 	public readonly label!: string;
-	// TODO: use dapi enum
-	public readonly style!: number;
+	public readonly style!: TextInputStyle;
 	public readonly min_length?: number;
 	public readonly max_length?: number;
 	public readonly placeholder?: string;
@@ -79,9 +77,8 @@ export class InputTextComponent implements Component {
 		return this;
 	}
 
-	// TODO: use dapi types
-	public toJSON(): APIMessageComponent {
-		// @ts-expect-error
+	// @ts-expect-error `style` conflicts with button `style` type ¯\_(ツ)_/¯
+	public toJSON(): APITextInputComponent {
 		return {
 			...this,
 		};

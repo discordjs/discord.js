@@ -1,13 +1,16 @@
-import { APIMessageComponent, ComponentType } from 'discord-api-types/v9';
-import { ActionRow, ButtonComponent, Component, SelectMenuComponent, InputTextComponent } from '../index';
-import type { MessageComponent } from './ActionRow';
+import {
+	APIActionRowComponentTypes,
+	APIMessageComponent,
+	APIModalComponent,
+	ComponentType,
+} from 'discord-api-types/v9';
+import { ActionRow, ButtonComponent, Component, SelectMenuComponent, TextInputComponent } from '../index';
 
 export interface MappedComponentTypes {
 	[ComponentType.ActionRow]: ActionRow;
 	[ComponentType.Button]: ButtonComponent;
 	[ComponentType.SelectMenu]: SelectMenuComponent;
-	// TODO: use dapi enum
-	[4]: InputTextComponent;
+	[ComponentType.TextInput]: TextInputComponent;
 }
 
 /**
@@ -17,8 +20,8 @@ export interface MappedComponentTypes {
 export function createComponent<T extends keyof MappedComponentTypes>(
 	data: APIMessageComponent & { type: T },
 ): MappedComponentTypes[T];
-export function createComponent<C extends MessageComponent>(data: C): C;
-export function createComponent(data: APIMessageComponent | MessageComponent): Component {
+export function createComponent<C extends APIModalComponent | APIMessageComponent>(data: C): C;
+export function createComponent(data: APIModalComponent | APIMessageComponent): Component {
 	if (data instanceof Component) {
 		return data;
 	}
@@ -30,9 +33,9 @@ export function createComponent(data: APIMessageComponent | MessageComponent): C
 			return new ButtonComponent(data);
 		case ComponentType.SelectMenu:
 			return new SelectMenuComponent(data);
-		case 4:
+		case ComponentType.TextInput:
 			// @ts-expect-error
-			return new InputTextComponent(data);
+			return new TextInputComponent(data);
 		default:
 			// @ts-expect-error
 			throw new Error(`Cannot serialize component type: ${data.type as number}`);

@@ -33,6 +33,12 @@ class ModalSubmitFieldsResolver {
     return field;
   }
 
+  /**
+   * Gets the value of a text input component given a custom id
+   * @param {string} customId The custom id of the text input component
+   * @param {?boolean} required Whether the text input component is required or not
+   * @returns {?string}
+   */
   getTextInputValue(customId, required) {
     const field = this.getField(customId, required);
     const expectedType = ComponentType.TextInput;
