@@ -115,7 +115,8 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    * @example
    * // Create a new channel with permission overwrites
-   * guild.channels.create('new-voice', {
+   * guild.channels.create({
+   *   name: 'new-voice',
    *   type: ChannelType.GuildVoice,
    *   permissionOverwrites: [
    *      {
@@ -126,8 +127,8 @@ class GuildChannelManager extends CachedManager {
    * })
    */
   async create(
-    name,
     {
+      name,
       type,
       topic,
       nsfw,
@@ -180,14 +181,15 @@ class GuildChannelManager extends CachedManager {
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
    * // Create a webhook for the current channel
-   * guild.channels.createWebhook('222197033908436994', 'Snek', {
+   * guild.channels.createWebhook('222197033908436994', {
+   *   name: 'Hello!',
    *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
    *   reason: 'Needed a cool new Webhook'
    * })
    *   .then(console.log)
    *   .catch(console.error)
    */
-  async createWebhook(channel, name, { avatar, reason } = {}) {
+  async createWebhook(channel, { name, avatar, reason } = {}) {
     const id = this.resolveId(channel);
     if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
