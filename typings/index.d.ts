@@ -1892,7 +1892,7 @@ export class Modal {
     ...components: (ModalActionRow | (Required<BaseMessageComponentOptions> & ModalActionRowOptions))[]
   ): this;
   public setTitle(title: string): this;
-  public toJSON(): APIModal;
+  public toJSON(): RawModalSubmitInteractionData;
 }
 
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
@@ -3642,8 +3642,6 @@ export interface APIErrors {
   CANNOT_UPDATE_A_FINISHED_EVENT: 180000;
   FAILED_TO_CREATE_STAGE_NEEDED_FOR_STAGE_EVENT: 180002;
 }
-
-export interface APIModal {}
 
 export interface APIRequest {
   method: 'get' | 'post' | 'delete' | 'patch' | 'put';
