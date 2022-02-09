@@ -1,7 +1,7 @@
 'use strict';
 
-const BaseMessageComponent = require('./BaseMessageComponent');
 const Interaction = require('./Interaction');
+const ModalSubmitFieldsResolver = require('./ModalSubmitFieldsResolver');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const { MessageComponentTypes } = require('../util/Constants');
 
@@ -16,10 +16,33 @@ class ModalSubmitInteraction extends Interaction {
     this.customId = data.data.custom_id;
 
     /**
-     * The inputs within the modal
-     * @type {Array<MessageActionRow<MessageActionRowComponent>>}
+     * @typedef {object} PartialTextInputData
+     * @property {string} [customId] A unique string to be sent in the interaction when submitted
+     * @property {MessageComponentType} [type] The type of this component
+     * @property {string} [value] Value of this text input component
      */
-    this.components = data.data.components?.map(c => BaseMessageComponent.create(c, this.client)) ?? [];
+
+    /**
+     * @typedef {object} PartialModalActionRow
+     * @property {MessageComponentType} [type] The type of this component
+     * @property {PartialTextInputData[]} [components] Partial text input components
+     */
+
+    /**
+     * The inputs within the modal
+     * @type {PartialModalActionRow[]}
+     */
+    this.components =
+      data.data.components?.map(c => ({
+        type: MessageComponentTypes[c.type],
+        components: ModalSubmitInteraction.transformComponent(c),
+      })) ?? [];
+
+    /**
+     * The fields within the modal
+     * @type {ModalSubmitFieldsResolver}
+     */
+    this.fields = new ModalSubmitFieldsResolver(this.components);
   }
 
   /**
@@ -38,6 +61,19 @@ class ModalSubmitInteraction extends Interaction {
       }
     }
     return null;
+  }
+
+  /**
+   * Transforms component data to discord.js-compatible data
+   * @param {*} rawComponent The data to transform
+   * @returns {PartialTextInputData[]}
+   */
+  static transformComponent(rawComponent) {
+    return rawComponent.components.map(c => ({
+      value: c.value,
+      type: MessageComponentTypes[c.type],
+      customId: c.custom_id,
+    }));
   }
 
   // These are here only for documentation purposes - they are implemented by InteractionResponses

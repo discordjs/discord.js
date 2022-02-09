@@ -1859,10 +1859,18 @@ export class Modal {
   public toJSON(): RawModalSubmitInteractionData;
 }
 
+export class ModalSubmitFieldsResolver {
+  constructor(components: PartialModalActionRow[]);
+  private readonly _fields: PartialTextInputData[];
+  public getField(customId: string): PartialTextInputData;
+  public getTextInputValue(customId: string): string;
+}
+
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawModalSubmitInteractionData);
   public customId: string;
   public components: MessageActionRow<ModalActionRowComponent>[];
+  public fields: ModalSubmitFieldsResolver;
   public getTextInputValue(customId: string): string;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
@@ -5351,6 +5359,18 @@ export interface OverwriteData {
 export type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
 export type OverwriteType = 'member' | 'role';
+
+export interface PartialModalActionRow {
+  type: MessageComponentType;
+  components: PartialTextInputData[];
+}
+
+export interface PartialTextInputData {
+  value: string;
+  // TODO: use dapi types
+  type: MessageComponentType;
+  customId: string;
+}
 
 export type PermissionFlags = Record<PermissionString, bigint>;
 
