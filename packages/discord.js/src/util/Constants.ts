@@ -1,10 +1,10 @@
 'use strict';
 
-const process = require('node:process');
-const { ChannelType, MessageType } = require('discord-api-types/v9');
+import process from 'node:process';
+import { ChannelType, MessageType } from 'discord-api-types/v9';
 const Package = (exports.Package = require('../../package.json'));
 
-exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;
+export const UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;
 
 /**
  * The name of an item to be swept in Sweepers
@@ -24,7 +24,7 @@ exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.j
  * * `voiceStates`
  * @typedef {string} SweeperKey
  */
-exports.SweeperKeys = [
+export const SweeperKeys = [
   'applicationCommands',
   'bans',
   'emojis',
@@ -49,7 +49,7 @@ exports.SweeperKeys = [
  * * {@link MessageType.ContextMenuCommand}
  * @typedef {MessageType[]} NonSystemMessageTypes
  */
-exports.NonSystemMessageTypes = [
+export const NonSystemMessageTypes = [
   MessageType.Default,
   MessageType.Reply,
   MessageType.ChatInputCommand,
@@ -75,7 +75,7 @@ exports.NonSystemMessageTypes = [
  * * {@link ChannelType.GuildPrivateThread}
  * @typedef {ChannelType} TextBasedChannelTypes
  */
-exports.TextBasedChannelTypes = [
+export const TextBasedChannelTypes = [
   ChannelType.DM,
   ChannelType.GuildText,
   ChannelType.GuildNews,
@@ -91,7 +91,7 @@ exports.TextBasedChannelTypes = [
  * * {@link ChannelType.GuildPrivateThread}
  * @typedef {ChannelType[]} ThreadChannelTypes
  */
-exports.ThreadChannelTypes = [
+export const ThreadChannelTypes = [
   ChannelType.GuildNewsThread,
   ChannelType.GuildPublicThread,
   ChannelType.GuildPrivateThread,
@@ -103,7 +103,7 @@ exports.ThreadChannelTypes = [
  * * {@link ChannelType.GuildStageVoice}
  * @typedef {ChannelType[]} VoiceBasedChannelTypes
  */
-exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
+export const VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
 
 /* eslint-enable max-len */
 

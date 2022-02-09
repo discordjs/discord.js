@@ -33,7 +33,7 @@ const Util = require('../util/Util');
 /**
  * Key mirror of all available audit log targets.
  * @name GuildAuditLogs.Targets
- * @type {Object<string, string>}
+ * @type {Record<string, string>}
  */
 const Targets = {
   ALL: 'ALL',
@@ -241,6 +241,7 @@ class GuildAuditLogs {
 
 /**
  * Audit logs entry.
+ * @public
  */
 class GuildAuditLogsEntry {
   constructor(logs, guild, data) {

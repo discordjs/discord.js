@@ -3,8 +3,12 @@
   "compilerOptions": {
     // Output Formatting
     "pretty": false,
+    "lib": ["ESNext"],
 
     // Completeness
-    "skipDefaultLibCheck": true
-  }
+    "skipDefaultLibCheck": true,
+    "allowJs": true,
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*", "typings/**/*"]
 }

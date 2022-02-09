@@ -1,12 +1,10 @@
-'use strict';
-
-const { parse } = require('node:path');
-const { Collection } = require('@discordjs/collection');
-const { ChannelType, RouteBases, Routes } = require('discord-api-types/v9');
-const fetch = require('node-fetch');
-const Colors = require('./Colors');
-const { Error: DiscordError, RangeError, TypeError } = require('../errors');
-const isObject = d => typeof d === 'object' && d !== null;
+import { parse } from 'node:path';
+import { Collection } from '@discordjs/collection';
+import { ChannelType, RouteBases, Routes, Snowflake } from 'discord-api-types/v9';
+import fetch from 'node-fetch';
+import Colors from './Colors';
+import { Error as DiscordError, RangeError, TypeError } from '../errors';
+const isObject = (d: unknown): d is Record<string, unknown> => typeof d === 'object' && d !== null;
 
 /**
  * Contains various general-purpose utility methods.
@@ -18,19 +16,21 @@ class Util extends null {
    * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.
    * @returns {Object}
    */
-  static flatten(obj, ...props) {
+  static flatten(obj: object, ...props: Iterable<[string, boolean | string]>[]): unknown {
     if (!isObject(obj)) return obj;
 
     const objProps = Object.keys(obj)
       .filter(k => !k.startsWith('_'))
       .map(k => ({ [k]: true }));
 
+    // @ts-expect-error
     props = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
-    const out = {};
+    const out: Record<string, unknown> = {};
 
     for (let [prop, newProp] of Object.entries(props)) {
       if (!newProp) continue;
+      // @ts-expect-error
       newProp = newProp === true ? prop : newProp;
 
       const element = obj[prop];
@@ -38,14 +38,19 @@ class Util extends null {
       const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
       // If it's a Collection, make the array of keys
+      // @ts-expect-error
       if (element instanceof Collection) out[newProp] = Array.from(element.keys());
       // If the valueOf is a Collection, use its array of keys
+      // @ts-expect-error
       else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
       // If it's an array, flatten each element
+      // @ts-expect-error
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
+      // @ts-expect-error
       else if (typeof valueOf !== 'object') out[newProp] = valueOf;
       // If it's a primitive
+      // @ts-expect-error
       else if (!elemIsObj) out[newProp] = element;
     }
 
@@ -68,7 +73,7 @@ class Util extends null {
    * @param {SplitOptions} [options] Options controlling the behavior of the split
    * @returns {string[]}
    */
-  static splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
+  static splitMessage(text: string, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
     text = Util.verifyString(text);
     if (text.length <= maxLength) return [text];
     let splitText = [text];
@@ -76,7 +81,7 @@ class Util extends null {
       while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
         const currentChar = char.shift();
         if (currentChar instanceof RegExp) {
-          splitText = splitText.flatMap(chunk => chunk.match(currentChar));
+          splitText = splitText.flatMap(chunk => chunk.match(currentChar)!);
         } else {
           splitText = splitText.flatMap(chunk => chunk.split(currentChar));
         }
@@ -118,7 +123,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeMarkdown(
-    text,
+    text: string,
     {
       codeBlock = true,
       inlineCode = true,
@@ -130,7 +135,7 @@ class Util extends null {
       codeBlockContent = true,
       inlineCodeContent = true,
     } = {},
-  ) {
+  ): string {
     if (!codeBlockContent) {
       return text
         .split('```')
@@ -179,7 +184,7 @@ class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeCodeBlock(text) {
+  static escapeCodeBlock(text: string) {
     return text.replaceAll('```', '\\`\\`\\`');
   }
 
@@ -188,7 +193,7 @@ class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeInlineCode(text) {
+  static escapeInlineCode(text: string) {
     return text.replace(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
   }
 
@@ -197,7 +202,7 @@ class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeItalic(text) {
+  static escapeItalic(text: string) {
     let i = 0;
     text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
       if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
@@ -215,7 +220,7 @@ class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeBold(text) {
+  static escapeBold(text: string) {
     let i = 0;
     return text.replace(/\*\*(\*)?/g, (_, match) => {
       if (match) return ++i % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
@@ -228,7 +233,7 @@ class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeUnderline(text) {
+  static escapeUnderline(text: string) {
     let i = 0;
     return text.replace(/__(_)?/g, (_, match) => {
       if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
@@ -241,7 +246,7 @@ class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeStrikethrough(text) {
+  static escapeStrikethrough(text: string) {
     return text.replaceAll('~~', '\\~\\~');
   }
 
@@ -250,7 +255,7 @@ class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeSpoiler(text) {
+  static escapeSpoiler(text: string) {
     return text.replaceAll('||', '\\|\\|');
   }
 
@@ -266,7 +271,7 @@ class Util extends null {
    * @param {FetchRecommendedShardsOptions} [options] Options for fetching the recommended shard count
    * @returns {Promise<number>} The recommended number of shards
    */
-  static async fetchRecommendedShards(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
+  static async fetchRecommendedShards(token: string, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
     const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
       method: 'GET',
@@ -289,7 +294,7 @@ class Util extends null {
    * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
    * @private
    */
-  static parseEmoji(text) {
+  static parseEmoji(text: string) {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (!text.includes(':')) return { animated: false, name: text, id: null };
     const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
@@ -302,7 +307,7 @@ class Util extends null {
    * @returns {?RawEmoji}
    * @private
    */
-  static resolvePartialEmoji(emoji) {
+  static resolvePartialEmoji(emoji: EmojiIdentifierResolvable) {
     if (!emoji) return null;
     if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
     const { id, name, animated } = emoji;
@@ -316,7 +321,7 @@ class Util extends null {
    * @returns {Object}
    * @private
    */
-  static cloneObject(obj) {
+  static cloneObject(obj: object) {
     return Object.assign(Object.create(obj), obj);
   }
 
@@ -327,13 +332,14 @@ class Util extends null {
    * @returns {Object}
    * @private
    */
-  static mergeDefault(def, given) {
+  static mergeDefault(def: Record<string, unknown>, given: Record<string, unknown>) {
     if (!given) return def;
     for (const key in def) {
+      // @ts-expect-error TS doesn't have typedefs for hasOwn yet
       if (!Object.hasOwn(given, key) || given[key] === undefined) {
         given[key] = def[key];
       } else if (given[key] === Object(given[key])) {
-        given[key] = Util.mergeDefault(def[key], given[key]);
+        given[key] = Util.mergeDefault(def[key] as Record<string, unknown>, given[key] as Record<string, unknown>);
       }
     }
 
@@ -354,7 +360,7 @@ class Util extends null {
    * @returns {Error}
    * @private
    */
-  static makeError(obj) {
+  static makeError(obj: MakeErrorOptions) {
     const err = new Error(obj.message);
     err.name = obj.name;
     err.stack = obj.stack;
@@ -367,7 +373,7 @@ class Util extends null {
    * @returns {MakeErrorOptions}
    * @private
    */
-  static makePlainError(err) {
+  static makePlainError(err: MakeErrorOptions) {
     return {
       name: err.name,
       message: err.message,
@@ -384,7 +390,7 @@ class Util extends null {
    * @returns {number}
    * @private
    */
-  static moveElementInArray(array, element, newIndex, offset = false) {
+  static moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset = false) {
     const index = array.indexOf(element);
     newIndex = (offset ? index : 0) + newIndex;
     if (newIndex > -1 && newIndex < array.length) {
@@ -403,7 +409,7 @@ class Util extends null {
    * @returns {string}
    */
   static verifyString(
-    data,
+    data: string,
     error = Error,
     errorMessage = `Expected a string, got ${data} instead.`,
     allowEmpty = true,
@@ -458,11 +464,11 @@ class Util extends null {
    * @param {ColorResolvable} color Color to resolve
    * @returns {number} A color
    */
-  static resolveColor(color) {
+  static resolveColor(color: ColorResolvable) {
     if (typeof color === 'string') {
       if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
       if (color === 'Default') return 0;
-      color = Colors[color] ?? parseInt(color.replace('#', ''), 16);
+      color = (Colors as Record<string, number>)[color] ?? parseInt(color.replace('#', ''), 16);
     } else if (Array.isArray(color)) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
@@ -478,7 +484,7 @@ class Util extends null {
    * @param {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
-  static discordSort(collection) {
+  static discordSort<K, V extends { rawPosition: number; id: Snowflake }>(collection: Collection<K, V>) {
     const isGuildChannel = collection.first() instanceof GuildChannel;
     return collection.sorted(
       isGuildChannel
@@ -499,10 +505,18 @@ class Util extends null {
    * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
-  static async setPosition(item, position, relative, sorted, client, route, reason) {
+  static async setPosition(
+    item: Channel | Role,
+    position: number,
+    relative: boolean,
+    sorted: Collection<string, Channel | Role>,
+    client: Client,
+    route: `/${string}`,
+    reason?: string,
+  ) {
     let updatedItems = [...sorted.values()];
     Util.moveElementInArray(updatedItems, item, position, relative);
-    updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
+    updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i })) as (Channel | Role)[];
     await client.rest.patch(route, { body: updatedItems, reason });
     return updatedItems;
   }
@@ -514,7 +528,7 @@ class Util extends null {
    * @returns {string} Basename of the path
    * @private
    */
-  static basename(path, ext) {
+  static basename(path: string, ext?: string) {
     const res = parse(path);
     return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
   }
@@ -524,7 +538,7 @@ class Util extends null {
    * @param {TextBasedChannels} channel The channel the string was sent in
    * @returns {string}
    */
-  static cleanContent(str, channel) {
+  static cleanContent(str: string, channel: TextBasedChannel) {
     str = str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
@@ -542,7 +556,9 @@ class Util extends null {
         }
       })
       .replace(/<#[0-9]+>/g, input => {
-        const mentionedChannel = channel.client.channels.cache.get(input.replace(/<|#|>/g, ''));
+        const mentionedChannel = channel.client.channels.cache.get(
+          input.replace(/<|#|>/g, ''),
+        ) as GuildTextBasedChannel;
         return mentionedChannel ? `#${mentionedChannel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
@@ -558,7 +574,7 @@ class Util extends null {
    * @param {string} text The string to be converted
    * @returns {string}
    */
-  static cleanCodeBlockContent(text) {
+  static cleanCodeBlockContent(text: string) {
     return text.replaceAll('```', '`\u200b``');
   }
 }
@@ -566,4 +582,14 @@ class Util extends null {
 module.exports = Util;
 
 // Fixes Circular
-const GuildChannel = require('../structures/GuildChannel');
+import GuildChannel from '../structures/GuildChannel';
+import type {
+  ColorResolvable,
+  EmojiIdentifierResolvable,
+  GuildTextBasedChannel,
+  MakeErrorOptions,
+  TextBasedChannel,
+} from '../../typings';
+import type { Channel } from '../structures/Channel';
+import type { Role } from '../structures/Role';
+import type Client from '../client/Client';

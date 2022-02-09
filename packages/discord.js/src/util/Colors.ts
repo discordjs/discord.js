@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = {
+const Colors = {
   Default: 0x000000,
   White: 0xffffff,
   Aqua: 0x1abc9c,
@@ -31,4 +31,6 @@ module.exports = {
   Greyple: 0x99aab5,
   DarkButNotBlack: 0x2c2f33,
   NotQuiteBlack: 0x23272a,
-};
+} as const;
+
+export default Colors;

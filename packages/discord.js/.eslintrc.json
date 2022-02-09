@@ -1,6 +1,7 @@
 {
   "root": true,
   "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "ignorePatterns": "*.ts",
   "plugins": ["import"],
   "parserOptions": {
     "ecmaVersion": 2021

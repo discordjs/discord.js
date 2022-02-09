@@ -97,6 +97,9 @@ exports.UnsafeEmbed = require('@discordjs/builders').UnsafeEmbed;
 exports.Emoji = require('./structures/Emoji').Emoji;
 exports.Guild = require('./structures/Guild').Guild;
 exports.GuildAuditLogs = require('./structures/GuildAuditLogs');
+/**
+ * @type {GuildAuditLogsEntry}
+ */
 exports.GuildAuditLogsEntry = require('./structures/GuildAuditLogs').Entry;
 exports.GuildBan = require('./structures/GuildBan');
 exports.GuildChannel = require('./structures/GuildChannel');
