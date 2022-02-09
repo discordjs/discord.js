@@ -81,7 +81,7 @@ class BaseMessageComponent {
         component = data instanceof MessageSelectMenu ? data : new MessageSelectMenu(data);
         break;
       }
-      case MessageComponentTypes.INPUT_TEXT: {
+      case MessageComponentTypes.TEXT_INPUT: {
         const TextInputComponent = require('./TextInputComponent');
         component = data instanceof TextInputComponent ? data : new TextInputComponent(data);
         break;

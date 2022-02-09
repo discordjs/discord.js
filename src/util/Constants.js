@@ -1111,7 +1111,7 @@ exports.InteractionResponseTypes = createEnum([
  * @typedef {string} MessageComponentType
  * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
  */
-exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU', 'INPUT_TEXT']);
+exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU', 'TEXT_INPUT']);
 
 /**
  * The style of a message button

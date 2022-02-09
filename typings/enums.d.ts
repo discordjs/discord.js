@@ -144,12 +144,12 @@ export const enum MessageComponentTypes {
   ACTION_ROW = 1,
   BUTTON = 2,
   SELECT_MENU = 3,
-  INPUT_TEXT = 4,
+  TEXT_INPUT = 4,
 }
 
 export const enum ModalComponentTypes {
   ACTION_ROW = 1,
-  INPUT_TEXT = 4,
+  TEXT_INPUT = 4,
 }
 
 export const enum MFALevels {

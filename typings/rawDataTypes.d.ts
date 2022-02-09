@@ -145,7 +145,7 @@ export type RawMessageSelectMenuInteractionData = APIMessageSelectMenuInteractio
 
 // TODO: Replace with discord-api-types definition
 export type RawTextInputComponentData = {
-  type: MessageComponentTypes.INPUT_TEXT;
+  type: MessageComponentTypes.TEXT_INPUT;
   custom_id: string;
   value: string;
 };

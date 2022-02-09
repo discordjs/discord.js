@@ -27,7 +27,7 @@ class TextInputComponent extends BaseMessageComponent {
    * @param {TextInputComponent|TextInputComponentOptions} [data={}] TextInputComponent to clone or raw data
    */
   constructor(data = {}) {
-    super({ type: 'INPUT_TEXT' });
+    super({ type: 'TEXT_INPUT' });
 
     this.setup(data);
   }
@@ -88,7 +88,7 @@ class TextInputComponent extends BaseMessageComponent {
    * @returns {TextInputComponent}
    */
   setCustomId(customId) {
-    this.customId = Util.verifyString(customId, RangeError, 'INPUT_TEXT_CUSTOM_ID');
+    this.customId = Util.verifyString(customId, RangeError, 'TEXT_INPUT_CUSTOM_ID');
     return this;
   }
 
@@ -98,7 +98,7 @@ class TextInputComponent extends BaseMessageComponent {
    * @returns {TextInputComponent}
    */
   setLabel(label) {
-    this.label = Util.verifyString(label, RangeError, 'INPUT_TEXT_LABEL');
+    this.label = Util.verifyString(label, RangeError, 'TEXT_INPUT_LABEL');
     return this;
   }
 
@@ -138,7 +138,7 @@ class TextInputComponent extends BaseMessageComponent {
    * @returns {TextInputComponent}
    */
   setPlaceholder(placeholder) {
-    this.placeholder = Util.verifyString(placeholder, RangeError, 'INPUT_TEXT_PLACEHOLDER');
+    this.placeholder = Util.verifyString(placeholder, RangeError, 'TEXT_INPUT_PLACEHOLDER');
     return this;
   }
 
@@ -158,7 +158,7 @@ class TextInputComponent extends BaseMessageComponent {
    * @returns {TextInputComponent}
    */
   setValue(value) {
-    this.value = Util.verifyString(value, RangeError, 'INPUT_TEXT_VALUE');
+    this.value = Util.verifyString(value, RangeError, 'TEXT_INPUT_VALUE');
     return this;
   }
 
