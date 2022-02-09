@@ -1491,7 +1491,7 @@ export type MappedInteractionTypes<Cached extends boolean = boolean> = EnumValue
     BUTTON: ButtonInteraction<WrapBooleanCache<Cached>>;
     SELECT_MENU: SelectMenuInteraction<WrapBooleanCache<Cached>>;
     ACTION_ROW: MessageComponentInteraction<WrapBooleanCache<Cached>>;
-    INPUT_TEXT: ModalSubmitInteraction<WrapBooleanCache<Cached>>;
+    TEXT_INPUT: ModalSubmitInteraction<WrapBooleanCache<Cached>>;
   }
 >;
 
@@ -1863,6 +1863,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   protected constructor(client: Client, data: RawModalSubmitInteractionData);
   public customId: string;
   public components: MessageActionRow<ModalActionRowComponent>[];
+  public getTextInputValue(customId: string): string;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
