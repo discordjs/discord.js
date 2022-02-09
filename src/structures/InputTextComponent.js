@@ -13,7 +13,7 @@ const Util = require('../util/Util');
 class InputTextComponent extends BaseMessageComponent {
   /**
    * @typedef {BaseMessageComponentOptions} InputTextComponentOptions
-   * @property {string} [custom_id] A unique string to be sent in the interaction when submitted
+   * @property {string} [customId] A unique string to be sent in the interaction when submitted
    * @property {string} [label] The text to be displayed above this input text component
    * @property {number} [maxLength] Maximum length of text that can be entered
    * @property {number} [minLength] Minimum length of text required to be entered
