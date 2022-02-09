@@ -1,12 +1,10 @@
 'use strict';
 
 const { Channel } = require('./Channel');
-const PermissionOverwrites = require('./PermissionOverwrites');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
-const { ChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
+const { VoiceBasedChannelTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const Util = require('../util/Util');
 
 /**
  * Represents a guild channel from any of the following:
@@ -263,27 +261,6 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * The data for a guild channel.
-   * @typedef {Object} ChannelData
-   * @property {string} [name] The name of the channel
-   * @property {ChannelType} [type] The type of the channel (only conversion between text and news is supported)
-   * @property {number} [position] The position of the channel
-   * @property {string} [topic] The topic of the text channel
-   * @property {boolean} [nsfw] Whether the channel is NSFW
-   * @property {number} [bitrate] The bitrate of the voice channel
-   * @property {number} [userLimit] The user limit of the voice channel
-   * @property {?CategoryChannelResolvable} [parent] The parent of the channel
-   * @property {boolean} [lockPermissions]
-   * Lock the permissions of the channel to what the parent's permissions are
-   * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
-   * Permission overwrites for the channel
-   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the channel in seconds
-   * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
-   * The default auto archive duration for all new threads in this channel
-   * @property {?string} [rtcRegion] The RTC region of the channel
-   */
-
-  /**
    * Edits the channel.
    * @param {ChannelData} data The new data for the channel
    * @param {string} [reason] Reason for editing this channel
@@ -294,64 +271,8 @@ class GuildChannel extends Channel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async edit(data, reason) {
-    data.parent &&= this.client.channels.resolveId(data.parent);
-
-    if (typeof data.position !== 'undefined') {
-      const updatedChannels = await Util.setPosition(
-        this,
-        data.position,
-        false,
-        this.guild._sortedChannels(this),
-        this.client.api.guilds(this.guild.id).channels,
-        reason,
-      );
-      this.client.actions.GuildChannelsPositionUpdate.handle({
-        guild_id: this.guild.id,
-        channels: updatedChannels,
-      });
-    }
-
-    let permission_overwrites;
-
-    if (data.permissionOverwrites) {
-      permission_overwrites = data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
-    }
-
-    if (data.lockPermissions) {
-      if (data.parent) {
-        const newParent = this.guild.channels.resolve(data.parent);
-        if (newParent?.type === 'GUILD_CATEGORY') {
-          permission_overwrites = newParent.permissionOverwrites.cache.map(o =>
-            PermissionOverwrites.resolve(o, this.guild),
-          );
-        }
-      } else if (this.parent) {
-        permission_overwrites = this.parent.permissionOverwrites.cache.map(o =>
-          PermissionOverwrites.resolve(o, this.guild),
-        );
-      }
-    }
-
-    const newData = await this.client.api.channels(this.id).patch({
-      data: {
-        name: (data.name ?? this.name).trim(),
-        type: ChannelTypes[data.type],
-        topic: data.topic,
-        nsfw: data.nsfw,
-        bitrate: data.bitrate ?? this.bitrate,
-        user_limit: data.userLimit ?? this.userLimit,
-        rtc_region: data.rtcRegion ?? this.rtcRegion,
-        parent_id: data.parent,
-        lock_permissions: data.lockPermissions,
-        rate_limit_per_user: data.rateLimitPerUser,
-        default_auto_archive_duration: data.defaultAutoArchiveDuration,
-        permission_overwrites,
-      },
-      reason,
-    });
-
-    return this.client.actions.ChannelUpdate.handle(newData).updated;
+  edit(data, reason) {
+    return this.guild.channels.edit(this, data, reason);
   }
 
   /**
@@ -415,29 +336,9 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *   .catch(console.error);
    */
-  async setPosition(position, { relative, reason } = {}) {
-    const updatedChannels = await Util.setPosition(
-      this,
-      position,
-      relative,
-      this.guild._sortedChannels(this),
-      this.client.api.guilds(this.guild.id).channels,
-      reason,
-    );
-    this.client.actions.GuildChannelsPositionUpdate.handle({
-      guild_id: this.guild.id,
-      channels: updatedChannels,
-    });
-    return this;
+  setPosition(position, options = {}) {
+    return this.guild.channels.setPosition(this, position, options);
   }
-
-  /**
-   * Data that can be resolved to an Application. This can be:
-   * * An Application
-   * * An Activity with associated Application
-   * * A Snowflake
-   * @typedef {Application|Snowflake} ApplicationResolvable
-   */
 
   /**
    * Options used to clone a guild channel.
@@ -544,7 +445,7 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   async delete(reason) {
-    await this.client.api.channels(this.id).delete({ reason });
+    await this.guild.channels.delete(this.id, reason);
     return this;
   }
 }

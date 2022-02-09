@@ -72,18 +72,8 @@ class GuildEmoji extends BaseGuildEmoji {
    * Fetches the author for this emoji
    * @returns {Promise<User>}
    */
-  async fetchAuthor() {
-    if (this.managed) {
-      throw new Error('EMOJI_MANAGED');
-    } else {
-      if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-      if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) {
-        throw new Error('MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION', this.guild);
-      }
-    }
-    const data = await this.client.api.guilds(this.guild.id).emojis(this.id).get();
-    this._patch(data);
-    return this.author;
+  fetchAuthor() {
+    return this.guild.emojis.fetchAuthor(this);
   }
 
   /**
@@ -137,7 +127,7 @@ class GuildEmoji extends BaseGuildEmoji {
    * @returns {Promise<GuildEmoji>}
    */
   async delete(reason) {
-    await this.client.api.guilds(this.guild.id).emojis(this.id).delete({ reason });
+    await this.guild.emojis.delete(this, reason);
     return this;
   }
 

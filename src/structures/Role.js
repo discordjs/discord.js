@@ -5,7 +5,6 @@ const Base = require('./Base');
 const { Error } = require('../errors');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
-const Util = require('../util/Util');
 
 let deprecationEmittedForComparePositions = false;
 
@@ -399,20 +398,8 @@ class Role extends Base {
    *   .then(updated => console.log(`Role position: ${updated.position}`))
    *   .catch(console.error);
    */
-  async setPosition(position, { relative, reason } = {}) {
-    const updatedRoles = await Util.setPosition(
-      this,
-      position,
-      relative,
-      this.guild._sortedRoles(),
-      this.client.api.guilds(this.guild.id).roles,
-      reason,
-    );
-    this.client.actions.GuildRolesPositionUpdate.handle({
-      guild_id: this.guild.id,
-      roles: updatedRoles,
-    });
-    return this;
+  setPosition(position, options = {}) {
+    return this.guild.roles.setPosition(this, position, options);
   }
 
   /**
