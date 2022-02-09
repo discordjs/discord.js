@@ -494,6 +494,7 @@ export abstract class Channel extends Base {
   public id: Snowflake;
   public readonly partial: false;
   public type: ChannelType;
+  public readonly url: string;
   public delete(): Promise<this>;
   public fetch(force?: boolean): Promise<this>;
   public isText(): this is TextChannel;
