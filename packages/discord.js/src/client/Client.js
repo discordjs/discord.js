@@ -2,7 +2,7 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v9');
+const { OAuth2Scopes, Routes } = require('discord-api-types/v9');
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
@@ -22,7 +22,6 @@ const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
-const { InviteScopes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Events = require('../util/Events');
 const IntentsBitField = require('../util/IntentsBitField');
@@ -388,7 +387,7 @@ class Client extends BaseClient {
   /**
    * Options for {@link Client#generateInvite}.
    * @typedef {Object} InviteGenerationOptions
-   * @property {InviteScope[]} scopes Scopes that should be requested
+   * @property {OAuth2Scopes[]} scopes Scopes that should be requested
    * @property {PermissionResolvable} [permissions] Permissions to request
    * @property {GuildResolvable} [guild] Guild to preselect
    * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
@@ -400,7 +399,7 @@ class Client extends BaseClient {
    * @returns {string}
    * @example
    * const link = client.generateInvite({
-   *   scopes: ['applications.commands'],
+   *   scopes: [OAuth2Scopes.ApplicationsCommands],
    * });
    * console.log(`Generated application invite link: ${link}`);
    * @example
@@ -410,7 +409,7 @@ class Client extends BaseClient {
    *     PermissionFlagsBits.ManageGuild,
    *     PermissionFlagsBits.MentionEveryone,
    *   ],
-   *   scopes: ['bot'],
+   *   scopes: [OAuth2Scopes.Bot],
    * });
    * console.log(`Generated bot invite link: ${link}`);
    */
@@ -429,10 +428,11 @@ class Client extends BaseClient {
     if (!Array.isArray(scopes)) {
       throw new TypeError('INVALID_TYPE', 'scopes', 'Array of Invite Scopes', true);
     }
-    if (!scopes.some(scope => ['bot', 'applications.commands'].includes(scope))) {
+    if (!scopes.some(scope => [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].includes(scope))) {
       throw new TypeError('INVITE_MISSING_SCOPES');
     }
-    const invalidScope = scopes.find(scope => !InviteScopes.includes(scope));
+    const validScopes = Object.values(OAuth2Scopes);
+    const invalidScope = scopes.find(scope => !validScopes.includes(scope));
     if (invalidScope) {
       throw new TypeError('INVALID_ELEMENT', 'Array', 'scopes', invalidScope);
     }

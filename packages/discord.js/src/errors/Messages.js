@@ -148,4 +148,10 @@ const Messages = {
   SWEEP_FILTER_RETURN: 'The return value of the sweepFilter function was not false or a Function',
 };
 
+Messages.AuthenticationFailed = Messages.TOKEN_INVALID;
+Messages.InvalidShard = Messages.SHARDING_INVALID;
+Messages.ShardingRequired = Messages.SHARDING_REQUIRED;
+Messages.InvalidIntents = Messages.INVALID_INTENTS;
+Messages.DisallowedIntents = Messages.DISALLOWED_INTENTS;
+
 for (const [name, message] of Object.entries(Messages)) register(name, message);
