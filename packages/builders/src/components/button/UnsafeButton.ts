@@ -3,8 +3,8 @@ import {
 	ButtonStyle,
 	type APIMessageComponentEmoji,
 	type APIButtonComponent,
-	APIButtonComponentWithURL,
-	APIButtonComponentWithCustomId,
+	type APIButtonComponentWithURL,
+	type APIButtonComponentWithCustomId,
 } from 'discord-api-types/v9';
 import { Component } from '../Component';
 
