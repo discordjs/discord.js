@@ -176,6 +176,7 @@ class Invite extends Base {
       /**
        * The stage instance data if there is a public {@link StageInstance} in the stage channel this invite is for
        * @type {?InviteStageInstance}
+       * @deprecated
        */
       this.stageInstance = new InviteStageInstance(this.client, data.stage_instance, this.channel.id, this.guild.id);
     } else {
