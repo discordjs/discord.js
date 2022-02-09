@@ -4198,11 +4198,6 @@ export type GuildAuditLogsTargets = {
 
 export type GuildBanResolvable = GuildBan | UserResolvable;
 
-export interface GuildChannelOverwriteOptions {
-  reason?: string;
-  type?: number;
-}
-
 export type GuildChannelResolvable = Snowflake | GuildBasedChannel;
 
 export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
