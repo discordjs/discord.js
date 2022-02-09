@@ -9,7 +9,7 @@ class Modal {
    * @property {string} [customId] A unique string to be sent in the interaction when clicked
    * @property {string} [title] The title to be displayed on this modal
    * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
-   * Action rows containing interactive components for the modal (input text components)
+   * Action rows containing interactive components for the modal (text input components)
    */
 
   /**

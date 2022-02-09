@@ -6,7 +6,7 @@ const { TextInputStyles, MessageComponentTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
- * Represents an input text component in a modal
+ * Represents a text input component in a modal
  * @extends {BaseMessageComponent}
  */
 
@@ -14,13 +14,13 @@ class TextInputComponent extends BaseMessageComponent {
   /**
    * @typedef {BaseMessageComponentOptions} TextInputComponentOptions
    * @property {string} [customId] A unique string to be sent in the interaction when submitted
-   * @property {string} [label] The text to be displayed above this input text component
+   * @property {string} [label] The text to be displayed above this text input component
    * @property {number} [maxLength] Maximum length of text that can be entered
    * @property {number} [minLength] Minimum length of text required to be entered
    * @property {string} [placeholder] Custom placeholder text to display when no text is entered
-   * @property {boolean} [required] Whether or not this input text component is required
-   * @property {TextInputStyleResolvable} [style] The style of this input text component
-   * @property {string} [value] Value of this input text component
+   * @property {boolean} [required] Whether or not this text input component is required
+   * @property {TextInputStyleResolvable} [style] The style of this text input component
+   * @property {string} [value] Value of this text input component
    */
 
   /**
@@ -40,7 +40,7 @@ class TextInputComponent extends BaseMessageComponent {
     this.customId = data.custom_id ?? data.customId ?? null;
 
     /**
-     * The text to be displayed above this input text component
+     * The text to be displayed above this text input component
      * @type {?string}
      */
     this.label = data.label ?? null;
@@ -64,26 +64,26 @@ class TextInputComponent extends BaseMessageComponent {
     this.placeholder = data.placeholder ?? null;
 
     /**
-     * Whether or not this input text component is required
+     * Whether or not this text input component is required
      * @type {?boolean}
      */
     this.required = data.required ?? false;
 
     /**
-     * The style of this input text component
+     * The style of this text input component
      * @type {?TextInputStyle}
      */
     this.style = data.style ? TextInputComponent.resolveStyle(data.style) : null;
 
     /**
-     * Value of this input text component
+     * Value of this text input component
      * @type {?string}
      */
     this.value = data.value ?? null;
   }
 
   /**
-   * Sets the custom id of this input text component
+   * Sets the custom id of this text input component
    * @param {string} customId A unique string to be sent in the interaction when submitted
    * @returns {TextInputComponent}
    */
@@ -93,8 +93,8 @@ class TextInputComponent extends BaseMessageComponent {
   }
 
   /**
-   * Sets the label of this input text component
-   * @param {string} label The text to be displayed above this input text component
+   * Sets the label of this text input component
+   * @param {string} label The text to be displayed above this text input component
    * @returns {TextInputComponent}
    */
   setLabel(label) {
@@ -103,8 +103,8 @@ class TextInputComponent extends BaseMessageComponent {
   }
 
   /**
-   * Sets the input text component to be required for modal submission
-   * @param {boolean} [required=true] Whether this input text component is required
+   * Sets the text input component to be required for modal submission
+   * @param {boolean} [required=true] Whether this text input component is required
    * @returns {TextInputComponent}
    */
   setRequired(required = true) {
@@ -113,7 +113,7 @@ class TextInputComponent extends BaseMessageComponent {
   }
 
   /**
-   * Sets the maximum length of text input required in this input text component
+   * Sets the maximum length of text input required in this text input component
    * @param {number} maxLength Maximum length of text to be required
    * @returns {TextInputComponent}
    */
@@ -123,7 +123,7 @@ class TextInputComponent extends BaseMessageComponent {
   }
 
   /**
-   * Sets the minimum length of text input required in this input text component
+   * Sets the minimum length of text input required in this text input component
    * @param {number} minLength Minimum length of text to be required
    * @returns {TextInputComponent}
    */
@@ -133,7 +133,7 @@ class TextInputComponent extends BaseMessageComponent {
   }
 
   /**
-   * Sets the placeholder of this input text component
+   * Sets the placeholder of this text input component
    * @param {string} placeholder Custom placeholder text to display when no text is entered
    * @returns {TextInputComponent}
    */
@@ -143,8 +143,8 @@ class TextInputComponent extends BaseMessageComponent {
   }
 
   /**
-   * Sets the style of this input text component
-   * @param {TextInputStyleResolvable} style The style of this input text component
+   * Sets the style of this text input component
+   * @param {TextInputStyleResolvable} style The style of this text input component
    * @returns {TextInputComponent}
    */
   setStyle(style) {
@@ -153,8 +153,8 @@ class TextInputComponent extends BaseMessageComponent {
   }
 
   /**
-   * Sets the value of this input text component
-   * @param {string} value Value of this input text component
+   * Sets the value of this text input component
+   * @param {string} value Value of this text input component
    * @returns {TextInputComponent}
    */
   setValue(value) {
@@ -163,8 +163,8 @@ class TextInputComponent extends BaseMessageComponent {
   }
 
   /**
-   * Transforms the input text component into a plain object
-   * @returns {APITextInput} The raw data of this input text component
+   * Transforms the text input component into a plain object
+   * @returns {APITextInput} The raw data of this text input component
    */
   toJSON() {
     return {
@@ -181,14 +181,14 @@ class TextInputComponent extends BaseMessageComponent {
   }
 
   /**
-   * Data that can be resolved to an TextInputStyle. This can be
+   * Data that can be resolved to a TextInputStyle. This can be
    * * TextInputStyle
    * * number
    * @typedef {number|TextInputStyle} TextInputStyleResolvable
    */
 
   /**
-   * Resolves the style of an input tetx component
+   * Resolves the style of a text input component
    * @param {TextInputStyleResolvable} style The style to resolve
    * @returns {TextInputStyle}
    * @private

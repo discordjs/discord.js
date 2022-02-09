@@ -1155,7 +1155,7 @@ exports.NSFWLevels = createEnum(['DEFAULT', 'EXPLICIT', 'SAFE', 'AGE_RESTRICTED'
 exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 
 /**
- * The style of an input text component
+ * The style of a text input component
  * * SHORT
  * * LONG
  * @typedef {string} TextInputStyle
