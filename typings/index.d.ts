@@ -1591,40 +1591,17 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public inGuild(): this is Message<true> & this;
 }
 
-export class MessageActionRow extends BaseMessageComponent {
-  public constructor(data?: MessageActionRow | MessageActionRowOptions | APIActionRowComponent);
+export class MessageActionRow<
+  T extends MessageActionRowComponent | ModalActionRowComponent = MessageActionRowComponent,
+  U = T extends ModalActionRowComponent ? ModalActionRowComponentResolvable : MessageActionRowComponentResolvable,
+> extends BaseMessageComponent {
+  public constructor(data?: MessageActionRow<T> | MessageActionRowOptions<U> | APIActionRowComponent);
   public type: 'ACTION_ROW';
-  public components: MessageActionRowComponent[];
-  public addComponents(
-    ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
-  ): this;
-  public setComponents(
-    ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
-  ): this;
-  public spliceComponents(
-    index: number,
-    deleteCount: number,
-    ...components: MessageActionRowComponentResolvable[] | MessageActionRowComponentResolvable[][]
-  ): this;
+  public components: T[];
+  public addComponents(...components: U[] | U[][]): this;
+  public setComponents(...components: U[] | U[][]): this;
+  public spliceComponents(index: number, deleteCount: number, ...components: U[] | U[][]): this;
   public toJSON(): APIActionRowComponent;
-}
-
-export class ModalActionRow extends BaseMessageComponent {
-  public constructor(data?: ModalActionRow | ModalActionRowOptions | RawModalActionRowComponentData);
-  public type: 'ACTION_ROW';
-  public components: ModalActionRowComponent[];
-  public addComponents(
-    ...components: ModalActionRowComponentResolvable[] | ModalActionRowComponentResolvable[][]
-  ): this;
-  public setComponents(
-    ...components: ModalActionRowComponentResolvable[] | ModalActionRowComponentResolvable[][]
-  ): this;
-  public spliceComponents(
-    index: number,
-    deleteCount: number,
-    ...components: ModalActionRowComponentResolvable[] | ModalActionRowComponentResolvable[][]
-  ): this;
-  public toJSON(): RawModalActionRowComponentData;
 }
 
 export class MessageAttachment {
@@ -1880,16 +1857,25 @@ export class Modal {
   public customId: string;
   public title: string;
   public addComponents(
-    ...components: (ModalActionRow | (Required<BaseMessageComponentOptions> & ModalActionRowOptions))[]
+    ...components: (
+      | MessageActionRow<ModalActionRowComponent>
+      | (Required<BaseMessageComponentOptions> & MessageActionRowOptions<ModalActionRowComponentResolvable>)
+    )[]
   ): this;
   public setComponents(
-    ...components: (ModalActionRow | (Required<BaseMessageComponentOptions> & ModalActionRowOptions))[]
+    ...components: (
+      | MessageActionRow<ModalActionRowComponent>
+      | (Required<BaseMessageComponentOptions> & MessageActionRowOptions<ModalActionRowComponentResolvable>)
+    )[]
   ): this;
   public setCustomId(customId: string): this;
   public spliceComponents(
     index: number,
     deleteCount: number,
-    ...components: (ModalActionRow | (Required<BaseMessageComponentOptions> & ModalActionRowOptions))[]
+    ...components: (
+      | MessageActionRow<ModalActionRowComponent>
+      | (Required<BaseMessageComponentOptions> & MessageActionRowOptions<ModalActionRowComponentResolvable>)
+    )[]
   ): this;
   public setTitle(title: string): this;
   public toJSON(): RawModalSubmitInteractionData;
@@ -1898,7 +1884,7 @@ export class Modal {
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawModalSubmitInteractionData);
   public customId: string;
-  public components: ModalActionRow[];
+  public components: MessageActionRow<ModalActionRowComponent>[];
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
@@ -5121,12 +5107,12 @@ export type ModalActionRowComponentOptions = InputTextComponentOptions;
 
 export type ModalActionRowComponentResolvable = ModalActionRowComponent | ModalActionRowComponentOptions;
 
-export interface MessageActionRowOptions extends BaseMessageComponentOptions {
-  components: MessageActionRowComponentResolvable[];
-}
-
-export interface ModalActionRowOptions extends BaseMessageComponentOptions {
-  components: ModalActionRowComponentResolvable[];
+export interface MessageActionRowOptions<
+  T extends
+    | MessageActionRowComponentResolvable
+    | ModalActionRowComponentResolvable = MessageActionRowComponentResolvable,
+> extends BaseMessageComponentOptions {
+  components: T[];
 }
 
 export interface MessageActivity {
