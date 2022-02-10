@@ -8,16 +8,12 @@ import {
 } from 'discord-api-types/v9';
 import { Component } from '../Component';
 
-export interface ButtonComponentData extends Omit<APIButtonComponent, 'type'> {
-	type?: ComponentType.Button;
-}
-
 /**
  * Represents a non-validated button component
  */
-export class UnsafeButtonComponent extends Component<APIButtonComponent> {
-	public constructor(data?: ButtonComponentData) {
-		super({ type: ComponentType.Button, ...data } as APIButtonComponent);
+export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>> {
+	public constructor(data?: Partial<APIButtonComponent>) {
+		super({ type: ComponentType.Button, ...data });
 	}
 
 	/**
@@ -117,8 +113,9 @@ export class UnsafeButtonComponent extends Component<APIButtonComponent> {
 	}
 
 	public toJSON(): APIButtonComponent {
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		return {
 			...this.data,
-		};
+		} as APIButtonComponent;
 	}
 }

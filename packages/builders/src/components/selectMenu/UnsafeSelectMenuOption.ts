@@ -4,7 +4,7 @@ import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-
  * Represents a non-validated option within a select menu component
  */
 export class UnsafeSelectMenuOption {
-	public constructor(protected data: APISelectMenuOption = {} as APISelectMenuOption) {}
+	public constructor(protected data: Partial<APISelectMenuOption> = {}) {}
 
 	/**
 	 * The label for this option
@@ -87,8 +87,9 @@ export class UnsafeSelectMenuOption {
 	}
 
 	public toJSON(): APISelectMenuOption {
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		return {
 			...this.data,
-		};
+		} as APISelectMenuOption;
 	}
 }

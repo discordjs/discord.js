@@ -1,4 +1,4 @@
-import { type APIActionRowComponent, ComponentType, APIMessageComponent } from 'discord-api-types/v9';
+import { type APIActionRowComponent, ComponentType } from 'discord-api-types/v9';
 import type { ButtonComponent, SelectMenuComponent } from '..';
 import { Component } from './Component';
 import { createComponent } from './Components';
@@ -8,21 +8,15 @@ export type MessageComponent = ActionRowComponent | ActionRow;
 export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
 
 // TODO: Add valid form component types
-
-export interface ActionRowData extends Omit<APIActionRowComponent, 'type' | 'components'> {
-	type?: ComponentType.ActionRow;
-	components?: Exclude<APIMessageComponent, APIActionRowComponent>[];
-}
-
 /**
  * Represents an action row component
  */
 export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends Component<
-	Omit<APIActionRowComponent, 'components'>
+	Omit<Partial<APIActionRowComponent>, 'components'>
 > {
 	public readonly components: T[];
 
-	public constructor({ components, ...data }: ActionRowData = {}) {
+	public constructor({ components, ...data }: Partial<APIActionRowComponent> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
 		this.components = (components?.map(createComponent) ?? []) as T[];
 	}
@@ -47,9 +41,10 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 	}
 
 	public toJSON(): APIActionRowComponent {
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		return {
 			...this.data,
 			components: this.components.map((component) => component.toJSON()),
-		};
+		} as APIActionRowComponent;
 	}
 }

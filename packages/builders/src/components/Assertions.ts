@@ -40,7 +40,7 @@ export function validateRequiredSelectMenuOptionParameters(label?: string, value
 export const urlValidator = z.string().url();
 
 export function validateRequiredButtonParameters(
-	style: ButtonStyle,
+	style?: ButtonStyle,
 	label?: string,
 	emoji?: APIMessageComponentEmoji,
 	customId?: string,
