@@ -64,9 +64,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 		return this;
 	}
 
-	public setChoices<Input extends APIApplicationCommandOptionChoice<T>[]>(
-		...choices: Input
-	): this {
+	public setChoices<Input extends APIApplicationCommandOptionChoice<T>[]>(...choices: Input): this {
 		if (choices.length > 0 && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
