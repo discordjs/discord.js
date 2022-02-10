@@ -20,26 +20,27 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 // Creates a boop command
 const boopCommand = new SlashCommandBuilder()
 	.setName('boop')
-	.setDescription('Boops the specified user, as many times as you want').addUserOption((option) => option.setName('user').setDescription('The user to boop').setRequired(true));
+	.setDescription('Boops the specified user, as many times as you want')
+	.addUserOption((option) => option.setName('user').setDescription('The user to boop').setRequired(true))
 
-// Adds an integer option
-boopCommand.addIntegerOption((option) =>
-	option.setName('boop_amount').setDescription('How many times should the user be booped (defaults to 1)'),
-);
+	// Adds an integer option
+	.addIntegerOption((option) =>
+		option.setName('boop_amount').setDescription('How many times should the user be booped (defaults to 1)'),
+	)
 
-// Supports choices too!
-boopCommand.addIntegerOption((option) =>
-	option
-		.setName('boop_reminder')
-		.setDescription('How often should we remind you to boop the user')
-		.addChoice('Every day', 1)
-		.addChoice('Weekly', 7)
-		// Or, if you prefer adding more choices at once, you can use an array
-		.addChoices([
-			['Every three months', 90],
-			['Yearly', 365],
-		]),
-);
+	// Supports choices too!
+	.addIntegerOption((option) =>
+		option
+			.setName('boop_reminder')
+			.setDescription('How often should we remind you to boop the user')
+			.addChoice('Every day', 1)
+			.addChoice('Weekly', 7)
+			// Or, if you prefer adding more choices at once, you can use an array
+			.addChoices([
+				['Every three months', 90],
+				['Yearly', 365],
+			]),
+	);
 
 // Get the final raw data that can be sent to Discord
 const rawData = boopCommand.toJSON();
