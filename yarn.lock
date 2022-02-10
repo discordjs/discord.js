@@ -4415,11 +4415,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@portal:/Users/suneettipirneni/discord-api-types::locator=%40discordjs%2Fdiscord.js%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "discord-api-types@portal:/Users/suneettipirneni/discord-api-types::locator=%40discordjs%2Fdiscord.js%40workspace%3A."
+"discord-api-types@npm:^0.27.0":
+  version: 0.27.0
+  resolution: "discord-api-types@npm:0.27.0"
+  checksum: 5a74a49ad7e57ea24e67d431de30cc7056d6d422b607c7d5a7dd35c683c8b87d70ec35a0d3929971adb411acc3df2bd6a77c1401ce30b29690bd1305e427265c
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "discord.js@workspace:packages/discord.js":
   version: 0.0.0-use.local

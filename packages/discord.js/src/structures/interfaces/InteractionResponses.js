@@ -5,6 +5,13 @@ const { Error } = require('../../errors');
 const MessagePayload = require('../MessagePayload');
 
 /**
+ * @typedef {Object} ModalData
+ * @property {string} title
+ * @property {string} customId
+ * @property {ActionRow[]} components
+ */
+
+/**
  * Interface for classes that support shared interaction response types.
  * @interface
  */
@@ -227,13 +234,12 @@ class InteractionResponses {
 
   /**
    * Presents a modal component
-   * @param {APIModal} modal The modal to present
+   * @param {APIModal|ModalData|Modal} modal The modal to present
    */
   async presentModal(modal) {
-    console.log(modal.toJSON());
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
-        type: 9,
+        type: InteractionResponseType.Modal,
         data: modal.toJSON(),
       },
     });

@@ -52,8 +52,5 @@
 	"workspaces": [
 		"packages/*"
 	],
-	"packageManager": "yarn@3.1.1",
-	"resolutions": {
-		"discord-api-types": "portal:/Users/suneettipirneni/discord-api-types"
-	}
+	"packageManager": "yarn@3.1.1"
 }
