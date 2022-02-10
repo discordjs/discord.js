@@ -1831,7 +1831,7 @@ export class MessageSelectMenu extends BaseMessageComponent {
 
 export class Modal {
   public constructor(data?: Modal | ModalOptions);
-  public components: MessageActionRow[];
+  public components: MessageActionRow<ModalActionRowComponent>[];
   public customId: string;
   public title: string;
   public addComponents(
@@ -1869,7 +1869,7 @@ export class ModalSubmitFieldsResolver {
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawModalSubmitInteractionData);
   public customId: string;
-  public components: MessageActionRow<ModalActionRowComponent>[];
+  public components: PartialModalActionRow[];
   public fields: ModalSubmitFieldsResolver;
   public getTextInputValue(customId: string): string;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
@@ -5330,7 +5330,9 @@ export type MessageType = keyof typeof MessageTypes;
 export type MFALevel = keyof typeof MFALevels;
 
 export interface ModalOptions {
-  components: MessageActionRow[] | MessageActionRowOptions[];
+  components:
+    | MessageActionRow<ModalActionRowComponent>[]
+    | MessageActionRowOptions<ModalActionRowComponentResolvable>[];
   customId: string;
   title: string;
 }
