@@ -28,3 +28,4 @@ docs/docs.json
 .tmp/
 .idea/
 .DS_Store
+.yarn/
