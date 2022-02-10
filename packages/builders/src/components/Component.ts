@@ -11,7 +11,7 @@ export abstract class Component<
 	/**
 	 * The API data associated with this component
 	 */
-	protected data: DataType;
+	protected readonly data: DataType;
 
 	/**
 	 * Converts this component to an API-compatible JSON object

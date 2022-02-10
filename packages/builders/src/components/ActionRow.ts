@@ -18,7 +18,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 
 	public constructor({ components, ...data }: Partial<APIActionRowComponent> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
-		this.components = (components?.map(createComponent) ?? []) as T[];
+		this.components = (components?.map((c) => createComponent(c)) ?? []) as T[];
 	}
 
 	/**

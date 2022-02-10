@@ -70,7 +70,6 @@ describe('Button Components', () => {
 			};
 
 			expect(
-				// @ts-expect-error
 				new SelectMenuComponent(selectMenuDataWithoutOptions)
 					.addOptions(new SelectMenuOption(selectMenuOptionData))
 					.toJSON(),
