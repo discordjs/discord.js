@@ -1,7 +1,6 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { TypeError } = require('../errors/DJSError.js');
+import { Collection } from '@discordjs/collection';
+import type { LimitedCollectionOptions } from '../../typings/index.js';
+import { TypeError } from '../errors/DJSError.js';
 
 /**
  * Options for defining the behavior of a LimitedCollection
@@ -17,8 +16,20 @@ const { TypeError } = require('../errors/DJSError.js');
  * @param {LimitedCollectionOptions} [options={}] Options for constructing the Collection.
  * @param {Iterable} [iterable=null] Optional entries passed to the Map constructor.
  */
-class LimitedCollection extends Collection {
-  constructor(options = {}, iterable) {
+export class LimitedCollection<K, V> extends Collection<K, V> {
+  /**
+   * The max size of the Collection.
+   * @type {number}
+   */
+  public readonly maxSize: number;
+
+  /**
+   * A function called to check if an entry should be kept when the Collection is at max size.
+   * @type {?Function}
+   */
+  public readonly keepOverLimit: ((value: V, key: K, collection: this) => boolean) | null;
+
+  public constructor(options: LimitedCollectionOptions<K, V> = {}, iterable?: Iterable<readonly [K, V]>) {
     if (typeof options !== 'object' || options === null) {
       throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     }
@@ -31,22 +42,13 @@ class LimitedCollection extends Collection {
       throw new TypeError('INVALID_TYPE', 'keepOverLimit', 'function');
     }
 
-    super(iterable);
+    super(iterable ?? []);
 
-    /**
-     * The max size of the Collection.
-     * @type {number}
-     */
     this.maxSize = maxSize;
-
-    /**
-     * A function called to check if an entry should be kept when the Collection is at max size.
-     * @type {?Function}
-     */
     this.keepOverLimit = keepOverLimit;
   }
 
-  set(key, value) {
+  public override set(key: K, value: V) {
     if (this.maxSize === 0) return this;
     if (this.size >= this.maxSize && !this.has(key)) {
       for (const [k, v] of this.entries()) {
@@ -60,9 +62,7 @@ class LimitedCollection extends Collection {
     return super.set(key, value);
   }
 
-  static get [Symbol.species]() {
+  public static get [Symbol.species]() {
     return Collection;
   }
 }
-
-module.exports = LimitedCollection;

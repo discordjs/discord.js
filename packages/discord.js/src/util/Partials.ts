@@ -1,4 +1,4 @@
-enum Partials {
+export enum Partials {
   User,
   Channel,
   GuildMember,
@@ -6,5 +6,3 @@ enum Partials {
   Reaction,
   GuildScheduledEvent,
 }
-
-export default Partials;

@@ -23,7 +23,7 @@ const ReactionManager = require('../managers/ReactionManager');
 const { NonSystemMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 /**
  * Represents a message on Discord.

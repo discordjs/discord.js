@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events');
 
 class GuildStickerCreateAction extends Action {
   handle(guild, createdSticker) {

@@ -1,6 +1,6 @@
 'use strict';
 
-const Events = require('../../../util/Events');
+const { Events } = require('../../../util/Events');
 
 module.exports = (client, packet, shard) => {
   const replayed = shard.sequence - shard.closeSequence;

@@ -8,9 +8,9 @@ const { GatewayCloseCodes, GatewayDispatchEvents, Routes } = require('discord-ap
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error } = require('../../errors');
-const Events = require('../../util/Events');
-const ShardEvents = require('../../util/ShardEvents');
-const Status = require('../../util/Status');
+const { Events } = require('../../util/Events');
+const { ShardEvents } = require('../../util/ShardEvents');
+const { Status } = require('../../util/Status');
 
 const BeforeReadyWhitelist = [
   GatewayDispatchEvents.Ready,

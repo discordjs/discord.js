@@ -9,7 +9,7 @@ const { Role } = require('../structures/Role');
 const DataResolver = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { resolveColor } = require('../util/Util');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 let cacheWarningEmitted = false;
 

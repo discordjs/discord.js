@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const GuildBan = require('../../structures/GuildBan');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events');
 
 class GuildBanRemove extends Action {
   handle(data) {

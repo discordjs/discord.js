@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const Invite = require('../../structures/Invite');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events');
 
 class InviteDeleteAction extends Action {
   handle(data) {

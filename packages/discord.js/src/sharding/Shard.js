@@ -6,7 +6,7 @@ const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Error } = require('../errors');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 let childProcess = null;
 let Worker = null;
 

@@ -2,7 +2,7 @@
 
 const { setInterval, clearInterval } = require('node:timers');
 const { ThreadChannelTypes, SweeperKeys } = require('./Constants');
-const Events = require('./Events');
+const { Events } = require('./Events');
 const { TypeError } = require('../errors/DJSError.js');
 
 /**

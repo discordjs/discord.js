@@ -23,11 +23,11 @@ const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
 const DataResolver = require('../util/DataResolver');
-const Events = require('../util/Events');
+const { Events } = require('../util/Events');
 const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
 const PermissionsBitField = require('../util/PermissionsBitField');
-const Status = require('../util/Status');
+const { Status } = require('../util/Status');
 const Sweepers = require('../util/Sweepers');
 
 /**

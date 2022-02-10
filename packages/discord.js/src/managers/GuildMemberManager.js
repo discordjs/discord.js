@@ -10,7 +10,7 @@ const { Error, TypeError, RangeError } = require('../errors');
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
-const Events = require('../util/Events');
+const { Events } = require('../util/Events');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.

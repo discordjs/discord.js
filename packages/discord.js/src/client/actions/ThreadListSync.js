@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events');
 
 class ThreadListSyncAction extends Action {
   handle(data) {

@@ -23,10 +23,10 @@ const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
-const Partials = require('../util/Partials');
-const Status = require('../util/Status');
+const { Partials } = require('../util/Partials');
+const { Status } = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 /**
  * Represents a guild (or a server) on Discord.

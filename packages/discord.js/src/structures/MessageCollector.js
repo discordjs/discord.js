@@ -1,7 +1,7 @@
 'use strict';
 
 const Collector = require('./interfaces/Collector');
-const Events = require('../util/Events');
+const { Events } = require('../util/Events');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions

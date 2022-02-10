@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const Typing = require('../../structures/Typing');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events');
 
 class TypingStart extends Action {
   handle(data) {

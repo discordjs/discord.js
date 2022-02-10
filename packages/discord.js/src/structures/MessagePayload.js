@@ -6,7 +6,7 @@ const { MessageFlags } = require('discord-api-types/v9');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 /**
  * Represents a message to be sent to the API.

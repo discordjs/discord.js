@@ -2,8 +2,8 @@
 
 const process = require('node:process');
 const { Error } = require('../errors');
-const Events = require('../util/Events');
-const Util = require('../util/Util');
+const { Events } = require('../util/Events');
+const { Util } = require('../util/Util');
 
 /**
  * Helper class for sharded clients spawned as a child process/worker, such as from a {@link ShardingManager}.

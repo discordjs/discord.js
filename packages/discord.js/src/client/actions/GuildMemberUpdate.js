@@ -1,8 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const Events = require('../../util/Events');
-const Status = require('../../util/Status');
+const { Events } = require('../../util/Events');
+const { Status } = require('../../util/Status');
 
 class GuildMemberUpdateAction extends Action {
   handle(data, shard) {

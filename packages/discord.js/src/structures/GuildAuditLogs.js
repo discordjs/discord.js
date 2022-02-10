@@ -9,8 +9,8 @@ const Invite = require('./Invite');
 const { StageInstance } = require('./StageInstance');
 const { Sticker } = require('./Sticker');
 const Webhook = require('./Webhook');
-const Partials = require('../util/Partials');
-const Util = require('../util/Util');
+const { Partials } = require('../util/Partials');
+const { Util } = require('../util/Util');
 
 /**
  * The target type of an entry. Here are the available types:

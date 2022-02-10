@@ -5,7 +5,7 @@ const { Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { Channel } = require('../structures/Channel');
 const { ThreadChannelTypes } = require('../util/Constants');
-const Events = require('../util/Events');
+const { Events } = require('../util/Events');
 
 let cacheWarningEmitted = false;
 

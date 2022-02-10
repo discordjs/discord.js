@@ -8,7 +8,7 @@ const ChatInputCommandInteraction = require('../../structures/ChatInputCommandIn
 const MessageContextMenuCommandInteraction = require('../../structures/MessageContextMenuCommandInteraction');
 const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
 const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events');
 
 class InteractionCreateAction extends Action {
   handle(data) {

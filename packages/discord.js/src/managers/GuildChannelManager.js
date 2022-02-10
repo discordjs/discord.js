@@ -12,7 +12,7 @@ const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 let cacheWarningEmitted = false;
 let storeChannelDeprecationEmitted = false;

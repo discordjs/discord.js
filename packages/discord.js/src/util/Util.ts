@@ -2,14 +2,14 @@ import { parse } from 'node:path';
 import { Collection } from '@discordjs/collection';
 import { ChannelType, RouteBases, Routes, Snowflake } from 'discord-api-types/v9';
 import fetch from 'node-fetch';
-import Colors from './Colors';
+import { Colors } from './Colors';
 import { Error as DiscordError, RangeError, TypeError } from '../errors';
 const isObject = (d: unknown): d is Record<string, unknown> => typeof d === 'object' && d !== null;
 
 /**
  * Contains various general-purpose utility methods.
  */
-class Util extends null {
+export class Util extends null {
   /**
    * Flatten an object. Any properties that are collections will get converted to an array of keys.
    * @param {Object} obj The object to flatten.
@@ -321,7 +321,7 @@ class Util extends null {
    * @returns {Object}
    * @private
    */
-  static cloneObject(obj: object) {
+  static cloneObject<T extends object>(obj: T): T {
     return Object.assign(Object.create(obj), obj);
   }
 
@@ -332,13 +332,14 @@ class Util extends null {
    * @returns {Object}
    * @private
    */
-  static mergeDefault(def: Record<string, unknown>, given: Record<string, unknown>) {
+  static mergeDefault<T>(def: Record<string, T>, given: Record<string, T>): Record<string, T> {
     if (!given) return def;
     for (const key in def) {
       // @ts-expect-error TS doesn't have typedefs for hasOwn yet
       if (!Object.hasOwn(given, key) || given[key] === undefined) {
         given[key] = def[key];
       } else if (given[key] === Object(given[key])) {
+        // @ts-expect-error
         given[key] = Util.mergeDefault(def[key] as Record<string, unknown>, given[key] as Record<string, unknown>);
       }
     }
@@ -390,7 +391,7 @@ class Util extends null {
    * @returns {number}
    * @private
    */
-  static moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset = false) {
+  static moveElementInArray<T>(array: T[], element: T, newIndex: number, offset = false) {
     const index = array.indexOf(element);
     newIndex = (offset ? index : 0) + newIndex;
     if (newIndex > -1 && newIndex < array.length) {
@@ -505,18 +506,18 @@ class Util extends null {
    * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
-  static async setPosition(
-    item: Channel | Role,
+  static async setPosition<T extends AnyChannel | Role>(
+    item: T,
     position: number,
     relative: boolean,
-    sorted: Collection<string, Channel | Role>,
+    sorted: Collection<string, T>,
     client: Client,
     route: `/${string}`,
     reason?: string,
   ) {
     let updatedItems = [...sorted.values()];
     Util.moveElementInArray(updatedItems, item, position, relative);
-    updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i })) as (Channel | Role)[];
+    updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i })) as T[];
     await client.rest.patch(route, { body: updatedItems, reason });
     return updatedItems;
   }
@@ -579,17 +580,15 @@ class Util extends null {
   }
 }
 
-module.exports = Util;
-
 // Fixes Circular
 import GuildChannel from '../structures/GuildChannel';
 import type {
+  AnyChannel,
   ColorResolvable,
   EmojiIdentifierResolvable,
   GuildTextBasedChannel,
   MakeErrorOptions,
   TextBasedChannel,
 } from '../../typings';
-import type { Channel } from '../structures/Channel';
 import type { Role } from '../structures/Role';
 import type Client from '../client/Client';

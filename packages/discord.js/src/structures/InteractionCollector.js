@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Collector = require('./interfaces/Collector');
-const Events = require('../util/Events');
+const { Events } = require('../util/Events');
 
 /**
  * @typedef {CollectorOptions} InteractionCollectorOptions

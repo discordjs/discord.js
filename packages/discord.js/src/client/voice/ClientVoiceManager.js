@@ -1,6 +1,6 @@
 'use strict';
 
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events');
 
 /**
  * Manages voice connections for the client

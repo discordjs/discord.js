@@ -1,6 +1,6 @@
 'use strict';
 
-const Events = require('../../../util/Events');
+const { Events } = require('../../../util/Events');
 
 module.exports = (client, packet) => {
   const { old, updated } = client.actions.MessageUpdate.handle(packet.d);

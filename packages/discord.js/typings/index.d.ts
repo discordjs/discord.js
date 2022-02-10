@@ -96,6 +96,8 @@ import { EventEmitter } from 'node:events';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
 import * as WebSocket from 'ws';
+import type { LimitedCollection } from '../src/util/LimitedCollection';
+import type { Status } from '../src/util/Status';
 import {
   RawActivityData,
   RawAnonymousGuildData,
@@ -1414,11 +1416,7 @@ export class InviteGuild extends AnonymousGuild {
   public welcomeScreen: WelcomeScreen | null;
 }
 
-export class LimitedCollection<K, V> extends Collection<K, V> {
-  public constructor(options?: LimitedCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
-  public maxSize: number;
-  public keepOverLimit: ((value: V, key: K, collection: this) => boolean) | null;
-}
+export * from '../src/util/LimitedCollection';
 
 export type MessageCollectorOptionsParams<T extends ComponentType, Cached extends boolean = boolean> =
   | {
@@ -2293,66 +2291,8 @@ export class UserFlagsBitField extends BitField<UserFlagsString> {
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
-export class Util extends null {
-  private constructor();
-  public static basename(path: string, ext?: string): string;
-  public static cleanContent(str: string, channel: TextBasedChannel): string;
-  public static cloneObject(obj: unknown): unknown;
-  public static discordSort<K, V extends { rawPosition: number; id: Snowflake }>(
-    collection: Collection<K, V>,
-  ): Collection<K, V>;
-  public static escapeMarkdown(text: string, options?: EscapeMarkdownOptions): string;
-  public static escapeCodeBlock(text: string): string;
-  public static escapeInlineCode(text: string): string;
-  public static escapeBold(text: string): string;
-  public static escapeItalic(text: string): string;
-  public static escapeUnderline(text: string): string;
-  public static escapeStrikethrough(text: string): string;
-  public static escapeSpoiler(text: string): string;
-  public static cleanCodeBlockContent(text: string): string;
-  public static fetchRecommendedShards(token: string, options?: FetchRecommendedShardsOptions): Promise<number>;
-  public static flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
-  public static makeError(obj: MakeErrorOptions): Error;
-  public static makePlainError(err: Error): MakeErrorOptions;
-  public static mergeDefault(def: unknown, given: unknown): unknown;
-  public static moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
-  public static parseEmoji(text: string): { animated: boolean; name: string; id: Snowflake | null } | null;
-  public static resolveColor(color: ColorResolvable): number;
-  public static resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<APIPartialEmoji> | null;
-  public static verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
-  public static setPosition<T extends AnyChannel | Role>(
-    item: T,
-    position: number,
-    relative: boolean,
-    sorted: Collection<Snowflake, T>,
-    client: Client,
-    route: string,
-    reason?: string,
-  ): Promise<{ id: Snowflake; position: number }[]>;
-  public static splitMessage(text: string, options?: SplitOptions): string[];
-}
-
-export class Formatters extends null {
-  public static blockQuote: typeof blockQuote;
-  public static bold: typeof bold;
-  public static channelMention: typeof channelMention;
-  public static codeBlock: typeof codeBlock;
-  public static formatEmoji: typeof formatEmoji;
-  public static hideLinkEmbed: typeof hideLinkEmbed;
-  public static hyperlink: typeof hyperlink;
-  public static inlineCode: typeof inlineCode;
-  public static italic: typeof italic;
-  public static memberNicknameMention: typeof memberNicknameMention;
-  public static quote: typeof quote;
-  public static roleMention: typeof roleMention;
-  public static spoiler: typeof spoiler;
-  public static strikethrough: typeof strikethrough;
-  public static time: typeof time;
-  public static TimestampStyles: typeof TimestampStyles;
-  public static TimestampStylesString: TimestampStylesString;
-  public static underscore: typeof underscore;
-  public static userMention: typeof userMention;
-}
+export * from '../src/util/Util';
+export * from '../src/util/Formatters';
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public readonly speakable: boolean;
@@ -3637,96 +3577,10 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
 }
 
-export * as Colors from '../src/util/Colors';
-
-export declare const Events: {
-  ClientReady: 'ready';
-  GuildCreate: 'guildCreate';
-  GuildDelete: 'guildDelete';
-  GuildUpdate: 'guildUpdate';
-  GuildUnavailable: 'guildUnavailable';
-  GuildMemberAdd: 'guildMemberAdd';
-  GuildMemberRemove: 'guildMemberRemove';
-  GuildMemberUpdate: 'guildMemberUpdate';
-  GuildMemberAvailable: 'guildMemberAvailable';
-  GuildMembersChunk: 'guildMembersChunk';
-  GuildIntegrationsUpdate: 'guildIntegrationsUpdate';
-  GuildRoleCreate: 'roleCreate';
-  GuildRoleDelete: 'roleDelete';
-  InviteCreate: 'inviteCreate';
-  InviteDelete: 'inviteDelete';
-  GuildRoleUpdate: 'roleUpdate';
-  GuildEmojiCreate: 'emojiCreate';
-  GuildEmojiDelete: 'emojiDelete';
-  GuildEmojiUpdate: 'emojiUpdate';
-  GuildBanAdd: 'guildBanAdd';
-  GuildBanRemove: 'guildBanRemove';
-  ChannelCreate: 'channelCreate';
-  ChannelDelete: 'channelDelete';
-  ChannelUpdate: 'channelUpdate';
-  ChannelPinsUpdate: 'channelPinsUpdate';
-  MessageCreate: 'messageCreate';
-  MessageDelete: 'messageDelete';
-  MessageUpdate: 'messageUpdate';
-  MessageBulkDelete: 'messageDeleteBulk';
-  MessageReactionAdd: 'messageReactionAdd';
-  MessageReactionRemove: 'messageReactionRemove';
-  MessageReactionRemoveAll: 'messageReactionRemoveAll';
-  MessageReactionRemoveEmoji: 'messageReactionRemoveEmoji';
-  ThreadCreate: 'threadCreate';
-  ThreadDelete: 'threadDelete';
-  ThreadUpdate: 'threadUpdate';
-  ThreadListSync: 'threadListSync';
-  ThreadMemberUpdate: 'threadMemberUpdate';
-  ThreadMembersUpdate: 'threadMembersUpdate';
-  UserUpdate: 'userUpdate';
-  PresenceUpdate: 'presenceUpdate';
-  VoiceServerUpdate: 'voiceServerUpdate';
-  VoiceStateUpdate: 'voiceStateUpdate';
-  TypingStart: 'typingStart';
-  WebhooksUpdate: 'webhookUpdate';
-  InteractionCreate: 'interactionCreate';
-  Error: 'error';
-  Warn: 'warn';
-  Debug: 'debug';
-  CacheSweep: 'cacheSweep';
-  ShardDisconnect: 'shardDisconnect';
-  ShardError: 'shardError';
-  ShardReconnecting: 'shardReconnecting';
-  ShardReady: 'shardReady';
-  ShardResume: 'shardResume';
-  Invalidated: 'invalidated';
-  Raw: 'raw';
-  StageInstanceCreate: 'stageInstanceCreate';
-  StageInstanceUpdate: 'stageInstanceUpdate';
-  StageInstanceDelete: 'stageInstanceDelete';
-  GuildStickerCreate: 'stickerCreate';
-  GuildStickerDelete: 'stickerDelete';
-  GuildStickerUpdate: 'stickerUpdate';
-  GuildScheduledEventCreate: 'guildScheduledEventCreate';
-  GuildScheduledEventUpdate: 'guildScheduledEventUpdate';
-  GuildScheduledEventDelete: 'guildScheduledEventDelete';
-  GuildScheduledEventUserAdd: 'guildScheduledEventUserAdd';
-  GuildScheduledEventUserRemove: 'guildScheduledEventUserRemove';
-};
-
-export enum ShardEvents {
-  Close = 'close',
-  Destroyed = 'destroyed',
-  InvalidSession = 'invalidSession',
-  Ready = 'ready',
-  Resumed = 'resumed',
-  AllReady = 'allReady',
-}
-
-export enum Status {
-  Ready = 0,
-  Connecting = 1,
-  Reconnecting = 2,
-  Idle = 3,
-  Nearly = 4,
-  Disconnected = 5,
-}
+export * from '../src/util/Colors';
+export * from '../src/util/Events';
+export * from '../src/util/ShardEvents';
+export * from '../src/util/Status';
 
 export interface CreateGuildScheduledEventInviteURLOptions extends CreateInviteOptions {
   channel?: GuildInvitableChannelResolvable;

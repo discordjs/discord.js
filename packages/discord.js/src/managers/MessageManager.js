@@ -6,7 +6,7 @@ const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const { Message } = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 /**
  * Manages API methods for Messages and holds their cache.

@@ -110,7 +110,7 @@ class Options extends null {
    */
   static cacheWithLimits(settings = {}) {
     const { Collection } = require('@discordjs/collection');
-    const LimitedCollection = require('./LimitedCollection');
+    const { LimitedCollection } = require('./LimitedCollection');
 
     return manager => {
       const setting = settings[manager.name];

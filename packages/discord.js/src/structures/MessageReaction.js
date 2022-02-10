@@ -4,7 +4,7 @@ const { Routes } = require('discord-api-types/v9');
 const GuildEmoji = require('./GuildEmoji');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserManager = require('../managers/ReactionUserManager');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 /**
  * Represents a reaction to a message.

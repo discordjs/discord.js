@@ -4,10 +4,10 @@ const EventEmitter = require('node:events');
 const { setTimeout, setInterval, clearTimeout, clearInterval } = require('node:timers');
 const { GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes } = require('discord-api-types/v9');
 const WebSocket = require('../../WebSocket');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events');
 const IntentsBitField = require('../../util/IntentsBitField');
-const ShardEvents = require('../../util/ShardEvents');
-const Status = require('../../util/Status');
+const { ShardEvents } = require('../../util/ShardEvents');
+const { Status } = require('../../util/Status');
 
 const STATUS_KEYS = Object.keys(Status);
 const CONNECTION_STATE = Object.keys(WebSocket.WebSocket);

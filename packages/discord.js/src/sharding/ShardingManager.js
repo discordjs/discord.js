@@ -8,7 +8,7 @@ const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
 const Shard = require('./Shard');
 const { Error, TypeError, RangeError } = require('../errors');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.

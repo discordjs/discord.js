@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 /**
  * Keeps track of mentions in a {@link Message}.

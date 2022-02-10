@@ -4,7 +4,7 @@ const EventEmitter = require('node:events');
 const { REST } = require('@discordjs/rest');
 const { TypeError } = require('../errors');
 const Options = require('../util/Options');
-const Util = require('../util/Util');
+const { Util } = require('../util/Util');
 
 /**
  * The base class for all clients.

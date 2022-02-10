@@ -4,7 +4,7 @@ const EventEmitter = require('node:events');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { TypeError } = require('../../errors');
-const Util = require('../../util/Util');
+const { Util } = require('../../util/Util');
 
 /**
  * Filter to be applied to the collector.

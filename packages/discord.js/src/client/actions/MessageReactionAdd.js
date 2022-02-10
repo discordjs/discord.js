@@ -1,8 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const Events = require('../../util/Events');
-const Partials = require('../../util/Partials');
+const { Events } = require('../../util/Events');
+const { Partials } = require('../../util/Partials');
 
 /*
 { user_id: 'id',
