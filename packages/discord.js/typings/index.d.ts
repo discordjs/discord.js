@@ -7,7 +7,7 @@ import {
   channelMention,
   codeBlock,
   Component,
-  Embed,
+  Embed as BuildersEmbed,
   formatEmoji,
   hideLinkEmbed,
   hyperlink,
@@ -89,6 +89,7 @@ import {
   GatewayIntentBits,
   ActivityFlags,
   APIMessageComponentEmoji,
+  EmbedType,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -470,6 +471,34 @@ export class ButtonComponent extends BuilderButtonComponent {
 
 export class SelectMenuComponent extends BuilderSelectMenuComponent {
   public constructor(data?: SelectMenuComponentData | APISelectMenuComponent);
+}
+
+export interface EmbedData {
+  title?: string;
+  type?: EmbedType;
+  description?: string;
+  url?: string;
+  timestamp?: string;
+  color?: number;
+  footer?: EmbedFooterData;
+  image?: EmbedImageData;
+  thumbnail?: EmbedImageData;
+  provider?: EmbedProviderData;
+  author?: EmbedAuthorData;
+  fields?: EmbedFieldData[];
+}
+
+export interface EmbedImageData {
+  url?: string;
+}
+
+export interface EmbedProviderData {
+  name?: string;
+  url?: string;
+}
+
+export class Embed extends BuildersEmbed {
+  public constructor(data?: EmbedData | APIEmbed);
 }
 
 export interface MappedChannelCategoryTypes {
@@ -2379,6 +2408,11 @@ export type ComponentData = ActionRowComponentData | ButtonComponentData | Selec
 export class Components extends null {
   private constructor();
   public static transformJSON(data: ComponentData | APIMessageComponent): APIMessageComponent;
+}
+
+export class Embeds extends null {
+  private constructor();
+  public static transformJSON(data: EmbedData | APIEmbed): APIEmbed;
 }
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
@@ -5193,7 +5227,6 @@ export {
   SelectMenuOption,
   UnsafeSelectMenuOption,
   ActionRowComponent,
-  Embed,
   UnsafeEmbed,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';

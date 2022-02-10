@@ -6,6 +6,7 @@ const { MessageFlags } = require('discord-api-types/v9');
 const { RangeError } = require('../errors');
 const Components = require('../util/Components');
 const DataResolver = require('../util/DataResolver');
+const Embeds = require('../util/Embeds');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const Util = require('../util/Util');
 
@@ -193,7 +194,9 @@ class MessagePayload {
       content,
       tts,
       nonce,
-      embeds: this.options.embeds?.map(embed => (embed instanceof Embed ? embed : new Embed(embed)).toJSON()),
+      embeds: this.options.embeds?.map(embed =>
+        embed instanceof Embed ? embed.toJSON() : Embeds.transformJSON(embed),
+      ),
       components,
       username,
       avatar_url: avatarURL,
