@@ -16,7 +16,7 @@ export class Util extends null {
    * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.
    * @returns {Object}
    */
-  static flatten(obj: object, ...props: Iterable<[string, boolean | string]>[]): unknown {
+  public static flatten(obj: object, ...props: Iterable<[string, boolean | string]>[]): unknown {
     if (!isObject(obj)) return obj;
 
     const objProps = Object.keys(obj)
@@ -24,11 +24,13 @@ export class Util extends null {
       .map(k => ({ [k]: true }));
 
     // @ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     props = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
     const out: Record<string, unknown> = {};
 
     for (let [prop, newProp] of Object.entries(props)) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!newProp) continue;
       // @ts-expect-error
       newProp = newProp === true ? prop : newProp;
@@ -45,6 +47,7 @@ export class Util extends null {
       else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
       // If it's an array, flatten each element
       // @ts-expect-error
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
       // @ts-expect-error
@@ -73,22 +76,25 @@ export class Util extends null {
    * @param {SplitOptions} [options] Options controlling the behavior of the split
    * @returns {string[]}
    */
-  static splitMessage(text: string, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
+  public static splitMessage(text: string, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
     text = Util.verifyString(text);
     if (text.length <= maxLength) return [text];
     let splitText = [text];
     if (Array.isArray(char)) {
       while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const currentChar = char.shift();
         if (currentChar instanceof RegExp) {
           splitText = splitText.flatMap(chunk => chunk.match(currentChar)!);
         } else {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           splitText = splitText.flatMap(chunk => chunk.split(currentChar));
         }
       }
     } else {
       splitText = text.split(char);
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (splitText.some(elem => elem.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [];
     let msg = '';
@@ -122,7 +128,7 @@ export class Util extends null {
    * @param {EscapeMarkdownOptions} [options={}] Options for escaping the markdown
    * @returns {string}
    */
-  static escapeMarkdown(
+  public static escapeMarkdown(
     text: string,
     {
       codeBlock = true,
@@ -184,7 +190,7 @@ export class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeCodeBlock(text: string) {
+  public static escapeCodeBlock(text: string) {
     return text.replaceAll('```', '\\`\\`\\`');
   }
 
@@ -193,7 +199,7 @@ export class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeInlineCode(text: string) {
+  public static escapeInlineCode(text: string) {
     return text.replace(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
   }
 
@@ -202,14 +208,14 @@ export class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeItalic(text: string) {
+  public static escapeItalic(text: string) {
     let i = 0;
-    text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
+    text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match: string) => {
       if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
       return `\\*${match}`;
     });
     i = 0;
-    return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
+    return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match: string) => {
       if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
       return `\\_${match}`;
     });
@@ -220,9 +226,9 @@ export class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeBold(text: string) {
+  public static escapeBold(text: string) {
     let i = 0;
-    return text.replace(/\*\*(\*)?/g, (_, match) => {
+    return text.replace(/\*\*(\*)?/g, (_, match: string) => {
       if (match) return ++i % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
       return '\\*\\*';
     });
@@ -233,9 +239,9 @@ export class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeUnderline(text: string) {
+  public static escapeUnderline(text: string) {
     let i = 0;
-    return text.replace(/__(_)?/g, (_, match) => {
+    return text.replace(/__(_)?/g, (_, match: string) => {
       if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
       return '\\_\\_';
     });
@@ -246,7 +252,7 @@ export class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeStrikethrough(text: string) {
+  public static escapeStrikethrough(text: string) {
     return text.replaceAll('~~', '\\~\\~');
   }
 
@@ -255,7 +261,7 @@ export class Util extends null {
    * @param {string} text Content to escape
    * @returns {string}
    */
-  static escapeSpoiler(text: string) {
+  public static escapeSpoiler(text: string) {
     return text.replaceAll('||', '\\|\\|');
   }
 
@@ -271,16 +277,20 @@ export class Util extends null {
    * @param {FetchRecommendedShardsOptions} [options] Options for fetching the recommended shard count
    * @returns {Promise<number>} The recommended number of shards
    */
-  static async fetchRecommendedShards(token: string, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
+  public static async fetchRecommendedShards(token: string, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (!token) throw new DiscordError('TOKEN_MISSING');
     const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
     });
     if (!response.ok) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       if (response.status === 401) throw new DiscordError('TOKEN_INVALID');
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw response;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { shards } = await response.json();
     return Math.ceil((shards * (1_000 / guildsPerShard)) / multipleOf) * multipleOf;
   }
@@ -294,10 +304,10 @@ export class Util extends null {
    * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
    * @private
    */
-  static parseEmoji(text: string) {
+  public static parseEmoji(text: string) {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (!text.includes(':')) return { animated: false, name: text, id: null };
-    const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
+    const match = /<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/.exec(text) as string[] | undefined;
     return match && { animated: Boolean(match[1]), name: match[2], id: match[3] ?? null };
   }
 
@@ -307,7 +317,7 @@ export class Util extends null {
    * @returns {?RawEmoji}
    * @private
    */
-  static resolvePartialEmoji(emoji: EmojiIdentifierResolvable) {
+  private static resolvePartialEmoji(emoji: EmojiIdentifierResolvable) {
     if (!emoji) return null;
     if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
     const { id, name, animated } = emoji;
@@ -321,8 +331,8 @@ export class Util extends null {
    * @returns {Object}
    * @private
    */
-  static cloneObject<T extends object>(obj: T): T {
-    return Object.assign(Object.create(obj), obj);
+  private static cloneObject<T extends object>(obj: T): T {
+    return Object.assign(Object.create(obj), obj) as T;
   }
 
   /**
@@ -332,10 +342,11 @@ export class Util extends null {
    * @returns {Object}
    * @private
    */
-  static mergeDefault<T>(def: Record<string, T>, given: Record<string, T>): Record<string, T> {
+  private static mergeDefault<T>(def: Record<string, T>, given?: Record<string, T>): Record<string, T> {
     if (!given) return def;
     for (const key in def) {
       // @ts-expect-error TS doesn't have typedefs for hasOwn yet
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       if (!Object.hasOwn(given, key) || given[key] === undefined) {
         given[key] = def[key];
       } else if (given[key] === Object(given[key])) {
@@ -361,7 +372,7 @@ export class Util extends null {
    * @returns {Error}
    * @private
    */
-  static makeError(obj: MakeErrorOptions) {
+  private static makeError(obj: MakeErrorOptions) {
     const err = new Error(obj.message);
     err.name = obj.name;
     err.stack = obj.stack;
@@ -374,7 +385,7 @@ export class Util extends null {
    * @returns {MakeErrorOptions}
    * @private
    */
-  static makePlainError(err: MakeErrorOptions) {
+  private makePlainError(err: MakeErrorOptions) {
     return {
       name: err.name,
       message: err.message,
@@ -391,7 +402,7 @@ export class Util extends null {
    * @returns {number}
    * @private
    */
-  static moveElementInArray<T>(array: T[], element: T, newIndex: number, offset = false) {
+  private static moveElementInArray<T>(array: T[], element: T, newIndex: number, offset = false) {
     const index = array.indexOf(element);
     newIndex = (offset ? index : 0) + newIndex;
     if (newIndex > -1 && newIndex < array.length) {
@@ -409,7 +420,7 @@ export class Util extends null {
    * @param {boolean} [allowEmpty=true] Whether an empty string should be allowed
    * @returns {string}
    */
-  static verifyString(
+  public static verifyString(
     data: string,
     error = Error,
     errorMessage = `Expected a string, got ${data} instead.`,
@@ -465,16 +476,20 @@ export class Util extends null {
    * @param {ColorResolvable} color Color to resolve
    * @returns {number} A color
    */
-  static resolveColor(color: ColorResolvable) {
+  public static resolveColor(color: ColorResolvable) {
     if (typeof color === 'string') {
       if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
       if (color === 'Default') return 0;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       color = (Colors as Record<string, number>)[color] ?? parseInt(color.replace('#', ''), 16);
     } else if (Array.isArray(color)) {
+      // eslint-disable-next-line
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (color < 0 || color > 0xffffff) throw new RangeError('COLOR_RANGE');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     else if (Number.isNaN(color)) throw new TypeError('COLOR_CONVERT');
 
     return color;
@@ -485,7 +500,8 @@ export class Util extends null {
    * @param {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
-  static discordSort<K, V extends { rawPosition: number; id: Snowflake }>(collection: Collection<K, V>) {
+  public static discordSort<K, V extends { rawPosition: number; id: Snowflake }>(collection: Collection<K, V>) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const isGuildChannel = collection.first() instanceof GuildChannel;
     return collection.sorted(
       isGuildChannel
@@ -506,7 +522,7 @@ export class Util extends null {
    * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
-  static async setPosition<T extends AnyChannel | Role>(
+  private static async setPosition<T extends AnyChannel | Role>(
     item: T,
     position: number,
     relative: boolean,
@@ -517,6 +533,7 @@ export class Util extends null {
   ) {
     let updatedItems = [...sorted.values()];
     Util.moveElementInArray(updatedItems, item, position, relative);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i })) as T[];
     await client.rest.patch(route, { body: updatedItems, reason });
     return updatedItems;
@@ -529,17 +546,18 @@ export class Util extends null {
    * @returns {string} Basename of the path
    * @private
    */
-  static basename(path: string, ext?: string) {
+  private static basename(path: string, ext?: string) {
     const res = parse(path);
     return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
   }
+
   /**
    * The content to have all mentions replaced by the equivalent text.
    * @param {string} str The string to be converted
    * @param {TextBasedChannels} channel The channel the string was sent in
    * @returns {string}
    */
-  static cleanContent(str: string, channel: TextBasedChannel) {
+  private static cleanContent(str: string, channel: TextBasedChannel) {
     str = str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
@@ -551,15 +569,15 @@ export class Util extends null {
         const member = channel.guild.members.cache.get(id);
         if (member) {
           return `@${member.displayName}`;
-        } else {
-          const user = channel.client.users.cache.get(id);
-          return user ? `@${user.username}` : input;
         }
+        const user = channel.client.users.cache.get(id);
+        return user ? `@${user.username}` : input;
       })
       .replace(/<#[0-9]+>/g, input => {
         const mentionedChannel = channel.client.channels.cache.get(
           input.replace(/<|#|>/g, ''),
         ) as GuildTextBasedChannel;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         return mentionedChannel ? `#${mentionedChannel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
@@ -575,7 +593,7 @@ export class Util extends null {
    * @param {string} text The string to be converted
    * @returns {string}
    */
-  static cleanCodeBlockContent(text: string) {
+  public static cleanCodeBlockContent(text: string) {
     return text.replaceAll('```', '`\u200b``');
   }
 }
