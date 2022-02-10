@@ -51,52 +51,54 @@ const rawData = boopCommand.toJSON();
 ```ts
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-const pointsCommand = new SlashCommandBuilder().setName('points').setDescription('Lists or manages user points');
+const pointsCommand = new SlashCommandBuilder()
+	.setName('points')
+	.setDescription('Lists or manages user points')
 
-// Add a manage group
-pointsCommand.addSubcommandGroup((group) =>
-	group
-		.setName('manage')
-		.setDescription('Shows or manages points in the server')
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('user_points')
-				.setDescription("Alters a user's points")
-				.addUserOption((option) =>
-					option.setName('user').setDescription('The user whose points to alter').setRequired(true),
-				)
-				.addStringOption((option) =>
-					option
-						.setName('action')
-						.setDescription('What action should be taken with the users points?')
-						.addChoices([
-							['Add points', 'add'],
-							['Remove points', 'remove'],
-							['Reset points', 'reset'],
-						])
-						.setRequired(true),
-				)
-				.addIntegerOption((option) => option.setName('points').setDescription('Points to add or remove')),
-		),
-);
+	// Add a manage group
+	.addSubcommandGroup((group) =>
+		group
+			.setName('manage')
+			.setDescription('Shows or manages points in the server')
+			.addSubcommand((subcommand) =>
+				subcommand
+					.setName('user_points')
+					.setDescription("Alters a user's points")
+					.addUserOption((option) =>
+						option.setName('user').setDescription('The user whose points to alter').setRequired(true),
+					)
+					.addStringOption((option) =>
+						option
+							.setName('action')
+							.setDescription('What action should be taken with the users points?')
+							.addChoices([
+								['Add points', 'add'],
+								['Remove points', 'remove'],
+								['Reset points', 'reset'],
+							])
+							.setRequired(true),
+					)
+					.addIntegerOption((option) => option.setName('points').setDescription('Points to add or remove')),
+			),
+	)
 
-// Add an information group
-pointsCommand.addSubcommandGroup((group) =>
-	group
-		.setName('info')
-		.setDescription('Shows information about points in the guild')
-		.addSubcommand((subcommand) =>
-			subcommand.setName('total').setDescription('Tells you the total amount of points given in the guild'),
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('user')
-				.setDescription("Lists a user's points")
-				.addUserOption((option) =>
-					option.setName('user').setDescription('The user whose points to list').setRequired(true),
-				),
-		),
-);
+	// Add an information group
+	.addSubcommandGroup((group) =>
+		group
+			.setName('info')
+			.setDescription('Shows information about points in the guild')
+			.addSubcommand((subcommand) =>
+				subcommand.setName('total').setDescription('Tells you the total amount of points given in the guild'),
+			)
+			.addSubcommand((subcommand) =>
+				subcommand
+					.setName('user')
+					.setDescription("Lists a user's points")
+					.addUserOption((option) =>
+						option.setName('user').setDescription('The user whose points to list').setRequired(true),
+					),
+			),
+	);
 
 // Get the final raw data that can be sent to Discord
 const rawData = pointsCommand.toJSON();
