@@ -1238,17 +1238,17 @@ expectType<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
 expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs({ type: null }));
 expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs());
 
-expectType<
-  Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, AuditLogEvent.MemberKick, 'Delete', 'User'> | undefined>
->(guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()));
-expectAssignable<
-  Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, AuditLogEvent.MemberKick, 'Delete', 'User'> | undefined>
->(guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()));
+expectType<Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, 'Delete', 'User'> | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
+);
+expectAssignable<Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, 'Delete', 'User'> | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
+);
 
-expectType<Promise<GuildAuditLogsEntry<null, null, 'All', 'Unknown'> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<null, 'All', 'Unknown'> | undefined>>(
   guild.fetchAuditLogs({ type: null }).then(al => al.entries.first()),
 );
-expectType<Promise<GuildAuditLogsEntry<null, null, 'All', 'Unknown'> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<null, 'All', 'Unknown'> | undefined>>(
   guild.fetchAuditLogs().then(al => al.entries.first()),
 );
 

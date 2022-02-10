@@ -993,8 +993,7 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
 }
 
 export class GuildAuditLogsEntry<
-  TActionRaw extends GuildAuditLogsResolvable = null,
-  TAction = TActionRaw,
+  TAction extends GuildAuditLogsResolvable = null,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
     : 'All',
