@@ -18,7 +18,11 @@ pids
 dist/
 typings/
 
-
+docs/**/*
+!docs/index.yml
+!docs/README.md
+!docs/examples/
+!docs/examples/*.md
 
 # Miscellaneous
 .tmp/
