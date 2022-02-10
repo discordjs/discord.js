@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class MessageCreateAction extends Action {
   handle(data) {
@@ -20,7 +20,7 @@ class MessageCreateAction extends Action {
        * @event Client#messageCreate
        * @param {Message} message The created message
        */
-      client.emit(Events.MESSAGE_CREATE, message);
+      client.emit(Events.MessageCreate, message);
 
       return { message };
     }

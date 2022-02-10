@@ -43,9 +43,9 @@ class GuildMember extends Base {
 
     /**
      * Whether this member has yet to pass the guild's membership gate
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.pending = false;
+    this.pending = null;
 
     /**
      * The timestamp this member's timeout will be removed
@@ -81,7 +81,13 @@ class GuildMember extends Base {
       this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
     }
     if ('roles' in data) this._roles = data.roles;
-    this.pending = data.pending ?? false;
+
+    if ('pending' in data) {
+      this.pending = data.pending;
+    } else if (!this.partial) {
+      // See https://github.com/discordjs/discord.js/issues/6546 for more info.
+      this.pending ??= false;
+    }
 
     if ('communication_disabled_until' in data) {
       this.communicationDisabledUntilTimestamp =

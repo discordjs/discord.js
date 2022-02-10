@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class GuildStickerUpdateAction extends Action {
   handle(current, data) {
@@ -12,7 +12,7 @@ class GuildStickerUpdateAction extends Action {
      * @param {Sticker} oldSticker The old sticker
      * @param {Sticker} newSticker The new sticker
      */
-    this.client.emit(Events.GUILD_STICKER_UPDATE, old, current);
+    this.client.emit(Events.GuildStickerUpdate, old, current);
     return { sticker: current };
   }
 }

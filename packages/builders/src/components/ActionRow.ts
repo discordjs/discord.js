@@ -16,7 +16,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> implem
 	public readonly components: T[] = [];
 	public readonly type = ComponentType.ActionRow;
 
-	public constructor(data?: APIActionRowComponent) {
+	public constructor(data?: APIActionRowComponent & { type?: ComponentType.ActionRow }) {
 		this.components = (data?.components.map(createComponent) ?? []) as T[];
 	}
 

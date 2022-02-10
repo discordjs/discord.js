@@ -1,0 +1,28 @@
+{
+	"baseBranch": "origin/main",
+	"pipeline": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", "docs/docs.json"]
+		},
+		"test": {
+			"dependsOn": ["^build"],
+			"outputs": ["coverage/**"]
+		},
+		"lint": {
+			"dependsOn": ["^build"],
+			"outputs": []
+		},
+		"format": {
+			"outputs": []
+		},
+		"docs": {
+			"dependsOn": ["^build"],
+			"outputs": ["docs/docs.json"]
+		},
+		"changelog": {
+			"dependsOn": ["^build"],
+			"outputs": ["CHANGELOG.md"]
+		}
+	}
+}

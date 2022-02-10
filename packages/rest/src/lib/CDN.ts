@@ -113,7 +113,7 @@ export class CDN {
 	 * @param discriminator The discriminator modulo 5
 	 */
 	public defaultAvatar(discriminator: number): string {
-		return this.makeURL(`/embed/avatars/${discriminator}`);
+		return this.makeURL(`/embed/avatars/${discriminator}`, { extension: 'png' });
 	}
 
 	/**

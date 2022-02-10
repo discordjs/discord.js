@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class GuildEmojiCreateAction extends Action {
   handle(guild, createdEmoji) {
@@ -12,7 +12,7 @@ class GuildEmojiCreateAction extends Action {
      * @event Client#emojiCreate
      * @param {GuildEmoji} emoji The emoji that was created
      */
-    if (!already) this.client.emit(Events.GUILD_EMOJI_CREATE, emoji);
+    if (!already) this.client.emit(Events.GuildEmojiCreate, emoji);
     return { emoji };
   }
 }

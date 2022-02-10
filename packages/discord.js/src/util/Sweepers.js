@@ -1,7 +1,8 @@
 'use strict';
 
 const { setInterval, clearInterval } = require('node:timers');
-const { Events, ThreadChannelTypes, SweeperKeys } = require('./Constants');
+const { ThreadChannelTypes, SweeperKeys } = require('./Constants');
+const Events = require('./Events');
 const { TypeError } = require('../errors/DJSError.js');
 
 /**
@@ -71,7 +72,7 @@ class Sweepers {
     const globalCommands = this.client.application?.commands.cache.sweep(filter) ?? 0;
 
     this.client.emit(
-      Events.CACHE_SWEEP,
+      Events.CacheSweep,
       `Swept ${globalCommands} global application commands and ${guildCommands} guild commands in ${guilds} guilds.`,
     );
     return guildCommands + globalCommands;
@@ -141,7 +142,7 @@ class Sweepers {
       channels++;
       messages += channel.messages.cache.sweep(filter);
     }
-    this.client.emit(Events.CACHE_SWEEP, `Swept ${messages} messages in ${channels} text-based channels.`);
+    this.client.emit(Events.CacheSweep, `Swept ${messages} messages in ${channels} text-based channels.`);
     return messages;
   }
 
@@ -177,7 +178,7 @@ class Sweepers {
       }
     }
     this.client.emit(
-      Events.CACHE_SWEEP,
+      Events.CacheSweep,
       `Swept ${reactions} reactions on ${messages} messages in ${channels} text-based channels.`,
     );
     return reactions;
@@ -219,7 +220,7 @@ class Sweepers {
       threads++;
       members += channel.members.cache.sweep(filter);
     }
-    this.client.emit(Events.CACHE_SWEEP, `Swept ${members} thread members in ${threads} threads.`);
+    this.client.emit(Events.CacheSweep, `Swept ${members} thread members in ${threads} threads.`);
     return members;
   }
 
@@ -250,7 +251,7 @@ class Sweepers {
         this.client.channels._remove(key);
       }
     }
-    this.client.emit(Events.CACHE_SWEEP, `Swept ${threads} threads.`);
+    this.client.emit(Events.CacheSweep, `Swept ${threads} threads.`);
     return threads;
   }
 
@@ -266,7 +267,7 @@ class Sweepers {
 
     const users = this.client.users.cache.sweep(filter);
 
-    this.client.emit(Events.CACHE_SWEEP, `Swept ${users} users.`);
+    this.client.emit(Events.CacheSweep, `Swept ${users} users.`);
 
     return users;
   }
@@ -404,7 +405,7 @@ class Sweepers {
     }
 
     if (emit) {
-      this.client.emit(Events.CACHE_SWEEP, `Swept ${items} ${outputName ?? key} in ${guilds} guilds.`);
+      this.client.emit(Events.CacheSweep, `Swept ${items} ${outputName ?? key} in ${guilds} guilds.`);
     }
 
     return { guilds, items };

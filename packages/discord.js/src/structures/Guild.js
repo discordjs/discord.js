@@ -22,9 +22,9 @@ const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
-const { Status } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Partials = require('../util/Partials');
+const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const Util = require('../util/Util');
 
@@ -168,34 +168,6 @@ class Guild extends AnonymousGuild {
        */
       this.premiumProgressBarEnabled = data.premium_progress_bar_enabled;
     }
-
-    /**
-     * An array of enabled guild features, here are the possible values:
-     * * ANIMATED_ICON
-     * * BANNER
-     * * COMMERCE
-     * * COMMUNITY
-     * * DISCOVERABLE
-     * * FEATURABLE
-     * * INVITE_SPLASH
-     * * MEMBER_VERIFICATION_GATE_ENABLED
-     * * NEWS
-     * * PARTNERED
-     * * PREVIEW_ENABLED
-     * * VANITY_URL
-     * * VERIFIED
-     * * VIP_REGIONS
-     * * WELCOME_SCREEN_ENABLED
-     * * TICKETED_EVENTS_ENABLED
-     * * MONETIZATION_ENABLED
-     * * MORE_STICKERS
-     * * THREE_DAY_THREAD_ARCHIVE
-     * * SEVEN_DAY_THREAD_ARCHIVE
-     * * PRIVATE_THREADS
-     * * ROLE_ICONS
-     * @typedef {string} Features
-     * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-features}
-     */
 
     if ('application_id' in data) {
       /**
@@ -789,7 +761,7 @@ class Guild extends AnonymousGuild {
    * @property {string} [preferredLocale] The preferred locale of the guild
    * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
    * @property {string} [description] The discovery description of the guild
-   * @property {Features[]} [features] The features of the guild
+   * @property {GuildFeature[]} [features] The features of the guild
    */
 
   /**
@@ -1272,7 +1244,7 @@ class Guild extends AnonymousGuild {
       this.client.voice.adapters.set(this.id, methods);
       return {
         sendPayload: data => {
-          if (this.shard.status !== Status.READY) return false;
+          if (this.shard.status !== Status.Ready) return false;
           this.shard.send(data);
           return true;
         },

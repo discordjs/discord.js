@@ -58,6 +58,15 @@ class Channel extends Base {
   }
 
   /**
+   * The URL to the channel
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return `https://discord.com/channels/${this.isDMBased() ? '@me' : this.guildId}/${this.id}`;
+  }
+
+  /**
    * Whether this Channel is a partial
    * <info>This is always false outside of DM channels.</info>
    * @type {boolean}
@@ -182,7 +191,7 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link GroupDMChannel}).
+   * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link PartialGroupDMChannel}).
    * @returns {boolean}
    */
   isDMBased() {

@@ -39,7 +39,6 @@ import {
   CommandInteractionOption,
   CommandInteractionOptionResolver,
   CommandOptionNonChoiceResolvableType,
-  Constants,
   ContextMenuCommandInteraction,
   DMChannel,
   Guild,
@@ -98,6 +97,9 @@ import {
   ActionRowComponent,
   InteractionResponseFields,
   ThreadChannelType,
+  Events,
+  ShardEvents,
+  Status,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -854,10 +856,9 @@ reactionCollector.on('dispose', (...args) => {
 
 // Make sure the properties are typed correctly, and that no backwards properties
 // (K -> V and V -> K) exist:
-expectType<'messageCreate'>(Constants.Events.MESSAGE_CREATE);
-expectType<'close'>(Constants.ShardEvents.CLOSE);
-expectType<1>(Constants.Status.CONNECTING);
-expectType<0>(Constants.Opcodes.DISPATCH);
+expectAssignable<'messageCreate'>(Events.MessageCreate);
+expectAssignable<'close'>(ShardEvents.Close);
+expectAssignable<1>(Status.Connecting);
 
 declare const applicationCommandData: ApplicationCommandData;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;

@@ -52,8 +52,10 @@ import {
   ButtonStyle,
   ChannelType,
   ComponentType,
+  GatewayDispatchEvents,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
+  GuildFeature,
   GuildMFALevel,
   GuildNSFWLevel,
   GuildPremiumTier,
@@ -61,6 +63,7 @@ import {
   InteractionType,
   InviteTargetType,
   MessageType,
+  OAuth2Scopes,
   RESTPostAPIApplicationCommandsJSONBody,
   Snowflake,
   StageInstancePrivacyLevel,
@@ -186,7 +189,7 @@ export class Activity {
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
 export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
-  public static flags: ActivityFlags;
+  public static Flags: typeof ActivityFlags;
   public static resolve(bit?: BitFieldResolvable<ActivityFlagsString, number>): number;
 }
 
@@ -246,17 +249,17 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public setOptions(options: ApplicationCommandOptionData[]): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(
     command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
-    enforceOptionorder?: boolean,
+    enforceOptionOrder?: boolean,
   ): boolean;
   public static optionsEqual(
     existing: ApplicationCommandOption[],
     options: ApplicationCommandOption[] | ApplicationCommandOptionData[] | APIApplicationCommandOption[],
-    enforceOptionorder?: boolean,
+    enforceOptionOrder?: boolean,
   ): boolean;
   private static _optionEquals(
     existing: ApplicationCommandOption,
     options: ApplicationCommandOption | ApplicationCommandOptionData | APIApplicationCommandOption,
-    enforceOptionorder?: boolean,
+    enforceOptionOrder?: boolean,
   ): boolean;
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
   private static transformCommand(command: ApplicationCommandData): RESTPostAPIApplicationCommandsJSONBody;
@@ -266,7 +269,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
 export type ApplicationResolvable = Application | Activity | Snowflake;
 
 export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
-  public static flags: ApplicationFlags;
+  public static Flags: typeof ApplicationFlags;
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
@@ -355,7 +358,7 @@ export abstract class BaseGuild extends Base {
   protected constructor(client: Client, data: RawBaseGuildData);
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
-  public features: GuildFeatures[];
+  public features: GuildFeature[];
   public icon: string | null;
   public id: Snowflake;
   public name: string;
@@ -491,6 +494,7 @@ export abstract class Channel extends Base {
   public id: Snowflake;
   public readonly partial: false;
   public type: ChannelType;
+  public readonly url: string;
   public delete(): Promise<this>;
   public fetch(force?: boolean): Promise<this>;
   public isText(): this is TextChannel;
@@ -797,7 +801,7 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
 export class DataResolver extends null {
   private constructor();
   public static resolveBase64(data: Base64Resolvable): string;
-  public static resolveCode(data: string, regx: RegExp): string;
+  public static resolveCode(data: string, regex: RegExp): string;
   public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer>;
   public static resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string | null>;
   public static resolveInviteCode(data: InviteResolvable): string;
@@ -1137,7 +1141,7 @@ export class GuildPreview extends Base {
   public discoverySplash: string | null;
   public emojis: Collection<Snowflake, GuildPreviewEmoji>;
   public stickers: Collection<Snowflake, Sticker>;
-  public features: GuildFeatures[];
+  public features: GuildFeature[];
   public icon: string | null;
   public id: Snowflake;
   public name: string;
@@ -1268,7 +1272,7 @@ export class IntegrationApplication extends Application {
 export type GatewayIntentsString = keyof typeof GatewayIntentBits;
 
 export class IntentsBitField extends BitField<GatewayIntentsString> {
-  public static flags: GatewayIntentBits;
+  public static Flags: typeof GatewayIntentBits;
   public static resolve(bit?: BitFieldResolvable<GatewayIntentsString, number>): number;
 }
 
@@ -1365,8 +1369,7 @@ export class InteractionWebhook extends PartialWebhookMixin() {
 
 export class Invite extends Base {
   private constructor(client: Client, data: RawInviteData);
-  public readonly channel: NonThreadGuildBasedChannel | PartialGroupDMChannel;
-  public channelId: Snowflake | null;
+  public channel: NonThreadGuildBasedChannel | PartialGroupDMChannel;
   public code: string;
   public readonly deletable: boolean;
   public readonly createdAt: Date | null;
@@ -1601,7 +1604,7 @@ export class MessageContextMenuCommandInteraction<
 export type MessageFlagsString = keyof typeof MessageFlags;
 
 export class MessageFlagsBitField extends BitField<MessageFlagsString> {
-  public static flags: MessageFlags;
+  public static Flags: typeof MessageFlags;
   public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
 }
 
@@ -1725,7 +1728,7 @@ export class PermissionsBitField extends BitField<PermissionsString, bigint> {
   public static All: bigint;
   public static Default: bigint;
   public static StageModerator: bigint;
-  public static flags: typeof PermissionFlagsBits;
+  public static Flags: typeof PermissionFlagsBits;
   public static resolve(permission?: PermissionResolvable): bigint;
 }
 
@@ -2077,7 +2080,7 @@ export class Sweepers {
   public sweepReactions(
     filter: CollectionSweepFilter<SweeperDefinitions['reactions'][0], SweeperDefinitions['reactions'][1]>,
   ): number;
-  public sweepStageInstnaces(
+  public sweepStageInstances(
     filter: CollectionSweepFilter<SweeperDefinitions['stageInstances'][0], SweeperDefinitions['stageInstances'][1]>,
   ): number;
   public sweepStickers(
@@ -2111,7 +2114,7 @@ export class Sweepers {
 export type SystemChannelFlagsString = keyof typeof GuildSystemChannelFlags;
 
 export class SystemChannelFlagsBitField extends BitField<SystemChannelFlagsString> {
-  public static flags: GuildSystemChannelFlags;
+  public static Flags: typeof GuildSystemChannelFlags;
   public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString, number>): number;
 }
 
@@ -2224,7 +2227,7 @@ export class ThreadMember extends Base {
 export type ThreadMemberFlagsString = keyof typeof ThreadMemberFlags;
 
 export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString> {
-  public static flags: ThreadMemberFlags;
+  public static Flags: typeof ThreadMemberFlags;
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
@@ -2286,7 +2289,7 @@ export class UserContextMenuCommandInteraction<
 export type UserFlagsString = keyof typeof UserFlags;
 
 export class UserFlagsBitField extends BitField<UserFlagsString> {
-  public static flags: UserFlags;
+  public static Flags: typeof UserFlags;
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
@@ -2460,8 +2463,8 @@ export class WebSocketManager extends EventEmitter {
   public status: Status;
   public readonly ping: number;
 
-  public on(event: WSEventType, listener: (data: any, shardId: number) => void): this;
-  public once(event: WSEventType, listener: (data: any, shardId: number) => void): this;
+  public on(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
+  public once(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
 
   private debug(message: string, shard?: WebSocketShard): void;
   private connect(): Promise<void>;
@@ -2604,24 +2607,9 @@ export const Constants: {
     [key: string]: unknown;
   };
   UserAgent: string;
-  WSCodes: {
-    1000: 'WS_CLOSE_REQUESTED';
-    4004: 'TOKEN_INVALID';
-    4010: 'SHARDING_INVALID';
-    4011: 'SHARDING_REQUIRED';
-  };
-  Events: ConstantsEvents;
-  ShardEvents: ConstantsShardEvents;
-  WSEvents: {
-    [K in WSEventType]: K;
-  };
-  Colors: ConstantsColors;
-  Status: ConstantsStatus;
-  Opcodes: ConstantsOpcodes;
   ThreadChannelTypes: ThreadChannelType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
-  InviteScopes: InviteScope[];
   MessageTypes: MessageType[];
   SystemMessageTypes: SystemMessageType[];
 };
@@ -2787,12 +2775,24 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
     name: string,
     options: GuildChannelCreateOptions & { type: ChannelType.GuildStore },
   ): Promise<StoreChannel>;
-
   public create(name: string, options?: GuildChannelCreateOptions): Promise<TextChannel>;
+  public createWebhook(
+    channel: GuildChannelResolvable,
+    name: string,
+    options?: ChannelWebhookCreateOptions,
+  ): Promise<Webhook>;
+  public edit(channel: GuildChannelResolvable, data: ChannelData, reason?: string): Promise<GuildChannel>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<NonThreadGuildBasedChannel | null>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, NonThreadGuildBasedChannel>>;
+  public fetchWebhooks(channel: GuildChannelResolvable): Promise<Collection<Snowflake, Webhook>>;
+  public setPosition(
+    channel: GuildChannelResolvable,
+    position: number,
+    options?: SetChannelPositionOptions,
+  ): Promise<GuildChannel>;
   public setPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
   public fetchActiveThreads(cache?: boolean): Promise<FetchedThreads>;
+  public delete(channel: GuildChannelResolvable, reason?: string): Promise<void>;
 }
 
 export class GuildEmojiManager extends BaseGuildEmojiManager {
@@ -2805,6 +2805,7 @@ export class GuildEmojiManager extends BaseGuildEmojiManager {
   ): Promise<GuildEmoji>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildEmoji>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildEmoji>>;
+  public fetchAuthor(emoji: EmojiResolvable): Promise<User>;
   public delete(emoji: EmojiResolvable, reason?: string): Promise<void>;
   public edit(emoji: EmojiResolvable, data: GuildEmojiEditData, reason?: string): Promise<GuildEmoji>;
 }
@@ -2905,6 +2906,7 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
   public delete(sticker: StickerResolvable, reason?: string): Promise<void>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Sticker>;
   public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Sticker>>;
+  public fetchUser(sticker: StickerResolvable): Promise<User | null>;
 }
 
 export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
@@ -3005,6 +3007,7 @@ export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> 
   public create(options?: CreateRoleOptions): Promise<Role>;
   public edit(role: RoleResolvable, options: RoleData, reason?: string): Promise<Role>;
   public delete(role: RoleResolvable, reason?: string): Promise<void>;
+  public setPosition(role: RoleResolvable, position: number, options?: SetRolePositionOptions): Promise<Role>;
   public setPositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
   public comparePositions(role1: RoleResolvable, role2: RoleResolvable): number;
 }
@@ -3515,7 +3518,7 @@ export interface ClientEvents {
   roleCreate: [role: Role];
   roleDelete: [role: Role];
   roleUpdate: [oldRole: Role, newRole: Role];
-  threadCreate: [thread: ThreadChannel];
+  threadCreate: [thread: ThreadChannel, newlyCreated: boolean];
   threadDelete: [thread: ThreadChannel];
   threadListSync: [threads: Collection<Snowflake, ThreadChannel>];
   threadMemberUpdate: [oldMember: ThreadMember, newMember: ThreadMember];
@@ -3601,37 +3604,37 @@ export interface CollectorResetTimerOptions {
 }
 
 export type ColorResolvable =
-  | 'DEFAULT'
-  | 'WHITE'
-  | 'AQUA'
-  | 'GREEN'
-  | 'BLUE'
-  | 'YELLOW'
-  | 'PURPLE'
-  | 'LUMINOUS_VIVID_PINK'
-  | 'FUCHSIA'
-  | 'GOLD'
-  | 'ORANGE'
-  | 'RED'
-  | 'GREY'
-  | 'DARKER_GREY'
-  | 'NAVY'
-  | 'DARK_AQUA'
-  | 'DARK_GREEN'
-  | 'DARK_BLUE'
-  | 'DARK_PURPLE'
-  | 'DARK_VIVID_PINK'
-  | 'DARK_GOLD'
-  | 'DARK_ORANGE'
-  | 'DARK_RED'
-  | 'DARK_GREY'
-  | 'LIGHT_GREY'
-  | 'DARK_NAVY'
-  | 'BLURPLE'
-  | 'GREYPLE'
-  | 'DARK_BUT_NOT_BLACK'
-  | 'NOT_QUITE_BLACK'
-  | 'RANDOM'
+  | 'Default'
+  | 'White'
+  | 'Aqua'
+  | 'Green'
+  | 'Blue'
+  | 'Yellow'
+  | 'Purple'
+  | 'LuminousVividPink'
+  | 'Fuchsia'
+  | 'Gold'
+  | 'Orange'
+  | 'Red'
+  | 'Grey'
+  | 'Navy'
+  | 'DarkAqua'
+  | 'DarkGreen'
+  | 'DarkBlue'
+  | 'DarkPurple'
+  | 'DarkVividPink'
+  | 'DarkGold'
+  | 'DarkOrange'
+  | 'DarkRed'
+  | 'DarkGrey'
+  | 'DarkerGrey'
+  | 'LightGrey'
+  | 'DarkNavy'
+  | 'Blurple'
+  | 'Greyple'
+  | 'DarkButNotBlack'
+  | 'NotQuiteBlack'
+  | 'Random'
   | readonly [number, number, number]
   | number
   | HexColorString;
@@ -3658,140 +3661,126 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
 }
 
-export interface ConstantsColors {
-  DEFAULT: 0x000000;
-  WHITE: 0xffffff;
-  AQUA: 0x1abc9c;
-  GREEN: 0x57f287;
-  BLUE: 0x3498db;
-  YELLOW: 0xfee75c;
-  PURPLE: 0x9b59b6;
-  LUMINOUS_VIVID_PINK: 0xe91e63;
-  FUCHSIA: 0xeb459e;
-  GOLD: 0xf1c40f;
-  ORANGE: 0xe67e22;
-  RED: 0xed4245;
-  GREY: 0x95a5a6;
-  NAVY: 0x34495e;
-  DARK_AQUA: 0x11806a;
-  DARK_GREEN: 0x1f8b4c;
-  DARK_BLUE: 0x206694;
-  DARK_PURPLE: 0x71368a;
-  DARK_VIVID_PINK: 0xad1457;
-  DARK_GOLD: 0xc27c0e;
-  DARK_ORANGE: 0xa84300;
-  DARK_RED: 0x992d22;
-  DARK_GREY: 0x979c9f;
-  DARKER_GREY: 0x7f8c8d;
-  LIGHT_GREY: 0xbcc0c0;
-  DARK_NAVY: 0x2c3e50;
-  BLURPLE: 0x5865f2;
-  GREYPLE: 0x99aab5;
-  DARK_BUT_NOT_BLACK: 0x2c2f33;
-  NOT_QUITE_BLACK: 0x23272a;
+export declare const Colors: {
+  Default: 0x000000;
+  White: 0xffffff;
+  Aqua: 0x1abc9c;
+  Green: 0x57f287;
+  Blue: 0x3498db;
+  Yellow: 0xfee75c;
+  Purple: 0x9b59b6;
+  LuminousVividPink: 0xe91e63;
+  Fuchsia: 0xeb459e;
+  Gold: 0xf1c40f;
+  Orange: 0xe67e22;
+  Red: 0xed4245;
+  Grey: 0x95a5a6;
+  Navy: 0x34495e;
+  DarkAqua: 0x11806a;
+  DarkGreen: 0x1f8b4c;
+  DarkBlue: 0x206694;
+  DarkPurple: 0x71368a;
+  DarkVividPink: 0xad1457;
+  DarkGold: 0xc27c0e;
+  DarkOrange: 0xa84300;
+  DarkRed: 0x992d22;
+  DarkGrey: 0x979c9f;
+  DarkerGrey: 0x7f8c8d;
+  LightGrey: 0xbcc0c0;
+  DarkNavy: 0x2c3e50;
+  Blurple: 0x5865f2;
+  Greyple: 0x99aab5;
+  DarkButNotBlack: 0x2c2f33;
+  NotQuiteBlack: 0x23272a;
+};
+
+export declare const Events: {
+  ClientReady: 'ready';
+  GuildCreate: 'guildCreate';
+  GuildDelete: 'guildDelete';
+  GuildUpdate: 'guildUpdate';
+  GuildUnavailable: 'guildUnavailable';
+  GuildMemberAdd: 'guildMemberAdd';
+  GuildMemberRemove: 'guildMemberRemove';
+  GuildMemberUpdate: 'guildMemberUpdate';
+  GuildMemberAvailable: 'guildMemberAvailable';
+  GuildMembersChunk: 'guildMembersChunk';
+  GuildIntegrationsUpdate: 'guildIntegrationsUpdate';
+  GuildRoleCreate: 'roleCreate';
+  GuildRoleDelete: 'roleDelete';
+  InviteCreate: 'inviteCreate';
+  InviteDelete: 'inviteDelete';
+  GuildRoleUpdate: 'roleUpdate';
+  GuildEmojiCreate: 'emojiCreate';
+  GuildEmojiDelete: 'emojiDelete';
+  GuildEmojiUpdate: 'emojiUpdate';
+  GuildBanAdd: 'guildBanAdd';
+  GuildBanRemove: 'guildBanRemove';
+  ChannelCreate: 'channelCreate';
+  ChannelDelete: 'channelDelete';
+  ChannelUpdate: 'channelUpdate';
+  ChannelPinsUpdate: 'channelPinsUpdate';
+  MessageCreate: 'messageCreate';
+  MessageDelete: 'messageDelete';
+  MessageUpdate: 'messageUpdate';
+  MessageBulkDelete: 'messageDeleteBulk';
+  MessageReactionAdd: 'messageReactionAdd';
+  MessageReactionRemove: 'messageReactionRemove';
+  MessageReactionRemoveAll: 'messageReactionRemoveAll';
+  MessageReactionRemoveEmoji: 'messageReactionRemoveEmoji';
+  ThreadCreate: 'threadCreate';
+  ThreadDelete: 'threadDelete';
+  ThreadUpdate: 'threadUpdate';
+  ThreadListSync: 'threadListSync';
+  ThreadMemberUpdate: 'threadMemberUpdate';
+  ThreadMembersUpdate: 'threadMembersUpdate';
+  UserUpdate: 'userUpdate';
+  PresenceUpdate: 'presenceUpdate';
+  VoiceServerUpdate: 'voiceServerUpdate';
+  VoiceStateUpdate: 'voiceStateUpdate';
+  TypingStart: 'typingStart';
+  WebhooksUpdate: 'webhookUpdate';
+  InteractionCreate: 'interactionCreate';
+  Error: 'error';
+  Warn: 'warn';
+  Debug: 'debug';
+  CacheSweep: 'cacheSweep';
+  ShardDisconnect: 'shardDisconnect';
+  ShardError: 'shardError';
+  ShardReconnecting: 'shardReconnecting';
+  ShardReady: 'shardReady';
+  ShardResume: 'shardResume';
+  Invalidated: 'invalidated';
+  Raw: 'raw';
+  StageInstanceCreate: 'stageInstanceCreate';
+  StageInstanceUpdate: 'stageInstanceUpdate';
+  StageInstanceDelete: 'stageInstanceDelete';
+  GuildStickerCreate: 'stickerCreate';
+  GuildStickerDelete: 'stickerDelete';
+  GuildStickerUpdate: 'stickerUpdate';
+  GuildScheduledEventCreate: 'guildScheduledEventCreate';
+  GuildScheduledEventUpdate: 'guildScheduledEventUpdate';
+  GuildScheduledEventDelete: 'guildScheduledEventDelete';
+  GuildScheduledEventUserAdd: 'guildScheduledEventUserAdd';
+  GuildScheduledEventUserRemove: 'guildScheduledEventUserRemove';
+};
+
+export enum ShardEvents {
+  Close = 'close',
+  Destroyed = 'destroyed',
+  InvalidSession = 'invalidSession',
+  Ready = 'ready',
+  Resumed = 'resumed',
+  AllReady = 'allReady',
 }
 
-export interface ConstantsEvents {
-  CLIENT_READY: 'ready';
-  GUILD_CREATE: 'guildCreate';
-  GUILD_DELETE: 'guildDelete';
-  GUILD_UPDATE: 'guildUpdate';
-  INVITE_CREATE: 'inviteCreate';
-  INVITE_DELETE: 'inviteDelete';
-  GUILD_UNAVAILABLE: 'guildUnavailable';
-  GUILD_MEMBER_ADD: 'guildMemberAdd';
-  GUILD_MEMBER_REMOVE: 'guildMemberRemove';
-  GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
-  GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable';
-  GUILD_MEMBERS_CHUNK: 'guildMembersChunk';
-  GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
-  GUILD_ROLE_CREATE: 'roleCreate';
-  GUILD_ROLE_DELETE: 'roleDelete';
-  GUILD_ROLE_UPDATE: 'roleUpdate';
-  GUILD_EMOJI_CREATE: 'emojiCreate';
-  GUILD_EMOJI_DELETE: 'emojiDelete';
-  GUILD_EMOJI_UPDATE: 'emojiUpdate';
-  GUILD_BAN_ADD: 'guildBanAdd';
-  GUILD_BAN_REMOVE: 'guildBanRemove';
-  CHANNEL_CREATE: 'channelCreate';
-  CHANNEL_DELETE: 'channelDelete';
-  CHANNEL_UPDATE: 'channelUpdate';
-  CHANNEL_PINS_UPDATE: 'channelPinsUpdate';
-  MESSAGE_CREATE: 'messageCreate';
-  MESSAGE_DELETE: 'messageDelete';
-  MESSAGE_UPDATE: 'messageUpdate';
-  MESSAGE_BULK_DELETE: 'messageDeleteBulk';
-  MESSAGE_REACTION_ADD: 'messageReactionAdd';
-  MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
-  MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
-  MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji';
-  THREAD_CREATE: 'threadCreate';
-  THREAD_DELETE: 'threadDelete';
-  THREAD_UPDATE: 'threadUpdate';
-  THREAD_LIST_SYNC: 'threadListSync';
-  THREAD_MEMBER_UPDATE: 'threadMemberUpdate';
-  THREAD_MEMBERS_UPDATE: 'threadMembersUpdate';
-  USER_UPDATE: 'userUpdate';
-  PRESENCE_UPDATE: 'presenceUpdate';
-  VOICE_SERVER_UPDATE: 'voiceServerUpdate';
-  VOICE_STATE_UPDATE: 'voiceStateUpdate';
-  TYPING_START: 'typingStart';
-  WEBHOOKS_UPDATE: 'webhookUpdate';
-  INTERACTION_CREATE: 'interactionCreate';
-  ERROR: 'error';
-  WARN: 'warn';
-  DEBUG: 'debug';
-  CACHE_SWEEP: 'cacheSweep';
-  SHARD_DISCONNECT: 'shardDisconnect';
-  SHARD_ERROR: 'shardError';
-  SHARD_RECONNECTING: 'shardReconnecting';
-  SHARD_READY: 'shardReady';
-  SHARD_RESUME: 'shardResume';
-  INVALIDATED: 'invalidated';
-  RAW: 'raw';
-  STAGE_INSTANCE_CREATE: 'stageInstanceCreate';
-  STAGE_INSTANCE_UPDATE: 'stageInstanceUpdate';
-  STAGE_INSTANCE_DELETE: 'stageInstanceDelete';
-  GUILD_STICKER_CREATE: 'stickerCreate';
-  GUILD_STICKER_DELETE: 'stickerDelete';
-  GUILD_STICKER_UPDATE: 'stickerUpdate';
-  GUILD_SCHEDULED_EVENT_CREATE: 'guildScheduledEventCreate';
-  GUILD_SCHEDULED_EVENT_UPDATE: 'guildScheduledEventUpdate';
-  GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete';
-  GUILD_SCHEDULED_EVENT_USER_ADD: 'guildScheduledEventUserAdd';
-  GUILD_SCHEDULED_EVENT_USER_REMOVE: 'guildScheduledEventUserRemove';
-}
-
-export interface ConstantsOpcodes {
-  DISPATCH: 0;
-  HEARTBEAT: 1;
-  IDENTIFY: 2;
-  STATUS_UPDATE: 3;
-  VOICE_STATE_UPDATE: 4;
-  VOICE_GUILD_PING: 5;
-  RESUME: 6;
-  RECONNECT: 7;
-  REQUEST_GUILD_MEMBERS: 8;
-  INVALID_SESSION: 9;
-  HELLO: 10;
-  HEARTBEAT_ACK: 11;
-}
-
-export interface ConstantsShardEvents {
-  CLOSE: 'close';
-  DESTROYED: 'destroyed';
-  INVALID_SESSION: 'invalidSession';
-  READY: 'ready';
-  RESUMED: 'resumed';
-}
-
-export interface ConstantsStatus {
-  READY: 0;
-  CONNECTING: 1;
-  RECONNECTING: 2;
-  IDLE: 3;
-  NEARLY: 4;
-  DISCONNECTED: 5;
+export enum Status {
+  Ready = 0,
+  Connecting = 1,
+  Reconnecting = 2,
+  Idle = 3,
+  Nearly = 4,
+  Disconnected = 5,
 }
 
 export interface CreateGuildScheduledEventInviteURLOptions extends CreateInviteOptions {
@@ -4093,10 +4082,10 @@ interface GuildAuditLogsTypes {
   StageInstanceDelete: ['StageInstance', 'Delete'];
   StickerCreate: ['Sticker', 'Create'];
   StickerUpdate: ['Sticker', 'Update'];
-  StickerDelete: ['Sticket', 'Delete'];
-  GUILD_SCHEDULED_EVENT_CREATE: ['GuildScheduledEvent', 'Create'];
-  GUILD_SCHEDULED_EVENT_UPDATE: ['GuildScheduledEvent', 'Update'];
-  GUILD_SCHEDULED_EVENT_DELETE: ['GuildScheduledEvent', 'Delete'];
+  StickerDelete: ['Sticker', 'Delete'];
+  GuildScheduledEventCreate: ['GuildScheduledEvent', 'Create'];
+  GuildScheduledEventUpdate: ['GuildScheduledEvent', 'Update'];
+  GuildScheduledEventDelete: ['GuildScheduledEvent', 'Delete'];
   ThreadCreate: ['Thread', 'Create'];
   ThreadUpdate: ['Thread', 'Update'];
   ThreadDelete: ['Thread', 'Delete'];
@@ -4217,11 +4206,6 @@ export type GuildAuditLogsTargets = {
 
 export type GuildBanResolvable = GuildBan | UserResolvable;
 
-export interface GuildChannelOverwriteOptions {
-  reason?: string;
-  type?: number;
-}
-
 export type GuildChannelResolvable = Snowflake | GuildBasedChannel;
 
 export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
@@ -4282,7 +4266,7 @@ export interface GuildEditData {
   preferredLocale?: string;
   premiumProgressBarEnabled?: boolean;
   description?: string | null;
-  features?: GuildFeatures[];
+  features?: GuildFeature[];
 }
 
 export interface GuildEmojiCreateOptions {
@@ -4305,30 +4289,6 @@ export interface GuildStickerEditData {
   description?: string | null;
   tags?: string;
 }
-
-export type GuildFeatures =
-  | 'ANIMATED_ICON'
-  | 'BANNER'
-  | 'COMMERCE'
-  | 'COMMUNITY'
-  | 'DISCOVERABLE'
-  | 'FEATURABLE'
-  | 'INVITE_SPLASH'
-  | 'MEMBER_VERIFICATION_GATE_ENABLED'
-  | 'NEWS'
-  | 'PARTNERED'
-  | 'PREVIEW_ENABLED'
-  | 'VANITY_URL'
-  | 'VERIFIED'
-  | 'VIP_REGIONS'
-  | 'WELCOME_SCREEN_ENABLED'
-  | 'TICKETED_EVENTS_ENABLED'
-  | 'MONETIZATION_ENABLED'
-  | 'MORE_STICKERS'
-  | 'THREE_DAY_THREAD_ARCHIVE'
-  | 'SEVEN_DAY_THREAD_ARCHIVE'
-  | 'PRIVATE_THREADS'
-  | 'ROLE_ICONS';
 
 export interface GuildMemberEditData {
   nick?: string | null;
@@ -4469,7 +4429,7 @@ export interface InviteGenerationOptions {
   permissions?: PermissionResolvable;
   guild?: GuildResolvable;
   disableGuildSelect?: boolean;
-  scopes: InviteScope[];
+  scopes: OAuth2Scopes[];
 }
 
 export type GuildInvitableChannelResolvable =
@@ -4492,20 +4452,6 @@ export interface CreateInviteOptions {
 }
 
 export type InviteResolvable = string;
-
-export type InviteScope =
-  | 'applications.builds.read'
-  | 'applications.commands'
-  | 'applications.entitlements'
-  | 'applications.store.update'
-  | 'bot'
-  | 'connections'
-  | 'email'
-  | 'identify'
-  | 'guilds'
-  | 'guilds.join'
-  | 'gdm.join'
-  | 'webhook.incoming';
 
 export interface LifetimeFilterOptions<K, V> {
   excludeFromSweep?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
@@ -4615,8 +4561,6 @@ export interface MessageMentionOptions {
 }
 
 export type MessageMentionTypes = 'roles' | 'users' | 'everyone';
-
-export { Embed };
 
 export interface MessageOptions {
   tts?: boolean;
@@ -4771,7 +4715,7 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
   lastMessageId: undefined;
 }
 
-export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp'> {}
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
 
 export interface PartialMessage
   extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
@@ -4895,7 +4839,7 @@ export interface StartThreadOptions {
   rateLimitPerUser?: number;
 }
 
-export type Status = number;
+export type ClientStatus = number;
 
 export type StickerResolvable = Sticker | Snowflake;
 
@@ -5090,55 +5034,6 @@ export interface WelcomeScreenEditData {
   welcomeChannels?: WelcomeChannelData[];
 }
 
-export type WSEventType =
-  | 'READY'
-  | 'RESUMED'
-  | 'GUILD_CREATE'
-  | 'GUILD_DELETE'
-  | 'GUILD_UPDATE'
-  | 'INVITE_CREATE'
-  | 'INVITE_DELETE'
-  | 'GUILD_MEMBER_ADD'
-  | 'GUILD_MEMBER_REMOVE'
-  | 'GUILD_MEMBER_UPDATE'
-  | 'GUILD_MEMBERS_CHUNK'
-  | 'GUILD_ROLE_CREATE'
-  | 'GUILD_ROLE_DELETE'
-  | 'GUILD_ROLE_UPDATE'
-  | 'GUILD_BAN_ADD'
-  | 'GUILD_BAN_REMOVE'
-  | 'GUILD_EMOJIS_UPDATE'
-  | 'GUILD_INTEGRATIONS_UPDATE'
-  | 'CHANNEL_CREATE'
-  | 'CHANNEL_DELETE'
-  | 'CHANNEL_UPDATE'
-  | 'CHANNEL_PINS_UPDATE'
-  | 'MESSAGE_CREATE'
-  | 'MESSAGE_DELETE'
-  | 'MESSAGE_UPDATE'
-  | 'MESSAGE_DELETE_BULK'
-  | 'MESSAGE_REACTION_ADD'
-  | 'MESSAGE_REACTION_REMOVE'
-  | 'MESSAGE_REACTION_REMOVE_ALL'
-  | 'MESSAGE_REACTION_REMOVE_EMOJI'
-  | 'THREAD_CREATE'
-  | 'THREAD_UPDATE'
-  | 'THREAD_DELETE'
-  | 'THREAD_LIST_SYNC'
-  | 'THREAD_MEMBER_UPDATE'
-  | 'THREAD_MEMBERS_UPDATE'
-  | 'USER_UPDATE'
-  | 'PRESENCE_UPDATE'
-  | 'TYPING_START'
-  | 'VOICE_STATE_UPDATE'
-  | 'VOICE_SERVER_UPDATE'
-  | 'WEBHOOKS_UPDATE'
-  | 'INTERACTION_CREATE'
-  | 'STAGE_INSTANCE_CREATE'
-  | 'STAGE_INSTANCE_UPDATE'
-  | 'STAGE_INSTANCE_DELETE'
-  | 'GUILD_STICKERS_UPDATE';
-
 export type Serialized<T> = T extends symbol | bigint | (() => any)
   ? never
   : T extends number | string | boolean | undefined
@@ -5191,10 +5086,14 @@ export {
   ButtonStyle,
   ChannelType,
   ComponentType,
+  GuildFeature,
   GuildMFALevel,
   GuildNSFWLevel,
   GuildPremiumTier,
+  GatewayCloseCodes,
+  GatewayDispatchEvents,
   GatewayIntentBits,
+  GatewayOpcodes,
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
   GuildScheduledEventStatus,
@@ -5204,6 +5103,7 @@ export {
   InviteTargetType,
   MessageType,
   MessageFlags,
+  OAuth2Scopes,
   PermissionFlagsBits,
   RESTJSONErrorCodes,
   StageInstancePrivacyLevel,
@@ -5217,8 +5117,13 @@ export {
 export {
   ActionRow,
   ButtonComponent,
+  UnsafeButtonComponent,
   SelectMenuComponent,
+  UnsafeSelectMenuComponent,
   SelectMenuOption,
+  UnsafeSelectMenuOption,
   ActionRowComponent,
+  Embed,
+  UnsafeEmbed,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
