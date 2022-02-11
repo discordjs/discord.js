@@ -16,8 +16,8 @@ import {
   InteractionType,
   GatewayIntentBits,
   PermissionFlagsBits,
+  AuditLogEvent,
 } from 'discord-api-types/v9';
-import { AuditLogEvent } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
   ApplicationCommandData,
