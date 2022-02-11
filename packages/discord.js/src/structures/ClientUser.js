@@ -1,5 +1,6 @@
 'use strict';
 
+const { Routes } = require('discord-api-types/v9');
 const User = require('./User');
 const DataResolver = require('../util/DataResolver');
 
@@ -55,8 +56,9 @@ class ClientUser extends User {
    */
   async edit(data) {
     if (typeof data.avatar !== 'undefined') data.avatar = await DataResolver.resolveImage(data.avatar);
-    const newData = await this.client.api.users('@me').patch({ data });
+    const newData = await this.client.rest.patch(Routes.user(), { body: data });
     this.client.token = newData.token;
+    this.client.rest.setToken(newData.token);
     const { updated } = this.client.actions.UserUpdate.handle(newData);
     return updated ?? this;
   }

@@ -1,9 +1,9 @@
 'use strict';
 
 const { token } = require('./auth');
-const { Client } = require('../src');
+const { Client, GatewayIntentBits } = require('../src');
 
-const client = new Client({ intents: ['GUILDS', 'GUILD_MESSAGES'] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 client
   .on('ready', () => console.log('ready'))
   .on('messageCreate', async message => {

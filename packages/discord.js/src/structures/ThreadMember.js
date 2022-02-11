@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const ThreadMemberFlags = require('../util/ThreadMemberFlags');
+const ThreadMemberFlagsBitField = require('../util/ThreadMemberFlagsBitField');
 
 /**
  * Represents a Member for a Thread.
@@ -38,9 +38,9 @@ class ThreadMember extends Base {
     if ('flags' in data) {
       /**
        * The flags for this thread member
-       * @type {ThreadMemberFlags}
+       * @type {ThreadMemberFlagsBitField}
        */
-      this.flags = new ThreadMemberFlags(data.flags).freeze();
+      this.flags = new ThreadMemberFlagsBitField(data.flags).freeze();
     }
   }
 

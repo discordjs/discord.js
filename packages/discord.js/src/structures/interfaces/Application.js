@@ -75,7 +75,7 @@ class Application extends Base {
    * @returns {?string}
    */
   iconURL(options = {}) {
-    return this.icon && this.client.rest.cdn.AppIcon(this.id, this.icon, options);
+    return this.icon && this.client.rest.cdn.appIcon(this.id, this.icon, options);
   }
 
   /**
@@ -84,7 +84,7 @@ class Application extends Base {
    * @returns {?string}
    */
   coverURL(options = {}) {
-    return this.cover && this.client.rest.cdn.AppIcon(this.id, this.cover, options);
+    return this.cover && this.client.rest.cdn.appIcon(this.id, this.cover, options);
   }
 
   /**

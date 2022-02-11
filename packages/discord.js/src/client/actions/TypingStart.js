@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const Typing = require('../../structures/Typing');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class TypingStart extends Action {
   handle(data) {
@@ -10,7 +10,7 @@ class TypingStart extends Action {
     if (!channel) return;
 
     if (!channel.isTextBased()) {
-      this.client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
+      this.client.emit(Events.Warn, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
       return;
     }
 
@@ -21,7 +21,7 @@ class TypingStart extends Action {
        * @event Client#typingStart
        * @param {Typing} typing The typing state
        */
-      this.client.emit(Events.TYPING_START, new Typing(channel, user, data));
+      this.client.emit(Events.TypingStart, new Typing(channel, user, data));
     }
   }
 }

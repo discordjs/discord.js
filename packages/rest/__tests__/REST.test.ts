@@ -119,7 +119,7 @@ test('postFile empty', async () => {
 test('postFile file (string)', async () => {
 	expect(
 		await api.post('/postFile', {
-			files: [{ fileName: 'out.txt', fileData: 'Hello' }],
+			files: [{ name: 'out.txt', data: 'Hello' }],
 		}),
 	).toStrictEqual({
 		body: [
@@ -134,7 +134,7 @@ test('postFile file (string)', async () => {
 test('postFile file and JSON', async () => {
 	expect(
 		await api.post('/postFile', {
-			files: [{ fileName: 'out.txt', fileData: Buffer.from('Hello') }],
+			files: [{ name: 'out.txt', data: Buffer.from('Hello') }],
 			body: { foo: 'bar' },
 		}),
 	).toStrictEqual({
@@ -154,8 +154,8 @@ test('postFile files and JSON', async () => {
 	expect(
 		await api.post('/postFile', {
 			files: [
-				{ fileName: 'out.txt', fileData: Buffer.from('Hello') },
-				{ fileName: 'out.txt', fileData: Buffer.from('Hi') },
+				{ name: 'out.txt', data: Buffer.from('Hello') },
+				{ name: 'out.txt', data: Buffer.from('Hi') },
 			],
 			body: { files: [{ id: 0, description: 'test' }] },
 		}),
@@ -179,7 +179,7 @@ test('postFile files and JSON', async () => {
 test('postFile sticker and JSON', async () => {
 	expect(
 		await api.post('/postFile', {
-			files: [{ key: 'file', fileName: 'sticker.png', fileData: Buffer.from('Sticker') }],
+			files: [{ key: 'file', name: 'sticker.png', data: Buffer.from('Sticker') }],
 			body: { foo: 'bar' },
 			appendToFormData: true,
 		}),

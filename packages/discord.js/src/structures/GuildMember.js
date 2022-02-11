@@ -1,11 +1,12 @@
 'use strict';
 
+const { PermissionFlagsBits } = require('discord-api-types/v9');
 const Base = require('./Base');
 const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
-const Permissions = require('../util/Permissions');
+const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Represents a member of a guild on Discord.
@@ -42,9 +43,9 @@ class GuildMember extends Base {
 
     /**
      * Whether this member has yet to pass the guild's membership gate
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.pending = false;
+    this.pending = null;
 
     /**
      * The timestamp this member's timeout will be removed
@@ -80,7 +81,13 @@ class GuildMember extends Base {
       this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
     }
     if ('roles' in data) this._roles = data.roles;
-    this.pending = data.pending ?? false;
+
+    if ('pending' in data) {
+      this.pending = data.pending;
+    } else if (!this.partial) {
+      // See https://github.com/discordjs/discord.js/issues/6546 for more info.
+      this.pending ??= false;
+    }
 
     if ('communication_disabled_until' in data) {
       this.communicationDisabledUntilTimestamp =
@@ -127,7 +134,7 @@ class GuildMember extends Base {
    * @returns {?string}
    */
   avatarURL(options = {}) {
-    return this.avatar && this.client.rest.cdn.GuildMemberAvatar(this.guild.id, this.id, this.avatar, options);
+    return this.avatar && this.client.rest.cdn.guildMemberAvatar(this.guild.id, this.id, this.avatar, options);
   }
 
   /**
@@ -214,12 +221,12 @@ class GuildMember extends Base {
 
   /**
    * The overall set of permissions for this member, taking only roles and owner status into account
-   * @type {Readonly<Permissions>}
+   * @type {Readonly<PermissionsBitField>}
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerId) return new Permissions(Permissions.ALL).freeze();
-    return new Permissions(this.roles.cache.map(role => role.permissions)).freeze();
+    if (this.user.id === this.guild.ownerId) return new PermissionsBitField(PermissionsBitField.All).freeze();
+    return new PermissionsBitField(this.roles.cache.map(role => role.permissions)).freeze();
   }
 
   /**
@@ -243,7 +250,7 @@ class GuildMember extends Base {
    */
   get kickable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS);
+    return this.manageable && this.guild.me.permissions.has(PermissionFlagsBits.KickMembers);
   }
 
   /**
@@ -253,7 +260,7 @@ class GuildMember extends Base {
    */
   get bannable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
+    return this.manageable && this.guild.me.permissions.has(PermissionFlagsBits.BanMembers);
   }
 
   /**
@@ -262,7 +269,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get moderatable() {
-    return this.manageable && (this.guild.me?.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS) ?? false);
+    return this.manageable && (this.guild.me?.permissions.has(PermissionFlagsBits.ModerateMembers) ?? false);
   }
 
   /**
@@ -277,7 +284,7 @@ class GuildMember extends Base {
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {GuildChannelResolvable} channel The guild channel to use as context
-   * @returns {Readonly<Permissions>}
+   * @returns {Readonly<PermissionsBitField>}
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);

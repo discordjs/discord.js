@@ -1,10 +1,10 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { PermissionFlagsBits } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { Error } = require('../errors');
-const Permissions = require('../util/Permissions');
-const Util = require('../util/Util');
+const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Represents a role on Discord.
@@ -76,9 +76,9 @@ class Role extends Base {
     if ('permissions' in data) {
       /**
        * The permissions of the role
-       * @type {Readonly<Permissions>}
+       * @type {Readonly<PermissionsBitField>}
        */
-      this.permissions = new Permissions(BigInt(data.permissions)).freeze();
+      this.permissions = new PermissionsBitField(BigInt(data.permissions)).freeze();
     }
 
     if ('managed' in data) {
@@ -166,7 +166,7 @@ class Role extends Base {
   get editable() {
     if (this.managed) return false;
     const clientMember = this.guild.members.resolve(this.client.user);
-    if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return false;
+    if (!clientMember.permissions.has(PermissionFlagsBits.ManageRoles)) return false;
     return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
 
@@ -225,7 +225,7 @@ class Role extends Base {
    * taking into account permission overwrites.
    * @param {GuildChannel|Snowflake} channel The guild channel to use as context
    * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
-   * @returns {Readonly<Permissions>}
+   * @returns {Readonly<PermissionsBitField>}
    */
   permissionsIn(channel, checkAdmin = true) {
     channel = this.guild.channels.resolve(channel);
@@ -285,7 +285,7 @@ class Role extends Base {
    * @returns {Promise<Role>}
    * @example
    * // Set the permissions of the role
-   * role.setPermissions([Permissions.FLAGS.KICK_MEMBERS, Permissions.FLAGS.BAN_MEMBERS])
+   * role.setPermissions([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers])
    *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
    * @example
@@ -358,20 +358,8 @@ class Role extends Base {
    *   .then(updated => console.log(`Role position: ${updated.position}`))
    *   .catch(console.error);
    */
-  async setPosition(position, { relative, reason } = {}) {
-    const updatedRoles = await Util.setPosition(
-      this,
-      position,
-      relative,
-      this.guild._sortedRoles(),
-      this.client.api.guilds(this.guild.id).roles,
-      reason,
-    );
-    this.client.actions.GuildRolesPositionUpdate.handle({
-      guild_id: this.guild.id,
-      roles: updatedRoles,
-    });
-    return this;
+  setPosition(position, options = {}) {
+    return this.guild.roles.setPosition(this, position, options);
   }
 
   /**
@@ -395,7 +383,7 @@ class Role extends Base {
    * @returns {?string}
    */
   iconURL(options = {}) {
-    return this.icon && this.client.rest.cdn.RoleIcon(this.id, this.icon, options);
+    return this.icon && this.client.rest.cdn.roleIcon(this.id, this.icon, options);
   }
 
   /**

@@ -2,11 +2,12 @@
 
 const process = require('node:process');
 const { setTimeout } = require('node:timers');
+const { GatewayIntentBits } = require('discord-api-types/v9');
 const { token } = require('./auth.json');
-const { Client, Intents } = require('../src');
+const { Client } = require('../src');
 
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
   shards: process.argv[2],
   shardCount: process.argv[3],
 });

@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class StageInstanceUpdateAction extends Action {
   handle(data) {
@@ -18,7 +18,7 @@ class StageInstanceUpdateAction extends Action {
        * @param {?StageInstance} oldStageInstance The stage instance before the update
        * @param {StageInstance} newStageInstance The stage instance after the update
        */
-      client.emit(Events.STAGE_INSTANCE_UPDATE, oldStageInstance, newStageInstance);
+      client.emit(Events.StageInstanceUpdate, oldStageInstance, newStageInstance);
 
       return { oldStageInstance, newStageInstance };
     }

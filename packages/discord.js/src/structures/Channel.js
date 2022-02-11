@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;
@@ -58,6 +58,15 @@ class Channel extends Base {
   }
 
   /**
+   * The URL to the channel
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return `https://discord.com/channels/${this.isDMBased() ? '@me' : this.guildId}/${this.id}`;
+  }
+
+  /**
    * Whether this Channel is a partial
    * <info>This is always false outside of DM channels.</info>
    * @type {boolean}
@@ -88,7 +97,7 @@ class Channel extends Base {
    *   .catch(console.error);
    */
   async delete() {
-    await this.client.api.channels(this.id).delete();
+    await this.client.rest.delete(Routes.channel(this.id));
     return this;
   }
 
@@ -179,6 +188,14 @@ class Channel extends Base {
    */
   isTextBased() {
     return 'messages' in this;
+  }
+
+  /**
+   * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link PartialGroupDMChannel}).
+   * @returns {boolean}
+   */
+  isDMBased() {
+    return [ChannelType.DM, ChannelType.GroupDM].includes(this.type);
   }
 
   /**

@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class ThreadMembersUpdateAction extends Action {
   handle(data) {
@@ -25,7 +25,7 @@ class ThreadMembersUpdateAction extends Action {
        * @param {Collection<Snowflake, ThreadMember>} oldMembers The members before the update
        * @param {Collection<Snowflake, ThreadMember>} newMembers The members after the update
        */
-      client.emit(Events.THREAD_MEMBERS_UPDATE, old, thread.members.cache);
+      client.emit(Events.ThreadMembersUpdate, old, thread.members.cache);
     }
     return {};
   }

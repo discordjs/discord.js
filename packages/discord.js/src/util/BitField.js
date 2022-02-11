@@ -101,7 +101,7 @@ class BitField {
    */
   serialize(...hasParams) {
     const serialized = {};
-    for (const [flag, bit] of Object.entries(this.constructor.FLAGS)) serialized[flag] = this.has(bit, ...hasParams);
+    for (const [flag, bit] of Object.entries(this.constructor.Flags)) serialized[flag] = this.has(bit, ...hasParams);
     return serialized;
   }
 
@@ -111,7 +111,7 @@ class BitField {
    * @returns {string[]}
    */
   toArray(...hasParams) {
-    return Object.keys(this.constructor.FLAGS).filter(bit => this.has(bit, ...hasParams));
+    return Object.keys(this.constructor.Flags).filter(bit => this.has(bit, ...hasParams));
   }
 
   toJSON() {
@@ -128,7 +128,7 @@ class BitField {
 
   /**
    * Data that can be resolved to give a bitfield. This can be:
-   * * A bit number (this can be a number literal or a value taken from {@link BitField.FLAGS})
+   * * A bit number (this can be a number literal or a value taken from {@link BitField.Flags})
    * * A string bit number
    * * An instance of BitField
    * * An Array of BitFieldResolvable
@@ -146,7 +146,7 @@ class BitField {
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, defaultBit);
     if (typeof bit === 'string') {
-      if (typeof this.FLAGS[bit] !== 'undefined') return this.FLAGS[bit];
+      if (typeof this.Flags[bit] !== 'undefined') return this.Flags[bit];
       if (!isNaN(bit)) return typeof defaultBit === 'bigint' ? BigInt(bit) : Number(bit);
     }
     throw new RangeError('BITFIELD_INVALID', bit);
@@ -159,7 +159,7 @@ class BitField {
  * @type {Object}
  * @abstract
  */
-BitField.FLAGS = {};
+BitField.Flags = {};
 
 /**
  * @type {number|bigint}

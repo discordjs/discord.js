@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class MessageDeleteBulkAction extends Action {
   handle(data) {
@@ -34,7 +34,7 @@ class MessageDeleteBulkAction extends Action {
        * @event Client#messageDeleteBulk
        * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their id
        */
-      if (messages.size > 0) client.emit(Events.MESSAGE_BULK_DELETE, messages);
+      if (messages.size > 0) client.emit(Events.MessageBulkDelete, messages);
       return { messages };
     }
     return {};

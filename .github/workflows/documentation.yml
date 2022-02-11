@@ -6,7 +6,7 @@ on:
       - 'stable'
       - '!docs'
     tags:
-      - '*'
+      - '**'
 jobs:
   build:
     name: Build documentation

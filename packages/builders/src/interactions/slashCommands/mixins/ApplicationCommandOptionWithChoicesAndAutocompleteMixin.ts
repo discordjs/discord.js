@@ -20,7 +20,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	 * @param name The name of the choice
 	 * @param value The value of the choice
 	 */
-	public addChoice(name: string, value: T): Omit<this, 'setAutocomplete'> {
+	public addChoice(name: string, value: T): this {
 		if (this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
@@ -51,7 +51,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	 *
 	 * @param choices The choices to add
 	 */
-	public addChoices(choices: [name: string, value: T][]): Omit<this, 'setAutocomplete'> {
+	public addChoices(choices: [name: string, value: T][]): this {
 		if (this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
@@ -62,11 +62,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 		return this;
 	}
 
-	public setChoices<Input extends [name: string, value: T][]>(
-		choices: Input,
-	): Input extends []
-		? this & Pick<ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T>, 'setAutocomplete'>
-		: Omit<this, 'setAutocomplete'> {
+	public setChoices(choices: [name: string, value: T][]): this {
 		if (choices.length > 0 && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
@@ -83,11 +79,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	 * Marks the option as autocompletable
 	 * @param autocomplete If this option should be autocompletable
 	 */
-	public setAutocomplete<U extends boolean>(
-		autocomplete: U,
-	): U extends true
-		? Omit<this, 'addChoice' | 'addChoices'>
-		: this & Pick<ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T>, 'addChoice' | 'addChoices'> {
+	public setAutocomplete(autocomplete: boolean): this {
 		// Assert that you actually passed a boolean
 		booleanPredicate.parse(autocomplete);
 

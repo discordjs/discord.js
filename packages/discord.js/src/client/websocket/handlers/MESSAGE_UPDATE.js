@@ -1,6 +1,6 @@
 'use strict';
 
-const { Events } = require('../../../util/Constants');
+const Events = require('../../../util/Events');
 
 module.exports = (client, packet) => {
   const { old, updated } = client.actions.MessageUpdate.handle(packet.d);
@@ -11,6 +11,6 @@ module.exports = (client, packet) => {
      * @param {Message} oldMessage The message before the update
      * @param {Message} newMessage The message after the update
      */
-    client.emit(Events.MESSAGE_UPDATE, old, updated);
+    client.emit(Events.MessageUpdate, old, updated);
   }
 };

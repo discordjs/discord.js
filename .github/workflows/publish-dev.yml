@@ -6,6 +6,20 @@ on:
 jobs:
   npm:
     name: npm
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: '@discordjs/builders'
+            folder: 'builders'
+          - package: '@discordjs/collection'
+            folder: 'collection'
+          - package: 'discord.js'
+            folder: 'discord.js'
+          - package: '@discordjs/rest'
+            folder: 'rest'
+          - package: '@discordjs/voice'
+            folder: 'voice'
     runs-on: ubuntu-latest
     if: github.repository_owner == 'discordjs'
     steps:
@@ -32,7 +46,7 @@ jobs:
       - name: Check previous released version
         id: pre-release
         run: |
-          if [[ $(npm view discord.js@dev version | grep -e "$(jq --raw-output '.version' packages/discord.js/package.json).*.$(git rev-parse --short HEAD | cut -b1-3)") ]]; \
+          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json).*.$(git rev-parse --short HEAD | cut -b1-3)") ]]; \
           then echo '::set-output name=release::false'; \
           else echo '::set-output name=release::true'; fi
 
@@ -46,14 +60,14 @@ jobs:
 
       - name: Deprecate old versions
         if: steps.pre-release.outputs.release == 'true'
-        run: npm deprecate discord.js@"~$(jq --raw-output '.version' packages/discord.js/package.json)" "no longer supported" || true
+        run: npm deprecate ${{ matrix.package }}@"~$(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json)" "no longer supported" || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
       - name: Publish
         if: steps.pre-release.outputs.release == 'true'
         run: |
-          yarn workspace discord.js version --no-git-tag-version --new-version $(jq --raw-output '.version' packages/discord.js/package.json).$(date +%s).$(git rev-parse --short HEAD)
-          yarn workspace discord.js publish --tag dev || true
+          yarn workspace ${{ matrix.package }} version $(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json).$(date +%s).$(git rev-parse --short HEAD)
+          yarn workspace ${{ matrix.package }} npm publish --tag dev || true
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

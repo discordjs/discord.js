@@ -5,17 +5,17 @@
 const request = require('superagent');
 const ytdl = require('ytdl-core');
 const { token, song } = require('./auth.js');
-const { Client, Intents } = require('../src');
-const { ChannelType } = require('discord-api-types/v9');
+const { Client } = require('../src');
+const { ChannelType, GatewayIntentBits } = require('discord-api-types/v9');
 
 console.time('magic');
 
 const client = new Client({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_MEMBERS,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMembers,
   ],
 });
 

@@ -113,7 +113,7 @@ export class CDN {
 	 * @param discriminator The discriminator modulo 5
 	 */
 	public defaultAvatar(discriminator: number): string {
-		return this.makeURL(`/embed/avatars/${discriminator}`);
+		return this.makeURL(`/embed/avatars/${discriminator}`, { extension: 'png' });
 	}
 
 	/**
@@ -210,6 +210,20 @@ export class CDN {
 	 */
 	public teamIcon(teamId: string, iconHash: string, options?: Readonly<BaseImageURLOptions>): string {
 		return this.makeURL(`/team-icons/${teamId}/${iconHash}`, options);
+	}
+
+	/**
+	 * Generates a cover image for a guild scheduled event.
+	 * @param scheduledEventId The scheduled event id
+	 * @param coverHash The hash provided by discord for this cover image
+	 * @param options Optional options for the cover image
+	 */
+	public guildScheduledEventCover(
+		scheduledEventId: string,
+		coverHash: string,
+		options?: Readonly<BaseImageURLOptions>,
+	): string {
+		return this.makeURL(`/guild-events/${scheduledEventId}/${coverHash}`, options);
 	}
 
 	/**

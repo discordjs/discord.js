@@ -34,6 +34,12 @@ class CommandInteraction extends Interaction {
     this.commandName = data.data.name;
 
     /**
+     * The invoked application command's type
+     * @type {ApplicationCommandType}
+     */
+    this.commandType = data.data.type;
+
+    /**
      * Whether the reply to this interaction has been deferred
      * @type {boolean}
      */
@@ -130,7 +136,9 @@ class CommandInteraction extends Interaction {
    * @typedef {Object} CommandInteractionOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
-   * @property {boolean} [autocomplete] Whether the option is an autocomplete option
+   * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
+   * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
    * @property {string|number|boolean} [value] The value of the option
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)

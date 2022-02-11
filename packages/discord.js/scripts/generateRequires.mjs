@@ -1,10 +1,10 @@
 import { readdir, writeFile } from 'node:fs/promises';
-import { Constants } from '../src/index.js';
+import { GatewayDispatchEvents } from '../src/index.js';
 
 async function writeWebsocketHandlerImports() {
   const lines = ["'use strict';\n", 'const handlers = Object.fromEntries(['];
 
-  for (const name of Object.keys(Constants.WSEvents)) {
+  for (const name of Object.values(GatewayDispatchEvents)) {
     lines.push(`  ['${name}', require('./${name}')],`);
   }
 

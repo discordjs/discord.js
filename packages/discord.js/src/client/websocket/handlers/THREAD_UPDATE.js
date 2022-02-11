@@ -1,6 +1,6 @@
 'use strict';
 
-const { Events } = require('../../../util/Constants');
+const Events = require('../../../util/Events');
 
 module.exports = (client, packet) => {
   const { old, updated } = client.actions.ChannelUpdate.handle(packet.d);
@@ -11,6 +11,6 @@ module.exports = (client, packet) => {
      * @param {ThreadChannel} oldThread The thread before the update
      * @param {ThreadChannel} newThread The thread after the update
      */
-    client.emit(Events.THREAD_UPDATE, old, updated);
+    client.emit(Events.ThreadUpdate, old, updated);
   }
 };

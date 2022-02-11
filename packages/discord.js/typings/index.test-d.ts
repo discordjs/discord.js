@@ -14,6 +14,8 @@ import {
   ApplicationCommandPermissionType,
   ChannelType,
   InteractionType,
+  GatewayIntentBits,
+  PermissionFlagsBits,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
 import {
@@ -37,7 +39,6 @@ import {
   CommandInteractionOption,
   CommandInteractionOptionResolver,
   CommandOptionNonChoiceResolvableType,
-  Constants,
   ContextMenuCommandInteraction,
   DMChannel,
   Guild,
@@ -47,7 +48,7 @@ import {
   GuildEmojiManager,
   GuildMember,
   GuildResolvable,
-  Intents,
+  IntentsBitField,
   Interaction,
   InteractionCollector,
   Message,
@@ -59,7 +60,7 @@ import {
   Options,
   PartialTextBasedChannelFields,
   PartialUser,
-  Permissions,
+  PermissionsBitField,
   ReactionCollector,
   Role,
   RoleManager,
@@ -96,6 +97,9 @@ import {
   ActionRowComponent,
   InteractionResponseFields,
   ThreadChannelType,
+  Events,
+  ShardEvents,
+  Status,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -105,7 +109,7 @@ declare const serialize: <T>(value: T) => Serialized<T>;
 declare const notPropertyOf: <T, P extends PropertyKey>(value: T, property: P & Exclude<P, keyof T>) => void;
 
 const client: Client = new Client({
-  intents: Intents.FLAGS.GUILDS,
+  intents: GatewayIntentBits.Guilds,
   makeCache: Options.cacheWithLimits({
     MessageManager: 200,
     // @ts-expect-error
@@ -719,7 +723,7 @@ client.on('interactionCreate', async interaction => {
 
   const button = new ButtonComponent();
 
-  const actionRow = new ActionRow({ type: ComponentType.ActionRow, components: [button] });
+  const actionRow = new ActionRow<ActionRowComponent>({ type: ComponentType.ActionRow, components: [button] });
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
@@ -772,8 +776,8 @@ expectType<{}>(
     ]),
   ),
 );
-expectType<string>(serialize(new Permissions(Permissions.FLAGS.ATTACH_FILES)));
-expectType<number>(serialize(new Intents(Intents.FLAGS.GUILDS)));
+expectType<string>(serialize(new PermissionsBitField(PermissionFlagsBits.AttachFiles)));
+expectType<number>(serialize(new IntentsBitField(GatewayIntentBits.Guilds)));
 expectAssignable<unknown>(
   serialize(
     new Collection([
@@ -852,10 +856,9 @@ reactionCollector.on('dispose', (...args) => {
 
 // Make sure the properties are typed correctly, and that no backwards properties
 // (K -> V and V -> K) exist:
-expectType<'messageCreate'>(Constants.Events.MESSAGE_CREATE);
-expectType<'close'>(Constants.ShardEvents.CLOSE);
-expectType<1>(Constants.Status.CONNECTING);
-expectType<0>(Constants.Opcodes.DISPATCH);
+expectAssignable<'messageCreate'>(Events.MessageCreate);
+expectAssignable<'close'>(ShardEvents.Close);
+expectAssignable<1>(Status.Connecting);
 
 declare const applicationCommandData: ApplicationCommandData;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;
@@ -891,7 +894,7 @@ declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
 
 declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
 {
-  expectType<'SubcommandGroup' | ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
+  expectType<ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
   expectType<ApplicationCommandSubCommandData[] | undefined>(applicationSubGroupCommandData.options);
 }
 

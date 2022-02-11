@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class GuildScheduledEventCreateAction extends Action {
   handle(data) {
@@ -15,7 +15,7 @@ class GuildScheduledEventCreateAction extends Action {
        * @event Client#guildScheduledEventCreate
        * @param {GuildScheduledEvent} guildScheduledEvent The created guild scheduled event
        */
-      client.emit(Events.GUILD_SCHEDULED_EVENT_CREATE, guildScheduledEvent);
+      client.emit(Events.GuildScheduledEventCreate, guildScheduledEvent);
 
       return { guildScheduledEvent };
     }

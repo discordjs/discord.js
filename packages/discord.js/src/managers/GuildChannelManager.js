@@ -2,14 +2,17 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const ThreadManager = require('./ThreadManager');
-const { Error } = require('../errors');
+const { Error, TypeError } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
+const Webhook = require('../structures/Webhook');
 const { ThreadChannelTypes } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
+const Util = require('../util/Util');
 
 let cacheWarningEmitted = false;
 let storeChannelDeprecationEmitted = false;
@@ -117,7 +120,7 @@ class GuildChannelManager extends CachedManager {
    *   permissionOverwrites: [
    *      {
    *        id: message.author.id,
-   *        deny: [Permissions.FLAGS.VIEW_CHANNEL],
+   *        deny: [PermissionFlagsBits.ViewChannel],
    *     },
    *   ],
    * })
@@ -150,8 +153,8 @@ class GuildChannelManager extends CachedManager {
       );
     }
 
-    const data = await this.client.api.guilds(this.guild.id).channels.post({
-      data: {
+    const data = await this.client.rest.post(Routes.guildChannels(this.guild.id), {
+      body: {
         name,
         topic,
         type,
@@ -167,6 +170,148 @@ class GuildChannelManager extends CachedManager {
       reason,
     });
     return this.client.actions.ChannelCreate.handle(data).channel;
+  }
+
+  /**
+   * Creates a webhook for the channel.
+   * @param {GuildChannelResolvable} channel The channel to create the webhook for
+   * @param {string} name The name of the webhook
+   * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
+   * @returns {Promise<Webhook>} Returns the created Webhook
+   * @example
+   * // Create a webhook for the current channel
+   * guild.channels.createWebhook('222197033908436994', 'Snek', {
+   *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
+   *   reason: 'Needed a cool new Webhook'
+   * })
+   *   .then(console.log)
+   *   .catch(console.error)
+   */
+  async createWebhook(channel, name, { avatar, reason } = {}) {
+    const id = this.resolveId(channel);
+    if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
+    if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
+      avatar = await DataResolver.resolveImage(avatar);
+    }
+    const data = await this.client.rest.post(Routes.channelWebhooks(id), {
+      body: {
+        name,
+        avatar,
+      },
+      reason,
+    });
+    return new Webhook(this.client, data);
+  }
+
+  /**
+   * The data for a guild channel.
+   * @typedef {Object} ChannelData
+   * @property {string} [name] The name of the channel
+   * @property {ChannelType} [type] The type of the channel (only conversion between text and news is supported)
+   * @property {number} [position] The position of the channel
+   * @property {string} [topic] The topic of the text channel
+   * @property {boolean} [nsfw] Whether the channel is NSFW
+   * @property {number} [bitrate] The bitrate of the voice channel
+   * @property {number} [userLimit] The user limit of the voice channel
+   * @property {?CategoryChannelResolvable} [parent] The parent of the channel
+   * @property {boolean} [lockPermissions]
+   * Lock the permissions of the channel to what the parent's permissions are
+   * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
+   * Permission overwrites for the channel
+   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the channel in seconds
+   * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
+   * The default auto archive duration for all new threads in this channel
+   * @property {?string} [rtcRegion] The RTC region of the channel
+   */
+
+  /**
+   * Edits the channel.
+   * @param {GuildChannelResolvable} channel The channel to edit
+   * @param {ChannelData} data The new data for the channel
+   * @param {string} [reason] Reason for editing this channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Edit a channel
+   * guild.channels.edit('222197033908436994', { name: 'new-channel' })
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  async edit(channel, data, reason) {
+    channel = this.resolve(channel);
+    if (!channel) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
+
+    const parent = this.client.channels.resolveId(data.parent);
+
+    if (typeof data.position !== 'undefined') await this.setPosition(channel, data.position, { reason });
+
+    let permission_overwrites = data.permissionOverwrites?.map(o => PermissionOverwrites.resolve(o, this.guild));
+
+    if (data.lockPermissions) {
+      if (parent) {
+        const newParent = this.guild.channels.resolve(parent);
+        if (newParent?.type === ChannelType.GuildCategory) {
+          permission_overwrites = newParent.permissionOverwrites.cache.map(o =>
+            PermissionOverwrites.resolve(o, this.guild),
+          );
+        }
+      } else if (channel.parent) {
+        permission_overwrites = this.parent.permissionOverwrites.cache.map(o =>
+          PermissionOverwrites.resolve(o, this.guild),
+        );
+      }
+    }
+
+    const newData = await this.client.rest.patch(Routes.channel(channel.id), {
+      body: {
+        name: (data.name ?? channel.name).trim(),
+        type: data.type,
+        topic: data.topic,
+        nsfw: data.nsfw,
+        bitrate: data.bitrate ?? channel.bitrate,
+        user_limit: data.userLimit ?? channel.userLimit,
+        rtc_region: data.rtcRegion ?? channel.rtcRegion,
+        parent_id: parent,
+        lock_permissions: data.lockPermissions,
+        rate_limit_per_user: data.rateLimitPerUser,
+        default_auto_archive_duration: data.defaultAutoArchiveDuration,
+        permission_overwrites,
+      },
+      reason,
+    });
+
+    return this.client.actions.ChannelUpdate.handle(newData).updated;
+  }
+
+  /**
+   * Sets a new position for the guild channel.
+   * @param {GuildChannelResolvable} channel The channel to set the position for
+   * @param {number} position The new position for the guild channel
+   * @param {SetChannelPositionOptions} [options] Options for setting position
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Set a new channel position
+   * guild.channels.setPosition('222078374472843266', 2)
+   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *   .catch(console.error);
+   */
+  async setPosition(channel, position, { relative, reason } = {}) {
+    channel = this.resolve(channel);
+    if (!channel) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
+    const updatedChannels = await Util.setPosition(
+      channel,
+      position,
+      relative,
+      this.guild._sortedChannels(channel),
+      this.client,
+      Routes.guildChannels(this.guild.id),
+      reason,
+    );
+
+    this.client.actions.GuildChannelsPositionUpdate.handle({
+      guild_id: this.guild.id,
+      channels: updatedChannels,
+    });
+    return channel;
   }
 
   /**
@@ -192,16 +337,33 @@ class GuildChannelManager extends CachedManager {
     }
 
     if (id) {
-      const data = await this.client.api.channels(id).get();
+      const data = await this.client.rest.get(Routes.channel(id));
       // Since this is the guild manager, throw if on a different guild
       if (this.guild.id !== data.guild_id) throw new Error('GUILD_CHANNEL_UNOWNED');
       return this.client.channels._add(data, this.guild, { cache });
     }
 
-    const data = await this.client.api.guilds(this.guild.id).channels.get();
+    const data = await this.client.rest.get(Routes.guildChannels(this.guild.id));
     const channels = new Collection();
     for (const channel of data) channels.set(channel.id, this.client.channels._add(channel, this.guild, { cache }));
     return channels;
+  }
+
+  /**
+   * Fetches all webhooks for the channel.
+   * @param {GuildChannelResolvable} channel The channel to fetch webhooks for
+   * @returns {Promise<Collection<Snowflake, Webhook>>}
+   * @example
+   * // Fetch webhooks
+   * guild.channels.fetchWebhooks('769862166131245066')
+   *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
+   *   .catch(console.error);
+   */
+  async fetchWebhooks(channel) {
+    const id = this.resolveId(channel);
+    if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
+    const data = await this.client.rest.get(Routes.channelWebhooks(id));
+    return data.reduce((hooks, hook) => hooks.set(hook.id, new Webhook(this.client, hook)), new Collection());
   }
 
   /**
@@ -238,7 +400,7 @@ class GuildChannelManager extends CachedManager {
       parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveId(r.parent) : undefined,
     }));
 
-    await this.client.api.guilds(this.guild.id).channels.patch({ data: channelPositions });
+    await this.client.rest.patch(Routes.guildChannels(this.guild.id), { body: channelPositions });
     return this.client.actions.GuildChannelsPositionUpdate.handle({
       guild_id: this.guild.id,
       channels: channelPositions,
@@ -256,8 +418,25 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetchActiveThreads(cache = true) {
-    const raw = await this.client.api.guilds(this.guild.id).threads.active.get();
+    const raw = await this.client.rest.get(Routes.guildActiveThreads(this.guild.id));
     return ThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
+  }
+
+  /**
+   * Deletes the channel.
+   * @param {GuildChannelResolvable} channel The channel to delete
+   * @param {string} [reason] Reason for deleting this channel
+   * @returns {Promise<void>}
+   * @example
+   * // Delete the channel
+   * guild.channels.delete('858850993013260338', 'making room for new channels')
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  async delete(channel, reason) {
+    const id = this.resolveId(channel);
+    if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
+    await this.client.rest.delete(Routes.channel(id), { reason });
   }
 }
 

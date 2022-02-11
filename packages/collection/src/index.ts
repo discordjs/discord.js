@@ -667,6 +667,57 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * Merges two Collections together into a new Collection.
+	 * @param other The other Collection to merge with
+	 * @param whenInSelf Function getting the result if the entry only exists in this Collection
+	 * @param whenInOther Function getting the result if the entry only exists in the other Collection
+	 * @param whenInBoth Function getting the result if the entry exists in both Collections
+	 *
+	 * @example
+	 * // Sums up the entries in two collections.
+	 * coll.merge(
+	 *  other,
+	 *  x => ({ keep: true, value: x }),
+	 *  y => ({ keep: true, value: y }),
+	 *  (x, y) => ({ keep: true, value: x + y }),
+	 * );
+	 *
+	 * @example
+	 * // Intersects two collections in a left-biased manner.
+	 * coll.merge(
+	 *  other,
+	 *  x => ({ keep: false }),
+	 *  y => ({ keep: false }),
+	 *  (x, _) => ({ keep: true, value: x }),
+	 * );
+	 */
+	public merge<T, R>(
+		other: ReadonlyCollection<K, T>,
+		whenInSelf: (value: V, key: K) => Keep<R>,
+		whenInOther: (valueOther: T, key: K) => Keep<R>,
+		whenInBoth: (value: V, valueOther: T, key: K) => Keep<R>,
+	): Collection<K, R> {
+		const coll = new this.constructor[Symbol.species]<K, R>();
+		const keys = new Set([...this.keys(), ...other.keys()]);
+		for (const k of keys) {
+			const hasInSelf = this.has(k);
+			const hasInOther = other.has(k);
+
+			if (hasInSelf && hasInOther) {
+				const r = whenInBoth(this.get(k)!, other.get(k)!, k);
+				if (r.keep) coll.set(k, r.value);
+			} else if (hasInSelf) {
+				const r = whenInSelf(this.get(k)!, k);
+				if (r.keep) coll.set(k, r.value);
+			} else if (hasInOther) {
+				const r = whenInOther(other.get(k)!, k);
+				if (r.keep) coll.set(k, r.value);
+			}
+		}
+		return coll;
+	}
+
+	/**
 	 * The sorted method sorts the items of a collection and returns it.
 	 * The sort is not necessarily stable in Node 10 or older.
 	 * The default sort order is according to string Unicode code points.
@@ -690,7 +741,36 @@ export class Collection<K, V> extends Map<K, V> {
 	private static defaultSort<V>(firstValue: V, secondValue: V): number {
 		return Number(firstValue > secondValue) || Number(firstValue === secondValue) - 1;
 	}
+
+	/**
+	 * Creates a Collection from a list of entries.
+	 * @param entries The list of entries
+	 * @param combine Function to combine an existing entry with a new one
+	 *
+	 * @example
+	 * Collection.combineEntries([["a", 1], ["b", 2], ["a", 2]], (x, y) => x + y);
+	 * // returns Collection { "a" => 3, "b" => 2 }
+	 */
+	public static combineEntries<K, V>(
+		entries: Iterable<[K, V]>,
+		combine: (firstValue: V, secondValue: V, key: K) => V,
+	): Collection<K, V> {
+		const coll = new Collection<K, V>();
+		for (const [k, v] of entries) {
+			if (coll.has(k)) {
+				coll.set(k, combine(coll.get(k)!, v, k));
+			} else {
+				coll.set(k, v);
+			}
+		}
+		return coll;
+	}
 }
+
+/**
+ * @internal
+ */
+export type Keep<V> = { keep: true; value: V } | { keep: false };
 
 /**
  * @internal

@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const VoiceState = require('../../structures/VoiceState');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class VoiceStateUpdate extends Action {
   handle(data) {
@@ -35,7 +35,7 @@ class VoiceStateUpdate extends Action {
        * @param {VoiceState} oldState The voice state before the update
        * @param {VoiceState} newState The voice state after the update
        */
-      client.emit(Events.VOICE_STATE_UPDATE, oldState, newState);
+      client.emit(Events.VoiceStateUpdate, oldState, newState);
     }
   }
 }

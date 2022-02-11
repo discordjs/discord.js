@@ -66,7 +66,7 @@ class DataResolver extends null {
     if (typeof image === 'string' && image.startsWith('data:')) {
       return image;
     }
-    const file = await this.resolveFileAsBuffer(image);
+    const file = await this.resolveFile(image);
     return DataResolver.resolveBase64(file);
   }
 
@@ -102,12 +102,19 @@ class DataResolver extends null {
    */
 
   /**
-   * Resolves a BufferResolvable to a Buffer or a Stream.
+   * Resolves a BufferResolvable to a Buffer.
    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
-   * @returns {Promise<Buffer|Stream>}
+   * @returns {Promise<Buffer>}
    */
   static async resolveFile(resource) {
-    if (Buffer.isBuffer(resource) || resource instanceof stream.Readable) return resource;
+    if (Buffer.isBuffer(resource)) return resource;
+
+    if (resource instanceof stream.Readable) {
+      const buffers = [];
+      for await (const data of resource) buffers.push(data);
+      return Buffer.concat(buffers);
+    }
+
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
         const res = await fetch(resource);
@@ -125,20 +132,6 @@ class DataResolver extends null {
     }
 
     throw new TypeError('REQ_RESOURCE_TYPE');
-  }
-
-  /**
-   * Resolves a BufferResolvable to a Buffer.
-   * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
-   * @returns {Promise<Buffer>}
-   */
-  static async resolveFileAsBuffer(resource) {
-    const file = await this.resolveFile(resource);
-    if (Buffer.isBuffer(file)) return file;
-
-    const buffers = [];
-    for await (const data of file) buffers.push(data);
-    return Buffer.concat(buffers);
   }
 }
 

@@ -3,7 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const UserFlags = require('../util/UserFlags');
+const UserFlagsBitField = require('../util/UserFlagsBitField');
 
 /**
  * Represents a user on Discord.
@@ -105,9 +105,9 @@ class User extends Base {
     if ('public_flags' in data) {
       /**
        * The flags for this user
-       * @type {?UserFlags}
+       * @type {?UserFlagsBitField}
        */
-      this.flags = new UserFlags(data.public_flags);
+      this.flags = new UserFlagsBitField(data.public_flags);
     }
   }
 
@@ -144,7 +144,7 @@ class User extends Base {
    * @returns {?string}
    */
   avatarURL(options = {}) {
-    return this.avatar && this.client.rest.cdn.Avatar(this.id, this.avatar, options);
+    return this.avatar && this.client.rest.cdn.avatar(this.id, this.avatar, options);
   }
 
   /**
@@ -153,7 +153,7 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    return this.client.rest.cdn.DefaultAvatar(this.discriminator % 5);
+    return this.client.rest.cdn.defaultAvatar(this.discriminator % 5);
   }
 
   /**
@@ -183,7 +183,7 @@ class User extends Base {
    * @returns {?string}
    */
   bannerURL(options = {}) {
-    return this.banner && this.client.rest.cdn.Banner(this.id, this.banner, options);
+    return this.banner && this.client.rest.cdn.banner(this.id, this.banner, options);
   }
 
   /**
@@ -263,7 +263,7 @@ class User extends Base {
   /**
    * Fetches this user's flags.
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
-   * @returns {Promise<UserFlags>}
+   * @returns {Promise<UserFlagsBitField>}
    */
   fetchFlags(force = false) {
     return this.client.users.fetchFlags(this.id, { force });

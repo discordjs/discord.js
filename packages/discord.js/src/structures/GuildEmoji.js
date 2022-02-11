@@ -1,9 +1,9 @@
 'use strict';
 
+const { PermissionFlagsBits } = require('discord-api-types/v9');
 const BaseGuildEmoji = require('./BaseGuildEmoji');
 const { Error } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
-const Permissions = require('../util/Permissions');
 
 /**
  * Represents a custom emoji.
@@ -56,7 +56,7 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   get deletable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return !this.managed && this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS);
+    return !this.managed && this.guild.me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers);
   }
 
   /**
@@ -72,18 +72,8 @@ class GuildEmoji extends BaseGuildEmoji {
    * Fetches the author for this emoji
    * @returns {Promise<User>}
    */
-  async fetchAuthor() {
-    if (this.managed) {
-      throw new Error('EMOJI_MANAGED');
-    } else {
-      if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-      if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) {
-        throw new Error('MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION', this.guild);
-      }
-    }
-    const data = await this.client.api.guilds(this.guild.id).emojis(this.id).get();
-    this._patch(data);
-    return this.author;
+  fetchAuthor() {
+    return this.guild.emojis.fetchAuthor(this);
   }
 
   /**

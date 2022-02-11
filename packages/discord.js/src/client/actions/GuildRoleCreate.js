@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class GuildRoleCreate extends Action {
   handle(data) {
@@ -16,7 +16,7 @@ class GuildRoleCreate extends Action {
        * @event Client#roleCreate
        * @param {Role} role The role that was created
        */
-      if (!already) client.emit(Events.GUILD_ROLE_CREATE, role);
+      if (!already) client.emit(Events.GuildRoleCreate, role);
     }
     return { role };
   }

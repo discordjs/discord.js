@@ -1,6 +1,6 @@
 'use strict';
 
-const { InteractionResponseType } = require('discord-api-types/v9');
+const { InteractionResponseType, Routes } = require('discord-api-types/v9');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 const Interaction = require('./Interaction');
 
@@ -29,6 +29,12 @@ class AutocompleteInteraction extends Interaction {
      * @type {string}
      */
     this.commandName = data.data.name;
+
+    /**
+     * The invoked application command's type
+     * @type {ApplicationCommandType.ChatInput}
+     */
+    this.commandType = data.data.type;
 
     /**
      * Whether this interaction has already received a response
@@ -70,8 +76,8 @@ class AutocompleteInteraction extends Interaction {
   async respond(options) {
     if (this.responded) throw new Error('INTERACTION_ALREADY_REPLIED');
 
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
         type: InteractionResponseType.ApplicationCommandAutocompleteResult,
         data: {
           choices: options,

@@ -9,7 +9,7 @@ const Invite = require('./Invite');
 const { StageInstance } = require('./StageInstance');
 const { Sticker } = require('./Sticker');
 const Webhook = require('./Webhook');
-const { PartialTypes } = require('../util/Constants');
+const Partials = require('../util/Partials');
 const Util = require('../util/Util');
 
 /**
@@ -274,7 +274,7 @@ class GuildAuditLogsEntry {
      * @type {?User}
      */
     this.executor = data.user_id
-      ? guild.client.options.partials.includes(PartialTypes.USER)
+      ? guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.user_id })
         : guild.client.users.cache.get(data.user_id)
       : null;
@@ -384,7 +384,7 @@ class GuildAuditLogsEntry {
       this.target.id = data.target_id;
       // MEMBER_DISCONNECT and similar types do not provide a target_id.
     } else if (targetType === Targets.USER && data.target_id) {
-      this.target = guild.client.options.partials.includes(PartialTypes.USER)
+      this.target = guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.target_id })
         : guild.client.users.cache.get(data.target_id);
     } else if (targetType === Targets.GUILD) {

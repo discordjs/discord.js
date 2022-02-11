@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const { Message } = require('../structures/Message');
@@ -82,7 +83,7 @@ class MessageManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetchPinned(cache = true) {
-    const data = await this.client.api.channels[this.channel.id].pins.get();
+    const data = await this.client.rest.get(Routes.channelPins(this.channel.id));
     const messages = new Collection();
     for (const message of data) messages.set(message.id, this._add(message, cache));
     return messages;
@@ -123,13 +124,13 @@ class MessageManager extends CachedManager {
     const messageId = this.resolveId(message);
     if (!messageId) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    const { data, files } = await (options instanceof MessagePayload
+    const { body, files } = await (options instanceof MessagePayload
       ? options
       : MessagePayload.create(message instanceof Message ? message : this, options)
     )
-      .resolveData()
+      .resolveBody()
       .resolveFiles();
-    const d = await this.client.api.channels[this.channel.id].messages[messageId].patch({ data, files });
+    const d = await this.client.rest.patch(Routes.channelMessage(this.channel.id, messageId), { body, files });
 
     const existing = this.cache.get(messageId);
     if (existing) {
@@ -149,7 +150,7 @@ class MessageManager extends CachedManager {
     message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    const data = await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
+    const data = await this.client.rest.post(Routes.channelMessageCrosspost(this.channel.id, message));
     return this.cache.get(data.id) ?? this._add(data);
   }
 
@@ -162,7 +163,7 @@ class MessageManager extends CachedManager {
     message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.api.channels(this.channel.id).pins(message).put();
+    await this.client.rest.put(Routes.channelPins(this.channel.id, message));
   }
 
   /**
@@ -174,7 +175,7 @@ class MessageManager extends CachedManager {
     message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.api.channels(this.channel.id).pins(message).delete();
+    await this.client.rest.delete(Routes.channelPin(this.channel.id, message));
   }
 
   /**
@@ -194,8 +195,7 @@ class MessageManager extends CachedManager {
       ? `${emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}`
       : encodeURIComponent(emoji.name);
 
-    // eslint-disable-next-line newline-per-chained-call
-    await this.client.api.channels(this.channel.id).messages(message).reactions(emojiId, '@me').put();
+    await this.client.rest.put(Routes.channelMessageOwnReaction(this.channel.id, message, emojiId));
   }
 
   /**
@@ -207,7 +207,7 @@ class MessageManager extends CachedManager {
     message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.api.channels(this.channel.id).messages(message).delete();
+    await this.client.rest.delete(Routes.channelMessage(this.channel.id, message));
   }
 
   async _fetchId(messageId, cache, force) {
@@ -216,12 +216,14 @@ class MessageManager extends CachedManager {
       if (existing && !existing.partial) return existing;
     }
 
-    const data = await this.client.api.channels[this.channel.id].messages[messageId].get();
+    const data = await this.client.rest.get(Routes.channelMessage(this.channel.id, messageId));
     return this._add(data, cache);
   }
 
   async _fetchMany(options = {}, cache) {
-    const data = await this.client.api.channels[this.channel.id].messages.get({ query: options });
+    const data = await this.client.rest.get(Routes.channelMessages(this.channel.id), {
+      query: new URLSearchParams(options),
+    });
     const messages = new Collection();
     for (const message of data) messages.set(message.id, this._add(message, cache));
     return messages;
