@@ -29,7 +29,7 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
    */
   public readonly keepOverLimit: ((value: V, key: K, collection: this) => boolean) | null;
 
-  public constructor(options: LimitedCollectionOptions<K, V> = {}, iterable?: Iterable<readonly [K, V]>) {
+  public constructor(options: LimitedCollectionOptions<K, V> | null = {}, iterable?: Iterable<readonly [K, V]>) {
     if (typeof options !== 'object' || options === null) {
       throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     }

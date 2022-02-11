@@ -1,8 +1,6 @@
-'use strict';
-
 import process from 'node:process';
 import { ChannelType, MessageType } from 'discord-api-types/v9';
-const Package = (exports.Package = require('../../package.json'));
+import * as Package from '../../package.json';
 
 export const UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;
 
@@ -111,3 +109,5 @@ export const VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.Guild
  * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
  * @property {Status} Status The available statuses of the client.
  */
+
+export { Package };

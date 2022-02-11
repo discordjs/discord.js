@@ -30,7 +30,7 @@ export class Formatters extends null {
    * @param {string} content The content to wrap.
    * @returns {string}
    */
-  static blockQuote = blockQuote;
+  public static blockQuote = blockQuote;
 
   /**
    * Formats the content into bold text.
@@ -39,7 +39,7 @@ export class Formatters extends null {
    * @param {string} content The content to wrap.
    * @returns {string}
    */
-  static bold = bold;
+  public static bold = bold;
 
   /**
    * Formats a channel id into a channel mention.
@@ -48,7 +48,7 @@ export class Formatters extends null {
    * @param {string} channelId The channel id to format.
    * @returns {string}
    */
-  static channelMention = channelMention;
+  public static channelMention = channelMention;
 
   /**
    * Wraps the content inside a code block with an optional language.
@@ -58,7 +58,7 @@ export class Formatters extends null {
    * @param {string} [content] The content to wrap.
    * @returns {string}
    */
-  static codeBlock = codeBlock;
+  public static codeBlock = codeBlock;
 
   /**
    * Formats an emoji id into a fully qualified emoji identifier
@@ -68,7 +68,7 @@ export class Formatters extends null {
    * @param {boolean} [animated] Whether the emoji is animated or not. Defaults to `false`
    * @returns {string}
    */
-  static formatEmoji = formatEmoji;
+  public static formatEmoji = formatEmoji;
 
   /**
    * Wraps the URL into `<>`, which stops it from embedding.
@@ -77,7 +77,7 @@ export class Formatters extends null {
    * @param {string} content The content to wrap.
    * @returns {string}
    */
-  static hideLinkEmbed = hideLinkEmbed;
+  public static hideLinkEmbed = hideLinkEmbed;
 
   /**
    * Formats the content and the URL into a masked URL with an optional title.
@@ -88,7 +88,7 @@ export class Formatters extends null {
    * @param {string} [title] The title shown when hovering on the masked link.
    * @returns {string}
    */
-  static hyperlink = hyperlink;
+  public static hyperlink = hyperlink;
 
   /**
    * Wraps the content inside \`backticks\`, which formats it as inline code.
@@ -97,7 +97,7 @@ export class Formatters extends null {
    * @param {string} content The content to wrap.
    * @returns {string}
    */
-  static inlineCode = inlineCode;
+  public static inlineCode = inlineCode;
 
   /**
    * Formats the content into italic text.
@@ -106,7 +106,7 @@ export class Formatters extends null {
    * @param {string} content The content to wrap.
    * @returns {string}
    */
-  static italic = italic;
+  public static italic = italic;
 
   /**
    * Formats a user id into a member-nickname mention.
@@ -115,7 +115,7 @@ export class Formatters extends null {
    * @param {string} memberId The user id to format.
    * @returns {string}
    */
-  static memberNicknameMention = memberNicknameMention;
+  public static memberNicknameMention = memberNicknameMention;
 
   /**
    * Formats the content into a quote. This needs to be at the start of the line for Discord to format it.
@@ -124,7 +124,7 @@ export class Formatters extends null {
    * @param {string} content The content to wrap.
    * @returns {string}
    */
-  static quote = quote;
+  public static quote = quote;
 
   /**
    * Formats a role id into a role mention.
@@ -133,7 +133,7 @@ export class Formatters extends null {
    * @param {string} roleId The role id to format.
    * @returns {string}
    */
-  static roleMention = roleMention;
+  public static roleMention = roleMention;
 
   /**
    * Formats the content into spoiler text.
@@ -142,7 +142,7 @@ export class Formatters extends null {
    * @param {string} content The content to spoiler.
    * @returns {string}
    */
-  static spoiler = spoiler;
+  public static spoiler = spoiler;
 
   /**
    * Formats the content into strike-through text.
@@ -151,7 +151,7 @@ export class Formatters extends null {
    * @param {string} content The content to wrap.
    * @returns {string}
    */
-  static strikethrough = strikethrough;
+  public static strikethrough = strikethrough;
 
   /**
    * Formats a date into a short date-time string.
@@ -161,7 +161,7 @@ export class Formatters extends null {
    * @param {TimestampStylesString} [style] The style to use.
    * @returns {string}
    */
-  static time = time;
+  public static time = time;
 
   /**
    * A message formatting timestamp style, as defined in
@@ -182,7 +182,7 @@ export class Formatters extends null {
    * @memberof Formatters
    * @type {Object<string, TimestampStylesString>}
    */
-  static TimestampStyles = TimestampStyles;
+  public static TimestampStyles = TimestampStyles;
 
   /**
    * Formats the content into underscored text.
@@ -191,7 +191,7 @@ export class Formatters extends null {
    * @param {string} content The content to wrap.
    * @returns {string}
    */
-  static underscore = underscore;
+  public static underscore = underscore;
 
   /**
    * Formats a user id into a user mention.
@@ -200,5 +200,5 @@ export class Formatters extends null {
    * @param {string} userId The user id to format.
    * @returns {string}
    */
-  static userMention = userMention;
+  public static userMention = userMention;
 }

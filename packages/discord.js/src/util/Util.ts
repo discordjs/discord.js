@@ -5,6 +5,8 @@ import fetch from 'node-fetch';
 import { Colors } from './Colors';
 import { Error as DiscordError, RangeError, TypeError } from '../errors';
 const isObject = (d: unknown): d is Record<string, unknown> => typeof d === 'object' && d !== null;
+import type { Role } from '../structures/Role';
+import type Client from '../client/Client';
 
 /**
  * Contains various general-purpose utility methods.
@@ -317,7 +319,7 @@ export class Util extends null {
    * @returns {?RawEmoji}
    * @private
    */
-  private static resolvePartialEmoji(emoji: EmojiIdentifierResolvable) {
+  public static resolvePartialEmoji(emoji: EmojiIdentifierResolvable) {
     if (!emoji) return null;
     if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : Util.parseEmoji(emoji);
     const { id, name, animated } = emoji;
@@ -331,7 +333,7 @@ export class Util extends null {
    * @returns {Object}
    * @private
    */
-  private static cloneObject<T extends object>(obj: T): T {
+  public static cloneObject<T extends object>(obj: T): T {
     return Object.assign(Object.create(obj), obj) as T;
   }
 
@@ -342,7 +344,7 @@ export class Util extends null {
    * @returns {Object}
    * @private
    */
-  private static mergeDefault<T>(def: Record<string, T>, given?: Record<string, T>): Record<string, T> {
+  public static mergeDefault<T extends Record<string, unknown>>(def: T, given?: T): T {
     if (!given) return def;
     for (const key in def) {
       // @ts-expect-error TS doesn't have typedefs for hasOwn yet
@@ -372,7 +374,7 @@ export class Util extends null {
    * @returns {Error}
    * @private
    */
-  private static makeError(obj: MakeErrorOptions) {
+  public static makeError(obj: MakeErrorOptions) {
     const err = new Error(obj.message);
     err.name = obj.name;
     err.stack = obj.stack;
@@ -385,7 +387,7 @@ export class Util extends null {
    * @returns {MakeErrorOptions}
    * @private
    */
-  private makePlainError(err: MakeErrorOptions) {
+  public makePlainError(err: MakeErrorOptions) {
     return {
       name: err.name,
       message: err.message,
@@ -421,9 +423,9 @@ export class Util extends null {
    * @returns {string}
    */
   public static verifyString(
-    data: string,
+    data: unknown,
     error = Error,
-    errorMessage = `Expected a string, got ${data} instead.`,
+    errorMessage = `Expected a string, got ${data as string} instead.`,
     allowEmpty = true,
   ) {
     if (typeof data !== 'string') throw new error(errorMessage);
@@ -522,7 +524,7 @@ export class Util extends null {
    * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
-  private static async setPosition<T extends AnyChannel | Role>(
+  public static async setPosition<T extends AnyChannel | Role>(
     item: T,
     position: number,
     relative: boolean,
@@ -546,7 +548,7 @@ export class Util extends null {
    * @returns {string} Basename of the path
    * @private
    */
-  private static basename(path: string, ext?: string) {
+  public static basename(path: string, ext?: string) {
     const res = parse(path);
     return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
   }
@@ -557,7 +559,7 @@ export class Util extends null {
    * @param {TextBasedChannels} channel The channel the string was sent in
    * @returns {string}
    */
-  private static cleanContent(str: string, channel: TextBasedChannel) {
+  public static cleanContent(str: string, channel: TextBasedChannel) {
     str = str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
@@ -608,5 +610,3 @@ import type {
   MakeErrorOptions,
   TextBasedChannel,
 } from '../../typings';
-import type { Role } from '../structures/Role';
-import type Client from '../client/Client';
