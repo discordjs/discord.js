@@ -118,7 +118,7 @@ class RoleManager extends CachedManager {
   /**
    * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
-   * @param {CreateRoleOptions} options Options for creating the new role
+   * @param {CreateRoleOptions} [options] Options for creating the new role
    * @returns {Promise<Role>}
    * @example
    * // Create a new role
