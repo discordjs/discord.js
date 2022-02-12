@@ -129,8 +129,8 @@ describe('createVoiceConnection', () => {
 
 		const stateSetter = jest.spyOn(existingVoiceConnection, 'state', 'set');
 
-		DataStore.getVoiceConnection.mockImplementation((guildId) =>
-			guildId === existingJoinConfig.guildId ? existingVoiceConnection : null,
+		DataStore.getVoiceConnection.mockImplementation((guildId, group = 'default') =>
+			guildId === existingJoinConfig.guildId && group === existingJoinConfig.group ? existingVoiceConnection : null,
 		);
 
 		const newAdapter = createFakeAdapter();
@@ -139,7 +139,7 @@ describe('createVoiceConnection', () => {
 			debug: false,
 			adapterCreator: newAdapter.creator,
 		});
-		expect(DataStore.getVoiceConnection).toHaveBeenCalledWith(newJoinConfig.guildId);
+		expect(DataStore.getVoiceConnection).toHaveBeenCalledWith(newJoinConfig.guildId, newJoinConfig.group);
 		expect(DataStore.trackVoiceConnection).not.toHaveBeenCalled();
 		expect(DataStore.untrackVoiceConnection).not.toHaveBeenCalled();
 		expect(newAdapter.creator).not.toHaveBeenCalled();
@@ -167,8 +167,8 @@ describe('createVoiceConnection', () => {
 
 		const rejoinSpy = jest.spyOn(existingVoiceConnection, 'rejoin');
 
-		DataStore.getVoiceConnection.mockImplementation((guildId) =>
-			guildId === existingJoinConfig.guildId ? existingVoiceConnection : null,
+		DataStore.getVoiceConnection.mockImplementation((guildId, group = 'default') =>
+			guildId === existingJoinConfig.guildId && group === existingJoinConfig.group ? existingVoiceConnection : null,
 		);
 
 		const newAdapter = createFakeAdapter();
@@ -178,7 +178,7 @@ describe('createVoiceConnection', () => {
 			debug: false,
 			adapterCreator: newAdapter.creator,
 		});
-		expect(DataStore.getVoiceConnection).toHaveBeenCalledWith(newJoinConfig.guildId);
+		expect(DataStore.getVoiceConnection).toHaveBeenCalledWith(newJoinConfig.guildId, newJoinConfig.group);
 		expect(DataStore.trackVoiceConnection).not.toHaveBeenCalled();
 		expect(DataStore.untrackVoiceConnection).not.toHaveBeenCalled();
 		expect(newAdapter.creator).not.toHaveBeenCalled();
@@ -198,8 +198,8 @@ describe('createVoiceConnection', () => {
 			adapterCreator: existingAdapter.creator,
 		});
 
-		DataStore.getVoiceConnection.mockImplementation((guildId) =>
-			guildId === existingJoinConfig.guildId ? existingVoiceConnection : null,
+		DataStore.getVoiceConnection.mockImplementation((guildId, group = 'default') =>
+			guildId === existingJoinConfig.guildId && group === existingJoinConfig.group ? existingVoiceConnection : null,
 		);
 
 		const newAdapter = createFakeAdapter();
@@ -209,7 +209,7 @@ describe('createVoiceConnection', () => {
 			debug: false,
 			adapterCreator: newAdapter.creator,
 		});
-		expect(DataStore.getVoiceConnection).toHaveBeenCalledWith(newJoinConfig.guildId);
+		expect(DataStore.getVoiceConnection).toHaveBeenCalledWith(newJoinConfig.guildId, newJoinConfig.group);
 		expect(DataStore.trackVoiceConnection).not.toHaveBeenCalled();
 		expect(DataStore.untrackVoiceConnection).not.toHaveBeenCalled();
 		expect(newAdapter.creator).not.toHaveBeenCalled();
@@ -473,8 +473,8 @@ describe('VoiceConnection#destroy', () => {
 
 	test('Cleans up in a valid, destroyable state', () => {
 		const { voiceConnection, joinConfig, adapter } = createFakeVoiceConnection();
-		DataStore.getVoiceConnection.mockImplementation((guildId) =>
-			joinConfig.guildId === guildId ? voiceConnection : undefined,
+		DataStore.getVoiceConnection.mockImplementation((guildId, group = 'default') =>
+			guildId === joinConfig.guildId && group === joinConfig.group ? voiceConnection : undefined,
 		);
 		const dummy = Symbol('dummy');
 		DataStore.createJoinVoiceChannelPayload.mockImplementation(() => dummy as any);
