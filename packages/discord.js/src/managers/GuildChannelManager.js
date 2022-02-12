@@ -142,7 +142,7 @@ class GuildChannelManager extends CachedManager {
       rateLimitPerUser,
       rtcRegion,
       reason,
-    } = {},
+    },
   ) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
