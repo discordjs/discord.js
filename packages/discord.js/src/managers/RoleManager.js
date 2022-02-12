@@ -118,7 +118,7 @@ class RoleManager extends CachedManager {
   /**
    * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
-   * @param {CreateRoleOptions} [options] Options for creating the new role
+   * @param {CreateRoleOptions} options Options for creating the new role
    * @returns {Promise<Role>}
    * @example
    * // Create a new role
@@ -135,8 +135,17 @@ class RoleManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async create(options = {}) {
-    let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
+  async create({
+    name,
+    color,
+    hoist,
+    permissions,
+    position,
+    mentionable,
+    reason,
+    icon,
+    unicodeEmoji
+  }) {
     color &&= resolveColor(color);
     if (typeof permissions !== 'undefined') permissions = new PermissionsBitField(permissions);
     if (icon) {
@@ -169,20 +178,22 @@ class RoleManager extends CachedManager {
    * Edits a role of the guild.
    * @param {RoleResolvable} role The role to edit
    * @param {RoleData} data The new data for the role
-   * @param {string} [reason] Reason for editing this role
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
-   * guild.roles.edit('222079219327434752', { name: 'buddies' })
-   *   .then(updated => console.log(`Edited role name to ${updated.name}`))
+   * guild.roles.edit('222079219327434752', {
+   *   name: 'buddies',
+   *   reason: 'Role edited!
+   * })
+   *   .then(roleUpdated => console.log(`Edited role name to ${roleUpdated.name}`))
    *   .catch(console.error);
    */
-  async edit(role, data, reason) {
+  async edit(role, data) {
     role = this.resolve(role);
     if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
 
     if (typeof data.position === 'number') {
-      await this.setPosition(role, data.position, { reason });
+      await this.setPosition(role, data.position, { reason: data.reason });
     }
 
     let icon = data.icon;
@@ -202,7 +213,7 @@ class RoleManager extends CachedManager {
       unicode_emoji: data.unicodeEmoji,
     };
 
-    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason });
+    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason: data.reason });
 
     const clone = role._clone();
     clone._patch(d);
