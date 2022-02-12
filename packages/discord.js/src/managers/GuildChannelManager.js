@@ -128,22 +128,20 @@ class GuildChannelManager extends CachedManager {
    *   ],
    * })
    */
-  async create(
-    {
-      name,
-      type,
-      topic,
-      nsfw,
-      bitrate,
-      userLimit,
-      parent,
-      permissionOverwrites,
-      position,
-      rateLimitPerUser,
-      rtcRegion,
-      reason,
-    },
-  ) {
+  async create({
+    name,
+    type,
+    topic,
+    nsfw,
+    bitrate,
+    userLimit,
+    parent,
+    permissionOverwrites,
+    position,
+    rateLimitPerUser,
+    rtcRegion,
+    reason,
+  }) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
 
@@ -234,7 +232,10 @@ class GuildChannelManager extends CachedManager {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
-   * guild.channels.edit('222197033908436994', { name: 'new-channel', reason: 'Channel edited!' })
+   * guild.channels.edit('222197033908436994', {
+   *   name: 'new-channel',
+   *   reason: 'Channel edited!'
+   * })
    *   .then(console.log)
    *   .catch(console.error);
    */
