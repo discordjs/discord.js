@@ -145,7 +145,7 @@ class RoleManager extends CachedManager {
     reason,
     icon,
     unicodeEmoji
-  }) {
+  } = {}) {
     color &&= resolveColor(color);
     if (typeof permissions !== 'undefined') permissions = new PermissionsBitField(permissions);
     if (icon) {
