@@ -37,7 +37,7 @@ class MessageManager extends CachedManager {
    * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
    * `after` are mutually exclusive. All the parameters are optional.
    * @typedef {Object} ChannelLogsQueryOptions
-   * @property {number} [limit=50] Number of messages to acquire
+   * @property {number} [limit] Number of messages to acquire
    * @property {Snowflake} [before] The message's id to get the messages that were posted before it
    * @property {Snowflake} [after] The message's id to get the messages that were posted after it
    * @property {Snowflake} [around] The message's id to get the messages that were posted around it
