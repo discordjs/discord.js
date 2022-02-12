@@ -185,7 +185,7 @@ class RoleManager extends CachedManager {
    *   name: 'buddies',
    *   reason: 'Role edited!
    * })
-   *   .then(roleUpdated => console.log(`Edited role name to ${roleUpdated.name}`))
+   *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
   async edit(role, data) {
