@@ -105,7 +105,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Creates a new channel in the guild.
-   * @param {GuildChannelCreateOptions} [options={}] Options for creating the new channel
+   * @param {GuildChannelCreateOptions} options Options for creating the new channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create a new text channel
@@ -178,7 +178,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Creates a webhook for the channel.
    * @param {GuildChannelResolvable} channel The channel to create the webhook for
-   * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
+   * @param {ChannelWebhookCreateOptions} options Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
    * // Create a webhook for the current channel
@@ -190,7 +190,7 @@ class GuildChannelManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  async createWebhook(channel, { name, avatar, reason } = {}) {
+  async createWebhook(channel, { name, avatar, reason }) {
     const id = this.resolveId(channel);
     if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
@@ -238,11 +238,11 @@ class GuildChannelManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async edit(channel, data = {}) {
+  async edit(channel, data) {
     channel = this.resolve(channel);
     if (!channel) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
 
-    const parent = data.parent && this.client.channels.resolveId(data.parent);
+    const parent = this.client.channels.resolveId(data.parent);
 
     if (typeof data.position !== 'undefined') await this.setPosition(channel, data.position, { reason: data.reason });
 
@@ -394,7 +394,7 @@ class GuildChannelManager extends CachedManager {
    *   .then(guild => console.log(`Updated channel positions for ${guild}`))
    *   .catch(console.error);
    */
-  async setPositions(channelPositions = []) {
+  async setPositions(channelPositions) {
     channelPositions = channelPositions.map(r => ({
       id: this.client.channels.resolveId(r.channel),
       position: r.position,
