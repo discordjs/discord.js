@@ -5,6 +5,7 @@ const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v9'
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
+const DataResolver = require('../util/DataResolver');
 
 /**
  * Manages API methods for GuildScheduledEvents and stores their cache.
@@ -50,6 +51,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This is required if `entityType` is {@link GuildScheduledEventEntityType.External}</warn>
+   * @property {?(BufferResolvable|Base64Resolvable)} [image] The cover image of the guild scheduled event
    * @property {string} [reason] The reason for creating the guild scheduled event
    */
 
@@ -77,6 +79,7 @@ class GuildScheduledEventManager extends CachedManager {
       scheduledEndTime,
       entityMetadata,
       reason,
+      image,
     } = options;
 
     let entity_metadata, channel_id;
@@ -99,6 +102,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         entity_metadata,
+        image: image && (await DataResolver.resolveImage(image)),
       },
       reason,
     });
@@ -171,6 +175,7 @@ class GuildScheduledEventManager extends CachedManager {
    * guild scheduled event
    * <warn>This can be modified only if `entityType` of the `GuildScheduledEvent` to be edited is
    * {@link GuildScheduledEventEntityType.External}</warn>
+   * @property {?(BufferResolvable|Base64Resolvable)} [image] The cover image of the guild scheduled event
    * @property {string} [reason] The reason for editing the guild scheduled event
    */
 
@@ -196,6 +201,7 @@ class GuildScheduledEventManager extends CachedManager {
       scheduledEndTime,
       entityMetadata,
       reason,
+      image,
     } = options;
 
     let entity_metadata;
@@ -215,6 +221,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         status,
+        image: image && (await DataResolver.resolveImage(image)),
         entity_metadata,
       },
       reason,

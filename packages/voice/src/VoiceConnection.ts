@@ -533,7 +533,7 @@ export class VoiceConnection extends TypedEmitter<VoiceConnectionEvents> {
 		if (this.state.status === VoiceConnectionStatus.Destroyed) {
 			throw new Error('Cannot destroy VoiceConnection - it has already been destroyed');
 		}
-		if (getVoiceConnection(this.joinConfig.guildId) === this) {
+		if (getVoiceConnection(this.joinConfig.guildId, this.joinConfig.group) === this) {
 			untrackVoiceConnection(this);
 		}
 		if (adapterAvailable) {
@@ -692,7 +692,7 @@ export class VoiceConnection extends TypedEmitter<VoiceConnectionEvents> {
  */
 export function createVoiceConnection(joinConfig: JoinConfig, options: CreateVoiceConnectionOptions) {
 	const payload = createJoinVoiceChannelPayload(joinConfig);
-	const existing = getVoiceConnection(joinConfig.guildId);
+	const existing = getVoiceConnection(joinConfig.guildId, joinConfig.group);
 	if (existing && existing.state.status !== VoiceConnectionStatus.Destroyed) {
 		if (existing.state.status === VoiceConnectionStatus.Disconnected) {
 			existing.rejoin({
