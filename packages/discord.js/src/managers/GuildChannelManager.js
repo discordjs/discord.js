@@ -240,7 +240,7 @@ class GuildChannelManager extends CachedManager {
     channel = this.resolve(channel);
     if (!channel) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
 
-    const parent = this.client.channels.resolveId(data.parent);
+    const parent = data.parent && this.client.channels.resolveId(data.parent);
 
     if (typeof data.position !== 'undefined') await this.setPosition(channel, data.position, { reason });
 
