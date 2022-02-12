@@ -1272,11 +1272,6 @@ expectType<Promise<User | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
 );
 
-expectType<Promise<User | undefined>>(
-  // @ts-expect-error Invalid audit log ID
-  guild.fetchAuditLogs({ type: 2000 }).then(al => al.entries.first()?.target),
-);
-
 declare const TextBasedChannel: TextBasedChannel;
 declare const TextBasedChannelTypes: TextBasedChannelTypes;
 declare const VoiceBasedChannel: VoiceBasedChannel;
