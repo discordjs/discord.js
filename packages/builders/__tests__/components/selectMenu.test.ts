@@ -23,7 +23,7 @@ describe('Button Components', () => {
 				.setEmoji({ name: 'test' })
 				.setDescription('description');
 			expect(() => selectMenu().addOptions(option)).not.toThrowError();
-			expect(() => selectMenu().setOptions([option])).not.toThrowError();
+			expect(() => selectMenu().setOptions(option)).not.toThrowError();
 		});
 
 		test('GIVEN invalid inputs THEN Select Menu does throw', () => {
