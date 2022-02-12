@@ -1,6 +1,7 @@
 'use strict';
 
 const Interaction = require('./Interaction');
+const InteractionWebhook = require('./InteractionWebhook');
 const ModalSubmitFieldsResolver = require('./ModalSubmitFieldsResolver');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const { MessageComponentTypes } = require('../util/Constants');
@@ -43,6 +44,30 @@ class ModalSubmitInteraction extends Interaction {
      * @type {ModalSubmitFieldsResolver}
      */
     this.fields = new ModalSubmitFieldsResolver(this.components);
+
+    /**
+     * Whether the reply to this interaction has been deferred
+     * @type {boolean}
+     */
+    this.deferred = false;
+
+    /**
+     * Whether the reply to this interaction is ephemeral
+     * @type {?boolean}
+     */
+    this.ephemeral = null;
+
+    /**
+     * Whether this interaction has already been replied to
+     * @type {boolean}
+     */
+    this.replied = false;
+
+    /**
+     * An associated interaction webhook, can be used to further interact with this interaction
+     * @type {InteractionWebhook}
+     */
+    this.webhook = new InteractionWebhook(this.client, this.applicationId, this.token);
   }
 
   /**
