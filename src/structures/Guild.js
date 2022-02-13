@@ -40,6 +40,7 @@ let deprecationEmittedForSetChannelPositions = false;
 let deprecationEmittedForSetRolePositions = false;
 let deprecationEmittedForDeleted = false;
 
+
 /**
  * @type {WeakSet<Guild>}
  * @private
@@ -178,6 +179,7 @@ class Guild extends AnonymousGuild {
   _patch(data) {
     super._patch(data);
     this.id = data.id;
+    if ('vanity_url_code' in data) this.vanityURLCode = data.vanity_url_code;
     if ('name' in data) this.name = data.name;
     if ('icon' in data) this.icon = data.icon;
     if ('unavailable' in data) {
@@ -992,6 +994,24 @@ class Guild extends AnonymousGuild {
     return this.edit({ explicitContentFilter }, reason);
   }
 
+   /**
+    * Edits the setting of the vanity url code of the guild.
+    * @param {code|string} code The new vanity url code of the guild
+    * @param {string} [reason] Reason for changing the setting of vanity url code
+    * @returns {Promise<Guild>}
+   */
+  async setVanityURL(code, reason) {
+    if (!this.features.includes('VANITY_URL')) {
+      throw new Error('VANITY_URL');
+    }
+
+    return this.client.api.guilds(this.id, 'vanity-url')
+      .patch({ data: { code: code }, reason })
+      .then((newData) => {
+        return this.client.actions.GuildUpdate.handle(newData);
+      });
+  }
+  
   /* eslint-disable max-len */
   /**
    * Edits the setting of the default message notifications of the guild.
