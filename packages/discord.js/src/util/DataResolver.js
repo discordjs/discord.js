@@ -67,7 +67,7 @@ class DataResolver extends null {
       return image;
     }
     const file = await this.resolveFile(image);
-    return DataResolver.resolveBase64(file);
+    return this.resolveBase64(file);
   }
 
   /**
@@ -118,7 +118,7 @@ class DataResolver extends null {
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
         const res = await fetch(resource);
-        return res.body;
+        return res.buffer();
       }
 
       return new Promise((resolve, reject) => {
