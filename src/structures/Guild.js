@@ -998,7 +998,7 @@ class Guild extends AnonymousGuild {
     * Edits the setting of the vanity url code of the guild.
     * @param {code|string} code The new vanity url code of the guild
     * @param {string} [reason] Reason for changing the setting of vanity url code
-    * @returns {Promise<Guild>}
+    * @returns {string}
    */
   async setVanityURL(code, reason) {
     if (!this.features.includes('VANITY_URL')) {
