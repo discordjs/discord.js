@@ -52,7 +52,8 @@ class CategoryChannel extends GuildChannel {
    * @returns {Promise<GuildChannel>}
    */
   createChannel(name, options) {
-    return this.guild.channels.create(name, {
+    return this.guild.channels.create({
+      name,
       ...options,
       parent: this.id,
     });
