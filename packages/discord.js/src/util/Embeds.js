@@ -61,18 +61,22 @@ class Embeds extends null {
       url: data?.url,
       timestamp: data?.timestamp,
       color: data?.color,
-      footer: {
-        test: data?.footer?.text,
-        icon_url: data?.footer?.iconURL ?? data?.footer?.icon_url,
-      },
+      footer: data?.footer
+        ? {
+            test: data.footer.text,
+            icon_url: data.footer.iconURL ?? data.footer.icon_url,
+          }
+        : undefined,
       image: data?.image,
       thumbnail: data?.thumbnail,
       provider: data?.provider,
-      author: {
-        name: data?.author?.name,
-        text: data?.author?.text,
-        icon_url: data?.author?.iconURL ?? data?.author?.icon_url,
-      },
+      author: data?.author
+        ? {
+            name: data.author.name,
+            text: data.author.text,
+            icon_url: data.author.iconURL ?? data.author.icon_url,
+          }
+        : undefined,
       fields: data?.fields,
     };
   }
