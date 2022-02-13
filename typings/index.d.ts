@@ -1832,8 +1832,8 @@ export class MessageSelectMenu extends BaseMessageComponent {
 export class Modal {
   public constructor(data?: Modal | ModalOptions);
   public components: MessageActionRow<ModalActionRowComponent>[];
-  public customId: string;
-  public title: string;
+  public customId: string | null;
+  public title: string | null;
   public addComponents(
     ...components: (
       | MessageActionRow<ModalActionRowComponent>
