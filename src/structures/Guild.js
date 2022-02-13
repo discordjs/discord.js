@@ -995,19 +995,21 @@ class Guild extends AnonymousGuild {
   }
 
    /**
-    * Change guild vanity url code.
-    * @param {code|string} code New vanity url code.
+    * Edits the setting of the vanity url code of the guild.
+    * @param {code|string} code The new vanity url code of the guild
+    * @param {string} [reason] Reason for changing the setting of vanity url code
     * @returns {Promise<Guild>}
    */
-  async setVanityURL(code) {
+  async setVanityURL(code, reason) {
     if (!this.features.includes('VANITY_URL')) {
       throw new Error('VANITY_URL');
     }
-    if (!code || code.length > 25 || code.length < 3 || specificChar.test(code)) {
-      throw new Error('CLIENT_INVALID_OPTION', 'code', 'string');
-    }
 
-    return this.client.api.guilds(this.id, 'vanity-url').post({ code: code });
+    return this.client.api.guilds(this.id, 'vanity-url')
+      .patch({ data: { code: code }, reason })
+      .then((newData) => {
+        return this.client.actions.GuildUpdate.handle(newData).updated;
+      });
   }
   
   /* eslint-disable max-len */
