@@ -3487,6 +3487,7 @@ export interface ChannelCreationOverwrites {
 }
 
 export interface ChannelData {
+  reason?: string;
   name?: string;
   type?: Pick<typeof ChannelType, 'GuildText' | 'GuildNews'>;
   position?: number;
@@ -3522,6 +3523,7 @@ export type GuildTextChannelResolvable = TextChannel | NewsChannel | Snowflake;
 export type ChannelResolvable = AnyChannel | Snowflake;
 
 export interface ChannelWebhookCreateOptions {
+  name?: string;
   avatar?: BufferResolvable | Base64Resolvable | null;
   reason?: string;
 }
@@ -4267,6 +4269,7 @@ export type GuildBanResolvable = GuildBan | UserResolvable;
 export type GuildChannelResolvable = Snowflake | GuildBasedChannel;
 
 export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
+  name?: string;
   parent?: CategoryChannelResolvable;
   type?: Exclude<
     ChannelType,
@@ -4818,6 +4821,7 @@ export interface ResolvedOverwriteOptions {
 }
 
 export interface RoleData {
+  reason: string;
   name?: string;
   color?: ColorResolvable;
   hoist?: boolean;
