@@ -335,6 +335,7 @@ export abstract class BaseCommandInteraction<Cached extends CacheType = CacheTyp
     | 'getBoolean'
     | 'getSubcommandGroup'
     | 'getSubcommand'
+    | 'getAttachment'
   >;
   public channelId: Snowflake;
   public commandId: Snowflake;
@@ -798,6 +799,11 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
   public getFocused(getFull: true): ApplicationCommandOptionChoice;
   public getFocused(getFull?: boolean): string | number;
+  public getAttachment(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['attachment']>;
+  public getAttachment(
+    name: string,
+    required?: boolean,
+  ): NonNullable<CommandInteractionOption<Cached>['attachment']> | null;
 }
 
 export class ContextMenuInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
@@ -4102,6 +4108,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   channel?: CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>;
   role?: CacheTypeReducer<Cached, Role, APIRole>;
   message?: GuildCacheMessage<Cached>;
+  attachment?: MessageAttachment;
 }
 
 export interface CommandInteractionResolvedData<Cached extends CacheType = CacheType> {
@@ -4110,6 +4117,7 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   channels?: Collection<Snowflake, CacheTypeReducer<Cached, AnyChannel, APIInteractionDataResolvedChannel>>;
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
+  attachments?: Collection<Snowflake, MessageAttachment>;
 }
 
 export interface ConstantsClientApplicationAssetTypes {

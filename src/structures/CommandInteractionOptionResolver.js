@@ -251,6 +251,17 @@ class CommandInteractionOptionResolver {
     if (!focusedOption) throw new TypeError('AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION');
     return getFull ? focusedOption : focusedOption.value;
   }
+
+  /**
+   * Gets an attachment option.
+   * @param {string} name The name of the option.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @returns {?MessageAttachment} The value of the option, or null if not set and not required.
+   */
+  getAttachment(name, required = false) {
+    const option = this._getTypedOption(name, 'ATTACHMENT', ['attachment'], required);
+    return option?.attachment ?? null;
+  }
 }
 
 module.exports = CommandInteractionOptionResolver;
