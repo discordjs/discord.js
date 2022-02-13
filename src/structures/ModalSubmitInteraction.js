@@ -6,6 +6,11 @@ const ModalSubmitFieldsResolver = require('./ModalSubmitFieldsResolver');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const { MessageComponentTypes } = require('../util/Constants');
 
+/**
+ * Represents a modal submit interaction.
+ * @extends {Interaction}
+ * @implements {InteractionResponses}
+ */
 class ModalSubmitInteraction extends Interaction {
   constructor(client, data) {
     super(client, data);

@@ -3,6 +3,9 @@
 const { TypeError } = require('../errors');
 const { MessageComponentTypes } = require('../util/Constants');
 
+/**
+ * A resolver for modal submit interaction text inputs.
+ */
 class ModalSubmitFieldsResolver {
   constructor(components) {
     /**
