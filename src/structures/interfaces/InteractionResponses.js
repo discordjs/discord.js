@@ -232,7 +232,7 @@ class InteractionResponses {
    * @param {Modal|ModalOptions} modal The modal to present
    * @returns {Promise<void>}
    */
-  async presentModal(modal) {
+  async showModal(modal) {
     const _modal = modal instanceof Modal ? modal : new Modal(modal);
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
@@ -252,7 +252,7 @@ class InteractionResponses {
       'followUp',
       'deferUpdate',
       'update',
-      'presentModal',
+      'showModal',
     ];
 
     for (const prop of props) {
