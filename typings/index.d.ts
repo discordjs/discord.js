@@ -188,6 +188,7 @@ export abstract class AnonymousGuild extends BaseGuild {
   public vanityURLCode: string | null;
   public verificationLevel: VerificationLevel;
   public bannerURL(options?: StaticImageURLOptions): string | null;
+  public setVanityURL(code: string, reason?: string): string | null;
   public splashURL(options?: StaticImageURLOptions): string | null;
 }
 
