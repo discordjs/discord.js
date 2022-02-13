@@ -39,7 +39,6 @@ const Util = require('../util/Util');
 let deprecationEmittedForSetChannelPositions = false;
 let deprecationEmittedForSetRolePositions = false;
 let deprecationEmittedForDeleted = false;
-let specificChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 
 
 /**
