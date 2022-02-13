@@ -1157,7 +1157,7 @@ exports.PrivacyLevels = createEnum([null, 'PUBLIC', 'GUILD_ONLY']);
 /**
  * The style of a text input component
  * * SHORT
- * * LONG
+ * * PARAGRAPH
  * @typedef {string} TextInputStyle
  * @see {@link https://discord.com/developers/docs/interactions/message-components#text-inputs-text-input-styles}
  */
