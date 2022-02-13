@@ -6,9 +6,9 @@ const Events = require('../util/Events');
 
 /**
  * @typedef {CollectorOptions} InteractionCollectorOptions
- * @property {TextBasedChannels} [channel] The channel to listen to interactions from
+ * @property {TextBasedChannelResolvable} [channel] The channel to listen to interactions from
  * @property {ComponentType} [componentType] The type of component to listen for
- * @property {Guild} [guild] The guild to listen to interactions from
+ * @property {GuildResolvable} [guild] The guild to listen to interactions from
  * @property {InteractionType} [interactionType] The type of interaction to listen for
  * @property {number} [max] The maximum total amount of interactions to collect
  * @property {number} [maxComponents] The maximum number of components to collect
