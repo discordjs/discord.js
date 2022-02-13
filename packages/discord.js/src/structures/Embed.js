@@ -5,7 +5,7 @@ const Embeds = require('../util/Embeds');
 
 class Embed extends BuildersEmbed {
   constructor(data) {
-    super({ ...Embeds.transformJSON(data) });
+    super(Embeds.transformJSON(data));
   }
 }
 
