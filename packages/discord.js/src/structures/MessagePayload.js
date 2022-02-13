@@ -228,7 +228,7 @@ class MessagePayload {
    */
   static async resolveFile(fileLike) {
     let attachment;
-    let fileName;
+    let name;
 
     const findName = thing => {
       if (typeof thing === 'string') {
@@ -246,14 +246,14 @@ class MessagePayload {
       typeof fileLike === 'string' || fileLike instanceof Buffer || typeof fileLike.pipe === 'function';
     if (ownAttachment) {
       attachment = fileLike;
-      fileName = findName(attachment);
+      name = findName(attachment);
     } else {
       attachment = fileLike.attachment;
-      fileName = fileLike.name ?? findName(attachment);
+      name = fileLike.name ?? findName(attachment);
     }
 
-    const fileData = await DataResolver.resolveFile(attachment);
-    return { fileData, fileName };
+    const data = await DataResolver.resolveFile(attachment);
+    return { data, name };
   }
 
   /**
