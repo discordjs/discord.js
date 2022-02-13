@@ -5,6 +5,7 @@ import {
 	ComponentType,
 } from 'discord-api-types/v9';
 import { ActionRow, ButtonComponent, Component, SelectMenuComponent, TextInputComponent } from '../index';
+import type { MessageComponent } from './ActionRow';
 
 export interface MappedComponentTypes {
 	[ComponentType.ActionRow]: ActionRow;
@@ -18,7 +19,7 @@ export interface MappedComponentTypes {
  * @param data The api data to transform to a component class
  */
 export function createComponent<T extends keyof MappedComponentTypes>(
-	data: APIMessageComponent & { type: T },
+	data: (APIMessageComponent | APIModalComponent) & { type: T },
 ): MappedComponentTypes[T];
 export function createComponent<C extends APIModalComponent | APIMessageComponent>(data: C): C;
 export function createComponent(data: APIModalComponent | APIMessageComponent): Component {
@@ -34,7 +35,6 @@ export function createComponent(data: APIModalComponent | APIMessageComponent): 
 		case ComponentType.SelectMenu:
 			return new SelectMenuComponent(data);
 		case ComponentType.TextInput:
-			// @ts-expect-error
 			return new TextInputComponent(data);
 		default:
 			// @ts-expect-error

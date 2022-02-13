@@ -1,13 +1,10 @@
-import type {
-	APIActionRowComponent,
-	APIMessageComponent,
-	APIModalComponent,
-	ComponentType,
-} from 'discord-api-types/v9';
 import type { JSONEncodable } from '../util/jsonEncodable';
 import type {
+	APIActionRowComponent,
 	APIActionRowComponentTypes,
 	APIBaseComponent,
+	APIMessageActionRowComponent,
+	APIModalActionRowComponent,
 	APIMessageComponent,
 	ComponentType,
 } from 'discord-api-types/v9';

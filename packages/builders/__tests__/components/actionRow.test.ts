@@ -1,4 +1,10 @@
-import { APIActionRowComponent, APIActionRowComponentTypes, ButtonStyle, ComponentType } from 'discord-api-types/v9';
+import {
+	APIActionRowComponent,
+	APIActionRowComponentTypes,
+	APIMessageActionRowComponent,
+	ButtonStyle,
+	ComponentType,
+} from 'discord-api-types/v9';
 import { ActionRow, ButtonComponent, createComponent, SelectMenuComponent, SelectMenuOption } from '../../src';
 
 const rowWithButtonData: APIActionRowComponent<APIMessageComponent> = {
@@ -43,7 +49,7 @@ describe('Action Row Components', () => {
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
-			const actionRowData: APIActionRowComponent<APIActionRowComponentTypes> = {
+			const actionRowData: APIActionRowComponent<APIMessageActionRowComponent> = {
 				type: ComponentType.ActionRow,
 				components: [
 					{
@@ -75,6 +81,7 @@ describe('Action Row Components', () => {
 			expect(new ActionRow(actionRowData).toJSON()).toEqual(actionRowData);
 			expect(new ActionRow().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
 			expect(() => createComponent({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
+			// @ts-expect-error
 			expect(() => createComponent({ type: 42, components: [] })).toThrowError();
 		});
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {

@@ -98,6 +98,7 @@ import {
   APIActionRowComponentTypes,
   APIModalInteractionResponseCallbackData,
   APIModalSubmitInteraction,
+  APIMessageActionRowComponent,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -211,7 +212,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
   constructor(
     data?:
       | ActionRowData
-      | (Omit<APIActionRowComponent<APIMessageComponent>, 'type'> & { type?: ComponentType.ActionRow }),
+      | (Omit<APIActionRowComponent<APIMessageActionRowComponent>, 'type'> & { type?: ComponentType.ActionRow }),
   );
 }
 
@@ -1599,9 +1600,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public get component(): CacheTypeReducer<
     Cached,
     ActionRowComponent,
-    Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>,
-    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>,
-    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>
+    Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
+    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
+    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>
   >;
   public componentType: Exclude<ComponentType, ComponentType.ActionRow>;
   public customId: string;
