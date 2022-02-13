@@ -120,7 +120,7 @@ class GuildBanManager extends CachedManager {
   /**
    * Options used to ban a user from a guild.
    * @typedef {Object} BanOptions
-   * @property {number} [days=0] Number of days of messages to delete, must be between 0 and 7, inclusive
+   * @property {number} [deleteMessageDays] Number of days of messages to delete, must be between 0 and 7, inclusive
    * @property {string} [reason] The reason for the ban
    */
 
@@ -137,12 +137,12 @@ class GuildBanManager extends CachedManager {
    *   .then(banInfo => console.log(`Banned ${banInfo.user?.tag ?? banInfo.tag ?? banInfo}`))
    *   .catch(console.error);
    */
-  async create(user, options = { days: 0 }) {
+  async create(user, options = {}) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     const id = this.client.users.resolveId(user);
     if (!id) throw new Error('BAN_RESOLVE_ID', true);
     await this.client.rest.put(Routes.guildBan(this.guild.id, id), {
-      body: { delete_message_days: options.days },
+      body: { delete_message_days: options.deleteMessageDays },
       reason: options.reason,
     });
     if (user instanceof GuildMember) return user;
