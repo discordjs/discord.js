@@ -178,7 +178,7 @@ class GuildInviteManager extends CachedManager {
    */
   async create(
     channel,
-    { temporary = false, maxAge = 86400, maxUses = 0, unique, targetUser, targetApplication, targetType, reason } = {},
+    { temporary, maxAge, maxUses, unique, targetUser, targetApplication, targetType, reason } = {},
   ) {
     const id = this.guild.channels.resolveId(channel);
     if (!id) throw new Error('GUILD_CHANNEL_RESOLVE');
