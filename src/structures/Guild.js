@@ -39,6 +39,8 @@ const Util = require('../util/Util');
 let deprecationEmittedForSetChannelPositions = false;
 let deprecationEmittedForSetRolePositions = false;
 let deprecationEmittedForDeleted = false;
+let specificChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+
 
 /**
  * @type {WeakSet<Guild>}
@@ -992,6 +994,22 @@ class Guild extends AnonymousGuild {
     return this.edit({ explicitContentFilter }, reason);
   }
 
+   /**
+    * Change guild vanity url code.
+    * @param {code|string} code New vanity url code.
+    * @returns {Promise<Guild>}
+   */
+  async setVanityURL(code) {
+    if (!this.features.includes('VANITY_URL')) {
+      throw new Error('VANITY_URL');
+    }
+    if (!code || code.length > 25 || code.length < 3 || specificChar.test(code)) {
+      throw new Error('CLIENT_INVALID_OPTION', 'code', 'string');
+    }
+
+    return this.client.api.guilds(this.id, 'vanity-url').post({ code: code });
+  }
+  
   /* eslint-disable max-len */
   /**
    * Edits the setting of the default message notifications of the guild.
