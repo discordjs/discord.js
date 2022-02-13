@@ -307,11 +307,11 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Edit a thread
-   * thread.edit({ name: 'new-thread' })
+   * thread.edit({ name: 'new-thread', reason: 'Thread edited!' })
    *   .then(editedThread => console.log(editedThread))
    *   .catch(console.error);
    */
-  async edit(data, reason) {
+  async edit(data) {
     let autoArchiveDuration = data.autoArchiveDuration;
     if (data.autoArchiveDuration === 'MAX') {
       autoArchiveDuration = 1440;
@@ -330,7 +330,7 @@ class ThreadChannel extends Channel {
         locked: data.locked,
         invitable: this.type === ChannelType.GuildPrivateThread ? data.invitable : undefined,
       },
-      reason,
+      reason: data.reason,
     });
 
     return this.client.actions.ChannelUpdate.handle(newData).updated;
@@ -348,7 +348,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setArchived(archived = true, reason) {
-    return this.edit({ archived }, reason);
+    return this.edit({ archived, reason });
   }
 
   /**
@@ -366,7 +366,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setAutoArchiveDuration(autoArchiveDuration, reason) {
-    return this.edit({ autoArchiveDuration }, reason);
+    return this.edit({ autoArchiveDuration, reason });
   }
 
   /**
@@ -380,7 +380,7 @@ class ThreadChannel extends Channel {
     if (this.type !== ChannelType.GuildPrivateThread) {
       return Promise.reject(new RangeError('THREAD_INVITABLE_TYPE', this.type));
     }
-    return this.edit({ invitable }, reason);
+    return this.edit({ invitable, reason });
   }
 
   /**
@@ -396,7 +396,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setLocked(locked = true, reason) {
-    return this.edit({ locked }, reason);
+    return this.edit({ locked, reason });
   }
 
   /**
@@ -411,7 +411,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setName(name, reason) {
-    return this.edit({ name }, reason);
+    return this.edit({ name, reason });
   }
 
   /**
@@ -421,7 +421,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {
-    return this.edit({ rateLimitPerUser }, reason);
+    return this.edit({ rateLimitPerUser, reason });
   }
 
   /**
