@@ -55,17 +55,25 @@ describe('Button Components', () => {
 				description: 'test',
 			};
 
-			const selectMenuData: APISelectMenuComponent = {
+			const selectMenuDataWithoutOptions = {
 				type: ComponentType.SelectMenu,
 				custom_id: 'test',
 				max_values: 10,
 				min_values: 3,
 				disabled: true,
-				options: [selectMenuOptionData],
 				placeholder: 'test',
+			} as const;
+
+			const selectMenuData: APISelectMenuComponent = {
+				...selectMenuDataWithoutOptions,
+				options: [selectMenuOptionData],
 			};
 
-			expect(new SelectMenuComponent(selectMenuData).toJSON()).toEqual(selectMenuData);
+			expect(
+				new SelectMenuComponent(selectMenuDataWithoutOptions)
+					.addOptions(new SelectMenuOption(selectMenuOptionData))
+					.toJSON(),
+			).toEqual(selectMenuData);
 			expect(new SelectMenuOption(selectMenuOptionData).toJSON()).toEqual(selectMenuOptionData);
 		});
 	});

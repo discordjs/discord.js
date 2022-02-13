@@ -250,7 +250,7 @@ class GuildManager extends CachedManager {
    * @typedef {Object} FetchGuildsOptions
    * @property {Snowflake} [before] Get guilds before this guild id
    * @property {Snowflake} [after] Get guilds after this guild id
-   * @property {number} [limit=200] Maximum number of guilds to request (1-200)
+   * @property {number} [limit] Maximum number of guilds to request (1-200)
    */
 
   /**

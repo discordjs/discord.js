@@ -4,20 +4,41 @@ import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-
  * Represents a non-validated option within a select menu component
  */
 export class UnsafeSelectMenuOption {
-	public readonly label!: string;
-	public readonly value!: string;
-	public readonly description?: string;
-	public readonly emoji?: APIMessageComponentEmoji;
-	public readonly default?: boolean;
+	public constructor(protected data: Partial<APISelectMenuOption> = {}) {}
 
-	public constructor(data?: APISelectMenuOption) {
-		/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
-		this.label = data?.label as string;
-		this.value = data?.value as string;
-		/* eslint-enable @typescript-eslint/non-nullable-type-assertion-style */
-		this.description = data?.description;
-		this.emoji = data?.emoji;
-		this.default = data?.default;
+	/**
+	 * The label for this option
+	 */
+	public get label() {
+		return this.data.label;
+	}
+
+	/**
+	 * The value for this option
+	 */
+	public get value() {
+		return this.data.value;
+	}
+
+	/**
+	 * The description for this option
+	 */
+	public get description() {
+		return this.data.description;
+	}
+
+	/**
+	 * The emoji for this option
+	 */
+	public get emoji() {
+		return this.data.emoji;
+	}
+
+	/**
+	 * Whether this option is selected by default
+	 */
+	public get default() {
+		return this.data.default;
 	}
 
 	/**
@@ -25,7 +46,7 @@ export class UnsafeSelectMenuOption {
 	 * @param label The label to show on this option
 	 */
 	public setLabel(label: string) {
-		Reflect.set(this, 'label', label);
+		this.data.label = label;
 		return this;
 	}
 
@@ -34,7 +55,7 @@ export class UnsafeSelectMenuOption {
 	 * @param value The value of this option
 	 */
 	public setValue(value: string) {
-		Reflect.set(this, 'value', value);
+		this.data.value = value;
 		return this;
 	}
 
@@ -43,16 +64,16 @@ export class UnsafeSelectMenuOption {
 	 * @param description The description of this option
 	 */
 	public setDescription(description: string) {
-		Reflect.set(this, 'description', description);
+		this.data.description = description;
 		return this;
 	}
 
 	/**
 	 * Sets whether this option is selected by default
-	 * @param isDefault Whether or not this option is selected by default
+	 * @param isDefault Whether this option is selected by default
 	 */
 	public setDefault(isDefault: boolean) {
-		Reflect.set(this, 'default', isDefault);
+		this.data.default = isDefault;
 		return this;
 	}
 
@@ -61,13 +82,14 @@ export class UnsafeSelectMenuOption {
 	 * @param emoji The emoji to display on this button
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
-		Reflect.set(this, 'emoji', emoji);
+		this.data.emoji = emoji;
 		return this;
 	}
 
 	public toJSON(): APISelectMenuOption {
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		return {
-			...this,
-		};
+			...this.data,
+		} as APISelectMenuOption;
 	}
 }

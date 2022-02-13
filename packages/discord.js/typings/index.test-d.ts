@@ -16,6 +16,7 @@ import {
   InteractionType,
   GatewayIntentBits,
   PermissionFlagsBits,
+  ButtonStyle,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
 import {
@@ -723,7 +724,7 @@ client.on('interactionCreate', async interaction => {
 
   const button = new ButtonComponent();
 
-  const actionRow = new ActionRow<ActionRowComponent>({ type: ComponentType.ActionRow, components: [button] });
+  const actionRow = new ActionRow<ActionRowComponent>({ type: ComponentType.ActionRow, components: [button.toJSON()] });
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
@@ -1322,3 +1323,19 @@ expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextCha
   NonThreadGuildBasedChannel,
 );
 expectType<NewsChannel | TextChannel | ThreadChannel>(GuildTextBasedChannel);
+
+const button = new ButtonComponent({
+  label: 'test',
+  style: ButtonStyle.Primary,
+  customId: 'test',
+});
+
+const selectMenu = new SelectMenuComponent({
+  maxValues: 10,
+  minValues: 2,
+  customId: 'test',
+});
+
+new ActionRow({
+  components: [selectMenu.toJSON(), button.toJSON()],
+});

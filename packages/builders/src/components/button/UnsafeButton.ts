@@ -3,33 +3,59 @@ import {
 	ButtonStyle,
 	type APIMessageComponentEmoji,
 	type APIButtonComponent,
+	type APIButtonComponentWithURL,
+	type APIButtonComponentWithCustomId,
 } from 'discord-api-types/v9';
-import type { Component } from '../Component';
+import { Component } from '../Component';
 
-export class UnsafeButtonComponent implements Component {
-	public readonly type = ComponentType.Button as const;
-	public readonly style!: ButtonStyle;
-	public readonly label?: string;
-	public readonly emoji?: APIMessageComponentEmoji;
-	public readonly disabled?: boolean;
-	public readonly custom_id!: string;
-	public readonly url!: string;
+/**
+ * Represents a non-validated button component
+ */
+export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent> & { type: ComponentType.Button }> {
+	public constructor(data?: Partial<APIButtonComponent>) {
+		super({ type: ComponentType.Button, ...data });
+	}
 
-	public constructor(data?: APIButtonComponent & { type?: ComponentType.Button }) {
-		/* eslint-disable @typescript-eslint/non-nullable-type-assertion-style */
-		this.style = data?.style as ButtonStyle;
-		this.label = data?.label;
-		this.emoji = data?.emoji;
-		this.disabled = data?.disabled;
+	/**
+	 * The style of this button
+	 */
+	public get style() {
+		return this.data.style;
+	}
 
-		// This if/else makes typescript happy
-		if (data?.style === ButtonStyle.Link) {
-			this.url = data.url;
-		} else {
-			this.custom_id = data?.custom_id as string;
-		}
+	/**
+	 * The label of this button
+	 */
+	public get label() {
+		return this.data.label;
+	}
 
-		/* eslint-enable @typescript-eslint/non-nullable-type-assertion-style */
+	/**
+	 * The emoji used in this button
+	 */
+	public get emoji() {
+		return this.data.emoji;
+	}
+
+	/**
+	 * Whether this button is disabled
+	 */
+	public get disabled() {
+		return this.data.disabled;
+	}
+
+	/**
+	 * The custom id of this button (only defined on non-link buttons)
+	 */
+	public get customId(): string | undefined {
+		return (this.data as APIButtonComponentWithCustomId).custom_id;
+	}
+
+	/**
+	 * The URL of this button (only defined on link buttons)
+	 */
+	public get url(): string | undefined {
+		return (this.data as APIButtonComponentWithURL).url;
 	}
 
 	/**
@@ -37,7 +63,7 @@ export class UnsafeButtonComponent implements Component {
 	 * @param style The style of the button
 	 */
 	public setStyle(style: ButtonStyle) {
-		Reflect.set(this, 'style', style);
+		this.data.style = style;
 		return this;
 	}
 
@@ -46,16 +72,16 @@ export class UnsafeButtonComponent implements Component {
 	 * @param url The URL to open when this button is clicked
 	 */
 	public setURL(url: string) {
-		Reflect.set(this, 'url', url);
+		(this.data as APIButtonComponentWithURL).url = url;
 		return this;
 	}
 
 	/**
 	 * Sets the custom Id for this button
-	 * @param customId The custom ID to use for this button
+	 * @param customId The custom id to use for this button
 	 */
 	public setCustomId(customId: string) {
-		Reflect.set(this, 'custom_id', customId);
+		(this.data as APIButtonComponentWithCustomId).custom_id = customId;
 		return this;
 	}
 
@@ -64,7 +90,7 @@ export class UnsafeButtonComponent implements Component {
 	 * @param emoji The emoji to display on this button
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
-		Reflect.set(this, 'emoji', emoji);
+		this.data.emoji = emoji;
 		return this;
 	}
 
@@ -73,7 +99,7 @@ export class UnsafeButtonComponent implements Component {
 	 * @param disabled Whether or not to disable this button or not
 	 */
 	public setDisabled(disabled: boolean) {
-		Reflect.set(this, 'disabled', disabled);
+		this.data.disabled = disabled;
 		return this;
 	}
 
@@ -82,13 +108,14 @@ export class UnsafeButtonComponent implements Component {
 	 * @param label The label to display on this button
 	 */
 	public setLabel(label: string) {
-		Reflect.set(this, 'label', label);
+		this.data.label = label;
 		return this;
 	}
 
 	public toJSON(): APIButtonComponent {
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		return {
-			...this,
-		};
+			...this.data,
+		} as APIButtonComponent;
 	}
 }

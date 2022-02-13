@@ -17,8 +17,8 @@ export const embedFieldsArrayPredicate = embedFieldPredicate.array();
 
 export const fieldLengthPredicate = z.number().lte(25);
 
-export function validateFieldLength(fields: APIEmbedField[], amountAdding: number): void {
-	fieldLengthPredicate.parse(fields.length + amountAdding);
+export function validateFieldLength(amountAdding: number, fields?: APIEmbedField[]): void {
+	fieldLengthPredicate.parse((fields?.length ?? 0) + amountAdding);
 }
 
 export const authorNamePredicate = fieldNamePredicate.nullable();

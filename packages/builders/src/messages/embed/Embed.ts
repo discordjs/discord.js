@@ -13,15 +13,15 @@ import {
 	urlPredicate,
 	validateFieldLength,
 } from './Assertions';
-import { AuthorOptions, FooterOptions, UnsafeEmbed } from './UnsafeEmbed';
+import { EmbedAuthorOptions, EmbedFooterOptions, UnsafeEmbed } from './UnsafeEmbed';
 
 /**
- * Represents an embed in a message (image/video preview, rich embed, etc.)
+ * Represents a validated embed in a message (image/video preview, rich embed, etc.)
  */
 export class Embed extends UnsafeEmbed {
 	public override addFields(...fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(this.fields, fields.length);
+		validateFieldLength(fields.length, this.fields);
 
 		// Data assertions
 		return super.addFields(...embedFieldsArrayPredicate.parse(fields));
@@ -29,13 +29,13 @@ export class Embed extends UnsafeEmbed {
 
 	public override spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(this.fields, fields.length - deleteCount);
+		validateFieldLength(fields.length - deleteCount, this.fields);
 
 		// Data assertions
 		return super.spliceFields(index, deleteCount, ...embedFieldsArrayPredicate.parse(fields));
 	}
 
-	public override setAuthor(options: AuthorOptions | null): this {
+	public override setAuthor(options: EmbedAuthorOptions | null): this {
 		if (options === null) {
 			return super.setAuthor(null);
 		}
@@ -58,7 +58,7 @@ export class Embed extends UnsafeEmbed {
 		return super.setDescription(descriptionPredicate.parse(description));
 	}
 
-	public override setFooter(options: FooterOptions | null): this {
+	public override setFooter(options: EmbedFooterOptions | null): this {
 		if (options === null) {
 			return super.setFooter(null);
 		}
