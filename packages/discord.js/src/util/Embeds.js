@@ -73,7 +73,7 @@ class Embeds extends null {
       author: data?.author
         ? {
             name: data.author.name,
-            url: data.url,
+            url: data.author.url,
             icon_url: data.author.iconURL ?? data.author.icon_url,
           }
         : undefined,
