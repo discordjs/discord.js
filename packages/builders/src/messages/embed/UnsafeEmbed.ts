@@ -4,98 +4,151 @@ import type {
 	APIEmbedField,
 	APIEmbedFooter,
 	APIEmbedImage,
-	APIEmbedProvider,
-	APIEmbedThumbnail,
 	APIEmbedVideo,
 } from 'discord-api-types/v9';
-import type { JSONEncodable } from '../../util/jsonEncodable';
 
-export interface AuthorOptions {
-	name: string;
-	url?: string;
+export interface IconData {
+	/**
+	 * The URL of the icon
+	 */
 	iconURL?: string;
+	/**
+	 * The proxy URL of the icon
+	 */
+	proxyIconURL?: string;
 }
 
-export interface FooterOptions {
-	text: string;
-	iconURL?: string;
+export type EmbedAuthorData = Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'> & IconData;
+
+export type EmbedAuthorOptions = Omit<EmbedAuthorData, 'proxyIconURL'>;
+
+export type EmbedFooterData = Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'> & IconData;
+
+export type EmbedFooterOptions = Omit<EmbedFooterData, 'proxyIconURL'>;
+
+export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
+	/**
+	 * The proxy URL for the image
+	 */
+	proxyURL?: string;
 }
 
-export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
+/**
+ * Represents a non-validated embed in a message (image/video preview, rich embed, etc.)
+ */
+export class UnsafeEmbed {
+	protected data: APIEmbed;
+
+	public constructor(data: APIEmbed = {}) {
+		this.data = { ...data };
+		if (data.timestamp) this.data.timestamp = new Date(data.timestamp).toISOString();
+	}
+
 	/**
 	 * An array of fields of this embed
 	 */
-	public readonly fields: APIEmbedField[];
+	public get fields() {
+		return this.data.fields;
+	}
 
 	/**
 	 * The embed title
 	 */
-	public readonly title?: string;
+	public get title() {
+		return this.data.title;
+	}
 
 	/**
 	 * The embed description
 	 */
-	public readonly description?: string;
+	public get description() {
+		return this.data.description;
+	}
 
 	/**
-	 * The embed url
+	 * The embed URL
 	 */
-	public readonly url?: string;
+	public get url() {
+		return this.data.url;
+	}
 
 	/**
 	 * The embed color
 	 */
-	public readonly color?: number;
+	public get color() {
+		return this.data.color;
+	}
 
 	/**
-	 * The timestamp of the embed in the ISO format
+	 * The timestamp of the embed in an ISO 8601 format
 	 */
-	public readonly timestamp?: string;
+	public get timestamp() {
+		return this.data.timestamp;
+	}
 
 	/**
 	 * The embed thumbnail data
 	 */
-	public readonly thumbnail?: APIEmbedThumbnail;
+	public get thumbnail(): EmbedImageData | undefined {
+		if (!this.data.thumbnail) return undefined;
+		return {
+			url: this.data.thumbnail.url,
+			proxyURL: this.data.thumbnail.proxy_url,
+			height: this.data.thumbnail.height,
+			width: this.data.thumbnail.width,
+		};
+	}
 
 	/**
 	 * The embed image data
 	 */
-	public readonly image?: APIEmbedImage;
+	public get image(): EmbedImageData | undefined {
+		if (!this.data.image) return undefined;
+		return {
+			url: this.data.image.url,
+			proxyURL: this.data.image.proxy_url,
+			height: this.data.image.height,
+			width: this.data.image.width,
+		};
+	}
 
 	/**
 	 * Received video data
 	 */
-	public readonly video?: APIEmbedVideo;
+	public get video(): APIEmbedVideo | undefined {
+		return this.data.video;
+	}
 
 	/**
 	 * The embed author data
 	 */
-	public readonly author?: APIEmbedAuthor;
+	public get author(): EmbedAuthorData | undefined {
+		if (!this.data.author) return undefined;
+		return {
+			name: this.data.author.name,
+			url: this.data.author.url,
+			iconURL: this.data.author.icon_url,
+			proxyIconURL: this.data.author.proxy_icon_url,
+		};
+	}
 
 	/**
 	 * Received data about the embed provider
 	 */
-	public readonly provider?: APIEmbedProvider;
+	public get provider() {
+		return this.data.provider;
+	}
 
 	/**
 	 * The embed footer data
 	 */
-	public readonly footer?: APIEmbedFooter;
-
-	public constructor(data: APIEmbed = {}) {
-		this.title = data.title;
-		this.description = data.description;
-		this.url = data.url;
-		this.color = data.color;
-		this.thumbnail = data.thumbnail;
-		this.image = data.image;
-		this.video = data.video;
-		this.author = data.author;
-		this.provider = data.provider;
-		this.footer = data.footer;
-		this.fields = data.fields ?? [];
-
-		if (data.timestamp) this.timestamp = new Date(data.timestamp).toISOString();
+	public get footer(): EmbedFooterData | undefined {
+		if (!this.data.footer) return undefined;
+		return {
+			text: this.data.footer.text,
+			iconURL: this.data.footer.icon_url,
+			proxyIconURL: this.data.footer.proxy_icon_url,
+		};
 	}
 
 	/**
@@ -103,11 +156,11 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 */
 	public get length(): number {
 		return (
-			(this.title?.length ?? 0) +
-			(this.description?.length ?? 0) +
-			this.fields.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) +
-			(this.footer?.text.length ?? 0) +
-			(this.author?.name.length ?? 0)
+			(this.data.title?.length ?? 0) +
+			(this.data.description?.length ?? 0) +
+			(this.data.fields?.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) ?? 0) +
+			(this.data.footer?.text.length ?? 0) +
+			(this.data.author?.name.length ?? 0)
 		);
 	}
 
@@ -126,7 +179,9 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param fields The fields to add
 	 */
 	public addFields(...fields: APIEmbedField[]): this {
-		this.fields.push(...UnsafeEmbed.normalizeFields(...fields));
+		fields = UnsafeEmbed.normalizeFields(...fields);
+		if (this.data.fields) this.data.fields.push(...fields);
+		else this.data.fields = fields;
 		return this;
 	}
 
@@ -138,7 +193,9 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param fields The replacing field objects
 	 */
 	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
-		this.fields.splice(index, deleteCount, ...UnsafeEmbed.normalizeFields(...fields));
+		fields = UnsafeEmbed.normalizeFields(...fields);
+		if (this.data.fields) this.data.fields.splice(index, deleteCount, ...fields);
+		else this.data.fields = fields;
 		return this;
 	}
 
@@ -147,7 +204,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param fields The fields to set
 	 */
 	public setFields(...fields: APIEmbedField[]) {
-		this.spliceFields(0, this.fields.length, ...fields);
+		this.spliceFields(0, this.fields?.length ?? 0, ...fields);
 		return this;
 	}
 
@@ -156,13 +213,13 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 *
 	 * @param options The options for the author
 	 */
-	public setAuthor(options: AuthorOptions | null): this {
+	public setAuthor(options: EmbedAuthorOptions | null): this {
 		if (options === null) {
-			Reflect.set(this, 'author', undefined);
+			this.data.author = undefined;
 			return this;
 		}
 
-		Reflect.set(this, 'author', { name: options.name, url: options.url, icon_url: options.iconURL });
+		this.data.author = { name: options.name, url: options.url, icon_url: options.iconURL };
 		return this;
 	}
 
@@ -172,7 +229,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param color The color of the embed
 	 */
 	public setColor(color: number | null): this {
-		Reflect.set(this, 'color', color ?? undefined);
+		this.data.color = color ?? undefined;
 		return this;
 	}
 
@@ -182,7 +239,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param description The description
 	 */
 	public setDescription(description: string | null): this {
-		Reflect.set(this, 'description', description ?? undefined);
+		this.data.description = description ?? undefined;
 		return this;
 	}
 
@@ -191,13 +248,13 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 *
 	 * @param options The options for the footer
 	 */
-	public setFooter(options: FooterOptions | null): this {
+	public setFooter(options: EmbedFooterOptions | null): this {
 		if (options === null) {
-			Reflect.set(this, 'footer', undefined);
+			this.data.footer = undefined;
 			return this;
 		}
 
-		Reflect.set(this, 'footer', { text: options.text, icon_url: options.iconURL });
+		this.data.footer = { text: options.text, icon_url: options.iconURL };
 		return this;
 	}
 
@@ -207,7 +264,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param url The URL of the image
 	 */
 	public setImage(url: string | null): this {
-		Reflect.set(this, 'image', url ? { url } : undefined);
+		this.data.image = url ? { url } : undefined;
 		return this;
 	}
 
@@ -217,7 +274,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param url The URL of the thumbnail
 	 */
 	public setThumbnail(url: string | null): this {
-		Reflect.set(this, 'thumbnail', url ? { url } : undefined);
+		this.data.thumbnail = url ? { url } : undefined;
 		return this;
 	}
 
@@ -227,7 +284,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param timestamp The timestamp or date
 	 */
 	public setTimestamp(timestamp: number | Date | null = Date.now()): this {
-		Reflect.set(this, 'timestamp', timestamp ? new Date(timestamp).toISOString() : undefined);
+		this.data.timestamp = timestamp ? new Date(timestamp).toISOString() : undefined;
 		return this;
 	}
 
@@ -237,7 +294,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param title The title
 	 */
 	public setTitle(title: string | null): this {
-		Reflect.set(this, 'title', title ?? undefined);
+		this.data.title = title ?? undefined;
 		return this;
 	}
 
@@ -247,7 +304,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * @param url The URL
 	 */
 	public setURL(url: string | null): this {
-		Reflect.set(this, 'url', url ?? undefined);
+		this.data.url = url ?? undefined;
 		return this;
 	}
 
@@ -255,7 +312,7 @@ export class UnsafeEmbed implements APIEmbed, JSONEncodable<APIEmbed> {
 	 * Transforms the embed to a plain object
 	 */
 	public toJSON(): APIEmbed {
-		return { ...this };
+		return { ...this.data };
 	}
 
 	/**

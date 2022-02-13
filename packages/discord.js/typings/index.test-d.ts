@@ -724,7 +724,7 @@ client.on('interactionCreate', async interaction => {
 
   const button = new ButtonComponent();
 
-  const actionRow = new ActionRow<ActionRowComponent>({ type: ComponentType.ActionRow, components: [button] });
+  const actionRow = new ActionRow<ActionRowComponent>({ type: ComponentType.ActionRow, components: [button.toJSON()] });
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 

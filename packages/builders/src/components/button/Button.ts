@@ -10,6 +10,9 @@ import {
 } from '../Assertions';
 import { UnsafeButtonComponent } from './UnsafeButton';
 
+/**
+ * Represents a validated button component
+ */
 export class ButtonComponent extends UnsafeButtonComponent {
 	public override setStyle(style: ButtonStyle) {
 		return super.setStyle(buttonStyleValidator.parse(style));
@@ -36,7 +39,7 @@ export class ButtonComponent extends UnsafeButtonComponent {
 	}
 
 	public override toJSON(): APIButtonComponent {
-		validateRequiredButtonParameters(this.style, this.label, this.emoji, this.custom_id, this.url);
+		validateRequiredButtonParameters(this.style, this.label, this.emoji, this.customId, this.url);
 		return super.toJSON();
 	}
 }
