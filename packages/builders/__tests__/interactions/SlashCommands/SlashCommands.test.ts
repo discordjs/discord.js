@@ -8,6 +8,7 @@ import {
 	SlashCommandMentionableOption,
 	SlashCommandNumberOption,
 	SlashCommandRoleOption,
+	SlashCommandAttachmentOption,
 	SlashCommandStringOption,
 	SlashCommandSubcommandBuilder,
 	SlashCommandSubcommandGroupBuilder,
@@ -25,6 +26,7 @@ const getBooleanOption = () => new SlashCommandBooleanOption().setName('owo').se
 const getUserOption = () => new SlashCommandUserOption().setName('owo').setDescription('Testing 123');
 const getChannelOption = () => new SlashCommandChannelOption().setName('owo').setDescription('Testing 123');
 const getRoleOption = () => new SlashCommandRoleOption().setName('owo').setDescription('Testing 123');
+const getAttachmentOption = () => new SlashCommandAttachmentOption().setName('owo').setDescription('Testing 123');
 const getMentionableOption = () => new SlashCommandMentionableOption().setName('owo').setDescription('Testing 123');
 const getSubcommandGroup = () => new SlashCommandSubcommandGroupBuilder().setName('owo').setDescription('Testing 123');
 const getSubcommand = () => new SlashCommandSubcommandBuilder().setName('owo').setDescription('Testing 123');
@@ -285,6 +287,8 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().addChannelOption(getChannelOption())).not.toThrowError();
 
 				expect(() => getBuilder().addRoleOption(getRoleOption())).not.toThrowError();
+
+				expect(() => getBuilder().addAttachmentOption(getAttachmentOption())).not.toThrowError();
 
 				expect(() => getBuilder().addMentionableOption(getMentionableOption())).not.toThrowError();
 			});

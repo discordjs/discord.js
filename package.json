@@ -38,8 +38,8 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^16.1.0",
-		"@commitlint/config-angular": "^16.0.0",
+		"@commitlint/cli": "^16.2.1",
+		"@commitlint/config-angular": "^16.2.1",
 		"@favware/npm-deprecate": "^1.0.4",
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^7.0.4",
