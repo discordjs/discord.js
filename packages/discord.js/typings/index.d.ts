@@ -2243,7 +2243,7 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel) {
     type: ChannelType.GuildPrivateThread;
   };
   public delete(reason?: string): Promise<this>;
-  public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
+  public edit(data: ThreadEditData): Promise<ThreadChannel>;
   public join(): Promise<ThreadChannel>;
   public leave(): Promise<ThreadChannel>;
   public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
@@ -4998,6 +4998,7 @@ export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptio
 }
 
 export interface ThreadEditData {
+  reason?: string;
   name?: string;
   archived?: boolean;
   autoArchiveDuration?: ThreadAutoArchiveDuration;
