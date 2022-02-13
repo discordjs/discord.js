@@ -201,7 +201,7 @@ export interface ActionRowData extends BaseComponentData {
 }
 
 export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends BuilderActionRow<T> {
-  constructor(data?: ActionRowData | APIActionRowComponent);
+  constructor(data?: ActionRowData | APIActionRowComponent<APIMessageComponent>);
 }
 
 export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
@@ -1500,6 +1500,7 @@ export interface MappedInteractionTypes<Cached extends boolean = boolean> {
   [ComponentType.Button]: ButtonInteraction<WrapBooleanCache<Cached>>;
   [ComponentType.SelectMenu]: SelectMenuInteraction<WrapBooleanCache<Cached>>;
   [ComponentType.ActionRow]: MessageComponentInteraction<WrapBooleanCache<Cached>>;
+  [ComponentType.TextInput]: never;
 }
 
 export class Message<Cached extends boolean = boolean> extends Base {
@@ -1615,9 +1616,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public readonly component: CacheTypeReducer<
     Cached,
     ActionRowComponent,
-    Exclude<APIMessageComponent, APIActionRowComponent>,
-    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>,
-    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>
+    Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>,
+    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>,
+    ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>
   >;
   public componentType: Exclude<ComponentType, ComponentType.ActionRow>;
   public customId: string;
