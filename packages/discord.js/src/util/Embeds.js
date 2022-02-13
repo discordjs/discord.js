@@ -63,7 +63,7 @@ class Embeds extends null {
       color: data?.color,
       footer: data?.footer
         ? {
-            test: data.footer.text,
+            text: data.footer.text,
             icon_url: data.footer.iconURL ?? data.footer.icon_url,
           }
         : undefined,
@@ -73,7 +73,7 @@ class Embeds extends null {
       author: data?.author
         ? {
             name: data.author.name,
-            text: data.author.text,
+            url: data.url,
             icon_url: data.author.iconURL ?? data.author.icon_url,
           }
         : undefined,
