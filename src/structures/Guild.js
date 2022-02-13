@@ -1008,7 +1008,8 @@ class Guild extends AnonymousGuild {
     return this.client.api.guilds(this.id, 'vanity-url')
       .patch({ data: { code: code }, reason })
       .then((newData) => {
-        return this.client.actions.GuildUpdate.handle(newData);
+        this.client.actions.GuildUpdate.handle(newData);
+        return newData.code;
       });
   }
   
