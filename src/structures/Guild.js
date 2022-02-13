@@ -179,6 +179,7 @@ class Guild extends AnonymousGuild {
   _patch(data) {
     super._patch(data);
     this.id = data.id;
+    if ('vanity_url_code' in data) this.vanityURLCode = data.vanity_url_code;
     if ('name' in data) this.name = data.name;
     if ('icon' in data) this.icon = data.icon;
     if ('unavailable' in data) {
