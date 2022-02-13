@@ -11,7 +11,7 @@ import { Component } from '../Component';
 /**
  * Represents a non-validated button component
  */
-export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>> {
+export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent> & { type: ComponentType.Button }> {
 	public constructor(data?: Partial<APIButtonComponent>) {
 		super({ type: ComponentType.Button, ...data });
 	}
