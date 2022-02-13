@@ -34,8 +34,8 @@ export class UnsafeModal implements JSONEncodable<APIModalInteractionResponseCal
 	}
 
 	/**
-	 * Sets the custom Id of the modal
-	 * @param customId The custom Id of this modal
+	 * Sets the custom id of the modal
+	 * @param customId The custom id of this modal
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;

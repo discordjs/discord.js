@@ -58,7 +58,7 @@ class InteractionCreateAction extends Action {
       case InteractionType.ApplicationCommandAutocomplete:
         InteractionClass = AutocompleteInteraction;
         break;
-      case 5:
+      case InteractionType.ModalSubmit:
         InteractionClass = ModalSubmitInteraction;
         break;
       default:

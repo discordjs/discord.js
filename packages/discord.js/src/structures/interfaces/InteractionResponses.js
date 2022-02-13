@@ -1,7 +1,9 @@
 'use strict';
 
+const { isJSONEncodable } = require('@discordjs/builders');
 const { InteractionResponseType, MessageFlags, Routes } = require('discord-api-types/v9');
 const { Error } = require('../../errors');
+const Modals = require('../../util/Modals');
 const MessagePayload = require('../MessagePayload');
 
 /**
@@ -236,11 +238,11 @@ class InteractionResponses {
    * Presents a modal component
    * @param {APIModal|ModalData|Modal} modal The modal to present
    */
-  async presentModal(modal) {
+  async showModal(modal) {
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.Modal,
-        data: modal.toJSON(),
+        data: isJSONEncodable(modal) ? modal.toJSON() : Modals.transformJSON(modal),
       },
     });
   }

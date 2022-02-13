@@ -196,8 +196,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isModalSubmit() {
-    // TODO: Use dapi enum
-    return this.type === 5;
+    return this.type === InteractionType.ModalSubmit;
   }
 
   /**

@@ -5,7 +5,7 @@ const ModalSubmitFieldsResolver = require('./ModalSubmitFieldsResolver');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 
 /**
- * @typedef {Object} PartialInputTextData
+ * @typedef {Object} PartialTextInputData
  * @property {string} value
  * @property {ComponentType} type
  * @property {string} customId
@@ -25,7 +25,7 @@ class ModalSubmitInteraction extends Interaction {
 
     /**
      * The components within the modal
-     * @type {Array<ActionRow<PartialInputTextData>>}
+     * @type {Array<ActionRow<PartialTextInputData>>}
      */
     this.components = data.data.components?.map(c => ModalSubmitInteraction.transformComponent(c)) ?? [];
 
@@ -39,7 +39,7 @@ class ModalSubmitInteraction extends Interaction {
   /**
    * Transforms component data to discord.js-compatible data
    * @param {*} rawComponent The data to transform
-   * @returns {ActionRow[]}
+   * @returns {PartialTextInputData[]}
    */
   static transformComponent(rawComponent) {
     return rawComponent.components.map(c => ({
@@ -50,6 +50,6 @@ class ModalSubmitInteraction extends Interaction {
   }
 }
 
-InteractionResponses.applyToClass(ModalSubmitInteraction);
+InteractionResponses.applyToClass(ModalSubmitInteraction, 'showModal');
 
 module.exports = ModalSubmitInteraction;

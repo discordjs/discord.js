@@ -40,5 +40,17 @@
  */
 
 /**
- * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData} ComponentData
+ * @typedef {BaseComponentData} TextInputComponentData
+ * @property {string} customId
+ * @property {TextInputStyle} style
+ * @property {string} label
+ * @property {?number} minLength
+ * @property {?number} maxLength
+ * @property {?boolean} required
+ * @property {?string} value
+ * @property {?string} placeholder
+ */
+
+/**
+ * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData} ComponentData
  */

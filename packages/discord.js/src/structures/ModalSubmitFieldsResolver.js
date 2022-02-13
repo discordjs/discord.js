@@ -24,23 +24,21 @@ class ModalSubmitFieldsResolver {
   /**
    * Gets a field given a custom id from a component
    * @param {string} customId The custom id of the component
-   * @param {?boolean} required Whether the component is required or not
-   * @returns {?PartialInputTextData}
+   * @returns {PartialInputTextData}
    */
-  getField(customId, required) {
+  getField(customId) {
     const field = this._fields.find(f => f.customId === customId);
-    if (required && !field) throw new TypeError('MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND', customId);
+    if (!field) throw new TypeError('MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND', customId);
     return field;
   }
 
   /**
    * Gets the value of a text input component given a custom id
    * @param {string} customId The custom id of the text input component
-   * @param {?boolean} required Whether the text input component is required or not
-   * @returns {?string}
+   * @returns {string}
    */
-  getTextInputValue(customId, required) {
-    const field = this.getField(customId, required);
+  getTextInputValue(customId) {
+    const field = this.getField(customId);
     const expectedType = ComponentType.TextInput;
     if (field.type !== expectedType) {
       throw new TypeError('MODAL_SUBMIT_INTERACTION_FIELD_TYPE', customId, field.type, expectedType);
