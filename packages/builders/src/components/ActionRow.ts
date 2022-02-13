@@ -12,7 +12,7 @@ export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
  * Represents an action row component
  */
 export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends Component<
-	Omit<Partial<APIActionRowComponent>, 'components'>
+	Omit<Partial<APIActionRowComponent> & { type: ComponentType.ActionRow }, 'components'>
 > {
 	public readonly components: T[];
 
@@ -41,10 +41,9 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 	}
 
 	public toJSON(): APIActionRowComponent {
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		return {
 			...this.data,
 			components: this.components.map((component) => component.toJSON()),
-		} as APIActionRowComponent;
+		};
 	}
 }

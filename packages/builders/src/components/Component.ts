@@ -5,7 +5,9 @@ import type { APIBaseMessageComponent, APIMessageComponent, ComponentType } from
  * Represents a discord component
  */
 export abstract class Component<
-	DataType extends Partial<APIBaseMessageComponent<ComponentType>> = APIBaseMessageComponent<ComponentType>,
+	DataType extends Partial<APIBaseMessageComponent<ComponentType>> & {
+		type: ComponentType;
+	} = APIBaseMessageComponent<ComponentType>,
 > implements JSONEncodable<APIMessageComponent>
 {
 	/**
