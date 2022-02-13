@@ -3402,7 +3402,7 @@ export interface AwaitReactionsOptions extends ReactionCollectorOptions {
 }
 
 export interface BanOptions {
-  days?: number;
+  deleteMessageDays?: number;
   reason?: string;
 }
 
