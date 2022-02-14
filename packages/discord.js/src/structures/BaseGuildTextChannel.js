@@ -86,7 +86,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<TextChannel>}
    */
   setDefaultAutoArchiveDuration(defaultAutoArchiveDuration, reason) {
-    return this.edit({ defaultAutoArchiveDuration }, reason);
+    return this.edit({ defaultAutoArchiveDuration, reason });
   }
 
   /**
@@ -96,7 +96,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<TextChannel>}
    */
   setNSFW(nsfw = true, reason) {
-    return this.edit({ nsfw }, reason);
+    return this.edit({ nsfw, reason });
   }
 
   /**
@@ -106,7 +106,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<GuildChannel>}
    */
   setType(type, reason) {
-    return this.edit({ type }, reason);
+    return this.edit({ type, reason });
   }
 
   /**
@@ -131,20 +131,20 @@ class BaseGuildTextChannel extends GuildChannel {
 
   /**
    * Creates a webhook for the channel.
-   * @param {string} name The name of the webhook
    * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
    * // Create a webhook for the current channel
-   * channel.createWebhook('Snek', {
+   * channel.createWebhook({
+   *   name: 'Hello!',
    *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
    *   reason: 'Needed a cool new Webhook'
    * })
    *   .then(console.log)
    *   .catch(console.error)
    */
-  createWebhook(name, options = {}) {
-    return this.guild.channels.createWebhook(this.id, name, options);
+  createWebhook(options) {
+    return this.guild.channels.createWebhook(this.id, options);
   }
 
   /**
@@ -159,7 +159,7 @@ class BaseGuildTextChannel extends GuildChannel {
    *   .catch(console.error);
    */
   setTopic(topic, reason) {
-    return this.edit({ topic }, reason);
+    return this.edit({ topic, reason });
   }
 
   /**
