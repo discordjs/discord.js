@@ -2407,10 +2407,6 @@ export class Formatters extends null {
   public static userMention: typeof userMention;
 }
 
-export class Transformers extends null {
-  private static toSnakeCase(obj?: unknown): unknown;
-}
-
 export type ComponentData = ActionRowComponentData | ButtonComponentData | SelectMenuComponentData;
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
