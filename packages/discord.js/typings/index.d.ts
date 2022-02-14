@@ -2407,17 +2407,11 @@ export class Formatters extends null {
   public static userMention: typeof userMention;
 }
 
+export class Transformers extends null {
+  private static toSnakeCase(obj?: unknown): unknown;
+}
+
 export type ComponentData = ActionRowComponentData | ButtonComponentData | SelectMenuComponentData;
-
-export class Components extends null {
-  private constructor();
-  public static transformJSON(data: ComponentData | APIMessageComponent): APIMessageComponent;
-}
-
-export class Embeds extends null {
-  private constructor();
-  public static transformJSON(data: EmbedData | APIEmbed): APIEmbed;
-}
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public readonly speakable: boolean;
