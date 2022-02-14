@@ -48,7 +48,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    *   .catch(console.error);
    */
   setBitrate(bitrate, reason) {
-    return this.edit({ bitrate }, reason);
+    return this.edit({ bitrate, reason });
   }
 
   /**
@@ -63,7 +63,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    *   .catch(console.error);
    */
   setUserLimit(userLimit, reason) {
-    return this.edit({ userLimit }, reason);
+    return this.edit({ userLimit, reason });
   }
 
   /**
