@@ -5003,7 +5003,6 @@ export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptio
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
   invitable?: AllowedThreadType extends ChannelType.GuildPrivateThread ? boolean : never;
-  rateLimitPerUser?: number;
 }
 
 export interface ThreadEditData {
