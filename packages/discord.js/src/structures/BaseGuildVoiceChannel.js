@@ -91,8 +91,8 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * // Remove a fixed region for this channel - let Discord decide automatically
    * channel.setRTCRegion(null);
    */
-  setRTCRegion(region) {
-    return this.edit({ rtcRegion: region });
+  setRTCRegion(rtcRegion) {
+    return this.edit({ rtcRegion });
   }
 
   /**
