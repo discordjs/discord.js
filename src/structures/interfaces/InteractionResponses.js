@@ -228,8 +228,8 @@ class InteractionResponses {
   }
 
   /**
-   * Presents a modal component
-   * @param {Modal|ModalOptions} modal The modal to present
+   * Shows a modal component
+   * @param {Modal|ModalOptions} modal The modal to show
    * @returns {Promise<void>}
    */
   async showModal(modal) {
