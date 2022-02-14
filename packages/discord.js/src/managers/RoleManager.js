@@ -183,7 +183,7 @@ class RoleManager extends CachedManager {
    * // Edit a role
    * guild.roles.edit('222079219327434752', {
    *   name: 'buddies',
-   *   reason: 'Role edited!
+   *   reason: 'Role edited!'
    * })
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
