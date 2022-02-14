@@ -257,7 +257,7 @@ class InteractionResponses {
       'followUp',
       'deferUpdate',
       'update',
-      'presentModal',
+      'showModal',
     ];
 
     for (const prop of props) {

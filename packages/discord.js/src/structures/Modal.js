@@ -5,7 +5,7 @@ const Modals = require('../util/Modals');
 
 class Modal extends BuildersModal {
   constructor(data) {
-    super(Modals.transformJSON(data));
+    super({ ...Modals.transformJSON(data) });
   }
 }
 

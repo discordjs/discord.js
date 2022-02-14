@@ -14,7 +14,7 @@ import {
   inlineCode,
   italic,
   memberNicknameMention,
-  Modal,
+  Modal as BuilderModal,
   quote,
   roleMention,
   SelectMenuComponent as BuilderSelectMenuComponent,
@@ -508,6 +508,10 @@ export class SelectMenuComponent extends BuilderSelectMenuComponent {
 
 export class TextInputComponent extends BuilderTextInputComponent {
   public constructor(data?: TextInputComponentData | APITextInputComponent);
+}
+
+export class Modal extends BuilderModal {
+  public constructor(data?: ModalData | APIModalActionRowComponent);
 }
 
 export interface EmbedData {
@@ -5245,5 +5249,6 @@ export {
   UnsafeSelectMenuOption,
   ActionRowComponent,
   UnsafeEmbed,
+  ModalActionRowComponent,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';

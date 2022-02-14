@@ -5,7 +5,7 @@ const Components = require('../util/Components');
 
 class TextInputComponent extends BuildersTextInputComponent {
   constructor(data) {
-    super(Components.transformJSON(data));
+    super({ ...Components.transformJSON(data) });
   }
 }
 
