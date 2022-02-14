@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { StickerType, StickerFormatType } = require('discord-api-types/v9');
+const { Routes, StickerFormatType } = require('discord-api-types/v9');
 const Base = require('./Base');
 
 /**
@@ -37,7 +37,7 @@ class Sticker extends Base {
        * The type of the sticker
        * @type {?StickerType}
        */
-      this.type = StickerType[sticker.type];
+      this.type = sticker.type;
     } else {
       this.type ??= null;
     }
@@ -47,7 +47,7 @@ class Sticker extends Base {
        * The format of the sticker
        * @type {StickerFormatType}
        */
-      this.format = StickerFormatType[sticker.format_type];
+      this.format = sticker.format_type;
     }
 
     if ('name' in sticker) {
@@ -157,11 +157,12 @@ class Sticker extends Base {
 
   /**
    * A link to the sticker
-   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie JSON file.</info>
+   * <info>If the sticker's format is {@link StickerFormatType.Lottie}, it returns
+   * the URL of the Lottie JSON file.</info>
    * @type {string}
    */
   get url() {
-    return this.client.rest.cdn.Sticker(this.id, this.format);
+    return this.client.rest.cdn.sticker(this.id, this.format === StickerFormatType.Lottie ? 'json' : 'png');
   }
 
   /**
@@ -169,7 +170,7 @@ class Sticker extends Base {
    * @returns {Promise<Sticker>}
    */
   async fetch() {
-    const data = await this.client.api.stickers(this.id).get();
+    const data = await this.client.rest.get(Routes.sticker(this.id));
     this._patch(data);
     return this;
   }
@@ -189,10 +190,7 @@ class Sticker extends Base {
   async fetchUser() {
     if (this.partial) await this.fetch();
     if (!this.guildId) throw new Error('NOT_GUILD_STICKER');
-
-    const data = await this.client.api.guilds(this.guildId).stickers(this.id).get();
-    this._patch(data);
-    return this.user;
+    return this.guild.stickers.fetchUser(this);
   }
 
   /**

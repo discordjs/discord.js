@@ -1,7 +1,6 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { ApplicationCommandType } = require('discord-api-types/v9');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const MessageAttachment = require('./MessageAttachment');
@@ -34,6 +33,12 @@ class CommandInteraction extends Interaction {
      * @type {string}
      */
     this.commandName = data.data.name;
+
+    /**
+     * The invoked application command's type
+     * @type {ApplicationCommandType}
+     */
+    this.commandType = data.data.type;
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -141,7 +146,9 @@ class CommandInteraction extends Interaction {
    * @typedef {Object} CommandInteractionOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
-   * @property {boolean} [autocomplete] Whether the option is an autocomplete option
+   * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
+   * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
+   * {@link ApplicationCommandOptionType.Number} option
    * @property {string|number|boolean} [value] The value of the option
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)
@@ -162,7 +169,7 @@ class CommandInteraction extends Interaction {
   transformOption(option, resolved) {
     const result = {
       name: option.name,
-      type: ApplicationCommandType[option.type],
+      type: option.type,
     };
 
     if ('value' in option) result.value = option.value;

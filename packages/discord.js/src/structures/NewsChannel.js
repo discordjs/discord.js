@@ -1,5 +1,6 @@
 'use strict';
 
+const { Routes } = require('discord-api-types/v9');
 const BaseGuildTextChannel = require('./BaseGuildTextChannel');
 const { Error } = require('../errors');
 
@@ -14,7 +15,7 @@ class NewsChannel extends BaseGuildTextChannel {
    * @param {string} [reason] Reason for creating the webhook
    * @returns {Promise<NewsChannel>}
    * @example
-   * if (channel.type === 'GUILD_NEWS') {
+   * if (channel.type === ChannelType.GuildNews) {
    *   channel.addFollower('222197033908436994', 'Important announcements')
    *     .then(() => console.log('Added follower'))
    *     .catch(console.error);
@@ -23,7 +24,7 @@ class NewsChannel extends BaseGuildTextChannel {
   async addFollower(channel, reason) {
     const channelId = this.guild.channels.resolveId(channel);
     if (!channelId) throw new Error('GUILD_CHANNEL_RESOLVE');
-    await this.client.api.channels(this.id).followers.post({ data: { webhook_channel_id: channelId }, reason });
+    await this.client.rest.post(Routes.channelFollowers(this.id), { body: { webhook_channel_id: channelId }, reason });
     return this;
   }
 }

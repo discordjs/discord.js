@@ -6,6 +6,7 @@ import { SlashCommandIntegerOption } from '../options/integer';
 import { SlashCommandMentionableOption } from '../options/mentionable';
 import { SlashCommandNumberOption } from '../options/number';
 import { SlashCommandRoleOption } from '../options/role';
+import { SlashCommandAttachmentOption } from '../options/attachment';
 import { SlashCommandStringOption } from '../options/string';
 import { SlashCommandUserOption } from '../options/user';
 import type { ToAPIApplicationCommandOptions } from '../SlashCommandBuilder';
@@ -51,6 +52,17 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	 */
 	public addRoleOption(input: SlashCommandRoleOption | ((builder: SlashCommandRoleOption) => SlashCommandRoleOption)) {
 		return this._sharedAddOptionMethod(input, SlashCommandRoleOption);
+	}
+
+	/**
+	 * Adds an attachment option
+	 *
+	 * @param input A function that returns an option builder, or an already built builder
+	 */
+	public addAttachmentOption(
+		input: SlashCommandAttachmentOption | ((builder: SlashCommandAttachmentOption) => SlashCommandAttachmentOption),
+	) {
+		return this._sharedAddOptionMethod(input, SlashCommandAttachmentOption);
 	}
 
 	/**

@@ -1,7 +1,6 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Endpoints } = require('../../util/Constants');
 const Base = require('../Base');
 
 /**
@@ -72,22 +71,20 @@ class Application extends Base {
 
   /**
    * A link to the application's icon.
-   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  iconURL({ format, size } = {}) {
-    if (!this.icon) return null;
-    return this.client.rest.cdn.AppIcon(this.id, this.icon, { format, size });
+  iconURL(options = {}) {
+    return this.icon && this.client.rest.cdn.appIcon(this.id, this.icon, options);
   }
 
   /**
    * A link to this application's cover image.
-   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  coverURL({ format, size } = {}) {
-    if (!this.cover) return null;
-    return Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.cover, { format, size });
+  coverURL(options = {}) {
+    return this.cover && this.client.rest.cdn.appIcon(this.id, this.cover, options);
   }
 
   /**

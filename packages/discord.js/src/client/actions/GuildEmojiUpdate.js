@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class GuildEmojiUpdateAction extends Action {
   handle(current, data) {
@@ -12,7 +12,7 @@ class GuildEmojiUpdateAction extends Action {
      * @param {GuildEmoji} oldEmoji The old emoji
      * @param {GuildEmoji} newEmoji The new emoji
      */
-    this.client.emit(Events.GUILD_EMOJI_UPDATE, old, current);
+    this.client.emit(Events.GuildEmojiUpdate, old, current);
     return { emoji: current };
   }
 }

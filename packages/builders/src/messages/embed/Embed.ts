@@ -1,13 +1,4 @@
-import type {
-	APIEmbed,
-	APIEmbedAuthor,
-	APIEmbedField,
-	APIEmbedFooter,
-	APIEmbedImage,
-	APIEmbedProvider,
-	APIEmbedThumbnail,
-	APIEmbedVideo,
-} from 'discord-api-types/v9';
+import type { APIEmbedField } from 'discord-api-types/v9';
 import {
 	authorNamePredicate,
 	colorPredicate,
@@ -22,291 +13,86 @@ import {
 	urlPredicate,
 	validateFieldLength,
 } from './Assertions';
-
-export interface AuthorOptions {
-	name: string;
-	url?: string;
-	iconURL?: string;
-}
-
-export interface FooterOptions {
-	text: string;
-	iconURL?: string;
-}
+import { EmbedAuthorOptions, EmbedFooterOptions, UnsafeEmbed } from './UnsafeEmbed';
 
 /**
- * Represents an embed in a message (image/video preview, rich embed, etc.)
+ * Represents a validated embed in a message (image/video preview, rich embed, etc.)
  */
-export class Embed implements APIEmbed {
-	/**
-	 * An array of fields of this embed
-	 */
-	public fields: APIEmbedField[];
-
-	/**
-	 * The embed title
-	 */
-	public title?: string;
-
-	/**
-	 * The embed description
-	 */
-	public description?: string;
-
-	/**
-	 * The embed url
-	 */
-	public url?: string;
-
-	/**
-	 * The embed color
-	 */
-	public color?: number;
-
-	/**
-	 * The timestamp of the embed in the ISO format
-	 */
-	public timestamp?: string;
-
-	/**
-	 * The embed thumbnail data
-	 */
-	public thumbnail?: APIEmbedThumbnail;
-
-	/**
-	 * The embed image data
-	 */
-	public image?: APIEmbedImage;
-
-	/**
-	 * Received video data
-	 */
-	public video?: APIEmbedVideo;
-
-	/**
-	 * The embed author data
-	 */
-	public author?: APIEmbedAuthor;
-
-	/**
-	 * Received data about the embed provider
-	 */
-	public provider?: APIEmbedProvider;
-
-	/**
-	 * The embed footer data
-	 */
-	public footer?: APIEmbedFooter;
-
-	public constructor(data: APIEmbed = {}) {
-		this.title = data.title;
-		this.description = data.description;
-		this.url = data.url;
-		this.color = data.color;
-		this.thumbnail = data.thumbnail;
-		this.image = data.image;
-		this.video = data.video;
-		this.author = data.author;
-		this.provider = data.provider;
-		this.footer = data.footer;
-		this.fields = data.fields ?? [];
-
-		if (data.timestamp) this.timestamp = new Date(data.timestamp).toISOString();
-	}
-
-	/**
-	 * The accumulated length for the embed title, description, fields, footer text, and author name
-	 */
-	public get length(): number {
-		return (
-			(this.title?.length ?? 0) +
-			(this.description?.length ?? 0) +
-			this.fields.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) +
-			(this.footer?.text.length ?? 0) +
-			(this.author?.name.length ?? 0)
-		);
-	}
-
-	/**
-	 * Adds a field to the embed (max 25)
-	 *
-	 * @param field The field to add.
-	 */
-	public addField(field: APIEmbedField): this {
-		return this.addFields(field);
-	}
-
-	/**
-	 * Adds fields to the embed (max 25)
-	 *
-	 * @param fields The fields to add
-	 */
-	public addFields(...fields: APIEmbedField[]): this {
-		// Data assertions
-		embedFieldsArrayPredicate.parse(fields);
-
+export class Embed extends UnsafeEmbed {
+	public override addFields(...fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(this.fields, fields.length);
+		validateFieldLength(fields.length, this.fields);
 
-		this.fields.push(...Embed.normalizeFields(...fields));
-		return this;
-	}
-
-	/**
-	 * Removes, replaces, or inserts fields in the embed (max 25)
-	 *
-	 * @param index The index to start at
-	 * @param deleteCount The number of fields to remove
-	 * @param fields The replacing field objects
-	 */
-	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
 		// Data assertions
-		embedFieldsArrayPredicate.parse(fields);
-
-		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(this.fields, fields.length - deleteCount);
-
-		this.fields.splice(index, deleteCount, ...Embed.normalizeFields(...fields));
-		return this;
+		return super.addFields(...embedFieldsArrayPredicate.parse(fields));
 	}
 
-	/**
-	 * Sets the author of this embed
-	 *
-	 * @param options The options for the author
-	 */
-	public setAuthor(options: AuthorOptions | null): this {
+	public override spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
+		// Ensure adding these fields won't exceed the 25 field limit
+		validateFieldLength(fields.length - deleteCount, this.fields);
+
+		// Data assertions
+		return super.spliceFields(index, deleteCount, ...embedFieldsArrayPredicate.parse(fields));
+	}
+
+	public override setAuthor(options: EmbedAuthorOptions | null): this {
 		if (options === null) {
-			this.author = undefined;
-			return this;
+			return super.setAuthor(null);
 		}
 
-		const { name, iconURL, url } = options;
 		// Data assertions
-		authorNamePredicate.parse(name);
-		urlPredicate.parse(iconURL);
-		urlPredicate.parse(url);
+		authorNamePredicate.parse(options.name);
+		urlPredicate.parse(options.iconURL);
+		urlPredicate.parse(options.url);
 
-		this.author = { name, url, icon_url: iconURL };
-		return this;
+		return super.setAuthor(options);
 	}
 
-	/**
-	 * Sets the color of this embed
-	 *
-	 * @param color The color of the embed
-	 */
-	public setColor(color: number | null): this {
+	public override setColor(color: number | null): this {
 		// Data assertions
-		colorPredicate.parse(color);
-
-		this.color = color ?? undefined;
-		return this;
+		return super.setColor(colorPredicate.parse(color));
 	}
 
-	/**
-	 * Sets the description of this embed
-	 *
-	 * @param description The description
-	 */
-	public setDescription(description: string | null): this {
+	public override setDescription(description: string | null): this {
 		// Data assertions
-		descriptionPredicate.parse(description);
-
-		this.description = description ?? undefined;
-		return this;
+		return super.setDescription(descriptionPredicate.parse(description));
 	}
 
-	/**
-	 * Sets the footer of this embed
-	 *
-	 * @param options The options for the footer
-	 */
-	public setFooter(options: FooterOptions | null): this {
+	public override setFooter(options: EmbedFooterOptions | null): this {
 		if (options === null) {
-			this.footer = undefined;
-			return this;
+			return super.setFooter(null);
 		}
 
-		const { text, iconURL } = options;
 		// Data assertions
-		footerTextPredicate.parse(text);
-		urlPredicate.parse(iconURL);
+		footerTextPredicate.parse(options.text);
+		urlPredicate.parse(options.iconURL);
 
-		this.footer = { text, icon_url: iconURL };
-		return this;
+		return super.setFooter(options);
 	}
 
-	/**
-	 * Sets the image of this embed
-	 *
-	 * @param url The URL of the image
-	 */
-	public setImage(url: string | null): this {
+	public override setImage(url: string | null): this {
 		// Data assertions
-		urlPredicate.parse(url);
-
-		this.image = url ? { url } : undefined;
-		return this;
+		return super.setImage(urlPredicate.parse(url)!);
 	}
 
-	/**
-	 * Sets the thumbnail of this embed
-	 *
-	 * @param url The URL of the thumbnail
-	 */
-	public setThumbnail(url: string | null): this {
+	public override setThumbnail(url: string | null): this {
 		// Data assertions
-		urlPredicate.parse(url);
-
-		this.thumbnail = url ? { url } : undefined;
-		return this;
+		return super.setThumbnail(urlPredicate.parse(url)!);
 	}
 
-	/**
-	 * Sets the timestamp of this embed
-	 *
-	 * @param timestamp The timestamp or date
-	 */
-	public setTimestamp(timestamp: number | Date | null = Date.now()): this {
+	public override setTimestamp(timestamp: number | Date | null = Date.now()): this {
 		// Data assertions
-		timestampPredicate.parse(timestamp);
-
-		this.timestamp = timestamp ? new Date(timestamp).toISOString() : undefined;
-		return this;
+		return super.setTimestamp(timestampPredicate.parse(timestamp));
 	}
 
-	/**
-	 * Sets the title of this embed
-	 *
-	 * @param title The title
-	 */
-	public setTitle(title: string | null): this {
+	public override setTitle(title: string | null): this {
 		// Data assertions
-		titlePredicate.parse(title);
-
-		this.title = title ?? undefined;
-		return this;
+		return super.setTitle(titlePredicate.parse(title));
 	}
 
-	/**
-	 * Sets the URL of this embed
-	 *
-	 * @param url The URL
-	 */
-	public setURL(url: string | null): this {
+	public override setURL(url: string | null): this {
 		// Data assertions
-		urlPredicate.parse(url);
-
-		this.url = url ?? undefined;
-		return this;
-	}
-
-	/**
-	 * Transforms the embed to a plain object
-	 */
-	public toJSON(): APIEmbed {
-		return { ...this };
+		return super.setURL(urlPredicate.parse(url)!);
 	}
 
 	/**
@@ -314,7 +100,7 @@ export class Embed implements APIEmbed {
 	 *
 	 * @param fields Fields to normalize
 	 */
-	public static normalizeFields(...fields: APIEmbedField[]): APIEmbedField[] {
+	public static override normalizeFields(...fields: APIEmbedField[]): APIEmbedField[] {
 		return fields.flat(Infinity).map((field) => {
 			fieldNamePredicate.parse(field.name);
 			fieldValuePredicate.parse(field.value);

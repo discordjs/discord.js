@@ -1,8 +1,9 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v9');
 const Base = require('./Base');
+const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;
 let DMChannel;
 let NewsChannel;
@@ -11,7 +12,6 @@ let StoreChannel;
 let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
-const { ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
@@ -22,12 +22,11 @@ class Channel extends Base {
   constructor(client, data, immediatePatch = true) {
     super(client);
 
-    const type = ChannelType[data?.type];
     /**
      * The type of the channel
      * @type {ChannelType}
      */
-    this.type = type ?? 'UNKNOWN';
+    this.type = data.type;
 
     if (data && immediatePatch) this._patch(data);
   }
@@ -56,6 +55,15 @@ class Channel extends Base {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The URL to the channel
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return `https://discord.com/channels/${this.isDMBased() ? '@me' : this.guildId}/${this.id}`;
   }
 
   /**
@@ -89,7 +97,7 @@ class Channel extends Base {
    *   .catch(console.error);
    */
   async delete() {
-    await this.client.api.channels(this.id).delete();
+    await this.client.rest.delete(Routes.channel(this.id));
     return this;
   }
 
@@ -103,19 +111,59 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   * Indicates whether this channel is a {@link TextChannel}.
    * @returns {boolean}
    */
   isText() {
-    return 'messages' in this;
+    return this.type === ChannelType.GuildText;
   }
 
   /**
-   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
+   * Indicates whether this channel is a {@link DMChannel}.
+   * @returns {boolean}
+   */
+  isDM() {
+    return this.type === ChannelType.DM;
+  }
+
+  /**
+   * Indicates whether this channel is a {@link VoiceChannel}.
    * @returns {boolean}
    */
   isVoice() {
-    return VoiceBasedChannelTypes.includes(this.type);
+    return this.type === ChannelType.GuildVoice;
+  }
+
+  /**
+   * Indicates whether this channel is a {@link PartialGroupDMChannel}.
+   * @returns {boolean}
+   */
+  isGroupDM() {
+    return this.type === ChannelType.GroupDM;
+  }
+
+  /**
+   * Indicates whether this channel is a {@link CategoryChannel}.
+   * @returns {boolean}
+   */
+  isCategory() {
+    return this.type === ChannelType.GuildCategory;
+  }
+
+  /**
+   * Indicates whether this channel is a {@link NewsChannel}.
+   * @returns {boolean}
+   */
+  isNews() {
+    return this.type === ChannelType.GuildNews;
+  }
+
+  /**
+   * Indicates whether this channel is a {@link StoreChannel}.
+   * @returns {boolean}
+   */
+  isStore() {
+    return this.type === ChannelType.GuildStore;
   }
 
   /**
@@ -124,6 +172,38 @@ class Channel extends Base {
    */
   isThread() {
     return ThreadChannelTypes.includes(this.type);
+  }
+
+  /**
+   * Indicates whether this channel is a {@link StageChannel}.
+   * @returns {boolean}
+   */
+  isStage() {
+    return this.type === ChannelType.GuildStageVoice;
+  }
+
+  /**
+   * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   * @returns {boolean}
+   */
+  isTextBased() {
+    return 'messages' in this;
+  }
+
+  /**
+   * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link PartialGroupDMChannel}).
+   * @returns {boolean}
+   */
+  isDMBased() {
+    return [ChannelType.DM, ChannelType.GroupDM].includes(this.type);
+  }
+
+  /**
+   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
+   * @returns {boolean}
+   */
+  isVoiceBased() {
+    return 'bitrate' in this;
   }
 
   static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {

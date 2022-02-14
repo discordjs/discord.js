@@ -1,9 +1,8 @@
 'use strict';
 
-const { ActivityType } = require('discord-api-types/v9');
+const { GatewayOpcodes } = require('discord-api-types/v9');
 const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
-const { Opcodes } = require('../util/Constants');
 
 /**
  * Represents the client's presence.
@@ -23,13 +22,13 @@ class ClientPresence extends Presence {
     const packet = this._parse(presence);
     this._patch(packet);
     if (typeof presence.shardId === 'undefined') {
-      this.client.ws.broadcast({ op: Opcodes.STATUS_UPDATE, d: packet });
+      this.client.ws.broadcast({ op: GatewayOpcodes.PresenceUpdate, d: packet });
     } else if (Array.isArray(presence.shardId)) {
       for (const shardId of presence.shardId) {
-        this.client.ws.shards.get(shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
+        this.client.ws.shards.get(shardId).send({ op: GatewayOpcodes.PresenceUpdate, d: packet });
       }
     } else {
-      this.client.ws.shards.get(presence.shardId).send({ op: Opcodes.STATUS_UPDATE, d: packet });
+      this.client.ws.shards.get(presence.shardId).send({ op: GatewayOpcodes.PresenceUpdate, d: packet });
     }
     return this;
   }
@@ -53,7 +52,7 @@ class ClientPresence extends Presence {
         activity.type ??= 0;
 
         data.activities.push({
-          type: typeof activity.type === 'number' ? activity.type : ActivityType[activity.type],
+          type: activity.type,
           name: activity.name,
           url: activity.url,
         });
@@ -62,7 +61,7 @@ class ClientPresence extends Presence {
       data.activities.push(
         ...this.activities.map(a => ({
           name: a.name,
-          type: ActivityType[a.type],
+          type: a.type,
           url: a.url ?? undefined,
         })),
       );

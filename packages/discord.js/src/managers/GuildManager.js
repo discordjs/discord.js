@@ -1,15 +1,9 @@
 'use strict';
 
 const process = require('node:process');
-const { setTimeout } = require('node:timers');
+const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
-const {
-  GuildVerificationLevel,
-  GuildDefaultMessageNotifications,
-  GuildExplicitContentFilter,
-  ChannelType,
-  OverwriteType,
-} = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
@@ -18,10 +12,10 @@ const { GuildMember } = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const OAuth2Guild = require('../structures/OAuth2Guild');
 const { Role } = require('../structures/Role');
-const { Events } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Permissions = require('../util/Permissions');
-const SystemChannelFlags = require('../util/SystemChannelFlags');
+const Events = require('../util/Events');
+const PermissionsBitField = require('../util/PermissionsBitField');
+const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const { resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
@@ -181,17 +175,8 @@ class GuildManager extends CachedManager {
     } = {},
   ) {
     icon = await DataResolver.resolveImage(icon);
-    if (typeof verificationLevel === 'string') {
-      verificationLevel = GuildVerificationLevel[verificationLevel];
-    }
-    if (typeof defaultMessageNotifications === 'string') {
-      defaultMessageNotifications = GuildDefaultMessageNotifications[defaultMessageNotifications];
-    }
-    if (typeof explicitContentFilter === 'string') {
-      explicitContentFilter = GuildExplicitContentFilter[explicitContentFilter];
-    }
+
     for (const channel of channels) {
-      channel.type &&= typeof channel.type === 'number' ? channel.type : ChannelType[channel.type];
       channel.parent_id = channel.parentId;
       delete channel.parentId;
       channel.user_limit = channel.userLimit;
@@ -203,23 +188,20 @@ class GuildManager extends CachedManager {
 
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
-        if (typeof overwrite.type === 'string') {
-          overwrite.type = OverwriteType[overwrite.type];
-        }
-        overwrite.allow &&= Permissions.resolve(overwrite.allow).toString();
-        overwrite.deny &&= Permissions.resolve(overwrite.deny).toString();
+        overwrite.allow &&= PermissionsBitField.resolve(overwrite.allow).toString();
+        overwrite.deny &&= PermissionsBitField.resolve(overwrite.deny).toString();
       }
       channel.permission_overwrites = channel.permissionOverwrites;
       delete channel.permissionOverwrites;
     }
     for (const role of roles) {
       role.color &&= resolveColor(role.color);
-      role.permissions &&= Permissions.resolve(role.permissions).toString();
+      role.permissions &&= PermissionsBitField.resolve(role.permissions).toString();
     }
-    systemChannelFlags &&= SystemChannelFlags.resolve(systemChannelFlags);
+    systemChannelFlags &&= SystemChannelFlagsBitField.resolve(systemChannelFlags);
 
-    const data = await this.client.api.guilds.post({
-      data: {
+    const data = await this.client.rest.post(Routes.guilds(), {
+      body: {
         name,
         icon,
         verification_level: verificationLevel,
@@ -240,16 +222,16 @@ class GuildManager extends CachedManager {
       const handleGuild = guild => {
         if (guild.id === data.id) {
           clearTimeout(timeout);
-          this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+          this.client.removeListener(Events.GuildCreate, handleGuild);
           this.client.decrementMaxListeners();
           resolve(guild);
         }
       };
       this.client.incrementMaxListeners();
-      this.client.on(Events.GUILD_CREATE, handleGuild);
+      this.client.on(Events.GuildCreate, handleGuild);
 
       const timeout = setTimeout(() => {
-        this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+        this.client.removeListener(Events.GuildCreate, handleGuild);
         this.client.decrementMaxListeners();
         resolve(this.client.guilds._add(data));
       }, 10_000).unref();
@@ -268,7 +250,7 @@ class GuildManager extends CachedManager {
    * @typedef {Object} FetchGuildsOptions
    * @property {Snowflake} [before] Get guilds before this guild id
    * @property {Snowflake} [after] Get guilds after this guild id
-   * @property {number} [limit=200] Maximum number of guilds to request (1-200)
+   * @property {number} [limit] Maximum number of guilds to request (1-200)
    */
 
   /**
@@ -285,11 +267,13 @@ class GuildManager extends CachedManager {
         if (existing) return existing;
       }
 
-      const data = await this.client.api.guilds(id).get({ query: { with_counts: options.withCounts ?? true } });
+      const data = await this.client.rest.get(Routes.guild(id), {
+        query: new URLSearchParams({ with_counts: options.withCounts ?? true }),
+      });
       return this._add(data, options.cache);
     }
 
-    const data = await this.client.api.users('@me').guilds.get({ query: options });
+    const data = await this.client.rest.get(Routes.userGuilds(), { query: new URLSearchParams(options) });
     return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
   }
 }

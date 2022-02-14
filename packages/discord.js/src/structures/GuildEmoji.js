@@ -1,9 +1,9 @@
 'use strict';
 
+const { PermissionFlagsBits } = require('discord-api-types/v9');
 const BaseGuildEmoji = require('./BaseGuildEmoji');
 const { Error } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
-const Permissions = require('../util/Permissions');
 
 /**
  * Represents a custom emoji.
@@ -56,7 +56,7 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   get deletable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return !this.managed && this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS);
+    return !this.managed && this.guild.me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers);
   }
 
   /**
@@ -72,18 +72,8 @@ class GuildEmoji extends BaseGuildEmoji {
    * Fetches the author for this emoji
    * @returns {Promise<User>}
    */
-  async fetchAuthor() {
-    if (this.managed) {
-      throw new Error('EMOJI_MANAGED');
-    } else {
-      if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-      if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) {
-        throw new Error('MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION', this.guild);
-      }
-    }
-    const data = await this.client.api.guilds(this.guild.id).emojis(this.id).get();
-    this._patch(data);
-    return this.author;
+  fetchAuthor() {
+    return this.guild.emojis.fetchAuthor(this);
   }
 
   /**
@@ -104,21 +94,8 @@ class GuildEmoji extends BaseGuildEmoji {
    *   .then(e => console.log(`Edited emoji ${e}`))
    *   .catch(console.error);
    */
-  async edit(data, reason) {
-    const roles = data.roles?.map(r => r.id ?? r);
-    const newData = await this.client.api
-      .guilds(this.guild.id)
-      .emojis(this.id)
-      .patch({
-        data: {
-          name: data.name,
-          roles,
-        },
-        reason,
-      });
-    const clone = this._clone();
-    clone._patch(newData);
-    return clone;
+  edit(data, reason) {
+    return this.guild.emojis.edit(this.id, data, reason);
   }
 
   /**
@@ -137,7 +114,7 @@ class GuildEmoji extends BaseGuildEmoji {
    * @returns {Promise<GuildEmoji>}
    */
   async delete(reason) {
-    await this.client.api.guilds(this.guild.id).emojis(this.id).delete({ reason });
+    await this.guild.emojis.delete(this.id, reason);
     return this;
   }
 

@@ -2,9 +2,9 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
+const { ChannelType, RouteBases, Routes } = require('discord-api-types/v9');
 const fetch = require('node-fetch');
-const { Colors, Endpoints } = require('./Constants');
-const Options = require('./Options');
+const Colors = require('./Colors');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
 
@@ -268,8 +268,7 @@ class Util extends null {
    */
   static async fetchRecommendedShards(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
-    const defaults = Options.createDefault();
-    const response = await fetch(`${defaults.http.api}/v${defaults.http.version}${Endpoints.botGateway}`, {
+    const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
     });
@@ -420,37 +419,37 @@ class Util extends null {
    * [255, 0, 255] // purple
    * ```
    * or one of the following strings:
-   * - `DEFAULT`
-   * - `WHITE`
-   * - `AQUA`
-   * - `GREEN`
-   * - `BLUE`
-   * - `YELLOW`
-   * - `PURPLE`
-   * - `LUMINOUS_VIVID_PINK`
-   * - `FUCHSIA`
-   * - `GOLD`
-   * - `ORANGE`
-   * - `RED`
-   * - `GREY`
-   * - `NAVY`
-   * - `DARK_AQUA`
-   * - `DARK_GREEN`
-   * - `DARK_BLUE`
-   * - `DARK_PURPLE`
-   * - `DARK_VIVID_PINK`
-   * - `DARK_GOLD`
-   * - `DARK_ORANGE`
-   * - `DARK_RED`
-   * - `DARK_GREY`
-   * - `DARKER_GREY`
-   * - `LIGHT_GREY`
-   * - `DARK_NAVY`
-   * - `BLURPLE`
-   * - `GREYPLE`
-   * - `DARK_BUT_NOT_BLACK`
-   * - `NOT_QUITE_BLACK`
-   * - `RANDOM`
+   * - `Default`
+   * - `White`
+   * - `Aqua`
+   * - `Green`
+   * - `Blue`
+   * - `Yellow`
+   * - `Purple`
+   * - `LuminousVividPink`
+   * - `Fuchsia`
+   * - `Gold`
+   * - `Orange`
+   * - `Red`
+   * - `Grey`
+   * - `Navy`
+   * - `DarkAqua`
+   * - `DarkGreen`
+   * - `DarkBlue`
+   * - `DarkPurple`
+   * - `DarkVividPink`
+   * - `DarkGold`
+   * - `DarkOrange`
+   * - `DarkRed`
+   * - `DarkGrey`
+   * - `DarkerGrey`
+   * - `LightGrey`
+   * - `DarkNavy`
+   * - `Blurple`
+   * - `Greyple`
+   * - `DarkButNotBlack`
+   * - `NotQuiteBlack`
+   * - `Random`
    * @typedef {string|number|number[]} ColorResolvable
    */
 
@@ -461,8 +460,8 @@ class Util extends null {
    */
   static resolveColor(color) {
     if (typeof color === 'string') {
-      if (color === 'RANDOM') return Math.floor(Math.random() * (0xffffff + 1));
-      if (color === 'DEFAULT') return 0;
+      if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
+      if (color === 'Default') return 0;
       color = Colors[color] ?? parseInt(color.replace('#', ''), 16);
     } else if (Array.isArray(color)) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
@@ -494,16 +493,17 @@ class Util extends null {
    * @param {number} position New position for the object
    * @param {boolean} relative Whether `position` is relative to its current position
    * @param {Collection<string, Channel|Role>} sorted A collection of the objects sorted properly
-   * @param {APIRouter} route Route to call PATCH on
+   * @param {Client} client The client to use to patch the data
+   * @param {string} route Route to call PATCH on
    * @param {string} [reason] Reason for the change
    * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
    * @private
    */
-  static async setPosition(item, position, relative, sorted, route, reason) {
+  static async setPosition(item, position, relative, sorted, client, route, reason) {
     let updatedItems = [...sorted.values()];
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
-    await route.patch({ data: updatedItems, reason });
+    await client.rest.patch(route, { body: updatedItems, reason });
     return updatedItems;
   }
 
@@ -528,7 +528,7 @@ class Util extends null {
     str = str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
-        if (channel.type === 'DM') {
+        if (channel.type === ChannelType.DM) {
           const user = channel.client.users.cache.get(id);
           return user ? `@${user.username}` : input;
         }
@@ -546,7 +546,7 @@ class Util extends null {
         return mentionedChannel ? `#${mentionedChannel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
-        if (channel.type === 'DM') return input;
+        if (channel.type === ChannelType.DM) return input;
         const role = channel.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });

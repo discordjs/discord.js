@@ -2,7 +2,7 @@
 
 const process = require('node:process');
 const { Error } = require('../errors');
-const { Events } = require('../util/Constants');
+const Events = require('../util/Events');
 const Util = require('../util/Util');
 
 /**
@@ -210,10 +210,13 @@ class ShardClientUtil {
       error.stack = err.stack;
       /**
        * Emitted when the client encounters an error.
+       * <warn>Errors thrown within this event do not have a catch handler, it is
+       * recommended to not use async functions as `error` event handlers. See the
+       * [Node.js docs](https://nodejs.org/api/events.html#capture-rejections-of-promises) for details.</warn>
        * @event Client#error
        * @param {Error} error The error encountered
        */
-      this.client.emit(Events.ERROR, error);
+      this.client.emit(Events.Error, error);
     });
   }
 
@@ -228,7 +231,7 @@ class ShardClientUtil {
       this._singleton = new this(client, mode);
     } else {
       client.emit(
-        Events.WARN,
+        Events.Warn,
         'Multiple clients created in child process/worker; only the first will handle sharding helpers.',
       );
     }

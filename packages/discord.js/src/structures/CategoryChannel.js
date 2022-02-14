@@ -30,7 +30,7 @@ class CategoryChannel extends GuildChannel {
   /**
    * Options for creating a channel using {@link CategoryChannel#createChannel}.
    * @typedef {Object} CategoryCreateChannelOptions
-   * @property {ChannelType|number} [type='GUILD_TEXT'] The type of the new channel.
+   * @property {ChannelType} [type=ChannelType.GuildText] The type of the new channel.
    * @property {string} [topic] The topic for the new channel
    * @property {boolean} [nsfw] Whether the new channel is NSFW
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
@@ -45,7 +45,8 @@ class CategoryChannel extends GuildChannel {
 
   /**
    * Creates a new channel within this category.
-   * <info>You cannot create a channel of type `GUILD_CATEGORY` inside a CategoryChannel.</info>
+   * <info>You cannot create a channel of type {@link ChannelType.GuildCategory} inside a
+   * CategoryChannel.</info>
    * @param {string} name The name of the new channel
    * @param {CategoryCreateChannelOptions} options Options for creating the new channel
    * @returns {Promise<GuildChannel>}

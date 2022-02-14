@@ -8,4 +8,6 @@ export interface IHandler {
 		options: RequestInit,
 		bodyData: Pick<InternalRequest, 'files' | 'body'>,
 	) => Promise<unknown>;
+	readonly inactive: boolean;
+	readonly id: string;
 }

@@ -5,16 +5,17 @@
 const request = require('superagent');
 const ytdl = require('ytdl-core');
 const { token, song } = require('./auth.js');
-const { Client, Intents } = require('../src');
+const { Client } = require('../src');
+const { ChannelType, GatewayIntentBits } = require('discord-api-types/v9');
 
 console.time('magic');
 
 const client = new Client({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_MEMBERS,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMembers,
   ],
 });
 
@@ -57,7 +58,7 @@ client.on('messageCreate', message => {
   if (true) {
     if (message.content === 'makechann') {
       if (message.channel.guild) {
-        message.channel.guild.channels.create('hi', { type: 'GUILD_TEXT' }).then(console.log);
+        message.channel.guild.channels.create('hi', { type: ChannelType.GuildText }).then(console.log);
       }
     }
 

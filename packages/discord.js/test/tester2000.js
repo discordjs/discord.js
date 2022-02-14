@@ -1,15 +1,16 @@
 'use strict';
 
 const process = require('node:process');
+const { GatewayIntentBits } = require('discord-api-types/v9');
 const { token, prefix, owner } = require('./auth.js');
-const { Client, Options, Intents, Formatters } = require('../src');
+const { Client, Options, Formatters } = require('../src');
 
 // eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
 const client = new Client({
   // 😏
-  intents: Object.values(Intents.FLAGS).reduce((acc, p) => acc | p, 0),
+  intents: Object.values(GatewayIntentBits).reduce((acc, p) => acc | p, 0),
   makeCache: Options.cacheWithLimits({
     MessageManager: 10,
     PresenceManager: 10,

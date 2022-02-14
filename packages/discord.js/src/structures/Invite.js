@@ -1,14 +1,11 @@
 'use strict';
 
+const { RouteBases, Routes, PermissionFlagsBits } = require('discord-api-types/v9');
 const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
 const InviteStageInstance = require('./InviteStageInstance');
 const { Error } = require('../errors');
-const { Endpoints } = require('../util/Constants');
-const Permissions = require('../util/Permissions');
-
-// TODO: Convert `inviter` and `channel` in this class to a getter.
 
 /**
  * Represents an invitation to a guild channel.
@@ -115,20 +112,13 @@ class Invite extends Base {
        * @type {?Snowflake}
        */
       this.inviterId = data.inviter_id;
-      this.inviter = this.client.users.resolve(data.inviter_id);
     } else {
       this.inviterId ??= null;
     }
 
     if ('inviter' in data) {
-      /**
-       * The user who created this invite
-       * @type {?User}
-       */
-      this.inviter ??= this.client.users._add(data.inviter);
+      this.client.users._add(data.inviter);
       this.inviterId = data.inviter.id;
-    } else {
-      this.inviter ??= null;
     }
 
     if ('target_user' in data) {
@@ -151,40 +141,22 @@ class Invite extends Base {
       this.targetApplication ??= null;
     }
 
-    /**
-     * The type of the invite target:
-     * * 1: STREAM
-     * * 2: EMBEDDED_APPLICATION
-     * @typedef {number} TargetType
-     * @see {@link https://discord.com/developers/docs/resources/invite#invite-object-invite-target-types}
-     */
-
     if ('target_type' in data) {
       /**
        * The target type
-       * @type {?TargetType}
+       * @type {?InviteTargetType}
        */
       this.targetType = data.target_type;
     } else {
       this.targetType ??= null;
     }
 
-    if ('channel_id' in data) {
-      /**
-       * The channel's id this invite is for
-       * @type {Snowflake}
-       */
-      this.channelId = data.channel_id;
-      this.channel = this.client.channels.cache.get(data.channel_id);
-    }
-
     if ('channel' in data) {
       /**
        * The channel this invite is for
-       * @type {Channel}
+       * @type {?Channel}
        */
-      this.channel ??= this.client.channels._add(data.channel, this.guild, { cache: false });
-      this.channelId ??= data.channel.id;
+      this.channel = this.client.channels._add(data.channel, this.guild, { cache: false });
     }
 
     if ('created_at' in data) {
@@ -239,9 +211,9 @@ class Invite extends Base {
     const guild = this.guild;
     if (!guild || !this.client.guilds.cache.has(guild.id)) return false;
     if (!guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return (
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) ||
-      guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)
+    return Boolean(
+      this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageChannels, false) ||
+        guild.me.permissions.has(PermissionFlagsBits.ManageGuild),
     );
   }
 
@@ -267,12 +239,21 @@ class Invite extends Base {
   }
 
   /**
+   * The user who created this invite
+   * @type {?User}
+   * @readonly
+   */
+  get inviter() {
+    return this.inviterId && this.client.users.resolve(this.inviterId);
+  }
+
+  /**
    * The URL to the invite
    * @type {string}
    * @readonly
    */
   get url() {
-    return Endpoints.invite(this.client.options.http.invite, this.code);
+    return `${RouteBases.invite}/${this.code}`;
   }
 
   /**
@@ -281,7 +262,7 @@ class Invite extends Base {
    * @returns {Promise<Invite>}
    */
   async delete(reason) {
-    await this.client.api.invites[this.code].delete({ reason });
+    await this.client.rest.delete(Routes.invite(this.code), { reason });
     return this;
   }
 
@@ -303,7 +284,6 @@ class Invite extends Base {
       presenceCount: false,
       memberCount: false,
       uses: false,
-      channel: 'channelId',
       inviter: 'inviterId',
       guild: 'guildId',
     });

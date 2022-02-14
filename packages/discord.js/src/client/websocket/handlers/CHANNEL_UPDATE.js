@@ -1,6 +1,6 @@
 'use strict';
 
-const { Events } = require('../../../util/Constants');
+const Events = require('../../../util/Events');
 
 module.exports = (client, packet) => {
   const { old, updated } = client.actions.ChannelUpdate.handle(packet.d);
@@ -11,6 +11,6 @@ module.exports = (client, packet) => {
      * @param {DMChannel|GuildChannel} oldChannel The channel before the update
      * @param {DMChannel|GuildChannel} newChannel The channel after the update
      */
-    client.emit(Events.CHANNEL_UPDATE, old, updated);
+    client.emit(Events.ChannelUpdate, old, updated);
   }
 };

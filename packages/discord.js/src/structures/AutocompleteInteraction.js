@@ -1,6 +1,6 @@
 'use strict';
 
-const { ApplicationCommandOptionType, InteractionResponseType } = require('discord-api-types/v9');
+const { InteractionResponseType, Routes } = require('discord-api-types/v9');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 const Interaction = require('./Interaction');
 
@@ -31,6 +31,12 @@ class AutocompleteInteraction extends Interaction {
     this.commandName = data.data.name;
 
     /**
+     * The invoked application command's type
+     * @type {ApplicationCommandType.ChatInput}
+     */
+    this.commandType = data.data.type;
+
+    /**
      * Whether this interaction has already received a response
      * @type {boolean}
      */
@@ -40,10 +46,7 @@ class AutocompleteInteraction extends Interaction {
      * The options passed to the command
      * @type {CommandInteractionOptionResolver}
      */
-    this.options = new CommandInteractionOptionResolver(
-      this.client,
-      data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
-    );
+    this.options = new CommandInteractionOptionResolver(this.client, data.data.options ?? []);
   }
 
   /**
@@ -53,25 +56,6 @@ class AutocompleteInteraction extends Interaction {
   get command() {
     const id = this.commandId;
     return this.guild?.commands.cache.get(id) ?? this.client.application.commands.cache.get(id) ?? null;
-  }
-
-  /**
-   * Transforms an option received from the API.
-   * @param {APIApplicationCommandOption} option The received option
-   * @returns {CommandInteractionOption}
-   * @private
-   */
-  transformOption(option) {
-    const result = {
-      name: option.name,
-      type: ApplicationCommandOptionType[option.type],
-    };
-
-    if ('value' in option) result.value = option.value;
-    if ('options' in option) result.options = option.options.map(opt => this.transformOption(opt));
-    if ('focused' in option) result.focused = option.focused;
-
-    return result;
   }
 
   /**
@@ -92,8 +76,8 @@ class AutocompleteInteraction extends Interaction {
   async respond(options) {
     if (this.responded) throw new Error('INTERACTION_ALREADY_REPLIED');
 
-    await this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
         type: InteractionResponseType.ApplicationCommandAutocompleteResult,
         data: {
           choices: options,

@@ -8,19 +8,48 @@ import {
 	StickerExtension,
 } from './utils/constants';
 
+/**
+ * The options used for image URLs
+ */
 export interface BaseImageURLOptions {
+	/**
+	 * The extension to use for the image URL
+	 * @default 'webp'
+	 */
 	extension?: ImageExtension;
+	/**
+	 * The size specified in the image URL
+	 */
 	size?: ImageSize;
 }
 
+/**
+ * The options used for image URLs with animated content
+ */
 export interface ImageURLOptions extends BaseImageURLOptions {
-	dynamic?: boolean;
+	/**
+	 * Whether or not to prefer the static version of an image asset.
+	 */
+	forceStatic?: boolean;
 }
 
+/**
+ * The options to use when making a CDN URL
+ */
 export interface MakeURLOptions {
+	/**
+	 * The extension to use for the image URL
+	 * @default 'webp'
+	 */
 	extension?: string | undefined;
+	/**
+	 * The size specified in the image URL
+	 */
 	size?: ImageSize;
-	allowedExtensions?: readonly string[];
+	/**
+	 * The allowed extensions that can be used
+	 */
+	allowedExtensions?: ReadonlyArray<string>;
 }
 
 /**
@@ -84,7 +113,7 @@ export class CDN {
 	 * @param discriminator The discriminator modulo 5
 	 */
 	public defaultAvatar(discriminator: number): string {
-		return this.makeURL(`/embed/avatars/${discriminator}`);
+		return this.makeURL(`/embed/avatars/${discriminator}`, { extension: 'png' });
 	}
 
 	/**
@@ -158,7 +187,10 @@ export class CDN {
 	 * @param extension The extension of the sticker
 	 */
 	public sticker(stickerId: string, extension?: StickerExtension): string {
-		return this.makeURL(`/stickers/${stickerId}`, { allowedExtensions: ALLOWED_STICKER_EXTENSIONS, extension });
+		return this.makeURL(`/stickers/${stickerId}`, {
+			allowedExtensions: ALLOWED_STICKER_EXTENSIONS,
+			extension: extension ?? 'png', // Stickers cannot have a `.webp` extension, so we default to a `.png`
+		});
 	}
 
 	/**
@@ -181,6 +213,20 @@ export class CDN {
 	}
 
 	/**
+	 * Generates a cover image for a guild scheduled event.
+	 * @param scheduledEventId The scheduled event id
+	 * @param coverHash The hash provided by discord for this cover image
+	 * @param options Optional options for the cover image
+	 */
+	public guildScheduledEventCover(
+		scheduledEventId: string,
+		coverHash: string,
+		options?: Readonly<BaseImageURLOptions>,
+	): string {
+		return this.makeURL(`/guild-events/${scheduledEventId}/${coverHash}`, options);
+	}
+
+	/**
 	 * Constructs the URL for the resource, checking whether or not `hash` starts with `a_` if `dynamic` is set to `true`.
 	 * @param route The base cdn route
 	 * @param hash The hash provided by Discord for this icon
@@ -189,9 +235,9 @@ export class CDN {
 	private dynamicMakeURL(
 		route: string,
 		hash: string,
-		{ dynamic = false, ...options }: Readonly<ImageURLOptions> = {},
+		{ forceStatic = false, ...options }: Readonly<ImageURLOptions> = {},
 	): string {
-		return this.makeURL(route, dynamic && hash.startsWith('a_') ? { ...options, extension: 'gif' } : options);
+		return this.makeURL(route, !forceStatic && hash.startsWith('a_') ? { ...options, extension: 'gif' } : options);
 	}
 
 	/**
@@ -201,7 +247,7 @@ export class CDN {
 	 */
 	private makeURL(
 		route: string,
-		{ allowedExtensions = ALLOWED_EXTENSIONS, extension = 'png', size }: Readonly<MakeURLOptions> = {},
+		{ allowedExtensions = ALLOWED_EXTENSIONS, extension = 'webp', size }: Readonly<MakeURLOptions> = {},
 	): string {
 		extension = String(extension).toLowerCase();
 

@@ -68,7 +68,7 @@ Other prefixes are up to your discretion. Suggested prefixes are `docs`, `chore`
 
 ### Scope
 
-The scope could be anything specifying the place of the commit change. For example `GuildMember`, `Guild`, `Message`, `MessageEmbed` etc...
+The scope could be anything specifying the place of the commit change. For example `GuildMember`, `Guild`, `Message`, `TextChannel` etc...
 
 ### Subject
 

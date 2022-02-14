@@ -9,7 +9,7 @@ const Invite = require('./Invite');
 const { StageInstance } = require('./StageInstance');
 const { Sticker } = require('./Sticker');
 const Webhook = require('./Webhook');
-const { PartialTypes } = require('../util/Constants');
+const Partials = require('../util/Partials');
 const Util = require('../util/Util');
 
 /**
@@ -274,7 +274,7 @@ class GuildAuditLogsEntry {
      * @type {?User}
      */
     this.executor = data.user_id
-      ? guild.client.options.partials.includes(PartialTypes.USER)
+      ? guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.user_id })
         : guild.client.users.cache.get(data.user_id)
       : null;
@@ -338,19 +338,19 @@ class GuildAuditLogsEntry {
       case AuditLogEvent.ChannelOverwriteCreate:
       case AuditLogEvent.ChannelOverwriteUpdate:
       case AuditLogEvent.ChannelOverwriteDelete:
-        switch (Number(data.options.type)) {
+        switch (data.options.type) {
           case OverwriteType.Role:
             this.extra = guild.roles.cache.get(data.options.id) ?? {
               id: data.options.id,
               name: data.options.role_name,
-              type: OverwriteType[OverwriteType.Role],
+              type: OverwriteType.Role,
             };
             break;
 
           case OverwriteType.Member:
             this.extra = guild.members.cache.get(data.options.id) ?? {
               id: data.options.id,
-              type: OverwriteType[OverwriteType.Member],
+              type: OverwriteType.Member,
             };
             break;
 
@@ -384,7 +384,7 @@ class GuildAuditLogsEntry {
       this.target.id = data.target_id;
       // MEMBER_DISCONNECT and similar types do not provide a target_id.
     } else if (targetType === Targets.USER && data.target_id) {
-      this.target = guild.client.options.partials.includes(PartialTypes.USER)
+      this.target = guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.target_id })
         : guild.client.users.cache.get(data.target_id);
     } else if (targetType === Targets.GUILD) {

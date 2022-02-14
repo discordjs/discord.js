@@ -1,8 +1,8 @@
 'use strict';
 
 const EventEmitter = require('node:events');
+const { REST } = require('@discordjs/rest');
 const { TypeError } = require('../errors');
-const RESTManager = require('../rest/RESTManager');
 const Options = require('../util/Options');
 const Util = require('../util/Util');
 
@@ -12,7 +12,7 @@ const Util = require('../util/Util');
  */
 class BaseClient extends EventEmitter {
   constructor(options = {}) {
-    super();
+    super({ captureRejections: true });
 
     if (typeof options !== 'object' || options === null) {
       throw new TypeError('INVALID_TYPE', 'options', 'object', true);
@@ -26,20 +26,9 @@ class BaseClient extends EventEmitter {
 
     /**
      * The REST manager of the client
-     * @type {RESTManager}
-     * @private
+     * @type {REST}
      */
-    this.rest = new RESTManager(this);
-  }
-
-  /**
-   * API shortcut
-   * @type {Object}
-   * @readonly
-   * @private
-   */
-  get api() {
-    return this.rest.api;
+    this.rest = new REST(this.options.rest);
   }
 
   /**
@@ -47,7 +36,8 @@ class BaseClient extends EventEmitter {
    * @returns {void}
    */
   destroy() {
-    if (this.rest.sweepInterval) clearInterval(this.rest.sweepInterval);
+    this.rest.requestManager.clearHashSweeper();
+    this.rest.requestManager.clearHandlerSweeper();
   }
 
   /**
@@ -80,7 +70,6 @@ class BaseClient extends EventEmitter {
 module.exports = BaseClient;
 
 /**
- * Emitted for general debugging information.
- * @event BaseClient#debug
- * @param {string} info The debug information
+ * @external REST
+ * @see {@link https://discord.js.org/#/docs/rest/main/class/REST}
  */

@@ -1,23 +1,28 @@
 'use strict';
 
+const { createComponent, Embed } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { MessageType, InteractionType } = require('discord-api-types/v9');
+const {
+  InteractionType,
+  ChannelType,
+  MessageType,
+  MessageFlags,
+  PermissionFlagsBits,
+} = require('discord-api-types/v9');
 const Base = require('./Base');
-const BaseMessageComponent = require('./BaseMessageComponent');
 const ClientApplication = require('./ClientApplication');
 const InteractionCollector = require('./InteractionCollector');
 const MessageAttachment = require('./MessageAttachment');
-const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
-const { SystemMessageTypes } = require('../util/Constants');
-const MessageFlags = require('../util/MessageFlags');
-const Permissions = require('../util/Permissions');
+const { NonSystemMessageTypes } = require('../util/Constants');
+const MessageFlagsBitField = require('../util/MessageFlagsBitField');
+const PermissionsBitField = require('../util/PermissionsBitField');
 const Util = require('../util/Util');
 
 /**
@@ -61,13 +66,13 @@ class Message extends Base {
        * The type of the message
        * @type {?MessageType}
        */
-      this.type = MessageType[data.type];
+      this.type = data.type;
 
       /**
        * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
        * @type {?boolean}
        */
-      this.system = SystemMessageTypes.includes(this.type);
+      this.system = !NonSystemMessageTypes.includes(this.type);
     } else {
       this.system ??= null;
       this.type ??= null;
@@ -128,9 +133,9 @@ class Message extends Base {
     if ('embeds' in data) {
       /**
        * A list of embeds in the message - e.g. YouTube Player
-       * @type {MessageEmbed[]}
+       * @type {Embed[]}
        */
-      this.embeds = data.embeds.map(e => new Embed(e, true));
+      this.embeds = data.embeds.map(e => new Embed(e));
     } else {
       this.embeds = this.embeds?.slice() ?? [];
     }
@@ -138,9 +143,9 @@ class Message extends Base {
     if ('components' in data) {
       /**
        * A list of MessageActionRows in the message
-       * @type {MessageActionRow[]}
+       * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => BaseMessageComponent.create(c, this.client));
+      this.components = data.components.map(c => createComponent(c));
     } else {
       this.components = this.components?.slice() ?? [];
     }
@@ -278,21 +283,21 @@ class Message extends Base {
     if ('flags' in data) {
       /**
        * Flags that are applied to the message
-       * @type {Readonly<MessageFlags>}
+       * @type {Readonly<MessageFlagsBitField>}
        */
-      this.flags = new MessageFlags(data.flags).freeze();
+      this.flags = new MessageFlagsBitField(data.flags).freeze();
     } else {
-      this.flags = new MessageFlags(this.flags).freeze();
+      this.flags = new MessageFlagsBitField(this.flags).freeze();
     }
 
     /**
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
-     * * Crossposted messages (IS_CROSSPOST {@link MessageFlags.FLAGS message flag})
-     * * CHANNEL_FOLLOW_ADD
-     * * CHANNEL_PINNED_MESSAGE
-     * * REPLY
-     * * THREAD_STARTER_MESSAGE
+     * * Crossposted messages (`MessageFlags.Crossposted`)
+     * * {@link MessageType.ChannelFollowAdd}
+     * * {@link MessageType.ChannelPinnedMessage}
+     * * {@link MessageType.Reply}
+     * * {@link MessageType.ThreadStarterMessage}
      * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
      * @property {Snowflake} channelId The channel's id the message was referenced
@@ -334,7 +339,7 @@ class Message extends Base {
        */
       this.interaction = {
         id: data.interaction.id,
-        type: InteractionType[data.interaction.type],
+        type: data.interaction.type,
         commandName: data.interaction.name,
         user: this.client.users._add(data.interaction.user),
       };
@@ -404,7 +409,7 @@ class Message extends Base {
    * @readonly
    */
   get hasThread() {
-    return this.flags.has(MessageFlags.FLAGS.HAS_THREAD);
+    return this.flags.has(MessageFlags.HasThread);
   }
 
   /**
@@ -483,7 +488,7 @@ class Message extends Base {
 
   /**
    * @typedef {CollectorOptions} MessageComponentCollectorOptions
-   * @property {MessageComponentType} [componentType] The type of component to listen for
+   * @property {ComponentType} [componentType] The type of component to listen for
    * @property {number} [max] The maximum total amount of interactions to collect
    * @property {number} [maxComponents] The maximum number of components to collect
    * @property {number} [maxUsers] The maximum number of users to interact
@@ -513,7 +518,7 @@ class Message extends Base {
    * @typedef {Object} AwaitMessageComponentOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
-   * @property {MessageComponentType} [componentType] The type of component interaction to collect
+   * @property {ComponentType} [componentType] The type of component interaction to collect
    */
 
   /**
@@ -572,11 +577,11 @@ class Message extends Base {
     const permissions = this.channel?.permissionsFor(this.client.user);
     if (!permissions) return false;
     // This flag allows deleting even if timed out
-    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return Boolean(
       this.author.id === this.client.user.id ||
-        (permissions.has(Permissions.FLAGS.MANAGE_MESSAGES, false) &&
+        (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
           this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
     );
   }
@@ -592,7 +597,7 @@ class Message extends Base {
       !this.system &&
         (!this.guild ||
           (channel?.viewable &&
-            channel?.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false))),
+            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
     );
   }
 
@@ -616,13 +621,13 @@ class Message extends Base {
    */
   get crosspostable() {
     const bitfield =
-      Permissions.FLAGS.SEND_MESSAGES |
-      (this.author.id === this.client.user.id ? Permissions.defaultBit : Permissions.FLAGS.MANAGE_MESSAGES);
+      PermissionFlagsBits.SendMessages |
+      (this.author.id === this.client.user.id ? PermissionsBitField.defaultBit : PermissionFlagsBits.ManageMessages);
     const { channel } = this;
     return Boolean(
-      channel?.type === 'GUILD_NEWS' &&
-        !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
-        this.type === 'DEFAULT' &&
+      channel?.type === ChannelType.GuildNews &&
+        !this.flags.has(MessageFlags.Crossposted) &&
+        this.type === MessageType.Default &&
         channel.viewable &&
         channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
@@ -632,13 +637,14 @@ class Message extends Base {
    * Options that can be passed into {@link Message#edit}.
    * @typedef {Object} MessageEditOptions
    * @property {?string} [content] Content to be edited
-   * @property {MessageEmbed[]|APIEmbed[]} [embeds] Embeds to be added/edited
+   * @property {Embed[]|APIEmbed[]} [embeds] Embeds to be added/edited
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
+   * @property {MessageFlags} [flags] Which flags to set for the message.
+   * Only `MessageFlags.SuppressEmbeds` can be edited.
    * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
    * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to add to the message
-   * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
+   * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
 
@@ -662,7 +668,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === 'GUILD_NEWS') {
+   * if (message.channel.type === ChannelType.GuildNews) {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
@@ -751,8 +757,8 @@ class Message extends Base {
   /**
    * Options provided when sending a message as an inline reply.
    * @typedef {BaseMessageOptions} ReplyMessageOptions
-   * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
-   * does not exist (creates a standard message in this case when false)
+   * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
+   * message does not exist (creates a standard message in this case when false)
    * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
@@ -812,7 +818,7 @@ class Message extends Base {
    */
   startThread(options = {}) {
     if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
-    if (!['GUILD_TEXT', 'GUILD_NEWS'].includes(this.channel.type)) {
+    if (![ChannelType.GuildText, ChannelType.GuildNews].includes(this.channel.type)) {
       return Promise.reject(new Error('MESSAGE_THREAD_PARENT'));
     }
     if (this.hasThread) return Promise.reject(new Error('MESSAGE_EXISTING_THREAD'));
@@ -845,12 +851,12 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   suppressEmbeds(suppress = true) {
-    const flags = new MessageFlags(this.flags.bitfield);
+    const flags = new MessageFlagsBitField(this.flags.bitfield);
 
     if (suppress) {
-      flags.add(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+      flags.add(MessageFlags.SuppressEmbeds);
     } else {
-      flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+      flags.remove(MessageFlags.SuppressEmbeds);
     }
 
     return this.edit({ flags });

@@ -7,10 +7,10 @@
     "test:typescript": "tsc --noEmit && tsd",
     "lint": "prettier --check . && eslint src && tslint typings/index.d.ts",
     "format": "prettier --write . && eslint src --fix",
-    "docs": "docgen --source ./src --custom ./docs/index.yml --output ./docs/docs.json",
-    "docs:test": "docgen --source ./src --custom ./docs/index.yml",
+    "docs": "docgen --source ./src --custom ./docs/index.yml --root ../../ --output ./docs/docs.json",
+    "docs:test": "docgen --source ./src --custom ./docs/index.yml --root ../../",
     "prepublishOnly": "yarn lint && yarn test",
-    "changelog": "git cliff --prepend ./CHANGELOG.md -l -c ../../cliff.toml -r ../../ --include-path './*'"
+    "changelog": "git cliff --prepend ./CHANGELOG.md -l -c ./cliff.toml -r ../../ --include-path 'packages/discord.js/*'"
   },
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",
@@ -47,32 +47,30 @@
   },
   "homepage": "https://discord.js.org",
   "dependencies": {
-    "@discordjs/builders": "^0.11.0",
-    "@discordjs/collection": "^0.4.0",
-    "@sapphire/async-queue": "^1.1.9",
-    "@sapphire/snowflake": "^3.0.0",
-    "@types/node-fetch": "^2.5.12",
+    "@discordjs/builders": "workspace:^",
+    "@discordjs/collection": "workspace:^",
+    "@discordjs/rest": "workspace:^",
+    "@sapphire/snowflake": "^3.1.0",
     "@types/ws": "^8.2.2",
-    "discord-api-types": "^0.26.1",
-    "form-data": "^4.0.0",
-    "node-fetch": "^2.6.1",
-    "ws": "^8.4.0"
+    "discord-api-types": "^0.27.0",
+    "node-fetch": "^2.6.7",
+    "ws": "^8.5.0"
   },
   "devDependencies": {
     "@discordjs/docgen": "^0.11.0",
-    "@types/node": "^16.11.12",
+    "@types/node": "^16.11.24",
     "dtslint": "^4.2.1",
-    "eslint": "^8.5.0",
+    "eslint": "^8.9.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
     "is-ci": "^3.0.1",
-    "jest": "^27.4.7",
+    "jest": "^27.5.1",
     "prettier": "^2.5.1",
-    "tsd": "^0.19.0",
+    "tsd": "^0.19.1",
     "tslint": "^6.1.3",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.5"
   },
   "engines": {
     "node": ">=16.9.0"

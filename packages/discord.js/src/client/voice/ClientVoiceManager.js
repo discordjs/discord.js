@@ -1,6 +1,6 @@
 'use strict';
 
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 /**
  * Manages voice connections for the client
@@ -21,7 +21,7 @@ class ClientVoiceManager {
      */
     this.adapters = new Map();
 
-    client.on(Events.SHARD_DISCONNECT, (_, shardId) => {
+    client.on(Events.ShardDisconnect, (_, shardId) => {
       for (const [guildId, adapter] of this.adapters.entries()) {
         if (client.guilds.cache.get(guildId)?.shardId === shardId) {
           adapter.destroy();

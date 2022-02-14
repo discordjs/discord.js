@@ -8,6 +8,7 @@ import {
 	SlashCommandMentionableOption,
 	SlashCommandNumberOption,
 	SlashCommandRoleOption,
+	SlashCommandAttachmentOption,
 	SlashCommandStringOption,
 	SlashCommandSubcommandBuilder,
 	SlashCommandSubcommandGroupBuilder,
@@ -25,6 +26,7 @@ const getBooleanOption = () => new SlashCommandBooleanOption().setName('owo').se
 const getUserOption = () => new SlashCommandUserOption().setName('owo').setDescription('Testing 123');
 const getChannelOption = () => new SlashCommandChannelOption().setName('owo').setDescription('Testing 123');
 const getRoleOption = () => new SlashCommandRoleOption().setName('owo').setDescription('Testing 123');
+const getAttachmentOption = () => new SlashCommandAttachmentOption().setName('owo').setDescription('Testing 123');
 const getMentionableOption = () => new SlashCommandMentionableOption().setName('owo').setDescription('Testing 123');
 const getSubcommandGroup = () => new SlashCommandSubcommandGroupBuilder().setName('owo').setDescription('Testing 123');
 const getSubcommand = () => new SlashCommandSubcommandBuilder().setName('owo').setDescription('Testing 123');
@@ -138,23 +140,23 @@ describe('Slash Commands', () => {
 							integer
 								.setName('iscool')
 								.setDescription('Are we cool or what?')
-								.addChoices([['Very cool', 1_000]]),
+								.addChoices({ name: 'Very cool', value: 1_000 }),
 						)
 						.addNumberOption((number) =>
 							number
 								.setName('iscool')
 								.setDescription('Are we cool or what?')
-								.addChoices([['Very cool', 1.5]]),
+								.addChoices({ name: 'Very cool', value: 1.5 }),
 						)
 						.addStringOption((string) =>
 							string
 								.setName('iscool')
 								.setDescription('Are we cool or what?')
-								.addChoices([
-									['Fancy Pants', 'fp_1'],
-									['Fancy Shoes', 'fs_1'],
-									['The Whole shebang', 'all'],
-								]),
+								.addChoices(
+									{ name: 'Fancy Pants', value: 'fp_1' },
+									{ name: 'Fancy Shoes', value: 'fs_1' },
+									{ name: 'The Whole shebang', value: 'all' },
+								),
 						)
 						.addIntegerOption((integer) =>
 							integer.setName('iscool').setDescription('Are we cool or what?').setAutocomplete(true),
@@ -286,6 +288,8 @@ describe('Slash Commands', () => {
 
 				expect(() => getBuilder().addRoleOption(getRoleOption())).not.toThrowError();
 
+				expect(() => getBuilder().addAttachmentOption(getAttachmentOption())).not.toThrowError();
+
 				expect(() => getBuilder().addMentionableOption(getMentionableOption())).not.toThrowError();
 			});
 
@@ -331,24 +335,24 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setName('foo').setDescription('foo').setDefaultPermission(false)).not.toThrowError();
 			});
 
-			test('GIVEN an option that is autocompletable and has choices, THEN setting choices to an empty array should not throw an error', () => {
+			test('GIVEN an option that is autocompletable and has choices, THEN passing nothing to setChoices should not throw an error', () => {
 				expect(() =>
-					getBuilder().addStringOption(getStringOption().setAutocomplete(true).setChoices([])),
+					getBuilder().addStringOption(getStringOption().setAutocomplete(true).setChoices()),
 				).not.toThrowError();
 			});
 
 			test('GIVEN an option that is autocompletable, THEN setting choices should throw an error', () => {
 				expect(() =>
 					getBuilder().addStringOption(
-						getStringOption()
-							.setAutocomplete(true)
-							.setChoices([['owo', 'uwu']]),
+						getStringOption().setAutocomplete(true).setChoices({ name: 'owo', value: 'uwu' }),
 					),
 				).toThrowError();
 			});
 
 			test('GIVEN an option, THEN setting choices should not throw an error', () => {
-				expect(() => getBuilder().addStringOption(getStringOption().setChoices([['owo', 'uwu']]))).not.toThrowError();
+				expect(() =>
+					getBuilder().addStringOption(getStringOption().setChoices({ name: 'owo', value: 'uwu' })),
+				).not.toThrowError();
 			});
 		});
 

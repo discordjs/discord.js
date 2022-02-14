@@ -1,7 +1,6 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { StageInstancePrivacyLevel } = require('discord-api-types/v9');
 const Base = require('./Base');
 
 /**
@@ -51,13 +50,14 @@ class StageInstance extends Base {
        * The privacy level of the stage instance
        * @type {StageInstancePrivacyLevel}
        */
-      this.privacyLevel = StageInstancePrivacyLevel[data.privacy_level];
+      this.privacyLevel = data.privacy_level;
     }
 
     if ('discoverable_disabled' in data) {
       /**
        * Whether or not stage discovery is disabled
        * @type {?boolean}
+       * @deprecated See https://github.com/discord/discord-api-docs/pull/4296 for more information
        */
       this.discoverableDisabled = data.discoverable_disabled;
     } else {

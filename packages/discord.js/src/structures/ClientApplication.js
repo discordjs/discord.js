@@ -1,9 +1,10 @@
 'use strict';
 
+const { Routes } = require('discord-api-types/v9');
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
-const ApplicationFlags = require('../util/ApplicationFlags');
+const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
 
 /**
  * Represents a Client OAuth2 Application.
@@ -26,9 +27,9 @@ class ClientApplication extends Application {
     if ('flags' in data) {
       /**
        * The flags this application has
-       * @type {ApplicationFlags}
+       * @type {ApplicationFlagsBitField}
        */
-      this.flags = new ApplicationFlags(data.flags).freeze();
+      this.flags = new ApplicationFlagsBitField(data.flags).freeze();
     }
 
     if ('cover_image' in data) {
@@ -96,7 +97,7 @@ class ClientApplication extends Application {
    * @returns {Promise<ClientApplication>}
    */
   async fetch() {
-    const app = await this.client.api.oauth2.applications('@me').get();
+    const app = await this.client.rest.get(Routes.oauth2CurrentApplication());
     this._patch(app);
     return this;
   }

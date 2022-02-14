@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const Events = require('../../util/Events');
 
 class GuildIntegrationsUpdate extends Action {
   handle(data) {
@@ -12,7 +12,7 @@ class GuildIntegrationsUpdate extends Action {
      * @event Client#guildIntegrationsUpdate
      * @param {Guild} guild The guild whose integrations were updated
      */
-    if (guild) client.emit(Events.GUILD_INTEGRATIONS_UPDATE, guild);
+    if (guild) client.emit(Events.GuildIntegrationsUpdate, guild);
   }
 }
 

@@ -12,7 +12,7 @@
 		"postinstall": "is-ci || husky install",
 		"docs": "turbo run docs",
 		"changelog": "turbo run changelog",
-		"update": "yarn upgrade-interactive --latest"
+		"update": "yarn upgrade-interactive"
 	},
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
@@ -38,13 +38,13 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^16.0.2",
-		"@commitlint/config-angular": "^16.0.0",
+		"@commitlint/cli": "^16.2.1",
+		"@commitlint/config-angular": "^16.2.1",
 		"@favware/npm-deprecate": "^1.0.4",
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^7.0.4",
 		"prettier": "^2.5.1",
-		"turbo": "1.0.24"
+		"turbo": "1.1.2"
 	},
 	"engines": {
 		"node": ">=16.9.0"
@@ -52,48 +52,5 @@
 	"workspaces": [
 		"packages/*"
 	],
-	"turbo": {
-		"baseBranch": "origin/main",
-		"pipeline": {
-			"build": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": [
-					"dist/**",
-					"docs/docs.json"
-				]
-			},
-			"test": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": [
-					"coverage/**"
-				]
-			},
-			"lint": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": []
-			},
-			"format": {
-				"outputs": []
-			},
-			"docs": {
-				"outputs": [
-					"docs/docs.json"
-				]
-			},
-			"changelog": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": [
-					"CHANGELOG.md"
-				]
-			}
-		}
-	}
+	"packageManager": "yarn@3.1.1"
 }

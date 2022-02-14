@@ -1,6 +1,5 @@
 'use strict';
 
-const { ComponentType } = require('discord-api-types/v9');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
@@ -34,9 +33,9 @@ class MessageComponentInteraction extends Interaction {
 
     /**
      * The type of component which was interacted with
-     * @type {string}
+     * @type {ComponentType}
      */
-    this.componentType = MessageComponentInteraction.resolveType(data.data.component_type);
+    this.componentType = data.data.component_type;
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -81,16 +80,6 @@ class MessageComponentInteraction extends Interaction {
       .find(component => (component.customId ?? component.custom_id) === this.customId);
   }
 
-  /**
-   * Resolves the type of a MessageComponent
-   * @param {MessageComponentTypeResolvable} type The type to resolve
-   * @returns {ComponentType}
-   * @private
-   */
-  static resolveType(type) {
-    return typeof type === 'string' ? type : ComponentType[type];
-  }
-
   // These are here only for documentation purposes - they are implemented by InteractionResponses
   /* eslint-disable no-empty-function */
   deferReply() {}
@@ -115,4 +104,29 @@ module.exports = MessageComponentInteraction;
 /**
  * @external APIMessageButton
  * @see {@link https://discord.com/developers/docs/interactions/message-components#button-object}
+ */
+
+/**
+ * @external ButtonComponent
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/ButtonComponent}
+ */
+
+/**
+ * @external SelectMenuComponent
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuComponent}
+ */
+
+/**
+ * @external SelectMenuOption
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuComponent}
+ */
+
+/**
+ * @external ActionRow
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/ActionRow}
+ */
+
+/**
+ * @external Embed
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/Embed}
  */

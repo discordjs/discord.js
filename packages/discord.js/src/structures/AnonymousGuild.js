@@ -1,6 +1,5 @@
 'use strict';
 
-const { GuildVerificationLevel, GuildNSFWLevel } = require('discord-api-types/v9');
 const BaseGuild = require('./BaseGuild');
 
 /**
@@ -44,9 +43,9 @@ class AnonymousGuild extends BaseGuild {
     if ('verification_level' in data) {
       /**
        * The verification level of the guild
-       * @type {VerificationLevel}
+       * @type {GuildVerificationLevel}
        */
-      this.verificationLevel = GuildVerificationLevel[data.verification_level];
+      this.verificationLevel = data.verification_level;
     }
 
     if ('vanity_url_code' in data) {
@@ -60,28 +59,28 @@ class AnonymousGuild extends BaseGuild {
     if ('nsfw_level' in data) {
       /**
        * The NSFW level of this guild
-       * @type {NSFWLevel}
+       * @type {GuildNSFWLevel}
        */
-      this.nsfwLevel = GuildNSFWLevel[data.nsfw_level];
+      this.nsfwLevel = data.nsfw_level;
     }
   }
 
   /**
    * The URL to this guild's banner.
-   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  bannerURL({ format, size } = {}) {
-    return this.banner && this.client.rest.cdn.Banner(this.id, this.banner, format, size);
+  bannerURL(options = {}) {
+    return this.banner && this.client.rest.cdn.banner(this.id, this.banner, options);
   }
 
   /**
    * The URL to this guild's invite splash image.
-   * @param {StaticImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  splashURL({ format, size } = {}) {
-    return this.splash && this.client.rest.cdn.Splash(this.id, this.splash, format, size);
+  splashURL(options = {}) {
+    return this.splash && this.client.rest.cdn.splash(this.id, this.splash, options);
   }
 }
 

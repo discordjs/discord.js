@@ -2,12 +2,14 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
+const { Routes } = require('discord-api-types/v9');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const { Role } = require('../structures/Role');
 const DataResolver = require('../util/DataResolver');
-const Permissions = require('../util/Permissions');
-const { resolveColor, setPosition } = require('../util/Util');
+const PermissionsBitField = require('../util/PermissionsBitField');
+const { resolveColor } = require('../util/Util');
+const Util = require('../util/Util');
 
 let cacheWarningEmitted = false;
 
@@ -66,7 +68,7 @@ class RoleManager extends CachedManager {
     }
 
     // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
-    const data = await this.client.api.guilds(this.guild.id).roles.get();
+    const data = await this.client.rest.get(Routes.guildRoles(this.guild.id));
     const roles = new Collection();
     for (const role of data) roles.set(role.id, this._add(role, cache));
     return id ? roles.get(id) ?? null : roles;
@@ -127,7 +129,7 @@ class RoleManager extends CachedManager {
    * // Create a new role with data and a reason
    * guild.roles.create({
    *   name: 'Super Cool Blue People',
-   *   color: 'BLUE',
+   *   color: Colors.Blue,
    *   reason: 'we needed a role for Super Cool People',
    * })
    *   .then(console.log)
@@ -136,15 +138,15 @@ class RoleManager extends CachedManager {
   async create(options = {}) {
     let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
     color &&= resolveColor(color);
-    if (typeof permissions !== 'undefined') permissions = new Permissions(permissions);
+    if (typeof permissions !== 'undefined') permissions = new PermissionsBitField(permissions);
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
       icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
       if (typeof icon !== 'string') icon = undefined;
     }
 
-    const data = await this.client.api.guilds(this.guild.id).roles.post({
-      data: {
+    const data = await this.client.rest.post(Routes.guildRoles(this.guild.id), {
+      body: {
         name,
         color,
         hoist,
@@ -159,7 +161,7 @@ class RoleManager extends CachedManager {
       guild_id: this.guild.id,
       role: data,
     });
-    if (position) return role.setPosition(position, reason);
+    if (position) return this.setPosition(role, position, { reason });
     return role;
   }
 
@@ -180,19 +182,7 @@ class RoleManager extends CachedManager {
     if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
 
     if (typeof data.position === 'number') {
-      const updatedRoles = await setPosition(
-        role,
-        data.position,
-        false,
-        this.guild._sortedRoles(),
-        this.client.api.guilds(this.guild.id).roles,
-        reason,
-      );
-
-      this.client.actions.GuildRolesPositionUpdate.handle({
-        guild_id: this.guild.id,
-        roles: updatedRoles,
-      });
+      await this.setPosition(role, data.position, { reason });
     }
 
     let icon = data.icon;
@@ -202,17 +192,17 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
-    const _data = {
+    const body = {
       name: data.name,
       color: typeof data.color === 'undefined' ? undefined : resolveColor(data.color),
       hoist: data.hoist,
-      permissions: typeof data.permissions === 'undefined' ? undefined : new Permissions(data.permissions),
+      permissions: typeof data.permissions === 'undefined' ? undefined : new PermissionsBitField(data.permissions),
       mentionable: data.mentionable,
       icon,
       unicode_emoji: data.unicodeEmoji,
     };
 
-    const d = await this.client.api.guilds(this.guild.id).roles(role.id).patch({ data: _data, reason });
+    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason });
 
     const clone = role._clone();
     clone._patch(d);
@@ -232,11 +222,43 @@ class RoleManager extends CachedManager {
    */
   async delete(role, reason) {
     const id = this.resolveId(role);
-    await this.client.api.guilds[this.guild.id].roles[id].delete({ reason });
+    await this.client.rest.delete(Routes.guildRole(this.guild.id, id), { reason });
     this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: id });
   }
 
-  /*
+  /**
+   * Sets the new position of the role.
+   * @param {RoleResolvable} role The role to change the position of
+   * @param {number} position The new position for the role
+   * @param {SetRolePositionOptions} [options] Options for setting the position
+   * @returns {Promise<Role>}
+   * @example
+   * // Set the position of the role
+   * guild.roles.setPosition('222197033908436994', 1)
+   *   .then(updated => console.log(`Role position: ${updated.position}`))
+   *   .catch(console.error);
+   */
+  async setPosition(role, position, { relative, reason } = {}) {
+    role = this.resolve(role);
+    if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
+    const updatedRoles = await Util.setPosition(
+      role,
+      position,
+      relative,
+      this.guild._sortedRoles(),
+      this.client,
+      Routes.guildRoles(this.guild.id),
+      reason,
+    );
+
+    this.client.actions.GuildRolesPositionUpdate.handle({
+      guild_id: this.guild.id,
+      roles: updatedRoles,
+    });
+    return role;
+  }
+
+  /**
    * The data needed for updating a guild role's position
    * @typedef {Object} GuildRolePosition
    * @property {RoleResolvable} role The role's id
@@ -260,9 +282,7 @@ class RoleManager extends CachedManager {
     }));
 
     // Call the API to update role positions
-    await this.client.api.guilds(this.guild.id).roles.patch({
-      data: rolePositions,
-    });
+    await this.client.rest.patch(Routes.guildRoles(this.guild.id), { body: rolePositions });
     return this.client.actions.GuildRolesPositionUpdate.handle({
       guild_id: this.guild.id,
       roles: rolePositions,

@@ -1,7 +1,7 @@
 'use strict';
 
 const Collector = require('./interfaces/Collector');
-const { Events } = require('../util/Constants');
+const Events = require('../util/Events');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
@@ -46,20 +46,20 @@ class MessageCollector extends Collector {
     this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
 
     this.client.incrementMaxListeners();
-    this.client.on(Events.MESSAGE_CREATE, this.handleCollect);
-    this.client.on(Events.MESSAGE_DELETE, this.handleDispose);
-    this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
-    this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
-    this.client.on(Events.THREAD_DELETE, this._handleThreadDeletion);
-    this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
+    this.client.on(Events.MessageCreate, this.handleCollect);
+    this.client.on(Events.MessageDelete, this.handleDispose);
+    this.client.on(Events.MessageBulkDelete, bulkDeleteListener);
+    this.client.on(Events.ChannelDelete, this._handleChannelDeletion);
+    this.client.on(Events.ThreadDelete, this._handleThreadDeletion);
+    this.client.on(Events.GuildDelete, this._handleGuildDeletion);
 
     this.once('end', () => {
-      this.client.removeListener(Events.MESSAGE_CREATE, this.handleCollect);
-      this.client.removeListener(Events.MESSAGE_DELETE, this.handleDispose);
-      this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
-      this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
-      this.client.removeListener(Events.THREAD_DELETE, this._handleThreadDeletion);
-      this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
+      this.client.removeListener(Events.MessageCreate, this.handleCollect);
+      this.client.removeListener(Events.MessageDelete, this.handleDispose);
+      this.client.removeListener(Events.MessageBulkDelete, bulkDeleteListener);
+      this.client.removeListener(Events.ChannelDelete, this._handleChannelDeletion);
+      this.client.removeListener(Events.ThreadDelete, this._handleThreadDeletion);
+      this.client.removeListener(Events.GuildDelete, this._handleGuildDeletion);
       this.client.decrementMaxListeners();
     });
   }
