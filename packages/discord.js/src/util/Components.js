@@ -4,28 +4,28 @@
 
 /**
  * @typedef {Object} BaseComponentData
- * @property {ComponentType} type
+ * @property {ComponentType} type The type of component
  */
 /**
  * @typedef {BaseComponentData} ActionRowData
- * @property {ComponentData[]} components
+ * @property {ComponentData[]} components The components in this action row
  */
 /**
  * @typedef {BaseComponentData} ButtonComponentData
- * @property {ButtonStyle} style
- * @property {?boolean} disabled
- * @property {string} label
- * @property {?APIComponentEmoji} emoji
- * @property {?string} customId
- * @property {?string} url
+ * @property {ButtonStyle} style The style of the button
+ * @property {?boolean} disabled Whether or not this button is disabled
+ * @property {string} label The label of this button
+ * @property {?APIComponentEmoji} emoji The emoji on this button
+ * @property {?string} customId The custom id of the button
+ * @property {?string} url The url of the button
  */
 /**
  * @typedef {object} SelectMenuComponentOptionData
- * @property {string} label
- * @property {string} value
- * @property {?string} description
- * @property {?APIComponentEmoji} emoji
- * @property {?boolean} default
+ * @property {string} label The label of the option
+ * @property {string} value The value of the option
+ * @property {?string} description The description of the option
+ * @property {?APIComponentEmoji} emoji The emoji on the option
+ * @property {?boolean} default Whether or not this option is selected by default
  */
 /**
  * @typedef {BaseComponentData} SelectMenuComponentData
@@ -51,4 +51,51 @@
 
 /**
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData} ComponentData
+ */
+
+/**
+ * @typedef {Object} EmbedData
+ * @property {?string} title
+ * @property {?EmbedType} type
+ * @property {?string} description
+ * @property {?string} url
+ * @property {?string} timestamp
+ * @property {?number} color
+ * @property {?EmbedFooterData} footer
+ * @property {?EmbedImageData} image
+ * @property {?EmbedImageData} thumbnail
+ * @property {?EmbedProviderData} provider
+ * @property {?EmbedAuthorData} author
+ * @property {?EmbedFieldData[]} fields
+ */
+
+/**
+ * @typedef {Object} EmbedFooterData
+ * @property {string} text
+ * @property {?string} iconURL
+ */
+
+/**
+ * @typedef {Object} EmbedImageData
+ * @property {?string} url
+ */
+
+/**
+ * @typedef {Object} EmbedProviderData
+ * @property {?string} name
+ * @property {?string} url
+ */
+
+/**
+ * @typedef {Object} EmbedAuthorData
+ * @property {string} name
+ * @property {?string} url
+ * @property {?string} iconURL
+ */
+
+/**
+ * @typedef {Object} EmbedFieldData
+ * @property {string} name
+ * @property {string} value
+ * @property {?boolean} inline
  */

@@ -235,8 +235,8 @@ class InteractionResponses {
   }
 
   /**
-   * Presents a modal component
-   * @param {APIModal|ModalData|Modal} modal The modal to present
+   * Shows a modal component
+   * @param {APIModal|ModalData|Modal} modal The modal to show
    */
   async showModal(modal) {
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
