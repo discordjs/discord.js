@@ -35,9 +35,8 @@ export function createComponent(data: APIModalComponent | APIMessageComponent): 
 		case ComponentType.SelectMenu:
 			return new SelectMenuComponent(data);
 		case ComponentType.TextInput:
-			return new TextInputComponent(data);
+			return data instanceof TextInputComponent ? data : new TextInputComponent(data);
 		default:
-			// @ts-expect-error
-			throw new Error(`Cannot serialize component type: ${data.type as number}`);
+			throw new Error(`Cannot serialize component type: ${(data as APIBaseComponent<ComponentType>).type}`);
 	}
 }

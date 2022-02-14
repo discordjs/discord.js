@@ -8,9 +8,9 @@ const MessagePayload = require('../MessagePayload');
 
 /**
  * @typedef {Object} ModalData
- * @property {string} title
- * @property {string} customId
- * @property {ActionRow[]} components
+ * @property {string} title The title of the modal
+ * @property {string} customId The custom id of the modal
+ * @property {ActionRowData[]} components The components within this modal
  */
 
 /**

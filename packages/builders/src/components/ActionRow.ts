@@ -1,4 +1,9 @@
-import { APIActionRowComponent, APIMessageActionRowComponent, ComponentType } from 'discord-api-types/v9';
+import {
+	APIActionRowComponent,
+	APIMessageActionRowComponent,
+	APIModalActionRowComponent,
+	ComponentType,
+} from 'discord-api-types/v9';
 import type { ButtonComponent, SelectMenuComponent } from '..';
 import { Component } from './Component';
 import { createComponent } from './Components';
@@ -27,7 +32,7 @@ export class ActionRow<
 	public constructor({
 		components,
 		...data
-	}: Partial<APIActionRowComponent<APIMessageActionRowComponent | APIMessageActionRowComponent>> = {}) {
+	}: Partial<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
 		this.components = (components?.map((c) => createComponent(c)) ?? []) as T[];
 	}

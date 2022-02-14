@@ -1,6 +1,5 @@
 import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v9';
-import { Component } from '../..';
-import { customIdValidator } from '../Assertions';
+import { Component } from '../../index';
 
 export class UnsafeTextInputComponent extends Component<
 	Partial<APITextInputComponent> & { type: ComponentType.TextInput }
@@ -70,7 +69,6 @@ export class UnsafeTextInputComponent extends Component<
 	 * @param customId The custom id of this input text
 	 */
 	public setCustomId(customId: string) {
-		customIdValidator.parse(customId);
 		this.data.custom_id = customId;
 		return this;
 	}

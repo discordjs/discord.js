@@ -7,14 +7,14 @@ class ModalSubmitFieldsResolver {
   constructor(components) {
     /**
      * The components within the modal
-     * @type {Array<ActionRow<PartialInputTextData>>} The components in the modal
+     * @type {Array<ActionRow<ModalFieldData>>} The components in the modal
      */
     this.components = components;
   }
 
   /**
    * The extracted fields from the modal
-   * @type {Array<PartialInputTextData>}The fields in the modal
+   * @type {FieldData[]}The fields in the modal
    * @private
    */
   get _fields() {
@@ -24,7 +24,7 @@ class ModalSubmitFieldsResolver {
   /**
    * Gets a field given a custom id from a component
    * @param {string} customId The custom id of the component
-   * @returns {PartialInputTextData}
+   * @returns {ModalFieldData}
    */
   getField(customId) {
     const field = this._fields.find(f => f.customId === customId);
