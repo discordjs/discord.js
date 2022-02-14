@@ -3,10 +3,9 @@
 const { Buffer } = require('node:buffer');
 const { Embed, isJSONEncodable } = require('@discordjs/builders');
 const { MessageFlags } = require('discord-api-types/v9');
+const snakecase = require('snakecase-keys');
 const { RangeError } = require('../errors');
-const Components = require('../util/Components');
 const DataResolver = require('../util/DataResolver');
-const Embeds = require('../util/Embeds');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const Util = require('../util/Util');
 
@@ -133,9 +132,7 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c =>
-      isJSONEncodable(c) ? c.toJSON() : Components.transformJSON(c),
-    );
+    const components = this.options.components?.map(c => (isJSONEncodable(c) ? c.toJSON() : snakecase(c)));
 
     let username;
     let avatarURL;
@@ -194,9 +191,7 @@ class MessagePayload {
       content,
       tts,
       nonce,
-      embeds: this.options.embeds?.map(embed =>
-        embed instanceof Embed ? embed.toJSON() : Embeds.transformJSON(embed),
-      ),
+      embeds: this.options.embeds?.map(embed => (embed instanceof Embed ? embed.toJSON() : snakecase(embed))),
       components,
       username,
       avatar_url: avatarURL,

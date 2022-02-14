@@ -1,11 +1,11 @@
 'use strict';
 
 const { SelectMenuComponent: BuildersSelectMenuComponent } = require('@discordjs/builders');
-const Components = require('../util/Components');
+const snakecase = require('snakecase-keys');
 
 class SelectMenuComponent extends BuildersSelectMenuComponent {
   constructor(data) {
-    super(Components.transformJSON(data));
+    super(snakecase(data));
   }
 }
 

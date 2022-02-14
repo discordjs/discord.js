@@ -43,28 +43,49 @@
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData} ComponentData
  */
 
-class Components extends null {
-  /**
-   * Transforms json data into api-compatible json data.
-   * @param {ComponentData|APIMessageComponent} data The data to transform.
-   * @returns {APIMessageComponentData}
-   */
-  static transformJSON(data) {
-    return {
-      type: data?.type,
-      custom_id: data?.customId ?? data?.custom_id,
-      disabled: data?.disabled,
-      style: data?.style,
-      label: data?.label,
-      emoji: data?.emoji,
-      url: data?.url,
-      options: data?.options,
-      placeholder: data?.placeholder,
-      min_values: data?.minValues ?? data?.min_values,
-      max_values: data?.maxValues ?? data?.max_values,
-      components: data?.components?.map(c => Components.transformJSON(c)),
-    };
-  }
-}
+/**
+ * @typedef {Object} EmbedData
+ * @property {?string} title
+ * @property {?EmbedType} type
+ * @property {?string} description
+ * @property {?string} url
+ * @property {?string} timestamp
+ * @property {?number} color
+ * @property {?EmbedFooterData} footer
+ * @property {?EmbedImageData} image
+ * @property {?EmbedImageData} thumbnail
+ * @property {?EmbedProviderData} provider
+ * @property {?EmbedAuthorData} author
+ * @property {?EmbedFieldData[]} fields
+ */
 
-module.exports = Components;
+/**
+ * @typedef {Object} EmbedFooterData
+ * @property {string} text
+ * @property {?string} iconURL
+ */
+
+/**
+ * @typedef {Object} EmbedImageData
+ * @property {?string} url
+ */
+
+/**
+ * @typedef {Object} EmbedProviderData
+ * @property {?string} name
+ * @property {?string} url
+ */
+
+/**
+ * @typedef {Object} EmbedAuthorData
+ * @property {string} name
+ * @property {?string} url
+ * @property {?string} iconURL
+ */
+
+/**
+ * @typedef {Object} EmbedFieldData
+ * @property {string} name
+ * @property {string} value
+ * @property {?boolean} inline
+ */
