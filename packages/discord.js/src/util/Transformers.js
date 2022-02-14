@@ -12,7 +12,7 @@ class Transformers extends null {
   static toSnakeCase(obj = {}) {
     return transform(obj, (acc, value, key, target) => {
       const camelKey = Array.isArray(target) ? key : snakeCase(key);
-      acc[camelKey] = Boolean(value) && typeof value === 'object' ? Transformers.toSnakeCase(value) : value;
+      acc[camelKey] = value && typeof value === 'object' ? Transformers.toSnakeCase(value) : value;
     });
   }
 }
