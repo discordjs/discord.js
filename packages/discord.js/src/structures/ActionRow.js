@@ -1,11 +1,11 @@
 'use strict';
 
 const { ActionRow: BuildersActionRow } = require('@discordjs/builders');
-const snakecase = require('snakecase-keys');
+const Transformers = require('../util/Transformers');
 
 class ActionRow extends BuildersActionRow {
-  constructor(data = {}) {
-    super(snakecase(data));
+  constructor(data) {
+    super(Transformers.toSnakeCase(data));
   }
 }
 

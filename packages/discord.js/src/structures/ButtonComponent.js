@@ -1,11 +1,11 @@
 'use strict';
 
 const { ButtonComponent: BuildersButtonComponent } = require('@discordjs/builders');
-const snakecase = require('snakecase-keys');
+const Transformers = require('../util/Transformers');
 
 class ButtonComponent extends BuildersButtonComponent {
   constructor(data) {
-    super(snakecase(data));
+    super(Transformers.toSnakeCase(data));
   }
 }
 
