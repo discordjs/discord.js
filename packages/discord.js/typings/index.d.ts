@@ -3281,7 +3281,7 @@ export interface ApplicationCommandChannelOption extends BaseApplicationCommandO
 }
 
 export interface ApplicationCommandAttachmentOption extends BaseApplicationCommandOptionsData {
-  type: 'ATTACHMENT';
+  type: ApplicationCommandOptionType.Attachment;
 }
 
 export interface ApplicationCommandAutocompleteOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
