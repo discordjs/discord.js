@@ -81,7 +81,6 @@ describe('Action Row Components', () => {
 			expect(new ActionRow(actionRowData).toJSON()).toEqual(actionRowData);
 			expect(new ActionRow().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
 			expect(() => createComponent({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
-			// @ts-expect-error
 			expect(() => createComponent({ type: 42, components: [] })).toThrowError();
 		});
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {
