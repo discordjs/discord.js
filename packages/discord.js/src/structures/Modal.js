@@ -1,11 +1,11 @@
 'use strict';
 
 const { Modal: BuildersModal } = require('@discordjs/builders');
-const Modals = require('../util/Modals');
+const snakecase = require('snakecase-keys');
 
 class Modal extends BuildersModal {
-  constructor(data) {
-    super({ ...Modals.transformJSON(data) });
+  constructor(data = {}) {
+    super(snakecase(data));
   }
 }
 

@@ -54,6 +54,7 @@
     "@types/ws": "^8.2.2",
     "discord-api-types": "^0.27.1",
     "lodash.snakecase": "^4.1.1",
+    "snakecase-keys": "^5.1.2",
     "undici": "^4.14.1",
     "ws": "^8.5.0"
   },
