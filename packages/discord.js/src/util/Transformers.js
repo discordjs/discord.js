@@ -1,7 +1,6 @@
 'use strict';
 
 const snakeCase = require('lodash.snakecase');
-const transform = require('lodash.transform');
 
 class Transformers extends null {
   /**
@@ -10,10 +9,14 @@ class Transformers extends null {
    * @returns {*}
    */
   static toSnakeCase(obj = {}) {
-    return transform(obj, (acc, value, key, target) => {
-      const camelKey = Array.isArray(target) ? key : snakeCase(key);
-      acc[camelKey] = value && typeof value === 'object' ? Transformers.toSnakeCase(value) : value;
-    });
+    if (typeof obj !== 'object' || !obj) return obj;
+    if (Array.isArray(obj)) return obj.map(Transformers.toSnakeCase);
+
+    const target = {};
+    for (const [key, value] of Object.entries(obj)) {
+      target[snakeCase(key)] = Transformers.toSnakeCase(value);
+    }
+    return target;
   }
 }
 

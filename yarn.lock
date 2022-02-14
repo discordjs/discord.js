@@ -4442,7 +4442,6 @@ __metadata:
     is-ci: ^3.0.1
     jest: ^27.5.1
     lodash.snakecase: ^4.1.1
-    lodash.transform: ^4.6.0
     node-fetch: ^2.6.7
     prettier: ^2.5.1
     tsd: ^0.19.1
@@ -7616,13 +7615,6 @@ dts-critic@latest:
   version: 4.1.1
   resolution: "lodash.snakecase@npm:4.1.1"
   checksum: 1685ed3e83dda6eae5a4dcaee161a51cd210aabb3e1c09c57150e7dd8feda19e4ca0d27d0631eabe8d0f4eaa51e376da64e8c018ae5415417c5890d42feb72a8
-  languageName: node
-  linkType: hard
-
-"lodash.transform@npm:^4.6.0":
-  version: 4.6.0
-  resolution: "lodash.transform@npm:4.6.0"
-  checksum: f9d0f583409212e4e94c08c0de1c9e71679e26658d2645be16ee6db55ee2572db5a8395c76f471c00c7d18f3a86c781f7ac51238a7cfa29e9cca253aa0b97149
   languageName: node
   linkType: hard
 
