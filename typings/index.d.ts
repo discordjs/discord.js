@@ -348,6 +348,9 @@ export abstract class BaseCommandInteraction<Cached extends CacheType = CacheTyp
   public ephemeral: boolean | null;
   public replied: boolean;
   public webhook: InteractionWebhook;
+  public awaitModalSubmit(
+    options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
+  ): Promise<ModalSubmitInteraction<Cached>>;
   public inGuild(): this is BaseCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is BaseCommandInteraction<'cached'>;
   public inRawGuild(): this is BaseCommandInteraction<'raw'>;
@@ -1654,6 +1657,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public message: GuildCacheMessage<Cached>;
   public replied: boolean;
   public webhook: InteractionWebhook;
+  public awaitModalSubmit(
+    options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
+  ): Promise<ModalSubmitInteraction<Cached>>;
   public inGuild(): this is MessageComponentInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MessageComponentInteraction<'cached'>;
   public inRawGuild(): this is MessageComponentInteraction<'raw'>;
@@ -3862,6 +3868,13 @@ export interface AwaitMessagesOptions extends MessageCollectorOptions {
   errors?: string[];
 }
 
+export type AwaitModalSubmitOptions<T extends ModalSubmitInteraction> = Omit<
+  ModalSubmitInteractionCollectorOptions<T>,
+  'max' | 'maxComponents' | 'maxUsers'
+> & {
+  time: number;
+};
+
 export interface AwaitReactionsOptions extends ReactionCollectorOptions {
   errors?: string[];
 }
@@ -5340,6 +5353,11 @@ export interface ModalOptions {
   customId: string;
   title: string;
 }
+
+export type ModalSubmitInteractionCollectorOptions<T extends ModalSubmitInteraction> = Omit<
+  InteractionCollectorOptions<T>,
+  'channel' | 'message' | 'guild' | 'interactionType'
+>;
 
 export interface MultipleShardRespawnOptions {
   shardDelay?: number;
