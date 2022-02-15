@@ -1,4 +1,8 @@
-import type { APIModalInteractionResponseCallbackData } from 'discord-api-types/v9';
+import type {
+	APIActionRowComponent,
+	APIModalActionRowComponent,
+	APIModalInteractionResponseCallbackData,
+} from 'discord-api-types/v9';
 import { ActionRow, createComponent, JSONEncodable, ModalActionRowComponent } from '../../index';
 
 export class UnsafeModal implements JSONEncodable<APIModalInteractionResponseCallbackData> {
@@ -46,8 +50,14 @@ export class UnsafeModal implements JSONEncodable<APIModalInteractionResponseCal
 	 * Adds components to this modal
 	 * @param components The components to add to this modal
 	 */
-	public addComponents(...components: ActionRow<ModalActionRowComponent>[]) {
-		this.components.push(...components);
+	public addComponents(
+		...components: (ActionRow<ModalActionRowComponent> | APIActionRowComponent<APIModalActionRowComponent>)[]
+	) {
+		this.components.push(
+			...components.map((component) =>
+				component instanceof ActionRow ? component : new ActionRow<ModalActionRowComponent>(component),
+			),
+		);
 		return this;
 	}
 

@@ -10,9 +10,9 @@ import { createComponent } from './Components';
 import isEqual from 'fast-deep-equal';
 import type { TextInputComponent } from './TextInput';
 
-export type MessageComponent = ActionRowComponent | ActionRow;
+export type MessageComponent = MessageActionRowComponent | ActionRow;
 
-export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
+export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
 export type ModalActionRowComponent = UnsafeTextInputComponent;
 
 // TODO: Add valid form component types
@@ -20,7 +20,7 @@ export type ModalActionRowComponent = UnsafeTextInputComponent;
  * Represents an action row component
  */
 export class ActionRow<
-	T extends ModalActionRowComponent | ActionRowComponent = ModalActionRowComponent | ActionRowComponent,
+	T extends ModalActionRowComponent | MessageActionRowComponent = ModalActionRowComponent | MessageActionRowComponent,
 > extends Component<
 	Omit<Partial<APIActionRowComponent<APIMessageActionRowComponent>> & { type: ComponentType.ActionRow }, 'components'>
 > {

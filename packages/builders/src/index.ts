@@ -9,6 +9,7 @@ export * from './components/button/Button';
 export * from './components/Component';
 export * from './components/Components';
 export * from './components/textInput/TextInput';
+export * from './components/textInput/Assertions';
 export * from './components/textInput/UnsafeTextInput';
 export * from './interactions/modals/UnsafeModal';
 export * from './interactions/modals/Modal';
