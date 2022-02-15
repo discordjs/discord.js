@@ -10,7 +10,7 @@ class Transformers extends null {
    */
   static toSnakeCase(obj = {}) {
     if (typeof obj !== 'object' || !obj) return obj;
-    if (Array.isArray(obj)) return obj.map(Transformers.toSnakeCase);
+    if (Array.isArray(obj)) return obj.map((item) => Transformers.toSnakeCase(item));
 
     const target = {};
     for (const [key, value] of Object.entries(obj)) {
