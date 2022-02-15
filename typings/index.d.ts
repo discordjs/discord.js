@@ -22,6 +22,7 @@ import {
 import { Collection } from '@discordjs/collection';
 import {
   APIActionRowComponent,
+  APIActionRowComponentTypes,
   APIApplicationCommand,
   APIApplicationCommandInteractionData,
   APIApplicationCommandOption,
@@ -35,7 +36,9 @@ import {
   APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
   APIMessage,
+  APIMessageActionRowComponent,
   APIMessageComponent,
+  APIModalActionRowComponent,
   APIOverwrite,
   APIPartialChannel,
   APIPartialEmoji,
@@ -43,6 +46,7 @@ import {
   APIRole,
   APISelectMenuComponent,
   APITemplateSerializedSourceGuild,
+  APITextInputComponent,
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
@@ -119,7 +123,6 @@ import {
   RawMessagePayloadData,
   RawMessageReactionData,
   RawMessageSelectMenuInteractionData,
-  RawModalActionRowComponentData,
   RawModalSubmitInteractionData,
   RawOAuth2GuildData,
   RawPartialGroupDMChannelData,
@@ -134,6 +137,7 @@ import {
   RawStickerPackData,
   RawTeamData,
   RawTeamMemberData,
+  RawTextInputComponentData,
   RawThreadChannelData,
   RawThreadMemberData,
   RawTypingData,
@@ -1576,13 +1580,15 @@ export class MessageActionRow<
   T extends MessageActionRowComponent | ModalActionRowComponent = MessageActionRowComponent,
   U = T extends ModalActionRowComponent ? ModalActionRowComponentResolvable : MessageActionRowComponentResolvable,
 > extends BaseMessageComponent {
-  public constructor(data?: MessageActionRow<T> | MessageActionRowOptions<U> | APIActionRowComponent);
+  public constructor(
+    data?: MessageActionRow<T> | MessageActionRowOptions<U> | APIActionRowComponent<APIActionRowComponentTypes>,
+  );
   public type: 'ACTION_ROW';
   public components: T[];
   public addComponents(...components: U[] | U[][]): this;
   public setComponents(...components: U[] | U[][]): this;
   public spliceComponents(index: number, deleteCount: number, ...components: U[] | U[][]): this;
-  public toJSON(): APIActionRowComponent;
+  public toJSON(): APIActionRowComponent<APIActionRowComponentTypes>;
 }
 
 export class MessageAttachment {
@@ -1645,9 +1651,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public readonly component: CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
-    Exclude<APIMessageComponent, APIActionRowComponent>,
-    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>,
-    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent>
+    Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
+    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
+    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>
   >;
   public componentType: Exclude<MessageComponentType, 'ACTION_ROW'>;
   public customId: string;
@@ -2389,7 +2395,7 @@ export class TextInputComponent extends BaseMessageComponent {
   public setPlaceholder(placeholder: string): this;
   public setStyle(style: TextInputStyleResolvable): this;
   public setValue(value: string): this;
-  public toJSON(): unknown;
+  public toJSON(): RawTextInputComponentData;
   public static resolveStyle(style: TextInputStyleResolvable): TextInputStyle;
 }
 
@@ -5105,13 +5111,19 @@ export type MessageActionRowComponentOptions =
   | (Required<BaseMessageComponentOptions> & MessageButtonOptions)
   | (Required<BaseMessageComponentOptions> & MessageSelectMenuOptions);
 
-export type MessageActionRowComponentResolvable = MessageActionRowComponent | MessageActionRowComponentOptions;
+export type MessageActionRowComponentResolvable =
+  | MessageActionRowComponent
+  | MessageActionRowComponentOptions
+  | APIMessageActionRowComponent;
 
 export type ModalActionRowComponent = TextInputComponent;
 
 export type ModalActionRowComponentOptions = TextInputComponentOptions;
 
-export type ModalActionRowComponentResolvable = ModalActionRowComponent | ModalActionRowComponentOptions;
+export type ModalActionRowComponentResolvable =
+  | ModalActionRowComponent
+  | ModalActionRowComponentOptions
+  | APIModalActionRowComponent;
 
 export interface MessageActionRowOptions<
   T extends
