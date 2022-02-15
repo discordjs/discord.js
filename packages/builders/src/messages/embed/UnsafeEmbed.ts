@@ -333,10 +333,10 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	}
 
 	public equals(other: UnsafeEmbed | APIEmbed) {
-		if (other instanceof UnsafeEmbed) {
-			return isEqual(other.data, this.data);
-		}
-		return isEqual(other, this.data);
+		const { image: thisImage, thumbnail: thisThumbnail, ...thisData } = this.data;
+		const data = other instanceof UnsafeEmbed ? other.data : other;
+		const { image, thumbnail, ...otherData } = data;
+		return isEqual(otherData, thisData) && image?.url === thisImage?.url && thumbnail?.url === thisThumbnail?.url;
 	}
 
 	/**
