@@ -9,6 +9,8 @@ import type {
 import type { Equatable } from '../../util/equatable';
 import isEqual from 'fast-deep-equal';
 
+export type RGBTuple = [red: number, blue: number, green: number];
+
 export interface IconData {
 	/**
 	 * The URL of the icon
@@ -238,7 +240,12 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 *
 	 * @param color The color of the embed
 	 */
-	public setColor(color: number | null): this {
+	public setColor(color: number | RGBTuple | null): this {
+		if (Array.isArray(color)) {
+			const [red, green, blue] = color;
+			this.data.color = (red << 16) + (green << 8) + blue;
+			return this;
+		}
 		this.data.color = color ?? undefined;
 		return this;
 	}
