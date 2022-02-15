@@ -484,7 +484,7 @@ export interface EmbedData {
   type?: EmbedType;
   description?: string;
   url?: string;
-  timestamp?: string;
+  timestamp?: string | number | Date;
   color?: number;
   footer?: EmbedFooterData;
   image?: EmbedImageData;
