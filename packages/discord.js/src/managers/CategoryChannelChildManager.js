@@ -8,8 +8,8 @@ const GuildChannel = require('../structures/GuildChannel');
  * @extends {DataManager}
  */
 class CategoryChannelChildManager extends DataManager {
-  constructor(channel, iterable) {
-    super(channel.client, GuildChannel, iterable);
+  constructor(channel) {
+    super(channel.client, GuildChannel);
     /**
      * The category channel this manager belongs to
      * @type {CategoryChannel}

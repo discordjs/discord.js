@@ -2731,12 +2731,12 @@ export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, 
   public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
 }
 
-export class CategoryChannelChildManager extends CachedManager<
+export class CategoryChannelChildManager extends DataManager<
   Snowflake,
   NonCategoryGuildBasedChannel,
   GuildChannelResolvable
 > {
-  private constructor(guild: Guild, iterable?: Iterable<RawGuildChannelData>);
+  private constructor(channel: CategoryChannel);
 
   public channel: CategoryChannel;
   public readonly guild: Guild;
