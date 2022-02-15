@@ -1,6 +1,7 @@
 import { ComponentType, type APISelectMenuComponent } from 'discord-api-types/v9';
 import { Component } from '../Component';
 import { UnsafeSelectMenuOption } from './UnsafeSelectMenuOption';
+import isEqual from 'fast-deep-equal';
 
 /**
  * Represents a non-validated select menu component
@@ -121,5 +122,16 @@ export class UnsafeSelectMenuComponent extends Component<
 			...this.data,
 			options: this.options.map((o) => o.toJSON()),
 		} as APISelectMenuComponent;
+	}
+
+	public equals(other: APISelectMenuComponent | UnsafeSelectMenuComponent): boolean {
+		const thisData = {
+			...this.data,
+			options: this.options.map((o) => o.toJSON()),
+		};
+		if (other instanceof UnsafeSelectMenuComponent) {
+			return isEqual(thisData, other.data);
+		}
+		return isEqual(thisData, other);
 	}
 }
