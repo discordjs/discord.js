@@ -9,13 +9,7 @@ import {
 } from '../../src/components/textInput/Assertions';
 import { TextInputComponent } from '../../src/components/textInput/TextInput';
 
-const superLongStr = (() => {
-	let str = '';
-	for (let i = 0; i <= 5000; i++) {
-		str += 'a';
-	}
-	return str;
-})();
+const superLongStr = 'a'.repeat(5000);
 
 const textInputComponent = () => new TextInputComponent();
 
