@@ -1,7 +1,7 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const fs = require('node:fs');
+const fs = require('node:fs/promises');
 const path = require('node:path');
 const stream = require('node:stream');
 const fetch = require('node-fetch');
@@ -121,14 +121,11 @@ class DataResolver extends null {
         return res.buffer();
       }
 
-      return new Promise((resolve, reject) => {
-        const file = path.resolve(resource);
-        fs.stat(file, (err, stats) => {
-          if (err) return reject(err);
-          if (!stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
-          return resolve(fs.createReadStream(file));
-        });
-      });
+      const file = path.resolve(resource);
+
+      const stats = await fs.stat(file);
+      if (!stats.isFile()) throw new DiscordError('FILE_NOT_FOUND', file);
+      return fs.readFile(file);
     }
 
     throw new TypeError('REQ_RESOURCE_TYPE');
