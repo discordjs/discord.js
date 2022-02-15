@@ -14,19 +14,19 @@ const Util = require('../util/Util');
 
 /**
  * The target type of an entry. Here are the available types:
- * * GUILD
- * * CHANNEL
- * * USER
- * * ROLE
- * * INVITE
- * * WEBHOOK
- * * EMOJI
- * * MESSAGE
- * * INTEGRATION
- * * STAGE_INSTANCE
- * * STICKER
- * * THREAD
- * * GUILD_SCHEDULED_EVENT
+ * * Guild
+ * * Channel
+ * * User
+ * * Role
+ * * Invite
+ * * Webhook
+ * * Emoji
+ * * Message
+ * * Integration
+ * * StageInstance
+ * * Sticker
+ * * Thread
+ * * GuildScheduledEvent
  * @typedef {string} AuditLogTargetType
  */
 
@@ -36,21 +36,21 @@ const Util = require('../util/Util');
  * @type {Object<string, string>}
  */
 const Targets = {
-  ALL: 'ALL',
-  GUILD: 'GUILD',
-  GUILD_SCHEDULED_EVENT: 'GUILD_SCHEDULED_EVENT',
-  CHANNEL: 'CHANNEL',
-  USER: 'USER',
-  ROLE: 'ROLE',
-  INVITE: 'INVITE',
-  WEBHOOK: 'WEBHOOK',
-  EMOJI: 'EMOJI',
-  MESSAGE: 'MESSAGE',
-  INTEGRATION: 'INTEGRATION',
-  STAGE_INSTANCE: 'STAGE_INSTANCE',
-  STICKER: 'STICKER',
-  THREAD: 'THREAD',
-  UNKNOWN: 'UNKNOWN',
+  All: 'All',
+  Guild: 'Guild',
+  GuildScheduledEvent: 'GuildScheduledEvent',
+  Channel: 'Channel',
+  User: 'User',
+  Role: 'Role',
+  Invite: 'Invite',
+  Webhook: 'Webhook',
+  Emoji: 'Emoji',
+  Message: 'Message',
+  Integration: 'Integration',
+  StageInstance: 'StageInstance',
+  Sticker: 'Sticker',
+  Thread: 'Thread',
+  Unknown: 'Unknown',
 };
 
 /**
@@ -132,28 +132,28 @@ class GuildAuditLogs {
    * @returns {AuditLogTargetType}
    */
   static targetType(target) {
-    if (target < 10) return Targets.GUILD;
-    if (target < 20) return Targets.CHANNEL;
-    if (target < 30) return Targets.USER;
-    if (target < 40) return Targets.ROLE;
-    if (target < 50) return Targets.INVITE;
-    if (target < 60) return Targets.WEBHOOK;
-    if (target < 70) return Targets.EMOJI;
-    if (target < 80) return Targets.MESSAGE;
-    if (target < 83) return Targets.INTEGRATION;
-    if (target < 86) return Targets.STAGE_INSTANCE;
-    if (target < 100) return Targets.STICKER;
-    if (target < 110) return Targets.GUILD_SCHEDULED_EVENT;
-    if (target < 120) return Targets.THREAD;
-    return Targets.UNKNOWN;
+    if (target < 10) return Targets.Guild;
+    if (target < 20) return Targets.Channel;
+    if (target < 30) return Targets.User;
+    if (target < 40) return Targets.Role;
+    if (target < 50) return Targets.Invite;
+    if (target < 60) return Targets.Webhook;
+    if (target < 70) return Targets.Emoji;
+    if (target < 80) return Targets.Message;
+    if (target < 83) return Targets.Integration;
+    if (target < 86) return Targets.StageInstance;
+    if (target < 100) return Targets.Sticker;
+    if (target < 110) return Targets.GuildScheduledEvent;
+    if (target < 120) return Targets.Thread;
+    return Targets.Unknown;
   }
 
   /**
-   * The action type of an entry, e.g. `CREATE`. Here are the available types:
-   * * CREATE
-   * * DELETE
-   * * UPDATE
-   * * ALL
+   * The action type of an entry, e.g. `Create`. Here are the available types:
+   * * Create
+   * * Delete
+   * * Update
+   * * All
    * @typedef {string} AuditLogActionType
    */
 
@@ -181,7 +181,7 @@ class GuildAuditLogs {
         AuditLogEvent.ThreadCreate,
       ].includes(action)
     ) {
-      return 'CREATE';
+      return 'Create';
     }
 
     if (
@@ -206,7 +206,7 @@ class GuildAuditLogs {
         AuditLogEvent.ThreadDelete,
       ].includes(action)
     ) {
-      return 'DELETE';
+      return 'Delete';
     }
 
     if (
@@ -228,10 +228,10 @@ class GuildAuditLogs {
         AuditLogEvent.ThreadUpdate,
       ].includes(action)
     ) {
-      return 'UPDATE';
+      return 'Update';
     }
 
-    return 'ALL';
+    return 'All';
   }
 
   toJSON() {
@@ -376,20 +376,20 @@ class GuildAuditLogsEntry {
      * @type {?AuditLogEntryTarget}
      */
     this.target = null;
-    if (targetType === Targets.UNKNOWN) {
+    if (targetType === Targets.Unknown) {
       this.target = this.changes.reduce((o, c) => {
         o[c.key] = c.new ?? c.old;
         return o;
       }, {});
       this.target.id = data.target_id;
-      // MEMBER_DISCONNECT and similar types do not provide a target_id.
-    } else if (targetType === Targets.USER && data.target_id) {
+      // MemberDisconnect and similar types do not provide a target_id.
+    } else if (targetType === Targets.User && data.target_id) {
       this.target = guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.target_id })
         : guild.client.users.cache.get(data.target_id);
-    } else if (targetType === Targets.GUILD) {
+    } else if (targetType === Targets.Guild) {
       this.target = guild.client.guilds.cache.get(data.target_id);
-    } else if (targetType === Targets.WEBHOOK) {
+    } else if (targetType === Targets.Webhook) {
       this.target =
         logs.webhooks.get(data.target_id) ??
         new Webhook(
@@ -405,7 +405,7 @@ class GuildAuditLogsEntry {
             },
           ),
         );
-    } else if (targetType === Targets.INVITE) {
+    } else if (targetType === Targets.Invite) {
       let change = this.changes.find(c => c.key === 'code');
       change = change.new ?? change.old;
 
@@ -421,13 +421,13 @@ class GuildAuditLogsEntry {
             { guild },
           ),
         );
-    } else if (targetType === Targets.MESSAGE) {
-      // Discord sends a channel id for the MESSAGE_BULK_DELETE action type.
+    } else if (targetType === Targets.Message) {
+      // Discord sends a channel id for the MessageBulkDelete action type.
       this.target =
         data.action_type === AuditLogEvent.MessageBulkDelete
           ? guild.channels.cache.get(data.target_id) ?? { id: data.target_id }
           : guild.client.users.cache.get(data.target_id);
-    } else if (targetType === Targets.INTEGRATION) {
+    } else if (targetType === Targets.Integration) {
       this.target =
         logs.integrations.get(data.target_id) ??
         new Integration(
@@ -441,7 +441,7 @@ class GuildAuditLogsEntry {
           ),
           guild,
         );
-    } else if (targetType === Targets.CHANNEL || targetType === Targets.THREAD) {
+    } else if (targetType === Targets.Channel || targetType === Targets.Thread) {
       this.target =
         guild.channels.cache.get(data.target_id) ??
         this.changes.reduce(
@@ -451,7 +451,7 @@ class GuildAuditLogsEntry {
           },
           { id: data.target_id },
         );
-    } else if (targetType === Targets.STAGE_INSTANCE) {
+    } else if (targetType === Targets.StageInstance) {
       this.target =
         guild.stageInstances.cache.get(data.target_id) ??
         new StageInstance(
@@ -468,7 +468,7 @@ class GuildAuditLogsEntry {
             },
           ),
         );
-    } else if (targetType === Targets.STICKER) {
+    } else if (targetType === Targets.Sticker) {
       this.target =
         guild.stickers.cache.get(data.target_id) ??
         new Sticker(
@@ -481,7 +481,7 @@ class GuildAuditLogsEntry {
             { id: data.target_id },
           ),
         );
-    } else if (targetType === Targets.GUILD_SCHEDULED_EVENT) {
+    } else if (targetType === Targets.GuildScheduledEvent) {
       this.target =
         guild.scheduledEvents.cache.get(data.target_id) ??
         new GuildScheduledEvent(
