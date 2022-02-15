@@ -1,13 +1,13 @@
 'use strict';
 
-const CachedManager = require('./CachedManager');
+const DataManager = require('./DataManager');
 const GuildChannel = require('../structures/GuildChannel');
 
 /**
  * Manages API methods for CategoryChannels' children and stores their cache.
- * @extends {CachedManager}
+ * @extends {DataManager}
  */
-class CategoryChannelChildManager extends CachedManager {
+class CategoryChannelChildManager extends DataManager {
   constructor(channel, iterable) {
     super(channel.client, GuildChannel, iterable);
     /**
@@ -15,12 +15,24 @@ class CategoryChannelChildManager extends CachedManager {
      * @type {CategoryChannel}
      */
     this.channel = channel;
+  }
 
-    /**
-     * The guild this manager belongs to
-     * @type {Guild}
-     */
-    this.guild = channel.guild;
+  /**
+   * The channels that are a part of this category
+   * @type {Collection<Snowflake, GuildChannel>}
+   * @readonly
+   */
+  get cache() {
+    return this.guild.channels.cache.filter(c => c.parentId === this.channel.id);
+  }
+
+  /**
+   * The guild this manager belongs to
+   * @type {Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.channel.guild;
   }
 
   /**
@@ -51,15 +63,6 @@ class CategoryChannelChildManager extends CachedManager {
       ...options,
       parent: this.channel.id,
     });
-  }
-
-  /**
-   * The channels that are a part of this category
-   * @type {Collection<Snowflake, GuildChannel>}
-   * @readonly
-   */
-  get cache() {
-    return this.guild.channels.cache.filter(c => c.parentId === this.channel.id);
   }
 }
 

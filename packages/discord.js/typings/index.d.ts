@@ -2739,7 +2739,7 @@ export class CategoryChannelChildManager extends CachedManager<
   private constructor(guild: Guild, iterable?: Iterable<RawGuildChannelData>);
 
   public channel: CategoryChannel;
-  public guild: Guild;
+  public readonly guild: Guild;
   public create<T extends Exclude<CategoryChannelType, ChannelType.GuildStore>>(
     name: string,
     options: CategoryCreateChannelOptions & { type: T },
