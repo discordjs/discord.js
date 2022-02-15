@@ -1579,16 +1579,17 @@ export class Message<Cached extends boolean = boolean> extends Base {
 export class MessageActionRow<
   T extends MessageActionRowComponent | ModalActionRowComponent = MessageActionRowComponent,
   U = T extends ModalActionRowComponent ? ModalActionRowComponentResolvable : MessageActionRowComponentResolvable,
+  V = T extends ModalActionRowComponent
+    ? APIActionRowComponent<APIModalActionRowComponent>
+    : APIActionRowComponent<APIMessageActionRowComponent>,
 > extends BaseMessageComponent {
-  public constructor(
-    data?: MessageActionRow<T> | MessageActionRowOptions<U> | APIActionRowComponent<APIActionRowComponentTypes>,
-  );
+  public constructor(data?: MessageActionRow<T> | MessageActionRowOptions<U> | V);
   public type: 'ACTION_ROW';
   public components: T[];
   public addComponents(...components: U[] | U[][]): this;
   public setComponents(...components: U[] | U[][]): this;
   public spliceComponents(index: number, deleteCount: number, ...components: U[] | U[][]): this;
-  public toJSON(): APIActionRowComponent<APIActionRowComponentTypes>;
+  public toJSON(): V;
 }
 
 export class MessageAttachment {
