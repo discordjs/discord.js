@@ -4,7 +4,7 @@ const DataManager = require('./DataManager');
 const GuildChannel = require('../structures/GuildChannel');
 
 /**
- * Manages API methods for CategoryChannels' children and stores their cache.
+ * Manages API methods for CategoryChannels' children.
  * @extends {DataManager}
  */
 class CategoryChannelChildManager extends DataManager {
