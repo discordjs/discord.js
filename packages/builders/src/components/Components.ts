@@ -5,7 +5,7 @@ import {
 	ComponentType,
 } from 'discord-api-types/v9';
 import { ActionRow, ButtonComponent, Component, SelectMenuComponent, TextInputComponent } from '../index';
-import type { MessageComponent } from './ActionRow';
+import type { MessageComponent, ModalActionRowComponent } from './ActionRow';
 
 export interface MappedComponentTypes {
 	[ComponentType.ActionRow]: ActionRow;
