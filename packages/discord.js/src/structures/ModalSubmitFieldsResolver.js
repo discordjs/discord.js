@@ -14,7 +14,7 @@ class ModalSubmitFieldsResolver {
 
   /**
    * The extracted fields from the modal
-   * @type {ModalFieldData[]}The fields in the modal
+   * @type {ModalFieldData[]} The fields in the modal
    * @private
    */
   get _fields() {
