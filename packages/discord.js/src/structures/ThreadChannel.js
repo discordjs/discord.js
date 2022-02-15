@@ -291,6 +291,7 @@ class ThreadChannel extends Channel {
    * The options used to edit a thread channel
    * @typedef {Object} ThreadEditData
    * @property {string} [name] The new name for the thread
+   * @param {string} [reason] Reason for editing this thread
    * @property {boolean} [archived] Whether the thread is archived
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time (in minutes) after which the thread
    * should automatically archive in case of no recent activity
@@ -303,11 +304,13 @@ class ThreadChannel extends Channel {
   /**
    * Edits this thread.
    * @param {ThreadEditData} data The new data for this thread
-   * @param {string} [reason] Reason for editing this thread
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Edit a thread
-   * thread.edit({ name: 'new-thread', reason: 'Thread edited!' })
+   * thread.edit({
+   *  name: 'new-thread',
+   *  reason: 'Thread edited!'
+   * })
    *   .then(editedThread => console.log(editedThread))
    *   .catch(console.error);
    */
@@ -360,9 +363,7 @@ class ThreadChannel extends Channel {
    * @example
    * // Set the thread's auto archive time to 1 hour
    * thread.setAutoArchiveDuration(60)
-   *   .then(newThread => {
-   *     console.log(`Thread will now archive after ${newThread.autoArchiveDuration} minutes of inactivity`);
-   *    });
+   *   .then(newThread => console.log(`Thread will now archive after ${newThread.autoArchiveDuration} minutes of inactivity`));
    *   .catch(console.error);
    */
   setAutoArchiveDuration(autoArchiveDuration, reason) {
