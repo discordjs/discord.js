@@ -7,7 +7,29 @@ const selectMenuOption = () => new SelectMenuOption();
 const longStr =
 	'looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong';
 
-describe('Button Components', () => {
+const selectMenuOptionData: APISelectMenuOption = {
+	label: 'test',
+	value: 'test',
+	emoji: { name: 'test' },
+	default: true,
+	description: 'test',
+};
+
+const selectMenuDataWithoutOptions = {
+	type: ComponentType.SelectMenu,
+	custom_id: 'test',
+	max_values: 10,
+	min_values: 3,
+	disabled: true,
+	placeholder: 'test',
+} as const;
+
+const selectMenuData: APISelectMenuComponent = {
+	...selectMenuDataWithoutOptions,
+	options: [selectMenuOptionData],
+};
+
+describe('Select Menu Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid inputs THEN Select Menu does not throw', () => {
 			expect(() => selectMenu().setCustomId('foo')).not.toThrowError();
@@ -24,6 +46,7 @@ describe('Button Components', () => {
 				.setDescription('description');
 			expect(() => selectMenu().addOptions(option)).not.toThrowError();
 			expect(() => selectMenu().setOptions([option])).not.toThrowError();
+			expect(() => selectMenu().setOptions([{ label: 'test', value: 'test' }])).not.toThrowError();
 		});
 
 		test('GIVEN invalid inputs THEN Select Menu does throw', () => {
@@ -47,34 +70,17 @@ describe('Button Components', () => {
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON history is correct', () => {
-			const selectMenuOptionData: APISelectMenuOption = {
-				label: 'test',
-				value: 'test',
-				emoji: { name: 'test' },
-				default: true,
-				description: 'test',
-			};
-
-			const selectMenuDataWithoutOptions = {
-				type: ComponentType.SelectMenu,
-				custom_id: 'test',
-				max_values: 10,
-				min_values: 3,
-				disabled: true,
-				placeholder: 'test',
-			} as const;
-
-			const selectMenuData: APISelectMenuComponent = {
-				...selectMenuDataWithoutOptions,
-				options: [selectMenuOptionData],
-			};
-
 			expect(
 				new SelectMenuComponent(selectMenuDataWithoutOptions)
 					.addOptions(new SelectMenuOption(selectMenuOptionData))
 					.toJSON(),
 			).toEqual(selectMenuData);
 			expect(new SelectMenuOption(selectMenuOptionData).toJSON()).toEqual(selectMenuOptionData);
+		});
+
+		test('Given JSON data THEN builder is equal to it and itself', () => {
+			expect(new SelectMenuComponent(selectMenuData).equals(selectMenuData)).toBeTruthy();
+			expect(new SelectMenuComponent(selectMenuData).equals(new SelectMenuComponent(selectMenuData))).toBeTruthy();
 		});
 	});
 });

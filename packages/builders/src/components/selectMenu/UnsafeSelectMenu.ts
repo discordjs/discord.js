@@ -115,7 +115,7 @@ export class UnsafeSelectMenuComponent extends Component<
 	 * Sets the options on this select menu
 	 * @param options The options to set on this select menu
 	 */
-	public setOptions(...options: UnsafeSelectMenuOption[]) {
+	public setOptions(...options: (UnsafeSelectMenuOption | APISelectMenuOption)[]) {
 		this.options.splice(
 			0,
 			this.options.length,
@@ -135,13 +135,12 @@ export class UnsafeSelectMenuComponent extends Component<
 	}
 
 	public equals(other: APISelectMenuComponent | UnsafeSelectMenuComponent): boolean {
-		const thisData = {
+		if (other instanceof UnsafeSelectMenuComponent) {
+			return isEqual(other.data, this.data) && isEqual(other.options, this.options);
+		}
+		return isEqual(other, {
 			...this.data,
 			options: this.options.map((o) => o.toJSON()),
-		};
-		if (other instanceof UnsafeSelectMenuComponent) {
-			return isEqual(thisData, other.data);
-		}
-		return isEqual(thisData, other);
+		});
 	}
 }

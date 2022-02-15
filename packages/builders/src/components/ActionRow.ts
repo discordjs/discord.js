@@ -50,8 +50,11 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 
 	public equals(other: APIActionRowComponent<APIMessageComponent> | ActionRow) {
 		if (other instanceof ActionRow) {
-			return isEqual(other.data, this.data);
+			return isEqual(other.data, this.data) && isEqual(other.components, this.components);
 		}
-		return isEqual(other, this.data);
+		return isEqual(other, {
+			...this.data,
+			components: this.components.map((component) => component.toJSON()),
+		});
 	}
 }
