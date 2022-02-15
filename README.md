@@ -12,6 +12,8 @@
   </p>
 </div>
 
+# DISCORD.JS
+
 ## About
 
 discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
