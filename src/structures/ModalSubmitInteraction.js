@@ -76,24 +76,6 @@ class ModalSubmitInteraction extends Interaction {
   }
 
   /**
-   * Get the value submitted in a text input component
-   * @param {string} customId Custom id of the text input component
-   * @returns {string}
-   */
-  getTextInputValue(customId) {
-    for (const row of this.components) {
-      const field = row.components.find(
-        c => c.customId === customId && c.type === MessageComponentTypes[MessageComponentTypes.TEXT_INPUT],
-      );
-
-      if (field) {
-        return field.value;
-      }
-    }
-    return null;
-  }
-
-  /**
    * Transforms component data to discord.js-compatible data
    * @param {*} rawComponent The data to transform
    * @returns {PartialTextInputData[]}

@@ -1881,7 +1881,6 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public fields: ModalSubmitFieldsResolver;
   public replied: false;
   public webhook: InteractionWebhook;
-  public getTextInputValue(customId: string): string;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public deleteReply(): Promise<void>;
