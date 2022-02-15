@@ -132,7 +132,8 @@ class ApplicationCommand extends Base {
    * @property {string} description The description of the command, if type is {@link ApplicationCommandType.ChatInput}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
-   * @property {boolean} [defaultPermission=true] Whether the command is enabled by default when the app is added to a guild
+   * @property {boolean} [defaultPermission=true] Whether the command is enabled by default when the app is added to a
+   * guild
    */
 
   /**
