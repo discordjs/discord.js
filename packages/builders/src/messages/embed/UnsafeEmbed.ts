@@ -9,7 +9,7 @@ import type {
 import type { Equatable } from '../../util/equatable';
 import isEqual from 'fast-deep-equal';
 
-export type RGBTuple = [red: number, blue: number, green: number];
+export type RGBTuple = [red: number, green: number, blue: number];
 
 export interface IconData {
 	/**
