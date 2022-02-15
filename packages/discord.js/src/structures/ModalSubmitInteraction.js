@@ -1,5 +1,6 @@
 'use strict';
 
+const { createComponent } = require('@discordjs/builders');
 const Interaction = require('./Interaction');
 const ModalSubmitFieldsResolver = require('./ModalSubmitFieldsResolver');
 const InteractionResponses = require('./interfaces/InteractionResponses');
@@ -25,9 +26,9 @@ class ModalSubmitInteraction extends Interaction {
 
     /**
      * The components within the modal
-     * @type {Array<ActionRow<ModalFieldData>>}
+     * @type {ActionRow[]}
      */
-    this.components = data.data.components?.map(c => ModalSubmitInteraction.transformComponent(c)) ?? [];
+    this.components = data.data.components?.map(c => createComponent(c)) ?? [];
 
     /**
      * The fields within the modal
@@ -42,11 +43,11 @@ class ModalSubmitInteraction extends Interaction {
    * @returns {ModalFieldData[]}
    */
   static transformComponent(rawComponent) {
-    return rawComponent.components.map(c => ({
-      value: c.value,
-      type: c.type,
-      customId: c.custom_id,
-    }));
+    return {
+      value: rawComponent.value,
+      type: rawComponent.type,
+      customId: rawComponent.custom_id,
+    };
   }
 }
 

@@ -14,11 +14,11 @@ class ModalSubmitFieldsResolver {
 
   /**
    * The extracted fields from the modal
-   * @type {FieldData[]}The fields in the modal
+   * @type {ModalFieldData[]}The fields in the modal
    * @private
    */
   get _fields() {
-    return this.components.reduce((previous, next) => previous.concat(next), []);
+    return this.components.reduce((previous, next) => previous.concat(next.components), []);
   }
 
   /**
