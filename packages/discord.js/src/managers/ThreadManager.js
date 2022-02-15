@@ -70,7 +70,6 @@ class ThreadManager extends CachedManager {
    * {@link ChannelType.GuildNewsThread}</warn>
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to the thread
    * <info>Can only be set when type will be {@link ChannelType.GuildPrivateThread}</info>
-   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the new channel in seconds
    */
 
   /**
