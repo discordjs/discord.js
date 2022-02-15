@@ -46,6 +46,7 @@ import {
   APIPartialEmoji,
   APIPartialGuild,
   APIRole,
+  APIAttachment,
   APISelectMenuComponent,
   APITemplateSerializedSourceGuild,
   APIUser,
@@ -335,6 +336,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
     | 'getFocused'
     | 'getMentionable'
     | 'getRole'
+    | 'getAttachment'
     | 'getNumber'
     | 'getInteger'
     | 'getString'
@@ -741,6 +743,8 @@ export interface ApplicationCommandInteractionOptionResolver<Cached extends Cach
   getMember(name: string): NonNullable<CommandInteractionOption<Cached>['member']> | null;
   getRole(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['role']>;
   getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['role']> | null;
+  getAttachment(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['attachment']>;
+  getAttachment(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['attachment']> | null;
   getMentionable(
     name: string,
     required: true,
@@ -3272,6 +3276,10 @@ export interface ApplicationCommandChannelOption extends BaseApplicationCommandO
   channelTypes?: ChannelType[];
 }
 
+export interface ApplicationCommandAttachmentOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Attachment;
+}
+
 export interface ApplicationCommandAutocompleteOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type:
     | ApplicationCommandOptionType.String
@@ -3355,6 +3363,7 @@ export type ApplicationCommandOption =
   | ApplicationCommandChannelOption
   | ApplicationCommandChoicesOption
   | ApplicationCommandNumericOption
+  | ApplicationCommandAttachmentOption
   | ApplicationCommandSubCommand;
 
 export interface ApplicationCommandOptionChoice {
@@ -3707,6 +3716,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
   channel?: CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>;
   role?: CacheTypeReducer<Cached, Role, APIRole>;
+  attachment?: Collection<Snowflake, MessageAttachment>;
   message?: GuildCacheMessage<Cached>;
 }
 
@@ -3716,6 +3726,7 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   channels?: Collection<Snowflake, CacheTypeReducer<Cached, AnyChannel, APIInteractionDataResolvedChannel>>;
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
+  attachments?: Collection<Snowflake, MessageAttachment>;
 }
 
 export declare const Colors: {
