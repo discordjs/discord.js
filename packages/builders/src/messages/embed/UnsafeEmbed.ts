@@ -6,6 +6,8 @@ import type {
 	APIEmbedImage,
 	APIEmbedVideo,
 } from 'discord-api-types/v9';
+import type { Equatable } from '../../util/equatable';
+import isEqual from 'fast-deep-equal';
 
 export interface IconData {
 	/**
@@ -36,7 +38,7 @@ export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
 /**
  * Represents a non-validated embed in a message (image/video preview, rich embed, etc.)
  */
-export class UnsafeEmbed {
+export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	protected data: APIEmbed;
 
 	public constructor(data: APIEmbed = {}) {
@@ -162,6 +164,14 @@ export class UnsafeEmbed {
 			(this.data.footer?.text.length ?? 0) +
 			(this.data.author?.name.length ?? 0)
 		);
+	}
+
+	/**
+	 * The hex color of the current color of the embed
+	 */
+	public get hexColor() {
+		if (!this.data.color) return undefined;
+		return `#${this.data.color}` as const;
 	}
 
 	/**
@@ -313,6 +323,13 @@ export class UnsafeEmbed {
 	 */
 	public toJSON(): APIEmbed {
 		return { ...this.data };
+	}
+
+	public equals(other: UnsafeEmbed | APIEmbed) {
+		if (other instanceof UnsafeEmbed) {
+			return isEqual(other.data, this.data);
+		}
+		return isEqual(other, this.data);
 	}
 
 	/**
