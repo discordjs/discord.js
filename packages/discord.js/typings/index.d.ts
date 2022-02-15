@@ -1381,7 +1381,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
   public isRepliable(): this is this & InteractionResponseFields<Cached>;
-  public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
+  public isModalSubmission(): this is ModalSubmitInteraction<Cached>;
 }
 
 export class InteractionCollector<T extends Interaction> extends Collector<Snowflake, T> {
