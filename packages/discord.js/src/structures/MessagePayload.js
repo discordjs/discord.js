@@ -6,7 +6,6 @@ const { MessageFlags } = require('discord-api-types/v9');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
 /**
@@ -133,7 +132,7 @@ class MessagePayload {
     }
 
     const components = this.options.components?.map(c =>
-      isJSONEncodable(c) ? c.toJSON() : Transformers.toSnakeCase(c),
+      isJSONEncodable(c) ? c.toJSON() : this.target.client.options.jsonTransformer(c),
     );
 
     let username;
@@ -194,7 +193,7 @@ class MessagePayload {
       tts,
       nonce,
       embeds: this.options.embeds?.map(embed =>
-        embed instanceof Embed ? embed.toJSON() : Transformers.toSnakeCase(embed),
+        embed instanceof Embed ? embed.toJSON() : this.target.client.options.jsonTransformer(embed),
       ),
       components,
       username,
