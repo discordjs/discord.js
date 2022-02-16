@@ -1445,10 +1445,12 @@ export class Invite extends Base {
   public toJSON(): unknown;
   public toString(): string;
   public static INVITES_PATTERN: RegExp;
+  /** @deprecated */
   public stageInstance: InviteStageInstance | null;
   public guildScheduledEvent: GuildScheduledEvent | null;
 }
 
+/** @deprecated */
 export class InviteStageInstance extends Base {
   private constructor(client: Client, data: RawInviteStageInstance, channelId: Snowflake, guildId: Snowflake);
   public channelId: Snowflake;
