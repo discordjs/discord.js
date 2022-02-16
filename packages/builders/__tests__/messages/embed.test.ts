@@ -131,12 +131,9 @@ describe('Embed', () => {
 
 			// @ts-expect-error
 			expect(() => embed.setColor('RED')).toThrowError();
-		});
-
-		test('GIVEN an embed with a valid color THEN does not throw error', () => {
-			const embed = new Embed();
-			expect(() => embed.setColor([42, 36, 100])).not.toThrowError();
-			expect(() => embed.setColor(0xffffff)).not.toThrowError();
+			// @ts-expect-error
+			expect(() => embed.setColor([42, 36])).toThrowError();
+			expect(() => embed.setColor([42, 36, 1000])).toThrowError();
 		});
 	});
 

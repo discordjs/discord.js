@@ -22,6 +22,7 @@ export abstract class Component<
 	protected readonly data: DataType;
 
 	public abstract toJSON(): APIMessageComponent;
+
 	public abstract equals(other: Component | APIActionRowComponentTypes): boolean;
 
 	public constructor(data: DataType) {
