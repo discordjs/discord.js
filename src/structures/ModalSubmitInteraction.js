@@ -96,8 +96,10 @@ class ModalSubmitInteraction extends Interaction {
   editReply() {}
   deleteReply() {}
   followUp() {}
+  update() {}
+  deferUpdate() {}
 }
 
-InteractionResponses.applyToClass(ModalSubmitInteraction, ['deferUpdate', 'update', 'showModal', 'awaitModalSubmit']);
+InteractionResponses.applyToClass(ModalSubmitInteraction, ['showModal', 'awaitModalSubmit']);
 
 module.exports = ModalSubmitInteraction;
