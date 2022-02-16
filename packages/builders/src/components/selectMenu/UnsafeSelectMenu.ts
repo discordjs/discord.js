@@ -110,7 +110,7 @@ export class UnsafeSelectMenuComponent extends Component<
 	 * Sets the options on this select menu
 	 * @param options The options to set on this select menu
 	 */
-	public setOptions(options: UnsafeSelectMenuOption[]) {
+	public setOptions(...options: UnsafeSelectMenuOption[]) {
 		this.options.splice(0, this.options.length, ...options);
 		return this;
 	}

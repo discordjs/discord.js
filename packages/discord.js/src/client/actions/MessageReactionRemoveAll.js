@@ -7,7 +7,7 @@ class MessageReactionRemoveAll extends Action {
   handle(data) {
     // Verify channel
     const channel = this.getChannel(data);
-    if (!channel || !channel.isTextBased()) return false;
+    if (!channel?.isTextBased()) return false;
 
     // Verify message
     const message = this.getMessage(data, channel);

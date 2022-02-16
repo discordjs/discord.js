@@ -20,6 +20,7 @@ const {
   TeamMemberMembershipState,
   GuildScheduledEventEntityType,
   IntegrationExpireBehavior,
+  AuditLogEvent,
 } = require('discord-api-types/v9');
 
 function unknownKeyStrategy(val) {
@@ -629,6 +630,157 @@ class EnumResolvers extends null {
         return IntegrationExpireBehavior.RemoveRole;
       case 'KICK':
         return IntegrationExpireBehavior.Kick;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * A string that can be resolved to a {@link AuditLogEvent} enum value. Here are the available types:
+   * * GUILD_UPDATE
+   * * CHANNEL_CREATE
+   * * CHANNEL_UPDATE
+   * * CHANNEL_DELETE
+   * * CHANNEL_OVERWRITE_CREATE
+   * * CHANNEL_OVERWRITE_UPDATE
+   * * CHANNEL_OVERWRITE_DELETE
+   * * MEMBER_KICK
+   * * MEMBER_PRUNE
+   * * MEMBER_BAN_ADD
+   * * MEMBER_BAN_REMOVE
+   * * MEMBER_UPDATE
+   * * MEMBER_ROLE_UPDATE
+   * * MEMBER_MOVE
+   * * MEMBER_DISCONNECT
+   * * BOT_ADD
+   * * ROLE_CREATE
+   * * ROLE_UPDATE
+   * * ROLE_DELETE
+   * * INVITE_CREATE
+   * * INVITE_UPDATE
+   * * INVITE_DELETE
+   * * WEBHOOK_CREATE
+   * * WEBHOOK_UPDATE
+   * * WEBHOOK_DELETE
+   * * INTEGRATION_CREATE
+   * * INTEGRATION_UPDATE
+   * * INTEGRATION_DELETE
+   * * STAGE_INSTANCE_CREATE
+   * * STAGE_INSTANCE_UPDATE
+   * * STAGE_INSTANCE_DELETE
+   * * STICKER_CREATE
+   * * STICKER_UPDATE
+   * * STICKER_DELETE
+   * * GUILD_SCHEDULED_EVENT_CREATE
+   * * GUILD_SCHEDULED_EVENT_UPDATE
+   * * GUILD_SCHEDULED_EVENT_DELETE
+   * * THREAD_CREATE
+   * * THREAD_UPDATE
+   * * THREAD_DELETE
+   * @typedef {string} AuditLogEventEnumResolvable
+   */
+
+  /**
+   * Resolves enum key to {@link AuditLogEvent} enum value
+   * @param {AuditLogEventEnumResolvable|AuditLogEvent} key The key to lookup
+   * @returns {AuditLogEvent}
+   */
+  static resolveAuditLogEvent(key) {
+    switch (key) {
+      case 'GUILD_UPDATE':
+        return AuditLogEvent.GuildUpdate;
+      case 'CHANNEL_CREATE':
+        return AuditLogEvent.ChannelCreate;
+      case 'CHANNEL_UPDATE':
+        return AuditLogEvent.ChannelUpdate;
+      case 'CHANNEL_DELETE':
+        return AuditLogEvent.ChannelDelete;
+      case 'CHANNEL_OVERWRITE_CREATE':
+        return AuditLogEvent.ChannelOverwriteCreate;
+      case 'CHANNEL_OVERWRITE_UPDATE':
+        return AuditLogEvent.ChannelOverwriteUpdate;
+      case 'CHANNEL_OVERWRITE_DELETE':
+        return AuditLogEvent.ChannelOverwriteDelete;
+      case 'MEMBER_KICK':
+        return AuditLogEvent.MemberKick;
+      case 'MEMBER_PRUNE':
+        return AuditLogEvent.MemberPrune;
+      case 'MEMBER_BAN_ADD':
+        return AuditLogEvent.MemberBanAdd;
+      case 'MEMBER_BAN_REMOVE':
+        return AuditLogEvent.MemberBanRemove;
+      case 'MEMBER_UPDATE':
+        return AuditLogEvent.MemberUpdate;
+      case 'MEMBER_ROLE_UPDATE':
+        return AuditLogEvent.MemberRoleUpdate;
+      case 'MEMBER_MOVE':
+        return AuditLogEvent.MemberMove;
+      case 'MEMBER_DISCONNECT':
+        return AuditLogEvent.MemberDisconnect;
+      case 'BOT_ADD':
+        return AuditLogEvent.BotAdd;
+      case 'ROLE_CREATE':
+        return AuditLogEvent.RoleCreate;
+      case 'ROLE_UPDATE':
+        return AuditLogEvent.RoleUpdate;
+      case 'ROLE_DELETE':
+        return AuditLogEvent.RoleDelete;
+      case 'INVITE_CREATE':
+        return AuditLogEvent.InviteCreate;
+      case 'INVITE_UPDATE':
+        return AuditLogEvent.InviteUpdate;
+      case 'INVITE_DELETE':
+        return AuditLogEvent.InviteDelete;
+      case 'WEBHOOK_CREATE':
+        return AuditLogEvent.WebhookCreate;
+      case 'WEBHOOK_UPDATE':
+        return AuditLogEvent.WebhookUpdate;
+      case 'WEBHOOK_DELETE':
+        return AuditLogEvent.WebhookDelete;
+      case 'EMOJI_CREATE':
+        return AuditLogEvent.EmojiCreate;
+      case 'EMOJI_UPDATE':
+        return AuditLogEvent.EmojiUpdate;
+      case 'EMOJI_DELETE':
+        return AuditLogEvent.EmojiDelete;
+      case 'MESSAGE_DELETE':
+        return AuditLogEvent.MessageDelete;
+      case 'MESSAGE_BULK_DELETE':
+        return AuditLogEvent.MessageBulkDelete;
+      case 'MESSAGE_PIN':
+        return AuditLogEvent.MessagePin;
+      case 'MESSAGE_UNPIN':
+        return AuditLogEvent.MessageUnpin;
+      case 'INTEGRATION_CREATE':
+        return AuditLogEvent.IntegrationCreate;
+      case 'INTEGRATION_UPDATE':
+        return AuditLogEvent.IntegrationUpdate;
+      case 'INTEGRATION_DELETE':
+        return AuditLogEvent.IntegrationDelete;
+      case 'STAGE_INSTANCE_CREATE':
+        return AuditLogEvent.StageInstanceCreate;
+      case 'STAGE_INSTANCE_UPDATE':
+        return AuditLogEvent.StageInstanceUpdate;
+      case 'STAGE_INSTANCE_DELETE':
+        return AuditLogEvent.StageInstanceDelete;
+      case 'STICKER_CREATE':
+        return AuditLogEvent.StickerCreate;
+      case 'STICKER_UPDATE':
+        return AuditLogEvent.StickerUpdate;
+      case 'STICKER_DELETE':
+        return AuditLogEvent.StickerDelete;
+      case 'GUILD_SCHEDULED_EVENT_CREATE':
+        return AuditLogEvent.GuildScheduledEventCreate;
+      case 'GUILD_SCHEDULED_EVENT_UPDATE':
+        return AuditLogEvent.GuildScheduledEventUpdate;
+      case 'GUILD_SCHEDULED_EVENT_DELETE':
+        return AuditLogEvent.GuildScheduledEventDelete;
+      case 'THREAD_CREATE':
+        return AuditLogEvent.ThreadCreate;
+      case 'THREAD_UPDATE':
+        return AuditLogEvent.ThreadUpdate;
+      case 'THREAD_DELETE':
+        return AuditLogEvent.ThreadDelete;
       default:
         return unknownKeyStrategy(key);
     }

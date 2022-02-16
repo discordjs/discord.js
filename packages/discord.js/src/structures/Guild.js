@@ -209,14 +209,6 @@ class Guild extends AnonymousGuild {
       this.premiumTier = data.premium_tier;
     }
 
-    if ('premium_subscription_count' in data) {
-      /**
-       * The total number of boosts for this server
-       * @type {?number}
-       */
-      this.premiumSubscriptionCount = data.premium_subscription_count;
-    }
-
     if ('widget_enabled' in data) {
       /**
        * Whether widget images are enabled on this guild
