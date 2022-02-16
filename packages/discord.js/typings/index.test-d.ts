@@ -101,6 +101,7 @@ import {
   Events,
   ShardEvents,
   Status,
+  CategoryChannelChildManager,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -824,7 +825,7 @@ expectType<Message | null>(newsChannel.lastMessage);
 expectType<Message | null>(textChannel.lastMessage);
 
 expectDeprecated(storeChannel.clone());
-expectDeprecated(categoryChannel.createChannel('Store', { type: ChannelType.GuildStore }));
+expectDeprecated(categoryChannelChildManager.create('Store', { type: ChannelType.GuildStore }));
 expectDeprecated(guild.channels.create('Store', { type: ChannelType.GuildStore }));
 
 notPropertyOf(user, 'lastMessage');
@@ -904,15 +905,15 @@ expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationC
 expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch(undefined, {}));
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
 
-declare const categoryChannel: CategoryChannel;
+declare const categoryChannelChildManager: CategoryChannelChildManager;
 {
-  expectType<Promise<VoiceChannel>>(categoryChannel.createChannel('name', { type: ChannelType.GuildVoice }));
-  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name', { type: ChannelType.GuildText }));
-  expectType<Promise<NewsChannel>>(categoryChannel.createChannel('name', { type: ChannelType.GuildNews }));
-  expectDeprecated(categoryChannel.createChannel('name', { type: ChannelType.GuildStore }));
-  expectType<Promise<StageChannel>>(categoryChannel.createChannel('name', { type: ChannelType.GuildStageVoice }));
-  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name', {}));
-  expectType<Promise<TextChannel>>(categoryChannel.createChannel('name'));
+  expectType<Promise<VoiceChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildVoice }));
+  expectType<Promise<TextChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildText }));
+  expectType<Promise<NewsChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildNews }));
+  expectDeprecated(categoryChannelChildManager.create('name', { type: ChannelType.GuildStore }));
+  expectType<Promise<StageChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildStageVoice }));
+  expectType<Promise<TextChannel>>(categoryChannelChildManager.create('name', {}));
+  expectType<Promise<TextChannel>>(categoryChannelChildManager.create('name'));
 }
 
 declare const guildChannelManager: GuildChannelManager;
