@@ -54,8 +54,8 @@
     "@types/ws": "^8.2.2",
     "discord-api-types": "^0.27.0",
     "lodash.snakecase": "^4.1.1",
-    "node-fetch": "^2.6.7",
-    "ws": "^8.5.0"
+    "ws": "^8.5.0",
+    "undici": "^4.14.1"
   },
   "devDependencies": {
     "@discordjs/docgen": "^0.11.0",

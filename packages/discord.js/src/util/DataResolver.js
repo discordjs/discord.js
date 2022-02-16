@@ -4,7 +4,7 @@ const { Buffer } = require('node:buffer');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const stream = require('node:stream');
-const fetch = require('node-fetch');
+const { fetch } = require('undici');
 const { Error: DiscordError, TypeError } = require('../errors');
 const Invite = require('../structures/Invite');
 
@@ -118,7 +118,7 @@ class DataResolver extends null {
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
         const res = await fetch(resource);
-        return res.buffer();
+        return Buffer.from(await res.arrayBuffer());
       }
 
       const file = path.resolve(resource);
