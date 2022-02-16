@@ -177,7 +177,7 @@ class Interaction extends Base {
    * Indicates whether this interaction is a {@link ModalSubmitInteraction}
    * @returns {boolean}
    */
-  isModalSubmission() {
+  isModalSubmit() {
     return InteractionTypes[this.type] === InteractionTypes.MODAL_SUBMIT;
   }
 
