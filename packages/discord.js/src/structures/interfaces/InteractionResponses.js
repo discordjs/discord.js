@@ -2,8 +2,8 @@
 
 const { isJSONEncodable } = require('@discordjs/builders');
 const { InteractionResponseType, MessageFlags, Routes } = require('discord-api-types/v9');
-const snakecase = require('snakecase-keys');
 const { Error } = require('../../errors');
+const Transformers = require('../../util/Transformers');
 const MessagePayload = require('../MessagePayload');
 
 /**
@@ -242,7 +242,7 @@ class InteractionResponses {
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.Modal,
-        data: isJSONEncodable(modal) ? modal.toJSON() : snakecase(modal),
+        data: isJSONEncodable(modal) ? modal.toJSON() : Transformers.toSnakeCase(modal),
       },
     });
   }

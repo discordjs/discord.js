@@ -1,11 +1,11 @@
 'use strict';
 
 const { TextInputComponent: BuildersTextInputComponent } = require('@discordjs/builders');
-const snakecase = require('snakecase-keys');
+const Transformers = require('../util/Transformers');
 
 class TextInputComponent extends BuildersTextInputComponent {
-  constructor(data = {}) {
-    super(snakecase(data));
+  constructor(data) {
+    super(Transformers.toSnakeCase(data));
   }
 }
 

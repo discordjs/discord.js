@@ -25,8 +25,6 @@ class ModalSubmitInteraction extends Interaction {
      */
     this.customId = data.data.custom_id;
 
-    console.log(data);
-
     /**
      * The message associated with this interaction
      * @type {Message|APIMessage|null}
