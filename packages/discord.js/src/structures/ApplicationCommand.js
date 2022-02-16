@@ -127,11 +127,13 @@ class ApplicationCommand extends Base {
   /**
    * Data for creating or editing an application command.
    * @typedef {Object} ApplicationCommandData
-   * @property {string} name The name of the command
-   * @property {string} description The description of the command
-   * @property {ApplicationCommandType} [type] The type of the command
+   * @property {string} name The name of the command, must be in all lowercase if type is
+   * {@link ApplicationCommandType.ChatInput}
+   * @property {string} description The description of the command, if type is {@link ApplicationCommandType.ChatInput}
+   * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
-   * @property {boolean} [defaultPermission] Whether the command is enabled by default when the app is added to a guild
+   * @property {boolean} [defaultPermission=true] Whether the command is enabled by default when the app is added to a
+   * guild
    */
 
   /**
