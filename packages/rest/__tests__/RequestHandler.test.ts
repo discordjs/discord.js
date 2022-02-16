@@ -259,12 +259,13 @@ test('Significant Invalid Requests', async () => {
 
 test('Handle standard rate limits', async () => {
 	const [a, b, c] = [api.get('/standard'), api.get('/standard'), api.get('/standard')];
+	const uint8 = new Uint8Array();
 
-	expect(await a).toStrictEqual(Buffer.alloc(0));
+	expect(new Uint8Array((await a) as ArrayBuffer)).toStrictEqual(uint8);
 	const previous1 = performance.now();
-	expect(await b).toStrictEqual(Buffer.alloc(0));
+	expect(new Uint8Array((await b) as ArrayBuffer)).toStrictEqual(uint8);
 	const previous2 = performance.now();
-	expect(await c).toStrictEqual(Buffer.alloc(0));
+	expect(new Uint8Array((await c) as ArrayBuffer)).toStrictEqual(uint8);
 	const now = performance.now();
 	expect(previous2).toBeGreaterThanOrEqual(previous1 + 250);
 	expect(now).toBeGreaterThanOrEqual(previous2 + 250);
