@@ -2,6 +2,7 @@
 
 const { createComponent } = require('@discordjs/builders');
 const Interaction = require('./Interaction');
+const InteractionWebhook = require('./InteractionWebhook');
 const ModalSubmitFieldsResolver = require('./ModalSubmitFieldsResolver');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 
@@ -24,6 +25,14 @@ class ModalSubmitInteraction extends Interaction {
      */
     this.customId = data.data.custom_id;
 
+    console.log(data);
+
+    /**
+     * The message associated with this interaction
+     * @type {Message|APIMessage|null}
+     */
+    this.message = this.channel?.messages._add(data.message) ?? data.message ?? null;
+
     /**
      * The components within the modal
      * @type {ActionRow[]}
@@ -35,6 +44,12 @@ class ModalSubmitInteraction extends Interaction {
      * @type {ModalSubmitFieldsResolver}
      */
     this.fields = new ModalSubmitFieldsResolver(this.components);
+
+    /**
+     * An associated interaction webhook, can be used to further interact with this interaction
+     * @type {InteractionWebhook}
+     */
+    this.webhook = new InteractionWebhook(this.client, this.applicationId, this.token);
   }
 
   /**
@@ -48,6 +63,14 @@ class ModalSubmitInteraction extends Interaction {
       type: rawComponent.type,
       customId: rawComponent.custom_id,
     };
+  }
+
+  /**
+   * Whether or not this is from a message component interaction.
+   * @returns {boolean}
+   */
+  isFromMessage() {
+    return Boolean(this.message);
   }
 }
 
