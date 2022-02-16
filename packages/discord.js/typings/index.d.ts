@@ -4928,6 +4928,7 @@ export type AnyChannel =
   | CategoryChannel
   | DMChannel
   | PartialDMChannel
+  | PartialGroupDMChannel
   | NewsChannel
   | StageChannel
   | StoreChannel
