@@ -25,7 +25,12 @@ export const authorNamePredicate = fieldNamePredicate.nullable();
 
 export const urlPredicate = z.string().url().nullish();
 
-export const colorPredicate = z.number().gte(0).lte(0xffffff).nullable();
+export const colorPredicate = z
+	.number()
+	.gte(0)
+	.lte(0xffffff)
+	.nullable()
+	.or(z.tuple([z.number(), z.number(), z.number()]));
 
 export const descriptionPredicate = z.string().min(1).max(4096).nullable();
 

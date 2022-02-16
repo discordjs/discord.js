@@ -13,7 +13,7 @@ import {
 	urlPredicate,
 	validateFieldLength,
 } from './Assertions';
-import { EmbedAuthorOptions, EmbedFooterOptions, UnsafeEmbed } from './UnsafeEmbed';
+import { EmbedAuthorOptions, EmbedFooterOptions, RGBTuple, UnsafeEmbed } from './UnsafeEmbed';
 
 /**
  * Represents a validated embed in a message (image/video preview, rich embed, etc.)
@@ -48,7 +48,7 @@ export class Embed extends UnsafeEmbed {
 		return super.setAuthor(options);
 	}
 
-	public override setColor(color: number | null): this {
+	public override setColor(color: number | RGBTuple | null): this {
 		// Data assertions
 		return super.setColor(colorPredicate.parse(color));
 	}
