@@ -2,7 +2,7 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { ChannelType, Routes } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const ThreadManager = require('./ThreadManager');
 const { Error, TypeError } = require('../errors');

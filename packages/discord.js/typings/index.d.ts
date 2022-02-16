@@ -5335,7 +5335,7 @@ export {
   ThreadMemberFlags,
   UserFlags,
   WebhookType,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 export {
   UnsafeButtonBuilder,
   UnsafeSelectMenuBuilder,

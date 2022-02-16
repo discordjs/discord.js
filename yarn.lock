@@ -1852,7 +1852,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.11.0
     babel-plugin-const-enum: ^1.2.0
     babel-plugin-transform-typescript-metadata: ^0.3.2
-    discord-api-types: ^0.27.0
+    discord-api-types: next
     eslint: ^8.9.0
     eslint-config-marine: ^9.3.2
     eslint-config-prettier: ^8.3.0
@@ -4429,6 +4429,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"discord-api-types@npm:^0.29.0":
+  version: 0.29.0
+  resolution: "discord-api-types@npm:0.29.0"
+  checksum: 1ca74693b4e9c611c3de17f604714425d81d537ee81669d040a8c37fb23fb634a6918dd7d21056ccb90a3f4741bc2750509f6c8dd922bf2b3ed544d18bd0f32a
+  languageName: node
+  linkType: hard
+
+"discord-api-types@npm:next":
+  version: 0.27.2-next.3b1acdf.1644961926
+  resolution: "discord-api-types@npm:0.27.2-next.3b1acdf.1644961926"
+  checksum: 18bfa28bd0330983e915560f955ab5ebaa0fc0a0a1ce7415c054aa3d1d9476833ca3cac9600bff87fddb53117883b6b54f579d67500ec4bc217594945a163ddb
+  languageName: node
+  linkType: hard
+
 "discord.js@workspace:packages/discord.js":
   version: 0.0.0-use.local
   resolution: "discord.js@workspace:packages/discord.js"
@@ -4440,7 +4454,7 @@ __metadata:
     "@sapphire/snowflake": ^3.1.0
     "@types/node": ^16.11.24
     "@types/ws": ^8.2.2
-    discord-api-types: ^0.27.3
+    discord-api-types: ^0.29.0
     dtslint: ^4.2.1
     eslint: ^8.9.0
     eslint-config-prettier: ^8.3.0

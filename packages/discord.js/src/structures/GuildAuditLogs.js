@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { OverwriteType, AuditLogEvent } = require('discord-api-types/v9');
+const { OverwriteType, AuditLogEvent } = require('discord-api-types/v10');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');

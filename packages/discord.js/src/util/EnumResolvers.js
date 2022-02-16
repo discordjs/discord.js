@@ -21,7 +21,7 @@ const {
   GuildScheduledEventEntityType,
   IntegrationExpireBehavior,
   AuditLogEvent,
-} = require('discord-api-types/v9');
+} = require('discord-api-types/v10');
 
 function unknownKeyStrategy(val) {
   throw new Error(`Could not resolve enum value for ${val}`);

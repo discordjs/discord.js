@@ -1,6 +1,6 @@
 'use strict';
 
-const { OverwriteType } = require('discord-api-types/v9');
+const { OverwriteType } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { Role } = require('./Role');
 const { TypeError } = require('../errors');
