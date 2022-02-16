@@ -172,8 +172,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 * The hex color of the current color of the embed
 	 */
 	public get hexColor() {
-		if (!this.data.color) return undefined;
-		return typeof this.data.color === 'number' ? `#${this.data.color.toString(16).padStart(6, '0')}` : null;
+		return typeof this.data.color === 'number' ? `#${this.data.color.toString(16).padStart(6, '0')}` : this.data.color;
 	}
 
 	/**
