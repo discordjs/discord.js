@@ -211,7 +211,10 @@ class Role extends Base {
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
-   * role.edit({ name: 'new role', reason: 'Role edited!' })
+   * role.edit({
+   *  name: 'new role',
+   *  reason: 'Role edited!'
+   * })
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
@@ -425,6 +428,7 @@ class Role extends Base {
       permissions: this.permissions.toJSON(),
     };
   }
+  
 }
 
 exports.Role = Role;
