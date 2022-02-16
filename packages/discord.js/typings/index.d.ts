@@ -2411,16 +2411,6 @@ export class Formatters extends null {
 
 export type ComponentData = ActionRowComponentData | ButtonComponentData | SelectMenuComponentData;
 
-export class Components extends null {
-  private constructor();
-  public static transformJSON(data: ComponentData | APIMessageComponent): APIMessageComponent;
-}
-
-export class Embeds extends null {
-  private constructor();
-  public static transformJSON(data: EmbedData | APIEmbed): APIEmbed;
-}
-
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public readonly speakable: boolean;
   public type: ChannelType.GuildVoice;
