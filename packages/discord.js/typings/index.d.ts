@@ -3635,6 +3635,7 @@ export interface ClientOptions {
   sweepers?: SweeperOptions;
   ws?: WebSocketOptions;
   rest?: Partial<RESTOptions>;
+  jsonTransformer?: (obj: unknown) => unknown;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';

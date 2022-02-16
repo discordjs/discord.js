@@ -2,6 +2,7 @@
 
 const process = require('node:process');
 const { DefaultRestOptions } = require('@discordjs/rest');
+const Transformers = require('./Transformers');
 
 /**
  * @typedef {Function} CacheFactory
@@ -35,6 +36,7 @@ const { DefaultRestOptions } = require('@discordjs/rest');
  * @property {SweeperOptions} [sweepers={}] Options for cache sweeping
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {RESTOptions} [rest] Options for the REST manager
+ * @property {Function} [jsonTransformer] A function used to transform outgoing json data
  */
 
 /**
@@ -88,6 +90,7 @@ class Options extends null {
         version: 9,
       },
       rest: DefaultRestOptions,
+      jsonTransformer: Transformers.toSnakeCase,
     };
   }
 
