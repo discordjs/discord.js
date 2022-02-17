@@ -129,6 +129,38 @@ class Message extends Base {
   }
 
   /**
+   * A list of embeds in the message - e.g. YouTube Player
+   * @type {Embed[]}
+   */
+  get embeds() {
+    return this._embeds ?? [];
+  }
+
+  /**
+   * A list of MessageActionRows in the message
+   * @type {ActionRow[]}
+   */
+  get components() {
+    return this._components ?? [];
+  }
+
+  /**
+   * A collection of attachments in the message - e.g. Pictures - mapped by their ids
+   * @type {Collection<Snowflake, MessageAttachment>}
+   */
+  get attachments() {
+    return this._attachments ?? new Collection();
+  }
+
+  /**
+   * A collection of stickers in the message
+   * @type {Collection<Snowflake, Sticker>}
+   */
+  get stickers() {
+    return this._stickers ?? new Collection();
+  }
+
+  /**
    * Whether or not the message was Text-To-Speech
    * @type {?boolean}
    * @readonly
@@ -425,44 +457,30 @@ class Message extends Base {
     }
 
     if (embeds) {
-      /**
-       * A list of embeds in the message - e.g. YouTube Player
-       * @type {Embed[]}
-       */
       this._embeds = embeds.map(e => new Embed(e));
+    } else {
+      this._embeds = this._embeds?.slice();
     }
 
     if (components) {
-      /**
-       * A list of MessageActionRows in the message
-       * @type {ActionRow[]}
-       */
       this._components = components.map(c => createComponent(c));
+    } else {
+      this._components = this._components?.slice();
     }
 
     if (attachments) {
-      /**
-       * A collection of attachments in the message - e.g. Pictures - mapped by their ids
-       * @type {Collection<Snowflake, MessageAttachment>}
-       */
-      this.attachments = new Collection();
-      if (data.attachments) {
-        for (const attachment of data.attachments) {
-          this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
-        }
+      this._attachments = new Collection();
+      for (const attachment of attachments) {
+        this._attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
       }
-    } else {
-      this.attachments = new Collection(this.attachments);
+    } else if (this._attachments) {
+      this._attachments = new Collection(this._attachments);
     }
 
     if (sticker_items || stickers) {
-      /**
-       * A collection of stickers in the message
-       * @type {Collection<Snowflake, Sticker>}
-       */
-      this.stickers = new Collection((sticker_items ?? stickers)?.map(s => [s.id, new Sticker(this.client, s)]));
-    } else {
-      this.stickers = new Collection(this.stickers);
+      this._stickers = new Collection((sticker_items ?? stickers)?.map(s => [s.id, new Sticker(this.client, s)]));
+    } else if (this._stickers) {
+      this._stickers = new Collection(this._stickers);
     }
 
     if (reactions) {
@@ -476,8 +494,6 @@ class Message extends Base {
           this.reactions._add(reaction);
         }
       }
-    } else {
-      this.reactions ??= new ReactionManager(this);
     }
 
     if (!this.mentions) {
