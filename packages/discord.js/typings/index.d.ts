@@ -553,7 +553,6 @@ export interface MappedChannelCategoryTypes {
   [ChannelType.GuildNews]: NewsChannel;
   [ChannelType.GuildVoice]: VoiceChannel;
   [ChannelType.GuildText]: TextChannel;
-  [ChannelType.GuildStore]: StoreChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
 }
 
@@ -590,7 +589,6 @@ export abstract class Channel extends Base {
   public isGroupDM(): this is PartialGroupDMChannel;
   public isCategory(): this is CategoryChannel;
   public isNews(): this is NewsChannel;
-  public isStore(): this is StoreChannel;
   public isThread(): this is ThreadChannel;
   public isStage(): this is StageChannel;
   public isTextBased(): this is TextBasedChannel;
@@ -2158,17 +2156,6 @@ export class StickerPack extends Base {
   public bannerURL(options?: ImageURLOptions): string | null;
 }
 
-/** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-export class StoreChannel extends GuildChannel {
-  private constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
-  public createInvite(options?: CreateInviteOptions): Promise<Invite>;
-  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public clone(options?: GuildChannelCloneOptions): Promise<this>;
-  public nsfw: boolean;
-  public type: ChannelType.GuildStore;
-}
-
 export class Sweepers {
   public constructor(client: Client, options: SweeperOptions);
   public readonly client: Client;
@@ -2704,7 +2691,7 @@ export class WelcomeChannel extends Base {
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
   public description: string;
-  public get channel(): TextChannel | NewsChannel | StoreChannel | null;
+  public get channel(): TextChannel | NewsChannel | null;
   public get emoji(): GuildEmoji | Emoji;
 }
 
@@ -2875,15 +2862,10 @@ export class CategoryChannelChildManager extends DataManager<
 
   public channel: CategoryChannel;
   public get guild(): Guild;
-  public create<T extends Exclude<CategoryChannelType, ChannelType.GuildStore>>(
+  public create<T extends CategoryChannelType>(
     name: string,
     options: CategoryCreateChannelOptions & { type: T },
   ): Promise<MappedChannelCategoryTypes[T]>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public create(
-    name: string,
-    options: CategoryCreateChannelOptions & { type: ChannelType.GuildStore },
-  ): Promise<StoreChannel>;
   public create(name: string, options?: CategoryCreateChannelOptions): Promise<TextChannel>;
 }
 
@@ -2918,15 +2900,10 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public get channelCountWithoutThreads(): number;
   public guild: Guild;
 
-  public create<T extends Exclude<GuildChannelTypes, ChannelType.GuildStore>>(
+  public create<T extends GuildChannelTypes>(
     name: string,
     options: GuildChannelCreateOptions & { type: T },
   ): Promise<MappedGuildChannelTypes[T]>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public create(
-    name: string,
-    options: GuildChannelCreateOptions & { type: ChannelType.GuildStore },
-  ): Promise<StoreChannel>;
   public create(name: string, options?: GuildChannelCreateOptions): Promise<TextChannel>;
   public createWebhook(
     channel: GuildChannelResolvable,
@@ -4577,13 +4554,7 @@ export interface InviteGenerationOptions {
   scopes: OAuth2Scopes[];
 }
 
-export type GuildInvitableChannelResolvable =
-  | TextChannel
-  | VoiceChannel
-  | NewsChannel
-  | StoreChannel
-  | StageChannel
-  | Snowflake;
+export type GuildInvitableChannelResolvable = TextChannel | VoiceChannel | NewsChannel | StageChannel | Snowflake;
 
 export interface CreateInviteOptions {
   temporary?: boolean;
@@ -5070,7 +5041,6 @@ export type AnyChannel =
   | PartialGroupDMChannel
   | NewsChannel
   | StageChannel
-  | StoreChannel
   | TextChannel
   | ThreadChannel
   | VoiceChannel;
@@ -5196,7 +5166,7 @@ export interface WidgetChannel {
 
 export interface WelcomeChannelData {
   description: string;
-  channel: TextChannel | NewsChannel | StoreChannel | Snowflake;
+  channel: GuildTextChannelResolvable;
   emoji?: EmojiIdentifierResolvable;
 }
 

@@ -74,7 +74,6 @@ import {
   ShardingManager,
   Snowflake,
   StageChannel,
-  StoreChannel,
   TextBasedChannelFields,
   TextBasedChannel,
   TextBasedChannelTypes,
@@ -848,7 +847,6 @@ declare const dmChannel: DMChannel;
 declare const threadChannel: ThreadChannel;
 declare const newsChannel: NewsChannel;
 declare const textChannel: TextChannel;
-declare const storeChannel: StoreChannel;
 declare const voiceChannel: VoiceChannel;
 declare const guild: Guild;
 declare const user: User;
@@ -867,7 +865,6 @@ expectType<Message | null>(threadChannel.lastMessage);
 expectType<Message | null>(newsChannel.lastMessage);
 expectType<Message | null>(textChannel.lastMessage);
 
-expectDeprecated(storeChannel.clone());
 expectDeprecated(categoryChannelChildManager.create('Store', { type: ChannelType.GuildStore }));
 expectDeprecated(guild.channels.create('Store', { type: ChannelType.GuildStore }));
 
@@ -961,7 +958,7 @@ declare const categoryChannelChildManager: CategoryChannelChildManager;
 
 declare const guildChannelManager: GuildChannelManager;
 {
-  type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel;
+  type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StageChannel;
 
   expectType<Promise<TextChannel>>(guildChannelManager.create('name'));
   expectType<Promise<TextChannel>>(guildChannelManager.create('name', {}));
@@ -969,7 +966,6 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildCategory }));
   expectType<Promise<TextChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildText }));
   expectType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildNews }));
-  expectType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildStore }));
   expectType<Promise<StageChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildStageVoice }));
 
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
@@ -1328,12 +1324,10 @@ declare const GuildTextBasedChannel: GuildTextBasedChannel;
 expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel>(TextBasedChannel);
 expectType<ChannelType.GuildText | ChannelType.DM | ChannelType.GuildNews | ThreadChannelType>(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | ThreadChannel | VoiceChannel>(
+expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | ThreadChannel | VoiceChannel>(
   GuildBasedChannel,
 );
-expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | VoiceChannel>(
-  NonThreadGuildBasedChannel,
-);
+expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel>(NonThreadGuildBasedChannel);
 expectType<NewsChannel | TextChannel | ThreadChannel>(GuildTextBasedChannel);
 
 const button = new ButtonComponent({

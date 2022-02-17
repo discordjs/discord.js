@@ -15,7 +15,6 @@ const DataResolver = require('../util/DataResolver');
 const Util = require('../util/Util');
 
 let cacheWarningEmitted = false;
-let storeChannelDeprecationEmitted = false;
 
 /**
  * Manages API methods for GuildChannels and stores their cache.
@@ -143,15 +142,6 @@ class GuildChannelManager extends CachedManager {
   ) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
-
-    if (type === ChannelType.GuildStore && !storeChannelDeprecationEmitted) {
-      storeChannelDeprecationEmitted = true;
-      process.emitWarning(
-        // eslint-disable-next-line max-len
-        'Creating store channels is deprecated by Discord and will stop working in March 2022. Check the docs for more info.',
-        'DeprecationWarning',
-      );
-    }
 
     const data = await this.client.rest.post(Routes.guildChannels(this.guild.id), {
       body: {
