@@ -1,11 +1,11 @@
 'use strict';
 
 const { Embed: BuildersEmbed } = require('@discordjs/builders');
-const Embeds = require('../util/Embeds');
+const Transformers = require('../util/Transformers');
 
 class Embed extends BuildersEmbed {
   constructor(data) {
-    super({ ...Embeds.transformJSON(data) });
+    super(Transformers.toSnakeCase(data));
   }
 }
 

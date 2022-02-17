@@ -526,19 +526,8 @@ export type CategoryChannelType = Exclude<
 >;
 
 export class CategoryChannel extends GuildChannel {
-  public readonly children: Collection<Snowflake, Exclude<NonThreadGuildBasedChannel, CategoryChannel>>;
+  public readonly children: CategoryChannelChildManager;
   public type: ChannelType.GuildCategory;
-
-  public createChannel<T extends Exclude<CategoryChannelType, ChannelType.GuildStore>>(
-    name: string,
-    options: CategoryCreateChannelOptions & { type: T },
-  ): Promise<MappedChannelCategoryTypes[T]>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public createChannel(
-    name: string,
-    options: CategoryCreateChannelOptions & { type: ChannelType.GuildStore },
-  ): Promise<StoreChannel>;
-  public createChannel(name: string, options?: CategoryCreateChannelOptions): Promise<TextChannel>;
 }
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
@@ -2411,16 +2400,6 @@ export class Formatters extends null {
 
 export type ComponentData = ActionRowComponentData | ButtonComponentData | SelectMenuComponentData;
 
-export class Components extends null {
-  private constructor();
-  public static transformJSON(data: ComponentData | APIMessageComponent): APIMessageComponent;
-}
-
-export class Embeds extends null {
-  private constructor();
-  public static transformJSON(data: EmbedData | APIEmbed): APIEmbed;
-}
-
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public readonly speakable: boolean;
   public type: ChannelType.GuildVoice;
@@ -2800,6 +2779,27 @@ export class ApplicationCommandPermissionsManager<
 export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
   protected constructor(client: Client, iterable?: Iterable<RawGuildEmojiData>);
   public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
+}
+
+export class CategoryChannelChildManager extends DataManager<
+  Snowflake,
+  NonCategoryGuildBasedChannel,
+  GuildChannelResolvable
+> {
+  private constructor(channel: CategoryChannel);
+
+  public channel: CategoryChannel;
+  public readonly guild: Guild;
+  public create<T extends Exclude<CategoryChannelType, ChannelType.GuildStore>>(
+    name: string,
+    options: CategoryCreateChannelOptions & { type: T },
+  ): Promise<MappedChannelCategoryTypes[T]>;
+  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
+  public create(
+    name: string,
+    options: CategoryCreateChannelOptions & { type: ChannelType.GuildStore },
+  ): Promise<StoreChannel>;
+  public create(name: string, options?: CategoryCreateChannelOptions): Promise<TextChannel>;
 }
 
 export class ChannelManager extends CachedManager<Snowflake, AnyChannel, ChannelResolvable> {
@@ -3635,6 +3635,7 @@ export interface ClientOptions {
   sweepers?: SweeperOptions;
   ws?: WebSocketOptions;
   rest?: Partial<RESTOptions>;
+  jsonTransformer?: (obj: unknown) => unknown;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -4969,6 +4970,8 @@ export type TextBasedChannelTypes = TextBasedChannel['type'];
 export type VoiceBasedChannel = Extract<AnyChannel, { bitrate: number }>;
 
 export type GuildBasedChannel = Extract<AnyChannel, { guild: Guild }>;
+
+export type NonCategoryGuildBasedChannel = Exclude<GuildBasedChannel, CategoryChannel>;
 
 export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, ThreadChannel>;
 
