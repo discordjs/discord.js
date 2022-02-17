@@ -58,7 +58,7 @@ export class UnsafeTextInputComponent extends Component<
 	}
 
 	/**
-	 * Whether or not this text input is required
+	 * Whether this text input is required
 	 */
 	public get required() {
 		return this.data.required;
