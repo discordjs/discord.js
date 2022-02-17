@@ -64,7 +64,7 @@ class ModalSubmitInteraction extends Interaction {
   }
 
   /**
-   * Whether or not this is from a message component interaction.
+   * Whether this is from a {@link MessageComponentInteraction}.
    * @returns {boolean}
    */
   isFromMessage() {
