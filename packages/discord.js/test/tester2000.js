@@ -52,9 +52,9 @@ const commands = {
 client.on('messageCreate', message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  message.content = message.content.replace(prefix, '').trim().split(' ');
+  message.data.content = message.content.replace(prefix, '').trim().split(' ');
   const command = message.content.shift();
-  message.content = message.content.join(' ');
+  message.data.content = message.content.join(' ');
 
   // eslint-disable-next-line no-console
   console.log('COMMAND', command, message.content);

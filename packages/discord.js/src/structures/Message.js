@@ -30,127 +30,417 @@ const Util = require('../util/Util');
  * @extends {Base}
  */
 class Message extends Base {
-  constructor(client, data) {
+  constructor(client, data = {}) {
     super(client);
-
-    /**
-     * The id of the channel the message was sent in
-     * @type {Snowflake}
-     */
-    this.channelId = data.channel_id;
-
-    /**
-     * The id of the guild the message was sent in, if any
-     * @type {?Snowflake}
-     */
-    this.guildId = data.guild_id ?? this.channel?.guild?.id ?? null;
-
+    this.data.channel_id = data.channel_id;
+    this.data.guild_id = data.guild_id ?? this.channel?.guild?.id ?? null;
     this._patch(data);
   }
 
+  /**
+   * The message's id
+   * @type {Snowflake}
+   * @readonly
+   */
+  get id() {
+    return this.data.id;
+  }
+
+  /**
+   * The id of the channel the message was sent in
+   * @type {Snowflake}
+   * @readonly
+   */
+  get channelId() {
+    return this.data.channel_id;
+  }
+
+  /**
+   * The id of the guild the message was sent in, if any
+   * @type {?Snowflake}
+   * @readonly
+   */
+  get guildId() {
+    return this.data.guild_id;
+  }
+
+  /**
+   * The timestamp the message was sent at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return DiscordSnowflake.timestampFrom(this.data.id);
+  }
+
+  /**
+   * The time the message was sent at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The type of the message
+   * @type {?MessageType}
+   * @readonly
+   */
+  get type() {
+    return this.data.type ?? null;
+  }
+
+  /**
+   * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+   * @type {?boolean}
+   * @readonly
+   */
+  get system() {
+    if (!this.data.type) return null;
+    return !NonSystemMessageTypes.includes(this.data.type);
+  }
+
+  /**
+   * The content of the message
+   * @type {?string}
+   * @readonly
+   */
+  get content() {
+    return this.data.content ?? null;
+  }
+
+  /**
+   * The author of the message
+   * @type {?User}
+   * @readonly
+   */
+  get author() {
+    return this.client.users.resolve(this.data.author.id);
+  }
+
+  /**
+   * Whether or not this message is pinned
+   * @type {?boolean}
+   * @readonly
+   */
+  get pinned() {
+    return this.data.pinned ?? null;
+  }
+
+  /**
+   * Whether or not the message was Text-To-Speech
+   * @type {?boolean}
+   * @readonly
+   */
+  get tts() {
+    return this.data.tts ?? null;
+  }
+
+  /**
+   * A random number or string used for checking message delivery
+   * <warn>This is only received after the message was sent successfully, and
+   * lost if re-fetched</warn>
+   * @type {?string}
+   * @readonly
+   */
+  get nonce() {
+    return this.data.nonce ?? null;
+  }
+
+  /**
+   * The timestamp the message was last edited at (if applicable)
+   * @type {?number}
+   * @readonly
+   */
+  get editedTimestamp() {
+    if (this.data.edited_timestamp === undefined) return undefined;
+    return Date.parse(this.data.edited_timestamp);
+  }
+
+  /**
+   * The id of the webhook that sent the message, if applicable
+   * @type {?Snowflake}
+   * @readonly
+   */
+  get webhookId() {
+    return this.data.webhook_id;
+  }
+
+  /**
+   * Supplemental application information for group activities
+   * @type {?ClientApplication}
+   * @readonly
+   */
+  get groupActivityApplication() {
+    if (!this.data.application) return null;
+    return new ClientApplication(this.client, this.data.application);
+  }
+
+  /**
+   * The id of the application of the interaction that sent this message, if any
+   * @type {?Snowflake}
+   * @readonly
+   */
+  get applicationId() {
+    return this.data.application_id ?? null;
+  }
+
+  /**
+   * Group activity
+   * @type {?MessageActivity}
+   * @readonly
+   */
+  get activity() {
+    if (!this.data.activity) return null;
+    return {
+      partyId: this.data.party_id,
+      type: this.data.activity.type,
+    };
+  }
+
+  /**
+   * The thread started by this message
+   * <info>This property is not suitable for checking whether a message has a thread,
+   * use {@link Message#hasThread} instead.</info>
+   * @type {?ThreadChannel}
+   * @readonly
+   */
+  get thread() {
+    return this.channel?.threads?.resolve(this.id) ?? null;
+  }
+
+  /**
+   * Represents the author of the message as a guild member.
+   * Only available if the message comes from a guild where the author is still a member
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get member() {
+    return this.guild?.members.resolve(this.data.author) ?? null;
+  }
+
+  /**
+   * Flags that are applied to the message
+   * @type {Readonly<MessageFlagsBitField>}
+   * @readonly
+   */
+  get flags() {
+    if (!this.data.flags) return null;
+    return new MessageFlagsBitField(this.data.flags);
+  }
+
+  /**
+   * Message reference data
+   * @type {?MessageReference}
+   * @readonly
+   */
+  get reference() {
+    if (!this.data.message_reference) return null;
+    return {
+      channelId: this.data.message_reference.channel_id,
+      guildId: this.data.message_reference.guild_id,
+      messageId: this.data.message_reference.message_id,
+    };
+  }
+  /**
+   * Partial data of the interaction that this message is a reply to
+   * @type {?MessageInteraction}
+   * @readonly
+   */
+  get interaction() {
+    if (!this.data.interaction) return null;
+    return {
+      id: this.data.interaction.id,
+      type: this.data.interaction.type,
+      commandName: this.data.interaction.name,
+      user: this.client.users.resolve(this.data.interaction.user),
+    };
+  }
+
+  /**
+   * The channel that the message was sent in
+   * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
+   * @readonly
+   */
+  get channel() {
+    return this.client.channels.resolve(this.data.channel_id);
+  }
+
+  /**
+   * Whether this message is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.content !== 'string' || !this.author;
+  }
+
+  /**
+   * The time the message was last edited at (if applicable)
+   * @type {?Date}
+   * @readonly
+   */
+  get editedAt() {
+    return this.editedTimestamp && new Date(this.editedTimestamp);
+  }
+
+  /**
+   * The guild the message was sent in (if in a guild channel)
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.client.guilds.resolve(this.data.guild_id) ?? this.channel?.guild ?? null;
+  }
+
+  /**
+   * Whether this message has a thread associated with it
+   * @type {boolean}
+   * @readonly
+   */
+  get hasThread() {
+    return this.flags.has(MessageFlags.HasThread);
+  }
+
+  /**
+   * The URL to jump to this message
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return `https://discord.com/channels/${this.guildId ?? '@me'}/${this.channelId}/${this.id}`;
+  }
+
+  /**
+   * The message contents with all mentions replaced by the equivalent text.
+   * If mentions cannot be resolved to a name, the relevant mention in the message content will not be converted.
+   * @type {?string}
+   * @readonly
+   */
+  get cleanContent() {
+    return typeof this.content === 'string' ? Util.cleanContent(this.data.content, this.channel) : null;
+  }
+
+  /**
+   * Whether the message is editable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get editable() {
+    const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
+    // Regardless of permissions thread messages cannot be edited if the thread is locked.
+    if (this.channel?.isThread()) {
+      return precheck && !this.channel.locked;
+    }
+    return precheck;
+  }
+
+  /**
+   * Whether the message is deletable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get deletable() {
+    if (!this.guild) {
+      return this.data.author.id === this.client.user.id;
+    }
+    // DMChannel does not have viewable property, so check viewable after proved that message is on a guild.
+    if (!this.channel?.viewable) {
+      return false;
+    }
+
+    const permissions = this.channel?.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    // This flag allows deleting even if timed out
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
+
+    return Boolean(
+      this.author.id === this.client.user.id ||
+        (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
+          this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
+    );
+  }
+
+  /**
+   * Whether the message is pinnable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get pinnable() {
+    const { channel } = this;
+    return Boolean(
+      !this.system &&
+        (!this.guild ||
+          (channel?.viewable &&
+            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
+    );
+  }
+
+  /**
+   * Whether the message is crosspostable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get crosspostable() {
+    const bitfield =
+      PermissionFlagsBits.SendMessages |
+      (this.author.id === this.client.user.id ? PermissionsBitField.defaultBit : PermissionFlagsBits.ManageMessages);
+    const { channel } = this;
+    return Boolean(
+      channel?.type === ChannelType.GuildNews &&
+        !this.flags.has(MessageFlags.Crossposted) &&
+        this.type === MessageType.Default &&
+        channel.viewable &&
+        channel.permissionsFor(this.client.user)?.has(bitfield, false),
+    );
+  }
+
   _patch(data) {
-    /**
-     * The message's id
-     * @type {Snowflake}
-     */
-    this.id = data.id;
+    const {
+      embeds,
+      components,
+      mentions,
+      mention_roles,
+      mention_channels,
+      mention_everyone,
+      attachments,
+      stickers,
+      sticker_items,
+      thread,
+      member,
+      reactions,
+      ...initData
+    } = data;
 
     /**
-     * The timestamp the message was sent at
-     * @type {number}
+     * The raw API data for this message
+     * @type {APIMessage}
+     * @readonly
      */
-    this.createdTimestamp = DiscordSnowflake.timestampFrom(this.id);
+    this.data = { ...initData, ...this.data };
 
-    if ('type' in data) {
-      /**
-       * The type of the message
-       * @type {?MessageType}
-       */
-      this.type = data.type;
-
-      /**
-       * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
-       * @type {?boolean}
-       */
-      this.system = !NonSystemMessageTypes.includes(this.type);
-    } else {
-      this.system ??= null;
-      this.type ??= null;
+    if (data.author) {
+      this.client.users._add(data.author, !data.webhook_id);
     }
 
-    if ('content' in data) {
-      /**
-       * The content of the message
-       * @type {?string}
-       */
-      this.content = data.content;
-    } else {
-      this.content ??= null;
-    }
-
-    if ('author' in data) {
-      /**
-       * The author of the message
-       * @type {?User}
-       */
-      this.author = this.client.users._add(data.author, !data.webhook_id);
-    } else {
-      this.author ??= null;
-    }
-
-    if ('pinned' in data) {
-      /**
-       * Whether or not this message is pinned
-       * @type {?boolean}
-       */
-      this.pinned = Boolean(data.pinned);
-    } else {
-      this.pinned ??= null;
-    }
-
-    if ('tts' in data) {
-      /**
-       * Whether or not the message was Text-To-Speech
-       * @type {?boolean}
-       */
-      this.tts = data.tts;
-    } else {
-      this.tts ??= null;
-    }
-
-    if ('nonce' in data) {
-      /**
-       * A random number or string used for checking message delivery
-       * <warn>This is only received after the message was sent successfully, and
-       * lost if re-fetched</warn>
-       * @type {?string}
-       */
-      this.nonce = data.nonce;
-    } else {
-      this.nonce ??= null;
-    }
-
-    if ('embeds' in data) {
+    if (embeds) {
       /**
        * A list of embeds in the message - e.g. YouTube Player
        * @type {Embed[]}
        */
-      this.embeds = data.embeds.map(e => new Embed(e));
-    } else {
-      this.embeds = this.embeds?.slice() ?? [];
+      this._embeds = embeds.map(e => new Embed(e));
     }
 
-    if ('components' in data) {
+    if (components) {
       /**
        * A list of MessageActionRows in the message
        * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => createComponent(c));
-    } else {
-      this.components = this.components?.slice() ?? [];
+      this._components = components.map(c => createComponent(c));
     }
 
-    if ('attachments' in data) {
+    if (attachments) {
       /**
        * A collection of attachments in the message - e.g. Pictures - mapped by their ids
        * @type {Collection<Snowflake, MessageAttachment>}
@@ -165,30 +455,17 @@ class Message extends Base {
       this.attachments = new Collection(this.attachments);
     }
 
-    if ('sticker_items' in data || 'stickers' in data) {
+    if (sticker_items || stickers) {
       /**
        * A collection of stickers in the message
        * @type {Collection<Snowflake, Sticker>}
        */
-      this.stickers = new Collection(
-        (data.sticker_items ?? data.stickers)?.map(s => [s.id, new Sticker(this.client, s)]),
-      );
+      this.stickers = new Collection((sticker_items ?? stickers)?.map(s => [s.id, new Sticker(this.client, s)]));
     } else {
       this.stickers = new Collection(this.stickers);
     }
 
-    // Discord sends null if the message has not been edited
-    if (data.edited_timestamp) {
-      /**
-       * The timestamp the message was last edited at (if applicable)
-       * @type {?number}
-       */
-      this.editedTimestamp = Date.parse(data.edited_timestamp);
-    } else {
-      this.editedTimestamp ??= null;
-    }
-
-    if ('reactions' in data) {
+    if (reactions) {
       /**
        * A manager of the reactions belonging to this message
        * @type {ReactionManager}
@@ -210,84 +487,31 @@ class Message extends Base {
        */
       this.mentions = new Mentions(
         this,
-        data.mentions,
-        data.mention_roles,
-        data.mention_everyone,
-        data.mention_channels,
-        data.referenced_message?.author,
+        mentions,
+        mention_roles,
+        mention_everyone,
+        mention_channels,
+        this.data.referenced_message?.author,
       );
     } else {
       this.mentions = new Mentions(
         this,
-        data.mentions ?? this.mentions.users,
-        data.mention_roles ?? this.mentions.roles,
-        data.mention_everyone ?? this.mentions.everyone,
-        data.mention_channels ?? this.mentions.crosspostedChannels,
-        data.referenced_message?.author ?? this.mentions.repliedUser,
+        mentions ?? this.mentions.users,
+        mention_roles ?? this.mentions.roles,
+        mention_everyone ?? this.mentions.everyone,
+        mention_channels ?? this.mentions.crosspostedChannels,
+        this.data.referenced_message?.author ?? this.mentions.repliedUser,
       );
     }
 
-    if ('webhook_id' in data) {
-      /**
-       * The id of the webhook that sent the message, if applicable
-       * @type {?Snowflake}
-       */
-      this.webhookId = data.webhook_id;
-    } else {
-      this.webhookId ??= null;
+    if (thread) {
+      this.client.channels._add(thread, this.guild);
     }
 
-    if ('application' in data) {
-      /**
-       * Supplemental application information for group activities
-       * @type {?ClientApplication}
-       */
-      this.groupActivityApplication = new ClientApplication(this.client, data.application);
-    } else {
-      this.groupActivityApplication ??= null;
-    }
-
-    if ('application_id' in data) {
-      /**
-       * The id of the application of the interaction that sent this message, if any
-       * @type {?Snowflake}
-       */
-      this.applicationId = data.application_id;
-    } else {
-      this.applicationId ??= null;
-    }
-
-    if ('activity' in data) {
-      /**
-       * Group activity
-       * @type {?MessageActivity}
-       */
-      this.activity = {
-        partyId: data.activity.party_id,
-        type: data.activity.type,
-      };
-    } else {
-      this.activity ??= null;
-    }
-
-    if ('thread' in data) {
-      this.client.channels._add(data.thread, this.guild);
-    }
-
-    if (this.member && data.member) {
-      this.member._patch(data.member);
-    } else if (data.member && this.guild && this.author) {
-      this.guild.members._add(Object.assign(data.member, { user: this.author }));
-    }
-
-    if ('flags' in data) {
-      /**
-       * Flags that are applied to the message
-       * @type {Readonly<MessageFlagsBitField>}
-       */
-      this.flags = new MessageFlagsBitField(data.flags).freeze();
-    } else {
-      this.flags = new MessageFlagsBitField(this.flags).freeze();
+    if (this.member && member) {
+      this.member._patch(member);
+    } else if (member && this.guild && this.author) {
+      this.guild.members._add(Object.assign(member, { user: this.author }));
     }
 
     /**
@@ -305,21 +529,7 @@ class Message extends Base {
      * @property {?Snowflake} messageId The message's id that was referenced
      */
 
-    if ('message_reference' in data) {
-      /**
-       * Message reference data
-       * @type {?MessageReference}
-       */
-      this.reference = {
-        channelId: data.message_reference.channel_id,
-        guildId: data.message_reference.guild_id,
-        messageId: data.message_reference.message_id,
-      };
-    } else {
-      this.reference ??= null;
-    }
-
-    if (data.referenced_message) {
+    if (this.data.referenced_message) {
       this.channel?.messages._add({ guild_id: data.message_reference?.guild_id, ...data.referenced_message });
     }
 
@@ -331,116 +541,6 @@ class Message extends Base {
      * @property {string} commandName The name of the interaction's application command
      * @property {User} user The user that invoked the interaction
      */
-
-    if (data.interaction) {
-      /**
-       * Partial data of the interaction that this message is a reply to
-       * @type {?MessageInteraction}
-       */
-      this.interaction = {
-        id: data.interaction.id,
-        type: data.interaction.type,
-        commandName: data.interaction.name,
-        user: this.client.users._add(data.interaction.user),
-      };
-    } else {
-      this.interaction ??= null;
-    }
-  }
-
-  /**
-   * The channel that the message was sent in
-   * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
-   * @readonly
-   */
-  get channel() {
-    return this.client.channels.resolve(this.channelId);
-  }
-
-  /**
-   * Whether or not this message is a partial
-   * @type {boolean}
-   * @readonly
-   */
-  get partial() {
-    return typeof this.content !== 'string' || !this.author;
-  }
-
-  /**
-   * Represents the author of the message as a guild member.
-   * Only available if the message comes from a guild where the author is still a member
-   * @type {?GuildMember}
-   * @readonly
-   */
-  get member() {
-    return this.guild?.members.resolve(this.author) ?? null;
-  }
-
-  /**
-   * The time the message was sent at
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * The time the message was last edited at (if applicable)
-   * @type {?Date}
-   * @readonly
-   */
-  get editedAt() {
-    return this.editedTimestamp && new Date(this.editedTimestamp);
-  }
-
-  /**
-   * The guild the message was sent in (if in a guild channel)
-   * @type {?Guild}
-   * @readonly
-   */
-  get guild() {
-    return this.client.guilds.resolve(this.guildId) ?? this.channel?.guild ?? null;
-  }
-
-  /**
-   * Whether this message has a thread associated with it
-   * @type {boolean}
-   * @readonly
-   */
-  get hasThread() {
-    return this.flags.has(MessageFlags.HasThread);
-  }
-
-  /**
-   * The thread started by this message
-   * <info>This property is not suitable for checking whether a message has a thread,
-   * use {@link Message#hasThread} instead.</info>
-   * @type {?ThreadChannel}
-   * @readonly
-   */
-  get thread() {
-    return this.channel?.threads?.resolve(this.id) ?? null;
-  }
-
-  /**
-   * The URL to jump to this message
-   * @type {string}
-   * @readonly
-   */
-  get url() {
-    return `https://discord.com/channels/${this.guildId ?? '@me'}/${this.channelId}/${this.id}`;
-  }
-
-  /**
-   * The message contents with all mentions replaced by the equivalent text.
-   * If mentions cannot be resolved to a name, the relevant mention in the message content will not be converted.
-   * @type {?string}
-   * @readonly
-   */
-  get cleanContent() {
-    // eslint-disable-next-line eqeqeq
-    return this.content != null ? Util.cleanContent(this.content, this.channel) : null;
   }
 
   /**
@@ -546,62 +646,6 @@ class Message extends Base {
   }
 
   /**
-   * Whether the message is editable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get editable() {
-    const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
-    // Regardless of permissions thread messages cannot be edited if
-    // the thread is locked.
-    if (this.channel?.isThread()) {
-      return precheck && !this.channel.locked;
-    }
-    return precheck;
-  }
-
-  /**
-   * Whether the message is deletable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get deletable() {
-    if (!this.guild) {
-      return this.author.id === this.client.user.id;
-    }
-    // DMChannel does not have viewable property, so check viewable after proved that message is on a guild.
-    if (!this.channel?.viewable) {
-      return false;
-    }
-
-    const permissions = this.channel?.permissionsFor(this.client.user);
-    if (!permissions) return false;
-    // This flag allows deleting even if timed out
-    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
-
-    return Boolean(
-      this.author.id === this.client.user.id ||
-        (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
-          this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
-    );
-  }
-
-  /**
-   * Whether the message is pinnable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get pinnable() {
-    const { channel } = this;
-    return Boolean(
-      !this.system &&
-        (!this.guild ||
-          (channel?.viewable &&
-            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
-    );
-  }
-
-  /**
    * Fetches the Message this crosspost/reply/pin-add references, if available to the client
    * @returns {Promise<Message>}
    */
@@ -612,25 +656,6 @@ class Message extends Base {
     if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
     const message = await channel.messages.fetch(messageId);
     return message;
-  }
-
-  /**
-   * Whether the message is crosspostable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get crosspostable() {
-    const bitfield =
-      PermissionFlagsBits.SendMessages |
-      (this.author.id === this.client.user.id ? PermissionsBitField.defaultBit : PermissionFlagsBits.ManageMessages);
-    const { channel } = this;
-    return Boolean(
-      channel?.type === ChannelType.GuildNews &&
-        !this.flags.has(MessageFlags.Crossposted) &&
-        this.type === MessageType.Default &&
-        channel.viewable &&
-        channel.permissionsFor(this.client.user)?.has(bitfield, false),
-    );
   }
 
   /**

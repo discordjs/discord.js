@@ -1498,46 +1498,60 @@ export class Message<Cached extends boolean = boolean> extends Base {
   private readonly _cacheType: Cached;
   private constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData | RawMessageData): void;
-
-  public activity: MessageActivity | null;
-  public applicationId: Snowflake | null;
+  public data: Omit<
+    RawMessageData,
+    | 'embeds'
+    | 'components'
+    | 'mentions'
+    | 'mention_roles'
+    | 'mention_channels'
+    | 'mention_everyone'
+    | 'attachments'
+    | 'stickers'
+    | 'sticker_items'
+    | 'thread'
+    | 'member'
+    | 'reactions'
+  >;
+  public readonly activity: MessageActivity | null;
+  public readonly applicationId: Snowflake | null;
   public attachments: Collection<Snowflake, MessageAttachment>;
-  public author: User;
+  public readonly author: User;
   public readonly channel: If<Cached, GuildTextBasedChannel, TextBasedChannel>;
-  public channelId: Snowflake;
+  public readonly channelId: Snowflake;
   public readonly cleanContent: string;
   public components: ActionRow<ActionRowComponent>[];
-  public content: string;
+  public readonly content: string;
   public readonly createdAt: Date;
-  public createdTimestamp: number;
+  public readonly createdTimestamp: number;
   public readonly crosspostable: boolean;
   public readonly deletable: boolean;
   public readonly editable: boolean;
   public readonly editedAt: Date | null;
-  public editedTimestamp: number | null;
+  public readonly editedTimestamp: number | null;
   public embeds: Embed[];
-  public groupActivityApplication: ClientApplication | null;
-  public guildId: If<Cached, Snowflake>;
+  public readonly groupActivityApplication: ClientApplication | null;
+  public readonly guildId: If<Cached, Snowflake>;
   public readonly guild: If<Cached, Guild>;
   public readonly hasThread: boolean;
-  public id: Snowflake;
-  public interaction: MessageInteraction | null;
+  public readonly id: Snowflake;
+  public readonly interaction: MessageInteraction | null;
   public readonly member: GuildMember | null;
   public mentions: MessageMentions;
-  public nonce: string | number | null;
+  public readonly nonce: string | number | null;
   public readonly partial: false;
   public readonly pinnable: boolean;
-  public pinned: boolean;
+  public readonly pinned: boolean;
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
-  public system: boolean;
+  public readonly system: boolean;
   public readonly thread: ThreadChannel | null;
-  public tts: boolean;
-  public type: MessageType;
+  public readonly tts: boolean;
+  public readonly type: MessageType;
   public readonly url: string;
-  public webhookId: Snowflake | null;
-  public flags: Readonly<MessageFlagsBitField>;
-  public reference: MessageReference | null;
+  public readonly webhookId: Snowflake | null;
+  public readonly flags: Readonly<MessageFlagsBitField>;
+  public readonly reference: MessageReference | null;
   public awaitMessageComponent<T extends ComponentType = ComponentType.ActionRow>(
     options?: AwaitMessageCollectorOptionsParams<T, Cached>,
   ): Promise<MappedInteractionTypes<Cached>[T]>;
