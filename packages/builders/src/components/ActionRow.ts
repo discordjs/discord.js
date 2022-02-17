@@ -10,7 +10,8 @@ import { createComponent } from './Components';
 import isEqual from 'fast-deep-equal';
 import type { TextInputComponent } from './TextInput';
 
-export type MessageComponent = MessageActionRowComponent | ActionRow;
+export type MessageComponent = MessageActionRowComponent | ActionRow<MessageActionRowComponent>;
+export type ModalComponent = ModalActionRowComponent | ActionRow<ModalActionRowComponent>;
 
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
 export type ModalActionRowComponent = UnsafeTextInputComponent;

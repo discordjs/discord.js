@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { customIdValidator } from '../Assertions';
 
 export const textInputStyleValidator = z.nativeEnum(TextInputStyle);
-export const minLengthValidator = z.number().min(0).max(4000);
-export const maxLengthValidator = z.number().min(1).max(4000);
+export const minLengthValidator = z.number().int().min(0).max(4000);
+export const maxLengthValidator = z.number().int().min(1).max(4000);
 export const requiredValidator = z.boolean();
 export const valueValidator = z.string().max(4000);
 export const placeholderValidator = z.string().max(100);
