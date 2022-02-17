@@ -1815,7 +1815,6 @@ __metadata:
     husky: ^7.0.4
     prettier: ^2.5.1
     turbo: 1.1.2
-    undici: ^4.14.1
   languageName: unknown
   linkType: soft
 
