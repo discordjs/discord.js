@@ -712,39 +712,6 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   ): this;
 }
 
-export interface ApplicationCommandInteractionOptionResolver<Cached extends CacheType = CacheType>
-  extends CommandInteractionOptionResolver<Cached> {
-  getSubcommand(required?: true): string;
-  getSubcommand(required: boolean): string | null;
-  getSubcommandGroup(required: true): string;
-  getSubcommandGroup(required?: boolean): string | null;
-  getBoolean(name: string, required: true): boolean;
-  getBoolean(name: string, required?: boolean): boolean | null;
-  getChannel(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['channel']>;
-  getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['channel']> | null;
-  getString(name: string, required: true): string;
-  getString(name: string, required?: boolean): string | null;
-  getInteger(name: string, required: true): number;
-  getInteger(name: string, required?: boolean): number | null;
-  getNumber(name: string, required: true): number;
-  getNumber(name: string, required?: boolean): number | null;
-  getUser(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['user']>;
-  getUser(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['user']> | null;
-  getMember(name: string): NonNullable<CommandInteractionOption<Cached>['member']> | null;
-  getRole(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['role']>;
-  getRole(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['role']> | null;
-  getAttachment(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['attachment']>;
-  getAttachment(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['attachment']> | null;
-  getMentionable(
-    name: string,
-    required: true,
-  ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']>;
-  getMentionable(
-    name: string,
-    required?: boolean,
-  ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
-}
-
 export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
   public inGuild(): this is ChatInputCommandInteraction<'raw' | 'cached'>;
