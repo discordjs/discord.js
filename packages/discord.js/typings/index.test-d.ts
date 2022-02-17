@@ -1307,3 +1307,8 @@ const selectMenu = new SelectMenuComponent({
 new ActionRow({
   components: [selectMenu.toJSON(), button.toJSON()],
 });
+
+declare const chatInputInteraction: ChatInputCommandInteraction;
+
+expectType<MessageAttachment>(chatInputInteraction.options.getAttachment('attachment', true));
+expectType<MessageAttachment | null>(chatInputInteraction.options.getAttachment('attachment'));
