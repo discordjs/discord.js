@@ -92,7 +92,7 @@ class Message extends Base {
   }
 
   /**
-   * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+   * Whether this message was sent by Discord, not actually a user (e.g. pin notifications)
    * @type {?boolean}
    * @readonly
    */
@@ -120,7 +120,7 @@ class Message extends Base {
   }
 
   /**
-   * Whether or not this message is pinned
+   * Whether this message is pinned
    * @type {?boolean}
    * @readonly
    */
@@ -161,7 +161,7 @@ class Message extends Base {
   }
 
   /**
-   * Whether or not the message was Text-To-Speech
+   * Whether the message was Text-To-Speech
    * @type {?boolean}
    * @readonly
    */
@@ -173,7 +173,7 @@ class Message extends Base {
    * A random number or string used for checking message delivery
    * <warn>This is only received after the message was sent successfully, and
    * lost if re-fetched</warn>
-   * @type {?string}
+   * @type {?(string|number)}
    * @readonly
    */
   get nonce() {
@@ -186,7 +186,7 @@ class Message extends Base {
    * @readonly
    */
   get editedTimestamp() {
-    if (this.data.edited_timestamp === undefined) return undefined;
+    if (this.data.edited_timestamp === undefined) return null;
     return Date.parse(this.data.edited_timestamp);
   }
 
@@ -292,7 +292,7 @@ class Message extends Base {
 
   /**
    * The channel that the message was sent in
-   * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
+   * @type {TextBasedChannels}
    * @readonly
    */
   get channel() {
