@@ -249,14 +249,18 @@ class Shard extends EventEmitter {
       const listener = message => {
         if (message?._fetchProp !== prop) return;
         child.removeListener('message', listener);
+        this.decrementMaxListeners(child);
         this._fetches.delete(prop);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
       };
+
+      this.incrementMaxListeners(child);
       child.on('message', listener);
 
       this.send({ _fetchProp: prop }).catch(err => {
         child.removeListener('message', listener);
+        this.decrementMaxListeners(child);
         this._fetches.delete(prop);
         reject(err);
       });
@@ -288,14 +292,18 @@ class Shard extends EventEmitter {
       const listener = message => {
         if (message?._eval !== _eval) return;
         child.removeListener('message', listener);
+        this.decrementMaxListeners(child);
         this._evals.delete(_eval);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
       };
+
+      this.incrementMaxListeners(child);
       child.on('message', listener);
 
       this.send({ _eval }).catch(err => {
         child.removeListener('message', listener);
+        this.decrementMaxListeners(child);
         this._evals.delete(_eval);
         reject(err);
       });
@@ -405,6 +413,30 @@ class Shard extends EventEmitter {
     this._fetches.clear();
 
     if (respawn) this.spawn(timeout).catch(err => this.emit('error', err));
+  }
+
+  /**
+   * Increments max listeners by one for a given emitter, if they are not zero.
+   * @param {EventEmitter|process} emitter The emitter that emits the events.
+   * @private
+   */
+  incrementMaxListeners(emitter) {
+    const maxListeners = emitter.getMaxListeners();
+    if (maxListeners !== 0) {
+      emitter.setMaxListeners(maxListeners + 1);
+    }
+  }
+
+  /**
+   * Decrements max listeners by one for a given emitter, if they are not zero.
+   * @param {EventEmitter|process} emitter The emitter that emits the events.
+   * @private
+   */
+  decrementMaxListeners(emitter) {
+    const maxListeners = emitter.getMaxListeners();
+    if (maxListeners !== 0) {
+      emitter.setMaxListeners(maxListeners - 1);
+    }
   }
 }
 
