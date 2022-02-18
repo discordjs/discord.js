@@ -1764,7 +1764,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.11.0
     "@typescript-eslint/parser": ^5.11.0
     babel-plugin-transform-typescript-metadata: ^0.3.2
-    discord-api-types: ^0.27.3
+    discord-api-types: ^0.29.0
     eslint: ^8.9.0
     eslint-config-marine: ^9.3.2
     eslint-config-prettier: ^8.3.0
@@ -1852,7 +1852,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.11.0
     babel-plugin-const-enum: ^1.2.0
     babel-plugin-transform-typescript-metadata: ^0.3.2
-    discord-api-types: next
+    discord-api-types: ^0.27.2
     eslint: ^8.9.0
     eslint-config-marine: ^9.3.2
     eslint-config-prettier: ^8.3.0
@@ -4422,10 +4422,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.27.3":
-  version: 0.27.3
-  resolution: "discord-api-types@npm:0.27.3"
-  checksum: c22d87e787fae6cffd9d23972a3d196d4b43f2fb6deeed50181e7c9d4e823a4fd30a3e1d0e0b3b48a7c284ae2b39fbe960dee988375c7d4072df445f30ac440e
+"discord-api-types@npm:^0.27.2":
+  version: 0.27.2
+  resolution: "discord-api-types@npm:0.27.2"
+  checksum: 3849f7975d4d654481609535b6d778856f4af770f4ab8b9b216ee610ffd31b8a0deb2e0b0a7b881490632597a0d2412e84d06bfd268bceb24d01bd1b000bb50a
   languageName: node
   linkType: hard
 
@@ -4433,13 +4433,6 @@ __metadata:
   version: 0.29.0
   resolution: "discord-api-types@npm:0.29.0"
   checksum: 1ca74693b4e9c611c3de17f604714425d81d537ee81669d040a8c37fb23fb634a6918dd7d21056ccb90a3f4741bc2750509f6c8dd922bf2b3ed544d18bd0f32a
-  languageName: node
-  linkType: hard
-
-"discord-api-types@npm:next":
-  version: 0.27.2-next.3b1acdf.1644961926
-  resolution: "discord-api-types@npm:0.27.2-next.3b1acdf.1644961926"
-  checksum: 18bfa28bd0330983e915560f955ab5ebaa0fc0a0a1ce7415c054aa3d1d9476833ca3cac9600bff87fddb53117883b6b54f579d67500ec4bc217594945a163ddb
   languageName: node
   linkType: hard
 
