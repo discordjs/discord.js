@@ -8,14 +8,11 @@ class Transformers extends null {
    * @param {*} obj The object to transform
    * @returns {*}
    */
-  static toSnakeCase(obj = {}) {
+  static toSnakeCase(obj) {
     if (typeof obj !== 'object' || !obj) return obj;
     if (Array.isArray(obj)) return obj.map(Transformers.toSnakeCase);
     return Object.fromEntries(
-      Object.entries(obj).map(([key, value]) => [
-        snakeCase(key),
-        typeof value === 'undefined' ? value : Transformers.toSnakeCase(value),
-      ]),
+      Object.entries(obj).map(([key, value]) => [snakeCase(key), Transformers.toSnakeCase(value)]),
     );
   }
 }
