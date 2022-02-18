@@ -13,7 +13,7 @@ const InteractionResponses = require('./interfaces/InteractionResponses');
  * @abstract
  */
 class CommandInteraction extends Interaction {
-  constructor(client, data) {
+  constructor(client, data = {}) {
     super(client, data);
 
     /**
@@ -22,23 +22,9 @@ class CommandInteraction extends Interaction {
      * @name CommandInteraction#channelId
      */
 
-    /**
-     * The invoked application command's id
-     * @type {Snowflake}
-     */
-    this.commandId = data.data.id;
-
-    /**
-     * The invoked application command's name
-     * @type {string}
-     */
-    this.commandName = data.data.name;
-
-    /**
-     * The invoked application command's type
-     * @type {ApplicationCommandType}
-     */
-    this.commandType = data.data.type;
+    this.data.command_id = data.data.id;
+    this.data.command_name = data.data.name;
+    this.command_type = data.data.type;
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -63,6 +49,29 @@ class CommandInteraction extends Interaction {
      * @type {InteractionWebhook}
      */
     this.webhook = new InteractionWebhook(this.client, this.applicationId, this.token);
+  }
+  /**
+   * The invoked application command's id
+   * @type {Snowflake}
+   */
+  get commandId() {
+    return this.data.command_id;
+  }
+
+  /**
+   * The invoked application command's name
+   * @type {string}
+   */
+  get commandName() {
+    return this.data.command_name;
+  }
+
+  /**
+   * The invoked application command's type
+   * @type {ApplicationCommandType}
+   */
+  get commandType() {
+    return this.data.command_type;
   }
 
   /**

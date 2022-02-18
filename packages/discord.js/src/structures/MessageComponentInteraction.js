@@ -10,7 +10,7 @@ const InteractionResponses = require('./interfaces/InteractionResponses');
  * @implements {InteractionResponses}
  */
 class MessageComponentInteraction extends Interaction {
-  constructor(client, data) {
+  constructor(client, data = {}) {
     super(client, data);
 
     /**
@@ -24,18 +24,8 @@ class MessageComponentInteraction extends Interaction {
      * @type {Message|APIMessage}
      */
     this.message = this.channel?.messages._add(data.message) ?? data.message;
-
-    /**
-     * The custom id of the component which was interacted with
-     * @type {string}
-     */
-    this.customId = data.data.custom_id;
-
-    /**
-     * The type of component which was interacted with
-     * @type {ComponentType}
-     */
-    this.componentType = data.data.component_type;
+    this.data.custom_id = data.data.custom_id;
+    this.component_type = data.data.component_type;
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -68,6 +58,22 @@ class MessageComponentInteraction extends Interaction {
    * * APIMessageSelectMenu
    * @typedef {APIMessageButton|APIMessageSelectMenu} APIMessageActionRowComponent
    */
+
+  /**
+   * The custom id of the component which was interacted with
+   * @type {string}
+   */
+  get customId() {
+    return this.data.custom_id;
+  }
+
+  /**
+   * The type of component which was interacted with
+   * @type {ComponentType}
+   */
+  get componentType() {
+    return this.data.component_type;
+  }
 
   /**
    * The component which was interacted with

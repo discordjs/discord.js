@@ -346,10 +346,10 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
     | 'getSubcommandGroup'
     | 'getSubcommand'
   >;
-  public channelId: Snowflake;
-  public commandId: Snowflake;
-  public commandName: string;
-  public commandType: ApplicationCommandType;
+  public readonly channelId: Snowflake;
+  public readonly commandId: Snowflake;
+  public readonly commandName: string;
+  public readonly commandType: ApplicationCommandType;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public replied: boolean;
@@ -843,7 +843,7 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
     | 'getSubcommandGroup'
     | 'getSubcommand'
   >;
-  public targetId: Snowflake;
+  public readonly targetId: Snowflake;
   public inGuild(): this is ContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ContextMenuCommandInteraction<'cached'>;
   public inRawGuild(): this is ContextMenuCommandInteraction<'raw'>;
@@ -1342,7 +1342,8 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
   private readonly _cacheType: Cached;
   protected constructor(client: Client, data: RawInteractionData);
-  public applicationId: Snowflake;
+  public data: RawInteractionData;
+  public readonly applicationId: Snowflake;
   public readonly channel: CacheTypeReducer<
     Cached,
     GuildTextBasedChannel | null,
@@ -1350,20 +1351,20 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
     GuildTextBasedChannel | null,
     TextBasedChannel | null
   >;
-  public channelId: Snowflake | null;
+  public readonly channelId: Snowflake | null;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public readonly guild: CacheTypeReducer<Cached, Guild, null>;
-  public guildId: CacheTypeReducer<Cached, Snowflake>;
-  public id: Snowflake;
+  public readonly guildId: CacheTypeReducer<Cached, Snowflake>;
+  public readonly id: Snowflake;
   public member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   public readonly token: string;
-  public type: InteractionType;
-  public user: User;
-  public version: number;
-  public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
-  public locale: string;
-  public guildLocale: CacheTypeReducer<Cached, string, string, string>;
+  public readonly type: InteractionType;
+  public readonly user: User;
+  public readonly version: number;
+  public readonly memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
+  public readonly locale: string;
+  public readonly guildLocale: CacheTypeReducer<Cached, string, string, string>;
   public inGuild(): this is Interaction<'raw' | 'cached'>;
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
@@ -1616,9 +1617,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
     ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>,
     ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>
   >;
-  public componentType: Exclude<ComponentType, ComponentType.ActionRow>;
-  public customId: string;
-  public channelId: Snowflake;
+  public readonly componentType: Exclude<ComponentType, ComponentType.ActionRow>;
+  public readonly customId: string;
+  public readonly channelId: Snowflake;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public message: GuildCacheMessage<Cached>;

@@ -9,7 +9,7 @@ const CommandInteractionOptionResolver = require('./CommandInteractionOptionReso
  * @extends {CommandInteraction}
  */
 class ContextMenuCommandInteraction extends CommandInteraction {
-  constructor(client, data) {
+  constructor(client, data = {}) {
     super(client, data);
     /**
      * The target of the interaction, parsed into options
@@ -21,13 +21,15 @@ class ContextMenuCommandInteraction extends CommandInteraction {
       this.transformResolved(data.data.resolved),
     );
 
-    /**
-     * The id of the target of the interaction
-     * @type {Snowflake}
-     */
-    this.targetId = data.data.target_id;
+    this.data.target_id = data.data.target_id;
   }
-
+  /**
+   * The id of the target of the interaction
+   * @type {Snowflake}
+   */
+  get targetId() {
+    return this.data.target_id;
+  }
   /**
    * Resolves and transforms options received from the API for a context menu interaction.
    * @param {APIApplicationCommandInteractionData} data The interaction data

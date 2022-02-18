@@ -10,20 +10,11 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  * @extends {Base}
  */
 class Interaction extends Base {
-  constructor(client, data) {
+  constructor(client, data = {}) {
     super(client);
 
-    /**
-     * The interaction's type
-     * @type {InteractionType}
-     */
-    this.type = data.type;
-
-    /**
-     * The interaction's id
-     * @type {Snowflake}
-     */
-    this.id = data.id;
+    this.data.type = data.type;
+    this.data.id = data.id;
 
     /**
      * The interaction's token
@@ -33,29 +24,10 @@ class Interaction extends Base {
      */
     Object.defineProperty(this, 'token', { value: data.token });
 
-    /**
-     * The application's id
-     * @type {Snowflake}
-     */
-    this.applicationId = data.application_id;
-
-    /**
-     * The id of the channel this interaction was sent in
-     * @type {?Snowflake}
-     */
-    this.channelId = data.channel_id ?? null;
-
-    /**
-     * The id of the guild this interaction was sent in
-     * @type {?Snowflake}
-     */
-    this.guildId = data.guild_id ?? null;
-
-    /**
-     * The user which sent this interaction
-     * @type {User}
-     */
-    this.user = this.client.users._add(data.user ?? data.member.user);
+    this.data.application_id = data.application_id;
+    this.data.channel_id = data.channel_id ?? null;
+    this.data.guild_id = data.guild_id ?? null;
+    this.data.user = this.client.users._add(data.user ?? data.member.user);
 
     /**
      * If this interaction was sent in a guild, the member which sent it
@@ -63,32 +35,90 @@ class Interaction extends Base {
      */
     this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
 
-    /**
-     * The version
-     * @type {number}
-     */
-    this.version = data.version;
+    this.data.version = data.version;
+    this.data.locale = data.locale;
+    this.data.guild_locale = data.guild_locale ?? null;
+  }
 
-    /**
-     * The permissions of the member, if one exists, in the channel this interaction was executed in
-     * @type {?Readonly<PermissionsBitField>}
-     */
-    this.memberPermissions = data.member?.permissions
-      ? new PermissionsBitField(data.member.permissions).freeze()
-      : null;
+  /**
+   * The interaction's id
+   * @type {Snowflake}
+   */
+  get id() {
+    return this.data.id;
+  }
 
-    /**
-     * The locale of the user who invoked this interaction
-     * @type {string}
-     * @see {@link https://discord.com/developers/docs/reference#locales}
-     */
-    this.locale = data.locale;
+  /**
+   * The interaction's type
+   * @type {InteractionType}
+   */
+  get type() {
+    return this.data.type;
+  }
 
-    /**
-     * The preferred locale from the guild this interaction was sent in
-     * @type {?string}
-     */
-    this.guildLocale = data.guild_locale ?? null;
+  /**
+   * The application's id
+   * @type {Snowflake}
+   */
+  get applicationId() {
+    return this.data.application_id;
+  }
+
+  /**
+   * The id of the channel this interaction was sent in
+   * @type {?Snowflake}
+   */
+  get channelId() {
+    return this.data.channel_id;
+  }
+
+  /**
+   * The id of the guild this interaction was sent in
+   * @type {?Snowflake}
+   */
+  get guildId() {
+    return this.data.guild_id;
+  }
+
+  /**
+   * The user which sent this interaction
+   * @type {User}
+   */
+  get user() {
+    return this.client.users.resolve(this.data.user.id);
+  }
+
+  /**
+   * The version
+   * @type {number}
+   */
+  get version() {
+    return this.data.version;
+  }
+
+  /**
+   * The permissions of the member, if one exists, in the channel this interaction was executed in
+   * @type {?Readonly<PermissionsBitField>}
+   */
+  get memberPermissions() {
+    return this.member?.permissions ? new PermissionsBitField(this.member.permissions).freeze() : null;
+  }
+
+  /**
+   * The locale of the user who invoked this interaction
+   * @type {string}
+   * @see {@link https://discord.com/developers/docs/reference#locales}
+   */
+  get locale() {
+    return this.data.locale;
+  }
+
+  /**
+   * The preferred locale from the guild this interaction was sent in
+   * @type {?string}
+   */
+  get guildLocale() {
+    return this.data.guild_locale;
   }
 
   /**
