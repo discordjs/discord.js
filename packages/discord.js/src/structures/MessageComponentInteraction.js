@@ -19,13 +19,8 @@ class MessageComponentInteraction extends Interaction {
      * @name MessageComponentInteraction#channelId
      */
 
-    /**
-     * The message to which the component was attached
-     * @type {Message|APIMessage}
-     */
-    this.message = this.channel?.messages._add(data.message) ?? data.message;
-    this.data.custom_id = data.data.custom_id;
-    this.data.component_type = data.data.component_type;
+    this.data.message = data.message;
+    this.data.data = data.data;
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -60,19 +55,30 @@ class MessageComponentInteraction extends Interaction {
    */
 
   /**
+   * The message to which the component was attached
+   * @type {Message|APIMessage}
+   * @readonly
+   */
+  get message() {
+    return this.channel?.messages._add(this.data.message) ?? this.data.message;
+  }
+
+  /**
    * The custom id of the component which was interacted with
    * @type {string}
+   * @readonly
    */
   get customId() {
-    return this.data.custom_id;
+    return this.data.data.custom_id;
   }
 
   /**
    * The type of component which was interacted with
    * @type {ComponentType}
+   * @readonly
    */
   get componentType() {
-    return this.data.component_type;
+    return this.data.data.component_type;
   }
 
   /**

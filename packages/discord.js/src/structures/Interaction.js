@@ -37,6 +37,7 @@ class Interaction extends Base {
   /**
    * The interaction's id
    * @type {Snowflake}
+   * @readonly
    */
   get id() {
     return this.data.id;
@@ -45,6 +46,7 @@ class Interaction extends Base {
   /**
    * The interaction's type
    * @type {InteractionType}
+   * @readonly
    */
   get type() {
     return this.data.type;
@@ -53,6 +55,7 @@ class Interaction extends Base {
   /**
    * The application's id
    * @type {Snowflake}
+   * @readonly
    */
   get applicationId() {
     return this.data.application_id;
@@ -61,6 +64,7 @@ class Interaction extends Base {
   /**
    * The id of the channel this interaction was sent in
    * @type {?Snowflake}
+   * @readonly
    */
   get channelId() {
     return this.data.channel_id;
@@ -69,6 +73,7 @@ class Interaction extends Base {
   /**
    * The id of the guild this interaction was sent in
    * @type {?Snowflake}
+   * @readonly
    */
   get guildId() {
     return this.data.guild_id;
@@ -77,6 +82,7 @@ class Interaction extends Base {
   /**
    * The user which sent this interaction
    * @type {User}
+   * @readonly
    */
   get user() {
     return this.client.users.resolve(this.data.user.id);
@@ -85,6 +91,7 @@ class Interaction extends Base {
   /**
    * If this interaction was sent in a guild, the member which sent it
    * @type {?(GuildMember|APIGuildMember)}
+   * @readonly
    */
   get member() {
     return this.data.member ? this.guild?.members._add(this.data.member) ?? this.data.member : null;
@@ -93,6 +100,7 @@ class Interaction extends Base {
   /**
    * The version
    * @type {number}
+   * @readonly
    */
   get version() {
     return this.data.version;
@@ -101,6 +109,7 @@ class Interaction extends Base {
   /**
    * The permissions of the member, if one exists, in the channel this interaction was executed in
    * @type {?Readonly<PermissionsBitField>}
+   * @readonly
    */
   get memberPermissions() {
     return this.member?.permissions ? new PermissionsBitField(this.member.permissions).freeze() : null;
@@ -110,6 +119,7 @@ class Interaction extends Base {
    * The locale of the user who invoked this interaction
    * @type {string}
    * @see {@link https://discord.com/developers/docs/reference#locales}
+   * @readonly
    */
   get locale() {
     return this.data.locale;
@@ -118,6 +128,7 @@ class Interaction extends Base {
   /**
    * The preferred locale from the guild this interaction was sent in
    * @type {?string}
+   * @readonly
    */
   get guildLocale() {
     return this.data.guild_locale;

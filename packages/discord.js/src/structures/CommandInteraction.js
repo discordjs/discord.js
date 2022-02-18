@@ -22,9 +22,7 @@ class CommandInteraction extends Interaction {
      * @name CommandInteraction#channelId
      */
 
-    this.data.command_id = data.data.id;
-    this.data.command_name = data.data.name;
-    this.data.command_type = data.data.type;
+    this.data = data.data;
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -53,30 +51,34 @@ class CommandInteraction extends Interaction {
   /**
    * The invoked application command's id
    * @type {Snowflake}
+   * @readonly
    */
   get commandId() {
-    return this.data.command_id;
+    return this.data.data.id;
   }
 
   /**
    * The invoked application command's name
    * @type {string}
+   * @readonly
    */
   get commandName() {
-    return this.data.command_name;
+    return this.data.data.name;
   }
 
   /**
    * The invoked application command's type
    * @type {ApplicationCommandType}
+   * @readonly
    */
   get commandType() {
-    return this.data.command_type;
+    return this.data.data.type;
   }
 
   /**
    * The invoked application command, if it was fetched before
    * @type {?ApplicationCommand}
+   * @readonly
    */
   get command() {
     const id = this.commandId;

@@ -21,14 +21,15 @@ class ContextMenuCommandInteraction extends CommandInteraction {
       this.transformResolved(data.data.resolved),
     );
 
-    this.data.target_id = data.data.target_id;
+    this.data = data.data;
   }
   /**
    * The id of the target of the interaction
    * @type {Snowflake}
+   * @readonly
    */
   get targetId() {
-    return this.data.target_id;
+    return this.data.data.target_id;
   }
   /**
    * Resolves and transforms options received from the API for a context menu interaction.
