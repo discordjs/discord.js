@@ -28,13 +28,7 @@ class Interaction extends Base {
     this.data.channel_id = data.channel_id ?? null;
     this.data.guild_id = data.guild_id ?? null;
     this.data.user = this.client.users._add(data.user ?? data.member.user);
-
-    /**
-     * If this interaction was sent in a guild, the member which sent it
-     * @type {?(GuildMember|APIGuildMember)}
-     */
-    this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
-
+    this.data.member = data.member;
     this.data.version = data.version;
     this.data.locale = data.locale;
     this.data.guild_locale = data.guild_locale ?? null;
@@ -86,6 +80,14 @@ class Interaction extends Base {
    */
   get user() {
     return this.client.users.resolve(this.data.user.id);
+  }
+
+  /**
+   * If this interaction was sent in a guild, the member which sent it
+   * @type {?(GuildMember|APIGuildMember)}
+   */
+  get member() {
+    return this.data.member ? this.guild?.members._add(this.data.member) ?? this.data.member : null;
   }
 
   /**

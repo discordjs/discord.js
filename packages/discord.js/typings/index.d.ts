@@ -1357,7 +1357,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public readonly guild: CacheTypeReducer<Cached, Guild, null>;
   public readonly guildId: CacheTypeReducer<Cached, Snowflake>;
   public readonly id: Snowflake;
-  public member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
+  public readonly member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   public readonly token: string;
   public readonly type: InteractionType;
   public readonly user: User;
