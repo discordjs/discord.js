@@ -20,7 +20,7 @@ class MessageComponentInteraction extends Interaction {
      */
 
     this.data.message = data.message;
-    this.data.data = data.data;
+    this.data = { ...this.data, ...data.data };
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -69,7 +69,7 @@ class MessageComponentInteraction extends Interaction {
    * @readonly
    */
   get customId() {
-    return this.data.data.custom_id;
+    return this.data.custom_id;
   }
 
   /**
@@ -78,7 +78,7 @@ class MessageComponentInteraction extends Interaction {
    * @readonly
    */
   get componentType() {
-    return this.data.data.component_type;
+    return this.data.component_type;
   }
 
   /**

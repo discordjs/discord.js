@@ -22,7 +22,13 @@ class CommandInteraction extends Interaction {
      * @name CommandInteraction#channelId
      */
 
-    this.data.data = data.data;
+    /**
+     * The raw API data for this interaction
+     * @type {RawInteractionData}
+     * @readonly
+     */
+
+    this.data = { ...this.data, ...data.data };
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -54,7 +60,7 @@ class CommandInteraction extends Interaction {
    * @readonly
    */
   get commandId() {
-    return this.data.data.id;
+    return this.data.id;
   }
 
   /**
@@ -63,7 +69,7 @@ class CommandInteraction extends Interaction {
    * @readonly
    */
   get commandName() {
-    return this.data.data.name;
+    return this.data.name;
   }
 
   /**
@@ -72,7 +78,7 @@ class CommandInteraction extends Interaction {
    * @readonly
    */
   get commandType() {
-    return this.data.data.type;
+    return this.data.type;
   }
 
   /**

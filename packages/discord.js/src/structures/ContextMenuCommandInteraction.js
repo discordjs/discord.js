@@ -21,7 +21,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
       this.transformResolved(data.data.resolved),
     );
 
-    this.data.data = data.data;
+    this.data = { ...this.data, ...data.data };
   }
   /**
    * The id of the target of the interaction
@@ -29,7 +29,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
    * @readonly
    */
   get targetId() {
-    return this.data.data.target_id;
+    return this.data.target_id;
   }
   /**
    * Resolves and transforms options received from the API for a context menu interaction.
