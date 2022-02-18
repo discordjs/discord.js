@@ -142,5 +142,17 @@ describe('Button Components', () => {
 
 			expect(buttonComponent().setLabel(linkData.label).setDisabled(true).setURL(linkData.url));
 		});
+		test('Given JSON data THEN builder is equal to it and itself', () => {
+			const buttonData: APIButtonComponentWithCustomId = {
+				type: ComponentType.Button,
+				custom_id: 'test',
+				label: 'test',
+				style: ButtonStyle.Primary,
+				disabled: true,
+			};
+
+			expect(new ButtonComponent(buttonData).equals(buttonData)).toBeTruthy();
+			expect(new ButtonComponent(buttonData).equals(new ButtonComponent(buttonData))).toBeTruthy();
+		});
 	});
 });
