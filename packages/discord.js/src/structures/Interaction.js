@@ -13,8 +13,12 @@ class Interaction extends Base {
   constructor(client, data = {}) {
     super(client);
 
-    this.data.type = data.type;
-    this.data.id = data.id;
+    /**
+     * The raw API data for this interaction
+     * @type {RawInteractionData}
+     * @readonly
+     */
+    this.data = { ...data };
 
     /**
      * The interaction's token
@@ -23,15 +27,6 @@ class Interaction extends Base {
      * @readonly
      */
     Object.defineProperty(this, 'token', { value: data.token });
-
-    this.data.application_id = data.application_id;
-    this.data.channel_id = data.channel_id ?? null;
-    this.data.guild_id = data.guild_id ?? null;
-    this.data.user = this.client.users._add(data.user ?? data.member.user);
-    this.data.member = data.member;
-    this.data.version = data.version;
-    this.data.locale = data.locale;
-    this.data.guild_locale = data.guild_locale ?? null;
   }
 
   /**
@@ -67,7 +62,7 @@ class Interaction extends Base {
    * @readonly
    */
   get channelId() {
-    return this.data.channel_id;
+    return this.data.channel_id ?? null;
   }
 
   /**
@@ -76,7 +71,7 @@ class Interaction extends Base {
    * @readonly
    */
   get guildId() {
-    return this.data.guild_id;
+    return this.data.guild_id ?? null;
   }
 
   /**
@@ -85,7 +80,7 @@ class Interaction extends Base {
    * @readonly
    */
   get user() {
-    return this.client.users.resolve(this.data.user.id);
+    return this.client.users._add(this.data.user ?? this.data.member.user);
   }
 
   /**
@@ -131,7 +126,7 @@ class Interaction extends Base {
    * @readonly
    */
   get guildLocale() {
-    return this.data.guild_locale;
+    return this.data.guild_locale ?? null;
   }
 
   /**

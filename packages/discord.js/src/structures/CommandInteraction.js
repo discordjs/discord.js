@@ -22,12 +22,6 @@ class CommandInteraction extends Interaction {
      * @name CommandInteraction#channelId
      */
 
-    /**
-     * The raw API data for this interaction
-     * @type {RawInteractionData}
-     * @readonly
-     */
-
     this.data = { ...this.data, ...data.data };
 
     /**
