@@ -25,7 +25,7 @@ class MessageComponentInteraction extends Interaction {
      */
     this.message = this.channel?.messages._add(data.message) ?? data.message;
     this.data.custom_id = data.data.custom_id;
-    this.component_type = data.data.component_type;
+    this.data.component_type = data.data.component_type;
 
     /**
      * Whether the reply to this interaction has been deferred
