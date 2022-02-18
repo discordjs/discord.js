@@ -1,9 +1,19 @@
-import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v9';
+import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
 import { Component } from '../../index';
+import type { TextInputComponent } from './TextInput';
+import isEqual from 'fast-deep-equal';
 
 export class UnsafeTextInputComponent extends Component<
 	Partial<APITextInputComponent> & { type: ComponentType.TextInput }
 > {
+	public equals(other: TextInputComponent | APITextInputComponent): boolean {
+		if (other instanceof UnsafeTextInputComponent) {
+			return isEqual(other.data, this.data);
+		}
+
+		return isEqual(other, this.data);
+	}
+
 	public constructor(data?: APITextInputComponent & { type?: ComponentType.TextInput }) {
 		super({ type: ComponentType.TextInput, ...data });
 	}

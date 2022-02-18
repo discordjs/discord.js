@@ -3,12 +3,11 @@ import {
 	APIMessageActionRowComponent,
 	APIModalActionRowComponent,
 	ComponentType,
-} from 'discord-api-types/v9';
-import type { ButtonComponent, SelectMenuComponent } from '..';
+} from 'discord-api-types/v10';
+import type { ButtonComponent, SelectMenuComponent, UnsafeTextInputComponent } from '..';
 import { Component } from './Component';
 import { createComponent } from './Components';
 import isEqual from 'fast-deep-equal';
-import type { TextInputComponent } from './TextInput';
 
 export type MessageComponent = MessageActionRowComponent | ActionRow<MessageActionRowComponent>;
 export type ModalComponent = ModalActionRowComponent | ActionRow<ModalActionRowComponent>;
@@ -64,7 +63,7 @@ export class ActionRow<
 		};
 	}
 
-	public equals(other: APIActionRowComponent<APIMessageComponent> | ActionRow) {
+	public equals(other: APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent> | ActionRow) {
 		if (other instanceof ActionRow) {
 			return isEqual(other.data, this.data) && isEqual(other.components, this.components);
 		}

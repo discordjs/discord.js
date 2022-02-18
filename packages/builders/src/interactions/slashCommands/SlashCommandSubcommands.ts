@@ -2,7 +2,7 @@ import {
 	APIApplicationCommandSubcommandGroupOption,
 	APIApplicationCommandSubcommandOption,
 	ApplicationCommandOptionType,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { assertReturnOfBuilder, validateMaxOptionsLength, validateRequiredParameters } from './Assertions';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';

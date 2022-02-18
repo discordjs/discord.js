@@ -1,4 +1,4 @@
-import type { APIEmbedField } from 'discord-api-types/v9';
+import type { APIEmbedField } from 'discord-api-types/v10';
 import {
 	authorNamePredicate,
 	colorPredicate,

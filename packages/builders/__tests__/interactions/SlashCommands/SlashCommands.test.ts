@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, ChannelType } from 'discord-api-types/v9';
+import { APIApplicationCommandOptionChoice, ChannelType } from 'discord-api-types/v10';
 import {
 	SlashCommandAssertions,
 	SlashCommandBooleanOption,

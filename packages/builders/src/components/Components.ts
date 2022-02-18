@@ -1,9 +1,4 @@
-import {
-	APIActionRowComponentTypes,
-	APIMessageComponent,
-	APIModalComponent,
-	ComponentType,
-} from 'discord-api-types/v9';
+import { APIBaseComponent, APIMessageComponent, APIModalComponent, ComponentType } from 'discord-api-types/v9';
 import { ActionRow, ButtonComponent, Component, SelectMenuComponent, TextInputComponent } from '../index';
 import type { MessageComponent, ModalActionRowComponent } from './ActionRow';
 
@@ -21,7 +16,7 @@ export interface MappedComponentTypes {
 export function createComponent<T extends keyof MappedComponentTypes>(
 	data: (APIMessageComponent | APIModalComponent) & { type: T },
 ): MappedComponentTypes[T];
-export function createComponent<C extends APIModalComponent | APIMessageComponent>(data: C): C;
+export function createComponent<C extends MessageComponent | ModalActionRowComponent>(data: C): C;
 export function createComponent(data: APIModalComponent | APIMessageComponent): Component {
 	if (data instanceof Component) {
 		return data;

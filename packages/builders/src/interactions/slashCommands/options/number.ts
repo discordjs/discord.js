@@ -1,4 +1,4 @@
-import { APIApplicationCommandNumberOption, ApplicationCommandOptionType } from 'discord-api-types/v9';
+import { APIApplicationCommandNumberOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { z } from 'zod';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin';

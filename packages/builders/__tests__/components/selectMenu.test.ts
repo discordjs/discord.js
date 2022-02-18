@@ -1,4 +1,4 @@
-import { APISelectMenuComponent, APISelectMenuOption, ComponentType } from 'discord-api-types/v9';
+import { APISelectMenuComponent, APISelectMenuOption, ComponentType } from 'discord-api-types/v10';
 import { SelectMenuComponent, SelectMenuOption } from '../../src/index';
 
 const selectMenu = () => new SelectMenuComponent();
