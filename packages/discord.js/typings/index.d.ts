@@ -1501,7 +1501,7 @@ export interface MappedInteractionTypes<Cached extends boolean = boolean> {
 
 export class Message<Cached extends boolean = boolean> extends Base {
   private readonly _cacheType: Cached;
-  private constructor(client: Client, data: RawMessageData);
+  protected constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData | RawMessageData): void;
 
   public activity: MessageActivity | null;
