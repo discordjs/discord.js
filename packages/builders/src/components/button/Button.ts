@@ -30,7 +30,7 @@ export class ButtonComponent extends UnsafeButtonComponent {
 		return super.setEmoji(emojiValidator.parse(emoji));
 	}
 
-	public override setDisabled(disabled: boolean) {
+	public override setDisabled(disabled = true) {
 		return super.setDisabled(disabledValidator.parse(disabled));
 	}
 
