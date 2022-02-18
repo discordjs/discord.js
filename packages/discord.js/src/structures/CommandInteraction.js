@@ -24,7 +24,7 @@ class CommandInteraction extends Interaction {
 
     this.data.command_id = data.data.id;
     this.data.command_name = data.data.name;
-    this.command_type = data.data.type;
+    this.data.command_type = data.data.type;
 
     /**
      * Whether the reply to this interaction has been deferred
