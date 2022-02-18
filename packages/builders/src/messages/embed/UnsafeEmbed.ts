@@ -190,7 +190,6 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 * @param fields The fields to add
 	 */
 	public addFields(...fields: APIEmbedField[]): this {
-		fields = UnsafeEmbed.normalizeFields(...fields);
 		if (this.data.fields) this.data.fields.push(...fields);
 		else this.data.fields = fields;
 		return this;
@@ -204,7 +203,6 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 * @param fields The replacing field objects
 	 */
 	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
-		fields = UnsafeEmbed.normalizeFields(...fields);
 		if (this.data.fields) this.data.fields.splice(index, deleteCount, ...fields);
 		else this.data.fields = fields;
 		return this;
@@ -336,16 +334,5 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 		const data = other instanceof UnsafeEmbed ? other.data : other;
 		const { image, thumbnail, ...otherData } = data;
 		return isEqual(otherData, thisData) && image?.url === thisImage?.url && thumbnail?.url === thisThumbnail?.url;
-	}
-
-	/**
-	 * Normalizes field input and resolves strings
-	 *
-	 * @param fields Fields to normalize
-	 */
-	public static normalizeFields(...fields: APIEmbedField[]): APIEmbedField[] {
-		return fields
-			.flat(Infinity)
-			.map((field) => ({ name: field.name, value: field.value, inline: field.inline ?? undefined }));
 	}
 }
