@@ -290,10 +290,16 @@ export class RequestManager extends EventEmitter {
 			this.createHandler(hash.value, routeId.majorParameter);
 
 		// Resolve the request into usable fetch/node-fetch options
-		const { url, fetchOptions } = this.resolveRequest(request);
+		const { url, fetchOptions, isAuthenticated } = this.resolveRequest(request);
 
 		// Queue the request
-		return handler.queueRequest(routeId, url, fetchOptions, { body: request.body, files: request.files });
+		return handler.queueRequest(
+			routeId,
+			url,
+			fetchOptions,
+			{ body: request.body, files: request.files },
+			isAuthenticated,
+		);
 	}
 
 	/**
@@ -315,7 +321,11 @@ export class RequestManager extends EventEmitter {
 	 * Formats the request data to a usable format for fetch
 	 * @param request The request data
 	 */
-	private resolveRequest(request: InternalRequest): { url: string; fetchOptions: RequestInit } {
+	private resolveRequest(request: InternalRequest): {
+		url: string;
+		fetchOptions: RequestInit;
+		isAuthenticated: boolean;
+	} {
 		const { options } = this;
 
 		this.agent ??= options.api.startsWith('https')
@@ -406,7 +416,7 @@ export class RequestManager extends EventEmitter {
 			method: request.method,
 		};
 
-		return { url, fetchOptions };
+		return { url, fetchOptions, isAuthenticated: request.auth !== false };
 	}
 
 	/**

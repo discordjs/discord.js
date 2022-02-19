@@ -7,6 +7,7 @@ export interface IHandler {
 		url: string,
 		options: RequestInit,
 		bodyData: Pick<InternalRequest, 'files' | 'body'>,
+		isAuthenticated: boolean,
 	) => Promise<unknown>;
 	readonly inactive: boolean;
 	readonly id: string;

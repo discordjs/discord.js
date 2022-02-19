@@ -8,6 +8,7 @@ import type { InternalRequest, RequestManager, RouteData } from '../RequestManag
 import { RESTEvents } from '../utils/constants';
 import { hasSublimit, parseResponse } from '../utils/utils';
 import type { RateLimitData } from '../REST';
+import type { IHandler } from './IHandler';
 
 /* Invalid request limiting is done on a per-IP basis, not a per-token basis.
  * The best we can do is track invalid counts process-wide (on the theory that
@@ -26,7 +27,7 @@ const enum QueueType {
 /**
  * The structure used to handle requests for a given bucket
  */
-export class SequentialHandler {
+export class SequentialHandler implements IHandler {
 	/**
 	 * The unique id of the handler
 	 */
@@ -169,6 +170,7 @@ export class SequentialHandler {
 		url: string,
 		options: RequestInit,
 		bodyData: Pick<InternalRequest, 'files' | 'body'>,
+		isAuthenticated: boolean,
 	): Promise<unknown> {
 		let queue = this.#asyncQueue;
 		let queueType = QueueType.Standard;
@@ -197,7 +199,7 @@ export class SequentialHandler {
 		}
 		try {
 			// Make the request, and return the results
-			return await this.runRequest(routeId, url, options, bodyData);
+			return await this.runRequest(routeId, url, options, bodyData, isAuthenticated);
 		} finally {
 			// Allow the next request to fire
 			queue.shift();
@@ -226,6 +228,7 @@ export class SequentialHandler {
 		url: string,
 		options: RequestInit,
 		bodyData: Pick<InternalRequest, 'files' | 'body'>,
+		isAuthenticated: boolean,
 		retries = 0,
 	): Promise<unknown> {
 		/*
@@ -309,7 +312,7 @@ export class SequentialHandler {
 		} catch (error: unknown) {
 			// Retry the specified number of times for possible timed out requests
 			if (error instanceof Error && error.name === 'AbortError' && retries !== this.manager.options.retries) {
-				return await this.runRequest(routeId, url, options, bodyData, ++retries);
+				return await this.runRequest(routeId, url, options, bodyData, isAuthenticated, ++retries);
 			}
 
 			throw error;
@@ -466,11 +469,11 @@ export class SequentialHandler {
 				}
 			}
 			// Since this is not a server side issue, the next request should pass, so we don't bump the retries counter
-			return this.runRequest(routeId, url, options, bodyData, retries);
+			return this.runRequest(routeId, url, options, bodyData, isAuthenticated, retries);
 		} else if (res.status >= 500 && res.status < 600) {
 			// Retry the specified number of times for possible server side issues
 			if (retries !== this.manager.options.retries) {
-				return this.runRequest(routeId, url, options, bodyData, ++retries);
+				return this.runRequest(routeId, url, options, bodyData, isAuthenticated, ++retries);
 			}
 			// We are out of retries, throw an error
 			throw new HTTPError(res.statusText, res.constructor.name, res.status, method, url, bodyData);
@@ -478,7 +481,7 @@ export class SequentialHandler {
 			// Handle possible malformed requests
 			if (res.status >= 400 && res.status < 500) {
 				// If we receive this status code, it means the token we had is no longer valid.
-				if (res.status === 401) {
+				if (res.status === 401 && isAuthenticated) {
 					this.manager.setToken(null!);
 				}
 				// The request will not succeed for some reason, parse the error returned from the api
