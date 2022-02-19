@@ -43,7 +43,7 @@ class GenericAction {
         },
         this.client.channels,
         id,
-        Partials.Channel,
+        Partials.Flags.Channel,
       )
     );
   }
@@ -60,7 +60,7 @@ class GenericAction {
         },
         channel.messages,
         id,
-        Partials.Message,
+        Partials.Flags.Message,
         cache,
       )
     );
@@ -76,17 +76,17 @@ class GenericAction {
       },
       message.reactions,
       id,
-      Partials.Reaction,
+      Partials.Flags.Reaction,
     );
   }
 
   getMember(data, guild) {
-    return this.getPayload(data, guild.members, data.user.id, Partials.GuildMember);
+    return this.getPayload(data, guild.members, data.user.id, Partials.Flags.GuildMember);
   }
 
   getUser(data) {
     const id = data.user_id;
-    return data.user ?? this.getPayload({ id }, this.client.users, id, Partials.User);
+    return data.user ?? this.getPayload({ id }, this.client.users, id, Partials.Flags.User);
   }
 
   getUserFromMember(data) {
@@ -107,12 +107,12 @@ class GenericAction {
       { id, guild_id: data.guild_id ?? guild.id },
       guild.scheduledEvents,
       id,
-      Partials.GuildScheduledEvent,
+      Partials.Flags.GuildScheduledEvent,
     );
   }
 
   getThreadMember(id, manager) {
-    return this.getPayload({ user_id: id }, manager, id, Partials.ThreadMember, false);
+    return this.getPayload({ user_id: id }, manager, id, Partials.Flags.ThreadMember, false);
   }
 }
 

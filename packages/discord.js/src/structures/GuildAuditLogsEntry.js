@@ -101,7 +101,7 @@ class GuildAuditLogsEntry {
      * @type {?User}
      */
     this.executor = data.user_id
-      ? guild.client.options.partials.includes(Partials.User)
+      ? guild.client.options.partials.includes(Partials.Flags.User)
         ? guild.client.users._add({ id: data.user_id })
         : guild.client.users.cache.get(data.user_id)
       : null;
@@ -211,7 +211,7 @@ class GuildAuditLogsEntry {
       this.target.id = data.target_id;
       // MemberDisconnect and similar types do not provide a target_id.
     } else if (targetType === Targets.User && data.target_id) {
-      this.target = guild.client.options.partials.includes(Partials.User)
+      this.target = guild.client.options.partials.includes(Partials.Flags.User)
         ? guild.client.users._add({ id: data.target_id })
         : guild.client.users.cache.get(data.target_id);
     } else if (targetType === Targets.Guild) {

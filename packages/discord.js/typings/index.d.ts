@@ -1912,6 +1912,11 @@ export class OAuth2Guild extends BaseGuild {
   public permissions: Readonly<PermissionsBitField>;
 }
 
+export class Partials extends BitField<keyof typeof PartialsFlags> {
+  public static Flags: typeof PartialsFlags;
+  public static All: PartialsFlags[];
+}
+
 export class PartialGroupDMChannel extends Channel {
   private constructor(client: Client, data: RawPartialGroupDMChannelData);
   public type: ChannelType.GroupDM;
@@ -3826,7 +3831,7 @@ export interface ClientOptions {
   shardCount?: number;
   makeCache?: CacheFactory;
   allowedMentions?: MessageMentionOptions;
-  partials?: Partials[];
+  partials?: PartialsFlags[];
   failIfNotExists?: boolean;
   presence?: PresenceData;
   intents: BitFieldResolvable<GatewayIntentsString, number>;
@@ -4861,7 +4866,7 @@ export interface PartialRoleData extends RoleData {
   id?: Snowflake | number;
 }
 
-export enum Partials {
+declare enum PartialsFlags {
   User,
   Channel,
   GuildMember,

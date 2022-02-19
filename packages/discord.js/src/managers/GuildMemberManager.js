@@ -129,7 +129,7 @@ class GuildMemberManager extends CachedManager {
   get me() {
     return (
       this.resolve(this.client.user.id) ??
-      (this.client.options.partials.includes(Partials.GuildMember)
+      (this.client.options.partials.includes(Partials.Flags.GuildMember)
         ? this._add({ user: { id: this.client.user.id } }, true)
         : null)
     );
