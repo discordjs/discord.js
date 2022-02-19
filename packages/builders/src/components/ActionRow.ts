@@ -2,6 +2,7 @@ import { type APIActionRowComponent, ComponentType, APIMessageComponent } from '
 import type { ButtonComponent, SelectMenuComponent } from '..';
 import { Component } from './Component';
 import { createComponent } from './Components';
+import isEqual from 'fast-deep-equal';
 
 export type MessageComponent = ActionRowComponent | ActionRow;
 
@@ -45,5 +46,15 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 			...this.data,
 			components: this.components.map((component) => component.toJSON()),
 		};
+	}
+
+	public equals(other: APIActionRowComponent<APIMessageComponent> | ActionRow) {
+		if (other instanceof ActionRow) {
+			return isEqual(other.data, this.data) && isEqual(other.components, this.components);
+		}
+		return isEqual(other, {
+			...this.data,
+			components: this.components.map((component) => component.toJSON()),
+		});
 	}
 }

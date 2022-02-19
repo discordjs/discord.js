@@ -7,6 +7,7 @@ import {
 	type APIButtonComponentWithCustomId,
 } from 'discord-api-types/v9';
 import { Component } from '../Component';
+import isEqual from 'fast-deep-equal';
 
 /**
  * Represents a non-validated button component
@@ -117,5 +118,12 @@ export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>
 		return {
 			...this.data,
 		} as APIButtonComponent;
+	}
+
+	public equals(other: APIButtonComponent | UnsafeButtonComponent) {
+		if (other instanceof UnsafeButtonComponent) {
+			return isEqual(other.data, this.data);
+		}
+		return isEqual(other, this.data);
 	}
 }

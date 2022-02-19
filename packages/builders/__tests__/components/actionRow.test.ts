@@ -1,6 +1,40 @@
 import { APIActionRowComponent, APIMessageComponent, ButtonStyle, ComponentType } from 'discord-api-types/v9';
 import { ActionRow, ButtonComponent, createComponent, SelectMenuComponent, SelectMenuOption } from '../../src';
 
+const rowWithButtonData: APIActionRowComponent<APIMessageComponent> = {
+	type: ComponentType.ActionRow,
+	components: [
+		{
+			type: ComponentType.Button,
+			label: 'test',
+			custom_id: '123',
+			style: ButtonStyle.Primary,
+		},
+	],
+};
+
+const rowWithSelectMenuData: APIActionRowComponent<APIMessageComponent> = {
+	type: ComponentType.ActionRow,
+	components: [
+		{
+			type: ComponentType.SelectMenu,
+			custom_id: '1234',
+			options: [
+				{
+					label: 'one',
+					value: 'one',
+				},
+				{
+					label: 'two',
+					value: 'two',
+				},
+			],
+			max_values: 10,
+			min_values: 12,
+		},
+	],
+};
+
 describe('Action Row Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
@@ -45,40 +79,6 @@ describe('Action Row Components', () => {
 			expect(() => createComponent({ type: 42, components: [] })).toThrowError();
 		});
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {
-			const rowWithButtonData: APIActionRowComponent<APIMessageComponent> = {
-				type: ComponentType.ActionRow,
-				components: [
-					{
-						type: ComponentType.Button,
-						label: 'test',
-						custom_id: '123',
-						style: ButtonStyle.Primary,
-					},
-				],
-			};
-
-			const rowWithSelectMenuData: APIActionRowComponent<APIMessageComponent> = {
-				type: ComponentType.ActionRow,
-				components: [
-					{
-						type: ComponentType.SelectMenu,
-						custom_id: '1234',
-						options: [
-							{
-								label: 'one',
-								value: 'one',
-							},
-							{
-								label: 'two',
-								value: 'two',
-							},
-						],
-						max_values: 10,
-						min_values: 12,
-					},
-				],
-			};
-
 			const button = new ButtonComponent().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
 			const selectMenu = new SelectMenuComponent()
 				.setCustomId('1234')
@@ -91,6 +91,10 @@ describe('Action Row Components', () => {
 
 			expect(new ActionRow().addComponents(button).toJSON()).toEqual(rowWithButtonData);
 			expect(new ActionRow().addComponents(selectMenu).toJSON()).toEqual(rowWithSelectMenuData);
+		});
+		test('Given JSON data THEN builder is equal to it and itself', () => {
+			expect(new ActionRow(rowWithSelectMenuData).equals(rowWithSelectMenuData)).toBeTruthy();
+			expect(new ActionRow(rowWithButtonData).equals(new ActionRow(rowWithButtonData))).toBeTruthy();
 		});
 	});
 });
