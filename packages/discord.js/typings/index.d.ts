@@ -755,12 +755,12 @@ export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> e
 
 export class AutocompleteInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   public readonly command: ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public channelId: Snowflake;
-  public commandId: Snowflake;
-  public commandName: string;
-  public commandType: ApplicationCommandType.ChatInput;
+  public readonly channelId: Snowflake;
+  public readonly commandId: Snowflake;
+  public readonly commandName: string;
+  public readonly commandType: ApplicationCommandType.ChatInput;
   public responded: boolean;
-  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
+  public readonly options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
   public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
   public inRawGuild(): this is AutocompleteInteraction<'raw'>;

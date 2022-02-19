@@ -9,7 +9,7 @@ const Interaction = require('./Interaction');
  * @extends {Interaction}
  */
 class AutocompleteInteraction extends Interaction {
-  constructor(client, data) {
+  constructor(client, data = {}) {
     super(client, data);
 
     /**
@@ -18,40 +18,54 @@ class AutocompleteInteraction extends Interaction {
      * @name AutocompleteInteraction#channelId
      */
 
-    /**
-     * The invoked application command's id
-     * @type {Snowflake}
-     */
-    this.commandId = data.data.id;
-
-    /**
-     * The invoked application command's name
-     * @type {string}
-     */
-    this.commandName = data.data.name;
-
-    /**
-     * The invoked application command's type
-     * @type {ApplicationCommandType.ChatInput}
-     */
-    this.commandType = data.data.type;
-
+    this.data = { ...this.data, ...data.data };
     /**
      * Whether this interaction has already received a response
      * @type {boolean}
      */
     this.responded = false;
+  }
 
-    /**
-     * The options passed to the command
-     * @type {CommandInteractionOptionResolver}
-     */
-    this.options = new CommandInteractionOptionResolver(this.client, data.data.options ?? []);
+  /**
+   * The invoked application command's id
+   * @type {Snowflake}
+   * @readonly
+   */
+  get commandId() {
+    return this.data.id;
+  }
+
+  /**
+   * The invoked application command's name
+   * @type {string}
+   * @readonly
+   */
+  get commandName() {
+    return this.data.name;
+  }
+
+  /**
+   * The invoked application command's type
+   * @type {ApplicationCommandType.ChatInput}
+   * @readonly
+   */
+  get commandType() {
+    return this.data.type;
+  }
+
+  /**
+   * The options passed to the command
+   * @type {CommandInteractionOptionResolver}
+   * @readonly
+   */
+  get options() {
+    return new CommandInteractionOptionResolver(this.client, this.data.options ?? []);
   }
 
   /**
    * The invoked application command, if it was fetched before
    * @type {?ApplicationCommand}
+   * @readonly
    */
   get command() {
     const id = this.commandId;
