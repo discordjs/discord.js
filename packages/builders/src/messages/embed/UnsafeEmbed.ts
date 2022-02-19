@@ -4,6 +4,7 @@ import type {
 	APIEmbedField,
 	APIEmbedFooter,
 	APIEmbedImage,
+	APIEmbedProvider,
 	APIEmbedVideo,
 } from 'discord-api-types/v9';
 import type { Equatable } from '../../util/equatable';
@@ -51,7 +52,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	/**
 	 * An array of fields of this embed
 	 */
-	public get fields() {
+	public get fields(): ReadonlyArray<APIEmbedField> | undefined {
 		return this.data.fields;
 	}
 
@@ -93,7 +94,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	/**
 	 * The embed thumbnail data
 	 */
-	public get thumbnail(): EmbedImageData | undefined {
+	public get thumbnail(): Readonly<EmbedImageData> | undefined {
 		if (!this.data.thumbnail) return undefined;
 		return {
 			url: this.data.thumbnail.url,
@@ -106,7 +107,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	/**
 	 * The embed image data
 	 */
-	public get image(): EmbedImageData | undefined {
+	public get image(): Readonly<EmbedImageData> | undefined {
 		if (!this.data.image) return undefined;
 		return {
 			url: this.data.image.url,
@@ -119,14 +120,14 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	/**
 	 * Received video data
 	 */
-	public get video(): APIEmbedVideo | undefined {
+	public get video(): Readonly<APIEmbedVideo> | undefined {
 		return this.data.video;
 	}
 
 	/**
 	 * The embed author data
 	 */
-	public get author(): EmbedAuthorData | undefined {
+	public get author(): Readonly<EmbedAuthorData> | undefined {
 		if (!this.data.author) return undefined;
 		return {
 			name: this.data.author.name,
@@ -139,14 +140,14 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	/**
 	 * Received data about the embed provider
 	 */
-	public get provider() {
+	public get provider(): Readonly<APIEmbedProvider> | undefined {
 		return this.data.provider;
 	}
 
 	/**
 	 * The embed footer data
 	 */
-	public get footer(): EmbedFooterData | undefined {
+	public get footer(): Readonly<EmbedFooterData> | undefined {
 		if (!this.data.footer) return undefined;
 		return {
 			text: this.data.footer.text,
@@ -189,10 +190,10 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 *
 	 * @param fields The fields to add
 	 */
-	public addFields(...fields: APIEmbedField[]): this {
+	public addFields(...fields: ReadonlyArray<Readonly<APIEmbedField>>): this {
 		fields = UnsafeEmbed.normalizeFields(...fields);
 		if (this.data.fields) this.data.fields.push(...fields);
-		else this.data.fields = fields;
+		else this.data.fields = [...fields];
 		return this;
 	}
 
@@ -203,10 +204,10 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 * @param deleteCount The number of fields to remove
 	 * @param fields The replacing field objects
 	 */
-	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
+	public spliceFields(index: number, deleteCount: number, ...fields: ReadonlyArray<Readonly<APIEmbedField>>): this {
 		fields = UnsafeEmbed.normalizeFields(...fields);
 		if (this.data.fields) this.data.fields.splice(index, deleteCount, ...fields);
-		else this.data.fields = fields;
+		else this.data.fields = [...fields];
 		return this;
 	}
 
@@ -214,7 +215,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 * Sets the embed's fields (max 25).
 	 * @param fields The fields to set
 	 */
-	public setFields(...fields: APIEmbedField[]) {
+	public setFields(...fields: ReadonlyArray<Readonly<APIEmbedField>>) {
 		this.spliceFields(0, this.fields?.length ?? 0, ...fields);
 		return this;
 	}
@@ -224,7 +225,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 *
 	 * @param options The options for the author
 	 */
-	public setAuthor(options: EmbedAuthorOptions | null): this {
+	public setAuthor(options: Readonly<EmbedAuthorOptions> | null): this {
 		if (options === null) {
 			this.data.author = undefined;
 			return this;
@@ -264,7 +265,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 *
 	 * @param options The options for the footer
 	 */
-	public setFooter(options: EmbedFooterOptions | null): this {
+	public setFooter(options: Readonly<EmbedFooterOptions> | null): this {
 		if (options === null) {
 			this.data.footer = undefined;
 			return this;
@@ -299,7 +300,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 *
 	 * @param timestamp The timestamp or date
 	 */
-	public setTimestamp(timestamp: number | Date | null = Date.now()): this {
+	public setTimestamp(timestamp: number | Readonly<Date> | null = Date.now()): this {
 		this.data.timestamp = timestamp ? new Date(timestamp).toISOString() : undefined;
 		return this;
 	}
@@ -331,7 +332,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 		return { ...this.data };
 	}
 
-	public equals(other: UnsafeEmbed | APIEmbed) {
+	public equals(other: Readonly<UnsafeEmbed | APIEmbed>) {
 		const { image: thisImage, thumbnail: thisThumbnail, ...thisData } = this.data;
 		const data = other instanceof UnsafeEmbed ? other.data : other;
 		const { image, thumbnail, ...otherData } = data;
@@ -343,7 +344,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 *
 	 * @param fields Fields to normalize
 	 */
-	public static normalizeFields(...fields: APIEmbedField[]): APIEmbedField[] {
+	public static normalizeFields(...fields: ReadonlyArray<Readonly<APIEmbedField>>): APIEmbedField[] {
 		return fields
 			.flat(Infinity)
 			.map((field) => ({ name: field.name, value: field.value, inline: field.inline ?? undefined }));

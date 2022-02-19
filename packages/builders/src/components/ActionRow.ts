@@ -17,7 +17,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 > {
 	public readonly components: T[];
 
-	public constructor({ components, ...data }: Partial<APIActionRowComponent<APIMessageComponent>> = {}) {
+	public constructor({ components, ...data }: Readonly<Partial<APIActionRowComponent<APIMessageComponent>>> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
 		this.components = (components?.map((c) => createComponent(c)) ?? []) as T[];
 	}
@@ -27,7 +27,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 	 * @param components The components to add to this action row.
 	 * @returns
 	 */
-	public addComponents(...components: T[]) {
+	public addComponents(...components: ReadonlyArray<Readonly<T>>) {
 		this.components.push(...components);
 		return this;
 	}
@@ -36,7 +36,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 	 * Sets the components in this action row
 	 * @param components The components to set this row to
 	 */
-	public setComponents(...components: T[]) {
+	public setComponents(...components: ReadonlyArray<Readonly<T>>) {
 		this.components.splice(0, this.components.length, ...components);
 		return this;
 	}
@@ -48,7 +48,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 		};
 	}
 
-	public equals(other: APIActionRowComponent<APIMessageComponent> | ActionRow) {
+	public equals(other: Readonly<APIActionRowComponent<APIMessageComponent> | ActionRow>) {
 		if (other instanceof ActionRow) {
 			return isEqual(other.data, this.data) && isEqual(other.components, this.components);
 		}

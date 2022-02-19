@@ -13,7 +13,7 @@ import isEqual from 'fast-deep-equal';
  * Represents a non-validated button component
  */
 export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent> & { type: ComponentType.Button }> {
-	public constructor(data?: Partial<APIButtonComponent>) {
+	public constructor(data?: Readonly<Partial<APIButtonComponent>>) {
 		super({ type: ComponentType.Button, ...data });
 	}
 
@@ -34,7 +34,7 @@ export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>
 	/**
 	 * The emoji used in this button
 	 */
-	public get emoji() {
+	public get emoji(): Readonly<APIMessageComponentEmoji> | undefined {
 		return this.data.emoji;
 	}
 
@@ -90,7 +90,7 @@ export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>
 	 * Sets the emoji to display on this button
 	 * @param emoji The emoji to display on this button
 	 */
-	public setEmoji(emoji: APIMessageComponentEmoji) {
+	public setEmoji(emoji: Readonly<APIMessageComponentEmoji>) {
 		this.data.emoji = emoji;
 		return this;
 	}
@@ -120,7 +120,7 @@ export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>
 		} as APIButtonComponent;
 	}
 
-	public equals(other: APIButtonComponent | UnsafeButtonComponent) {
+	public equals(other: Readonly<APIButtonComponent | UnsafeButtonComponent>) {
 		if (other instanceof UnsafeButtonComponent) {
 			return isEqual(other.data, this.data);
 		}

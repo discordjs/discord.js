@@ -11,7 +11,7 @@ export class UnsafeSelectMenuComponent extends Component<
 > {
 	public readonly options: UnsafeSelectMenuOption[];
 
-	public constructor(data?: Partial<APISelectMenuComponent>) {
+	public constructor(data?: Readonly<Partial<APISelectMenuComponent>>) {
 		const { options, ...initData } = data ?? {};
 		super({ type: ComponentType.SelectMenu, ...initData });
 		this.options = options?.map((o) => new UnsafeSelectMenuOption(o)) ?? [];
@@ -102,7 +102,7 @@ export class UnsafeSelectMenuComponent extends Component<
 	 * @param options The options to add to this select menu
 	 * @returns
 	 */
-	public addOptions(...options: (UnsafeSelectMenuOption | APISelectMenuOption)[]) {
+	public addOptions(...options: ReadonlyArray<Readonly<UnsafeSelectMenuOption | APISelectMenuOption>>) {
 		this.options.push(
 			...options.map((option) =>
 				option instanceof UnsafeSelectMenuOption ? option : new UnsafeSelectMenuOption(option),
@@ -115,7 +115,7 @@ export class UnsafeSelectMenuComponent extends Component<
 	 * Sets the options on this select menu
 	 * @param options The options to set on this select menu
 	 */
-	public setOptions(...options: (UnsafeSelectMenuOption | APISelectMenuOption)[]) {
+	public setOptions(...options: ReadonlyArray<Readonly<UnsafeSelectMenuOption | APISelectMenuOption>>) {
 		this.options.splice(
 			0,
 			this.options.length,
@@ -134,7 +134,7 @@ export class UnsafeSelectMenuComponent extends Component<
 		} as APISelectMenuComponent;
 	}
 
-	public equals(other: APISelectMenuComponent | UnsafeSelectMenuComponent): boolean {
+	public equals(other: Readonly<APISelectMenuComponent | UnsafeSelectMenuComponent>): boolean {
 		if (other instanceof UnsafeSelectMenuComponent) {
 			return isEqual(other.data, this.data) && isEqual(other.options, this.options);
 		}

@@ -30,7 +30,7 @@ export class UnsafeSelectMenuOption {
 	/**
 	 * The emoji for this option
 	 */
-	public get emoji() {
+	public get emoji(): Readonly<APIMessageComponentEmoji> | undefined {
 		return this.data.emoji;
 	}
 
@@ -81,7 +81,7 @@ export class UnsafeSelectMenuOption {
 	 * Sets the emoji to display on this button
 	 * @param emoji The emoji to display on this button
 	 */
-	public setEmoji(emoji: APIMessageComponentEmoji) {
+	public setEmoji(emoji: Readonly<APIMessageComponentEmoji>) {
 		this.data.emoji = emoji;
 		return this;
 	}
