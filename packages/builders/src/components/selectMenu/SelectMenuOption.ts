@@ -15,7 +15,7 @@ export class SelectMenuOption extends UnsafeSelectMenuOption {
 		return super.setDescription(labelValueValidator.parse(description));
 	}
 
-	public override setDefault(isDefault: boolean) {
+	public override setDefault(isDefault = true) {
 		return super.setDefault(defaultValidator.parse(isDefault));
 	}
 

@@ -115,6 +115,7 @@ class GuildPreview extends Base {
       new Collection(),
     );
   }
+
   /**
    * The timestamp this guild was created at
    * @type {number}

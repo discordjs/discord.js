@@ -15,6 +15,9 @@ export type ActionRowComponent = ButtonComponent | SelectMenuComponent;
 export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends Component<
 	Omit<Partial<APIActionRowComponent<APIMessageComponent>> & { type: ComponentType.ActionRow }, 'components'>
 > {
+	/**
+	 * The components within this action row
+	 */
 	public readonly components: T[];
 
 	public constructor({ components, ...data }: Partial<APIActionRowComponent<APIMessageComponent>> = {}) {

@@ -99,7 +99,7 @@ export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>
 	 * Sets whether this button is disable or not
 	 * @param disabled Whether or not to disable this button or not
 	 */
-	public setDisabled(disabled: boolean) {
+	public setDisabled(disabled = true) {
 		this.data.disabled = disabled;
 		return this;
 	}

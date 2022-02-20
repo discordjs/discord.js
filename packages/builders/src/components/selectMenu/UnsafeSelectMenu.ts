@@ -9,6 +9,9 @@ import isEqual from 'fast-deep-equal';
 export class UnsafeSelectMenuComponent extends Component<
 	Partial<Omit<APISelectMenuComponent, 'options'>> & { type: ComponentType.SelectMenu }
 > {
+	/**
+	 * The options within this select menu
+	 */
 	public readonly options: UnsafeSelectMenuOption[];
 
 	public constructor(data?: Partial<APISelectMenuComponent>) {
@@ -92,7 +95,7 @@ export class UnsafeSelectMenuComponent extends Component<
 	 * Sets whether or not this select menu is disabled
 	 * @param disabled Whether or not this select menu is disabled
 	 */
-	public setDisabled(disabled: boolean) {
+	public setDisabled(disabled = true) {
 		this.data.disabled = disabled;
 		return this;
 	}
