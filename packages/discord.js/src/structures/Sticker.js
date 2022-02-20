@@ -160,6 +160,7 @@ class Sticker extends Base {
    * <info>If the sticker's format is {@link StickerFormatType.Lottie}, it returns
    * the URL of the Lottie JSON file.</info>
    * @type {string}
+   * @readonly
    */
   get url() {
     return this.client.rest.cdn.sticker(this.id, this.format === StickerFormatType.Lottie ? 'json' : 'png');
