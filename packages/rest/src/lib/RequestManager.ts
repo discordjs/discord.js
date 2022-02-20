@@ -319,10 +319,7 @@ export class RequestManager extends EventEmitter {
 	 * Formats the request data to a usable format for fetch
 	 * @param request The request data
 	 */
-	private resolveRequest(request: InternalRequest): {
-		url: string;
-		fetchOptions: RequestInit;
-	} {
+	private resolveRequest(request: InternalRequest): { url: string; fetchOptions: RequestInit } {
 		const { options } = this;
 
 		this.agent ??= options.api.startsWith('https')
