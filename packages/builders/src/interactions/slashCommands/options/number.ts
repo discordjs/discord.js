@@ -5,7 +5,7 @@ import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/Appli
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
 import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin';
 
-const numberValidator = z.number().nonnegative();
+const numberValidator = z.number();
 
 @mix(ApplicationCommandNumericOptionMinMaxValueMixin, ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
 export class SlashCommandNumberOption
