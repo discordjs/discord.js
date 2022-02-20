@@ -41,7 +41,7 @@ export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
  * Represents a non-validated embed in a message (image/video preview, rich embed, etc.)
  */
 export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
-	protected data: APIEmbed;
+	public readonly data: APIEmbed;
 
 	public constructor(data: APIEmbed = {}) {
 		this.data = { ...data };

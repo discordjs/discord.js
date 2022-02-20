@@ -19,7 +19,7 @@ export abstract class Component<
 	/**
 	 * The API data associated with this component
 	 */
-	protected readonly data: DataType;
+	public readonly data: DataType;
 
 	public abstract toJSON(): APIMessageComponent;
 
