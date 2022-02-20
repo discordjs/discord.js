@@ -19,9 +19,6 @@ class MessageComponentInteraction extends Interaction {
      * @name MessageComponentInteraction#channelId
      */
 
-    this.data.message = data.message;
-    this.data = { ...this.data, ...data.data };
-
     /**
      * Whether the reply to this interaction has been deferred
      * @type {boolean}

@@ -22,8 +22,6 @@ class CommandInteraction extends Interaction {
      * @name CommandInteraction#channelId
      */
 
-    this.data = { ...this.data, ...data.data };
-
     /**
      * Whether the reply to this interaction has been deferred
      * @type {boolean}

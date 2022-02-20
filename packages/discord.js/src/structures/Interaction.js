@@ -13,12 +13,14 @@ class Interaction extends Base {
   constructor(client, data = {}) {
     super(client);
 
+    const { data: rawData, ...initData } = data;
+
     /**
      * The raw API data for this interaction
      * @type {RawInteractionData}
      * @readonly
      */
-    this.data = { ...data };
+    this.data = { ...rawData, ...initData };
 
     /**
      * The interaction's token

@@ -20,8 +20,6 @@ class ContextMenuCommandInteraction extends CommandInteraction {
       this.resolveContextMenuOptions(data.data),
       this.transformResolved(data.data.resolved),
     );
-
-    this.data = { ...this.data, ...data.data };
   }
   /**
    * The id of the target of the interaction

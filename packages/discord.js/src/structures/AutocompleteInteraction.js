@@ -18,7 +18,6 @@ class AutocompleteInteraction extends Interaction {
      * @name AutocompleteInteraction#channelId
      */
 
-    this.data = { ...this.data, ...data.data };
     /**
      * Whether this interaction has already received a response
      * @type {boolean}
