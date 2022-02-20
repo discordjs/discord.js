@@ -6,9 +6,9 @@ export interface IHandler {
 		routeId: RouteData,
 		url: string,
 		options: RequestInit,
-		bodyData: Pick<InternalRequest, 'files' | 'body'>,
-		isAuthenticated: boolean,
+		requestData: Pick<InternalRequest, 'files' | 'body' | 'auth'>,
 	) => Promise<unknown>;
-	readonly inactive: boolean;
+	// eslint-disable-next-line @typescript-eslint/method-signature-style -- This is meant to be a getter returning a bool
+	get inactive(): boolean;
 	readonly id: string;
 }

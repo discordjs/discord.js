@@ -160,7 +160,7 @@ export interface APIRequest {
 	/**
 	 * The data that was used to form the body of this request
 	 */
-	data: Pick<InternalRequest, 'files' | 'body'>;
+	data: Pick<InternalRequest, 'files' | 'body' | 'auth'>;
 	/**
 	 * The number of times this request has been attempted
 	 */

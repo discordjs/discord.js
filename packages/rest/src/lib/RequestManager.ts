@@ -293,13 +293,11 @@ export class RequestManager extends EventEmitter {
 		const { url, fetchOptions, isAuthenticated } = this.resolveRequest(request);
 
 		// Queue the request
-		return handler.queueRequest(
-			routeId,
-			url,
-			fetchOptions,
-			{ body: request.body, files: request.files },
-			isAuthenticated,
-		);
+		return handler.queueRequest(routeId, url, fetchOptions, {
+			body: request.body,
+			files: request.files,
+			auth: isAuthenticated,
+		});
 	}
 
 	/**
