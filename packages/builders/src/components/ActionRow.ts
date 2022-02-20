@@ -36,7 +36,7 @@ export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extend
 	 * Sets the components in this action row
 	 * @param components The components to set this row to
 	 */
-	public setComponents(...components: ReadonlyArray<Readonly<T>>) {
+	public setComponents(...components: readonly Readonly<T>[]) {
 		this.components.splice(0, this.components.length, ...components);
 		return this;
 	}

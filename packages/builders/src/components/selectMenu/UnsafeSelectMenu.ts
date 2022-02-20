@@ -102,7 +102,7 @@ export class UnsafeSelectMenuComponent extends Component<
 	 * @param options The options to add to this select menu
 	 * @returns
 	 */
-	public addOptions(...options: ReadonlyArray<Readonly<UnsafeSelectMenuOption | APISelectMenuOption>>) {
+	public addOptions(...options: readonly Readonly<UnsafeSelectMenuOption | APISelectMenuOption>[]) {
 		this.options.push(
 			...options.map((option) =>
 				option instanceof UnsafeSelectMenuOption ? option : new UnsafeSelectMenuOption(option),
@@ -115,7 +115,7 @@ export class UnsafeSelectMenuComponent extends Component<
 	 * Sets the options on this select menu
 	 * @param options The options to set on this select menu
 	 */
-	public setOptions(...options: ReadonlyArray<Readonly<UnsafeSelectMenuOption | APISelectMenuOption>>) {
+	public setOptions(...options: readonly Readonly<UnsafeSelectMenuOption | APISelectMenuOption>[]) {
 		this.options.splice(
 			0,
 			this.options.length,

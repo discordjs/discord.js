@@ -52,7 +52,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	/**
 	 * An array of fields of this embed
 	 */
-	public get fields(): ReadonlyArray<APIEmbedField> | undefined {
+	public get fields(): readonly Readonly<APIEmbedField>[] | undefined {
 		return this.data.fields;
 	}
 
@@ -181,7 +181,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 *
 	 * @param field The field to add.
 	 */
-	public addField(field: APIEmbedField): this {
+	public addField(field: Readonly<APIEmbedField>): this {
 		return this.addFields(field);
 	}
 
@@ -190,7 +190,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 *
 	 * @param fields The fields to add
 	 */
-	public addFields(...fields: ReadonlyArray<Readonly<APIEmbedField>>): this {
+	public addFields(...fields: readonly Readonly<APIEmbedField>[]): this {
 		fields = UnsafeEmbed.normalizeFields(...fields);
 		if (this.data.fields) this.data.fields.push(...fields);
 		else this.data.fields = [...fields];
@@ -204,7 +204,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 * @param deleteCount The number of fields to remove
 	 * @param fields The replacing field objects
 	 */
-	public spliceFields(index: number, deleteCount: number, ...fields: ReadonlyArray<Readonly<APIEmbedField>>): this {
+	public spliceFields(index: number, deleteCount: number, ...fields: readonly Readonly<APIEmbedField>[]): this {
 		fields = UnsafeEmbed.normalizeFields(...fields);
 		if (this.data.fields) this.data.fields.splice(index, deleteCount, ...fields);
 		else this.data.fields = [...fields];
@@ -215,7 +215,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 * Sets the embed's fields (max 25).
 	 * @param fields The fields to set
 	 */
-	public setFields(...fields: ReadonlyArray<Readonly<APIEmbedField>>) {
+	public setFields(...fields: readonly Readonly<APIEmbedField>[]) {
 		this.spliceFields(0, this.fields?.length ?? 0, ...fields);
 		return this;
 	}
@@ -344,7 +344,7 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 *
 	 * @param fields Fields to normalize
 	 */
-	public static normalizeFields(...fields: ReadonlyArray<Readonly<APIEmbedField>>): APIEmbedField[] {
+	public static normalizeFields(...fields: readonly Readonly<APIEmbedField>[]): APIEmbedField[] {
 		return fields
 			.flat(Infinity)
 			.map((field) => ({ name: field.name, value: field.value, inline: field.inline ?? undefined }));
