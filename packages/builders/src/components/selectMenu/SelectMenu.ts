@@ -28,7 +28,7 @@ export class SelectMenuComponent extends UnsafeSelectMenuComponent {
 		return super.setCustomId(customIdValidator.parse(customId));
 	}
 
-	public override setDisabled(disabled: boolean) {
+	public override setDisabled(disabled = true) {
 		return super.setDisabled(disabledValidator.parse(disabled));
 	}
 

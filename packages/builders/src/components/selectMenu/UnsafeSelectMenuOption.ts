@@ -72,7 +72,7 @@ export class UnsafeSelectMenuOption {
 	 * Sets whether this option is selected by default
 	 * @param isDefault Whether this option is selected by default
 	 */
-	public setDefault(isDefault: boolean) {
+	public setDefault(isDefault = true) {
 		this.data.default = isDefault;
 		return this;
 	}

@@ -8,7 +8,7 @@ class Transformers extends null {
    * @param {*} obj The object to transform
    * @returns {*}
    */
-  static toSnakeCase(obj = {}) {
+  static toSnakeCase(obj) {
     if (typeof obj !== 'object' || !obj) return obj;
     if (Array.isArray(obj)) return obj.map(Transformers.toSnakeCase);
     return Object.fromEntries(
