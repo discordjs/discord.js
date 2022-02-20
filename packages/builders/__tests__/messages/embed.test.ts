@@ -311,10 +311,10 @@ describe('Embed', () => {
 	describe('Embed Fields', () => {
 		test('GIVEN an embed with a pre-defined field THEN returns valid toJSON data', () => {
 			const embed = new Embed({
-				fields: [{ name: 'foo', value: 'bar', inline: undefined }],
+				fields: [{ name: 'foo', value: 'bar' }],
 			});
 			expect(embed.toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'bar', inline: undefined }],
+				fields: [{ name: 'foo', value: 'bar' }],
 			});
 		});
 
@@ -323,7 +323,7 @@ describe('Embed', () => {
 			embed.addField({ name: 'foo', value: 'bar' });
 
 			expect(embed.toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'bar', inline: undefined }],
+				fields: [{ name: 'foo', value: 'bar' }],
 			});
 		});
 
@@ -332,7 +332,7 @@ describe('Embed', () => {
 			embed.addFields({ name: 'foo', value: 'bar' });
 
 			expect(embed.toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'bar', inline: undefined }],
+				fields: [{ name: 'foo', value: 'bar' }],
 			});
 		});
 
@@ -341,7 +341,7 @@ describe('Embed', () => {
 			embed.addFields({ name: 'foo', value: 'bar' }, { name: 'foo', value: 'baz' });
 
 			expect(embed.spliceFields(0, 1).toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'baz', inline: undefined }],
+				fields: [{ name: 'foo', value: 'baz' }],
 			});
 		});
 
