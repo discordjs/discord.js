@@ -346,10 +346,10 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
     | 'getSubcommandGroup'
     | 'getSubcommand'
   >;
-  public readonly channelId: Snowflake;
-  public readonly commandId: Snowflake;
-  public readonly commandName: string;
-  public readonly commandType: ApplicationCommandType;
+  public get channelId(): Snowflake;
+  public get commandId(): Snowflake;
+  public get commandName(): string;
+  public get commandType(): ApplicationCommandType;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public replied: boolean;
@@ -465,7 +465,7 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
     ButtonComponent | APIButtonComponent,
     ButtonComponent | APIButtonComponent
   >;
-  public componentType: ComponentType.Button;
+  public get componentType(): ComponentType.Button;
   public inGuild(): this is ButtonInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ButtonInteraction<'cached'>;
   public inRawGuild(): this is ButtonInteraction<'raw'>;
@@ -1584,9 +1584,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
     ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>,
     ActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageComponent>>
   >;
-  public readonly componentType: Exclude<ComponentType, ComponentType.ActionRow>;
-  public readonly customId: string;
-  public readonly channelId: Snowflake;
+  public get componentType(): Exclude<ComponentType, ComponentType.ActionRow>;
+  public get customId(): string;
+  public get channelId(): Snowflake;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public message: GuildCacheMessage<Cached>;
@@ -1857,7 +1857,7 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
     SelectMenuComponent | APISelectMenuComponent,
     SelectMenuComponent | APISelectMenuComponent
   >;
-  public componentType: ComponentType.SelectMenu;
+  public get componentType(): ComponentType.SelectMenu;
   public values: string[];
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
