@@ -92,7 +92,7 @@ export class UnsafeSelectMenuComponent extends Component<
 	 * Sets whether or not this select menu is disabled
 	 * @param disabled Whether or not this select menu is disabled
 	 */
-	public setDisabled(disabled: boolean) {
+	public setDisabled(disabled = true) {
 		this.data.disabled = disabled;
 		return this;
 	}
