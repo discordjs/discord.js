@@ -11,15 +11,6 @@ const CommandInteractionOptionResolver = require('./CommandInteractionOptionReso
 class ContextMenuCommandInteraction extends CommandInteraction {
   constructor(client, data = {}) {
     super(client, data);
-    /**
-     * The target of the interaction, parsed into options
-     * @type {CommandInteractionOptionResolver}
-     */
-    this.options = new CommandInteractionOptionResolver(
-      this.client,
-      this.resolveContextMenuOptions(data.data),
-      this.transformResolved(data.data.resolved),
-    );
   }
   /**
    * The id of the target of the interaction
@@ -29,6 +20,20 @@ class ContextMenuCommandInteraction extends CommandInteraction {
   get targetId() {
     return this.data.target_id;
   }
+
+  /**
+   * The target of the interaction, parsed into options
+   * @type {CommandInteractionOptionResolver}
+   * @readonly
+   */
+  get options() {
+    return new CommandInteractionOptionResolver(
+      this.client,
+      this.resolveContextMenuOptions(this.data),
+      this.transformResolved(this.data.resolved),
+    );
+  }
+
   /**
    * Resolves and transforms options received from the API for a context menu interaction.
    * @param {APIApplicationCommandInteractionData} data The interaction data

@@ -331,7 +331,7 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public options: Omit<
+  public get options(): Omit<
     CommandInteractionOptionResolver<Cached>,
     | 'getMessage'
     | 'getFocused'
@@ -713,7 +713,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 }
 
 export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
-  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
+  public get options(): Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
   public inGuild(): this is ChatInputCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ChatInputCommandInteraction<'cached'>;
   public inRawGuild(): this is ChatInputCommandInteraction<'raw'>;
@@ -727,7 +727,7 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public get commandName(): string;
   public get commandType(): ApplicationCommandType.ChatInput;
   public responded: boolean;
-  public readonly options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
+  public get options(): Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
   public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
   public inRawGuild(): this is AutocompleteInteraction<'raw'>;
@@ -797,7 +797,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
 }
 
 export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
-  public options: Omit<
+  public get options(): Omit<
     CommandInteractionOptionResolver<Cached>,
     | 'getFocused'
     | 'getMentionable'
@@ -810,7 +810,7 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
     | 'getSubcommandGroup'
     | 'getSubcommand'
   >;
-  public readonly targetId: Snowflake;
+  public get targetId(): Snowflake;
   public inGuild(): this is ContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ContextMenuCommandInteraction<'cached'>;
   public inRawGuild(): this is ContextMenuCommandInteraction<'raw'>;
