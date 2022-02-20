@@ -11,6 +11,7 @@ class ChatInputCommandInteraction extends CommandInteraction {
   /**
    * The options passed to the command.
    * @type {CommandInteractionOptionResolver}
+   * @readonly
    */
   get options() {
     return new CommandInteractionOptionResolver(
