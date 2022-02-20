@@ -8,6 +8,9 @@ const CommandInteractionOptionResolver = require('./CommandInteractionOptionReso
  * @extends {CommandInteraction}
  */
 class ChatInputCommandInteraction extends CommandInteraction {
+  constructor(client, data = {}) {
+    super(client, data);
+  }
   /**
    * The options passed to the command.
    * @type {CommandInteractionOptionResolver}
