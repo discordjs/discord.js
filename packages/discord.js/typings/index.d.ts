@@ -1381,7 +1381,8 @@ export class InteractionWebhook extends PartialWebhookMixin() {
 
 export class Invite extends Base {
   private constructor(client: Client, data: RawInviteData);
-  public channel: NonThreadGuildBasedChannel | PartialGroupDMChannel;
+  public channel: NonThreadGuildBasedChannel | PartialGroupDMChannel | null;
+  public channelId: Snowflake | null;
   public code: string;
   public get deletable(): boolean;
   public get createdAt(): Date | null;
