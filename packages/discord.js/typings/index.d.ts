@@ -1325,12 +1325,12 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public get id(): Snowflake;
   public get member(): CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   public readonly token: string;
-  public readonly type: InteractionType;
-  public readonly user: User;
-  public readonly version: number;
-  public readonly memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
-  public readonly locale: string;
-  public readonly guildLocale: CacheTypeReducer<Cached, string, string, string>;
+  public get type(): InteractionType;
+  public get user(): User;
+  public get version(): number;
+  public get memberPermissions(): CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
+  public get locale(): string;
+  public get guildLocale(): CacheTypeReducer<Cached, string, string, string>;
   public inGuild(): this is Interaction<'raw' | 'cached'>;
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
