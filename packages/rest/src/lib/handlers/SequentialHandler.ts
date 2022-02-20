@@ -163,7 +163,7 @@ export class SequentialHandler implements IHandler {
 	 * @param routeId The generalized api route with literal ids for major parameters
 	 * @param url The url to do the request on
 	 * @param options All the information needed to make a request
-	 * @param requestData The data that was used to form the body, passed to any errors generated and for determining whether to sublimit
+	 * @param requestData Extra data from the user's request needed for errors and additional processing
 	 */
 	public async queueRequest(
 		routeId: RouteData,
@@ -219,7 +219,7 @@ export class SequentialHandler implements IHandler {
 	 * @param routeId The generalized api route with literal ids for major parameters
 	 * @param url The fully resolved url to make the request to
 	 * @param options The node-fetch options needed to make the request
-	 * @param requestData The data that was used to form the body, passed to any errors generated
+	 * @param requestData Extra data from the user's request needed for errors and additional processing
 	 * @param retries The number of retries this request has already attempted (recursion)
 	 */
 	private async runRequest(

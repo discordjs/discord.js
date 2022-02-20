@@ -290,13 +290,13 @@ export class RequestManager extends EventEmitter {
 			this.createHandler(hash.value, routeId.majorParameter);
 
 		// Resolve the request into usable fetch/node-fetch options
-		const { url, fetchOptions, isAuthenticated } = this.resolveRequest(request);
+		const { url, fetchOptions } = this.resolveRequest(request);
 
 		// Queue the request
 		return handler.queueRequest(routeId, url, fetchOptions, {
 			body: request.body,
 			files: request.files,
-			auth: isAuthenticated,
+			auth: request.auth !== false,
 		});
 	}
 
@@ -322,7 +322,6 @@ export class RequestManager extends EventEmitter {
 	private resolveRequest(request: InternalRequest): {
 		url: string;
 		fetchOptions: RequestInit;
-		isAuthenticated: boolean;
 	} {
 		const { options } = this;
 
@@ -414,7 +413,7 @@ export class RequestManager extends EventEmitter {
 			method: request.method,
 		};
 
-		return { url, fetchOptions, isAuthenticated: request.auth !== false };
+		return { url, fetchOptions };
 	}
 
 	/**
