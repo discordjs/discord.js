@@ -1,4 +1,4 @@
-import type { ButtonStyle, APIMessageComponentEmoji, APIButtonComponent } from 'discord-api-types/v10';
+import type { ButtonStyle, APIMessageComponentEmoji, APIButtonComponent } from 'discord-api-types/v9';
 import {
 	buttonLabelValidator,
 	buttonStyleValidator,

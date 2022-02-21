@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ApplicationCommandType } from 'discord-api-types/v10';
+import { ApplicationCommandType } from 'discord-api-types/v9';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder';
 
 const namePredicate = z

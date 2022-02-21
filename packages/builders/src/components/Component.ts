@@ -8,7 +8,7 @@ import type {
 	APIMessageComponent,
 	ComponentType,
 	APIModalComponent,
-} from 'discord-api-types/v10';
+} from 'discord-api-types/v9';
 import type { Equatable } from '../util/equatable';
 
 /**

@@ -4,7 +4,7 @@ import {
 	APIMessageActionRowComponent,
 	ButtonStyle,
 	ComponentType,
-} from 'discord-api-types/v10';
+} from 'discord-api-types/v9';
 import { ActionRow, ButtonComponent, createComponent, SelectMenuComponent, SelectMenuOption } from '../../src';
 
 const rowWithButtonData: APIActionRowComponent<APIMessageComponent> = {

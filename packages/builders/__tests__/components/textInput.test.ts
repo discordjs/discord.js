@@ -1,4 +1,4 @@
-import { APITextInputComponent, ComponentType, TextInputStyle } from 'discord-api-types/v10';
+import { APITextInputComponent, ComponentType, TextInputStyle } from 'discord-api-types/v9';
 import {
 	labelValidator,
 	maxLengthValidator,

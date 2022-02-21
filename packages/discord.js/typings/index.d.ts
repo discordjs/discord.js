@@ -1647,6 +1647,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
+  public showModal(modal: Modal): Promise<void>;
 }
 
 export class MessageContextMenuCommandInteraction<
@@ -1760,11 +1761,16 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
   inRawGuild(): this is ModalMessageModalSubmitInteraction<'raw'>;
 }
 
+export interface ModalSubmitActionRow {
+  type: ComponentType.ActionRow;
+  components: ModalFieldData[];
+}
+
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   private constructor(client: Client, data: APIModalSubmitInteraction);
   public readonly customId: string;
-  // TODO: fix this type
-  public readonly components: ActionRow<TextInputComponent>;
+  // TODO: fix this type when #7517 is implemented
+  public readonly components: ModalSubmitActionRow[];
   public readonly fields: ModalSubmitFieldsResolver;
   public readonly webhook: InteractionWebhook;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;

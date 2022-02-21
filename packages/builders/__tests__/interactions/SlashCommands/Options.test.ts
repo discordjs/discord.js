@@ -9,7 +9,7 @@ import {
 	APIApplicationCommandUserOption,
 	ApplicationCommandOptionType,
 	ChannelType,
-} from 'discord-api-types/v10';
+} from 'discord-api-types/v9';
 import {
 	SlashCommandBooleanOption,
 	SlashCommandChannelOption,

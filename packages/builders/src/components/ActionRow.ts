@@ -3,7 +3,7 @@ import {
 	APIMessageActionRowComponent,
 	APIModalActionRowComponent,
 	ComponentType,
-} from 'discord-api-types/v10';
+} from 'discord-api-types/v9';
 import type { ButtonComponent, SelectMenuComponent, UnsafeTextInputComponent } from '..';
 import { Component } from './Component';
 import { createComponent } from './Components';
@@ -15,7 +15,6 @@ export type ModalComponent = ModalActionRowComponent | ActionRow<ModalActionRowC
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
 export type ModalActionRowComponent = UnsafeTextInputComponent;
 
-// TODO: Add valid form component types
 /**
  * Represents an action row component
  */

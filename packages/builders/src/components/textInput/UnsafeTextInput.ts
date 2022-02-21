@@ -1,4 +1,4 @@
-import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
+import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v9';
 import { Component } from '../../index';
 import type { TextInputComponent } from './TextInput';
 import isEqual from 'fast-deep-equal';

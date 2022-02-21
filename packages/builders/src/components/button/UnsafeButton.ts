@@ -5,7 +5,7 @@ import {
 	type APIButtonComponent,
 	type APIButtonComponentWithURL,
 	type APIButtonComponentWithCustomId,
-} from 'discord-api-types/v10';
+} from 'discord-api-types/v9';
 import { Component } from '../Component';
 import isEqual from 'fast-deep-equal';
 

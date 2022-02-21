@@ -18,7 +18,7 @@ export class TextInputComponent extends UnsafeTextInputComponent {
 		return super.setMaxLength(maxLengthValidator.parse(maxLength));
 	}
 
-	public override setRequired(required: boolean) {
+	public override setRequired(required = true) {
 		return super.setRequired(requiredValidator.parse(required));
 	}
 
