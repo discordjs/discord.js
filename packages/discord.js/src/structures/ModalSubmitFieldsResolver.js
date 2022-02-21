@@ -15,9 +15,8 @@ class ModalSubmitFieldsResolver {
   /**
    * The extracted fields from the modal
    * @type {ModalFieldData[]} The fields in the modal
-   * @private
    */
-  get _fields() {
+  get fields() {
     return this.components.reduce((previous, next) => previous.concat(next.components), []);
   }
 
@@ -27,7 +26,7 @@ class ModalSubmitFieldsResolver {
    * @returns {ModalFieldData}
    */
   getField(customId) {
-    const field = this._fields.find(f => f.customId === customId);
+    const field = this.fields.find(f => f.customId === customId);
     if (!field) throw new TypeError('MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND', customId);
     return field;
   }
