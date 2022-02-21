@@ -16,6 +16,14 @@ class AutocompleteInteraction extends Interaction {
      * The id of the channel this interaction was sent in
      * @type {Snowflake}
      * @name AutocompleteInteraction#channelId
+     * @readonly
+     */
+
+    /**
+     * The raw API data for this interaction
+     * @type {RawInteractionData}
+     * @name AutocompleteInteraction#data
+     * @readonly
      */
 
     /**

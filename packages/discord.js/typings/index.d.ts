@@ -1308,7 +1308,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
   private readonly _cacheType: Cached;
   protected constructor(client: Client, data: RawInteractionData);
-  public data: RawInteractionData;
+  public data: Omit<RawInteractionData, 'data'> & RawInteractionData['data'];
   public get applicationId(): Snowflake;
   public get channel(): CacheTypeReducer<
     Cached,

@@ -17,6 +17,14 @@ class MessageComponentInteraction extends Interaction {
      * The id of the channel this interaction was sent in
      * @type {Snowflake}
      * @name MessageComponentInteraction#channelId
+     * @readonly
+     */
+
+    /**
+     * The raw API data for this interaction
+     * @type {RawInteractionData}
+     * @name MessageComponentInteraction#data
+     * @readonly
      */
 
     /**

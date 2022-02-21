@@ -11,6 +11,12 @@ const CommandInteractionOptionResolver = require('./CommandInteractionOptionReso
 class ContextMenuCommandInteraction extends CommandInteraction {
   constructor(client, data = {}) {
     super(client, data);
+    /**
+     * The raw API data for this interaction
+     * @type {RawInteractionData}
+     * @name ContextMenuCommandInteraction#data
+     * @readonly
+     */
   }
   /**
    * The id of the target of the interaction

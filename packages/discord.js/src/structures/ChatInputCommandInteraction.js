@@ -10,6 +10,13 @@ const CommandInteractionOptionResolver = require('./CommandInteractionOptionReso
 class ChatInputCommandInteraction extends CommandInteraction {
   constructor(client, data = {}) {
     super(client, data);
+
+    /**
+     * The raw API data for this interaction
+     * @type {RawInteractionData}
+     * @name ChatInputCommandInteraction#data
+     * @readonly
+     */
   }
   /**
    * The options passed to the command.
