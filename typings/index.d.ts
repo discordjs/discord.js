@@ -1906,12 +1906,16 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
+  public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public inGuild(): this is ModalSubmitInteraction<'present'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
   public isFromMessage(): this is ModalMessageModalSubmitInteraction<Cached>;
+  public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
 }
 
 export class NewsChannel extends BaseGuildTextChannel {
