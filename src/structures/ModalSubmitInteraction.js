@@ -48,7 +48,7 @@ class ModalSubmitInteraction extends Interaction {
      * The message associated with this interaction
      * @type {Message|APIMessage|null}
      */
-    this.message = this.channel?.messages._add(data.message) ?? data.message ?? null;
+    this.message = data.message ? this.channel?.messages._add(data.message) ?? data.message : null;
 
     /**
      * The fields within the modal
