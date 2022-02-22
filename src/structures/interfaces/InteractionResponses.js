@@ -234,6 +234,8 @@ class InteractionResponses {
    * @returns {Promise<void>}
    */
   async showModal(modal) {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+
     const _modal = modal instanceof Modal ? modal : new Modal(modal);
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
@@ -241,6 +243,7 @@ class InteractionResponses {
         data: _modal.toJSON(),
       },
     });
+    this.replied = true;
   }
 
   /**
