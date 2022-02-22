@@ -211,8 +211,13 @@ export interface BaseComponentData {
 export type MessageActionRowComponentData = ButtonComponentData | SelectMenuComponentData;
 export type ModalActionRowComponentData = TextInputComponentData;
 
-export interface ActionRowData<T extends MessageActionRowComponentData | ModalActionRowComponentData>
-  extends BaseComponentData {
+export interface ActionRowData<
+  T extends
+    | MessageActionRowComponentData
+    | ModalActionRowComponentData
+    | MessageActionRowComponent
+    | ModalActionRowComponent,
+> extends BaseComponentData {
   components: T[];
 }
 
