@@ -239,12 +239,14 @@ class InteractionResponses {
    * @param {APIModal|ModalData|Modal} modal The modal to show
    */
   async showModal(modal) {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.Modal,
         data: isJSONEncodable(modal) ? modal.toJSON() : Transformers.toSnakeCase(modal),
       },
     });
+    this.replied = true;
   }
 
   static applyToClass(structure, ignore = []) {
