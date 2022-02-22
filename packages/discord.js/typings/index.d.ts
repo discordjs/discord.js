@@ -2766,7 +2766,7 @@ export class CategoryChannelChildManager extends DataManager<
 
   public channel: CategoryChannel;
   public get guild(): Guild;
-  public create<T extends Exclude<CategoryChannelType, ChannelType.GuildStore>>(
+  public create<T extends Exclude<CategoryChannelType, ChannelType.GuildStore> = ChannelType.GuildText>(
     name: string,
     options: CategoryCreateChannelOptions & { type: T },
   ): Promise<MappedChannelCategoryTypes[T]>;
@@ -2809,7 +2809,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public get channelCountWithoutThreads(): number;
   public guild: Guild;
 
-  public create<T extends Exclude<GuildChannelTypes, ChannelType.GuildStore>>(
+  public create<T extends Exclude<GuildChannelTypes, ChannelType.GuildStore> = ChannelType.GuildText>(
     name: string,
     options: GuildChannelCreateOptions & { type: T },
   ): Promise<MappedGuildChannelTypes[T]>;
