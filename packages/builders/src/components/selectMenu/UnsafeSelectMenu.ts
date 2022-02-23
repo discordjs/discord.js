@@ -2,6 +2,7 @@ import { APISelectMenuOption, ComponentType, type APISelectMenuComponent } from 
 import { Component } from '../Component';
 import { UnsafeSelectMenuOption } from './UnsafeSelectMenuOption';
 import isEqual from 'fast-deep-equal';
+import { buildComponent } from '../Components';
 
 /**
  * Represents a non-validated select menu component
@@ -146,4 +147,24 @@ export class UnsafeSelectMenuComponent extends Component<
 			options: this.options.map((o) => o.toJSON()),
 		});
 	}
+
+	public build() {
+		Object.freeze(this.data);
+		return buildComponent<BuildSelectMenu>(this);
+	}
 }
+
+type BuildSelectMenu = Omit<
+	UnsafeSelectMenuComponent,
+	| 'setPlaceholder'
+	| 'setMinValues'
+	| 'setMaxValues'
+	| 'setCustomId'
+	| 'setDisabled'
+	| 'addOptions'
+	| 'setOptions'
+	| 'equals'
+	| 'build'
+> & {
+	customId: string;
+};

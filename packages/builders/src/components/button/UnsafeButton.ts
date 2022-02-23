@@ -8,6 +8,7 @@ import {
 } from 'discord-api-types/v9';
 import { Component } from '../Component';
 import isEqual from 'fast-deep-equal';
+import { buildComponent } from '../Components';
 
 /**
  * Represents a non-validated button component
@@ -126,4 +127,17 @@ export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>
 		}
 		return isEqual(other, this.data);
 	}
+
+	public build() {
+		Object.freeze(this.data);
+		return buildComponent<BuildButton>(this);
+	}
 }
+
+type BuildButton = Omit<
+	UnsafeButtonComponent,
+	'setStyle' | 'setURL' | 'setCustomId' | 'setEmoji' | 'setDisabled' | 'setLabel' | 'equals' | 'build' | 'url'
+> & {
+	customId: string;
+	style: Omit<ButtonStyle, 'LINK'>;
+};
