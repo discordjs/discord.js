@@ -3662,6 +3662,7 @@ export interface ClientEvents {
   threadListSync: [threads: Collection<Snowflake, ThreadChannel>];
   threadMemberUpdate: [oldMember: ThreadMember, newMember: ThreadMember];
   threadMembersUpdate: [
+    thread: ThreadChannel,
     addedMembers: Collection<Snowflake, ThreadMember>,
     removedMembers: Collection<Snowflake, ThreadMember>,
   ];
