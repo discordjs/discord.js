@@ -3,7 +3,7 @@
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v9');
-const fetch = require('node-fetch');
+const { fetch } = require('undici');
 const Colors = require('./Colors');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
