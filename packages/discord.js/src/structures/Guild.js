@@ -754,6 +754,7 @@ class Guild extends AnonymousGuild {
    * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
    * @property {string} [description] The discovery description of the guild
    * @property {GuildFeature[]} [features] The features of the guild
+   * @property {string} [reason] The reason of the editing guild
    */
 
   /**
