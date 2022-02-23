@@ -428,7 +428,6 @@ class Role extends Base {
       permissions: this.permissions.toJSON(),
     };
   }
-  
 }
 
 exports.Role = Role;
