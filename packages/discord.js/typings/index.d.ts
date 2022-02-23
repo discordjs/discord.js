@@ -431,7 +431,7 @@ export class BaseGuildVoiceChannel extends GuildChannel {
   public bitrate: number;
   public userLimit: number;
   public createInvite(options?: CreateInviteOptions): Promise<Invite>;
-  public setRTCRegion(region: string | null): Promise<this>;
+  public setRTCRegion(rtcRegion: string | null): Promise<this>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
 }
 
@@ -2810,18 +2810,12 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public guild: Guild;
 
   public create<T extends Exclude<GuildChannelTypes, ChannelType.GuildStore>>(
-    name: string,
     options: GuildChannelCreateOptions & { type: T },
   ): Promise<MappedGuildChannelTypes[T]>;
   /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public create(
-    options: GuildChannelCreateOptions & { type: ChannelType.GuildStore },
-  ): Promise<StoreChannel>;
-  public create(name: string, options?: GuildChannelCreateOptions): Promise<TextChannel>;
-  public createWebhook(
-    channel: GuildChannelResolvable,
-    options?: ChannelWebhookCreateOptions,
-  ): Promise<Webhook>;
+  public create(options: GuildChannelCreateOptions & { type: ChannelType.GuildStore }): Promise<StoreChannel>;
+  public create(options: GuildChannelCreateOptions): Promise<TextChannel>;
+  public createWebhook(channel: GuildChannelResolvable, options: ChannelWebhookCreateOptions): Promise<Webhook>;
   public edit(channel: GuildChannelResolvable, data: ChannelData): Promise<GuildChannel>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<NonThreadGuildBasedChannel | null>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, NonThreadGuildBasedChannel>>;
@@ -4795,7 +4789,7 @@ export interface ResolvedOverwriteOptions {
 }
 
 export interface RoleData {
-  reason: string;
+  reason?: string;
   name?: string;
   color?: ColorResolvable;
   hoist?: boolean;
