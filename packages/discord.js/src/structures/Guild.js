@@ -826,7 +826,7 @@ class Guild extends AnonymousGuild {
     }
     if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
     if ('premiumProgressBarEnabled' in data) _data.premium_progress_bar_enabled = data.premiumProgressBarEnabled;
-    const newData = await this.client.rest.patch(Routes.guild(this.id), { body: _data, data.reason });
+    const newData = await this.client.rest.patch(Routes.guild(this.id), { body: _data, reason: data.reason });
     return this.client.actions.GuildUpdate.handle(newData).updated;
   }
 
