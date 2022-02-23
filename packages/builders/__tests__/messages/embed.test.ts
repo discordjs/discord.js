@@ -320,10 +320,10 @@ describe('Embed', () => {
 
 		test('GIVEN an embed using Embed#addField THEN returns valid toJSON data', () => {
 			const embed = new Embed();
-			embed.addField({ name: 'foo', value: 'bar' });
+			embed.addField('foo', 'bar');
 
 			expect(embed.toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'bar' }],
+				fields: [{ name: 'foo', value: 'bar', inline: false }],
 			});
 		});
 

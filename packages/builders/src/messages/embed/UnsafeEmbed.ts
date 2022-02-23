@@ -178,10 +178,12 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	/**
 	 * Adds a field to the embed (max 25)
 	 *
-	 * @param field The field to add.
+	 * @param name The name of the field (first line)
+	 * @param value The value of the field (second line)
+	 * @param inline Whether the field should be displayed inline with others
 	 */
-	public addField(field: APIEmbedField): this {
-		return this.addFields(field);
+	public addField(name: string, value: string, inline = false): this {
+		return this.addFields({ name, value, inline });
 	}
 
 	/**
