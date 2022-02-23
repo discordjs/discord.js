@@ -311,7 +311,7 @@ class ThreadChannel extends Channel {
    *  name: 'new-thread',
    *  reason: 'Thread edited!'
    * })
-   *   .then(editedThread => console.log(editedThread))
+   *   .then(editedThread => console.log(`The thread now has a new name ${editedThred.name}!`))
    *   .catch(console.error);
    */
   async edit(data) {
@@ -363,7 +363,9 @@ class ThreadChannel extends Channel {
    * @example
    * // Set the thread's auto archive time to 1 hour
    * thread.setAutoArchiveDuration(60)
-   *   .then(newThread => console.log(`Thread will now archive after ${newThread.autoArchiveDuration} minutes of inactivity`));
+   *   .then(newThread => {
+   *     console.log(`Thread will now archive after ${newThread.autoArchiveDuration} minutes of inactivity`);
+   *    });
    *   .catch(console.error);
    */
   setAutoArchiveDuration(autoArchiveDuration, reason) {
