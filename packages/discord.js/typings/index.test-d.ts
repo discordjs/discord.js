@@ -733,7 +733,7 @@ client.on('interactionCreate', async interaction => {
   interaction.reply({ content: 'Hi!', components: [[button]] });
 
   // @ts-expect-error
-  void new MessageActionRow({});
+  void new ActionRow({});
 
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
