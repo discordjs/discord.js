@@ -29,3 +29,15 @@ export function createComponent(data: APIMessageComponent | MessageComponent): C
 			throw new Error(`Cannot serialize component type: ${data.type as number}`);
 	}
 }
+
+export function buildComponent<T>(source: Component) {
+	const target: Record<string, unknown> = {};
+	const props = [
+		...Object.getOwnPropertyNames(Object.getPrototypeOf(source)),
+		...Object.getOwnPropertyNames(source),
+	].filter((prop) => typeof source[prop as keyof typeof source] !== 'function' && prop !== 'toJSON');
+	props.forEach((x) => {
+		target[x] = source[x as keyof typeof source];
+	});
+	return target as T;
+}
