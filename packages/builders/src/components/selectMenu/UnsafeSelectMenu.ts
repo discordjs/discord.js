@@ -154,7 +154,7 @@ export class UnsafeSelectMenuComponent extends Component<
 	}
 }
 
-type BuildSelectMenu = Omit<
+export type ReadonlySelectMenuComponent = Omit<
 	UnsafeSelectMenuComponent,
 	| 'setPlaceholder'
 	| 'setMinValues'
