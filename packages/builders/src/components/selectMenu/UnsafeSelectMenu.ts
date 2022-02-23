@@ -150,7 +150,7 @@ export class UnsafeSelectMenuComponent extends Component<
 
 	public build() {
 		Object.freeze(this.data);
-		return buildComponent<BuildSelectMenu>(this);
+		return buildComponent<ReadonlySelectMenuComponent>(this);
 	}
 }
 

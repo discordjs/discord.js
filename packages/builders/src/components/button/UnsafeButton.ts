@@ -130,11 +130,11 @@ export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>
 
 	public build() {
 		Object.freeze(this.data);
-		return buildComponent<BuildButton>(this);
+		return buildComponent<ReadonlyButtonComponent>(this);
 	}
 }
 
-type BuildButton = Omit<
+export type ReadonlyButtonComponent = Omit<
 	UnsafeButtonComponent,
 	'setStyle' | 'setURL' | 'setCustomId' | 'setEmoji' | 'setDisabled' | 'setLabel' | 'equals' | 'build' | 'url'
 > & {
