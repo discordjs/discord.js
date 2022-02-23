@@ -35,7 +35,7 @@ export function buildComponent<T>(source: Component) {
 	const props = [
 		...Object.getOwnPropertyNames(Object.getPrototypeOf(source)),
 		...Object.getOwnPropertyNames(source),
-	].filter((prop) => typeof source[prop as keyof typeof source] !== 'function' && prop !== 'toJSON');
+	].filter((prop) => typeof source[prop as keyof typeof source] !== 'function' || prop === 'toJSON');
 	props.forEach((x) => {
 		target[x] = source[x as keyof typeof source];
 	});
