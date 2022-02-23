@@ -223,6 +223,7 @@ class GuildChannelManager extends CachedManager {
    * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
+   * @property {string} [reason] The reason of the editing channel
    */
 
   /**
