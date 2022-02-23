@@ -203,6 +203,7 @@ class Role extends Base {
    * <warn>The `EmojiResolvable` should belong to the same guild as the role.
    * If not, pass the emoji's URL directly</warn>
    * @property {?string} [unicodeEmoji] The unicode emoji for the role
+   * @property {string} [reason] The reason for the the editing channel
    */
 
   /**
