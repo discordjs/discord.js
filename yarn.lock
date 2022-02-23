@@ -4443,11 +4443,11 @@ __metadata:
     is-ci: ^3.0.1
     jest: ^27.5.1
     lodash.snakecase: ^4.1.1
-    node-fetch: ^2.6.7
     prettier: ^2.5.1
     tsd: ^0.19.1
     tslint: ^6.1.3
     typescript: ^4.5.5
+    undici: ^4.14.1
     ws: ^8.5.0
   languageName: unknown
   linkType: soft
@@ -10697,6 +10697,13 @@ dts-critic@latest:
   version: 1.13.2
   resolution: "underscore@npm:1.13.2"
   checksum: 6ab156c845ccc757fd01d8b9eb28be18ba89ac68993370dd7397a66a95b124f2ba26947fd53e687c084d334429914fc3dd1620d5123b6e0a7cf112cdcf4e859f
+  languageName: node
+  linkType: hard
+
+"undici@npm:^4.14.1":
+  version: 4.14.1
+  resolution: "undici@npm:4.14.1"
+  checksum: d64a7fa0e388a43819bb7860268f9f2c917bc14a3e6ab7956bdc73492016bfc58c8d5055eca8f5c3d402f275a1c87a92c2467d77ec34dbaca2c4a6e35e760e5a
   languageName: node
   linkType: hard
 

@@ -143,7 +143,11 @@ class MessagePayload {
     }
 
     let flags;
-    if (typeof this.options.flags !== 'undefined' || this.isMessage || this.isMessageManager) {
+    if (
+      typeof this.options.flags !== 'undefined' ||
+      (this.isMessage && typeof this.options.reply === 'undefined') ||
+      this.isMessageManager
+    ) {
       flags =
         // eslint-disable-next-line eqeqeq
         this.options.flags != null
