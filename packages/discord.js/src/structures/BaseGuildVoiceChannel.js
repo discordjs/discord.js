@@ -82,7 +82,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
 
   /**
    * Sets the RTC region of the channel.
-   * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @param {?string} rtcRegion The new region of the channel. Set to `null` to remove a specific region for the channel
    * @returns {Promise<BaseGuildVoiceChannel>}
    * @example
    * // Set the RTC region to europe
