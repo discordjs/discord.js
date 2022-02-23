@@ -5111,6 +5111,7 @@ export {
   ApplicationCommandType,
   ApplicationCommandOptionType,
   ApplicationCommandPermissionType,
+  AuditLogEvent,
   ButtonStyle,
   ChannelType,
   ComponentType,

@@ -164,6 +164,7 @@ exports.ActivityType = require('discord-api-types/v9').ActivityType;
 exports.ApplicationCommandType = require('discord-api-types/v9').ApplicationCommandType;
 exports.ApplicationCommandOptionType = require('discord-api-types/v9').ApplicationCommandOptionType;
 exports.ApplicationCommandPermissionType = require('discord-api-types/v9').ApplicationCommandPermissionType;
+exports.AuditLogEvent = require('discord-api-types/v9').AuditLogEvent;
 exports.ButtonStyle = require('discord-api-types/v9').ButtonStyle;
 exports.ChannelType = require('discord-api-types/v9').ChannelType;
 exports.ComponentType = require('discord-api-types/v9').ComponentType;
