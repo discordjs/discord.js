@@ -72,6 +72,7 @@ class DMChannel extends Channel {
   /**
    * The recipient on the other end of the DM
    * @type {?User}
+   * @readonly
    */
   get recipient() {
     return this.client.users.resolve(this.recipientId);
