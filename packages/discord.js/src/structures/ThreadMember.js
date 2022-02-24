@@ -89,14 +89,6 @@ class ThreadMember extends Base {
   }
 
   /**
-   * Fetches this thread member. Requires access to the `GUILD_MEMBERS` gateway intent.
-   * @returns {Promise<ThreadMember>}
-   */
-  fetch() {
-    return this.thread.members.fetch({ member: this.id, force: true });
-  }
-
-  /**
    * Removes this member from the thread.
    * @param {string} [reason] Reason for removing the member
    * @returns {ThreadMember}

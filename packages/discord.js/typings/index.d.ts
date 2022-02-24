@@ -2330,7 +2330,6 @@ export class ThreadMember extends Base {
   public thread: ThreadChannel;
   public get user(): User | null;
   public get partial(): false;
-  public fetch(): Promise<ThreadMember>;
   public remove(reason?: string): Promise<ThreadMember>;
 }
 
