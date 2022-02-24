@@ -4,6 +4,8 @@ const { ChannelType } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
+const { Formatters } = require('../util/Formatters');
+const Partials = require('../util/Partials');
 
 /**
  * Represents a direct message channel between two users.
@@ -29,10 +31,14 @@ class DMChannel extends Channel {
 
     if (data.recipients) {
       /**
-       * The recipient on the other end of the DM
-       * @type {User}
+       * The recipient's id
+       * @type {Snowflake}
        */
-      this.recipient = this.client.users._add(data.recipients[0]);
+      this.recipientId = data.recipients[0].id;
+
+      if ('username' in data.recipients[0] || this.client.options.partials.includes(Partials.Users)) {
+        this.client.users._add(data.recipients[0]);
+      }
     }
 
     if ('last_message_id' in data) {
@@ -64,12 +70,20 @@ class DMChannel extends Channel {
   }
 
   /**
+   * The recipient on the other end of the DM
+   * @type {?User}
+   */
+  get recipient() {
+    return this.client.users.resolve(this.recipientId);
+  }
+
+  /**
    * Fetch this DMChannel.
    * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
   fetch(force = true) {
-    return this.recipient.createDM(force);
+    return this.client.users.createDM(this.recipientId, force);
   }
 
   /**
@@ -81,7 +95,7 @@ class DMChannel extends Channel {
    * console.log(`Hello from ${channel}!`);
    */
   toString() {
-    return this.recipient.toString();
+    return Formatters.userMention(this.recipientId);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
