@@ -19,8 +19,8 @@ class ThreadMembersUpdateAction extends Action {
       );
 
       data.removed_member_ids?.reduce((removedMembersIds, removedMembersId) => {
-        const cachedThreadMember = thread.members.cache.get(removedMembersId);
-        if (cachedThreadMember) removedMembersIds.set(cachedThreadMember.id, cachedThreadMember);
+        const threadMember = this.getThreadMember(removedMembersId, thread.members);
+        if (threadMember) removedMembersIds.set(threadMember.id, threadMember);
         thread.members.cache.delete(removedMembersId);
         return removedMembersIds;
       }, removedMembers);

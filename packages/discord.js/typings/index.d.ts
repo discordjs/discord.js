@@ -2329,6 +2329,8 @@ export class ThreadMember extends Base {
   public get manageable(): boolean;
   public thread: ThreadChannel;
   public get user(): User | null;
+  public get partial(): false;
+  public fetch(): Promise<ThreadMember>;
   public remove(reason?: string): Promise<ThreadMember>;
 }
 
@@ -3280,7 +3282,7 @@ export interface AddGuildMemberOptions {
   fetchWhenExisting?: boolean;
 }
 
-export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction;
+export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction | ThreadMember;
 
 export type AllowedThreadTypeForNewsChannel = ChannelType.GuildNewsThread;
 
@@ -3664,7 +3666,7 @@ export interface ClientEvents {
   threadMembersUpdate: [
     thread: ThreadChannel,
     addedMembers: Collection<Snowflake, ThreadMember>,
-    removedMembers: Collection<Snowflake, ThreadMember>,
+    removedMembers: Collection<Snowflake, ThreadMember | PartialThreadMember>,
   ];
   threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
   typingStart: [typing: Typing];
@@ -4869,6 +4871,8 @@ export interface PartialMessage
 
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
+export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
+
 export interface PartialOverwriteData {
   id: Snowflake | number;
   type?: OverwriteType;
@@ -4887,6 +4891,7 @@ export enum Partials {
   Message,
   Reaction,
   GuildScheduledEvent,
+  ThreadMember,
 }
 
 export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
