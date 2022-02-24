@@ -106,6 +106,7 @@ import {
   ActionRowData,
   MessageActionRowComponentData,
   PartialThreadMember,
+  ThreadMemberFlagsBitField,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -718,15 +719,18 @@ client.on('messageCreate', async message => {
   });
 });
 
-client.on('threadMembersUpdate', async (thread, addedMembers, removedMembers) => {
   expectType<ThreadChannel>(thread);
   expectType<Collection<Snowflake, ThreadMember>>(addedMembers);
   expectType<Collection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
   const left = removedMembers.first();
+  if (!left) return;
 
-  if (left?.partial) {
+  if (left.partial) {
     expectType<PartialThreadMember>(left);
     expectType<null>(left.flags);
+  } else {
+    expectType<ThreadMember>(left);
+    expectType<ThreadMemberFlagsBitField>(left.flags);
   }
 });
 
