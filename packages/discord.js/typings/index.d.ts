@@ -5132,6 +5132,7 @@ export {
   InteractionType,
   InteractionResponseType,
   InviteTargetType,
+  Locale,
   MessageType,
   MessageFlags,
   OAuth2Scopes,
