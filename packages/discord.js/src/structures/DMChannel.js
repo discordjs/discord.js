@@ -1,10 +1,10 @@
 'use strict';
 
+const { userMention } = require('@discordjs/builders');
 const { ChannelType } = require('discord-api-types/v9');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
-const { Formatters } = require('../util/Formatters');
 const Partials = require('../util/Partials');
 
 /**
@@ -98,7 +98,7 @@ class DMChannel extends Channel {
    * console.log(`Hello from ${channel}!`);
    */
   toString() {
-    return Formatters.userMention(this.recipientId);
+    return userMention(this.recipientId);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
