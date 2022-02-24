@@ -30,14 +30,16 @@ class DMChannel extends Channel {
     super._patch(data);
 
     if (data.recipients) {
+      const recipient = data.recipients[0];
+
       /**
        * The recipient's id
        * @type {Snowflake}
        */
-      this.recipientId = data.recipients[0].id;
+      this.recipientId = recipient.id;
 
-      if ('username' in data.recipients[0] || this.client.options.partials.includes(Partials.Users)) {
-        this.client.users._add(data.recipients[0]);
+      if ('username' in recipient || this.client.options.partials.includes(Partials.Users)) {
+        this.client.users._add(recipient);
       }
     }
 
