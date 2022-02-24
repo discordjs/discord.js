@@ -719,6 +719,7 @@ client.on('messageCreate', async message => {
   });
 });
 
+client.on('threadMembersUpdate', (thread, addedMembers, removedMembers) => {
   expectType<ThreadChannel>(thread);
   expectType<Collection<Snowflake, ThreadMember>>(addedMembers);
   expectType<Collection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
