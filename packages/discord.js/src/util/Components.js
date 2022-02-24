@@ -29,25 +29,17 @@
  */
 /**
  * @typedef {BaseComponentData} SelectMenuComponentData
- * @property {string} customId
- * @property {?boolean} disabled
- * @property {?number} maxValues
- * @property {?number} minValues
- * @property {?SelectMenuComponentOptionData[]} options
- * @property {?string} placeholder
+ * @property {string} customId The custom id of the select menu
+ * @property {?boolean} disabled Whether the select menu is disabled or not
+ * @property {?number} maxValues The maximum amount of options that can be selected
+ * @property {?number} minValues The minimum amount of options that can be selected
+ * @property {?SelectMenuComponentOptionData[]} options The options in this select menu
+ * @property {?string} placeholder The placeholder of the select menu
  */
 
 /**
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData} MessageComponentData
- * @property {string} customId
- * @property {TextInputStyle} style
- * @property {string} label
- * @property {?number} minLength
- * @property {?number} maxLength
- * @property {?boolean} required
- * @property {?string} value
- * @property {?string} placeholder
- */
+ /
 
 /**
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData} ComponentData

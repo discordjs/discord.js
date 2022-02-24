@@ -1,4 +1,4 @@
-import type { APITextInputComponent } from 'discord-api-types';
+import type { APITextInputComponent } from 'discord-api-types/v9';
 import {
 	maxLengthValidator,
 	minLengthValidator,
