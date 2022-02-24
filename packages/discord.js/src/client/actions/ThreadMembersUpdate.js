@@ -14,7 +14,7 @@ class ThreadMembersUpdateAction extends Action {
       const removedMembers = new Collection();
 
       data.added_members?.reduce(
-        (_addedMembers, addedMember) => _addedMembers.set(addedMember.id, thread.members._add(addedMember)),
+        (_addedMembers, addedMember) => _addedMembers.set(addedMember.user_id, thread.members._add(addedMember)),
         addedMembers,
       );
 
