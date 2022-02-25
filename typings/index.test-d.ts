@@ -93,6 +93,7 @@ import {
   MessageActionRowComponent,
   MessageSelectMenu,
   PartialDMChannel,
+  InteractionResponseFields,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -1144,6 +1145,16 @@ client.on('interactionCreate', async interaction => {
     expectType<string>(interaction.options.getSubcommandGroup(true));
     expectType<string | null>(interaction.options.getSubcommandGroup(booleanValue));
     expectType<string | null>(interaction.options.getSubcommandGroup(false));
+  }
+
+  if (interaction.isRepliable()) {
+    expectAssignable<InteractionResponseFields>(interaction);
+    interaction.reply('test');
+  }
+
+  if (interaction.isCommand() && interaction.isRepliable()) {
+    expectAssignable<CommandInteraction>(interaction);
+    expectAssignable<InteractionResponseFields>(interaction);
   }
 });
 
