@@ -344,7 +344,7 @@ export abstract class BaseCommandInteraction<Cached extends CacheType = CacheTyp
   public ephemeral: boolean | null;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public inGuild(): this is BaseCommandInteraction<'present'>;
+  public inGuild(): this is BaseCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is BaseCommandInteraction<'cached'>;
   public inRawGuild(): this is BaseCommandInteraction<'raw'>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
@@ -461,7 +461,7 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
     MessageButton | APIButtonComponent
   >;
   public componentType: 'BUTTON';
-  public inGuild(): this is ButtonInteraction<'present'>;
+  public inGuild(): this is ButtonInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ButtonInteraction<'cached'>;
   public inRawGuild(): this is ButtonInteraction<'raw'>;
 }
@@ -722,7 +722,7 @@ export interface ApplicationCommandInteractionOptionResolver<Cached extends Cach
 
 export class CommandInteraction<Cached extends CacheType = CacheType> extends BaseCommandInteraction<Cached> {
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
-  public inGuild(): this is CommandInteraction<'present'>;
+  public inGuild(): this is CommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is CommandInteraction<'cached'>;
   public inRawGuild(): this is CommandInteraction<'raw'>;
   public toString(): string;
@@ -735,7 +735,7 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public commandName: string;
   public responded: boolean;
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
-  public inGuild(): this is AutocompleteInteraction<'present'>;
+  public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
   public inRawGuild(): this is AutocompleteInteraction<'raw'>;
   private transformOption(option: APIApplicationCommandOption): CommandInteractionOption;
@@ -821,7 +821,7 @@ export class ContextMenuInteraction<Cached extends CacheType = CacheType> extend
   >;
   public targetId: Snowflake;
   public targetType: Exclude<ApplicationCommandType, 'CHAT_INPUT'>;
-  public inGuild(): this is ContextMenuInteraction<'present'>;
+  public inGuild(): this is ContextMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ContextMenuInteraction<'cached'>;
   public inRawGuild(): this is ContextMenuInteraction<'raw'>;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
@@ -1294,7 +1294,7 @@ export class Intents extends BitField<IntentsString> {
   public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
 }
 
-export type CacheType = 'cached' | 'raw' | 'present';
+export type CacheType = 'cached' | 'raw' | undefined;
 
 export type CacheTypeReducer<
   State extends CacheType,
@@ -1306,7 +1306,7 @@ export type CacheTypeReducer<
   ? CachedType
   : [State] extends ['raw']
   ? RawType
-  : [State] extends ['present']
+  : [State] extends ['raw' | 'cached']
   ? PresentType
   : Fallback;
 
@@ -1336,7 +1336,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public memberPermissions: CacheTypeReducer<Cached, Readonly<Permissions>>;
   public locale: string;
   public guildLocale: CacheTypeReducer<Cached, string, string, string>;
-  public inGuild(): this is Interaction<'present'>;
+  public inGuild(): this is Interaction<'raw' | 'cached'>;
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
   public isApplicationCommand(): this is BaseCommandInteraction<Cached>;
@@ -1648,7 +1648,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public message: GuildCacheMessage<Cached>;
   public replied: boolean;
   public webhook: InteractionWebhook;
-  public inGuild(): this is MessageComponentInteraction<'present'>;
+  public inGuild(): this is MessageComponentInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MessageComponentInteraction<'cached'>;
   public inRawGuild(): this is MessageComponentInteraction<'raw'>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
@@ -1671,7 +1671,7 @@ export class MessageContextMenuInteraction<
   Cached extends CacheType = CacheType,
 > extends ContextMenuInteraction<Cached> {
   public readonly targetMessage: NonNullable<CommandInteractionOption<Cached>['message']>;
-  public inGuild(): this is MessageContextMenuInteraction<'present'>;
+  public inGuild(): this is MessageContextMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MessageContextMenuInteraction<'cached'>;
   public inRawGuild(): this is MessageContextMenuInteraction<'raw'>;
 }
@@ -1985,7 +1985,7 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
   >;
   public componentType: 'SELECT_MENU';
   public values: string[];
-  public inGuild(): this is SelectMenuInteraction<'present'>;
+  public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
   public inRawGuild(): this is SelectMenuInteraction<'raw'>;
 }
@@ -2415,7 +2415,7 @@ export class User extends PartialTextBasedChannel(Base) {
 export class UserContextMenuInteraction<Cached extends CacheType = CacheType> extends ContextMenuInteraction<Cached> {
   public readonly targetUser: User;
   public readonly targetMember: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
-  public inGuild(): this is UserContextMenuInteraction<'present'>;
+  public inGuild(): this is UserContextMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is UserContextMenuInteraction<'cached'>;
   public inRawGuild(): this is UserContextMenuInteraction<'raw'>;
 }
