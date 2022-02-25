@@ -557,6 +557,13 @@ exports.ChannelTypes = createEnum([
  */
 
 /**
+ * Data that resolves to give a text-based channel. This can be:
+ * * A text-based channel
+ * * A snowflake
+ * @typedef {TextBasedChannels|Snowflake} TextBasedChannelsResolvable
+ */
+
+/**
  * The types of channels that are text-based. The available types are:
  * * DM
  * * GUILD_TEXT

@@ -7,7 +7,7 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
 
 /**
  * @typedef {CollectorOptions} InteractionCollectorOptions
- * @property {TextBasedChannelResolvable} [channel] The channel to listen to interactions from
+ * @property {TextBasedChannelsResolvable} [channel] The channel to listen to interactions from
  * @property {MessageComponentType} [componentType] The type of component to listen for
  * @property {GuildResolvable} [guild] The guild to listen to interactions from
  * @property {InteractionType} [interactionType] The type of interaction to listen for
