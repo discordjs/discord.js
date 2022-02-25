@@ -35,6 +35,7 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenu().setMaxValues(10)).not.toThrowError();
 			expect(() => selectMenu().setMinValues(3)).not.toThrowError();
 			expect(() => selectMenu().setDisabled(true)).not.toThrowError();
+			expect(() => selectMenu().setDisabled()).not.toThrowError();
 			expect(() => selectMenu().setPlaceholder('description')).not.toThrowError();
 
 			const option = selectMenuOption()
@@ -46,6 +47,16 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenu().addOptions(option)).not.toThrowError();
 			expect(() => selectMenu().setOptions(option)).not.toThrowError();
 			expect(() => selectMenu().setOptions({ label: 'test', value: 'test' })).not.toThrowError();
+
+			const options = new Array<APISelectMenuOption>(25).fill({ label: 'test', value: 'test' });
+			expect(() => selectMenu().addOptions(...options)).not.toThrowError();
+			expect(() => selectMenu().setOptions(...options)).not.toThrowError();
+
+			expect(() =>
+				selectMenu()
+					.addOptions({ label: 'test', value: 'test' })
+					.addOptions(...new Array<APISelectMenuOption>(24).fill({ label: 'test', value: 'test' })),
+			).not.toThrowError();
 		});
 
 		test('GIVEN invalid inputs THEN Select Menu does throw', () => {
@@ -55,6 +66,21 @@ describe('Select Menu Components', () => {
 			// @ts-expect-error
 			expect(() => selectMenu().setDisabled(0)).toThrowError();
 			expect(() => selectMenu().setPlaceholder(longStr)).toThrowError();
+			// @ts-expect-error
+			expect(() => selectMenu().addOptions({ label: 'test' })).toThrowError();
+			// @ts-expect-error
+			expect(() => selectMenu().addOptions({ value: 'test' })).toThrowError();
+			// @ts-expect-error
+			expect(() => selectMenu().addOptions({ default: true })).toThrowError();
+
+			const tooManyOptions = new Array<APISelectMenuOption>(26).fill({ label: 'test', value: 'test' });
+			expect(() => selectMenu().setOptions(...tooManyOptions)).toThrowError();
+
+			expect(() =>
+				selectMenu()
+					.addOptions({ label: 'test', value: 'test' })
+					.addOptions(...tooManyOptions),
+			).toThrowError();
 
 			expect(() => {
 				selectMenuOption()

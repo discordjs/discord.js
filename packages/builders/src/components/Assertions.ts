@@ -23,6 +23,11 @@ export const placeholderValidator = z.string().max(150);
 export const minMaxValidator = z.number().int().min(0).max(25);
 
 export const optionsValidator = z.object({}).array().nonempty();
+export const optionValidator = z.object({
+	label: z.string(),
+	value: z.string(),
+});
+export const optionsLengthValidator = z.number().int().min(0).max(25);
 
 export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
 	customIdValidator.parse(customId);
