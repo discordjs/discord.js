@@ -23,9 +23,13 @@ export const placeholderValidator = z.string().max(150);
 export const minMaxValidator = z.number().int().min(0).max(25);
 
 export const optionsValidator = z.object({}).array().nonempty();
+export const labelValueDescriptionValidator = z.string().min(1).max(100);
 export const optionValidator = z.object({
-	label: z.string(),
-	value: z.string(),
+	label: labelValueDescriptionValidator,
+	value: labelValueDescriptionValidator,
+	description: labelValueDescriptionValidator.optional(),
+	emoji: emojiValidator.optional(),
+	default: z.boolean().optional(),
 });
 export const optionsLengthValidator = z.number().int().min(0).max(25);
 

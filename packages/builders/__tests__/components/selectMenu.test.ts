@@ -37,7 +37,6 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenu().setDisabled(true)).not.toThrowError();
 			expect(() => selectMenu().setDisabled()).not.toThrowError();
 			expect(() => selectMenu().setPlaceholder('description')).not.toThrowError();
-
 			const option = selectMenuOption()
 				.setLabel('test')
 				.setValue('test')
@@ -47,6 +46,17 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenu().addOptions(option)).not.toThrowError();
 			expect(() => selectMenu().setOptions(option)).not.toThrowError();
 			expect(() => selectMenu().setOptions({ label: 'test', value: 'test' })).not.toThrowError();
+			expect(() =>
+				selectMenu().addOptions({
+					label: 'test',
+					value: 'test',
+					emoji: {
+						id: '123',
+						name: 'test',
+						animated: true,
+					},
+				}),
+			).not.toThrowError();
 
 			const options = new Array<APISelectMenuOption>(25).fill({ label: 'test', value: 'test' });
 			expect(() => selectMenu().addOptions(...options)).not.toThrowError();
@@ -68,6 +78,11 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenu().setPlaceholder(longStr)).toThrowError();
 			// @ts-expect-error
 			expect(() => selectMenu().addOptions({ label: 'test' })).toThrowError();
+			expect(() => selectMenu().addOptions({ label: longStr, value: 'test' })).toThrowError();
+			expect(() => selectMenu().addOptions({ value: longStr, label: 'test' })).toThrowError();
+			expect(() => selectMenu().addOptions({ label: 'test', value: 'test', description: longStr })).toThrowError();
+			// @ts-expect-error
+			expect(() => selectMenu().addOptions({ label: 'test', value: 'test', default: 100 })).toThrowError();
 			// @ts-expect-error
 			expect(() => selectMenu().addOptions({ value: 'test' })).toThrowError();
 			// @ts-expect-error
