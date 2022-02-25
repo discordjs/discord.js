@@ -280,7 +280,7 @@ class RequestHandler {
         /**
          * @typedef {Object} InvalidRequestWarningData
          * @property {number} count Number of invalid requests that have been made in the window
-         * @property {number} remainingTime Time in ms remaining before the count resets
+         * @property {number} remainingTime Time in milliseconds remaining before the count resets
          */
 
         /**

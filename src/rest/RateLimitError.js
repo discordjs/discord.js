@@ -15,7 +15,7 @@ class RateLimitError extends Error {
     this.name = 'RateLimitError';
 
     /**
-     * Time until this rate limit ends, in ms
+     * Time until this rate limit ends, in milliseconds
      * @type {number}
      */
     this.timeout = timeout;
