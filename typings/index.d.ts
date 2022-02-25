@@ -3338,7 +3338,7 @@ export interface PartialWebhookFields {
   /** @deprecated */
   fetchMessage(message: Snowflake | '@original', cache?: boolean): Promise<Message | APIMessage>;
   /* tslint:enable:unified-signatures */
-  send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message | APIMessage>;
+  send(options: string | MessagePayload | Omit<WebhookMessageOptions, 'flags'>): Promise<Message | APIMessage>;
 }
 
 export interface WebhookFields extends PartialWebhookFields {
@@ -4900,9 +4900,10 @@ export interface InteractionDeferReplyOptions {
 
 export type InteractionDeferUpdateOptions = Omit<InteractionDeferReplyOptions, 'ephemeral'>;
 
-export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL'> {
+export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL' | 'flags'> {
   ephemeral?: boolean;
   fetchReply?: boolean;
+  flags?: BitFieldResolvable<'SUPPRESS_EMBEDS' | 'EPHEMERAL', number>;
 }
 
 export type InteractionResponseType = keyof typeof InteractionResponseTypes;
@@ -5169,6 +5170,7 @@ export interface MessageOptions {
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
   attachments?: MessageAttachment[];
+  flags?: BitFieldResolvable<'SUPPRESS_EMBEDS', number>;
 }
 
 export type MessageReactionResolvable =
