@@ -141,7 +141,7 @@ export class UnsafeTextInputComponent extends Component<
 	 * Sets whether this text input is required or not
 	 * @param required Whether this text input is required or not
 	 */
-	public setRequired(required: boolean) {
+	public setRequired(required = true) {
 		this.data.required = required;
 		return this;
 	}

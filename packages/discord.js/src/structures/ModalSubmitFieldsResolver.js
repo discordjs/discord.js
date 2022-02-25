@@ -1,5 +1,6 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { ComponentType } = require('discord-api-types/v9');
 const { TypeError } = require('../errors');
 
@@ -10,14 +11,15 @@ class ModalSubmitFieldsResolver {
      * @type {Array<ActionRow<ModalFieldData>>} The components in the modal
      */
     this.components = components;
-  }
 
-  /**
-   * The extracted fields from the modal
-   * @type {ModalFieldData[]} The fields in the modal
-   */
-  get fields() {
-    return this.components.reduce((previous, next) => previous.concat(next.components), []);
+    /**
+     * The extracted fields from the modal
+     * @type {Collection<string, ModalFieldData>} The fields in the modal
+     */
+    this.fields = components.reduce((accumulator, next) => {
+      next.components.forEach(c => accumulator.set(c.customId, c));
+      return accumulator;
+    }, new Collection());
   }
 
   /**
@@ -26,7 +28,7 @@ class ModalSubmitFieldsResolver {
    * @returns {ModalFieldData}
    */
   getField(customId) {
-    const field = this.fields.find(f => f.customId === customId);
+    const field = this.fields.get(customId);
     if (!field) throw new TypeError('MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND', customId);
     return field;
   }

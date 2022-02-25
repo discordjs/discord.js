@@ -17,7 +17,7 @@ export function createComponent<T extends keyof MappedComponentTypes>(
 	data: (APIMessageComponent | APIModalComponent) & { type: T },
 ): MappedComponentTypes[T];
 export function createComponent<C extends MessageComponent | ModalActionRowComponent>(data: C): C;
-export function createComponent(data: APIModalComponent | APIMessageComponent): Component {
+export function createComponent(data: APIModalComponent | APIMessageComponent | Component): Component {
 	if (data instanceof Component) {
 		return data;
 	}
@@ -30,7 +30,7 @@ export function createComponent(data: APIModalComponent | APIMessageComponent): 
 		case ComponentType.SelectMenu:
 			return new SelectMenuComponent(data);
 		case ComponentType.TextInput:
-			return data instanceof TextInputComponent ? data : new TextInputComponent(data);
+			return new TextInputComponent(data);
 		default:
 			throw new Error(`Cannot serialize component type: ${(data as APIBaseComponent<ComponentType>).type}`);
 	}

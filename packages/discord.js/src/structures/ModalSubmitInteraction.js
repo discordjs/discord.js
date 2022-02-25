@@ -28,7 +28,7 @@ class ModalSubmitInteraction extends Interaction {
     if ('message' in data) {
       /**
        * The message associated with this interaction
-       * @type {Message|APIMessage|null}
+       * @type {?(Message|APIMessage)}
        */
       this.message = this.channel?.messages._add(data.message) ?? data.message;
     } else {

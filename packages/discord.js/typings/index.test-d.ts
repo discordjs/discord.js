@@ -104,6 +104,7 @@ import {
   Status,
   CategoryChannelChildManager,
   ActionRowData,
+  MessageActionRowComponentData,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -1339,7 +1340,7 @@ new ButtonComponent({
   style: ButtonStyle.Danger,
 });
 
-expectNotAssignable<ActionRowData>({
+expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
   type: ComponentType.ActionRow,
   components: [
     {

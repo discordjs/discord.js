@@ -4,7 +4,7 @@ import {
 	APIModalActionRowComponent,
 	ComponentType,
 } from 'discord-api-types/v9';
-import type { ButtonComponent, SelectMenuComponent, UnsafeTextInputComponent } from '..';
+import type { ButtonComponent, SelectMenuComponent, TextInputComponent } from '../index';
 import { Component } from './Component';
 import { createComponent } from './Components';
 import isEqual from 'fast-deep-equal';
@@ -13,7 +13,7 @@ export type MessageComponent = MessageActionRowComponent | ActionRow<MessageActi
 export type ModalComponent = ModalActionRowComponent | ActionRow<ModalActionRowComponent>;
 
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
-export type ModalActionRowComponent = UnsafeTextInputComponent;
+export type ModalActionRowComponent = TextInputComponent;
 
 /**
  * Represents an action row component
@@ -21,7 +21,12 @@ export type ModalActionRowComponent = UnsafeTextInputComponent;
 export class ActionRow<
 	T extends ModalActionRowComponent | MessageActionRowComponent = ModalActionRowComponent | MessageActionRowComponent,
 > extends Component<
-	Omit<Partial<APIActionRowComponent<APIMessageActionRowComponent>> & { type: ComponentType.ActionRow }, 'components'>
+	Omit<
+		Partial<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>> & {
+			type: ComponentType.ActionRow;
+		},
+		'components'
+	>
 > {
 	/**
 	 * The components within this action row

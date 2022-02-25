@@ -26,6 +26,7 @@ describe('Text Input Components', () => {
 
 		test('GIVEN valid style THEN validator does not throw', () => {
 			expect(() => textInputStyleValidator.parse(TextInputStyle.Paragraph)).not.toThrowError();
+			expect(() => textInputStyleValidator.parse(TextInputStyle.Short)).not.toThrowError();
 		});
 
 		test('GIVEN invalid style THEN validator does throw', () => {
@@ -52,7 +53,7 @@ describe('Text Input Components', () => {
 			expect(() => valueValidator.parse('foobar')).not.toThrowError();
 		});
 
-		test('GIVEN invalid value THEN validator does not throw', () => {
+		test('GIVEN invalid value THEN validator does throw', () => {
 			expect(() => valueValidator.parse(superLongStr)).toThrowError();
 		});
 
@@ -60,7 +61,7 @@ describe('Text Input Components', () => {
 			expect(() => placeholderValidator.parse('foobar')).not.toThrowError();
 		});
 
-		test('GIVEN invalid value THEN validator does not throw', () => {
+		test('GIVEN invalid value THEN validator does throw', () => {
 			expect(() => placeholderValidator.parse(superLongStr)).toThrowError();
 		});
 
@@ -90,8 +91,9 @@ describe('Text Input Components', () => {
 				.setCustomId('test')
 				.setMaxLength(100)
 				.setPlaceholder('hello')
-				.setStyle(TextInputStyle.Paragraph);
-		});
+				.setStyle(TextInputStyle.Paragraph)
+				.toJSON();
+		}).toThrowError();
 	});
 
 	test('GIVEN valid input THEN valid JSON outputs are given', () => {
