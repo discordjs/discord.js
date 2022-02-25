@@ -487,7 +487,7 @@ class ThreadChannel extends Channel {
    * @readonly
    */
   get unarchivable() {
-    return this.archived && (this.locked ? this.manageable : this.sendable);
+    return this.archived && this.sendable && (!this.locked || this.manageable);
   }
 
   /**
