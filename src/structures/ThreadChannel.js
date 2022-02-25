@@ -100,6 +100,15 @@ class ThreadChannel extends Channel {
        * @type {?number}
        */
       this.archiveTimestamp = new Date(data.thread_metadata.archive_timestamp).getTime();
+
+      if ('create_timestamp' in data.thread_metadata) {
+        /**
+         * The timestamp when this thread was created. This isn't available for threads
+         * created before 2022-01-09
+         * @type {?number}
+         */
+        this.createdTimestamp = Date.parse(data.thread_metadata.create_timestamp);
+      }
     } else {
       this.locked ??= null;
       this.archived ??= null;
@@ -107,6 +116,8 @@ class ThreadChannel extends Channel {
       this.archiveTimestamp ??= null;
       this.invitable ??= null;
     }
+
+    this.createdTimestamp ??= this.type === 'GUILD_PRIVATE_THREAD' ? super.createdTimestamp : null;
 
     if ('owner_id' in data) {
       /**
@@ -194,6 +205,15 @@ class ThreadChannel extends Channel {
   get archivedAt() {
     if (!this.archiveTimestamp) return null;
     return new Date(this.archiveTimestamp);
+  }
+
+  /**
+   * The time the thread was created at
+   * @type {?Date}
+   * @readonly
+   */
+  get createdAt() {
+    return this.createdTimestamp && new Date(this.createdTimestamp);
   }
 
   /**
@@ -488,6 +508,14 @@ class ThreadChannel extends Channel {
    */
   get unarchivable() {
     return this.archived && (this.locked ? this.manageable : this.sendable);
+  }
+
+  /**
+   * Whether this thread is a private thread
+   * @returns {boolean}
+   */
+  isPrivate() {
+    return this.type === 'GUILD_PRIVATE_THREAD';
   }
 
   /**
