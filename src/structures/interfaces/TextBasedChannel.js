@@ -236,7 +236,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Creates a button interaction collector.
+   * Creates a component interaction collector.
    * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
    * @returns {InteractionCollector}
    * @example
