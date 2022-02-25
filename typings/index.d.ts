@@ -1691,7 +1691,7 @@ export class MessageEmbed {
   public readonly length: number;
   public provider: MessageEmbedProvider | null;
   public thumbnail: MessageEmbedThumbnail | null;
-  public timestamp: number | null;
+  public timestamp: number | Date | null;
   public title: string | null;
   /** @deprecated */
   public type: string;
