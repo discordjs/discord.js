@@ -223,9 +223,13 @@ class VoiceState extends Base {
 
     if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
 
-    if (typeof data.requestToSpeak !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'requestToSpeak');
+    if (!['boolean', 'undefined'].includes(typeof data.requestToSpeak)) {
+      throw new TypeError('VOICE_STATE_INVALID_TYPE', 'requestToSpeak');
+    }
 
-    if (typeof data.suppressed !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
+    if (!['boolean', 'undefined'].includes(typeof data.suppressed)) {
+      throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
+    }
 
     await this.client.rest.patch(Routes.guildVoiceState(this.guild.id), {
       body: {
