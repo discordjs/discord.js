@@ -17,13 +17,17 @@ export function createComponent<T extends keyof MappedComponentTypes>(
 ): MappedComponentTypes[T];
 export function createComponent<C extends MessageComponent>(data: C): C;
 export function createComponent(data: APIMessageComponent | MessageComponent): Component {
+	if (data instanceof Component) {
+		return data;
+	}
+
 	switch (data.type) {
 		case ComponentType.ActionRow:
-			return (data instanceof ActionRow ? data : new ActionRow(data)) as Component;
+			return new ActionRow(data);
 		case ComponentType.Button:
-			return (data instanceof ButtonComponent ? data : new ButtonComponent(data)) as Component;
+			return new ButtonComponent(data);
 		case ComponentType.SelectMenu:
-			return (data instanceof SelectMenuComponent ? data : new SelectMenuComponent(data)) as Component;
+			return new SelectMenuComponent(data);
 		default:
 			// @ts-expect-error
 			throw new Error(`Cannot serialize component type: ${data.type as number}`);
