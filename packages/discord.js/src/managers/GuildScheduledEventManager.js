@@ -67,20 +67,18 @@ class GuildScheduledEventManager extends CachedManager {
    * @param {GuildScheduledEventCreateOptions} options Options for creating the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
    */
-  async create(options) {
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let {
-      privacyLevel,
-      entityType,
-      channel,
-      name,
-      scheduledStartTime,
-      description,
-      scheduledEndTime,
-      entityMetadata,
-      reason,
-      image,
-    } = options;
+  async create({
+    privacyLevel,
+    entityType,
+    channel,
+    name,
+    scheduledStartTime,
+    description,
+    scheduledEndTime,
+    entityMetadata,
+    reason,
+    image,
+  } = {}) {
 
     let entity_metadata, channel_id;
     if (entityType === GuildScheduledEventEntityType.External) {
@@ -185,24 +183,21 @@ class GuildScheduledEventManager extends CachedManager {
    * @param {GuildScheduledEventEditOptions} options Options to edit the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
    */
-  async edit(guildScheduledEvent, options) {
+  async edit(guildScheduledEvent, {
+    privacyLevel,
+    entityType,
+    channel,
+    status,
+    name,
+    scheduledStartTime,
+    description,
+    scheduledEndTime,
+    entityMetadata,
+    reason,
+    image,
+  }) {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
-
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let {
-      privacyLevel,
-      entityType,
-      channel,
-      status,
-      name,
-      scheduledStartTime,
-      description,
-      scheduledEndTime,
-      entityMetadata,
-      reason,
-      image,
-    } = options;
 
     let entity_metadata;
     if (entityMetadata) {
