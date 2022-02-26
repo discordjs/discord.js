@@ -184,6 +184,7 @@ exports.GuildVerificationLevel = require('discord-api-types/v9').GuildVerificati
 exports.InteractionType = require('discord-api-types/v9').InteractionType;
 exports.InteractionResponseType = require('discord-api-types/v9').InteractionResponseType;
 exports.InviteTargetType = require('discord-api-types/v9').InviteTargetType;
+exports.Locale = require('discord-api-types/v9').Locale;
 exports.MessageType = require('discord-api-types/v9').MessageType;
 exports.MessageFlags = require('discord-api-types/v9').MessageFlags;
 exports.OAuth2Scopes = require('discord-api-types/v9').OAuth2Scopes;

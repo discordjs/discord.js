@@ -60,6 +60,7 @@ import {
   GuildNSFWLevel,
   GuildPremiumTier,
   GuildVerificationLevel,
+  Locale,
   InteractionType,
   InviteTargetType,
   MessageType,
@@ -203,7 +204,11 @@ export interface ActionRowData extends BaseComponentData {
 }
 
 export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends BuilderActionRow<T> {
-  constructor(data?: ActionRowData | APIActionRowComponent<APIMessageComponent>);
+  constructor(
+    data?:
+      | ActionRowData
+      | (Omit<APIActionRowComponent<APIMessageComponent>, 'type'> & { type?: ComponentType.ActionRow }),
+  );
 }
 
 export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
@@ -472,11 +477,13 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
 }
 
 export class ButtonComponent extends BuilderButtonComponent {
-  public constructor(data?: ButtonComponentData | APIButtonComponent);
+  public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
 }
 
 export class SelectMenuComponent extends BuilderSelectMenuComponent {
-  public constructor(data?: SelectMenuComponentData | APISelectMenuComponent);
+  public constructor(
+    data?: SelectMenuComponentData | (Omit<APISelectMenuComponent, 'type'> & { type?: ComponentType.SelectMenu }),
+  );
 }
 
 export interface EmbedData {
@@ -924,7 +931,7 @@ export class Guild extends AnonymousGuild {
   public members: GuildMemberManager;
   public mfaLevel: GuildMFALevel;
   public ownerId: Snowflake;
-  public preferredLocale: string;
+  public preferredLocale: Locale;
   public premiumProgressBarEnabled: boolean;
   public premiumTier: GuildPremiumTier;
   public presences: PresenceManager;
@@ -982,7 +989,7 @@ export class Guild extends AnonymousGuild {
   public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
   public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
-  public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;
+  public setPreferredLocale(preferredLocale: Locale, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
@@ -1328,8 +1335,8 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public user: User;
   public version: number;
   public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
-  public locale: string;
-  public guildLocale: CacheTypeReducer<Cached, string, string, string>;
+  public locale: Locale;
+  public guildLocale: CacheTypeReducer<Cached, Locale>;
   public inGuild(): this is Interaction<'raw' | 'cached'>;
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
@@ -4292,7 +4299,7 @@ export interface GuildEditData {
   banner?: BufferResolvable | Base64Resolvable | null;
   rulesChannel?: TextChannelResolvable;
   publicUpdatesChannel?: TextChannelResolvable;
-  preferredLocale?: string;
+  preferredLocale?: Locale;
   premiumProgressBarEnabled?: boolean;
   description?: string | null;
   features?: GuildFeature[];
@@ -4613,7 +4620,7 @@ export interface MessageReference {
 export type MessageResolvable = Message | Snowflake;
 
 export interface SelectMenuComponentData extends BaseComponentData {
-  customId?: string;
+  customId: string;
   disabled?: boolean;
   maxValues?: number;
   minValues?: number;
@@ -5128,6 +5135,7 @@ export {
   InteractionType,
   InteractionResponseType,
   InviteTargetType,
+  Locale,
   MessageType,
   MessageFlags,
   OAuth2Scopes,

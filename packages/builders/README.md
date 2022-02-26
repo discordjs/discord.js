@@ -27,7 +27,7 @@ pnpm add @discordjs/builders
 
 Here are some examples for the builders and utilities you can find in this package:
 
-- [Slash Command Builders](./docs/examples/Slash%20Command%20Builders.md)
+- [Slash Command Builders](https://github.com/discordjs/discord.js/blob/main/packages/builders/docs/examples/Slash%20Command%20Builders.md)
 
 ## Links
 

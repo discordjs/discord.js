@@ -15,6 +15,7 @@ import {
   ChannelType,
   InteractionType,
   GatewayIntentBits,
+  Locale,
   PermissionFlagsBits,
   AuditLogEvent,
   ButtonStyle,
@@ -102,6 +103,7 @@ import {
   ShardEvents,
   Status,
   CategoryChannelChildManager,
+  ActionRowData,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -1006,13 +1008,13 @@ client.on('interactionCreate', async interaction => {
     expectAssignable<GuildMember>(interaction.member);
     expectNotType<ChatInputCommandInteraction<'cached'>>(interaction);
     expectAssignable<Interaction>(interaction);
-    expectType<string>(interaction.guildLocale);
+    expectType<Locale>(interaction.guildLocale);
   } else if (interaction.inRawGuild()) {
     expectAssignable<APIInteractionGuildMember>(interaction.member);
     expectNotAssignable<Interaction<'cached'>>(interaction);
-    expectType<string>(interaction.guildLocale);
+    expectType<Locale>(interaction.guildLocale);
   } else if (interaction.inGuild()) {
-    expectType<string>(interaction.guildLocale);
+    expectType<Locale>(interaction.guildLocale);
   } else {
     expectType<APIInteractionGuildMember | GuildMember | null>(interaction.member);
     expectNotAssignable<Interaction<'cached'>>(interaction);
@@ -1306,6 +1308,23 @@ const selectMenu = new SelectMenuComponent({
 
 new ActionRow({
   components: [selectMenu.toJSON(), button.toJSON()],
+});
+
+new SelectMenuComponent({
+  customId: 'foo',
+});
+
+new ButtonComponent({
+  style: ButtonStyle.Danger,
+});
+
+expectNotAssignable<ActionRowData>({
+  type: ComponentType.ActionRow,
+  components: [
+    {
+      type: ComponentType.Button,
+    },
+  ],
 });
 
 declare const chatInputInteraction: ChatInputCommandInteraction;
