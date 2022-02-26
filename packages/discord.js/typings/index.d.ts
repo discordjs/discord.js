@@ -1137,7 +1137,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
-  public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
+  public edit(data: GuildMemberEditData): Promise<GuildMember>;
   public isCommunicationDisabled(): this is GuildMember & {
     communicationDisabledUntilTimestamp: number;
     readonly communicationDisabledUntil: Date;
@@ -2041,7 +2041,7 @@ export class Sticker extends Base {
   public fetch(): Promise<Sticker>;
   public fetchPack(): Promise<StickerPack | null>;
   public fetchUser(): Promise<User | null>;
-  public edit(data?: GuildStickerEditData, reason?: string): Promise<Sticker>;
+  public edit(data?: GuildStickerEditData): Promise<Sticker>;
   public delete(reason?: string): Promise<Sticker>;
   public equals(other: Sticker | unknown): boolean;
 }
@@ -2881,7 +2881,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   ): Promise<GuildMember | null>;
   public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
   public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
-  public edit(user: UserResolvable, data: GuildMemberEditData, reason?: string): Promise<void>;
+  public edit(user: UserResolvable, data: GuildMemberEditData): Promise<void>;
   public fetch(
     options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable }),
   ): Promise<GuildMember>;
@@ -2944,7 +2944,7 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
     tags: string,
     options?: GuildStickerCreateOptions,
   ): Promise<Sticker>;
-  public edit(sticker: StickerResolvable, data?: GuildStickerEditData, reason?: string): Promise<Sticker>;
+  public edit(sticker: StickerResolvable, data?: GuildStickerEditData): Promise<Sticker>;
   public delete(sticker: StickerResolvable, reason?: string): Promise<void>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Sticker>;
   public fetch(id?: Snowflake, options?: BaseFetchOptions): Promise<Collection<Snowflake, Sticker>>;
@@ -4323,11 +4323,13 @@ export interface GuildStickerCreateOptions {
 export interface GuildStickerEditData {
   name?: string;
   description?: string | null;
+  reason?: string;
   tags?: string;
 }
 
 export interface GuildMemberEditData {
   nick?: string | null;
+  reason?: string;
   roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
   mute?: boolean;
   deaf?: boolean;
