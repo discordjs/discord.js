@@ -271,7 +271,7 @@ class VoiceState extends Base {
    * // Making the client an audience member
    * guild.me.voice.setSuppressed(true);
    * @example
-   * // Inviting another user to speak\
+   * // Inviting another user to speak
    * voiceState.setSuppressed(false);
    * @example
    * // Moving another user to the audience, or cancelling their invite to speak
