@@ -103,6 +103,7 @@ import {
   ShardEvents,
   Status,
   CategoryChannelChildManager,
+  ActionRowData,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -1307,6 +1308,23 @@ const selectMenu = new SelectMenuComponent({
 
 new ActionRow({
   components: [selectMenu.toJSON(), button.toJSON()],
+});
+
+new SelectMenuComponent({
+  customId: 'foo',
+});
+
+new ButtonComponent({
+  style: ButtonStyle.Danger,
+});
+
+expectNotAssignable<ActionRowData>({
+  type: ComponentType.ActionRow,
+  components: [
+    {
+      type: ComponentType.Button,
+    },
+  ],
 });
 
 declare const chatInputInteraction: ChatInputCommandInteraction;

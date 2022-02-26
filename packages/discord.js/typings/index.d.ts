@@ -204,7 +204,11 @@ export interface ActionRowData extends BaseComponentData {
 }
 
 export class ActionRow<T extends ActionRowComponent = ActionRowComponent> extends BuilderActionRow<T> {
-  constructor(data?: ActionRowData | APIActionRowComponent<APIMessageComponent>);
+  constructor(
+    data?:
+      | ActionRowData
+      | (Omit<APIActionRowComponent<APIMessageComponent>, 'type'> & { type?: ComponentType.ActionRow }),
+  );
 }
 
 export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
@@ -473,11 +477,13 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
 }
 
 export class ButtonComponent extends BuilderButtonComponent {
-  public constructor(data?: ButtonComponentData | APIButtonComponent);
+  public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
 }
 
 export class SelectMenuComponent extends BuilderSelectMenuComponent {
-  public constructor(data?: SelectMenuComponentData | APISelectMenuComponent);
+  public constructor(
+    data?: SelectMenuComponentData | (Omit<APISelectMenuComponent, 'type'> & { type?: ComponentType.SelectMenu }),
+  );
 }
 
 export interface EmbedData {
@@ -4619,7 +4625,7 @@ export interface MessageReference {
 export type MessageResolvable = Message | Snowflake;
 
 export interface SelectMenuComponentData extends BaseComponentData {
-  customId?: string;
+  customId: string;
   disabled?: boolean;
   maxValues?: number;
   minValues?: number;
