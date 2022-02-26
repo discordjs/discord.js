@@ -236,6 +236,7 @@ class GuildMemberManager extends CachedManager {
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {?string} [nick] The nickname to set for the member
+   * @param {?string} [reason] Reason for editing this user
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
@@ -250,10 +251,9 @@ class GuildMemberManager extends CachedManager {
    * <info>The user must be a member of the guild</info>
    * @param {UserResolvable} user The member to edit
    * @param {GuildMemberEditData} data The data to edit the member with
-   * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  async edit(user, data, reason) {
+  async edit(user, data) {
     const id = this.client.users.resolveId(user);
     if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
 
@@ -286,7 +286,7 @@ class GuildMemberManager extends CachedManager {
     } else {
       endpoint = Routes.guildMember(this.guild.id, id);
     }
-    const d = await this.client.rest.patch(endpoint, { body: _data, reason });
+    const d = await this.client.rest.patch(endpoint, { body: _data, data.reason: reason });
 
     const clone = this.cache.get(id)?._clone();
     clone?._patch(d);
@@ -325,7 +325,13 @@ class GuildMemberManager extends CachedManager {
    *    .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *    .catch(console.error);
    */
-  async prune({ days, dry = false, count: compute_prune_count, roles = [], reason } = {}) {
+  async prune({
+    days,
+    dry = false,
+    count: compute_prune_count,
+    roles = [],
+    reason
+  } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
 
     const query = { days };
