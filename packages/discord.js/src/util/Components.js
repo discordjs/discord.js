@@ -17,7 +17,7 @@
  * @property {string} label The label of this button
  * @property {?APIComponentEmoji} emoji The emoji on this button
  * @property {?string} customId The custom id of the button
- * @property {?string} url The url of the button
+ * @property {?string} url The URL of the button
  */
 /**
  * @typedef {object} SelectMenuComponentOptionData

@@ -5,7 +5,7 @@
  * @property {?string} title The title of the embed
  * @property {?EmbedType} type The type of the embed
  * @property {?string} description The description of the embed
- * @property {?string} url The url of the embed
+ * @property {?string} url The URL of the embed
  * @property {?string} timestamp The timestamp on the embed
  * @property {?number} color The color of the embed
  * @property {?EmbedFooterData} footer The footer of the embed
@@ -24,7 +24,7 @@
 
 /**
  * @typedef {Object} EmbedImageData
- * @property {?string} url The url of the image
+ * @property {?string} url The URL of the image
  */
 
 /**
@@ -36,8 +36,8 @@
 /**
  * @typedef {Object} EmbedAuthorData
  * @property {string} name The name of the author
- * @property {?string} url The url of the author
- * @property {?string} iconURL The icon url of the author
+ * @property {?string} url The URL of the author
+ * @property {?string} iconURL The icon URL of the author
  */
 
 /**

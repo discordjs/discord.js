@@ -75,8 +75,8 @@ export class UnsafeTextInputComponent extends Component<
 	}
 
 	/**
-	 * Sets the custom id for this input text
-	 * @param customId The custom id of this input text
+	 * Sets the custom id for this text input
+	 * @param customId The custom id of this text input
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
@@ -84,8 +84,8 @@ export class UnsafeTextInputComponent extends Component<
 	}
 
 	/**
-	 * Sets the label for this input text
-	 * @param label The label for this input text
+	 * Sets the label for this text input
+	 * @param label The label for this text input
 	 */
 	public setLabel(label: string) {
 		this.data.label = label;
@@ -93,8 +93,8 @@ export class UnsafeTextInputComponent extends Component<
 	}
 
 	/**
-	 * Sets the style for this input text
-	 * @param style The style for this input text
+	 * Sets the style for this text input
+	 * @param style The style for this text input
 	 */
 	public setStyle(style: TextInputStyle) {
 		this.data.style = style;
@@ -102,8 +102,8 @@ export class UnsafeTextInputComponent extends Component<
 	}
 
 	/**
-	 * Sets the minimum length of text for this input text
-	 * @param minLength The minimum length of text for this input text
+	 * Sets the minimum length of text for this text input
+	 * @param minLength The minimum length of text for this text input
 	 */
 	public setMinLength(minLength: number) {
 		this.data.min_length = minLength;
@@ -111,8 +111,8 @@ export class UnsafeTextInputComponent extends Component<
 	}
 
 	/**
-	 * Sets the maximum length of text for this input text
-	 * @param maxLength The maximum length of text for this input text
+	 * Sets the maximum length of text for this text input
+	 * @param maxLength The maximum length of text for this text input
 	 */
 	public setMaxLength(maxLength: number) {
 		this.data.max_length = maxLength;
@@ -120,8 +120,8 @@ export class UnsafeTextInputComponent extends Component<
 	}
 
 	/**
-	 * Sets the placeholder of this input text
-	 * @param placeholder The placeholder of this input text
+	 * Sets the placeholder of this text input
+	 * @param placeholder The placeholder of this text input
 	 */
 	public setPlaceholder(placeholder: string) {
 		this.data.placeholder = placeholder;
@@ -129,8 +129,8 @@ export class UnsafeTextInputComponent extends Component<
 	}
 
 	/**
-	 * Sets the value of this input text
-	 * @param value The value for this input text
+	 * Sets the value of this text input
+	 * @param value The value for this text input
 	 */
 	public setValue(value: string) {
 		this.data.value = value;
