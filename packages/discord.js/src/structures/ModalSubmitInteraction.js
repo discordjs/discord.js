@@ -15,6 +15,7 @@ const InteractionResponses = require('./interfaces/InteractionResponses');
 
 /**
  * Represents a modal interaction
+ * @implements {InteractionResponses}
  */
 class ModalSubmitInteraction extends Interaction {
   constructor(client, data) {
@@ -74,6 +75,17 @@ class ModalSubmitInteraction extends Interaction {
   isFromMessage() {
     return Boolean(this.message);
   }
+
+  // These are here only for documentation purposes - they are implemented by InteractionResponses
+  /* eslint-disable no-empty-function */
+  deferReply() {}
+  reply() {}
+  fetchReply() {}
+  editReply() {}
+  deleteReply() {}
+  followUp() {}
+  deferUpdate() {}
+  update() {}
 }
 
 InteractionResponses.applyToClass(ModalSubmitInteraction, 'showModal');

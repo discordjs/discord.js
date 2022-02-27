@@ -4,6 +4,9 @@ const { Collection } = require('@discordjs/collection');
 const { ComponentType } = require('discord-api-types/v9');
 const { TypeError } = require('../errors');
 
+/**
+ * Represents the serialized fields from a modal submit interaction
+ */
 class ModalSubmitFieldsResolver {
   constructor(components) {
     /**
