@@ -90,6 +90,7 @@ const Messages = {
   CHANNEL_NOT_CACHED: 'Could not find the channel where this message came from in the cache!',
   STAGE_CHANNEL_RESOLVE: 'Could not resolve channel to a stage channel.',
   GUILD_SCHEDULED_EVENT_RESOLVE: 'Could not resolve the guild scheduled event.',
+  FETCH_OWNER_ID: "Couldn't resolve the guild ownerId to fetch the member.",
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,

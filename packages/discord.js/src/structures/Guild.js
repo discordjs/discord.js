@@ -451,8 +451,12 @@ class Guild extends AnonymousGuild {
    * @param {BaseFetchOptions} [options] The options for fetching the member
    * @returns {Promise<GuildMember>}
    */
-  fetchOwner(options) {
-    return this.members.fetch({ ...options, user: this.ownerId });
+  async fetchOwner(options) {
+    if (!this.ownerId) {
+      throw new Error('FETCH_OWNER_ID');
+    }
+    const member = await this.members.fetch({ ...options, user: this.ownerId });
+    return member;
   }
 
   /**
