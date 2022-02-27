@@ -24,6 +24,5 @@
 			"dependsOn": ["^build"],
 			"outputs": ["CHANGELOG.md"]
 		}
-	},
-	"$schema": "https://turborepo.org/schema.json"
+	}
 }
