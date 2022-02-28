@@ -2014,7 +2014,7 @@ export class StageInstance extends Base {
   public guildScheduledEventId?: Snowflake;
   public get channel(): StageChannel | null;
   public get guild(): Guild | null;
-  public get scheduledEvent(): GuildScheduledEvent | null;
+  public get guildScheduledEvent(): GuildScheduledEvent | null;
   public edit(options: StageInstanceEditOptions): Promise<StageInstance>;
   public delete(): Promise<StageInstance>;
   public setTopic(topic: string): Promise<StageInstance>;
