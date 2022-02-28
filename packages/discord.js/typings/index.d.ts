@@ -3570,11 +3570,12 @@ export interface ClientEvents {
   roleUpdate: [oldRole: Role, newRole: Role];
   threadCreate: [thread: ThreadChannel, newlyCreated: boolean];
   threadDelete: [thread: ThreadChannel];
-  threadListSync: [threads: Collection<Snowflake, ThreadChannel>];
+  threadListSync: [threads: Collection<Snowflake, ThreadChannel>, guild: Guild];
   threadMemberUpdate: [oldMember: ThreadMember, newMember: ThreadMember];
   threadMembersUpdate: [
     oldMembers: Collection<Snowflake, ThreadMember>,
     newMembers: Collection<Snowflake, ThreadMember>,
+    thread: ThreadChannel,
   ];
   threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
   typingStart: [typing: Typing];
