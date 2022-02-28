@@ -24,8 +24,9 @@ class ThreadMembersUpdateAction extends Action {
        * @event Client#threadMembersUpdate
        * @param {Collection<Snowflake, ThreadMember>} oldMembers The members before the update
        * @param {Collection<Snowflake, ThreadMember>} newMembers The members after the update
+       * @param {ThreadChannel} thread The thread that the members were updated in
        */
-      client.emit(Events.ThreadMembersUpdate, old, thread.members.cache);
+      client.emit(Events.ThreadMembersUpdate, old, thread.members.cache, thread);
     }
     return {};
   }
