@@ -6,7 +6,7 @@ import isEqual from 'fast-deep-equal';
 export class UnsafeTextInputComponent extends Component<
 	Partial<APITextInputComponent> & { type: ComponentType.TextInput }
 > {
-	public equals(other: TextInputComponent | APITextInputComponent): boolean {
+	public equals(other: UnsafeTextInputComponent | APITextInputComponent): boolean {
 		if (other instanceof UnsafeTextInputComponent) {
 			return isEqual(other.data, this.data);
 		}
