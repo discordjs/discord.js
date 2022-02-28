@@ -66,7 +66,7 @@ class StageInstance extends Base {
 
     if ('guild_scheduled_event_id' in data) {
       /**
-       * The associated scheduled event Id of this stage instance
+       * The associated guild scheduled event id of this stage instance
        * @type {?Snowflake}
        */
       this.guildScheduledEventId = data.guild_scheduled_event_id;
@@ -94,12 +94,12 @@ class StageInstance extends Base {
   }
 
   /**
-   * The associated scheduled event of this stage instance
+   * The associated guild scheduled event of this stage instance
    * @type {?GuildScheduledEvent}
    * @readonly
    */
   get scheduledEvent() {
-    return this.guild?.scheduledEvents.resolve(this.guildScheduledEventId);
+    return this.guild?.scheduledEvents.resolve(this.guildScheduledEventId) ?? null;
   }
 
   /**
