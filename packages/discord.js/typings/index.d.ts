@@ -172,7 +172,7 @@ export class Activity {
   public emoji: Emoji | null;
   public flags: Readonly<ActivityFlagsBitField>;
   public id: string;
-  public name: string;
+  public name: string | null;
   public party: {
     id: string | null;
     size: [number, number];

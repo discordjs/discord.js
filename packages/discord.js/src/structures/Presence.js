@@ -159,9 +159,9 @@ class Activity {
 
     /**
      * The activity's name
-     * @type {string}
+     * @type {?string}
      */
-    this.name = data.name;
+    this.name = data.name ?? null;
 
     /**
      * The activity status's type
@@ -304,7 +304,7 @@ class Activity {
    * @returns {string}
    */
   toString() {
-    return this.name;
+    return this.name ?? '';
   }
 
   _clone() {
