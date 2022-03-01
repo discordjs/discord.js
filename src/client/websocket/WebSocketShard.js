@@ -578,7 +578,7 @@ class WebSocketShard extends EventEmitter {
       if (!this.connection || this.closeEmitted) {
         this.debug(
           `[WebSocket] WebSocket close not detected. | WS State: ${
-            CONNECTION_STATE[this.connection?.readyState ?? 3]
+            CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
           } | Close Emitted: ${this.closeEmitted}`,
         );
         this.closeEmitted = false;
@@ -791,7 +791,7 @@ class WebSocketShard extends EventEmitter {
 
     this.debug(
       `[WS Destroy] Step 1: Attempting to close the WebSocket. | WS State: ${
-        CONNECTION_STATE[this.connection?.readyState ?? 3]
+        CONNECTION_STATE[this.connection?.readyState ?? CONNECTION_STATE]
       }`,
     );
     // Step 1: Close the WebSocket connection, if any, otherwise, emit DESTROYED
@@ -800,11 +800,13 @@ class WebSocketShard extends EventEmitter {
       if (this.connection.readyState === WebSocket.OPEN) {
         this.connection.close(closeCode);
         this.debug(
-          `[WebSocket] Close: Tried closing. | WS State: ${CONNECTION_STATE[this.connection?.readyState ?? 3]}`,
+          `[WebSocket] Close: Tried closing. | WS State: ${
+            CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
+          }`,
         );
       } else {
         // Connection is not OPEN
-        this.debug(`WS State: ${CONNECTION_STATE[this.connection?.readyState ?? 3]}`);
+        this.debug(`WS State: ${CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]}`);
         // Remove listeners from the connection
         this._cleanupConnection();
         // Attempt to close the connection just in case
@@ -813,7 +815,7 @@ class WebSocketShard extends EventEmitter {
         } catch {
           this.debug(
             `[WebSocket] Close: Something went wrong while closing the WebSocket, Now calling terminate. | WS State: ${
-              CONNECTION_STATE[this.connection?.readyState ?? 3]
+              CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
             }`,
           );
           this.connection.terminate();
@@ -834,7 +836,7 @@ class WebSocketShard extends EventEmitter {
     if (closeCode === 4009) {
       this.debug(
         `[WebSocket] closeCode[4009]: Adding a timeout to check the connection state. | WS State: ${
-          CONNECTION_STATE[this.connection?.readyState ?? 3]
+          CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
         }`,
       );
       this.setWsCloseTimeout();
@@ -842,7 +844,7 @@ class WebSocketShard extends EventEmitter {
 
     this.debug(
       `[WS Destroy] Step 2: Resetting the sequence and session id if requested. | WS State: ${
-        CONNECTION_STATE[this.connection?.readyState ?? 3]
+        CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
       }`,
     );
 
@@ -879,7 +881,7 @@ class WebSocketShard extends EventEmitter {
     if (this.connection?.readyState === WebSocket.CLOSING || this.connection?.readyState === WebSocket.OPEN) {
       this.debug(
         `[WS Destroy] Step 3: WebSocket Still Connected: trying to terminate. | WS State: ${
-          CONNECTION_STATE[this.connection?.readyState ?? 3]
+          CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
         }`,
       );
 
@@ -897,7 +899,7 @@ class WebSocketShard extends EventEmitter {
         this.debug(
           // eslint-disable-next-line max-len
           `[WebSocket] Connection still stuck at Closing: Calling a Manual Destroy of the socket to Close and reconnect. | WS State: ${
-            CONNECTION_STATE[this.connection?.readyState ?? 3]
+            CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
           }`,
         );
 
@@ -918,7 +920,7 @@ class WebSocketShard extends EventEmitter {
 
         this.debug(
           `[WebSocket] Applied a Manual Destroy, Clearing the WS State Logger in 5s. | WS State: ${
-            CONNECTION_STATE[this.connection?.readyState ?? 3]
+            CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
           }`,
         );
       }
