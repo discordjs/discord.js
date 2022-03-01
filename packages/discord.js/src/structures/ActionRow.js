@@ -1,14 +1,21 @@
 'use strict';
 
-const { ActionRow: BuildersActionRow, Component } = require('@discordjs/builders');
-const Transformers = require('../util/Transformers');
+const Component = require('./Component');
+const Components = require('../util/Components');
 
-class ActionRow extends BuildersActionRow {
+/**
+ * Represents an action row
+ * @extends {Component}
+ */
+class ActionRow extends Component {
   constructor({ components, ...data } = {}) {
-    super({
-      components: components?.map(c => (c instanceof Component ? c : Transformers.toSnakeCase(c))),
-      ...Transformers.toSnakeCase(data),
-    });
+    super(data);
+    /**
+     * The components in this action row
+     * @type {Component[]}
+     * @readonly
+     */
+    this.components = components.map(c => Components.createComponent(c));
   }
 }
 
