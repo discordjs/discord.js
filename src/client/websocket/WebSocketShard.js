@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use strict';
 
 const EventEmitter = require('node:events');
@@ -586,7 +585,6 @@ class WebSocketShard extends EventEmitter {
         this.setWsCloseTimeout(-1);
         return;
       }
-      console.log('Should emit zombieConnection');
       // Waiting for approx 5s.
 
       /**
