@@ -1,11 +1,11 @@
+import { APIActionRowComponent, APIMessageComponent, ButtonStyle, ComponentType } from 'discord-api-types/v9';
 import {
-	APIActionRowComponent,
-	APIActionRowComponentTypes,
-	APIMessageActionRowComponent,
-	ButtonStyle,
-	ComponentType,
-} from 'discord-api-types/v9';
-import { ActionRow, ButtonComponent, createComponent, SelectMenuComponent, SelectMenuOption } from '../../src';
+	ActionRowBuilder,
+	ButtonBuilder,
+	createComponentBuilder,
+	SelectMenuBuilder,
+	SelectMenuOptionBuilder,
+} from '../../src';
 
 const rowWithButtonData: APIActionRowComponent<APIMessageComponent> = {
 	type: ComponentType.ActionRow,
@@ -44,8 +44,8 @@ const rowWithSelectMenuData: APIActionRowComponent<APIMessageComponent> = {
 describe('Action Row Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
-			expect(() => new ActionRow().addComponents(new ButtonComponent())).not.toThrowError();
-			expect(() => new ActionRow().setComponents(new ButtonComponent())).not.toThrowError();
+			expect(() => new ActionRowBuilder().addComponents(new ButtonBuilder())).not.toThrowError();
+			expect(() => new ActionRowBuilder().setComponents(new ButtonBuilder())).not.toThrowError();
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
@@ -119,21 +119,26 @@ describe('Action Row Components', () => {
 			};
 
 			const button = new ButtonComponent().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
-			const selectMenu = new SelectMenuComponent()
+			const selectMenu = new SelectMenuComponent();
+			expect(new ActionRowBuilder(actionRowData).toJSON()).toEqual(actionRowData);
+			expect(new ActionRowBuilder().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
+			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
+			// @ts-expect-error
+			expect(() => createComponentBuilder({ type: 42, components: [] })).toThrowError();
+		});
+		test('GIVEN valid builder options THEN valid JSON output is given', () => {
+			const button = new ButtonBuilder().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
+			const selectMenu = new SelectMenuBuilder()
 				.setCustomId('1234')
 				.setMaxValues(10)
 				.setMinValues(12)
 				.setOptions(
-					new SelectMenuOption().setLabel('one').setValue('one'),
-					new SelectMenuOption().setLabel('two').setValue('two'),
+					new SelectMenuOptionBuilder().setLabel('one').setValue('one'),
+					new SelectMenuOptionBuilder().setLabel('two').setValue('two'),
 				);
 
-			expect(new ActionRow().addComponents(button).toJSON()).toEqual(rowWithButtonData);
-			expect(new ActionRow().addComponents(selectMenu).toJSON()).toEqual(rowWithSelectMenuData);
-		});
-		test('Given JSON data THEN builder is equal to it and itself', () => {
-			expect(new ActionRow(rowWithSelectMenuData).equals(rowWithSelectMenuData)).toBeTruthy();
-			expect(new ActionRow(rowWithButtonData).equals(new ActionRow(rowWithButtonData))).toBeTruthy();
+			expect(new ActionRowBuilder().addComponents(button).toJSON()).toEqual(rowWithButtonData);
+			expect(new ActionRowBuilder().addComponents(selectMenu).toJSON()).toEqual(rowWithSelectMenuData);
 		});
 	});
 });

@@ -95,10 +95,10 @@ import {
   GuildAuditLogs,
   StageInstance,
   PartialDMChannel,
-  ActionRow,
+  ActionRowBuilder,
   ButtonComponent,
   SelectMenuComponent,
-  MessageActionRowComponent,
+  MessageActionRowBuilderComponent,
   InteractionResponseFields,
   ThreadChannelType,
   Events,
@@ -109,9 +109,13 @@ import {
   MessageActionRowComponentData,
   PartialThreadMember,
   ThreadMemberFlagsBitField,
-  Embed,
+  ButtonBuilder,
+  EmbedBuilder,
+  MessageActionRowComponent,
+  SelectMenuBuilder,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import type { ModalActionRowComponentBuilder } from '@discordjs/builders';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -574,7 +578,7 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({ embeds: [] }));
 
   const attachment = new MessageAttachment('file.png');
-  const embed = new Embed();
+  const embed = new EmbedBuilder();
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
   assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));
@@ -744,11 +748,11 @@ client.on('interactionCreate', async interaction => {
 
   if (!interaction.isCommand()) return;
 
-  void new ActionRow<MessageActionRowComponent>();
+  void new ActionRowBuilder<MessageActionRowBuilderComponent>();
 
-  const button = new ButtonComponent();
+  const button = new ButtonBuilder();
 
-  const actionRow = new ActionRow<MessageActionRowComponent>({
+  const actionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>({
     type: ComponentType.ActionRow,
     components: [button.toJSON()],
   });
@@ -759,9 +763,7 @@ client.on('interactionCreate', async interaction => {
   interaction.reply({ content: 'Hi!', components: [[button]] });
 
   // @ts-expect-error
-  void new ActionRow({});
-
-  // @ts-expect-error
+  void new ActionRowBuilder({});
   await interaction.reply({ content: 'Hi!', components: [button] });
 
   await interaction.reply({
@@ -1336,34 +1338,34 @@ expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextCha
 );
 expectType<NewsChannel | TextChannel | ThreadChannel>(GuildTextBasedChannel);
 
-const button = new ButtonComponent({
+const button = new ButtonBuilder({
   label: 'test',
   style: ButtonStyle.Primary,
   customId: 'test',
 });
 
-const selectMenu = new SelectMenuComponent({
+const selectMenu = new SelectMenuBuilder({
   maxValues: 10,
   minValues: 2,
   customId: 'test',
 });
 
-new ActionRow({
+new ActionRowBuilder({
   components: [selectMenu.toJSON(), button.toJSON()],
 });
 
-new SelectMenuComponent({
+new SelectMenuBuilder({
   customId: 'foo',
 });
 
-new ButtonComponent({
+new ButtonBuilder({
   style: ButtonStyle.Danger,
 });
 
 // @ts-expect-error
-new Embed().setColor('abc');
+new EmbedBuilder().setColor('abc');
 
-new Embed().setColor('#ffffff');
+new EmbedBuilder().setColor('#ffffff');
 
 expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
   type: ComponentType.ActionRow,

@@ -1769,7 +1769,6 @@ __metadata:
     eslint-config-marine: ^9.3.2
     eslint-config-prettier: ^8.3.0
     eslint-plugin-prettier: ^4.0.0
-    fast-deep-equal: ^3.1.3
     jest: ^27.5.1
     prettier: ^2.5.1
     ts-mixer: ^6.0.0
@@ -4446,6 +4445,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.25.4
     eslint-plugin-prettier: ^4.0.0
+    fast-deep-equal: ^3.1.3
     husky: ^7.0.4
     is-ci: ^3.0.1
     jest: ^27.5.1
