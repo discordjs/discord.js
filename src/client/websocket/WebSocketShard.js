@@ -791,7 +791,7 @@ class WebSocketShard extends EventEmitter {
 
     this.debug(
       `[WS Destroy] Step 1: Attempting to close the WebSocket. | WS State: ${
-        CONNECTION_STATE[this.connection?.readyState ?? CONNECTION_STATE]
+        CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
       }`,
     );
     // Step 1: Close the WebSocket connection, if any, otherwise, emit DESTROYED
