@@ -374,7 +374,6 @@ class WebSocketShard extends EventEmitter {
       this._cleanupConnection();
     }
     this.closeEmitted = true;
-    this.status = Status.DISCONNECTED;
 
     // Step 1: Null the connection object
     this.debug('Step 1: Null the connection object.');
