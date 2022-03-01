@@ -2,7 +2,6 @@
 
 // This file contains the typedefs for camel-cased json data
 const { ComponentType } = require('discord-api-types/v9');
-const Component = require('../structures/Component');
 /**
  * @typedef {Object} BaseComponentData
  * @property {ComponentType} type The type of component
@@ -69,24 +68,22 @@ class Components extends null {
       return data;
     }
 
-    let ComponentClass;
-
     switch (data.type) {
       case ComponentType.ActionRow:
-        ComponentClass = require('../structures/ActionRow');
-        break;
+        return new ActionRow(data);
       case ComponentType.Button:
-        ComponentClass = require('../structures/ButtonComponent');
-        break;
+        return new ButtonComponent(data);
       case ComponentType.SelectMenu:
-        ComponentClass = require('../structures/SelectMenuComponent');
-        break;
+        return new SelectMenuComponent(data);
       default:
         throw new Error(`Found unknown component type: ${data.type}`);
     }
-
-    return new ComponentClass(data);
   }
 }
 
 module.exports = Components;
+
+const ActionRow = require('../structures/ActionRow');
+const ButtonComponent = require('../structures/ButtonComponent');
+const Component = require('../structures/Component');
+const SelectMenuComponent = require('../structures/SelectMenuComponent');
