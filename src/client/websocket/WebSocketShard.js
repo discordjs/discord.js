@@ -864,7 +864,7 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Forcefully closes the WebSocket when the destory() method could not close it normally
+   * Forcefully closes the WebSocket when the destroy() method could not close it normally
    * using the ws.close(); and ws.terminate();
    * @private
    * @returns {Promise<void>}
@@ -903,10 +903,10 @@ class WebSocketShard extends EventEmitter {
          * after a 4009 closeCode due to WebSocket being stuck at CLOSING ready state.
          * Check the issue https://github.com/discordjs/discord.js/issues/7450
          *
-         * The _socket.destroy() method Ensures that no more I/O activity happens on this socket.
+         * The _socket.destroy() method ensures that no more I/O activity happens on this socket.
          * Destroys the stream and closes the connection. Refer: https://nodejs.org/api/net.html#socketdestroy
          * _socket.destroy() is also being invoked in ws.terminate() method.
-         * ._socket.destroy emits the close event and makes the readyState to CLOSED.
+         * _socket.destroy() emits the close event and makes the readyState to CLOSED.
          */
 
         // manual destory
