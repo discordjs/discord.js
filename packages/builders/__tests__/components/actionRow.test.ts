@@ -1,4 +1,4 @@
-import { APIActionRowComponent, APIMessageComponent, ButtonStyle, ComponentType } from 'discord-api-types/v9';
+import { APIActionRowComponent, APIMessageActionRowComponent, ButtonStyle, ComponentType } from 'discord-api-types/v9';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -7,7 +7,7 @@ import {
 	SelectMenuOptionBuilder,
 } from '../../src';
 
-const rowWithButtonData: APIActionRowComponent<APIMessageComponent> = {
+const rowWithButtonData: APIActionRowComponent<APIMessageActionRowComponent> = {
 	type: ComponentType.ActionRow,
 	components: [
 		{
@@ -19,7 +19,7 @@ const rowWithButtonData: APIActionRowComponent<APIMessageComponent> = {
 	],
 };
 
-const rowWithSelectMenuData: APIActionRowComponent<APIMessageComponent> = {
+const rowWithSelectMenuData: APIActionRowComponent<APIMessageActionRowComponent> = {
 	type: ComponentType.ActionRow,
 	components: [
 		{
@@ -78,13 +78,14 @@ describe('Action Row Components', () => {
 				],
 			};
 
-			expect(new ActionRow(actionRowData).toJSON()).toEqual(actionRowData);
-			expect(new ActionRow().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
-			expect(() => createComponent({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
-			expect(() => createComponent({ type: 42, components: [] })).toThrowError();
+			expect(new ActionRowBuilder(actionRowData).toJSON()).toEqual(actionRowData);
+			expect(new ActionRowBuilder().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
+			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
+			// @ts-expect-error
+			expect(() => createComponentBuilder({ type: 42, components: [] })).toThrowError();
 		});
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {
-			const rowWithButtonData: APIActionRowComponent<APIActionRowComponentTypes> = {
+			const rowWithButtonData: APIActionRowComponent<APIMessageActionRowComponent> = {
 				type: ComponentType.ActionRow,
 				components: [
 					{
@@ -96,7 +97,7 @@ describe('Action Row Components', () => {
 				],
 			};
 
-			const rowWithSelectMenuData: APIActionRowComponent<APIActionRowComponentTypes> = {
+			const rowWithSelectMenuData: APIActionRowComponent<APIMessageActionRowComponent> = {
 				type: ComponentType.ActionRow,
 				components: [
 					{
@@ -118,9 +119,8 @@ describe('Action Row Components', () => {
 				],
 			};
 
-			const button = new ButtonComponent().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
-			const selectMenu = new SelectMenuComponent();
-			expect(new ActionRowBuilder(actionRowData).toJSON()).toEqual(actionRowData);
+			expect(new ActionRowBuilder(rowWithButtonData).toJSON()).toEqual(rowWithButtonData);
+			expect(new ActionRowBuilder(rowWithSelectMenuData).toJSON()).toEqual(rowWithSelectMenuData);
 			expect(new ActionRowBuilder().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
 			// @ts-expect-error

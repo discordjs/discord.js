@@ -98,7 +98,7 @@ import {
   ActionRowBuilder,
   ButtonComponent,
   SelectMenuComponent,
-  MessageActionRowBuilderComponent,
+  MessageActionRowComponentBuilder,
   InteractionResponseFields,
   ThreadChannelType,
   Events,
@@ -748,14 +748,16 @@ client.on('interactionCreate', async interaction => {
 
   if (!interaction.isCommand()) return;
 
-  void new ActionRowBuilder<MessageActionRowBuilderComponent>();
+  void new ActionRowBuilder<MessageActionRowComponentBuilder>();
 
   const button = new ButtonBuilder();
 
-  const actionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>({
+  const actionRow = new ActionRowBuilder<MessageActionRowComponentBuilder>({
     type: ComponentType.ActionRow,
     components: [button.toJSON()],
   });
+
+  actionRow.toJSON();
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
@@ -764,6 +766,7 @@ client.on('interactionCreate', async interaction => {
 
   // @ts-expect-error
   void new ActionRowBuilder({});
+  // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
 
   await interaction.reply({

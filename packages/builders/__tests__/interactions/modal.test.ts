@@ -1,5 +1,5 @@
 import { APIModalInteractionResponseCallbackData, ComponentType, TextInputStyle } from 'discord-api-types/v9';
-import { ActionRow, ButtonComponent, Modal, ModalActionRowComponent, TextInputComponent } from '../../src';
+import { ActionRowBuilder, ButtonBuilder, Modal, ModalActionRowComponentBuilder, TextInputComponent } from '../../src';
 import {
 	componentsValidator,
 	titleValidator,
@@ -19,33 +19,37 @@ describe('Modals', () => {
 		});
 
 		test('GIVEN valid components THEN validator does not throw', () => {
-			expect(() => componentsValidator.parse([new ActionRow(), new ActionRow()])).not.toThrowError();
+			expect(() => componentsValidator.parse([new ActionRowBuilder(), new ActionRowBuilder()])).not.toThrowError();
 		});
 
 		test('GIVEN invalid components THEN validator does throw', () => {
-			expect(() => componentsValidator.parse([new ButtonComponent(), new TextInputComponent()])).toThrowError();
+			expect(() => componentsValidator.parse([new ButtonBuilder(), new TextInputComponent()])).toThrowError();
 		});
 
 		test('GIVEN valid required parameters THEN validator does not throw', () => {
-			expect(() => validateRequiredParameters('123', 'title', [new ActionRow(), new ActionRow()])).not.toThrowError();
+			expect(() =>
+				validateRequiredParameters('123', 'title', [new ActionRowBuilder(), new ActionRowBuilder()]),
+			).not.toThrowError();
 		});
 
 		test('GIVEN invalid required parameters THEN validator does throw', () => {
 			expect(() =>
 				// @ts-expect-error
-				validateRequiredParameters('123', undefined, [new ActionRow(), new ButtonComponent()]),
+				validateRequiredParameters('123', undefined, [new ActionRowBuilder(), new ButtonBuilder()]),
 			).toThrowError();
 		});
 	});
 
 	test('GIVEN valid fields THEN builder does not throw', () => {
-		expect(() => modal().setTitle('test').setCustomId('foobar').setComponents(new ActionRow())).not.toThrowError();
+		expect(() =>
+			modal().setTitle('test').setCustomId('foobar').setComponents(new ActionRowBuilder()),
+		).not.toThrowError();
 	});
 
 	test('GIVEN invalid fields THEN builder does throw', () => {
 		expect(() =>
 			// @ts-expect-error
-			modal().setTitle('test').setCustomId('foobar').setComponents([new ActionRow()]).toJSON(),
+			modal().setTitle('test').setCustomId('foobar').setComponents([new ActionRowBuilder()]).toJSON(),
 		).toThrowError();
 		expect(() => modal().setTitle('test').setCustomId('foobar').toJSON()).toThrowError();
 		// @ts-expect-error
@@ -78,7 +82,7 @@ describe('Modals', () => {
 				.setTitle(modalData.title)
 				.setCustomId('custom id')
 				.setComponents(
-					new ActionRow<ModalActionRowComponent>().addComponents(
+					new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
 						new TextInputComponent().setCustomId('custom id').setLabel('label').setStyle(TextInputStyle.Paragraph),
 					),
 				)

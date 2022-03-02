@@ -1,7 +1,6 @@
 import {
 	type APIActionRowComponent,
 	ComponentType,
-	APIMessageComponent,
 	APIMessageActionRowComponent,
 	APIModalActionRowComponent,
 } from 'discord-api-types/v9';
@@ -10,20 +9,20 @@ import { ComponentBuilder } from './Component';
 import { createComponentBuilder } from './Components';
 
 export type MessageComponentBuilder =
-	| MessageActionRowBuilderComponent
-	| ActionRowBuilder<MessageActionRowBuilderComponent>;
-export type ModalComponentBuilder = ModalActionRowBuilderComponent | ActionRowBuilder<ModalActionRowBuilderComponent>;
+	| MessageActionRowComponentBuilder
+	| ActionRowBuilder<MessageActionRowComponentBuilder>;
+export type ModalComponentBuilder = ModalActionRowComponentBuilder | ActionRowBuilder<ModalActionRowComponentBuilder>;
 
-export type MessageActionRowBuilderComponent = ButtonBuilder | SelectMenuBuilder;
-export type ModalActionRowBuilderComponent = TextInputComponent;
+export type MessageActionRowComponentBuilder = ButtonBuilder | SelectMenuBuilder;
+export type ModalActionRowComponentBuilder = TextInputComponent;
 
 /**
  * Represents an action row component
  */
 export class ActionRowBuilder<
-	T extends MessageActionRowBuilderComponent | ModalActionRowBuilderComponent =
-		| MessageActionRowBuilderComponent
-		| ModalActionRowBuilderComponent,
+	T extends MessageActionRowComponentBuilder | ModalActionRowComponentBuilder =
+		| MessageActionRowComponentBuilder
+		| ModalActionRowComponentBuilder,
 > extends ComponentBuilder<
 	Omit<
 		Partial<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>> & {

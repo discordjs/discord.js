@@ -1,6 +1,6 @@
 import {
   ActionRowBuilder as BuilderActionRow,
-  MessageActionRowBuilderComponent,
+  MessageActionRowComponentBuilder,
   blockQuote,
   bold,
   ButtonBuilder as BuilderButtonComponent,
@@ -28,7 +28,7 @@ import {
   TimestampStylesString,
   underscore,
   userMention,
-  ModalActionRowComponent,
+  ModalActionRowComponentBuilder,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
@@ -112,7 +112,6 @@ import {
   APIEmbedAuthor,
   APIEmbedFooter,
   APIEmbedImage,
-  APIMessageActionRowComponent,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -229,9 +228,9 @@ export interface ActionRowData<T extends ActionRowComponent | ActionRowComponent
 }
 
 export class ActionRowBuilder<
-  T extends MessageActionRowBuilderComponent | ModalActionRowBuilderComponent =
-    | MessageActionRowBuilderComponent
-    | ModalActionRowBuilderComponent,
+  T extends MessageActionRowComponentBuilder | ModalActionRowComponentBuilder =
+    | MessageActionRowComponentBuilder
+    | ModalActionRowComponentBuilder,
 > extends BuilderActionRow<T> {
   constructor(
     data?:
@@ -1592,7 +1591,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public get channel(): If<Cached, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
   public get cleanContent(): string;
-  public components: ActionRowBuilder<MessageActionRowBuilderComponent>[];
+  public components: ActionRow<MessageActionRowComponent>[];
   public content: string;
   public get createdAt(): Date;
   public createdTimestamp: number;
@@ -4713,7 +4712,7 @@ export interface MessageCollectorOptions extends CollectorOptions<[Message]> {
 
 export type MessageComponent =
   | Component
-  | ActionRowBuilder<MessageActionRowBuilderComponent | ModalActionRowBuilderComponent>
+  | ActionRowBuilder<MessageActionRowComponentBuilder | ModalActionRowComponentBuilder>
   | ButtonComponent
   | SelectMenuComponent;
 
@@ -4776,7 +4775,7 @@ export interface MessageOptions {
   content?: string | null;
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
   components?: (
-    | JSONEncodable<APIActionRowComponent<APIActionRowComponentTypes>>
+    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
     | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData>)
     | APIActionRowComponent<APIActionRowComponentTypes>
   )[];
@@ -5365,8 +5364,8 @@ export {
   UnsafeSelectMenuBuilder,
   SelectMenuOptionBuilder,
   UnsafeSelectMenuOptionBuilder,
-  MessageActionRowBuilderComponent,
-  ModalActionRowBuilderComponent,
+  MessageActionRowComponentBuilder,
+  ModalActionRowComponentBuilder,
   UnsafeEmbedBuilder,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
