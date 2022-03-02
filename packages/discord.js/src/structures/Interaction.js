@@ -10,19 +10,76 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  * @extends {Base}
  */
 class Interaction extends Base {
+  /**
+   * The interaction's type
+   * @type {InteractionType}
+   */
+  type;
+
+  /**
+   * The interaction's id
+   * @type {Snowflake}
+   */
+  id;
+
+  /**
+   * The application's id
+   * @type {Snowflake}
+   */
+  applicationId;
+
+  /**
+   * The id of the channel this interaction was sent in
+   * @type {?Snowflake}
+   */
+  channelId;
+
+  /**
+   * The id of the guild this interaction was sent in
+   * @type {?Snowflake}
+   */
+  guildId;
+
+  /**
+   * The user which sent this interaction
+   * @type {User}
+   */
+  user;
+
+  /**
+   * If this interaction was sent in a guild, the member which sent it
+   * @type {?(GuildMember|APIGuildMember)}
+   */
+  member;
+
+  /**
+   * The version
+   * @type {number}
+   */
+  version;
+
+  /**
+   * The permissions of the member, if one exists, in the channel this interaction was executed in
+   * @type {?Readonly<PermissionsBitField>}
+   */
+  memberPermissions;
+
+  /**
+   * The locale of the user who invoked this interaction
+   * @type {string}
+   * @see {@link https://discord.com/developers/docs/reference#locales}
+   */
+  locale;
+
+  /**
+   * The preferred locale from the guild this interaction was sent in
+   * @type {?string}
+   */
+  guildLocale;
+
   constructor(client, data) {
     super(client);
-
-    /**
-     * The interaction's type
-     * @type {InteractionType}
-     */
     this.type = data.type;
-
-    /**
-     * The interaction's id
-     * @type {Snowflake}
-     */
     this.id = data.id;
 
     /**
@@ -32,62 +89,16 @@ class Interaction extends Base {
      * @readonly
      */
     Object.defineProperty(this, 'token', { value: data.token });
-
-    /**
-     * The application's id
-     * @type {Snowflake}
-     */
     this.applicationId = data.application_id;
-
-    /**
-     * The id of the channel this interaction was sent in
-     * @type {?Snowflake}
-     */
     this.channelId = data.channel_id ?? null;
-
-    /**
-     * The id of the guild this interaction was sent in
-     * @type {?Snowflake}
-     */
     this.guildId = data.guild_id ?? null;
-
-    /**
-     * The user which sent this interaction
-     * @type {User}
-     */
     this.user = this.client.users._add(data.user ?? data.member.user);
-
-    /**
-     * If this interaction was sent in a guild, the member which sent it
-     * @type {?(GuildMember|APIGuildMember)}
-     */
     this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
-
-    /**
-     * The version
-     * @type {number}
-     */
     this.version = data.version;
-
-    /**
-     * The permissions of the member, if one exists, in the channel this interaction was executed in
-     * @type {?Readonly<PermissionsBitField>}
-     */
     this.memberPermissions = data.member?.permissions
       ? new PermissionsBitField(data.member.permissions).freeze()
       : null;
-
-    /**
-     * The locale of the user who invoked this interaction
-     * @type {string}
-     * @see {@link https://discord.com/developers/docs/reference#locales}
-     */
     this.locale = data.locale;
-
-    /**
-     * The preferred locale from the guild this interaction was sent in
-     * @type {?string}
-     */
     this.guildLocale = data.guild_locale ?? null;
   }
 
