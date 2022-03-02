@@ -33,13 +33,12 @@ const boopCommand = new SlashCommandBuilder()
 		option
 			.setName('boop_reminder')
 			.setDescription('How often should we remind you to boop the user')
-			.addChoice('Every day', 1)
-			.addChoice('Weekly', 7)
+			.addChoices({ name: 'Every day', value: 1 }, { name: 'Weekly', value: 7 })
 			// Or, if you prefer adding more choices at once, you can use an array
-			.addChoices([
+			.addChoices(
 				['Every three months', 90],
 				['Yearly', 365],
-			]),
+			),
 	);
 
 // Get the final raw data that can be sent to Discord

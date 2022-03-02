@@ -87,18 +87,16 @@ describe('Slash Commands', () => {
 		test('GIVEN valid array of options or choices THEN does not throw error', () => {
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength([])).not.toThrowError();
 
-			expect(() => SlashCommandAssertions.validateMaxChoicesLength([])).not.toThrowError();
+			expect(() => SlashCommandAssertions.validateChoicesLength(25, [])).not.toThrowError();
 		});
 
 		test('GIVEN invalid options or choices THEN throw error', () => {
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength(null)).toThrowError();
 
-			expect(() => SlashCommandAssertions.validateMaxChoicesLength(null)).toThrowError();
-
 			// Given an array that's too big
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength(largeArray)).toThrowError();
 
-			expect(() => SlashCommandAssertions.validateMaxChoicesLength(largeArray)).toThrowError();
+			expect(() => SlashCommandAssertions.validateChoicesLength(1, largeArray)).toThrowError();
 		});
 
 		test('GIVEN valid required parameters THEN does not throw error', () => {
@@ -181,7 +179,7 @@ describe('Slash Commands', () => {
 					getBuilder().addStringOption(
 						// @ts-expect-error Checking if check works JS-side too
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
-						getStringOption().setAutocomplete(true).addChoice('Fancy Pants', 'fp_1'),
+						getStringOption().setAutocomplete(true).addChoices(['Fancy Pants', 'fp_1']),
 					),
 				).toThrowError();
 
@@ -203,7 +201,7 @@ describe('Slash Commands', () => {
 					getBuilder().addStringOption(
 						// @ts-expect-error Checking if check works JS-side too
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
-						getStringOption().addChoice('Fancy Pants', 'fp_1').setAutocomplete(true),
+						getStringOption().addChoices(['Fancy Pants', 'fp_1']).setAutocomplete(true),
 					),
 				).toThrowError();
 
