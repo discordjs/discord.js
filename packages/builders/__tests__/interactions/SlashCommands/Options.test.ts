@@ -29,7 +29,7 @@ const getChannelOption = () =>
 		.setName('owo')
 		.setDescription('Testing 123')
 		.setRequired(true)
-		.addChannelType(ChannelType.GuildText);
+		.addChannelTypes(ChannelType.GuildText);
 
 const getStringOption = () =>
 	new SlashCommandStringOption().setName('owo').setDescription('Testing 123').setRequired(true);

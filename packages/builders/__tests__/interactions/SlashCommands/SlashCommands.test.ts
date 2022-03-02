@@ -177,31 +177,25 @@ describe('Slash Commands', () => {
 			test('GIVEN a builder with both choices and autocomplete THEN does throw an error', () => {
 				expect(() =>
 					getBuilder().addStringOption(
-						// @ts-expect-error Checking if check works JS-side too
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
-						getStringOption().setAutocomplete(true).addChoices(['Fancy Pants', 'fp_1']),
+						getStringOption().setAutocomplete(true).addChoices({ name: 'Fancy Pants', value: 'fp_1' }),
 					),
 				).toThrowError();
 
 				expect(() =>
 					getBuilder().addStringOption(
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
 						getStringOption()
 							.setAutocomplete(true)
-							// @ts-expect-error Checking if check works JS-side too
-							.addChoices([
-								['Fancy Pants', 'fp_1'],
-								['Fancy Shoes', 'fs_1'],
-								['The Whole shebang', 'all'],
-							]),
+							.addChoices(
+								{ name: 'Fancy Pants', value: 'fp_1' },
+								{ name: 'Fancy Shoes', value: 'fs_1' },
+								{ name: 'The Whole shebang', value: 'all' },
+							),
 					),
 				).toThrowError();
 
 				expect(() =>
 					getBuilder().addStringOption(
-						// @ts-expect-error Checking if check works JS-side too
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
-						getStringOption().addChoices(['Fancy Pants', 'fp_1']).setAutocomplete(true),
+						getStringOption().addChoices({ name: 'Fancy Pants', value: 'fp_1' }).setAutocomplete(true),
 					),
 				).toThrowError();
 
@@ -229,20 +223,20 @@ describe('Slash Commands', () => {
 
 			test('GIVEN a builder with valid channel options and channel_types THEN does not throw an error', () => {
 				expect(() =>
-					getBuilder().addChannelOption(getChannelOption().addChannelType(ChannelType.GuildText)),
+					getBuilder().addChannelOption(getChannelOption().addChannelTypes(ChannelType.GuildText)),
 				).not.toThrowError();
 
 				expect(() => {
 					getBuilder().addChannelOption(
-						getChannelOption().addChannelTypes([ChannelType.GuildNews, ChannelType.GuildText]),
+						getChannelOption().addChannelTypes(ChannelType.GuildNews, ChannelType.GuildText),
 					);
 				}).not.toThrowError();
 			});
 
 			test('GIVEN a builder with valid channel options and channel_types THEN does throw an error', () => {
-				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelType(100))).toThrowError();
+				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes(100))).toThrowError();
 
-				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes([100, 200]))).toThrowError();
+				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes(100, 200))).toThrowError();
 			});
 
 			test('GIVEN a builder with invalid number min/max options THEN does throw an error', () => {
