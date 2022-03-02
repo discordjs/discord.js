@@ -16,7 +16,7 @@ class SnowflakeUtil extends null {
    * ```
    * 64                                          22     17     12          0
    *  000000111011000111100001101001000101000000  00001  00000  000000000000
-   *       number of ms since Discord epoch       worker  pid    increment
+   *  number of milliseconds since Discord epoch  worker  pid    increment
    * ```
    * @typedef {string} Snowflake
    */
