@@ -94,6 +94,7 @@ import {
   AuditLogEvent,
   APIMessageComponentEmoji,
   EmbedType,
+  APIActionRowComponentTypes,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -4600,7 +4601,11 @@ export interface MessageOptions {
   nonce?: string | number;
   content?: string | null;
   embeds?: (Embed | APIEmbed)[];
-  components?: (ActionRow<ActionRowComponent> | (Required<BaseComponentData> & ActionRowData))[];
+  components?: (
+    | ActionRow<ActionRowComponent>
+    | (Required<BaseComponentData> & ActionRowData)
+    | APIActionRowComponent<APIActionRowComponentTypes>
+  )[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   reply?: ReplyOptions;

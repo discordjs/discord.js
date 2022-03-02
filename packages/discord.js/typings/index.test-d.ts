@@ -740,6 +740,23 @@ client.on('interactionCreate', async interaction => {
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
 
+  await interaction.reply({
+    content: 'test',
+    components: [
+      {
+        components: [
+          {
+            custom_id: 'abc',
+            label: 'abc',
+            style: ButtonStyle.Primary,
+            type: ComponentType.Button,
+          },
+        ],
+        type: ComponentType.ActionRow,
+      },
+    ],
+  });
+
   if (interaction.isMessageComponent()) {
     expectType<Snowflake>(interaction.channelId);
   }
