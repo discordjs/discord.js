@@ -124,7 +124,7 @@ class MessageAttachment {
 
     if ('content_type' in data) {
       /**
-       * This media type of this attachment
+       * The media type of this attachment
        * @type {?string}
        */
       this.contentType = data.content_type;
