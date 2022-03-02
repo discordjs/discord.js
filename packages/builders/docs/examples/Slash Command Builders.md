@@ -33,7 +33,7 @@ const boopCommand = new SlashCommandBuilder()
 		option
 			.setName('boop_reminder')
 			.setDescription('How often should we remind you to boop the user')
-			.addChoices({ name: 'Every day', value: 1 }, { name: 'Weekly', value: 7 })
+			.addChoices({ name: 'Every day', value: 1 }, { name: 'Weekly', value: 7 }),
 	);
 
 // Get the final raw data that can be sent to Discord
@@ -65,11 +65,11 @@ const pointsCommand = new SlashCommandBuilder()
 						option
 							.setName('action')
 							.setDescription('What action should be taken with the users points?')
-							.addChoices([
-								['Add points', 'add'],
-								['Remove points', 'remove'],
-								['Reset points', 'reset'],
-							])
+							.addChoices(
+								{ name: 'Add points', value: 'add' },
+								{ name: 'Remove points', value: 'remove' },
+								{ name: 'Reset points', value: 'reset' },
+							)
 							.setRequired(true),
 					)
 					.addIntegerOption((option) => option.setName('points').setDescription('Points to add or remove')),
