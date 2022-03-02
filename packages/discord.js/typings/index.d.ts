@@ -883,7 +883,8 @@ export class EnumResolvers extends null {
 export class DMChannel extends TextBasedChannelMixin(Channel, ['bulkDelete']) {
   private constructor(client: Client, data?: RawDMChannelData);
   public messages: MessageManager;
-  public recipient: User;
+  public recipientId: Snowflake;
+  public get recipient(): User | null;
   public type: ChannelType.DM;
   public fetch(force?: boolean): Promise<this>;
 }
@@ -2256,7 +2257,7 @@ export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString>
 export class Typing extends Base {
   private constructor(channel: TextBasedChannel, user: PartialUser, data?: RawTypingData);
   public channel: TextBasedChannel;
-  public user: PartialUser;
+  public user: User | PartialUser;
   public startedTimestamp: number;
   public get startedAt(): Date;
   public get guild(): Guild | null;
