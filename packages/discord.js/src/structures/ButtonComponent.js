@@ -22,7 +22,7 @@ class ButtonComponent extends Component {
    * @readonly
    */
   get label() {
-    return this.data.label;
+    return this.data.label ?? null;
   }
 
   /**
@@ -31,7 +31,7 @@ class ButtonComponent extends Component {
    * @readonly
    */
   get emoji() {
-    return this.data.emoji;
+    return this.data.emoji ?? null;
   }
 
   /**
@@ -40,7 +40,7 @@ class ButtonComponent extends Component {
    * @readonly
    */
   get disabled() {
-    return this.data.disabled;
+    return this.data.disabled ?? null;
   }
 
   /**
@@ -49,7 +49,7 @@ class ButtonComponent extends Component {
    * @readonly
    */
   get customId() {
-    return this.data.custom_id;
+    return this.data.custom_id ?? null;
   }
 
   /**
@@ -58,7 +58,7 @@ class ButtonComponent extends Component {
    * @readonly
    */
   get url() {
-    return this.data.url;
+    return this.data.url ?? null;
   }
 }
 

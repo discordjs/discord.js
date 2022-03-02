@@ -8,7 +8,7 @@ const Components = require('../util/Components');
  * @extends {Component}
  */
 class ActionRow extends Component {
-  constructor({ components, ...data } = {}) {
+  constructor({ components, ...data }) {
     super(data);
     /**
      * The components in this action row

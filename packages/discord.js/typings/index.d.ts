@@ -245,7 +245,7 @@ export class ActionRowBuilder<
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
 
 export class ActionRow<T extends MessageActionRowComponent> {
-  private constructor(data?: APIActionRowComponent<APIMessageActionRowComponent>);
+  private constructor(data: APIActionRowComponent<APIMessageActionRowComponent>);
   public readonly components: T[];
 }
 
@@ -520,20 +520,20 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
 }
 
 export class Component<T extends APIMessageComponent = APIMessageComponent> {
-  public data: T;
+  public readonly data: Readonly<T>;
   public get type(): T['type'];
   public toJSON(): T;
   public equals(other: this | T): boolean;
 }
 
 export class ButtonComponent extends Component<APIButtonComponent> {
-  private constructor(data?: APIButtonComponent);
+  private constructor(data: APIButtonComponent);
   public get style(): ButtonStyle;
-  public get label(): string | undefined;
-  public get emoji(): APIMessageComponentEmoji | undefined;
-  public get disabled(): boolean | undefined;
-  public get customId(): string | undefined;
-  public get url(): string | undefined;
+  public get label(): string | null;
+  public get emoji(): APIMessageComponentEmoji | null;
+  public get disabled(): boolean | null;
+  public get customId(): string | null;
+  public get url(): string | null;
 }
 
 export class ButtonBuilder extends BuilderButtonComponent {
@@ -555,12 +555,12 @@ export class Modal extends BuilderModal {
 }
 
 export class SelectMenuComponent extends Component<APISelectMenuComponent> {
-  private constructor(data?: APISelectMenuComponent);
-  public get placeholder(): string | undefined;
-  public get maxValues(): number | undefined;
-  public get minValues(): number | undefined;
+  private constructor(data: APISelectMenuComponent);
+  public get placeholder(): string | null;
+  public get maxValues(): number | null;
+  public get minValues(): number | null;
   public get customId(): string;
-  public get disabled(): boolean | undefined;
+  public get disabled(): boolean | null;
   public get options(): APISelectMenuOption[];
 }
 
@@ -603,15 +603,18 @@ export class EmbedBuilder extends BuildersEmbed {
 }
 
 export class Embed {
-  private constructor(data?: APIEmbed);
-  public get fields(): APIEmbedField[] | undefined;
-  public get title(): string | undefined;
-  public get description(): string | undefined;
-  public get url(): string | undefined;
-  public get color(): number | undefined;
-  public get timestamp(): string | undefined;
-  public get thumbnail(): EmbedImageData | undefined;
-  public get image(): EmbedImageData | undefined;
+  private constructor(data: APIEmbed);
+  public readonly data: Readonly<APIEmbed>;
+  public get fields(): APIEmbedField[] | null;
+  public get title(): string | null;
+  public get description(): string | null;
+  public get url(): string | null;
+  public get color(): number | null;
+  public get timestamp(): string | null;
+  public get thumbnail(): EmbedImageData | null;
+  public get image(): EmbedImageData | null;
+  public equals(other: Embed | APIEmbed): boolean;
+  public toJSON(): APIEmbed;
 }
 
 export interface MappedChannelCategoryTypes {

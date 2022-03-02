@@ -13,7 +13,7 @@ class SelectMenuComponent extends Component {
    * @readonly
    */
   get placeholder() {
-    return this.data.placeholder;
+    return this.data.placeholder ?? null;
   }
 
   /**
@@ -22,7 +22,7 @@ class SelectMenuComponent extends Component {
    * @readonly
    */
   get maxValues() {
-    return this.data.max_values;
+    return this.data.max_values ?? null;
   }
 
   /**
@@ -31,7 +31,7 @@ class SelectMenuComponent extends Component {
    * @readonly
    */
   get minValues() {
-    return this.data.min_values;
+    return this.data.min_values ?? null;
   }
 
   /**
@@ -49,7 +49,7 @@ class SelectMenuComponent extends Component {
    * @readonly
    */
   get disabled() {
-    return this.data.disabled;
+    return this.data.disabled ?? null;
   }
 
   /**

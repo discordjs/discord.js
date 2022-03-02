@@ -9,7 +9,7 @@ class Embed {
    * @param {APIEmbed} data API embed data
    * @private
    */
-  constructor(data = {}) {
+  constructor(data) {
     /**
      * The API embed data
      * @type {APIEmbed}
@@ -24,7 +24,7 @@ class Embed {
    * @readonly
    */
   get fields() {
-    return this.data.fields;
+    return this.data.fields ?? null;
   }
 
   /**
@@ -33,7 +33,7 @@ class Embed {
    * @readonly
    */
   get title() {
-    return this.data.title;
+    return this.data.title ?? null;
   }
 
   /**
@@ -42,7 +42,7 @@ class Embed {
    * @readonly
    */
   get description() {
-    return this.data.description;
+    return this.data.description ?? null;
   }
 
   /**
@@ -51,7 +51,7 @@ class Embed {
    * @readonly
    */
   get url() {
-    return this.data.url;
+    return this.data.url ?? null;
   }
 
   /**
@@ -60,7 +60,7 @@ class Embed {
    * @readonly
    */
   get color() {
-    return this.data.color;
+    return this.data.color ?? null;
   }
 
   /**
@@ -69,7 +69,7 @@ class Embed {
    * @readonly
    */
   get timestamp() {
-    return this.data.timestamp;
+    return this.data.timestamp ?? null;
   }
 
   /**
@@ -78,7 +78,7 @@ class Embed {
    * @readonly
    */
   get thumbnail() {
-    if (!this.data.thumbnail) return undefined;
+    if (!this.data.thumbnail) return null;
     return {
       url: this.data.thumbnail.url,
       proxyURL: this.data.thumbnail.proxy_url,
@@ -93,7 +93,7 @@ class Embed {
    * @readonly
    */
   get image() {
-    if (!this.data.image) return undefined;
+    if (!this.data.image) return null;
     return {
       url: this.data.image.url,
       proxyURL: this.data.image.proxy_url,
@@ -108,7 +108,7 @@ class Embed {
    * @readonly
    */
   get video() {
-    return this.data.video;
+    return this.data.video ?? null;
   }
 
   /**
@@ -117,7 +117,7 @@ class Embed {
    * @readonly
    */
   get author() {
-    if (!this.data.author) return undefined;
+    if (!this.data.author) return null;
     return {
       name: this.data.author.name,
       url: this.data.author.url,
@@ -132,7 +132,7 @@ class Embed {
    * @readonly
    */
   get provider() {
-    return this.data.provider;
+    return this.data.provider ?? null;
   }
 
   /**
@@ -141,7 +141,7 @@ class Embed {
    * @readonly
    */
   get footer() {
-    if (!this.data.footer) return undefined;
+    if (!this.data.footer) return null;
     return {
       text: this.data.footer.text,
       iconURL: this.data.footer.icon_url,
@@ -170,7 +170,9 @@ class Embed {
    * @readonly
    */
   get hexColor() {
-    return typeof this.data.color === 'number' ? `#${this.data.color.toString(16).padStart(6, '0')}` : this.data.color;
+    return typeof this.data.color === 'number'
+      ? `#${this.data.color.toString(16).padStart(6, '0')}`
+      : this.data.color ?? null;
   }
 
   /**
