@@ -197,6 +197,7 @@ exports.RESTJSONErrorCodes = require('discord-api-types/v9').RESTJSONErrorCodes;
 exports.StageInstancePrivacyLevel = require('discord-api-types/v9').StageInstancePrivacyLevel;
 exports.StickerType = require('discord-api-types/v9').StickerType;
 exports.StickerFormatType = require('discord-api-types/v9').StickerFormatType;
+exports.TextInputStyle = require('discord-api-types/v9').TextInputStyle;
 exports.UserFlags = require('discord-api-types/v9').UserFlags;
 exports.WebhookType = require('discord-api-types/v9').WebhookType;
 exports.UnsafeButtonComponent = require('@discordjs/builders').UnsafeButtonComponent;
