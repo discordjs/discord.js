@@ -542,6 +542,7 @@ export interface EmbedProviderData {
 
 export class Embed extends BuildersEmbed {
   public constructor(data?: EmbedData | APIEmbed);
+  public override setColor(color: ColorResolvable | null): this;
 }
 
 export interface MappedChannelCategoryTypes {
@@ -3775,7 +3776,7 @@ export type ColorResolvable =
   | 'DarkButNotBlack'
   | 'NotQuiteBlack'
   | 'Random'
-  | readonly [number, number, number]
+  | readonly [red: number, green: number, blue: number]
   | number
   | HexColorString;
 

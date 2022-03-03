@@ -105,9 +105,9 @@ import {
   CategoryChannelChildManager,
   ActionRowData,
   MessageActionRowComponentData,
+  Embed,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
-import { Embed } from '@discordjs/builders';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -1339,6 +1339,11 @@ new SelectMenuComponent({
 new ButtonComponent({
   style: ButtonStyle.Danger,
 });
+
+// @ts-expect-error
+new Embed().setColor('abc');
+
+new Embed().setColor('#ffffff');
 
 expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
   type: ComponentType.ActionRow,
