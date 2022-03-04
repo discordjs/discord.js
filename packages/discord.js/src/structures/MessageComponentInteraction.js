@@ -90,6 +90,7 @@ class MessageComponentInteraction extends Interaction {
   followUp() {}
   deferUpdate() {}
   update() {}
+  showModal() {}
 }
 
 InteractionResponses.applyToClass(MessageComponentInteraction);

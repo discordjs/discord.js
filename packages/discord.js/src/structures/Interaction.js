@@ -192,6 +192,14 @@ class Interaction extends Base {
   }
 
   /**
+   * Indicates whether this interaction is a {@link ModalSubmitInteraction}
+   * @returns {boolean}
+   */
+  isModalSubmit() {
+    return this.type === InteractionType.ModalSubmit;
+  }
+
+  /**
    * Indicates whether this interaction is an {@link AutocompleteInteraction}
    * @returns {boolean}
    */

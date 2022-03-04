@@ -96,7 +96,7 @@ import {
   ActionRow,
   ButtonComponent,
   SelectMenuComponent,
-  ActionRowComponent,
+  MessageActionRowComponent,
   InteractionResponseFields,
   ThreadChannelType,
   Events,
@@ -104,6 +104,7 @@ import {
   Status,
   CategoryChannelChildManager,
   ActionRowData,
+  MessageActionRowComponentData,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { Embed } from '@discordjs/builders';
@@ -723,11 +724,14 @@ client.on('interactionCreate', async interaction => {
 
   if (!interaction.isCommand()) return;
 
-  void new ActionRow<ActionRowComponent>();
+  void new ActionRow<MessageActionRowComponent>();
 
   const button = new ButtonComponent();
 
-  const actionRow = new ActionRow<ActionRowComponent>({ type: ComponentType.ActionRow, components: [button.toJSON()] });
+  const actionRow = new ActionRow<MessageActionRowComponent>({
+    type: ComponentType.ActionRow,
+    components: [button.toJSON()],
+  });
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
@@ -739,6 +743,23 @@ client.on('interactionCreate', async interaction => {
 
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
+
+  await interaction.reply({
+    content: 'test',
+    components: [
+      {
+        components: [
+          {
+            custom_id: 'abc',
+            label: 'abc',
+            style: ButtonStyle.Primary,
+            type: ComponentType.Button,
+          },
+        ],
+        type: ComponentType.ActionRow,
+      },
+    ],
+  });
 
   if (interaction.isMessageComponent()) {
     expectType<Snowflake>(interaction.channelId);
@@ -947,8 +968,9 @@ expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(u
 expectType<Promise<GuildEmoji>>(guildEmojiManager.fetch('0'));
 
 declare const typing: Typing;
-expectType<PartialUser>(typing.user);
+expectType<User | PartialUser>(typing.user);
 if (typing.user.partial) expectType<null>(typing.user.username);
+if (!typing.user.partial) expectType<string>(typing.user.tag);
 
 expectType<TextBasedChannel>(typing.channel);
 if (typing.channel.partial) expectType<undefined>(typing.channel.lastMessageId);
@@ -1074,11 +1096,11 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.isMessageComponent()) {
     expectType<MessageComponentInteraction>(interaction);
-    expectType<ActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
+    expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message | APIMessage>(interaction.message);
     if (interaction.inCachedGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
-      expectType<ActionRowComponent>(interaction.component);
+      expectType<MessageActionRowComponent>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
       expectAssignable<Promise<Message>>(interaction.reply({ fetchReply: true }));
@@ -1090,7 +1112,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
-      expectType<ActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
+      expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
       expectType<Message | APIMessage>(interaction.message);
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<APIMessage | Message>>(interaction.reply({ fetchReply: true }));
@@ -1318,7 +1340,7 @@ new ButtonComponent({
   style: ButtonStyle.Danger,
 });
 
-expectNotAssignable<ActionRowData>({
+expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
   type: ComponentType.ActionRow,
   components: [
     {
