@@ -19,6 +19,7 @@ import {
   PermissionFlagsBits,
   AuditLogEvent,
   ButtonStyle,
+  TextInputStyle,
 } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
@@ -58,6 +59,7 @@ import {
   MessageCollector,
   MessageComponentInteraction,
   MessageReaction,
+  Modal,
   NewsChannel,
   Options,
   PartialTextBasedChannelFields,
@@ -1353,3 +1355,25 @@ declare const chatInputInteraction: ChatInputCommandInteraction;
 
 expectType<MessageAttachment>(chatInputInteraction.options.getAttachment('attachment', true));
 expectType<MessageAttachment | null>(chatInputInteraction.options.getAttachment('attachment'));
+
+declare const modal: Modal;
+
+chatInputInteraction.showModal(modal);
+
+chatInputInteraction.showModal({
+  title: 'abc',
+  custom_id: 'abc',
+  components: [
+    {
+      components: [
+        {
+          custom_id: 'aa',
+          label: 'label',
+          style: TextInputStyle.Short,
+          type: ComponentType.TextInput,
+        },
+      ],
+      type: ComponentType.ActionRow,
+    },
+  ],
+});
