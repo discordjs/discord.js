@@ -242,8 +242,9 @@ export class ActionRowBuilder<
 }
 
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
+export type ModalActionRowComponent = TextInputComponent;
 
-export class ActionRow<T extends MessageActionRowComponent> {
+export class ActionRow<T extends MessageActionRowComponent | ModalActionRowComponent> {
   private constructor(data: APIActionRowComponent<APIMessageActionRowComponent>);
   public readonly components: T[];
 }
@@ -518,7 +519,7 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
   public inRawGuild(): this is ButtonInteraction<'raw'>;
 }
 
-export class Component<T extends APIMessageComponent = APIMessageComponent> {
+export class Component<T extends APIMessageComponent | APIModalComponent = APIMessageComponent | APIModalComponent> {
   public readonly data: Readonly<T>;
   public get type(): T['type'];
   public toJSON(): T;
@@ -545,8 +546,13 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
   );
 }
 
-export class TextInputComponent extends BuilderTextInputComponent {
+export class TextInputBuilder extends BuilderTextInputComponent {
   public constructor(data?: TextInputComponentData | APITextInputComponent);
+}
+
+export class TextInputComponent extends Component<APITextInputComponent> {
+  public get customId(): string;
+  public get value(): string;
 }
 
 export class Modal extends BuilderModal {
@@ -1808,17 +1814,11 @@ export class MessageReaction {
   public toJSON(): unknown;
 }
 
-export interface ModalFieldData {
-  value: string;
-  type: ComponentType;
-  customId: string;
-}
-
 export class ModalSubmitFieldsResolver {
-  constructor(components: ModalFieldData[][]);
-  public components: ModalFieldData[][];
-  public fields: Collection<string, ModalFieldData>;
-  public getField(customId: string): ModalFieldData;
+  constructor(components: ModalActionRowComponent[][]);
+  public components: ModalActionRowComponent[][];
+  public fields: Collection<string, ModalActionRowComponentData>;
+  public getField(customId: string): ModalActionRowComponent;
   public getTextInputValue(customId: string): string;
 }
 
@@ -1836,7 +1836,7 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
 
 export interface ModalSubmitActionRow {
   type: ComponentType.ActionRow;
-  components: ModalFieldData[];
+  components: ActionRow<TextInputComponent>[];
 }
 
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {

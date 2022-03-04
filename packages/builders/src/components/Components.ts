@@ -1,12 +1,12 @@
 import { APIBaseComponent, APIMessageComponent, APIModalComponent, ComponentType } from 'discord-api-types/v9';
-import { ActionRowBuilder, ButtonBuilder, ComponentBuilder, SelectMenuBuilder, TextInputComponent } from '../index';
+import { ActionRowBuilder, ButtonBuilder, ComponentBuilder, SelectMenuBuilder, TextInputBuilder } from '../index';
 import type { MessageComponentBuilder, ModalComponentBuilder } from './ActionRow';
 
 export interface MappedComponentTypes {
 	[ComponentType.ActionRow]: ActionRowBuilder;
 	[ComponentType.Button]: ButtonBuilder;
 	[ComponentType.SelectMenu]: SelectMenuBuilder;
-	[ComponentType.TextInput]: TextInputComponent;
+	[ComponentType.TextInput]: TextInputBuilder;
 }
 
 /**
@@ -32,7 +32,7 @@ export function createComponentBuilder(
 		case ComponentType.SelectMenu:
 			return new SelectMenuBuilder(data);
 		case ComponentType.TextInput:
-			return new TextInputComponent(data);
+			return new TextInputBuilder(data);
 		default:
 			throw new Error(`Cannot serialize component type: ${(data as APIBaseComponent<ComponentType>).type}`);
 	}

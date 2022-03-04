@@ -1,5 +1,5 @@
 import { APIModalInteractionResponseCallbackData, ComponentType, TextInputStyle } from 'discord-api-types/v9';
-import { ActionRowBuilder, ButtonBuilder, Modal, ModalActionRowComponentBuilder, TextInputComponent } from '../../src';
+import { ActionRowBuilder, ButtonBuilder, Modal, ModalActionRowComponentBuilder, TextInputBuilder } from '../../src';
 import {
 	componentsValidator,
 	titleValidator,
@@ -23,7 +23,7 @@ describe('Modals', () => {
 		});
 
 		test('GIVEN invalid components THEN validator does throw', () => {
-			expect(() => componentsValidator.parse([new ButtonBuilder(), new TextInputComponent()])).toThrowError();
+			expect(() => componentsValidator.parse([new ButtonBuilder(), new TextInputBuilder()])).toThrowError();
 		});
 
 		test('GIVEN valid required parameters THEN validator does not throw', () => {
@@ -83,7 +83,7 @@ describe('Modals', () => {
 				.setCustomId('custom id')
 				.setComponents(
 					new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
-						new TextInputComponent().setCustomId('custom id').setLabel('label').setStyle(TextInputStyle.Paragraph),
+						new TextInputBuilder().setCustomId('custom id').setLabel('label').setStyle(TextInputStyle.Paragraph),
 					),
 				)
 				.toJSON(),
