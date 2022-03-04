@@ -151,6 +151,7 @@ exports.StoreChannel = require('./structures/StoreChannel');
 exports.Team = require('./structures/Team');
 exports.TeamMember = require('./structures/TeamMember');
 exports.TextChannel = require('./structures/TextChannel');
+exports.TextInputBuilder = require('./structures/TextInputBuilder');
 exports.TextInputComponent = require('./structures/TextInputComponent');
 exports.ThreadChannel = require('./structures/ThreadChannel');
 exports.ThreadMember = require('./structures/ThreadMember');

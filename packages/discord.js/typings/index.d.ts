@@ -20,7 +20,7 @@ import {
   quote,
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
-  TextInputComponent as BuilderTextInputComponent,
+  TextInputBuilder as BuilderTextInputComponent,
   spoiler,
   strikethrough,
   time,
