@@ -3216,7 +3216,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   lastMessageId: Snowflake | null;
   get lastMessage(): Message | null;
   lastPinTimestamp: number | null;
-  readonly lastPinAt: Date | null;
+  get lastPinAt(): Date | null;
   awaitMessageComponent<T extends MessageComponentType = ComponentType.ActionRow>(
     options?: AwaitMessageCollectorOptionsParams<T, true>,
   ): Promise<MappedInteractionTypes[T]>;
