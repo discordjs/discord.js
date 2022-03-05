@@ -1744,6 +1744,7 @@ export interface ModalFieldData {
 
 export class ModalSubmitFieldsResolver {
   constructor(components: ModalFieldData[][]);
+  public components: ModalFieldData[][];
   public fields: Collection<string, ModalFieldData>;
   public getField(customId: string): ModalFieldData;
   public getTextInputValue(customId: string): string;
