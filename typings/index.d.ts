@@ -2635,7 +2635,7 @@ export class WebSocketShard extends EventEmitter {
   private expectedGuilds: Set<Snowflake> | null;
   private readyTimeout: NodeJS.Timeout | null;
   private closeEmitted: boolean;
-  private WsCloseTimeout: NodeJS.Timeout | null;
+  private wsCloseTimeout: NodeJS.Timeout | null;
 
   public manager: WebSocketManager;
   public id: number;

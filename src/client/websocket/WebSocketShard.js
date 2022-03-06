@@ -136,11 +136,11 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The WebSocket timeout.
-     * @name WebSocketShard#WsCloseTimeout
+     * @name WebSocketShard#wsCloseTimeout
      * @type {?NodeJS.Timeout}
      * @private
      */
-    Object.defineProperty(this, 'WsCloseTimeout', { value: null, writable: true });
+    Object.defineProperty(this, 'wsCloseTimeout', { value: null, writable: true });
 
     /**
      * If the manager attached its event handlers on the shard
@@ -369,23 +369,18 @@ class WebSocketShard extends EventEmitter {
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
     // If we still have a connection object, clean up its listeners
-    if (this.connection) {
-      this.debug('[WebSocket] onClose: Cleaning up the Connection.');
-      this._cleanupConnection();
-    }
+    if (this.connection) this._cleanupConnection();
+
     this.closeEmitted = true;
     // Clearing the websocket close timeout as close was emitted.
     this.setWsCloseTimeout(-1);
 
     // Step 1: Null the connection object
-    this.debug('Step 1: Null the connection object.');
     this.connection = null;
 
-    this.debug('Step 2: Set the shard status to DISCONNECTED');
     // Step 2: Set the shard status to DISCONNECTED
     this.status = Status.DISCONNECTED;
 
-    this.debug('Step 3: Cache the old sequence (use to attempt a resume)');
     // Step 3: Cache the old sequence (use to attempt a resume)
     if (this.sequence !== -1) this.closeSequence = this.sequence;
 
@@ -566,14 +561,14 @@ class WebSocketShard extends EventEmitter {
    */
   setWsCloseTimeout(time) {
     if (time === -1) {
-      if (this.WsCloseTimeout) {
+      if (this.wsCloseTimeout) {
         this.debug('Clearing the WebSocket close timeout.');
-        clearTimeout(this.WsCloseTimeout);
-        this.WsCloseTimeout = null;
+        clearTimeout(this.wsCloseTimeout);
+        this.wsCloseTimeout = null;
       }
       return;
     }
-    this.WsCloseTimeout = setTimeout(() => {
+    this.wsCloseTimeout = setTimeout(() => {
       this.debug(`[WebSocket] Close Emitted: ${this.closeEmitted}`);
       // Check connection is null or if close event was emitted.
       if (!this.connection || this.closeEmitted) {
@@ -788,7 +783,6 @@ class WebSocketShard extends EventEmitter {
     Emit DESTROYED: ${emit}`);
     }
 
-    this.debug(`[WS Destroy] Step 0: Remove all timers.`);
     // Step 0: Remove all timers
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
@@ -814,9 +808,9 @@ class WebSocketShard extends EventEmitter {
           this.connection.close(closeCode);
         } catch (err) {
           this.debug(
-            `[WebSocket] Close: Something went wrong while closing the WebSocket: ${err.message || err}. Forcefully terminating the connection | WS State: ${
-              CONNECTION_STATE[this.connection.readyState]
-            }`,
+            `[WebSocket] Close: Something went wrong while closing the WebSocket: ${
+              err.message || err
+            }. Forcefully terminating the connection | WS State: ${CONNECTION_STATE[this.connection.readyState]}`,
           );
           this.connection.terminate();
           // No-op
@@ -835,18 +829,13 @@ class WebSocketShard extends EventEmitter {
      **/
     if (closeCode === 4009) {
       this.debug(
+        // eslint-disable-next-line max-len
         `[WebSocket] Encountered close code 4009. Adding a timeout to check the connection actually closed. | WS State: ${
           CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
         }`,
       );
       this.setWsCloseTimeout();
     }
-
-    this.debug(
-      `[WS Destroy] Step 2: Resetting the sequence and session id if requested. | WS State: ${
-        CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
-      }`,
-    );
 
     // Step 2: Reset the sequence and session id if requested
     if (reset) {
@@ -857,12 +846,10 @@ class WebSocketShard extends EventEmitter {
     // Step 3: Watch for zombie connection event which could be emitted when step 1 fails to close the WebSocket
     this.on(ShardEvents.ZOMBIE_CONNECTION, this.handleZombieConnection);
 
-    this.debug('Step 4: reset the rate limit data');
     // Step 4: reset the rate limit data
     this.ratelimit.remaining = this.ratelimit.total;
     this.ratelimit.queue.length = 0;
     if (this.ratelimit.timer) {
-      this.debug(`[WS Destroy] Step 4: Clearing ratelimit timer`);
       clearTimeout(this.ratelimit.timer);
       this.ratelimit.timer = null;
     }
@@ -919,9 +906,7 @@ class WebSocketShard extends EventEmitter {
         this.connection.emitClose();
 
         this.debug(
-          `[WebSocket] Manually closed the connection. | WS State: ${
-            CONNECTION_STATE[this.connection.readyState]
-          }`,
+          `[WebSocket] Manually closed the connection. | WS State: ${CONNECTION_STATE[this.connection.readyState]}`,
         );
       }
     }
