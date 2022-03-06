@@ -83,7 +83,7 @@ class WebSocketShard extends EventEmitter {
     this.lastHeartbeatAcked = true;
 
     /**
-     * Used to prevent from calling the onClose event twice while closing or terminating the WebSocket.
+     * Used to prevent calling {@link WebSocketShard#event:close} twice while closing or terminating the WebSocket.
      * @type {boolean}
      * @private
      */
@@ -372,7 +372,7 @@ class WebSocketShard extends EventEmitter {
     if (this.connection) this._cleanupConnection();
 
     this.closeEmitted = true;
-    // Clearing the websocket close timeout as close was emitted.
+    // Clearing the WebSocket close timeout as close was emitted.
     this.setWsCloseTimeout(-1);
 
     // Step 1: Null the connection object
@@ -554,8 +554,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Sets the WebSocket Close timeout.
-   * This method is responsilble to detect any zombie connections if the ws fails to close properly,
-   * Wait for 6s for the ws#close event after ws.close() or ws.terminate() is called.
+   * This method is responsible for detecting any zombie connections if the WebSocket fails to close properly.
    * @param {number} [time] If set to -1, it will clear the timeout
    * @private
    */
@@ -823,9 +822,9 @@ class WebSocketShard extends EventEmitter {
       this._emitDestroyed();
     }
 
-    /**
-     * Just to make sure the readyState is not stuck at CLOSING incase of a closeCode 4009.
-     * we can use this for other close codes as well but right now so far only 4009 is failing to close.
+    /*
+     * Just to make sure the readyState is not stuck at CLOSING in case of a closeCode 4009.
+     * We can use this for other close codes as well but so far only 4009 is failing to close.
      **/
     if (closeCode === 4009) {
       this.debug(
@@ -846,7 +845,7 @@ class WebSocketShard extends EventEmitter {
     // Step 3: Watch for zombie connection event which could be emitted when step 1 fails to close the WebSocket
     this.on(ShardEvents.ZOMBIE_CONNECTION, this.handleZombieConnection);
 
-    // Step 4: reset the rate limit data
+    // Step 4: Reset the rate limit data
     this.ratelimit.remaining = this.ratelimit.total;
     this.ratelimit.queue.length = 0;
     if (this.ratelimit.timer) {
@@ -856,8 +855,7 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Forcefully closes the WebSocket when the destroy() method could not close it normally
-   * using the ws.close(); and ws.terminate();
+   * Forcefully closes the WebSocket when {@link WebSocketShard#destroy} could not close it properly.
    * @private
    * @returns {Promise<void>}
    */
@@ -890,9 +888,9 @@ class WebSocketShard extends EventEmitter {
           }`,
         );
 
-        /**
-         * This is an important step to deal with zombie connections where in shard never reconnects
-         * after a 4009 closeCode due to WebSocket being stuck at CLOSING ready state.
+        /*
+         * This is an important step to deal with zombie connections wherein shards never reconnect
+         * after a 4009 closeCode due to the WebSocket being stuck at the CLOSING ready state.
          * Check the issue https://github.com/discordjs/discord.js/issues/7450
          *
          * The _socket.destroy() method ensures that no more I/O activity happens on this socket.
