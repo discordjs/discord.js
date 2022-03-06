@@ -87,18 +87,16 @@ describe('Slash Commands', () => {
 		test('GIVEN valid array of options or choices THEN does not throw error', () => {
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength([])).not.toThrowError();
 
-			expect(() => SlashCommandAssertions.validateMaxChoicesLength([])).not.toThrowError();
+			expect(() => SlashCommandAssertions.validateChoicesLength(25, [])).not.toThrowError();
 		});
 
 		test('GIVEN invalid options or choices THEN throw error', () => {
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength(null)).toThrowError();
 
-			expect(() => SlashCommandAssertions.validateMaxChoicesLength(null)).toThrowError();
-
 			// Given an array that's too big
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength(largeArray)).toThrowError();
 
-			expect(() => SlashCommandAssertions.validateMaxChoicesLength(largeArray)).toThrowError();
+			expect(() => SlashCommandAssertions.validateChoicesLength(1, largeArray)).toThrowError();
 		});
 
 		test('GIVEN valid required parameters THEN does not throw error', () => {
@@ -179,31 +177,25 @@ describe('Slash Commands', () => {
 			test('GIVEN a builder with both choices and autocomplete THEN does throw an error', () => {
 				expect(() =>
 					getBuilder().addStringOption(
-						// @ts-expect-error Checking if check works JS-side too
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
-						getStringOption().setAutocomplete(true).addChoice('Fancy Pants', 'fp_1'),
+						getStringOption().setAutocomplete(true).addChoices({ name: 'Fancy Pants', value: 'fp_1' }),
 					),
 				).toThrowError();
 
 				expect(() =>
 					getBuilder().addStringOption(
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
 						getStringOption()
 							.setAutocomplete(true)
-							// @ts-expect-error Checking if check works JS-side too
-							.addChoices([
-								['Fancy Pants', 'fp_1'],
-								['Fancy Shoes', 'fs_1'],
-								['The Whole shebang', 'all'],
-							]),
+							.addChoices(
+								{ name: 'Fancy Pants', value: 'fp_1' },
+								{ name: 'Fancy Shoes', value: 'fs_1' },
+								{ name: 'The Whole shebang', value: 'all' },
+							),
 					),
 				).toThrowError();
 
 				expect(() =>
 					getBuilder().addStringOption(
-						// @ts-expect-error Checking if check works JS-side too
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
-						getStringOption().addChoice('Fancy Pants', 'fp_1').setAutocomplete(true),
+						getStringOption().addChoices({ name: 'Fancy Pants', value: 'fp_1' }).setAutocomplete(true),
 					),
 				).toThrowError();
 
@@ -231,20 +223,20 @@ describe('Slash Commands', () => {
 
 			test('GIVEN a builder with valid channel options and channel_types THEN does not throw an error', () => {
 				expect(() =>
-					getBuilder().addChannelOption(getChannelOption().addChannelType(ChannelType.GuildText)),
+					getBuilder().addChannelOption(getChannelOption().addChannelTypes(ChannelType.GuildText)),
 				).not.toThrowError();
 
 				expect(() => {
 					getBuilder().addChannelOption(
-						getChannelOption().addChannelTypes([ChannelType.GuildNews, ChannelType.GuildText]),
+						getChannelOption().addChannelTypes(ChannelType.GuildNews, ChannelType.GuildText),
 					);
 				}).not.toThrowError();
 			});
 
 			test('GIVEN a builder with valid channel options and channel_types THEN does throw an error', () => {
-				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelType(100))).toThrowError();
+				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes(100))).toThrowError();
 
-				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes([100, 200]))).toThrowError();
+				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes(100, 200))).toThrowError();
 			});
 
 			test('GIVEN a builder with invalid number min/max options THEN does throw an error', () => {
