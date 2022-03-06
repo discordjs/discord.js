@@ -4,10 +4,11 @@ import fetch, { RequestInit, Response } from 'node-fetch';
 import { DiscordAPIError, DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError';
 import { HTTPError } from '../errors/HTTPError';
 import { RateLimitError } from '../errors/RateLimitError';
-import type { InternalRequest, RequestManager, RouteData } from '../RequestManager';
+import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
 import { RESTEvents } from '../utils/constants';
 import { hasSublimit, parseResponse } from '../utils/utils';
 import type { RateLimitData } from '../REST';
+import type { IHandler } from './IHandler';
 
 /* Invalid request limiting is done on a per-IP basis, not a per-token basis.
  * The best we can do is track invalid counts process-wide (on the theory that
@@ -26,7 +27,7 @@ const enum QueueType {
 /**
  * The structure used to handle requests for a given bucket
  */
-export class SequentialHandler {
+export class SequentialHandler implements IHandler {
 	/**
 	 * The unique id of the handler
 	 */
@@ -162,18 +163,18 @@ export class SequentialHandler {
 	 * @param routeId The generalized api route with literal ids for major parameters
 	 * @param url The url to do the request on
 	 * @param options All the information needed to make a request
-	 * @param bodyData The data that was used to form the body, passed to any errors generated and for determining whether to sublimit
+	 * @param requestData Extra data from the user's request needed for errors and additional processing
 	 */
 	public async queueRequest(
 		routeId: RouteData,
 		url: string,
 		options: RequestInit,
-		bodyData: Pick<InternalRequest, 'files' | 'body'>,
+		requestData: HandlerRequestData,
 	): Promise<unknown> {
 		let queue = this.#asyncQueue;
 		let queueType = QueueType.Standard;
 		// Separate sublimited requests when already sublimited
-		if (this.#sublimitedQueue && hasSublimit(routeId.bucketRoute, bodyData.body, options.method)) {
+		if (this.#sublimitedQueue && hasSublimit(routeId.bucketRoute, requestData.body, options.method)) {
 			queue = this.#sublimitedQueue!;
 			queueType = QueueType.Sublimit;
 		}
@@ -181,7 +182,7 @@ export class SequentialHandler {
 		await queue.wait();
 		// This set handles retroactively sublimiting requests
 		if (queueType === QueueType.Standard) {
-			if (this.#sublimitedQueue && hasSublimit(routeId.bucketRoute, bodyData.body, options.method)) {
+			if (this.#sublimitedQueue && hasSublimit(routeId.bucketRoute, requestData.body, options.method)) {
 				/**
 				 * Remove the request from the standard queue, it should never be possible to get here while processing the
 				 * sublimit queue so there is no need to worry about shifting the wrong request
@@ -197,7 +198,7 @@ export class SequentialHandler {
 		}
 		try {
 			// Make the request, and return the results
-			return await this.runRequest(routeId, url, options, bodyData);
+			return await this.runRequest(routeId, url, options, requestData);
 		} finally {
 			// Allow the next request to fire
 			queue.shift();
@@ -218,14 +219,14 @@ export class SequentialHandler {
 	 * @param routeId The generalized api route with literal ids for major parameters
 	 * @param url The fully resolved url to make the request to
 	 * @param options The node-fetch options needed to make the request
-	 * @param bodyData The data that was used to form the body, passed to any errors generated
+	 * @param requestData Extra data from the user's request needed for errors and additional processing
 	 * @param retries The number of retries this request has already attempted (recursion)
 	 */
 	private async runRequest(
 		routeId: RouteData,
 		url: string,
 		options: RequestInit,
-		bodyData: Pick<InternalRequest, 'files' | 'body'>,
+		requestData: HandlerRequestData,
 		retries = 0,
 	): Promise<unknown> {
 		/*
@@ -292,7 +293,7 @@ export class SequentialHandler {
 				path: routeId.original,
 				route: routeId.bucketRoute,
 				options,
-				data: bodyData,
+				data: requestData,
 				retries,
 			});
 		}
@@ -309,7 +310,7 @@ export class SequentialHandler {
 		} catch (error: unknown) {
 			// Retry the specified number of times for possible timed out requests
 			if (error instanceof Error && error.name === 'AbortError' && retries !== this.manager.options.retries) {
-				return await this.runRequest(routeId, url, options, bodyData, ++retries);
+				return await this.runRequest(routeId, url, options, requestData, ++retries);
 			}
 
 			throw error;
@@ -325,7 +326,7 @@ export class SequentialHandler {
 					path: routeId.original,
 					route: routeId.bucketRoute,
 					options,
-					data: bodyData,
+					data: requestData,
 					retries,
 				},
 				res.clone(),
@@ -466,25 +467,25 @@ export class SequentialHandler {
 				}
 			}
 			// Since this is not a server side issue, the next request should pass, so we don't bump the retries counter
-			return this.runRequest(routeId, url, options, bodyData, retries);
+			return this.runRequest(routeId, url, options, requestData, retries);
 		} else if (res.status >= 500 && res.status < 600) {
 			// Retry the specified number of times for possible server side issues
 			if (retries !== this.manager.options.retries) {
-				return this.runRequest(routeId, url, options, bodyData, ++retries);
+				return this.runRequest(routeId, url, options, requestData, ++retries);
 			}
 			// We are out of retries, throw an error
-			throw new HTTPError(res.statusText, res.constructor.name, res.status, method, url, bodyData);
+			throw new HTTPError(res.statusText, res.constructor.name, res.status, method, url, requestData);
 		} else {
 			// Handle possible malformed requests
 			if (res.status >= 400 && res.status < 500) {
 				// If we receive this status code, it means the token we had is no longer valid.
-				if (res.status === 401) {
+				if (res.status === 401 && requestData.auth) {
 					this.manager.setToken(null!);
 				}
 				// The request will not succeed for some reason, parse the error returned from the api
 				const data = (await parseResponse(res)) as DiscordErrorData | OAuthErrorData;
 				// throw the API error
-				throw new DiscordAPIError(data, 'code' in data ? data.code : data.error, res.status, method, url, bodyData);
+				throw new DiscordAPIError(data, 'code' in data ? data.code : data.error, res.status, method, url, requestData);
 			}
 			return null;
 		}
