@@ -209,19 +209,21 @@ class VoiceState extends Base {
    * Data to edit the logged in user's own voice state with, when in a stage channel
    * @typedef {Object} VoiceStateEditData
    * @property {boolean} [requestToSpeak] Whether or not the client is requesting to become a speaker.
+   * <info>Only available to the logged in user's own voice state.</info>
    * @property {boolean} [suppressed] Whether or not the user should be suppressed.
    */
 
   /**
-   * Edits this voice state.
-   * Currently only available to the logged in user's own voice state and when in a stage channel
+   * Edits this voice state. Currently only available when in a stage channel
    * @param {VoiceStateEditData} data The data to edit the voice state with
    * @returns {Promise<VoiceState>}
    */
   async edit(data) {
     if (this.channel?.type !== ChannelType.GuildStageVoice) throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
-    if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
+    if (this.client.user.id !== this.id && typeof data.requestToSpeak !== 'undefined') {
+      throw new Error('VOICE_STATE_NOT_OWN');
+    }
 
     if (!['boolean', 'undefined'].includes(typeof data.requestToSpeak)) {
       throw new TypeError('VOICE_STATE_INVALID_TYPE', 'requestToSpeak');
@@ -231,7 +233,9 @@ class VoiceState extends Base {
       throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
     }
 
-    await this.client.rest.patch(Routes.guildVoiceState(this.guild.id), {
+    const target = this.client.user.id === this.id ? '@me' : this.id;
+
+    await this.client.rest.patch(Routes.guildVoiceState(this.guild.id, target), {
       body: {
         channel_id: this.channelId,
         request_to_speak_timestamp: data.requestToSpeak
