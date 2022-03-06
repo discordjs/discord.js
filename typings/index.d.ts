@@ -5163,6 +5163,7 @@ export interface MessageInteraction {
 export interface MessageMentionsHasOptions {
   ignoreDirect?: boolean;
   ignoreRoles?: boolean;
+  ignoreRepliedUser?: boolean;
   ignoreEveryone?: boolean;
 }
 
