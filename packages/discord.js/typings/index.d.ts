@@ -1773,6 +1773,9 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   // TODO: fix this type when #7517 is implemented
   public readonly components: ModalSubmitActionRow[];
   public readonly fields: ModalSubmitFieldsResolver;
+  public deferred: boolean;
+  public ephemeral: boolean | null;
+  public replied: boolean;
   public readonly webhook: InteractionWebhook;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
