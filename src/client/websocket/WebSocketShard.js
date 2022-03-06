@@ -271,7 +271,7 @@ class WebSocketShard extends EventEmitter {
       this.connectedAt = Date.now();
 
       // Adding a handshake timeout to just make sure no zombie connection appears.
-      const ws = (this.connection = WebSocket.create(gateway, wsQuery, { handshakeTimeout: 30000 }));
+      const ws = (this.connection = WebSocket.create(gateway, wsQuery, { handshakeTimeout: 30_000 }));
       ws.onopen = this.onOpen.bind(this);
       ws.onmessage = this.onMessage.bind(this);
       ws.onerror = this.onError.bind(this);
@@ -588,7 +588,7 @@ class WebSocketShard extends EventEmitter {
       }
 
       this.debug(
-        `[WebSocket] did not close properly, Assuming a zombie connection. Destroying and reconnecting again.
+        `[WebSocket] did not close properly, assuming a zombie connection. Destroying and reconnecting again.
         WS State: ${CONNECTION_STATE[this.connection.readyState]} | Close Emitted: ${this.closeEmitted}`,
       );
       /**
@@ -597,7 +597,7 @@ class WebSocketShard extends EventEmitter {
        * @event WebSocketShard#zombieConnection
        */
       this.emit(ShardEvents.ZOMBIE_CONNECTION);
-    }, 6000).unref();
+    }, 6_000).unref();
   }
 
   /**
