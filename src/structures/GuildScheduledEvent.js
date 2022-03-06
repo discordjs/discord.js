@@ -166,11 +166,11 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The URL of this scheduled event's cover image
-   * @param {BaseImageURLOptions} [options={}] Options for image URL
+   * @param {StaticImageURLOptions} [options={}] Options for image URL
    * @returns {?string}
    */
-  coverImageURL(options = {}) {
-    return this.image && this.client.rest.cdn.guildScheduledEventCover(this.id, this.image, options);
+  coverImageURL({ format, size } = {}) {
+    return this.image && this.client.rest.cdn.guildScheduledEventCover(this.id, this.image, format, size);
   }
 
   /**
