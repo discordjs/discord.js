@@ -223,7 +223,7 @@ class VoiceState extends Base {
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
 
-    if (target === '@me' && typeof data.requestToSpeak !== 'undefined') {
+    if (target !== '@me' && typeof data.requestToSpeak !== 'undefined') {
       throw new Error('VOICE_STATE_NOT_OWN');
     }
 
