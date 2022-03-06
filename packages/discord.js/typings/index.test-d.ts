@@ -115,7 +115,6 @@ import {
   SelectMenuBuilder,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
-import type { ModalActionRowComponentBuilder } from '@discordjs/builders';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;

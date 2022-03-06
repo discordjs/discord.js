@@ -81,8 +81,6 @@ describe('Action Row Components', () => {
 			expect(new ActionRowBuilder(actionRowData).toJSON()).toEqual(actionRowData);
 			expect(new ActionRowBuilder().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
-			// @ts-expect-error
-			expect(() => createComponentBuilder({ type: 42, components: [] })).toThrowError();
 		});
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {
 			const rowWithButtonData: APIActionRowComponent<APIMessageActionRowComponent> = {
@@ -123,8 +121,6 @@ describe('Action Row Components', () => {
 			expect(new ActionRowBuilder(rowWithSelectMenuData).toJSON()).toEqual(rowWithSelectMenuData);
 			expect(new ActionRowBuilder().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
-			// @ts-expect-error
-			expect(() => createComponentBuilder({ type: 42, components: [] })).toThrowError();
 		});
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {
 			const button = new ButtonBuilder().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');

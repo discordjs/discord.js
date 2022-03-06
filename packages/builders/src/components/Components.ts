@@ -1,6 +1,7 @@
-import { APIBaseComponent, APIMessageComponent, APIModalComponent, ComponentType } from 'discord-api-types/v9';
+import { APIMessageComponent, APIModalComponent, ComponentType } from 'discord-api-types/v9';
 import { ActionRowBuilder, ButtonBuilder, ComponentBuilder, SelectMenuBuilder, TextInputBuilder } from '../index';
 import type { MessageComponentBuilder, ModalComponentBuilder } from './ActionRow';
+import { UnknownComponentBuilder } from './UnknownComponent';
 
 export interface MappedComponentTypes {
 	[ComponentType.ActionRow]: ActionRowBuilder;
@@ -34,6 +35,9 @@ export function createComponentBuilder(
 		case ComponentType.TextInput:
 			return new TextInputBuilder(data);
 		default:
-			throw new Error(`Cannot serialize component type: ${(data as APIBaseComponent<ComponentType>).type}`);
+			// @ts-expect-error
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+			console.warn(`Cannot properly serialize component type: ${data.type}`);
+			return new UnknownComponentBuilder(data);
 	}
 }

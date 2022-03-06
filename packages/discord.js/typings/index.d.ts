@@ -1816,8 +1816,8 @@ export class MessageReaction {
 
 export class ModalSubmitFieldsResolver {
   constructor(components: ModalActionRowComponent[][]);
-  public components: ModalActionRowComponent[][];
-  public fields: Collection<string, ModalActionRowComponentData>;
+  public components: ActionRow<ModalActionRowComponent>;
+  public fields: Collection<string, ModalActionRowComponent>;
   public getField(customId: string): ModalActionRowComponent;
   public getTextInputValue(customId: string): string;
 }
