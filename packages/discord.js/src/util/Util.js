@@ -189,7 +189,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeInlineCode(text) {
-    return text.replace(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
+    return text.replaceAll('`', '\\`');
   }
 
   /**
