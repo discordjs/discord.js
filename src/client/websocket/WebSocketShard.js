@@ -794,7 +794,7 @@ class WebSocketShard extends EventEmitter {
     this.setHelloTimeout(-1);
 
     this.debug(
-      `[WS Destroy] Step 1: Attempting to close the WebSocket. | WS State: ${
+      `[WS Destroy] Attempting to close the WebSocket. | WS State: ${
         CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
       }`,
     );
@@ -812,9 +812,9 @@ class WebSocketShard extends EventEmitter {
         // Attempt to close the connection just in case
         try {
           this.connection.close(closeCode);
-        } catch {
+        } catch (err) {
           this.debug(
-            `[WebSocket] Close: Something went wrong while closing the WebSocket, Now calling terminate. | WS State: ${
+            `[WebSocket] Close: Something went wrong while closing the WebSocket: ${err.message || err}. Forcefully terminating the connection | WS State: ${
               CONNECTION_STATE[this.connection.readyState]
             }`,
           );
@@ -831,11 +831,11 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * Just to make sure the readyState is not stuck at CLOSING incase of a closeCode 4009.
-     * we can use this for other closeCodes aswell but rightnow so far only 4009 is failing to close.
+     * we can use this for other close codes as well but right now so far only 4009 is failing to close.
      **/
     if (closeCode === 4009) {
       this.debug(
-        `[WebSocket] closeCode[4009]: Adding a timeout to check the connection state. | WS State: ${
+        `[WebSocket] Encountered close code 4009. Adding a timeout to check the connection actually closed. | WS State: ${
           CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
         }`,
       );
@@ -898,7 +898,7 @@ class WebSocketShard extends EventEmitter {
       if (this.connection.readyState === WebSocket.CLOSING || this.connection.readyState === WebSocket.OPEN) {
         this.debug(
           // eslint-disable-next-line max-len
-          `[WebSocket] Connection still stuck at Closing: Calling a Manual Destroy of the socket to Close and reconnect. | WS State: ${
+          `[WebSocket] Connection still stuck at Closing: calling a manual destroy of the socket to close and reconnect. | WS State: ${
             CONNECTION_STATE[this.connection.readyState]
           }`,
         );
@@ -919,7 +919,7 @@ class WebSocketShard extends EventEmitter {
         this.connection.emitClose();
 
         this.debug(
-          `[WebSocket] Applied a Manual Destroy, Clearing the WS State Logger in 5s. | WS State: ${
+          `[WebSocket] Manually closed the connection. | WS State: ${
             CONNECTION_STATE[this.connection.readyState]
           }`,
         );
