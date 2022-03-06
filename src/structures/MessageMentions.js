@@ -173,28 +173,35 @@ class MessageMentions {
    * @typedef {Object} MessageMentionsHasOptions
    * @property {boolean} [ignoreDirect=false] Whether to ignore direct mentions to the item
    * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to a guild member
-   * @property {boolean} [ignoreEveryone=false] Whether to ignore everyone/here mentions
+   * @property {boolean} [ignoreRepliedUser=false] Whether to ignore replied user mention to an user
+   * @property {boolean} [ignoreEveryone=false] Whether to ignore `@everyone`/`@here` mentions
    */
 
   /**
-   * Checks if a user, guild member, role, or channel is mentioned.
-   * Takes into account user mentions, role mentions, and `@everyone`/`@here` mentions.
+   * Checks if a user, guild member, thread member, role, or channel is mentioned.
+   * Takes into account user mentions, role mentions, channel mentions,
+   * replied user mention, and `@everyone`/`@here` mentions.
    * @param {UserResolvable|RoleResolvable|ChannelResolvable} data The User/Role/Channel to check for
    * @param {MessageMentionsHasOptions} [options] The options for the check
    * @returns {boolean}
    */
-  has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
-    if (!ignoreEveryone && this.everyone) return true;
-    const { GuildMember } = require('./GuildMember');
-    if (!ignoreRoles && data instanceof GuildMember) {
-      for (const role of this.roles.values()) if (data.roles.cache.has(role.id)) return true;
-    }
+  has(data, { ignoreDirect = false, ignoreRoles = false, ignoreRepliedUser = false, ignoreEveryone = false } = {}) {
+    const user = this.client.users.resolve(data);
+    const role = this.guild?.roles.resolve(data);
+    const channel = this.client.channels.resolve(data);
 
+    if (!ignoreRepliedUser && this.users.has(this.repliedUser?.id) && this.repliedUser?.id === user?.id) return true;
     if (!ignoreDirect) {
-      const id =
-        this.guild?.roles.resolveId(data) ?? this.client.channels.resolveId(data) ?? this.client.users.resolveId(data);
-
-      return typeof id === 'string' && (this.users.has(id) || this.channels.has(id) || this.roles.has(id));
+      if (this.users.has(user?.id)) return true;
+      if (this.roles.has(role?.id)) return true;
+      if (this.channels.has(channel?.id)) return true;
+    }
+    if (user && !ignoreEveryone && this.everyone) return true;
+    if (!ignoreRoles) {
+      const member = this.guild?.members.resolve(data);
+      if (member) {
+        for (const mentionedRole of this.roles.values()) if (member.roles.cache.has(mentionedRole.id)) return true;
+      }
     }
 
     return false;
