@@ -107,6 +107,8 @@ import {
   CategoryChannelChildManager,
   ActionRowData,
   MessageActionRowComponentData,
+  PartialThreadMember,
+  ThreadMemberFlagsBitField,
   Embed,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -717,6 +719,22 @@ client.on('messageCreate', async message => {
       return true;
     },
   });
+});
+
+client.on('threadMembersUpdate', (thread, addedMembers, removedMembers) => {
+  expectType<ThreadChannel>(thread);
+  expectType<Collection<Snowflake, ThreadMember>>(addedMembers);
+  expectType<Collection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
+  const left = removedMembers.first();
+  if (!left) return;
+
+  if (left.partial) {
+    expectType<PartialThreadMember>(left);
+    expectType<null>(left.flags);
+  } else {
+    expectType<ThreadMember>(left);
+    expectType<ThreadMemberFlagsBitField>(left.flags);
+  }
 });
 
 client.on('interactionCreate', async interaction => {
