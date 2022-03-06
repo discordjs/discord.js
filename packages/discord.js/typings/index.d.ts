@@ -209,10 +209,14 @@ export interface BaseComponentData {
 }
 
 export type MessageActionRowComponentData = ButtonComponentData | SelectMenuComponentData;
+
 export type ModalActionRowComponentData = TextInputComponentData;
 
-export interface ActionRowData<T extends MessageActionRowComponentData | ModalActionRowComponentData>
-  extends BaseComponentData {
+export type ActionRowComponentData = MessageActionRowComponentData | ModalActionRowComponentData;
+
+export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
+
+export interface ActionRowData<T extends ActionRowComponent | ActionRowComponentData> extends BaseComponentData {
   components: T[];
 }
 
@@ -352,7 +356,7 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
   deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   fetchReply(): Promise<GuildCacheMessage<Cached>>;
   followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
-  showModal(modal: Modal): Promise<void>;
+  showModal(modal: Modal | ModalData | APIModalInteractionResponseCallbackData): Promise<void>;
 }
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
@@ -391,7 +395,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  public showModal(modal: Modal): Promise<void>;
+  public showModal(modal: Modal | ModalData | APIModalInteractionResponseCallbackData): Promise<void>;
   private transformOption(
     option: APIApplicationCommandOption,
     resolved: APIApplicationCommandInteractionData['resolved'],
@@ -542,6 +546,7 @@ export interface EmbedProviderData {
 
 export class Embed extends BuildersEmbed {
   public constructor(data?: EmbedData | APIEmbed);
+  public override setColor(color: ColorResolvable | null): this;
 }
 
 export interface MappedChannelCategoryTypes {
@@ -1647,7 +1652,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
-  public showModal(modal: Modal): Promise<void>;
+  public showModal(modal: Modal | ModalData | APIModalInteractionResponseCallbackData): Promise<void>;
 }
 
 export class MessageContextMenuCommandInteraction<
@@ -1744,6 +1749,7 @@ export interface ModalFieldData {
 
 export class ModalSubmitFieldsResolver {
   constructor(components: ModalFieldData[][]);
+  public components: ModalFieldData[][];
   public fields: Collection<string, ModalFieldData>;
   public getField(customId: string): ModalFieldData;
   public getTextInputValue(customId: string): string;
@@ -1772,6 +1778,9 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   // TODO: fix this type when #7517 is implemented
   public readonly components: ModalSubmitActionRow[];
   public readonly fields: ModalSubmitFieldsResolver;
+  public deferred: boolean;
+  public ephemeral: boolean | null;
+  public replied: boolean;
   public readonly webhook: InteractionWebhook;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
@@ -3217,7 +3226,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   lastMessageId: Snowflake | null;
   get lastMessage(): Message | null;
   lastPinTimestamp: number | null;
-  readonly lastPinAt: Date | null;
+  get lastPinAt(): Date | null;
   awaitMessageComponent<T extends MessageComponentType = ComponentType.ActionRow>(
     options?: AwaitMessageCollectorOptionsParams<T, true>,
   ): Promise<MappedInteractionTypes[T]>;
@@ -3777,7 +3786,7 @@ export type ColorResolvable =
   | 'DarkButNotBlack'
   | 'NotQuiteBlack'
   | 'Random'
-  | readonly [number, number, number]
+  | readonly [red: number, green: number, blue: number]
   | number
   | HexColorString;
 
