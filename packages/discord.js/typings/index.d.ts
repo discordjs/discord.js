@@ -1744,6 +1744,7 @@ export interface ModalFieldData {
 
 export class ModalSubmitFieldsResolver {
   constructor(components: ModalFieldData[][]);
+  public components: ModalFieldData[][];
   public fields: Collection<string, ModalFieldData>;
   public getField(customId: string): ModalFieldData;
   public getTextInputValue(customId: string): string;
@@ -3216,7 +3217,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   lastMessageId: Snowflake | null;
   get lastMessage(): Message | null;
   lastPinTimestamp: number | null;
-  readonly lastPinAt: Date | null;
+  get lastPinAt(): Date | null;
   awaitMessageComponent<T extends MessageComponentType = ComponentType.ActionRow>(
     options?: AwaitMessageCollectorOptionsParams<T, true>,
   ): Promise<MappedInteractionTypes[T]>;
