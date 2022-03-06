@@ -1,8 +1,17 @@
 'use strict';
 
+const { isJSONEncodable } = require('@discordjs/builders');
 const { InteractionResponseType, MessageFlags, Routes } = require('discord-api-types/v9');
 const { Error } = require('../../errors');
+const Transformers = require('../../util/Transformers');
 const MessagePayload = require('../MessagePayload');
+
+/**
+ * @typedef {Object} ModalData
+ * @property {string} title The title of the modal
+ * @property {string} customId The custom id of the modal
+ * @property {ActionRowData[]} components The components within this modal
+ */
 
 /**
  * Interface for classes that support shared interaction response types.
@@ -225,6 +234,21 @@ class InteractionResponses {
     return options.fetchReply ? this.fetchReply() : undefined;
   }
 
+  /**
+   * Shows a modal component
+   * @param {APIModal|ModalData|Modal} modal The modal to show
+   */
+  async showModal(modal) {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
+        type: InteractionResponseType.Modal,
+        data: isJSONEncodable(modal) ? modal.toJSON() : Transformers.toSnakeCase(modal),
+      },
+    });
+    this.replied = true;
+  }
+
   static applyToClass(structure, ignore = []) {
     const props = [
       'deferReply',
@@ -235,6 +259,7 @@ class InteractionResponses {
       'followUp',
       'deferUpdate',
       'update',
+      'showModal',
     ];
 
     for (const prop of props) {

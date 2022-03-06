@@ -141,6 +141,10 @@ const Messages = {
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No subcommand group specified for interaction.',
   AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION: 'No focused option for autocomplete interaction.',
 
+  MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND: customId => `Required field with custom id "${customId}" not found.`,
+  MODAL_SUBMIT_INTERACTION_FIELD_TYPE: (customId, type, expected) =>
+    `Field with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
+
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 
   NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,

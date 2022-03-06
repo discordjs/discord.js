@@ -691,7 +691,7 @@ class Guild extends AnonymousGuild {
    * @property {Snowflake|GuildAuditLogsEntry} [before] Only return entries before this entry
    * @property {number} [limit] The number of entries to return
    * @property {UserResolvable} [user] Only return entries for actions made by this user
-   * @property {AuditLogAction|number} [type] Only return entries for this action type
+   * @property {?AuditLogEvent} [type] Only return entries for this action type
    */
 
   /**
@@ -718,7 +718,7 @@ class Guild extends AnonymousGuild {
     }
 
     if (options.user) {
-      const id = this.client.user.resolveId(options.user);
+      const id = this.client.users.resolveId(options.user);
       if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
       query.set('user_id', id);
     }

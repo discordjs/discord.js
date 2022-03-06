@@ -1,0 +1,19 @@
+import type { APIModalInteractionResponseCallbackData } from 'discord-api-types/v9';
+import { customIdValidator } from '../../components/Assertions';
+import { titleValidator, validateRequiredParameters } from './Assertions';
+import { UnsafeModal } from './UnsafeModal';
+
+export class Modal extends UnsafeModal {
+	public override setCustomId(customId: string): this {
+		return super.setCustomId(customIdValidator.parse(customId));
+	}
+
+	public override setTitle(title: string) {
+		return super.setTitle(titleValidator.parse(title));
+	}
+
+	public override toJSON(): APIModalInteractionResponseCallbackData {
+		validateRequiredParameters(this.data.custom_id, this.data.title, this.components);
+		return super.toJSON();
+	}
+}

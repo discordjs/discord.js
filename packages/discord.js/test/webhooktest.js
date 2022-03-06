@@ -5,13 +5,16 @@ const path = require('node:path');
 const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
 const { GatewayIntentBits } = require('discord-api-types/v9');
-const fetch = require('node-fetch');
+const { fetch } = require('undici');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
 const { Client, MessageAttachment, Embed, WebhookClient } = require('../src');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
-const buffer = l => fetch(l).then(res => res.buffer());
+const buffer = l =>
+  fetch(l)
+    .then(res => res.arrayBuffer())
+    .then(Buffer.from);
 const read = util.promisify(fs.readFile);
 const readStream = fs.createReadStream;
 
