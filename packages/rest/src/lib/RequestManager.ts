@@ -113,6 +113,8 @@ export interface InternalRequest extends RequestData {
 	fullRoute: RouteLike;
 }
 
+export type HandlerRequestData = Pick<InternalRequest, 'files' | 'body' | 'auth'>;
+
 /**
  * Parsed route data for an endpoint
  *

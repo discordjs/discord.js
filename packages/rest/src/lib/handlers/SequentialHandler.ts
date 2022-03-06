@@ -4,7 +4,7 @@ import fetch, { RequestInit, Response } from 'node-fetch';
 import { DiscordAPIError, DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError';
 import { HTTPError } from '../errors/HTTPError';
 import { RateLimitError } from '../errors/RateLimitError';
-import type { InternalRequest, RequestManager, RouteData } from '../RequestManager';
+import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
 import { RESTEvents } from '../utils/constants';
 import { hasSublimit, parseResponse } from '../utils/utils';
 import type { RateLimitData } from '../REST';
@@ -169,7 +169,7 @@ export class SequentialHandler implements IHandler {
 		routeId: RouteData,
 		url: string,
 		options: RequestInit,
-		requestData: Pick<InternalRequest, 'files' | 'body' | 'auth'>,
+		requestData: HandlerRequestData,
 	): Promise<unknown> {
 		let queue = this.#asyncQueue;
 		let queueType = QueueType.Standard;
@@ -226,7 +226,7 @@ export class SequentialHandler implements IHandler {
 		routeId: RouteData,
 		url: string,
 		options: RequestInit,
-		requestData: Pick<InternalRequest, 'files' | 'body' | 'auth'>,
+		requestData: HandlerRequestData,
 		retries = 0,
 	): Promise<unknown> {
 		/*
