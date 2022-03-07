@@ -19,6 +19,7 @@ import {
   PermissionFlagsBits,
   AuditLogEvent,
   ButtonStyle,
+  TextInputStyle,
 } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
@@ -58,6 +59,7 @@ import {
   MessageCollector,
   MessageComponentInteraction,
   MessageReaction,
+  Modal,
   NewsChannel,
   Options,
   PartialTextBasedChannelFields,
@@ -96,7 +98,7 @@ import {
   ActionRow,
   ButtonComponent,
   SelectMenuComponent,
-  ActionRowComponent,
+  MessageActionRowComponent,
   InteractionResponseFields,
   ThreadChannelType,
   Events,
@@ -104,9 +106,12 @@ import {
   Status,
   CategoryChannelChildManager,
   ActionRowData,
+  MessageActionRowComponentData,
+  PartialThreadMember,
+  ThreadMemberFlagsBitField,
+  Embed,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
-import { Embed } from '@discordjs/builders';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -716,6 +721,22 @@ client.on('messageCreate', async message => {
   });
 });
 
+client.on('threadMembersUpdate', (thread, addedMembers, removedMembers) => {
+  expectType<ThreadChannel>(thread);
+  expectType<Collection<Snowflake, ThreadMember>>(addedMembers);
+  expectType<Collection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
+  const left = removedMembers.first();
+  if (!left) return;
+
+  if (left.partial) {
+    expectType<PartialThreadMember>(left);
+    expectType<null>(left.flags);
+  } else {
+    expectType<ThreadMember>(left);
+    expectType<ThreadMemberFlagsBitField>(left.flags);
+  }
+});
+
 client.on('interactionCreate', async interaction => {
   expectType<Snowflake | null>(interaction.guildId);
   expectType<Snowflake | null>(interaction.channelId);
@@ -723,11 +744,14 @@ client.on('interactionCreate', async interaction => {
 
   if (!interaction.isCommand()) return;
 
-  void new ActionRow<ActionRowComponent>();
+  void new ActionRow<MessageActionRowComponent>();
 
   const button = new ButtonComponent();
 
-  const actionRow = new ActionRow<ActionRowComponent>({ type: ComponentType.ActionRow, components: [button.toJSON()] });
+  const actionRow = new ActionRow<MessageActionRowComponent>({
+    type: ComponentType.ActionRow,
+    components: [button.toJSON()],
+  });
 
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
@@ -739,6 +763,23 @@ client.on('interactionCreate', async interaction => {
 
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
+
+  await interaction.reply({
+    content: 'test',
+    components: [
+      {
+        components: [
+          {
+            custom_id: 'abc',
+            label: 'abc',
+            style: ButtonStyle.Primary,
+            type: ComponentType.Button,
+          },
+        ],
+        type: ComponentType.ActionRow,
+      },
+    ],
+  });
 
   if (interaction.isMessageComponent()) {
     expectType<Snowflake>(interaction.channelId);
@@ -947,8 +988,9 @@ expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(u
 expectType<Promise<GuildEmoji>>(guildEmojiManager.fetch('0'));
 
 declare const typing: Typing;
-expectType<PartialUser>(typing.user);
+expectType<User | PartialUser>(typing.user);
 if (typing.user.partial) expectType<null>(typing.user.username);
+if (!typing.user.partial) expectType<string>(typing.user.tag);
 
 expectType<TextBasedChannel>(typing.channel);
 if (typing.channel.partial) expectType<undefined>(typing.channel.lastMessageId);
@@ -1074,11 +1116,11 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.isMessageComponent()) {
     expectType<MessageComponentInteraction>(interaction);
-    expectType<ActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
+    expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message | APIMessage>(interaction.message);
     if (interaction.inCachedGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
-      expectType<ActionRowComponent>(interaction.component);
+      expectType<MessageActionRowComponent>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
       expectAssignable<Promise<Message>>(interaction.reply({ fetchReply: true }));
@@ -1090,7 +1132,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
-      expectType<ActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
+      expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
       expectType<Message | APIMessage>(interaction.message);
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<APIMessage | Message>>(interaction.reply({ fetchReply: true }));
@@ -1318,7 +1360,12 @@ new ButtonComponent({
   style: ButtonStyle.Danger,
 });
 
-expectNotAssignable<ActionRowData>({
+// @ts-expect-error
+new Embed().setColor('abc');
+
+new Embed().setColor('#ffffff');
+
+expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
   type: ComponentType.ActionRow,
   components: [
     {
@@ -1331,3 +1378,25 @@ declare const chatInputInteraction: ChatInputCommandInteraction;
 
 expectType<MessageAttachment>(chatInputInteraction.options.getAttachment('attachment', true));
 expectType<MessageAttachment | null>(chatInputInteraction.options.getAttachment('attachment'));
+
+declare const modal: Modal;
+
+chatInputInteraction.showModal(modal);
+
+chatInputInteraction.showModal({
+  title: 'abc',
+  custom_id: 'abc',
+  components: [
+    {
+      components: [
+        {
+          custom_id: 'aa',
+          label: 'label',
+          style: TextInputStyle.Short,
+          type: ComponentType.TextInput,
+        },
+      ],
+      type: ComponentType.ActionRow,
+    },
+  ],
+});

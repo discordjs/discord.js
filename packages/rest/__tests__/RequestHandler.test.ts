@@ -357,9 +357,19 @@ test('Bad Request', async () => {
 });
 
 test('Unauthorized', async () => {
+	const setTokenSpy = jest.spyOn(invalidAuthApi.requestManager, 'setToken');
+
+	// Ensure authless requests don't reset the token
+	const promiseWithoutTokenClear = invalidAuthApi.get('/unauthorized', { auth: false });
+	await expect(promiseWithoutTokenClear).rejects.toThrowError('401: Unauthorized');
+	await expect(promiseWithoutTokenClear).rejects.toBeInstanceOf(DiscordAPIError);
+	expect(setTokenSpy).not.toHaveBeenCalled();
+
+	// Ensure authed requests do reset the token
 	const promise = invalidAuthApi.get('/unauthorized');
 	await expect(promise).rejects.toThrowError('401: Unauthorized');
 	await expect(promise).rejects.toBeInstanceOf(DiscordAPIError);
+	expect(setTokenSpy).toHaveBeenCalledTimes(1);
 });
 
 test('Reject on RateLimit', async () => {

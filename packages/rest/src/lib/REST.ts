@@ -1,6 +1,13 @@
 import { EventEmitter } from 'node:events';
 import { CDN } from './CDN';
-import { InternalRequest, RequestData, RequestManager, RequestMethod, RouteLike } from './RequestManager';
+import {
+	HandlerRequestData,
+	InternalRequest,
+	RequestData,
+	RequestManager,
+	RequestMethod,
+	RouteLike,
+} from './RequestManager';
 import { DefaultRestOptions, RESTEvents } from './utils/constants';
 import type { AgentOptions } from 'node:https';
 import type { RequestInit, Response } from 'node-fetch';
@@ -160,7 +167,7 @@ export interface APIRequest {
 	/**
 	 * The data that was used to form the body of this request
 	 */
-	data: Pick<InternalRequest, 'files' | 'body'>;
+	data: HandlerRequestData;
 	/**
 	 * The number of times this request has been attempted
 	 */
