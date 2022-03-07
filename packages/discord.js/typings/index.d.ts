@@ -538,9 +538,12 @@ export class ButtonComponent extends Component<APIButtonComponent> {
   public get url(): string | null;
 }
 
+export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
+
 export class ButtonBuilder extends BuilderButtonComponent {
   public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
   public static from(other: JSONEncodable<APIButtonComponent> | APIButtonComponent): ButtonBuilder;
+  public override setEmoji(emoji: string | ComponentEmojiResolvable): this;
 }
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
@@ -5302,6 +5305,7 @@ export {
   ApplicationCommandPermissionType,
   APIEmbedField,
   APISelectMenuOption,
+  APIMessageComponentEmoji,
   AuditLogEvent,
   ButtonStyle,
   ChannelType,
