@@ -713,7 +713,7 @@ class Message extends Base {
 
   /**
    * Adds a reaction to the message.
-   * @param {EmojiIdentifierResolvable} emoji The emoji to react with
+   * @param {EmojiIdentifierResolvable|Array<EmojiIdentifierResolvable>} emoji The emoji(s) to react with
    * @returns {Promise<MessageReaction>}
    * @example
    * // React to a message with a unicode emoji
@@ -728,7 +728,14 @@ class Message extends Base {
    */
   async react(emoji) {
     if (!this.channel) throw new Error('CHANNEL_NOT_CACHED');
-    await this.channel.messages.react(this.id, emoji);
+
+    if (Array.isArray(emoji)) {
+      emoji.map(async e => {
+        await this.channel.messages.react(this.id, e);
+      });
+    } else {
+      await this.channel.messages.react(this.id, emoji);
+    }
 
     return this.client.actions.MessageReactionAdd.handle(
       {
