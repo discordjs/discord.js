@@ -2517,8 +2517,9 @@ export class VoiceState extends Base {
   public setMute(mute?: boolean, reason?: string): Promise<GuildMember>;
   public disconnect(reason?: string): Promise<GuildMember>;
   public setChannel(channel: GuildVoiceChannelResolvable | null, reason?: string): Promise<GuildMember>;
-  public setRequestToSpeak(request?: boolean): Promise<void>;
-  public setSuppressed(suppressed?: boolean): Promise<void>;
+  public setRequestToSpeak(request?: boolean): Promise<this>;
+  public setSuppressed(suppressed?: boolean): Promise<this>;
+  public edit(data: VoiceStateEditData): Promise<this>;
 }
 
 export class Webhook extends WebhookMixin() {
@@ -5128,6 +5129,11 @@ export interface Vanity {
 export type VoiceBasedChannelTypes = VoiceBasedChannel['type'];
 
 export type VoiceChannelResolvable = Snowflake | VoiceChannel;
+
+export interface VoiceStateEditData {
+  requestToSpeak?: boolean;
+  suppressed?: boolean;
+}
 
 export type WebhookClientData = WebhookClientDataIdWithToken | WebhookClientDataURL;
 
