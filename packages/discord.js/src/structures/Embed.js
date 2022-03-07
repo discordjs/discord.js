@@ -2,7 +2,7 @@
 
 const { Embed: BuildersEmbed } = require('@discordjs/builders');
 const Transformers = require('../util/Transformers');
-const { Util } = require('../util/Util');
+const Util = require('../util/Util');
 
 /**
  * Represents an embed object
