@@ -4664,7 +4664,7 @@ export interface MessageEditOptions {
   allowedMentions?: MessageMentionOptions;
   components?: (
     | ActionRow<MessageActionRowComponent>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData>)
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
 }
@@ -4705,7 +4705,7 @@ export interface MessageOptions {
   embeds?: (Embed | APIEmbed)[];
   components?: (
     | ActionRow<MessageActionRowComponent>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData>)
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
