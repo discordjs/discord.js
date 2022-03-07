@@ -582,8 +582,10 @@ class WebSocketShard extends EventEmitter {
       }
 
       this.debug(
-        `[WebSocket] did not close properly, assuming a zombie connection. Destroying and reconnecting again.
-        WS State: ${CONNECTION_STATE[this.connection.readyState]} | Close Emitted: ${this.closeEmitted}`,
+        // eslint-disable-next-line max-len
+        `[WebSocket] did not close properly, assuming a zombie connection. Destroying and reconnecting again. WS State: ${
+          CONNECTION_STATE[this.connection.readyState]
+        } | Close Emitted: ${this.closeEmitted}`,
       );
       /**
        * Emitted when a shard's WebSocket is not closed in time.
@@ -901,7 +903,8 @@ class WebSocketShard extends EventEmitter {
 
         // manual destory
         this.connection._socket.destroy();
-        this.connection.emitClose();
+        // Prevent close event from being emitted twice.
+        if (!this.closeEmitted) this.connection.emitClose();
 
         this.debug(
           `[WebSocket] Manually closed the connection. | WS State: ${CONNECTION_STATE[this.connection.readyState]}`,
