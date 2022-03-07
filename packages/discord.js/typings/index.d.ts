@@ -1572,7 +1572,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public crosspost(): Promise<Message>;
   public fetch(force?: boolean): Promise<Message>;
   public pin(reason?: string): Promise<Message>;
-  public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
+  public react(emoji: EmojiIdentifierResolvable | Array<EmojiIdentifierResolvable>): Promise<MessageReaction>;
   public removeAttachments(): Promise<Message>;
   public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
