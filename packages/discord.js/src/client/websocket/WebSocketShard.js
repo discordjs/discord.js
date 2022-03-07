@@ -1,9 +1,9 @@
 'use strict';
 
+const { GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes } = require('discord-api-types/v9');
 const EventEmitter = require('node:events');
 const { setTimeout, setInterval, clearTimeout, clearInterval } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
-const { GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes } = require('discord-api-types/v9');
 const WebSocket = require('../../WebSocket');
 const Events = require('../../util/Events');
 const IntentsBitField = require('../../util/IntentsBitField');
@@ -381,8 +381,8 @@ class WebSocketShard extends EventEmitter {
     // Step 1: Null the connection object
     this.connection = null;
 
-    // Step 2: Set the shard status to DISCONNECTED
-    this.status = Status.DISCONNECTED;
+    // Step 2: Set the shard status to Disconnected
+    this.status = Status.Disconnected;
 
     // Step 3: Cache the old sequence (use to attempt a resume)
     if (this.sequence !== -1) this.closeSequence = this.sequence;
