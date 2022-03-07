@@ -7,4 +7,5 @@ module.exports = {
   Ready: 'ready',
   Resumed: 'resumed',
   AllReady: 'allReady',
+  ZombieConnection: 'zombieConnection',
 };
