@@ -52,7 +52,7 @@ export function validateRequired(required: unknown): asserts required is boolean
 	booleanPredicate.parse(required);
 }
 
-const choicesLengthPredicate = z.number().lte(25);
+const choicesLengthPredicate = s.number.le(25);
 
 export function validateChoicesLength(amountAdding: number, choices?: APIApplicationCommandOptionChoice[]): void {
 	choicesLengthPredicate.parse((choices?.length ?? 0) + amountAdding);

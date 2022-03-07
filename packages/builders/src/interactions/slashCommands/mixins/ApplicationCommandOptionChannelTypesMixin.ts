@@ -18,11 +18,11 @@ export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelT
 
 const channelTypesPredicate = s.array(
 	s.union(
-		allowedChannelTypes.map((type) => z.literal(type)) as [
+		...(allowedChannelTypes.map((type) => s.literal(type)) as [
 			LiteralValidator<ChannelType>,
 			LiteralValidator<ChannelType>,
 			...LiteralValidator<ChannelType>[]
-		],
+		]),
 	),
 );
 
