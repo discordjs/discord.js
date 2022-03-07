@@ -120,6 +120,7 @@ import {
   Embed,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import type { ReadonlyCollection } from '@discordjs/collection';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -1267,7 +1268,7 @@ collector.on('dispose', (vals, ...other) => {
 });
 
 collector.on('end', (collection, reason) => {
-  expectType<Collection<string, Interaction>>(collection);
+  expectType<ReadonlyCollection<string, Interaction>>(collection);
   expectType<string>(reason);
 });
 
