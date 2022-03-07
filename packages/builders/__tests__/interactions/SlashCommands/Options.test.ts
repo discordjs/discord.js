@@ -29,7 +29,7 @@ const getChannelOption = () =>
 		.setName('owo')
 		.setDescription('Testing 123')
 		.setRequired(true)
-		.addChannelType(ChannelType.GuildText);
+		.addChannelTypes(ChannelType.GuildText);
 
 const getStringOption = () =>
 	new SlashCommandStringOption().setName('owo').setDescription('Testing 123').setRequired(true);
@@ -100,7 +100,7 @@ describe('Application Command toJSON() results', () => {
 		});
 
 		expect(
-			getIntegerOption().addChoice({ name: 'uwu', value: 1 }).toJSON(),
+			getIntegerOption().addChoices({ name: 'uwu', value: 1 }).toJSON(),
 		).toEqual<APIApplicationCommandIntegerOption>({
 			name: 'owo',
 			description: 'Testing 123',
@@ -143,15 +143,17 @@ describe('Application Command toJSON() results', () => {
 			choices: [],
 		});
 
-		expect(getNumberOption().addChoice({ name: 'uwu', value: 1 }).toJSON()).toEqual<APIApplicationCommandNumberOption>({
-			name: 'owo',
-			description: 'Testing 123',
-			type: ApplicationCommandOptionType.Number,
-			required: true,
-			max_value: 10,
-			min_value: -1.23,
-			choices: [{ name: 'uwu', value: 1 }],
-		});
+		expect(getNumberOption().addChoices({ name: 'uwu', value: 1 }).toJSON()).toEqual<APIApplicationCommandNumberOption>(
+			{
+				name: 'owo',
+				description: 'Testing 123',
+				type: ApplicationCommandOptionType.Number,
+				required: true,
+				max_value: 10,
+				min_value: -1.23,
+				choices: [{ name: 'uwu', value: 1 }],
+			},
+		);
 	});
 
 	test('GIVEN a role option THEN calling toJSON should return a valid JSON', () => {
@@ -182,7 +184,7 @@ describe('Application Command toJSON() results', () => {
 		});
 
 		expect(
-			getStringOption().addChoice({ name: 'uwu', value: '1' }).toJSON(),
+			getStringOption().addChoices({ name: 'uwu', value: '1' }).toJSON(),
 		).toEqual<APIApplicationCommandStringOption>({
 			name: 'owo',
 			description: 'Testing 123',
