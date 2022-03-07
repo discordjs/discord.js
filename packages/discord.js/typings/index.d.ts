@@ -19,6 +19,7 @@ import {
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
   TextInputBuilder as BuilderTextInputComponent,
+  UnsafeSelectMenuOptionBuilder as BuildersSelectMenuOption,
   spoiler,
   strikethrough,
   time,
@@ -551,6 +552,10 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
     data?: SelectMenuComponentData | (Omit<APISelectMenuComponent, 'type'> & { type?: ComponentType.SelectMenu }),
   );
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
+}
+
+export class SelectMenuOption extends BuildersSelectMenuOption {
+  public setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
 export class TextInputBuilder extends BuilderTextInputComponent {

@@ -1367,7 +1367,11 @@ new SelectMenuBuilder({
 
 new ButtonBuilder({
   style: ButtonStyle.Danger,
-});
+})
+  .setEmoji('<a:foo:123>')
+  .setEmoji('<:foo:123>')
+  // @ts-expect-error
+  .setEmoji(':foobar:123');
 
 // @ts-expect-error
 new EmbedBuilder().setColor('abc');
