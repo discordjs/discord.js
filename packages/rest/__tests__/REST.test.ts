@@ -245,7 +245,7 @@ test('Request and Response Events', async () => {
 			method: 'get',
 			path: '/request',
 			route: '/request',
-			data: { files: undefined, body: undefined },
+			data: { files: undefined, body: undefined, auth: true },
 			retries: 0,
 		}) as APIRequest,
 	);
@@ -254,7 +254,7 @@ test('Request and Response Events', async () => {
 			method: 'get',
 			path: '/request',
 			route: '/request',
-			data: { files: undefined, body: undefined },
+			data: { files: undefined, body: undefined, auth: true },
 			retries: 0,
 		}) as APIRequest,
 		expect.objectContaining({ status: 200, statusText: 'OK' }) as Response,

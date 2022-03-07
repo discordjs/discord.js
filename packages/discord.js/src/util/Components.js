@@ -42,5 +42,17 @@
  /
 
 /**
+ * @typedef {BaseComponentData} TextInputComponentData
+ * @property {string} customId The custom id of the text input
+ * @property {TextInputStyle} style The style of the text input
+ * @property {string} label The text that appears on top of the text input field
+ * @property {?number} minLength The minimum number of characters that can be entered in the text input
+ * @property {?number} maxLength The maximum number of characters that can be entered in the text input
+ * @property {?boolean} required Whether or not the text input is required or not
+ * @property {?string} value The pre-filled text in the text input
+ * @property {?string} placeholder Placeholder for the text input
+ */
+
+/**
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData} ComponentData
  */

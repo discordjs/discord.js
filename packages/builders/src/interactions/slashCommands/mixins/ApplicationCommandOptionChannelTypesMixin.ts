@@ -16,40 +16,33 @@ const allowedChannelTypes = [
 
 export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelTypes[number];
 
-const channelTypePredicate = s.union(
-	...(allowedChannelTypes.map((type) => s.literal(type)) as [
-		LiteralValidator<ChannelType>,
-		LiteralValidator<ChannelType>,
-		...LiteralValidator<ChannelType>[]
-	]),
+const channelTypesPredicate = s.array(
+	s.union(
+		allowedChannelTypes.map((type) => z.literal(type)) as [
+			LiteralValidator<ChannelType>,
+			LiteralValidator<ChannelType>,
+			...LiteralValidator<ChannelType>[]
+		],
+	),
 );
 
 export class ApplicationCommandOptionChannelTypesMixin {
 	public readonly channel_types?: ApplicationCommandOptionAllowedChannelTypes[];
 
 	/**
-	 * Adds a channel type to this option
-	 *
-	 * @param channelType The type of channel to allow
-	 */
-	public addChannelType(channelType: ApplicationCommandOptionAllowedChannelTypes) {
-		if (this.channel_types === undefined) {
-			Reflect.set(this, 'channel_types', []);
-		}
-
-		channelTypePredicate.parse(channelType);
-		this.channel_types!.push(channelType);
-
-		return this;
-	}
-
-	/**
 	 * Adds channel types to this option
 	 *
 	 * @param channelTypes The channel types to add
 	 */
-	public addChannelTypes(channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
-		channelTypes.forEach((channelType) => this.addChannelType(channelType));
+	public addChannelTypes(...channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
+		if (this.channel_types === undefined) {
+			Reflect.set(this, 'channel_types', []);
+		}
+
+		channelTypesPredicate.parse(channelTypes);
+
+		this.channel_types!.push(...channelTypes);
+
 		return this;
 	}
 }
