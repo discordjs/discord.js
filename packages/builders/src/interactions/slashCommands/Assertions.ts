@@ -1,27 +1,27 @@
 import is from '@sindresorhus/is';
 import type { APIApplicationCommandOptionChoice } from 'discord-api-types/v9';
-import { z } from 'zod';
+import { s } from '@sapphire/shapeshift';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
 
-const namePredicate = z
-	.string()
-	.min(1)
-	.max(32)
-	.regex(/^[\P{Lu}\p{N}_-]+$/u);
+const namePredicate = s.string.lengthGe(1).lengthLe(32);
+// TODO: after v2
+// .regex(/^[\P{Lu}\p{N}_-]+$/u);
 
 export function validateName(name: unknown): asserts name is string {
 	namePredicate.parse(name);
 }
 
-const descriptionPredicate = z.string().min(1).max(100);
+const descriptionPredicate = s.string.lengthGe(1).lengthLe(100);
 
 export function validateDescription(description: unknown): asserts description is string {
 	descriptionPredicate.parse(description);
 }
 
-const maxArrayLengthPredicate = z.unknown().array().max(25);
+const maxArrayLengthPredicate = s.unknown.array;
+// TODO: after v2
+// .lengthLe(25);
 
 export function validateMaxOptionsLength(options: unknown): asserts options is ToAPIApplicationCommandOptions[] {
 	maxArrayLengthPredicate.parse(options);
@@ -42,7 +42,7 @@ export function validateRequiredParameters(
 	validateMaxOptionsLength(options);
 }
 
-const booleanPredicate = z.boolean();
+const booleanPredicate = s.boolean;
 
 export function validateDefaultPermission(value: unknown): asserts value is boolean {
 	booleanPredicate.parse(value);

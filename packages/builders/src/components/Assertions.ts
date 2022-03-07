@@ -1,43 +1,46 @@
 import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v9';
-import { z } from 'zod';
+import { s } from '@sapphire/shapeshift';
 import type { SelectMenuOption } from './selectMenu/SelectMenuOption';
 
-export const customIdValidator = z.string().min(1).max(100);
+export const customIdValidator = s.string.lengthGe(1).lengthLte(100);
 
-export const emojiValidator = z
-	.object({
-		id: z.string(),
-		name: z.string(),
-		animated: z.boolean(),
-	})
-	.partial()
-	.strict();
+export const emojiValidator = s.object({
+	id: s.string,
+	name: s.string,
+	animated: s.boolean,
+}).partial.strict;
 
-export const disabledValidator = z.boolean();
+export const disabledValidator = s.boolean;
 
-export const buttonLabelValidator = z.string().nonempty().max(80);
+export const buttonLabelValidator = s.string.lengthGe(1).lengthLe(80);
 
-export const buttonStyleValidator = z.number().int().min(ButtonStyle.Primary).max(ButtonStyle.Link);
+export const buttonStyleValidator = s.enum(ButtonStyle);
+// TODO: after v2
+// .nativeEnum(ButtonStyle);
 
-export const placeholderValidator = z.string().max(100);
-export const minMaxValidator = z.number().int().min(0).max(25);
+export const placeholderValidator = s.string.lengthLe(100);
+export const minMaxValidator = s.number.int.ge(0).le(25);
 
-export const optionsValidator = z.object({}).array().nonempty();
+export const optionsValidator = s.object({}).array;
+// TODO: after v2
+// .lengthGe(1);
 
 export function validateRequiredSelectMenuParameters(options: SelectMenuOption[], customId?: string) {
 	customIdValidator.parse(customId);
 	optionsValidator.parse(options);
 }
 
-export const labelValueValidator = z.string().min(1).max(100);
-export const defaultValidator = z.boolean();
+export const labelValueValidator = s.string.lengthGe(1).lengthLte(100);
+export const defaultValidator = s.boolean;
 
 export function validateRequiredSelectMenuOptionParameters(label?: string, value?: string) {
 	labelValueValidator.parse(label);
 	labelValueValidator.parse(value);
 }
 
-export const urlValidator = z.string().url();
+export const urlValidator = s.string;
+// TODO: after v2
+// .url();
 
 export function validateRequiredButtonParameters(
 	style?: ButtonStyle,
