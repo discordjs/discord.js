@@ -223,7 +223,11 @@ class GuildMemberManager extends CachedManager {
    * @param {GuildListMembersOptions} [options] Options for listing members
    * @returns {Promise<Collection<Snowflake, GuildMember>>}
    */
-  async list({ after, limit, cache = true } = {}) {
+  async list({
+   after,
+   limit,
+   cache = true
+  } = {}) {
     const query = new URLSearchParams({ limit });
     if (after) {
       query.set('after', after);
@@ -286,8 +290,8 @@ class GuildMemberManager extends CachedManager {
     } else {
       endpoint = Routes.guildMember(this.guild.id, id);
     }
-    const d = await this.client.rest.patch(endpoint, { body: _data, data.reason: reason });
 
+    const d = await this.client.rest.patch(endpoint, { body: _data, reason: data.reason });
     const clone = this.cache.get(id)?._clone();
     clone?._patch(d);
     return clone ?? this._add(d, false);
