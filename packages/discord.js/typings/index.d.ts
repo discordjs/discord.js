@@ -6,7 +6,6 @@ import {
   ButtonBuilder as BuilderButtonComponent,
   channelMention,
   codeBlock,
-  ComponentBuilder,
   EmbedBuilder as BuildersEmbed,
   formatEmoji,
   hideLinkEmbed,
@@ -541,16 +540,19 @@ export class ButtonComponent extends Component<APIButtonComponent> {
 
 export class ButtonBuilder extends BuilderButtonComponent {
   public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
+  public static from(other: JSONEncodable<APIButtonComponent> | APIButtonComponent): ButtonBuilder;
 }
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
   public constructor(
     data?: SelectMenuComponentData | (Omit<APISelectMenuComponent, 'type'> & { type?: ComponentType.SelectMenu }),
   );
+  public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
 }
 
 export class TextInputBuilder extends BuilderTextInputComponent {
   public constructor(data?: TextInputComponentData | APITextInputComponent);
+  public static from(other: JSONEncodable<APITextInputComponent> | APITextInputComponent): TextInputBuilder;
 }
 
 export class TextInputComponent extends Component<APITextInputComponent> {
@@ -604,6 +606,7 @@ export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
 export class EmbedBuilder extends BuildersEmbed {
   public constructor(data?: EmbedData | APIEmbed);
   public override setColor(color: ColorResolvable | null): this;
+  public static from(other: JSONEncodable<APIEmbed> | APIEmbed): EmbedBuilder;
 }
 
 export class Embed {

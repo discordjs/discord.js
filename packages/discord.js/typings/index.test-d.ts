@@ -20,6 +20,8 @@ import {
   AuditLogEvent,
   ButtonStyle,
   TextInputStyle,
+  APITextInputComponent,
+  APIEmbed,
 } from 'discord-api-types/v9';
 import {
   ApplicationCommand,
@@ -113,6 +115,9 @@ import {
   EmbedBuilder,
   MessageActionRowComponent,
   SelectMenuBuilder,
+  TextInputBuilder,
+  TextInputComponent,
+  Embed,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 
@@ -1404,3 +1409,27 @@ chatInputInteraction.showModal({
     },
   ],
 });
+
+declare const selectMenuData: APISelectMenuComponent;
+SelectMenuBuilder.from(selectMenuData);
+
+declare const selectMenuComp: SelectMenuComponent;
+SelectMenuBuilder.from(selectMenuComp);
+
+declare const buttonData: APIButtonComponent;
+ButtonBuilder.from(buttonData);
+
+declare const buttonComp: ButtonComponent;
+ButtonBuilder.from(buttonComp);
+
+declare const textInputData: APITextInputComponent;
+TextInputBuilder.from(textInputData);
+
+declare const textInputComp: TextInputComponent;
+TextInputBuilder.from(textInputComp);
+
+declare const embedData: APIEmbed;
+EmbedBuilder.from(embedData);
+
+declare const embedComp: Embed;
+EmbedBuilder.from(embedComp);
