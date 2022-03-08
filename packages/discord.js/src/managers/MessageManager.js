@@ -164,7 +164,7 @@ class MessageManager extends CachedManager {
     message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.rest.put(Routes.channelPins(this.channel.id, message), { reason });
+    await this.client.rest.put(Routes.channelPin(this.channel.id, message), { reason });
   }
 
   /**

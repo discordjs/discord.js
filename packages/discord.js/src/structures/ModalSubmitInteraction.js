@@ -49,6 +49,24 @@ class ModalSubmitInteraction extends Interaction {
     this.fields = new ModalSubmitFieldsResolver(this.components);
 
     /**
+     * Whether the reply to this interaction has been deferred
+     * @type {boolean}
+     */
+    this.deferred = false;
+
+    /**
+     * Whether this interaction has already been replied to
+     * @type {boolean}
+     */
+    this.replied = false;
+
+    /**
+     * Whether the reply to this interaction is ephemeral
+     * @type {?boolean}
+     */
+    this.ephemeral = null;
+
+    /**
      * An associated interaction webhook, can be used to further interact with this interaction
      * @type {InteractionWebhook}
      */

@@ -110,6 +110,10 @@ class GenericAction {
       Partials.GuildScheduledEvent,
     );
   }
+
+  getThreadMember(id, manager) {
+    return this.getPayload({ user_id: id }, manager, id, Partials.ThreadMember, false);
+  }
 }
 
 module.exports = GenericAction;

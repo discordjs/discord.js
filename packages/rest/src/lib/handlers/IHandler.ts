@@ -1,13 +1,14 @@
 import type { RequestInit } from 'node-fetch';
-import type { InternalRequest, RouteData } from '../RequestManager';
+import type { HandlerRequestData, RouteData } from '../RequestManager';
 
 export interface IHandler {
 	queueRequest: (
 		routeId: RouteData,
 		url: string,
 		options: RequestInit,
-		bodyData: Pick<InternalRequest, 'files' | 'body'>,
+		requestData: HandlerRequestData,
 	) => Promise<unknown>;
-	readonly inactive: boolean;
+	// eslint-disable-next-line @typescript-eslint/method-signature-style -- This is meant to be a getter returning a bool
+	get inactive(): boolean;
 	readonly id: string;
 }

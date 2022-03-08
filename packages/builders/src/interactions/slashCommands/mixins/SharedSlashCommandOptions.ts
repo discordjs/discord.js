@@ -85,13 +85,13 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 		input:
 			| SlashCommandStringOption
 			| Omit<SlashCommandStringOption, 'setAutocomplete'>
-			| Omit<SlashCommandStringOption, 'addChoice' | 'addChoices'>
+			| Omit<SlashCommandStringOption, 'addChoices'>
 			| ((
 					builder: SlashCommandStringOption,
 			  ) =>
 					| SlashCommandStringOption
 					| Omit<SlashCommandStringOption, 'setAutocomplete'>
-					| Omit<SlashCommandStringOption, 'addChoice' | 'addChoices'>),
+					| Omit<SlashCommandStringOption, 'addChoices'>),
 	) {
 		return this._sharedAddOptionMethod(input, SlashCommandStringOption);
 	}
@@ -105,13 +105,13 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 		input:
 			| SlashCommandIntegerOption
 			| Omit<SlashCommandIntegerOption, 'setAutocomplete'>
-			| Omit<SlashCommandIntegerOption, 'addChoice' | 'addChoices'>
+			| Omit<SlashCommandIntegerOption, 'addChoices'>
 			| ((
 					builder: SlashCommandIntegerOption,
 			  ) =>
 					| SlashCommandIntegerOption
 					| Omit<SlashCommandIntegerOption, 'setAutocomplete'>
-					| Omit<SlashCommandIntegerOption, 'addChoice' | 'addChoices'>),
+					| Omit<SlashCommandIntegerOption, 'addChoices'>),
 	) {
 		return this._sharedAddOptionMethod(input, SlashCommandIntegerOption);
 	}
@@ -125,13 +125,13 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 		input:
 			| SlashCommandNumberOption
 			| Omit<SlashCommandNumberOption, 'setAutocomplete'>
-			| Omit<SlashCommandNumberOption, 'addChoice' | 'addChoices'>
+			| Omit<SlashCommandNumberOption, 'addChoices'>
 			| ((
 					builder: SlashCommandNumberOption,
 			  ) =>
 					| SlashCommandNumberOption
 					| Omit<SlashCommandNumberOption, 'setAutocomplete'>
-					| Omit<SlashCommandNumberOption, 'addChoice' | 'addChoices'>),
+					| Omit<SlashCommandNumberOption, 'addChoices'>),
 	) {
 		return this._sharedAddOptionMethod(input, SlashCommandNumberOption);
 	}
@@ -140,8 +140,8 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 		input:
 			| T
 			| Omit<T, 'setAutocomplete'>
-			| Omit<T, 'addChoice' | 'addChoices'>
-			| ((builder: T) => T | Omit<T, 'setAutocomplete'> | Omit<T, 'addChoice' | 'addChoices'>),
+			| Omit<T, 'addChoices'>
+			| ((builder: T) => T | Omit<T, 'setAutocomplete'> | Omit<T, 'addChoices'>),
 		Instance: new () => T,
 	): ShouldOmitSubcommandFunctions extends true ? Omit<this, 'addSubcommand' | 'addSubcommandGroup'> : this {
 		const { options } = this;
