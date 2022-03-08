@@ -125,3 +125,4 @@ See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
 nudge in the right direction, please don't hesitate to join our official [discord.js Server](https://discord.gg/djs).
+
