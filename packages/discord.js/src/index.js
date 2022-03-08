@@ -197,6 +197,7 @@ exports.InviteTargetType = require('discord-api-types/v9').InviteTargetType;
 exports.Locale = require('discord-api-types/v9').Locale;
 exports.MessageType = require('discord-api-types/v9').MessageType;
 exports.MessageFlags = require('discord-api-types/v9').MessageFlags;
+exports.ModalBuilder = require('@discordjs/builders').ModalBuilder;
 exports.OAuth2Scopes = require('discord-api-types/v9').OAuth2Scopes;
 exports.PermissionFlagsBits = require('discord-api-types/v9').PermissionFlagsBits;
 exports.RESTJSONErrorCodes = require('discord-api-types/v9').RESTJSONErrorCodes;

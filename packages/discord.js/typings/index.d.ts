@@ -16,7 +16,6 @@ import {
   JSONEncodable,
   MappedComponentTypes,
   memberNicknameMention,
-  Modal as BuilderModal,
   quote,
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
@@ -373,7 +372,9 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
   deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   fetchReply(): Promise<GuildCacheMessage<Cached>>;
   followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
-  showModal(modal: Modal | ModalData | APIModalInteractionResponseCallbackData): Promise<void>;
+  showModal(
+    modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
+  ): Promise<void>;
 }
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
@@ -412,7 +413,9 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  public showModal(modal: Modal | ModalData | APIModalInteractionResponseCallbackData): Promise<void>;
+  public showModal(
+    modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
+  ): Promise<void>;
   private transformOption(
     option: APIApplicationCommandOption,
     resolved: APIApplicationCommandInteractionData['resolved'],
@@ -553,10 +556,6 @@ export class TextInputBuilder extends BuilderTextInputComponent {
 export class TextInputComponent extends Component<APITextInputComponent> {
   public get customId(): string;
   public get value(): string;
-}
-
-export class Modal extends BuilderModal {
-  public constructor(data?: ModalData | APIModalActionRowComponent);
 }
 
 export class SelectMenuComponent extends Component<APISelectMenuComponent> {
@@ -1725,7 +1724,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
-  public showModal(modal: Modal | ModalData | APIModalInteractionResponseCallbackData): Promise<void>;
+  public showModal(
+    modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
+  ): Promise<void>;
 }
 
 export class MessageContextMenuCommandInteraction<
@@ -5367,5 +5368,6 @@ export {
   MessageActionRowComponentBuilder,
   ModalActionRowComponentBuilder,
   UnsafeEmbedBuilder,
+  ModalBuilder,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';

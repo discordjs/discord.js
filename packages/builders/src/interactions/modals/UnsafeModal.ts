@@ -5,7 +5,7 @@ import type {
 } from 'discord-api-types/v9';
 import { ActionRowBuilder, createComponentBuilder, JSONEncodable, ModalActionRowComponentBuilder } from '../../index';
 
-export class UnsafeModal implements JSONEncodable<APIModalInteractionResponseCallbackData> {
+export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResponseCallbackData> {
 	protected readonly data: Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>>;
 	public readonly components: ActionRowBuilder<ModalActionRowComponentBuilder>[] = [];
 
@@ -13,20 +13,6 @@ export class UnsafeModal implements JSONEncodable<APIModalInteractionResponseCal
 		this.data = { ...data };
 		this.components = (components?.map((c) => createComponentBuilder(c)) ??
 			[]) as ActionRowBuilder<ModalActionRowComponentBuilder>[];
-	}
-
-	/**
-	 * The custom id of this modal
-	 */
-	public get customId() {
-		return this.data.custom_id;
-	}
-
-	/**
-	 * The title of this modal
-	 */
-	public get title() {
-		return this.data.title;
 	}
 
 	/**

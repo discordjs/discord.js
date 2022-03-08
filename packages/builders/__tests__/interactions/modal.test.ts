@@ -1,12 +1,18 @@
 import { APIModalInteractionResponseCallbackData, ComponentType, TextInputStyle } from 'discord-api-types/v9';
-import { ActionRowBuilder, ButtonBuilder, Modal, ModalActionRowComponentBuilder, TextInputBuilder } from '../../src';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ModalBuilder,
+	ModalActionRowComponentBuilder,
+	TextInputBuilder,
+} from '../../src';
 import {
 	componentsValidator,
 	titleValidator,
 	validateRequiredParameters,
 } from '../../src/interactions/modals/Assertions';
 
-const modal = () => new Modal();
+const modal = () => new ModalBuilder();
 
 describe('Modals', () => {
 	describe('Assertion Tests', () => {
@@ -75,7 +81,7 @@ describe('Modals', () => {
 			],
 		};
 
-		expect(new Modal(modalData).toJSON()).toEqual(modalData);
+		expect(new ModalBuilder(modalData).toJSON()).toEqual(modalData);
 
 		expect(
 			modal()

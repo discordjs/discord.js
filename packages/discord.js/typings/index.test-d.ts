@@ -59,7 +59,7 @@ import {
   MessageCollector,
   MessageComponentInteraction,
   MessageReaction,
-  Modal,
+  ModalBuilder,
   NewsChannel,
   Options,
   PartialTextBasedChannelFields,
@@ -1383,7 +1383,7 @@ declare const chatInputInteraction: ChatInputCommandInteraction;
 expectType<MessageAttachment>(chatInputInteraction.options.getAttachment('attachment', true));
 expectType<MessageAttachment | null>(chatInputInteraction.options.getAttachment('attachment'));
 
-declare const modal: Modal;
+declare const modal: ModalBuilder;
 
 chatInputInteraction.showModal(modal);
 
