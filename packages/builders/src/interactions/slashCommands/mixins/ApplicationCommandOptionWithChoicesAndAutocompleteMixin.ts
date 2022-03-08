@@ -1,6 +1,6 @@
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v9';
 import { z } from 'zod';
-import { validateMaxChoicesLength } from '../Assertions';
+import { validateChoicesLength } from '../Assertions';
 
 const stringPredicate = z.string().min(1).max(100);
 const numberPredicate = z.number().gt(-Infinity).lt(Infinity);
@@ -17,50 +17,34 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	public readonly type!: ApplicationCommandOptionType;
 
 	/**
-	 * Adds a choice for this option
-	 *
-	 * @param choice The choice to add
-	 */
-	public addChoice(choice: APIApplicationCommandOptionChoice<T>): this {
-		const { name, value } = choice;
-		if (this.autocomplete) {
-			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
-		}
-
-		if (this.choices === undefined) {
-			Reflect.set(this, 'choices', []);
-		}
-
-		validateMaxChoicesLength(this.choices!);
-
-		// Validate name
-		stringPredicate.parse(name);
-
-		// Validate the value
-		if (this.type === ApplicationCommandOptionType.String) {
-			stringPredicate.parse(value);
-		} else {
-			numberPredicate.parse(value);
-		}
-
-		this.choices!.push({ name, value });
-
-		return this;
-	}
-
-	/**
 	 * Adds multiple choices for this option
 	 *
 	 * @param choices The choices to add
 	 */
 	public addChoices(...choices: APIApplicationCommandOptionChoice<T>[]): this {
-		if (this.autocomplete) {
+		if (choices.length > 0 && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
 		choicesPredicate.parse(choices);
 
-		for (const entry of choices) this.addChoice(entry);
+		if (this.choices === undefined) {
+			Reflect.set(this, 'choices', []);
+		}
+
+		validateChoicesLength(choices.length, this.choices);
+
+		for (const { name, value } of choices) {
+			// Validate the value
+			if (this.type === ApplicationCommandOptionType.String) {
+				stringPredicate.parse(value);
+			} else {
+				numberPredicate.parse(value);
+			}
+
+			this.choices!.push({ name, value });
+		}
+
 		return this;
 	}
 
@@ -72,7 +56,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 		choicesPredicate.parse(choices);
 
 		Reflect.set(this, 'choices', []);
-		for (const entry of choices) this.addChoice(entry);
+		this.addChoices(...choices);
 
 		return this;
 	}

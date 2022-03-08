@@ -318,15 +318,6 @@ describe('Embed', () => {
 			});
 		});
 
-		test('GIVEN an embed using Embed#addField THEN returns valid toJSON data', () => {
-			const embed = new Embed();
-			embed.addField({ name: 'foo', value: 'bar' });
-
-			expect(embed.toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'bar' }],
-			});
-		});
-
 		test('GIVEN an embed using Embed#addFields THEN returns valid toJSON data', () => {
 			const embed = new Embed();
 			embed.addFields({ name: 'foo', value: 'bar' });

@@ -113,6 +113,8 @@ export interface InternalRequest extends RequestData {
 	fullRoute: RouteLike;
 }
 
+export type HandlerRequestData = Pick<InternalRequest, 'files' | 'body' | 'auth'>;
+
 /**
  * Parsed route data for an endpoint
  *
@@ -293,7 +295,11 @@ export class RequestManager extends EventEmitter {
 		const { url, fetchOptions } = this.resolveRequest(request);
 
 		// Queue the request
-		return handler.queueRequest(routeId, url, fetchOptions, { body: request.body, files: request.files });
+		return handler.queueRequest(routeId, url, fetchOptions, {
+			body: request.body,
+			files: request.files,
+			auth: request.auth !== false,
+		});
 	}
 
 	/**

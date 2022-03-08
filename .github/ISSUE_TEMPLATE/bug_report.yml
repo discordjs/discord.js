@@ -96,6 +96,7 @@ body:
         - Message
         - Reaction
         - GuildScheduledEvent
+        - ThreadMember
       multiple: true
     validations:
       required: true
