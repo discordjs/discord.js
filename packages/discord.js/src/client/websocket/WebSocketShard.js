@@ -387,7 +387,6 @@ class WebSocketShard extends EventEmitter {
     // Step 3: Cache the old sequence (use to attempt a resume)
     if (this.sequence !== -1) this.closeSequence = this.sequence;
 
-
     /**
      * Emitted when a shard's WebSocket closes.
      * @private
