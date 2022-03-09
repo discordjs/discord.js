@@ -3931,6 +3931,7 @@ export enum ShardEvents {
   Ready = 'ready',
   Resumed = 'resumed',
   AllReady = 'allReady',
+  ZombieConnection = 'zombieConnection',
 }
 
 export enum Status {
