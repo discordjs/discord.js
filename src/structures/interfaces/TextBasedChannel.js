@@ -73,6 +73,7 @@ class TextBasedChannel {
    * @typedef {BaseMessageOptions} MessageOptions
    * @property {ReplyOptions} [reply] The options for replying to a message
    * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
+   * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be set.
    */
 
   /**
@@ -128,7 +129,7 @@ class TextBasedChannel {
    * channel.send({
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
-   *     name: 'file.jpg'
+   *     name: 'file.jpg',
    *     description: 'A description of the file'
    *   }]
    * })
@@ -147,7 +148,7 @@ class TextBasedChannel {
    *   ],
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
-   *     name: 'file.jpg'
+   *     name: 'file.jpg',
    *     description: 'A description of the file'
    *   }]
    * })
@@ -236,7 +237,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Creates a button interaction collector.
+   * Creates a component interaction collector.
    * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
    * @returns {InteractionCollector}
    * @example

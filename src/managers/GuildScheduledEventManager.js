@@ -5,6 +5,7 @@ const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
 const { PrivacyLevels, GuildScheduledEventEntityTypes, GuildScheduledEventStatuses } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
 
 /**
  * Manages API methods for GuildScheduledEvents and stores their cache.
@@ -49,6 +50,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This is required if `entityType` is 'EXTERNAL'</warn>
+   * @property {?(BufferResolvable|Base64Resolvable)} [image] The cover image of the guild scheduled event
    * @property {string} [reason] The reason for creating the guild scheduled event
    */
 
@@ -76,6 +78,7 @@ class GuildScheduledEventManager extends CachedManager {
       scheduledEndTime,
       entityMetadata,
       reason,
+      image,
     } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
@@ -99,6 +102,7 @@ class GuildScheduledEventManager extends CachedManager {
         scheduled_start_time: new Date(scheduledStartTime).toISOString(),
         scheduled_end_time: scheduledEndTime ? new Date(scheduledEndTime).toISOString() : scheduledEndTime,
         description,
+        image: image && (await DataResolver.resolveImage(image)),
         entity_type: entityType,
         entity_metadata,
       },
@@ -172,6 +176,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This can be modified only if `entityType` of the `GuildScheduledEvent` to be edited is 'EXTERNAL'</warn>
+   * @property {?(BufferResolvable|Base64Resolvable)} [image] The cover image of the guild scheduled event
    * @property {string} [reason] The reason for editing the guild scheduled event
    */
 
@@ -197,6 +202,7 @@ class GuildScheduledEventManager extends CachedManager {
       scheduledEndTime,
       entityMetadata,
       reason,
+      image,
     } = options;
 
     if (typeof privacyLevel === 'string') privacyLevel = PrivacyLevels[privacyLevel];
@@ -220,6 +226,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         status,
+        image: image && (await DataResolver.resolveImage(image)),
         entity_metadata,
       },
       reason,
