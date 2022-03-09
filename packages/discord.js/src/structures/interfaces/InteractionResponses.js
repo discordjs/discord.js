@@ -117,7 +117,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : new RepliedInteractionContext(this.client, this.id, this);
+    return options.fetchReply ? this.fetchReply() : new RepliedInteractionContext(this.client, this);
   }
 
   /**

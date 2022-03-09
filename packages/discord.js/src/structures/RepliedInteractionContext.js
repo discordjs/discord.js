@@ -28,8 +28,7 @@ class RepliedInteractionContext {
   createMessageComponentCollector(options = {}) {
     return new InteractionCollector(this.client, {
       ...options,
-      messageInteractionId: this.interaction.interactionId,
-      channelId: this.interaction.channelId,
+      repliedInteractionContext: this,
       interactionType: InteractionType.MessageComponent,
     });
   }

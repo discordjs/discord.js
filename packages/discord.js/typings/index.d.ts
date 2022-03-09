@@ -1537,6 +1537,7 @@ export class InteractionCollector<T extends Interaction> extends Collector<Snowf
   private _handleGuildDeletion(guild: Guild): void;
 
   public channelId: Snowflake | null;
+  public messageInteractionId: Snowflake | null;
   public componentType: ComponentType | null;
   public get endReason(): string | null;
   public guildId: Snowflake | null;
@@ -4675,8 +4676,7 @@ export interface InteractionCollectorOptions<T extends Interaction, Cached exten
   maxComponents?: number;
   maxUsers?: number;
   message?: CacheTypeReducer<Cached, Message, APIMessage>;
-  messageInteractionId?: Snowflake;
-  channelId?: Snowflake;
+  repliedInteractionContext?: RepliedInteractionContext;
 }
 
 export interface InteractionDeferReplyOptions {
