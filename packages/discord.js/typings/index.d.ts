@@ -436,7 +436,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
+  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<PartialInteractionMessage>;
   public showModal(
     modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
@@ -447,6 +447,16 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   private transformResolved(
     resolved: APIApplicationCommandInteractionData['resolved'],
   ): CommandInteractionResolvedData<Cached>;
+}
+
+export class PartialInteractionMessage<Cached extends boolean = boolean> {
+  public interactionId: Snowflake;
+  public channelId: Snowflake;
+  public client: Client;
+
+  public createMessageComponentCollector<T extends MessageComponentType = ComponentType.ActionRow>(
+    options?: MessageCollectorOptionsParams<T, Cached>,
+  ): InteractionCollector<MappedInteractionTypes<Cached>[T]>;
 }
 
 export abstract class BaseGuild extends Base {
@@ -1781,7 +1791,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
+  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<PartialInteractionMessage>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
   public showModal(
@@ -1907,7 +1917,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public replied: boolean;
   public readonly webhook: InteractionWebhook;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
+  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<PartialInteractionMessage>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
@@ -4666,6 +4676,8 @@ export interface InteractionCollectorOptions<T extends Interaction, Cached exten
   maxComponents?: number;
   maxUsers?: number;
   message?: CacheTypeReducer<Cached, Message, APIMessage>;
+  messageInteractionId?: Snowflake;
+  channelId?: Snowflake;
 }
 
 export interface InteractionDeferReplyOptions {

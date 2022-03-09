@@ -13,7 +13,8 @@ const Events = require('../util/Events');
  * @property {number} [max] The maximum total amount of interactions to collect
  * @property {number} [maxComponents] The maximum number of components to collect
  * @property {number} [maxUsers] The maximum number of users to interact
- * @property {Message|APIMessage} [message] The message to listen to interactions from
+ * @property {Snowflake} [channelId] The channel id of the message interaction response
+ * @property {Snowflake} [messageInteractionId] The message with a given interaction id to listen to interactions from
  */
 
 /**
@@ -39,6 +40,12 @@ class InteractionCollector extends Collector {
      * @type {?Snowflake}
      */
     this.messageId = options.message?.id ?? null;
+
+    /**
+     * The message interaction id from which to collect interactions, if provided
+     * @type {?Snowflake}
+     */
+    this.messageInteractionId = options.messageInteractionId ?? null;
 
     /**
      * The channel from which to collect interactions, if provided
@@ -87,7 +94,7 @@ class InteractionCollector extends Collector {
       if (messages.has(this.messageId)) this.stop('messageDelete');
     };
 
-    if (this.messageId) {
+    if (this.messageId || this.messageInteractionId) {
       this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
       this.client.on(Events.MessageDelete, this._handleMessageDeletion);
       this.client.on(Events.MessageBulkDelete, bulkDeleteListener);
@@ -138,6 +145,7 @@ class InteractionCollector extends Collector {
     if (this.interactionType && interaction.type !== this.interactionType) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
+    if (this.messageInteractionId && interaction.message?.interaction?.id !== this.messageInteractionId) return null;
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 
@@ -194,6 +202,10 @@ class InteractionCollector extends Collector {
    */
   _handleMessageDeletion(message) {
     if (message.id === this.messageId) {
+      this.stop('messageDelete');
+    }
+
+    if (message.interaction.id === this.messageInteractionId) {
       this.stop('messageDelete');
     }
   }

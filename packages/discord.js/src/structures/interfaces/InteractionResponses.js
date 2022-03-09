@@ -5,6 +5,7 @@ const { InteractionResponseType, MessageFlags, Routes, InteractionType } = requi
 const { Error } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
 const MessagePayload = require('../MessagePayload');
+const PartialInteractionMessage = require('../PartialInteractionMessage');
 
 /**
  * @typedef {Object} ModalData
@@ -116,7 +117,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new PartialInteractionMessage(this.client, this.id, this.channelId);
   }
 
   /**
