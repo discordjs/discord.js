@@ -157,11 +157,15 @@ class GuildScheduledEvent extends Base {
       this.entityMetadata ??= null;
     }
 
-    /**
-     * The cover image hash for this scheduled event
-     * @type {?string}
-     */
-    this.image = data.image ?? null;
+    if ('image' in data) {
+      /**
+       * The cover image hash for this scheduled event
+       * @type {?string}
+       */
+      this.image = data.image;
+    } else {
+      this.image ??= null;
+    }
   }
 
   /**
