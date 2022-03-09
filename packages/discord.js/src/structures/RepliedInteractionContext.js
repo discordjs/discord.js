@@ -2,16 +2,21 @@
 
 const { InteractionType } = require('discord-api-types/v9');
 
-class PartialInteractionMessage {
-  constructor(client, interactionId, channelId) {
+/**
+ * Represents the context of an interaction that's a been replied to
+ */
+class RepliedInteractionContext {
+  /**
+   * @param {Client} client The client
+   * @param {Interaction} interaction The interaction associated with the response
+   * @private
+   */
+  constructor(client, interaction) {
     /**
-     * The interaction id of the response
+     * The interaction of the response
+     * @type {Interaction}
      */
-    this.interactionId = interactionId;
-    /**
-     * The channel the response was sent in.
-     */
-    this.channelId = channelId;
+    this.interaction = interaction;
     this.client = client;
   }
 
@@ -23,13 +28,12 @@ class PartialInteractionMessage {
   createMessageComponentCollector(options = {}) {
     return new InteractionCollector(this.client, {
       ...options,
-      messageInteractionId: this.interactionId,
-      channelId: this.channelId,
+      messageInteractionId: this.interaction.interactionId,
+      channelId: this.interaction.channelId,
       interactionType: InteractionType.MessageComponent,
     });
   }
 }
 
 const InteractionCollector = require('./InteractionCollector');
-
-module.exports = PartialInteractionMessage;
+module.exports = RepliedInteractionContext;

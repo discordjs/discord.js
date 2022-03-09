@@ -13,8 +13,9 @@ const Events = require('../util/Events');
  * @property {number} [max] The maximum total amount of interactions to collect
  * @property {number} [maxComponents] The maximum number of components to collect
  * @property {number} [maxUsers] The maximum number of users to interact
+ * @property {Message|APIMessage} [message] The message to listen to interactions from
  * @property {Snowflake} [channelId] The channel id of the message interaction response
- * @property {Snowflake} [messageInteractionId] The message with a given interaction id to listen to interactions from
+ * @property {Snowflake} [messageInteractionId] The message with the given interaction id to listen to interactions from
  */
 
 /**

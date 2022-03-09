@@ -136,6 +136,7 @@ exports.PartialGroupDMChannel = require('./structures/PartialGroupDMChannel');
 exports.PermissionOverwrites = require('./structures/PermissionOverwrites');
 exports.Presence = require('./structures/Presence').Presence;
 exports.ReactionCollector = require('./structures/ReactionCollector');
+exports.RepliedInteractionContext = require('./structures/RepliedInteractionContext');
 exports.ReactionEmoji = require('./structures/ReactionEmoji');
 exports.RichPresenceAssets = require('./structures/Presence').RichPresenceAssets;
 exports.Role = require('./structures/Role').Role;
