@@ -737,8 +737,8 @@ class Guild extends AnonymousGuild {
    * @property {string} [name] The name of the guild
    * @property {VerificationLevel|number} [verificationLevel] The verification level of the guild
    * @property {ExplicitContentFilterLevel|number} [explicitContentFilter] The level of the explicit content filter
-   * @property {VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
-   * @property {TextChannelResolvable} [systemChannel] The system channel of the guild
+   * @property {?VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {?TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
@@ -748,11 +748,11 @@ class Guild extends AnonymousGuild {
    * @property {DefaultMessageNotificationLevel|number} [defaultMessageNotifications] The default message notification
    * level of the guild
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
-   * @property {TextChannelResolvable} [rulesChannel] The rules channel of the guild
-   * @property {TextChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
+   * @property {?TextChannelResolvable} [rulesChannel] The rules channel of the guild
+   * @property {?TextChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {string} [preferredLocale] The preferred locale of the guild
    * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
-   * @property {string} [description] The discovery description of the guild
+   * @property {?string} [description] The discovery description of the guild
    * @property {GuildFeature[]} [features] The features of the guild
    */
 
