@@ -1014,24 +1014,27 @@ export class Guild extends AnonymousGuild {
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
   public setBanner(banner: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setDefaultMessageNotifications(
-    defaultMessageNotifications: GuildDefaultMessageNotifications,
+    defaultMessageNotifications: GuildDefaultMessageNotifications | null,
     reason?: string,
   ): Promise<Guild>;
   public setDiscoverySplash(
     discoverySplash: BufferResolvable | Base64Resolvable | null,
     reason?: string,
   ): Promise<Guild>;
-  public setExplicitContentFilter(explicitContentFilter: GuildExplicitContentFilter, reason?: string): Promise<Guild>;
+  public setExplicitContentFilter(
+    explicitContentFilter: GuildExplicitContentFilter | null,
+    reason?: string,
+  ): Promise<Guild>;
   public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
   public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
-  public setPreferredLocale(preferredLocale: Locale, reason?: string): Promise<Guild>;
+  public setPreferredLocale(preferredLocale: Locale | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
-  public setVerificationLevel(verificationLevel: GuildVerificationLevel, reason?: string): Promise<Guild>;
+  public setVerificationLevel(verificationLevel: GuildVerificationLevel | null, reason?: string): Promise<Guild>;
   public setPremiumProgressBarEnabled(enabled?: boolean, reason?: string): Promise<Guild>;
   public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
   public toJSON(): unknown;
@@ -4393,9 +4396,9 @@ export interface GuildWidgetSettings {
 
 export interface GuildEditData {
   name?: string;
-  verificationLevel?: GuildVerificationLevel;
-  explicitContentFilter?: GuildExplicitContentFilter;
-  defaultMessageNotifications?: GuildDefaultMessageNotifications;
+  verificationLevel?: GuildVerificationLevel | null;
+  explicitContentFilter?: GuildExplicitContentFilter | null;
+  defaultMessageNotifications?: GuildDefaultMessageNotifications | null;
   afkChannel?: VoiceChannelResolvable | null;
   systemChannel?: TextChannelResolvable | null;
   systemChannelFlags?: SystemChannelFlagsResolvable;
@@ -4407,7 +4410,7 @@ export interface GuildEditData {
   banner?: BufferResolvable | Base64Resolvable | null;
   rulesChannel?: TextChannelResolvable | null;
   publicUpdatesChannel?: TextChannelResolvable | null;
-  preferredLocale?: Locale;
+  preferredLocale?: Locale | null;
   premiumProgressBarEnabled?: boolean;
   description?: string | null;
   features?: GuildFeature[];
