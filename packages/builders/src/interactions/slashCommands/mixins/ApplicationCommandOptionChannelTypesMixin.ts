@@ -7,7 +7,6 @@ const allowedChannelTypes = [
 	ChannelType.GuildVoice,
 	ChannelType.GuildCategory,
 	ChannelType.GuildNews,
-	ChannelType.GuildStore,
 	ChannelType.GuildNewsThread,
 	ChannelType.GuildPublicThread,
 	ChannelType.GuildPrivateThread,
