@@ -4286,6 +4286,7 @@ export interface ConstantsShardEvents {
   INVALID_SESSION: 'invalidSession';
   READY: 'ready';
   RESUMED: 'resumed';
+  ZOMBIE_CONNECTION: 'zombieConnection';
 }
 
 export interface ConstantsStatus {
