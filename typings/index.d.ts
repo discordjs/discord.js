@@ -4692,8 +4692,8 @@ export interface GuildEditData {
   verificationLevel?: VerificationLevel | number;
   explicitContentFilter?: ExplicitContentFilterLevel | number;
   defaultMessageNotifications?: DefaultMessageNotificationLevel | number;
-  afkChannel?: VoiceChannelResolvable;
-  systemChannel?: TextChannelResolvable;
+  afkChannel?: VoiceChannelResolvable | null;
+  systemChannel?: TextChannelResolvable| null;
   systemChannelFlags?: SystemChannelFlagsResolvable;
   afkTimeout?: number;
   icon?: BufferResolvable | Base64Resolvable | null;
@@ -4701,8 +4701,8 @@ export interface GuildEditData {
   splash?: BufferResolvable | Base64Resolvable | null;
   discoverySplash?: BufferResolvable | Base64Resolvable | null;
   banner?: BufferResolvable | Base64Resolvable | null;
-  rulesChannel?: TextChannelResolvable;
-  publicUpdatesChannel?: TextChannelResolvable;
+  rulesChannel?: TextChannelResolvable | null;
+  publicUpdatesChannel?: TextChannelResolvable | null;
   preferredLocale?: string;
   premiumProgressBarEnabled?: boolean;
   description?: string | null;
