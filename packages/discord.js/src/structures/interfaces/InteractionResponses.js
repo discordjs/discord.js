@@ -4,8 +4,8 @@ const { isJSONEncodable } = require('@discordjs/builders');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { Error } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
+const InteractionReply = require('../InteractionReply');
 const MessagePayload = require('../MessagePayload');
-const RepliedInteractionContext = require('../RepliedInteractionContext');
 
 /**
  * @typedef {Object} ModalData
@@ -83,7 +83,7 @@ class InteractionResponses {
    * Creates a reply to this interaction.
    * <info>Use the `fetchReply` option to get the bot's reply message.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionReply>}
    * @example
    * // Reply to the interaction and fetch the response
    * interaction.reply({ content: 'Pong!', fetchReply: true })
@@ -117,7 +117,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : new RepliedInteractionContext(this.client, this);
+    return options.fetchReply ? this.fetchReply() : new InteractionReply(this);
   }
 
   /**

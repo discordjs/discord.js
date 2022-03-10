@@ -14,7 +14,7 @@ const Events = require('../util/Events');
  * @property {number} [maxComponents] The maximum number of components to collect
  * @property {number} [maxUsers] The maximum number of users to interact
  * @property {Message|APIMessage} [message] The message to listen to interactions from
- * @property {RepliedInteractionContext} repliedInteractionContext The replied interaction context to listen
+ * @property {InteractionReply} interactionReply The interaction reply to listen
  * to message component interactions from
  */
 
@@ -46,14 +46,14 @@ class InteractionCollector extends Collector {
      * The message interaction id from which to collect interactions, if provided
      * @type {?Snowflake}
      */
-    this.messageInteractionId = options.repliedInteractionContext?.interaction.id ?? null;
+    this.messageInteractionId = options.interactionReply?.interaction.id ?? null;
 
     /**
      * The channel from which to collect interactions, if provided
      * @type {?Snowflake}
      */
     this.channelId =
-      options.repliedInteractionContext?.interaction.channelId ??
+      options.interactionReply?.interaction.channelId ??
       options.message?.channelId ??
       options.message?.channel_id ??
       this.client.channels.resolveId(options.channel);
@@ -63,6 +63,7 @@ class InteractionCollector extends Collector {
      * @type {?Snowflake}
      */
     this.guildId =
+      options.interactionReply?.interaction.guildId ??
       options.message?.guildId ??
       options.message?.guild_id ??
       this.client.guilds.resolveId(options.channel?.guild) ??
@@ -170,6 +171,7 @@ class InteractionCollector extends Collector {
     if (this.type && interaction.type !== this.type) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
+    if (this.messageInteractionId && interaction.message?.interaction?.id !== this.messageInteractionId) return null;
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 
