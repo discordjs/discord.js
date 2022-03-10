@@ -18,7 +18,7 @@ export const buttonStyleValidator = s.enum(ButtonStyle);
 // TODO: after v2
 // .nativeEnum(ButtonStyle);
 
-export const placeholderValidator = s.string.lengthLe(100);
+export const placeholderValidator = s.string.lengthLe(150);
 export const minMaxValidator = s.number.int.ge(0).le(25);
 
 export const optionsValidator = s.object({}).array;
