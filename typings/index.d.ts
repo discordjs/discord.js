@@ -4901,9 +4901,9 @@ export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 
 export interface InteractionCollectorOptions<T extends Interaction, Cached extends CacheType = CacheType>
   extends CollectorOptions<[T]> {
-  channel?: TextBasedChannel;
+  channel?: TextBasedChannelResolvable;
   componentType?: MessageComponentType | MessageComponentTypes;
-  guild?: Guild;
+  guild?: GuildResolvable;
   interactionType?: InteractionType | InteractionTypes;
   max?: number;
   maxComponents?: number;
@@ -5628,6 +5628,8 @@ export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, ThreadChanne
 export type GuildTextBasedChannel = Extract<GuildBasedChannel, TextBasedChannel>;
 
 export type TextChannelResolvable = Snowflake | TextChannel;
+
+export type TextBasedChannelResolvable = Snowflake | TextBasedChannel;
 
 export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080 | 'MAX';
 
