@@ -4813,7 +4813,6 @@ export interface PartialChannelData {
     | ChannelType.DM
     | ChannelType.GroupDM
     | ChannelType.GuildNews
-    | ChannelType.GuildStore
     | ChannelType.GuildNewsThread
     | ChannelType.GuildPublicThread
     | ChannelType.GuildPrivateThread

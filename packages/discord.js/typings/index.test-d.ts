@@ -865,9 +865,6 @@ expectType<Message | null>(threadChannel.lastMessage);
 expectType<Message | null>(newsChannel.lastMessage);
 expectType<Message | null>(textChannel.lastMessage);
 
-expectDeprecated(categoryChannelChildManager.create('Store', { type: ChannelType.GuildStore }));
-expectDeprecated(guild.channels.create('Store', { type: ChannelType.GuildStore }));
-
 notPropertyOf(user, 'lastMessage');
 notPropertyOf(user, 'lastMessageId');
 notPropertyOf(guildMember, 'lastMessage');
@@ -950,7 +947,6 @@ declare const categoryChannelChildManager: CategoryChannelChildManager;
   expectType<Promise<VoiceChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildVoice }));
   expectType<Promise<TextChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildText }));
   expectType<Promise<NewsChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildNews }));
-  expectDeprecated(categoryChannelChildManager.create('name', { type: ChannelType.GuildStore }));
   expectType<Promise<StageChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildStageVoice }));
   expectType<Promise<TextChannel>>(categoryChannelChildManager.create('name', {}));
   expectType<Promise<TextChannel>>(categoryChannelChildManager.create('name'));
