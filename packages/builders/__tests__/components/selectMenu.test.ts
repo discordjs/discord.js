@@ -4,8 +4,7 @@ import { SelectMenuComponent, SelectMenuOption } from '../../src/index';
 const selectMenu = () => new SelectMenuComponent();
 const selectMenuOption = () => new SelectMenuOption();
 
-const longStr =
-	'looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong';
+const longStr = 'a'.repeat(256);
 
 const selectMenuOptionData: APISelectMenuOption = {
 	label: 'test',
