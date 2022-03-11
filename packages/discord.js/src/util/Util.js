@@ -1,8 +1,8 @@
 'use strict';
 
-const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v9');
+const { parse } = require('node:path');
 const { fetch } = require('undici');
 const Colors = require('./Colors');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
@@ -189,7 +189,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeInlineCode(text) {
-    return text.replace(/(?<=^|[^`])``?(?=[^`]|$)/g, '\\`');
+    return text.replace(/(?<=^|[^`])``?(?=[^`]|$)/g, match => (match.length === 2 ? '\\`\\`' : '\\`'));
   }
 
   /**
