@@ -22,7 +22,6 @@ export const buttonStyleValidator = z.number().int().min(ButtonStyle.Primary).ma
 export const placeholderValidator = z.string().max(150);
 export const minMaxValidator = z.number().int().min(0).max(25);
 
-export const optionsValidator = z.object({}).array().nonempty();
 export const labelValueDescriptionValidator = z.string().min(1).max(100);
 export const optionValidator = z.object({
 	label: labelValueDescriptionValidator,
@@ -31,6 +30,7 @@ export const optionValidator = z.object({
 	emoji: emojiValidator.optional(),
 	default: z.boolean().optional(),
 });
+export const optionsValidator = optionValidator.array().nonempty();
 export const optionsLengthValidator = z.number().int().min(0).max(25);
 
 export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
