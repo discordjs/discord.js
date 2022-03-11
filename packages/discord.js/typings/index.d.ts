@@ -544,7 +544,7 @@ export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
 export class ButtonBuilder extends BuilderButtonComponent {
   public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
   public static from(other: JSONEncodable<APIButtonComponent> | APIButtonComponent): ButtonBuilder;
-  public override setEmoji(emoji: string | ComponentEmojiResolvable): this;
+  public override setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
@@ -554,7 +554,7 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
 }
 
-export class SelectMenuOption extends BuildersSelectMenuOption {
+export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
   public setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
@@ -5348,7 +5348,6 @@ export {
 export {
   UnsafeButtonBuilder,
   UnsafeSelectMenuBuilder,
-  SelectMenuOptionBuilder,
   UnsafeSelectMenuOptionBuilder,
   MessageActionRowComponentBuilder,
   ModalActionRowComponentBuilder,

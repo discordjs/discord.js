@@ -1,7 +1,6 @@
 'use strict';
 
 const Component = require('./Component');
-const Util = require('../util/Util');
 
 /**
  * Represents a button component
@@ -60,18 +59,6 @@ class ButtonComponent extends Component {
    */
   get url() {
     return this.data.url ?? null;
-  }
-
-  /**
-   * Sets the emoji to display on this button
-   * @param {ComponentEmojiResolvable} emoji The emoji to display on this button
-   * @returns {ButtonComponent}
-   */
-  setEmoji(emoji) {
-    if (typeof emoji === 'string') {
-      return super.setEmoji(Util.parseEmoji(emoji));
-    }
-    return super.setEmoji(emoji);
   }
 }
 

@@ -1370,8 +1370,13 @@ new ButtonBuilder({
 })
   .setEmoji('<a:foo:123>')
   .setEmoji('<:foo:123>')
-  // @ts-expect-error
-  .setEmoji(':foobar:123');
+  .setEmoji('foobar:123')
+  .setEmoji('normal')
+  .setEmoji({
+    name: 'test',
+    id: '123',
+    animated: false,
+  });
 
 // @ts-expect-error
 new EmbedBuilder().setColor('abc');
