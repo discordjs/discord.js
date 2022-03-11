@@ -13,10 +13,10 @@ class Component {
    */
   constructor(data) {
     /**
-     * The API data associated with this button component
+     * The API data associated with this component
      * @type {APIMessageComponent}
      */
-    this.data = { ...data };
+    this.data = data;
   }
 
   /**

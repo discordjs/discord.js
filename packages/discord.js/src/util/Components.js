@@ -76,10 +76,7 @@ class Components extends null {
       case ComponentType.SelectMenu:
         return new SelectMenuComponent(data);
       default:
-        // This is done for future-proofing purposes to prevent
-        // crashes when unknown component types are found.
-        console.warn(`Found unknown component type: ${data.type}`);
-        return new Component(data);
+        throw new Error(`Found unknown component type: ${data.type}`);
     }
   }
 }

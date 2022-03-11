@@ -1,7 +1,6 @@
 import { APIMessageComponent, APIModalComponent, ComponentType } from 'discord-api-types/v9';
 import { ActionRowBuilder, ButtonBuilder, ComponentBuilder, SelectMenuBuilder, TextInputBuilder } from '../index';
 import type { MessageComponentBuilder, ModalComponentBuilder } from './ActionRow';
-import { UnknownComponentBuilder } from './UnknownComponent';
 
 export interface MappedComponentTypes {
 	[ComponentType.ActionRow]: ActionRowBuilder;
@@ -37,7 +36,6 @@ export function createComponentBuilder(
 		default:
 			// @ts-expect-error
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-			console.warn(`Cannot properly serialize component type: ${data.type}`);
-			return new UnknownComponentBuilder(data);
+			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }
