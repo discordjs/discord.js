@@ -232,7 +232,7 @@ export class ActionRowBuilder<
 > extends BuilderActionRow<T> {
   constructor(
     data?:
-      | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>
+      | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData | ActionRowComponent>
       | (Omit<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>, 'type'> & {
           type?: ComponentType.ActionRow;
         }),
@@ -4739,7 +4739,8 @@ export interface MessageEditOptions {
   allowedMentions?: MessageMentionOptions;
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData>)
+    | ActionRow<MessageActionRowComponent>
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
 }
@@ -4780,8 +4781,9 @@ export interface MessageOptions {
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData>)
-    | APIActionRowComponent<APIActionRowComponentTypes>
+    | ActionRow<MessageActionRowComponent>
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
+    | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
