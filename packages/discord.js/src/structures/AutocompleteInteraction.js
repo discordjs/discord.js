@@ -60,20 +60,20 @@ class AutocompleteInteraction extends Interaction {
 
   /**
    * Sends results for the autocomplete of this interaction.
-   * @param {ApplicationCommandOptionChoice[]} options The options for the autocomplete
+   * @param {...ApplicationCommandOptionChoice} options The options for the autocomplete
    * @returns {Promise<void>}
    * @example
    * // respond to autocomplete interaction
-   * interaction.respond([
+   * interaction.respond(
    *  {
    *    name: 'Option 1',
    *    value: 'option1',
    *  },
-   * ])
+   * )
    *  .then(console.log)
    *  .catch(console.error);
    */
-  async respond(options) {
+  async respond(...options) {
     if (this.responded) throw new Error('INTERACTION_ALREADY_REPLIED');
 
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
