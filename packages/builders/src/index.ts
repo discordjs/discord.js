@@ -37,3 +37,5 @@ export * as ContextMenuCommandAssertions from './interactions/contextMenuCommand
 export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder';
 
 export * from './util/jsonEncodable';
+export * from './util/equatable';
+export * from './util/componentUtil';

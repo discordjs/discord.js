@@ -1,24 +1,24 @@
 import {
-  ActionRow as BuilderActionRow,
-  MessageActionRowComponent,
+  ActionRowBuilder as BuilderActionRow,
+  MessageActionRowComponentBuilder,
   blockQuote,
   bold,
-  ButtonComponent as BuilderButtonComponent,
+  ButtonBuilder as BuilderButtonComponent,
   channelMention,
   codeBlock,
-  Component,
-  Embed as BuildersEmbed,
+  EmbedBuilder as BuildersEmbed,
   formatEmoji,
   hideLinkEmbed,
   hyperlink,
   inlineCode,
   italic,
+  JSONEncodable,
+  MappedComponentTypes,
   memberNicknameMention,
-  Modal as BuilderModal,
   quote,
   roleMention,
-  SelectMenuComponent as BuilderSelectMenuComponent,
-  TextInputComponent as BuilderTextInputComponent,
+  SelectMenuBuilder as BuilderSelectMenuComponent,
+  TextInputBuilder as BuilderTextInputComponent,
   spoiler,
   strikethrough,
   time,
@@ -26,7 +26,7 @@ import {
   TimestampStylesString,
   underscore,
   userMention,
-  ModalActionRowComponent,
+  ModalActionRowComponentBuilder,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
@@ -105,6 +105,11 @@ import {
   APITextInputComponent,
   APIModalActionRowComponent,
   APIModalComponent,
+  APISelectMenuOption,
+  APIEmbedField,
+  APIEmbedAuthor,
+  APIEmbedFooter,
+  APIEmbedImage,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -220,8 +225,10 @@ export interface ActionRowData<T extends ActionRowComponent | ActionRowComponent
   components: T[];
 }
 
-export class ActionRow<
-  T extends MessageActionRowComponent | ModalActionRowComponent = MessageActionRowComponent,
+export class ActionRowBuilder<
+  T extends MessageActionRowComponentBuilder | ModalActionRowComponentBuilder =
+    | MessageActionRowComponentBuilder
+    | ModalActionRowComponentBuilder,
 > extends BuilderActionRow<T> {
   constructor(
     data?:
@@ -230,6 +237,14 @@ export class ActionRow<
           type?: ComponentType.ActionRow;
         }),
   );
+}
+
+export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
+export type ModalActionRowComponent = TextInputComponent;
+
+export class ActionRow<T extends MessageActionRowComponent | ModalActionRowComponent> {
+  private constructor(data: APIActionRowComponent<APIMessageActionRowComponent>);
+  public readonly components: T[];
 }
 
 export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
@@ -356,7 +371,9 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
   deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   fetchReply(): Promise<GuildCacheMessage<Cached>>;
   followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
-  showModal(modal: Modal | ModalData | APIModalInteractionResponseCallbackData): Promise<void>;
+  showModal(
+    modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
+  ): Promise<void>;
 }
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
@@ -395,7 +412,9 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  public showModal(modal: Modal | ModalData | APIModalInteractionResponseCallbackData): Promise<void>;
+  public showModal(
+    modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
+  ): Promise<void>;
   private transformOption(
     option: APIApplicationCommandOption,
     resolved: APIApplicationCommandInteractionData['resolved'],
@@ -502,22 +521,53 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
   public inRawGuild(): this is ButtonInteraction<'raw'>;
 }
 
-export class ButtonComponent extends BuilderButtonComponent {
-  public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
+export class Component<T extends APIMessageComponent | APIModalComponent = APIMessageComponent | APIModalComponent> {
+  public readonly data: Readonly<T>;
+  public get type(): T['type'];
+  public toJSON(): T;
+  public equals(other: this | T): boolean;
 }
 
-export class SelectMenuComponent extends BuilderSelectMenuComponent {
+export class ButtonComponent extends Component<APIButtonComponent> {
+  private constructor(data: APIButtonComponent);
+  public get style(): ButtonStyle;
+  public get label(): string | null;
+  public get emoji(): APIMessageComponentEmoji | null;
+  public get disabled(): boolean | null;
+  public get customId(): string | null;
+  public get url(): string | null;
+}
+
+export class ButtonBuilder extends BuilderButtonComponent {
+  public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
+  public static from(other: JSONEncodable<APIButtonComponent> | APIButtonComponent): ButtonBuilder;
+}
+
+export class SelectMenuBuilder extends BuilderSelectMenuComponent {
   public constructor(
     data?: SelectMenuComponentData | (Omit<APISelectMenuComponent, 'type'> & { type?: ComponentType.SelectMenu }),
   );
+  public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
 }
 
-export class TextInputComponent extends BuilderTextInputComponent {
+export class TextInputBuilder extends BuilderTextInputComponent {
   public constructor(data?: TextInputComponentData | APITextInputComponent);
+  public static from(other: JSONEncodable<APITextInputComponent> | APITextInputComponent): TextInputBuilder;
 }
 
-export class Modal extends BuilderModal {
-  public constructor(data?: ModalData | APIModalActionRowComponent);
+export class TextInputComponent extends Component<APITextInputComponent> {
+  public get customId(): string;
+  public get value(): string;
+}
+
+export class SelectMenuComponent extends Component<APISelectMenuComponent> {
+  private constructor(data: APISelectMenuComponent);
+  public get placeholder(): string | null;
+  public get maxValues(): number | null;
+  public get minValues(): number | null;
+  public get customId(): string;
+  public get disabled(): boolean | null;
+  public get options(): APISelectMenuOption[];
 }
 
 export interface EmbedData {
@@ -535,18 +585,43 @@ export interface EmbedData {
   fields?: EmbedFieldData[];
 }
 
-export interface EmbedImageData {
-  url?: string;
+export interface IconData {
+  iconURL?: string;
+  proxyIconURL?: string;
 }
+
+export type EmbedAuthorData = Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'> & IconData;
+
+export type EmbedFooterData = Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'> & IconData;
 
 export interface EmbedProviderData {
   name?: string;
   url?: string;
 }
 
-export class Embed extends BuildersEmbed {
+export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
+  proxyURL?: string;
+}
+
+export class EmbedBuilder extends BuildersEmbed {
   public constructor(data?: EmbedData | APIEmbed);
   public override setColor(color: ColorResolvable | null): this;
+  public static from(other: JSONEncodable<APIEmbed> | APIEmbed): EmbedBuilder;
+}
+
+export class Embed {
+  private constructor(data: APIEmbed);
+  public readonly data: Readonly<APIEmbed>;
+  public get fields(): APIEmbedField[] | null;
+  public get title(): string | null;
+  public get description(): string | null;
+  public get url(): string | null;
+  public get color(): number | null;
+  public get timestamp(): string | null;
+  public get thumbnail(): EmbedImageData | null;
+  public get image(): EmbedImageData | null;
+  public equals(other: Embed | APIEmbed): boolean;
+  public toJSON(): APIEmbed;
 }
 
 export interface MappedChannelCategoryTypes {
@@ -1652,7 +1727,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
-  public showModal(modal: Modal | ModalData | APIModalInteractionResponseCallbackData): Promise<void>;
+  public showModal(
+    modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
+  ): Promise<void>;
 }
 
 export class MessageContextMenuCommandInteraction<
@@ -1741,17 +1818,11 @@ export class MessageReaction {
   public toJSON(): unknown;
 }
 
-export interface ModalFieldData {
-  value: string;
-  type: ComponentType;
-  customId: string;
-}
-
 export class ModalSubmitFieldsResolver {
-  constructor(components: ModalFieldData[][]);
-  public components: ModalFieldData[][];
-  public fields: Collection<string, ModalFieldData>;
-  public getField(customId: string): ModalFieldData;
+  constructor(components: ModalActionRowComponent[][]);
+  public components: ActionRow<ModalActionRowComponent>;
+  public fields: Collection<string, ModalActionRowComponent>;
+  public getField(customId: string): ModalActionRowComponent;
   public getTextInputValue(customId: string): string;
 }
 
@@ -1769,7 +1840,7 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
 
 export interface ModalSubmitActionRow {
   type: ComponentType.ActionRow;
-  components: ModalFieldData[];
+  components: ActionRow<TextInputComponent>[];
 }
 
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
@@ -2450,6 +2521,14 @@ export class Util extends null {
     reason?: string,
   ): Promise<{ id: Snowflake; position: number }[]>;
   public static splitMessage(text: string, options?: SplitOptions): string[];
+}
+
+export class Components extends null {
+  public static createComponentBuilder<T extends keyof MappedComponentTypes>(
+    data: APIMessageComponent & { type: T },
+  ): MappedComponentTypes[T];
+  public static createComponentBuilder<C extends Component>(data: C): C;
+  public static createComponentBuilder(data: APIMessageComponent | Component): Component;
 }
 
 export class Formatters extends null {
@@ -3966,12 +4045,6 @@ export interface EditGuildTemplateOptions {
   description?: string;
 }
 
-export interface EmbedAuthorData {
-  name: string;
-  url?: string;
-  iconURL?: string;
-}
-
 export interface EmbedField {
   name: string;
   value: string;
@@ -3982,11 +4055,6 @@ export interface EmbedFieldData {
   name: string;
   value: string;
   inline?: boolean;
-}
-
-export interface EmbedFooterData {
-  text: string;
-  iconURL?: string;
 }
 
 export type EmojiIdentifierResolvable = string | EmojiResolvable;
@@ -4646,7 +4714,11 @@ export interface MessageCollectorOptions extends CollectorOptions<[Message]> {
   maxProcessed?: number;
 }
 
-export type MessageComponent = Component | ActionRow<MessageActionRowComponent> | ButtonComponent | SelectMenuComponent;
+export type MessageComponent =
+  | Component
+  | ActionRowBuilder<MessageActionRowComponentBuilder | ModalActionRowComponentBuilder>
+  | ButtonComponent
+  | SelectMenuComponent;
 
 export type MessageComponentCollectorOptions<T extends MessageComponentInteraction> = Omit<
   InteractionCollectorOptions<T>,
@@ -4666,6 +4738,7 @@ export interface MessageEditOptions {
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
+    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
     | ActionRow<MessageActionRowComponent>
     | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
     | APIActionRowComponent<APIMessageActionRowComponent>
@@ -4705,8 +4778,9 @@ export interface MessageOptions {
   tts?: boolean;
   nonce?: string | number;
   content?: string | null;
-  embeds?: (Embed | APIEmbed)[];
+  embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
   components?: (
+    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
     | ActionRow<MessageActionRowComponent>
     | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
     | APIActionRowComponent<APIMessageActionRowComponent>
@@ -5255,6 +5329,8 @@ export {
   ApplicationCommandType,
   ApplicationCommandOptionType,
   ApplicationCommandPermissionType,
+  APIEmbedField,
+  APISelectMenuOption,
   AuditLogEvent,
   ButtonStyle,
   ChannelType,
@@ -5290,12 +5366,13 @@ export {
   WebhookType,
 } from 'discord-api-types/v9';
 export {
-  UnsafeButtonComponent,
-  UnsafeSelectMenuComponent,
-  SelectMenuOption,
-  UnsafeSelectMenuOption,
-  MessageActionRowComponent,
-  UnsafeEmbed,
-  ModalActionRowComponent,
+  UnsafeButtonBuilder,
+  UnsafeSelectMenuBuilder,
+  SelectMenuOptionBuilder,
+  UnsafeSelectMenuOptionBuilder,
+  MessageActionRowComponentBuilder,
+  ModalActionRowComponentBuilder,
+  UnsafeEmbedBuilder,
+  ModalBuilder,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
