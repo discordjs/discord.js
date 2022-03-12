@@ -804,6 +804,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public ended: boolean;
   public abstract get endReason(): string | null;
   public filter: CollectorFilter<[V, ...F]>;
+  public onFiltered: CollectorOnFiltered<[V, ...F]>;
   public get next(): Promise<V>;
   public options: CollectorOptions<[V, ...F]>;
   public checkEnd(): boolean;
@@ -3824,8 +3825,11 @@ export interface CloseEvent {
 
 export type CollectorFilter<T extends unknown[]> = (...args: T) => boolean | Promise<boolean>;
 
+export type CollectorOnFiltered<T extends unknown[]> = (...args: T) => Awaitable<void>;
+
 export interface CollectorOptions<T extends unknown[]> {
   filter?: CollectorFilter<T>;
+  onFiltered?: CollectorOnFiltered<T>;
   time?: number;
   idle?: number;
   dispose?: boolean;

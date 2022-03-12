@@ -15,9 +15,17 @@ const Util = require('../../util/Util');
  */
 
 /**
+ * Function to be called when an item is filtered out of the collector
+ * @typedef {Function} CollectorOnFiltered
+ * @param {...*} args Any arguments filtered out by the collector
+ * @returns {void|Promise<void>}
+ */
+
+/**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
  * @property {CollectorFilter} [filter] The filter applied to this collector
+ * @property {CollectorOnFiltered} [onFiltered] The function to call when an item is filtered out of the collector
  * @property {number} [time] How long to run the collector for in milliseconds
  * @property {number} [idle] How long to stop the collector after inactivity in milliseconds
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
@@ -45,6 +53,13 @@ class Collector extends EventEmitter {
      * @returns {boolean|Promise<boolean>}
      */
     this.filter = options.filter ?? (() => true);
+
+    /**
+     * A function to be called when the collector filters out an item
+     * @type {CollectorOnFiltered}
+     * @returns {void|Promise<void>}
+     */
+    this.onFiltered = options.onFiltered ?? (() => undefined);
 
     /**
      * The options of this collector
@@ -96,21 +111,26 @@ class Collector extends EventEmitter {
    * @emits Collector#collect
    */
   async handleCollect(...args) {
-    const collect = await this.collect(...args);
+    const collectedId = await this.collect(...args);
+    const filterResult = await this.filter(...args, this.collected);
 
-    if (collect && (await this.filter(...args, this.collected))) {
-      this.collected.set(collect, args[0]);
+    if (collectedId) {
+      if (filterResult) {
+        this.collected.set(collectedId, args[0]);
 
-      /**
-       * Emitted whenever an element is collected.
-       * @event Collector#collect
-       * @param {...*} args The arguments emitted by the listener
-       */
-      this.emit('collect', ...args);
+        /**
+         * Emitted whenever an element is collected.
+         * @event Collector#collect
+         * @param {...*} args The arguments emitted by the listener
+         */
+        this.emit('collect', ...args);
 
-      if (this._idletimeout) {
-        clearTimeout(this._idletimeout);
-        this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
+        if (this._idletimeout) {
+          clearTimeout(this._idletimeout);
+          this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
+        }
+      } else {
+        this.onFiltered(...args);
       }
     }
     this.checkEnd();
