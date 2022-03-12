@@ -50,7 +50,7 @@ class InteractionResponses {
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferReplyOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionReply>}
    * @example
    * // Defer the reply to this interaction
    * interaction.deferReply()
@@ -76,7 +76,7 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionReply(this);
   }
 
   /**
@@ -180,7 +180,7 @@ class InteractionResponses {
   /**
    * Defers an update to the message to which the component was attached.
    * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionReply>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
@@ -197,7 +197,7 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionReply(this, this.message.interaction.id);
   }
 
   /**
