@@ -1,6 +1,5 @@
 'use strict';
 
-const Embed = require('./Embed');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const {
@@ -12,6 +11,7 @@ const {
 } = require('discord-api-types/v9');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
+const Embed = require('./Embed');
 const InteractionCollector = require('./InteractionCollector');
 const MessageAttachment = require('./MessageAttachment');
 const Mentions = require('./MessageMentions');
