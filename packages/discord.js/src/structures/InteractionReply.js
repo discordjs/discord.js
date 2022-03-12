@@ -7,18 +7,21 @@ const { InteractionType } = require('discord-api-types/v9');
  */
 class InteractionReply {
   /**
-   * @param {Interaction} interaction The interaction associated with this response
+   * @param {Interaction} interaction The interaction associated with this reply
+   * @param {Snowflake?} replyInteractionId The interaction id associated with the original reply
    * @private
    */
-  constructor(interaction) {
-    if (!interaction.replied) {
-      throw new Error('InteractionReply objects can only be instantiated with replied interactions.');
-    }
+  constructor(interaction, replyInteractionId) {
     /**
-     * The interaction associated with this reply
+     * The interaction associated with the interaction reply
      * @type {Interaction}
      */
     this.interaction = interaction;
+    /**
+     * The id of the originally-replied interaction
+     * @type {Snowflake}
+     */
+    this.replyInteractionId = replyInteractionId ?? interaction.id;
     this.client = interaction.client;
   }
 

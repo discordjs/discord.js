@@ -232,7 +232,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionReply(this, this.message.interaction.id);
   }
 
   /**
