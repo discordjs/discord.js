@@ -1,6 +1,6 @@
 'use strict';
 
-const { Embed } = require('@discordjs/builders');
+const Embed = require('./Embed');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const {
