@@ -59,10 +59,10 @@ class Collector extends EventEmitter {
     this.collected = new Collection();
 
     /**
-     * The items filtered out by this collector
+     * The items that were not collected by this collector
      * @type {Collection}
      */
-    this.filtered = new Collection();
+    this.ignored = new Collection();
 
     /**
      * Whether this collector has finished collecting
@@ -121,14 +121,14 @@ class Collector extends EventEmitter {
           this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
         }
       } else {
-        this.filtered.set(collectedId, args[0]);
+        this.ignored.set(collectedId, args[0]);
 
         /**
-         * Emitted whenever an element is filtered out of the collector.
-         * @event Collector#filtered
+         * Emitted whenever an element is not collected by the collector.
+         * @event Collector#ignore
          * @param {...*} args The arguments emitted by the listener
          */
-        this.emit('filtered', ...args);
+        this.emit('ignore', ...args);
       }
     }
     this.checkEnd();
