@@ -222,7 +222,7 @@ export type ActionRowComponentData = MessageActionRowComponentData | ModalAction
 
 export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
 
-export interface ActionRowData<T extends ActionRowComponent | ActionRowComponentData> extends BaseComponentData {
+export interface ActionRowData<T extends ActionRowBuilder | ActionRowComponentData> extends BaseComponentData {
   components: T[];
 }
 
@@ -233,7 +233,7 @@ export class ActionRowBuilder<
 > extends BuilderActionRow<T> {
   constructor(
     data?:
-      | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData | ActionRowComponent>
+      | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData | ActionRowBuilder>
       | (Omit<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>, 'type'> & {
           type?: ComponentType.ActionRow;
         }),
@@ -242,6 +242,9 @@ export class ActionRowBuilder<
 
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
 export type ModalActionRowComponent = TextInputComponent;
+
+export type MessageActionRowBuilder = ButtonBuilder | SelectMenuBuilder;
+export type ModalActionRowBuilder = TextInputBuilder;
 
 export class ActionRow<T extends MessageActionRowComponent | ModalActionRowComponent> {
   private constructor(data: APIActionRowComponent<APIMessageActionRowComponent>);
@@ -4719,14 +4722,14 @@ export type MessageChannelComponentCollectorOptions<T extends MessageComponentIn
 export interface MessageEditOptions {
   attachments?: MessageAttachment[];
   content?: string | null;
-  embeds?: (Embed | APIEmbed)[] | null;
+  embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[] | null;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRow<MessageActionRowComponent>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
+    | ActionRowBuilder<MessageActionRowBuilder>
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | ActionRowBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
 }
@@ -4767,8 +4770,8 @@ export interface MessageOptions {
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRow<MessageActionRowComponent>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
+    | ActionRowBuilder<MessageActionRowBuilder>
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | ActionRowBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
