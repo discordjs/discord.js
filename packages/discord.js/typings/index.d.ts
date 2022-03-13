@@ -222,7 +222,9 @@ export type ActionRowComponentData = MessageActionRowComponentData | ModalAction
 
 export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
 
-export interface ActionRowData<T extends ActionRowBuilder | ActionRowComponentData> extends BaseComponentData {
+export type ActionRowComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
+
+export interface ActionRowData<T extends ActionRowComponentBuilder | ActionRowComponentData> extends BaseComponentData {
   components: T[];
 }
 
@@ -233,7 +235,7 @@ export class ActionRowBuilder<
 > extends BuilderActionRow<T> {
   constructor(
     data?:
-      | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData | ActionRowBuilder>
+      | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData | ActionRowComponentBuilder>
       | (Omit<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>, 'type'> & {
           type?: ComponentType.ActionRow;
         }),
@@ -4728,8 +4730,8 @@ export interface MessageEditOptions {
   allowedMentions?: MessageMentionOptions;
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRowBuilder<MessageActionRowBuilder>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | ActionRowBuilder>)
+    | ActionRowBuilder<MessageActionRowComponentBuilder>
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | ActionRowComponentBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
 }
@@ -4770,8 +4772,8 @@ export interface MessageOptions {
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRowBuilder<MessageActionRowBuilder>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | ActionRowBuilder>)
+    | ActionRowBuilder<MessageActionRowComponentBuilder>
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | ActionRowComponentBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;

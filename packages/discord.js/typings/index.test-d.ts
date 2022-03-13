@@ -100,7 +100,7 @@ import {
   ActionRowBuilder,
   ButtonComponent,
   SelectMenuComponent,
-  MessageActionRowComponentBuilder,
+  MessageActionRowBuilder,
   InteractionResponseFields,
   ThreadChannelType,
   Events,
@@ -752,11 +752,11 @@ client.on('interactionCreate', async interaction => {
 
   if (!interaction.isCommand()) return;
 
-  void new ActionRowBuilder<MessageActionRowComponentBuilder>();
+  void new ActionRowBuilder<MessageActionRowBuilder>();
 
   const button = new ButtonBuilder();
 
-  const actionRow = new ActionRowBuilder<MessageActionRowComponentBuilder>({
+  const actionRow = new ActionRowBuilder<MessageActionRowBuilder>({
     type: ComponentType.ActionRow,
     components: [button.toJSON()],
   });
