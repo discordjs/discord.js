@@ -128,7 +128,6 @@ exports.MessageContextMenuCommandInteraction = require('./structures/MessageCont
 exports.MessageMentions = require('./structures/MessageMentions');
 exports.MessagePayload = require('./structures/MessagePayload');
 exports.MessageReaction = require('./structures/MessageReaction');
-exports.Modal = require('./structures/Modal');
 exports.ModalSubmitInteraction = require('./structures/ModalSubmitInteraction');
 exports.ModalSubmitFieldsResolver = require('./structures/ModalSubmitFieldsResolver');
 exports.NewsChannel = require('./structures/NewsChannel');
