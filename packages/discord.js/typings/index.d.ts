@@ -790,6 +790,7 @@ export { Collection } from '@discordjs/collection';
 
 export interface CollectorEventTypes<K, V, F extends unknown[] = []> {
   collect: [V, ...F];
+  filtered: [V, ...F];
   dispose: [V, ...F];
   end: [collected: Collection<K, V>, reason: string];
 }
@@ -801,10 +802,10 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 
   public readonly client: Client;
   public collected: Collection<K, V>;
+  public filtered: Collection<K, V>;
   public ended: boolean;
   public abstract get endReason(): string | null;
   public filter: CollectorFilter<[V, ...F]>;
-  public onFiltered: CollectorOnFiltered<[V, ...F]>;
   public get next(): Promise<V>;
   public options: CollectorOptions<[V, ...F]>;
   public checkEnd(): boolean;
@@ -1484,11 +1485,11 @@ export class InteractionCollector<T extends Interaction> extends Collector<Snowf
   public collect(interaction: Interaction): Snowflake;
   public empty(): void;
   public dispose(interaction: Interaction): Snowflake;
-  public on(event: 'collect' | 'dispose', listener: (interaction: T) => Awaitable<void>): this;
+  public on(event: 'collect' | 'dispose' | 'filtered', listener: (interaction: T) => Awaitable<void>): this;
   public on(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaitable<void>): this;
   public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 
-  public once(event: 'collect' | 'dispose', listener: (interaction: T) => Awaitable<void>): this;
+  public once(event: 'collect' | 'dispose' | 'filtered', listener: (interaction: T) => Awaitable<void>): this;
   public once(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaitable<void>): this;
   public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 }
@@ -1952,11 +1953,17 @@ export class ReactionCollector extends Collector<Snowflake | string, MessageReac
   public dispose(reaction: MessageReaction, user: User): Snowflake | string | null;
   public empty(): void;
 
-  public on(event: 'collect' | 'dispose' | 'remove', listener: (reaction: MessageReaction, user: User) => void): this;
+  public on(
+    event: 'collect' | 'dispose' | 'remove' | 'filtered',
+    listener: (reaction: MessageReaction, user: User) => void,
+  ): this;
   public on(event: 'end', listener: (collected: Collection<Snowflake, MessageReaction>, reason: string) => void): this;
   public on(event: string, listener: (...args: any[]) => void): this;
 
-  public once(event: 'collect' | 'dispose' | 'remove', listener: (reaction: MessageReaction, user: User) => void): this;
+  public once(
+    event: 'collect' | 'dispose' | 'remove' | 'filtered',
+    listener: (reaction: MessageReaction, user: User) => void,
+  ): this;
   public once(
     event: 'end',
     listener: (collected: Collection<Snowflake, MessageReaction>, reason: string) => void,
@@ -3825,11 +3832,8 @@ export interface CloseEvent {
 
 export type CollectorFilter<T extends unknown[]> = (...args: T) => boolean | Promise<boolean>;
 
-export type CollectorOnFiltered<T extends unknown[]> = (...args: T) => Awaitable<void>;
-
 export interface CollectorOptions<T extends unknown[]> {
   filter?: CollectorFilter<T>;
-  onFiltered?: CollectorOnFiltered<T>;
   time?: number;
   idle?: number;
   dispose?: boolean;

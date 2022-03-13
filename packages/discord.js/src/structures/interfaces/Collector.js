@@ -15,17 +15,9 @@ const Util = require('../../util/Util');
  */
 
 /**
- * Function to be called when an item is filtered out of the collector
- * @typedef {Function} CollectorOnFiltered
- * @param {...*} args Any arguments filtered out by the collector
- * @returns {void|Promise<void>}
- */
-
-/**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
  * @property {CollectorFilter} [filter] The filter applied to this collector
- * @property {CollectorOnFiltered} [onFiltered] The function to call when an item is filtered out of the collector
  * @property {number} [time] How long to run the collector for in milliseconds
  * @property {number} [idle] How long to stop the collector after inactivity in milliseconds
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
@@ -55,13 +47,6 @@ class Collector extends EventEmitter {
     this.filter = options.filter ?? (() => true);
 
     /**
-     * A function to be called when the collector filters out an item
-     * @type {CollectorOnFiltered}
-     * @returns {void|Promise<void>}
-     */
-    this.onFiltered = options.onFiltered ?? (() => undefined);
-
-    /**
      * The options of this collector
      * @type {CollectorOptions}
      */
@@ -72,6 +57,12 @@ class Collector extends EventEmitter {
      * @type {Collection}
      */
     this.collected = new Collection();
+
+    /**
+     * The items filtered out by this collector
+     * @type {Collection}
+     */
+    this.filtered = new Collection();
 
     /**
      * Whether this collector has finished collecting
@@ -130,7 +121,14 @@ class Collector extends EventEmitter {
           this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
         }
       } else {
-        this.onFiltered(...args);
+        this.filtered.set(collectedId, args[0]);
+
+        /**
+         * Emitted whenever an element is filtered out of the collector.
+         * @event Collector#filtered
+         * @param {...*} args The arguments emitted by the listener
+         */
+        this.emit('filtered', ...args);
       }
     }
     this.checkEnd();
