@@ -1,6 +1,5 @@
 'use strict';
 
-const { createComponent, Embed } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const {
@@ -12,6 +11,7 @@ const {
 } = require('discord-api-types/v9');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
+const Embed = require('./Embed');
 const InteractionCollector = require('./InteractionCollector');
 const MessageAttachment = require('./MessageAttachment');
 const Mentions = require('./MessageMentions');
@@ -20,6 +20,7 @@ const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
+const Components = require('../util/Components');
 const { NonSystemMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
@@ -145,7 +146,7 @@ class Message extends Base {
        * A list of MessageActionRows in the message
        * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => createComponent(c));
+      this.components = data.components.map(c => Components.createComponent(c));
     } else {
       this.components = this.components?.slice() ?? [];
     }

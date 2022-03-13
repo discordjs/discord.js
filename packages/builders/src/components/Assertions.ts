@@ -1,6 +1,6 @@
 import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v9';
 import { z } from 'zod';
-import type { SelectMenuOption } from './selectMenu/SelectMenuOption';
+import type { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
 
 export const customIdValidator = z.string().min(1).max(100);
 
@@ -24,7 +24,7 @@ export const minMaxValidator = z.number().int().min(0).max(25);
 
 export const optionsValidator = z.object({}).array().nonempty();
 
-export function validateRequiredSelectMenuParameters(options: SelectMenuOption[], customId?: string) {
+export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
 	customIdValidator.parse(customId);
 	optionsValidator.parse(options);
 }
