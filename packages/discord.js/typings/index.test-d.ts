@@ -1371,7 +1371,7 @@ new ButtonBuilder({
   .setEmoji('<a:foo:123>')
   .setEmoji('<:foo:123>')
   .setEmoji('foobar:123')
-  .setEmoji('normal')
+  .setEmoji('😏')
   .setEmoji({
     name: 'test',
     id: '123',
