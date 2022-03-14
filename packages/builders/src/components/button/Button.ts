@@ -21,8 +21,6 @@ import { UnsafeButtonBuilder } from './UnsafeButton';
  */
 export class ButtonBuilder extends UnsafeButtonBuilder {
 	public override setStyle(style: ButtonStyle) {
-		// TODO: after v2
-		// @ts-expect-error
 		return super.setStyle(buttonStyleValidator.parse(style));
 	}
 

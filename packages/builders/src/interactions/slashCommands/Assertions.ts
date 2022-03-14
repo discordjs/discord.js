@@ -5,9 +5,10 @@ import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOp
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
 
-const namePredicate = s.string.lengthGe(1).lengthLe(32);
-// TODO: after v2
-// .regex(/^[\P{Lu}\p{N}_-]+$/u);
+const namePredicate = s.string
+	.lengthGe(1)
+	.lengthLe(32)
+	.regex(/^[\P{Lu}\p{N}_-]+$/u);
 
 export function validateName(name: unknown): asserts name is string {
 	namePredicate.parse(name);
@@ -19,9 +20,7 @@ export function validateDescription(description: unknown): asserts description i
 	descriptionPredicate.parse(description);
 }
 
-const maxArrayLengthPredicate = s.unknown.array;
-// TODO: after v2
-// .lengthLe(25);
+const maxArrayLengthPredicate = s.unknown.array.lengthLe(25);
 
 export function validateMaxOptionsLength(options: unknown): asserts options is ToAPIApplicationCommandOptions[] {
 	maxArrayLengthPredicate.parse(options);

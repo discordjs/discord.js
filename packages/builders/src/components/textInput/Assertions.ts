@@ -2,10 +2,7 @@ import { TextInputStyle } from 'discord-api-types/v9';
 import { s } from '@sapphire/shapeshift';
 import { customIdValidator } from '../Assertions';
 
-export const textInputStyleValidator = s
-	// TODO: after v2
-	.enum(TextInputStyle);
-// .nativeEnum(TextInputStyle);
+export const textInputStyleValidator = s.nativeEnum(TextInputStyle);
 export const minLengthValidator = s.number.int.ge(0).le(4000);
 export const maxLengthValidator = s.number.int.ge(1).le(4000);
 export const requiredValidator = s.boolean;

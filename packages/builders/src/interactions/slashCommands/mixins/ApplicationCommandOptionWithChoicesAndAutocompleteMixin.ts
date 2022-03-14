@@ -4,8 +4,6 @@ import { validateChoicesLength } from '../Assertions';
 
 const stringPredicate = s.string.lengthGe(1).lengthLe(100);
 const numberPredicate = s.number.gt(-Infinity).lt(Infinity);
-// TODO: after v2
-// @ts-expect-error
 const choicesPredicate = s.object({ name: stringPredicate, value: s.union(stringPredicate, numberPredicate) }).array;
 const booleanPredicate = s.boolean;
 

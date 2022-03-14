@@ -23,22 +23,20 @@ export function validateFieldLength(amountAdding: number, fields?: APIEmbedField
 
 export const authorNamePredicate = fieldNamePredicate.nullable;
 
-export const urlPredicate =
-	// TODO: after v2
-	// .url()
-	s.string.nullish;
+export const urlPredicate = s.string.url({
+	allowedProtocols: ['http:', 'https:'],
+}).nullish;
 
 export const RGBPredicate = s.number.int.ge(0).le(255);
-export const colorPredicate = s.number.int.ge(0).le(0xffffff).nullable;
-// TODO: after v2
-// .or(s.tuple(RGBPredicate, RGBPredicate, RGBPredicate));
+export const colorPredicate = s.number.int
+	.ge(0)
+	.le(0xffffff)
+	.or(s.tuple([RGBPredicate, RGBPredicate, RGBPredicate])).nullable;
 
 export const descriptionPredicate = s.string.lengthGe(1).lengthLe(4096).nullable;
 
 export const footerTextPredicate = s.string.lengthGe(1).lengthLe(2048).nullable;
 
-// TODO: after v2
-// @ts-expect-error
 export const timestampPredicate = s.union(s.number, s.date).nullable;
 
 export const titlePredicate = fieldNamePredicate.nullable;

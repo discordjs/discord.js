@@ -2,7 +2,7 @@ import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v9';
 import { s } from '@sapphire/shapeshift';
 import type { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
 
-export const customIdValidator = s.string.lengthGe(1).lengthLte(100);
+export const customIdValidator = s.string.lengthGe(1).lengthLe(100);
 
 export const emojiValidator = s.object({
 	id: s.string,
@@ -14,23 +14,19 @@ export const disabledValidator = s.boolean;
 
 export const buttonLabelValidator = s.string.lengthGe(1).lengthLe(80);
 
-export const buttonStyleValidator = s.enum(ButtonStyle);
-// TODO: after v2
-// .nativeEnum(ButtonStyle);
+export const buttonStyleValidator = s.nativeEnum(ButtonStyle);
 
 export const placeholderValidator = s.string.lengthLe(150);
 export const minMaxValidator = s.number.int.ge(0).le(25);
 
-export const optionsValidator = s.object({}).array;
-// TODO: after v2
-// .lengthGe(1);
+export const optionsValidator = s.object({}).array.lengthGe(1);
 
 export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
 	customIdValidator.parse(customId);
 	optionsValidator.parse(options);
 }
 
-export const labelValueValidator = s.string.lengthGe(1).lengthLte(100);
+export const labelValueValidator = s.string.lengthGe(1).lengthLe(100);
 export const defaultValidator = s.boolean;
 
 export function validateRequiredSelectMenuOptionParameters(label?: string, value?: string) {
@@ -38,9 +34,9 @@ export function validateRequiredSelectMenuOptionParameters(label?: string, value
 	labelValueValidator.parse(value);
 }
 
-export const urlValidator = s.string;
-// TODO: after v2
-// .url();
+export const urlValidator = s.string.url({
+	allowedProtocols: ['http:', 'https:', 'discord:'],
+});
 
 export function validateRequiredButtonParameters(
 	style?: ButtonStyle,
