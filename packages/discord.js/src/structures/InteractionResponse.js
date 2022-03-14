@@ -5,7 +5,7 @@ const { InteractionType } = require('discord-api-types/v9');
 /**
  * Represents an interaction's response
  */
-class InteractionReply {
+class InteractionResponse {
   /**
    * @param {Interaction} interaction The interaction associated with this reply
    * @param {Snowflake?} replyInteractionId The interaction id associated with the original reply
@@ -51,11 +51,11 @@ class InteractionReply {
   createMessageComponentCollector(options = {}) {
     return new InteractionCollector(this.client, {
       ...options,
-      interactionReply: this,
+      interactionResponse: this,
       interactionType: InteractionType.MessageComponent,
     });
   }
 }
 
 const InteractionCollector = require('./InteractionCollector');
-module.exports = InteractionReply;
+module.exports = InteractionResponse;

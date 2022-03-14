@@ -14,7 +14,7 @@ const Events = require('../util/Events');
  * @property {number} [maxComponents] The maximum number of components to collect
  * @property {number} [maxUsers] The maximum number of users to interact
  * @property {Message|APIMessage} [message] The message to listen to interactions from
- * @property {InteractionReply} interactionReply The interaction reply to listen
+ * @property {InteractionResponse} interactionResponse The interaction response to listen
  * to message component interactions from
  */
 
@@ -46,14 +46,14 @@ class InteractionCollector extends Collector {
      * The message interaction id from which to collect interactions, if provided
      * @type {?Snowflake}
      */
-    this.messageInteractionId = options.interactionReply?.replyInteractionId ?? null;
+    this.messageInteractionId = options.interactionResponse?.replyInteractionId ?? null;
 
     /**
      * The channel from which to collect interactions, if provided
      * @type {?Snowflake}
      */
     this.channelId =
-      options.interactionReply?.interaction.channelId ??
+      options.interactionResponse?.interaction.channelId ??
       options.message?.channelId ??
       options.message?.channel_id ??
       this.client.channels.resolveId(options.channel);
@@ -63,7 +63,7 @@ class InteractionCollector extends Collector {
      * @type {?Snowflake}
      */
     this.guildId =
-      options.interactionReply?.interaction.guildId ??
+      options.interactionResponse?.interaction.guildId ??
       options.message?.guildId ??
       options.message?.guild_id ??
       this.client.guilds.resolveId(options.channel?.guild) ??
