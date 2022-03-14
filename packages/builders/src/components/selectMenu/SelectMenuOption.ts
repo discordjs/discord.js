@@ -5,12 +5,12 @@ import {
 	labelValueValidator,
 	validateRequiredSelectMenuOptionParameters,
 } from '../Assertions';
-import { UnsafeSelectMenuOption } from './UnsafeSelectMenuOption';
+import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
 
 /**
  * Represents a validated option within a select menu component
  */
-export class SelectMenuOption extends UnsafeSelectMenuOption {
+export class SelectMenuOptionBuilder extends UnsafeSelectMenuOptionBuilder {
 	public override setDescription(description: string) {
 		return super.setDescription(labelValueValidator.parse(description));
 	}
@@ -24,7 +24,7 @@ export class SelectMenuOption extends UnsafeSelectMenuOption {
 	}
 
 	public override toJSON(): APISelectMenuOption {
-		validateRequiredSelectMenuOptionParameters(this.label, this.value);
+		validateRequiredSelectMenuOptionParameters(this.data.label, this.data.value);
 		return super.toJSON();
 	}
 }

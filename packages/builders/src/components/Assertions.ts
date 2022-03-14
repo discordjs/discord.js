@@ -1,6 +1,6 @@
 import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v9';
 import { s } from '@sapphire/shapeshift';
-import type { SelectMenuOption } from './selectMenu/SelectMenuOption';
+import type { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
 
 export const customIdValidator = s.string.lengthGe(1).lengthLte(100);
 
@@ -25,7 +25,7 @@ export const optionsValidator = s.object({}).array;
 // TODO: after v2
 // .lengthGe(1);
 
-export function validateRequiredSelectMenuParameters(options: SelectMenuOption[], customId?: string) {
+export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
 	customIdValidator.parse(customId);
 	optionsValidator.parse(options);
 }
