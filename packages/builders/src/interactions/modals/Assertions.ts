@@ -3,7 +3,7 @@ import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../..';
 import { customIdValidator } from '../../components/Assertions';
 
 export const titleValidator = s.string.lengthGe(1).lengthLe(45);
-export const componentsValidator = s.array(s.instance(ActionRowBuilder)).lengthGe(1);
+export const componentsValidator = s.instance(ActionRowBuilder).array.lengthGe(1);
 
 export function validateRequiredParameters(
 	customId?: string,
