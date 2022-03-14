@@ -1,8 +1,8 @@
 import { APISelectMenuComponent, APISelectMenuOption, ComponentType } from 'discord-api-types/v9';
-import { SelectMenuComponent, SelectMenuOption } from '../../src/index';
+import { SelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index';
 
-const selectMenu = () => new SelectMenuComponent();
-const selectMenuOption = () => new SelectMenuOption();
+const selectMenu = () => new SelectMenuBuilder();
+const selectMenuOption = () => new SelectMenuOptionBuilder();
 
 const longStr = 'a'.repeat(256);
 
@@ -44,8 +44,8 @@ describe('Select Menu Components', () => {
 				.setEmoji({ name: 'test' })
 				.setDescription('description');
 			expect(() => selectMenu().addOptions(option)).not.toThrowError();
-			expect(() => selectMenu().setOptions([option])).not.toThrowError();
-			expect(() => selectMenu().setOptions([{ label: 'test', value: 'test' }])).not.toThrowError();
+			expect(() => selectMenu().setOptions(option)).not.toThrowError();
+			expect(() => selectMenu().setOptions({ label: 'test', value: 'test' })).not.toThrowError();
 		});
 
 		test('GIVEN invalid inputs THEN Select Menu does throw', () => {
@@ -70,16 +70,11 @@ describe('Select Menu Components', () => {
 
 		test('GIVEN valid JSON input THEN valid JSON history is correct', () => {
 			expect(
-				new SelectMenuComponent(selectMenuDataWithoutOptions)
-					.addOptions(new SelectMenuOption(selectMenuOptionData))
+				new SelectMenuBuilder(selectMenuDataWithoutOptions)
+					.addOptions(new SelectMenuOptionBuilder(selectMenuOptionData))
 					.toJSON(),
 			).toEqual(selectMenuData);
-			expect(new SelectMenuOption(selectMenuOptionData).toJSON()).toEqual(selectMenuOptionData);
-		});
-
-		test('Given JSON data THEN builder is equal to it and itself', () => {
-			expect(new SelectMenuComponent(selectMenuData).equals(selectMenuData)).toBeTruthy();
-			expect(new SelectMenuComponent(selectMenuData).equals(new SelectMenuComponent(selectMenuData))).toBeTruthy();
+			expect(new SelectMenuOptionBuilder(selectMenuOptionData).toJSON()).toEqual(selectMenuOptionData);
 		});
 	});
 });
