@@ -1,6 +1,7 @@
 import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v10';
 import { z } from 'zod';
 import type { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
+import { UnsafeSelectMenuOptionBuilder } from './selectMenu/UnsafeSelectMenuOption';
 
 export const customIdValidator = z.string().min(1).max(100);
 
@@ -23,13 +24,16 @@ export const placeholderValidator = z.string().max(150);
 export const minMaxValidator = z.number().int().min(0).max(25);
 
 export const labelValueDescriptionValidator = z.string().min(1).max(100);
-export const optionValidator = z.object({
-	label: labelValueDescriptionValidator,
-	value: labelValueDescriptionValidator,
-	description: labelValueDescriptionValidator.optional(),
-	emoji: emojiValidator.optional(),
-	default: z.boolean().optional(),
-});
+export const optionValidator = z.union([
+	z.object({
+		label: labelValueDescriptionValidator,
+		value: labelValueDescriptionValidator,
+		description: labelValueDescriptionValidator.optional(),
+		emoji: emojiValidator.optional(),
+		default: z.boolean().optional(),
+	}),
+	z.instanceof(UnsafeSelectMenuOptionBuilder),
+]);
 export const optionsValidator = optionValidator.array().nonempty();
 export const optionsLengthValidator = z.number().int().min(0).max(25);
 

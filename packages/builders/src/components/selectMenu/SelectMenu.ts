@@ -41,7 +41,7 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 			...options.map((option) =>
 				option instanceof UnsafeSelectMenuOptionBuilder
 					? option
-					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse(option)),
+					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse(option) as APISelectMenuOption),
 			),
 		);
 		return this;
@@ -55,7 +55,7 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 			...options.map((option) =>
 				option instanceof UnsafeSelectMenuOptionBuilder
 					? option
-					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse(option)),
+					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse(option) as APISelectMenuOption),
 			),
 		);
 		return this;
