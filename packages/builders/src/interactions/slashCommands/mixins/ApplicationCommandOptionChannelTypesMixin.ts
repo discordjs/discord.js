@@ -16,9 +16,7 @@ const allowedChannelTypes = [
 
 export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelTypes[number];
 
-const channelTypesPredicate = s.array(
-	s.union(...allowedChannelTypes.map((type) => s.literal(type))),
-);
+const channelTypesPredicate = s.array(s.union(...allowedChannelTypes.map((type) => s.literal(type))));
 
 export class ApplicationCommandOptionChannelTypesMixin {
 	public readonly channel_types?: ApplicationCommandOptionAllowedChannelTypes[];
@@ -33,9 +31,7 @@ export class ApplicationCommandOptionChannelTypesMixin {
 			Reflect.set(this, 'channel_types', []);
 		}
 
-		channelTypesPredicate.parse(channelTypes);
-
-		this.channel_types!.push(...channelTypes);
+		this.channel_types!.push(...channelTypesPredicate.parse(channelTypes));
 
 		return this;
 	}
