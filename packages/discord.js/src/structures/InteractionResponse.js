@@ -7,21 +7,21 @@ const { InteractionType } = require('discord-api-types/v9');
  */
 class InteractionResponse {
   /**
-   * @param {Interaction} interaction The interaction associated with this reply
-   * @param {Snowflake?} replyInteractionId The interaction id associated with the original reply
+   * @param {Interaction} interaction The interaction associated with this response
+   * @param {Snowflake?} responseInteractionId The interaction id associated with the original response
    * @private
    */
-  constructor(interaction, replyInteractionId) {
+  constructor(interaction, responseInteractionId) {
     /**
-     * The interaction associated with the interaction reply
+     * The interaction associated with the interaction response
      * @type {Interaction}
      */
     this.interaction = interaction;
     /**
-     * The id of the originally-replied interaction
+     * The id of the original interaction response
      * @type {Snowflake}
      */
-    this.replyInteractionId = replyInteractionId ?? interaction.id;
+    this.responseInteractionId = responseInteractionId ?? interaction.id;
     this.client = interaction.client;
   }
 
