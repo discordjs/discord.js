@@ -1,5 +1,5 @@
 import { ChannelType } from 'discord-api-types/v9';
-import { s, LiteralValidator } from '@sapphire/shapeshift';
+import { s } from '@sapphire/shapeshift';
 
 // Only allow valid channel types to be used. (This can't be dynamic because const enums are erased at runtime)
 const allowedChannelTypes = [
@@ -17,13 +17,7 @@ const allowedChannelTypes = [
 export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelTypes[number];
 
 const channelTypesPredicate = s.array(
-	s.union(
-		...(allowedChannelTypes.map((type) => s.literal(type)) as [
-			LiteralValidator<ChannelType>,
-			LiteralValidator<ChannelType>,
-			...LiteralValidator<ChannelType>[]
-		]),
-	),
+	s.union(...allowedChannelTypes.map((type) => s.literal(type))),
 );
 
 export class ApplicationCommandOptionChannelTypesMixin {
