@@ -559,12 +559,12 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   setWsCloseTimeout(time) {
+    if (this.wsCloseTimeout) {
+      this.debug('Clearing the WebSocket close timeout.');
+      clearTimeout(this.wsCloseTimeout);
+    }
     if (time === -1) {
-      if (this.wsCloseTimeout) {
-        this.debug('Clearing the WebSocket close timeout.');
-        clearTimeout(this.wsCloseTimeout);
-        this.wsCloseTimeout = null;
-      }
+      this.wsCloseTimeout = null;
       return;
     }
     this.wsCloseTimeout = setTimeout(() => {
@@ -814,7 +814,6 @@ class WebSocketShard extends EventEmitter {
             }. Forcefully terminating the connection | WS State: ${CONNECTION_STATE[this.connection.readyState]}`,
           );
           this.connection.terminate();
-          // No-op
         }
         // Emit the destroyed event if needed
         if (emit) this._emitDestroyed();
@@ -901,7 +900,7 @@ class WebSocketShard extends EventEmitter {
          * _socket.destroy() emits the close event and makes the readyState to CLOSED.
          */
 
-        // manual destory
+        // manual destroy
         this.connection._socket.destroy();
         // Prevent close event from being emitted twice.
         if (!this.closeEmitted) this.connection.emitClose();
