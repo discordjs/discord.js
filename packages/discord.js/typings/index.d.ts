@@ -5345,5 +5345,7 @@ export {
   ModalActionRowComponentBuilder,
   UnsafeEmbedBuilder,
   ModalBuilder,
+  UnsafeModalBuilder,
+  UnsafeTextInputBuilder,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
