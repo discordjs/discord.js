@@ -212,7 +212,7 @@ class GuildMemberManager extends CachedManager {
    * @returns {Promise<GuildMember>}
    */
   fetchOwner(options) {
-    return this.fetch({ ...options, user: this.ownerId });
+    return this.fetch({ ...options, user: this.guild.ownerId });
   }
 
   /**
