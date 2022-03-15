@@ -11,6 +11,7 @@ const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
 const Events = require('../util/Events');
+const Partials = require('../util/Partials');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -120,6 +121,20 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
+   * The client user as a GuildMember of this guild
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get me() {
+    return (
+      this.resolve(this.client.user.id) ??
+      (this.client.options.partials.includes(Partials.GuildMember)
+        ? this._add({ user: { id: this.client.user.id } }, true)
+        : null)
+    );
+  }
+
+  /**
    * Options used to fetch a single member from a guild.
    * @typedef {BaseFetchOptions} FetchMemberOptions
    * @property {UserResolvable} user The user to fetch
@@ -188,6 +203,16 @@ class GuildMemberManager extends CachedManager {
       if (!options.limit && !options.withPresences) return this._fetchSingle(options);
     }
     return this._fetchMany(options);
+  }
+
+  /**
+   * Fetches the owner of the guild.
+   * If the member object isn't needed, use {@link Guild#ownerId} instead.
+   * @param {BaseFetchOptions} [options] The options for fetching the member
+   * @returns {Promise<GuildMember>}
+   */
+  fetchOwner(options) {
+    return this.fetch({ ...options, user: this.ownerId });
   }
 
   /**

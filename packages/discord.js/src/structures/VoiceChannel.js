@@ -31,7 +31,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return (
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.Speak, false)
     );
   }

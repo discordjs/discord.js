@@ -583,7 +583,7 @@ class Message extends Base {
     return Boolean(
       this.author.id === this.client.user.id ||
         (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
-          this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
+          this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()),
     );
   }
 

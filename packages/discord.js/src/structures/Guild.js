@@ -23,7 +23,6 @@ const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
-const Partials = require('../util/Partials');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const Util = require('../util/Util');
@@ -446,16 +445,6 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Fetches the owner of the guild.
-   * If the member object isn't needed, use {@link Guild#ownerId} instead.
-   * @param {BaseFetchOptions} [options] The options for fetching the member
-   * @returns {Promise<GuildMember>}
-   */
-  fetchOwner(options) {
-    return this.members.fetch({ ...options, user: this.ownerId });
-  }
-
-  /**
    * AFK voice channel for this guild
    * @type {?VoiceChannel}
    * @readonly
@@ -498,20 +487,6 @@ class Guild extends AnonymousGuild {
    */
   get publicUpdatesChannel() {
     return this.client.channels.resolve(this.publicUpdatesChannelId);
-  }
-
-  /**
-   * The client user as a GuildMember of this guild
-   * @type {?GuildMember}
-   * @readonly
-   */
-  get me() {
-    return (
-      this.members.resolve(this.client.user.id) ??
-      (this.client.options.partials.includes(Partials.GuildMember)
-        ? this.members._add({ user: { id: this.client.user.id } }, true)
-        : null)
-    );
   }
 
   /**
@@ -1030,7 +1005,7 @@ class Guild extends AnonymousGuild {
    * @example
    * // Edit the guild owner
    * guild.setOwner(guild.members.cache.first())
-   *  .then(guild => guild.fetchOwner())
+   *  .then(guild => guild.members.fetchOwner())
    *  .then(owner => console.log(`Updated the guild owner to ${owner.displayName}`))
    *  .catch(console.error);
    */

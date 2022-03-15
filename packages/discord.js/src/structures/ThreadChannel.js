@@ -475,7 +475,7 @@ class ThreadChannel extends Channel {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return (
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.ManageThreads, false)
     );
   }
@@ -507,7 +507,7 @@ class ThreadChannel extends Channel {
       !(this.archived && this.locked && !this.manageable) &&
       (this.type !== ChannelType.GuildPrivateThread || this.joined || this.manageable) &&
       permissions.has(PermissionFlagsBits.SendMessagesInThreads, false) &&
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now()
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()
     );
   }
 
