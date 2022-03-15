@@ -59,12 +59,6 @@ class Collector extends EventEmitter {
     this.collected = new Collection();
 
     /**
-     * The items that were not collected by this collector
-     * @type {Collection}
-     */
-    this.ignored = new Collection();
-
-    /**
      * Whether this collector has finished collecting
      * @type {boolean}
      */
@@ -121,8 +115,6 @@ class Collector extends EventEmitter {
           this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
         }
       } else {
-        this.ignored.set(collectedId, args[0]);
-
         /**
          * Emitted whenever an element is not collected by the collector.
          * @event Collector#ignore
