@@ -224,7 +224,7 @@ export type ActionRowComponent = MessageActionRowComponent | ModalActionRowCompo
 
 export type ActionRowComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
 
-export interface ActionRowData<T extends ActionRowComponentBuilder | ActionRowComponentData> extends BaseComponentData {
+export interface ActionRowData<T extends ActionRowComponent | ActionRowComponentData> extends BaseComponentData {
   components: T[];
 }
 
@@ -4731,7 +4731,7 @@ export interface MessageEditOptions {
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
     | ActionRowBuilder<MessageActionRowComponentBuilder>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | ActionRowComponentBuilder>)
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
 }
@@ -4773,7 +4773,7 @@ export interface MessageOptions {
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
     | ActionRowBuilder<MessageActionRowComponentBuilder>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | ActionRowComponentBuilder>)
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
