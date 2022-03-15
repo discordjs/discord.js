@@ -97,9 +97,9 @@ class Collector extends EventEmitter {
    */
   async handleCollect(...args) {
     const collectedId = await this.collect(...args);
-    const filterResult = await this.filter(...args, this.collected);
 
     if (collectedId) {
+      const filterResult = await this.filter(...args, this.collected);
       if (filterResult) {
         this.collected.set(collectedId, args[0]);
 
