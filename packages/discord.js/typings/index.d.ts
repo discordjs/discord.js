@@ -110,7 +110,7 @@ import {
   APIEmbedAuthor,
   APIEmbedFooter,
   APIEmbedImage,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { Stream } from 'node:stream';
@@ -5336,7 +5336,7 @@ export {
   ThreadMemberFlags,
   UserFlags,
   WebhookType,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 export {
   UnsafeButtonBuilder,
   UnsafeSelectMenuBuilder,

@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v9');
+const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');

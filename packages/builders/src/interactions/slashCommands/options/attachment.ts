@@ -1,4 +1,4 @@
-import { APIApplicationCommandAttachmentOption, ApplicationCommandOptionType } from 'discord-api-types/v9';
+import { APIApplicationCommandAttachmentOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
 
 export class SlashCommandAttachmentOption extends ApplicationCommandOptionBase {

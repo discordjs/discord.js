@@ -2,7 +2,7 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { OAuth2Scopes, Routes } = require('discord-api-types/v9');
+const { OAuth2Scopes, Routes } = require('discord-api-types/v10');
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');

@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { ChannelType, MessageType } = require('discord-api-types/v9');
+const { ChannelType, MessageType } = require('discord-api-types/v10');
 const Package = (exports.Package = require('../../package.json'));
 
 exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;

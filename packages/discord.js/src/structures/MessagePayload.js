@@ -2,7 +2,7 @@
 
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/builders');
-const { MessageFlags } = require('discord-api-types/v9');
+const { MessageFlags } = require('discord-api-types/v10');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');

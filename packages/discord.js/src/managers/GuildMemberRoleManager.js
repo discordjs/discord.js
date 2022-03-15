@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const DataManager = require('./DataManager');
 const { TypeError } = require('../errors');
 const { Role } = require('../structures/Role');

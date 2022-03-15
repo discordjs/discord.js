@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { InteractionType, Routes } = require('discord-api-types/v9');
+const { InteractionType, Routes } = require('discord-api-types/v10');
 const { TypeError, Error } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
 const MessageCollector = require('../MessageCollector');

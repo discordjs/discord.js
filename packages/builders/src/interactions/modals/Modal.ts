@@ -1,4 +1,4 @@
-import type { APIModalInteractionResponseCallbackData } from 'discord-api-types/v9';
+import type { APIModalInteractionResponseCallbackData } from 'discord-api-types/v10';
 import { customIdValidator } from '../../components/Assertions';
 import { titleValidator, validateRequiredParameters } from './Assertions';
 import { UnsafeModalBuilder } from './UnsafeModal';
