@@ -23,7 +23,7 @@ class EmbedBuilder extends BuildersEmbed {
 
   /**
    * Sets the color of this embed
-   * @param {ColorResolvable} color The color of the embed
+   * @param {?ColorResolvable} color The color of the embed
    * @returns {Embed}
    */
   setColor(color) {
