@@ -46,7 +46,7 @@ class InteractionCollector extends Collector {
      * The message interaction id from which to collect interactions, if provided
      * @type {?Snowflake}
      */
-    this.messageInteractionId = options.interactionResponse?.responseInteractionId ?? null;
+    this.messageInteractionId = options.interactionResponse?.id ?? null;
 
     /**
      * The channel from which to collect interactions, if provided

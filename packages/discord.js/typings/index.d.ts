@@ -450,10 +450,10 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
 }
 
 export class InteractionResponse<Cached extends boolean = boolean> {
-  private constructor(interaction: Interaction, responseInteractionId?: Snowflake);
+  private constructor(interaction: Interaction, id?: Snowflake);
   public interaction: Interaction<WrapBooleanCache<Cached>>;
   public client: Client;
-  public responseInteractionId: Snowflake;
+  public id: Snowflake;
   public awaitMessageComponent<T extends MessageComponentType = ComponentType.ActionRow>(
     options?: AwaitMessageCollectorOptionsParams<T, Cached>,
   ): Promise<MappedInteractionTypes<Cached>[T]>;
