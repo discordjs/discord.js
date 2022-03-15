@@ -224,7 +224,7 @@ export type ActionRowComponent = MessageActionRowComponent | ModalActionRowCompo
 
 export type ActionRowComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
 
-export interface ActionRowData<T extends ActionRowComponent | ActionRowComponentData> extends BaseComponentData {
+export interface ActionRowData<T extends ActionRowComponentBuilder | ActionRowComponentData> extends BaseComponentData {
   components: T[];
 }
 
