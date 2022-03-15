@@ -456,15 +456,6 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Fetches the client user as a GuildMember of the guild.
-   * @param {BaseFetchOptions} [options] The options for fetching the member
-   * @returns {Promise<GuildMember>}
-   */
-  fetchMe(options) {
-    return this.members.fetch({ ...options, user: this.client.user.id });
-  }
-
-  /**
    * AFK voice channel for this guild
    * @type {?VoiceChannel}
    * @readonly
