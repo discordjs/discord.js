@@ -802,7 +802,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 
   public readonly client: Client;
   public collected: Collection<K, V>;
-  public ignore: Collection<K, V>;
+  public ignored: Collection<K, V>;
   public ended: boolean;
   public abstract get endReason(): string | null;
   public filter: CollectorFilter<[V, ...F]>;
