@@ -613,6 +613,7 @@ export class Embed {
   private constructor(data: APIEmbed);
   public readonly data: Readonly<APIEmbed>;
   public get fields(): APIEmbedField[] | null;
+  public get footer(): EmbedFooterData | null;
   public get title(): string | null;
   public get description(): string | null;
   public get url(): string | null;
