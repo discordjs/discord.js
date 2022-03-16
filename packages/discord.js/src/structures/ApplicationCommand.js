@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ApplicationCommandOptionType } = require('discord-api-types/v9');
+const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
 

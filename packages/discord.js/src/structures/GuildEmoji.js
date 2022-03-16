@@ -1,6 +1,6 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v9');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 const BaseGuildEmoji = require('./BaseGuildEmoji');
 const { Error } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');

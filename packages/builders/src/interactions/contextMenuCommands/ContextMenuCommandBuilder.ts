@@ -1,5 +1,5 @@
 import { validateRequiredParameters, validateName, validateType, validateDefaultPermission } from './Assertions';
-import type { ApplicationCommandType, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v9';
+import type { ApplicationCommandType, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
 
 export class ContextMenuCommandBuilder {
 	/**

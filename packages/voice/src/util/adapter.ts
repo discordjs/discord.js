@@ -1,4 +1,4 @@
-import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v9';
+import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v10';
 
 /**
  * Methods that are provided by the @discordjs/voice library to implementations of

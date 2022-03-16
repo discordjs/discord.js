@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v9';
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { s } from '@sapphire/shapeshift';
 import { validateChoicesLength } from '../Assertions';
 

@@ -1,4 +1,4 @@
-import { APIApplicationCommandUserOption, ApplicationCommandOptionType } from 'discord-api-types/v9';
+import { APIApplicationCommandUserOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
 
 export class SlashCommandUserOption extends ApplicationCommandOptionBase {

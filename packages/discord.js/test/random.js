@@ -6,7 +6,7 @@ const request = require('superagent');
 const ytdl = require('ytdl-core');
 const { token, song } = require('./auth.js');
 const { Client } = require('../src');
-const { ChannelType, GatewayIntentBits } = require('discord-api-types/v9');
+const { ChannelType, GatewayIntentBits } = require('discord-api-types/v10');
 
 console.time('magic');
 
