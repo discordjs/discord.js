@@ -2809,6 +2809,12 @@ export class WelcomeScreen extends Base {
 
 //#region Constants
 
+export type NonSystemMessageType =
+  | MessageType.Default
+  | MessageType.Reply
+  | MessageType.ChatInputCommand
+  | MessageType.ContextMenuCommand;
+
 export const Constants: {
   Package: {
     name: string;
@@ -2831,8 +2837,7 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
-  MessageTypes: MessageType[];
-  SystemMessageTypes: SystemMessageType[];
+  NonSystemMessageTypes: NonSystemMessageType[];
 };
 
 export const version: string;
@@ -5062,11 +5067,6 @@ export type ClientStatus = number;
 export type StickerResolvable = Sticker | Snowflake;
 
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
-
-export type SystemMessageType = Exclude<
-  MessageType,
-  MessageType.Default | MessageType.Reply | MessageType.ChatInputCommand | MessageType.ContextMenuCommand
->;
 
 export type StageChannelResolvable = StageChannel | Snowflake;
 
