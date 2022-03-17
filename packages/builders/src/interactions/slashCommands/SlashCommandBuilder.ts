@@ -1,4 +1,8 @@
-import type { APIApplicationCommandOption, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
+import type {
+	APIApplicationCommandOption,
+	LocaleString,
+	RESTPostAPIApplicationCommandsJSONBody,
+} from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import {
 	assertReturnOfBuilder,
@@ -18,9 +22,19 @@ export class SlashCommandBuilder {
 	public readonly name: string = undefined!;
 
 	/**
+	 * The localized names for this command
+	 */
+	public readonly nameLocalizations?: Partial<Record<LocaleString, string>> = undefined;
+
+	/**
 	 * The description of this slash command
 	 */
 	public readonly description: string = undefined!;
+
+	/**
+	 * The localized descriptions for this command
+	 */
+	public readonly descriptionLocalizations?: Partial<Record<LocaleString, string>> = undefined;
 
 	/**
 	 * The options of this slash command
@@ -44,7 +58,10 @@ export class SlashCommandBuilder {
 
 		return {
 			name: this.name,
+			// @ts-expect-error bump dapi-types
+			name_localizations: this.nameLocalizations,
 			description: this.description,
+			description_localizations: this.descriptionLocalizations,
 			options: this.options.map((option) => option.toJSON()),
 			default_permission: this.defaultPermission,
 		};
