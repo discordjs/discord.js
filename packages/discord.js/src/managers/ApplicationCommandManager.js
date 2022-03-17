@@ -216,7 +216,9 @@ class ApplicationCommandManager extends CachedManager {
   static transformCommand(command) {
     return {
       name: command.name,
+      name_localizations: command.nameLocalizations,
       description: command.description,
+      description_localizations: command.descriptionLocalizations,
       type: command.type,
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
       default_permission: command.defaultPermission ?? command.default_permission,

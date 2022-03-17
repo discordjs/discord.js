@@ -129,7 +129,10 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the command, must be in all lowercase if type is
    * {@link ApplicationCommandType.ChatInput}
+   * @property {Object<string, string>} nameLocalizations The localizations for the command name
    * @property {string} description The description of the command, if type is {@link ApplicationCommandType.ChatInput}
+   * @property {Object<string, string>} descriptionLocalizations The localizations for the command description,
+   * if type is {@link ApplicationCommandType.ChatInput}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {boolean} [defaultPermission=true] Whether the command is enabled by default when the app is added to a
@@ -145,7 +148,9 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOptionData
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
+   * @property {Object<string, string>} nameLocalizations The name localizations for the option
    * @property {string} description The description of the option
+   * @property {Object<string, string>} descriptionLocalizations The description localizations for the option
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
    * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option

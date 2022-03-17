@@ -112,6 +112,7 @@ import {
   APIEmbedFooter,
   APIEmbedImage,
   VideoQualityMode,
+  LocaleString,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3380,6 +3381,7 @@ export type AllowedThreadTypeForTextChannel = ChannelType.GuildPublicThread | Ch
 
 export interface BaseApplicationCommandData {
   name: string;
+  nameLocalizations?: Partial<Record<LocaleString, string>>;
   defaultPermission?: boolean;
 }
 
@@ -3421,6 +3423,7 @@ export interface MessageApplicationCommandData extends BaseApplicationCommandDat
 
 export interface ChatInputApplicationCommandData extends BaseApplicationCommandData {
   description: string;
+  descriptionLocalizations?: Partial<Record<LocaleString, string>>;
   type?: ApplicationCommandType.ChatInput;
   options?: ApplicationCommandOptionData[];
 }
