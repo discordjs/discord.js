@@ -1,11 +1,15 @@
 'use strict';
 
-const { SelectMenuBuilder: BuildersSelectMenu, isJSONEncodable } = require('@discordjs/builders');
+const {
+  SelectMenuBuilder: BuildersSelectMenu,
+  isJSONEncodable,
+  SelectMenuOptionBuilder,
+} = require('@discordjs/builders');
 const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
 /**
- * Class used to build select menu components to be sent through the API
+ * Class used to build Select Menu components to be sent through the API
  * @extends {BuildersSelectMenu}
  */
 class SelectMenuBuilder extends BuildersSelectMenu {
@@ -19,6 +23,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
         })),
       }),
     );
+    this.options = this.data.options.map(option => new SelectMenuOptionBuilder(option));
   }
 
   /**
@@ -59,6 +64,51 @@ class SelectMenuBuilder extends BuildersSelectMenu {
       return new this(other.toJSON());
     }
     return new this(other);
+  }
+
+  /**
+   * Text to be displayed if nothing is selected on this select menu component
+   * @type {?string}
+   * @readonly
+   */
+  get placeholder() {
+    return this.data.placeholder ?? null;
+  }
+
+  /**
+   * The minimum number of items that must be chosen
+   * @type {?number}
+   * @readonly
+   */
+  get minValues() {
+    return this.data.min_values ?? null;
+  }
+
+  /**
+   * The maximum number of items that must be chosen
+   * @type {?number}
+   * @readonly
+   */
+  get maxValues() {
+    return this.data.max_values ?? null;
+  }
+
+  /**
+   * A developer-defined identifier for this select menu component
+   * @type {?string}
+   * @readonly
+   */
+  get customId() {
+    return this.data.custom_id ?? null;
+  }
+
+  /**
+   * Whether this select menu component is disabled
+   * @type {?boolean}
+   * @readonly
+   */
+  get disabled() {
+    return this.data.disabled ?? null;
   }
 }
 

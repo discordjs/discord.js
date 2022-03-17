@@ -3,7 +3,7 @@
 const isEqual = require('fast-deep-equal');
 
 /**
- * Represents an embed.
+ * Represents an Embed received from the API
  */
 class Embed {
   /**

@@ -17,6 +17,7 @@ import {
   quote,
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
+  SelectMenuOptionBuilder as BuilderSelectMenuOption,
   TextInputBuilder as BuilderTextInputComponent,
   UnsafeSelectMenuOptionBuilder as BuildersSelectMenuOption,
   spoiler,
@@ -600,11 +601,22 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
     options: (BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption)[],
   ): this;
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
+  public readonly options: SelectMenuOptionBuilder[];
+  public get placeholder(): string | null;
+  public get maxValues(): number | null;
+  public get minValues(): number | null;
+  public get customId(): string | null;
+  public get disabled(): boolean | null;
 }
 
-export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
+export class SelectMenuOptionBuilder extends BuilderSelectMenuOption {
   public constructor(data?: SelectMenuComponentOptionData | APISelectMenuOption);
   public setEmoji(emoji: ComponentEmojiResolvable): this;
+  public get label(): string | null;
+  public get value(): string | null;
+  public get description(): string | null;
+  public get emoji(): APIMessageComponentEmoji | null;
+  public get default(): boolean | null;
 }
 
 export class ModalBuilder extends BuildersModal {
@@ -615,11 +627,24 @@ export class ModalBuilder extends BuildersModal {
 export class TextInputBuilder extends BuilderTextInputComponent {
   public constructor(data?: Partial<TextInputComponentData | APITextInputComponent>);
   public static from(other: JSONEncodable<APITextInputComponent> | APITextInputComponent): TextInputBuilder;
+  public get label(): string | null;
+  public get style(): TextInputStyle | null;
+  public get maxLength(): number | null;
+  public get minLength(): number | null;
+  public get required(): boolean | null;
+  public get value(): string | null;
+  public get placeholder(): string | null;
+  public get customId(): string | null;
 }
 
 export class TextInputComponent extends Component<APITextInputComponent> {
   public get customId(): string;
   public get value(): string;
+  public get style(): ButtonStyle | null;
+  public get label(): string | null;
+  public get emoji(): APIMessageComponentEmoji | null;
+  public get disabled(): boolean | null;
+  public get url(): string | null;
 }
 
 export class SelectMenuComponent extends Component<APISelectMenuComponent> {
@@ -674,18 +699,29 @@ export class EmbedBuilder extends BuildersEmbed {
   public constructor(data?: EmbedData | APIEmbed);
   public override setColor(color: ColorResolvable | null): this;
   public static from(other: JSONEncodable<APIEmbed> | APIEmbed): EmbedBuilder;
+  public get fields(): APIEmbedField[] | null;
+  public get title(): string | null;
+  public get description(): string | null;
+  public get url(): string | null;
+  public get color(): number | null;
+  public get timestamp(): string | null;
+  public get thumbnail(): EmbedImageData | null;
+  public get image(): EmbedImageData | null;
+  public get author(): EmbedAuthorData | null;
+  public get footer(): EmbedFooterData | null;
+  public get length(): number;
+  public get hexColor(): HexColorString | null;
 }
 
 export class Embed {
   private constructor(data: APIEmbed);
   public readonly data: Readonly<APIEmbed>;
   public get fields(): APIEmbedField[] | null;
-  public get footer(): EmbedFooterData | null;
   public get title(): string | null;
   public get description(): string | null;
   public get url(): string | null;
   public get color(): number | null;
-  public get hexColor(): string | null;
+  public get hexColor(): HexColorString | null;
   public get timestamp(): string | null;
   public get thumbnail(): EmbedImageData | null;
   public get image(): EmbedImageData | null;
@@ -693,6 +729,7 @@ export class Embed {
   public get provider(): EmbedProviderData | null;
   public get video(): EmbedVideoData | null;
   public get length(): number;
+  public get footer(): EmbedFooterData | null;
   public equals(other: Embed | APIEmbed): boolean;
   public toJSON(): APIEmbed;
 }

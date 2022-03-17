@@ -3,7 +3,7 @@
 const Component = require('./Component');
 
 /**
- * Represents a text input component.
+ * Represents a text input component received from the API
  * @extends {Component}
  */
 class TextInputComponent extends Component {
