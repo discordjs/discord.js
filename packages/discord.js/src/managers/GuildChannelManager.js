@@ -13,6 +13,7 @@ const Webhook = require('../structures/Webhook');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Util = require('../util/Util');
+const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 let cacheWarningEmitted = false;
 let storeChannelDeprecationEmitted = false;
@@ -262,14 +263,7 @@ class GuildChannelManager extends CachedManager {
     }
 
     let defaultAutoArchiveDuration = data.defaultAutoArchiveDuration;
-    if (defaultAutoArchiveDuration === 'MAX') {
-      defaultAutoArchiveDuration = 1440;
-      if (this.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
-        defaultAutoArchiveDuration = 10080;
-      } else if (this.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
-        defaultAutoArchiveDuration = 4320;
-      }
-    }
+    if (defaultAutoArchiveDuration === 'MAX') defaultAutoArchiveDuration = resolveAutoArchiveMaxLimit(this.guild);
 
     const newData = await this.client.rest.patch(Routes.channel(channel.id), {
       body: {
