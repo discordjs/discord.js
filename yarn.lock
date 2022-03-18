@@ -4501,15 +4501,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-mock-server@portal:/Users/suneettipirneni/discord-mock-server::locator=%40discordjs%2Fdiscord.js%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "discord-mock-server@portal:/Users/suneettipirneni/discord-mock-server::locator=%40discordjs%2Fdiscord.js%40workspace%3A."
+"discord-mock-server@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "discord-mock-server@npm:0.1.0"
   dependencies:
     express: ^4.17.3
     mock-socket: ^9.1.2
     ws: ^8.5.0
+  checksum: 1eec98b972d7a5440cc744d4913d189b4e7fe81e5cc5961f18875904da6728cc5647ac4de827a75a630f935660d68ad83ed48c6624e9a2c3631e7ae0fbcc2ab1
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "discord.js@workspace:packages/discord.js":
   version: 0.0.0-use.local
@@ -4523,7 +4524,7 @@ __metadata:
     "@types/node": ^16.11.24
     "@types/ws": ^8.2.2
     discord-api-types: ^0.29.0
-    discord-mock-server: "portal:/Users/suneettipirneni/discord-mock-server"
+    discord-mock-server: ^0.1.0
     dtslint: ^4.2.1
     eslint: ^8.9.0
     eslint-config-prettier: ^8.3.0
