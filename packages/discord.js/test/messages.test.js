@@ -94,6 +94,7 @@ describe('message test', () => {
 
     client.on(Events.MessageCreate, fn);
     client.dispatch(GatewayDispatchEvents.MessageCreate, mockMessage());
-    expect(fn.mock.calls[0][0].channel.name).toBe(mockChannel().name);
+    const [[message]] = fn.mock.calls;
+    expect(message.channel.name).toBe(mockChannel().name);
   });
 });

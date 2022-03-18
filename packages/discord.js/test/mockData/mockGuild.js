@@ -10,10 +10,11 @@ const {
   GuildSystemChannelFlags,
   GuildVerificationLevel,
 } = require('discord-api-types/v10');
+const { mergeable } = require('./mergeable');
 const { mockChannel } = require('./mockChannel');
 const { mockUser } = require('./mockUser');
 
-module.exports.mockGuild = mergeData => ({
+module.exports.mockGuild = mergeable({
   id: '123456789',
   name: 'MockGuild',
   icon: null,
@@ -48,5 +49,4 @@ module.exports.mockGuild = mergeData => ({
   premium_progress_bar_enabled: true,
   channels: [mockChannel()],
   mfa_level: GuildMFALevel.None,
-  ...mergeData,
 });

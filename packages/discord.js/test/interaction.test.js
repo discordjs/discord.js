@@ -5,11 +5,10 @@
 const { MockDiscordServer } = require('discord-mock-server');
 const MockClient = require('./MockClient');
 const { mockApplication } = require('./mockData/mockApplication');
-const { mockChannel } = require('./mockData/mockChannel');
 const { mockGuild } = require('./mockData/mockGuild');
 const { mockInteraction } = require('./mockData/mockInteraction');
 const { mockUser } = require('./mockData/mockUser');
-const { GatewayIntentBits, Events, GatewayDispatchEvents } = require('../src');
+const { GatewayIntentBits, Events, GatewayDispatchEvents, CommandInteraction } = require('../src');
 
 describe('interaction tests', () => {
   let client;
@@ -47,9 +46,20 @@ describe('interaction tests', () => {
     await server.stop();
   });
 
-  test('interaction serialization', () => {
+  test('interaction event fires', () => {
     const fn = jest.fn();
+    client.on(Events.InteractionCreate, fn);
     client.dispatch(GatewayDispatchEvents.InteractionCreate, mockInteraction());
     expect(fn).toHaveBeenCalled();
+  });
+
+  describe('interaction serialization', () => {
+    test('Emit event serialization given valid application command data', () => {
+      const fn = jest.fn();
+      client.on(Events.InteractionCreate, fn);
+      client.dispatch(GatewayDispatchEvents.InteractionCreate, mockInteraction());
+      const [[interaction]] = fn.mock.calls;
+      expect(interaction).toBeInstanceOf(CommandInteraction);
+    });
   });
 });

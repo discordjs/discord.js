@@ -1,14 +1,17 @@
 'use strict';
 
+const { mergeable } = require('./mergeable');
 const { mockApplication } = require('./mockApplication');
 const { mockChannel } = require('./mockChannel');
-const { InteractionType, ApplicationCommandOptionType } = require('../../src');
+const { mockInteractionMember } = require('./mockMember');
+const { InteractionType, ApplicationCommandOptionType, ApplicationCommandType } = require('../../src');
 
-module.exports.mockInteraction = mergeData => ({
+module.exports.mockInteraction = mergeable({
   id: '1234589303',
   type: InteractionType.ApplicationCommand,
   application_id: mockApplication().id,
   data: {
+    type: ApplicationCommandType.ChatInput,
     options: [
       {
         id: '12345678',
@@ -19,5 +22,5 @@ module.exports.mockInteraction = mergeData => ({
       },
     ],
   },
-  ...mergeData,
+  member: mockInteractionMember(),
 });

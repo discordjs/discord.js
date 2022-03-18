@@ -1,6 +1,8 @@
 'use strict';
 
-module.exports.mockUser = mergeData => ({
+const { mergeable } = require('./mergeable');
+
+module.exports.mockUser = mergeable({
   id: '1234567891011121324',
   username: 'fakeuser',
   discriminator: '1234',
@@ -8,5 +10,4 @@ module.exports.mockUser = mergeData => ({
   bot: true,
   system: false,
   email: 'testuser@test.com',
-  ...mergeData,
 });
