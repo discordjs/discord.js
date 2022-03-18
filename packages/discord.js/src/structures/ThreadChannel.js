@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v9');
+const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError } = require('../errors');

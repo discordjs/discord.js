@@ -1,4 +1,4 @@
-import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v9';
+import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v10';
 import { z } from 'zod';
 import type { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
 

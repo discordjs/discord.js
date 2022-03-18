@@ -1,4 +1,4 @@
-import { APIModalInteractionResponseCallbackData, ComponentType, TextInputStyle } from 'discord-api-types/v9';
+import { APIModalInteractionResponseCallbackData, ComponentType, TextInputStyle } from 'discord-api-types/v10';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,

@@ -1,4 +1,4 @@
-import { APISelectMenuOption, ComponentType, type APISelectMenuComponent } from 'discord-api-types/v9';
+import { APISelectMenuOption, ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
 import { ComponentBuilder } from '../Component';
 import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
 

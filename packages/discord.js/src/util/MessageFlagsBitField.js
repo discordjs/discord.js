@@ -1,6 +1,6 @@
 'use strict';
 
-const { MessageFlags } = require('discord-api-types/v9');
+const { MessageFlags } = require('discord-api-types/v10');
 const BitField = require('./BitField');
 
 /**
