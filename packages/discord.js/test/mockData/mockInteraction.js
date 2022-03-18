@@ -25,6 +25,12 @@ const mockApplicationCommandData = mergeable({
   ],
 });
 
+const mockContextMenuCommandData = mergeable({
+  type: ApplicationCommandType.Message,
+  target_id: '12345',
+  resolved: {},
+});
+
 const mockButtonComponentData = mergeable({
   component_type: ComponentType.Button,
   label: 'test',
@@ -39,6 +45,32 @@ const mockSelectMenuComponentData = mergeable({
   values: ['one', 'two,'],
 });
 
+const mockModalSubmitData = mergeable({
+  custom_id: 'modal',
+  components: [],
+});
+
+const mockActionRowData = mergeable({
+  components: [],
+});
+
+const mockTextInputData = mergeable({
+  custom_id: 'textInput',
+  label: 'label',
+  value: 'test value',
+});
+
+const mockAutocompleteData = mergeable({
+  options: [
+    {
+      name: 'option',
+      type: ApplicationCommandOptionType.String,
+      value: 'foobar',
+      focused: true,
+    },
+  ],
+});
+
 const mockInteraction = mergeable({
   id: '1234589303',
   type: InteractionType.ApplicationCommand,
@@ -47,4 +79,14 @@ const mockInteraction = mergeable({
   member: mockInteractionMember(),
 });
 
-module.exports = { mockInteraction, mockApplicationCommandData, mockButtonComponentData, mockSelectMenuComponentData };
+module.exports = {
+  mockInteraction,
+  mockApplicationCommandData,
+  mockButtonComponentData,
+  mockSelectMenuComponentData,
+  mockTextInputData,
+  mockModalSubmitData,
+  mockActionRowData,
+  mockContextMenuCommandData,
+  mockAutocompleteData,
+};
