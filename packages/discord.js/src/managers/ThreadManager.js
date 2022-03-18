@@ -121,7 +121,7 @@ class ThreadManager extends CachedManager {
       resolvedType = type ?? resolvedType;
     }
 
-    if (autoArchiveDuration === 'MAX') resolveAutoArchiveMaxLimit(this.channel.guild);
+    if (autoArchiveDuration === 'MAX') autoArchiveDuration = resolveAutoArchiveMaxLimit(this.channel.guild);
 
     const data = await this.client.rest.post(Routes.threads(this.channel.id, startMessageId), {
       body: {
