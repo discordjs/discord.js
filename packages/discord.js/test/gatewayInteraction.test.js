@@ -33,8 +33,8 @@ const {
   UserContextMenuCommandInteraction,
   AutocompleteInteraction,
 } = require('../src');
-
 describe('interaction tests', () => {
+  jest.setTimeout(10000);
   let client;
   let server;
 
