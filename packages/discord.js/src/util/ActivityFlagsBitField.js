@@ -1,6 +1,6 @@
 'use strict';
 
-const { ActivityFlags } = require('discord-api-types/v9');
+const { ActivityFlags } = require('discord-api-types/v10');
 const BitField = require('./BitField');
 
 /**

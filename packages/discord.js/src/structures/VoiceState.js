@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, Routes } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 

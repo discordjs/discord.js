@@ -1,7 +1,7 @@
 'use strict';
 
 const { isJSONEncodable } = require('@discordjs/builders');
-const { InteractionResponseType, MessageFlags, Routes } = require('discord-api-types/v9');
+const { InteractionResponseType, MessageFlags, Routes } = require('discord-api-types/v10');
 const { Error } = require('../../errors');
 const MessagePayload = require('../MessagePayload');
 

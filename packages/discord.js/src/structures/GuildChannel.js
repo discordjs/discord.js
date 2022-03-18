@@ -1,6 +1,6 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v9');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 const { Channel } = require('./Channel');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');

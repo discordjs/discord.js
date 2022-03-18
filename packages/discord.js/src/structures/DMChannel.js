@@ -1,7 +1,7 @@
 'use strict';
 
 const { userMention } = require('@discordjs/builders');
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType } = require('discord-api-types/v10');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');

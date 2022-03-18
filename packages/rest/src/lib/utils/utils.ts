@@ -1,4 +1,4 @@
-import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v9';
+import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
 import type { Response } from 'node-fetch';
 import { RequestMethod } from '../RequestManager';
 

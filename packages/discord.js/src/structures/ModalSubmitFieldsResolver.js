@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { ComponentType } = require('discord-api-types/v9');
+const { ComponentType } = require('discord-api-types/v10');
 const { TypeError } = require('../errors');
 
 /**

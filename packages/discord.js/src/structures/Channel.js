@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ChannelType, Routes } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;

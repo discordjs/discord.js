@@ -1,4 +1,4 @@
-import type { APISelectMenuComponent } from 'discord-api-types/v9';
+import type { APISelectMenuComponent } from 'discord-api-types/v10';
 import {
 	customIdValidator,
 	disabledValidator,
@@ -6,12 +6,12 @@ import {
 	placeholderValidator,
 	validateRequiredSelectMenuParameters,
 } from '../Assertions';
-import { UnsafeSelectMenuComponent } from './UnsafeSelectMenu';
+import { UnsafeSelectMenuBuilder } from './UnsafeSelectMenu';
 
 /**
  * Represents a validated select menu component
  */
-export class SelectMenuComponent extends UnsafeSelectMenuComponent {
+export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 	public override setPlaceholder(placeholder: string) {
 		return super.setPlaceholder(placeholderValidator.parse(placeholder));
 	}
@@ -33,7 +33,7 @@ export class SelectMenuComponent extends UnsafeSelectMenuComponent {
 	}
 
 	public override toJSON(): APISelectMenuComponent {
-		validateRequiredSelectMenuParameters(this.options, this.customId);
+		validateRequiredSelectMenuParameters(this.options, this.data.custom_id);
 		return super.toJSON();
 	}
 }

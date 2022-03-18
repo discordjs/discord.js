@@ -1,6 +1,6 @@
 'use strict';
 
-const { RouteBases, Routes, PermissionFlagsBits } = require('discord-api-types/v9');
+const { RouteBases, Routes, PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');

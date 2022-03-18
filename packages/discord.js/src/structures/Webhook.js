@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, WebhookType } = require('discord-api-types/v9');
+const { Routes, WebhookType } = require('discord-api-types/v10');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const DataResolver = require('../util/DataResolver');

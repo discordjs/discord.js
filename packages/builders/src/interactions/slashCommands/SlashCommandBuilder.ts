@@ -1,4 +1,4 @@
-import type { APIApplicationCommandOption, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v9';
+import type { APIApplicationCommandOption, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import {
 	assertReturnOfBuilder,
