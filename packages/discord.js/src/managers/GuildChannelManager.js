@@ -261,6 +261,16 @@ class GuildChannelManager extends CachedManager {
       }
     }
 
+    let defaultAutoArchiveDuration = data.defaultAutoArchiveDuration;
+    if (defaultAutoArchiveDuration === 'MAX') {
+      defaultAutoArchiveDuration = 1440;
+      if (this.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
+        defaultAutoArchiveDuration = 10080;
+      } else if (this.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
+        defaultAutoArchiveDuration = 4320;
+      }
+    }
+
     const newData = await this.client.rest.patch(Routes.channel(channel.id), {
       body: {
         name: (data.name ?? channel.name).trim(),
@@ -273,7 +283,7 @@ class GuildChannelManager extends CachedManager {
         parent_id: parent,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
-        default_auto_archive_duration: data.defaultAutoArchiveDuration,
+        default_auto_archive_duration: defaultAutoArchiveDuration,
         permission_overwrites,
       },
       reason,
