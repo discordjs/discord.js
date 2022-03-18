@@ -563,7 +563,7 @@ class Util extends null {
   }
 
   /**
-   * Resolves the maximum time a guild's thread channels should automatcally archived in case of no recent activity.
+   * Resolves the maximum time a guild's thread channels should automatcally archive in case of no recent activity.
    * @param {Guild} guild The guild to resolve this limit from.
    * @returns {number}
    */
