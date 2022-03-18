@@ -220,7 +220,7 @@ class CommandInteractionOptionResolver {
    * Gets an attachment option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?MessageAttachment} The value of the option, or null if not set and not required.
+   * @returns {?Attachment} The value of the option, or null if not set and not required.
    */
   getAttachment(name, required = false) {
     const option = this._getTypedOption(name, ApplicationCommandOptionType.Attachment, ['attachment'], required);

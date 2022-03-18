@@ -142,7 +142,7 @@ import {
   RawInviteData,
   RawInviteGuildData,
   RawInviteStageInstance,
-  RawMessageAttachmentData,
+  RawAttachmentData,
   RawMessageButtonInteractionData,
   RawMessageComponentInteractionData,
   RawMessageData,
@@ -1595,7 +1595,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
 
   public activity: MessageActivity | null;
   public applicationId: Snowflake | null;
-  public attachments: Collection<Snowflake, MessageAttachment>;
+  public attachments: Collection<Snowflake, Attachment>;
   public author: User;
   public get channel(): If<Cached, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
@@ -1660,8 +1660,8 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public inGuild(): this is Message<true> & this;
 }
 
-export class MessageAttachment {
-  public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawMessageAttachmentData);
+export class Attachment {
+  public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawAttachmentData);
 
   public attachment: BufferResolvable | Stream;
   public contentType: string | null;
@@ -1796,7 +1796,7 @@ export class MessagePayload {
     options: string | MessageOptions | WebhookMessageOptions,
     extra?: MessageOptions | WebhookMessageOptions,
   ): MessagePayload;
-  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<RawFile>;
+  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | Attachment): Promise<RawFile>;
 
   public makeContent(): string | undefined;
   public resolveBody(): this;
@@ -3129,7 +3129,7 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
   private constructor(guild: Guild, iterable?: Iterable<RawStickerData>);
   public guild: Guild;
   public create(
-    file: BufferResolvable | Stream | FileOptions | MessageAttachment,
+    file: BufferResolvable | Stream | FileOptions | Attachment,
     name: string,
     tags: string,
     options?: GuildStickerCreateOptions,
@@ -3855,7 +3855,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
   channel?: CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>;
   role?: CacheTypeReducer<Cached, Role, APIRole>;
-  attachment?: MessageAttachment;
+  attachment?: Attachment;
   message?: GuildCacheMessage<Cached>;
 }
 
@@ -3865,7 +3865,7 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   channels?: Collection<Snowflake, CacheTypeReducer<Cached, AnyChannel, APIInteractionDataResolvedChannel>>;
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
-  attachments?: Collection<Snowflake, MessageAttachment>;
+  attachments?: Collection<Snowflake, Attachment>;
 }
 
 export declare const Colors: {
@@ -4703,10 +4703,10 @@ export type MessageChannelComponentCollectorOptions<T extends MessageComponentIn
 >;
 
 export interface MessageEditOptions {
-  attachments?: MessageAttachment[];
+  attachments?: Attachment[];
   content?: string | null;
   embeds?: (Embed | APIEmbed)[] | null;
-  files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
+  files?: (FileOptions | BufferResolvable | Stream | Attachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
@@ -4758,10 +4758,10 @@ export interface MessageOptions {
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
-  files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
+  files?: (FileOptions | BufferResolvable | Stream | Attachment)[];
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
-  attachments?: MessageAttachment[];
+  attachments?: Attachment[];
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, number>;
 }
 
