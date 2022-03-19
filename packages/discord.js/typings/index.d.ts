@@ -4730,7 +4730,6 @@ export interface MessageEditOptions {
   allowedMentions?: MessageMentionOptions;
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRowBuilder<MessageActionRowComponentBuilder>
     | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
@@ -4772,7 +4771,6 @@ export interface MessageOptions {
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRowBuilder<MessageActionRowComponentBuilder>
     | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
