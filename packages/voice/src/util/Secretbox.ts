@@ -23,7 +23,7 @@ const libs = {
 			return output;
 		},
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		random: (n: any, buffer: Buffer = Buffer.allocUnsafe(n)) => {
+		random: (n: number, buffer: Buffer = Buffer.allocUnsafe(n)) => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			sodium.randombytes_buf(buffer);
 			return buffer;
@@ -35,7 +35,7 @@ const libs = {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		close: sodium.api.crypto_secretbox_easy,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		random: (n: any, buffer: Buffer = Buffer.allocUnsafe(n)) => {
+		random: (n: number, buffer: Buffer = Buffer.allocUnsafe(n)) => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			sodium.api.randombytes_buf(buffer);
 			return buffer;
@@ -46,16 +46,16 @@ const libs = {
 		open: sodium.crypto_secretbox_open_easy,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		close: sodium.crypto_secretbox_easy,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-		random: (n: any) => sodium.randombytes_buf(n),
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+		random: sodium.randombytes_buf,
 	}),
 	tweetnacl: (tweetnacl: any): Methods => ({
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		open: tweetnacl.secretbox.open,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		close: tweetnacl.secretbox,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-		random: (n: any) => tweetnacl.randomBytes(n),
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+		random: tweetnacl.randomBytes,
 	}),
 } as const;
 
