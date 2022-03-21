@@ -132,7 +132,7 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c => new ActionRowBuilder(c).toJSON());
+    const components = this.options.components?.map(c => (isJSONEncodable(c) ? c : new ActionRowBuilder(c)).toJSON());
 
     let username;
     let avatarURL;
