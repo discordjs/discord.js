@@ -22,9 +22,8 @@ const libs = {
 			sodium.crypto_secretbox_easy(output, opusPacket, nonce, secretKey);
 			return output;
 		},
-		random: (n: any, buffer?: Buffer) => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			if (!buffer) buffer = Buffer.allocUnsafe(n);
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+		random: (n: any, buffer: Buffer = Buffer.allocUnsafe(n)) => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			sodium.randombytes_buf(buffer);
 			return buffer;
