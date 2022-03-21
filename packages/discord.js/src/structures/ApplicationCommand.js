@@ -217,7 +217,8 @@ class ApplicationCommand extends Base {
    * @example
    * // Edit the name localizations of this command
    * command.setLocalizedNames({
-   *   'en-US': 'ping',
+   *   'en-GB': 'test',
+   *   'pt-BR': 'teste',
    * })
    *   .then(console.log)
    *   .catch(console.error)
@@ -242,7 +243,8 @@ class ApplicationCommand extends Base {
    * @example
    * // Edit the description localizations of this command
    * command.setLocalizedDescriptions({
-   *   'en-US': 'My localized description in english',
+   *   'en-GB': 'A test command',
+   *   'pt-BR': 'Um comando de teste',
    * })
    *   .then(console.log)
    *   .catch(console.error)
