@@ -7,7 +7,8 @@ interface Methods {
 const libs = {
 	'sodium-native': (sodium: any): Methods => ({
 		open: (buffer: Buffer, nonce: Buffer, secretKey: Uint8Array) => {
-			if (Boolean(buffer)) {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			if (buffer) {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				const output = Buffer.allocUnsafe(buffer.length - sodium.crypto_box_MACBYTES);
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
