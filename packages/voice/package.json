@@ -74,6 +74,7 @@
 		"jest-websocket-mock": "^2.3.0",
 		"mock-socket": "^9.1.2",
 		"prettier": "^2.5.1",
+		"sodium-native": "^3.3.0",
 		"tsup": "^5.11.13",
 		"tweetnacl": "^1.0.3",
 		"typedoc": "^0.22.11",
