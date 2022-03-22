@@ -3,22 +3,6 @@
 /* eslint-env jest */
 
 const { MockDiscordServer } = require('discord-mock-server');
-const MockClient = require('./MockClient');
-const { mockApplication } = require('./mockData/mockApplication');
-const { mockGuild } = require('./mockData/mockGuild');
-const {
-  mockInteraction,
-  mockButtonComponentData,
-  mockSelectMenuComponentData,
-  mockModalSubmitData,
-  mockTextInputData,
-  mockActionRowData,
-  mockApplicationCommandData,
-  mockContextMenuCommandData,
-  mockAutocompleteData,
-} = require('./mockData/mockInteraction');
-const { mockMessage } = require('./mockData/mockMessage');
-const { mockUser } = require('./mockData/mockUser');
 const {
   GatewayIntentBits,
   Events,
@@ -32,7 +16,23 @@ const {
   ApplicationCommandType,
   UserContextMenuCommandInteraction,
   AutocompleteInteraction,
-} = require('../src');
+} = require('../../src');
+const MockClient = require('../MockClient');
+const { mockApplication } = require('../mockData/mockApplication');
+const { mockGuild } = require('../mockData/mockGuild');
+const {
+  mockInteraction,
+  mockButtonComponentData,
+  mockSelectMenuComponentData,
+  mockModalSubmitData,
+  mockTextInputData,
+  mockActionRowData,
+  mockApplicationCommandData,
+  mockContextMenuCommandData,
+  mockAutocompleteData,
+} = require('../mockData/mockInteraction');
+const { mockMessage } = require('../mockData/mockMessage');
+const { mockUser } = require('../mockData/mockUser');
 describe('interaction tests', () => {
   jest.setTimeout(10000);
   let client;

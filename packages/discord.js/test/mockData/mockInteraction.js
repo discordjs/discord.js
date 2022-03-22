@@ -3,7 +3,7 @@
 const { mergeable } = require('./mergeable');
 const { mockApplication } = require('./mockApplication');
 const { mockChannel } = require('./mockChannel');
-const { mockInteractionMember } = require('./mockMember');
+const { mockUser } = require('./mockUser');
 const {
   InteractionType,
   ApplicationCommandOptionType,
@@ -73,10 +73,11 @@ const mockAutocompleteData = mergeable({
 
 const mockInteraction = mergeable({
   id: '1234589303',
+  version: 10,
   type: InteractionType.ApplicationCommand,
   application_id: mockApplication().id,
   data: mockApplicationCommandData(),
-  member: mockInteractionMember(),
+  user: mockUser(),
 });
 
 module.exports = {
