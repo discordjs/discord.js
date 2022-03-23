@@ -7,6 +7,20 @@ const { RangeError } = require('../errors');
  */
 class BitField {
   /**
+   * Numeric bitfield flags.
+   * <info>Defined in extension classes</info>
+   * @type {Object}
+   * @abstract
+   */
+  static Flags = {};
+
+  /**
+   * @type {number|bigint}
+   * @private
+   */
+  static defaultBit = 0;
+
+  /**
    * @param {BitFieldResolvable} [bits=this.constructor.defaultBit] Bit(s) to read from
    */
   constructor(bits = this.constructor.defaultBit) {
@@ -152,19 +166,5 @@ class BitField {
     throw new RangeError('BITFIELD_INVALID', bit);
   }
 }
-
-/**
- * Numeric bitfield flags.
- * <info>Defined in extension classes</info>
- * @type {Object}
- * @abstract
- */
-BitField.Flags = {};
-
-/**
- * @type {number|bigint}
- * @private
- */
-BitField.defaultBit = 0;
 
 module.exports = BitField;
