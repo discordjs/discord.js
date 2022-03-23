@@ -36,7 +36,7 @@ class PermissionsBitField extends BitField {
   static StageModerator =
     PermissionFlagsBits.ManageChannels | PermissionFlagsBits.MuteMembers | PermissionFlagsBits.MoveMembers;
 
-  static defaultBit = BigInt(0);
+  static DefaultBit = BigInt(0);
 
   /**
    * Bitfield of the packed bits
