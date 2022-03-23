@@ -67,6 +67,21 @@ const Transformers = require('./Transformers');
  */
 class Options extends null {
   /**
+   * The default settings passed to {@link Options.sweepers} (for v14).
+   * The sweepers that this changes are:
+   * * `threads` - Sweep archived threads every hour, removing those archived more than 4 hours ago
+   * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
+   * `sweepers: { ...Options.DefaultSweeperSettings, messages: { interval: 300, lifetime: 600 } })`</info>
+   * @type {SweeperOptions}
+   */
+  static DefaultSweeperSettings = {
+    threads: {
+      interval: 3600,
+      lifetime: 14400,
+    },
+  };
+
+  /**
    * The default client options.
    * @returns {ClientOptions}
    */
@@ -74,11 +89,11 @@ class Options extends null {
     return {
       waitGuildTimeout: 15_000,
       shardCount: 1,
-      makeCache: this.cacheWithLimits(this.defaultMakeCacheSettings),
+      makeCache: this.cacheWithLimits(this.DefaultMakeCacheSettings),
       partials: [],
       failIfNotExists: true,
       presence: {},
-      sweepers: this.defaultSweeperSettings,
+      sweepers: this.DefaultSweeperSettings,
       ws: {
         large_threshold: 50,
         compress: false,
@@ -153,30 +168,15 @@ class Options extends null {
    * * `GuildChannelManager` - Sweep archived threads
    * * `ThreadManager` - Sweep archived threads
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
-   * `makeCache: Options.cacheWithLimits({ ...Options.defaultMakeCacheSettings, ReactionManager: 0 })`</info>
+   * `makeCache: Options.cacheWithLimits({ ...Options.DefaultMakeCacheSettings, ReactionManager: 0 })`</info>
    * @type {Object<string, LimitedCollectionOptions|number>}
    */
-  static get defaultMakeCacheSettings() {
+  static get DefaultMakeCacheSettings() {
     return {
       MessageManager: 200,
     };
   }
 }
-
-/**
- * The default settings passed to {@link Options.sweepers} (for v14).
- * The sweepers that this changes are:
- * * `threads` - Sweep archived threads every hour, removing those archived more than 4 hours ago
- * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
- * `sweepers: { ...Options.defaultSweeperSettings, messages: { interval: 300, lifetime: 600 } })`</info>
- * @type {SweeperOptions}
- */
-Options.defaultSweeperSettings = {
-  threads: {
-    interval: 3600,
-    lifetime: 14400,
-  },
-};
 
 module.exports = Options;
 

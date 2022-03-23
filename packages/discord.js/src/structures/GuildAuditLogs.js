@@ -57,6 +57,9 @@ const Targets = {
  * Audit logs entries are held in this class.
  */
 class GuildAuditLogs {
+  static Targets = Targets;
+  static Entry = GuildAuditLogsEntry;
+
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.users._add(user);
     if (data.threads) for (const thread of data.threads) guild.client.channels._add(thread, guild);
@@ -521,8 +524,5 @@ class GuildAuditLogsEntry {
     return Util.flatten(this, { createdTimestamp: true });
   }
 }
-
-GuildAuditLogs.Targets = Targets;
-GuildAuditLogs.Entry = GuildAuditLogsEntry;
 
 module.exports = GuildAuditLogs;

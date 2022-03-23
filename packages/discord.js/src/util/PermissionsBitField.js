@@ -92,6 +92,4 @@ class PermissionsBitField extends BitField {
   }
 }
 
-PermissionsBitField.defaultBit = BigInt(0);
-
 module.exports = PermissionsBitField;

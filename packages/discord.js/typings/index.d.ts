@@ -774,8 +774,8 @@ export class ClientUser extends User {
 
 export class Options extends null {
   private constructor();
-  public static defaultMakeCacheSettings: CacheWithLimitsOptions;
-  public static defaultSweeperSettings: SweeperOptions;
+  public static DefaultMakeCacheSettings: CacheWithLimitsOptions;
+  public static DefaultSweeperSettings: SweeperOptions;
   public static createDefault(): ClientOptions;
   public static cacheWithLimits(settings?: CacheWithLimitsOptions): CacheFactory;
   public static cacheEverything(): CacheFactory;
