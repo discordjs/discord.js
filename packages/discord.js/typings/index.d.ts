@@ -19,6 +19,7 @@ import {
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
   TextInputBuilder as BuilderTextInputComponent,
+  UnsafeSelectMenuOptionBuilder as BuildersSelectMenuOption,
   spoiler,
   strikethrough,
   time,
@@ -539,9 +540,12 @@ export class ButtonComponent extends Component<APIButtonComponent> {
   public get url(): string | null;
 }
 
+export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
+
 export class ButtonBuilder extends BuilderButtonComponent {
   public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
   public static from(other: JSONEncodable<APIButtonComponent> | APIButtonComponent): ButtonBuilder;
+  public override setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
@@ -549,6 +553,10 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
     data?: SelectMenuComponentData | (Omit<APISelectMenuComponent, 'type'> & { type?: ComponentType.SelectMenu }),
   );
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
+}
+
+export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
+  public setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
 export class TextInputBuilder extends BuilderTextInputComponent {
@@ -5304,6 +5312,7 @@ export {
   ApplicationCommandPermissionType,
   APIEmbedField,
   APISelectMenuOption,
+  APIMessageComponentEmoji,
   AuditLogEvent,
   ButtonStyle,
   ChannelType,
@@ -5341,7 +5350,6 @@ export {
 export {
   UnsafeButtonBuilder,
   UnsafeSelectMenuBuilder,
-  SelectMenuOptionBuilder,
   UnsafeSelectMenuOptionBuilder,
   MessageActionRowComponentBuilder,
   ModalActionRowComponentBuilder,
