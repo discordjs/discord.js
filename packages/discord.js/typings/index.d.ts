@@ -235,7 +235,7 @@ export class ActionRowBuilder<
 > extends BuilderActionRow<T> {
   constructor(
     data?:
-      | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData | ActionRowComponentBuilder>
+      | ActionRowData<ActionRowComponentData | ActionRowComponentBuilder>
       | (Omit<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>, 'type'> & {
           type?: ComponentType.ActionRow;
         }),
