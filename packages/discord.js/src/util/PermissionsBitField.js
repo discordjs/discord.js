@@ -11,6 +11,34 @@ const BitField = require('./BitField');
  */
 class PermissionsBitField extends BitField {
   /**
+   * Numeric permission flags.
+   * @type {PermissionFlagsBits}
+   * @see {@link https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags}
+   */
+  static Flags = PermissionFlagsBits;
+
+  /**
+   * Bitfield representing every permission combined
+   * @type {bigint}
+   */
+  static All = Object.values(PermissionFlagsBits).reduce((all, p) => all | p, 0n);
+
+  /**
+   * Bitfield representing the default permissions for users
+   * @type {bigint}
+   */
+  static Default = BigInt(104324673);
+
+  /**
+   * Bitfield representing the permissions required for moderators of stage channels
+   * @type {bigint}
+   */
+  static StageModerator =
+    PermissionFlagsBits.ManageChannels | PermissionFlagsBits.MuteMembers | PermissionFlagsBits.MoveMembers;
+
+  static DefaultBit = BigInt(0);
+
+  /**
    * Bitfield of the packed bits
    * @type {bigint}
    * @name Permissions#bitfield
@@ -63,33 +91,5 @@ class PermissionsBitField extends BitField {
     return super.toArray(false);
   }
 }
-
-/**
- * Numeric permission flags.
- * @type {PermissionFlagsBits}
- * @see {@link https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags}
- */
-PermissionsBitField.Flags = PermissionFlagsBits;
-
-/**
- * Bitfield representing every permission combined
- * @type {bigint}
- */
-PermissionsBitField.All = Object.values(PermissionFlagsBits).reduce((all, p) => all | p, 0n);
-
-/**
- * Bitfield representing the default permissions for users
- * @type {bigint}
- */
-PermissionsBitField.Default = BigInt(104324673);
-
-/**
- * Bitfield representing the permissions required for moderators of stage channels
- * @type {bigint}
- */
-PermissionsBitField.StageModerator =
-  PermissionFlagsBits.ManageChannels | PermissionFlagsBits.MuteMembers | PermissionFlagsBits.MoveMembers;
-
-PermissionsBitField.defaultBit = BigInt(0);
 
 module.exports = PermissionsBitField;

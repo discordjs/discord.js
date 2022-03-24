@@ -3,10 +3,10 @@
   "extends": ["eslint:recommended", "plugin:prettier/recommended"],
   "plugins": ["import"],
   "parserOptions": {
-    "ecmaVersion": 2021
+    "ecmaVersion": 2022
   },
   "env": {
-    "es2021": true,
+    "es2022": true,
     "node": true
   },
   "rules": {
