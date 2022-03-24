@@ -27,6 +27,7 @@ const Partials = require('../util/Partials');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const Util = require('../util/Util');
+const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -705,7 +706,7 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async fetchAuditLogs(options = {}) {
-    if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
+    if (options.before && options.before instanceof GuildAuditLogsEntry) options.before = options.before.id;
 
     const query = new URLSearchParams();
 

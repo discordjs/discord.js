@@ -1,10 +1,10 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { AuditLogEvent } = require('discord-api-types/v10');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const Util = require('../util/Util');
+const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 
 /**
  * The target type of an entry. Here are the available types:
@@ -74,92 +74,6 @@ class GuildAuditLogs {
     const logs = new GuildAuditLogs(...args);
     await Promise.all(logs.entries.map(e => e.target));
     return logs;
-  }
-
-  /**
-   * The action type of an entry, e.g. `Create`. Here are the available types:
-   * * Create
-   * * Delete
-   * * Update
-   * * All
-   * @typedef {string} AuditLogActionType
-   */
-
-  /**
-   * Finds the action type from the entry action.
-   * @param {AuditLogAction} action The action target
-   * @returns {AuditLogActionType}
-   */
-  static actionType(action) {
-    if (
-      [
-        AuditLogEvent.ChannelCreate,
-        AuditLogEvent.ChannelOverwriteCreate,
-        AuditLogEvent.MemberBanRemove,
-        AuditLogEvent.BotAdd,
-        AuditLogEvent.RoleCreate,
-        AuditLogEvent.InviteCreate,
-        AuditLogEvent.WebhookCreate,
-        AuditLogEvent.EmojiCreate,
-        AuditLogEvent.MessagePin,
-        AuditLogEvent.IntegrationCreate,
-        AuditLogEvent.StageInstanceCreate,
-        AuditLogEvent.StickerCreate,
-        AuditLogEvent.GuildScheduledEventCreate,
-        AuditLogEvent.ThreadCreate,
-      ].includes(action)
-    ) {
-      return 'Create';
-    }
-
-    if (
-      [
-        AuditLogEvent.ChannelDelete,
-        AuditLogEvent.ChannelOverwriteDelete,
-        AuditLogEvent.MemberKick,
-        AuditLogEvent.MemberPrune,
-        AuditLogEvent.MemberBanAdd,
-        AuditLogEvent.MemberDisconnect,
-        AuditLogEvent.RoleDelete,
-        AuditLogEvent.InviteDelete,
-        AuditLogEvent.WebhookDelete,
-        AuditLogEvent.EmojiDelete,
-        AuditLogEvent.MessageDelete,
-        AuditLogEvent.MessageBulkDelete,
-        AuditLogEvent.MessageUnpin,
-        AuditLogEvent.IntegrationDelete,
-        AuditLogEvent.StageInstanceDelete,
-        AuditLogEvent.StickerDelete,
-        AuditLogEvent.GuildScheduledEventDelete,
-        AuditLogEvent.ThreadDelete,
-      ].includes(action)
-    ) {
-      return 'Delete';
-    }
-
-    if (
-      [
-        AuditLogEvent.GuildUpdate,
-        AuditLogEvent.ChannelUpdate,
-        AuditLogEvent.ChannelOverwriteUpdate,
-        AuditLogEvent.MemberUpdate,
-        AuditLogEvent.MemberRoleUpdate,
-        AuditLogEvent.MemberMove,
-        AuditLogEvent.RoleUpdate,
-        AuditLogEvent.InviteUpdate,
-        AuditLogEvent.WebhookUpdate,
-        AuditLogEvent.EmojiUpdate,
-        AuditLogEvent.IntegrationUpdate,
-        AuditLogEvent.StageInstanceUpdate,
-        AuditLogEvent.StickerUpdate,
-        AuditLogEvent.GuildScheduledEventUpdate,
-        AuditLogEvent.ThreadUpdate,
-      ].includes(action)
-    ) {
-      return 'Update';
-    }
-
-    return 'All';
   }
 
   toJSON() {

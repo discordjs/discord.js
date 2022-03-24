@@ -51,6 +51,15 @@ const Targets = {
  */
 
 /**
+ * The action type of an entry, e.g. `Create`. Here are the available types:
+ * * Create
+ * * Delete
+ * * Update
+ * * All
+ * @typedef {string} AuditLogActionType
+ */
+
+/**
  * Audit logs entry.
  */
  class GuildAuditLogsEntry {
@@ -71,7 +80,7 @@ const Targets = {
      * The action type of this entry
      * @type {AuditLogActionType}
      */
-    this.actionType = GuildAuditLogs.actionType(data.action_type);
+    this.actionType = GuildAuditLogsEntry.actionType(data.action_type);
 
     /**
      * Specific action type of this entry in its string presentation
@@ -335,6 +344,83 @@ const Targets = {
     if (target < 110) return Targets.GuildScheduledEvent;
     if (target < 120) return Targets.Thread;
     return Targets.Unknown;
+  }
+
+  /**
+   * Finds the action type from the guild audit log entry action.
+   * @param {AuditLogAction} action The action target.
+   * @returns {AuditLogActionType}
+   */
+  static actionType(action) {
+    if (
+      [
+        AuditLogEvent.ChannelCreate,
+        AuditLogEvent.ChannelOverwriteCreate,
+        AuditLogEvent.MemberBanRemove,
+        AuditLogEvent.BotAdd,
+        AuditLogEvent.RoleCreate,
+        AuditLogEvent.InviteCreate,
+        AuditLogEvent.WebhookCreate,
+        AuditLogEvent.EmojiCreate,
+        AuditLogEvent.MessagePin,
+        AuditLogEvent.IntegrationCreate,
+        AuditLogEvent.StageInstanceCreate,
+        AuditLogEvent.StickerCreate,
+        AuditLogEvent.GuildScheduledEventCreate,
+        AuditLogEvent.ThreadCreate,
+      ].includes(action)
+    ) {
+      return 'Create';
+    }
+
+    if (
+      [
+        AuditLogEvent.ChannelDelete,
+        AuditLogEvent.ChannelOverwriteDelete,
+        AuditLogEvent.MemberKick,
+        AuditLogEvent.MemberPrune,
+        AuditLogEvent.MemberBanAdd,
+        AuditLogEvent.MemberDisconnect,
+        AuditLogEvent.RoleDelete,
+        AuditLogEvent.InviteDelete,
+        AuditLogEvent.WebhookDelete,
+        AuditLogEvent.EmojiDelete,
+        AuditLogEvent.MessageDelete,
+        AuditLogEvent.MessageBulkDelete,
+        AuditLogEvent.MessageUnpin,
+        AuditLogEvent.IntegrationDelete,
+        AuditLogEvent.StageInstanceDelete,
+        AuditLogEvent.StickerDelete,
+        AuditLogEvent.GuildScheduledEventDelete,
+        AuditLogEvent.ThreadDelete,
+      ].includes(action)
+    ) {
+      return 'Delete';
+    }
+
+    if (
+      [
+        AuditLogEvent.GuildUpdate,
+        AuditLogEvent.ChannelUpdate,
+        AuditLogEvent.ChannelOverwriteUpdate,
+        AuditLogEvent.MemberUpdate,
+        AuditLogEvent.MemberRoleUpdate,
+        AuditLogEvent.MemberMove,
+        AuditLogEvent.RoleUpdate,
+        AuditLogEvent.InviteUpdate,
+        AuditLogEvent.WebhookUpdate,
+        AuditLogEvent.EmojiUpdate,
+        AuditLogEvent.IntegrationUpdate,
+        AuditLogEvent.StageInstanceUpdate,
+        AuditLogEvent.StickerUpdate,
+        AuditLogEvent.GuildScheduledEventUpdate,
+        AuditLogEvent.ThreadUpdate,
+      ].includes(action)
+    ) {
+      return 'Update';
+    }
+
+    return 'All';
   }
 
   /**
