@@ -4,6 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { ChannelType, GuildPremiumTier, Routes } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
+const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
@@ -709,7 +710,7 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async fetchAuditLogs(options = {}) {
-    if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
+    if (options.before && options.before instanceof GuildAuditLogsEntry) options.before = options.before.id;
 
     const query = new URLSearchParams();
 

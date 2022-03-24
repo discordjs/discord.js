@@ -1129,14 +1129,9 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
-
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
-
-  public static Targets: GuildAuditLogsTargets;
   public static Entry: typeof GuildAuditLogsEntry;
-  public static actionType(action: number): GuildAuditLogsActionType;
   public static build(...args: unknown[]): Promise<GuildAuditLogs>;
-  public static targetType(target: number): GuildAuditLogsTarget;
   public toJSON(): unknown;
 }
 
@@ -1150,6 +1145,7 @@ export class GuildAuditLogsEntry<
     : 'Unknown',
 > {
   private constructor(logs: GuildAuditLogs, guild: Guild, data: RawGuildAuditLogEntryData);
+  public static Targets: GuildAuditLogsTargets;
   public action: TAction;
   public actionType: TActionType;
   public changes: AuditLogChange[] | null;
@@ -1163,6 +1159,8 @@ export class GuildAuditLogsEntry<
     ? GuildAuditLogsEntryTargetField<TActionType>[TTargetType]
     : Role | GuildEmoji | { id: Snowflake } | null;
   public targetType: TTargetType;
+  public static actionType(action: number): GuildAuditLogsActionType;
+  public static targetType(target: number): GuildAuditLogsTarget;
   public toJSON(): unknown;
 }
 
