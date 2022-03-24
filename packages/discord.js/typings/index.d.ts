@@ -774,8 +774,8 @@ export class ClientUser extends User {
 
 export class Options extends null {
   private constructor();
-  public static defaultMakeCacheSettings: CacheWithLimitsOptions;
-  public static defaultSweeperSettings: SweeperOptions;
+  public static get DefaultMakeCacheSettings(): CacheWithLimitsOptions;
+  public static get DefaultSweeperSettings(): SweeperOptions;
   public static createDefault(): ClientOptions;
   public static cacheWithLimits(settings?: CacheWithLimitsOptions): CacheFactory;
   public static cacheEverything(): CacheFactory;
@@ -1356,7 +1356,7 @@ export class GuildTemplate extends Base {
   public delete(): Promise<GuildTemplate>;
   public edit(options?: EditGuildTemplateOptions): Promise<GuildTemplate>;
   public sync(): Promise<GuildTemplate>;
-  public static GUILD_TEMPLATES_PATTERN: RegExp;
+  public static GuildTemplatesPattern: RegExp;
 }
 
 export class GuildPreviewEmoji extends BaseGuildEmoji {
@@ -1525,7 +1525,7 @@ export class Invite extends Base {
   public delete(reason?: string): Promise<Invite>;
   public toJSON(): unknown;
   public toString(): string;
-  public static INVITES_PATTERN: RegExp;
+  public static InvitesPattern: RegExp;
   /** @deprecated */
   public stageInstance: InviteStageInstance | null;
   public guildScheduledEvent: GuildScheduledEvent | null;
@@ -1773,10 +1773,10 @@ export class MessageMentions {
   public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
   public toJSON(): unknown;
 
-  public static CHANNELS_PATTERN: RegExp;
-  public static EVERYONE_PATTERN: RegExp;
-  public static ROLES_PATTERN: RegExp;
-  public static USERS_PATTERN: RegExp;
+  public static ChannelsPattern: RegExp;
+  public static EveryonePattern: RegExp;
+  public static RolesPattern: RegExp;
+  public static UsersPattern: RegExp;
 }
 
 export class MessagePayload {

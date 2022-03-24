@@ -43,7 +43,7 @@ class DataResolver extends null {
    * @returns {string}
    */
   static resolveInviteCode(data) {
-    return this.resolveCode(data, Invite.INVITES_PATTERN);
+    return this.resolveCode(data, Invite.InvitesPattern);
   }
 
   /**
@@ -53,7 +53,7 @@ class DataResolver extends null {
    */
   static resolveGuildTemplateCode(data) {
     const GuildTemplate = require('../structures/GuildTemplate');
-    return this.resolveCode(data, GuildTemplate.GUILD_TEMPLATES_PATTERN);
+    return this.resolveCode(data, GuildTemplate.GuildTemplatesPattern);
   }
 
   /**

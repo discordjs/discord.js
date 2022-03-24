@@ -9,7 +9,13 @@ const BitField = require('./BitField');
  * and by setting their corresponding flags you are disabling them</info>
  * @extends {BitField}
  */
-class SystemChannelFlagsBitField extends BitField {}
+class SystemChannelFlagsBitField extends BitField {
+  /**
+   * Numeric system channel flags.
+   * @type {GuildSystemChannelFlags}
+   */
+  static Flags = GuildSystemChannelFlags;
+}
 
 /**
  * @name SystemChannelFlagsBitField
@@ -32,11 +38,5 @@ class SystemChannelFlagsBitField extends BitField {}
  * * An Array of SystemChannelFlagsResolvable
  * @typedef {string|number|SystemChannelFlagsBitField|SystemChannelFlagsResolvable[]} SystemChannelFlagsResolvable
  */
-
-/**
- * Numeric system channel flags.
- * @type {GuildSystemChannelFlags}
- */
-SystemChannelFlagsBitField.Flags = GuildSystemChannelFlags;
 
 module.exports = SystemChannelFlagsBitField;

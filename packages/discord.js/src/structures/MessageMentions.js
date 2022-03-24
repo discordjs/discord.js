@@ -7,6 +7,30 @@ const Util = require('../util/Util');
  * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
+  /**
+   * Regular expression that globally matches `@everyone` and `@here`
+   * @type {RegExp}
+   */
+  static EveryonePattern = /@(everyone|here)/g;
+
+  /**
+   * Regular expression that globally matches user mentions like `<@81440962496172032>`
+   * @type {RegExp}
+   */
+  static UsersPattern = /<@!?(\d{17,19})>/g;
+
+  /**
+   * Regular expression that globally matches role mentions like `<@&297577916114403338>`
+   * @type {RegExp}
+   */
+  static RolesPattern = /<@&(\d{17,19})>/g;
+
+  /**
+   * Regular expression that globally matches channel mentions like `<#222079895583457280>`
+   * @type {RegExp}
+   */
+  static ChannelsPattern = /<#(\d{17,19})>/g;
+
   constructor(message, users, roles, everyone, crosspostedChannels, repliedUser) {
     /**
      * The client the message is from
@@ -158,7 +182,7 @@ class MessageMentions {
     if (this._channels) return this._channels;
     this._channels = new Collection();
     let matches;
-    while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
+    while ((matches = this.constructor.ChannelsPattern.exec(this._content)) !== null) {
       const chan = this.client.channels.cache.get(matches[1]);
       if (chan) this._channels.set(chan.id, chan);
     }
@@ -211,29 +235,5 @@ class MessageMentions {
     });
   }
 }
-
-/**
- * Regular expression that globally matches `@everyone` and `@here`
- * @type {RegExp}
- */
-MessageMentions.EVERYONE_PATTERN = /@(everyone|here)/g;
-
-/**
- * Regular expression that globally matches user mentions like `<@81440962496172032>`
- * @type {RegExp}
- */
-MessageMentions.USERS_PATTERN = /<@!?(\d{17,19})>/g;
-
-/**
- * Regular expression that globally matches role mentions like `<@&297577916114403338>`
- * @type {RegExp}
- */
-MessageMentions.ROLES_PATTERN = /<@&(\d{17,19})>/g;
-
-/**
- * Regular expression that globally matches channel mentions like `<#222079895583457280>`
- * @type {RegExp}
- */
-MessageMentions.CHANNELS_PATTERN = /<#(\d{17,19})>/g;
 
 module.exports = MessageMentions;

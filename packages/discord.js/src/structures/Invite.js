@@ -12,6 +12,12 @@ const { Error } = require('../errors');
  * @extends {Base}
  */
 class Invite extends Base {
+  /**
+   * Regular expression that globally matches Discord invite links
+   * @type {RegExp}
+   */
+  static InvitesPattern = /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/gi;
+
   constructor(client, data) {
     super(client);
     this._patch(data);
@@ -307,11 +313,5 @@ class Invite extends Base {
     return this.code;
   }
 }
-
-/**
- * Regular expression that globally matches Discord invite links
- * @type {RegExp}
- */
-Invite.INVITES_PATTERN = /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/gi;
 
 module.exports = Invite;
