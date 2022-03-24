@@ -113,6 +113,7 @@ import {
   APIEmbedImage,
   VideoQualityMode,
   LocaleString,
+  LocalizationMap,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -291,13 +292,13 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public get createdTimestamp(): number;
   public defaultPermission: boolean;
   public description: string;
-  public descriptionLocalizations: Partial<Record<LocaleString, string>> | null;
+  public descriptionLocalizations: LocalizationMap | null;
   public guild: Guild | null;
   public guildId: Snowflake | null;
   public get manager(): ApplicationCommandManager;
   public id: Snowflake;
   public name: string;
-  public nameLocalizations: Partial<Record<LocaleString, string>> | null;
+  public nameLocalizations: LocalizationMap | null;
   public options: ApplicationCommandOption[];
   public permissions: ApplicationCommandPermissionsManager<
     PermissionsFetchType,
@@ -311,12 +312,10 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
   public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setName(name: string): Promise<ApplicationCommand<PermissionsFetchType>>;
-  public setNameLocalizations(
-    nameLocalizations: Partial<Record<LocaleString, string>>,
-  ): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public setNameLocalizations(nameLocalizations: LocalizationMap): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDescription(description: string): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDescriptionLocalizations(
-    descriptionLocalizations: Partial<Record<LocaleString, string>>,
+    descriptionLocalizations: LocalizationMap,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDefaultPermission(defaultPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setOptions(options: ApplicationCommandOptionData[]): Promise<ApplicationCommand<PermissionsFetchType>>;
@@ -3389,7 +3388,7 @@ export type AllowedThreadTypeForTextChannel = ChannelType.GuildPublicThread | Ch
 
 export interface BaseApplicationCommandData {
   name: string;
-  nameLocalizations?: Partial<Record<LocaleString, string>>;
+  nameLocalizations?: LocalizationMap;
   defaultPermission?: boolean;
 }
 
@@ -3416,9 +3415,9 @@ export type CommandOptionNonChoiceResolvableType = Exclude<
 
 export interface BaseApplicationCommandOptionsData {
   name: string;
-  nameLocalizations?: Partial<Record<LocaleString, string>>;
+  nameLocalizations?: LocalizationMap;
   description: string;
-  descriptionLocalizations?: Partial<Record<LocaleString, string>>;
+  descriptionLocalizations?: LocalizationMap;
   required?: boolean;
   autocomplete?: never;
 }
@@ -3433,7 +3432,7 @@ export interface MessageApplicationCommandData extends BaseApplicationCommandDat
 
 export interface ChatInputApplicationCommandData extends BaseApplicationCommandData {
   description: string;
-  descriptionLocalizations?: Partial<Record<LocaleString, string>>;
+  descriptionLocalizations?: LocalizationMap;
   type?: ApplicationCommandType.ChatInput;
   options?: ApplicationCommandOptionData[];
 }
