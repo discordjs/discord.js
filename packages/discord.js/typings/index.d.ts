@@ -1131,7 +1131,6 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
   private integrations: Collection<Snowflake | string, Integration>;
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
   public static Entry: typeof GuildAuditLogsEntry;
-  public static build(...args: unknown[]): Promise<GuildAuditLogs>;
   public toJSON(): unknown;
 }
 

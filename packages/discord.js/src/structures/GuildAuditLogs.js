@@ -66,16 +66,6 @@ class GuildAuditLogs {
     }
   }
 
-  /**
-   * Handles possible promises for entry targets.
-   * @returns {Promise<GuildAuditLogs>}
-   */
-  static async build(...args) {
-    const logs = new GuildAuditLogs(...args);
-    await Promise.all(logs.entries.map(e => e.target));
-    return logs;
-  }
-
   toJSON() {
     return Util.flatten(this);
   }

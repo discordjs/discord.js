@@ -733,7 +733,7 @@ class Guild extends AnonymousGuild {
     }
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
-    return GuildAuditLogs.build(this, data);
+    return new GuildAuditLogs(this, data);
   }
 
   /**
