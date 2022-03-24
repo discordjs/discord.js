@@ -1,10 +1,10 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const Util = require('../util/Util');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 
 /**
  * The target type of an entry. Here are the available types:

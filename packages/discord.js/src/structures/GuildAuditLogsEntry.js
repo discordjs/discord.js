@@ -62,7 +62,7 @@ const Targets = {
 /**
  * Audit logs entry.
  */
- class GuildAuditLogsEntry {
+class GuildAuditLogsEntry {
   /**
    * Key mirror of all available audit log targets.
    * @type {Object<string, string>}
@@ -75,6 +75,7 @@ const Targets = {
      * @type {AuditLogTargetType}
      */
     this.targetType = GuildAuditLogsEntry.targetType(data.action_type);
+    const targetType = this.targetType;
 
     /**
      * The action type of this entry

@@ -4,6 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { ChannelType, GuildPremiumTier, Routes } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
+const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
@@ -27,7 +28,6 @@ const Partials = require('../util/Partials');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const Util = require('../util/Util');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 
 /**
  * Represents a guild (or a server) on Discord.
