@@ -66,6 +66,7 @@ class GuildAuditLogsEntry {
   /**
    * Key mirror of all available audit log targets.
    * @type {Object<string, string>}
+   * @memberof GuildAuditLogsEntry
    */
   static Targets = Targets;
 
