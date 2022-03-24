@@ -363,6 +363,7 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
   deferred: boolean;
   ephemeral: boolean | null;
   replied: boolean;
+  webhook: InteractionWebhook;
   reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   deleteReply(): Promise<void>;
