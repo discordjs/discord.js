@@ -4,13 +4,16 @@ const { EmbedBuilder: BuildersEmbed, isJSONEncodable } = require('@discordjs/bui
 const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
+/**
+ * Represents an embed builder.
+ */
 class EmbedBuilder extends BuildersEmbed {
   constructor(data) {
     super(Transformers.toSnakeCase(data));
   }
 
   /**
-   * Creates a new embed builder from json data
+   * Creates a new embed builder from JSON data
    * @param {JSONEncodable<APIEmbed> | APIEmbed} other The other data
    * @returns {EmbedBuilder}
    */

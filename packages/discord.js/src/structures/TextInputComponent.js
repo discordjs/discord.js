@@ -2,9 +2,14 @@
 
 const Component = require('./Component');
 
+/**
+ * Represents a text input component.
+ * @extends {Component}
+ */
 class TextInputComponent extends Component {
   /**
    * The custom id of this text input
+   * @type {string}
    */
   get customId() {
     return this.data.custom_id;
@@ -12,6 +17,7 @@ class TextInputComponent extends Component {
 
   /**
    * The value for this text input
+   * @type {string}
    */
   get value() {
     return this.data.value;

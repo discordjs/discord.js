@@ -3,6 +3,9 @@
 const { ActionRowBuilder: BuildersActionRow, ComponentBuilder } = require('@discordjs/builders');
 const Transformers = require('../util/Transformers');
 
+/**
+ * Represents an action row builder.
+ */
 class ActionRowBuilder extends BuildersActionRow {
   constructor({ components, ...data } = {}) {
     super({
