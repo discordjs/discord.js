@@ -57,6 +57,11 @@ const { ComponentType } = require('discord-api-types/v10');
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData} ComponentData
  */
 
+/**
+ * Any emoji data that can be used within a button
+ * @typedef {APIMessageComponentEmoji|string} ComponentEmojiResolvable
+ */
+
 class Components extends null {
   /**
    * Transforms API data into a component
