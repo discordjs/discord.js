@@ -27,6 +27,7 @@ import {
   underscore,
   userMention,
   ModalActionRowComponentBuilder,
+  ModalBuilder as BuildersModal,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
@@ -579,6 +580,11 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
 
 export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
   public setEmoji(emoji: ComponentEmojiResolvable): this;
+}
+
+export class ModalBuilder extends BuildersModal {
+  public constructor(data?: ModalData | APIModalComponent);
+  public static from(other: JSONEncodable<APIModalComponent> | APIModalComponent): ModalBuilder;
 }
 
 export class TextInputBuilder extends BuilderTextInputComponent {
@@ -5385,14 +5391,13 @@ export {
   WebhookType,
 } from 'discord-api-types/v10';
 export {
+  UnsafeEmbedBuilder,
+  UnsafeModalBuilder,
+  UnsafeTextInputBuilder,
   UnsafeButtonBuilder,
   UnsafeSelectMenuBuilder,
   UnsafeSelectMenuOptionBuilder,
   MessageActionRowComponentBuilder,
   ModalActionRowComponentBuilder,
-  UnsafeEmbedBuilder,
-  ModalBuilder,
-  UnsafeModalBuilder,
-  UnsafeTextInputBuilder,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
