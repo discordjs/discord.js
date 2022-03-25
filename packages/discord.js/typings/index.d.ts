@@ -245,9 +245,6 @@ export class ActionRowBuilder<
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
 export type ModalActionRowComponent = TextInputComponent;
 
-export type MessageActionRowBuilder = ButtonBuilder | SelectMenuBuilder;
-export type ModalActionRowBuilder = TextInputBuilder;
-
 export class ActionRow<T extends MessageActionRowComponent | ModalActionRowComponent> {
   private constructor(data: APIActionRowComponent<APIMessageActionRowComponent>);
   public readonly components: T[];
