@@ -22,7 +22,7 @@ export const minMaxValidator = s.number.int.ge(0).le(25);
 
 export const labelValueDescriptionValidator = s.string.lengthGe(1).lengthLe(100);
 export const optionValidator = s.union(
-	z.object({
+	s.object({
 		label: labelValueDescriptionValidator,
 		value: labelValueDescriptionValidator,
 		description: labelValueDescriptionValidator.optional,
