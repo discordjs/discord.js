@@ -13,6 +13,7 @@ class ModalBuilder extends BuildersModal {
       ...Transformers.toSnakeCase(data),
     });
   }
+
   /**
    * Creates a new modal builder from JSON data
    * @param {JSONEncodable<APIModalComponent> | APIModalComponent} other The other data
