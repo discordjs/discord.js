@@ -39,7 +39,7 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData} MessageComponentData
- /
+ */
 
 /**
  * @typedef {BaseComponentData} TextInputComponentData
