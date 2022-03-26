@@ -3090,7 +3090,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
-  public unban(user: UserResolvable, reason?: string): Promise<User>;
+  public unban(user: UserResolvable, reason?: string): Promise<User | null>;
 }
 
 export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBanResolvable> {
