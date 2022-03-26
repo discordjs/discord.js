@@ -10,6 +10,7 @@ class IntentsBitField extends BitField {
   /**
    * Numeric WebSocket intents
    * @type {GatewayIntentBits}
+   * @memberof IntentsBitField
    */
   static Flags = GatewayIntentBits;
 }

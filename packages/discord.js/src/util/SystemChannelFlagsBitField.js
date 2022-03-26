@@ -13,6 +13,7 @@ class SystemChannelFlagsBitField extends BitField {
   /**
    * Numeric system channel flags.
    * @type {GuildSystemChannelFlags}
+   * @memberof SystemChannelFlagsBitField
    */
   static Flags = GuildSystemChannelFlags;
 }

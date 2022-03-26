@@ -14,6 +14,7 @@ class GuildTemplate extends Base {
   /**
    * Regular expression that globally matches guild template links
    * @type {RegExp}
+   * @memberof GuildTemplate
    */
   static GuildTemplatesPattern = /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/gi;
 
