@@ -4871,7 +4871,7 @@ export interface TextInputComponentData extends BaseComponentData {
 export interface ModalData {
   customId: string;
   title: string;
-  components: ActionRowData<ModalActionRowComponentData>[];
+  components: (ActionRow<ModalActionRowComponent> | ActionRowData<ModalActionRowComponentData>)[];
 }
 
 export type MessageTarget =
