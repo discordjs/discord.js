@@ -10,12 +10,14 @@ class BitField {
    * Numeric bitfield flags.
    * <info>Defined in extension classes</info>
    * @type {Object}
+   * @memberof BitField
    * @abstract
    */
   static Flags = {};
 
   /**
    * @type {number|bigint}
+   * @memberof BitField
    * @private
    */
   static DefaultBit = 0;

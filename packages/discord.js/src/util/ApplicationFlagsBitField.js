@@ -11,6 +11,7 @@ class ApplicationFlagsBitField extends BitField {
   /**
    * Numeric application flags. All available properties:
    * @type {ApplicationFlags}
+   * @memberof ApplicationFlagsBitField
    */
   static Flags = ApplicationFlags;
 }

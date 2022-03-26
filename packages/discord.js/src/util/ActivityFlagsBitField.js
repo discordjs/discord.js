@@ -11,6 +11,7 @@ class ActivityFlagsBitField extends BitField {
   /**
    * Numeric activity flags.
    * @type {ActivityFlags}
+   * @memberof ActivityFlagsBitField
    */
   static Flags = ActivityFlags;
 }

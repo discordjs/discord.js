@@ -10,24 +10,28 @@ class MessageMentions {
   /**
    * Regular expression that globally matches `@everyone` and `@here`
    * @type {RegExp}
+   * @memberof MessageMentions
    */
   static EveryonePattern = /@(everyone|here)/g;
 
   /**
    * Regular expression that globally matches user mentions like `<@81440962496172032>`
    * @type {RegExp}
+   * @memberof MessageMentions
    */
   static UsersPattern = /<@!?(\d{17,19})>/g;
 
   /**
    * Regular expression that globally matches role mentions like `<@&297577916114403338>`
    * @type {RegExp}
+   * @memberof MessageMentions
    */
   static RolesPattern = /<@&(\d{17,19})>/g;
 
   /**
    * Regular expression that globally matches channel mentions like `<#222079895583457280>`
    * @type {RegExp}
+   * @memberof MessageMentions
    */
   static ChannelsPattern = /<#(\d{17,19})>/g;
 

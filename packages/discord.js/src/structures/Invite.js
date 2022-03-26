@@ -15,6 +15,7 @@ class Invite extends Base {
   /**
    * Regular expression that globally matches Discord invite links
    * @type {RegExp}
+   * @memberof Invite
    */
   static InvitesPattern = /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/gi;
 

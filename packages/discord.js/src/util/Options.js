@@ -87,7 +87,7 @@ class Options extends null {
           $browser: 'discord.js',
           $device: 'discord.js',
         },
-        version: 9,
+        version: 10,
       },
       rest: DefaultRestOptions,
       jsonTransformer: Transformers.toSnakeCase,

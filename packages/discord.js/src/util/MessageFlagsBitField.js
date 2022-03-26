@@ -11,6 +11,7 @@ class MessageFlagsBitField extends BitField {
   /**
    * Numeric message flags.
    * @type {MessageFlags}
+   * @memberof MessageFlagsBitField
    */
   static Flags = MessageFlags;
 }
