@@ -1,6 +1,6 @@
 'use strict';
 
-const { InteractionType } = require('discord-api-types/v9');
+const { InteractionType } = require('discord-api-types/v10');
 
 /**
  * Represents an interaction's response
