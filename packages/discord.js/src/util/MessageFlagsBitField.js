@@ -7,7 +7,14 @@ const BitField = require('./BitField');
  * Data structure that makes it easy to interact with a {@link Message#flags} bitfield.
  * @extends {BitField}
  */
-class MessageFlagsBitField extends BitField {}
+class MessageFlagsBitField extends BitField {
+  /**
+   * Numeric message flags.
+   * @type {MessageFlags}
+   * @memberof MessageFlagsBitField
+   */
+  static Flags = MessageFlags;
+}
 
 /**
  * @name MessageFlagsBitField
@@ -21,11 +28,5 @@ class MessageFlagsBitField extends BitField {}
  * @type {number}
  * @name MessageFlagsBitField#bitfield
  */
-
-/**
- * Numeric message flags.
- * @type {MessageFlags}
- */
-MessageFlagsBitField.Flags = MessageFlags;
 
 module.exports = MessageFlagsBitField;

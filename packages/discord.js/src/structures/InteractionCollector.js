@@ -45,16 +45,14 @@ class InteractionCollector extends Collector {
      * @type {?Snowflake}
      */
     this.channelId =
-      this.client.channels.resolveId(options.message?.channel) ??
-      options.message?.channel_id ??
-      this.client.channels.resolveId(options.channel);
+      options.message?.channelId ?? options.message?.channel_id ?? this.client.channels.resolveId(options.channel);
 
     /**
      * The guild from which to collect interactions, if provided
      * @type {?Snowflake}
      */
     this.guildId =
-      this.client.guilds.resolveId(options.message?.guild) ??
+      options.message?.guildId ??
       options.message?.guild_id ??
       this.client.guilds.resolveId(options.channel?.guild) ??
       this.client.guilds.resolveId(options.guild);
@@ -83,7 +81,6 @@ class InteractionCollector extends Collector {
      */
     this.total = 0;
 
-    this.empty = this.empty.bind(this);
     this.client.incrementMaxListeners();
 
     const bulkDeleteListener = messages => {

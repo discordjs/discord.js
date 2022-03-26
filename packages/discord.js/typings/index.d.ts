@@ -19,6 +19,7 @@ import {
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
   TextInputBuilder as BuilderTextInputComponent,
+  UnsafeSelectMenuOptionBuilder as BuildersSelectMenuOption,
   spoiler,
   strikethrough,
   time,
@@ -363,6 +364,7 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
   deferred: boolean;
   ephemeral: boolean | null;
   replied: boolean;
+  webhook: InteractionWebhook;
   reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   deleteReply(): Promise<void>;
@@ -462,7 +464,7 @@ export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel) {
   public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
   public setDefaultAutoArchiveDuration(
-    defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
+    defaultAutoArchiveDuration: ThreadAutoArchiveDuration | 'MAX',
     reason?: string,
   ): Promise<this>;
   public setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
@@ -538,9 +540,12 @@ export class ButtonComponent extends Component<APIButtonComponent> {
   public get url(): string | null;
 }
 
+export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
+
 export class ButtonBuilder extends BuilderButtonComponent {
   public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
   public static from(other: JSONEncodable<APIButtonComponent> | APIButtonComponent): ButtonBuilder;
+  public override setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
@@ -548,6 +553,10 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
     data?: SelectMenuComponentData | (Omit<APISelectMenuComponent, 'type'> & { type?: ComponentType.SelectMenu }),
   );
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
+}
+
+export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
+  public setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
 export class TextInputBuilder extends BuilderTextInputComponent {
@@ -774,8 +783,8 @@ export class ClientUser extends User {
 
 export class Options extends null {
   private constructor();
-  public static defaultMakeCacheSettings: CacheWithLimitsOptions;
-  public static defaultSweeperSettings: SweeperOptions;
+  public static get DefaultMakeCacheSettings(): CacheWithLimitsOptions;
+  public static get DefaultSweeperSettings(): SweeperOptions;
   public static createDefault(): ClientOptions;
   public static cacheWithLimits(settings?: CacheWithLimitsOptions): CacheFactory;
   public static cacheEverything(): CacheFactory;
@@ -1090,24 +1099,27 @@ export class Guild extends AnonymousGuild {
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
   public setBanner(banner: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setDefaultMessageNotifications(
-    defaultMessageNotifications: GuildDefaultMessageNotifications,
+    defaultMessageNotifications: GuildDefaultMessageNotifications | null,
     reason?: string,
   ): Promise<Guild>;
   public setDiscoverySplash(
     discoverySplash: BufferResolvable | Base64Resolvable | null,
     reason?: string,
   ): Promise<Guild>;
-  public setExplicitContentFilter(explicitContentFilter: GuildExplicitContentFilter, reason?: string): Promise<Guild>;
+  public setExplicitContentFilter(
+    explicitContentFilter: GuildExplicitContentFilter | null,
+    reason?: string,
+  ): Promise<Guild>;
   public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
   public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
-  public setPreferredLocale(preferredLocale: Locale, reason?: string): Promise<Guild>;
+  public setPreferredLocale(preferredLocale: Locale | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
-  public setVerificationLevel(verificationLevel: GuildVerificationLevel, reason?: string): Promise<Guild>;
+  public setVerificationLevel(verificationLevel: GuildVerificationLevel | null, reason?: string): Promise<Guild>;
   public setPremiumProgressBarEnabled(enabled?: boolean, reason?: string): Promise<Guild>;
   public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
   public toJSON(): unknown;
@@ -1117,14 +1129,8 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
-
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
-
-  public static Targets: GuildAuditLogsTargets;
   public static Entry: typeof GuildAuditLogsEntry;
-  public static actionType(action: number): GuildAuditLogsActionType;
-  public static build(...args: unknown[]): Promise<GuildAuditLogs>;
-  public static targetType(target: number): GuildAuditLogsTarget;
   public toJSON(): unknown;
 }
 
@@ -1138,6 +1144,7 @@ export class GuildAuditLogsEntry<
     : 'Unknown',
 > {
   private constructor(logs: GuildAuditLogs, guild: Guild, data: RawGuildAuditLogEntryData);
+  public static Targets: GuildAuditLogsTargets;
   public action: TAction;
   public actionType: TActionType;
   public changes: AuditLogChange[] | null;
@@ -1151,6 +1158,8 @@ export class GuildAuditLogsEntry<
     ? GuildAuditLogsEntryTargetField<TActionType>[TTargetType]
     : Role | GuildEmoji | { id: Snowflake } | null;
   public targetType: TTargetType;
+  public static actionType(action: number): GuildAuditLogsActionType;
+  public static targetType(target: number): GuildAuditLogsTarget;
   public toJSON(): unknown;
 }
 
@@ -1356,7 +1365,7 @@ export class GuildTemplate extends Base {
   public delete(): Promise<GuildTemplate>;
   public edit(options?: EditGuildTemplateOptions): Promise<GuildTemplate>;
   public sync(): Promise<GuildTemplate>;
-  public static GUILD_TEMPLATES_PATTERN: RegExp;
+  public static GuildTemplatesPattern: RegExp;
 }
 
 export class GuildPreviewEmoji extends BaseGuildEmoji {
@@ -1526,7 +1535,7 @@ export class Invite extends Base {
   public delete(reason?: string): Promise<Invite>;
   public toJSON(): unknown;
   public toString(): string;
-  public static INVITES_PATTERN: RegExp;
+  public static InvitesPattern: RegExp;
   /** @deprecated */
   public stageInstance: InviteStageInstance | null;
   public guildScheduledEvent: GuildScheduledEvent | null;
@@ -1774,10 +1783,10 @@ export class MessageMentions {
   public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
   public toJSON(): unknown;
 
-  public static CHANNELS_PATTERN: RegExp;
-  public static EVERYONE_PATTERN: RegExp;
-  public static ROLES_PATTERN: RegExp;
-  public static USERS_PATTERN: RegExp;
+  public static ChannelsPattern: RegExp;
+  public static EveryonePattern: RegExp;
+  public static RolesPattern: RegExp;
+  public static UsersPattern: RegExp;
 }
 
 export class MessagePayload {
@@ -2394,7 +2403,7 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel) {
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
   public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
   public setAutoArchiveDuration(
-    autoArchiveDuration: ThreadAutoArchiveDuration,
+    autoArchiveDuration: ThreadAutoArchiveDuration | 'MAX',
     reason?: string,
   ): Promise<ThreadChannel>;
   public setInvitable(invitable?: boolean, reason?: string): Promise<ThreadChannel>;
@@ -2801,6 +2810,12 @@ export class WelcomeScreen extends Base {
 
 //#region Constants
 
+export type NonSystemMessageType =
+  | MessageType.Default
+  | MessageType.Reply
+  | MessageType.ChatInputCommand
+  | MessageType.ContextMenuCommand;
+
 export const Constants: {
   Package: {
     name: string;
@@ -2823,8 +2838,7 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
-  MessageTypes: MessageType[];
-  SystemMessageTypes: SystemMessageType[];
+  NonSystemMessageTypes: NonSystemMessageType[];
 };
 
 export const version: string;
@@ -3082,7 +3096,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
-  public unban(user: UserResolvable, reason?: string): Promise<User>;
+  public unban(user: UserResolvable, reason?: string): Promise<User | null>;
 }
 
 export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBanResolvable> {
@@ -3673,7 +3687,7 @@ export interface ChannelData {
   rateLimitPerUser?: number;
   lockPermissions?: boolean;
   permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
-  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
+  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
   rtcRegion?: string | null;
 }
 
@@ -4434,11 +4448,11 @@ export interface GuildWidgetSettings {
 
 export interface GuildEditData {
   name?: string;
-  verificationLevel?: GuildVerificationLevel;
-  explicitContentFilter?: GuildExplicitContentFilter;
-  defaultMessageNotifications?: GuildDefaultMessageNotifications;
-  afkChannel?: VoiceChannelResolvable;
-  systemChannel?: TextChannelResolvable;
+  verificationLevel?: GuildVerificationLevel | null;
+  explicitContentFilter?: GuildExplicitContentFilter | null;
+  defaultMessageNotifications?: GuildDefaultMessageNotifications | null;
+  afkChannel?: VoiceChannelResolvable | null;
+  systemChannel?: TextChannelResolvable | null;
   systemChannelFlags?: SystemChannelFlagsResolvable;
   afkTimeout?: number;
   icon?: BufferResolvable | Base64Resolvable | null;
@@ -4446,9 +4460,9 @@ export interface GuildEditData {
   splash?: BufferResolvable | Base64Resolvable | null;
   discoverySplash?: BufferResolvable | Base64Resolvable | null;
   banner?: BufferResolvable | Base64Resolvable | null;
-  rulesChannel?: TextChannelResolvable;
-  publicUpdatesChannel?: TextChannelResolvable;
-  preferredLocale?: Locale;
+  rulesChannel?: TextChannelResolvable | null;
+  publicUpdatesChannel?: TextChannelResolvable | null;
+  preferredLocale?: Locale | null;
   premiumProgressBarEnabled?: boolean;
   description?: string | null;
   features?: GuildFeature[];
@@ -5055,11 +5069,6 @@ export type StickerResolvable = Sticker | Snowflake;
 
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
-export type SystemMessageType = Exclude<
-  MessageType,
-  MessageType.Default | MessageType.Reply | MessageType.ChatInputCommand | MessageType.ContextMenuCommand
->;
-
 export type StageChannelResolvable = StageChannel | Snowflake;
 
 export interface StageInstanceEditOptions {
@@ -5140,7 +5149,7 @@ export type TextChannelResolvable = Snowflake | TextChannel;
 
 export type TextBasedChannelResolvable = Snowflake | TextBasedChannel;
 
-export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080 | 'MAX';
+export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080;
 
 export type ThreadChannelResolvable = ThreadChannel | Snowflake;
 
@@ -5304,6 +5313,7 @@ export {
   ApplicationCommandPermissionType,
   APIEmbedField,
   APISelectMenuOption,
+  APIMessageComponentEmoji,
   AuditLogEvent,
   ButtonStyle,
   ChannelType,
@@ -5341,7 +5351,6 @@ export {
 export {
   UnsafeButtonBuilder,
   UnsafeSelectMenuBuilder,
-  SelectMenuOptionBuilder,
   UnsafeSelectMenuOptionBuilder,
   MessageActionRowComponentBuilder,
   ModalActionRowComponentBuilder,
