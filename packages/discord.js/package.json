@@ -3,7 +3,7 @@
   "version": "14.0.0-dev",
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
-    "test": "npx jest --runInBand && yarn docs:test && yarn test:typescript",
+    "test": "jest --runInBand && yarn docs:test && yarn test:typescript",
     "test:typescript": "tsc --noEmit && tsd",
     "lint": "prettier --check . && eslint src && tslint typings/index.d.ts",
     "format": "prettier --write . && eslint src --fix",
