@@ -24,7 +24,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The localized names for this command
 	 */
-	public readonly nameLocalizations?: Partial<Record<LocaleString, string>> = undefined;
+	public readonly name_localizations?: Partial<Record<LocaleString, string>> = undefined;
 
 	/**
 	 * The description of this slash command
@@ -34,7 +34,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The localized descriptions for this command
 	 */
-	public readonly descriptionLocalizations?: Partial<Record<LocaleString, string>> = undefined;
+	public readonly description_localizations?: Partial<Record<LocaleString, string>> = undefined;
 
 	/**
 	 * The options of this slash command
@@ -58,10 +58,9 @@ export class SlashCommandBuilder {
 
 		return {
 			name: this.name,
-			// @ts-expect-error bump dapi-types
-			name_localizations: this.nameLocalizations,
+			name_localizations: this.name_localizations,
 			description: this.description,
-			description_localizations: this.descriptionLocalizations,
+			description_localizations: this.description_localizations,
 			options: this.options.map((option) => option.toJSON()),
 			default_permission: this.defaultPermission,
 		};

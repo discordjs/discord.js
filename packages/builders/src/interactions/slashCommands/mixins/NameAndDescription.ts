@@ -1,12 +1,12 @@
-import type { LocaleString } from 'discord-api-types/v10';
+import type { LocaleString, LocalizationMap } from 'discord-api-types/v10';
 import { flattenLocaleMap } from '../../../util/slashCommandUtil';
 import { validateDescription, validateLocale, validateName } from '../Assertions';
 
 export class SharedNameAndDescription {
 	public readonly name!: string;
-	public readonly nameLocalizations?: Partial<Record<LocaleString, string>> = undefined;
+	public readonly name_localizations?: LocalizationMap = undefined;
 	public readonly description!: string;
-	public readonly descriptionLocalizations?: Partial<Record<LocaleString, string>> = undefined;
+	public readonly description_localizations?: LocalizationMap = undefined;
 
 	/**
 	 * Sets the name
@@ -46,11 +46,11 @@ export class SharedNameAndDescription {
 		validateLocale(locale);
 		validateName(localizedName);
 
-		if (!this.nameLocalizations) {
-			Reflect.set(this, 'nameLocalizations', {});
+		if (!this.name_localizations) {
+			Reflect.set(this, 'name_localizations', {});
 		}
 
-		this.nameLocalizations![locale] = localizedName;
+		this.name_localizations![locale] = localizedName;
 		return this;
 	}
 
@@ -63,11 +63,11 @@ export class SharedNameAndDescription {
 		localizedNames: Partial<Record<LocaleString, string>> | Map<LocaleString, string> | null,
 	) {
 		if (localizedNames === null) {
-			Reflect.set(this, 'nameLocalizations', undefined);
+			Reflect.set(this, 'name_localizations', null);
 			return this;
 		}
 
-		Reflect.set(this, 'nameLocalizations', {});
+		Reflect.set(this, 'name_localizations', {});
 		flattenLocaleMap(localizedNames).forEach((args) => this.setNameLocalization(...args));
 		return this;
 	}
@@ -82,11 +82,11 @@ export class SharedNameAndDescription {
 		validateLocale(locale);
 		validateDescription(localizedDescription);
 
-		if (!this.descriptionLocalizations) {
-			Reflect.set(this, 'descriptionLocalizations', {});
+		if (!this.description_localizations) {
+			Reflect.set(this, 'description_localizations', {});
 		}
 
-		this.descriptionLocalizations![locale] = localizedDescription;
+		this.description_localizations![locale] = localizedDescription;
 		return this;
 	}
 
@@ -99,11 +99,11 @@ export class SharedNameAndDescription {
 		localizedDescriptions: Map<LocaleString, string> | Partial<Record<LocaleString, string>> | null,
 	) {
 		if (localizedDescriptions === null) {
-			Reflect.set(this, 'descriptionLocalizations', undefined);
+			Reflect.set(this, 'description_localizations', null);
 			return this;
 		}
 
-		Reflect.set(this, 'descriptionLocalizations', {});
+		Reflect.set(this, 'description_localizations', {});
 		flattenLocaleMap(localizedDescriptions).forEach((args) => this.setDescriptionLocalization(...args));
 		return this;
 	}

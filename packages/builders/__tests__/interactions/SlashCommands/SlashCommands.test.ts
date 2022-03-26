@@ -443,14 +443,14 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN valid name localizations THEN valid data is stored', () => {
-				expect(getBuilder().setNameLocalization('en-US', 'foobar').nameLocalizations).toEqual(expectedSingleLocale);
-				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).nameLocalizations).toEqual(
+				expect(getBuilder().setNameLocalization('en-US', 'foobar').name_localizations).toEqual(expectedSingleLocale);
+				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).name_localizations).toEqual(
 					expectedMultipleLocales,
 				);
 				expect(
-					getBuilder().setNameLocalizations(new Map().set('en-US', 'foobar').set('bg', 'test')).nameLocalizations,
+					getBuilder().setNameLocalizations(new Map().set('en-US', 'foobar').set('bg', 'test')).name_localizations,
 				).toEqual(expectedMultipleLocales);
-				expect(getBuilder().setNameLocalizations(null).nameLocalizations).toBeUndefined;
+				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
 			});
 
 			test('GIVEN valid description localizations THEN does not throw error', () => {
@@ -470,17 +470,17 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN valid description localizations THEN valid data is stored', () => {
-				expect(getBuilder().setDescriptionLocalization('en-US', 'foobar').descriptionLocalizations).toEqual(
+				expect(getBuilder().setDescriptionLocalization('en-US', 'foobar').description_localizations).toEqual(
 					expectedSingleLocale,
 				);
 				expect(
-					getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar', bg: 'test' }).descriptionLocalizations,
+					getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar', bg: 'test' }).description_localizations,
 				).toEqual(expectedMultipleLocales);
 				expect(
 					getBuilder().setDescriptionLocalizations(new Map().set('en-US', 'foobar').set('bg', 'test'))
-						.descriptionLocalizations,
+						.description_localizations,
 				).toEqual(expectedMultipleLocales);
-				expect(getBuilder().setDescriptionLocalizations(null).descriptionLocalizations).toBeUndefined();
+				expect(getBuilder().setDescriptionLocalizations(null).description_localizations).toBeNull();
 			});
 		});
 	});
