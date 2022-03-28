@@ -1,8 +1,8 @@
 'use strict';
 
-const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, Routes } = require('discord-api-types/v10');
+const process = require('node:process');
 const CachedManager = require('./CachedManager');
 const ThreadManager = require('./ThreadManager');
 const { Error, TypeError } = require('../errors');
@@ -197,8 +197,7 @@ class GuildChannelManager extends CachedManager {
     }
 
     const invalidNames = ['everyone', 'here'];
-    // eslint-disable-next-line no-useless-escape, prettier/prettier
-    const invalidSubstrings = ['@', '#', ':', '\```', 'discord'];
+    const invalidSubstrings = ['@', '#', ':', '```', 'discord', 'clyde'];
     if (invalidNames.includes(name) || invalidSubstrings.some(c => name.includes(c))) {
       throw new TypeError('INVALID_WEBHOOK_NAME');
     }
