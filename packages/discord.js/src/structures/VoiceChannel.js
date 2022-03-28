@@ -81,7 +81,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
   }
 
   /**
-   * Sets the camera video quality mode the channel.
+   * Sets the camera video quality mode of the channel.
    * @param {VideoQualityMode} videoQualityMode The new camera video quality mode.
    * @param {string} [reason] Reason for changing the camera video quality mode.
    * @returns {Promise<VoiceChannel>}
