@@ -191,9 +191,18 @@ class GuildChannelManager extends CachedManager {
   async createWebhook(channel, name, { avatar, reason } = {}) {
     const id = this.resolveId(channel);
     if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
+
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
       avatar = await DataResolver.resolveImage(avatar);
     }
+
+    const invalidNames = ['everyone', 'here'];
+    // eslint-disable-next-line no-useless-escape, prettier/prettier
+    const invalidSubstrings = ['@', '#', ':', '\```', 'discord'];
+    if (invalidNames.includes(name) || invalidSubstrings.some(c => name.includes(c))) {
+      throw new TypeError('INVALID_WEBHOOK_NAME');
+    }
+
     const data = await this.client.rest.post(Routes.channelWebhooks(id), {
       body: {
         name,
