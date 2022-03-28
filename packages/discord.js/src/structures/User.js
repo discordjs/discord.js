@@ -210,7 +210,7 @@ class User extends Base {
    * @returns {Promise<DMChannel>}
    */
   createDM(force = false) {
-    return this.client.users.createDM(this.id, force);
+    return this.client.users.createDM(this.id, { force });
   }
 
   /**
