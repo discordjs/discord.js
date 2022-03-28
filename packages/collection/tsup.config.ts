@@ -5,7 +5,7 @@ export const tsup: Options = {
 	dts: true,
 	entryPoints: ['src/index.ts'],
 	format: ['esm', 'cjs'],
-	minify: true,
+	minify: false,
 	// if false: causes Collection.constructor to be a minified value like: 'o'
 	keepNames: true,
 	skipNodeModulesBundle: true,
