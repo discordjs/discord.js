@@ -1,9 +1,9 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const Attachment = require('./Attachment');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
-const Attachment = require('./Attachment');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 
 /**

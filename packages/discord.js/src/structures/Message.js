@@ -9,11 +9,11 @@ const {
   MessageFlags,
   PermissionFlagsBits,
 } = require('discord-api-types/v10');
+const Attachment = require('./Attachment');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
 const Embed = require('./Embed');
 const InteractionCollector = require('./InteractionCollector');
-const Attachment = require('./Attachment');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
