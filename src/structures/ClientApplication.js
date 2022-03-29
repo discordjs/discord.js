@@ -30,10 +30,10 @@ class ClientApplication extends Application {
   _patch(data) {
     super._patch(data);
 
-    /** 
- ​    * The tags this application has (max of 5) 
- ​    * ​@type​ {string[]} 
- ​    */
+    /**
+     * The tags this application has (max of 5)
+     * ​@type​ {string[]}
+     */
     this.tags = data.tags ?? [];
 
     if ('install_params' in data) {
