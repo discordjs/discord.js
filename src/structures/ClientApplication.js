@@ -30,7 +30,7 @@ class ClientApplication extends Application {
   _patch(data) {
     super._patch(data);
 
- ​   /** 
+    /** 
  ​    * The tags this application has (max of 5) 
  ​    * ​@type​ {string[]} 
  ​    */
