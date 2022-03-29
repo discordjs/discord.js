@@ -19,6 +19,7 @@ const Permissions = require('../util/Permissions');
 class ClientApplication extends Application {
   constructor(client, data) {
     super(client, data);
+
     /**
      * The application command manager for this application
      * @type {ApplicationCommandManager}
