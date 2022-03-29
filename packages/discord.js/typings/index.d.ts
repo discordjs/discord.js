@@ -4015,6 +4015,7 @@ export interface CreateRoleOptions extends RoleData {
 export interface StageInstanceCreateOptions {
   topic: string;
   privacyLevel?: StageInstancePrivacyLevel;
+  sendStartNotification?: boolean;
 }
 
 export interface CrosspostedChannel {
