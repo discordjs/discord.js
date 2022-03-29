@@ -630,6 +630,7 @@ export class Embed {
   public get timestamp(): string | null;
   public get thumbnail(): EmbedImageData | null;
   public get image(): EmbedImageData | null;
+  public get author(): EmbedAuthorData | null;
   public equals(other: Embed | APIEmbed): boolean;
   public toJSON(): APIEmbed;
 }
