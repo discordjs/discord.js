@@ -603,6 +603,9 @@ export class ClientApplication extends Application {
   public commands: ApplicationCommandManager;
   public cover: string | null;
   public flags: Readonly<ApplicationFlags>;
+  public tags?: [string, string?, string?, string?, string?];
+  public installParams?: ClientApplicationInstallParams;
+  public customInstallURL?: string;
   public owner: User | Team | null;
   public readonly partial: boolean;
   public rpcOrigins: string[];
@@ -3408,6 +3411,11 @@ export type AllowedPartial = User | Channel | GuildMember | Message | MessageRea
 export type AllowedThreadTypeForNewsChannel = 'GUILD_NEWS_THREAD' | 10;
 
 export type AllowedThreadTypeForTextChannel = 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD' | 11 | 12;
+
+export interface ClientApplicationInstallParams {
+  scopes: InviteScope[];
+  permissions: Readonly<Permissions>;
+}
 
 export interface APIErrors {
   UNKNOWN_ACCOUNT: 10001;

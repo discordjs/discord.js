@@ -4,6 +4,13 @@ const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
 const ApplicationFlags = require('../util/ApplicationFlags');
+const Permissions = require('../util/Permissions');
+
+/**
+ * @typedef {Object} ClientApplicationInstallParams
+ * @property {InviteScope[]} scopes The scopes to add the application to the server with
+ * @property {Readonly<Permissions>} permissions The permissions this bot will request upon joining
+ */
 
 /**
  * Represents a Client OAuth2 Application.
@@ -12,6 +19,27 @@ const ApplicationFlags = require('../util/ApplicationFlags');
 class ClientApplication extends Application {
   constructor(client, data) {
     super(client, data);
+
+    this.tags = data.tags ?? [];
+
+    if ('install_params' in data) {
+      /**
+       * Settings for this application's default in-app authorization
+       * @type {?ClientApplicationInstallParams}
+       */
+      this.installParams = {
+        scopes: data.install_params.scopes,
+        permissions: new Permissions(data.install_params.permissions).freeze(),
+      };
+    }
+
+    if ('custom_install_url' in data) {
+      /**
+       * This application's custom installation URL
+       * @type {?string}
+       */
+      this.customInstallURL = data.custom_install_url;
+    }
 
     /**
      * The application command manager for this application
