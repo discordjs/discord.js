@@ -19,6 +19,15 @@ const Permissions = require('../util/Permissions');
 class ClientApplication extends Application {
   constructor(client, data) {
     super(client, data);
+    /**
+     * The application command manager for this application
+     * @type {ApplicationCommandManager}
+     */
+    this.commands = new ApplicationCommandManager(this.client);
+  }
+
+  _patch(data) {
+    super._patch(data);
 
     this.tags = data.tags ?? [];
 
@@ -40,16 +49,6 @@ class ClientApplication extends Application {
        */
       this.customInstallURL = data.custom_install_url;
     }
-
-    /**
-     * The application command manager for this application
-     * @type {ApplicationCommandManager}
-     */
-    this.commands = new ApplicationCommandManager(this.client);
-  }
-
-  _patch(data) {
-    super._patch(data);
 
     if ('flags' in data) {
       /**
