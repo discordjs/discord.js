@@ -6,7 +6,7 @@ const namePredicate = z
 	.string()
 	.min(1)
 	.max(32)
-	.regex(/^( *[\p{L}\p{N}_-]+ *)+$/u);
+	.regex(/^( *[\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+ *)+$/u);
 
 const typePredicate = z.union([z.literal(ApplicationCommandType.User), z.literal(ApplicationCommandType.Message)]);
 
