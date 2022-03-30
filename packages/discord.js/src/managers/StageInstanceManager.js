@@ -31,7 +31,7 @@ class StageInstanceManager extends CachedManager {
    * @typedef {Object} StageInstanceCreateOptions
    * @property {string} topic The topic of the stage instance
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the stage instance
-   * @property {boolean} [sendStartNotification] Notify `@everyone` that the stage instance has started
+   * @property {boolean} [sendStartNotification] Whether to notify `@everyone` that the stage instance has started
    */
 
   /**
