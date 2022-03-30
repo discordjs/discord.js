@@ -1,4 +1,4 @@
-import type { APIEmbedField } from 'discord-api-types/v9';
+import type { APIEmbedField } from 'discord-api-types/v10';
 import {
 	authorNamePredicate,
 	colorPredicate,
@@ -10,15 +10,15 @@ import {
 	urlPredicate,
 	validateFieldLength,
 } from './Assertions';
-import { EmbedAuthorOptions, EmbedFooterOptions, RGBTuple, UnsafeEmbed } from './UnsafeEmbed';
+import { EmbedAuthorOptions, EmbedFooterOptions, RGBTuple, UnsafeEmbedBuilder } from './UnsafeEmbed';
 
 /**
  * Represents a validated embed in a message (image/video preview, rich embed, etc.)
  */
-export class Embed extends UnsafeEmbed {
+export class EmbedBuilder extends UnsafeEmbedBuilder {
 	public override addFields(...fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(fields.length, this.fields);
+		validateFieldLength(fields.length, this.data.fields);
 
 		// Data assertions
 		return super.addFields(...embedFieldsArrayPredicate.parse(fields));
@@ -26,7 +26,7 @@ export class Embed extends UnsafeEmbed {
 
 	public override spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(fields.length - deleteCount, this.fields);
+		validateFieldLength(fields.length - deleteCount, this.data.fields);
 
 		// Data assertions
 		return super.spliceFields(index, deleteCount, ...embedFieldsArrayPredicate.parse(fields));

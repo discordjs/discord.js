@@ -1,8 +1,8 @@
-import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v9';
-import { Component } from '../../index';
+import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
+import { ComponentBuilder } from '../../index';
 import isEqual from 'fast-deep-equal';
 
-export class UnsafeTextInputComponent extends Component<
+export class UnsafeTextInputBuilder extends ComponentBuilder<
 	Partial<APITextInputComponent> & { type: ComponentType.TextInput }
 > {
 	public constructor(data?: APITextInputComponent & { type?: ComponentType.TextInput }) {
@@ -10,64 +10,8 @@ export class UnsafeTextInputComponent extends Component<
 	}
 
 	/**
-	 * The style of this text input
-	 */
-	public get style() {
-		return this.data.style;
-	}
-
-	/**
-	 * The custom id of this text input
-	 */
-	public get customId() {
-		return this.data.custom_id;
-	}
-
-	/**
-	 * The label for this text input
-	 */
-	public get label() {
-		return this.data.label;
-	}
-
-	/**
-	 * The placeholder text for this text input
-	 */
-	public get placeholder() {
-		return this.data.placeholder;
-	}
-
-	/**
-	 * The default value for this text input
-	 */
-	public get value() {
-		return this.data.value;
-	}
-
-	/**
-	 * The minimum length of this text input
-	 */
-	public get minLength() {
-		return this.data.min_length;
-	}
-
-	/**
-	 * The maximum length of this text input
-	 */
-	public get maxLength() {
-		return this.data.max_length;
-	}
-
-	/**
-	 * Whether this text input is required
-	 */
-	public get required() {
-		return this.data.required;
-	}
-
-	/**
 	 * Sets the custom id for this text input
-	 * @param customId The custom id of this text input
+	 * @param customId The custom id of this text inputå
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
@@ -144,8 +88,8 @@ export class UnsafeTextInputComponent extends Component<
 		} as APITextInputComponent;
 	}
 
-	public equals(other: UnsafeTextInputComponent | APITextInputComponent): boolean {
-		if (other instanceof UnsafeTextInputComponent) {
+	public equals(other: UnsafeTextInputBuilder | APITextInputComponent): boolean {
+		if (other instanceof UnsafeTextInputBuilder) {
 			return isEqual(other.data, this.data);
 		}
 

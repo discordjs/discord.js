@@ -1,4 +1,4 @@
-import { ChannelType } from 'discord-api-types/v9';
+import { ChannelType } from 'discord-api-types/v10';
 import { z, ZodLiteral } from 'zod';
 
 // Only allow valid channel types to be used. (This can't be dynamic because const enums are erased at runtime)

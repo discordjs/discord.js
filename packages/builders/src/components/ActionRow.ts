@@ -1,26 +1,29 @@
 import {
-	APIActionRowComponent,
+	type APIActionRowComponent,
+	ComponentType,
 	APIMessageActionRowComponent,
 	APIModalActionRowComponent,
-	ComponentType,
-} from 'discord-api-types/v9';
-import type { ButtonComponent, SelectMenuComponent, TextInputComponent } from '../index';
-import { Component } from './Component';
-import { createComponent } from './Components';
-import isEqual from 'fast-deep-equal';
+} from 'discord-api-types/v10';
+import type { ButtonBuilder, SelectMenuBuilder, TextInputBuilder } from '..';
+import { ComponentBuilder } from './Component';
+import { createComponentBuilder } from './Components';
 
-export type MessageComponent = MessageActionRowComponent | ActionRow<MessageActionRowComponent>;
-export type ModalComponent = ModalActionRowComponent | ActionRow<ModalActionRowComponent>;
+export type MessageComponentBuilder =
+	| MessageActionRowComponentBuilder
+	| ActionRowBuilder<MessageActionRowComponentBuilder>;
+export type ModalComponentBuilder = ModalActionRowComponentBuilder | ActionRowBuilder<ModalActionRowComponentBuilder>;
 
-export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
-export type ModalActionRowComponent = TextInputComponent;
+export type MessageActionRowComponentBuilder = ButtonBuilder | SelectMenuBuilder;
+export type ModalActionRowComponentBuilder = TextInputBuilder;
 
 /**
  * Represents an action row component
  */
-export class ActionRow<
-	T extends ModalActionRowComponent | MessageActionRowComponent = ModalActionRowComponent | MessageActionRowComponent,
-> extends Component<
+export class ActionRowBuilder<
+	T extends MessageActionRowComponentBuilder | ModalActionRowComponentBuilder =
+		| MessageActionRowComponentBuilder
+		| ModalActionRowComponentBuilder,
+> extends ComponentBuilder<
 	Omit<
 		Partial<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>> & {
 			type: ComponentType.ActionRow;
@@ -31,14 +34,14 @@ export class ActionRow<
 	/**
 	 * The components within this action row
 	 */
-	public readonly components: T[];
+	private readonly components: T[];
 
 	public constructor({
 		components,
 		...data
 	}: Partial<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
-		this.components = (components?.map((c) => createComponent(c)) ?? []) as T[];
+		this.components = (components?.map((c) => createComponentBuilder(c)) ?? []) as T[];
 	}
 
 	/**
@@ -65,15 +68,5 @@ export class ActionRow<
 			...this.data,
 			components: this.components.map((component) => component.toJSON()) as ReturnType<T['toJSON']>[],
 		};
-	}
-
-	public equals(other: APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent> | ActionRow) {
-		if (other instanceof ActionRow) {
-			return isEqual(other.data, this.data) && isEqual(other.components, this.components);
-		}
-		return isEqual(other, {
-			...this.data,
-			components: this.components.map((component) => component.toJSON()),
-		});
 	}
 }

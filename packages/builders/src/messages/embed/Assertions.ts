@@ -1,4 +1,4 @@
-import type { APIEmbedField } from 'discord-api-types/v9';
+import type { APIEmbedField } from 'discord-api-types/v10';
 import { z } from 'zod';
 
 export const fieldNamePredicate = z.string().min(1).max(256);

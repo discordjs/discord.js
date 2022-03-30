@@ -1,4 +1,4 @@
-import { TextInputStyle } from 'discord-api-types/v9';
+import { TextInputStyle } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { customIdValidator } from '../Assertions';
 

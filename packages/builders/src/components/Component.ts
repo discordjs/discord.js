@@ -4,17 +4,16 @@ import type {
 	APIActionRowComponentTypes,
 	APIBaseComponent,
 	APIMessageActionRowComponent,
-	APIModalActionRowComponent,
 	APIMessageComponent,
-	ComponentType,
+	APIModalActionRowComponent,
 	APIModalComponent,
-} from 'discord-api-types/v9';
-import type { Equatable } from '../util/equatable';
+	ComponentType,
+} from 'discord-api-types/v10';
 
 /**
  * Represents a discord component
  */
-export abstract class Component<
+export abstract class ComponentBuilder<
 	DataType extends Partial<APIBaseComponent<ComponentType>> & {
 		type: ComponentType;
 	} = APIBaseComponent<ComponentType>,
@@ -22,11 +21,6 @@ export abstract class Component<
 		JSONEncodable<
 			| APIModalComponent
 			| APIMessageComponent
-			| APIActionRowComponent<APIModalActionRowComponent | APIMessageActionRowComponent>
-		>,
-		Equatable<
-			| Component
-			| APIActionRowComponentTypes
 			| APIActionRowComponent<APIModalActionRowComponent | APIMessageActionRowComponent>
 		>
 {
@@ -39,21 +33,7 @@ export abstract class Component<
 		| APIActionRowComponentTypes
 		| APIActionRowComponent<APIModalActionRowComponent | APIMessageActionRowComponent>;
 
-	public abstract equals(
-		other:
-			| Component
-			| APIActionRowComponentTypes
-			| APIActionRowComponent<APIModalActionRowComponent | APIMessageActionRowComponent>,
-	): boolean;
-
 	public constructor(data: DataType) {
 		this.data = data;
-	}
-
-	/**
-	 * The type of this component
-	 */
-	public get type(): DataType['type'] {
-		return this.data.type;
 	}
 }

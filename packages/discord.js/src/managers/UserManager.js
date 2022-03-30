@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, Routes } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { GuildMember } = require('../structures/GuildMember');
 const { Message } = require('../structures/Message');

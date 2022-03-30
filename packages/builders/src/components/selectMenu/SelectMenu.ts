@@ -1,17 +1,20 @@
-import type { APISelectMenuComponent } from 'discord-api-types/v9';
+import type { APISelectMenuComponent, APISelectMenuOption } from 'discord-api-types/v10';
 import {
 	customIdValidator,
 	disabledValidator,
 	minMaxValidator,
+	optionsLengthValidator,
+	optionValidator,
 	placeholderValidator,
 	validateRequiredSelectMenuParameters,
 } from '../Assertions';
-import { UnsafeSelectMenuComponent } from './UnsafeSelectMenu';
+import { UnsafeSelectMenuBuilder } from './UnsafeSelectMenu';
+import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
 
 /**
  * Represents a validated select menu component
  */
-export class SelectMenuComponent extends UnsafeSelectMenuComponent {
+export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 	public override setPlaceholder(placeholder: string) {
 		return super.setPlaceholder(placeholderValidator.parse(placeholder));
 	}
@@ -32,8 +35,34 @@ export class SelectMenuComponent extends UnsafeSelectMenuComponent {
 		return super.setDisabled(disabledValidator.parse(disabled));
 	}
 
+	public override addOptions(...options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+		optionsLengthValidator.parse(this.options.length + options.length);
+		this.options.push(
+			...options.map((option) =>
+				option instanceof UnsafeSelectMenuOptionBuilder
+					? option
+					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse(option) as APISelectMenuOption),
+			),
+		);
+		return this;
+	}
+
+	public override setOptions(...options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+		optionsLengthValidator.parse(options.length);
+		this.options.splice(
+			0,
+			this.options.length,
+			...options.map((option) =>
+				option instanceof UnsafeSelectMenuOptionBuilder
+					? option
+					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse(option) as APISelectMenuOption),
+			),
+		);
+		return this;
+	}
+
 	public override toJSON(): APISelectMenuComponent {
-		validateRequiredSelectMenuParameters(this.options, this.customId);
+		validateRequiredSelectMenuParameters(this.options, this.data.custom_id);
 		return super.toJSON();
 	}
 }

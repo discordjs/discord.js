@@ -4,7 +4,7 @@ const EventEmitter = require('node:events');
 const { setImmediate } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
-const { GatewayCloseCodes, GatewayDispatchEvents, Routes } = require('discord-api-types/v9');
+const { GatewayCloseCodes, GatewayDispatchEvents, Routes } = require('discord-api-types/v10');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { Error } = require('../../errors');
@@ -136,7 +136,7 @@ class WebSocketManager extends EventEmitter {
       shards: recommendedShards,
       session_start_limit: sessionStartLimit,
     } = await this.client.rest.get(Routes.gatewayBot()).catch(error => {
-      throw error.httpStatus === 401 ? invalidToken : error;
+      throw error.status === 401 ? invalidToken : error;
     });
 
     const { total, remaining } = sessionStartLimit;

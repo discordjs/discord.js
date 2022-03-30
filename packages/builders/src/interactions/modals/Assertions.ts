@@ -1,14 +1,14 @@
 import { z } from 'zod';
-import { ActionRow, type ModalActionRowComponent } from '../..';
+import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../..';
 import { customIdValidator } from '../../components/Assertions';
 
 export const titleValidator = z.string().min(1).max(45);
-export const componentsValidator = z.array(z.instanceof(ActionRow)).min(1);
+export const componentsValidator = z.array(z.instanceof(ActionRowBuilder)).min(1);
 
 export function validateRequiredParameters(
 	customId?: string,
 	title?: string,
-	components?: ActionRow<ModalActionRowComponent>[],
+	components?: ActionRowBuilder<ModalActionRowComponentBuilder>[],
 ) {
 	customIdValidator.parse(customId);
 	titleValidator.parse(title);
