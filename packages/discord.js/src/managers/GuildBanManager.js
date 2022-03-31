@@ -73,8 +73,8 @@ class GuildBanManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    * @example
-   * // Fetch multiple bans from a guild without caching
-   * guild.bans.fetch({ cache: false })
+   * // Fetch a maximum of 5 bans from a guild without caching
+   * guild.bans.fetch({ limit: 5, cache: false })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
