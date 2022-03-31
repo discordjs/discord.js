@@ -57,10 +57,10 @@ class GuildBanManager extends CachedManager {
   /**
    * Options used to fetch multiple bans from a guild.
    * @typedef {Object} FetchBansOptions
-   * @property {number} limit The limit
-   * @property {Snowflake} before The before thing
-   * @property {Snowflake} after The other thing
-   * @property {boolean} cache Whether to cache the fetched bans
+   * @property {number} [limit] The maximum number of bans to return
+   * @property {Snowflake} [before] Consider only bans before this id
+   * @property {Snowflake} [after] Consider only bans after this id
+   * @property {boolean} [cache] Whether to cache the fetched bans
    */
 
   /**
