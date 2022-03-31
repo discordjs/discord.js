@@ -106,7 +106,7 @@ class GuildBanManager extends CachedManager {
     return this._fetchMany({ cache, limit, before, after });
   }
 
-  async _fetchSingle({ user, cache = true, force = false }) {
+  async _fetchSingle({ user, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(user);
       if (existing && !existing.partial) return existing;
