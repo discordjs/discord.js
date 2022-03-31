@@ -68,7 +68,7 @@ class GuildBanManager extends CachedManager {
    * @param {UserResolvable|FetchBanOptions|FetchBansOptions} [options] Options for fetching guild ban(s)
    * @returns {Promise<GuildBan|Collection<Snowflake, GuildBan>>}
    * @example
-   * // Fetch multple bans from a guild
+   * // Fetch multiple bans from a guild
    * guild.bans.fetch()
    *   .then(console.log)
    *   .catch(console.error);
