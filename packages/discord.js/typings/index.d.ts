@@ -14,7 +14,6 @@ import {
   italic,
   JSONEncodable,
   MappedComponentTypes,
-  memberNicknameMention,
   quote,
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
