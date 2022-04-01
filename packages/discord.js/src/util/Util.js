@@ -526,7 +526,7 @@ class Util extends null {
    */
   static cleanContent(str, channel) {
     str = str
-      .replace(/<@!?[0-9]+>/g, input => {
+      .replace(/<@[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
         if (channel.type === ChannelType.DM) {
           const user = channel.client.users.cache.get(id);

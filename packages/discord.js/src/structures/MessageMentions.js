@@ -19,7 +19,7 @@ class MessageMentions {
    * @type {RegExp}
    * @memberof MessageMentions
    */
-  static UsersPattern = /<@!?(\d{17,19})>/g;
+  static UsersPattern = /<@(\d{17,19})>/g;
 
   /**
    * Regular expression that globally matches role mentions like `<@&297577916114403338>`
