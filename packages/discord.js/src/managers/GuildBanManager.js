@@ -116,7 +116,7 @@ class GuildBanManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany({ cache, limit, before, after }) {
+  async _fetchMany({ cache, limit, before, after } = {}) {
     const options = {};
     if (limit) options.limit = limit;
     if (before) options.before = before;
