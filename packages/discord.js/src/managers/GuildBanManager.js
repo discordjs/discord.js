@@ -103,7 +103,7 @@ class GuildBanManager extends CachedManager {
       return Promise.reject(new Error('FETCH_BAN_RESOLVE_ID'));
     }
 
-    return this._fetchMany({ cache, limit, before, after });
+    return this._fetchMany(options);
   }
 
   async _fetchSingle({ user, cache, force = false }) {
@@ -116,17 +116,12 @@ class GuildBanManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany({ cache, limit, before, after } = {}) {
-    const options = {};
-    if (limit) options.limit = limit;
-    if (before) options.before = before;
-    if (after) options.after = after;
-
+  async _fetchMany(options = {}) {
     const data = await this.client.rest.get(Routes.guildBans(this.guild.id), {
       query: new URLSearchParams(options),
     });
 
-    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, cache)), new Collection());
+    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, options.cache)), new Collection());
   }
 
   /**
