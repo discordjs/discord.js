@@ -426,6 +426,7 @@ class ApplicationCommand extends Base {
    * A choice for an application command option.
    * @typedef {Object} ApplicationCommandOptionChoice
    * @property {string} name The name of the choice
+   * @property {Object<string, string>} nameLocalizations The localized names for this choice
    * @property {string|number} value The value of the choice
    */
 
@@ -455,7 +456,11 @@ class ApplicationCommand extends Base {
           ? undefined
           : false),
       autocomplete: option.autocomplete,
-      choices: option.choices,
+      choices: option.choices?.map(choice => ({
+        name: choice.name,
+        [nameLocalizationsKey]: choice.nameLocalizations ?? choice.name_localizations,
+        value: choice.value,
+      })),
       options: option.options?.map(o => this.transformOption(o, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,

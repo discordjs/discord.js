@@ -3544,6 +3544,7 @@ export type ApplicationCommandOption =
 
 export interface ApplicationCommandOptionChoice {
   name: string;
+  nameLocalizations?: LocalizationMap;
   value: string | number;
 }
 
