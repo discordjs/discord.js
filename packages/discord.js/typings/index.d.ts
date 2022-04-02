@@ -112,7 +112,6 @@ import {
   APIEmbedFooter,
   APIEmbedImage,
   VideoQualityMode,
-  LocaleString,
   LocalizationMap,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
@@ -5329,6 +5328,7 @@ export {
   InteractionResponseType,
   InviteTargetType,
   Locale,
+  LocalizationMap,
   MessageType,
   MessageFlags,
   OAuth2Scopes,
