@@ -199,7 +199,7 @@ class GuildChannelManager extends CachedManager {
     const invalidNames = ['everyone', 'here'];
     const invalidSubstrings = ['@', '#', ':', '```', 'discord', 'clyde'];
     if (invalidNames.includes(name) || invalidSubstrings.some(c => name.includes(c))) {
-      throw new TypeError('INVALID_WEBHOOK_NAME');
+      throw new TypeError('WEBHOOK_NAME_INVALID');
     }
 
     const data = await this.client.rest.post(Routes.channelWebhooks(id), {

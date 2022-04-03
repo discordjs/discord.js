@@ -102,6 +102,7 @@ const Messages = {
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
   WEBHOOK_TOKEN_UNAVAILABLE: 'This action requires a webhook token, but none is available.',
   WEBHOOK_URL_INVALID: 'The provided webhook URL is not valid.',
+  WEBHOOK_NAME_INVALID: 'The provided webhook name is not valid.',
   WEBHOOK_APPLICATION: 'This message webhook belongs to an application and cannot be fetched.',
   MESSAGE_REFERENCE_MISSING: 'The message does not reference another message',
 
