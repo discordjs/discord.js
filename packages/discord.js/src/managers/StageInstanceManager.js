@@ -1,6 +1,6 @@
 'use strict';
 
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const { StageInstance } = require('../structures/StageInstance');

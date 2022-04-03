@@ -3,7 +3,7 @@ import {
 	APIButtonComponentWithURL,
 	ButtonStyle,
 	ComponentType,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import { buttonLabelValidator, buttonStyleValidator } from '../../src/components/Assertions';
 import { ButtonBuilder } from '../../src/components/button/Button';
 

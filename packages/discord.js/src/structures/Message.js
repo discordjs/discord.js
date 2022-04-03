@@ -8,7 +8,7 @@ const {
   MessageType,
   MessageFlags,
   PermissionFlagsBits,
-} = require('discord-api-types/v9');
+} = require('discord-api-types/v10');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
 const Embed = require('./Embed');
@@ -623,7 +623,7 @@ class Message extends Base {
   get crosspostable() {
     const bitfield =
       PermissionFlagsBits.SendMessages |
-      (this.author.id === this.client.user.id ? PermissionsBitField.defaultBit : PermissionFlagsBits.ManageMessages);
+      (this.author.id === this.client.user.id ? PermissionsBitField.DefaultBit : PermissionFlagsBits.ManageMessages);
     const { channel } = this;
     return Boolean(
       channel?.type === ChannelType.GuildNews &&

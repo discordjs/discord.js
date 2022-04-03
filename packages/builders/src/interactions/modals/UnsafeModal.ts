@@ -2,7 +2,7 @@ import type {
 	APIActionRowComponent,
 	APIModalActionRowComponent,
 	APIModalInteractionResponseCallbackData,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import { ActionRowBuilder, createComponentBuilder, JSONEncodable, ModalActionRowComponentBuilder } from '../../index';
 
 export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResponseCallbackData> {

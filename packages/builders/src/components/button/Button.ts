@@ -4,7 +4,7 @@ import type {
 	APIButtonComponent,
 	APIButtonComponentWithCustomId,
 	APIButtonComponentWithURL,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import {
 	buttonLabelValidator,
 	buttonStyleValidator,

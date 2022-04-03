@@ -1,4 +1,4 @@
-import { APIVersion } from 'discord-api-types/v9';
+import { APIVersion } from 'discord-api-types/v10';
 import type { RESTOptions } from '../REST';
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
 const Package = require('../../../package.json');

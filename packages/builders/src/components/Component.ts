@@ -8,7 +8,7 @@ import type {
 	APIModalActionRowComponent,
 	APIModalComponent,
 	ComponentType,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 
 /**
  * Represents a discord component

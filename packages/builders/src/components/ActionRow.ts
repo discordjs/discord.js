@@ -3,7 +3,7 @@ import {
 	ComponentType,
 	APIMessageActionRowComponent,
 	APIModalActionRowComponent,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import type { ButtonBuilder, SelectMenuBuilder, TextInputBuilder } from '..';
 import { ComponentBuilder } from './Component';
 import { createComponentBuilder } from './Components';

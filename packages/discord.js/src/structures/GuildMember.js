@@ -1,6 +1,6 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v9');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
 const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');

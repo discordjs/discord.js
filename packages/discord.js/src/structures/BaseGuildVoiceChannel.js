@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { PermissionFlagsBits } = require('discord-api-types/v9');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 const GuildChannel = require('./GuildChannel');
 
 /**

@@ -3,7 +3,7 @@
 const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
