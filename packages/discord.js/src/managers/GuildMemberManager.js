@@ -211,7 +211,7 @@ class GuildMemberManager extends CachedManager {
    * @param {BaseFetchOptions} [options] The options for fetching the member
    * @returns {Promise<GuildMember>}
    */
-   async fetchOwner(options) {
+  async fetchOwner(options) {
     if (!this.ownerId) {
       throw new Error('FETCH_OWNER_ID');
     }
