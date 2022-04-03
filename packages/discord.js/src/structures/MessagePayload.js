@@ -115,7 +115,7 @@ class MessagePayload {
    * @returns {MessagePayload}
    */
   resolveBody() {
-    if (this.data) return this;
+    if (this.body) return this;
     const isInteraction = this.isInteraction;
     const isWebhook = this.isWebhook;
 
