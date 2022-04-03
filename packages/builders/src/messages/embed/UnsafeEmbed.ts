@@ -83,7 +83,11 @@ export class UnsafeEmbedBuilder {
 			return this;
 		}
 
-		this.data.author = { name: options.name, url: options.url, icon_url: options.iconURL };
+		this.data.author = {
+			name: options.name,
+			url: options.url ?? this.data.author?.url,
+			icon_url: options.iconURL ?? this.data.author?.icon_url,
+		};
 		return this;
 	}
 
@@ -123,7 +127,7 @@ export class UnsafeEmbedBuilder {
 			return this;
 		}
 
-		this.data.footer = { text: options.text, icon_url: options.iconURL };
+		this.data.footer = { text: options.text, icon_url: options.iconURL ?? this.data.footer?.icon_url };
 		return this;
 	}
 
