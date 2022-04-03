@@ -9,8 +9,8 @@ class SelectMenuBuilder extends BuildersSelectMenuComponent {
     super(
       Transformers.toSnakeCase({
         options: options.map(({ emoji, ...option }) => ({
-          emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
           ...option,
+          emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
         })),
         ...data,
       }),
