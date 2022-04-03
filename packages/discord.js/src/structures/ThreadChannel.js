@@ -6,6 +6,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
+const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 /**
  * Represents a thread channel on Discord.
@@ -313,14 +314,8 @@ class ThreadChannel extends Channel {
    */
   async edit(data, reason) {
     let autoArchiveDuration = data.autoArchiveDuration;
-    if (data.autoArchiveDuration === 'MAX') {
-      autoArchiveDuration = 1440;
-      if (this.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
-        autoArchiveDuration = 10080;
-      } else if (this.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
-        autoArchiveDuration = 4320;
-      }
-    }
+    if (autoArchiveDuration === 'MAX') autoArchiveDuration = resolveAutoArchiveMaxLimit(this.guild);
+
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
         name: (data.name ?? this.name).trim(),

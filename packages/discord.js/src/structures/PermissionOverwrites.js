@@ -175,8 +175,8 @@ class PermissionOverwrites extends Base {
       return {
         id: overwrite.id,
         type: overwrite.type,
-        allow: PermissionsBitField.resolve(overwrite.allow ?? PermissionsBitField.defaultBit).toString(),
-        deny: PermissionsBitField.resolve(overwrite.deny ?? PermissionsBitField.defaultBit).toString(),
+        allow: PermissionsBitField.resolve(overwrite.allow ?? PermissionsBitField.DefaultBit).toString(),
+        deny: PermissionsBitField.resolve(overwrite.deny ?? PermissionsBitField.DefaultBit).toString(),
       };
     }
 
@@ -187,8 +187,8 @@ class PermissionOverwrites extends Base {
     return {
       id: userOrRole.id,
       type,
-      allow: PermissionsBitField.resolve(overwrite.allow ?? PermissionsBitField.defaultBit).toString(),
-      deny: PermissionsBitField.resolve(overwrite.deny ?? PermissionsBitField.defaultBit).toString(),
+      allow: PermissionsBitField.resolve(overwrite.allow ?? PermissionsBitField.DefaultBit).toString(),
+      deny: PermissionsBitField.resolve(overwrite.deny ?? PermissionsBitField.DefaultBit).toString(),
     };
   }
 }

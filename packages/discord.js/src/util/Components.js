@@ -57,6 +57,11 @@ const { ComponentType } = require('discord-api-types/v10');
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData} ComponentData
  */
 
+/**
+ * Any emoji data that can be used within a button
+ * @typedef {APIMessageComponentEmoji|string} ComponentEmojiResolvable
+ */
+
 class Components extends null {
   /**
    * Transforms API data into a component
@@ -75,6 +80,8 @@ class Components extends null {
         return new ButtonComponent(data);
       case ComponentType.SelectMenu:
         return new SelectMenuComponent(data);
+      case ComponentType.TextInput:
+        return new TextInputComponent(data);
       default:
         throw new Error(`Found unknown component type: ${data.type}`);
     }
@@ -87,3 +94,4 @@ const ActionRow = require('../structures/ActionRow');
 const ButtonComponent = require('../structures/ButtonComponent');
 const Component = require('../structures/Component');
 const SelectMenuComponent = require('../structures/SelectMenuComponent');
+const TextInputComponent = require('../structures/TextInputComponent');

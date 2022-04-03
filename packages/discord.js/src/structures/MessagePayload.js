@@ -3,6 +3,7 @@
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/builders');
 const { MessageFlags } = require('discord-api-types/v10');
+const ActionRowBuilder = require('./ActionRowBuilder');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
@@ -131,9 +132,7 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c =>
-      isJSONEncodable(c) ? c.toJSON() : this.target.client.options.jsonTransformer(c),
-    );
+    const components = this.options.components?.map(c => (isJSONEncodable(c) ? c : new ActionRowBuilder(c)).toJSON());
 
     let username;
     let avatarURL;
