@@ -4722,7 +4722,7 @@ export interface MessageEditOptions {
   attachments?: Attachment[];
   content?: string | null;
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[] | null;
-  files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
+  files?: (FileOptions | BufferResolvable | Stream | Attachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
