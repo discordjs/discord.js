@@ -627,10 +627,13 @@ export class Embed {
   public get description(): string | null;
   public get url(): string | null;
   public get color(): number | null;
+  public get hexColor(): string | null;
   public get timestamp(): string | null;
   public get thumbnail(): EmbedImageData | null;
   public get image(): EmbedImageData | null;
   public get author(): EmbedAuthorData | null;
+  public get provider(): EmbedProviderData | null;
+  public get length(): number;
   public equals(other: Embed | APIEmbed): boolean;
   public toJSON(): APIEmbed;
 }
