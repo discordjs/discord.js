@@ -54,13 +54,13 @@ class ThreadMemberManager extends CachedManager {
    */
   async fetchOwner({ cache = true, force = false } = {}) {
     if (!force) {
-      const existing = this.members.cache.get(this.ownerId);
+      const existing = this.cache.get(this.thread.ownerId);
       if (existing) return existing;
     }
 
     // We cannot fetch a single thread member, as of this commit's date, Discord API responds with 405
-    const members = await this.members.fetch(cache);
-    return members.get(this.ownerId) ?? null;
+    const members = await this.fetch(cache);
+    return members.get(this.thread.ownerId) ?? null;
   }
 
   /**

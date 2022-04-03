@@ -212,10 +212,10 @@ class GuildMemberManager extends CachedManager {
    * @returns {Promise<GuildMember>}
    */
   async fetchOwner(options) {
-    if (!this.ownerId) {
+    if (!this.guild.ownerId) {
       throw new Error('FETCH_OWNER_ID');
     }
-    const member = await this.members.fetch({ ...options, user: this.ownerId });
+    const member = await this.fetch({ ...options, user: this.guild.ownerId });
     return member;
   }
 
