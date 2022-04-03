@@ -20,7 +20,7 @@ class ActionRow extends Component {
 
   /**
    * Returns the API-compatible JSON for this component
-   * @returns {APIMessageComponent}
+   * @returns {APIActionRowComponent}
    */
   toJSON() {
     return { ...this.data, components: this.components.map(c => c.toJSON()) };
