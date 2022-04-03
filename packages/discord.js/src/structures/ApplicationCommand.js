@@ -72,6 +72,16 @@ class ApplicationCommand extends Base {
       this.nameLocalizations ??= null;
     }
 
+    if ('name_localized' in data) {
+      /**
+       * The localized name for this command
+       * @type {?Object<string, string>}
+       */
+      this.nameLocalized = data.name_localized;
+    } else {
+      this.nameLocalized ??= null;
+    }
+
     if ('description' in data) {
       /**
        * The description of this command
@@ -83,11 +93,21 @@ class ApplicationCommand extends Base {
     if ('description_localizations' in data) {
       /**
        * The description localizations for this command
-       * @type {?Object<string, string>}
+       * @type {?string}
        */
       this.descriptionLocalizations = data.description_localizations;
     } else {
       this.descriptionLocalizations ??= null;
+    }
+
+    if ('description_localized' in data) {
+      /**
+       * The localized description for this command
+       * @type {?string}
+       */
+      this.descriptionLocalized = data.description_localized;
+    } else {
+      this.descriptionLocalized ??= null;
     }
 
     if ('options' in data) {
@@ -175,7 +195,7 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
    * @property {boolean} [required] Whether the option is required
-   * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
+   * @property {ApplicationCommandOptionChoiceData[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
@@ -183,6 +203,18 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
+   */
+
+  /**
+   * @typedef {Object} ApplicationCommandOptionChoiceData
+   * @property {string} name The name of the choice
+   * @property {Object<string, string>} [nameLocalizations] The localized names for this choice
+   * @property {string|number} value The value of the choice
+   */
+
+  /**
+   * @param {ApplicationCommandOptionChoiceData} ApplicationCommandOptionChoice
+   * @property {string} [nameLocalized] The localized name for this choice
    */
 
   /**
@@ -407,7 +439,11 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
+   * @property {Object<string, string>} [nameLocalizations] The localizations for the option name
+   * @property {string} [nameLocalized] The localized name for this option
    * @property {string} description The description of the option
+   * @property {Object<string, string>} [descriptionLocalizations] The localizations for the option description
+   * @property {string} [descriptionLocalized] The localized description for this option
    * @property {boolean} [required] Whether the option is required
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
    * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
@@ -426,13 +462,14 @@ class ApplicationCommand extends Base {
    * A choice for an application command option.
    * @typedef {Object} ApplicationCommandOptionChoice
    * @property {string} name The name of the choice
-   * @property {Object<string, string>} nameLocalizations The localized names for this choice
+   * @property {string} [nameLocalized] The localized name for this choice
+   * @property {Object<string, string>} [nameLocalizations] The localized names for this choice
    * @property {string|number} value The value of the choice
    */
 
   /**
    * Transforms an {@link ApplicationCommandOptionData} object into something that can be used with the API.
-   * @param {ApplicationCommandOptionData} option The option to transform
+   * @param {ApplicationCommandOptionData|ApplicationCommandOption} option The option to transform
    * @param {boolean} [received] Whether this option has been received from Discord
    * @returns {APIApplicationCommandOption}
    * @private
@@ -442,13 +479,17 @@ class ApplicationCommand extends Base {
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
     const nameLocalizationsKey = received ? 'nameLocalizations' : 'name_localizations';
+    const nameLocalizedKey = received ? 'nameLocalized' : 'name_localized';
     const descriptionLocalizationsKey = received ? 'descriptionLocalizations' : 'description_localizations';
+    const descriptionLocalizedKey = received ? 'descriptionLocalized' : 'description_localized';
     return {
       type: option.type,
       name: option.name,
       [nameLocalizationsKey]: option.nameLocalizations ?? option.name_localizations,
+      [nameLocalizedKey]: option.nameLocalized ?? option.name_localized,
       description: option.description,
       [descriptionLocalizationsKey]: option.descriptionLocalizations ?? option.description_localizations,
+      [descriptionLocalizedKey]: option.descriptionLocalized ?? option.description_localized,
       required:
         option.required ??
         (option.type === ApplicationCommandOptionType.Subcommand ||
@@ -458,6 +499,7 @@ class ApplicationCommand extends Base {
       autocomplete: option.autocomplete,
       choices: option.choices?.map(choice => ({
         name: choice.name,
+        [nameLocalizedKey]: choice.nameLocalized ?? choice.name_localized,
         [nameLocalizationsKey]: choice.nameLocalizations ?? choice.name_localizations,
         value: choice.value,
       })),

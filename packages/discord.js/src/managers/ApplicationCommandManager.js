@@ -74,6 +74,8 @@ class ApplicationCommandManager extends CachedManager {
    * Options used to fetch Application Commands from Discord
    * @typedef {BaseFetchOptions} FetchApplicationCommandOptions
    * @property {Snowflake} [guildId] The guild's id to fetch commands for, for when the guild is not cached
+   * @property {LocaleString} [locale] The locale to use when fetching this command
+   * @property {boolean} [withLocalizations] Whether or not to fetch all localization data
    */
 
   /**
@@ -92,7 +94,14 @@ class ApplicationCommandManager extends CachedManager {
    *   .then(commands => console.log(`Fetched ${commands.size} commands`))
    *   .catch(console.error);
    */
-  async fetch(id, { guildId, cache = true, force = false } = {}) {
+  async fetch(id, { guildId, cache = true, force = false, locale, withLocalizations } = {}) {
+    const fetchOptions = {
+      headers: {
+        'X-Discord-Locale': locale,
+      },
+      query: withLocalizations ? new URLSearchParams({ with_localizations: withLocalizations }) : undefined,
+    };
+
     if (typeof id === 'object') {
       ({ guildId, cache = true } = id);
     } else if (id) {
@@ -100,11 +109,11 @@ class ApplicationCommandManager extends CachedManager {
         const existing = this.cache.get(id);
         if (existing) return existing;
       }
-      const command = await this.client.rest.get(this.commandPath({ id, guildId }));
+      const command = await this.client.rest.get(this.commandPath({ id, guildId }), fetchOptions);
       return this._add(command, cache);
     }
 
-    const data = await this.client.rest.get(this.commandPath({ guildId }));
+    const data = await this.client.rest.get(this.commandPath({ guildId }), fetchOptions);
     return data.reduce((coll, command) => coll.set(command.id, this._add(command, cache, guildId)), new Collection());
   }
 
