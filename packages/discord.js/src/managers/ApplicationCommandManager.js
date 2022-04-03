@@ -99,7 +99,10 @@ class ApplicationCommandManager extends CachedManager {
       headers: {
         'X-Discord-Locale': locale,
       },
-      query: typeof withLocalizations === 'boolean' ? new URLSearchParams({ with_localizations: withLocalizations }) : undefined,
+      query:
+        typeof withLocalizations === 'boolean'
+          ? new URLSearchParams({ with_localizations: withLocalizations })
+          : undefined,
     };
 
     if (typeof id === 'object') {
