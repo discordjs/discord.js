@@ -38,6 +38,32 @@ class ThreadMemberManager extends CachedManager {
   }
 
   /**
+   * The client user as a ThreadMember of this ThreadChannel
+   * @type {?ThreadMember}
+   * @readonly
+   */
+  get me() {
+    return this.resolve(this.client.user.id);
+  }
+
+  /**
+   * Fetches the owner of this thread. If the thread member object isn't needed,
+   * use {@link ThreadChannel#ownerId} instead.
+   * @param {BaseFetchOptions} [options] The options for fetching the member
+   * @returns {Promise<?ThreadMember>}
+   */
+  async fetchOwner({ cache = true, force = false } = {}) {
+    if (!force) {
+      const existing = this.members.cache.get(this.ownerId);
+      if (existing) return existing;
+    }
+
+    // We cannot fetch a single thread member, as of this commit's date, Discord API responds with 405
+    const members = await this.members.fetch(cache);
+    return members.get(this.ownerId) ?? null;
+  }
+
+  /**
    * Data that resolves to give a ThreadMember object. This can be:
    * * A ThreadMember object
    * * A User resolvable
