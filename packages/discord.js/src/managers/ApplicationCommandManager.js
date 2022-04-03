@@ -95,7 +95,18 @@ class ApplicationCommandManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(id, { guildId, cache = true, force = false, locale, withLocalizations } = {}) {
-    const fetchOptions = {
+    if (typeof id === 'object') {
+      ({ guildId, cache = true, locale, withLocalizations } = id);
+    } else if (id) {
+      if (!force) {
+        const existing = this.cache.get(id);
+        if (existing) return existing;
+      }
+      const command = await this.client.rest.get(this.commandPath({ id, guildId }));
+      return this._add(command, cache);
+    }
+
+    const data = await this.client.rest.get(this.commandPath({ guildId }), {
       headers: {
         'X-Discord-Locale': locale,
       },
@@ -103,20 +114,7 @@ class ApplicationCommandManager extends CachedManager {
         typeof withLocalizations === 'boolean'
           ? new URLSearchParams({ with_localizations: withLocalizations })
           : undefined,
-    };
-
-    if (typeof id === 'object') {
-      ({ guildId, cache = true } = id);
-    } else if (id) {
-      if (!force) {
-        const existing = this.cache.get(id);
-        if (existing) return existing;
-      }
-      const command = await this.client.rest.get(this.commandPath({ id, guildId }), fetchOptions);
-      return this._add(command, cache);
-    }
-
-    const data = await this.client.rest.get(this.commandPath({ guildId }), fetchOptions);
+    });
     return data.reduce((coll, command) => coll.set(command.id, this._add(command, cache, guildId)), new Collection());
   }
 
