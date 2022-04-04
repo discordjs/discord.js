@@ -111,6 +111,7 @@ import {
   APIEmbedAuthor,
   APIEmbedFooter,
   APIEmbedImage,
+  APIEmbedVideo,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -592,6 +593,7 @@ export interface EmbedData {
   provider?: EmbedProviderData;
   author?: EmbedAuthorData;
   fields?: EmbedFieldData[];
+  video?: EmbedVideoData;
 }
 
 export interface IconData {
@@ -609,6 +611,10 @@ export interface EmbedProviderData {
 }
 
 export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
+  proxyURL?: string;
+}
+
+export interface EmbedVideoData extends Omit<APIEmbedVideo, 'proxy_url'> {
   proxyURL?: string;
 }
 
@@ -633,6 +639,7 @@ export class Embed {
   public get image(): EmbedImageData | null;
   public get author(): EmbedAuthorData | null;
   public get provider(): EmbedProviderData | null;
+  public get video(): EmbedVideoData | null;
   public get length(): number;
   public equals(other: Embed | APIEmbed): boolean;
   public toJSON(): APIEmbed;
