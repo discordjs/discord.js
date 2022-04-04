@@ -485,7 +485,7 @@ export class BaseGuildVoiceChannel extends GuildChannel {
   public bitrate: number;
   public userLimit: number;
   public createInvite(options?: CreateInviteOptions): Promise<Invite>;
-  public setRTCRegion(region: string | null): Promise<this>;
+  public setRTCRegion(rtcRegion: string | null, reason?: string): Promise<this>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
 }
 
