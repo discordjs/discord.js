@@ -208,6 +208,7 @@ exports.TextInputStyle = require('discord-api-types/v10').TextInputStyle;
 exports.UserFlags = require('discord-api-types/v10').UserFlags;
 exports.WebhookType = require('discord-api-types/v10').WebhookType;
 exports.UnsafeButtonBuilder = require('@discordjs/builders').UnsafeButtonBuilder;
+exports.UnsafeEmbedBuilder = require('@discordjs/builders').UnsafeEmbedBuilder;
 exports.UnsafeSelectMenuBuilder = require('@discordjs/builders').UnsafeSelectMenuBuilder;
 exports.UnsafeSelectMenuOptionBuilder = require('@discordjs/builders').UnsafeSelectMenuOptionBuilder;
 exports.DiscordAPIError = require('@discordjs/rest').DiscordAPIError;
