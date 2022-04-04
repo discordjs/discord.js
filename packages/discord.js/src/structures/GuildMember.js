@@ -1,6 +1,5 @@
 'use strict';
 
-const { userMention } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
 const VoiceState = require('./VoiceState');
@@ -429,7 +428,7 @@ class GuildMember extends Base {
    * console.log(`Hello from ${member}!`);
    */
   toString() {
-    return userMention(this.user.id);
+    return this.user.toString();
   }
 
   toJSON() {
