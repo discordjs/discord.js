@@ -100,7 +100,6 @@ import {
   ActionRowBuilder,
   ButtonComponent,
   SelectMenuComponent,
-  MessageActionRowComponentBuilder,
   InteractionResponseFields,
   ThreadChannelType,
   Events,
@@ -118,8 +117,10 @@ import {
   TextInputBuilder,
   TextInputComponent,
   Embed,
+  MessageActionRowComponentBuilder,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -727,6 +728,39 @@ client.on('messageCreate', async message => {
       return true;
     },
   });
+
+  // Check that both builders and builder data can be sent in messages
+  const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
+  const buttonsRow = {
+    type: ComponentType.ActionRow,
+    components: [
+      new ButtonBuilder(),
+      new UnsafeButtonBuilder(),
+      { type: ComponentType.Button, label: 'test', style: ButtonStyle.Primary, customId: 'test' },
+      {
+        type: ComponentType.Button,
+        label: 'another test',
+        style: ButtonStyle.Link as const,
+        url: 'https://discord.js.org',
+      },
+    ],
+  };
+  const selectsRow = {
+    type: ComponentType.ActionRow,
+    components: [
+      new SelectMenuBuilder(),
+      new UnsafeSelectMenuBuilder(),
+      {
+        type: ComponentType.SelectMenu,
+        label: 'select menu',
+        options: [{ label: 'test', value: 'test' }],
+        customId: 'test',
+      },
+    ],
+  };
+  const buildersEmbed = new UnsafeEmbedBuilder();
+  const embedData = { description: 'test', color: 0xff0000 };
+  channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, buildersEmbed, embedData] });
 });
 
 client.on('threadMembersUpdate', (thread, addedMembers, removedMembers) => {
