@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
@@ -712,24 +713,16 @@ class Guild extends AnonymousGuild {
   async fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogsEntry) options.before = options.before.id;
 
-    const query = new URLSearchParams();
-
-    if (options.before) {
-      query.set('before', options.before);
-    }
-
-    if (options.limit) {
-      query.set('limit', options.limit);
-    }
+    const query = makeURLSearchParams({
+      before: options.before,
+      limit: options.limit,
+      action_type: options.type,
+    });
 
     if (options.user) {
       const id = this.client.users.resolveId(options.user);
       if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
       query.set('user_id', id);
-    }
-
-    if (options.type) {
-      query.set('action_type', options.type);
     }
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });

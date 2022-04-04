@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
@@ -141,13 +142,13 @@ class GuildScheduledEventManager extends CachedManager {
       }
 
       const data = await this.client.rest.get(Routes.guildScheduledEvent(this.guild.id, id), {
-        query: new URLSearchParams({ with_user_count: options.withUserCount ?? true }),
+        query: makeURLSearchParams({ with_user_count: options.withUserCount ?? true }),
       });
       return this._add(data, options.cache);
     }
 
     const data = await this.client.rest.get(Routes.guildScheduledEvents(this.guild.id), {
-      query: new URLSearchParams({ with_user_count: options.withUserCount ?? true }),
+      query: makeURLSearchParams({ with_user_count: options.withUserCount ?? true }),
     });
 
     return data.reduce(
@@ -270,25 +271,12 @@ class GuildScheduledEventManager extends CachedManager {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
     if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
 
-    let { limit, withMember, before, after } = options;
-
-    const query = new URLSearchParams();
-
-    if (limit) {
-      query.set('limit', limit);
-    }
-
-    if (typeof withMember !== 'undefined') {
-      query.set('with_member', withMember);
-    }
-
-    if (before) {
-      query.set('before', before);
-    }
-
-    if (after) {
-      query.set('after', after);
-    }
+    const query = makeURLSearchParams({
+      limit: options.limit,
+      with_member: options.withMember,
+      before: options.before,
+      after: options.after,
+    });
 
     const data = await this.client.rest.get(Routes.guildScheduledEventUsers(this.guild.id, guildScheduledEventId), {
       query,
