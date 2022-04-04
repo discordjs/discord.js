@@ -11,7 +11,7 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<
 	/**
 	 * The options within this select menu
 	 */
-	protected readonly options: UnsafeSelectMenuOptionBuilder[];
+	public readonly options: UnsafeSelectMenuOptionBuilder[];
 
 	public constructor(data?: Partial<APISelectMenuComponent>) {
 		const { options, ...initData } = data ?? {};

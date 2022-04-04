@@ -34,7 +34,7 @@ export class ActionRowBuilder<
 	/**
 	 * The components within this action row
 	 */
-	private readonly components: T[];
+	public readonly components: T[];
 
 	public constructor({
 		components,
