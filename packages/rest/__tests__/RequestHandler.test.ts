@@ -477,12 +477,12 @@ test('server responding too slow', async () => {
 			method: 'GET',
 		})
 		.reply(200, '')
-		.delay(5000)
+		.delay(8000)
 		.times(10);
 
 	const promise = api.get('/slow');
 	await expect(promise).rejects.toThrowError('The operation was aborted');
-}, 10000);
+}, 20000);
 
 test('Unauthorized', async () => {
 	mockPool

@@ -378,9 +378,7 @@ export class RequestManager extends EventEmitter {
 				// FormData.append only accepts a string or Blob.
 				// https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#parameters
 				// The Blob constructor accepts TypedArray/ArrayBuffer, strings, and Blobs.
-				if (typeof file.data === 'string') {
-					formData.append(fileKey, file.data, file.name);
-				} else if (Buffer.isBuffer(file.data)) {
+				if (Buffer.isBuffer(file.data) || typeof file.data === 'string') {
 					formData.append(fileKey, new Blob([file.data]), file.name);
 				} else {
 					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
