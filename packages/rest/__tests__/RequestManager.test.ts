@@ -10,10 +10,12 @@ setGlobalDispatcher(mockAgent);
 
 const mockPool = mockAgent.get('https://discord.com');
 
-mockPool.intercept({
-	path: genPath('/simpleGet'),
-	method: 'GET'	
-}).reply(200, 'Well this is awkward...');
+mockPool
+	.intercept({
+		path: genPath('/simpleGet'),
+		method: 'GET',
+	})
+	.reply(200, 'Well this is awkward...');
 
 test('no token', async () => {
 	const promise = api.get('/simpleGet');
