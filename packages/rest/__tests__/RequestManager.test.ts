@@ -1,9 +1,19 @@
-import nock from 'nock';
-import { DefaultRestOptions, REST } from '../src';
+import { MockAgent, setGlobalDispatcher } from 'undici';
+import { REST } from '../src';
+import { genPath } from './util';
 
 const api = new REST();
 
-nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`).get('/simpleGet').reply(200, { test: true });
+const mockAgent = new MockAgent();
+mockAgent.disableNetConnect();
+setGlobalDispatcher(mockAgent);
+
+const mockPool = mockAgent.get('https://discord.com');
+
+mockPool.intercept({
+	path: genPath('/simpleGet'),
+	method: 'GET'	
+}).reply(200, 'Well this is awkward...');
 
 test('no token', async () => {
 	const promise = api.get('/simpleGet');
