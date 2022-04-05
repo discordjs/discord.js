@@ -1,7 +1,7 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Routes, Snowflake } from 'discord-api-types/v10';
 import { MockAgent, setGlobalDispatcher } from 'undici';
-import type { MockInterceptor } from 'undici/types/mock-interceptor';
+import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { APIRequest, REST } from '../src';
 import { genPath } from './util';
 
@@ -30,13 +30,18 @@ const res = await fetch('http://localhost:3000/foo');
 console.log(res.status, await res.text()); // 200 foo
 */
 
-const mockAgent = new MockAgent();
-mockAgent.disableNetConnect(); // don't accidentally make requests to Discord
-setGlobalDispatcher(mockAgent); // this allows the Agent to intercept requests
+let mockAgent: MockAgent;
+let mockPool: Interceptable;
 
-const mockPool = mockAgent.get('https://discord.com');
+beforeEach(() => {
+	mockAgent = new MockAgent();
+	mockAgent.disableNetConnect(); // prevent actual requests to Discord
+	setGlobalDispatcher(mockAgent); // enabled the mock client to intercept requests
 
-afterAll(async () => {
+	mockPool = mockAgent.get('https://discord.com');
+});
+
+afterEach(async () => {
 	await mockAgent.close();
 });
 
