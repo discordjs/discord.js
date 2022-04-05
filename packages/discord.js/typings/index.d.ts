@@ -1746,6 +1746,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public showModal(
     modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
+  public awaitModalSubmit(options: AwaitModalSubmitOptions<ModalSubmitInteraction>): Promise<ModalSubmitInteraction>;
 }
 
 export class MessageContextMenuCommandInteraction<
@@ -3585,6 +3586,18 @@ export type AwaitMessageComponentOptions<T extends MessageComponentInteraction> 
   MessageComponentCollectorOptions<T>,
   'max' | 'maxComponents' | 'maxUsers'
 >;
+
+export type ModalSubmitInteractionCollectorOptions<T extends ModalSubmitInteraction> = Omit<
+  InteractionCollectorOptions<T>,
+  'channel' | 'message' | 'guild' | 'interactionType'
+>;
+
+export type AwaitModalSubmitOptions<T extends ModalSubmitInteraction> = Omit<
+  ModalSubmitInteractionCollectorOptions<T>,
+  'max' | 'maxComponents' | 'maxUsers'
+> & {
+  time: number;
+};
 
 export interface AwaitMessagesOptions extends MessageCollectorOptions {
   errors?: string[];
