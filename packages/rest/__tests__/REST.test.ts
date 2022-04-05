@@ -36,6 +36,10 @@ setGlobalDispatcher(mockAgent); // this allows the Agent to intercept requests
 
 const mockPool = mockAgent.get('https://discord.com');
 
+afterAll(async () => {
+	await mockAgent.close();
+});
+
 test('simple GET', async () => {
 	mockPool
 		.intercept({
