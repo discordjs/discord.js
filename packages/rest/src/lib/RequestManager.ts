@@ -415,11 +415,14 @@ export class RequestManager extends EventEmitter {
 
 		const fetchOptions = {
 			agent: this.agent,
-			body: finalBody ?? null,
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
 			method: request.method,
 		};
+
+		if (finalBody !== undefined) {
+			Reflect.set(fetchOptions, 'body', finalBody);
+		}
 
 		return { url, fetchOptions };
 	}
