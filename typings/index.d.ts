@@ -603,9 +603,9 @@ export class ClientApplication extends Application {
   public commands: ApplicationCommandManager;
   public cover: string | null;
   public flags: Readonly<ApplicationFlags>;
-  public tags?: [string, string?, string?, string?, string?];
-  public installParams?: ClientApplicationInstallParams;
-  public customInstallURL?: string;
+  public tags: string[];
+  public installParams: ClientApplicationInstallParams | null;
+  public customInstallURL: string | null;
   public owner: User | Team | null;
   public readonly partial: boolean;
   public rpcOrigins: string[];
