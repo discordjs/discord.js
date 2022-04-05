@@ -50,14 +50,12 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/collection": "workspace:^",
+		"@discordjs/collection": "0.5.0",
 		"@sapphire/async-queue": "^1.2.0",
 		"@sapphire/snowflake": "^3.1.0",
-		"@types/node-fetch": "^2.5.12",
 		"discord-api-types": "^0.29.0",
-		"form-data": "^4.0.0",
-		"node-fetch": "^2.6.7",
-		"tslib": "^2.3.1"
+		"tslib": "^2.3.1",
+		"undici": "^5.0.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.17.2",

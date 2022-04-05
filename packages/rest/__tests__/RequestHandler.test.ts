@@ -13,7 +13,10 @@ let sublimitHits = 0;
 let serverOutage = true;
 let unexpected429 = true;
 let unexpected429cf = true;
-const sublimitIntervals = {
+const sublimitIntervals: {
+	reset: NodeJS.Timer | null;
+	retry: NodeJS.Timer | null;
+} = {
 	reset: null,
 	retry: null,
 };
@@ -59,7 +62,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 					'x-ratelimit-bucket': '80c17d2f203122d936070c88c8d10f33',
 					via: '1.1 google',
 				},
-			];
+			] as nock.ReplyFnResult;
 		}
 		return [
 			429,
@@ -110,7 +113,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 					'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1000).toString(),
 					via: '1.1 google',
 				},
-			];
+			] as nock.ReplyFnResult;
 		}
 		return [
 			429,
@@ -146,7 +149,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 					'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1000).toString(),
 					via: '1.1 google',
 				},
-			];
+			] as nock.ReplyFnResult;
 		}
 		return [
 			429,
@@ -177,7 +180,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 					'retry-after': '1',
 					via: '1.1 google',
 				},
-			];
+			] as nock.ReplyFnResult;
 		}
 		return [204, { test: true }];
 	})
@@ -192,7 +195,7 @@ nock(`${DefaultRestOptions.api}/v${DefaultRestOptions.version}`)
 				{
 					'retry-after': '1',
 				},
-			];
+			] as nock.ReplyFnResult;
 		}
 		return [204, { test: true }];
 	})
@@ -306,14 +309,14 @@ test('Handle sublimits', async () => {
 	expect(e).toBeLessThan(g);
 	expect(g).toBeLessThan(f);
 
-	clearInterval(sublimitIntervals.reset);
-	clearInterval(sublimitIntervals.retry);
+	clearInterval(sublimitIntervals.reset!);
+	clearInterval(sublimitIntervals.retry!);
 });
 
 test('Handle unexpected 429', async () => {
 	const previous = performance.now();
-	let firstResolvedTime: number;
-	let secondResolvedTime: number;
+	let firstResolvedTime = 0;
+	let secondResolvedTime = 0;
 	const unexepectedSublimit = api.get('/unexpected').then((res) => {
 		firstResolvedTime = performance.now();
 		return res;

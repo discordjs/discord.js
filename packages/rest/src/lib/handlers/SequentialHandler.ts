@@ -1,6 +1,6 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
-import fetch, { RequestInit, Response } from 'node-fetch';
+import { fetch, RequestInit, Response } from 'undici';
 import { DiscordAPIError, DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError';
 import { HTTPError } from '../errors/HTTPError';
 import { RateLimitError } from '../errors/RateLimitError';
@@ -218,7 +218,7 @@ export class SequentialHandler implements IHandler {
 	 * The method that actually makes the request to the api, and updates info about the bucket accordingly
 	 * @param routeId The generalized api route with literal ids for major parameters
 	 * @param url The fully resolved url to make the request to
-	 * @param options The node-fetch options needed to make the request
+	 * @param options The fetch options needed to make the request
 	 * @param requestData Extra data from the user's request needed for errors and additional processing
 	 * @param retries The number of retries this request has already attempted (recursion)
 	 */
@@ -303,10 +303,7 @@ export class SequentialHandler implements IHandler {
 		let res: Response;
 
 		try {
-			// node-fetch typings are a bit weird, so we have to cast to any to get the correct signature
-			// Type 'AbortSignal' is not assignable to type 'import("discord.js-modules/node_modules/@types/node-fetch/externals").AbortSignal'
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			res = await fetch(url, { ...options, signal: controller.signal as any });
+			res = await fetch(url, { ...options, signal: controller.signal });
 		} catch (error: unknown) {
 			// Retry the specified number of times for possible timed out requests
 			if (error instanceof Error && error.name === 'AbortError' && retries !== this.manager.options.retries) {

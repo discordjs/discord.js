@@ -1,10 +1,10 @@
 import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
-import type { Response } from 'node-fetch';
+import type { Response } from 'undici';
 import { RequestMethod } from '../RequestManager';
 
 /**
  * Converts the response to usable data
- * @param res The node-fetch response
+ * @param res The fetch response
  */
 export function parseResponse(res: Response): Promise<unknown> {
 	if (res.headers.get('Content-Type')?.startsWith('application/json')) {

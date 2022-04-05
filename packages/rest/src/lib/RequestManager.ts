@@ -1,10 +1,10 @@
 import Collection from '@discordjs/collection';
-import FormData from 'form-data';
 import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Blob } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import { Agent as httpsAgent } from 'node:https';
 import { Agent as httpAgent } from 'node:http';
-import type { RequestInit, BodyInit } from 'node-fetch';
+import { FormData, type RequestInit, type BodyInit } from 'undici';
 import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
 import type { RESTOptions, RestEvents } from './REST';
@@ -291,7 +291,7 @@ export class RequestManager extends EventEmitter {
 			this.handlers.get(`${hash.value}:${routeId.majorParameter}`) ??
 			this.createHandler(hash.value, routeId.majorParameter);
 
-		// Resolve the request into usable fetch/node-fetch options
+		// Resolve the request into usable fetch
 		const { url, fetchOptions } = this.resolveRequest(request);
 
 		// Queue the request
@@ -372,7 +372,20 @@ export class RequestManager extends EventEmitter {
 
 			// Attach all files to the request
 			for (const [index, file] of request.files.entries()) {
-				formData.append(file.key ?? `files[${index}]`, file.data, file.name);
+				const fileKey = file.key ?? `files[${index}]`;
+
+				// https://developer.mozilla.org/en-US/docs/Web/API/FormData/append#parameters
+				// FormData.append only accepts a string or Blob.
+				// https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#parameters
+				// The Blob constructor accepts TypedArray/ArrayBuffer, strings, and Blobs.
+				if (typeof file.data === 'string') {
+					formData.append(fileKey, file.data, file.name);
+				} else if (Buffer.isBuffer(file.data)) {
+					formData.append(fileKey, new Blob([file.data]), file.name);
+				} else {
+					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+					formData.append(fileKey, new Blob([`${file.data}`]), file.name);
+				}
 			}
 
 			// If a JSON body was added as well, attach it to the form data, using payload_json unless otherwise specified
@@ -380,7 +393,7 @@ export class RequestManager extends EventEmitter {
 			if (request.body != null) {
 				if (request.appendToFormData) {
 					for (const [key, value] of Object.entries(request.body as Record<string, unknown>)) {
-						formData.append(key, value);
+						formData.append(key, JSON.stringify(value));
 					}
 				} else {
 					formData.append('payload_json', JSON.stringify(request.body));
@@ -389,8 +402,6 @@ export class RequestManager extends EventEmitter {
 
 			// Set the final body to the form data
 			finalBody = formData;
-			// Set the additional headers to the form data ones
-			additionalHeaders = formData.getHeaders();
 
 			// eslint-disable-next-line no-eq-null
 		} else if (request.body != null) {
@@ -406,7 +417,7 @@ export class RequestManager extends EventEmitter {
 
 		const fetchOptions = {
 			agent: this.agent,
-			body: finalBody,
+			body: finalBody ?? null,
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
 			method: request.method,
