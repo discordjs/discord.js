@@ -50,16 +50,6 @@ class IntegrationApplication extends Application {
       this.rpcOrigins ??= [];
     }
 
-    if ('summary' in data) {
-      /**
-       * The application's summary
-       * @type {?string}
-       */
-      this.summary = data.summary;
-    } else {
-      this.summary ??= null;
-    }
-
     if ('hook' in data) {
       /**
        * Whether the application can be default hooked by the client

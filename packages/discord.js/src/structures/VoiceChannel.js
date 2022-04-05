@@ -8,6 +8,20 @@ const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
  * @extends {BaseGuildVoiceChannel}
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
+  _patch(data) {
+    super._patch(data);
+
+    if ('video_quality_mode' in data) {
+      /**
+       * The camera video quality mode of the channel.
+       * @type {?VideoQualityMode}
+       */
+      this.videoQualityMode = data.video_quality_mode;
+    } else {
+      this.videoQualityMode ??= null;
+    }
+  }
+
   /**
    * Whether the channel is joinable by the client user
    * @type {boolean}
@@ -64,6 +78,16 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    */
   setUserLimit(userLimit, reason) {
     return this.edit({ userLimit }, reason);
+  }
+
+  /**
+   * Sets the camera video quality mode of the channel.
+   * @param {VideoQualityMode} videoQualityMode The new camera video quality mode.
+   * @param {string} [reason] Reason for changing the camera video quality mode.
+   * @returns {Promise<VoiceChannel>}
+   */
+  setVideoQualityMode(videoQualityMode, reason) {
+    return this.edit({ videoQualityMode }, reason);
   }
 
   /**
