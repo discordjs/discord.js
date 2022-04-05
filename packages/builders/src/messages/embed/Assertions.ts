@@ -23,6 +23,10 @@ export function validateFieldLength(amountAdding: number, fields?: APIEmbedField
 
 export const authorNamePredicate = fieldNamePredicate.nullable;
 
+export const imageURLPredicate = s.string.url({
+	allowedProtocols: ['http:', 'https:', 'attachment:'],
+}).nullish;
+
 export const urlPredicate = s.string.url({
 	allowedProtocols: ['http:', 'https:'],
 }).nullish;
