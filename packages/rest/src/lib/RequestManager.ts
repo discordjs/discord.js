@@ -2,8 +2,6 @@ import Collection from '@discordjs/collection';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Blob } from 'node:buffer';
 import { EventEmitter } from 'node:events';
-import { Agent as httpsAgent } from 'node:https';
-import { Agent as httpAgent } from 'node:http';
 import { FormData, type RequestInit, type BodyInit } from 'undici';
 import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
@@ -187,7 +185,6 @@ export class RequestManager extends EventEmitter {
 
 	private hashTimer!: NodeJS.Timer;
 	private handlerTimer!: NodeJS.Timer;
-	private agent: httpsAgent | httpAgent | null = null;
 
 	public readonly options: RESTOptions;
 
@@ -324,10 +321,6 @@ export class RequestManager extends EventEmitter {
 	private resolveRequest(request: InternalRequest): { url: string; fetchOptions: RequestInit } {
 		const { options } = this;
 
-		this.agent ??= options.api.startsWith('https')
-			? new httpsAgent({ ...options.agent, keepAlive: true })
-			: new httpAgent({ ...options.agent, keepAlive: true });
-
 		let query = '';
 
 		// If a query option is passed, use it
@@ -413,8 +406,8 @@ export class RequestManager extends EventEmitter {
 			}
 		}
 
-		const fetchOptions = {
-			agent: this.agent,
+		const fetchOptions: RequestInit = {
+			body: finalBody!,
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
 			method: request.method,
