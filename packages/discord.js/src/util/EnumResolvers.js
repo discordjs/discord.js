@@ -21,6 +21,7 @@ const {
   GuildScheduledEventEntityType,
   IntegrationExpireBehavior,
   AuditLogEvent,
+  VideoQualityMode,
 } = require('discord-api-types/v10');
 
 function unknownKeyStrategy(val) {
@@ -781,6 +782,29 @@ class EnumResolvers extends null {
         return AuditLogEvent.ThreadUpdate;
       case 'THREAD_DELETE':
         return AuditLogEvent.ThreadDelete;
+      default:
+        return unknownKeyStrategy(key);
+    }
+  }
+
+  /**
+   * A string that can be resolved to a {@link VideoQualityMode} enum value. Here are the available types:
+   * * AUTO (automatic)
+   * * FULL (720p)
+   * @typedef {string} VideoQualityModeEnumResolvable
+   */
+
+  /**
+   * Resolves enum key to {@link VideoQualityMode} enum value
+   * @param {VideoQualityModeEnumResolvable|VideoQualityMode} key The key to lookup
+   * @returns {VideoQualityMode}
+   */
+  static resolveVideoQualityMode(key) {
+    switch (key) {
+      case 'AUTO':
+        return VideoQualityMode.Auto;
+      case 'FULL':
+        return VideoQualityMode.Full;
       default:
         return unknownKeyStrategy(key);
     }
