@@ -316,55 +316,55 @@ test('Handle sublimits', async () => {
 	await expect(cP2).rejects.toBeInstanceOf(RateLimitError);
 });
 
-if (Boolean(false))
-	test('Handle unexpected 429', async () => {
-		mockPool
-			.intercept({
-				path: genPath('/unexpected'),
-				method: 'GET',
-			})
-			.reply(() => {
-				if (unexpected429) {
-					unexpected429 = false;
-
-					return {
-						statusCode: 429,
-						data: '',
-						responseOptions: {
-							headers: {
-								'retry-after': '1',
-								via: '1.1 google',
-								...responseOptions.headers,
-							},
-						},
-					};
-				}
+// TODO: this test causes the "Handle unexpected 429 cloudflare" to fail when enabled.
+test.skip('Handle unexpected 429', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/unexpected'),
+			method: 'GET',
+		})
+		.reply(() => {
+			if (unexpected429) {
+				unexpected429 = false;
 
 				return {
-					statusCode: 204,
-					data: { test: true },
-					responseOptions,
+					statusCode: 429,
+					data: '',
+					responseOptions: {
+						headers: {
+							'retry-after': '1',
+							via: '1.1 google',
+							...responseOptions.headers,
+						},
+					},
 				};
-			})
-			.times(3);
+			}
 
-		const previous = performance.now();
-		let firstResolvedTime = 0;
-		let secondResolvedTime = 0;
-		const unexepectedSublimit = api.get('/unexpected').then((res) => {
-			firstResolvedTime = performance.now();
-			return res;
-		});
-		const queuedSublimit = api.get('/unexpected').then((res) => {
-			secondResolvedTime = performance.now();
-			return res;
-		});
+			return {
+				statusCode: 204,
+				data: { test: true },
+				responseOptions,
+			};
+		})
+		.times(3);
 
-		expect(await unexepectedSublimit).toStrictEqual({ test: true });
-		expect(await queuedSublimit).toStrictEqual({ test: true });
-		expect(performance.now()).toBeGreaterThanOrEqual(previous + 1000);
-		expect(secondResolvedTime).toBeGreaterThan(firstResolvedTime);
+	const previous = performance.now();
+	let firstResolvedTime = 0;
+	let secondResolvedTime = 0;
+	const unexepectedSublimit = api.get('/unexpected').then((res) => {
+		firstResolvedTime = performance.now();
+		return res;
 	});
+	const queuedSublimit = api.get('/unexpected').then((res) => {
+		secondResolvedTime = performance.now();
+		return res;
+	});
+
+	expect(await unexepectedSublimit).toStrictEqual({ test: true });
+	expect(await queuedSublimit).toStrictEqual({ test: true });
+	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1000);
+	expect(secondResolvedTime).toBeGreaterThan(firstResolvedTime);
+});
 
 test('Handle unexpected 429 cloudflare', async () => {
 	mockPool
