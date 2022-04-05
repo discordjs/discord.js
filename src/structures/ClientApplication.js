@@ -45,6 +45,8 @@ class ClientApplication extends Application {
         scopes: data.install_params.scopes,
         permissions: new Permissions(data.install_params.permissions).freeze(),
       };
+    } else {
+      this.installParams ??= null;
     }
 
     if ('custom_install_url' in data) {
@@ -53,6 +55,8 @@ class ClientApplication extends Application {
        * @type {?string}
        */
       this.customInstallURL = data.custom_install_url;
+    } else {
+      this.customInstallURL = null;
     }
 
     if ('flags' in data) {
