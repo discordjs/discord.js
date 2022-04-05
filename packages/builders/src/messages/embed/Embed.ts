@@ -5,11 +5,11 @@ import {
 	descriptionPredicate,
 	embedFieldsArrayPredicate,
 	footerTextPredicate,
+	imageURLPredicate,
 	timestampPredicate,
 	titlePredicate,
-	imageURLPredicate,
-	validateFieldLength,
 	urlPredicate,
+	validateFieldLength,
 } from './Assertions';
 import { EmbedAuthorOptions, EmbedFooterOptions, RGBTuple, UnsafeEmbedBuilder } from './UnsafeEmbed';
 
