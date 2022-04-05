@@ -1,6 +1,6 @@
 import { DefaultRestOptions } from '../src';
 
-export function genPath(path: string) {
+export function genPath(path: `/${string}`) {
 	return `/api/v${DefaultRestOptions.version}${path}` as const;
 }
 
