@@ -756,6 +756,9 @@ export class ClientApplication extends Application {
   public commands: ApplicationCommandManager;
   public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
+  public tags: string[];
+  public installParams: ClientApplicationInstallParams | null;
+  public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
   public rpcOrigins: string[];
@@ -5259,6 +5262,11 @@ export interface WelcomeScreenEditData {
   enabled?: boolean;
   description?: string;
   welcomeChannels?: WelcomeChannelData[];
+}
+
+export interface ClientApplicationInstallParams {
+  scopes: OAuth2Scopes[];
+  permissions: Readonly<PermissionsBitField>;
 }
 
 export type Serialized<T> = T extends symbol | bigint | (() => any)
