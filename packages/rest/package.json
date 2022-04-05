@@ -73,7 +73,6 @@
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^4.0.0",
 		"jest": "^27.5.1",
-		"nock": "^13.2.4",
 		"prettier": "^2.5.1",
 		"tsup": "^5.11.13",
 		"typedoc": "^0.22.11",
