@@ -407,6 +407,9 @@ export class RequestManager extends EventEmitter {
 		}
 
 		const fetchOptions: RequestInit = {
+			// The non-null assertion is due to undici's type not explicitly allowing undefined.
+			// However, the `body` property itself is optional, so it is safe for an undefined
+			// value to be passed to it.
 			body: finalBody!,
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,

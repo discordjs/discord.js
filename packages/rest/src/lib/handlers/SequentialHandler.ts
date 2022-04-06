@@ -1,6 +1,6 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
-import { fetch, RequestInit, Response } from 'undici';
+import { fetch, type RequestInit, type Response } from 'undici';
 import { DiscordAPIError, DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError';
 import { HTTPError } from '../errors/HTTPError';
 import { RateLimitError } from '../errors/RateLimitError';
