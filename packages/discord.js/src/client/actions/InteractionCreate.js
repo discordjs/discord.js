@@ -31,7 +31,7 @@ class InteractionCreateAction extends Action {
             InteractionClass = UserContextMenuCommandInteraction;
             break;
           case ApplicationCommandType.Message:
-            if (c && c.isTextBased()) return;
+            if (c && !c.isTextBased()) return;
             InteractionClass = MessageContextMenuCommandInteraction;
             break;
           default:
@@ -43,7 +43,7 @@ class InteractionCreateAction extends Action {
         }
         break;
       case InteractionType.MessageComponent:
-        if (c && c.isTextBased()) return;
+        if (c && !c.isTextBased()) return;
 
         switch (data.data.component_type) {
           case ComponentType.Button:
