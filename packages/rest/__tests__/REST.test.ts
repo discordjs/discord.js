@@ -1,6 +1,6 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Routes, Snowflake } from 'discord-api-types/v10';
-import { MockAgent, setGlobalDispatcher } from 'undici';
+import { File, FormData, MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { APIRequest, REST } from '../src';
 import { genPath } from './util';

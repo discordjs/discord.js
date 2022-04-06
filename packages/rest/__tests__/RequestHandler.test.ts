@@ -471,18 +471,20 @@ test('perm server outage', async () => {
 });
 
 test('server responding too slow', async () => {
+	const api2 = new REST({ timeout: 250 }).setToken('A-Very-Really-Real-Token');
+
 	mockPool
 		.intercept({
 			path: genPath('/slow'),
 			method: 'GET',
 		})
 		.reply(200, '')
-		.delay(8000)
+		.delay(1000)
 		.times(10);
 
-	const promise = api.get('/slow');
+	const promise = api2.get('/slow');
 	await expect(promise).rejects.toThrowError('The operation was aborted');
-}, 20000);
+}, 5000);
 
 test('Unauthorized', async () => {
 	mockPool
