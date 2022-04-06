@@ -288,7 +288,7 @@ export class RequestManager extends EventEmitter {
 			this.handlers.get(`${hash.value}:${routeId.majorParameter}`) ??
 			this.createHandler(hash.value, routeId.majorParameter);
 
-		// Resolve the request into usable fetch
+		// Resolve the request into usable fetch options
 		const { url, fetchOptions } = this.resolveRequest(request);
 
 		// Queue the request
@@ -384,7 +384,7 @@ export class RequestManager extends EventEmitter {
 			if (request.body != null) {
 				if (request.appendToFormData) {
 					for (const [key, value] of Object.entries(request.body as Record<string, unknown>)) {
-						formData.append(key, JSON.stringify(value));
+						formData.append(key, value);
 					}
 				} else {
 					formData.append('payload_json', JSON.stringify(request.body));
@@ -412,10 +412,6 @@ export class RequestManager extends EventEmitter {
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
 			method: request.method,
 		};
-
-		if (finalBody !== undefined) {
-			Reflect.set(fetchOptions, 'body', finalBody);
-		}
 
 		return { url, fetchOptions };
 	}

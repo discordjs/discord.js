@@ -355,3 +355,79 @@ test('Request and Response Events', async () => {
 	expect(requestListener).toHaveBeenCalledTimes(1);
 	expect(responseListener).toHaveBeenCalledTimes(1);
 });
+
+test('postFile', async () => {
+	let time = 0;
+
+	mockPool
+		.intercept({
+			path: genPath('/postFile'),
+			method: 'POST',
+		})
+		.reply((t) => {
+			// This is only possible due to a bug. Hopefully in the future
+			// either the FormData object will be returned or we get the
+			// stringified FormData body back.
+			// https://github.com/nodejs/undici/issues/1322
+			const fd = t.body as unknown as FormData;
+
+			if (time === 0) {
+				expect(t.body).toBeNull();
+			} else if (time === 1) {
+				expect(fd.get('files[0]')).toBeInstanceOf(File);
+				expect(fd.get('files[0]')).toHaveProperty('size', 5); // 'Hello'
+			} else if (time === 2) {
+				expect(fd.get('files[0]')).toBeInstanceOf(File);
+				expect(fd.get('files[0]')).toHaveProperty('size', 5); // Buffer.from('Hello')
+				expect(fd.get('payload_json')).toStrictEqual(JSON.stringify({ foo: 'bar' }));
+			} else if (time === 3) {
+				expect(fd.get('files[0]')).toBeInstanceOf(File);
+				expect(fd.get('files[1]')).toBeInstanceOf(File);
+
+				expect(fd.get('files[0]')).toHaveProperty('size', 5); // Buffer.from('Hello')
+				expect(fd.get('files[1]')).toHaveProperty('size', 2); // Buffer.from('Hi')
+				expect(fd.get('payload_json')).toStrictEqual(JSON.stringify({ files: [{ id: 0, description: 'test' }] }));
+			} else if (time === 4) {
+				expect(fd.get('file')).toBeInstanceOf(File);
+				expect(fd.get('file')).toHaveProperty('size', 7); // Buffer.from('Sticker')
+				expect(fd.get('foo')).toStrictEqual('bar');
+			}
+
+			time++;
+			return {
+				statusCode: 200,
+				data: 'Hello',
+			};
+		})
+		.times(5);
+
+	// postFile empty
+	await api.post('/postFile', { files: [] });
+
+	// postFile file (string)
+	await api.post('/postFile', {
+		files: [{ name: 'out.txt', data: 'Hello' }],
+	});
+
+	// postFile file and JSON
+	await api.post('/postFile', {
+		files: [{ name: 'out.txt', data: Buffer.from('Hello') }],
+		body: { foo: 'bar' },
+	});
+
+	// postFile files and JSON
+	await api.post('/postFile', {
+		files: [
+			{ name: 'out.txt', data: Buffer.from('Hello') },
+			{ name: 'out.txt', data: Buffer.from('Hi') },
+		],
+		body: { files: [{ id: 0, description: 'test' }] },
+	});
+
+	// postFile sticker and JSON
+	await api.post('/postFile', {
+		files: [{ key: 'file', name: 'sticker.png', data: Buffer.from('Sticker') }],
+		body: { foo: 'bar' },
+		appendToFormData: true,
+	});
+});
