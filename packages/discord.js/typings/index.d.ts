@@ -244,6 +244,7 @@ export class ActionRowBuilder<
           type?: ComponentType.ActionRow;
         }),
   );
+  public static from(other: JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>> | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>): ActionRowBuilder;
 }
 
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
