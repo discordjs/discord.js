@@ -111,6 +111,7 @@ import {
   APIEmbedAuthor,
   APIEmbedFooter,
   APIEmbedImage,
+  VideoQualityMode,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -756,6 +757,9 @@ export class ClientApplication extends Application {
   public commands: ApplicationCommandManager;
   public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
+  public tags: string[];
+  public installParams: ClientApplicationInstallParams | null;
+  public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
   public rpcOrigins: string[];
@@ -1000,6 +1004,7 @@ export class EnumResolvers extends null {
     key: IntegrationExpireBehaviorEnumResolvable | IntegrationExpireBehavior,
   ): IntegrationExpireBehavior;
   public static resolveAuditLogEvent(key: AuditLogEventEnumResolvable | AuditLogEvent): AuditLogEvent;
+  public static resolveVideoQualityMode(key: VideoQualityModeEnumResolvable | VideoQualityMode): VideoQualityMode;
 }
 
 export class DMChannel extends TextBasedChannelMixin(Channel, ['bulkDelete']) {
@@ -1405,7 +1410,6 @@ export class IntegrationApplication extends Application {
   public termsOfServiceURL: string | null;
   public privacyPolicyURL: string | null;
   public rpcOrigins: string[];
-  public summary: string | null;
   public hook: boolean | null;
   public cover: string | null;
   public verifyKey: string | null;
@@ -2571,10 +2575,12 @@ export type ComponentData =
   | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
+  public videoQualityMode: VideoQualityMode;
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
   public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
   public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
+  public setVideoQualityMode(videoQualityMode: VideoQualityMode, reason?: string): Promise<VoiceChannel>;
 }
 
 export class VoiceRegion {
@@ -3690,6 +3696,7 @@ export interface ChannelData {
   permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
   rtcRegion?: string | null;
+  videoQualityMode?: VideoQualityMode | null;
 }
 
 export interface ChannelLogsQueryOptions {
@@ -4175,6 +4182,8 @@ export type AuditLogEventEnumResolvable =
   | 'THREAD_CREATE'
   | 'THREAD_UPDATE'
   | 'THREAD_DELETE';
+
+export type VideoQualityModeEnumResolvable = 'AUTO' | 'FULL';
 
 export interface ErrorEvent {
   error: unknown;
@@ -4914,6 +4923,7 @@ export interface PartialChannelData {
   bitrate?: number;
   userLimit?: number;
   rtcRegion?: string | null;
+  videoQualityMode?: VideoQualityMode;
   permissionOverwrites?: PartialOverwriteData[];
   rateLimitPerUser?: number;
 }
@@ -5259,6 +5269,11 @@ export interface WelcomeScreenEditData {
   enabled?: boolean;
   description?: string;
   welcomeChannels?: WelcomeChannelData[];
+}
+
+export interface ClientApplicationInstallParams {
+  scopes: OAuth2Scopes[];
+  permissions: Readonly<PermissionsBitField>;
 }
 
 export type Serialized<T> = T extends symbol | bigint | (() => any)
