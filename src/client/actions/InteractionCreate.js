@@ -17,9 +17,11 @@ class InteractionCreateAction extends Action {
     const client = this.client;
 
     // Resolve and cache partial channels for Interaction#channel getter
-    this.getChannel(data);
+    const channel = this.getChannel(data);
 
+    // Do not emit this for interactions that cache messages that are non-text-based.
     let InteractionType;
+
     switch (data.type) {
       case InteractionTypes.APPLICATION_COMMAND:
         switch (data.data.type) {
@@ -30,6 +32,7 @@ class InteractionCreateAction extends Action {
             InteractionType = UserContextMenuInteraction;
             break;
           case ApplicationCommandTypes.MESSAGE:
+            if (channel && !channel.isText()) return;
             InteractionType = MessageContextMenuInteraction;
             break;
           default:
@@ -41,6 +44,8 @@ class InteractionCreateAction extends Action {
         }
         break;
       case InteractionTypes.MESSAGE_COMPONENT:
+        if (channel && !channel.isText()) return;
+
         switch (data.data.component_type) {
           case MessageComponentTypes.BUTTON:
             InteractionType = ButtonInteraction;
