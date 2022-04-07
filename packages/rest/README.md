@@ -40,15 +40,13 @@ import { Routes } from 'discord-api-types/v10';
 
 const rest = new REST({ version: '10' }).setToken('token');
 
-(async () => {
-	try {
-		await rest.post(Routes.channelMessages(CHANNEL_ID), {
-			content: 'A message via REST!',
-		});
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	await rest.post(Routes.channelMessages(CHANNEL_ID), {
+		content: 'A message via REST!',
+	});
+} catch (error) {
+	console.error(error);
+}
 ```
 
 Create a thread from an existing message to be archived after 60 minutes of inactivity:
@@ -59,18 +57,16 @@ import { Routes } from 'discord-api-types/v10';
 
 const rest = new REST({ version: '10' }).setToken('token');
 
-(async () => {
-	try {
-		await rest.post(Routes.threads(CHANNEL_ID, MESSAGE_ID), {
-			body: {
-				name: 'Thread',
-				auto_archive_duration: 60,
-			},
-		});
-	} catch (error) {
-		console.error(error);
-	}
-})();
+try {
+	await rest.post(Routes.threads(CHANNEL_ID, MESSAGE_ID), {
+		body: {
+			name: 'Thread',
+			auto_archive_duration: 60,
+		},
+	});
+} catch (error) {
+	console.error(error);
+}
 ```
 
 ## Links
