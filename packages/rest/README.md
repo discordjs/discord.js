@@ -42,7 +42,7 @@ const rest = new REST({ version: '10' }).setToken('token');
 
 (async () => {
 	try {
-		await rest.get(Routes.channelMessages(CHANNEL_ID), {
+		await rest.post(Routes.channelMessages(CHANNEL_ID), {
 			content: 'A message via REST!',
 		});
 	} catch (error) {
