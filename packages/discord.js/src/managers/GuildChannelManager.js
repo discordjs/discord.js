@@ -223,6 +223,7 @@ class GuildChannelManager extends CachedManager {
    * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
+   * @property {?VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
    */
 
   /**
@@ -274,6 +275,7 @@ class GuildChannelManager extends CachedManager {
         bitrate: data.bitrate ?? channel.bitrate,
         user_limit: data.userLimit ?? channel.userLimit,
         rtc_region: data.rtcRegion ?? channel.rtcRegion,
+        video_quality_mode: data.videoQualityMode,
         parent_id: parent,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
