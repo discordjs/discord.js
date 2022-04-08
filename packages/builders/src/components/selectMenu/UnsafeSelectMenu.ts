@@ -69,7 +69,7 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<
 	 * @param options The options to add to this select menu
 	 * @returns
 	 */
-	public addOptions(...options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public addOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
 		this.options.push(
 			...options.map((option) =>
 				option instanceof UnsafeSelectMenuOptionBuilder ? option : new UnsafeSelectMenuOptionBuilder(option),
@@ -82,7 +82,7 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<
 	 * Sets the options on this select menu
 	 * @param options The options to set on this select menu
 	 */
-	public setOptions(...options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public setOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
 		this.options.splice(
 			0,
 			this.options.length,
