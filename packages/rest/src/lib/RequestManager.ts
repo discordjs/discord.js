@@ -34,10 +34,6 @@ export interface RawFile {
  */
 export interface RequestData {
 	/**
-	 * The [Agent](@link https://undici.nodejs.org/#/docs/api/Agent) to use for this request.
-	 */
-	agent?: Dispatcher;
-	/**
 	 * Whether to append JSON data to form data instead of `payload_json` when sending files
 	 */
 	appendToFormData?: boolean;
@@ -190,7 +186,6 @@ export class RequestManager extends EventEmitter {
 
 	private hashTimer!: NodeJS.Timer;
 	private handlerTimer!: NodeJS.Timer;
-	private readonly agent: Dispatcher;
 
 	public readonly options: RESTOptions;
 
@@ -199,7 +194,6 @@ export class RequestManager extends EventEmitter {
 		this.options = { ...DefaultRestOptions, ...options };
 		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = this.options.globalRequestsPerSecond;
-		this.agent = this.options.agent;
 
 		// Start sweepers
 		this.setupSweepers();
@@ -423,7 +417,6 @@ export class RequestManager extends EventEmitter {
 		}
 
 		const fetchOptions: RequestOptions = {
-			dispatcher: this.agent,
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
 			method: `${request.method}` as Dispatcher.HttpMethod,
