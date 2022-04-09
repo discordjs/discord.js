@@ -184,6 +184,7 @@ export abstract class AnonymousGuild extends BaseGuild {
   public banner: string | null;
   public description: string | null;
   public nsfwLevel: NSFWLevel;
+  public premiumSubscriptionCount: number | null;
   public splash: string | null;
   public vanityURLCode: string | null;
   public verificationLevel: VerificationLevel;
@@ -905,7 +906,6 @@ export class Guild extends AnonymousGuild {
   public mfaLevel: MFALevel;
   public ownerId: Snowflake;
   public preferredLocale: string;
-  public premiumSubscriptionCount: number | null;
   public premiumProgressBarEnabled: boolean;
   public premiumTier: PremiumTier;
   public presences: PresenceManager;

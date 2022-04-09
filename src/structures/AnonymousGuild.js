@@ -64,6 +64,16 @@ class AnonymousGuild extends BaseGuild {
        */
       this.nsfwLevel = NSFWLevels[data.nsfw_level];
     }
+
+    if ('premium_subscription_count' in data) {
+      /**
+       * The total number of boosts for this server
+       * @type {?number}
+       */
+      this.premiumSubscriptionCount = data.premium_subscription_count;
+    } else {
+      this.premiumSubscriptionCount ??= null;
+    }
   }
 
   /**
