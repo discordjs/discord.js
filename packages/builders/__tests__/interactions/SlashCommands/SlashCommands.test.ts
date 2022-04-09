@@ -431,7 +431,9 @@ describe('Slash Commands', () => {
 			test('GIVEN valid name localizations THEN does not throw error', () => {
 				expect(() => getBuilder().setNameLocalization('en-US', 'foobar')).not.toThrowError();
 				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
-				expect(() => getBuilder().setNameLocalizations(new Map().set('en-US', 'foobar'))).not.toThrowError();
+				expect(() =>
+					getBuilder().setNameLocalizations(new Map<LocaleString, string>().set('en-US', 'foobar')),
+				).not.toThrowError();
 			});
 
 			test('GIVEN valid name localizations THEN does not throw error', () => {
@@ -451,14 +453,15 @@ describe('Slash Commands', () => {
 					getBuilder().setNameLocalizations(new Map().set('en-US', 'foobar').set('bg', 'test')).name_localizations,
 				).toEqual(expectedMultipleLocales);
 				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
+				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
+					'en-US': null,
+				});
 			});
 
 			test('GIVEN valid description localizations THEN does not throw error', () => {
 				expect(() => getBuilder().setDescriptionLocalization('en-US', 'foobar')).not.toThrowError();
 				expect(() => getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
-				expect(() =>
-					getBuilder().setDescriptionLocalizations(new Map<LocaleString, string>().set('en-US', 'foobar')),
-				).not.toThrowError();
+				expect(() => getBuilder().setDescriptionLocalizations(new Map().set('en-US', 'foobar'))).not.toThrowError();
 			});
 
 			test('GIVEN valid description localizations THEN does not throw error', () => {
@@ -481,6 +484,9 @@ describe('Slash Commands', () => {
 						.description_localizations,
 				).toEqual(expectedMultipleLocales);
 				expect(getBuilder().setDescriptionLocalizations(null).description_localizations).toBeNull();
+				expect(getBuilder().setDescriptionLocalization('en-US', null).description_localizations).toEqual({
+					'en-US': null,
+				});
 			});
 		});
 	});

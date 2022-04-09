@@ -4,9 +4,9 @@ import { validateDescription, validateLocale, validateName } from '../Assertions
 
 export class SharedNameAndDescription {
 	public readonly name!: string;
-	public readonly name_localizations?: LocalizationMap = undefined;
+	public readonly name_localizations?: LocalizationMap;
 	public readonly description!: string;
-	public readonly description_localizations?: LocalizationMap = undefined;
+	public readonly description_localizations?: LocalizationMap;
 
 	/**
 	 * Sets the name
@@ -42,13 +42,19 @@ export class SharedNameAndDescription {
 	 * @param locale The locale to set a description for
 	 * @param localizedName The localized description for the given locale
 	 */
-	public setNameLocalization(locale: LocaleString, localizedName: string) {
-		validateLocale(locale);
-		validateName(localizedName);
-
+	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
 		if (!this.name_localizations) {
 			Reflect.set(this, 'name_localizations', {});
 		}
+
+		validateLocale(locale);
+
+		if (localizedName === null) {
+			this.name_localizations![locale] = null;
+			return this;
+		}
+
+		validateName(localizedName);
 
 		this.name_localizations![locale] = localizedName;
 		return this;
@@ -59,9 +65,7 @@ export class SharedNameAndDescription {
 	 *
 	 * @param localizedNames The dictionary of localized descriptions to set
 	 */
-	public setNameLocalizations(
-		localizedNames: Partial<Record<LocaleString, string>> | Map<LocaleString, string> | null,
-	) {
+	public setNameLocalizations(localizedNames: Map<LocaleString, string> | LocalizationMap | null) {
 		if (localizedNames === null) {
 			Reflect.set(this, 'name_localizations', null);
 			return this;
@@ -78,13 +82,19 @@ export class SharedNameAndDescription {
 	 * @param locale The locale to set a description for
 	 * @param localizedDescription The localized description for the given locale
 	 */
-	public setDescriptionLocalization(locale: LocaleString, localizedDescription: string) {
-		validateLocale(locale);
-		validateDescription(localizedDescription);
-
+	public setDescriptionLocalization(locale: LocaleString, localizedDescription: string | null) {
 		if (!this.description_localizations) {
 			Reflect.set(this, 'description_localizations', {});
 		}
+
+		validateLocale(locale);
+
+		if (localizedDescription === null) {
+			this.description_localizations![locale] = null;
+			return this;
+		}
+
+		validateDescription(localizedDescription);
 
 		this.description_localizations![locale] = localizedDescription;
 		return this;
