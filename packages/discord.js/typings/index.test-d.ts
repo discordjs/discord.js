@@ -762,10 +762,10 @@ client.on('messageCreate', async message => {
   channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, buildersEmbed, embedData] });
 });
 
-client.on('threadMembersUpdate', (thread, addedMembers, removedMembers) => {
-  expectType<ThreadChannel>(thread);
+client.on('threadMembersUpdate', (addedMembers, removedMembers, thread) => {
   expectType<Collection<Snowflake, ThreadMember>>(addedMembers);
   expectType<Collection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
+  expectType<ThreadChannel>(thread);
   const left = removedMembers.first();
   if (!left) return;
 
