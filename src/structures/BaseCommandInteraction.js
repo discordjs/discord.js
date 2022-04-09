@@ -196,6 +196,8 @@ class BaseCommandInteraction extends Interaction {
   editReply() {}
   deleteReply() {}
   followUp() {}
+  showModal() {}
+  awaitModalSubmit() {}
 }
 
 InteractionResponses.applyToClass(BaseCommandInteraction, ['deferUpdate', 'update']);

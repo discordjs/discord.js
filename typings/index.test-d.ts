@@ -679,6 +679,8 @@ client.on('interaction', async interaction => {
 
   void new MessageActionRow();
 
+  void new MessageActionRow({});
+
   const button = new MessageButton();
 
   const actionRow = new MessageActionRow({ components: [button] });
@@ -687,9 +689,6 @@ client.on('interaction', async interaction => {
 
   // @ts-expect-error
   interaction.reply({ content: 'Hi!', components: [[button]] });
-
-  // @ts-expect-error
-  void new MessageActionRow({});
 
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
