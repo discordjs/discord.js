@@ -147,7 +147,6 @@ exports.StageChannel = require('./structures/StageChannel');
 exports.StageInstance = require('./structures/StageInstance').StageInstance;
 exports.Sticker = require('./structures/Sticker').Sticker;
 exports.StickerPack = require('./structures/StickerPack');
-exports.StoreChannel = require('./structures/StoreChannel');
 exports.Team = require('./structures/Team');
 exports.TeamMember = require('./structures/TeamMember');
 exports.TextChannel = require('./structures/TextChannel');
