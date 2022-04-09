@@ -9,7 +9,7 @@ import {
 	RouteLike,
 } from './RequestManager';
 import { DefaultRestOptions, RESTEvents } from './utils/constants';
-import { getGlobalDispatcher, setGlobalDispatcher, type Dispatcher, type RequestInit, type Response } from 'undici';
+import { getGlobalDispatcher, request, setGlobalDispatcher, type Dispatcher } from 'undici';
 import type { HashData } from './RequestManager';
 import type Collection from '@discordjs/collection';
 import type { IHandler } from './handlers/IHandler';
@@ -161,7 +161,7 @@ export interface APIRequest {
 	/**
 	 * Additional HTTP options for this request
 	 */
-	options: RequestInit;
+	options: RequestOptions;
 	/**
 	 * The data that was used to form the body of this request
 	 */
@@ -188,7 +188,7 @@ export interface RestEvents {
 	restDebug: [info: string];
 	rateLimited: [rateLimitInfo: RateLimitData];
 	request: [request: APIRequest];
-	response: [request: APIRequest, response: Response];
+	response: [request: APIRequest, response: Dispatcher.ResponseData];
 	newListener: [name: string, listener: (...args: any) => void];
 	removeListener: [name: string, listener: (...args: any) => void];
 	hashSweep: [sweptHashes: Collection<string, HashData>];
@@ -211,6 +211,8 @@ export interface REST {
 	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
 		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
 }
+
+export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
 
 export class REST extends EventEmitter {
 	public readonly cdn: CDN;

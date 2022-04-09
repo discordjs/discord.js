@@ -2,11 +2,12 @@ import Collection from '@discordjs/collection';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Blob } from 'node:buffer';
 import { EventEmitter } from 'node:events';
-import { FormData, type RequestInit, type BodyInit } from 'undici';
+import { FormData, type RequestInit, type BodyInit, type Dispatcher } from 'undici';
 import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
-import type { RESTOptions, RestEvents } from './REST';
+import type { RESTOptions, RestEvents, RequestOptions } from './REST';
 import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants';
+import { resolveBody } from './utils/utils';
 
 /**
  * Represents a file to be added to the request
@@ -32,6 +33,10 @@ export interface RawFile {
  * Represents possible data to be given to an endpoint
  */
 export interface RequestData {
+	/**
+	 * The [Agent](@link https://undici.nodejs.org/#/docs/api/Agent) to use for this request.
+	 */
+	agent?: Dispatcher;
 	/**
 	 * Whether to append JSON data to form data instead of `payload_json` when sending files
 	 */
@@ -92,11 +97,11 @@ export interface RequestHeaders {
  * Possible API methods to be used when doing requests
  */
 export const enum RequestMethod {
-	Delete = 'delete',
-	Get = 'get',
-	Patch = 'patch',
-	Post = 'post',
-	Put = 'put',
+	Delete = 'DELETE',
+	Get = 'GET',
+	Patch = 'PATCH',
+	Post = 'POST',
+	Put = 'PUT',
 }
 
 export type RouteLike = `/${string}`;
@@ -185,6 +190,7 @@ export class RequestManager extends EventEmitter {
 
 	private hashTimer!: NodeJS.Timer;
 	private handlerTimer!: NodeJS.Timer;
+	private readonly agent: Dispatcher;
 
 	public readonly options: RESTOptions;
 
@@ -193,6 +199,7 @@ export class RequestManager extends EventEmitter {
 		this.options = { ...DefaultRestOptions, ...options };
 		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = this.options.globalRequestsPerSecond;
+		this.agent = this.options.agent;
 
 		// Start sweepers
 		this.setupSweepers();
@@ -289,7 +296,7 @@ export class RequestManager extends EventEmitter {
 			this.createHandler(hash.value, routeId.majorParameter);
 
 		// Resolve the request into usable fetch options
-		const { url, fetchOptions } = this.resolveRequest(request);
+		const { url, fetchOptions } = await this.resolveRequest(request);
 
 		// Queue the request
 		return handler.queueRequest(routeId, url, fetchOptions, {
@@ -318,7 +325,7 @@ export class RequestManager extends EventEmitter {
 	 * Formats the request data to a usable format for fetch
 	 * @param request The request data
 	 */
-	private resolveRequest(request: InternalRequest): { url: string; fetchOptions: RequestInit } {
+	private async resolveRequest(request: InternalRequest): Promise<{ url: string; fetchOptions: RequestOptions }> {
 		const { options } = this;
 
 		let query = '';
@@ -406,15 +413,25 @@ export class RequestManager extends EventEmitter {
 			}
 		}
 
-		const fetchOptions: RequestInit = {
-			// The non-null assertion is due to undici's type not explicitly allowing undefined.
-			// However, the `body` property itself is optional, so it is safe for an undefined
-			// value to be passed to it.
-			body: finalBody!,
+		const resolvedBody = await resolveBody(finalBody);
+
+		if (Array.isArray(resolvedBody)) {
+			finalBody = resolvedBody[0]; // FormData stringified
+			additionalHeaders['content-type'] = resolvedBody[1]; // multipart header
+		} else {
+			finalBody = resolvedBody;
+		}
+
+		const fetchOptions: RequestOptions = {
+			dispatcher: this.agent,
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
-			method: request.method,
+			method: `${request.method}` as Dispatcher.HttpMethod,
 		};
+
+		if (finalBody !== undefined) {
+			fetchOptions.body = finalBody as Exclude<RequestOptions['body'], undefined>;
+		}
 
 		return { url, fetchOptions };
 	}

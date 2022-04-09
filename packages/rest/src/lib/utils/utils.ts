@@ -1,17 +1,32 @@
 import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
-import type { Response } from 'undici';
+import { FormData, type Dispatcher, type RequestInit } from 'undici';
 import { RequestMethod } from '../RequestManager';
+import type { RequestOptions } from '../REST';
+import { Blob } from 'node:buffer';
+import { URLSearchParams } from 'node:url';
+import { types } from 'node:util';
+
+export function parseHeader(header: string | string[] | undefined): string | undefined {
+	if (header === undefined) {
+		return header;
+	} else if (typeof header === 'string') {
+		return header;
+	}
+
+	return header.join(';');
+}
 
 /**
  * Converts the response to usable data
  * @param res The fetch response
  */
-export function parseResponse(res: Response): Promise<unknown> {
-	if (res.headers.get('Content-Type')?.startsWith('application/json')) {
-		return res.json();
+export function parseResponse(res: Dispatcher.ResponseData): Promise<unknown> {
+	const header = parseHeader(res.headers['content-type']);
+	if (header?.startsWith('application/json')) {
+		return res.body.json();
 	}
 
-	return res.arrayBuffer();
+	return res.body.arrayBuffer();
 }
 
 /**
@@ -35,4 +50,99 @@ export function hasSublimit(bucketRoute: string, body?: unknown, method?: string
 
 	// If we are checking if a request has a sublimit on a route not checked above, sublimit all requests to avoid a flood of 429s
 	return true;
+}
+
+/**
+ * @see https://github.com/nodejs/undici/blob/89411abba88d71bb0341360166f07ea1e0e539e3/lib/fetch/body.js#L74-L124
+ */
+async function extractFormData(fd: FormData): Promise<[Buffer, string]> {
+	const boundary = `----formdata-undici-${Math.random()}`;
+	const prefix = `--${boundary}\r\nContent-Disposition: form-data`;
+
+	/* ! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
+	const escape = (str: string) => str.replace(/\n/g, '%0A').replace(/\r/g, '%0D').replace(/"/g, '%22');
+	const normalizeLinefeeds = (value: string) => value.replace(/\r?\n|\r/g, '\r\n');
+
+	// Set action to this step: run the multipart/form-data
+	// encoding algorithm, with object’s entry list and UTF-8.
+
+	const enc = new TextEncoder();
+	const chunks: Uint8Array[] = [];
+
+	for (const [name, value] of fd) {
+		if (typeof value === 'string') {
+			chunks.push(
+				enc.encode(
+					// eslint-disable-next-line no-useless-concat
+					`${prefix}; name="${escape(normalizeLinefeeds(name))}"` + `\r\n\r\n${normalizeLinefeeds(value)}\r\n`,
+				),
+			);
+		} else {
+			chunks.push(
+				enc.encode(
+					/* eslint-disable no-useless-concat */
+					`${prefix}; name="${escape(normalizeLinefeeds(name))}"${
+						value.name ? `; filename="${escape(value.name)}"` : ''
+					}\r\n` + `Content-Type: ${value.type || 'application/octet-stream'}\r\n\r\n`,
+					/* eslint-enable no-useless-concat */
+				),
+			);
+
+			chunks.push(new Uint8Array(await value.arrayBuffer()));
+
+			chunks.push(enc.encode('\r\n'));
+		}
+	}
+
+	chunks.push(enc.encode(`--${boundary}--`));
+
+	// Set Content-Type to `multipart/form-data; boundary=`,
+	// followed by the multipart/form-data boundary string generated
+	// by the multipart/form-data encoding algorithm.
+	return [Buffer.concat(chunks), `multipart/form-data; boundary=${boundary}`];
+}
+
+export async function resolveBody(body: RequestInit['body']): Promise<RequestOptions['body'] | [Buffer, string]> {
+	// eslint-disable-next-line no-eq-null
+	if (body == null) {
+		return null;
+	} else if (typeof body === 'string') {
+		return body;
+	} else if (types.isUint8Array(body)) {
+		return body;
+	} else if (types.isArrayBuffer(body)) {
+		return new Uint8Array(body);
+	} else if (body instanceof URLSearchParams) {
+		return body.toString();
+	} else if (body instanceof DataView) {
+		return new Uint8Array(body.buffer);
+	} else if (body instanceof Blob) {
+		return new Uint8Array(await body.arrayBuffer());
+	} else if (body instanceof FormData) {
+		return extractFormData(body);
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	} else if ((body as Iterable<Uint8Array>)[Symbol.iterator]) {
+		const chunks = [...(body as Iterable<Uint8Array>)];
+		const length = chunks.reduce((a, b) => a + b.length, 0);
+
+		const uint8 = new Uint8Array(length);
+		let lengthUsed = 0;
+
+		return chunks.reduce((a, b) => {
+			a.set(b, lengthUsed);
+			lengthUsed += b.length;
+			return a;
+		}, uint8);
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	} else if ((body as AsyncIterable<Uint8Array>)[Symbol.asyncIterator]) {
+		const chunks: Uint8Array[] = [];
+
+		for await (const chunk of body as AsyncIterable<Uint8Array>) {
+			chunks.push(chunk);
+		}
+
+		return Buffer.concat(chunks);
+	}
+
+	throw new TypeError(`Unable to resolve body.`);
 }

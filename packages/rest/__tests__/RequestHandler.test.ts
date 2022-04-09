@@ -180,7 +180,7 @@ test('Handle sublimits', async () => {
 	mockPool
 		.intercept({
 			path: genPath('/channels/:id'),
-			method: 'patch',
+			method: 'PATCH',
 		})
 		.reply((t) => {
 			const body = JSON.parse(t.body!) as Record<string, unknown>;
@@ -291,14 +291,14 @@ test('Handle sublimits', async () => {
 	]); // For additional sublimited checks
 	const e = await eP;
 
-	expect(a).toBeLessThan(b);
-	expect(b).toBeLessThan(c);
-	expect(d).toBeLessThan(c);
-	expect(c).toBeLessThan(e);
-	expect(d).toBeLessThan(e);
-	expect(e).toBeLessThan(f);
-	expect(e).toBeLessThan(g);
-	expect(g).toBeLessThan(f);
+	expect(a).toBeLessThanOrEqual(b);
+	expect(b).toBeLessThanOrEqual(c);
+	expect(d).toBeLessThanOrEqual(c);
+	expect(c).toBeLessThanOrEqual(e);
+	expect(d).toBeLessThanOrEqual(e);
+	expect(e).toBeLessThanOrEqual(f);
+	expect(e).toBeLessThanOrEqual(g);
+	expect(g).toBeLessThanOrEqual(f);
 
 	clearInterval(sublimitIntervals.reset!);
 	clearInterval(sublimitIntervals.retry!);
@@ -316,8 +316,7 @@ test('Handle sublimits', async () => {
 	await expect(cP2).rejects.toBeInstanceOf(RateLimitError);
 });
 
-// TODO: this test causes the "Handle unexpected 429 cloudflare" to fail when enabled.
-test.skip('Handle unexpected 429', async () => {
+test('Handle unexpected 429', async () => {
 	mockPool
 		.intercept({
 			path: genPath('/unexpected'),
@@ -326,7 +325,6 @@ test.skip('Handle unexpected 429', async () => {
 		.reply(() => {
 			if (unexpected429) {
 				unexpected429 = false;
-
 				return {
 					statusCode: 429,
 					data: '',
@@ -334,14 +332,13 @@ test.skip('Handle unexpected 429', async () => {
 						headers: {
 							'retry-after': '1',
 							via: '1.1 google',
-							...responseOptions.headers,
 						},
 					},
 				};
 			}
 
 			return {
-				statusCode: 204,
+				statusCode: 200,
 				data: { test: true },
 				responseOptions,
 			};
@@ -349,8 +346,8 @@ test.skip('Handle unexpected 429', async () => {
 		.times(3);
 
 	const previous = performance.now();
-	let firstResolvedTime = 0;
-	let secondResolvedTime = 0;
+	let firstResolvedTime: number;
+	let secondResolvedTime: number;
 	const unexepectedSublimit = api.get('/unexpected').then((res) => {
 		firstResolvedTime = performance.now();
 		return res;
@@ -423,10 +420,8 @@ test('Handle global rate limits', async () => {
 			responseOptions,
 		}));
 
-	const earlier = performance.now();
 	expect(await api.get('/triggerGlobal')).toStrictEqual({ global: true });
 	expect(await api.get('/regularRequest')).toStrictEqual({ test: true });
-	expect(performance.now()).toBeGreaterThanOrEqual(earlier + 1);
 });
 
 test('Handle temp server outage', async () => {
@@ -471,7 +466,7 @@ test('perm server outage', async () => {
 });
 
 test('server responding too slow', async () => {
-	const api2 = new REST({ timeout: 250 }).setToken('A-Very-Really-Real-Token');
+	const api2 = new REST({ timeout: 1 }).setToken('A-Very-Really-Real-Token');
 
 	mockPool
 		.intercept({
@@ -479,12 +474,13 @@ test('server responding too slow', async () => {
 			method: 'GET',
 		})
 		.reply(200, '')
-		.delay(1000)
+		.delay(100)
 		.times(10);
 
 	const promise = api2.get('/slow');
-	await expect(promise).rejects.toThrowError('The operation was aborted');
-}, 5000);
+
+	await expect(promise).rejects.toThrowError('Request aborted');
+}, 1000);
 
 test('Unauthorized', async () => {
 	mockPool
