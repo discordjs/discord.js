@@ -1,5 +1,5 @@
 import is from '@sindresorhus/is';
-import { type APIApplicationCommandOptionChoice, Locale, type LocaleString } from 'discord-api-types/v10';
+import { type APIApplicationCommandOptionChoice, Locale } from 'discord-api-types/v10';
 import { s } from '@sapphire/shapeshift';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
@@ -22,8 +22,8 @@ export function validateDescription(description: unknown): asserts description i
 }
 
 const maxArrayLengthPredicate = s.unknown.array.lengthLe(25);
-export function validateLocale(locale: unknown): asserts locale is LocaleString {
-	localePredicate.parse(locale);
+export function validateLocale(locale: unknown) {
+	return localePredicate.parse(locale);
 }
 
 export function validateMaxOptionsLength(options: unknown): asserts options is ToAPIApplicationCommandOptions[] {

@@ -1,6 +1,6 @@
 import type {
 	APIApplicationCommandOption,
-	LocaleString,
+	LocalizationMap,
 	RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
@@ -24,7 +24,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The localized names for this command
 	 */
-	public readonly name_localizations?: Partial<Record<LocaleString, string>> = undefined;
+	public readonly name_localizations?: LocalizationMap;
 
 	/**
 	 * The description of this slash command
@@ -34,7 +34,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The localized descriptions for this command
 	 */
-	public readonly description_localizations?: Partial<Record<LocaleString, string>> = undefined;
+	public readonly description_localizations?: LocalizationMap;
 
 	/**
 	 * The options of this slash command

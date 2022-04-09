@@ -47,8 +47,6 @@ export class SharedNameAndDescription {
 			Reflect.set(this, 'name_localizations', {});
 		}
 
-		validateLocale(locale);
-
 		if (localizedName === null) {
 			this.name_localizations![locale] = null;
 			return this;
@@ -56,7 +54,7 @@ export class SharedNameAndDescription {
 
 		validateName(localizedName);
 
-		this.name_localizations![locale] = localizedName;
+		this.name_localizations![validateLocale(locale)] = localizedName;
 		return this;
 	}
 
@@ -87,8 +85,6 @@ export class SharedNameAndDescription {
 			Reflect.set(this, 'description_localizations', {});
 		}
 
-		validateLocale(locale);
-
 		if (localizedDescription === null) {
 			this.description_localizations![locale] = null;
 			return this;
@@ -96,7 +92,7 @@ export class SharedNameAndDescription {
 
 		validateDescription(localizedDescription);
 
-		this.description_localizations![locale] = localizedDescription;
+		this.description_localizations![validateLocale(locale)] = localizedDescription;
 		return this;
 	}
 
