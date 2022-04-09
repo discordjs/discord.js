@@ -84,7 +84,7 @@ class MessageManager extends CachedManager {
    *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
-  fetch(options = {}) {
+  fetch(options) {
     if (!options) return this._fetchMany();
     const { message, cache, force } = options;
     const resolvedMessage = this.resolveId(message ?? options);
