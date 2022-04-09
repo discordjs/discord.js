@@ -161,6 +161,19 @@ class GuildStickerManager extends CachedManager {
     const data = await this.client.api.guilds(this.guild.id).stickers.get();
     return new Collection(data.map(sticker => [sticker.id, this._add(sticker, cache)]));
   }
+
+  /**
+   * Fetches the user who uploaded this sticker, if this is a guild sticker.
+   * @param {StickerResolvable} sticker The sticker to fetch the user for
+   * @returns {Promise<?User>}
+   */
+  async fetchUser(sticker) {
+    sticker = this.resolve(sticker);
+    if (!sticker) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
+    const data = await this.client.api.guilds(this.guildId).stickers(sticker.id).get();
+    sticker._patch(data);
+    return sticker.user;
+  }
 }
 
 module.exports = GuildStickerManager;
