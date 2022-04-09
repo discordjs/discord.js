@@ -226,6 +226,16 @@ class Interaction extends Base {
       MessageComponentTypes[this.componentType] === MessageComponentTypes.SELECT_MENU
     );
   }
+
+  /**
+   * Indicates whether this interaction can be replied to.
+   * @returns {boolean}
+   */
+  isRepliable() {
+    return ![InteractionTypes.PING, InteractionTypes.APPLICATION_COMMAND_AUTOCOMPLETE].includes(
+      InteractionTypes[this.type],
+    );
+  }
 }
 
 module.exports = Interaction;
