@@ -708,6 +708,7 @@ export abstract class Channel extends Base {
   public isNews(): this is NewsChannel;
   public isThread(): this is ThreadChannel;
   public isStage(): this is StageChannel;
+  public isDirectory(): this is DirectoryChannel;
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
@@ -2206,6 +2207,8 @@ export class StageChannel extends BaseGuildVoiceChannel {
   public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
   public setTopic(topic: string): Promise<StageChannel>;
 }
+
+export class DirectoryChannel extends Channel {}
 
 export class StageInstance extends Base {
   private constructor(client: Client, data: RawStageInstanceData, channel: StageChannel);

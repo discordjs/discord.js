@@ -175,6 +175,15 @@ class Channel extends Base {
   }
 
   /**
+   * Indicates whether this channel is a {@link DirectoryChannel}
+   * @returns {boolean}
+   */
+  isDirectory() {
+    // TODO: Use dapi-types
+    return this.type === 14;
+  }
+
+  /**
    * Indicates whether this channel is {@link TextBasedChannels text-based}.
    * @returns {boolean}
    */
