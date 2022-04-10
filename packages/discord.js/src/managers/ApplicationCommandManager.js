@@ -75,7 +75,7 @@ class ApplicationCommandManager extends CachedManager {
    * @typedef {BaseFetchOptions} FetchApplicationCommandOptions
    * @property {Snowflake} [guildId] The guild's id to fetch commands for, for when the guild is not cached
    * @property {LocaleString} [locale] The locale to use when fetching this command
-   * @property {boolean} [withLocalizations] Whether or not to fetch all localization data
+   * @property {boolean} [withLocalizations] Whether to fetch all localization data
    */
 
   /**
