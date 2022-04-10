@@ -1,16 +1,15 @@
-import { z } from 'zod';
+import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandType } from 'discord-api-types/v10';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder';
 
-const namePredicate = z
-	.string()
-	.min(1)
-	.max(32)
+const namePredicate = s.string
+	.lengthGe(1)
+	.lengthLe(32)
 	.regex(/^( *[\p{L}\p{N}_-]+ *)+$/u);
 
-const typePredicate = z.union([z.literal(ApplicationCommandType.User), z.literal(ApplicationCommandType.Message)]);
+const typePredicate = s.union(s.literal(ApplicationCommandType.User), s.literal(ApplicationCommandType.Message));
 
-const booleanPredicate = z.boolean();
+const booleanPredicate = s.boolean;
 
 export function validateDefaultPermission(value: unknown): asserts value is boolean {
 	booleanPredicate.parse(value);
