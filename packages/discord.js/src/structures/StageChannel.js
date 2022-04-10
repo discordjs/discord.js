@@ -55,14 +55,15 @@ class StageChannel extends BaseGuildVoiceChannel {
   /**
    * Sets the RTC region of the channel.
    * @name StageChannel#setRTCRegion
-   * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @param {?string} rtcRegion The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @param {string} [reason] The reason for modifying this region.
    * @returns {Promise<StageChannel>}
    * @example
-   * // Set the RTC region to europe
-   * stageChannel.setRTCRegion('europe');
+   * // Set the RTC region to sydney
+   * stageChannel.setRTCRegion('sydney');
    * @example
    * // Remove a fixed region for this channel - let Discord decide automatically
-   * stageChannel.setRTCRegion(null);
+   * stageChannel.setRTCRegion(null, 'We want to let Discord decide.');
    */
 }
 
