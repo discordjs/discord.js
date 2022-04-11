@@ -1,56 +1,55 @@
 import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v10';
-import { z } from 'zod';
+import { s } from '@sapphire/shapeshift';
 import type { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
 import { UnsafeSelectMenuOptionBuilder } from './selectMenu/UnsafeSelectMenuOption';
 
-export const customIdValidator = z.string().min(1).max(100);
+export const customIdValidator = s.string.lengthGe(1).lengthLe(100);
 
-export const emojiValidator = z
-	.object({
-		id: z.string(),
-		name: z.string(),
-		animated: z.boolean(),
-	})
-	.partial()
-	.strict();
+export const emojiValidator = s.object({
+	id: s.string,
+	name: s.string,
+	animated: s.boolean,
+}).partial.strict;
 
-export const disabledValidator = z.boolean();
+export const disabledValidator = s.boolean;
 
-export const buttonLabelValidator = z.string().nonempty().max(80);
+export const buttonLabelValidator = s.string.lengthGe(1).lengthLe(80);
 
-export const buttonStyleValidator = z.number().int().min(ButtonStyle.Primary).max(ButtonStyle.Link);
+export const buttonStyleValidator = s.nativeEnum(ButtonStyle);
 
-export const placeholderValidator = z.string().max(150);
-export const minMaxValidator = z.number().int().min(0).max(25);
+export const placeholderValidator = s.string.lengthLe(150);
+export const minMaxValidator = s.number.int.ge(0).le(25);
 
-export const labelValueDescriptionValidator = z.string().min(1).max(100);
-export const optionValidator = z.union([
-	z.object({
+export const labelValueDescriptionValidator = s.string.lengthGe(1).lengthLe(100);
+export const optionValidator = s.union(
+	s.object({
 		label: labelValueDescriptionValidator,
 		value: labelValueDescriptionValidator,
-		description: labelValueDescriptionValidator.optional(),
-		emoji: emojiValidator.optional(),
-		default: z.boolean().optional(),
+		description: labelValueDescriptionValidator.optional,
+		emoji: emojiValidator.optional,
+		default: s.boolean.optional,
 	}),
-	z.instanceof(UnsafeSelectMenuOptionBuilder),
-]);
-export const optionsValidator = optionValidator.array().nonempty();
-export const optionsLengthValidator = z.number().int().min(0).max(25);
+	s.instance(UnsafeSelectMenuOptionBuilder),
+);
+export const optionsValidator = optionValidator.array.lengthGe(0);
+export const optionsLengthValidator = s.number.int.ge(0).le(25);
 
 export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
 	customIdValidator.parse(customId);
 	optionsValidator.parse(options);
 }
 
-export const labelValueValidator = z.string().min(1).max(100);
-export const defaultValidator = z.boolean();
+export const labelValueValidator = s.string.lengthGe(1).lengthLe(100);
+export const defaultValidator = s.boolean;
 
 export function validateRequiredSelectMenuOptionParameters(label?: string, value?: string) {
 	labelValueValidator.parse(label);
 	labelValueValidator.parse(value);
 }
 
-export const urlValidator = z.string().url();
+export const urlValidator = s.string.url({
+	allowedProtocols: ['http:', 'https:', 'discord:'],
+});
 
 export function validateRequiredButtonParameters(
 	style?: ButtonStyle,

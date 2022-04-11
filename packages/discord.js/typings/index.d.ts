@@ -111,6 +111,7 @@ import {
   APIEmbedAuthor,
   APIEmbedFooter,
   APIEmbedImage,
+  VideoQualityMode,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -222,7 +223,9 @@ export type ActionRowComponentData = MessageActionRowComponentData | ModalAction
 
 export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
 
-export interface ActionRowData<T extends ActionRowComponent | ActionRowComponentData> extends BaseComponentData {
+export type ActionRowComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
+
+export interface ActionRowData<T extends ActionRowComponentBuilder | ActionRowComponentData> extends BaseComponentData {
   components: T[];
 }
 
@@ -233,7 +236,7 @@ export class ActionRowBuilder<
 > extends BuilderActionRow<T> {
   constructor(
     data?:
-      | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData | ActionRowComponent>
+      | ActionRowData<ActionRowComponentData | ActionRowComponentBuilder>
       | (Omit<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>, 'type'> & {
           type?: ComponentType.ActionRow;
         }),
@@ -483,7 +486,7 @@ export class BaseGuildVoiceChannel extends GuildChannel {
   public bitrate: number;
   public userLimit: number;
   public createInvite(options?: CreateInviteOptions): Promise<Invite>;
-  public setRTCRegion(region: string | null): Promise<this>;
+  public setRTCRegion(rtcRegion: string | null, reason?: string): Promise<this>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
 }
 
@@ -638,7 +641,6 @@ export interface MappedChannelCategoryTypes {
   [ChannelType.GuildNews]: NewsChannel;
   [ChannelType.GuildVoice]: VoiceChannel;
   [ChannelType.GuildText]: TextChannel;
-  [ChannelType.GuildStore]: StoreChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
 }
 
@@ -675,7 +677,6 @@ export abstract class Channel extends Base {
   public isGroupDM(): this is PartialGroupDMChannel;
   public isCategory(): this is CategoryChannel;
   public isNews(): this is NewsChannel;
-  public isStore(): this is StoreChannel;
   public isThread(): this is ThreadChannel;
   public isStage(): this is StageChannel;
   public isTextBased(): this is TextBasedChannel;
@@ -754,6 +755,9 @@ export class ClientApplication extends Application {
   public commands: ApplicationCommandManager;
   public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
+  public tags: string[];
+  public installParams: ClientApplicationInstallParams | null;
+  public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
   public rpcOrigins: string[];
@@ -998,6 +1002,7 @@ export class EnumResolvers extends null {
     key: IntegrationExpireBehaviorEnumResolvable | IntegrationExpireBehavior,
   ): IntegrationExpireBehavior;
   public static resolveAuditLogEvent(key: AuditLogEventEnumResolvable | AuditLogEvent): AuditLogEvent;
+  public static resolveVideoQualityMode(key: VideoQualityModeEnumResolvable | VideoQualityMode): VideoQualityMode;
 }
 
 export class DMChannel extends TextBasedChannelMixin(Channel, ['bulkDelete']) {
@@ -1403,7 +1408,6 @@ export class IntegrationApplication extends Application {
   public termsOfServiceURL: string | null;
   public privacyPolicyURL: string | null;
   public rpcOrigins: string[];
-  public summary: string | null;
   public hook: boolean | null;
   public cover: string | null;
   public verifyKey: string | null;
@@ -2239,17 +2243,6 @@ export class StickerPack extends Base {
   public bannerURL(options?: ImageURLOptions): string | null;
 }
 
-/** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-export class StoreChannel extends GuildChannel {
-  private constructor(guild: Guild, data?: RawGuildChannelData, client?: Client);
-  public createInvite(options?: CreateInviteOptions): Promise<Invite>;
-  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public clone(options?: GuildChannelCloneOptions): Promise<this>;
-  public nsfw: boolean;
-  public type: ChannelType.GuildStore;
-}
-
 export class Sweepers {
   public constructor(client: Client, options: SweeperOptions);
   public readonly client: Client;
@@ -2569,10 +2562,12 @@ export type ComponentData =
   | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
+  public videoQualityMode: VideoQualityMode;
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
   public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
   public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
+  public setVideoQualityMode(videoQualityMode: VideoQualityMode, reason?: string): Promise<VoiceChannel>;
 }
 
 export class VoiceRegion {
@@ -2793,7 +2788,7 @@ export class WelcomeChannel extends Base {
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
   public description: string;
-  public get channel(): TextChannel | NewsChannel | StoreChannel | null;
+  public get channel(): TextChannel | NewsChannel | null;
   public get emoji(): GuildEmoji | Emoji;
 }
 
@@ -2969,15 +2964,10 @@ export class CategoryChannelChildManager extends DataManager<
 
   public channel: CategoryChannel;
   public get guild(): Guild;
-  public create<T extends Exclude<CategoryChannelType, ChannelType.GuildStore>>(
+  public create<T extends CategoryChannelType>(
     name: string,
     options: CategoryCreateChannelOptions & { type: T },
   ): Promise<MappedChannelCategoryTypes[T]>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public create(
-    name: string,
-    options: CategoryCreateChannelOptions & { type: ChannelType.GuildStore },
-  ): Promise<StoreChannel>;
   public create(name: string, options?: CategoryCreateChannelOptions): Promise<TextChannel>;
 }
 
@@ -3012,15 +3002,10 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public get channelCountWithoutThreads(): number;
   public guild: Guild;
 
-  public create<T extends Exclude<GuildChannelTypes, ChannelType.GuildStore>>(
+  public create<T extends GuildChannelTypes>(
     name: string,
     options: GuildChannelCreateOptions & { type: T },
   ): Promise<MappedGuildChannelTypes[T]>;
-  /** @deprecated See [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479) for more information */
-  public create(
-    name: string,
-    options: GuildChannelCreateOptions & { type: ChannelType.GuildStore },
-  ): Promise<StoreChannel>;
   public create(name: string, options?: GuildChannelCreateOptions): Promise<TextChannel>;
   public createWebhook(
     channel: GuildChannelResolvable,
@@ -3688,6 +3673,7 @@ export interface ChannelData {
   permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
   rtcRegion?: string | null;
+  videoQualityMode?: VideoQualityMode | null;
 }
 
 export interface ChannelLogsQueryOptions {
@@ -3754,7 +3740,7 @@ export interface ClientEvents {
     reactions: Collection<string | Snowflake, MessageReaction>,
   ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
-  messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
+  messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>, channel: TextBasedChannel];
   messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
@@ -3766,12 +3752,12 @@ export interface ClientEvents {
   roleUpdate: [oldRole: Role, newRole: Role];
   threadCreate: [thread: ThreadChannel, newlyCreated: boolean];
   threadDelete: [thread: ThreadChannel];
-  threadListSync: [threads: Collection<Snowflake, ThreadChannel>];
+  threadListSync: [threads: Collection<Snowflake, ThreadChannel>, guild: Guild];
   threadMemberUpdate: [oldMember: ThreadMember, newMember: ThreadMember];
   threadMembersUpdate: [
-    thread: ThreadChannel,
     addedMembers: Collection<Snowflake, ThreadMember>,
     removedMembers: Collection<Snowflake, ThreadMember | PartialThreadMember>,
+    thread: ThreadChannel,
   ];
   threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
   typingStart: [typing: Typing];
@@ -4173,6 +4159,8 @@ export type AuditLogEventEnumResolvable =
   | 'THREAD_CREATE'
   | 'THREAD_UPDATE'
   | 'THREAD_DELETE';
+
+export type VideoQualityModeEnumResolvable = 'AUTO' | 'FULL';
 
 export interface ErrorEvent {
   error: unknown;
@@ -4631,13 +4619,7 @@ export interface InviteGenerationOptions {
   scopes: OAuth2Scopes[];
 }
 
-export type GuildInvitableChannelResolvable =
-  | TextChannel
-  | VoiceChannel
-  | NewsChannel
-  | StoreChannel
-  | StageChannel
-  | Snowflake;
+export type GuildInvitableChannelResolvable = TextChannel | VoiceChannel | NewsChannel | StageChannel | Snowflake;
 
 export interface CreateInviteOptions {
   temporary?: boolean;
@@ -4719,14 +4701,13 @@ export type MessageChannelComponentCollectorOptions<T extends MessageComponentIn
 export interface MessageEditOptions {
   attachments?: MessageAttachment[];
   content?: string | null;
-  embeds?: (Embed | APIEmbed)[] | null;
+  embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[] | null;
   files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRow<MessageActionRowComponent>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
 }
@@ -4767,8 +4748,7 @@ export interface MessageOptions {
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRow<MessageActionRowComponent>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponent>)
+    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>)
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
@@ -4902,7 +4882,6 @@ export interface PartialChannelData {
     | ChannelType.DM
     | ChannelType.GroupDM
     | ChannelType.GuildNews
-    | ChannelType.GuildStore
     | ChannelType.GuildNewsThread
     | ChannelType.GuildPublicThread
     | ChannelType.GuildPrivateThread
@@ -4914,6 +4893,7 @@ export interface PartialChannelData {
   bitrate?: number;
   userLimit?: number;
   rtcRegion?: string | null;
+  videoQualityMode?: VideoQualityMode;
   permissionOverwrites?: PartialOverwriteData[];
   rateLimitPerUser?: number;
 }
@@ -5125,7 +5105,6 @@ export type AnyChannel =
   | PartialGroupDMChannel
   | NewsChannel
   | StageChannel
-  | StoreChannel
   | TextChannel
   | ThreadChannel
   | VoiceChannel;
@@ -5251,7 +5230,7 @@ export interface WidgetChannel {
 
 export interface WelcomeChannelData {
   description: string;
-  channel: TextChannel | NewsChannel | StoreChannel | Snowflake;
+  channel: GuildTextChannelResolvable;
   emoji?: EmojiIdentifierResolvable;
 }
 
@@ -5259,6 +5238,11 @@ export interface WelcomeScreenEditData {
   enabled?: boolean;
   description?: string;
   welcomeChannels?: WelcomeChannelData[];
+}
+
+export interface ClientApplicationInstallParams {
+  scopes: OAuth2Scopes[];
+  permissions: Readonly<PermissionsBitField>;
 }
 
 export type Serialized<T> = T extends symbol | bigint | (() => any)
@@ -5355,5 +5339,7 @@ export {
   ModalActionRowComponentBuilder,
   UnsafeEmbedBuilder,
   ModalBuilder,
+  UnsafeModalBuilder,
+  UnsafeTextInputBuilder,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
