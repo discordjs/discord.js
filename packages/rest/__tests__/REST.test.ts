@@ -1,6 +1,6 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Routes, Snowflake } from 'discord-api-types/v10';
-import { Agent, Dispatcher, File, FormData, MockAgent, setGlobalDispatcher } from 'undici';
+import { Dispatcher, File, FormData, MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { APIRequest, REST } from '../src';
 import { genPath } from './util';
@@ -424,16 +424,4 @@ test.skip('postFile', async () => {
 		body: { foo: 'bar' },
 		appendToFormData: true,
 	});
-});
-
-test('REST.setAgent and REST.getAgent', () => {
-	const agent = new Agent({ headersTimeout: 69 });
-	const api2 = new REST({ agent });
-
-	expect(api2.getAgent()).toStrictEqual(agent);
-
-	const agent2 = new Agent({ bodyTimeout: 6969 });
-	const api3 = new REST().setAgent(agent2).setToken('It returns <this>');
-
-	expect(api3.getAgent()).toStrictEqual(agent2);
 });

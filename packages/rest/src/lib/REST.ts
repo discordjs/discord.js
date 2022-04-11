@@ -9,7 +9,7 @@ import {
 	RouteLike,
 } from './RequestManager';
 import { DefaultRestOptions, RESTEvents } from './utils/constants';
-import { getGlobalDispatcher, request, setGlobalDispatcher, type Dispatcher } from 'undici';
+import type { request, Dispatcher } from 'undici';
 import type { HashData } from './RequestManager';
 import type Collection from '@discordjs/collection';
 import type { IHandler } from './handlers/IHandler';
@@ -233,10 +233,6 @@ export class REST extends EventEmitter {
 		this.on('removeListener', (name, listener) => {
 			if (name === RESTEvents.Request || name === RESTEvents.Response) this.requestManager.off(name, listener);
 		});
-
-		if (options.agent) {
-			setGlobalDispatcher(options.agent);
-		}
 	}
 
 	/**
@@ -246,22 +242,6 @@ export class REST extends EventEmitter {
 	public setToken(token: string) {
 		this.requestManager.setToken(token);
 		return this;
-	}
-
-	/**
-	 * Sets the agent to use globally
-	 * @param agent The agent to use
-	 */
-	public setAgent(agent: Dispatcher) {
-		setGlobalDispatcher(agent);
-		return this;
-	}
-
-	/**
-	 * Gets the currently set agent
-	 */
-	public getAgent() {
-		return getGlobalDispatcher();
 	}
 
 	/**

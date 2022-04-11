@@ -2,7 +2,7 @@ import Collection from '@discordjs/collection';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Blob } from 'node:buffer';
 import { EventEmitter } from 'node:events';
-import { FormData, type RequestInit, type BodyInit, type Dispatcher } from 'undici';
+import { FormData, type RequestInit, type BodyInit, type Dispatcher, Agent } from 'undici';
 import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
 import type { RESTOptions, RestEvents, RequestOptions } from './REST';
@@ -52,6 +52,10 @@ export interface RequestData {
 	 * If providing as BodyInit, set `passThroughBody: true`
 	 */
 	body?: BodyInit | unknown;
+	/**
+	 * The [Agent]({@link https://undici.nodejs.org/#/docs/api/Agent}) to use for the request.
+	 */
+	dispatcher?: Agent;
 	/**
 	 * Files to be attached to this request
 	 */
@@ -424,6 +428,10 @@ export class RequestManager extends EventEmitter {
 
 		if (finalBody !== undefined) {
 			fetchOptions.body = finalBody as Exclude<RequestOptions['body'], undefined>;
+		}
+
+		if (request.dispatcher) {
+			fetchOptions.dispatcher = request.dispatcher;
 		}
 
 		return { url, fetchOptions };
