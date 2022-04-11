@@ -120,14 +120,14 @@ test('Handle standard rate limits', async () => {
 			path: genPath('/standard'),
 			method: 'GET',
 		})
-		.reply((t) => {
+		.reply(() => {
 			const response = Date.now() >= resetAfter ? 204 : 429;
 			resetAfter = Date.now() + 250;
 
 			if (response === 204) {
 				return {
 					statusCode: 204,
-					data: t.body!,
+					data: '',
 					responseOptions: {
 						headers: {
 							'x-ratelimit-limit': '1',

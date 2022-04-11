@@ -472,7 +472,7 @@ export class SequentialHandler implements IHandler {
 				return this.runRequest(routeId, url, options, requestData, ++retries);
 			}
 			// We are out of retries, throw an error
-			throw new HTTPError(status.toString(), res.constructor.name, status, method, url, requestData);
+			throw new HTTPError(res.constructor.name, status, method, url, requestData);
 		} else {
 			// Handle possible malformed requests
 			if (status >= 400 && status < 500) {

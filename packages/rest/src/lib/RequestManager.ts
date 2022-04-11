@@ -419,7 +419,7 @@ export class RequestManager extends EventEmitter {
 		const fetchOptions: RequestOptions = {
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
-			method: `${request.method}` as Dispatcher.HttpMethod,
+			method: request.method.toUpperCase() as Dispatcher.HttpMethod,
 		};
 
 		if (finalBody !== undefined) {
