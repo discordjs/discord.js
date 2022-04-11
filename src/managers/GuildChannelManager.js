@@ -435,7 +435,7 @@ class GuildChannelManager extends CachedManager {
   async delete(channel, reason) {
     const id = this.resolveId(channel);
     if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
-    await this.client.api.channels(this.id).delete({ reason });
+    await this.client.api.channels(id).delete({ reason });
   }
 }
 
