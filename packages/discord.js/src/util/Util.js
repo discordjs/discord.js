@@ -45,6 +45,8 @@ class Util extends null {
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
       else if (typeof valueOf !== 'object') out[newProp] = valueOf;
+      // If element is an object, use the flattened version of it
+      else if (typeof element === 'object') out[newProp] = Util.flatten(element);
       // If it's a primitive
       else if (!elemIsObj) out[newProp] = element;
     }
