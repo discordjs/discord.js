@@ -1478,7 +1478,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
 }
 
-export class InteractionCollector<T extends Interaction> extends Collector<Snowflake, T> {
+export class InteractionCollector<T extends Interaction> extends Collector<Snowflake, T, [Collection<Snowflake, T>]> {
   public constructor(client: Client, options?: InteractionCollectorOptions<T>);
   private _handleMessageDeletion(message: Message): void;
   private _handleChannelDeletion(channel: NonThreadGuildBasedChannel): void;
@@ -1695,7 +1695,7 @@ export class MessageAttachment {
   public toJSON(): unknown;
 }
 
-export class MessageCollector extends Collector<Snowflake, Message> {
+export class MessageCollector extends Collector<Snowflake, Message, [Collection<Snowflake, Message>]> {
   public constructor(channel: TextBasedChannel, options?: MessageCollectorOptions);
   private _handleChannelDeletion(channel: NonThreadGuildBasedChannel): void;
   private _handleGuildDeletion(guild: Guild): void;
@@ -4584,7 +4584,7 @@ export interface IntegrationAccount {
 export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 
 export interface InteractionCollectorOptions<T extends Interaction, Cached extends CacheType = CacheType>
-  extends CollectorOptions<[T]> {
+  extends CollectorOptions<[T, Collection<Snowflake, T>]> {
   channel?: TextBasedChannelResolvable;
   componentType?: ComponentType;
   guild?: GuildResolvable;
@@ -4677,7 +4677,7 @@ export interface InteractionButtonComponentData extends BaseButtonComponentData 
 
 export type ButtonComponentData = InteractionButtonComponentData | LinkButtonComponentData;
 
-export interface MessageCollectorOptions extends CollectorOptions<[Message]> {
+export interface MessageCollectorOptions extends CollectorOptions<[Message, Collection<Snowflake, Message>]> {
   max?: number;
   maxProcessed?: number;
 }

@@ -595,7 +595,12 @@ client.on('messageCreate', async message => {
 
     const buttonCollector = message.createMessageComponentCollector({ componentType: ComponentType.Button });
     expectType<InteractionCollector<ButtonInteraction<'cached'>>>(buttonCollector);
-    expectAssignable<(test: ButtonInteraction<'cached'>) => boolean | Promise<boolean>>(buttonCollector.filter);
+    expectAssignable<
+      (
+        test: ButtonInteraction<'cached'>,
+        items: Collection<Snowflake, ButtonInteraction<'cached'>>,
+      ) => boolean | Promise<boolean>
+    >(buttonCollector.filter);
     expectType<GuildTextBasedChannel>(message.channel);
     expectType<Guild>(message.guild);
     expectType<GuildMember | null>(message.member);
@@ -916,12 +921,12 @@ notPropertyOf(guildMember, 'lastMessageId');
 // Test collector event parameters
 declare const messageCollector: MessageCollector;
 messageCollector.on('collect', (...args) => {
-  expectType<[Message]>(args);
+  expectType<[Message, Collection<Snowflake, Message>]>(args);
 });
 
 (async () => {
   for await (const value of messageCollector) {
-    expectType<[Message<boolean>]>(value);
+    expectType<[Message<boolean>, Collection<Snowflake, Message>]>(value);
   }
 })();
 
