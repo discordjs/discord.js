@@ -47,6 +47,7 @@ try installing another.
 
 **Encryption Libraries (npm install):**
 
+- `sodium-native`: ^3.3.0
 - `sodium`: ^3.0.2
 - `tweetnacl`: ^1.0.3
 - `libsodium-wrappers`: ^0.7.9
