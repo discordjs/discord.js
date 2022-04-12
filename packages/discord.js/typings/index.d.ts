@@ -14,7 +14,6 @@ import {
   italic,
   JSONEncodable,
   MappedComponentTypes,
-  memberNicknameMention,
   quote,
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
@@ -1281,7 +1280,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public permissionsIn(channel: GuildChannelResolvable): Readonly<PermissionsBitField>;
   public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
   public toJSON(): unknown;
-  public toString(): MemberMention;
+  public toString(): UserMention;
   public valueOf(): string;
 }
 
@@ -2554,7 +2553,6 @@ export class Formatters extends null {
   public static hyperlink: typeof hyperlink;
   public static inlineCode: typeof inlineCode;
   public static italic: typeof italic;
-  public static memberNicknameMention: typeof memberNicknameMention;
   public static quote: typeof quote;
   public static roleMention: typeof roleMention;
   public static spoiler: typeof spoiler;
@@ -4667,8 +4665,6 @@ export interface MakeErrorOptions {
   message: string;
   stack: string;
 }
-
-export type MemberMention = UserMention | `<@!${Snowflake}>`;
 
 export type ActionRowComponentOptions =
   | (Required<BaseComponentData> & ButtonComponentData)
