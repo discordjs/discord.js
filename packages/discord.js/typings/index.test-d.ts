@@ -934,10 +934,10 @@ declare const guildMember: GuildMember;
 
 // Test whether the structures implement send
 expectType<TextBasedChannelFields['send']>(dmChannel.send);
-expectType<ThreadChannel>(threadChannel);
-expectType<NewsChannel>(newsChannel);
-expectType<TextChannel>(textChannel);
-expectType<VoiceChannel>(voiceChannel);
+expectType<TextBasedChannelFields['send']>(threadChannel.send);
+expectType<TextBasedChannelFields['send']>(newsChannel.send);
+expectType<TextBasedChannelFields['send']>(textChannel.send);
+expectType<TextBasedChannelFields['send']>(voiceChannel.send);
 expectAssignable<PartialTextBasedChannelFields>(user);
 expectAssignable<PartialTextBasedChannelFields>(guildMember);
 
