@@ -937,6 +937,7 @@ expectType<TextBasedChannelFields['send']>(dmChannel.send);
 expectType<ThreadChannel>(threadChannel);
 expectType<NewsChannel>(newsChannel);
 expectType<TextChannel>(textChannel);
+expectType<VoiceChannel>(voiceChannel);
 expectAssignable<PartialTextBasedChannelFields>(user);
 expectAssignable<PartialTextBasedChannelFields>(guildMember);
 
@@ -944,6 +945,7 @@ expectType<Message | null>(dmChannel.lastMessage);
 expectType<Message | null>(threadChannel.lastMessage);
 expectType<Message | null>(newsChannel.lastMessage);
 expectType<Message | null>(textChannel.lastMessage);
+expectType<Message | null>(voiceChannel.lastMessage);
 
 notPropertyOf(user, 'lastMessage');
 notPropertyOf(user, 'lastMessageId');
@@ -1427,14 +1429,16 @@ declare const GuildBasedChannel: GuildBasedChannel;
 declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
 declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
-expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel>(TextBasedChannel);
-expectType<ChannelType.GuildText | ChannelType.DM | ChannelType.GuildNews | ThreadChannelType>(TextBasedChannelTypes);
+expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(TextBasedChannel);
+expectType<ChannelType.GuildText | ChannelType.DM | ChannelType.GuildNews | ChannelType.GuildVoice | ThreadChannelType>(
+  TextBasedChannelTypes,
+);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | ThreadChannel | VoiceChannel>(
   GuildBasedChannel,
 );
 expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel>(NonThreadGuildBasedChannel);
-expectType<NewsChannel | TextChannel | ThreadChannel>(GuildTextBasedChannel);
+expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBasedChannel);
 
 const button = new ButtonBuilder({
   label: 'test',
