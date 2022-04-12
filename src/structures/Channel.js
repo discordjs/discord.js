@@ -10,6 +10,7 @@ let StoreChannel;
 let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
+let DirectoryChannel;
 const { ChannelTypes, ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
@@ -164,6 +165,14 @@ class Channel extends Base {
     return ThreadChannelTypes.includes(this.type);
   }
 
+  /**
+   * Indicates whether this channel is a {@link DirectoryChannel}
+   * @returns {boolean}
+   */
+  isDirectory() {
+    return this.type === 'GUILD_DIRECTORY';
+  }
+
   static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
     CategoryChannel ??= require('./CategoryChannel');
     DMChannel ??= require('./DMChannel');
@@ -173,6 +182,7 @@ class Channel extends Base {
     TextChannel ??= require('./TextChannel');
     ThreadChannel ??= require('./ThreadChannel');
     VoiceChannel ??= require('./VoiceChannel');
+    DirectoryChannel ??= require('./DirectoryChannel');
 
     let channel;
     if (!data.guild_id && !guild) {
@@ -218,6 +228,10 @@ class Channel extends Base {
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;
           }
+
+          case ChannelTypes.GUILD_DIRECTORY:
+            channel = new DirectoryChannel(client, data);
+            break;
         }
         if (channel && !allowUnknownGuild) guild.channels?.cache.set(channel.id, channel);
       }
