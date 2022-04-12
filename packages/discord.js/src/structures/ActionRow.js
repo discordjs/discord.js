@@ -17,6 +17,14 @@ class ActionRow extends Component {
      */
     this.components = components.map(c => Components.createComponent(c));
   }
+
+  /**
+   * Returns the API-compatible JSON for this component
+   * @returns {APIActionRowComponent}
+   */
+  toJSON() {
+    return { ...this.data, components: this.components.map(c => c.toJSON()) };
+  }
 }
 
 module.exports = ActionRow;
