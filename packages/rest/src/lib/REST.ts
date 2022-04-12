@@ -215,6 +215,7 @@ export interface REST {
 export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
 
 export class REST extends EventEmitter {
+	public readonly agent: Dispatcher | null = null;
 	public readonly cdn: CDN;
 	public readonly requestManager: RequestManager;
 
@@ -233,6 +234,22 @@ export class REST extends EventEmitter {
 		this.on('removeListener', (name, listener) => {
 			if (name === RESTEvents.Request || name === RESTEvents.Response) this.requestManager.off(name, listener);
 		});
+	}
+
+	/**
+	 * Gets the agent set for this instance
+	 */
+	public getAgent() {
+		return this.requestManager.agent;
+	}
+
+	/**
+	 * Sets the default agent to use for requests performed by this instance
+	 * @param agent Sets the agent to use
+	 */
+	public setAgent(agent: Dispatcher) {
+		this.requestManager.setAgent(agent);
+		return this;
 	}
 
 	/**

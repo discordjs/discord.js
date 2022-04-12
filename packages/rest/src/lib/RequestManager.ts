@@ -161,6 +161,11 @@ export interface RequestManager {
  */
 export class RequestManager extends EventEmitter {
 	/**
+	 * The [Agent](@link https://undici.nodejs.org/#/docs/api/Agent) for all requests
+	 * performed by this manager.
+	 */
+	public agent: Dispatcher | null = null;
+	/**
 	 * The number of requests remaining in the global bucket
 	 */
 	public globalRemaining: number;
@@ -263,6 +268,15 @@ export class RequestManager extends EventEmitter {
 				this.emit(RESTEvents.HandlerSweep, sweptHandlers);
 			}, this.options.handlerSweepInterval).unref();
 		}
+	}
+
+	/**
+	 * Sets the default agent to use for requests performed by this manager
+	 * @param agent The agent to use
+	 */
+	public setAgent(agent: Dispatcher) {
+		this.agent = agent;
+		return this;
 	}
 
 	/**
@@ -430,8 +444,11 @@ export class RequestManager extends EventEmitter {
 			fetchOptions.body = finalBody as Exclude<RequestOptions['body'], undefined>;
 		}
 
+		// Prioritize setting an agent per request, use the agent for this instance otherwise.
 		if (request.dispatcher) {
 			fetchOptions.dispatcher = request.dispatcher;
+		} else if (this.agent) {
+			fetchOptions.dispatcher = this.agent;
 		}
 
 		return { url, fetchOptions };
