@@ -5,9 +5,7 @@ import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
 /**
  * Represents a non-validated select menu component
  */
-export class UnsafeSelectMenuBuilder extends ComponentBuilder<
-	Partial<Omit<APISelectMenuComponent, 'options'>> & { type: ComponentType.SelectMenu }
-> {
+export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> {
 	/**
 	 * The options within this select menu
 	 */

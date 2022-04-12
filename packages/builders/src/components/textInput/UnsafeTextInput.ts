@@ -2,9 +2,7 @@ import { ComponentType, type TextInputStyle, type APITextInputComponent } from '
 import { ComponentBuilder } from '../../index';
 import isEqual from 'fast-deep-equal';
 
-export class UnsafeTextInputBuilder extends ComponentBuilder<
-	Partial<APITextInputComponent> & { type: ComponentType.TextInput }
-> {
+export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	public constructor(data?: APITextInputComponent & { type?: ComponentType.TextInput }) {
 		super({ type: ComponentType.TextInput, ...data });
 	}
