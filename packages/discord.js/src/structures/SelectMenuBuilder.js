@@ -2,10 +2,19 @@
 
 const { SelectMenuBuilder: BuildersSelectMenuComponent, isJSONEncodable } = require('@discordjs/builders');
 const Transformers = require('../util/Transformers');
+const Util = require('../util/Util');
 
 class SelectMenuBuilder extends BuildersSelectMenuComponent {
-  constructor(data) {
-    super(Transformers.toSnakeCase(data));
+  constructor({ options, ...data }) {
+    super(
+      Transformers.toSnakeCase({
+        options: options.map(({ emoji, ...option }) => ({
+          ...option,
+          emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
+        })),
+        ...data,
+      }),
+    );
   }
 
   /**

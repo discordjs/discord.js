@@ -4685,7 +4685,7 @@ export interface MessageActivity {
 
 export interface BaseButtonComponentData extends BaseComponentData {
   disabled?: boolean;
-  emoji?: APIMessageComponentEmoji;
+  emoji?: ComponentEmojiResolvable;
   label?: string;
 }
 
@@ -4819,7 +4819,7 @@ export interface MessageSelectOption {
 export interface SelectMenuComponentOptionData {
   default?: boolean;
   description?: string;
-  emoji?: APIMessageComponentEmoji;
+  emoji?: ComponentEmojiResolvable;
   label: string;
   value: string;
 }

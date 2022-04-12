@@ -5,8 +5,10 @@ const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
 class ButtonBuilder extends BuildersButtonComponent {
-  constructor(data) {
-    super(Transformers.toSnakeCase(data));
+  constructor({ emoji, ...data }) {
+    super(
+      Transformers.toSnakeCase({ ...data, emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji }),
+    );
   }
 
   /**
