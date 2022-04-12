@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
@@ -206,7 +207,7 @@ class ThreadManager extends CachedManager {
     }
     let timestamp;
     let id;
-    const query = new URLSearchParams();
+    const query = makeURLSearchParams({ limit });
     if (typeof before !== 'undefined') {
       if (before instanceof ThreadChannel || /^\d{16,19}$/.test(String(before))) {
         id = this.resolveId(before);
@@ -227,9 +228,6 @@ class ThreadManager extends CachedManager {
       }
     }
 
-    if (limit) {
-      query.set('limit', limit);
-    }
     const raw = await this.client.rest.get(path, { query });
     return this.constructor._mapThreads(raw, this.client, { parent: this.channel, cache });
   }
