@@ -1765,7 +1765,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.11.0
     "@typescript-eslint/parser": ^5.11.0
     babel-plugin-transform-typescript-metadata: ^0.3.2
-    discord-api-types: ^0.31.0
+    discord-api-types: ^0.31.1
     eslint: ^8.9.0
     eslint-config-marine: ^9.3.2
     eslint-config-prettier: ^8.3.0
@@ -4433,6 +4433,13 @@ __metadata:
   version: 0.31.0
   resolution: "discord-api-types@npm:0.31.0"
   checksum: 7ac466df8f3b62ebfa18296ef8cbf7a35ae295b775184b01f4357409cff89aa4e85a67e7fb3363b4a4ff796ff7313865e0266706b3d7908ef2238147a196a806
+  languageName: node
+  linkType: hard
+
+"discord-api-types@npm:^0.31.1":
+  version: 0.31.1
+  resolution: "discord-api-types@npm:0.31.1"
+  checksum: 5a18e512b549b75d55892b0dbc2dc7c46526bee0d001b73d41d144f4653de847c96b9c57342a32479af738f46acd80ee21686dced9fe0184dcac86b669b31f18
   languageName: node
   linkType: hard
 

@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, ChannelType, LocaleString } from 'discord-api-types/v10';
+import { APIApplicationCommandOptionChoice, ChannelType } from 'discord-api-types/v10';
 import {
 	SlashCommandAssertions,
 	SlashCommandBooleanOption,
@@ -431,9 +431,6 @@ describe('Slash Commands', () => {
 			test('GIVEN valid name localizations THEN does not throw error', () => {
 				expect(() => getBuilder().setNameLocalization('en-US', 'foobar')).not.toThrowError();
 				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
-				expect(() =>
-					getBuilder().setNameLocalizations(new Map<LocaleString, string>().set('en-US', 'foobar')),
-				).not.toThrowError();
 			});
 
 			test('GIVEN valid name localizations THEN does not throw error', () => {
@@ -441,7 +438,6 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
 				// @ts-expect-error
 				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
-				expect(() => getBuilder().setNameLocalizations(new Map().set('en-U', 'foobar'))).toThrowError();
 			});
 
 			test('GIVEN valid name localizations THEN valid data is stored', () => {
@@ -449,9 +445,6 @@ describe('Slash Commands', () => {
 				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).name_localizations).toEqual(
 					expectedMultipleLocales,
 				);
-				expect(
-					getBuilder().setNameLocalizations(new Map().set('en-US', 'foobar').set('bg', 'test')).name_localizations,
-				).toEqual(expectedMultipleLocales);
 				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
 				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
 					'en-US': null,
@@ -461,7 +454,6 @@ describe('Slash Commands', () => {
 			test('GIVEN valid description localizations THEN does not throw error', () => {
 				expect(() => getBuilder().setDescriptionLocalization('en-US', 'foobar')).not.toThrowError();
 				expect(() => getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
-				expect(() => getBuilder().setDescriptionLocalizations(new Map().set('en-US', 'foobar'))).not.toThrowError();
 			});
 
 			test('GIVEN valid description localizations THEN does not throw error', () => {
@@ -469,7 +461,6 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setDescriptionLocalization('en-U', 'foobar')).toThrowError();
 				// @ts-expect-error
 				expect(() => getBuilder().setDescriptionLocalizations({ 'en-U': 'foobar' })).toThrowError();
-				expect(() => getBuilder().setDescriptionLocalizations(new Map().set('en-U', 'foobar'))).toThrowError();
 			});
 
 			test('GIVEN valid description localizations THEN valid data is stored', () => {
@@ -478,10 +469,6 @@ describe('Slash Commands', () => {
 				);
 				expect(
 					getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar', bg: 'test' }).description_localizations,
-				).toEqual(expectedMultipleLocales);
-				expect(
-					getBuilder().setDescriptionLocalizations(new Map().set('en-US', 'foobar').set('bg', 'test'))
-						.description_localizations,
 				).toEqual(expectedMultipleLocales);
 				expect(getBuilder().setDescriptionLocalizations(null).description_localizations).toBeNull();
 				expect(getBuilder().setDescriptionLocalization('en-US', null).description_localizations).toEqual({

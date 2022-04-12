@@ -1,5 +1,4 @@
 import type { LocaleString, LocalizationMap } from 'discord-api-types/v10';
-import { flattenLocaleMap } from '../../../util/slashCommandUtil';
 import { validateDescription, validateLocale, validateName } from '../Assertions';
 
 export class SharedNameAndDescription {
@@ -63,14 +62,17 @@ export class SharedNameAndDescription {
 	 *
 	 * @param localizedNames The dictionary of localized descriptions to set
 	 */
-	public setNameLocalizations(localizedNames: Map<LocaleString, string> | LocalizationMap | null) {
+	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {
 			Reflect.set(this, 'name_localizations', null);
 			return this;
 		}
 
 		Reflect.set(this, 'name_localizations', {});
-		flattenLocaleMap(localizedNames).forEach((args) => this.setNameLocalization(...args));
+
+		Object.entries(localizedNames).forEach((args) =>
+			this.setNameLocalization(...(args as [LocaleString, string | null])),
+		);
 		return this;
 	}
 
@@ -101,16 +103,16 @@ export class SharedNameAndDescription {
 	 *
 	 * @param localizedDescriptions The dictionary of localized descriptions to set
 	 */
-	public setDescriptionLocalizations(
-		localizedDescriptions: Map<LocaleString, string> | Partial<Record<LocaleString, string>> | null,
-	) {
+	public setDescriptionLocalizations(localizedDescriptions: LocalizationMap | null) {
 		if (localizedDescriptions === null) {
 			Reflect.set(this, 'description_localizations', null);
 			return this;
 		}
 
 		Reflect.set(this, 'description_localizations', {});
-		flattenLocaleMap(localizedDescriptions).forEach((args) => this.setDescriptionLocalization(...args));
+		Object.entries(localizedDescriptions).forEach((args) =>
+			this.setDescriptionLocalization(...(args as [LocaleString, string | null])),
+		);
 		return this;
 	}
 }
