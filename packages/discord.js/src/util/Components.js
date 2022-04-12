@@ -1,6 +1,6 @@
 'use strict';
 
-// This file contains the typedefs for camel-cased json data
+// This file contains the typedefs for camel-cased JSON data
 const { ComponentType } = require('discord-api-types/v10');
 /**
  * @typedef {Object} BaseComponentData
