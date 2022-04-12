@@ -54,9 +54,12 @@ class GuildBanManager extends CachedManager {
    */
 
   /**
-   * Options used to fetch all bans from a guild.
+   * Options used to fetch multiple bans from a guild.
    * @typedef {Object} FetchBansOptions
-   * @property {boolean} cache Whether or not to cache the fetched bans
+   * @property {number} [limit] The maximum number of bans to return
+   * @property {Snowflake} [before] Consider only bans before this id
+   * @property {Snowflake} [after] Consider only bans after this id
+   * @property {boolean} [cache] Whether to cache the fetched bans
    */
 
   /**
@@ -64,13 +67,13 @@ class GuildBanManager extends CachedManager {
    * @param {UserResolvable|FetchBanOptions|FetchBansOptions} [options] Options for fetching guild ban(s)
    * @returns {Promise<GuildBan|Collection<Snowflake, GuildBan>>}
    * @example
-   * // Fetch all bans from a guild
+   * // Fetch multiple bans from a guild
    * guild.bans.fetch()
    *   .then(console.log)
    *   .catch(console.error);
    * @example
-   * // Fetch all bans from a guild without caching
-   * guild.bans.fetch({ cache: false })
+   * // Fetch a maximum of 5 bans from a guild without caching
+   * guild.bans.fetch({ limit: 5, cache: false })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
@@ -91,14 +94,15 @@ class GuildBanManager extends CachedManager {
    */
   fetch(options) {
     if (!options) return this._fetchMany();
-    const user = this.client.users.resolveId(options);
-    if (user) return this._fetchSingle({ user, cache: true });
-    options.user &&= this.client.users.resolveId(options.user);
-    if (!options.user) {
-      if ('cache' in options) return this._fetchMany(options.cache);
+    const { user, cache, force, limit, before, after } = options;
+    const resolvedUser = this.client.users.resolveId(user ?? options);
+    if (resolvedUser) return this._fetchSingle({ user: resolvedUser, cache, force });
+
+    if (!before && !after && !limit && typeof cache === 'undefined') {
       return Promise.reject(new Error('FETCH_BAN_RESOLVE_ID'));
     }
-    return this._fetchSingle(options);
+
+    return this._fetchMany(options);
   }
 
   async _fetchSingle({ user, cache, force = false }) {
@@ -111,11 +115,13 @@ class GuildBanManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany(cache) {
-    const data = await this.client.api.guilds(this.guild.id).bans.get();
-    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, cache)), new Collection());
-  }
+  async _fetchMany(options = {}) {
+    const data = await this.client.api.guilds(this.guild.id).bans.get({
+      query: options,
+    });
 
+    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, options.cache)), new Collection());
+  }
   /**
    * Options used to ban a user from a guild.
    * @typedef {Object} BanOptions
