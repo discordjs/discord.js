@@ -176,7 +176,6 @@ exports.ApplicationCommandPermissionType = require('discord-api-types/v10').Appl
 exports.AuditLogEvent = require('discord-api-types/v10').AuditLogEvent;
 exports.ButtonStyle = require('discord-api-types/v10').ButtonStyle;
 exports.ChannelType = require('discord-api-types/v10').ChannelType;
-exports.ContextMenuBuilder = require('@discordjs/builders').ContextMenuCommandBuilder;
 exports.ComponentType = require('discord-api-types/v10').ComponentType;
 exports.GatewayCloseCodes = require('discord-api-types/v10').GatewayCloseCodes;
 exports.GatewayDispatchEvents = require('discord-api-types/v10').GatewayDispatchEvents;
@@ -194,25 +193,12 @@ exports.GuildVerificationLevel = require('discord-api-types/v10').GuildVerificat
 exports.InteractionType = require('discord-api-types/v10').InteractionType;
 exports.InteractionResponseType = require('discord-api-types/v10').InteractionResponseType;
 exports.InviteTargetType = require('discord-api-types/v10').InviteTargetType;
-exports.isJSONEncodable = require('@discordjs/builders').isJSONEncodable;
 exports.Locale = require('discord-api-types/v10').Locale;
 exports.MessageType = require('discord-api-types/v10').MessageType;
 exports.MessageFlags = require('discord-api-types/v10').MessageFlags;
 exports.OAuth2Scopes = require('discord-api-types/v10').OAuth2Scopes;
 exports.PermissionFlagsBits = require('discord-api-types/v10').PermissionFlagsBits;
 exports.RESTJSONErrorCodes = require('discord-api-types/v10').RESTJSONErrorCodes;
-exports.SlashCommandAttachmentOption = require('@discordjs/builders').SlashCommandAttachmentOption;
-exports.SlashCommandBuilder = require('@discordjs/builders').SlashCommandBuilder;
-exports.SlashCommandBooleanOption = require('@discordjs/builders').SlashCommandBooleanOption;
-exports.SlashCommandChannelOption = require('@discordjs/builders').SlashCommandChannelOption;
-exports.SlashCommandIntegerOption = require('@discordjs/builders').SlashCommandIntegerOption;
-exports.SlashCommandNumberOption = require('@discordjs/builders').SlashCommandNumberOption;
-exports.SlashCommandMentionableOption = require('@discordjs/builders').SlashCommandMentionableOption;
-exports.SlashCommandRoleOption = require('@discordjs/builders').SlashCommandRoleOption;
-exports.SlashCommandStringOption = require('@discordjs/builders').SlashCommandStringOption;
-exports.SlashCommandSubcommandBuilder = require('@discordjs/builders').SlashCommandSubcommandBuilder;
-exports.SlashCommandSubcommandGroupBuilder = require('@discordjs/builders').SlashCommandSubcommandGroupBuilder;
-exports.SlashCommandUserOption = require('@discordjs/builders').SlashCommandUserOption;
 exports.StageInstancePrivacyLevel = require('discord-api-types/v10').StageInstancePrivacyLevel;
 exports.StickerType = require('discord-api-types/v10').StickerType;
 exports.StickerFormatType = require('discord-api-types/v10').StickerFormatType;
@@ -228,3 +214,9 @@ exports.UnsafeTextInputBuilder = require('@discordjs/builders').UnsafeTextInputB
 exports.DiscordAPIError = require('@discordjs/rest').DiscordAPIError;
 exports.HTTPError = require('@discordjs/rest').HTTPError;
 exports.RateLimitError = require('@discordjs/rest').RateLimitError;
+
+// Note: module.exports is used here since re-assigning `exports` is unsupported
+module.exports = {
+  ...require('@discordjs/builders'),
+  ...exports,
+};
