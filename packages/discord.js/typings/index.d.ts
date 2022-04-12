@@ -1861,16 +1861,10 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
   inRawGuild(): this is ModalMessageModalSubmitInteraction<'raw'>;
 }
 
-export interface ModalSubmitActionRow {
-  type: ComponentType.ActionRow;
-  components: ActionRow<TextInputComponent>[];
-}
-
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   private constructor(client: Client, data: APIModalSubmitInteraction);
   public readonly customId: string;
-  // TODO: fix this type when #7517 is implemented
-  public readonly components: ModalSubmitActionRow[];
+  public readonly components: ActionRow<ModalActionRowComponent>[];
   public readonly fields: ModalSubmitFieldsResolver;
   public deferred: boolean;
   public ephemeral: boolean | null;
