@@ -2549,6 +2549,7 @@ export class Util extends null {
     reason?: string,
   ): Promise<{ id: Snowflake; position: number }[]>;
   public static splitMessage(text: string, options?: SplitOptions): string[];
+  public static resolveAutoArchiveMaxLimit(guild: Guild): number;
 }
 
 export class Components extends null {
