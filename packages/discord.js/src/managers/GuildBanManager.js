@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
@@ -118,7 +119,7 @@ class GuildBanManager extends CachedManager {
 
   async _fetchMany(options = {}) {
     const data = await this.client.rest.get(Routes.guildBans(this.guild.id), {
-      query: new URLSearchParams(options),
+      query: makeURLSearchParams(options),
     });
 
     return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, options.cache)), new Collection());
