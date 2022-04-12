@@ -99,3 +99,8 @@ const ButtonComponent = require('../structures/ButtonComponent');
 const Component = require('../structures/Component');
 const SelectMenuComponent = require('../structures/SelectMenuComponent');
 const TextInputComponent = require('../structures/TextInputComponent');
+
+/**
+ * @external JSONEncodable
+ * @see {@link https://discord.js.org/#/docs/builders/main/typedef/JSONEncodable}
+ */
