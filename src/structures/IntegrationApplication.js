@@ -54,6 +54,7 @@ class IntegrationApplication extends Application {
       /**
        * The application's summary
        * @type {?string}
+       * @deprecated This property is no longer being sent by the API.
        */
       this.summary = data.summary;
     } else {

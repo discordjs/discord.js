@@ -1314,6 +1314,7 @@ export class IntegrationApplication extends Application {
   public termsOfServiceURL: string | null;
   public privacyPolicyURL: string | null;
   public rpcOrigins: string[];
+  /** @deprecated This property is no longer being sent by the API. */
   public summary: string | null;
   public hook: boolean | null;
   public cover: string | null;
