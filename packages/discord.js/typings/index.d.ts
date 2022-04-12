@@ -671,6 +671,7 @@ export interface MappedChannelCategoryTypes {
   [ChannelType.GuildVoice]: VoiceChannel;
   [ChannelType.GuildText]: TextChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
+  [ChannelType.GuildForum]: never; // TODO: Fix when guild forums come out
 }
 
 export type CategoryChannelType = Exclude<
@@ -681,6 +682,7 @@ export type CategoryChannelType = Exclude<
   | ChannelType.GuildNewsThread
   | ChannelType.GuildPrivateThread
   | ChannelType.GuildCategory
+  | ChannelType.GuildDirectory
 >;
 
 export class CategoryChannel extends GuildChannel {

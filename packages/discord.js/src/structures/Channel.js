@@ -179,8 +179,7 @@ class Channel extends Base {
    * @returns {boolean}
    */
   isDirectory() {
-    // TODO: Use dapi-types
-    return this.type === 14;
+    return this.type === ChannelType.GuildDirectory;
   }
 
   /**
@@ -257,8 +256,7 @@ class Channel extends Base {
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;
           }
-          // TODO: Use discord-api-types
-          case 14:
+          case ChannelType.GuildDirectory:
             channel = new DirectoryChannel(client, data);
             break;
         }
