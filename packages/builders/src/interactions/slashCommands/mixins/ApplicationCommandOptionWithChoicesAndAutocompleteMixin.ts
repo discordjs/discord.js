@@ -1,13 +1,11 @@
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import { z } from 'zod';
+import { s } from '@sapphire/shapeshift';
 import { validateChoicesLength } from '../Assertions';
 
-const stringPredicate = z.string().min(1).max(100);
-const numberPredicate = z.number().gt(-Infinity).lt(Infinity);
-const choicesPredicate = z
-	.object({ name: stringPredicate, value: z.union([stringPredicate, numberPredicate]) })
-	.array();
-const booleanPredicate = z.boolean();
+const stringPredicate = s.string.lengthGe(1).lengthLe(100);
+const numberPredicate = s.number.gt(-Infinity).lt(Infinity);
+const choicesPredicate = s.object({ name: stringPredicate, value: s.union(stringPredicate, numberPredicate) }).array;
+const booleanPredicate = s.boolean;
 
 export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends string | number> {
 	public readonly choices?: APIApplicationCommandOptionChoice<T>[];

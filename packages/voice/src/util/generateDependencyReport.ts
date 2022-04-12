@@ -69,6 +69,7 @@ export function generateDependencyReport() {
 
 	// encryption
 	report.push('Encryption Libraries');
+	addVersion('sodium-native');
 	addVersion('sodium');
 	addVersion('libsodium-wrappers');
 	addVersion('tweetnacl');

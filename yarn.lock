@@ -1758,6 +1758,7 @@ __metadata:
     "@babel/preset-env": ^7.16.11
     "@babel/preset-typescript": ^7.16.7
     "@discordjs/ts-docgen": ^0.3.4
+    "@sapphire/shapeshift": ^2.0.0
     "@sindresorhus/is": ^4.4.0
     "@types/jest": ^27.4.0
     "@types/node": ^16.11.24
@@ -1777,7 +1778,6 @@ __metadata:
     tsup: ^5.11.13
     typedoc: ^0.22.11
     typescript: ^4.5.5
-    zod: ^3.11.6
   languageName: unknown
   linkType: soft
 
@@ -2314,6 +2314,13 @@ __metadata:
   dependencies:
     cross-fetch: ^3.1.4
   checksum: 7e0ddbd79c0d84f322c5ba3c50a9d353a599ff39279f698f21433cf6e3cf8eaf6e9a87d805b68b6c1c15c7106b8a47c4a049e00c0e7f715fb76d43a00cbd8595
+  languageName: node
+  linkType: hard
+
+"@sapphire/shapeshift@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@sapphire/shapeshift@npm:2.0.0"
+  checksum: e866aa714d70b0c0d607ed9ad831c039b396cca30611691c59a6e43cb369cf23d69404560105101231f56128022b0030a5201c074193da324ad4345c6d06992c
   languageName: node
   linkType: hard
 
@@ -4422,6 +4429,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"discord-api-types@npm:^0.31.0":
+  version: 0.31.0
+  resolution: "discord-api-types@npm:0.31.0"
+  checksum: 7ac466df8f3b62ebfa18296ef8cbf7a35ae295b775184b01f4357409cff89aa4e85a67e7fb3363b4a4ff796ff7313865e0266706b3d7908ef2238147a196a806
+  languageName: node
+  linkType: hard
+
 "discord.js@workspace:packages/discord.js":
   version: 0.0.0-use.local
   resolution: "discord.js@workspace:packages/discord.js"
@@ -4433,7 +4447,7 @@ __metadata:
     "@sapphire/snowflake": ^3.1.0
     "@types/node": ^16.11.24
     "@types/ws": ^8.2.2
-    discord-api-types: ^0.29.0
+    discord-api-types: ^0.31.0
     dtslint: ^4.2.1
     eslint: ^8.9.0
     eslint-config-prettier: ^8.3.0
@@ -11299,12 +11313,5 @@ dts-critic@latest:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
-  languageName: node
-  linkType: hard
-
-"zod@npm:^3.11.6":
-  version: 3.11.6
-  resolution: "zod@npm:3.11.6"
-  checksum: 044ac416450f179a0c88240f27849d2886c777cebade42df10e5f04125b0265cec82d9bd741a7dcb11796b2ea88b32c86be7d36932a4bed6af57002560359db1
   languageName: node
   linkType: hard

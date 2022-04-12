@@ -8,7 +8,6 @@ let CategoryChannel;
 let DMChannel;
 let NewsChannel;
 let StageChannel;
-let StoreChannel;
 let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
@@ -159,14 +158,6 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is a {@link StoreChannel}.
-   * @returns {boolean}
-   */
-  isStore() {
-    return this.type === ChannelType.GuildStore;
-  }
-
-  /**
    * Indicates whether this channel is a {@link ThreadChannel}.
    * @returns {boolean}
    */
@@ -211,7 +202,6 @@ class Channel extends Base {
     DMChannel ??= require('./DMChannel');
     NewsChannel ??= require('./NewsChannel');
     StageChannel ??= require('./StageChannel');
-    StoreChannel ??= require('./StoreChannel');
     TextChannel ??= require('./TextChannel');
     ThreadChannel ??= require('./ThreadChannel');
     VoiceChannel ??= require('./VoiceChannel');
@@ -243,10 +233,6 @@ class Channel extends Base {
           }
           case ChannelType.GuildNews: {
             channel = new NewsChannel(guild, data, client);
-            break;
-          }
-          case ChannelType.GuildStore: {
-            channel = new StoreChannel(guild, data, client);
             break;
           }
           case ChannelType.GuildStageVoice: {
