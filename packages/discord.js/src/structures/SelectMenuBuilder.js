@@ -9,7 +9,7 @@ const Util = require('../util/Util');
  * @extends {BuildersSelectMenu}
  */
 class SelectMenuBuilder extends BuildersSelectMenu {
-  constructor({ options, ...data }) {
+  constructor({ options, ...data } = {}) {
     super(
       Transformers.toSnakeCase({
         options: options.map(({ emoji, ...option }) => ({

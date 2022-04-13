@@ -9,7 +9,7 @@ const Util = require('../util/Util');
  * @extends {BuildersButton}
  */
 class ButtonBuilder extends BuildersButton {
-  constructor({ emoji, ...data }) {
+  constructor({ emoji, ...data } = {}) {
     super(
       Transformers.toSnakeCase({ ...data, emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji }),
     );
