@@ -2,6 +2,7 @@
 
 const process = require('node:process');
 const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
+const { VideoQualityModes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
 let deprecationEmittedForEditable = false;
@@ -17,9 +18,9 @@ class VoiceChannel extends BaseGuildVoiceChannel {
     if ('video_quality_mode' in data) {
       /**
        * The camera video quality mode of the channel.
-       * @type {?number}
+       * @type {?VideoQualityMode}
        */
-      this.videoQualityMode = data.video_quality_mode;
+      this.videoQualityMode = VideoQualityModes[data.videoQualityMode];
     } else {
       this.videoQualityMode ??= null;
     }

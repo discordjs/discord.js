@@ -2636,7 +2636,7 @@ export class Formatters extends null {
 }
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
-  public videoQualityMode: VideoQualityMode;
+  public videoQualityMode: VideoQualityMode | null;
   /** @deprecated Use manageable instead */
   public readonly editable: boolean;
   public readonly speakable: boolean;
