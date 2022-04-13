@@ -9,7 +9,6 @@ import {
 	hyperlink,
 	inlineCode,
 	italic,
-	memberNicknameMention,
 	quote,
 	roleMention,
 	spoiler,
@@ -119,12 +118,6 @@ describe('Message formatters', () => {
 		describe('userMention', () => {
 			test('GIVEN userId THEN returns "<@[userId]>"', () => {
 				expect(userMention('139836912335716352')).toBe('<@139836912335716352>');
-			});
-		});
-
-		describe('memberNicknameMention', () => {
-			test('GIVEN memberId THEN returns "<@![memberId]>"', () => {
-				expect(memberNicknameMention('139836912335716352')).toBe('<@!139836912335716352>');
 			});
 		});
 

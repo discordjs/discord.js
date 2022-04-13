@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
@@ -712,24 +713,16 @@ class Guild extends AnonymousGuild {
   async fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogsEntry) options.before = options.before.id;
 
-    const query = new URLSearchParams();
-
-    if (options.before) {
-      query.set('before', options.before);
-    }
-
-    if (options.limit) {
-      query.set('limit', options.limit);
-    }
+    const query = makeURLSearchParams({
+      before: options.before,
+      limit: options.limit,
+      action_type: options.type,
+    });
 
     if (options.user) {
       const id = this.client.users.resolveId(options.user);
       if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
       query.set('user_id', id);
-    }
-
-    if (options.type) {
-      query.set('action_type', options.type);
     }
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
@@ -839,7 +832,7 @@ class Guild extends AnonymousGuild {
    * Welcome channel data
    * @typedef {Object} WelcomeChannelData
    * @property {string} description The description to show for this welcome channel
-   * @property {TextChannel|NewsChannel|StoreChannel|Snowflake} channel The channel to link for this welcome channel
+   * @property {GuildTextChannelResolvable} channel The channel to link for this welcome channel
    * @property {EmojiIdentifierResolvable} [emoji] The emoji to display for this welcome channel
    */
 
@@ -1269,7 +1262,7 @@ class Guild extends AnonymousGuild {
    */
   _sortedChannels(channel) {
     const category = channel.type === ChannelType.GuildCategory;
-    const channelTypes = [ChannelType.GuildText, ChannelType.GuildNews, ChannelType.GuildStore];
+    const channelTypes = [ChannelType.GuildText, ChannelType.GuildNews];
     return Util.discordSort(
       this.channels.cache.filter(
         c =>

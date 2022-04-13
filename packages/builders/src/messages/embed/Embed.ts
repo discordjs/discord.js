@@ -5,6 +5,7 @@ import {
 	descriptionPredicate,
 	embedFieldsArrayPredicate,
 	footerTextPredicate,
+	imageURLPredicate,
 	timestampPredicate,
 	titlePredicate,
 	urlPredicate,
@@ -69,12 +70,12 @@ export class EmbedBuilder extends UnsafeEmbedBuilder {
 
 	public override setImage(url: string | null): this {
 		// Data assertions
-		return super.setImage(urlPredicate.parse(url)!);
+		return super.setImage(imageURLPredicate.parse(url)!);
 	}
 
 	public override setThumbnail(url: string | null): this {
 		// Data assertions
-		return super.setThumbnail(urlPredicate.parse(url)!);
+		return super.setThumbnail(imageURLPredicate.parse(url)!);
 	}
 
 	public override setTimestamp(timestamp: number | Date | null = Date.now()): this {

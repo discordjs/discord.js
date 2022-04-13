@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import { s } from '@sapphire/shapeshift';
 import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../..';
 import { customIdValidator } from '../../components/Assertions';
 
-export const titleValidator = z.string().min(1).max(45);
-export const componentsValidator = z.array(z.instanceof(ActionRowBuilder)).min(1);
+export const titleValidator = s.string.lengthGe(1).lengthLe(45);
+export const componentsValidator = s.instance(ActionRowBuilder).array.lengthGe(1);
 
 export function validateRequiredParameters(
 	customId?: string,

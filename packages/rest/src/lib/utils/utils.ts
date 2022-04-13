@@ -2,6 +2,45 @@ import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
 import type { Response } from 'node-fetch';
 import { RequestMethod } from '../RequestManager';
 
+function serializeSearchParam(value: unknown): string | null {
+	switch (typeof value) {
+		case 'string':
+			return value;
+		case 'number':
+		case 'bigint':
+		case 'boolean':
+			return value.toString();
+		case 'object':
+			if (value === null) return null;
+			if (value instanceof Date) {
+				return Number.isNaN(value.getTime()) ? null : value.toISOString();
+			}
+			// eslint-disable-next-line @typescript-eslint/no-base-to-string
+			if (typeof value.toString === 'function' && value.toString !== Object.prototype.toString) return value.toString();
+			return null;
+		default:
+			return null;
+	}
+}
+
+/**
+ * Creates and populates an URLSearchParams instance from an object, stripping
+ * out null and undefined values, while also coercing non-strings to strings.
+ * @param options The options to use
+ * @returns A populated URLSearchParams instance
+ */
+export function makeURLSearchParams(options?: Record<string, unknown>) {
+	const params = new URLSearchParams();
+	if (!options) return params;
+
+	for (const [key, value] of Object.entries(options)) {
+		const serialized = serializeSearchParam(value);
+		if (serialized !== null) params.append(key, serialized);
+	}
+
+	return params;
+}
+
 /**
  * Converts the response to usable data
  * @param res The node-fetch response

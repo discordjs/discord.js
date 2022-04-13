@@ -1,8 +1,9 @@
 'use strict';
 
 const { isJSONEncodable } = require('@discordjs/builders');
-const { InteractionResponseType, MessageFlags, Routes } = require('discord-api-types/v10');
+const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { Error } = require('../../errors');
+const InteractionCollector = require('../InteractionCollector');
 const MessagePayload = require('../MessagePayload');
 
 /**
@@ -248,6 +249,38 @@ class InteractionResponses {
     this.replied = true;
   }
 
+  /**
+   * An object containing the same properties as {@link CollectorOptions}, but a few less:
+   * @typedef {Object} AwaitModalSubmitOptions
+   * @property {CollectorFilter} [filter] The filter applied to this collector
+   * @property {number} time Time to wait for an interaction before rejecting
+   */
+
+  /**
+   * Collects a single modal submit interaction that passes the filter.
+   * The Promise will reject if the time expires.
+   * @param {AwaitModalSubmitOptions} options Options to pass to the internal collector
+   * @returns {Promise<ModalSubmitInteraction>}
+   * @example
+   * // Collect a modal submit interaction
+   * const filter = (interaction) => interaction.customId === 'modal';
+   * interaction.awaitModalSubmit({ filter, time: 15_000 })
+   *   .then(interaction => console.log(`${interaction.customId} was submitted!`))
+   *   .catch(console.error);
+   */
+  awaitModalSubmit(options) {
+    if (typeof options.time !== 'number') throw new Error('INVALID_TYPE', 'time', 'number');
+    const _options = { ...options, max: 1, interactionType: InteractionType.ModalSubmit };
+    return new Promise((resolve, reject) => {
+      const collector = new InteractionCollector(this.client, _options);
+      collector.once('end', (interactions, reason) => {
+        const interaction = interactions.first();
+        if (interaction) resolve(interaction);
+        else reject(new Error('INTERACTION_COLLECTOR_ERROR', reason));
+      });
+    });
+  }
+
   static applyToClass(structure, ignore = []) {
     const props = [
       'deferReply',
@@ -259,6 +292,7 @@ class InteractionResponses {
       'deferUpdate',
       'update',
       'showModal',
+      'awaitModalSubmit',
     ];
 
     for (const prop of props) {
