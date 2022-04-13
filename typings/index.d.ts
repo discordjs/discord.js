@@ -2653,6 +2653,7 @@ export class VoiceRegion {
   public id: string;
   public name: string;
   public optimal: boolean;
+  /** @deprecated This property is no longer being sent by the API. */
   public vip: boolean;
   public toJSON(): unknown;
 }
