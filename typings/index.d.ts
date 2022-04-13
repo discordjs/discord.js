@@ -209,6 +209,7 @@ export abstract class Application extends Base {
   public id: Snowflake;
   public name: string | null;
   public coverURL(options?: StaticImageURLOptions): string | null;
+  /** @deprecated This method is deprecated as it is unsupported and will be removed in the next major version. */
   public fetchAssets(): Promise<ApplicationAsset[]>;
   public iconURL(options?: StaticImageURLOptions): string | null;
   public toJSON(): unknown;
