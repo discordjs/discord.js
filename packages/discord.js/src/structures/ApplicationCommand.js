@@ -213,7 +213,7 @@ class ApplicationCommand extends Base {
    */
 
   /**
-   * @param {ApplicationCommandOptionChoiceData} ApplicationCommandOptionChoice
+   * @typedef {ApplicationCommandOptionChoiceData} ApplicationCommandOptionChoice
    * @property {string} [nameLocalized] The localized name for this choice
    */
 
@@ -456,15 +456,6 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
-   */
-
-  /**
-   * A choice for an application command option.
-   * @typedef {Object} ApplicationCommandOptionChoice
-   * @property {string} name The name of the choice
-   * @property {string} [nameLocalized] The localized name for this choice
-   * @property {Object<string, string>} [nameLocalizations] The localized names for this choice
-   * @property {string|number} value The value of the choice
    */
 
   /**
