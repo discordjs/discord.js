@@ -12,7 +12,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
   constructor({ options, ...data } = {}) {
     super(
       Transformers.toSnakeCase({
-        options: options.map(({ emoji, ...option }) => ({
+        options: options?.map(({ emoji, ...option }) => ({
           ...option,
           emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
         })),
