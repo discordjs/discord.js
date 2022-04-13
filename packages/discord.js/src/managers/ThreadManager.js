@@ -18,7 +18,7 @@ class ThreadManager extends CachedManager {
 
     /**
      * The channel this Manager belongs to
-     * @type {NewsChannel|TextChannel}
+     * @type {NewsChannel|ForumChannel|TextChannel}
      */
     this.channel = channel;
   }

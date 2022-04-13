@@ -10,6 +10,7 @@ let NewsChannel;
 let StageChannel;
 let TextChannel;
 let ThreadChannel;
+let ForumChannel;
 let VoiceChannel;
 
 /**
@@ -166,6 +167,14 @@ class Channel extends Base {
   }
 
   /**
+   * Indicates whether this channel is a {@link ForumChannel}.
+   * @returns {boolean}
+   */
+  isForum() {
+    return this.type === ChannelType.GuildForum;
+  }
+
+  /**
    * Indicates whether this channel is a {@link StageChannel}.
    * @returns {boolean}
    */
@@ -204,6 +213,7 @@ class Channel extends Base {
     StageChannel ??= require('./StageChannel');
     TextChannel ??= require('./TextChannel');
     ThreadChannel ??= require('./ThreadChannel');
+    ForumChannel ??= require('./ForumChannel');
     VoiceChannel ??= require('./VoiceChannel');
 
     let channel;
@@ -244,6 +254,10 @@ class Channel extends Base {
           case ChannelType.GuildPrivateThread: {
             channel = new ThreadChannel(guild, data, client, fromInteraction);
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
+            break;
+          }
+          case ChannelType.GuildForum: {
+            channel = new ForumChannel(guild, data, client);
             break;
           }
         }

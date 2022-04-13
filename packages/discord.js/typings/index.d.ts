@@ -707,6 +707,7 @@ export abstract class Channel extends Base {
   public isCategory(): this is CategoryChannel;
   public isNews(): this is NewsChannel;
   public isThread(): this is ThreadChannel;
+  public isForum(): this is ForumChannel;
   public isStage(): this is StageChannel;
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
@@ -2450,6 +2451,11 @@ export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString>
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
+export class ForumChannel extends GuildChannel {
+  public threads: ThreadManager<AllowedThreadTypeForTextChannel>;
+  public type: ChannelType.ForumChannel;
+}
+
 export class Typing extends Base {
   private constructor(channel: TextBasedChannel, user: PartialUser, data?: RawTypingData);
   public channel: TextBasedChannel;
@@ -3281,7 +3287,7 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
 }
 
 export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
-  private constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<RawThreadChannelData>);
+  private constructor(channel: TextChannel | NewsChannel | ForumChannel, iterable?: Iterable<RawThreadChannelData>);
   public channel: TextChannel | NewsChannel;
   public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
   public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
