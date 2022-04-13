@@ -2256,8 +2256,10 @@ export class StageInstance extends Base {
   public topic: string;
   public privacyLevel: PrivacyLevel;
   public discoverableDisabled: boolean | null;
+  public guildScheduledEventId?: Snowflake;
   public readonly channel: StageChannel | null;
   public readonly guild: Guild | null;
+  public get guildScheduledEvent(): GuildScheduledEvent | null;
   public edit(options: StageInstanceEditOptions): Promise<StageInstance>;
   public delete(): Promise<StageInstance>;
   public setTopic(topic: string): Promise<StageInstance>;
