@@ -4,7 +4,7 @@ const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const ThreadManager = require('./ThreadManager');
+const GuildTextThreadManager = require('./GuildTextThreadManager');
 const { Error, TypeError, ErrorCodes } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
@@ -418,7 +418,7 @@ class GuildChannelManager extends CachedManager {
    */
   async fetchActiveThreads(cache = true) {
     const raw = await this.client.rest.get(Routes.guildActiveThreads(this.guild.id));
-    return ThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
+    return GuildTextThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
   }
 
   /**
