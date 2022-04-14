@@ -1,6 +1,7 @@
 'use strict';
 
 const { SelectMenuOptionBuilder: BuildersSelectMenuOption } = require('@discordjs/builders');
+const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
 /**
@@ -8,6 +9,14 @@ const Util = require('../util/Util');
  * @extends {BuildersSelectMenuOption}
  */
 class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
+  constructor({ emoji, ...data } = {}) {
+    super(
+      Transformers.toSnakeCase({
+        ...data,
+        emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
+      }),
+    );
+  }
   /**
    * Sets the emoji to display on this option
    * @param {ComponentEmojiResolvable} emoji The emoji to display on this option

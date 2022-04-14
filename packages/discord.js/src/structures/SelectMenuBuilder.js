@@ -5,25 +5,53 @@ const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
 /**
- * Represents a select menu builder.
+ * Class used to build select menu components to be sent through the API
  * @extends {BuildersSelectMenu}
  */
 class SelectMenuBuilder extends BuildersSelectMenu {
   constructor({ options, ...data } = {}) {
     super(
       Transformers.toSnakeCase({
+        ...data,
         options: options?.map(({ emoji, ...option }) => ({
           ...option,
           emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
         })),
-        ...data,
       }),
     );
   }
 
   /**
-   * Creates a new select menu builder from JSON data
-   * @param {JSONEncodable<APISelectMenuComponent>|APISelectMenuComponent} other The other data
+   * Adds options to this select menu
+   * @param {APISelectMenuOption[]} options The options to add to this select menu
+   * @returns {SelectMenuBuilder}
+   */
+  addOptions(...options) {
+    return super.addOptions(
+      options.map(({ emoji, ...option }) => ({
+        ...option,
+        emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
+      })),
+    );
+  }
+
+  /**
+   * Sets the options on this select menu
+   * @param {APISelectMenuOption[]} options The options to set on this select menu
+   * @returns {SelectMenuBuilder}
+   */
+  setOptions(...options) {
+    return super.setOptions(
+      options.map(({ emoji, ...option }) => ({
+        ...option,
+        emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
+      })),
+    );
+  }
+
+  /**
+   * Creates a new select menu builder from json data
+   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
    * @returns {SelectMenuBuilder}
    */
   static from(other) {
