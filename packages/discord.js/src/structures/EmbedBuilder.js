@@ -4,9 +4,22 @@ const { EmbedBuilder: BuildersEmbed, isJSONEncodable } = require('@discordjs/bui
 const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
+/**
+ * Class used to build embed structures to be sent through the API
+ * @extends {BuildersEmbed}
+ */
 class EmbedBuilder extends BuildersEmbed {
   constructor(data) {
     super(Transformers.toSnakeCase(data));
+  }
+
+  /**
+   * Sets the color of this embed
+   * @param {?ColorResolvable} color The color of the embed
+   * @returns {EmbedBuilder}
+   */
+  setColor(color) {
+    return super.setColor(color && Util.resolveColor(color));
   }
 
   /**
@@ -19,18 +32,6 @@ class EmbedBuilder extends BuildersEmbed {
       return new this(other.toJSON());
     }
     return new this(other);
-  }
-
-  /**
-   * Sets the color of this embed
-   * @param {?ColorResolvable} color The color of the embed
-   * @returns {Embed}
-   */
-  setColor(color) {
-    if (color === null) {
-      return super.setColor(null);
-    }
-    return super.setColor(Util.resolveColor(color));
   }
 }
 

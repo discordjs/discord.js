@@ -3,6 +3,10 @@
 const { TextInputBuilder: BuildersTextInputComponent, isJSONEncodable } = require('@discordjs/builders');
 const Transformers = require('../util/Transformers');
 
+/**
+ * Class used to build text input components to be sent through the API
+ * @extends {BuildersTextInput}
+ */
 class TextInputBuilder extends BuildersTextInputComponent {
   constructor(data) {
     super(Transformers.toSnakeCase(data));

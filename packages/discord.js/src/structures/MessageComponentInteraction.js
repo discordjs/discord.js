@@ -109,26 +109,31 @@ module.exports = MessageComponentInteraction;
  */
 
 /**
- * @external ButtonComponent
- * @see {@link https://discord.js.org/#/docs/builders/main/class/ButtonComponent}
+ * @external BuildersButtonComponent
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/ButtonComponentBuilder}
  */
 
 /**
- * @external SelectMenuComponent
- * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuComponent}
+ * @external BuildersSelectMenu
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuComponentBuilder}
  */
 
 /**
- * @external SelectMenuOption
- * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuComponent}
+ * @external BuildersSelectMenuOption
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuComponentBuilder}
  */
 
 /**
- * @external ActionRow
- * @see {@link https://discord.js.org/#/docs/builders/main/class/ActionRow}
+ * @external BuildersTextInput
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/TextInputBuilder}
  */
 
 /**
- * @external Embed
- * @see {@link https://discord.js.org/#/docs/builders/main/class/Embed}
+ * @external BuildersActionRow
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/ActionRowBuilder}
+ */
+
+/**
+ * @external BuildersEmbed
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/EmbedBuilder}
  */

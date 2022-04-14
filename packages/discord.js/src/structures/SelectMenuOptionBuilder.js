@@ -5,6 +5,7 @@ const Util = require('../util/Util');
 
 /**
  * Represents a select menu option
+ * @extends {BuildersSelectMenuOption}
  */
 class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
   /**

@@ -4,7 +4,7 @@ const Component = require('./Component');
 const Components = require('../util/Components');
 
 /**
- * Represents an action row
+ * Represents an action row received from the API
  * @extends {Component}
  */
 class ActionRow extends Component {

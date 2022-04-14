@@ -4,6 +4,10 @@ const { SelectMenuBuilder: BuildersSelectMenuComponent, isJSONEncodable } = requ
 const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
+/**
+ * Class used to build select menu components to be sent through the API
+ * @extends {BuildersSelectMenu}
+ */
 class SelectMenuBuilder extends BuildersSelectMenuComponent {
   constructor({ options, ...data }) {
     super(

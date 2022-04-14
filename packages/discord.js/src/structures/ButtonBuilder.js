@@ -4,6 +4,10 @@ const { ButtonBuilder: BuildersButtonComponent, isJSONEncodable } = require('@di
 const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
+/**
+ * Class used to build button components to be sent through the API
+ * @extends {BuildersButtonComponent}
+ */
 class ButtonBuilder extends BuildersButtonComponent {
   constructor({ emoji, ...data }) {
     super(
@@ -14,7 +18,7 @@ class ButtonBuilder extends BuildersButtonComponent {
   /**
    * Sets the emoji to display on this button
    * @param {string|APIMessageComponentEmoji} emoji The emoji to display on this button
-   * @returns {ButtonComponent}
+   * @returns {ButtonBuilder}
    */
   setEmoji(emoji) {
     if (typeof emoji === 'string') {
@@ -25,7 +29,7 @@ class ButtonBuilder extends BuildersButtonComponent {
 
   /**
    * Creates a new button builder from json data
-   * @param {JSONEncodable<APIButtonComponent> | APIButtonComponent} other The other data
+   * @param {JSONEncodable<APIButtonComponent>|APIButtonComponent} other The other data
    * @returns {ButtonBuilder}
    */
   static from(other) {

@@ -2,6 +2,9 @@
 
 const isEqual = require('fast-deep-equal');
 
+/**
+ * Represents an embed received from the API
+ */
 class Embed {
   /**
    * Creates a new embed object
