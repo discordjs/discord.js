@@ -89,6 +89,7 @@ import {
   GuildScheduledEventEntityTypes,
   GuildScheduledEventStatuses,
   GuildScheduledEventPrivacyLevels,
+  VideoQualityModes,
 } from './enums';
 import {
   RawActivityData,
@@ -2635,12 +2636,14 @@ export class Formatters extends null {
 }
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
+  public videoQualityMode: VideoQualityMode | null;
   /** @deprecated Use manageable instead */
   public readonly editable: boolean;
   public readonly speakable: boolean;
   public type: 'GUILD_VOICE';
   public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
   public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
+  public setVideoQualityMode(videoQualityMode: VideoQualityMode | number, reason?: string): Promise<VoiceChannel>;
 }
 
 export class VoiceRegion {
@@ -2992,6 +2995,7 @@ export const Constants: {
   GuildScheduledEventEntityTypes: EnumHolder<typeof GuildScheduledEventEntityTypes>;
   GuildScheduledEventStatuses: EnumHolder<typeof GuildScheduledEventStatuses>;
   GuildScheduledEventPrivacyLevels: EnumHolder<typeof GuildScheduledEventPrivacyLevels>;
+  VideoQualityModes: EnumHolder<typeof VideoQualityModes>;
 };
 
 export const version: string;
@@ -4048,6 +4052,7 @@ export interface ChannelData {
   permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   rtcRegion?: string | null;
+  videoQualityMode?: VideoQualityMode | null;
 }
 
 export interface ChannelLogsQueryOptions {
@@ -5553,6 +5558,7 @@ export interface PartialChannelData {
   bitrate?: number;
   userLimit?: number;
   rtcRegion?: string | null;
+  videoQualityMode?: VideoQualityMode;
   permissionOverwrites?: PartialOverwriteData[];
   rateLimitPerUser?: number;
 }
@@ -5889,6 +5895,8 @@ export interface Vanity {
 }
 
 export type VerificationLevel = keyof typeof VerificationLevels;
+
+export type VideoQualityMode = keyof typeof VideoQualityModes;
 
 export type VoiceBasedChannelTypes = VoiceBasedChannel['type'];
 

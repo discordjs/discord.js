@@ -1203,6 +1203,15 @@ exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', '
  * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-types}
  */
 exports.GuildScheduledEventEntityTypes = createEnum([null, 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
+
+/**
+ * The camera video quality mode of a {@link VoiceChannel}:
+ * * AUTO
+ * * FULL
+ * @typedef {string} VideoQualityMode
+ * @see {@link https://discord.com/developers/docs/resources/channel#channel-object-video-quality-modes}
+ */
+exports.VideoQualityModes = createEnum([null, 'AUTO', 'FULL']);
 /* eslint-enable max-len */
 
 exports._cleanupSymbol = Symbol('djsCleanup');
@@ -1256,6 +1265,7 @@ function createEnum(keys) {
  * @property {StickerFormatType} StickerFormatTypes The value set for a sticker's format type.
  * @property {StickerType} StickerTypes The value set for a sticker's type.
  * @property {VerificationLevel} VerificationLevels The value set for the verification levels for a guild.
+ * @property {VideoQualityMode} VideoQualityModes The camera video quality mode for a {@link VoiceChannel}.
  * @property {WebhookType} WebhookTypes The value set for a webhook's type.
  * @property {WSEventType} WSEvents The type of a WebSocket message event.
  */

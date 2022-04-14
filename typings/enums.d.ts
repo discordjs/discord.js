@@ -205,6 +205,11 @@ export const enum VerificationLevels {
   VERY_HIGH = 4,
 }
 
+export const enum VideoQualityModes {
+  AUTO = 1,
+  FULL = 2,
+}
+
 export const enum WebhookTypes {
   Incoming = 1,
   'Channel Follower' = 2,

@@ -2,6 +2,7 @@
 
 const process = require('node:process');
 const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
+const { VideoQualityModes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
 let deprecationEmittedForEditable = false;
@@ -11,6 +12,20 @@ let deprecationEmittedForEditable = false;
  * @extends {BaseGuildVoiceChannel}
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
+  _patch(data) {
+    super._patch(data);
+
+    if ('video_quality_mode' in data) {
+      /**
+       * The camera video quality mode of the channel.
+       * @type {?VideoQualityMode}
+       */
+      this.videoQualityMode = VideoQualityModes[data.videoQualityMode];
+    } else {
+      this.videoQualityMode ??= null;
+    }
+  }
+
   /**
    * Whether the channel is editable by the client user
    * @type {boolean}
@@ -85,6 +100,16 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    */
   setUserLimit(userLimit, reason) {
     return this.edit({ userLimit }, reason);
+  }
+
+  /**
+   * Sets the camera video quality mode of the channel.
+   * @param {VideoQualityMode|number} videoQualityMode The new camera video quality mode.
+   * @param {string} [reason] Reason for changing the camera video quality mode.
+   * @returns {Promise<VoiceChannel>}
+   */
+  setVideoQualityMode(videoQualityMode, reason) {
+    return this.edit({ videoQualityMode }, reason);
   }
 
   /**

@@ -9,7 +9,7 @@ const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
-const { ThreadChannelTypes, ChannelTypes } = require('../util/Constants');
+const { ThreadChannelTypes, ChannelTypes, VideoQualityModes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Util = require('../util/Util');
 
@@ -222,6 +222,7 @@ class GuildChannelManager extends CachedManager {
    * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
+   * @property {?VideoQualityMode|number} [videoQualityMode] The camera video quality mode of the channel
    */
 
   /**
@@ -270,6 +271,8 @@ class GuildChannelManager extends CachedManager {
         bitrate: data.bitrate ?? channel.bitrate,
         user_limit: data.userLimit ?? channel.userLimit,
         rtc_region: data.rtcRegion ?? channel.rtcRegion,
+        video_quality_mode:
+          typeof data.videoQualityMode === 'string' ? VideoQualityModes[data.videoQualityMode] : data.videoQualityMode,
         parent_id: parent,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
