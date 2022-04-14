@@ -4262,7 +4262,10 @@ export interface FetchBanOptions extends BaseFetchOptions {
 }
 
 export interface FetchBansOptions {
-  cache: boolean;
+  limit?: number;
+  before?: Snowflake;
+  after?: Snowflake;
+  cache?: boolean;
 }
 
 export interface FetchChannelOptions extends BaseFetchOptions {
