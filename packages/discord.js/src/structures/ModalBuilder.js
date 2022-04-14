@@ -8,7 +8,7 @@ const Transformers = require('../util/Transformers');
  * @extends {BuildersModal}
  */
 class ModalBuilder extends BuildersModal {
-  constructor({ components, ...data }) {
+  constructor({ components, ...data } = {}) {
     super({
       ...Transformers.toSnakeCase(data),
       components: components?.map(c => (c instanceof ComponentBuilder ? c : Transformers.toSnakeCase(c))),
