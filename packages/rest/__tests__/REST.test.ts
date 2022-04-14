@@ -1,8 +1,8 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Routes, Snowflake } from 'discord-api-types/v10';
-import { Dispatcher, File, FormData, MockAgent, setGlobalDispatcher } from 'undici';
+import { File, FormData, MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
-import { APIRequest, REST } from '../src';
+import { REST } from '../src';
 import { genPath } from './util';
 
 const newSnowflake: Snowflake = DiscordSnowflake.generate().toString();
@@ -296,58 +296,6 @@ test('Old Message Delete Edge-Case: Old message', async () => {
 		}));
 
 	expect(await api.delete(Routes.channelMessage('339942739275677727', newSnowflake))).toStrictEqual({ test: true });
-});
-
-test('Request and Response Events', async () => {
-	mockPool
-		.intercept({
-			path: genPath('/request'),
-			method: 'GET',
-		})
-		.reply(() => ({
-			data: { test: true },
-			statusCode: 200,
-			responseOptions,
-		}))
-		.times(2);
-
-	const requestListener = jest.fn();
-	const responseListener = jest.fn();
-
-	api.on('request', requestListener);
-	api.on('response', responseListener);
-
-	await api.get('/request');
-
-	expect(requestListener).toHaveBeenCalledTimes(1);
-	expect(responseListener).toHaveBeenCalledTimes(1);
-	expect(requestListener).toHaveBeenLastCalledWith<[APIRequest]>(
-		expect.objectContaining({
-			method: 'GET',
-			path: '/request',
-			route: '/request',
-			data: { files: undefined, body: undefined, auth: true },
-			retries: 0,
-		}) as APIRequest,
-	);
-	expect(responseListener).toHaveBeenLastCalledWith<[APIRequest, Dispatcher.ResponseData]>(
-		expect.objectContaining({
-			method: 'GET',
-			path: '/request',
-			route: '/request',
-			data: { files: undefined, body: undefined, auth: true },
-			retries: 0,
-		}) as APIRequest,
-		expect.objectContaining({ statusCode: 200 }) as Dispatcher.ResponseData,
-	);
-
-	api.off('request', requestListener);
-	api.off('response', responseListener);
-
-	await api.get('/request');
-
-	expect(requestListener).toHaveBeenCalledTimes(1);
-	expect(responseListener).toHaveBeenCalledTimes(1);
 });
 
 test.skip('postFile', async () => {

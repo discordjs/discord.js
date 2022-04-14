@@ -287,17 +287,6 @@ export class SequentialHandler implements IHandler {
 
 		const method = options.method ?? 'get';
 
-		if (this.manager.listenerCount(RESTEvents.Request)) {
-			this.manager.emit(RESTEvents.Request, {
-				method,
-				path: routeId.original,
-				route: routeId.bucketRoute,
-				options,
-				data: requestData,
-				retries,
-			});
-		}
-
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), this.manager.options.timeout).unref();
 		let res: Dispatcher.ResponseData;
@@ -313,21 +302,6 @@ export class SequentialHandler implements IHandler {
 			throw error;
 		} finally {
 			clearTimeout(timeout);
-		}
-
-		if (this.manager.listenerCount(RESTEvents.Response)) {
-			this.manager.emit(
-				RESTEvents.Response,
-				{
-					method,
-					path: routeId.original,
-					route: routeId.bucketRoute,
-					options,
-					data: requestData,
-					retries,
-				},
-				{ ...res },
-			);
 		}
 
 		const status = res.statusCode;

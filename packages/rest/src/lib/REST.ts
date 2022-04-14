@@ -1,13 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { CDN } from './CDN';
-import {
-	HandlerRequestData,
-	InternalRequest,
-	RequestData,
-	RequestManager,
-	RequestMethod,
-	RouteLike,
-} from './RequestManager';
+import { InternalRequest, RequestData, RequestManager, RequestMethod, RouteLike } from './RequestManager';
 import { DefaultRestOptions, RESTEvents } from './utils/constants';
 import type { request, Dispatcher } from 'undici';
 import type { HashData } from './RequestManager';
@@ -145,33 +138,6 @@ export interface RateLimitData {
  */
 export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => boolean | Promise<boolean>;
 
-export interface APIRequest {
-	/**
-	 * The HTTP method used in this request
-	 */
-	method: string;
-	/**
-	 * The full path used to make the request
-	 */
-	path: RouteLike;
-	/**
-	 * The API route identifying the ratelimit for this request
-	 */
-	route: string;
-	/**
-	 * Additional HTTP options for this request
-	 */
-	options: RequestOptions;
-	/**
-	 * The data that was used to form the body of this request
-	 */
-	data: HandlerRequestData;
-	/**
-	 * The number of times this request has been attempted
-	 */
-	retries: number;
-}
-
 export interface InvalidRequestWarningData {
 	/**
 	 * Number of invalid requests that have been made in the window
@@ -187,8 +153,6 @@ export interface RestEvents {
 	invalidRequestWarning: [invalidRequestInfo: InvalidRequestWarningData];
 	restDebug: [info: string];
 	rateLimited: [rateLimitInfo: RateLimitData];
-	request: [request: APIRequest];
-	response: [request: APIRequest, response: Dispatcher.ResponseData];
 	newListener: [name: string, listener: (...args: any) => void];
 	removeListener: [name: string, listener: (...args: any) => void];
 	hashSweep: [sweptHashes: Collection<string, HashData>];
@@ -227,13 +191,6 @@ export class REST extends EventEmitter {
 			.on(RESTEvents.RateLimited, this.emit.bind(this, RESTEvents.RateLimited))
 			.on(RESTEvents.InvalidRequestWarning, this.emit.bind(this, RESTEvents.InvalidRequestWarning))
 			.on(RESTEvents.HashSweep, this.emit.bind(this, RESTEvents.HashSweep));
-
-		this.on('newListener', (name, listener) => {
-			if (name === RESTEvents.Request || name === RESTEvents.Response) this.requestManager.on(name, listener);
-		});
-		this.on('removeListener', (name, listener) => {
-			if (name === RESTEvents.Request || name === RESTEvents.Response) this.requestManager.off(name, listener);
-		});
 	}
 
 	/**
