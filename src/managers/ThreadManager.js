@@ -5,6 +5,7 @@ const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
 const { ChannelTypes } = require('../util/Constants');
+const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.
@@ -120,14 +121,8 @@ class ThreadManager extends CachedManager {
     } else if (this.channel.type !== 'GUILD_NEWS') {
       resolvedType = typeof type === 'string' ? ChannelTypes[type] : type ?? resolvedType;
     }
-    if (autoArchiveDuration === 'MAX') {
-      autoArchiveDuration = 1440;
-      if (this.channel.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
-        autoArchiveDuration = 10080;
-      } else if (this.channel.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
-        autoArchiveDuration = 4320;
-      }
-    }
+
+    if (autoArchiveDuration === 'MAX') autoArchiveDuration = resolveAutoArchiveMaxLimit(this.channel.guild);
 
     const data = await path.threads.post({
       data: {
