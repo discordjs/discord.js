@@ -165,15 +165,6 @@ export function userMention<C extends Snowflake>(userId: C): `<@${C}>` {
 }
 
 /**
- * Formats a user ID into a member-nickname mention
- *
- * @param memberId The user ID to format
- */
-export function memberNicknameMention<C extends Snowflake>(memberId: C): `<@!${C}>` {
-	return `<@!${memberId}>`;
-}
-
-/**
  * Formats a channel ID into a channel mention
  *
  * @param channelId The channel ID to format

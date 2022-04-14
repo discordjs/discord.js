@@ -428,7 +428,7 @@ class GuildMember extends Base {
    * console.log(`Hello from ${member}!`);
    */
   toString() {
-    return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
+    return this.user.toString();
   }
 
   toJSON() {

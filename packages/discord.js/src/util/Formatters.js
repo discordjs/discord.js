@@ -10,7 +10,6 @@ const {
   hyperlink,
   inlineCode,
   italic,
-  memberNicknameMention,
   quote,
   roleMention,
   spoiler,
@@ -110,15 +109,6 @@ class Formatters extends null {
    * @returns {string}
    */
   static italic = italic;
-
-  /**
-   * Formats a user id into a member-nickname mention.
-   * @method memberNicknameMention
-   * @memberof Formatters
-   * @param {string} memberId The user id to format.
-   * @returns {string}
-   */
-  static memberNicknameMention = memberNicknameMention;
 
   /**
    * Formats the content into a quote. This needs to be at the start of the line for Discord to format it.

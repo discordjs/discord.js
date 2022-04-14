@@ -8,7 +8,7 @@ import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder 
 const namePredicate = s.string
 	.lengthGe(1)
 	.lengthLe(32)
-	.regex(/^[\P{Lu}\p{N}_-]+$/u);
+	.regex(/^[\P{Lu}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u);
 
 export function validateName(name: unknown): asserts name is string {
 	namePredicate.parse(name);
