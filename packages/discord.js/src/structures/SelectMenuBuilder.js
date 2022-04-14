@@ -1,10 +1,14 @@
 'use strict';
 
-const { SelectMenuBuilder: BuildersSelectMenuComponent, isJSONEncodable } = require('@discordjs/builders');
+const { SelectMenuBuilder: BuildersSelectMenu, isJSONEncodable } = require('@discordjs/builders');
 const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
-class SelectMenuBuilder extends BuildersSelectMenuComponent {
+/**
+ * Represents a select menu builder.
+ * @extends {BuildersSelectMenu}
+ */
+class SelectMenuBuilder extends BuildersSelectMenu {
   constructor({ options, ...data }) {
     super(
       Transformers.toSnakeCase({
@@ -18,8 +22,8 @@ class SelectMenuBuilder extends BuildersSelectMenuComponent {
   }
 
   /**
-   * Creates a new select menu builder from json data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * Creates a new select menu builder from JSON data
+   * @param {JSONEncodable<APISelectMenuComponent>|APISelectMenuComponent} other The other data
    * @returns {SelectMenuBuilder}
    */
   static from(other) {
@@ -31,3 +35,8 @@ class SelectMenuBuilder extends BuildersSelectMenuComponent {
 }
 
 module.exports = SelectMenuBuilder;
+
+/**
+ * @external BuildersSelectMenu
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuBuilder}
+ */

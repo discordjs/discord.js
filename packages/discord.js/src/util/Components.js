@@ -1,15 +1,17 @@
 'use strict';
 
-// This file contains the typedefs for camel-cased json data
+// This file contains the typedefs for camel-cased JSON data
 const { ComponentType } = require('discord-api-types/v10');
 /**
  * @typedef {Object} BaseComponentData
  * @property {ComponentType} type The type of component
  */
+
 /**
  * @typedef {BaseComponentData} ActionRowData
  * @property {ComponentData[]} components The components in this action row
  */
+
 /**
  * @typedef {BaseComponentData} ButtonComponentData
  * @property {ButtonStyle} style The style of the button
@@ -19,6 +21,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @property {?string} customId The custom id of the button
  * @property {?string} url The URL of the button
  */
+
 /**
  * @typedef {object} SelectMenuComponentOptionData
  * @property {string} label The label of the option
@@ -27,6 +30,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @property {?APIComponentEmoji} emoji The emoji on the option
  * @property {?boolean} default Whether this option is selected by default
  */
+
 /**
  * @typedef {BaseComponentData} SelectMenuComponentData
  * @property {string} customId The custom id of the select menu
@@ -39,7 +43,7 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData} MessageComponentData
- /
+ */
 
 /**
  * @typedef {BaseComponentData} TextInputComponentData
@@ -95,3 +99,8 @@ const ButtonComponent = require('../structures/ButtonComponent');
 const Component = require('../structures/Component');
 const SelectMenuComponent = require('../structures/SelectMenuComponent');
 const TextInputComponent = require('../structures/TextInputComponent');
+
+/**
+ * @external JSONEncodable
+ * @see {@link https://discord.js.org/#/docs/builders/main/typedef/JSONEncodable}
+ */

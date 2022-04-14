@@ -27,6 +27,7 @@ import {
   underscore,
   userMention,
   ModalActionRowComponentBuilder,
+  ModalBuilder as BuildersModal,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
@@ -243,6 +244,11 @@ export class ActionRowBuilder<
           type?: ComponentType.ActionRow;
         }),
   );
+  public static from(
+    other:
+      | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>>
+      | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>,
+  ): ActionRowBuilder;
 }
 
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
@@ -581,6 +587,11 @@ export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
   public setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
+export class ModalBuilder extends BuildersModal {
+  public constructor(data?: ModalData | APIModalComponent);
+  public static from(other: JSONEncodable<APIModalComponent> | APIModalComponent): ModalBuilder;
+}
+
 export class TextInputBuilder extends BuilderTextInputComponent {
   public constructor(data?: TextInputComponentData | APITextInputComponent);
   public static from(other: JSONEncodable<APITextInputComponent> | APITextInputComponent): TextInputBuilder;
@@ -671,6 +682,7 @@ export interface MappedChannelCategoryTypes {
   [ChannelType.GuildVoice]: VoiceChannel;
   [ChannelType.GuildText]: TextChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
+  [ChannelType.GuildForum]: never; // TODO: Fix when guild forums come out
 }
 
 export type CategoryChannelType = Exclude<
@@ -681,6 +693,7 @@ export type CategoryChannelType = Exclude<
   | ChannelType.GuildNewsThread
   | ChannelType.GuildPrivateThread
   | ChannelType.GuildCategory
+  | ChannelType.GuildDirectory
 >;
 
 export class CategoryChannel extends GuildChannel {
@@ -708,6 +721,7 @@ export abstract class Channel extends Base {
   public isNews(): this is NewsChannel;
   public isThread(): this is ThreadChannel;
   public isStage(): this is StageChannel;
+  public isDirectory(): this is DirectoryChannel;
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
@@ -2207,6 +2221,8 @@ export class StageChannel extends BaseGuildVoiceChannel {
   public setTopic(topic: string): Promise<StageChannel>;
 }
 
+export class DirectoryChannel extends Channel {}
+
 export class StageInstance extends Base {
   private constructor(client: Client, data: RawStageInstanceData, channel: StageChannel);
   public id: Snowflake;
@@ -2549,6 +2565,7 @@ export class Util extends null {
     reason?: string,
   ): Promise<{ id: Snowflake; position: number }[]>;
   public static splitMessage(text: string, options?: SplitOptions): string[];
+  public static resolveAutoArchiveMaxLimit(guild: Guild): number;
 }
 
 export class Components extends null {
@@ -2586,7 +2603,7 @@ export type ComponentData =
   | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
-  public videoQualityMode: VideoQualityMode;
+  public videoQualityMode: VideoQualityMode | null;
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
   public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
@@ -4250,7 +4267,10 @@ export interface FetchBanOptions extends BaseFetchOptions {
 }
 
 export interface FetchBansOptions {
-  cache: boolean;
+  limit?: number;
+  before?: Snowflake;
+  after?: Snowflake;
+  cache?: boolean;
 }
 
 export interface FetchChannelOptions extends BaseFetchOptions {
@@ -4865,7 +4885,7 @@ export interface TextInputComponentData extends BaseComponentData {
 export interface ModalData {
   customId: string;
   title: string;
-  components: ActionRowData<ModalActionRowComponentData>[];
+  components: (ActionRow<ModalActionRowComponent> | ActionRowData<ModalActionRowComponentData>)[];
 }
 
 export type MessageTarget =
@@ -5385,14 +5405,13 @@ export {
   WebhookType,
 } from 'discord-api-types/v10';
 export {
+  UnsafeEmbedBuilder,
+  UnsafeModalBuilder,
+  UnsafeTextInputBuilder,
   UnsafeButtonBuilder,
   UnsafeSelectMenuBuilder,
   UnsafeSelectMenuOptionBuilder,
   MessageActionRowComponentBuilder,
   ModalActionRowComponentBuilder,
-  UnsafeEmbedBuilder,
-  ModalBuilder,
-  UnsafeModalBuilder,
-  UnsafeTextInputBuilder,
 } from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';

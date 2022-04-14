@@ -4429,10 +4429,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.31.0":
-  version: 0.31.0
-  resolution: "discord-api-types@npm:0.31.0"
-  checksum: 7ac466df8f3b62ebfa18296ef8cbf7a35ae295b775184b01f4357409cff89aa4e85a67e7fb3363b4a4ff796ff7313865e0266706b3d7908ef2238147a196a806
+"discord-api-types@npm:^0.31.1":
+  version: 0.31.1
+  resolution: "discord-api-types@npm:0.31.1"
+  checksum: 5a18e512b549b75d55892b0dbc2dc7c46526bee0d001b73d41d144f4653de847c96b9c57342a32479af738f46acd80ee21686dced9fe0184dcac86b669b31f18
   languageName: node
   linkType: hard
 
@@ -4447,7 +4447,7 @@ __metadata:
     "@sapphire/snowflake": ^3.1.0
     "@types/node": ^16.11.24
     "@types/ws": ^8.2.2
-    discord-api-types: ^0.31.0
+    discord-api-types: ^0.31.1
     dtslint: ^4.2.1
     eslint: ^8.9.0
     eslint-config-prettier: ^8.3.0
