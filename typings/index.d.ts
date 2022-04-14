@@ -4466,6 +4466,7 @@ export interface CreateRoleOptions extends RoleData {
 export interface StageInstanceCreateOptions {
   topic: string;
   privacyLevel?: PrivacyLevel | number;
+  sendStartNotification?: boolean;
 }
 
 export interface CrosspostedChannel {
