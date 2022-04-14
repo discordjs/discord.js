@@ -1913,7 +1913,7 @@ export class ModalSubmitFieldsResolver {
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
   extends ModalSubmitInteraction<Cached> {
-  message: GuildCacheMessage<Cached> | null;
+  message: GuildCacheMessage<Cached>;
   update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
   deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
@@ -1929,6 +1929,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public components: PartialModalActionRow[];
   public deferred: boolean;
   public ephemeral: boolean | null;
+  public message: GuildCacheMessage<Cached> | null;
   public fields: ModalSubmitFieldsResolver;
   public replied: false;
   public webhook: InteractionWebhook;
