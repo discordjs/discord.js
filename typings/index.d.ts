@@ -523,6 +523,7 @@ export type CategoryChannelTypes = ExcludeEnum<
   | 'GUILD_NEWS_THREAD'
   | 'GUILD_PRIVATE_THREAD'
   | 'GUILD_CATEGORY'
+  | 'GUILD_DIRECTORY'
 >;
 
 export class CategoryChannel extends GuildChannel {
@@ -557,6 +558,7 @@ export abstract class Channel extends Base {
   public isText(): this is TextBasedChannel;
   public isVoice(): this is BaseGuildVoiceChannel;
   public isThread(): this is ThreadChannel;
+  public isDirectory(): this is DirectoryChannel;
   public toString(): ChannelMention;
 }
 
@@ -2236,6 +2238,8 @@ export class StageChannel extends BaseGuildVoiceChannel {
   public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
   public setTopic(topic: string): Promise<StageChannel>;
 }
+
+export class DirectoryChannel extends Channel {}
 
 export class StageInstance extends Base {
   private constructor(client: Client, data: RawStageInstanceData, channel: StageChannel);
