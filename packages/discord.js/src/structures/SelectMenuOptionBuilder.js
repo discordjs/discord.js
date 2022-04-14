@@ -4,7 +4,8 @@ const { SelectMenuOptionBuilder: BuildersSelectMenuOption } = require('@discordj
 const Util = require('../util/Util');
 
 /**
- * Represents a select menu option
+ * Represents a select menu option builder.
+ * @extends {BuildersSelectMenuOption}
  */
 class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
   /**
@@ -21,3 +22,8 @@ class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
 }
 
 module.exports = SelectMenuOptionBuilder;
+
+/**
+ * @external BuildersSelectMenuOption
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuOptionBuilder}
+ */

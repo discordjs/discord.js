@@ -31,6 +31,7 @@ class StageInstanceManager extends CachedManager {
    * @typedef {Object} StageInstanceCreateOptions
    * @property {string} topic The topic of the stage instance
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the stage instance
+   * @property {boolean} [sendStartNotification] Whether to notify `@everyone` that the stage instance has started
    */
 
   /**
@@ -58,13 +59,14 @@ class StageInstanceManager extends CachedManager {
     const channelId = this.guild.channels.resolveId(channel);
     if (!channelId) throw new Error('STAGE_CHANNEL_RESOLVE');
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { topic, privacyLevel } = options;
+    let { topic, privacyLevel, sendStartNotification } = options;
 
     const data = await this.client.rest.post(Routes.stageInstances(), {
       body: {
         channel_id: channelId,
         topic,
         privacy_level: privacyLevel,
+        send_start_notification: sendStartNotification,
       },
     });
 

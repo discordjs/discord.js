@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
@@ -224,7 +225,7 @@ class MessageManager extends CachedManager {
 
   async _fetchMany(options = {}, cache) {
     const data = await this.client.rest.get(Routes.channelMessages(this.channel.id), {
-      query: new URLSearchParams(options),
+      query: makeURLSearchParams(options),
     });
     const messages = new Collection();
     for (const message of data) messages.set(message.id, this._add(message, cache));

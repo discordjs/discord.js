@@ -8,10 +8,10 @@ let CategoryChannel;
 let DMChannel;
 let NewsChannel;
 let StageChannel;
-let StoreChannel;
 let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
+let DirectoryChannel;
 
 /**
  * Represents any channel on Discord.
@@ -159,14 +159,6 @@ class Channel extends Base {
   }
 
   /**
-   * Indicates whether this channel is a {@link StoreChannel}.
-   * @returns {boolean}
-   */
-  isStore() {
-    return this.type === ChannelType.GuildStore;
-  }
-
-  /**
    * Indicates whether this channel is a {@link ThreadChannel}.
    * @returns {boolean}
    */
@@ -180,6 +172,14 @@ class Channel extends Base {
    */
   isStage() {
     return this.type === ChannelType.GuildStageVoice;
+  }
+
+  /**
+   * Indicates whether this channel is a {@link DirectoryChannel}
+   * @returns {boolean}
+   */
+  isDirectory() {
+    return this.type === ChannelType.GuildDirectory;
   }
 
   /**
@@ -211,10 +211,10 @@ class Channel extends Base {
     DMChannel ??= require('./DMChannel');
     NewsChannel ??= require('./NewsChannel');
     StageChannel ??= require('./StageChannel');
-    StoreChannel ??= require('./StoreChannel');
     TextChannel ??= require('./TextChannel');
     ThreadChannel ??= require('./ThreadChannel');
     VoiceChannel ??= require('./VoiceChannel');
+    DirectoryChannel ??= require('./DirectoryChannel');
 
     let channel;
     if (!data.guild_id && !guild) {
@@ -245,10 +245,6 @@ class Channel extends Base {
             channel = new NewsChannel(guild, data, client);
             break;
           }
-          case ChannelType.GuildStore: {
-            channel = new StoreChannel(guild, data, client);
-            break;
-          }
           case ChannelType.GuildStageVoice: {
             channel = new StageChannel(guild, data, client);
             break;
@@ -260,6 +256,9 @@ class Channel extends Base {
             if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
             break;
           }
+          case ChannelType.GuildDirectory:
+            channel = new DirectoryChannel(client, data);
+            break;
         }
         if (channel && !allowUnknownGuild) guild.channels?.cache.set(channel.id, channel);
       }

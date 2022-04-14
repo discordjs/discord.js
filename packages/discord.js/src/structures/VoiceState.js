@@ -121,7 +121,7 @@ class VoiceState extends Base {
        * The time at which the member requested to speak. This property is specific to stage channels only.
        * @type {?number}
        */
-      this.requestToSpeakTimestamp = Date.parse(data.request_to_speak_timestamp);
+      this.requestToSpeakTimestamp = data.request_to_speak_timestamp && Date.parse(data.request_to_speak_timestamp);
     } else {
       this.requestToSpeakTimestamp ??= null;
     }
