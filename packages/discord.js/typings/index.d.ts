@@ -2597,7 +2597,7 @@ export type ComponentData =
   | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
-  public videoQualityMode: VideoQualityMode;
+  public videoQualityMode: VideoQualityMode | null;
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
   public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
