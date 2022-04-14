@@ -5,6 +5,7 @@ const Transformers = require('../util/Transformers');
 
 /**
  * Represents a text input builder.
+ * @extends {BuildersTextInput}
  */
 class TextInputBuilder extends BuildersTextInput {
   constructor(data) {
@@ -13,7 +14,7 @@ class TextInputBuilder extends BuildersTextInput {
 
   /**
    * Creates a new text input builder from JSON data
-   * @param {JSONEncodable<APITextInputComponent> | APITextInputComponent} other The other data
+   * @param {JSONEncodable<APITextInputComponent>|APITextInputComponent} other The other data
    * @returns {TextInputBuilder}
    */
   static from(other) {
@@ -25,3 +26,8 @@ class TextInputBuilder extends BuildersTextInput {
 }
 
 module.exports = TextInputBuilder;
+
+/**
+ * @external BuildersTextInput
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/TextInputBuilder}
+ */

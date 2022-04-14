@@ -6,6 +6,7 @@ const Util = require('../util/Util');
 
 /**
  * Represents a select menu builder.
+ * @extends {BuildersSelectMenu}
  */
 class SelectMenuBuilder extends BuildersSelectMenu {
   constructor({ options, ...data }) {
@@ -22,7 +23,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
 
   /**
    * Creates a new select menu builder from JSON data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * @param {JSONEncodable<APISelectMenuComponent>|APISelectMenuComponent} other The other data
    * @returns {SelectMenuBuilder}
    */
   static from(other) {
@@ -34,3 +35,8 @@ class SelectMenuBuilder extends BuildersSelectMenu {
 }
 
 module.exports = SelectMenuBuilder;
+
+/**
+ * @external BuildersSelectMenu
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuBuilder}
+ */

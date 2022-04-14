@@ -6,6 +6,7 @@ const Util = require('../util/Util');
 
 /**
  * Represents an embed builder.
+ * @extends {BuildersEmbed}
  */
 class EmbedBuilder extends BuildersEmbed {
   constructor(data) {
@@ -13,8 +14,17 @@ class EmbedBuilder extends BuildersEmbed {
   }
 
   /**
+   * Sets the color of this embed
+   * @param {?ColorResolvable} color The color of the embed
+   * @returns {EmbedBuilder}
+   */
+  setColor(color) {
+    return super.setColor(color && Util.resolveColor(color));
+  }
+
+  /**
    * Creates a new embed builder from JSON data
-   * @param {JSONEncodable<APIEmbed> | APIEmbed} other The other data
+   * @param {JSONEncodable<APIEmbed>|APIEmbed} other The other data
    * @returns {EmbedBuilder}
    */
   static from(other) {
@@ -23,18 +33,11 @@ class EmbedBuilder extends BuildersEmbed {
     }
     return new this(other);
   }
-
-  /**
-   * Sets the color of this embed
-   * @param {?ColorResolvable} color The color of the embed
-   * @returns {Embed}
-   */
-  setColor(color) {
-    if (color === null) {
-      return super.setColor(null);
-    }
-    return super.setColor(Util.resolveColor(color));
-  }
 }
 
 module.exports = EmbedBuilder;
+
+/**
+ * @external BuildersEmbed
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/EmbedBuilder}
+ */

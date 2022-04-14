@@ -5,6 +5,7 @@ const Transformers = require('../util/Transformers');
 
 /**
  * Represents a modal builder.
+ * @extends {BuildersModal}
  */
 class ModalBuilder extends BuildersModal {
   constructor({ components, ...data }) {
@@ -16,7 +17,7 @@ class ModalBuilder extends BuildersModal {
 
   /**
    * Creates a new modal builder from JSON data
-   * @param {JSONEncodable<APIModalComponent> | APIModalComponent} other The other data
+   * @param {JSONEncodable<APIModalComponent>|APIModalComponent} other The other data
    * @returns {ModalBuilder}
    */
   static from(other) {
@@ -28,3 +29,8 @@ class ModalBuilder extends BuildersModal {
 }
 
 module.exports = ModalBuilder;
+
+/**
+ * @external BuildersModal
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/ModalBuilder}
+ */

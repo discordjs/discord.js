@@ -5,6 +5,7 @@ const Transformers = require('../util/Transformers');
 
 /**
  * Represents an action row builder.
+ * @extends {BuildersActionRow}
  */
 class ActionRowBuilder extends BuildersActionRow {
   constructor({ components, ...data } = {}) {
@@ -16,3 +17,8 @@ class ActionRowBuilder extends BuildersActionRow {
 }
 
 module.exports = ActionRowBuilder;
+
+/**
+ * @external BuildersActionRow
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/ActionRowBuilder}
+ */

@@ -6,6 +6,7 @@ const Util = require('../util/Util');
 
 /**
  * Represents a button builder.
+ * @extends {BuildersButton}
  */
 class ButtonBuilder extends BuildersButton {
   constructor({ emoji, ...data }) {
@@ -17,7 +18,7 @@ class ButtonBuilder extends BuildersButton {
   /**
    * Sets the emoji to display on this button
    * @param {string|APIMessageComponentEmoji} emoji The emoji to display on this button
-   * @returns {ButtonComponent}
+   * @returns {ButtonBuilder}
    */
   setEmoji(emoji) {
     if (typeof emoji === 'string') {
@@ -28,7 +29,7 @@ class ButtonBuilder extends BuildersButton {
 
   /**
    * Creates a new button builder from JSON data
-   * @param {JSONEncodable<APIButtonComponent> | APIButtonComponent} other The other data
+   * @param {JSONEncodable<APIButtonComponent>|APIButtonComponent} other The other data
    * @returns {ButtonBuilder}
    */
   static from(other) {
@@ -40,3 +41,8 @@ class ButtonBuilder extends BuildersButton {
 }
 
 module.exports = ButtonBuilder;
+
+/**
+ * @external BuildersButton
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/ButtonBuilder}
+ */
