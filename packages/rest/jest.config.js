@@ -15,4 +15,5 @@ module.exports = {
 			statements: 70,
 		},
 	},
+	coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/'],
 };
