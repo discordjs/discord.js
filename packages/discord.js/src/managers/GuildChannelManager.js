@@ -196,9 +196,7 @@ class GuildChannelManager extends CachedManager {
       avatar = await DataResolver.resolveImage(avatar);
     }
 
-    const invalidNames = ['everyone', 'here'];
-    const invalidSubstrings = ['@', '#', ':', '```', 'discord', 'clyde'];
-    if (invalidNames.includes(name) || invalidSubstrings.some(c => name.includes(c))) {
+    if (name.toLowerCase().includes('clyde')) {
       throw new TypeError('WEBHOOK_NAME_INVALID');
     }
 
