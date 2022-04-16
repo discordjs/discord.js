@@ -2,9 +2,9 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
+const isEqual = require('fast-deep-equal');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
-const isEqual = require('fast-deep-equal');
 
 /**
  * Represents an application command.
@@ -412,7 +412,10 @@ class ApplicationCommand extends Base {
       if (
         enforceOptionOrder &&
         !existing.choices.every(
-          (choice, index) => choice.name === option.choices[index].name && choice.value === option.choices[index].value && isEqual(choice.nameLocalizations ?? {}, option.choices[index].nameLocalizations  ?? {}),
+          (choice, index) =>
+            choice.name === option.choices[index].name &&
+            choice.value === option.choices[index].value &&
+            isEqual(choice.nameLocalizations ?? {}, option.choices[index].nameLocalizations ?? {}),
         )
       ) {
         return false;
