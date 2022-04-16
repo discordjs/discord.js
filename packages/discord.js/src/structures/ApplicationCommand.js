@@ -4,6 +4,7 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
+const isEqual = require('fast-deep-equal');
 
 /**
  * Represents an application command.
@@ -339,7 +340,9 @@ class ApplicationCommand extends Base {
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
-      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission
+      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission ||
+      !isEqual(command.nameLocalizations ?? {}, this.nameLocalizations ?? {}) ||
+      !isEqual(command.descriptionLocalizations ?? {}, this.descriptionLocalizations ?? {})
     ) {
       return false;
     }
@@ -398,7 +401,9 @@ class ApplicationCommand extends Base {
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
       (option.minValue ?? option.min_value) !== existing.minValue ||
-      (option.maxValue ?? option.max_value) !== existing.maxValue
+      (option.maxValue ?? option.max_value) !== existing.maxValue ||
+      !isEqual(option.nameLocalizations ?? {}, existing.nameLocalizations ?? {}) ||
+      !isEqual(option.descriptionLocalizations ?? {}, existing.descriptionLocalizations ?? {})
     ) {
       return false;
     }
@@ -407,7 +412,7 @@ class ApplicationCommand extends Base {
       if (
         enforceOptionOrder &&
         !existing.choices.every(
-          (choice, index) => choice.name === option.choices[index].name && choice.value === option.choices[index].value,
+          (choice, index) => choice.name === option.choices[index].name && choice.value === option.choices[index].value && isEqual(choice.nameLocalizations ?? {}, option.choices[index].nameLocalizations  ?? {}),
         )
       ) {
         return false;
