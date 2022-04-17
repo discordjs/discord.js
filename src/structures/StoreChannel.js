@@ -4,7 +4,7 @@ const GuildChannel = require('./GuildChannel');
 
 /**
  * Represents a guild store channel on Discord.
- * <warn>Store channels are deprecated and will be removed from Discord in March 2022. See
+ * <warn>Store channels have been removed from Discord. See
  * [Self-serve Game Selling Deprecation](https://support-dev.discord.com/hc/en-us/articles/4414590563479)
  * for more information.</warn>
  * @extends {GuildChannel}

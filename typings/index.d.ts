@@ -212,6 +212,7 @@ export abstract class Application extends Base {
   public id: Snowflake;
   public name: string | null;
   public coverURL(options?: StaticImageURLOptions): string | null;
+  /** @deprecated This method is deprecated as it is unsupported and will be removed in the next major version. */
   public fetchAssets(): Promise<ApplicationAsset[]>;
   public iconURL(options?: StaticImageURLOptions): string | null;
   public toJSON(): unknown;
@@ -1330,6 +1331,7 @@ export class IntegrationApplication extends Application {
   public termsOfServiceURL: string | null;
   public privacyPolicyURL: string | null;
   public rpcOrigins: string[];
+  /** @deprecated This property is no longer being sent by the API. */
   public summary: string | null;
   public hook: boolean | null;
   public cover: string | null;
@@ -2627,6 +2629,7 @@ export class Util extends null {
     route: unknown,
     reason?: string,
   ): Promise<{ id: Snowflake; position: number }[]>;
+  /** @deprecated This will be removed in the next major version. */
   public static splitMessage(text: string, options?: SplitOptions): string[];
   public static resolveAutoArchiveMaxLimit(guild: Guild): number;
 }
@@ -2671,6 +2674,7 @@ export class VoiceRegion {
   public id: string;
   public name: string;
   public optimal: boolean;
+  /** @deprecated This property is no longer being sent by the API. */
   public vip: boolean;
   public toJSON(): unknown;
 }
