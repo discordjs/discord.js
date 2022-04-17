@@ -3595,10 +3595,6 @@ export interface ApplicationCommandOptionChoiceData {
   value: string | number;
 }
 
-export interface ApplicationCommandOptionChoice extends ApplicationCommandOptionChoiceData {
-  nameLocalized?: string;
-}
-
 export interface ApplicationCommandPermissionData {
   id: Snowflake;
   type: ApplicationCommandPermissionType;
