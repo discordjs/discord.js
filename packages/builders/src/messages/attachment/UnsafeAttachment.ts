@@ -162,12 +162,12 @@ export class UnsafeAttachmentBuilder {
 	}
 
 	/**
-     * Whether or not this attachment has been marked as a spoiler
-     * @type {boolean}
-     * @readonly
-     */
+	 * Whether or not this attachment has been marked as a spoiler
+	 * @type {boolean}
+	 * @readonly
+	 */
 	get spoiler() {
-		if(this.name) return this.name.startsWith('SPOILER_');
+		if (this.name) return this.name.startsWith('SPOILER_');
 		return false;
 	}
 
