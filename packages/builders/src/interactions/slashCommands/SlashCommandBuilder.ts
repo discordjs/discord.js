@@ -10,9 +10,9 @@ import {
 	validateMaxOptionsLength,
 	validateRequiredParameters,
 } from './Assertions';
-import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions';
-import { SharedNameAndDescription } from './mixins/NameAndDescription';
 import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
+import { SharedNameAndDescription } from './mixins/NameAndDescription';
+import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions';
 
 @mix(SharedSlashCommandOptions, SharedNameAndDescription)
 export class SlashCommandBuilder {

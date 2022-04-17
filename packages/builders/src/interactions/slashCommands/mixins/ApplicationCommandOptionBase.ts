@@ -1,6 +1,6 @@
 import type { APIApplicationCommandBasicOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import { validateRequiredParameters, validateRequired } from '../Assertions';
 import { SharedNameAndDescription } from './NameAndDescription';
+import { validateRequiredParameters, validateRequired } from '../Assertions';
 
 export abstract class ApplicationCommandOptionBase extends SharedNameAndDescription {
 	public abstract readonly type: ApplicationCommandOptionType;

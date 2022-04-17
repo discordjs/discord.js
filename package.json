@@ -38,13 +38,13 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^16.2.1",
-		"@commitlint/config-angular": "^16.2.1",
+		"@commitlint/cli": "^16.2.3",
+		"@commitlint/config-angular": "^16.2.3",
 		"@favware/npm-deprecate": "^1.0.4",
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^7.0.4",
-		"prettier": "^2.5.1",
-		"turbo": "1.1.4"
+		"prettier": "^2.6.2",
+		"turbo": "^1.2.4"
 	},
 	"engines": {
 		"node": ">=16.9.0"

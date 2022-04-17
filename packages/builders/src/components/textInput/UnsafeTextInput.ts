@@ -1,6 +1,6 @@
 import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
-import { ComponentBuilder } from '../../index';
 import isEqual from 'fast-deep-equal';
+import { ComponentBuilder } from '../../index';
 
 export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	public constructor(data?: APITextInputComponent & { type?: ComponentType.TextInput }) {

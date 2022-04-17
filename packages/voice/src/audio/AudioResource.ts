@@ -1,8 +1,8 @@
-import { Edge, findPipeline, StreamType, TransformerType } from './TransformerGraph';
 import { pipeline, Readable } from 'node:stream';
-import { noop } from '../util/util';
 import prism from 'prism-media';
 import { AudioPlayer, SILENCE_FRAME } from './AudioPlayer';
+import { Edge, findPipeline, StreamType, TransformerType } from './TransformerGraph';
+import { noop } from '../util/util';
 
 /**
  * Options that are set when creating a new audio resource.

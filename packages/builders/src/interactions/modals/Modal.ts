@@ -1,7 +1,7 @@
 import type { APIModalInteractionResponseCallbackData } from 'discord-api-types/v10';
-import { customIdValidator } from '../../components/Assertions';
 import { titleValidator, validateRequiredParameters } from './Assertions';
 import { UnsafeModalBuilder } from './UnsafeModal';
+import { customIdValidator } from '../../components/Assertions';
 
 export class ModalBuilder extends UnsafeModalBuilder {
 	public override setCustomId(customId: string): this {

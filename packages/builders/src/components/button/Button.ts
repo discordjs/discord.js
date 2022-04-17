@@ -5,6 +5,7 @@ import type {
 	APIButtonComponentWithCustomId,
 	APIButtonComponentWithURL,
 } from 'discord-api-types/v10';
+import { UnsafeButtonBuilder } from './UnsafeButton';
 import {
 	buttonLabelValidator,
 	buttonStyleValidator,
@@ -14,7 +15,6 @@ import {
 	urlValidator,
 	validateRequiredButtonParameters,
 } from '../Assertions';
-import { UnsafeButtonBuilder } from './UnsafeButton';
 
 /**
  * Represents a validated button component

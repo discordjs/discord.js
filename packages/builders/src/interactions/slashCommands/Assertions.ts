@@ -1,9 +1,9 @@
+import { s } from '@sapphire/shapeshift';
 import is from '@sindresorhus/is';
 import { type APIApplicationCommandOptionChoice, Locale } from 'discord-api-types/v10';
-import { s } from '@sapphire/shapeshift';
-import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
+import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
 
 const namePredicate = s.string
 	.lengthGe(1)

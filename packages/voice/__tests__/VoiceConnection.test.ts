@@ -3,6 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/dot-notation */
+import EventEmitter from 'node:events';
+import * as _DataStore from '../src/DataStore';
 import {
 	createVoiceConnection,
 	VoiceConnection,
@@ -13,12 +15,10 @@ import {
 	VoiceConnectionStatus,
 } from '../src/VoiceConnection';
 
-import * as _DataStore from '../src/DataStore';
-import * as _Networking from '../src/networking/Networking';
 import * as _AudioPlayer from '../src/audio/AudioPlayer';
 import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSubscription';
+import * as _Networking from '../src/networking/Networking';
 import type { DiscordGatewayAdapterLibraryMethods } from '../src/util/adapter';
-import EventEmitter from 'node:events';
 
 jest.mock('../src/audio/AudioPlayer');
 jest.mock('../src/audio/PlayerSubscription');

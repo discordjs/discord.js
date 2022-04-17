@@ -1,11 +1,11 @@
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
+import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
 import {
 	defaultValidator,
 	emojiValidator,
 	labelValueValidator,
 	validateRequiredSelectMenuOptionParameters,
 } from '../Assertions';
-import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
 
 /**
  * Represents a validated option within a select menu component

@@ -1,5 +1,5 @@
-import type { Snowflake } from 'discord-api-types/globals';
 import type { URL } from 'url';
+import type { Snowflake } from 'discord-api-types/globals';
 
 /**
  * Wraps the content inside a codeblock with no language

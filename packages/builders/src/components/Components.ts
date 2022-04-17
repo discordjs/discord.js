@@ -1,6 +1,6 @@
 import { APIMessageComponent, APIModalComponent, ComponentType } from 'discord-api-types/v10';
-import { ActionRowBuilder, ButtonBuilder, ComponentBuilder, SelectMenuBuilder, TextInputBuilder } from '../index';
 import type { AnyComponentBuilder, MessageComponentBuilder, ModalComponentBuilder } from './ActionRow';
+import { ActionRowBuilder, ButtonBuilder, ComponentBuilder, SelectMenuBuilder, TextInputBuilder } from '../index';
 
 export interface MappedComponentTypes {
 	[ComponentType.ActionRow]: ActionRowBuilder<AnyComponentBuilder>;

@@ -1,5 +1,5 @@
-import type { APIEmbedField } from 'discord-api-types/v10';
 import { s } from '@sapphire/shapeshift';
+import type { APIEmbedField } from 'discord-api-types/v10';
 
 export const fieldNamePredicate = s.string.lengthGe(1).lengthLe(256);
 
