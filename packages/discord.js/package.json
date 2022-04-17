@@ -60,7 +60,7 @@
     "ws": "^8.5.0"
   },
   "devDependencies": {
-    "@discordjs/docgen": "^0.11.0",
+    "@discordjs/docgen": "^0.11.1",
     "@types/node": "^16.11.27",
     "dtslint": "^4.2.1",
     "eslint": "^8.13.0",
