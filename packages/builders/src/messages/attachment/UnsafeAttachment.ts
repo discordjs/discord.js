@@ -12,7 +12,7 @@ export class UnsafeAttachmentBuilder {
 	public description?: string | null;
 	public ephemeral?: boolean;
 	public height?: number | null;
-	public id: Snowflake;
+	public id!: Snowflake;
 	public name: string | null;
 	public proxyURL!: string;
 	public size!: number;
