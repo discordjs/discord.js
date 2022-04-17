@@ -3207,11 +3207,8 @@ export class MessageManager extends CachedManager<Snowflake, Message, MessageRes
   public crosspost(message: MessageResolvable): Promise<Message>;
   public delete(message: MessageResolvable): Promise<void>;
   public edit(message: MessageResolvable, options: string | MessagePayload | MessageEditOptions): Promise<Message>;
-  public fetch(message: Snowflake, options?: BaseFetchOptions): Promise<Message>;
-  public fetch(
-    options?: ChannelLogsQueryOptions,
-    cacheOptions?: BaseFetchOptions,
-  ): Promise<Collection<Snowflake, Message>>;
+  public fetch(options: MessageResolvable | FetchMessageOptions): Promise<Message>;
+  public fetch(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message>>;
   public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable, reason?: string): Promise<void>;
@@ -3734,13 +3731,6 @@ export interface ChannelData {
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
   rtcRegion?: string | null;
   videoQualityMode?: VideoQualityMode | null;
-}
-
-export interface ChannelLogsQueryOptions {
-  limit?: number;
-  before?: Snowflake;
-  after?: Snowflake;
-  around?: Snowflake;
 }
 
 export type ChannelMention = `<#${Snowflake}>`;
@@ -4322,6 +4312,18 @@ export interface FetchMembersOptions {
   time?: number;
   nonce?: string;
   force?: boolean;
+}
+
+export interface FetchMessageOptions extends BaseFetchOptions {
+  message: MessageResolvable;
+}
+
+export interface FetchMessagesOptions {
+  limit?: number;
+  before?: Snowflake;
+  after?: Snowflake;
+  around?: Snowflake;
+  cache?: boolean;
 }
 
 export interface FetchReactionUsersOptions {
