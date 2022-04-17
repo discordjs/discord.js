@@ -2558,7 +2558,6 @@ export class Util extends null {
     route: string,
     reason?: string,
   ): Promise<{ id: Snowflake; position: number }[]>;
-  public static splitMessage(text: string, options?: SplitOptions): string[];
   public static resolveAutoArchiveMaxLimit(guild: Guild): number;
 }
 
@@ -5090,13 +5089,6 @@ export interface ShardingManagerOptions {
 }
 
 export { Snowflake };
-
-export interface SplitOptions {
-  maxLength?: number;
-  char?: string | string[] | RegExp | RegExp[];
-  prepend?: string;
-  append?: string;
-}
 
 export type StageInstanceResolvable = StageInstance | Snowflake;
 
