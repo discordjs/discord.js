@@ -1,5 +1,5 @@
-import { resolveBody, parseHeader } from '../src/lib/utils/utils';
 import { Blob } from 'node:buffer';
+import { resolveBody, parseHeader } from '../src/lib/utils/utils';
 
 test('GIVEN string parseHeader returns string', () => {
 	const header = 'application/json';

@@ -1,7 +1,7 @@
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import { Interceptable } from 'undici/types/mock-interceptor';
-import { REST } from '../src';
 import { genPath } from './util';
+import { REST } from '../src';
 
 const api = new REST();
 

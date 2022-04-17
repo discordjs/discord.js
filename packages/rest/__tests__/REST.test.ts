@@ -2,8 +2,8 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Routes, Snowflake } from 'discord-api-types/v10';
 import { File, FormData, MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
-import { REST } from '../src';
 import { genPath } from './util';
+import { REST } from '../src';
 
 const newSnowflake: Snowflake = DiscordSnowflake.generate().toString();
 

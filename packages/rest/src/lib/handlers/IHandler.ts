@@ -1,5 +1,5 @@
-import type { HandlerRequestData, RouteData } from '../RequestManager';
 import type { RequestOptions } from '../REST';
+import type { HandlerRequestData, RouteData } from '../RequestManager';
 
 export interface IHandler {
 	queueRequest: (

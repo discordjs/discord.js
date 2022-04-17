@@ -1,17 +1,8 @@
 import { EventEmitter } from 'node:events';
-import type { AgentOptions } from 'node:https';
 import type Collection from '@discordjs/collection';
-import type { RequestInit, Response } from 'node-fetch';
-import { CDN } from './CDN';
 import type { request, Dispatcher } from 'undici';
-import {
-	HandlerRequestData,
-	InternalRequest,
-	RequestData,
-	RequestManager,
-	RequestMethod,
-	RouteLike,
-} from './RequestManager';
+import { CDN } from './CDN';
+import { InternalRequest, RequestData, RequestManager, RequestMethod, RouteLike } from './RequestManager';
 import type { HashData } from './RequestManager';
 import type { IHandler } from './handlers/IHandler';
 import { DefaultRestOptions, RESTEvents } from './utils/constants';

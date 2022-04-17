@@ -1,11 +1,11 @@
-import Collection from '@discordjs/collection';
-import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Blob } from 'node:buffer';
 import { EventEmitter } from 'node:events';
+import Collection from '@discordjs/collection';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import { FormData, type RequestInit, type BodyInit, type Dispatcher, Agent } from 'undici';
+import type { RESTOptions, RestEvents, RequestOptions } from './REST';
 import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
-import type { RESTOptions, RestEvents, RequestOptions } from './REST';
 import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants';
 import { resolveBody } from './utils/utils';
 

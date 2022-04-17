@@ -1,7 +1,7 @@
-import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src';
 import { MockAgent, setGlobalDispatcher } from 'undici';
-import { genPath } from './util';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
+import { genPath } from './util';
+import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src';
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;

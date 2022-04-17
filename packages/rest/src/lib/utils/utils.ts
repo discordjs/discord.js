@@ -1,10 +1,10 @@
-import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
-import { FormData, type Dispatcher, type RequestInit } from 'undici';
-import { RequestMethod } from '../RequestManager';
-import type { RequestOptions } from '../REST';
 import { Blob } from 'node:buffer';
 import { URLSearchParams } from 'node:url';
 import { types } from 'node:util';
+import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
+import { FormData, type Dispatcher, type RequestInit } from 'undici';
+import type { RequestOptions } from '../REST';
+import { RequestMethod } from '../RequestManager';
 
 export function parseHeader(header: string | string[] | undefined): string | undefined {
 	if (header === undefined) {
