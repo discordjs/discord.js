@@ -87,7 +87,7 @@ jobs:
         id: package-name
         uses: frabert/replace-string-action@v2.0
         with:
-          pattern: '(^@.*\\/(?<package>.*)@v?)?(?<semver>\d+.\d+.\d+)-?.*'
+          pattern: '(^@.*\\/(?<package>.*)@v?)?(?<semver>\\d+.\\d+.\\d+)-?.*'
           string: ${{ env.BRANCH_NAME }}
           replace-with: '$<package>'
 
@@ -96,7 +96,7 @@ jobs:
         id: semver
         uses: frabert/replace-string-action@v2.0
         with:
-          pattern: '(^@.*\\/(?<package>.*)@v?)?(?<semver>\d+.\d+.\d+)-?.*'
+          pattern: '(^@.*\\/(?<package>.*)@v?)?(?<semver>\\d+.\\d+.\\d+)-?.*'
           string: ${{ env.BRANCH_NAME }}
           replace-with: '$<semver>'
 
