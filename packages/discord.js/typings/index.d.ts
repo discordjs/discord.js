@@ -1883,6 +1883,7 @@ export class MessageReaction {
   public message: Message | PartialMessage;
   public get partial(): false;
   public users: ReactionUserManager;
+  public react(): Promise<MessageReaction>;
   public remove(): Promise<MessageReaction>;
   public fetch(): Promise<MessageReaction>;
   public toJSON(): unknown;

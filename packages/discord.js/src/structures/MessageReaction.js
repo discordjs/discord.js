@@ -53,6 +53,14 @@ class MessageReaction {
   }
 
   /**
+   * Makes the client user react with this reaction
+   * @returns {Promise<MessageReaction>}
+   */
+  react() {
+    return this.message.react(this.emoji);
+  }
+
+  /**
    * Removes all users from this reaction.
    * @returns {Promise<MessageReaction>}
    */
