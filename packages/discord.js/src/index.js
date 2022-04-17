@@ -117,6 +117,7 @@ exports.Integration = require('./structures/Integration');
 exports.IntegrationApplication = require('./structures/IntegrationApplication');
 exports.Interaction = require('./structures/Interaction');
 exports.InteractionCollector = require('./structures/InteractionCollector');
+exports.InteractionResponse = require('./structures/InteractionResponse');
 exports.InteractionWebhook = require('./structures/InteractionWebhook');
 exports.Invite = require('./structures/Invite');
 exports.InviteStageInstance = require('./structures/InviteStageInstance');
