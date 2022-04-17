@@ -1,5 +1,6 @@
 import {
   ActionRowBuilder as BuilderActionRow,
+  AttachmentBuilder as BuilderAttachment,
   MessageActionRowComponentBuilder,
   blockQuote,
   bold,
@@ -37,6 +38,7 @@ import {
   APIApplicationCommand,
   APIApplicationCommandInteractionData,
   APIApplicationCommandOption,
+  APIAttachment,
   APIAuditLogChange,
   APIButtonComponent,
   APIEmbed,
@@ -1728,26 +1730,27 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public inGuild(): this is Message<true> & this;
 }
 
-export class Attachment {
+export class AttachmentBuilder extends BuilderAttachment {
   public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawAttachmentData);
+}
 
-  public attachment: BufferResolvable | Stream;
-  public contentType: string | null;
-  public description: string | null;
-  public ephemeral: boolean;
-  public height: number | null;
-  public id: Snowflake;
-  public name: string | null;
-  public proxyURL: string;
-  public size: number;
+export class Attachment {
+  public constructor(data?: RawAttachmentData);
+
+  public get contentType(): string | null;
+  public get description(): string | null;
+  public get ephemeral(): boolean;
+  public get height(): number | null;
+  public get id(): Snowflake;
+  public get name(): string | null;
+  public get proxyURL(): string;
+  public get size(): number;
   public get spoiler(): boolean;
-  public url: string;
-  public width: number | null;
-  public setDescription(description: string): this;
-  public setFile(attachment: BufferResolvable | Stream, name?: string): this;
-  public setName(name: string): this;
-  public setSpoiler(spoiler?: boolean): this;
+  public get url(): string;
+  public get width(): number | null;
+  public static from(other: JSONEncodable<RawAttachmentData> | APIAttachment): AttachmentBuilder;
   public toJSON(): unknown;
+  public equals(other: Attachment | APIAttachment): boolean;
 }
 
 export class MessageCollector extends Collector<Snowflake, Message, [Collection<Snowflake, Message>]> {

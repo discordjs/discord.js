@@ -3,6 +3,10 @@ export * from './messages/embed/Embed';
 export * from './messages/formatters';
 export * from './messages/embed/UnsafeEmbed';
 
+export * as AttachmentAssertions from './messages/attachment/Assertions';
+export * from './messages/attachment/Attachment';
+export * from './messages/attachment/UnsafeAttachment';
+
 export * as ComponentAssertions from './components/Assertions';
 export * from './components/ActionRow';
 export * from './components/button/Button';

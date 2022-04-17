@@ -159,7 +159,7 @@ class Message extends Base {
       this.attachments = new Collection();
       if (data.attachments) {
         for (const attachment of data.attachments) {
-          this.attachments.set(attachment.id, new Attachment(attachment.url, attachment.filename, attachment));
+          this.attachments.set(attachment.id, new Attachment(attachment));
         }
       }
     } else {

@@ -1,5 +1,6 @@
 'use strict';
 
+const { isJSONEncodable } = require('@discordjs/builders');
 const Util = require('../util/Util');
 
 /**
@@ -7,159 +8,136 @@ const Util = require('../util/Util');
  */
 class Attachment {
   /**
-   * @param {BufferResolvable|Stream} attachment The file
-   * @param {string} [name=null] The name of the file, if any
-   * @param {APIAttachment} [data] Extra data
+   * Creates a new attachment from API data
+   * @param {APIAttachment} data The API attachment's data
    */
-  constructor(attachment, name = null, data) {
-    this.attachment = attachment;
+  constructor(data) {
     /**
-     * The name of this attachment
-     * @type {?string}
+     * The API data associated with this attachment.
+     * @type {APIAttachment}
      */
-    this.name = name;
-    if (data) this._patch(data);
+    this.data = data;
   }
 
   /**
-   * Sets the description of this attachment.
-   * @param {string} description The description of the file
-   * @returns {Attachment} This attachment
+   * The attachment's id
+   * @type {Snowflake}
    */
-  setDescription(description) {
-    this.description = description;
-    return this;
+  get id() {
+    return this.data.id ?? null;
   }
 
   /**
-   * Sets the file of this attachment.
-   * @param {BufferResolvable|Stream} attachment The file
-   * @param {string} [name=null] The name of the file, if any
-   * @returns {Attachment} This attachment
+   * The media type of this attachment
+   * @type {?string}
    */
-  setFile(attachment, name = null) {
-    this.attachment = attachment;
-    this.name = name;
-    return this;
+  get contentType() {
+    return this.data.content_type ?? this.data.contentType ?? null;
   }
 
   /**
-   * Sets the name of this attachment.
-   * @param {string} name The name of the file
-   * @returns {Attachment} This attachment
+   * The name of this attachment
+   * @type {?string}
    */
-  setName(name) {
-    this.name = name;
-    return this;
+  get name() {
+    return this.data.filename ?? this.data.name ?? null;
   }
 
   /**
-   * Sets whether this attachment is a spoiler
-   * @param {boolean} [spoiler=true] Whether the attachment should be marked as a spoiler
-   * @returns {Attachment} This attachment
+   * The description (alt text) of this attachment
+   * @type {?string}
    */
-  setSpoiler(spoiler = true) {
-    if (spoiler === this.spoiler) return this;
-
-    if (!spoiler) {
-      while (this.spoiler) {
-        this.name = this.name.slice('SPOILER_'.length);
-      }
-      return this;
-    }
-    this.name = `SPOILER_${this.name}`;
-    return this;
-  }
-
-  _patch(data) {
-    /**
-     * The attachment's id
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    if ('size' in data) {
-      /**
-       * The size of this attachment in bytes
-       * @type {number}
-       */
-      this.size = data.size;
-    }
-
-    if ('url' in data) {
-      /**
-       * The URL to this attachment
-       * @type {string}
-       */
-      this.url = data.url;
-    }
-
-    if ('proxy_url' in data) {
-      /**
-       * The Proxy URL to this attachment
-       * @type {string}
-       */
-      this.proxyURL = data.proxy_url;
-    }
-
-    if ('height' in data) {
-      /**
-       * The height of this attachment (if an image or video)
-       * @type {?number}
-       */
-      this.height = data.height;
-    } else {
-      this.height ??= null;
-    }
-
-    if ('width' in data) {
-      /**
-       * The width of this attachment (if an image or video)
-       * @type {?number}
-       */
-      this.width = data.width;
-    } else {
-      this.width ??= null;
-    }
-
-    if ('content_type' in data) {
-      /**
-       * The media type of this attachment
-       * @type {?string}
-       */
-      this.contentType = data.content_type;
-    } else {
-      this.contentType ??= null;
-    }
-
-    if ('description' in data) {
-      /**
-       * The description (alt text) of this attachment
-       * @type {?string}
-       */
-      this.description = data.description;
-    } else {
-      this.description ??= null;
-    }
-
-    /**
-     * Whether this attachment is ephemeral
-     * @type {boolean}
-     */
-    this.ephemeral = data.ephemeral ?? false;
+  get description() {
+    return this.data.description ?? null;
   }
 
   /**
-   * Whether or not this attachment has been marked as a spoiler
+   * Whether this attachment is ephemeral
    * @type {boolean}
-   * @readonly
    */
-  get spoiler() {
-    return Util.basename(this.url ?? this.name).startsWith('SPOILER_');
+  get ephemeral() {
+    return this.data.ephemeral ?? false;
   }
 
+  /**
+   * The size of this attachment in bytes
+   * @type {number}
+   */
+  get size() {
+    return this.data.size ?? null;
+  }
+
+  /**
+   * The URL to this attachment
+   * @type {string}
+   */
+  get url() {
+    return this.data.url ?? null;
+  }
+
+  /**
+   * The Proxy URL to this attachment
+   * @type {string}
+   */
+  get proxyURL() {
+    return this.data.proxy_url ?? this.data.proxyURL ?? null;
+  }
+
+  /**
+   * The height of this attachment (if an image or video)
+   * @type {?number}
+   */
+  get height() {
+    return this.data.height ?? null;
+  }
+
+  /**
+   * The width of this attachment (if an image or video)
+   * @type {?number}
+   */
+  get width() {
+    return this.data.width ?? null;
+  }
+
+  /**
+	 * Whether or not this attachment has been marked as a spoiler
+	 * @type {boolean}
+	 * @readonly
+	 */
+	get spoiler() {
+		return Util.basename(this.url ?? this.name).startsWith('SPOILER_');
+	}
+
+  /**
+   * Creates a new attachment builder from JSON data
+   * @param {JSONEncodable<APIAttachment>|APIAttachment} other The other data
+   * @returns {AttachmentBuilder}
+   */
+  static from(other) {
+    if (isJSONEncodable(other)) {
+      return new this(other.toJSON());
+    }
+    return new this(other);
+  }
+
+  /**
+   * Returns the API-compatible JSON for this attachment
+   * @returns {APIAttachment}
+   */
   toJSON() {
-    return Util.flatten(this);
+    return { ...this.data };
+  }
+
+  /**
+   * Whether or not the given attachments are equal
+   * @param {Attachment|APIAttachment} other The attachment to compare against
+   * @returns {boolean}
+   */
+  equals(other) {
+    if (other instanceof Attachment) {
+      return isEqual(other.data, this.data);
+    }
+    return isEqual(other, this.data);
   }
 }
 
