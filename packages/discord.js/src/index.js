@@ -1,5 +1,7 @@
 'use strict';
 
+const { __exportStar } = require('tslib');
+
 // "Root" classes (starting points)
 exports.BaseClient = require('./client/BaseClient');
 exports.Client = require('./client/Client');
@@ -205,12 +207,8 @@ exports.StickerFormatType = require('discord-api-types/v10').StickerFormatType;
 exports.TextInputStyle = require('discord-api-types/v10').TextInputStyle;
 exports.UserFlags = require('discord-api-types/v10').UserFlags;
 exports.WebhookType = require('discord-api-types/v10').WebhookType;
-exports.UnsafeButtonBuilder = require('@discordjs/builders').UnsafeButtonBuilder;
-exports.UnsafeEmbedBuilder = require('@discordjs/builders').UnsafeEmbedBuilder;
-exports.UnsafeSelectMenuBuilder = require('@discordjs/builders').UnsafeSelectMenuBuilder;
-exports.UnsafeSelectMenuOptionBuilder = require('@discordjs/builders').UnsafeSelectMenuOptionBuilder;
-exports.UnsafeModalBuilder = require('@discordjs/builders').UnsafeModalBuilder;
-exports.UnsafeTextInputBuilder = require('@discordjs/builders').UnsafeTextInputBuilder;
 exports.DiscordAPIError = require('@discordjs/rest').DiscordAPIError;
 exports.HTTPError = require('@discordjs/rest').HTTPError;
 exports.RateLimitError = require('@discordjs/rest').RateLimitError;
+
+__exportStar(require('@discordjs/builders'), exports);

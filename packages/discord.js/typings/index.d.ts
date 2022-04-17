@@ -5390,14 +5390,5 @@ export {
   UserFlags,
   WebhookType,
 } from 'discord-api-types/v10';
-export {
-  UnsafeEmbedBuilder,
-  UnsafeModalBuilder,
-  UnsafeTextInputBuilder,
-  UnsafeButtonBuilder,
-  UnsafeSelectMenuBuilder,
-  UnsafeSelectMenuOptionBuilder,
-  MessageActionRowComponentBuilder,
-  ModalActionRowComponentBuilder,
-} from '@discordjs/builders';
+export * from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
