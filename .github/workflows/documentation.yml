@@ -86,7 +86,7 @@ jobs:
         id: SHORT_BRANCH_NAME
         with:
           pattern: '(^@\w+\/\w+@v?)?(?<semver>\d+.\d+.\d+)-?.*'
-          string: ${{ BRANCH_NAME }}
+          string: ${{ env.BRANCH_NAME }}
           replace-with: '$<semver>'
 
       - name: Move docs to correct directory
