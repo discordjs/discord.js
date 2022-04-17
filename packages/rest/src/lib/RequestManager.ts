@@ -53,7 +53,7 @@ export interface RequestData {
 	 */
 	body?: BodyInit | unknown;
 	/**
-	 * The [Agent]({@link https://undici.nodejs.org/#/docs/api/Agent}) to use for the request.
+	 * The {@link https://undici.nodejs.org/#/docs/api/Agent Agent} to use for the request.
 	 */
 	dispatcher?: Agent;
 	/**
@@ -161,7 +161,7 @@ export interface RequestManager {
  */
 export class RequestManager extends EventEmitter {
 	/**
-	 * The [Agent](@link https://undici.nodejs.org/#/docs/api/Agent) for all requests
+	 * The {@link https://undici.nodejs.org/#/docs/api/Agent Agent} for all requests
 	 * performed by this manager.
 	 */
 	public agent: Dispatcher | null = null;
@@ -445,7 +445,7 @@ export class RequestManager extends EventEmitter {
 		}
 
 		// Prioritize setting an agent per request, use the agent for this instance otherwise.
-		fetchOptions.dispatcher = request.dispatcher ?? this.agent;
+		fetchOptions.dispatcher = request.dispatcher ?? this.agent ?? undefined!;
 
 		return { url, fetchOptions };
 	}
