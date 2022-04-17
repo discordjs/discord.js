@@ -161,6 +161,16 @@ export class UnsafeAttachmentBuilder {
 		this.ephemeral = _data.ephemeral ?? false;
 	}
 
+	/**
+     * Whether or not this attachment has been marked as a spoiler
+     * @type {boolean}
+     * @readonly
+     */
+	get spoiler() {
+		if(this.name) return this.name.startsWith('SPOILER_');
+		return false;
+	}
+
 	public toJSON() {
 		return {
 			...this.data,
