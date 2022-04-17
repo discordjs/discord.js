@@ -1,5 +1,5 @@
-import { createVoiceConnection } from './VoiceConnection';
 import type { JoinConfig } from './DataStore';
+import { createVoiceConnection } from './VoiceConnection';
 import type { DiscordGatewayAdapterCreator } from './util/adapter';
 
 /**

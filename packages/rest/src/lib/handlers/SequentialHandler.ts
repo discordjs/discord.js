@@ -1,10 +1,10 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { request, type Dispatcher } from 'undici';
+import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
 import { DiscordAPIError, DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError';
 import { HTTPError } from '../errors/HTTPError';
 import { RateLimitError } from '../errors/RateLimitError';
-import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
 import { RESTEvents } from '../utils/constants';
 import { hasSublimit, parseHeader, parseResponse } from '../utils/utils';
 import type { RateLimitData, RequestOptions } from '../REST';

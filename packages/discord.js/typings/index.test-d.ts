@@ -57,7 +57,7 @@ import {
   Interaction,
   InteractionCollector,
   Message,
-  MessageAttachment,
+  Attachment,
   MessageCollector,
   MessageComponentInteraction,
   MessageReaction,
@@ -119,6 +119,7 @@ import {
   MessageActionRowComponentBuilder,
   GuildBanManager,
   GuildBan,
+  MessageManager,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
@@ -583,7 +584,7 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({}));
   assertIsMessage(channel.send({ embeds: [] }));
 
-  const attachment = new MessageAttachment('file.png');
+  const attachment = new Attachment('file.png');
   const embed = new EmbedBuilder();
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
@@ -808,8 +809,8 @@ client.on('interactionCreate', async interaction => {
   // @ts-expect-error
   interaction.reply({ content: 'Hi!', components: [[button]] });
 
-  // @ts-expect-error
   void new ActionRowBuilder({});
+
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
 
@@ -1017,6 +1018,22 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
   expectType<Promise<AnyChannel | null>>(guildChannelManager.fetch('0'));
+}
+
+declare const messageManager: MessageManager;
+{
+  expectType<Promise<Message>>(messageManager.fetch('1234567890'));
+  expectType<Promise<Message>>(messageManager.fetch({ message: '1234567890' }));
+  expectType<Promise<Message>>(messageManager.fetch({ message: '1234567890', cache: true, force: false }));
+  expectType<Promise<Collection<Snowflake, Message>>>(messageManager.fetch());
+  expectType<Promise<Collection<Snowflake, Message>>>(messageManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, Message>>>(
+    messageManager.fetch({ limit: 100, before: '1234567890', cache: false }),
+  );
+  // @ts-expect-error
+  messageManager.fetch({ cache: true, force: false });
+  // @ts-expect-error
+  messageManager.fetch({ message: '1234567890', after: '1234567890', cache: true, force: false });
 }
 
 declare const roleManager: RoleManager;
@@ -1439,8 +1456,8 @@ expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
 
 declare const chatInputInteraction: ChatInputCommandInteraction;
 
-expectType<MessageAttachment>(chatInputInteraction.options.getAttachment('attachment', true));
-expectType<MessageAttachment | null>(chatInputInteraction.options.getAttachment('attachment'));
+expectType<Attachment>(chatInputInteraction.options.getAttachment('attachment', true));
+expectType<Attachment | null>(chatInputInteraction.options.getAttachment('attachment'));
 
 declare const modal: ModalBuilder;
 

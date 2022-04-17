@@ -1,5 +1,5 @@
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { s } from '@sapphire/shapeshift';
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { validateChoicesLength } from '../Assertions';
 
 const stringPredicate = s.string.lengthGe(1).lengthLe(100);

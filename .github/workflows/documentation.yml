@@ -83,6 +83,15 @@ jobs:
           path: 'out'
 
       - name: Move docs to correct directory
+        if: env.BRANCH_OR_TAG == 'tag'
+        env:
+          PACKAGE: ${{ matrix.package }}
+        run: |
+          mkdir -p out/${PACKAGE}
+          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/$(jq --raw-output '.version' packages/${PACKAGE}/package.json).json
+
+      - name: Move docs to correct directory
+        if: env.BRANCH_OR_TAG == 'branch'
         env:
           PACKAGE: ${{ matrix.package }}
         run: |

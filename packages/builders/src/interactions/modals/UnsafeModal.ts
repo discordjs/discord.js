@@ -6,7 +6,7 @@ import type {
 import { ActionRowBuilder, createComponentBuilder, JSONEncodable, ModalActionRowComponentBuilder } from '../../index';
 
 export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResponseCallbackData> {
-	public readonly data: Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>>;
+	public readonly data: Partial<APIModalInteractionResponseCallbackData>;
 	public readonly components: ActionRowBuilder<ModalActionRowComponentBuilder>[] = [];
 
 	public constructor({ components, ...data }: Partial<APIModalInteractionResponseCallbackData> = {}) {
