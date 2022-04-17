@@ -48,9 +48,17 @@ jobs:
           name: docs
           path: packages/*/docs/docs.json
 
+      - uses: frabert/replace-string-action@v2.0
+        id: SHORT_BRANCH_NAME
+        with:
+          pattern: '(^@\w+\/\w+@v?)?(?<semver>\d+.\d+.\d+)-?.*'
+          string: ${{ env.BRANCH_NAME }}
+          replace-with: '$<semver>'
+
       - name: Set outputs for upload job
         id: env
         run: |
+          echo "::set-output name=SHORT_BRANCH_NAME::${{ steps.SHORT_BRANCH_NAME.outputs.replaced }}"
           echo "::set-output name=BRANCH_NAME::${GITHUB_REF_NAME}"
           echo "::set-output name=BRANCH_OR_TAG::${GITHUB_REF_TYPE}"
           echo "::set-output name=SHA::${GITHUB_SHA}"
@@ -65,6 +73,7 @@ jobs:
         package: ['builders', 'collection', 'discord.js', 'rest', 'voice']
     runs-on: ubuntu-latest
     env:
+      SHORT_BRANCH_NAME: ${{ needs.build.outputs.SHORT_BRANCH_NAME }}
       BRANCH_NAME: ${{ needs.build.outputs.BRANCH_NAME }}
       BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
       SHA: ${{ needs.build.outputs.SHA }}
@@ -82,19 +91,12 @@ jobs:
           token: ${{ secrets.DJS_DOCS }}
           path: 'out'
 
-      - uses: frabert/replace-string-action@v2.0
-        id: SHORT_BRANCH_NAME
-        with:
-          pattern: '(^@\w+\/\w+@v?)?(?<semver>\d+.\d+.\d+)-?.*'
-          string: ${{ env.BRANCH_NAME }}
-          replace-with: '$<semver>'
-
       - name: Move docs to correct directory
         env:
           PACKAGE: ${{ matrix.package }}
         run: |
           mkdir -p out/${PACKAGE}
-          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${{ steps.SHORT_BRANCH_NAME.outputs.replaced }}.json
+          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SHORT_BRANCH_NAME}.json
 
       - name: Commit and push
         run: |
