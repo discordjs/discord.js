@@ -1822,7 +1822,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.17.9
     "@babel/preset-env": ^7.16.11
     "@babel/preset-typescript": ^7.16.7
-    "@discordjs/ts-docgen": ^0.4.0
+    "@discordjs/ts-docgen": ^0.4.1
     "@sapphire/shapeshift": ^2.0.0
     "@sindresorhus/is": ^4.6.0
     "@types/jest": ^27.4.1
@@ -1853,7 +1853,7 @@ __metadata:
     "@babel/core": ^7.17.9
     "@babel/preset-env": ^7.16.11
     "@babel/preset-typescript": ^7.16.7
-    "@discordjs/ts-docgen": ^0.4.0
+    "@discordjs/ts-docgen": ^0.4.1
     "@types/jest": ^27.4.1
     "@types/node": ^16.11.27
     "@typescript-eslint/eslint-plugin": ^5.19.0
@@ -1908,7 +1908,7 @@ __metadata:
     "@babel/preset-env": ^7.16.11
     "@babel/preset-typescript": ^7.16.7
     "@discordjs/collection": "workspace:^"
-    "@discordjs/ts-docgen": ^0.4.0
+    "@discordjs/ts-docgen": ^0.4.1
     "@sapphire/async-queue": ^1.3.1
     "@sapphire/snowflake": ^3.2.1
     "@types/jest": ^27.4.1
@@ -1934,13 +1934,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/ts-docgen@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@discordjs/ts-docgen@npm:0.4.0"
+"@discordjs/ts-docgen@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@discordjs/ts-docgen@npm:0.4.1"
   dependencies:
     js-yaml: ^4.1.0
     typedoc: ^0.22.15
-  checksum: 7d746270008595f265ab87c830c84408157394ea100587fe8d9455a2cb92fcb0a92a287a23991f17be59f4c1e3482cad525dfbd655e6e0ae580f11e6c349b64e
+  checksum: fbb8c7041812ae0130043451501b73d732a05afaec01136f3c877dae08d7fe9bb913c9763b60010b28bbc50c0043354ae01f5bc2626e1a24a767cb337a29a9a9
   languageName: node
   linkType: hard
 
@@ -1951,7 +1951,7 @@ __metadata:
     "@babel/core": ^7.17.9
     "@babel/preset-env": ^7.16.11
     "@babel/preset-typescript": ^7.16.7
-    "@discordjs/ts-docgen": ^0.4.0
+    "@discordjs/ts-docgen": ^0.4.1
     "@types/jest": ^27.4.1
     "@types/node": ^16.11.27
     "@types/ws": ^8.5.3

@@ -64,7 +64,7 @@
 		"@babel/plugin-proposal-decorators": "^7.17.9",
 		"@babel/preset-env": "^7.16.11",
 		"@babel/preset-typescript": "^7.16.7",
-		"@discordjs/ts-docgen": "^0.4.0",
+		"@discordjs/ts-docgen": "^0.4.1",
 		"@types/jest": "^27.4.1",
 		"@types/node": "^16.11.27",
 		"@typescript-eslint/eslint-plugin": "^5.19.0",
