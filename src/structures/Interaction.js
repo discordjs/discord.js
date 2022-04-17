@@ -119,7 +119,7 @@ class Interaction extends Base {
 
     /**
      * The preferred locale from the guild this interaction was sent in
-     * @type {?string}
+     * @type {?Locale}
      */
     this.guildLocale = data.guild_locale ?? null;
   }
