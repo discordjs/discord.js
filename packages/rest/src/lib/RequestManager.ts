@@ -445,11 +445,7 @@ export class RequestManager extends EventEmitter {
 		}
 
 		// Prioritize setting an agent per request, use the agent for this instance otherwise.
-		if (request.dispatcher) {
-			fetchOptions.dispatcher = request.dispatcher;
-		} else if (this.agent) {
-			fetchOptions.dispatcher = this.agent;
-		}
+		fetchOptions.dispatcher = request.dispatcher ?? this.agent;
 
 		return { url, fetchOptions };
 	}
