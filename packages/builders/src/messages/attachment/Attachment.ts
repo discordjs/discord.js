@@ -20,7 +20,7 @@ export class AttachmentBuilder extends UnsafeAttachmentBuilder {
 	}
 
 	public override toJSON() {
-		validateRequiredAttachmentParameters(this.data.description, this.data.name);
+		validateRequiredAttachmentParameters(this.data.description, this.data.filename ?? this.data.name);
 		return super.toJSON();
 	}
 }
