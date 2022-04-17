@@ -1,5 +1,7 @@
 'use strict';
 
+const { __exportStar } = require('tslib');
+
 // "Root" classes (starting points)
 exports.BaseClient = require('./client/BaseClient');
 exports.Client = require('./client/Client');
@@ -115,12 +117,13 @@ exports.Integration = require('./structures/Integration');
 exports.IntegrationApplication = require('./structures/IntegrationApplication');
 exports.Interaction = require('./structures/Interaction');
 exports.InteractionCollector = require('./structures/InteractionCollector');
+exports.InteractionResponse = require('./structures/InteractionResponse');
 exports.InteractionWebhook = require('./structures/InteractionWebhook');
 exports.Invite = require('./structures/Invite');
 exports.InviteStageInstance = require('./structures/InviteStageInstance');
 exports.InviteGuild = require('./structures/InviteGuild');
 exports.Message = require('./structures/Message').Message;
-exports.MessageAttachment = require('./structures/MessageAttachment');
+exports.Attachment = require('./structures/Attachment');
 exports.ModalBuilder = require('./structures/ModalBuilder');
 exports.MessageCollector = require('./structures/MessageCollector');
 exports.MessageComponentInteraction = require('./structures/MessageComponentInteraction');
@@ -205,12 +208,8 @@ exports.StickerFormatType = require('discord-api-types/v10').StickerFormatType;
 exports.TextInputStyle = require('discord-api-types/v10').TextInputStyle;
 exports.UserFlags = require('discord-api-types/v10').UserFlags;
 exports.WebhookType = require('discord-api-types/v10').WebhookType;
-exports.UnsafeButtonBuilder = require('@discordjs/builders').UnsafeButtonBuilder;
-exports.UnsafeEmbedBuilder = require('@discordjs/builders').UnsafeEmbedBuilder;
-exports.UnsafeSelectMenuBuilder = require('@discordjs/builders').UnsafeSelectMenuBuilder;
-exports.UnsafeSelectMenuOptionBuilder = require('@discordjs/builders').UnsafeSelectMenuOptionBuilder;
-exports.UnsafeModalBuilder = require('@discordjs/builders').UnsafeModalBuilder;
-exports.UnsafeTextInputBuilder = require('@discordjs/builders').UnsafeTextInputBuilder;
 exports.DiscordAPIError = require('@discordjs/rest').DiscordAPIError;
 exports.HTTPError = require('@discordjs/rest').HTTPError;
 exports.RateLimitError = require('@discordjs/rest').RateLimitError;
+
+__exportStar(require('@discordjs/builders'), exports);

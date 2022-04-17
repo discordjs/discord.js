@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { VoiceReceiver } from '../src/receive/VoiceReceiver';
-import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
-import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
 import { once } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
+import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
+import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
+import { VoiceReceiver } from '../src/receive/VoiceReceiver';
 import { methods } from '../src/util/Secretbox';
 
 jest.mock('../src/VoiceConnection');

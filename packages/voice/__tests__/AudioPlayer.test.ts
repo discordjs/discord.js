@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { AudioResource } from '../src/audio/AudioResource';
-import { createAudioPlayer, AudioPlayerStatus, AudioPlayer, SILENCE_FRAME } from '../src/audio/AudioPlayer';
-import { Readable } from 'node:stream';
-import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
-import { NoSubscriberBehavior } from '../src';
-import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import { once } from 'node:events';
+import { Readable } from 'node:stream';
+import { NoSubscriberBehavior } from '../src';
+import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
+import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
+import { createAudioPlayer, AudioPlayerStatus, AudioPlayer, SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioPlayerError } from '../src/audio/AudioPlayerError';
+import { AudioResource } from '../src/audio/AudioResource';
 
 jest.mock('../src/DataStore');
 jest.mock('../src/VoiceConnection');

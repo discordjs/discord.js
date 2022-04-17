@@ -5,10 +5,10 @@ import {
 } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { assertReturnOfBuilder, validateMaxOptionsLength, validateRequiredParameters } from './Assertions';
+import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
 import { SharedNameAndDescription } from './mixins/NameAndDescription';
 import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions';
-import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 
 /**
  * Represents a folder for subcommands

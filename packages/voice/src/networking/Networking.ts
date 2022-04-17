@@ -1,10 +1,10 @@
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
+import { TypedEmitter } from 'tiny-typed-emitter';
+import type { CloseEvent } from 'ws';
 import { VoiceUDPSocket } from './VoiceUDPSocket';
 import { VoiceWebSocket } from './VoiceWebSocket';
 import * as secretbox from '../util/Secretbox';
 import { Awaited, noop } from '../util/util';
-import type { CloseEvent } from 'ws';
-import { TypedEmitter } from 'tiny-typed-emitter';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;

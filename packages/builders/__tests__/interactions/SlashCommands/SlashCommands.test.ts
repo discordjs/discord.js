@@ -420,5 +420,61 @@ describe('Slash Commands', () => {
 				expect(() => getSubcommand().addBooleanOption(getBooleanOption()).toJSON()).not.toThrowError();
 			});
 		});
+
+		describe('Slash command localizations', () => {
+			const expectedSingleLocale = { 'en-US': 'foobar' };
+			const expectedMultipleLocales = {
+				...expectedSingleLocale,
+				bg: 'test',
+			};
+
+			test('GIVEN valid name localizations THEN does not throw error', () => {
+				expect(() => getBuilder().setNameLocalization('en-US', 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+			});
+
+			test('GIVEN valid name localizations THEN does not throw error', () => {
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
+			});
+
+			test('GIVEN valid name localizations THEN valid data is stored', () => {
+				expect(getBuilder().setNameLocalization('en-US', 'foobar').name_localizations).toEqual(expectedSingleLocale);
+				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).name_localizations).toEqual(
+					expectedMultipleLocales,
+				);
+				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
+				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
+					'en-US': null,
+				});
+			});
+
+			test('GIVEN valid description localizations THEN does not throw error', () => {
+				expect(() => getBuilder().setDescriptionLocalization('en-US', 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+			});
+
+			test('GIVEN valid description localizations THEN does not throw error', () => {
+				// @ts-expect-error
+				expect(() => getBuilder().setDescriptionLocalization('en-U', 'foobar')).toThrowError();
+				// @ts-expect-error
+				expect(() => getBuilder().setDescriptionLocalizations({ 'en-U': 'foobar' })).toThrowError();
+			});
+
+			test('GIVEN valid description localizations THEN valid data is stored', () => {
+				expect(getBuilder().setDescriptionLocalization('en-US', 'foobar').description_localizations).toEqual(
+					expectedSingleLocale,
+				);
+				expect(
+					getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar', bg: 'test' }).description_localizations,
+				).toEqual(expectedMultipleLocales);
+				expect(getBuilder().setDescriptionLocalizations(null).description_localizations).toBeNull();
+				expect(getBuilder().setDescriptionLocalization('en-US', null).description_localizations).toEqual({
+					'en-US': null,
+				});
+			});
+		});
 	});
 });
