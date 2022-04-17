@@ -179,7 +179,6 @@ export interface REST {
 export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
 
 export class REST extends EventEmitter {
-	public readonly agent: Dispatcher | null = null;
 	public readonly cdn: CDN;
 	public readonly requestManager: RequestManager;
 
