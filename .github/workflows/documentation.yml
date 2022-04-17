@@ -82,12 +82,19 @@ jobs:
           token: ${{ secrets.DJS_DOCS }}
           path: 'out'
 
+      - uses: frabert/replace-string-action@v2.0
+        id: SHORT_BRANCH_NAME
+        with:
+          pattern: '(^@\w+\/\w+@v?)?(?<semver>\d+.\d+.\d+)-?.*'
+          string: ${{ BRANCH_NAME }}
+          replace-with: '$<semver>'
+
       - name: Move docs to correct directory
         env:
           PACKAGE: ${{ matrix.package }}
         run: |
           mkdir -p out/${PACKAGE}
-          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
+          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${{ steps.SHORT_BRANCH_NAME.outputs.replaced }}.json
 
       - name: Commit and push
         run: |
