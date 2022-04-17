@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/rest",
-	"version": "0.4.0",
+	"version": "0.5.0-dev",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"build": "tsup && tsc --emitDeclarationOnly --incremental",
