@@ -28,6 +28,7 @@ import {
   userMention,
   ModalActionRowComponentBuilder,
   ModalBuilder as BuildersModal,
+  AnyComponentBuilder,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
@@ -232,17 +233,12 @@ export interface ActionRowData<T extends ActionRowComponentBuilder | ActionRowCo
   components: T[];
 }
 
-export class ActionRowBuilder<
-  T extends MessageActionRowComponentBuilder | ModalActionRowComponentBuilder =
-    | MessageActionRowComponentBuilder
-    | ModalActionRowComponentBuilder,
-> extends BuilderActionRow<T> {
+export class ActionRowBuilder<T extends AnyComponentBuilder = AnyComponentBuilder> extends BuilderActionRow<T> {
   constructor(
-    data?:
+    data?: Partial<
       | ActionRowData<ActionRowComponentData | ActionRowComponentBuilder>
-      | (Omit<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>, 'type'> & {
-          type?: ComponentType.ActionRow;
-        }),
+      | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
+    >,
   );
   public static from(
     other:
@@ -577,9 +573,7 @@ export class ButtonBuilder extends BuilderButtonComponent {
 }
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
-  public constructor(
-    data?: SelectMenuComponentData | (Omit<APISelectMenuComponent, 'type'> & { type?: ComponentType.SelectMenu }),
-  );
+  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
 }
 
@@ -593,7 +587,7 @@ export class ModalBuilder extends BuildersModal {
 }
 
 export class TextInputBuilder extends BuilderTextInputComponent {
-  public constructor(data?: TextInputComponentData | APITextInputComponent);
+  public constructor(data?: Partial<TextInputComponentData | APITextInputComponent>);
   public static from(other: JSONEncodable<APITextInputComponent> | APITextInputComponent): TextInputBuilder;
 }
 

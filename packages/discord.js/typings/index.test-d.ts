@@ -808,8 +808,8 @@ client.on('interactionCreate', async interaction => {
   // @ts-expect-error
   interaction.reply({ content: 'Hi!', components: [[button]] });
 
-  // @ts-expect-error
   void new ActionRowBuilder({});
+
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
 
