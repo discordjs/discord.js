@@ -33,7 +33,7 @@ export const urlPredicate = s.string.url({
 
 export const embedAuthorPredicate = s.object({
 	name: authorNamePredicate,
-	iconURL: urlPredicate,
+	iconURL: imageURLPredicate,
 	url: urlPredicate,
 });
 
@@ -49,7 +49,7 @@ export const footerTextPredicate = s.string.lengthGe(1).lengthLe(2048).nullable;
 
 export const embedFooterPredicate = s.object({
 	text: footerTextPredicate,
-	iconURL: urlPredicate,
+	iconURL: imageURLPredicate,
 });
 
 export const timestampPredicate = s.union(s.number, s.date).nullable;
