@@ -77,7 +77,7 @@ class Attachment {
   }
 
   /**
-   * The Proxy URL to this attachment
+   * The proxy URL to this attachment
    * @type {string}
    */
   get proxyURL() {
