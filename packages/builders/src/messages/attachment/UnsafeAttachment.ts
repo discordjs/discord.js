@@ -22,7 +22,7 @@ export class UnsafeAttachmentBuilder {
 	/**
 	 * @param {APIAttachment} [data] Extra data
 	 */
-	public constructor(attachment: BufferResolvable | Stream, name = null, _data?: APIAttachment) {
+	public constructor(attachment: BufferResolvable | Stream, name = null, _data: APIAttachment) {
 		this.data = { ..._data };
 		this.attachment = attachment;
 		/**
@@ -30,7 +30,7 @@ export class UnsafeAttachmentBuilder {
 		 * @type {?string}
 		 */
 		this.name = name;
-		if (_data) this._patch(_data);
+		this._patch(_data);
 	}
 
 	/**
