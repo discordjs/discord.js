@@ -1665,7 +1665,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
 
   public activity: MessageActivity | null;
   public applicationId: Snowflake | null;
-  public attachments: Collection<Snowflake, Attachment>;
+  public attachments: Collection<Snowflake, AttachmentBuilder>;
   public author: User;
   public get channel(): If<Cached, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
@@ -1868,7 +1868,7 @@ export class MessagePayload {
     options: string | MessageOptions | WebhookMessageOptions,
     extra?: MessageOptions | WebhookMessageOptions,
   ): MessagePayload;
-  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | Attachment): Promise<RawFile>;
+  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | AttachmentBuilder): Promise<RawFile>;
 
   public makeContent(): string | undefined;
   public resolveBody(): this;

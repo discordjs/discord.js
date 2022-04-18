@@ -57,6 +57,7 @@ import {
   Interaction,
   InteractionCollector,
   Message,
+  Attachment,
   AttachmentBuilder,
   MessageCollector,
   MessageComponentInteraction,
