@@ -3188,7 +3188,7 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
   private constructor(guild: Guild, iterable?: Iterable<RawStickerData>);
   public guild: Guild;
   public create(
-    file: BufferResolvable | Stream | FileOptions | Attachment,
+    file: BufferResolvable | Stream | FileOptions | AttachmentBuilder,
     name: string,
     tags: string,
     options?: GuildStickerCreateOptions,
@@ -4787,10 +4787,10 @@ export type MessageChannelComponentCollectorOptions<T extends MessageComponentIn
 >;
 
 export interface MessageEditOptions {
-  attachments?: Attachment[];
+  attachments?: AttachmentBuilder[];
   content?: string | null;
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[] | null;
-  files?: (FileOptions | BufferResolvable | Stream | Attachment)[];
+  files?: (FileOptions | BufferResolvable | Stream | AttachmentBuilder)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
@@ -4840,10 +4840,10 @@ export interface MessageOptions {
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
-  files?: (FileOptions | BufferResolvable | Stream | Attachment)[];
+  files?: (FileOptions | BufferResolvable | Stream | AttachmentBuilder)[];
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
-  attachments?: Attachment[];
+  attachments?: AttachmentBuilder[];
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, number>;
 }
 
