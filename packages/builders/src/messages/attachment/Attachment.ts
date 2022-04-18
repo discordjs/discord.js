@@ -1,5 +1,5 @@
-import { nameValidator, descriptionValidator, validateRequiredAttachmentParameters } from './Assertions';
 import type { Stream } from 'node:stream';
+import { nameValidator, descriptionValidator, validateRequiredAttachmentParameters } from './Assertions';
 import { UnsafeAttachmentBuilder } from './UnsafeAttachment';
 import type { BufferResolvable } from './UnsafeAttachment';
 
