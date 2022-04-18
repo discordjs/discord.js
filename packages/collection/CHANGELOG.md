@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+# [0.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.5.0...@discordjs/collection@0.6.0) (2022-04-17)
+
+## Features
+
+- Add support for module: NodeNext in TS and ESM (#7598) ([8f1986a](https://github.com/discordjs/discord.js/commit/8f1986a6aa98365e09b00e84ad5f9f354ab61f3d))
+- **builders:** Add attachment command option type (#7203) ([ae0f35f](https://github.com/discordjs/discord.js/commit/ae0f35f51d68dfa5a7dc43d161ef9365171debdb))
+- **Collection:** Add merging functions (#7299) ([e4bd07b](https://github.com/discordjs/discord.js/commit/e4bd07b2394f227ea06b72eb6999de9ab3127b25))
+
+## Refactor
+
+- Make `intersect` perform a true intersection (#7211) ([d8efba2](https://github.com/discordjs/discord.js/commit/d8efba24e09aa2a8dbf028fc57a561a56e7833fd))
+
+## Typings
+
+- Add `ReadonlyCollection` (#7245) ([db25f52](https://github.com/discordjs/discord.js/commit/db25f529b26d7c819c1c42ad3e26c2263ea2da0e))
+- **Collection:** Union types on `intersect` and `difference` (#7196) ([1f9b922](https://github.com/discordjs/discord.js/commit/1f9b9225f2066e9cc66c3355417139fd25cc403c))
+
 # [0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.4.0...@discordjs/collection@0.5.0) (2021-12-08)
 
 ## Refactor

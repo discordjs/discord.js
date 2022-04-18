@@ -1,5 +1,5 @@
-import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v10';
 import { s } from '@sapphire/shapeshift';
+import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v10';
 import type { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
 import { UnsafeSelectMenuOptionBuilder } from './selectMenu/UnsafeSelectMenuOption';
 

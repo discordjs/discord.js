@@ -61,10 +61,10 @@ class TextBasedChannel {
    * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
-   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to send with the message
+   * @property {FileOptions[]|BufferResolvable[]|Attachment[]} [files] Files to send with the message
    * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
-   * @property {MessageAttachment[]} [attachments] Attachments to send in the message
+   * @property {Attachment[]} [attachments] Attachments to send in the message
    */
 
   /**

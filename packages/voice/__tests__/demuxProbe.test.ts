@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { demuxProbe } from '../src/util/demuxProbe';
-import { opus as _opus } from 'prism-media';
-import { Readable } from 'node:stream';
-import { StreamType } from '../src/audio';
 import EventEmitter, { once } from 'node:events';
+import { Readable } from 'node:stream';
+import { opus as _opus } from 'prism-media';
+import { StreamType } from '../src/audio';
+import { demuxProbe } from '../src/util/demuxProbe';
 
 jest.mock('prism-media');
 

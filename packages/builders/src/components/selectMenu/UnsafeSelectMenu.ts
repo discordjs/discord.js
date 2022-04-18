@@ -1,13 +1,11 @@
 import { APISelectMenuOption, ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
-import { ComponentBuilder } from '../Component';
 import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
+import { ComponentBuilder } from '../Component';
 
 /**
  * Represents a non-validated select menu component
  */
-export class UnsafeSelectMenuBuilder extends ComponentBuilder<
-	Partial<Omit<APISelectMenuComponent, 'options'>> & { type: ComponentType.SelectMenu }
-> {
+export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> {
 	/**
 	 * The options within this select menu
 	 */

@@ -9,11 +9,11 @@ const {
   MessageFlags,
   PermissionFlagsBits,
 } = require('discord-api-types/v10');
+const Attachment = require('./Attachment');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
 const Embed = require('./Embed');
 const InteractionCollector = require('./InteractionCollector');
-const MessageAttachment = require('./MessageAttachment');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
@@ -154,12 +154,12 @@ class Message extends Base {
     if ('attachments' in data) {
       /**
        * A collection of attachments in the message - e.g. Pictures - mapped by their ids
-       * @type {Collection<Snowflake, MessageAttachment>}
+       * @type {Collection<Snowflake, Attachment>}
        */
       this.attachments = new Collection();
       if (data.attachments) {
         for (const attachment of data.attachments) {
-          this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
+          this.attachments.set(attachment.id, new Attachment(attachment.url, attachment.filename, attachment));
         }
       }
     } else {
@@ -642,9 +642,9 @@ class Message extends Base {
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * Only `MessageFlags.SuppressEmbeds` can be edited.
-   * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
+   * @property {Attachment[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
-   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to add to the message
+   * @property {FileOptions[]|BufferResolvable[]|Attachment[]} [files] Files to add to the message
    * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */

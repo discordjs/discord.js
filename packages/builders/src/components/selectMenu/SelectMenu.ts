@@ -1,4 +1,6 @@
 import type { APISelectMenuComponent, APISelectMenuOption } from 'discord-api-types/v10';
+import { UnsafeSelectMenuBuilder } from './UnsafeSelectMenu';
+import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
 import {
 	customIdValidator,
 	disabledValidator,
@@ -8,8 +10,6 @@ import {
 	placeholderValidator,
 	validateRequiredSelectMenuParameters,
 } from '../Assertions';
-import { UnsafeSelectMenuBuilder } from './UnsafeSelectMenu';
-import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
 
 /**
  * Represents a validated select menu component
