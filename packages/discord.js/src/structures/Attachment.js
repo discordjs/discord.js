@@ -1,6 +1,7 @@
 'use strict';
 
 const { isJSONEncodable } = require('@discordjs/builders');
+const isEqual = require('fast-deep-equal');
 const Util = require('../util/Util');
 
 /**
