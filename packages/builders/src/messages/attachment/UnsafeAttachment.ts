@@ -1,5 +1,5 @@
-import type { APIAttachment, Snowflake } from 'discord-api-types/v10';
 import type { Stream } from 'node:stream';
+import { APIAttachment, Snowflake } from 'discord-api-types/v10';
 
 export type BufferResolvable = typeof ArrayBuffer | string;
 /**
@@ -22,15 +22,15 @@ export class UnsafeAttachmentBuilder {
 	/**
 	 * @param {APIAttachment} [data] Extra data
 	 */
-	public constructor(attachment: BufferResolvable | Stream, name = null, _data: APIAttachment) {
-		this.data = { ..._data };
+	public constructor(attachment: BufferResolvable | Stream, name = null, data?: APIAttachment) {
+		this.data = { ...data };
 		this.attachment = attachment;
 		/**
 		 * The name of this attachment
 		 * @type {?string}
 		 */
 		this.name = name;
-		if (_data) this._patch(_data);
+		if (data) this._patch(data);
 	}
 
 	/**
@@ -79,77 +79,77 @@ export class UnsafeAttachmentBuilder {
 			}
 			return this;
 		}
-		this.name = `SPOILER_${this.name}`;
+		this.name ? (this.name = `SPOILER_${this.name}`) : (this.name = null);
 		return this;
 	}
 
-	_patch(_data: APIAttachment) {
+	private _patch(data: APIAttachment) {
 		/**
 		 * The attachment's id
 		 * @type {Snowflake}
 		 */
-		this.id = _data.id;
+		this.id = data.id;
 
-		if ('size' in _data) {
+		if ('size' in data) {
 			/**
 			 * The size of this attachment in bytes
 			 * @type {number}
 			 */
-			this.size = _data.size;
+			this.size = data.size;
 		}
 
-		if ('url' in _data) {
+		if ('url' in data) {
 			/**
 			 * The URL to this attachment
 			 * @type {string}
 			 */
-			this.url = _data.url;
+			this.url = data.url;
 		}
 
-		if ('proxy_url' in _data) {
+		if ('proxy_url' in data) {
 			/**
 			 * The Proxy URL to this attachment
 			 * @type {string}
 			 */
-			this.proxyURL = _data.proxy_url;
+			this.proxyURL = data.proxy_url;
 		}
 
-		if ('height' in _data) {
+		if ('height' in data) {
 			/**
 			 * The height of this attachment (if an image or video)
 			 * @type {?number}
 			 */
-			this.height = _data.height;
+			this.height = data.height;
 		} else {
 			this.height ??= null;
 		}
 
-		if ('width' in _data) {
+		if ('width' in data) {
 			/**
 			 * The width of this attachment (if an image or video)
 			 * @type {?number}
 			 */
-			this.width = _data.width;
+			this.width = data.width;
 		} else {
 			this.width ??= null;
 		}
 
-		if ('content_type' in _data) {
+		if ('content_type' in data) {
 			/**
 			 * The media type of this attachment
 			 * @type {?string}
 			 */
-			this.contentType = _data.content_type;
+			this.contentType = data.content_type;
 		} else {
 			this.contentType ??= null;
 		}
 
-		if ('description' in _data) {
+		if ('description' in data) {
 			/**
 			 * The description (alt text) of this attachment
 			 * @type {?string}
 			 */
-			this.description = _data.description;
+			this.description = data.description;
 		} else {
 			this.description ??= null;
 		}
@@ -158,7 +158,7 @@ export class UnsafeAttachmentBuilder {
 		 * Whether this attachment is ephemeral
 		 * @type {boolean}
 		 */
-		this.ephemeral = _data.ephemeral ?? false;
+		this.ephemeral = data.ephemeral ?? false;
 	}
 
 	/**
@@ -166,15 +166,17 @@ export class UnsafeAttachmentBuilder {
 	 * @type {boolean}
 	 * @readonly
 	 */
-	get spoiler() {
+	public get spoiler() {
 		if (this.name) return this.name.startsWith('SPOILER_');
 		return false;
 	}
 
-	public toJSON() {
-		return {
+	public toJSON(): APIAttachment {
+		const JSONAttachment: APIAttachment = {
 			...this.data,
-		} as APIAttachment;
+		};
+
+		return JSONAttachment;
 	}
 }
 

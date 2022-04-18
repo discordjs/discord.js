@@ -1,7 +1,7 @@
-import { UnsafeAttachmentBuilder } from './UnsafeAttachment';
 import { nameValidator, descriptionValidator, validateRequiredAttachmentParameters } from './Assertions';
-import type { BufferResolvable } from './UnsafeAttachment';
 import type { Stream } from 'node:stream';
+import { UnsafeAttachmentBuilder } from './UnsafeAttachment';
+import type { BufferResolvable } from './UnsafeAttachment';
 
 export class AttachmentBuilder extends UnsafeAttachmentBuilder {
 	public override setDescription(description: string) {

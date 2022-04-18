@@ -6,10 +6,7 @@ export const descriptionValidator = s.string;
 
 export const spoilerValidator = s.boolean;
 
-export function validateRequiredAttachmentParameters(
-	name: string | null | undefined,
-	description: string | null | undefined,
-) {
+export function validateRequiredAttachmentParameters(name: string | null, description: string | null) {
 	nameValidator.parse(name);
 	descriptionValidator.parse(description);
 }
