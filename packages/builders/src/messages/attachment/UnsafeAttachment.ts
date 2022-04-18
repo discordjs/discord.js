@@ -1,5 +1,5 @@
 import type { Stream } from 'node:stream';
-import { APIAttachment, Snowflake } from 'discord-api-types/v10';
+import type { APIAttachment, Snowflake } from 'discord-api-types/v10';
 
 export type BufferResolvable = typeof ArrayBuffer | string;
 /**
@@ -22,15 +22,15 @@ export class UnsafeAttachmentBuilder {
 	/**
 	 * @param {APIAttachment} [data] Extra data
 	 */
-	public constructor(attachment: BufferResolvable | Stream, name = null, data?: APIAttachment) {
-		this.data = { ...data };
+	public constructor(attachment: BufferResolvable | Stream, name = null, _data: APIAttachment) {
+		this.data = { ..._data };
 		this.attachment = attachment;
 		/**
 		 * The name of this attachment
 		 * @type {?string}
 		 */
 		this.name = name;
-		if (data) this._patch(data);
+		if (_data) this._patch(_data);
 	}
 
 	/**
