@@ -1,9 +1,11 @@
 'use strict';
 
 const { Error } = require('../../errors');
-const { InteractionResponseTypes } = require('../../util/Constants');
+const { InteractionResponseTypes, InteractionTypes } = require('../../util/Constants');
 const MessageFlags = require('../../util/MessageFlags');
+const InteractionCollector = require('../InteractionCollector');
 const MessagePayload = require('../MessagePayload');
+const Modal = require('../Modal');
 
 /**
  * Interface for classes that support shared interaction response types.
@@ -226,6 +228,56 @@ class InteractionResponses {
     return options.fetchReply ? this.fetchReply() : undefined;
   }
 
+  /**
+   * Shows a modal component
+   * @param {Modal|ModalOptions} modal The modal to show
+   * @returns {Promise<void>}
+   */
+  async showModal(modal) {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+
+    const _modal = modal instanceof Modal ? modal : new Modal(modal);
+    await this.client.api.interactions(this.id, this.token).callback.post({
+      data: {
+        type: InteractionResponseTypes.MODAL,
+        data: _modal.toJSON(),
+      },
+    });
+    this.replied = true;
+  }
+
+  /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * @typedef {Object} AwaitModalSubmitOptions
+   * @property {CollectorFilter} [filter] The filter applied to this collector
+   * @property {number} time Time to wait for an interaction before rejecting
+   */
+
+  /**
+   * Collects a single modal submit interaction that passes the filter.
+   * The Promise will reject if the time expires.
+   * @param {AwaitModalSubmitOptions} options Options to pass to the internal collector
+   * @returns {Promise<ModalSubmitInteraction>}
+   * @example
+   * // Collect a modal submit interaction
+   * const filter = (interaction) => interaction.customId === 'modal';
+   * interaction.awaitModalSubmit({ filter, time: 15_000 })
+   *   .then(interaction => console.log(`${interaction.customId} was submitted!`))
+   *   .catch(console.error);
+   */
+  awaitModalSubmit(options) {
+    if (typeof options.time !== 'number') throw new Error('INVALID_TYPE', 'time', 'number');
+    const _options = { ...options, max: 1, interactionType: InteractionTypes.MODAL_SUBMIT };
+    return new Promise((resolve, reject) => {
+      const collector = new InteractionCollector(this.client, _options);
+      collector.once('end', (interactions, reason) => {
+        const interaction = interactions.first();
+        if (interaction) resolve(interaction);
+        else reject(new Error('INTERACTION_COLLECTOR_ERROR', reason));
+      });
+    });
+  }
+
   static applyToClass(structure, ignore = []) {
     const props = [
       'deferReply',
@@ -236,6 +288,8 @@ class InteractionResponses {
       'followUp',
       'deferUpdate',
       'update',
+      'showModal',
+      'awaitModalSubmit',
     ];
 
     for (const prop of props) {

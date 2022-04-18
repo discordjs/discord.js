@@ -12,14 +12,16 @@ class MessageActionRow extends BaseMessageComponent {
    * Components that can be placed in an action row
    * * MessageButton
    * * MessageSelectMenu
-   * @typedef {MessageButton|MessageSelectMenu} MessageActionRowComponent
+   * * TextInputComponent
+   * @typedef {MessageButton|MessageSelectMenu|TextInputComponent} MessageActionRowComponent
    */
 
   /**
    * Options for components that can be placed in an action row
    * * MessageButtonOptions
    * * MessageSelectMenuOptions
-   * @typedef {MessageButtonOptions|MessageSelectMenuOptions} MessageActionRowComponentOptions
+   * * TextInputComponentOptions
+   * @typedef {MessageButtonOptions|MessageSelectMenuOptions|TextInputComponentOptions} MessageActionRowComponentOptions
    */
 
   /**

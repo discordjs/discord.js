@@ -197,8 +197,11 @@ class Invite extends Base {
       this.createdTimestamp ??= null;
     }
 
-    if ('expires_at' in data) this._expiresTimestamp = new Date(data.expires_at).getTime();
-    else this._expiresTimestamp ??= null;
+    if ('expires_at' in data) {
+      this._expiresTimestamp = data.expires_at && Date.parse(data.expires_at);
+    } else {
+      this._expiresTimestamp ??= null;
+    }
 
     if ('stage_instance' in data) {
       /**

@@ -64,6 +64,8 @@ class ApplicationCommandManager extends CachedManager {
    * Options used to fetch Application Commands from Discord
    * @typedef {BaseFetchOptions} FetchApplicationCommandOptions
    * @property {Snowflake} [guildId] The guild's id to fetch commands for, for when the guild is not cached
+   * @property {LocaleString} [locale] The locale to use when fetching this command
+   * @property {boolean} [withLocalizations] Whether to fetch all localization data
    */
 
   /**
@@ -82,9 +84,9 @@ class ApplicationCommandManager extends CachedManager {
    *   .then(commands => console.log(`Fetched ${commands.size} commands`))
    *   .catch(console.error);
    */
-  async fetch(id, { guildId, cache = true, force = false } = {}) {
+  async fetch(id, { guildId, cache = true, force = false, locale, withLocalizations } = {}) {
     if (typeof id === 'object') {
-      ({ guildId, cache = true } = id);
+      ({ guildId, cache = true, locale, withLocalizations } = id);
     } else if (id) {
       if (!force) {
         const existing = this.cache.get(id);
@@ -94,7 +96,15 @@ class ApplicationCommandManager extends CachedManager {
       return this._add(command, cache);
     }
 
-    const data = await this.commandPath({ guildId }).get();
+    const data = await this.commandPath({ guildId }).get({
+      headers: {
+        'X-Discord-Locale': locale,
+      },
+      query:
+        typeof withLocalizations === 'boolean'
+          ? new URLSearchParams({ with_localizations: withLocalizations })
+          : undefined,
+    });
     return data.reduce((coll, command) => coll.set(command.id, this._add(command, cache, guildId)), new Collection());
   }
 
@@ -206,7 +216,9 @@ class ApplicationCommandManager extends CachedManager {
   static transformCommand(command) {
     return {
       name: command.name,
+      name_localizations: command.nameLocalizations ?? command.name_localizations,
       description: command.description,
+      description_localizations: command.descriptionLocalizations ?? command.description_localizations,
       type: typeof command.type === 'number' ? command.type : ApplicationCommandTypes[command.type],
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
       default_permission: command.defaultPermission ?? command.default_permission,

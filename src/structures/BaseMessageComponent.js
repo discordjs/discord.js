@@ -4,7 +4,7 @@ const { TypeError } = require('../errors');
 const { MessageComponentTypes, Events } = require('../util/Constants');
 
 /**
- * Represents an interactive component of a Message. It should not be necessary to construct this directly.
+ * Represents an interactive component of a Message or Modal. It should not be necessary to construct this directly.
  * See {@link MessageComponent}
  */
 class BaseMessageComponent {
@@ -15,18 +15,20 @@ class BaseMessageComponent {
    */
 
   /**
-   * Data that can be resolved into options for a MessageComponent. This can be:
+   * Data that can be resolved into options for a component. This can be:
    * * MessageActionRowOptions
    * * MessageButtonOptions
    * * MessageSelectMenuOptions
+   * * TextInputComponentOptions
    * @typedef {MessageActionRowOptions|MessageButtonOptions|MessageSelectMenuOptions} MessageComponentOptions
    */
 
   /**
-   * Components that can be sent in a message. These can be:
+   * Components that can be sent in a payload. These can be:
    * * MessageActionRow
    * * MessageButton
    * * MessageSelectMenu
+   * * TextInputComponent
    * @typedef {MessageActionRow|MessageButton|MessageSelectMenu} MessageComponent
    * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
    */
@@ -51,10 +53,10 @@ class BaseMessageComponent {
   }
 
   /**
-   * Constructs a MessageComponent based on the type of the incoming data
+   * Constructs a component based on the type of the incoming data
    * @param {MessageComponentOptions} data Data for a MessageComponent
    * @param {Client|WebhookClient} [client] Client constructing this component
-   * @returns {?MessageComponent}
+   * @returns {?(MessageComponent|ModalComponent)}
    * @private
    */
   static create(data, client) {
@@ -79,6 +81,11 @@ class BaseMessageComponent {
         component = data instanceof MessageSelectMenu ? data : new MessageSelectMenu(data);
         break;
       }
+      case MessageComponentTypes.TEXT_INPUT: {
+        const TextInputComponent = require('./TextInputComponent');
+        component = data instanceof TextInputComponent ? data : new TextInputComponent(data);
+        break;
+      }
       default:
         if (client) {
           client.emit(Events.DEBUG, `[BaseMessageComponent] Received component with unknown type: ${data.type}`);
@@ -90,7 +97,7 @@ class BaseMessageComponent {
   }
 
   /**
-   * Resolves the type of a MessageComponent
+   * Resolves the type of a component
    * @param {MessageComponentTypeResolvable} type The type to resolve
    * @returns {MessageComponentType}
    * @private

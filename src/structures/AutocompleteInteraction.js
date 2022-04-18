@@ -76,7 +76,7 @@ class AutocompleteInteraction extends Interaction {
 
   /**
    * Sends results for the autocomplete of this interaction.
-   * @param {ApplicationCommandOptionChoice[]} options The options for the autocomplete
+   * @param {ApplicationCommandOptionChoiceData[]} options The options for the autocomplete
    * @returns {Promise<void>}
    * @example
    * // respond to autocomplete interaction

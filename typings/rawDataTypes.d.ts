@@ -76,8 +76,13 @@ import {
   RESTPostAPIWebhookWithTokenJSONBody,
   Snowflake,
   APIGuildScheduledEvent,
+  APIActionRowComponent,
+  APITextInputComponent,
+  APIModalActionRowComponent,
+  APIModalSubmitInteraction,
 } from 'discord-api-types/v9';
-import { GuildChannel, Guild, PermissionOverwrites } from '.';
+import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
+import type { InteractionTypes, MessageComponentTypes } from './enums';
 
 export type RawActivityData = GatewayActivity;
 
@@ -140,6 +145,9 @@ export type RawCommandInteractionData = APIApplicationCommandInteraction;
 export type RawMessageComponentInteractionData = APIMessageComponentInteraction;
 export type RawMessageButtonInteractionData = APIMessageButtonInteractionData;
 export type RawMessageSelectMenuInteractionData = APIMessageSelectMenuInteractionData;
+
+export type RawTextInputComponentData = APITextInputComponent;
+export type RawModalSubmitInteractionData = APIModalSubmitInteraction;
 
 export type RawInviteData =
   | APIExtendedInvite

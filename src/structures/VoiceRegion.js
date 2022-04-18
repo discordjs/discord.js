@@ -22,6 +22,7 @@ class VoiceRegion {
     /**
      * Whether the region is VIP-only
      * @type {boolean}
+     * @deprecated This property is no longer being sent by the API.
      */
     this.vip = data.vip;
 

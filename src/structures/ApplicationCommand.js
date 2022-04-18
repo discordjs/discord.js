@@ -62,12 +62,52 @@ class ApplicationCommand extends Base {
       this.name = data.name;
     }
 
+    if ('name_localizations' in data) {
+      /**
+       * The name localizations for this command
+       * @type {?Object<string, string>}
+       */
+      this.nameLocalizations = data.name_localizations;
+    } else {
+      this.nameLocalizations ??= null;
+    }
+
+    if ('name_localized' in data) {
+      /**
+       * The localized name for this command
+       * @type {?Object<string, string>}
+       */
+      this.nameLocalized = data.name_localized;
+    } else {
+      this.nameLocalized ??= null;
+    }
+
     if ('description' in data) {
       /**
        * The description of this command
        * @type {string}
        */
       this.description = data.description;
+    }
+
+    if ('description_localizations' in data) {
+      /**
+       * The description localizations for this command
+       * @type {?string}
+       */
+      this.descriptionLocalizations = data.description_localizations;
+    } else {
+      this.descriptionLocalizations ??= null;
+    }
+
+    if ('description_localized' in data) {
+      /**
+       * The localized description for this command
+       * @type {?string}
+       */
+      this.descriptionLocalized = data.description_localized;
+    } else {
+      this.descriptionLocalized ??= null;
     }
 
     if ('options' in data) {
@@ -128,7 +168,9 @@ class ApplicationCommand extends Base {
    * Data for creating or editing an application command.
    * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the command
+   * @property {Object<string, string>} [nameLocalizations] The localizations for the command name
    * @property {string} description The description of the command
+   * @property {Object<string, string>} [descriptionLocalizations] The localizations for the command description
    * @property {ApplicationCommandType} [type] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {boolean} [defaultPermission] Whether the command is enabled by default when the app is added to a guild
@@ -143,15 +185,29 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOptionData
    * @property {ApplicationCommandOptionType|number} type The type of the option
    * @property {string} name The name of the option
+   * @property {Object<string, string>} [nameLocalizations] The name localizations for the option
    * @property {string} description The description of the option
+   * @property {Object<string, string>} [descriptionLocalizations] The description localizations for the option
    * @property {boolean} [autocomplete] Whether the option is an autocomplete option
    * @property {boolean} [required] Whether the option is required
-   * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
+   * @property {ApplicationCommandOptionChoiceData[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]|number[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
    * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
    * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
+   */
+
+  /**
+   * @typedef {Object} ApplicationCommandOptionChoiceData
+   * @property {string} name The name of the choice
+   * @property {Object<string, string>} [nameLocalizations] The localized names for this choice
+   * @property {string|number} value The value of the choice
+   */
+
+  /**
+   * @typedef {ApplicationCommandOptionChoiceData} ApplicationCommandOptionChoice
+   * @property {string} [nameLocalized] The localized name for this choice
    */
 
   /**
@@ -180,12 +236,46 @@ class ApplicationCommand extends Base {
   }
 
   /**
+   * Edits the localized names of this ApplicationCommand
+   * @param {Object<string, string>} nameLocalizations The new localized names for the command
+   * @returns {Promise<ApplicationCommand>}
+   * @example
+   * // Edit the name localizations of this command
+   * command.setLocalizedNames({
+   *   'en-GB': 'test',
+   *   'pt-BR': 'teste',
+   * })
+   *   .then(console.log)
+   *   .catch(console.error)
+   */
+  setNameLocalizations(nameLocalizations) {
+    return this.edit({ nameLocalizations });
+  }
+
+  /**
    * Edits the description of this ApplicationCommand
    * @param {string} description The new description of the command
    * @returns {Promise<ApplicationCommand>}
    */
   setDescription(description) {
     return this.edit({ description });
+  }
+
+  /**
+   * Edits the localized descriptions of this ApplicationCommand
+   * @param {Object<string, string>} descriptionLocalizations The new localized descriptions for the command
+   * @returns {Promise<ApplicationCommand>}
+   * @example
+   * // Edit the description localizations of this command
+   * command.setLocalizedDescriptions({
+   *   'en-GB': 'A test command',
+   *   'pt-BR': 'Um comando de teste',
+   * })
+   *   .then(console.log)
+   *   .catch(console.error)
+   */
+  setDescriptionLocalizations(descriptionLocalizations) {
+    return this.edit({ descriptionLocalizations });
   }
 
   /**
@@ -344,7 +434,11 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
+   * @property {Object<string, string>} [nameLocalizations] The localizations for the option name
+   * @property {string} [nameLocalized] The localized name for this option
    * @property {string} description The description of the option
+   * @property {Object<string, string>} [descriptionLocalizations] The localizations for the option description
+   * @property {string} [descriptionLocalized] The localized description for this option
    * @property {boolean} [required] Whether the option is required
    * @property {boolean} [autocomplete] Whether the option is an autocomplete option
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
@@ -356,15 +450,8 @@ class ApplicationCommand extends Base {
    */
 
   /**
-   * A choice for an application command option.
-   * @typedef {Object} ApplicationCommandOptionChoice
-   * @property {string} name The name of the choice
-   * @property {string|number} value The value of the choice
-   */
-
-  /**
    * Transforms an {@link ApplicationCommandOptionData} object into something that can be used with the API.
-   * @param {ApplicationCommandOptionData} option The option to transform
+   * @param {ApplicationCommandOptionData|ApplicationCommandOption} option The option to transform
    * @param {boolean} [received] Whether this option has been received from Discord
    * @returns {APIApplicationCommandOption}
    * @private
@@ -374,14 +461,27 @@ class ApplicationCommand extends Base {
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
+    const nameLocalizationsKey = received ? 'nameLocalizations' : 'name_localizations';
+    const nameLocalizedKey = received ? 'nameLocalized' : 'name_localized';
+    const descriptionLocalizationsKey = received ? 'descriptionLocalizations' : 'description_localizations';
+    const descriptionLocalizedKey = received ? 'descriptionLocalized' : 'description_localized';
     return {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
+      [nameLocalizationsKey]: option.nameLocalizations ?? option.name_localizations,
+      [nameLocalizedKey]: option.nameLocalized ?? option.name_localized,
       description: option.description,
+      [descriptionLocalizationsKey]: option.descriptionLocalizations ?? option.description_localizations,
+      [descriptionLocalizedKey]: option.descriptionLocalized ?? option.description_localized,
       required:
         option.required ?? (stringType === 'SUB_COMMAND' || stringType === 'SUB_COMMAND_GROUP' ? undefined : false),
       autocomplete: option.autocomplete,
-      choices: option.choices,
+      choices: option.choices?.map(choice => ({
+        name: choice.name,
+        [nameLocalizedKey]: choice.nameLocalized ?? choice.name_localized,
+        [nameLocalizationsKey]: choice.nameLocalizations ?? choice.name_localizations,
+        value: choice.value,
+      })),
       options: option.options?.map(o => this.transformOption(o, received)),
       [channelTypesKey]: received
         ? option.channel_types?.map(type => ChannelTypes[type])

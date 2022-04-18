@@ -1,12 +1,9 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
 const GuildChannel = require('./GuildChannel');
-const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
 const ThreadManager = require('../managers/ThreadManager');
-const DataResolver = require('../util/DataResolver');
 
 /**
  * Represents a text-based guild channel on Discord.
@@ -72,7 +69,7 @@ class BaseGuildTextChannel extends GuildChannel {
     if ('default_auto_archive_duration' in data) {
       /**
        * The default auto archive duration for newly created threads in this channel
-       * @type {?ThreadAutoArchiveDuration}
+       * @type {?number}
        */
       this.defaultAutoArchiveDuration = data.default_auto_archive_duration;
     }
@@ -121,11 +118,8 @@ class BaseGuildTextChannel extends GuildChannel {
    *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
    *   .catch(console.error);
    */
-  async fetchWebhooks() {
-    const data = await this.client.api.channels[this.id].webhooks.get();
-    const hooks = new Collection();
-    for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
-    return hooks;
+  fetchWebhooks() {
+    return this.guild.channels.fetchWebhooks(this.id);
   }
 
   /**
@@ -149,18 +143,8 @@ class BaseGuildTextChannel extends GuildChannel {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  async createWebhook(name, { avatar, reason } = {}) {
-    if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
-      avatar = await DataResolver.resolveImage(avatar);
-    }
-    const data = await this.client.api.channels[this.id].webhooks.post({
-      data: {
-        name,
-        avatar,
-      },
-      reason,
-    });
-    return new Webhook(this.client, data);
+  createWebhook(name, options = {}) {
+    return this.guild.channels.createWebhook(this.id, name, options);
   }
 
   /**
@@ -177,6 +161,14 @@ class BaseGuildTextChannel extends GuildChannel {
   setTopic(topic, reason) {
     return this.edit({ topic }, reason);
   }
+
+  /**
+   * Data that can be resolved to an Application. This can be:
+   * * An Application
+   * * An Activity with associated Application
+   * * A Snowflake
+   * @typedef {Application|Snowflake} ApplicationResolvable
+   */
 
   /**
    * Options used to create an invite to a guild channel.

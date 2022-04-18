@@ -174,6 +174,14 @@ class Interaction extends Base {
   }
 
   /**
+   * Indicates whether this interaction is a {@link ModalSubmitInteraction}
+   * @returns {boolean}
+   */
+  isModalSubmit() {
+    return InteractionTypes[this.type] === InteractionTypes.MODAL_SUBMIT;
+  }
+
+  /**
    * Indicates whether this interaction is a {@link UserContextMenuInteraction}
    * @returns {boolean}
    */
@@ -224,6 +232,16 @@ class Interaction extends Base {
     return (
       InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
       MessageComponentTypes[this.componentType] === MessageComponentTypes.SELECT_MENU
+    );
+  }
+
+  /**
+   * Indicates whether this interaction can be replied to.
+   * @returns {boolean}
+   */
+  isRepliable() {
+    return ![InteractionTypes.PING, InteractionTypes.APPLICATION_COMMAND_AUTOCOMPLETE].includes(
+      InteractionTypes[this.type],
     );
   }
 }

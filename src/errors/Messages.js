@@ -58,6 +58,14 @@ const Messages = {
   SELECT_OPTION_VALUE: 'MessageSelectOption value must be a string',
   SELECT_OPTION_DESCRIPTION: 'MessageSelectOption description must be a string',
 
+  TEXT_INPUT_CUSTOM_ID: 'TextInputComponent customId must be a string',
+  TEXT_INPUT_LABEL: 'TextInputComponent label must be a string',
+  TEXT_INPUT_PLACEHOLDER: 'TextInputComponent placeholder must be a string',
+  TEXT_INPUT_VALUE: 'TextInputComponent value must be a string',
+
+  MODAL_CUSTOM_ID: 'Modal customId must be a string',
+  MODAL_TITLE: 'Modal title must be a string',
+
   INTERACTION_COLLECTOR_ERROR: reason => `Collector received no interactions before ending with reason: ${reason}`,
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
@@ -147,6 +155,10 @@ const Messages = {
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No subcommand specified for interaction.',
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No subcommand group specified for interaction.',
   AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION: 'No focused option for autocomplete interaction.',
+
+  MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND: customId => `Required field with custom id "${customId}" not found.`,
+  MODAL_SUBMIT_INTERACTION_FIELD_TYPE: (customId, type, expected) =>
+    `Field with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
 
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 
