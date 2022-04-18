@@ -57,7 +57,7 @@ import {
   Interaction,
   InteractionCollector,
   Message,
-  Attachment,
+  AttachmentBuilder,
   MessageCollector,
   MessageComponentInteraction,
   MessageReaction,
@@ -584,7 +584,7 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({}));
   assertIsMessage(channel.send({ embeds: [] }));
 
-  const attachment = new Attachment('file.png');
+  const attachment = new AttachmentBuilder('file.png');
   const embed = new EmbedBuilder();
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
