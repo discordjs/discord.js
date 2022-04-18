@@ -108,7 +108,7 @@ export class UnsafeAttachmentBuilder {
 
 		if ('proxy_url' in data) {
 			/**
-			 * The Proxy URL to this attachment
+			 * The proxy URL to this attachment
 			 * @type {string}
 			 */
 			this.proxyURL = data.proxy_url;
