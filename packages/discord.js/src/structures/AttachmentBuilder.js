@@ -8,11 +8,9 @@ const Transformers = require('../util/Transformers');
  * @extends {BuildersAttachment}
  */
 class AttachmentBuilder extends BuildersAttachment {
-    constructor({ ...data } = {}) {
-        super(
-            ...Transformers.toSnakeCase(data),
-        );
-    }
+  constructor({ ...data } = {}) {
+    super(...Transformers.toSnakeCase(data));
+  }
 }
 
 module.exports = AttachmentBuilder;

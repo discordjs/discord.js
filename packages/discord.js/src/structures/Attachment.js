@@ -100,13 +100,13 @@ class Attachment {
   }
 
   /**
-	 * Whether or not this attachment has been marked as a spoiler
-	 * @type {boolean}
-	 * @readonly
-	 */
-	get spoiler() {
-		return Util.basename(this.url ?? this.name).startsWith('SPOILER_');
-	}
+   * Whether or not this attachment has been marked as a spoiler
+   * @type {boolean}
+   * @readonly
+   */
+  get spoiler() {
+    return Util.basename(this.url ?? this.name).startsWith('SPOILER_');
+  }
 
   /**
    * Creates a new attachment builder from JSON data
