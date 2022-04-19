@@ -2,7 +2,8 @@
 
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/builders');
-const { MessageFlags } = require('discord-api-types/v9');
+const { MessageFlags } = require('discord-api-types/v10');
+const ActionRowBuilder = require('./ActionRowBuilder');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
@@ -115,7 +116,7 @@ class MessagePayload {
    * @returns {MessagePayload}
    */
   resolveBody() {
-    if (this.data) return this;
+    if (this.body) return this;
     const isInteraction = this.isInteraction;
     const isWebhook = this.isWebhook;
 
@@ -131,9 +132,7 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c =>
-      isJSONEncodable(c) ? c.toJSON() : this.target.client.options.jsonTransformer(c),
-    );
+    const components = this.options.components?.map(c => (isJSONEncodable(c) ? c : new ActionRowBuilder(c)).toJSON());
 
     let username;
     let avatarURL;
@@ -225,7 +224,7 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
-   * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
+   * @param {BufferResolvable|Stream|FileOptions|Attachment} fileLike Something that could be resolved to a file
    * @returns {Promise<RawFile>}
    */
   static async resolveFile(fileLike) {

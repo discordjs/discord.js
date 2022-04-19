@@ -1,6 +1,6 @@
 'use strict';
 
-const { RouteBases, Routes, PermissionFlagsBits } = require('discord-api-types/v9');
+const { RouteBases, Routes, PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
@@ -12,6 +12,13 @@ const { Error } = require('../errors');
  * @extends {Base}
  */
 class Invite extends Base {
+  /**
+   * Regular expression that globally matches Discord invite links
+   * @type {RegExp}
+   * @memberof Invite
+   */
+  static InvitesPattern = /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/gi;
+
   constructor(client, data) {
     super(client);
     this._patch(data);
@@ -181,8 +188,11 @@ class Invite extends Base {
       this.createdTimestamp ??= null;
     }
 
-    if ('expires_at' in data) this._expiresTimestamp = Date.parse(data.expires_at);
-    else this._expiresTimestamp ??= null;
+    if ('expires_at' in data) {
+      this._expiresTimestamp = data.expires_at && Date.parse(data.expires_at);
+    } else {
+      this._expiresTimestamp ??= null;
+    }
 
     if ('stage_instance' in data) {
       /**
@@ -307,11 +317,5 @@ class Invite extends Base {
     return this.code;
   }
 }
-
-/**
- * Regular expression that globally matches Discord invite links
- * @type {RegExp}
- */
-Invite.INVITES_PATTERN = /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/gi;
 
 module.exports = Invite;

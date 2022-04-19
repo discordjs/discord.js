@@ -1,7 +1,7 @@
 'use strict';
 
 const { userMention } = require('@discordjs/builders');
-const { ChannelType } = require('discord-api-types/v9');
+const { ChannelType } = require('discord-api-types/v10');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
@@ -86,7 +86,7 @@ class DMChannel extends Channel {
    * @returns {Promise<DMChannel>}
    */
   fetch(force = true) {
-    return this.client.users.createDM(this.recipientId, force);
+    return this.client.users.createDM(this.recipientId, { force });
   }
 
   /**

@@ -2,7 +2,7 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
-const { ChannelType, RouteBases, Routes } = require('discord-api-types/v9');
+const { ChannelType, RouteBases, Routes, GuildFeature } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const Colors = require('./Colors');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
@@ -50,51 +50,6 @@ class Util extends null {
     }
 
     return out;
-  }
-
-  /**
-   * Options for splitting a message.
-   * @typedef {Object} SplitOptions
-   * @property {number} [maxLength=2000] Maximum character length per message piece
-   * @property {string|string[]|RegExp|RegExp[]} [char='\n'] Character(s) or Regex(es) to split the message with,
-   * an array can be used to split multiple times
-   * @property {string} [prepend=''] Text to prepend to every piece except the first
-   * @property {string} [append=''] Text to append to every piece except the last
-   */
-
-  /**
-   * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
-   * @param {string} text Content to split
-   * @param {SplitOptions} [options] Options controlling the behavior of the split
-   * @returns {string[]}
-   */
-  static splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
-    text = Util.verifyString(text);
-    if (text.length <= maxLength) return [text];
-    let splitText = [text];
-    if (Array.isArray(char)) {
-      while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
-        const currentChar = char.shift();
-        if (currentChar instanceof RegExp) {
-          splitText = splitText.flatMap(chunk => chunk.match(currentChar));
-        } else {
-          splitText = splitText.flatMap(chunk => chunk.split(currentChar));
-        }
-      }
-    } else {
-      splitText = text.split(char);
-    }
-    if (splitText.some(elem => elem.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
-    const messages = [];
-    let msg = '';
-    for (const chunk of splitText) {
-      if (msg && (msg + char + chunk + append).length > maxLength) {
-        messages.push(msg + append);
-        msg = prepend;
-      }
-      msg += (msg && msg !== prepend ? char : '') + chunk;
-    }
-    return messages.concat(msg).filter(m => m);
   }
 
   /**
@@ -189,7 +144,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeInlineCode(text) {
-    return text.replaceAll('`', '\\`');
+    return text.replace(/(?<=^|[^`])``?(?=[^`]|$)/g, match => (match.length === 2 ? '\\`\\`' : '\\`'));
   }
 
   /**
@@ -291,9 +246,9 @@ class Util extends null {
    */
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
-    if (!text.includes(':')) return { animated: false, name: text, id: null };
+    if (!text.includes(':')) return { animated: false, name: text, id: undefined };
     const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
-    return match && { animated: Boolean(match[1]), name: match[2], id: match[3] ?? null };
+    return match && { animated: Boolean(match[1]), name: match[2], id: match[3] };
   }
 
   /**
@@ -560,6 +515,17 @@ class Util extends null {
    */
   static cleanCodeBlockContent(text) {
     return text.replaceAll('```', '`\u200b``');
+  }
+
+  /**
+   * Resolves the maximum time a guild's thread channels should automatcally archive in case of no recent activity.
+   * @param {Guild} guild The guild to resolve this limit from.
+   * @returns {number}
+   */
+  static resolveAutoArchiveMaxLimit({ features }) {
+    if (features.includes(GuildFeature.SevenDayThreadArchive)) return 10080;
+    if (features.includes(GuildFeature.ThreeDayThreadArchive)) return 4320;
+    return 1440;
   }
 }
 

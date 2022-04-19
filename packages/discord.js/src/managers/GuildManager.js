@@ -3,7 +3,8 @@
 const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v9');
+const { makeURLSearchParams } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
@@ -88,6 +89,7 @@ class GuildManager extends CachedManager {
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
    * @property {?string} [rtcRegion] The RTC region of the channel
+   * @property {VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
    * @property {PartialOverwriteData[]} [permissionOverwrites]
    * Overwrites of the channel
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) of the channel in seconds
@@ -185,6 +187,8 @@ class GuildManager extends CachedManager {
       delete channel.rateLimitPerUser;
       channel.rtc_region = channel.rtcRegion;
       delete channel.rtcRegion;
+      channel.video_quality_mode = channel.videoQualityMode;
+      delete channel.videoQualityMode;
 
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
@@ -268,12 +272,12 @@ class GuildManager extends CachedManager {
       }
 
       const data = await this.client.rest.get(Routes.guild(id), {
-        query: new URLSearchParams({ with_counts: options.withCounts ?? true }),
+        query: makeURLSearchParams({ with_counts: options.withCounts ?? true }),
       });
       return this._add(data, options.cache);
     }
 
-    const data = await this.client.rest.get(Routes.userGuilds(), { query: new URLSearchParams(options) });
+    const data = await this.client.rest.get(Routes.userGuilds(), { query: makeURLSearchParams(options) });
     return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
   }
 }

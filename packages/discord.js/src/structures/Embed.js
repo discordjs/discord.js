@@ -1,8 +1,10 @@
 'use strict';
 
 const isEqual = require('fast-deep-equal');
-const { Util } = require('../util/Util');
 
+/**
+ * Represents an embed.
+ */
 class Embed {
   /**
    * Creates a new embed object
@@ -193,18 +195,6 @@ class Embed {
       return isEqual(other.data, this.data);
     }
     return isEqual(other, this.data);
-  }
-
-  /**
-   * Sets the color of this embed
-   * @param {ColorResolvable} color The color of the embed
-   * @returns {Embed}
-   */
-  setColor(color) {
-    if (color === null) {
-      return super.setColor(null);
-    }
-    return super.setColor(Util.resolveColor(color));
   }
 }
 

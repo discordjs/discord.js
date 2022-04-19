@@ -2,11 +2,11 @@ import type {
 	APIActionRowComponent,
 	APIModalActionRowComponent,
 	APIModalInteractionResponseCallbackData,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import { ActionRowBuilder, createComponentBuilder, JSONEncodable, ModalActionRowComponentBuilder } from '../../index';
 
 export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResponseCallbackData> {
-	protected readonly data: Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>>;
+	public readonly data: Partial<APIModalInteractionResponseCallbackData>;
 	public readonly components: ActionRowBuilder<ModalActionRowComponentBuilder>[] = [];
 
 	public constructor({ components, ...data }: Partial<APIModalInteractionResponseCallbackData> = {}) {

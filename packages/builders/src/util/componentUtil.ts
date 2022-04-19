@@ -1,4 +1,4 @@
-import type { APIEmbed } from 'discord-api-types/v9';
+import type { APIEmbed } from 'discord-api-types/v10';
 
 export function embedLength(data: APIEmbed) {
 	return (

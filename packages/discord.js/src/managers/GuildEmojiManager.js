@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes, PermissionFlagsBits } = require('discord-api-types/v9');
+const { Routes, PermissionFlagsBits } = require('discord-api-types/v10');
 const BaseGuildEmojiManager = require('./BaseGuildEmojiManager');
 const { Error, TypeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');

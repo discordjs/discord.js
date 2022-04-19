@@ -1,4 +1,4 @@
-import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v9';
+import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
 
 /**
  * Represents a non-validated option within a select menu component
@@ -43,8 +43,8 @@ export class UnsafeSelectMenuOptionBuilder {
 	}
 
 	/**
-	 * Sets the emoji to display on this button
-	 * @param emoji The emoji to display on this button
+	 * Sets the emoji to display on this option
+	 * @param emoji The emoji to display on this option
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
 		this.data.emoji = emoji;

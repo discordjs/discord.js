@@ -1,7 +1,8 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v9');
+const { makeURLSearchParams } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
 const User = require('../structures/User');
@@ -41,10 +42,7 @@ class ReactionUserManager extends CachedManager {
    */
   async fetch({ limit = 100, after } = {}) {
     const message = this.reaction.message;
-    const query = new URLSearchParams({ limit });
-    if (after) {
-      query.set('after', after);
-    }
+    const query = makeURLSearchParams({ limit, after });
     const data = await this.client.rest.get(
       Routes.channelMessageReaction(message.channelId, message.id, this.reaction.emoji.identifier),
       { query },

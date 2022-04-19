@@ -1,15 +1,15 @@
-import { assertReturnOfBuilder, validateMaxOptionsLength } from '../Assertions';
 import type { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase';
+import { assertReturnOfBuilder, validateMaxOptionsLength } from '../Assertions';
+import type { ToAPIApplicationCommandOptions } from '../SlashCommandBuilder';
+import { SlashCommandAttachmentOption } from '../options/attachment';
 import { SlashCommandBooleanOption } from '../options/boolean';
 import { SlashCommandChannelOption } from '../options/channel';
 import { SlashCommandIntegerOption } from '../options/integer';
 import { SlashCommandMentionableOption } from '../options/mentionable';
 import { SlashCommandNumberOption } from '../options/number';
 import { SlashCommandRoleOption } from '../options/role';
-import { SlashCommandAttachmentOption } from '../options/attachment';
 import { SlashCommandStringOption } from '../options/string';
 import { SlashCommandUserOption } from '../options/user';
-import type { ToAPIApplicationCommandOptions } from '../SlashCommandBuilder';
 
 export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	public readonly options!: ToAPIApplicationCommandOptions[];

@@ -1,6 +1,6 @@
 'use strict';
 
-const { InteractionType, ComponentType, ApplicationCommandType } = require('discord-api-types/v9');
+const { InteractionType, ComponentType, ApplicationCommandType } = require('discord-api-types/v10');
 const Action = require('./Action');
 const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
@@ -16,9 +16,11 @@ class InteractionCreateAction extends Action {
     const client = this.client;
 
     // Resolve and cache partial channels for Interaction#channel getter
-    this.getChannel(data);
+    const channel = this.getChannel(data);
 
+    // Do not emit this for interactions that cache messages that are non-text-based.
     let InteractionClass;
+
     switch (data.type) {
       case InteractionType.ApplicationCommand:
         switch (data.data.type) {
@@ -29,6 +31,7 @@ class InteractionCreateAction extends Action {
             InteractionClass = UserContextMenuCommandInteraction;
             break;
           case ApplicationCommandType.Message:
+            if (channel && !channel.isTextBased()) return;
             InteractionClass = MessageContextMenuCommandInteraction;
             break;
           default:
@@ -40,6 +43,8 @@ class InteractionCreateAction extends Action {
         }
         break;
       case InteractionType.MessageComponent:
+        if (channel && !channel.isTextBased()) return;
+
         switch (data.data.component_type) {
           case ComponentType.Button:
             InteractionClass = ButtonInteraction;

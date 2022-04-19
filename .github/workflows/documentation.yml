@@ -82,7 +82,35 @@ jobs:
           token: ${{ secrets.DJS_DOCS }}
           path: 'out'
 
+      - name: 'Extract package from tag'
+        if: env.BRANCH_OR_TAG == 'tag'
+        id: package-name
+        uses: frabert/replace-string-action@v2.0
+        with:
+          pattern: '(^@.*\\/(?<package>.*)@v?)?(?<semver>\\d+.\\d+.\\d+)-?.*'
+          string: ${{ env.BRANCH_NAME }}
+          replace-with: '$<package>'
+
+      - name: 'Extract semver from tag'
+        if: env.BRANCH_OR_TAG == 'tag'
+        id: semver
+        uses: frabert/replace-string-action@v2.0
+        with:
+          pattern: '(^@.*\\/(?<package>.*)@v?)?(?<semver>\\d+.\\d+.\\d+)-?.*'
+          string: ${{ env.BRANCH_NAME }}
+          replace-with: '$<semver>'
+
       - name: Move docs to correct directory
+        if: env.BRANCH_OR_TAG == 'tag'
+        env:
+          PACKAGE: ${{ steps.package-name.outputs.replaced }}
+          SEMVER: ${{ steps.semver.outputs.replaced }}
+        run: |
+          mkdir -p out/${PACKAGE}
+          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
+
+      - name: Move docs to correct directory
+        if: env.BRANCH_OR_TAG == 'branch'
         env:
           PACKAGE: ${{ matrix.package }}
         run: |

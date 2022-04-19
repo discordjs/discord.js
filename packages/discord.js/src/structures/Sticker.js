@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, StickerFormatType } = require('discord-api-types/v9');
+const { Routes, StickerFormatType } = require('discord-api-types/v10');
 const Base = require('./Base');
 
 /**

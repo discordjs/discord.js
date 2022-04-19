@@ -5,15 +5,13 @@ import {
 	type APIButtonComponent,
 	type APIButtonComponentWithURL,
 	type APIButtonComponentWithCustomId,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import { ComponentBuilder } from '../Component';
 
 /**
  * Represents a non-validated button component
  */
-export class UnsafeButtonBuilder extends ComponentBuilder<
-	Partial<APIButtonComponent> & { type: ComponentType.Button }
-> {
+export class UnsafeButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	public constructor(data?: Partial<APIButtonComponent>) {
 		super({ type: ComponentType.Button, ...data });
 	}

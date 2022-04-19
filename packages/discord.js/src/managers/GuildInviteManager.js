@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
 const Invite = require('../structures/Invite');
@@ -44,10 +44,9 @@ class GuildInviteManager extends CachedManager {
    * * TextChannel
    * * VoiceChannel
    * * NewsChannel
-   * * StoreChannel
    * * StageChannel
    * * Snowflake
-   * @typedef {TextChannel|VoiceChannel|NewsChannel|StoreChannel|StageChannel|Snowflake}
+   * @typedef {TextChannel|VoiceChannel|NewsChannel|StageChannel|Snowflake}
    * GuildInvitableChannelResolvable
    */
 

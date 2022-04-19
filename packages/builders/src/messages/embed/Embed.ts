@@ -1,10 +1,11 @@
-import type { APIEmbedField } from 'discord-api-types/v9';
+import type { APIEmbedField } from 'discord-api-types/v10';
 import {
-	authorNamePredicate,
 	colorPredicate,
 	descriptionPredicate,
+	embedAuthorPredicate,
 	embedFieldsArrayPredicate,
-	footerTextPredicate,
+	embedFooterPredicate,
+	imageURLPredicate,
 	timestampPredicate,
 	titlePredicate,
 	urlPredicate,
@@ -38,9 +39,7 @@ export class EmbedBuilder extends UnsafeEmbedBuilder {
 		}
 
 		// Data assertions
-		authorNamePredicate.parse(options.name);
-		urlPredicate.parse(options.iconURL);
-		urlPredicate.parse(options.url);
+		embedAuthorPredicate.parse(options);
 
 		return super.setAuthor(options);
 	}
@@ -61,20 +60,19 @@ export class EmbedBuilder extends UnsafeEmbedBuilder {
 		}
 
 		// Data assertions
-		footerTextPredicate.parse(options.text);
-		urlPredicate.parse(options.iconURL);
+		embedFooterPredicate.parse(options);
 
 		return super.setFooter(options);
 	}
 
 	public override setImage(url: string | null): this {
 		// Data assertions
-		return super.setImage(urlPredicate.parse(url)!);
+		return super.setImage(imageURLPredicate.parse(url)!);
 	}
 
 	public override setThumbnail(url: string | null): this {
 		// Data assertions
-		return super.setThumbnail(urlPredicate.parse(url)!);
+		return super.setThumbnail(imageURLPredicate.parse(url)!);
 	}
 
 	public override setTimestamp(timestamp: number | Date | null = Date.now()): this {

@@ -1,14 +1,14 @@
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import type { ConnectionData } from '../networking/Networking';
-import { methods } from '../util/Secretbox';
-import type { VoiceConnection } from '../VoiceConnection';
 import {
 	AudioReceiveStream,
 	AudioReceiveStreamOptions,
 	createDefaultAudioReceiveStreamOptions,
 } from './AudioReceiveStream';
-import { SpeakingMap } from './SpeakingMap';
 import { SSRCMap } from './SSRCMap';
+import { SpeakingMap } from './SpeakingMap';
+import type { VoiceConnection } from '../VoiceConnection';
+import type { ConnectionData } from '../networking/Networking';
+import { methods } from '../util/Secretbox';
 
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other

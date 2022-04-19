@@ -101,10 +101,10 @@ describe('Embed', () => {
 			expect(embed.toJSON()).toStrictEqual({ url: undefined });
 		});
 
-		test('GIVEN an embed with an invalid URL THEN throws error', () => {
+		test.each(['owo', 'discord://user'])('GIVEN an embed with an invalid URL THEN throws error', (input) => {
 			const embed = new EmbedBuilder();
 
-			expect(() => embed.setURL('owo')).toThrowError();
+			expect(() => embed.setURL(input)).toThrowError();
 		});
 	});
 
@@ -325,7 +325,7 @@ describe('Embed', () => {
 			embed.addFields({ name: 'foo', value: 'bar' });
 
 			expect(embed.toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'bar' }],
+				fields: [{ name: 'foo', value: 'bar', inline: undefined }],
 			});
 		});
 
@@ -334,7 +334,7 @@ describe('Embed', () => {
 			embed.addFields({ name: 'foo', value: 'bar' }, { name: 'foo', value: 'baz' });
 
 			expect(embed.spliceFields(0, 1).toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'baz' }],
+				fields: [{ name: 'foo', value: 'baz', inline: undefined }],
 			});
 		});
 
