@@ -397,7 +397,7 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
   awaitModalSubmit(options: AwaitModalSubmitOptions<ModalSubmitInteraction>): Promise<ModalSubmitInteraction<Cached>>;
 }
 
-export type BooleanCache<T extends CacheType> = T extends ['cached'] ? true : false;
+export type BooleanCache<T extends CacheType> = T extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
