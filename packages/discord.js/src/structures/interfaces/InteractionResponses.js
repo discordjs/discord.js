@@ -197,7 +197,7 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction.id);
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
   }
 
   /**
@@ -232,7 +232,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction.id);
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
   }
 
   /**

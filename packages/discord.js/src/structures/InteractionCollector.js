@@ -211,7 +211,7 @@ class InteractionCollector extends Collector {
       this.stop('messageDelete');
     }
 
-    if (message.interaction.id === this.messageInteractionId) {
+    if (message.interaction?.id === this.messageInteractionId) {
       this.stop('messageDelete');
     }
   }
