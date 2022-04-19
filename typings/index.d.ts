@@ -998,7 +998,7 @@ export class Guild extends AnonymousGuild {
   /** @deprecated Use {@link GuildChannelManager.setPositions} instead */
   public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
   public setDefaultMessageNotifications(
-    defaultMessageNotifications: DefaultMessageNotificationLevel | number,
+    defaultMessageNotifications: DefaultMessageNotificationLevel | number | null,
     reason?: string,
   ): Promise<Guild>;
   public setDiscoverySplash(
@@ -1006,13 +1006,13 @@ export class Guild extends AnonymousGuild {
     reason?: string,
   ): Promise<Guild>;
   public setExplicitContentFilter(
-    explicitContentFilter: ExplicitContentFilterLevel | number,
+    explicitContentFilter: ExplicitContentFilterLevel | number | null,
     reason?: string,
   ): Promise<Guild>;
   public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
   public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
-  public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;
+  public setPreferredLocale(preferredLocale: string | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   /** @deprecated Use {@link RoleManager.setPositions} instead */
   public setRolePositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
@@ -1020,7 +1020,7 @@ export class Guild extends AnonymousGuild {
   public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
-  public setVerificationLevel(verificationLevel: VerificationLevel | number, reason?: string): Promise<Guild>;
+  public setVerificationLevel(verificationLevel: VerificationLevel | number | null, reason?: string): Promise<Guild>;
   public setPremiumProgressBarEnabled(enabled?: boolean, reason?: string): Promise<Guild>;
   public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
   public toJSON(): unknown;
@@ -1915,7 +1915,7 @@ export class ModalSubmitFieldsResolver {
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
   extends ModalSubmitInteraction<Cached> {
-  message: GuildCacheMessage<Cached> | null;
+  message: GuildCacheMessage<Cached>;
   update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   update(options: string | MessagePayload | InteractionUpdateOptions): Promise<void>;
   deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
@@ -1931,6 +1931,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public components: PartialModalActionRow[];
   public deferred: boolean;
   public ephemeral: boolean | null;
+  public message: GuildCacheMessage<Cached> | null;
   public fields: ModalSubmitFieldsResolver;
   public replied: false;
   public webhook: InteractionWebhook;
@@ -2631,7 +2632,7 @@ export class Util extends null {
   ): Promise<{ id: Snowflake; position: number }[]>;
   /** @deprecated This will be removed in the next major version. */
   public static splitMessage(text: string, options?: SplitOptions): string[];
-  public static resolveAutoArchiveMaxLimit(guild: Guild): number;
+  public static resolveAutoArchiveMaxLimit(guild: Guild): Exclude<ThreadAutoArchiveDuration, 60>;
 }
 
 export class Formatters extends null {
@@ -4609,7 +4610,10 @@ export interface FetchBanOptions extends BaseFetchOptions {
 }
 
 export interface FetchBansOptions {
-  cache: boolean;
+  limit?: number;
+  before?: Snowflake;
+  after?: Snowflake;
+  cache?: boolean;
 }
 
 export interface FetchChannelOptions extends BaseFetchOptions {
@@ -4902,11 +4906,11 @@ export interface GuildWidgetSettings {
 
 export interface GuildEditData {
   name?: string;
-  verificationLevel?: VerificationLevel | number;
-  explicitContentFilter?: ExplicitContentFilterLevel | number;
-  defaultMessageNotifications?: DefaultMessageNotificationLevel | number;
-  afkChannel?: VoiceChannelResolvable;
-  systemChannel?: TextChannelResolvable;
+  verificationLevel?: VerificationLevel | number | null;
+  explicitContentFilter?: ExplicitContentFilterLevel | number | null;
+  defaultMessageNotifications?: DefaultMessageNotificationLevel | number | null;
+  afkChannel?: VoiceChannelResolvable | null;
+  systemChannel?: TextChannelResolvable | null;
   systemChannelFlags?: SystemChannelFlagsResolvable;
   afkTimeout?: number;
   icon?: BufferResolvable | Base64Resolvable | null;
@@ -4914,9 +4918,9 @@ export interface GuildEditData {
   splash?: BufferResolvable | Base64Resolvable | null;
   discoverySplash?: BufferResolvable | Base64Resolvable | null;
   banner?: BufferResolvable | Base64Resolvable | null;
-  rulesChannel?: TextChannelResolvable;
-  publicUpdatesChannel?: TextChannelResolvable;
-  preferredLocale?: string;
+  rulesChannel?: TextChannelResolvable | null;
+  publicUpdatesChannel?: TextChannelResolvable | null;
+  preferredLocale?: string | null;
   premiumProgressBarEnabled?: boolean;
   description?: string | null;
   features?: GuildFeatures[];
@@ -5763,7 +5767,7 @@ export type StageInstanceResolvable = StageInstance | Snowflake;
 
 export interface StartThreadOptions {
   name: string;
-  autoArchiveDuration?: ThreadAutoArchiveDuration;
+  autoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
   reason?: string;
   rateLimitPerUser?: number;
 }
@@ -5909,7 +5913,7 @@ export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptio
 export interface ThreadEditData {
   name?: string;
   archived?: boolean;
-  autoArchiveDuration?: ThreadAutoArchiveDuration;
+  autoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
   rateLimitPerUser?: number;
   locked?: boolean;
   invitable?: boolean;
