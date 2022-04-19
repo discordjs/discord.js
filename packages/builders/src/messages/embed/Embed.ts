@@ -1,10 +1,10 @@
 import type { APIEmbedField } from 'discord-api-types/v10';
 import {
-	authorNamePredicate,
 	colorPredicate,
 	descriptionPredicate,
+	embedAuthorPredicate,
 	embedFieldsArrayPredicate,
-	footerTextPredicate,
+	embedFooterPredicate,
 	imageURLPredicate,
 	timestampPredicate,
 	titlePredicate,
@@ -39,9 +39,7 @@ export class EmbedBuilder extends UnsafeEmbedBuilder {
 		}
 
 		// Data assertions
-		authorNamePredicate.parse(options.name);
-		urlPredicate.parse(options.iconURL);
-		urlPredicate.parse(options.url);
+		embedAuthorPredicate.parse(options);
 
 		return super.setAuthor(options);
 	}
@@ -62,8 +60,7 @@ export class EmbedBuilder extends UnsafeEmbedBuilder {
 		}
 
 		// Data assertions
-		footerTextPredicate.parse(options.text);
-		urlPredicate.parse(options.iconURL);
+		embedFooterPredicate.parse(options);
 
 		return super.setFooter(options);
 	}
