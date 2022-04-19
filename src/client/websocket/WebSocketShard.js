@@ -880,7 +880,11 @@ class WebSocketShard extends EventEmitter {
 
       // Wait for 400ms for ws to close.
       await sleep(400);
-      this.debug(`[WebSocket] Final Close Check. | WS State: ${CONNECTION_STATE[this.connection.readyState]}`);
+      this.debug(
+        `[WebSocket] Final Close Check. | WS State: ${
+          CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
+        }`,
+      );
       if (this.connection.readyState === WebSocket.CLOSING || this.connection.readyState === WebSocket.OPEN) {
         this.debug(
           // eslint-disable-next-line max-len
