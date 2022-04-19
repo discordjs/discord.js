@@ -216,27 +216,29 @@ export class Activity {
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
 export interface BaseComponentData {
-  type?: ComponentType;
+  type: ComponentType;
 }
 
-export type MessageActionRowComponentData = ButtonComponentData | SelectMenuComponentData;
+export type MessageActionRowComponentData =
+  | JSONEncodable<APIMessageActionRowComponent>
+  | ButtonComponentData
+  | SelectMenuComponentData;
 
-export type ModalActionRowComponentData = TextInputComponentData;
+export type ModalActionRowComponentData = JSONEncodable<APIModalActionRowComponent> | TextInputComponentData;
 
 export type ActionRowComponentData = MessageActionRowComponentData | ModalActionRowComponentData;
 
 export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
 
-export type ActionRowComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
-
-export interface ActionRowData<T extends ActionRowComponentBuilder | ActionRowComponentData> extends BaseComponentData {
+export interface ActionRowData<T extends JSONEncodable<APIActionRowComponentTypes> | ActionRowComponentData>
+  extends BaseComponentData {
   components: T[];
 }
 
 export class ActionRowBuilder<T extends AnyComponentBuilder = AnyComponentBuilder> extends BuilderActionRow<T> {
   constructor(
     data?: Partial<
-      | ActionRowData<ActionRowComponentData | ActionRowComponentBuilder>
+      | ActionRowData<ActionRowComponentData | JSONEncodable<APIActionRowComponentTypes>>
       | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
     >,
   );
@@ -587,7 +589,7 @@ export class ButtonComponent extends Component<APIButtonComponent> {
 export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
 
 export class ButtonBuilder extends BuilderButtonComponent {
-  public constructor(data?: ButtonComponentData | (Omit<APIButtonComponent, 'type'> & { type?: ComponentType.Button }));
+  public constructor(data?: Partial<ButtonComponentData> | Partial<APIButtonComponent>);
   public static from(other: JSONEncodable<APIButtonComponent> | APIButtonComponent): ButtonBuilder;
   public override setEmoji(emoji: ComponentEmojiResolvable): this;
 }
@@ -4736,9 +4738,9 @@ export interface MakeErrorOptions {
   stack: string;
 }
 
-export type ActionRowComponentOptions =
-  | (Required<BaseComponentData> & ButtonComponentData)
-  | (Required<BaseComponentData> & SelectMenuComponentData);
+export type MemberMention = UserMention | `<@!${Snowflake}>`;
+
+export type ActionRowComponentOptions = ButtonComponentData | SelectMenuComponentData;
 
 export type MessageActionRowComponentResolvable = MessageActionRowComponent | ActionRowComponentOptions;
 
@@ -4748,6 +4750,7 @@ export interface MessageActivity {
 }
 
 export interface BaseButtonComponentData extends BaseComponentData {
+  style: ButtonStyle;
   disabled?: boolean;
   emoji?: ComponentEmojiResolvable;
   label?: string;
@@ -4795,7 +4798,8 @@ export interface MessageEditOptions {
   allowedMentions?: MessageMentionOptions;
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>)
+    | ActionRow<MessageActionRowComponent>
+    | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
 }
@@ -4836,7 +4840,7 @@ export interface MessageOptions {
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
   components?: (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | (Required<BaseComponentData> & ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>)
+    | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
@@ -4864,6 +4868,7 @@ export interface MessageReference {
 export type MessageResolvable = Message | Snowflake;
 
 export interface SelectMenuComponentData extends BaseComponentData {
+  type: ComponentType.SelectMenu;
   customId: string;
   disabled?: boolean;
   maxValues?: number;
@@ -4889,6 +4894,7 @@ export interface SelectMenuComponentOptionData {
 }
 
 export interface TextInputComponentData extends BaseComponentData {
+  type: ComponentType.TextInput;
   customId: string;
   style: TextInputStyle;
   label: string;
