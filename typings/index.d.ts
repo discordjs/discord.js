@@ -998,7 +998,7 @@ export class Guild extends AnonymousGuild {
   /** @deprecated Use {@link GuildChannelManager.setPositions} instead */
   public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
   public setDefaultMessageNotifications(
-    defaultMessageNotifications: DefaultMessageNotificationLevel | number,
+    defaultMessageNotifications: DefaultMessageNotificationLevel | number | null,
     reason?: string,
   ): Promise<Guild>;
   public setDiscoverySplash(
@@ -1006,13 +1006,13 @@ export class Guild extends AnonymousGuild {
     reason?: string,
   ): Promise<Guild>;
   public setExplicitContentFilter(
-    explicitContentFilter: ExplicitContentFilterLevel | number,
+    explicitContentFilter: ExplicitContentFilterLevel | number | null,
     reason?: string,
   ): Promise<Guild>;
   public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
   public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
-  public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;
+  public setPreferredLocale(preferredLocale: string | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   /** @deprecated Use {@link RoleManager.setPositions} instead */
   public setRolePositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
@@ -1020,7 +1020,7 @@ export class Guild extends AnonymousGuild {
   public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
-  public setVerificationLevel(verificationLevel: VerificationLevel | number, reason?: string): Promise<Guild>;
+  public setVerificationLevel(verificationLevel: VerificationLevel | number | null, reason?: string): Promise<Guild>;
   public setPremiumProgressBarEnabled(enabled?: boolean, reason?: string): Promise<Guild>;
   public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
   public toJSON(): unknown;
@@ -4900,11 +4900,11 @@ export interface GuildWidgetSettings {
 
 export interface GuildEditData {
   name?: string;
-  verificationLevel?: VerificationLevel | number;
-  explicitContentFilter?: ExplicitContentFilterLevel | number;
-  defaultMessageNotifications?: DefaultMessageNotificationLevel | number;
-  afkChannel?: VoiceChannelResolvable;
-  systemChannel?: TextChannelResolvable;
+  verificationLevel?: VerificationLevel | number | null;
+  explicitContentFilter?: ExplicitContentFilterLevel | number | null;
+  defaultMessageNotifications?: DefaultMessageNotificationLevel | number | null;
+  afkChannel?: VoiceChannelResolvable | null;
+  systemChannel?: TextChannelResolvable | null;
   systemChannelFlags?: SystemChannelFlagsResolvable;
   afkTimeout?: number;
   icon?: BufferResolvable | Base64Resolvable | null;
@@ -4912,9 +4912,9 @@ export interface GuildEditData {
   splash?: BufferResolvable | Base64Resolvable | null;
   discoverySplash?: BufferResolvable | Base64Resolvable | null;
   banner?: BufferResolvable | Base64Resolvable | null;
-  rulesChannel?: TextChannelResolvable;
-  publicUpdatesChannel?: TextChannelResolvable;
-  preferredLocale?: string;
+  rulesChannel?: TextChannelResolvable | null;
+  publicUpdatesChannel?: TextChannelResolvable | null;
+  preferredLocale?: string | null;
   premiumProgressBarEnabled?: boolean;
   description?: string | null;
   features?: GuildFeatures[];
