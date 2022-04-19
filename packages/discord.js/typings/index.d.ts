@@ -2576,7 +2576,7 @@ export class Util extends null {
     route: string,
     reason?: string,
   ): Promise<{ id: Snowflake; position: number }[]>;
-  public static resolveAutoArchiveMaxLimit(guild: Guild): number;
+  public static resolveAutoArchiveMaxLimit(guild: Guild): Exclude<ThreadAutoArchiveDuration, 60>;
 }
 
 export class Components extends null {
@@ -5115,7 +5115,7 @@ export type StageInstanceResolvable = StageInstance | Snowflake;
 
 export interface StartThreadOptions {
   name: string;
-  autoArchiveDuration?: ThreadAutoArchiveDuration;
+  autoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
   reason?: string;
   rateLimitPerUser?: number;
 }
@@ -5223,7 +5223,7 @@ export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptio
 export interface ThreadEditData {
   name?: string;
   archived?: boolean;
-  autoArchiveDuration?: ThreadAutoArchiveDuration;
+  autoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
   rateLimitPerUser?: number;
   locked?: boolean;
   invitable?: boolean;
