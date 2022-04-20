@@ -341,13 +341,10 @@ class ApplicationCommand extends Base {
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
       (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission ||
-      !isEqual(
-        command.nameLocalizations ?? command.name_localizations ?? {},
-        this.nameLocalizations ?? this.name_localizations ?? {},
-      ) ||
+      !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
-        this.descriptionLocalizations ?? this.description_localizations ?? {},
+        this.descriptionLocalizations ?? {},
       )
     ) {
       return false;
@@ -408,13 +405,10 @@ class ApplicationCommand extends Base {
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
       (option.minValue ?? option.min_value) !== existing.minValue ||
       (option.maxValue ?? option.max_value) !== existing.maxValue ||
-      !isEqual(
-        option.nameLocalizations ?? option.name_localizations ?? {},
-        existing.nameLocalizations ?? existing.name_localizations ?? {},
-      ) ||
+      !isEqual(option.nameLocalizations ?? option.name_localizations ?? {}, existing.nameLocalizations ?? {}) ||
       !isEqual(
         option.descriptionLocalizations ?? option.description_localizations ?? {},
-        existing.descriptionLocalizations ?? existing.description_localizations ?? {},
+        existing.descriptionLocalizations ?? {},
       )
     ) {
       return false;
@@ -428,7 +422,7 @@ class ApplicationCommand extends Base {
             choice.name === option.choices[index].name &&
             choice.value === option.choices[index].value &&
             isEqual(
-              choice.nameLocalizations ?? choice.name_localizations ?? {},
+              choice.nameLocalizations ?? {},
               option.choices[index].nameLocalizations ?? option.choices[index].name_localizations ?? {},
             ),
         )
