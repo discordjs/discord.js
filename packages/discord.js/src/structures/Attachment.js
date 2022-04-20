@@ -1,6 +1,7 @@
 'use strict';
 
 const { isJSONEncodable } = require('@discordjs/builders');
+const AttachmentBuilder = require('./AttachmentBuilder');
 const isEqual = require('fast-deep-equal');
 const Util = require('../util/Util');
 
@@ -25,7 +26,7 @@ class Attachment {
    * @type {Snowflake}
    */
   get id() {
-    return this.data.id ?? null;
+    return this.data.id;
   }
 
   /**
@@ -33,7 +34,7 @@ class Attachment {
    * @type {?string}
    */
   get contentType() {
-    return this.data.content_type ?? this.data.contentType ?? null;
+    return this.data.content_type ?? null;
   }
 
   /**
@@ -81,7 +82,7 @@ class Attachment {
    * @type {string}
    */
   get proxyURL() {
-    return this.data.proxy_url ?? this.data.proxyURL ?? null;
+    return this.data.proxy_url ?? null;
   }
 
   /**
@@ -116,9 +117,9 @@ class Attachment {
    */
   static from(other) {
     if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
+      return new AttachmentBuilder(other.toJSON().url, other.toJSON().filename);
     }
-    return new this(other);
+    return new AttachmentBuilder(other.attachment, other.name);
   }
 
   /**

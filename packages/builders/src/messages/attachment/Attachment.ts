@@ -13,7 +13,7 @@ export class AttachmentBuilder extends UnsafeAttachmentBuilder {
 		return super.setDescription(descriptionValidator.parse(description));
 	}
 
-	public override setFile(attachment: BufferResolvable | Stream, name: string | null) {
+	public override setFile(attachment: BufferResolvable | Stream, name: string) {
 		if (name) {
 			return super.setFile(attachment, nameValidator.parse(name));
 		}
