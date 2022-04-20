@@ -206,20 +206,6 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * Fetches the owner of the guild.
-   * If the member object isn't needed, use {@link Guild#ownerId} instead.
-   * @param {BaseFetchOptions} [options] The options for fetching the member
-   * @returns {Promise<GuildMember>}
-   */
-  async fetchOwner(options) {
-    if (!this.guild.ownerId) {
-      throw new Error('FETCH_OWNER_ID');
-    }
-    const member = await this.fetch({ ...options, user: this.guild.ownerId });
-    return member;
-  }
-
-  /**
    * Options used for searching guild members.
    * @typedef {Object} GuildSearchMembersOptions
    * @property {string} query Filter members whose username or nickname start with this query

@@ -446,6 +446,20 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * Fetches the owner of the guild.
+   * If the member object isn't needed, use {@link Guild#ownerId} instead.
+   * @param {BaseFetchOptions} [options] The options for fetching the member
+   * @returns {Promise<GuildMember>}
+   */
+  async fetchOwner(options) {
+    if (!this.ownerId) {
+      throw new Error('FETCH_OWNER_ID');
+    }
+    const member = await this.members.fetch({ ...options, user: this.ownerId });
+    return member;
+  }
+
+  /**
    * AFK voice channel for this guild
    * @type {?VoiceChannel}
    * @readonly
