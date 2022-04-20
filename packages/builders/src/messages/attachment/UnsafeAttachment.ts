@@ -78,9 +78,9 @@ export class UnsafeAttachmentBuilder {
 	}
 
 	public toJSON(): APIAttachment {
-		const JSONAttachment: APIAttachment = {
+		const JSONAttachment = {
 			filename: this.name,
-			description: this.description ?? null,
+			description: this.description,
 			url: this.attachment,
 		};
 
