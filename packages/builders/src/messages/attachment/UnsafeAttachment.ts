@@ -1,5 +1,4 @@
 import type { Stream } from 'node:stream';
-import type { APIAttachment } from 'discord-api-types/v10';
 
 export type BufferResolvable = ArrayBuffer | string;
 
