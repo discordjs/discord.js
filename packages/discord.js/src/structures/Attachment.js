@@ -1,8 +1,8 @@
 'use strict';
 
 const { isJSONEncodable } = require('@discordjs/builders');
-const AttachmentBuilder = require('./AttachmentBuilder');
 const isEqual = require('fast-deep-equal');
+const AttachmentBuilder = require('./AttachmentBuilder');
 const Util = require('../util/Util');
 
 /**
