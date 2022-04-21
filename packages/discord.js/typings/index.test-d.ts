@@ -526,6 +526,34 @@ client.on('guildCreate', async g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
 
+  if (channel.isText()) {
+    const row: ActionRowData<MessageActionRowComponentData> = {
+      type: ComponentType.ActionRow,
+      components: [
+        new ButtonBuilder(),
+        { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
+        { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
+        { type: ComponentType.SelectMenu, customId: 'foo' },
+        new SelectMenuBuilder(),
+        // @ts-expect-error
+        { type: ComponentType.TextInput, style: TextInputStyle.Paragraph, customId: 'foo', label: 'test' },
+        // @ts-expect-error
+        new TextInputBuilder(),
+      ],
+    };
+
+    const row2 = new ActionRowBuilder<MessageActionRowComponentBuilder>({
+      type: ComponentType.ActionRow,
+      components: [
+        { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
+        { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
+        { type: ComponentType.SelectMenu, customId: 'foo' },
+      ],
+    });
+
+    channel.send({ components: [row, row2] });
+  }
+
   if (channel.isThread()) {
     const fetchedMember = await channel.members.fetch({ member: '12345678' });
     expectType<ThreadMember>(fetchedMember);
@@ -738,7 +766,7 @@ client.on('messageCreate', async message => {
 
   // Check that both builders and builder data can be sent in messages
   const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
-  const buttonsRow = {
+  const buttonsRow: ActionRowData<MessageActionRowComponentData> = {
     type: ComponentType.ActionRow,
     components: [
       new ButtonBuilder(),
@@ -747,12 +775,12 @@ client.on('messageCreate', async message => {
       {
         type: ComponentType.Button,
         label: 'another test',
-        style: ButtonStyle.Link as const,
+        style: ButtonStyle.Link,
         url: 'https://discord.js.org',
       },
     ],
   };
-  const selectsRow = {
+  const selectsRow: ActionRowData<MessageActionRowComponentData> = {
     type: ComponentType.ActionRow,
     components: [
       new SelectMenuBuilder(),
@@ -765,6 +793,7 @@ client.on('messageCreate', async message => {
       },
     ],
   };
+
   const buildersEmbed = new UnsafeEmbedBuilder();
   const embedData = { description: 'test', color: 0xff0000 };
   channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, buildersEmbed, embedData] });
