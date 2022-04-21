@@ -66,7 +66,7 @@ class ApplicationCommand extends Base {
     if ('name_localizations' in data) {
       /**
        * The name localizations for this command
-       * @type {?Object<string, string>}
+       * @type {?Object<Locale, string>}
        */
       this.nameLocalizations = data.name_localizations;
     } else {
@@ -76,7 +76,7 @@ class ApplicationCommand extends Base {
     if ('name_localized' in data) {
       /**
        * The localized name for this command
-       * @type {?Object<string, string>}
+       * @type {?string}
        */
       this.nameLocalized = data.name_localized;
     } else {
@@ -94,7 +94,7 @@ class ApplicationCommand extends Base {
     if ('description_localizations' in data) {
       /**
        * The description localizations for this command
-       * @type {?string}
+       * @type {?Object<Locale, string>}
        */
       this.descriptionLocalizations = data.description_localizations;
     } else {
@@ -170,9 +170,9 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the command, must be in all lowercase if type is
    * {@link ApplicationCommandType.ChatInput}
-   * @property {Object<string, string>} [nameLocalizations] The localizations for the command name
+   * @property {Object<Locale, string>} [nameLocalizations] The localizations for the command name
    * @property {string} description The description of the command, if type is {@link ApplicationCommandType.ChatInput}
-   * @property {Object<string, string>} [descriptionLocalizations] The localizations for the command description,
+   * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the command description,
    * if type is {@link ApplicationCommandType.ChatInput}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
@@ -189,9 +189,9 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOptionData
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
-   * @property {Object<string, string>} [nameLocalizations] The name localizations for the option
+   * @property {Object<Locale, string>} [nameLocalizations] The name localizations for the option
    * @property {string} description The description of the option
-   * @property {Object<string, string>} [descriptionLocalizations] The description localizations for the option
+   * @property {Object<Locale, string>} [descriptionLocalizations] The description localizations for the option
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
    * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
@@ -209,13 +209,8 @@ class ApplicationCommand extends Base {
   /**
    * @typedef {Object} ApplicationCommandOptionChoiceData
    * @property {string} name The name of the choice
-   * @property {Object<string, string>} [nameLocalizations] The localized names for this choice
+   * @property {Object<Locale, string>} [nameLocalizations] The localized names for this choice
    * @property {string|number} value The value of the choice
-   */
-
-  /**
-   * @typedef {ApplicationCommandOptionChoiceData} ApplicationCommandOptionChoice
-   * @property {string} [nameLocalized] The localized name for this choice
    */
 
   /**
@@ -245,7 +240,7 @@ class ApplicationCommand extends Base {
 
   /**
    * Edits the localized names of this ApplicationCommand
-   * @param {Object<string, string>} nameLocalizations The new localized names for the command
+   * @param {Object<Locale, string>} nameLocalizations The new localized names for the command
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit the name localizations of this command
@@ -271,11 +266,11 @@ class ApplicationCommand extends Base {
 
   /**
    * Edits the localized descriptions of this ApplicationCommand
-   * @param {Object<string, string>} descriptionLocalizations The new localized descriptions for the command
+   * @param {Object<Locale, string>} descriptionLocalizations The new localized descriptions for the command
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit the description localizations of this command
-   * command.setLocalizedDescriptions({
+   * command.setDescriptionLocalizations({
    *   'en-GB': 'A test command',
    *   'pt-BR': 'Um comando de teste',
    * })
@@ -456,10 +451,10 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
-   * @property {Object<string, string>} [nameLocalizations] The localizations for the option name
+   * @property {Object<Locale, string>} [nameLocalizations] The localizations for the option name
    * @property {string} [nameLocalized] The localized name for this option
    * @property {string} description The description of the option
-   * @property {Object<string, string>} [descriptionLocalizations] The localizations for the option description
+   * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the option description
    * @property {string} [descriptionLocalized] The localized description for this option
    * @property {boolean} [required] Whether the option is required
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
@@ -473,6 +468,15 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
+   */
+
+  /**
+   * A choice for an application command option.
+   * @typedef {Object} ApplicationCommandOptionChoice
+   * @property {string} name The name of the choice
+   * @property {?string} nameLocalized The localized name of the choice in the provided locale, if any
+   * @property {?Object<string, string>} [nameLocalizations] The localized names for this choice
+   * @property {string|number} value The value of the choice
    */
 
   /**
