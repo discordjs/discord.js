@@ -2,6 +2,7 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
+const isEqual = require('fast-deep-equal');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
 
@@ -339,7 +340,12 @@ class ApplicationCommand extends Base {
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
-      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission
+      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission ||
+      !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
+      !isEqual(
+        command.descriptionLocalizations ?? command.description_localizations ?? {},
+        this.descriptionLocalizations ?? {},
+      )
     ) {
       return false;
     }
@@ -398,7 +404,12 @@ class ApplicationCommand extends Base {
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
       (option.minValue ?? option.min_value) !== existing.minValue ||
-      (option.maxValue ?? option.max_value) !== existing.maxValue
+      (option.maxValue ?? option.max_value) !== existing.maxValue ||
+      !isEqual(option.nameLocalizations ?? option.name_localizations ?? {}, existing.nameLocalizations ?? {}) ||
+      !isEqual(
+        option.descriptionLocalizations ?? option.description_localizations ?? {},
+        existing.descriptionLocalizations ?? {},
+      )
     ) {
       return false;
     }
@@ -407,7 +418,13 @@ class ApplicationCommand extends Base {
       if (
         enforceOptionOrder &&
         !existing.choices.every(
-          (choice, index) => choice.name === option.choices[index].name && choice.value === option.choices[index].value,
+          (choice, index) =>
+            choice.name === option.choices[index].name &&
+            choice.value === option.choices[index].value &&
+            isEqual(
+              choice.nameLocalizations ?? {},
+              option.choices[index].nameLocalizations ?? option.choices[index].name_localizations ?? {},
+            ),
         )
       ) {
         return false;
