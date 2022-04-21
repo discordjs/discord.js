@@ -44,7 +44,7 @@ export class UnsafeEmbedBuilder {
 	 *
 	 * @param fields The fields to add
 	 */
-	public addFields(...fields: APIEmbedField[]): this {
+	public addFields(fields: APIEmbedField[]): this {
 		if (this.data.fields) this.data.fields.push(...fields);
 		else this.data.fields = fields;
 		return this;
@@ -67,7 +67,7 @@ export class UnsafeEmbedBuilder {
 	 * Sets the embed's fields (max 25).
 	 * @param fields The fields to set
 	 */
-	public setFields(...fields: APIEmbedField[]) {
+	public setFields(fields: APIEmbedField[]) {
 		this.spliceFields(0, this.data.fields?.length ?? 0, ...fields);
 		return this;
 	}

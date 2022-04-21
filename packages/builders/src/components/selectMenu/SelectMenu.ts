@@ -35,7 +35,7 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 		return super.setDisabled(disabledValidator.parse(disabled));
 	}
 
-	public override addOptions(...options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public override addOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
 		optionsLengthValidator.parse(this.options.length + options.length);
 		this.options.push(
 			...options.map((option) =>
@@ -47,7 +47,7 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 		return this;
 	}
 
-	public override setOptions(...options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public override setOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
 		optionsLengthValidator.parse(options.length);
 		this.options.splice(
 			0,
