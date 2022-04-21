@@ -43,7 +43,7 @@ class Util extends null {
       // If the valueOf is a Collection, use its array of keys
       else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
       // If it's an array, call toJSON function on each element if present, otherwise flatten each element
-      else if (Array.isArray(element)) out[newProp] = element.map(e => e.toJSON?.() || Util.flatten(e));
+      else if (Array.isArray(element)) out[newProp] = element.map(e => e.toJSON?.() ?? Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
       else if (typeof valueOf !== 'object') out[newProp] = valueOf;
       // If it's an object with a toJSON function, use the return value of it
