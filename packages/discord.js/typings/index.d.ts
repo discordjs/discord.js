@@ -199,7 +199,7 @@ export class Activity {
     id: string | null;
     size: [number, number];
   } | null;
-  public platform: ActivityPlatform | null;
+  public platform: string | null;
   public sessionId: string | null;
   public state: string | null;
   public syncId: string | null;
@@ -3425,8 +3425,6 @@ export interface ActivityOptions {
   type?: Exclude<ActivityType, ActivityType.Custom>;
   shardId?: number | readonly number[];
 }
-
-export type ActivityPlatform = 'desktop' | 'samsung' | 'xbox';
 
 export interface AddGuildMemberOptions {
   accessToken: string;
