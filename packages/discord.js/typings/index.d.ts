@@ -596,10 +596,17 @@ export class ButtonBuilder extends BuilderButtonComponent {
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
   public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public override addOptions(
+    ...options: (BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption)[]
+  ): this;
+  public override setOptions(
+    ...options: (BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption)[]
+  ): this;
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
 }
 
 export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
+  public constructor(data?: SelectMenuComponentOptionData | APISelectMenuOption);
   public setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
