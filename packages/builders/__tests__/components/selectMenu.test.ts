@@ -43,29 +43,31 @@ describe('Select Menu Components', () => {
 				.setDefault(true)
 				.setEmoji({ name: 'test' })
 				.setDescription('description');
-			expect(() => selectMenu().addOptions(option)).not.toThrowError();
-			expect(() => selectMenu().setOptions(option)).not.toThrowError();
-			expect(() => selectMenu().setOptions({ label: 'test', value: 'test' })).not.toThrowError();
+			expect(() => selectMenu().addOptions([option])).not.toThrowError();
+			expect(() => selectMenu().setOptions([option])).not.toThrowError();
+			expect(() => selectMenu().setOptions([{ label: 'test', value: 'test' }])).not.toThrowError();
 			expect(() =>
-				selectMenu().addOptions({
-					label: 'test',
-					value: 'test',
-					emoji: {
-						id: '123',
-						name: 'test',
-						animated: true,
+				selectMenu().addOptions([
+					{
+						label: 'test',
+						value: 'test',
+						emoji: {
+							id: '123',
+							name: 'test',
+							animated: true,
+						},
 					},
-				}),
+				]),
 			).not.toThrowError();
 
 			const options = new Array<APISelectMenuOption>(25).fill({ label: 'test', value: 'test' });
-			expect(() => selectMenu().addOptions(...options)).not.toThrowError();
-			expect(() => selectMenu().setOptions(...options)).not.toThrowError();
+			expect(() => selectMenu().addOptions(options)).not.toThrowError();
+			expect(() => selectMenu().setOptions(options)).not.toThrowError();
 
 			expect(() =>
 				selectMenu()
-					.addOptions({ label: 'test', value: 'test' })
-					.addOptions(...new Array<APISelectMenuOption>(24).fill({ label: 'test', value: 'test' })),
+					.addOptions([{ label: 'test', value: 'test' }])
+					.addOptions(new Array<APISelectMenuOption>(24).fill({ label: 'test', value: 'test' })),
 			).not.toThrowError();
 		});
 
@@ -77,24 +79,24 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenu().setDisabled(0)).toThrowError();
 			expect(() => selectMenu().setPlaceholder(longStr)).toThrowError();
 			// @ts-expect-error
-			expect(() => selectMenu().addOptions({ label: 'test' })).toThrowError();
-			expect(() => selectMenu().addOptions({ label: longStr, value: 'test' })).toThrowError();
-			expect(() => selectMenu().addOptions({ value: longStr, label: 'test' })).toThrowError();
-			expect(() => selectMenu().addOptions({ label: 'test', value: 'test', description: longStr })).toThrowError();
+			expect(() => selectMenu().addOptions([{ label: 'test' }])).toThrowError();
+			expect(() => selectMenu().addOptions([{ label: longStr, value: 'test' }])).toThrowError();
+			expect(() => selectMenu().addOptions([{ value: longStr, label: 'test' }])).toThrowError();
+			expect(() => selectMenu().addOptions([{ label: 'test', value: 'test', description: longStr }])).toThrowError();
 			// @ts-expect-error
-			expect(() => selectMenu().addOptions({ label: 'test', value: 'test', default: 100 })).toThrowError();
+			expect(() => selectMenu().addOptions([{ label: 'test', value: 'test', default: 100 }])).toThrowError();
 			// @ts-expect-error
-			expect(() => selectMenu().addOptions({ value: 'test' })).toThrowError();
+			expect(() => selectMenu().addOptions([{ value: 'test' }])).toThrowError();
 			// @ts-expect-error
-			expect(() => selectMenu().addOptions({ default: true })).toThrowError();
+			expect(() => selectMenu().addOptions([{ default: true }])).toThrowError();
 
 			const tooManyOptions = new Array<APISelectMenuOption>(26).fill({ label: 'test', value: 'test' });
-			expect(() => selectMenu().setOptions(...tooManyOptions)).toThrowError();
+			expect(() => selectMenu().setOptions(tooManyOptions)).toThrowError();
 
 			expect(() =>
 				selectMenu()
-					.addOptions({ label: 'test', value: 'test' })
-					.addOptions(...tooManyOptions),
+					.addOptions([{ label: 'test', value: 'test' }])
+					.addOptions(tooManyOptions),
 			).toThrowError();
 
 			expect(() => {
@@ -112,7 +114,7 @@ describe('Select Menu Components', () => {
 		test('GIVEN valid JSON input THEN valid JSON history is correct', () => {
 			expect(
 				new SelectMenuBuilder(selectMenuDataWithoutOptions)
-					.addOptions(new SelectMenuOptionBuilder(selectMenuOptionData))
+					.addOptions([new SelectMenuOptionBuilder(selectMenuOptionData)])
 					.toJSON(),
 			).toEqual(selectMenuData);
 			expect(new SelectMenuOptionBuilder(selectMenuOptionData).toJSON()).toEqual(selectMenuOptionData);

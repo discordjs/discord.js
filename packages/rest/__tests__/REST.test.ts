@@ -1,8 +1,8 @@
-import nock from 'nock';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { REST, DefaultRestOptions, APIRequest } from '../src';
 import { Routes, Snowflake } from 'discord-api-types/v10';
+import nock from 'nock';
 import { Response } from 'node-fetch';
+import { REST, DefaultRestOptions, APIRequest } from '../src';
 
 const newSnowflake: Snowflake = DiscordSnowflake.generate().toString();
 

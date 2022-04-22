@@ -137,14 +137,6 @@ class Presence extends Base {
 }
 
 /**
- * The platform of this activity:
- * * **`desktop`**
- * * **`samsung`** - playing on Samsung Galaxy
- * * **`xbox`** - playing on Xbox Live
- * @typedef {string} ActivityPlatform
- */
-
-/**
  * Represents an activity that is part of a user's presence.
  */
 class Activity {
@@ -219,7 +211,7 @@ class Activity {
 
     /**
      * The platform the game is being played on
-     * @type {?ActivityPlatform}
+     * @type {?string}
      */
     this.platform = data.platform ?? null;
 

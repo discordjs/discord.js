@@ -6,7 +6,7 @@ import type {
 import { ActionRowBuilder, createComponentBuilder, JSONEncodable, ModalActionRowComponentBuilder } from '../../index';
 
 export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResponseCallbackData> {
-	public readonly data: Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>>;
+	public readonly data: Partial<APIModalInteractionResponseCallbackData>;
 	public readonly components: ActionRowBuilder<ModalActionRowComponentBuilder>[] = [];
 
 	public constructor({ components, ...data }: Partial<APIModalInteractionResponseCallbackData> = {}) {
@@ -38,10 +38,10 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 	 * @param components The components to add to this modal
 	 */
 	public addComponents(
-		...components: (
+		components: (
 			| ActionRowBuilder<ModalActionRowComponentBuilder>
 			| APIActionRowComponent<APIModalActionRowComponent>
-		)[]
+		)[],
 	) {
 		this.components.push(
 			...components.map((component) =>
@@ -57,7 +57,7 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 	 * Sets the components in this modal
 	 * @param components The components to set this modal to
 	 */
-	public setComponents(...components: ActionRowBuilder<ModalActionRowComponentBuilder>[]) {
+	public setComponents(components: ActionRowBuilder<ModalActionRowComponentBuilder>[]) {
 		this.components.splice(0, this.components.length, ...components);
 		return this;
 	}

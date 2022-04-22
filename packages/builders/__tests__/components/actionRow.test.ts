@@ -44,8 +44,8 @@ const rowWithSelectMenuData: APIActionRowComponent<APIMessageActionRowComponent>
 describe('Action Row Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
-			expect(() => new ActionRowBuilder().addComponents(new ButtonBuilder())).not.toThrowError();
-			expect(() => new ActionRowBuilder().setComponents(new ButtonBuilder())).not.toThrowError();
+			expect(() => new ActionRowBuilder().addComponents([new ButtonBuilder()])).not.toThrowError();
+			expect(() => new ActionRowBuilder().setComponents([new ButtonBuilder()])).not.toThrowError();
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
@@ -128,13 +128,13 @@ describe('Action Row Components', () => {
 				.setCustomId('1234')
 				.setMaxValues(10)
 				.setMinValues(12)
-				.setOptions(
+				.setOptions([
 					new SelectMenuOptionBuilder().setLabel('one').setValue('one'),
 					new SelectMenuOptionBuilder().setLabel('two').setValue('two'),
-				);
+				]);
 
-			expect(new ActionRowBuilder().addComponents(button).toJSON()).toEqual(rowWithButtonData);
-			expect(new ActionRowBuilder().addComponents(selectMenu).toJSON()).toEqual(rowWithSelectMenuData);
+			expect(new ActionRowBuilder().addComponents([button]).toJSON()).toEqual(rowWithButtonData);
+			expect(new ActionRowBuilder().addComponents([selectMenu]).toJSON()).toEqual(rowWithSelectMenuData);
 		});
 	});
 });

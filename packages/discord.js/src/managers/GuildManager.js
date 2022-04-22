@@ -3,6 +3,7 @@
 const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Guild } = require('../structures/Guild');
@@ -271,12 +272,12 @@ class GuildManager extends CachedManager {
       }
 
       const data = await this.client.rest.get(Routes.guild(id), {
-        query: new URLSearchParams({ with_counts: options.withCounts ?? true }),
+        query: makeURLSearchParams({ with_counts: options.withCounts ?? true }),
       });
       return this._add(data, options.cache);
     }
 
-    const data = await this.client.rest.get(Routes.userGuilds(), { query: new URLSearchParams(options) });
+    const data = await this.client.rest.get(Routes.userGuilds(), { query: makeURLSearchParams(options) });
     return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
   }
 }

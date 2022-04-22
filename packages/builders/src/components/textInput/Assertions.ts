@@ -1,5 +1,5 @@
-import { TextInputStyle } from 'discord-api-types/v10';
 import { s } from '@sapphire/shapeshift';
+import { TextInputStyle } from 'discord-api-types/v10';
 import { customIdValidator } from '../Assertions';
 
 export const textInputStyleValidator = s.nativeEnum(TextInputStyle);

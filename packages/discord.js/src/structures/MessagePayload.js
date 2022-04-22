@@ -105,7 +105,7 @@ class MessagePayload {
     if (this.options.content === null) {
       content = '';
     } else if (typeof this.options.content !== 'undefined') {
-      content = Util.verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', false);
+      content = Util.verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', true);
     }
 
     return content;
@@ -116,7 +116,7 @@ class MessagePayload {
    * @returns {MessagePayload}
    */
   resolveBody() {
-    if (this.data) return this;
+    if (this.body) return this;
     const isInteraction = this.isInteraction;
     const isWebhook = this.isWebhook;
 
@@ -224,7 +224,7 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
-   * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
+   * @param {BufferResolvable|Stream|FileOptions|Attachment} fileLike Something that could be resolved to a file
    * @returns {Promise<RawFile>}
    */
   static async resolveFile(fileLike) {

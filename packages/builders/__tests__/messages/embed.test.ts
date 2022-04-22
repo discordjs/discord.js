@@ -322,7 +322,7 @@ describe('Embed', () => {
 
 		test('GIVEN an embed using Embed#addFields THEN returns valid toJSON data', () => {
 			const embed = new EmbedBuilder();
-			embed.addFields({ name: 'foo', value: 'bar' });
+			embed.addFields([{ name: 'foo', value: 'bar' }]);
 
 			expect(embed.toJSON()).toStrictEqual({
 				fields: [{ name: 'foo', value: 'bar', inline: undefined }],
@@ -331,7 +331,10 @@ describe('Embed', () => {
 
 		test('GIVEN an embed using Embed#spliceFields THEN returns valid toJSON data', () => {
 			const embed = new EmbedBuilder();
-			embed.addFields({ name: 'foo', value: 'bar' }, { name: 'foo', value: 'baz' });
+			embed.addFields([
+				{ name: 'foo', value: 'bar' },
+				{ name: 'foo', value: 'baz' },
+			]);
 
 			expect(embed.spliceFields(0, 1).toJSON()).toStrictEqual({
 				fields: [{ name: 'foo', value: 'baz', inline: undefined }],
@@ -340,7 +343,7 @@ describe('Embed', () => {
 
 		test('GIVEN an embed using Embed#spliceFields THEN returns valid toJSON data', () => {
 			const embed = new EmbedBuilder();
-			embed.addFields(...Array.from({ length: 23 }, () => ({ name: 'foo', value: 'bar' })));
+			embed.addFields(Array.from({ length: 23 }, () => ({ name: 'foo', value: 'bar' })));
 
 			expect(() =>
 				embed.spliceFields(0, 3, ...Array.from({ length: 5 }, () => ({ name: 'foo', value: 'bar' }))),
@@ -349,7 +352,7 @@ describe('Embed', () => {
 
 		test('GIVEN an embed using Embed#spliceFields that adds additional fields resulting in fields > 25 THEN throws error', () => {
 			const embed = new EmbedBuilder();
-			embed.addFields(...Array.from({ length: 23 }, () => ({ name: 'foo', value: 'bar' })));
+			embed.addFields(Array.from({ length: 23 }, () => ({ name: 'foo', value: 'bar' })));
 
 			expect(() =>
 				embed.spliceFields(0, 3, ...Array.from({ length: 8 }, () => ({ name: 'foo', value: 'bar' }))),
@@ -360,25 +363,21 @@ describe('Embed', () => {
 			const embed = new EmbedBuilder();
 
 			expect(() =>
-				embed.setFields(...Array.from({ length: 25 }, () => ({ name: 'foo', value: 'bar' }))),
+				embed.setFields(Array.from({ length: 25 }, () => ({ name: 'foo', value: 'bar' }))),
 			).not.toThrowError();
 		});
 
 		test('GIVEN an embed using Embed#setFields that sets more than 25 fields THEN throws error', () => {
 			const embed = new EmbedBuilder();
 
-			expect(() =>
-				embed.setFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' }))),
-			).toThrowError();
+			expect(() => embed.setFields(Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })))).toThrowError();
 		});
 
 		describe('GIVEN invalid field amount THEN throws error', () => {
 			test('', () => {
 				const embed = new EmbedBuilder();
 
-				expect(() =>
-					embed.addFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' }))),
-				).toThrowError();
+				expect(() => embed.addFields(Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })))).toThrowError();
 			});
 		});
 
@@ -386,7 +385,7 @@ describe('Embed', () => {
 			test('', () => {
 				const embed = new EmbedBuilder();
 
-				expect(() => embed.addFields({ name: '', value: 'bar' })).toThrowError();
+				expect(() => embed.addFields([{ name: '', value: 'bar' }])).toThrowError();
 			});
 		});
 
@@ -394,7 +393,7 @@ describe('Embed', () => {
 			test('', () => {
 				const embed = new EmbedBuilder();
 
-				expect(() => embed.addFields({ name: 'a'.repeat(257), value: 'bar' })).toThrowError();
+				expect(() => embed.addFields([{ name: 'a'.repeat(257), value: 'bar' }])).toThrowError();
 			});
 		});
 
@@ -402,7 +401,7 @@ describe('Embed', () => {
 			test('', () => {
 				const embed = new EmbedBuilder();
 
-				expect(() => embed.addFields({ name: '', value: 'a'.repeat(1025) })).toThrowError();
+				expect(() => embed.addFields([{ name: '', value: 'a'.repeat(1025) }])).toThrowError();
 			});
 		});
 	});

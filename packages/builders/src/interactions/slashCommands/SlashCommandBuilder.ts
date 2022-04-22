@@ -1,4 +1,8 @@
-import type { APIApplicationCommandOption, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
+import type {
+	APIApplicationCommandOption,
+	LocalizationMap,
+	RESTPostAPIApplicationCommandsJSONBody,
+} from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import {
 	assertReturnOfBuilder,
@@ -6,9 +10,9 @@ import {
 	validateMaxOptionsLength,
 	validateRequiredParameters,
 } from './Assertions';
-import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions';
-import { SharedNameAndDescription } from './mixins/NameAndDescription';
 import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
+import { SharedNameAndDescription } from './mixins/NameAndDescription';
+import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions';
 
 @mix(SharedSlashCommandOptions, SharedNameAndDescription)
 export class SlashCommandBuilder {
@@ -18,9 +22,19 @@ export class SlashCommandBuilder {
 	public readonly name: string = undefined!;
 
 	/**
+	 * The localized names for this command
+	 */
+	public readonly name_localizations?: LocalizationMap;
+
+	/**
 	 * The description of this slash command
 	 */
 	public readonly description: string = undefined!;
+
+	/**
+	 * The localized descriptions for this command
+	 */
+	public readonly description_localizations?: LocalizationMap;
 
 	/**
 	 * The options of this slash command
@@ -44,7 +58,9 @@ export class SlashCommandBuilder {
 
 		return {
 			name: this.name,
+			name_localizations: this.name_localizations,
 			description: this.description,
+			description_localizations: this.description_localizations,
 			options: this.options.map((option) => option.toJSON()),
 			default_permission: this.defaultPermission,
 		};

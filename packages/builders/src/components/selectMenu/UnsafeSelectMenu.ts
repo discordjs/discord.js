@@ -1,13 +1,11 @@
 import { APISelectMenuOption, ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
-import { ComponentBuilder } from '../Component';
 import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
+import { ComponentBuilder } from '../Component';
 
 /**
  * Represents a non-validated select menu component
  */
-export class UnsafeSelectMenuBuilder extends ComponentBuilder<
-	Partial<Omit<APISelectMenuComponent, 'options'>> & { type: ComponentType.SelectMenu }
-> {
+export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> {
 	/**
 	 * The options within this select menu
 	 */
@@ -69,7 +67,7 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<
 	 * @param options The options to add to this select menu
 	 * @returns
 	 */
-	public addOptions(...options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public addOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
 		this.options.push(
 			...options.map((option) =>
 				option instanceof UnsafeSelectMenuOptionBuilder ? option : new UnsafeSelectMenuOptionBuilder(option),
@@ -82,7 +80,7 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<
 	 * Sets the options on this select menu
 	 * @param options The options to set on this select menu
 	 */
-	public setOptions(...options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public setOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
 		this.options.splice(
 			0,
 			this.options.length,
