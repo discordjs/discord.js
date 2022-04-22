@@ -26,7 +26,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
    * @param {APISelectMenuOption[]} options The options to add to this select menu
    * @returns {SelectMenuBuilder}
    */
-  addOptions(...options) {
+  addOptions(options) {
     return super.addOptions(
       options.map(({ emoji, ...option }) => ({
         ...option,
@@ -40,7 +40,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
    * @param {APISelectMenuOption[]} options The options to set on this select menu
    * @returns {SelectMenuBuilder}
    */
-  setOptions(...options) {
+  setOptions(options) {
     return super.setOptions(
       options.map(({ emoji, ...option }) => ({
         ...option,
