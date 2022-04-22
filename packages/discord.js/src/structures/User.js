@@ -78,8 +78,8 @@ class User extends Base {
        * @type {?string}
        */
       this.banner = data.banner;
-    } else if (this.banner !== null) {
-      this.banner ??= undefined;
+    } else {
+      this.banner ??= null;
     }
 
     if ('accent_color' in data) {
@@ -89,8 +89,8 @@ class User extends Base {
        * @type {?number}
        */
       this.accentColor = data.accent_color;
-    } else if (this.accentColor !== null) {
-      this.accentColor ??= undefined;
+    } else {
+      this.accentColor ??= null;
     }
 
     if ('system' in data) {
