@@ -38,10 +38,9 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 	 * @param components The components to add to this modal
 	 */
 	public addComponents(
-		components: (
-			| ActionRowBuilder<ModalActionRowComponentBuilder>
-			| APIActionRowComponent<APIModalActionRowComponent>
-		)[],
+		...components:
+			| ActionRowBuilder<ModalActionRowComponentBuilder>[]
+			| APIActionRowComponent<APIModalActionRowComponent>[]
 	) {
 		this.components.push(
 			...components.map((component) =>
