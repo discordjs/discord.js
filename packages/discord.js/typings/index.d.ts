@@ -878,6 +878,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   protected constructor(client: Client, options?: CollectorOptions<[V, ...F]>);
   private _timeout: NodeJS.Timeout | null;
   private _idletimeout: NodeJS.Timeout | null;
+  private _endReason: string | null;
 
   public readonly client: Client;
   public collected: Collection<K, V>;
