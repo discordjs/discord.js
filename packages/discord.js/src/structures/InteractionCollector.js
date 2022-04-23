@@ -197,7 +197,7 @@ class InteractionCollector extends Collector {
     if (this.options.max && this.total >= this.options.max) return 'limit';
     if (this.options.maxComponents && this.collected.size >= this.options.maxComponents) return 'componentLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
-    return null;
+    return super.endReason;
   }
 
   /**
