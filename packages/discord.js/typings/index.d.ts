@@ -199,7 +199,7 @@ export class Activity {
     id: string | null;
     size: [number, number];
   } | null;
-  public platform: ActivityPlatform | null;
+  public platform: string | null;
   public sessionId: string | null;
   public state: string | null;
   public syncId: string | null;
@@ -596,10 +596,17 @@ export class ButtonBuilder extends BuilderButtonComponent {
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
   public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public override addOptions(
+    options: (BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption)[],
+  ): this;
+  public override setOptions(
+    options: (BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption)[],
+  ): this;
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
 }
 
 export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
+  public constructor(data?: SelectMenuComponentOptionData | APISelectMenuOption);
   public setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
@@ -3419,8 +3426,6 @@ export interface ActivityOptions {
   shardId?: number | readonly number[];
 }
 
-export type ActivityPlatform = 'desktop' | 'samsung' | 'xbox';
-
 export interface AddGuildMemberOptions {
   accessToken: string;
   nick?: string;
@@ -3598,10 +3603,6 @@ export interface ApplicationCommandOptionChoiceData {
   name: string;
   nameLocalizations?: LocalizationMap;
   value: string | number;
-}
-
-export interface ApplicationCommandOptionChoice extends ApplicationCommandOptionChoiceData {
-  nameLocalized?: string;
 }
 
 export interface ApplicationCommandPermissionData {

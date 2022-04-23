@@ -9,7 +9,7 @@ export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputCompone
 
 	/**
 	 * Sets the custom id for this text input
-	 * @param customId The custom id of this text inputå
+	 * @param customId The custom id of this text input
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
