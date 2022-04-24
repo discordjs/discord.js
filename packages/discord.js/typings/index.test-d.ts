@@ -1547,3 +1547,5 @@ expectType<ChannelMention>(threadChannel.toString());
 expectType<ChannelMention>(stageChannel.toString());
 expectType<ChannelMention>(partialGroupDMChannel.toString());
 expectType<UserMention>(dmChannel.toString());
+expectType<UserMention>(user.toString());
+expectType<UserMention>(guildMember.toString());
