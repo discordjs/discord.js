@@ -748,7 +748,7 @@ export abstract class Channel extends Base {
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
-  public toString(): ChannelMention;
+  public toString(): ChannelMention | UserMention;
 }
 
 export type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ? B : A | B;
@@ -1078,6 +1078,7 @@ export class DMChannel extends TextBasedChannelMixin(Channel, ['bulkDelete']) {
   public get recipient(): User | null;
   public type: ChannelType.DM;
   public fetch(force?: boolean): Promise<this>;
+  public toString(): UserMention;
 }
 
 export class Emoji extends Base {
@@ -1277,6 +1278,7 @@ export abstract class GuildChannel extends Channel {
   public setParent(channel: CategoryChannelResolvable | null, options?: SetParentOptions): Promise<this>;
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
   public isTextBased(): this is GuildBasedChannel & TextBasedChannel;
+  public toString(): ChannelMention;
 }
 
 export class GuildEmoji extends BaseGuildEmoji {
@@ -1963,6 +1965,7 @@ export class PartialGroupDMChannel extends Channel {
   public icon: string | null;
   public recipients: PartialRecipient[];
   public iconURL(options?: ImageURLOptions): string | null;
+  public toString(): ChannelMention;
 }
 
 export class PermissionOverwrites extends Base {
@@ -2467,6 +2470,7 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel) {
   public setLocked(locked?: boolean, reason?: string): Promise<ThreadChannel>;
   public setName(name: string, reason?: string): Promise<ThreadChannel>;
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<ThreadChannel>;
+  public toString(): ChannelMention;
 }
 
 export class ThreadMember extends Base {
