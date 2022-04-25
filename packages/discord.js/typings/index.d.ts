@@ -194,16 +194,12 @@ export class Activity {
   public details: string | null;
   public emoji: Emoji | null;
   public flags: Readonly<ActivityFlagsBitField>;
-  public id: string;
   public name: string;
   public party: {
     id: string | null;
     size: [number, number];
   } | null;
-  public platform: string | null;
-  public sessionId: string | null;
   public state: string | null;
-  public syncId: string | null;
   public timestamps: {
     start: Date | null;
     end: Date | null;
