@@ -1449,7 +1449,7 @@ export class Integration extends Base {
   private constructor(client: Client, data: RawIntegrationData, guild: Guild);
   public account: IntegrationAccount;
   public application: IntegrationApplication | null;
-  public enabled: boolean;
+  public enabled: boolean | null;
   public expireBehavior: IntegrationExpireBehavior | null;
   public expireGracePeriod: number | null;
   public guild: Guild;
