@@ -875,11 +875,12 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   protected constructor(client: Client, options?: CollectorOptions<[V, ...F]>);
   private _timeout: NodeJS.Timeout | null;
   private _idletimeout: NodeJS.Timeout | null;
+  private _endReason: string | null;
 
   public readonly client: Client;
   public collected: Collection<K, V>;
   public ended: boolean;
-  public abstract get endReason(): string | null;
+  public get endReason(): string | null;
   public filter: CollectorFilter<[V, ...F]>;
   public get next(): Promise<V>;
   public options: CollectorOptions<[V, ...F]>;
@@ -1552,7 +1553,6 @@ export class InteractionCollector<T extends Interaction> extends Collector<Snowf
   public channelId: Snowflake | null;
   public messageInteractionId: Snowflake | null;
   public componentType: ComponentType | null;
-  public get endReason(): string | null;
   public guildId: Snowflake | null;
   public interactionType: InteractionType | null;
   public messageId: Snowflake | null;
@@ -1767,7 +1767,6 @@ export class MessageCollector extends Collector<Snowflake, Message, [Collection<
   private _handleGuildDeletion(guild: Guild): void;
 
   public channel: TextBasedChannel;
-  public get endReason(): string | null;
   public options: MessageCollectorOptions;
   public received: number;
 
@@ -2016,7 +2015,6 @@ export class ReactionCollector extends Collector<Snowflake | string, MessageReac
   private _handleGuildDeletion(guild: Guild): void;
   private _handleMessageDeletion(message: Message): void;
 
-  public get endReason(): string | null;
   public message: Message;
   public options: ReactionCollectorOptions;
   public total: number;
