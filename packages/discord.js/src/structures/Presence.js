@@ -144,12 +144,6 @@ class Activity {
     Object.defineProperty(this, 'presence', { value: presence });
 
     /**
-     * The activity's id
-     * @type {string}
-     */
-    this.id = data.id;
-
-    /**
      * The activity's name
      * @type {string}
      */
@@ -204,18 +198,6 @@ class Activity {
       : null;
 
     /**
-     * The Spotify song's id
-     * @type {?string}
-     */
-    this.syncId = data.sync_id ?? null;
-
-    /**
-     * The platform the game is being played on
-     * @type {?string}
-     */
-    this.platform = data.platform ?? null;
-
-    /**
      * Represents a party of an activity
      * @typedef {Object} ActivityParty
      * @property {?string} id The party's id
@@ -245,12 +227,6 @@ class Activity {
      * @type {?Emoji}
      */
     this.emoji = data.emoji ? new Emoji(presence.client, data.emoji) : null;
-
-    /**
-     * The game's or Spotify session's id
-     * @type {?string}
-     */
-    this.sessionId = data.session_id ?? null;
 
     /**
      * The labels of the buttons of this rich presence
