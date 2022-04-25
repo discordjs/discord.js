@@ -197,6 +197,7 @@ exports.InteractionType = require('discord-api-types/v10').InteractionType;
 exports.InteractionResponseType = require('discord-api-types/v10').InteractionResponseType;
 exports.InviteTargetType = require('discord-api-types/v10').InviteTargetType;
 exports.Locale = require('discord-api-types/v10').Locale;
+exports.MessageActivityType = require('discord-api-types/v10').MessageActivityType;
 exports.MessageType = require('discord-api-types/v10').MessageType;
 exports.MessageFlags = require('discord-api-types/v10').MessageFlags;
 exports.OAuth2Scopes = require('discord-api-types/v10').OAuth2Scopes;

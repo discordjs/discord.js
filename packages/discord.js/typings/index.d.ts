@@ -116,6 +116,7 @@ import {
   VideoQualityMode,
   LocalizationMap,
   LocaleString,
+  MessageActivityType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -4746,8 +4747,8 @@ export type ActionRowComponentOptions = ButtonComponentData | SelectMenuComponen
 export type MessageActionRowComponentResolvable = MessageActionRowComponent | ActionRowComponentOptions;
 
 export interface MessageActivity {
-  partyId: string;
-  type: number;
+  partyId?: string;
+  type: MessageActivityType;
 }
 
 export interface BaseButtonComponentData extends BaseComponentData {
@@ -5420,6 +5421,7 @@ export {
   ThreadMemberFlags,
   UserFlags,
   WebhookType,
+  MessageActivityType,
 } from 'discord-api-types/v10';
 export * from '@discordjs/builders';
 export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
