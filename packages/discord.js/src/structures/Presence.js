@@ -9,7 +9,7 @@ const Util = require('../util/Util');
  * Activity sent in a message.
  * @typedef {Object} MessageActivity
  * @property {string} [partyId] Id of the party represented in activity
- * @property {number} [type] Type of activity sent
+ * @property {MessageActivityType} type Type of activity sent
  */
 
 /**
