@@ -1687,7 +1687,28 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public inGuild(): this is Message<true> & this;
 }
 
-export class Attachment {
+export interface AttachmentPayload {
+  name: string | null;
+  attachment: BufferResolvable | Stream;
+  description?: string;
+}
+
+export class AttachmentBuilder implements JSONEncodable<AttachmentPayload> {
+  public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawAttachmentData);
+
+  public attachment: BufferResolvable | Stream;
+  public description: string | null;
+  public name: string | null;
+  public get spoiler(): boolean;
+  public setDescription(description: string): this;
+  public setFile(attachment: BufferResolvable | Stream, name?: string): this;
+  public setName(name: string): this;
+  public setSpoiler(spoiler?: boolean): this;
+  public toJSON(): AttachmentPayload;
+  public static from(other: JSONEncodable<AttachmentPayload>): AttachmentBuilder;
+}
+
+export class Attachment implements JSONEncodable<AttachmentPayload> {
   public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawAttachmentData);
 
   public attachment: BufferResolvable | Stream;
@@ -1702,11 +1723,7 @@ export class Attachment {
   public get spoiler(): boolean;
   public url: string;
   public width: number | null;
-  public setDescription(description: string): this;
-  public setFile(attachment: BufferResolvable | Stream, name?: string): this;
-  public setName(name: string): this;
-  public setSpoiler(spoiler?: boolean): this;
-  public toJSON(): unknown;
+  public toJSON(): AttachmentPayload;
 }
 
 export class MessageCollector extends Collector<Snowflake, Message, [Collection<Snowflake, Message>]> {
@@ -1829,7 +1846,9 @@ export class MessagePayload {
     options: string | MessageOptions | WebhookMessageOptions,
     extra?: MessageOptions | WebhookMessageOptions,
   ): MessagePayload;
-  public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | Attachment): Promise<RawFile>;
+  public static resolveFile(
+    fileLike: BufferResolvable | Stream | FileOptions | JSONEncodable<AttachmentPayload>,
+  ): Promise<RawFile>;
 
   public makeContent(): string | undefined;
   public resolveBody(): this;
@@ -3172,7 +3191,7 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
   private constructor(guild: Guild, iterable?: Iterable<RawStickerData>);
   public guild: Guild;
   public create(
-    file: BufferResolvable | Stream | FileOptions | Attachment,
+    file: BufferResolvable | Stream | FileOptions | JSONEncodable<AttachmentBuilder>,
     name: string,
     tags: string,
     options?: GuildStickerCreateOptions,
@@ -3911,7 +3930,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
   channel?: CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>;
   role?: CacheTypeReducer<Cached, Role, APIRole>;
-  attachment?: Attachment;
+  attachment?: AttachmentBuilder;
   message?: GuildCacheMessage<Cached>;
 }
 
@@ -3921,7 +3940,7 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   channels?: Collection<Snowflake, CacheTypeReducer<Cached, AnyChannel, APIInteractionDataResolvedChannel>>;
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
-  attachments?: Collection<Snowflake, Attachment>;
+  attachments?: Collection<Snowflake, AttachmentBuilder>;
 }
 
 export declare const Colors: {
@@ -4644,10 +4663,10 @@ export type MessageChannelComponentCollectorOptions<T extends MessageComponentIn
 >;
 
 export interface MessageEditOptions {
-  attachments?: Attachment[];
+  attachments?: JSONEncodable<AttachmentPayload>[];
   content?: string | null;
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[] | null;
-  files?: (FileOptions | BufferResolvable | Stream | Attachment)[];
+  files?: (FileOptions | BufferResolvable | Stream | AttachmentBuilder)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
@@ -4698,10 +4717,10 @@ export interface MessageOptions {
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
-  files?: (FileOptions | BufferResolvable | Stream | Attachment)[];
+  files?: (FileOptions | BufferResolvable | Stream | JSONEncodable<AttachmentPayload>)[];
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
-  attachments?: Attachment[];
+  attachments?: JSONEncodable<AttachmentPayload>[];
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, number>;
 }
 

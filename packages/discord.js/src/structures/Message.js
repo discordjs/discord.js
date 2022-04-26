@@ -642,9 +642,9 @@ class Message extends Base {
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * Only `MessageFlags.SuppressEmbeds` can be edited.
-   * @property {Attachment[]} [attachments] An array of attachments to keep,
+   * @property {Attachment[]|AttachmentBuilder} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
-   * @property {FileOptions[]|BufferResolvable[]|Attachment[]} [files] Files to add to the message
+   * @property {FileOptions[]|BufferResolvable[]|Attachment[]|AttachmentBuilder} [files] Files to add to the message
    * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
