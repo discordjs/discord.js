@@ -192,10 +192,10 @@ class ApplicationCommand extends Base {
    * @property {Object<Locale, string>} [nameLocalizations] The name localizations for the option
    * @property {string} description The description of the option
    * @property {Object<Locale, string>} [descriptionLocalizations] The description localizations for the option
-   * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
+   * @property {boolean} [autocomplete=false] Whether the autocomplete interaction is enabled for a
    * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
-   * @property {boolean} [required] Whether the option is required
+   * @property {boolean} [required=false] Whether the option is required
    * @property {ApplicationCommandOptionChoiceData[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
