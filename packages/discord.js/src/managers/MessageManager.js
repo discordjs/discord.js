@@ -44,7 +44,7 @@ class MessageManager extends CachedManager {
   /**
    * Options used to fetch a message.
    * @typedef {BaseFetchOptions} FetchMessageOptions
-   * @property {MessageResolvable} [message] The message to fetch
+   * @property {MessageResolvable} message The message to fetch
    */
 
   /**

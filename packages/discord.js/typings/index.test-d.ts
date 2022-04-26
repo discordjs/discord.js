@@ -120,6 +120,9 @@ import {
   GuildBanManager,
   GuildBan,
   MessageManager,
+  ChannelMention,
+  UserMention,
+  PartialGroupDMChannel,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
@@ -1533,3 +1536,16 @@ EmbedBuilder.from(embedData);
 
 declare const embedComp: Embed;
 EmbedBuilder.from(embedComp);
+
+declare const stageChannel: StageChannel;
+declare const partialGroupDMChannel: PartialGroupDMChannel;
+
+expectType<ChannelMention>(textChannel.toString());
+expectType<ChannelMention>(voiceChannel.toString());
+expectType<ChannelMention>(newsChannel.toString());
+expectType<ChannelMention>(threadChannel.toString());
+expectType<ChannelMention>(stageChannel.toString());
+expectType<ChannelMention>(partialGroupDMChannel.toString());
+expectType<UserMention>(dmChannel.toString());
+expectType<UserMention>(user.toString());
+expectType<UserMention>(guildMember.toString());
