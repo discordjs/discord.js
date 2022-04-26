@@ -73,13 +73,13 @@ class CommandInteractionOptionResolver {
    */
   get(name, required = false) {
     const option = this._hoistedOptions.find(opt => opt.name === name);
-    if (!option) {
-      if (required) {
-        throw new TypeError('COMMAND_INTERACTION_OPTION_NOT_FOUND', name);
-      }
-      return null;
+    if (option) {
+      return option;
     }
-    return option;
+    if (required) {
+      throw new TypeError('COMMAND_INTERACTION_OPTION_NOT_FOUND', name);
+    }
+    return null;
   }
 
   /**
