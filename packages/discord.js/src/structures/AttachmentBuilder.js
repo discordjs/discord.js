@@ -14,6 +14,7 @@ class AttachmentBuilder {
   constructor(attachment, name = null, data = {}) {
     /**
      * The file associated with this attachment.
+     * @type {BufferResolvable|Stream}
      */
     this.attachment = attachment;
     /**
@@ -23,6 +24,7 @@ class AttachmentBuilder {
     this.name = name;
     /**
      * The description of the attachment
+     * @type {?string}
      */
     this.description = data.description;
   }

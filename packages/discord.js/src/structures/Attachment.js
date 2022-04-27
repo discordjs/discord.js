@@ -3,16 +3,16 @@
 const Util = require('../util/Util');
 
 /**
+ * @typedef {Object} AttachmentPayload
+ * @property {?string} name
+ * @property {Stream|BufferResolvable} attachment
+ * @property {?string} description
+ */
+
+/**
  * Represents an attachment
  */
 class Attachment {
-  /**
-   * @typedef {Object} AttachmentPayload
-   * @property {?string} name
-   * @property {Stream|BufferResolvable} attachment
-   * @property {?string} description
-   */
-
   /**
    * @param {BufferResolvable|Stream} attachment The file
    * @param {string} [name=null] The name of the file, if any
