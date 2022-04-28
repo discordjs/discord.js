@@ -1,6 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import { localizationMapPredicate, validateChoicesLength, validateNameLocalizationsMap } from '../Assertions';
+import { localizationMapPredicate, validateChoicesLength } from '../Assertions';
 
 const stringPredicate = s.string.lengthGe(1).lengthLe(100);
 const numberPredicate = s.number.gt(-Infinity).lt(Infinity);
@@ -43,8 +43,6 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 			} else {
 				numberPredicate.parse(value);
 			}
-
-			validateNameLocalizationsMap(name_localizations);
 
 			this.choices!.push({ name, name_localizations, value });
 		}

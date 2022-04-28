@@ -91,7 +91,3 @@ export function assertReturnOfBuilder<
 export const localizationMapPredicate = s.object<LocalizationMap>(
 	Object.fromEntries(Object.values(Locale).map((locale) => [locale, s.string.nullish])),
 ).strict.nullish;
-
-export function validateNameLocalizationsMap(value: unknown): asserts value is LocalizationMap {
-	localizationMapPredicate.parse(value);
-}
