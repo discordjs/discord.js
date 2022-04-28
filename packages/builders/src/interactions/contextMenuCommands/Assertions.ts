@@ -30,3 +30,19 @@ export function validateRequiredParameters(name: string, type: number) {
 	// Assert type is valid
 	validateType(type);
 }
+
+const dmPermissionPredicate = s.boolean.nullish;
+
+export function validateDmPermission(value: unknown): asserts value is boolean | null | undefined {
+	dmPermissionPredicate.parse(value);
+}
+
+const memberPermissionPredicate = s.union(
+	s.bigint.transform((value) => value.toString()),
+	s.number.safeInt.transform((value) => value.toString()),
+	s.string.regex(/^\d+$/),
+).nullish;
+
+export function validateDefaultMemberPermission(permissions: unknown) {
+	return memberPermissionPredicate.parse(permissions);
+}
