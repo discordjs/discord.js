@@ -433,7 +433,7 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
 			});
 
-			test('GIVEN valid name localizations THEN does not throw error', () => {
+			test('GIVEN invalid name localizations THEN does throw error', () => {
 				// @ts-expect-error
 				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
 				// @ts-expect-error
@@ -456,7 +456,7 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
 			});
 
-			test('GIVEN valid description localizations THEN does not throw error', () => {
+			test('GIVEN invalid description localizations THEN does throw error', () => {
 				// @ts-expect-error
 				expect(() => getBuilder().setDescriptionLocalization('en-U', 'foobar')).toThrowError();
 				// @ts-expect-error
