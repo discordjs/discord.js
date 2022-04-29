@@ -88,7 +88,7 @@ export class SlashCommandBuilder {
 	 * @param value Whether or not to enable this command by default
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
-	 * @deprecated Use `setDefaultMemberPermissions` and `setDmPermission` instead.
+	 * @deprecated Use `setDefaultMemberPermissions` and `setDMPermission` instead.
 	 */
 	public setDefaultPermission(value: boolean) {
 		// Assert the value matches the conditions
@@ -125,7 +125,7 @@ export class SlashCommandBuilder {
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
-	public setDmPermission(enabled: boolean | null | undefined) {
+	public setDMPermission(enabled: boolean | null | undefined) {
 		// Assert the value matches the conditions
 		validateDmPermission(enabled);
 
