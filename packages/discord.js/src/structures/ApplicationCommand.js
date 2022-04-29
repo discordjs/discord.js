@@ -130,12 +130,15 @@ class ApplicationCommand extends Base {
       this.defaultMemberPermissions = data.default_member_permissions
         ? new PermissionsBitField(BigInt(data.default_member_permissions)).freeze()
         : null;
+    } else {
+      this.defaultMemberPermissions ??= null;
     }
 
     if ('dm_permission' in data) {
       /**
        * Whether the command can be used in dms
-       * @type {boolean}
+       * <info>This property is not present on guild commands</info>
+       * @type {boolean?}
        */
       this.dmPermission = data.dm_permission;
     }
@@ -379,7 +382,7 @@ class ApplicationCommand extends Base {
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
-      defaultMemberPermissions !== (this.defaultMemberPermissions ? this.defaultMemberPermissions.bitfield : null) ||
+      defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
       command.dmPermission !== this.dmPermission ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
