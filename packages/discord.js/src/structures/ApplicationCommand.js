@@ -143,15 +143,6 @@ class ApplicationCommand extends Base {
       this.dmPermission = data.dm_permission;
     }
 
-    if ('default_permission' in data) {
-      /**
-       * Whether the command is enabled by default when the app is added to a guild
-       * @deprecated Use {@link ApplicationCommand#dmPermission} and {@link ApplicationCommand#defaultMemberPermissions}
-       * @type {boolean}
-       */
-      this.defaultPermission = data.default_permission;
-    }
-
     if ('version' in data) {
       /**
        * Autoincrementing version identifier updated during substantial record changes
