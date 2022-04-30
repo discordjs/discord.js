@@ -232,6 +232,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * when the managers `commandId` is `null`</warn>
    * <warn>At least one of `users`, `roles`, and `channels` is required</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} RemoveApplicationCommandPermissionsOptions
+   * @property {string} token The bearer token to use that authorizes the permission removal
    * @property {UserResolvable[]} [users] The user(s) to remove
    * @property {Array<RoleResolvable|RolePermissionConstant>} [roles] The role(s) to remove
    * @property {Array<GuildChannelResolvable|ChannelPermissionConstant>} [channels] The channel(s) to remove
