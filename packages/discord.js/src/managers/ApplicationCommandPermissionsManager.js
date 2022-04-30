@@ -74,7 +74,8 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    */
 
   /**
-   * Fetches the permissions for one or multiple commands.
+   * Fetches the permissions for one or multiple commands. Provide the clients id as the command id to fetch *only* the
+   * guild level permissions
    * @param {BaseApplicationCommandPermissionsOptions} [options] Options used to fetch permissions
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
    * @example
