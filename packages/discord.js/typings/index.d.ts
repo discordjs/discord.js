@@ -502,7 +502,7 @@ export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel) {
   public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
   public setDefaultAutoArchiveDuration(
-    defaultAutoArchiveDuration: ThreadAutoArchiveDuration | 'MAX',
+    defaultAutoArchiveDuration: ThreadAutoArchiveDuration | "Max",
     reason?: string,
   ): Promise<this>;
   public setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
@@ -2458,7 +2458,7 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel) {
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
   public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
   public setAutoArchiveDuration(
-    autoArchiveDuration: ThreadAutoArchiveDuration | 'MAX',
+    autoArchiveDuration: ThreadAutoArchiveDuration | "Max",
     reason?: string,
   ): Promise<ThreadChannel>;
   public setInvitable(invitable?: boolean, reason?: string): Promise<ThreadChannel>;
@@ -3751,7 +3751,7 @@ export interface ChannelData {
   rateLimitPerUser?: number;
   lockPermissions?: boolean;
   permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
-  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
+  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration | "Max";
   rtcRegion?: string | null;
   videoQualityMode?: VideoQualityMode | null;
 }
@@ -4108,133 +4108,133 @@ export type EmojiIdentifierResolvable = string | EmojiResolvable;
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
 
 export type ChannelTypeEnumResolvable =
-  | 'GUILD_TEXT'
-  | 'DM'
-  | 'GUILD_VOICE'
-  | 'GROUP_DM'
-  | 'GUILD_CATEGORY'
-  | 'GUILD_NEWS'
-  | 'GUILD_NEWS_THREAD'
-  | 'GUILD_PUBLIC_THREAD'
-  | 'GUILD_PRIVATE_THREAD'
-  | 'GUILD_STAGE_VOICE';
+  | "GuildText"
+  | "Dm"
+  | "GuildVoice"
+  | "GroupDm"
+  | "GuildCategory"
+  | "GuildNews"
+  | "GuildNewsThread"
+  | "GuildPublicThread"
+  | "GuildPrivateThread"
+  | "GuildStageVoice";
 
 export type InteractionTypeEnumResolvable =
-  | 'PING'
-  | 'APPLICATION_COMMAND'
-  | 'MESSAGE_COMPONENT'
-  | 'APPLICATION_COMMAND_AUTOCOMPLETE';
+  | "Ping"
+  | "ApplicationCommand"
+  | "MessageComponent"
+  | "ApplicationCommandAutocomplete";
 
-export type ApplicationCommandTypeEnumResolvable = 'CHAT_INPUT' | 'USER' | 'MESSAGE';
+export type ApplicationCommandTypeEnumResolvable = "ChatInput" | "User" | "Message";
 
 export type ApplicationCommandOptionTypeEnumResolvable =
-  | 'SUB_COMMAND'
-  | 'SUB_COMMAND_GROUP'
-  | 'STRING'
-  | 'INTEGER'
-  | 'BOOLEAN'
-  | 'USER'
-  | 'CHANNEL'
-  | 'ROLE'
-  | 'NUMBER'
-  | 'MENTIONABLE';
+  | "SubCommand"
+  | "SubCommandGroup"
+  | "String"
+  | "Integer"
+  | "Boolean"
+  | "User"
+  | "Channel"
+  | "Role"
+  | "Number"
+  | "Mentionable";
 
-export type ApplicationCommandPermissionTypeEnumResolvable = 'ROLE' | 'USER';
+export type ApplicationCommandPermissionTypeEnumResolvable = "Role" | "User";
 
-export type ComponentTypeEnumResolvable = 'ACTION_ROW' | 'BUTTON' | 'SELECT_MENU';
+export type ComponentTypeEnumResolvable = "ActionRow" | "Button" | "SelectMenu";
 
-export type ButtonStyleEnumResolvable = 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
+export type ButtonStyleEnumResolvable = "Primary" | "Secondary" | "Success" | "Danger" | "Link";
 
 export type MessageTypeEnumResolvable =
-  | 'DEFAULT'
-  | 'RECIPIENT_ADD'
-  | 'RECIPIENT_REMOVE'
-  | 'CALL'
-  | 'CHANNEL_NAME_CHANGE'
-  | 'CHANNEL_ICON_CHANGE'
-  | 'CHANNEL_PINNED_MESSAGE'
-  | 'GUILD_MEMBER_JOIN'
-  | 'USER_PREMIUM_GUILD_SUBSCRIPTION'
-  | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
-  | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2'
-  | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3'
-  | 'CHANNEL_FOLLOW_ADD'
-  | 'GUILD_DISCOVERY_DISQUALIFIED'
-  | 'GUILD_DISCOVERY_REQUALIFIED'
-  | 'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING'
-  | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
-  | 'THREAD_CREATED'
-  | 'REPLY'
-  | 'CHAT_INPUT_COMMAND'
-  | 'THREAD_STARTER_MESSAGE'
-  | 'GUILD_INVITE_REMINDER'
-  | 'CONTEXT_MENU_COMMAND';
+  | "Default"
+  | "RecipientAdd"
+  | "RecipientRemove"
+  | "Call"
+  | "ChannelNameChange"
+  | "ChannelIconChange"
+  | "ChannelPinnedMessage"
+  | "GuildMemberJoin"
+  | "UserPremiumGuildSubscription"
+  | "UserPremiumGuildSubscriptionTier"
+  | "UserPremiumGuildSubscriptionTier"
+  | "UserPremiumGuildSubscriptionTier"
+  | "ChannelFollowAdd"
+  | "GuildDiscoveryDisqualified"
+  | "GuildDiscoveryRequalified"
+  | "GuildDiscoveryGracePeriodInitialWarning"
+  | "GuildDiscoveryGracePeriodFinalWarning"
+  | "ThreadCreated"
+  | "Reply"
+  | "ChatInputCommand"
+  | "ThreadStarterMessage"
+  | "GuildInviteReminder"
+  | "ContextMenuCommand";
 
-export type GuildNSFWLevelEnumResolvable = 'DEFAULT' | 'EXPLICIT' | 'SAFE' | 'AGE_RESTRICTED';
+export type GuildNSFWLevelEnumResolvable = "Default" | "Explicit" | "Safe" | "AgeRestricted";
 
-export type GuildVerificationLevelEnumResolvable = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
+export type GuildVerificationLevelEnumResolvable = "None" | "Low" | "Medium" | "High" | "VeryHigh";
 
-export type GuildDefaultMessageNotificationsEnumResolvable = 'ALL_MESSAGES' | 'ONLY_MENTIONS';
+export type GuildDefaultMessageNotificationsEnumResolvable = "AllMessages" | "OnlyMentions";
 
-export type GuildExplicitContentFilterEnumResolvable = 'DISABLED' | 'MEMBERS_WITHOUT_ROLES' | 'ALL_MEMBERS';
+export type GuildExplicitContentFilterEnumResolvable = "Disabled" | "MembersWithoutRoles" | "AllMembers";
 
-export type GuildPremiumTierEnumResolvable = 'NONE' | 'TIER_1' | 'TIER_2' | 'TIER_3';
+export type GuildPremiumTierEnumResolvable = "None" | "Tier" | "Tier" | "Tier";
 
-export type GuildScheduledEventStatusEnumResolvable = 'SCHEDULED' | 'ACTIVE' | 'COMPLETED' | 'CANCELED';
+export type GuildScheduledEventStatusEnumResolvable = "Scheduled" | "Active" | "Completed" | "Canceled";
 
-export type StageInstancePrivacyLevelEnumResolvable = 'PUBLIC' | 'GUILD_ONLY';
+export type StageInstancePrivacyLevelEnumResolvable = "Public" | "GuildOnly";
 
-export type GuildMFALevelEnumResolvable = 'NONE' | 'ELEVATED';
+export type GuildMFALevelEnumResolvable = "None" | "Elevated";
 
-export type TeamMemberMembershipStateEnumResolvable = 'INVITED' | 'ACCEPTED';
+export type TeamMemberMembershipStateEnumResolvable = "Invited" | "Accepted";
 
-export type GuildScheduledEventEntityTypeEnumResolvable = 'STAGE_INSTANCE' | 'VOICE' | 'EXTERNAL';
+export type GuildScheduledEventEntityTypeEnumResolvable = "StageInstance" | "Voice" | "External";
 
-export type IntegrationExpireBehaviorEnumResolvable = 'REMOVE_ROLE' | 'KICK';
+export type IntegrationExpireBehaviorEnumResolvable = "RemoveRole" | "Kick";
 
 export type AuditLogEventEnumResolvable =
-  | 'GUILD_UPDATE'
-  | 'CHANNEL_CREATE'
-  | 'CHANNEL_UPDATE'
-  | 'CHANNEL_DELETE'
-  | 'CHANNEL_OVERWRITE_CREATE'
-  | 'CHANNEL_OVERWRITE_UPDATE'
-  | 'CHANNEL_OVERWRITE_DELETE'
-  | 'MEMBER_KICK'
-  | 'MEMBER_PRUNE'
-  | 'MEMBER_BAN_ADD'
-  | 'MEMBER_BAN_REMOVE'
-  | 'MEMBER_UPDATE'
-  | 'MEMBER_ROLE_UPDATE'
-  | 'MEMBER_MOVE'
-  | 'MEMBER_DISCONNECT'
-  | 'BOT_ADD'
-  | 'ROLE_CREATE'
-  | 'ROLE_UPDATE'
-  | 'ROLE_DELETE'
-  | 'INVITE_CREATE'
-  | 'INVITE_UPDATE'
-  | 'INVITE_DELETE'
-  | 'WEBHOOK_CREATE'
-  | 'WEBHOOK_UPDATE'
-  | 'WEBHOOK_DELETE'
-  | 'INTEGRATION_CREATE'
-  | 'INTEGRATION_UPDATE'
-  | 'INTEGRATION_DELETE'
-  | 'STAGE_INSTANCE_CREATE'
-  | 'STAGE_INSTANCE_UPDATE'
-  | 'STAGE_INSTANCE_DELETE'
-  | 'STICKER_CREATE'
-  | 'STICKER_UPDATE'
-  | 'STICKER_DELETE'
-  | 'GUILD_SCHEDULED_EVENT_CREATE'
-  | 'GUILD_SCHEDULED_EVENT_UPDATE'
-  | 'GUILD_SCHEDULED_EVENT_DELETE'
-  | 'THREAD_CREATE'
-  | 'THREAD_UPDATE'
-  | 'THREAD_DELETE';
+  | "GuildUpdate"
+  | "ChannelCreate"
+  | "ChannelUpdate"
+  | "ChannelDelete"
+  | "ChannelOverwriteCreate"
+  | "ChannelOverwriteUpdate"
+  | "ChannelOverwriteDelete"
+  | "MemberKick"
+  | "MemberPrune"
+  | "MemberBanAdd"
+  | "MemberBanRemove"
+  | "MemberUpdate"
+  | "MemberRoleUpdate"
+  | "MemberMove"
+  | "MemberDisconnect"
+  | "BotAdd"
+  | "RoleCreate"
+  | "RoleUpdate"
+  | "RoleDelete"
+  | "InviteCreate"
+  | "InviteUpdate"
+  | "InviteDelete"
+  | "WebhookCreate"
+  | "WebhookUpdate"
+  | "WebhookDelete"
+  | "IntegrationCreate"
+  | "IntegrationUpdate"
+  | "IntegrationDelete"
+  | "StageInstanceCreate"
+  | "StageInstanceUpdate"
+  | "StageInstanceDelete"
+  | "StickerCreate"
+  | "StickerUpdate"
+  | "StickerDelete"
+  | "GuildScheduledEventCreate"
+  | "GuildScheduledEventUpdate"
+  | "GuildScheduledEventDelete"
+  | "ThreadCreate"
+  | "ThreadUpdate"
+  | "ThreadDelete";
 
-export type VideoQualityModeEnumResolvable = 'AUTO' | 'FULL';
+export type VideoQualityModeEnumResolvable = "Auto" | "Full";
 
 export interface ErrorEvent {
   error: unknown;
@@ -5124,7 +5124,7 @@ export type StageInstanceResolvable = StageInstance | Snowflake;
 
 export interface StartThreadOptions {
   name: string;
-  autoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
+  autoArchiveDuration?: ThreadAutoArchiveDuration | "Max";
   reason?: string;
   rateLimitPerUser?: number;
 }
@@ -5232,7 +5232,7 @@ export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptio
 export interface ThreadEditData {
   name?: string;
   archived?: boolean;
-  autoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
+  autoArchiveDuration?: ThreadAutoArchiveDuration | "Max";
   rateLimitPerUser?: number;
   locked?: boolean;
   invitable?: boolean;
