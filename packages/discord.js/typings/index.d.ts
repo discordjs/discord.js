@@ -4178,7 +4178,7 @@ export type GuildDefaultMessageNotificationsEnumResolvable = "AllMessages" | "On
 
 export type GuildExplicitContentFilterEnumResolvable = "Disabled" | "MembersWithoutRoles" | "AllMembers";
 
-export type GuildPremiumTierEnumResolvable = "None" | "Tier" | "Tier" | "Tier";
+export type GuildPremiumTierEnumResolvable = "None" | "Tier1" | "Tier2" | "Tier3";
 
 export type GuildScheduledEventStatusEnumResolvable = "Scheduled" | "Active" | "Completed" | "Canceled";
 
