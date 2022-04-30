@@ -5388,6 +5388,8 @@ export {
   ButtonStyle,
   ChannelType,
   ComponentType,
+  GuildDefaultMessageNotifications,
+  GuildExplicitContentFilter,
   GuildFeature,
   GuildMFALevel,
   GuildNSFWLevel,
