@@ -1803,13 +1803,19 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  public reply(
+    options: string | MessagePayload | InteractionReplyOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  public update(
+    options: string | MessagePayload | InteractionUpdateOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public showModal(
     modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
-  public awaitModalSubmit(options: AwaitModalSubmitOptions<ModalSubmitInteraction>): Promise<ModalSubmitInteraction<Cached>>;
+  public awaitModalSubmit(
+    options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
+  ): Promise<ModalSubmitInteraction<Cached>>;
 }
 
 export class MessageContextMenuCommandInteraction<
@@ -1910,7 +1916,9 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
   extends ModalSubmitInteraction<Cached> {
   message: GuildCacheMessage<Cached>;
   update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  update(options: string | MessagePayload | InteractionUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  update(
+    options: string | MessagePayload | InteractionUpdateOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   inGuild(): this is ModalMessageModalSubmitInteraction<'raw' | 'cached'>;
@@ -1929,7 +1937,9 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public replied: boolean;
   public readonly webhook: InteractionWebhook;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  public reply(
+    options: string | MessagePayload | InteractionReplyOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
