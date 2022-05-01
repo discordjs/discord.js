@@ -425,14 +425,7 @@ export class RequestManager extends EventEmitter {
 			}
 		}
 
-		const resolvedBody = await resolveBody(finalBody);
-
-		if (Array.isArray(resolvedBody)) {
-			finalBody = resolvedBody[0]; // FormData stringified
-			additionalHeaders['content-type'] = resolvedBody[1]; // multipart header
-		} else {
-			finalBody = resolvedBody;
-		}
+		finalBody = await resolveBody(finalBody);
 
 		const fetchOptions: RequestOptions = {
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions

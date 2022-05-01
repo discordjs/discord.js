@@ -183,7 +183,7 @@ test('Handle sublimits', async () => {
 			method: 'PATCH',
 		})
 		.reply((t) => {
-			const body = JSON.parse(t.body!) as Record<string, unknown>;
+			const body = JSON.parse(t.body as string) as Record<string, unknown>;
 
 			if ('name' in body || 'topic' in body) {
 				sublimitHits += 1;
@@ -521,15 +521,18 @@ test('Bad Request', async () => {
 });
 
 test('malformedRequest', async () => {
+	// This test doesn't really make sense because
+	// there is no such thing as a 601 status code.
+	// So, what exactly is a malformed request?
 	mockPool
 		.intercept({
 			path: genPath('/malformedRequest'),
 			method: 'GET',
 		})
 		.reply(() => ({
-			statusCode: 601,
+			statusCode: 405,
 			data: '',
 		}));
 
-	expect(await api.get('/malformedRequest')).toBe(null);
+	await expect(api.get('/malformedRequest')).rejects.toBeInstanceOf(DiscordAPIError);
 });

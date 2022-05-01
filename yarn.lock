@@ -1934,7 +1934,7 @@ __metadata:
     tsup: ^5.12.5
     typedoc: ^0.22.15
     typescript: ^4.6.3
-    undici: ^5.0.0
+    undici: 5.1.0
   languageName: unknown
   linkType: soft
 
@@ -10785,17 +10785,17 @@ dts-critic@latest:
   languageName: node
   linkType: hard
 
+"undici@npm:5.1.0":
+  version: 5.1.0
+  resolution: "undici@npm:5.1.0"
+  checksum: 0534a611bfd0ee76dcb30454341a45fe09f0d74f92812a4032541a0cd01381df57a8221d60679eb3202aeb78612600cd0d72995a3ecd0c3c6f5037e74abe3b6c
+  languageName: node
+  linkType: hard
+
 "undici@npm:^4.16.0":
   version: 4.16.0
   resolution: "undici@npm:4.16.0"
   checksum: 5e88c2b3381085e25ed1d1a308610ac7ee985f478ac705af7a8e03213536e10f73ef8dd8d85e6ed38948d1883fa0ae935e04357c317b0f5d3d3c0211d0c8c393
-  languageName: node
-  linkType: hard
-
-"undici@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "undici@npm:5.0.0"
-  checksum: 98bb9914aa0647840ce6fd518ac828b7760df8d9b747680d11260fcb4f50af0029b0513e5600bf0d3a812d9e3f8d9d787bbcbcee7b9e75aa5f7de6f9b0212898
   languageName: node
   linkType: hard
 

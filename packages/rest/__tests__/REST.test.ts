@@ -307,11 +307,7 @@ test.skip('postFile', async () => {
 			method: 'POST',
 		})
 		.reply((t) => {
-			// This is only possible due to a bug. Hopefully in the future
-			// either the FormData object will be returned or we get the
-			// stringified FormData body back.
-			// https://github.com/nodejs/undici/issues/1322
-			const fd = t.body as unknown as FormData;
+			const fd = t.body as FormData;
 
 			if (time === 0) {
 				expect(t.body).toBeNull();

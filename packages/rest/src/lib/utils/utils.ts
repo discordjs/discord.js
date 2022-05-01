@@ -91,57 +91,7 @@ export function hasSublimit(bucketRoute: string, body?: unknown, method?: string
 	return true;
 }
 
-/**
- * @see https://github.com/nodejs/undici/blob/89411abba88d71bb0341360166f07ea1e0e539e3/lib/fetch/body.js#L74-L124
- */
-async function extractFormData(fd: FormData): Promise<[Buffer, string]> {
-	const boundary = `----formdata-undici-${Math.random()}`;
-	const prefix = `--${boundary}\r\nContent-Disposition: form-data`;
-
-	/* ! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
-	const escape = (str: string) => str.replace(/\n/g, '%0A').replace(/\r/g, '%0D').replace(/"/g, '%22');
-	const normalizeLinefeeds = (value: string) => value.replace(/\r?\n|\r/g, '\r\n');
-
-	// Set action to this step: run the multipart/form-data
-	// encoding algorithm, with object’s entry list and UTF-8.
-
-	const enc = new TextEncoder();
-	const chunks: Uint8Array[] = [];
-
-	for (const [name, value] of fd) {
-		if (typeof value === 'string') {
-			chunks.push(
-				enc.encode(
-					// eslint-disable-next-line no-useless-concat
-					`${prefix}; name="${escape(normalizeLinefeeds(name))}"` + `\r\n\r\n${normalizeLinefeeds(value)}\r\n`,
-				),
-			);
-		} else {
-			chunks.push(
-				enc.encode(
-					/* eslint-disable no-useless-concat */
-					`${prefix}; name="${escape(normalizeLinefeeds(name))}"${
-						value.name ? `; filename="${escape(value.name)}"` : ''
-					}\r\n` + `Content-Type: ${value.type || 'application/octet-stream'}\r\n\r\n`,
-					/* eslint-enable no-useless-concat */
-				),
-			);
-
-			chunks.push(new Uint8Array(await value.arrayBuffer()));
-
-			chunks.push(enc.encode('\r\n'));
-		}
-	}
-
-	chunks.push(enc.encode(`--${boundary}--`));
-
-	// Set Content-Type to `multipart/form-data; boundary=`,
-	// followed by the multipart/form-data boundary string generated
-	// by the multipart/form-data encoding algorithm.
-	return [Buffer.concat(chunks), `multipart/form-data; boundary=${boundary}`];
-}
-
-export async function resolveBody(body: RequestInit['body']): Promise<RequestOptions['body'] | [Buffer, string]> {
+export async function resolveBody(body: RequestInit['body']): Promise<RequestOptions['body']> {
 	// eslint-disable-next-line no-eq-null
 	if (body == null) {
 		return null;
@@ -158,7 +108,7 @@ export async function resolveBody(body: RequestInit['body']): Promise<RequestOpt
 	} else if (body instanceof Blob) {
 		return new Uint8Array(await body.arrayBuffer());
 	} else if (body instanceof FormData) {
-		return extractFormData(body);
+		return body;
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	} else if ((body as Iterable<Uint8Array>)[Symbol.iterator]) {
 		const chunks = [...(body as Iterable<Uint8Array>)];
