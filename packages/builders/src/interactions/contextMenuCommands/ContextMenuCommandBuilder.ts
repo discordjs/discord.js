@@ -10,8 +10,8 @@ import {
 	validateName,
 	validateType,
 	validateDefaultPermission,
-	validateDefaultMemberPermission,
-	validateDmPermission,
+	validateDefaultMemberPermissions,
+	validateDMPermission,
 } from './Assertions';
 import { validateLocale, validateLocalizationMap } from '../slashCommands/Assertions';
 
@@ -35,7 +35,7 @@ export class ContextMenuCommandBuilder {
 	 * Whether the command is enabled by default when the app is added to a guild
 	 *
 	 * @deprecated This property is deprecated and will be removed in the future.
-	 * You should use `setDefaultMemberPermissions` or `setDmEnabled` instead.
+	 * You should use `setDefaultMemberPermissions` or `setDMPermission` instead.
 	 */
 	public readonly default_permission: boolean | undefined = undefined;
 
@@ -86,7 +86,7 @@ export class ContextMenuCommandBuilder {
 	 * @param value Whether or not to enable this command by default
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
-	 * @deprecated Use `setDefaultMemberPermissions` and `setDMPermission` instead.
+	 * @deprecated Use `setDefaultMemberPermissions` or `setDMPermission` instead.
 	 */
 	public setDefaultPermission(value: boolean) {
 		// Assert the value matches the conditions
@@ -108,7 +108,7 @@ export class ContextMenuCommandBuilder {
 	 */
 	public setDefaultMemberPermissions(permissions: Permissions | null | undefined) {
 		// Assert the value and parse it
-		const permissionValue = validateDefaultMemberPermission(permissions);
+		const permissionValue = validateDefaultMemberPermissions(permissions);
 
 		Reflect.set(this, 'default_member_permissions', permissionValue);
 
@@ -125,7 +125,7 @@ export class ContextMenuCommandBuilder {
 	 */
 	public setDMPermission(enabled: boolean | null | undefined) {
 		// Assert the value matches the conditions
-		validateDmPermission(enabled);
+		validateDMPermission(enabled);
 
 		Reflect.set(this, 'dm_permission', enabled);
 

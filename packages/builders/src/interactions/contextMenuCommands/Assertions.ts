@@ -33,7 +33,7 @@ export function validateRequiredParameters(name: string, type: number) {
 
 const dmPermissionPredicate = s.boolean.nullish;
 
-export function validateDmPermission(value: unknown): asserts value is boolean | null | undefined {
+export function validateDMPermission(value: unknown): asserts value is boolean | null | undefined {
 	dmPermissionPredicate.parse(value);
 }
 
@@ -43,6 +43,6 @@ const memberPermissionPredicate = s.union(
 	s.string.regex(/^\d+$/),
 ).nullish;
 
-export function validateDefaultMemberPermission(permissions: unknown) {
+export function validateDefaultMemberPermissions(permissions: unknown) {
 	return memberPermissionPredicate.parse(permissions);
 }
