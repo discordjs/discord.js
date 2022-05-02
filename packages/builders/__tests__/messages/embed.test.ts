@@ -323,9 +323,13 @@ describe('Embed', () => {
 		test('GIVEN an embed using Embed#addFields THEN returns valid toJSON data', () => {
 			const embed = new EmbedBuilder();
 			embed.addFields({ name: 'foo', value: 'bar' });
+			embed.addFields([{ name: 'foo', value: 'bar' }]);
 
 			expect(embed.toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'bar' }],
+				fields: [
+					{ name: 'foo', value: 'bar' },
+					{ name: 'foo', value: 'bar' },
+				],
 			});
 		});
 
@@ -362,6 +366,9 @@ describe('Embed', () => {
 			expect(() =>
 				embed.setFields(...Array.from({ length: 25 }, () => ({ name: 'foo', value: 'bar' }))),
 			).not.toThrowError();
+			expect(() =>
+				embed.setFields(Array.from({ length: 25 }, () => ({ name: 'foo', value: 'bar' }))),
+			).not.toThrowError();
 		});
 
 		test('GIVEN an embed using Embed#setFields that sets more than 25 fields THEN throws error', () => {
@@ -370,6 +377,7 @@ describe('Embed', () => {
 			expect(() =>
 				embed.setFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' }))),
 			).toThrowError();
+			expect(() => embed.setFields(Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })))).toThrowError();
 		});
 
 		describe('GIVEN invalid field amount THEN throws error', () => {

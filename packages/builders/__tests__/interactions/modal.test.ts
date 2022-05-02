@@ -48,15 +48,15 @@ describe('Modals', () => {
 
 	test('GIVEN valid fields THEN builder does not throw', () => {
 		expect(() =>
-			modal().setTitle('test').setCustomId('foobar').setComponents(new ActionRowBuilder()),
+			modal()
+				.setTitle('test')
+				.setCustomId('foobar')
+				.setComponents(new ActionRowBuilder())
+				.addComponents([new ActionRowBuilder()]),
 		).not.toThrowError();
 	});
 
 	test('GIVEN invalid fields THEN builder does throw', () => {
-		expect(() =>
-			// @ts-expect-error
-			modal().setTitle('test').setCustomId('foobar').setComponents([new ActionRowBuilder()]).toJSON(),
-		).toThrowError();
 		expect(() => modal().setTitle('test').setCustomId('foobar').toJSON()).toThrowError();
 		// @ts-expect-error
 		expect(() => modal().setTitle('test').setCustomId(42).toJSON()).toThrowError();
@@ -67,6 +67,17 @@ describe('Modals', () => {
 			title: 'title',
 			custom_id: 'custom id',
 			components: [
+				{
+					type: ComponentType.ActionRow,
+					components: [
+						{
+							type: ComponentType.TextInput,
+							label: 'label',
+							style: TextInputStyle.Paragraph,
+							custom_id: 'custom id',
+						},
+					],
+				},
 				{
 					type: ComponentType.ActionRow,
 					components: [
@@ -92,6 +103,11 @@ describe('Modals', () => {
 						new TextInputBuilder().setCustomId('custom id').setLabel('label').setStyle(TextInputStyle.Paragraph),
 					),
 				)
+				.addComponents([
+					new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
+						new TextInputBuilder().setCustomId('custom id').setLabel('label').setStyle(TextInputStyle.Paragraph),
+					),
+				])
 				.toJSON(),
 		).toEqual(modalData);
 	});

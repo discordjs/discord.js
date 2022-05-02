@@ -4,6 +4,7 @@ import type {
 	APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder, createComponentBuilder, JSONEncodable, ModalActionRowComponentBuilder } from '../../index';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 
 export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResponseCallbackData> {
 	public readonly data: Partial<APIModalInteractionResponseCallbackData>;
@@ -38,11 +39,11 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 	 * @param components The components to add to this modal
 	 */
 	public addComponents(
-		...components: (
-			| ActionRowBuilder<ModalActionRowComponentBuilder>
-			| APIActionRowComponent<APIModalActionRowComponent>
-		)[]
+		...components: RestOrArray<
+			ActionRowBuilder<ModalActionRowComponentBuilder> | APIActionRowComponent<APIModalActionRowComponent>
+		>
 	) {
+		components = normalizeArray(...components);
 		this.components.push(
 			...components.map((component) =>
 				component instanceof ActionRowBuilder
@@ -57,7 +58,8 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 	 * Sets the components in this modal
 	 * @param components The components to set this modal to
 	 */
-	public setComponents(...components: ActionRowBuilder<ModalActionRowComponentBuilder>[]) {
+	public setComponents(...components: RestOrArray<ActionRowBuilder<ModalActionRowComponentBuilder>>) {
+		components = normalizeArray(...components);
 		this.components.splice(0, this.components.length, ...components);
 		return this;
 	}
