@@ -2,12 +2,26 @@
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const MessageManager = require('../managers/MessageManager');
 
 /**
  * Represents a guild voice channel on Discord.
  * @extends {BaseGuildVoiceChannel}
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
+  constructor(guild, data, client) {
+    super(guild, data, client, false);
+
+    /**
+     * A manager of the messages sent to this channel
+     * @type {MessageManager}
+     */
+    this.messages = new MessageManager(this);
+
+    this._patch(data);
+  }
+
   _patch(data) {
     super._patch(data);
 
@@ -19,6 +33,18 @@ class VoiceChannel extends BaseGuildVoiceChannel {
       this.videoQualityMode = data.video_quality_mode;
     } else {
       this.videoQualityMode ??= null;
+    }
+
+    if ('last_message_id' in data) {
+      /**
+       * The last message id sent in the channel, if one was sent
+       * @type {?Snowflake}
+       */
+      this.lastMessageId = data.last_message_id;
+    }
+
+    if ('messages' in data) {
+      for (const message of data.messages) this.messages._add(message);
     }
   }
 
@@ -90,6 +116,19 @@ class VoiceChannel extends BaseGuildVoiceChannel {
     return this.edit({ videoQualityMode }, reason);
   }
 
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  /* eslint-disable no-empty-function */
+  get lastMessage() {}
+  send() {}
+  sendTyping() {}
+  createMessageCollector() {}
+  awaitMessages() {}
+  createMessageComponentCollector() {}
+  awaitMessageComponent() {}
+  bulkDelete() {}
+  fetchWebhooks() {}
+  createWebhook() {}
+
   /**
    * Sets the RTC region of the channel.
    * @name VoiceChannel#setRTCRegion
@@ -104,5 +143,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * voiceChannel.setRTCRegion(null, 'We want to let Discord decide.');
    */
 }
+
+TextBasedChannel.applyToClass(VoiceChannel, true, ['lastPinAt']);
 
 module.exports = VoiceChannel;
