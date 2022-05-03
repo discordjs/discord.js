@@ -351,7 +351,7 @@ export class RequestManager extends EventEmitter {
 				throw new Error('Expected token to be set for this request, but none was present');
 			}
 
-			headers.Authorization = `${request.authPrefix ?? 'Bot'} ${this.#token}`;
+			headers.Authorization = `${request.authPrefix ?? this.options.authPrefix} ${this.#token}`;
 		}
 
 		// If a reason was set, set it's appropriate header
