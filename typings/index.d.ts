@@ -3928,10 +3928,6 @@ export interface ApplicationCommandOptionChoiceData {
   value: string | number;
 }
 
-export interface ApplicationCommandOptionChoice extends ApplicationCommandOptionChoiceData {
-  nameLocalized?: string;
-}
-
 export type ApplicationCommandType = keyof typeof ApplicationCommandTypes;
 
 export type ApplicationCommandOptionType = keyof typeof ApplicationCommandOptionTypes;

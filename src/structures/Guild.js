@@ -411,7 +411,7 @@ class Guild extends AnonymousGuild {
     if ('preferred_locale' in data) {
       /**
        * The preferred locale of the guild, defaults to `en-US`
-       * @type {string}
+       * @type {Locale}
        * @see {@link https://discord.com/developers/docs/reference#locales}
        */
       this.preferredLocale = data.preferred_locale;
