@@ -12,7 +12,7 @@ import {
 	validateFieldLength,
 } from './Assertions';
 import { EmbedAuthorOptions, EmbedFooterOptions, RGBTuple, UnsafeEmbedBuilder } from './UnsafeEmbed';
-import { normalizeArray, RestOrArray } from '../../util/normalizeArray';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 
 /**
  * Represents a validated embed in a message (image/video preview, rich embed, etc.)
