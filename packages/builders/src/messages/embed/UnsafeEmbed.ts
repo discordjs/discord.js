@@ -46,7 +46,7 @@ export class UnsafeEmbedBuilder {
 	 * @param fields The fields to add
 	 */
 	public addFields(...fields: RestOrArray<APIEmbedField>): this {
-		fields = normalizeArray(...fields);
+		fields = normalizeArray(fields);
 		if (this.data.fields) this.data.fields.push(...fields);
 		else this.data.fields = fields;
 		return this;
@@ -70,7 +70,7 @@ export class UnsafeEmbedBuilder {
 	 * @param fields The fields to set
 	 */
 	public setFields(...fields: RestOrArray<APIEmbedField>) {
-		fields = normalizeArray(...fields);
+		fields = normalizeArray(fields);
 		this.spliceFields(0, this.data.fields?.length ?? 0, ...fields);
 		return this;
 	}

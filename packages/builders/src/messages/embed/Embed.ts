@@ -19,7 +19,7 @@ import { normalizeArray, RestOrArray } from '../../util/normalizeArray';
  */
 export class EmbedBuilder extends UnsafeEmbedBuilder {
 	public override addFields(...fields: RestOrArray<APIEmbedField>): this {
-		fields = normalizeArray(...fields);
+		fields = normalizeArray(fields);
 		// Ensure adding these fields won't exceed the 25 field limit
 		validateFieldLength(fields.length, this.data.fields);
 

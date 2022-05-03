@@ -37,7 +37,7 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 	}
 
 	public override addOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
-		options = normalizeArray(...options);
+		options = normalizeArray(options);
 		optionsLengthValidator.parse(this.options.length + options.length);
 		this.options.push(
 			...options.map((option) =>
@@ -50,7 +50,7 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 	}
 
 	public override setOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
-		options = normalizeArray(...options);
+		options = normalizeArray(options);
 		optionsLengthValidator.parse(options.length);
 		this.options.splice(
 			0,

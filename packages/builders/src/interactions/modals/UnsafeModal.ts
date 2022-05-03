@@ -43,7 +43,7 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 			ActionRowBuilder<ModalActionRowComponentBuilder> | APIActionRowComponent<APIModalActionRowComponent>
 		>
 	) {
-		components = normalizeArray(...components);
+		components = normalizeArray(components);
 		this.components.push(
 			...components.map((component) =>
 				component instanceof ActionRowBuilder
@@ -59,7 +59,7 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 	 * @param components The components to set this modal to
 	 */
 	public setComponents(...components: RestOrArray<ActionRowBuilder<ModalActionRowComponentBuilder>>) {
-		components = normalizeArray(...components);
+		components = normalizeArray(components);
 		this.components.splice(0, this.components.length, ...components);
 		return this;
 	}

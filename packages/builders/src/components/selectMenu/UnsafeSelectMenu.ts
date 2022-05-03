@@ -69,7 +69,7 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 	 * @returns
 	 */
 	public addOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
-		options = normalizeArray(...options);
+		options = normalizeArray(options);
 		this.options.push(
 			...options.map((option) =>
 				option instanceof UnsafeSelectMenuOptionBuilder ? option : new UnsafeSelectMenuOptionBuilder(option),
@@ -83,7 +83,7 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 	 * @param options The options to set on this select menu
 	 */
 	public setOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
-		options = normalizeArray(...options);
+		options = normalizeArray(options);
 		this.options.splice(
 			0,
 			this.options.length,
