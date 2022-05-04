@@ -30,6 +30,12 @@ export interface RESTOptions {
 	 */
 	api: string;
 	/**
+	 * The authorization prefix to use for requests, useful if you want to use
+	 * bearer tokens
+	 * @default 'Bot'
+	 */
+	authPrefix: 'Bot' | 'Bearer';
+	/**
 	 * The cdn path
 	 * @default 'https://cdn.discordapp.com'
 	 */
