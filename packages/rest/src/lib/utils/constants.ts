@@ -33,7 +33,6 @@ export const enum RESTEvents {
 	Debug = 'restDebug',
 	InvalidRequestWarning = 'invalidRequestWarning',
 	RateLimited = 'rateLimited',
-	Request = 'request',
 	Response = 'response',
 	HashSweep = 'hashSweep',
 	HandlerSweep = 'handlerSweep',

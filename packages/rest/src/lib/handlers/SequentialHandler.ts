@@ -304,6 +304,21 @@ export class SequentialHandler implements IHandler {
 			clearTimeout(timeout);
 		}
 
+		if (this.manager.listenerCount(RESTEvents.Response)) {
+			this.manager.emit(
+				RESTEvents.Response,
+				{
+					method,
+					path: routeId.original,
+					route: routeId.bucketRoute,
+					options,
+					data: requestData,
+					retries,
+				},
+				{ ...res }
+			);
+		}
+
 		const status = res.statusCode;
 		let retryAfter = 0;
 
