@@ -465,8 +465,7 @@ test('perm server outage', async () => {
 	await expect(promise).rejects.toBeInstanceOf(HTTPError);
 });
 
-// TODO: this causes jest to suck even more (causes async_hooks errors. WTF.)
-test.skip('server responding too slow', async () => {
+test('server responding too slow', async () => {
 	const api2 = new REST({ timeout: 1 }).setToken('A-Very-Really-Real-Token');
 
 	mockPool

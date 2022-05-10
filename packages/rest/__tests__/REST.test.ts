@@ -298,63 +298,84 @@ test('Old Message Delete Edge-Case: Old message', async () => {
 	expect(await api.delete(Routes.channelMessage('339942739275677727', newSnowflake))).toStrictEqual({ test: true });
 });
 
-test.skip('postFile', async () => {
-	let time = 0;
+test('postFile', async () => {
+	const mockData = {
+		statusCode: 200,
+		data: 'Hello',
+	};
 
 	mockPool
 		.intercept({
-			path: genPath('/postFile'),
+			path: genPath('/postFileEmptyArray'),
 			method: 'POST',
 		})
-		.reply((t) => {
-			const fd = t.body as FormData;
-
-			if (time === 0) {
-				expect(t.body).toBeNull();
-			} else if (time === 1) {
-				expect(fd.get('files[0]')).toBeInstanceOf(File);
-				expect(fd.get('files[0]')).toHaveProperty('size', 5); // 'Hello'
-			} else if (time === 2) {
-				expect(fd.get('files[0]')).toBeInstanceOf(File);
-				expect(fd.get('files[0]')).toHaveProperty('size', 5); // Buffer.from('Hello')
-				expect(fd.get('payload_json')).toStrictEqual(JSON.stringify({ foo: 'bar' }));
-			} else if (time === 3) {
-				expect(fd.get('files[0]')).toBeInstanceOf(File);
-				expect(fd.get('files[1]')).toBeInstanceOf(File);
-
-				expect(fd.get('files[0]')).toHaveProperty('size', 5); // Buffer.from('Hello')
-				expect(fd.get('files[1]')).toHaveProperty('size', 2); // Buffer.from('Hi')
-				expect(fd.get('payload_json')).toStrictEqual(JSON.stringify({ files: [{ id: 0, description: 'test' }] }));
-			} else if (time === 4) {
-				expect(fd.get('file')).toBeInstanceOf(File);
-				expect(fd.get('file')).toHaveProperty('size', 7); // Buffer.from('Sticker')
-				expect(fd.get('foo')).toStrictEqual('bar');
-			}
-
-			time++;
-			return {
-				statusCode: 200,
-				data: 'Hello',
-			};
-		})
-		.times(5);
+		.reply(({ body }) => {
+			expect(body).toBeNull();
+			return mockData;
+		});
 
 	// postFile empty
-	await api.post('/postFile', { files: [] });
+	await api.post('/postFileEmptyArray', { files: [] });
+
+	mockPool
+		.intercept({
+			path: genPath('/postFileStringData'),
+			method: 'POST',
+		})
+		.reply(({ body }) => {
+			const fd = body as FormData;
+
+			expect(fd.get('files[0]')).toBeInstanceOf(File);
+			expect(fd.get('files[0]')).toHaveProperty('size', 5); // 'Hello'
+
+			return mockData;
+		});
 
 	// postFile file (string)
-	await api.post('/postFile', {
+	await api.post('/postFileStringData', {
 		files: [{ name: 'out.txt', data: 'Hello' }],
 	});
 
+	mockPool
+		.intercept({
+			path: genPath('/postFileBufferWithJson'),
+			method: 'POST',
+		})
+		.reply(({ body }) => {
+			const fd = body as FormData;
+
+			expect(fd.get('files[0]')).toBeInstanceOf(File);
+			expect(fd.get('files[0]')).toHaveProperty('size', 5); // Buffer.from('Hello')
+			expect(fd.get('payload_json')).toStrictEqual(JSON.stringify({ foo: 'bar' }));
+
+			return mockData;
+		});
+
 	// postFile file and JSON
-	await api.post('/postFile', {
+	await api.post('/postFileBufferWithJson', {
 		files: [{ name: 'out.txt', data: Buffer.from('Hello') }],
 		body: { foo: 'bar' },
 	});
 
+	mockPool
+		.intercept({
+			path: genPath('/postFilesAndJson'),
+			method: 'POST',
+		})
+		.reply(({ body }) => {
+			const fd = body as FormData;
+
+			expect(fd.get('files[0]')).toBeInstanceOf(File);
+			expect(fd.get('files[1]')).toBeInstanceOf(File);
+			expect(fd.get('files[0]')).toHaveProperty('size', 5); // Buffer.from('Hello')
+			expect(fd.get('files[1]')).toHaveProperty('size', 2); // Buffer.from('Hi')
+			expect(fd.get('payload_json')).toStrictEqual(JSON.stringify({ files: [{ id: 0, description: 'test' }] }));
+
+			return mockData;
+		});
+
 	// postFile files and JSON
-	await api.post('/postFile', {
+	await api.post('/postFilesAndJson', {
 		files: [
 			{ name: 'out.txt', data: Buffer.from('Hello') },
 			{ name: 'out.txt', data: Buffer.from('Hi') },
@@ -362,8 +383,23 @@ test.skip('postFile', async () => {
 		body: { files: [{ id: 0, description: 'test' }] },
 	});
 
+	mockPool
+		.intercept({
+			path: genPath('/postFileStickerAndJson'),
+			method: 'POST',
+		})
+		.reply(({ body }) => {
+			const fd = body as FormData;
+
+			expect(fd.get('file')).toBeInstanceOf(File);
+			expect(fd.get('file')).toHaveProperty('size', 7); // Buffer.from('Sticker')
+			expect(fd.get('foo')).toStrictEqual('bar');
+
+			return mockData;
+		});
+
 	// postFile sticker and JSON
-	await api.post('/postFile', {
+	await api.post('/postFileStickerAndJson', {
 		files: [{ key: 'file', name: 'sticker.png', data: Buffer.from('Sticker') }],
 		body: { foo: 'bar' },
 		appendToFormData: true,

@@ -315,7 +315,7 @@ export class SequentialHandler implements IHandler {
 					data: requestData,
 					retries,
 				},
-				{ ...res }
+				{ ...res },
 			);
 		}
 

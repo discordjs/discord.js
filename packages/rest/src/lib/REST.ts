@@ -2,7 +2,14 @@ import { EventEmitter } from 'node:events';
 import type Collection from '@discordjs/collection';
 import type { request, Dispatcher } from 'undici';
 import { CDN } from './CDN';
-import { HandlerRequestData, InternalRequest, RequestData, RequestManager, RequestMethod, RouteLike } from './RequestManager';
+import {
+	HandlerRequestData,
+	InternalRequest,
+	RequestData,
+	RequestManager,
+	RequestMethod,
+	RouteLike,
+} from './RequestManager';
 import type { HashData } from './RequestManager';
 import type { IHandler } from './handlers/IHandler';
 import { DefaultRestOptions, RESTEvents } from './utils/constants';
