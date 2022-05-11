@@ -1,7 +1,8 @@
 'use strict';
 
 const AnonymousGuild = require('./AnonymousGuild');
-const WelcomeScreen = require('./WelcomeScreen');
+const Structures = require('../util/Structures');
+const WelcomeScreen = Structures.get('WelcomeScreen');
 
 /**
  * Represents a guild received from an invite, includes welcome screen data if available.

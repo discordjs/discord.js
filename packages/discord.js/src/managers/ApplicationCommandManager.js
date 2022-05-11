@@ -5,7 +5,8 @@ const { Routes } = require('discord-api-types/v10');
 const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
-const ApplicationCommand = require('../structures/ApplicationCommand');
+const Structures = require('../util/Structures');
+const ApplicationCommand = Structures.get('ApplicationCommand');
 
 /**
  * Manages API methods for application commands and stores their cache.

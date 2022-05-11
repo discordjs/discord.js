@@ -5,7 +5,8 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Error } = require('../errors');
-const User = require('../structures/User');
+const Structures = require('../util/Structures');
+const User = Structures.get('User');
 
 /**
  * Manages API methods for users who reacted to a reaction and stores their cache.

@@ -8,12 +8,13 @@ const ThreadManager = require('./ThreadManager');
 const { Error, TypeError } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
-const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
+const Structures = require('../util/Structures');
 const Util = require('../util/Util');
 const { resolveAutoArchiveMaxLimit } = require('../util/Util');
+const ThreadChannel = Structures.get('ThreadChannel');
 
 let cacheWarningEmitted = false;
 

@@ -2,10 +2,11 @@
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { GuildMember } = require('../structures/GuildMember');
-const { Message } = require('../structures/Message');
-const ThreadMember = require('../structures/ThreadMember');
-const User = require('../structures/User');
+const Structures = require('../util/Structures');
+const GuildMember = Structures.get('GuildMember');
+const Message = Structures.get('Message');
+const ThreadMember = Structures.get('ThreadMember');
+const User = Structures.get('User');
 
 /**
  * Manages API methods for users and stores their cache.

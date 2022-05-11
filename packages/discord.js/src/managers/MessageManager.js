@@ -5,9 +5,10 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
-const { Message } = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
+const Structures = require('../util/Structures');
 const Util = require('../util/Util');
+const Message = Structures.get('Message');
 
 /**
  * Manages API methods for Messages and holds their cache.

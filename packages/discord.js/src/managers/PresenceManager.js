@@ -1,7 +1,8 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
-const { Presence } = require('../structures/Presence');
+const Structures = require('../util/Structures');
+const Presence = Structures.get('Presence');
 
 /**
  * Manages API methods for Presences and holds their cache.

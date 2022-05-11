@@ -2,14 +2,15 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { OverwriteType, AuditLogEvent } = require('discord-api-types/v10');
-const { GuildScheduledEvent } = require('./GuildScheduledEvent');
+const GuildScheduledEvent = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
-const { StageInstance } = require('./StageInstance');
-const { Sticker } = require('./Sticker');
 const Webhook = require('./Webhook');
 const Partials = require('../util/Partials');
+const Structures = require('../util/Structures');
 const Util = require('../util/Util');
+const StageInstance = Structures.get('StageInstance');
+const Sticker = Structures.get('Sticker');
 
 const Targets = {
   All: 'All',

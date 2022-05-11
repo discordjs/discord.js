@@ -332,8 +332,6 @@ class ApplicationCommand extends Base {
       ('version' in command && command.version !== this.version) ||
       ('autocomplete' in command && command.autocomplete !== this.autocomplete) ||
       (command.type && command.type !== this.type) ||
-      // Future proof for options being nullable
-      // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
       (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||

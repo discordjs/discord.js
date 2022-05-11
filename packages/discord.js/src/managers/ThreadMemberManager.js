@@ -4,7 +4,8 @@ const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
-const ThreadMember = require('../structures/ThreadMember');
+const Structures = require('../util/Structures');
+const ThreadMember = Structures.get('ThreadMember');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.

@@ -100,7 +100,7 @@ class Emoji extends Base {
   }
 }
 
-exports.Emoji = Emoji;
+module.exports = Emoji;
 
 /**
  * @external APIEmoji

@@ -428,7 +428,7 @@ class Role extends Base {
   }
 }
 
-exports.Role = Role;
+module.exports = Role;
 
 /**
  * @external APIRole

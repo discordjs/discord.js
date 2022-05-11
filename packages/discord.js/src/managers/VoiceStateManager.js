@@ -1,7 +1,8 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
-const VoiceState = require('../structures/VoiceState');
+const Structures = require('../util/Structures');
+const VoiceState = Structures.get('VoiceState');
 
 /**
  * Manages API methods for VoiceStates and stores their cache.

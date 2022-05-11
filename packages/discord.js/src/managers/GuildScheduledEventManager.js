@@ -5,7 +5,7 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
-const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
+const GuildScheduledEvent = require('../structures/GuildScheduledEvent');
 const DataResolver = require('../util/DataResolver');
 
 /**

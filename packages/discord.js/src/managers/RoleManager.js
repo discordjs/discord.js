@@ -5,11 +5,12 @@ const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
-const { Role } = require('../structures/Role');
 const DataResolver = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const Structures = require('../util/Structures');
 const { resolveColor } = require('../util/Util');
 const Util = require('../util/Util');
+const Role = Structures.get('Role');
 
 let cacheWarningEmitted = false;
 

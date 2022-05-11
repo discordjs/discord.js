@@ -1,8 +1,9 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
-const GuildEmoji = require('../structures/GuildEmoji');
-const ReactionEmoji = require('../structures/ReactionEmoji');
+const Structures = require('../util/Structures');
+const GuildEmoji = Structures.get('GuildEmoji');
+const ReactionEmoji = Structures.get('ReactionEmoji');
 const { parseEmoji } = require('../util/Util');
 
 /**

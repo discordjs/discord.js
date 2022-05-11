@@ -319,7 +319,6 @@ class GuildScheduledEvent extends Base {
     return this.edit({ scheduledStartTime, reason });
   }
 
-  // TODO: scheduledEndTime gets reset on passing null but it hasn't been documented
   /**
    * Sets a new time to end the event at.
    * @param {DateResolvable} scheduledEndTime The time to end the event at
@@ -435,4 +434,4 @@ class GuildScheduledEvent extends Base {
   }
 }
 
-exports.GuildScheduledEvent = GuildScheduledEvent;
+module.exports = GuildScheduledEvent;

@@ -2,7 +2,7 @@
 
 const { RouteBases, Routes, PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { GuildScheduledEvent } = require('./GuildScheduledEvent');
+const GuildScheduledEvent = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
 const InviteStageInstance = require('./InviteStageInstance');
 const { Error } = require('../errors');

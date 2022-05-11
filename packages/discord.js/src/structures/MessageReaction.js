@@ -1,10 +1,11 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const GuildEmoji = require('./GuildEmoji');
-const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserManager = require('../managers/ReactionUserManager');
+const Structures = require('../util/Structures');
 const Util = require('../util/Util');
+const GuildEmoji = Structures.get('GuildEmoji');
+const ReactionEmoji = Structures.get('ReactionEmoji');
 
 /**
  * Represents a reaction to a message.

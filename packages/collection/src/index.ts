@@ -180,13 +180,21 @@ export class Collection<K, V> extends Map<K, V> {
 	public random(): V | undefined;
 	public random(amount: number): V[];
 	public random(amount?: number): V | V[] | undefined {
-		const arr = [...this.values()];
-		if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): V => arr.splice(Math.floor(Math.random() * arr.length), 1)[0],
-		);
+		// https://github.com/Discordoo/collection/blob/d9bfaa2c107a58bc5cece28ea7efbaaf3621895e/src/Collection.ts#L150
+		const array = [...this.values()];
+
+		if (!array.length || !amount) return [];
+		if (amount && amount > array.length) amount = array.length;
+		if (amount && amount < 1) amount = 1;
+
+		const random: number[] = [];
+		for (let i = 0; i < amount; i++) {
+			const num = Math.floor(Math.random() * array.length);
+			random.indexOf(num) > -1 ? (i -= 1) : random.push(num);
+		}
+		const results = random.map((r) => array[r]);
+
+		return results.length === 1 ? results[0] : results;
 	}
 
 	/**
@@ -317,9 +325,11 @@ export class Collection<K, V> extends Map<K, V> {
 	public filter<This>(fn: (this: This, value: V, key: K, collection: this) => boolean, thisArg: This): Collection<K, V>;
 	public filter(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): Collection<K, V> {
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
+		// https://github.com/Discordoo/collection/blob/d9bfaa2c107a58bc5cece28ea7efbaaf3621895e/src/Collection.ts#L247
 		const results = new this.constructor[Symbol.species]<K, V>();
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) results.set(key, val);
+		const predicate = (v: V, k: K, c: this) => fn(v, k, c) && results.set(k, v);
+		for (const [key, value] of this) {
+			predicate(value, key, this);
 		}
 		return results;
 	}
@@ -406,13 +416,12 @@ export class Collection<K, V> extends Map<K, V> {
 	public map<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): T[];
 	public map<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): T[] {
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
-		const iter = this.entries();
-		return Array.from({ length: this.size }, (): T => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			const [key, value] = iter.next().value;
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			return fn(value, key, this);
-		});
+		// https://github.com/Discordoo/collection/blob/d9bfaa2c107a58bc5cece28ea7efbaaf3621895e/src/Collection.ts#L481
+		const result: T[] = [];
+		for (const [key, value] of this) {
+			result.push(fn(value, key, this));
+		}
+		return result;
 	}
 
 	/**

@@ -1,8 +1,9 @@
 'use strict';
 
 const { GatewayOpcodes } = require('discord-api-types/v10');
-const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
+const Structures = require('../util/Structures');
+const Presence = Structures.get('Presence');
 
 /**
  * Represents the client's presence.

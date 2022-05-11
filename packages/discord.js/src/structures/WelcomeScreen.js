@@ -2,7 +2,8 @@
 
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
-const WelcomeChannel = require('./WelcomeChannel');
+const Structures = require('../util/Structures');
+const WelcomeChannel = Structures.get('WelcomeChannel');
 
 /**
  * Represents a welcome screen.

@@ -18,8 +18,6 @@ const ClientPresence = require('../structures/ClientPresence');
 const GuildPreview = require('../structures/GuildPreview');
 const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
-const { Sticker } = require('../structures/Sticker');
-const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
@@ -29,7 +27,10 @@ const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const Status = require('../util/Status');
+const Structures = require('../util/Structures');
 const Sweepers = require('../util/Sweepers');
+const Sticker = Structures.get('Sticker');
+const StickerPack = Structures.get('StickerPack');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -169,6 +170,12 @@ class Client extends BaseClient {
      * @type {?number}
      */
     this.readyTimestamp = null;
+
+    if (this.options.structures && typeof this.options.structures === 'object') {
+      for (const [structure, extender] of Object.entries(this.options.structures)) {
+        Structures.extend(structure, extender);
+      }
+    }
   }
 
   /**

@@ -2,11 +2,12 @@
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
-const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const Structures = require('../util/Structures');
+const VoiceState = Structures.get('VoiceState');
 
 /**
  * Represents a member of a guild on Discord.
@@ -450,7 +451,7 @@ class GuildMember extends Base {
 
 TextBasedChannel.applyToClass(GuildMember);
 
-exports.GuildMember = GuildMember;
+module.exports = GuildMember;
 
 /**
  * @external APIGuildMember

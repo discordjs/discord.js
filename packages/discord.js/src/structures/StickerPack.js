@@ -3,7 +3,8 @@
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
-const { Sticker } = require('./Sticker');
+const Structures = require('../util/Structures');
+const Sticker = Structures.get('Sticker');
 
 /**
  * Represents a pack of standard stickers.

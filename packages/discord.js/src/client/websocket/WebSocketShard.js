@@ -15,7 +15,7 @@ const CONNECTION_STATE = Object.keys(WebSocket.WebSocket);
 let zlib;
 
 try {
-  zlib = require('zlib-sync');
+  zlib = require('fast-zlib');
 } catch {} // eslint-disable-line no-empty
 
 /**
@@ -110,7 +110,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * @external Inflate
-     * @see {@link https://www.npmjs.com/package/zlib-sync}
+     * @see {@link https://www.npmjs.com/package/fast-zlib}
      */
 
     /**

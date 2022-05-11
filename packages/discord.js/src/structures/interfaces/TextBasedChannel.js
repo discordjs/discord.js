@@ -4,6 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, Routes } = require('discord-api-types/v10');
 const { TypeError, Error } = require('../../errors');
+const Structures = require('../../util/Structures');
 const InteractionCollector = require('../InteractionCollector');
 const MessageCollector = require('../MessageCollector');
 const MessagePayload = require('../MessagePayload');
@@ -155,8 +156,8 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   async send(options) {
-    const User = require('../User');
-    const { GuildMember } = require('../GuildMember');
+    const User = Structures.get('User');
+    const GuildMember = Structures.get('GuildMember');
 
     if (this instanceof User || this instanceof GuildMember) {
       const dm = await this.createDM();

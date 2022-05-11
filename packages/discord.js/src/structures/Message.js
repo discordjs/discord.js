@@ -17,14 +17,15 @@ const InteractionCollector = require('./InteractionCollector');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
-const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const Components = require('../util/Components');
 const { NonSystemMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const Structures = require('../util/Structures');
 const Util = require('../util/Util');
+const Sticker = Structures.get('Sticker');
 
 /**
  * Represents a message on Discord.
@@ -946,4 +947,4 @@ class Message extends Base {
   }
 }
 
-exports.Message = Message;
+module.exports = Message;

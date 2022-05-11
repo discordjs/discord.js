@@ -6,7 +6,8 @@ const { OverwriteType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
-const { Role } = require('../structures/Role');
+const Structures = require('../util/Structures');
+const Role = Structures.get('Role');
 
 let cacheWarningEmitted = false;
 

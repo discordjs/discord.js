@@ -3871,6 +3871,7 @@ export interface ClientOptions {
   sweepers?: SweeperOptions;
   ws?: WebSocketOptions;
   rest?: Partial<RESTOptions>;
+  structures?: { [K in keyof Extendable]?: Extendable[K] };
   jsonTransformer?: (obj: unknown) => unknown;
 }
 
@@ -4251,6 +4252,42 @@ export interface EscapeMarkdownOptions {
   spoiler?: boolean;
   inlineCodeContent?: boolean;
   codeBlockContent?: boolean;
+}
+
+interface Extendable {
+  ApplicationCommand: typeof ApplicationCommand;
+  AutocompleteInteraction: typeof AutocompleteInteraction;
+  ButtonInteraction: typeof ButtonInteraction;
+  CategoryChannel: typeof CategoryChannel;
+  ChatInputCommandInteraction: typeof ChatInputCommandInteraction;
+  DMChannel: typeof DMChannel;
+  Guild: typeof Guild;
+  GuildAuditLogs: typeof GuildAuditLogs;
+  GuildAuditLogsEntry: typeof GuildAuditLogsEntry;
+  GuildEmoji: typeof GuildEmoji;
+  GuildMember: typeof GuildMember;
+  Message: typeof Message;
+  MessageContextMenuCommandInteraction: typeof MessageContextMenuCommandInteraction;
+  MessageReaction: typeof MessageReaction;
+  ModalSubmitInteraction: typeof ModalSubmitInteraction;
+  NewsChannel: typeof NewsChannel;
+  Presence: typeof Presence;
+  ReactionEmoji: typeof ReactionEmoji;
+  Role: typeof Role;
+  SelectMenuInteraction: typeof SelectMenuInteraction;
+  StageChannel: typeof StageChannel;
+  StageInstance: typeof StageInstance;
+  Sticker: typeof Sticker;
+  StickerPack: typeof StickerPack;
+  TextChannel: typeof TextChannel;
+  ThreadChannel: typeof ThreadChannel;
+  ThreadMember: typeof ThreadMember;
+  User: typeof User;
+  UserContextMenuCommandInteraction: typeof UserContextMenuCommandInteraction;
+  VoiceChannel: typeof VoiceChannel;
+  VoiceState: typeof VoiceState;
+  WelcomeChannel: typeof WelcomeChannel;
+  WelcomeScreen: typeof WelcomeScreen;
 }
 
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {

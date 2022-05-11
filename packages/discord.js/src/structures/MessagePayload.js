@@ -7,6 +7,7 @@ const ActionRowBuilder = require('./ActionRowBuilder');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
+const Structures = require('../util/Structures');
 const Util = require('../util/Util');
 
 /**
@@ -60,8 +61,8 @@ class MessagePayload {
    * @readonly
    */
   get isUser() {
-    const User = require('./User');
-    const { GuildMember } = require('./GuildMember');
+    const User = Structures.get('User');
+    const GuildMember = Structures.get('GuildMember');
     return this.target instanceof User || this.target instanceof GuildMember;
   }
 
@@ -71,7 +72,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessage() {
-    const { Message } = require('./Message');
+    const Message = Structures.get('Message');
     return this.target instanceof Message;
   }
 

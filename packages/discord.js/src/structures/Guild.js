@@ -4,13 +4,10 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
-const GuildAuditLogs = require('./GuildAuditLogs');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
-const WelcomeScreen = require('./WelcomeScreen');
 const { Error, TypeError } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
@@ -27,8 +24,12 @@ const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
 const Partials = require('../util/Partials');
 const Status = require('../util/Status');
+const Structures = require('../util/Structures');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const Util = require('../util/Util');
+const GuildAuditLogs = Structures.get('GuildAuditLogs');
+const GuildAuditLogsEntry = Structures.get('GuildAuditLogsEntry');
+const WelcomeScreen = Structures.get('WelcomeScreen');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -1272,7 +1273,7 @@ class Guild extends AnonymousGuild {
   }
 }
 
-exports.Guild = Guild;
+module.exports = Guild;
 
 /**
  * @external APIGuild

@@ -1,8 +1,9 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const User = require('./User');
 const DataResolver = require('../util/DataResolver');
+const Structures = require('../util/Structures');
+const User = Structures.get('User');
 
 /**
  * Represents the logged in client's Discord user.

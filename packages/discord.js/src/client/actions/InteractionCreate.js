@@ -2,14 +2,15 @@
 
 const { InteractionType, ComponentType, ApplicationCommandType } = require('discord-api-types/v10');
 const Action = require('./Action');
-const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
-const ButtonInteraction = require('../../structures/ButtonInteraction');
-const ChatInputCommandInteraction = require('../../structures/ChatInputCommandInteraction');
-const MessageContextMenuCommandInteraction = require('../../structures/MessageContextMenuCommandInteraction');
-const ModalSubmitInteraction = require('../../structures/ModalSubmitInteraction');
-const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
-const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
 const Events = require('../../util/Events');
+const Structures = require('../../util/Structures');
+const AutocompleteInteraction = Structures.get('AutocompleteInteraction');
+const ButtonInteraction = Structures.get('ButtonInteraction');
+const ChatInputCommandInteraction = Structures.get('ChatInputCommandInteraction');
+const MessageContextMenuCommandInteraction = Structures.get('MessageContextMenuCommandInteraction');
+const ModalSubmitInteraction = Structures.get('ModalSubmitInteraction');
+const SelectMenuInteraction = Structures.get('SelectMenuInteraction');
+const UserContextMenuCommandInteraction = Structures.get('UserContextMenuCommandInteraction');
 
 class InteractionCreateAction extends Action {
   handle(data) {

@@ -9,9 +9,10 @@ const { Routes, GatewayOpcodes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Error, TypeError, RangeError } = require('../errors');
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
-const { GuildMember } = require('../structures/GuildMember');
-const { Role } = require('../structures/Role');
 const Events = require('../util/Events');
+const Structures = require('../util/Structures');
+const GuildMember = Structures.get('GuildMember');
+const Role = Structures.get('Role');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.

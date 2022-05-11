@@ -263,7 +263,7 @@ class Sticker extends Base {
   }
 }
 
-exports.Sticker = Sticker;
+module.exports = Sticker;
 
 /**
  * @external APISticker

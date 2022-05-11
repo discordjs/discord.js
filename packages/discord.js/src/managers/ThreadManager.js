@@ -5,7 +5,8 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
-const ThreadChannel = require('../structures/ThreadChannel');
+const Structures = require('../util/Structures');
+const ThreadChannel = Structures.get('ThreadChannel');
 const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 /**

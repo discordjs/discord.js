@@ -2,7 +2,8 @@
 
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const MessageReaction = require('../structures/MessageReaction');
+const Structures = require('../util/Structures');
+const MessageReaction = Structures.get('MessageReaction');
 
 /**
  * Manages API methods for reactions and holds their cache.

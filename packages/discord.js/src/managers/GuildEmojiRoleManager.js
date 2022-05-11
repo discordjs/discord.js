@@ -3,7 +3,8 @@
 const { Collection } = require('@discordjs/collection');
 const DataManager = require('./DataManager');
 const { TypeError } = require('../errors');
-const { Role } = require('../structures/Role');
+const Structures = require('../util/Structures');
+const Role = Structures.get('Role');
 
 /**
  * Manages API methods for roles belonging to emojis and stores their cache.

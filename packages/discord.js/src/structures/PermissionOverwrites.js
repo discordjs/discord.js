@@ -2,9 +2,10 @@
 
 const { OverwriteType } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { Role } = require('./Role');
 const { TypeError } = require('../errors');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const Structures = require('../util/Structures');
+const Role = Structures.get('Role');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
