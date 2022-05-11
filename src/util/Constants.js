@@ -17,7 +17,7 @@ exports.WSCodes = {
 
 const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 
-const AllowedImageSizes = [16, 32, 56, 64, 96, 128, 256, 300, 512, 600, 1024, 2048, 4096];
+const AllowedImageSizes = [16, 20, 22, 24, 28, 32, 40, 44, 48, 56, 60, 64, 80, 96, 100, 128, 160, 240, 256, 300, 320, 480, 512, 600, 640, 1024, 1280, 1536, 2048, 3072, 4096];
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (!['undefined', 'number'].includes(typeof size)) throw new TypeError('INVALID_TYPE', 'size', 'number');
@@ -36,8 +36,8 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * Options for static Image URLs.
  * @typedef {Object} StaticImageURLOptions
  * @property {string} [format='webp'] One of `webp`, `png`, `jpg`, `jpeg`.
- * @property {number} [size] One of `16`, `32`, `56`, `64`, `96`, `128`, `256`, `300`, `512`, `600`, `1024`, `2048`,
- * `4096`
+ * @property {number} [size] One of `16`, `20`, `22`, `24`, `28`, `32`, `40`, `44`, `48`, `56`, `60`, `64`, `80`, `96`,
+ * `100`, `128`, `160`, `240`, `256`, `300`, `320`, `480`, `512`, `600`, `640`, `1024`, `1280`, `1536`, `2048`, `3072`, `4096`
  */
 
 // https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints
