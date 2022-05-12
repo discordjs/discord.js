@@ -203,6 +203,7 @@ export class RequestManager extends EventEmitter {
 		this.options = { ...DefaultRestOptions, ...options };
 		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = this.options.globalRequestsPerSecond;
+		this.agent = options.agent ?? null;
 
 		// Start sweepers
 		this.setupSweepers();

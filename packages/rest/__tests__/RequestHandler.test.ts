@@ -6,12 +6,19 @@ import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '..
 let mockAgent: MockAgent;
 let mockPool: Interceptable;
 
+const api = new REST({ timeout: 2000, offset: 5 }).setToken('A-Very-Fake-Token');
+const invalidAuthApi = new REST({ timeout: 2000 }).setToken('Definitely-Not-A-Fake-Token');
+const rateLimitErrorApi = new REST({ rejectOnRateLimit: ['/channels'] }).setToken('Obviously-Not-A-Fake-Token');
+
 beforeEach(() => {
 	mockAgent = new MockAgent();
 	mockAgent.disableNetConnect();
 	setGlobalDispatcher(mockAgent);
 
 	mockPool = mockAgent.get('https://discord.com');
+	api.setAgent(mockAgent);
+	invalidAuthApi.setAgent(mockAgent);
+	rateLimitErrorApi.setAgent(mockAgent);
 });
 
 afterEach(async () => {
@@ -25,10 +32,6 @@ const responseOptions: MockInterceptor.MockResponseOptions = {
 		'content-type': 'application/json',
 	},
 };
-
-const api = new REST({ timeout: 2000, offset: 5 }).setToken('A-Very-Fake-Token');
-const invalidAuthApi = new REST({ timeout: 2000 }).setToken('Definitely-Not-A-Fake-Token');
-const rateLimitErrorApi = new REST({ rejectOnRateLimit: ['/channels'] }).setToken('Obviously-Not-A-Fake-Token');
 
 let resetAfter = 0;
 let sublimitResetAfter = 0;
