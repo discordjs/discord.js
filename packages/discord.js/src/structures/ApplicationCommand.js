@@ -129,6 +129,14 @@ class ApplicationCommand extends Base {
       this.defaultPermission = data.default_permission;
     }
 
+    if ('dm_permission' in data) {
+      /**
+       * Whether the command is enabled to be used in direct messages
+       * @type {boolean}
+       */
+      this.dmPermission = data.dm_permission;
+    }
+
     if ('version' in data) {
       /**
        * Autoincrementing version identifier updated during substantial record changes
@@ -178,6 +186,7 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {boolean} [defaultPermission=true] Whether the command is enabled by default when the app is added to a
    * guild
+   * @property {boolean} [dmPermission=true] Whether the command is enabled to be used in direct messages
    */
 
   /**
@@ -336,6 +345,7 @@ class ApplicationCommand extends Base {
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
       (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission ||
+      (command.dmPermission ?? command.dm_permission ?? true) !== this.dmPermission ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
