@@ -1,0 +1,21 @@
+# Folders
+__tests__
+.turbo
+coverage
+docs
+scripts
+src
+
+# Files
+.eslintrc.json
+.gitignore
+.npmignore
+.prettierignore
+.prettierrc.json
+.versionrc
+babel.config.js
+cliff.toml
+jest.config.js
+tsconfig.eslint.json
+tsconfig.json
+tsup.config.ts

@@ -1,0 +1,17 @@
+# Folders
+.turbo
+docs
+scripts
+src
+test
+
+# Files
+.eslintignore
+.eslintrc.json
+.gitignore
+.npmignore
+.prettierignore
+.prettierrc.json
+cliff.toml
+tsconfig.json
+tslint.json
