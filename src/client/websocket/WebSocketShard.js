@@ -652,7 +652,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   ackHeartbeat() {
-    this.lastHeartbeatAcked = false;
+    this.lastHeartbeatAcked = true;
     const latency = Date.now() - this.lastPingTimestamp;
     this.debug(`Heartbeat acknowledged, latency of ${latency}ms.`);
     this.ping = latency;
