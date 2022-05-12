@@ -370,12 +370,6 @@ class WebSocketShard extends EventEmitter {
     // If we still have a connection object, clean up its listeners
     if (this.connection) this._cleanupConnection();
     this.status = Status.DISCONNECTED;
-    /**
-     * Emitted when a shard's WebSocket closes.
-     * @private
-     * @event WebSocketShard#close
-     * @param {CloseEvent} event The received event
-     */
     this.emitClose(event);
   }
 
