@@ -2,7 +2,7 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
-const { ChannelType, RouteBases, Routes, GuildFeature } = require('discord-api-types/v10');
+const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const Colors = require('./Colors');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
@@ -520,17 +520,6 @@ class Util extends null {
    */
   static cleanCodeBlockContent(text) {
     return text.replaceAll('```', '`\u200b``');
-  }
-
-  /**
-   * Resolves the maximum time a guild's thread channels should automatcally archive in case of no recent activity.
-   * @param {Guild} guild The guild to resolve this limit from.
-   * @returns {number}
-   */
-  static resolveAutoArchiveMaxLimit({ features }) {
-    if (features.includes(GuildFeature.SevenDayThreadArchive)) return 10080;
-    if (features.includes(GuildFeature.ThreeDayThreadArchive)) return 4320;
-    return 1440;
   }
 }
 
