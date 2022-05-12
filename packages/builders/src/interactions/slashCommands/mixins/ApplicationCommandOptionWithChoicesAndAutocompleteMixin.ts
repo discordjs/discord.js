@@ -2,8 +2,8 @@ import { s } from '@sapphire/shapeshift';
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { localizationMapPredicate, validateChoicesLength } from '../Assertions';
 
-const stringPredicate = s.string.lengthGe(1).lengthLe(100);
-const numberPredicate = s.number.gt(-Infinity).lt(Infinity);
+const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
+const numberPredicate = s.number.greaterThan(-Infinity).lessThan(Infinity);
 const choicesPredicate = s.object({
 	name: stringPredicate,
 	name_localizations: localizationMapPredicate,
