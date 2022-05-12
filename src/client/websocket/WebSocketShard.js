@@ -549,7 +549,7 @@ class WebSocketShard extends EventEmitter {
     this.debug('Setting a HELLO timeout for 20s.');
     this.helloTimeout = setTimeout(() => {
       this.debug('Did not receive HELLO in time. Destroying and connecting again.');
-      this.destroy({ closeCode: 4009 });
+      this.destroy({ reset: true, closeCode: 4009 });
     }, 20_000).unref();
   }
 
@@ -634,7 +634,7 @@ class WebSocketShard extends EventEmitter {
     Sequence        : ${this.sequence}
     Connection State: ${this.connection ? CONNECTION_STATE[this.connection.readyState] : 'No Connection??'}`,
       );
-      this.destroy({ closeCode: 4009 });
+      this.destroy({ reset: true, closeCode: 4009 });
       return;
     }
 
