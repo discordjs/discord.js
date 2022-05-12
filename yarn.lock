@@ -1823,7 +1823,7 @@ __metadata:
     "@babel/preset-env": ^7.16.11
     "@babel/preset-typescript": ^7.16.7
     "@discordjs/ts-docgen": ^0.4.1
-    "@sapphire/shapeshift": ^2.0.0
+    "@sapphire/shapeshift": ^3.0.0
     "@sindresorhus/is": ^4.6.0
     "@types/jest": ^27.4.1
     "@types/node": ^16.11.27
@@ -2386,10 +2386,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/shapeshift@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@sapphire/shapeshift@npm:2.0.0"
-  checksum: e866aa714d70b0c0d607ed9ad831c039b396cca30611691c59a6e43cb369cf23d69404560105101231f56128022b0030a5201c074193da324ad4345c6d06992c
+"@sapphire/shapeshift@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@sapphire/shapeshift@npm:3.0.0"
+  checksum: f5ebf3991a2bb6e80242b58a488343f25147ba79e8ac227e3d26cbed3402e7e06c326eb9afddd5804be3b0a4e714366c7e60842d2072395da2cb6e754d28bda7
   languageName: node
   linkType: hard
 

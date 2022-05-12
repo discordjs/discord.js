@@ -46,14 +46,16 @@ export class SharedNameAndDescription {
 			Reflect.set(this, 'name_localizations', {});
 		}
 
+		const parsedLocale = validateLocale(locale);
+
 		if (localizedName === null) {
-			this.name_localizations![locale] = null;
+			this.name_localizations![parsedLocale] = null;
 			return this;
 		}
 
 		validateName(localizedName);
 
-		this.name_localizations![validateLocale(locale)] = localizedName;
+		this.name_localizations![parsedLocale] = localizedName;
 		return this;
 	}
 
@@ -87,14 +89,16 @@ export class SharedNameAndDescription {
 			Reflect.set(this, 'description_localizations', {});
 		}
 
+		const parsedLocale = validateLocale(locale);
+
 		if (localizedDescription === null) {
-			this.description_localizations![locale] = null;
+			this.description_localizations![parsedLocale] = null;
 			return this;
 		}
 
 		validateDescription(localizedDescription);
 
-		this.description_localizations![validateLocale(locale)] = localizedDescription;
+		this.description_localizations![parsedLocale] = localizedDescription;
 		return this;
 	}
 

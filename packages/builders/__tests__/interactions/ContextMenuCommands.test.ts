@@ -85,5 +85,36 @@ describe('Context Menu Commands', () => {
 				expect(() => getBuilder().setName('foo').setDefaultPermission(false)).not.toThrowError();
 			});
 		});
+
+		describe('Context menu command localizations', () => {
+			const expectedSingleLocale = { 'en-US': 'foobar' };
+			const expectedMultipleLocales = {
+				...expectedSingleLocale,
+				bg: 'test',
+			};
+
+			test('GIVEN valid name localizations THEN does not throw error', () => {
+				expect(() => getBuilder().setNameLocalization('en-US', 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+			});
+
+			test('GIVEN invalid name localizations THEN does throw error', () => {
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
+			});
+
+			test('GIVEN valid name localizations THEN valid data is stored', () => {
+				expect(getBuilder().setNameLocalization('en-US', 'foobar').name_localizations).toEqual(expectedSingleLocale);
+				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).name_localizations).toEqual(
+					expectedMultipleLocales,
+				);
+				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
+				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
+					'en-US': null,
+				});
+			});
+		});
 	});
 });
