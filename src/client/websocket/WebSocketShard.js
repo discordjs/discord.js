@@ -359,10 +359,6 @@ class WebSocketShard extends EventEmitter {
     this.closeEmitted = true;
     if (this.sequence !== -1) this.closeSequence = this.sequence;
     this.sequence = -1;
-    this.debug(`[CLOSE]
-    Event Code: ${event.code}
-    Clean     : ${event.wasClean}
-    Reason    : ${event.reason ?? 'No reason received'}`);
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
     // Clearing the WebSocket close timeout as close was emitted.
@@ -385,6 +381,10 @@ class WebSocketShard extends EventEmitter {
       wasClean: false,
     },
   ) {
+    this.debug(`[CLOSE]
+    Event Code: ${event.code}
+    Clean     : ${event.wasClean}
+    Reason    : ${event.reason ?? 'No reason received'}`);
     /**
      * Emitted when a shard's WebSocket closes.
      * @private
