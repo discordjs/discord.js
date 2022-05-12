@@ -1375,7 +1375,7 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public status: S;
   public entityType: GuildScheduledEventEntityType;
   public entityId: Snowflake | null;
-  public entityMetadata: GuildScheduledEventEntityMetadata;
+  public entityMetadata: GuildScheduledEventEntityMetadata | null;
   public userCount: number | null;
   public creator: User | null;
   public get createdTimestamp(): number;
