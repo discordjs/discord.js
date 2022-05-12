@@ -375,6 +375,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Manually emit close since the ws never received the close frame.
+   * This method helps the shard reconnect.
    * @param {CloseEvent} [event] Close event that was received
    */
   emitClose(
@@ -576,6 +577,7 @@ class WebSocketShard extends EventEmitter {
             CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
           } | Close Emitted: ${this.closeEmitted}`,
         );
+        // Setting the variable false to check for zombie connections.
         this.closeEmitted = false;
         this.setWsCloseTimeout(-1);
         return;
@@ -587,6 +589,8 @@ class WebSocketShard extends EventEmitter {
       );
 
       this.emitClose();
+      // Setting the variable false to check for zombie connections.
+      this.closeEmitted = false;
     }, time).unref();
   }
 
@@ -768,8 +772,6 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   destroy({ closeCode = 1_000, reset = false, emit = true, log = true } = {}) {
-    // Making the variable false to check for zombie connections.
-    this.closeEmitted = false;
     if (log) {
       this.debug(`[DESTROY]
     Close Code    : ${closeCode}
