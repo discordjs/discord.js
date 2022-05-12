@@ -15,7 +15,6 @@ pids
 .env
 
 # Dist
-dist/
 typings/
 docs/**/*
 !docs/index.yml
