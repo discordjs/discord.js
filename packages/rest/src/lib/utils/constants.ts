@@ -8,7 +8,7 @@ const Package = require('../../../package.json');
 export const DefaultUserAgent = `DiscordBot (${Package.homepage}, ${Package.version})`;
 
 export const DefaultRestOptions: Required<RESTOptions> = {
-	get agent () {
+	get agent() {
 		return getGlobalDispatcher();
 	},
 	api: 'https://discord.com/api',
