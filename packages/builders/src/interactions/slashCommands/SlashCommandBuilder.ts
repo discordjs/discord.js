@@ -7,6 +7,7 @@ import { mix } from 'ts-mixer';
 import {
 	assertReturnOfBuilder,
 	validateDefaultPermission,
+	validateLocalizationMap,
 	validateMaxOptionsLength,
 	validateRequiredParameters,
 } from './Assertions';
@@ -55,6 +56,9 @@ export class SlashCommandBuilder {
 	 */
 	public toJSON(): RESTPostAPIApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.description, this.options);
+
+		validateLocalizationMap(this.name_localizations);
+		validateLocalizationMap(this.description_localizations);
 
 		return {
 			name: this.name,
