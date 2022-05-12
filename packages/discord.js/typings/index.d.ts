@@ -1213,7 +1213,7 @@ export class GuildAuditLogsEntry<
   public static Targets: GuildAuditLogsTargets;
   public action: TAction;
   public actionType: TActionType;
-  public changes: AuditLogChange[] | null;
+  public changes: AuditLogChange[];
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executor: User | null;
