@@ -376,27 +376,27 @@ class WebSocketShard extends EventEmitter {
      * @event WebSocketShard#close
      * @param {CloseEvent} event The received event
      */
-    this.emit(ShardEvents.CLOSE, event);
+    this.emitClose(event);
   }
 
   /**
    * Manually emit close since the ws never received the close frame.
+   * @param {CloseEvent} [event] Close event that was received
    */
-  emitClose() {
+  emitClose(
+    event = {
+      code: 1011,
+      reason: WSCodes[1011],
+      wasClean: false,
+    },
+  ) {
     /**
      * Emitted when a shard's WebSocket closes.
      * @private
+     * @event WebSocketShard#close
      * @param {CloseEvent} event The received event
      */
-    this.emit(ShardEvents.CLOSE, {
-      code: 1011,
-      reason: WSCodes[1011],
-      /**
-       * - `wasClean` property is set to false when the WebSocket connection did not close via the close handshake.
-       * i.e. by not receiving a valid Close frame from the server.
-       */
-      wasClean: false,
-    });
+    this.emit(ShardEvents.CLOSE, event);
   }
 
   /**
