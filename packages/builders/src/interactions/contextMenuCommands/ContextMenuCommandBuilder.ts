@@ -1,11 +1,22 @@
-import type { ApplicationCommandType, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
+import type {
+	ApplicationCommandType,
+	LocaleString,
+	LocalizationMap,
+	RESTPostAPIApplicationCommandsJSONBody,
+} from 'discord-api-types/v10';
 import { validateRequiredParameters, validateName, validateType, validateDefaultPermission } from './Assertions';
+import { validateLocale, validateLocalizationMap } from '../slashCommands/Assertions';
 
 export class ContextMenuCommandBuilder {
 	/**
 	 * The name of this context menu command
 	 */
 	public readonly name: string = undefined!;
+
+	/**
+	 * The localized names for this command
+	 */
+	public readonly name_localizations?: LocalizationMap;
 
 	/**
 	 * The type of this context menu command
@@ -66,14 +77,61 @@ export class ContextMenuCommandBuilder {
 	}
 
 	/**
+	 * Sets a name localization
+	 *
+	 * @param locale The locale to set a description for
+	 * @param localizedName The localized description for the given locale
+	 */
+	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
+		if (!this.name_localizations) {
+			Reflect.set(this, 'name_localizations', {});
+		}
+
+		const parsedLocale = validateLocale(locale);
+
+		if (localizedName === null) {
+			this.name_localizations![parsedLocale] = null;
+			return this;
+		}
+
+		validateName(localizedName);
+
+		this.name_localizations![parsedLocale] = localizedName;
+		return this;
+	}
+
+	/**
+	 * Sets the name localizations
+	 *
+	 * @param localizedNames The dictionary of localized descriptions to set
+	 */
+	public setNameLocalizations(localizedNames: LocalizationMap | null) {
+		if (localizedNames === null) {
+			Reflect.set(this, 'name_localizations', null);
+			return this;
+		}
+
+		Reflect.set(this, 'name_localizations', {});
+
+		Object.entries(localizedNames).forEach((args) =>
+			this.setNameLocalization(...(args as [LocaleString, string | null])),
+		);
+		return this;
+	}
+
+	/**
 	 * Returns the final data that should be sent to Discord.
 	 *
 	 * **Note:** Calling this function will validate required properties based on their conditions.
 	 */
 	public toJSON(): RESTPostAPIApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.type);
+
+		validateLocalizationMap(this.name_localizations);
+
 		return {
 			name: this.name,
+			name_localizations: this.name_localizations,
 			type: this.type,
 			default_permission: this.defaultPermission,
 		};

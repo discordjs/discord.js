@@ -1,6 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import is from '@sindresorhus/is';
-import { type APIApplicationCommandOptionChoice, Locale } from 'discord-api-types/v10';
+import { type APIApplicationCommandOptionChoice, Locale, LocalizationMap } from 'discord-api-types/v10';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
@@ -86,4 +86,12 @@ export function assertReturnOfBuilder<
 
 		throw new TypeError(`Expected to receive a ${instanceName} builder, got ${fullResultName} instead.`);
 	}
+}
+
+export const localizationMapPredicate = s.object<LocalizationMap>(
+	Object.fromEntries(Object.values(Locale).map((locale) => [locale, s.string.nullish])),
+).strict.nullish;
+
+export function validateLocalizationMap(value: unknown): asserts value is LocalizationMap {
+	localizationMapPredicate.parse(value);
 }
