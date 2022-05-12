@@ -1846,13 +1846,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/collection@npm:0.5.0":
-  version: 0.5.0
-  resolution: "@discordjs/collection@npm:0.5.0"
-  checksum: a228979bb5f955cf095ce47441c55d0196cd99ff8484b57d26a45e58506c6646d776a98a9e11b822aab4e15fb2ac1aecfdebc63cde8ab7d04d3d74b716e80144
-  languageName: node
-  linkType: hard
-
 "@discordjs/collection@workspace:^, @discordjs/collection@workspace:packages/collection":
   version: 0.0.0-use.local
   resolution: "@discordjs/collection@workspace:packages/collection"
@@ -1914,7 +1907,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.17.9
     "@babel/preset-env": ^7.16.11
     "@babel/preset-typescript": ^7.16.7
-    "@discordjs/collection": 0.5.0
+    "@discordjs/collection": "workspace:^"
     "@discordjs/ts-docgen": ^0.4.1
     "@sapphire/async-queue": ^1.3.1
     "@sapphire/snowflake": ^3.2.1
