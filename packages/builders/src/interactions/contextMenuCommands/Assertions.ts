@@ -3,8 +3,8 @@ import { ApplicationCommandType } from 'discord-api-types/v10';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder';
 
 const namePredicate = s.string
-	.lengthGe(1)
-	.lengthLe(32)
+	.lengthGreaterThanOrEqual(1)
+	.lengthLessThanOrEqual(32)
 	.regex(/^( *[\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+ *)+$/u);
 
 const typePredicate = s.union(s.literal(ApplicationCommandType.User), s.literal(ApplicationCommandType.Message));

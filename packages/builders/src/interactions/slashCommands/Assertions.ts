@@ -6,22 +6,22 @@ import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder 
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
 
 const namePredicate = s.string
-	.lengthGe(1)
-	.lengthLe(32)
+	.lengthGreaterThanOrEqual(1)
+	.lengthLessThanOrEqual(32)
 	.regex(/^[\P{Lu}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u);
 
 export function validateName(name: unknown): asserts name is string {
 	namePredicate.parse(name);
 }
 
-const descriptionPredicate = s.string.lengthGe(1).lengthLe(100);
+const descriptionPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 const localePredicate = s.nativeEnum(Locale);
 
 export function validateDescription(description: unknown): asserts description is string {
 	descriptionPredicate.parse(description);
 }
 
-const maxArrayLengthPredicate = s.unknown.array.lengthLe(25);
+const maxArrayLengthPredicate = s.unknown.array.lengthLessThanOrEqual(25);
 export function validateLocale(locale: unknown) {
 	return localePredicate.parse(locale);
 }
@@ -55,7 +55,7 @@ export function validateRequired(required: unknown): asserts required is boolean
 	booleanPredicate.parse(required);
 }
 
-const choicesLengthPredicate = s.number.le(25);
+const choicesLengthPredicate = s.number.lessThanOrEqual(25);
 
 export function validateChoicesLength(amountAdding: number, choices?: APIApplicationCommandOptionChoice[]): void {
 	choicesLengthPredicate.parse((choices?.length ?? 0) + amountAdding);

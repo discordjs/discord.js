@@ -325,7 +325,7 @@ describe('Embed', () => {
 			embed.addFields([{ name: 'foo', value: 'bar' }]);
 
 			expect(embed.toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'bar', inline: undefined }],
+				fields: [{ name: 'foo', value: 'bar' }],
 			});
 		});
 
@@ -337,7 +337,7 @@ describe('Embed', () => {
 			]);
 
 			expect(embed.spliceFields(0, 1).toJSON()).toStrictEqual({
-				fields: [{ name: 'foo', value: 'baz', inline: undefined }],
+				fields: [{ name: 'foo', value: 'baz' }],
 			});
 		});
 
