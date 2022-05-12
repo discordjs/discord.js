@@ -8,6 +8,7 @@ exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.j
 
 exports.WSCodes = {
   1000: 'WS_CLOSE_REQUESTED',
+  1011: 'INTERNAL_ERROR',
   4004: 'TOKEN_INVALID',
   4010: 'SHARDING_INVALID',
   4011: 'SHARDING_REQUIRED',

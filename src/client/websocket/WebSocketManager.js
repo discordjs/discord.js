@@ -20,7 +20,7 @@ const BeforeReadyWhitelist = [
   WSEvents.GUILD_MEMBER_REMOVE,
 ];
 
-const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(1).map(Number);
+const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(2).map(Number);
 const UNRESUMABLE_CLOSE_CODES = [
   RPCErrorCodes.UnknownError,
   RPCErrorCodes.InvalidPermissions,
