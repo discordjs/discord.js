@@ -1,7 +1,6 @@
 import { EventEmitter } from 'node:events';
-import type { AgentOptions } from 'node:https';
 import type Collection from '@discordjs/collection';
-import type { RequestInit, Response } from 'node-fetch';
+import type { request, Dispatcher } from 'undici';
 import { CDN } from './CDN';
 import {
 	HandlerRequestData,
@@ -20,10 +19,9 @@ import { DefaultRestOptions, RESTEvents } from './utils/constants';
  */
 export interface RESTOptions {
 	/**
-	 * HTTPS Agent options
-	 * @default {}
+	 * The agent to set globally
 	 */
-	agent: Omit<AgentOptions, 'keepAlive'>;
+	agent: Dispatcher;
 	/**
 	 * The base api path, without version
 	 * @default 'https://discord.com/api'
@@ -169,7 +167,7 @@ export interface APIRequest {
 	/**
 	 * Additional HTTP options for this request
 	 */
-	options: RequestInit;
+	options: RequestOptions;
 	/**
 	 * The data that was used to form the body of this request
 	 */
@@ -195,8 +193,7 @@ export interface RestEvents {
 	invalidRequestWarning: [invalidRequestInfo: InvalidRequestWarningData];
 	restDebug: [info: string];
 	rateLimited: [rateLimitInfo: RateLimitData];
-	request: [request: APIRequest];
-	response: [request: APIRequest, response: Response];
+	response: [request: APIRequest, response: Dispatcher.ResponseData];
 	newListener: [name: string, listener: (...args: any) => void];
 	removeListener: [name: string, listener: (...args: any) => void];
 	hashSweep: [sweptHashes: Collection<string, HashData>];
@@ -220,6 +217,8 @@ export interface REST {
 		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
 }
 
+export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
+
 export class REST extends EventEmitter {
 	public readonly cdn: CDN;
 	public readonly requestManager: RequestManager;
@@ -234,11 +233,27 @@ export class REST extends EventEmitter {
 			.on(RESTEvents.HashSweep, this.emit.bind(this, RESTEvents.HashSweep));
 
 		this.on('newListener', (name, listener) => {
-			if (name === RESTEvents.Request || name === RESTEvents.Response) this.requestManager.on(name, listener);
+			if (name === RESTEvents.Response) this.requestManager.on(name, listener);
 		});
 		this.on('removeListener', (name, listener) => {
-			if (name === RESTEvents.Request || name === RESTEvents.Response) this.requestManager.off(name, listener);
+			if (name === RESTEvents.Response) this.requestManager.off(name, listener);
 		});
+	}
+
+	/**
+	 * Gets the agent set for this instance
+	 */
+	public getAgent() {
+		return this.requestManager.agent;
+	}
+
+	/**
+	 * Sets the default agent to use for requests performed by this instance
+	 * @param agent Sets the agent to use
+	 */
+	public setAgent(agent: Dispatcher) {
+		this.requestManager.setAgent(agent);
+		return this;
 	}
 
 	/**

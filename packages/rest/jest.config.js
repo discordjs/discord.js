@@ -15,5 +15,5 @@ module.exports = {
 			statements: 70,
 		},
 	},
-	setupFilesAfterEnv: ['./jest.setup.js'],
+	coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/'],
 };

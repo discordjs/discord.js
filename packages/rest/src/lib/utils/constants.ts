@@ -1,4 +1,5 @@
 import { APIVersion } from 'discord-api-types/v10';
+import { getGlobalDispatcher } from 'undici';
 import type { RESTOptions } from '../REST';
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
 const Package = require('../../../package.json');
@@ -7,7 +8,9 @@ const Package = require('../../../package.json');
 export const DefaultUserAgent = `DiscordBot (${Package.homepage}, ${Package.version})`;
 
 export const DefaultRestOptions: Required<RESTOptions> = {
-	agent: {},
+	get agent() {
+		return getGlobalDispatcher();
+	},
 	api: 'https://discord.com/api',
 	authPrefix: 'Bot',
 	cdn: 'https://cdn.discordapp.com',
@@ -32,7 +35,6 @@ export const enum RESTEvents {
 	Debug = 'restDebug',
 	InvalidRequestWarning = 'invalidRequestWarning',
 	RateLimited = 'rateLimited',
-	Request = 'request',
 	Response = 'response',
 	HashSweep = 'hashSweep',
 	HandlerSweep = 'handlerSweep',
