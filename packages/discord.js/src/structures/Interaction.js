@@ -93,7 +93,7 @@ class Interaction extends Base {
   get member() {
     return this.data.member ? this.guild?.members._add(this.data.member) ?? this.data.member : null;
   }
-  
+
   /**
    * The version
    * @type {number}
@@ -112,54 +112,54 @@ class Interaction extends Base {
     return this.member?.permissions ? new PermissionsBitField(this.member.permissions).freeze() : null;
   }
 
-    /**
-     * A Discord locale string, possible values are:
-     * * en-US (English, US)
-     * * en-GB (English, UK)
-     * * bg (Bulgarian)
-     * * zh-CN (Chinese, China)
-     * * zh-TW (Chinese, Taiwan)
-     * * hr (Croatian)
-     * * cs (Czech)
-     * * da (Danish)
-     * * nl (Dutch)
-     * * fi (Finnish)
-     * * fr (French)
-     * * de (German)
-     * * el (Greek)
-     * * hi (Hindi)
-     * * hu (Hungarian)
-     * * it (Italian)
-     * * ja (Japanese)
-     * * ko (Korean)
-     * * lt (Lithuanian)
-     * * no (Norwegian)
-     * * pl (Polish)
-     * * pt-BR (Portuguese, Brazilian)
-     * * ro (Romanian, Romania)
-     * * ru (Russian)
-     * * es-ES (Spanish)
-     * * sv-SE (Swedish)
-     * * th (Thai)
-     * * tr (Turkish)
-     * * uk (Ukrainian)
-     * * vi (Vietnamese)
-     * @see {@link https://discord.com/developers/docs/reference#locales}
-     * @typedef {string} Locale
-     */
+  /**
+   * A Discord locale string, possible values are:
+   * * en-US (English, US)
+   * * en-GB (English, UK)
+   * * bg (Bulgarian)
+   * * zh-CN (Chinese, China)
+   * * zh-TW (Chinese, Taiwan)
+   * * hr (Croatian)
+   * * cs (Czech)
+   * * da (Danish)
+   * * nl (Dutch)
+   * * fi (Finnish)
+   * * fr (French)
+   * * de (German)
+   * * el (Greek)
+   * * hi (Hindi)
+   * * hu (Hungarian)
+   * * it (Italian)
+   * * ja (Japanese)
+   * * ko (Korean)
+   * * lt (Lithuanian)
+   * * no (Norwegian)
+   * * pl (Polish)
+   * * pt-BR (Portuguese, Brazilian)
+   * * ro (Romanian, Romania)
+   * * ru (Russian)
+   * * es-ES (Spanish)
+   * * sv-SE (Swedish)
+   * * th (Thai)
+   * * tr (Turkish)
+   * * uk (Ukrainian)
+   * * vi (Vietnamese)
+   * @see {@link https://discord.com/developers/docs/reference#locales}
+   * @typedef {string} Locale
+   */
 
-    /**
-     * The locale of the user who invoked this interaction
-     * @type {Locale}
-     */
+  /**
+   * The locale of the user who invoked this interaction
+   * @type {Locale}
+   */
   get locale() {
     return this.data.locale;
   }
 
-    /**
-     * The preferred locale from the guild this interaction was sent in
-     * @type {?Locale}
-     */
+  /**
+   * The preferred locale from the guild this interaction was sent in
+   * @type {?Locale}
+   */
   get guildLocale() {
     return this.data.guild_locale ?? null;
   }
