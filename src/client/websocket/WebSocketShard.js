@@ -386,7 +386,6 @@ class WebSocketShard extends EventEmitter {
     /**
      * Emitted when a shard's WebSocket closes.
      * @private
-     * @event WebSocketShard#close
      * @param {CloseEvent} event The received event
      */
     this.emit(ShardEvents.CLOSE, {
