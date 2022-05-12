@@ -17,19 +17,6 @@ const responseOptions: MockInterceptor.MockResponseOptions = {
 	},
 };
 
-/*
-const mockAgent = new MockAgent();
-mockAgent.disableNetConnect();
-setGlobalDispatcher(mockAgent);
-
-const mockPool = mockAgent.get('http://localhost:3000');
-mockPool.intercept({ path: '/foo', method: 'GET' }).reply(200, 'foo');
-
-const res = await fetch('http://localhost:3000/foo');
-
-console.log(res.status, await res.text()); // 200 foo
-*/
-
 let mockAgent: MockAgent;
 let mockPool: Interceptable;
 
