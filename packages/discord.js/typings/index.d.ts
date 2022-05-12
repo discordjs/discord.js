@@ -295,6 +295,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public defaultPermission: boolean;
+  public dmPermission: boolean;
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
@@ -3453,6 +3454,7 @@ export interface BaseApplicationCommandData {
   name: string;
   nameLocalizations?: LocalizationMap;
   defaultPermission?: boolean;
+  dmPermission?: boolean;
 }
 
 export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType;
