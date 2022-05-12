@@ -1113,7 +1113,6 @@ export class Guild extends AnonymousGuild {
   public large: boolean;
   public maximumMembers: number | null;
   public maximumPresences: number | null;
-  public get me(): GuildMember | null;
   public memberCount: number;
   public members: GuildMemberManager;
   public mfaLevel: GuildMFALevel;
@@ -1793,19 +1792,25 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse>;
+  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<InteractionResponse>;
+  public reply(
+    options: string | MessagePayload | InteractionReplyOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<InteractionResponse>;
+  public update(
+    options: string | MessagePayload | InteractionUpdateOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public showModal(
     modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
-  public awaitModalSubmit(options: AwaitModalSubmitOptions<ModalSubmitInteraction>): Promise<ModalSubmitInteraction>;
+  public awaitModalSubmit(
+    options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
+  ): Promise<ModalSubmitInteraction<Cached>>;
 }
 
 export class MessageContextMenuCommandInteraction<
@@ -1906,9 +1911,11 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
   extends ModalSubmitInteraction<Cached> {
   message: GuildCacheMessage<Cached>;
   update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  update(options: string | MessagePayload | InteractionUpdateOptions): Promise<InteractionResponse>;
+  update(
+    options: string | MessagePayload | InteractionUpdateOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse>;
+  deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   inGuild(): this is ModalMessageModalSubmitInteraction<'raw' | 'cached'>;
   inCachedGuild(): this is ModalMessageModalSubmitInteraction<'cached'>;
   inRawGuild(): this is ModalMessageModalSubmitInteraction<'raw'>;
@@ -1925,11 +1932,13 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public replied: boolean;
   public readonly webhook: InteractionWebhook;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<InteractionResponse>;
+  public reply(
+    options: string | MessagePayload | InteractionReplyOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
@@ -3131,6 +3140,7 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
 export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildMemberData>);
   public guild: Guild;
+  public get me(): GuildMember | null;
   public add(
     user: UserResolvable,
     options: AddGuildMemberOptions & { fetchWhenExisting: false },
@@ -3328,6 +3338,7 @@ export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, T
 export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable> {
   private constructor(thread: ThreadChannel, iterable?: Iterable<RawThreadMemberData>);
   public thread: ThreadChannel;
+  public get me(): ThreadMember | null;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(options?: ThreadMemberFetchOptions): Promise<ThreadMember>;
   public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
@@ -4687,7 +4698,7 @@ export interface InteractionCollectorOptions<T extends Interaction, Cached exten
   maxComponents?: number;
   maxUsers?: number;
   message?: CacheTypeReducer<Cached, Message, APIMessage>;
-  interactionResponse?: InteractionResponse;
+  interactionResponse?: InteractionResponse<BooleanCache<Cached>>;
 }
 
 export interface InteractionDeferReplyOptions {
