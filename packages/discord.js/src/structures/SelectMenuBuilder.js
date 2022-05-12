@@ -1,19 +1,51 @@
 'use strict';
 
-const { SelectMenuBuilder: BuildersSelectMenuComponent, isJSONEncodable } = require('@discordjs/builders');
+const { SelectMenuBuilder: BuildersSelectMenu, isJSONEncodable } = require('@discordjs/builders');
 const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
-class SelectMenuBuilder extends BuildersSelectMenuComponent {
-  constructor({ options, ...data }) {
+/**
+ * Class used to build select menu components to be sent through the API
+ * @extends {BuildersSelectMenu}
+ */
+class SelectMenuBuilder extends BuildersSelectMenu {
+  constructor({ options, ...data } = {}) {
     super(
       Transformers.toSnakeCase({
-        options: options.map(({ emoji, ...option }) => ({
+        ...data,
+        options: options?.map(({ emoji, ...option }) => ({
           ...option,
           emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
         })),
-        ...data,
       }),
+    );
+  }
+
+  /**
+   * Adds options to this select menu
+   * @param {APISelectMenuOption[]} options The options to add to this select menu
+   * @returns {SelectMenuBuilder}
+   */
+  addOptions(options) {
+    return super.addOptions(
+      options.map(({ emoji, ...option }) => ({
+        ...option,
+        emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
+      })),
+    );
+  }
+
+  /**
+   * Sets the options on this select menu
+   * @param {APISelectMenuOption[]} options The options to set on this select menu
+   * @returns {SelectMenuBuilder}
+   */
+  setOptions(options) {
+    return super.setOptions(
+      options.map(({ emoji, ...option }) => ({
+        ...option,
+        emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
+      })),
     );
   }
 
@@ -31,3 +63,8 @@ class SelectMenuBuilder extends BuildersSelectMenuComponent {
 }
 
 module.exports = SelectMenuBuilder;
+
+/**
+ * @external BuildersSelectMenu
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuBuilder}
+ */

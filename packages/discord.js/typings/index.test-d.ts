@@ -57,7 +57,7 @@ import {
   Interaction,
   InteractionCollector,
   Message,
-  MessageAttachment,
+  Attachment,
   MessageCollector,
   MessageComponentInteraction,
   MessageReaction,
@@ -117,6 +117,12 @@ import {
   TextInputComponent,
   Embed,
   MessageActionRowComponentBuilder,
+  GuildBanManager,
+  GuildBan,
+  MessageManager,
+  ChannelMention,
+  UserMention,
+  PartialGroupDMChannel,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
@@ -523,6 +529,34 @@ client.on('guildCreate', async g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
 
+  if (channel.isText()) {
+    const row: ActionRowData<MessageActionRowComponentData> = {
+      type: ComponentType.ActionRow,
+      components: [
+        new ButtonBuilder(),
+        { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
+        { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
+        { type: ComponentType.SelectMenu, customId: 'foo' },
+        new SelectMenuBuilder(),
+        // @ts-expect-error
+        { type: ComponentType.TextInput, style: TextInputStyle.Paragraph, customId: 'foo', label: 'test' },
+        // @ts-expect-error
+        new TextInputBuilder(),
+      ],
+    };
+
+    const row2 = new ActionRowBuilder<MessageActionRowComponentBuilder>({
+      type: ComponentType.ActionRow,
+      components: [
+        { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
+        { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
+        { type: ComponentType.SelectMenu, customId: 'foo' },
+      ],
+    });
+
+    channel.send({ components: [row, row2] });
+  }
+
   if (channel.isThread()) {
     const fetchedMember = await channel.members.fetch({ member: '12345678' });
     expectType<ThreadMember>(fetchedMember);
@@ -581,7 +615,7 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({}));
   assertIsMessage(channel.send({ embeds: [] }));
 
-  const attachment = new MessageAttachment('file.png');
+  const attachment = new Attachment('file.png');
   const embed = new EmbedBuilder();
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
@@ -735,7 +769,7 @@ client.on('messageCreate', async message => {
 
   // Check that both builders and builder data can be sent in messages
   const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
-  const buttonsRow = {
+  const buttonsRow: ActionRowData<MessageActionRowComponentData> = {
     type: ComponentType.ActionRow,
     components: [
       new ButtonBuilder(),
@@ -744,12 +778,12 @@ client.on('messageCreate', async message => {
       {
         type: ComponentType.Button,
         label: 'another test',
-        style: ButtonStyle.Link as const,
+        style: ButtonStyle.Link,
         url: 'https://discord.js.org',
       },
     ],
   };
-  const selectsRow = {
+  const selectsRow: ActionRowData<MessageActionRowComponentData> = {
     type: ComponentType.ActionRow,
     components: [
       new SelectMenuBuilder(),
@@ -762,6 +796,7 @@ client.on('messageCreate', async message => {
       },
     ],
   };
+
   const buildersEmbed = new UnsafeEmbedBuilder();
   const embedData = { description: 'test', color: 0xff0000 };
   channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, buildersEmbed, embedData] });
@@ -806,8 +841,8 @@ client.on('interactionCreate', async interaction => {
   // @ts-expect-error
   interaction.reply({ content: 'Hi!', components: [[button]] });
 
-  // @ts-expect-error
   void new ActionRowBuilder({});
+
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
 
@@ -902,9 +937,10 @@ declare const guildMember: GuildMember;
 
 // Test whether the structures implement send
 expectType<TextBasedChannelFields['send']>(dmChannel.send);
-expectType<ThreadChannel>(threadChannel);
-expectType<NewsChannel>(newsChannel);
-expectType<TextChannel>(textChannel);
+expectType<TextBasedChannelFields['send']>(threadChannel.send);
+expectType<TextBasedChannelFields['send']>(newsChannel.send);
+expectType<TextBasedChannelFields['send']>(textChannel.send);
+expectType<TextBasedChannelFields['send']>(voiceChannel.send);
 expectAssignable<PartialTextBasedChannelFields>(user);
 expectAssignable<PartialTextBasedChannelFields>(guildMember);
 
@@ -912,6 +948,7 @@ expectType<Message | null>(dmChannel.lastMessage);
 expectType<Message | null>(threadChannel.lastMessage);
 expectType<Message | null>(newsChannel.lastMessage);
 expectType<Message | null>(textChannel.lastMessage);
+expectType<Message | null>(voiceChannel.lastMessage);
 
 notPropertyOf(user, 'lastMessage');
 notPropertyOf(user, 'lastMessageId');
@@ -1017,6 +1054,22 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<AnyChannel | null>>(guildChannelManager.fetch('0'));
 }
 
+declare const messageManager: MessageManager;
+{
+  expectType<Promise<Message>>(messageManager.fetch('1234567890'));
+  expectType<Promise<Message>>(messageManager.fetch({ message: '1234567890' }));
+  expectType<Promise<Message>>(messageManager.fetch({ message: '1234567890', cache: true, force: false }));
+  expectType<Promise<Collection<Snowflake, Message>>>(messageManager.fetch());
+  expectType<Promise<Collection<Snowflake, Message>>>(messageManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, Message>>>(
+    messageManager.fetch({ limit: 100, before: '1234567890', cache: false }),
+  );
+  // @ts-expect-error
+  messageManager.fetch({ cache: true, force: false });
+  // @ts-expect-error
+  messageManager.fetch({ message: '1234567890', after: '1234567890', cache: true, force: false });
+}
+
 declare const roleManager: RoleManager;
 expectType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch());
 expectType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch(undefined, {}));
@@ -1026,6 +1079,20 @@ declare const guildEmojiManager: GuildEmojiManager;
 expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch());
 expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 expectType<Promise<GuildEmoji>>(guildEmojiManager.fetch('0'));
+
+declare const guildBanManager: GuildBanManager;
+{
+  expectType<Promise<GuildBan>>(guildBanManager.fetch('1234567890'));
+  expectType<Promise<GuildBan>>(guildBanManager.fetch({ user: '1234567890' }));
+  expectType<Promise<GuildBan>>(guildBanManager.fetch({ user: '1234567890', cache: true, force: false }));
+  expectType<Promise<Collection<Snowflake, GuildBan>>>(guildBanManager.fetch());
+  expectType<Promise<Collection<Snowflake, GuildBan>>>(guildBanManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, GuildBan>>>(guildBanManager.fetch({ limit: 100, before: '1234567890' }));
+  // @ts-expect-error
+  guildBanManager.fetch({ cache: true, force: false });
+  // @ts-expect-error
+  guildBanManager.fetch({ user: '1234567890', after: '1234567890', cache: true, force: false });
+}
 
 declare const typing: Typing;
 expectType<User | PartialUser>(typing.user);
@@ -1365,14 +1432,16 @@ declare const GuildBasedChannel: GuildBasedChannel;
 declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
 declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
-expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel>(TextBasedChannel);
-expectType<ChannelType.GuildText | ChannelType.DM | ChannelType.GuildNews | ThreadChannelType>(TextBasedChannelTypes);
+expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(TextBasedChannel);
+expectType<ChannelType.GuildText | ChannelType.DM | ChannelType.GuildNews | ChannelType.GuildVoice | ThreadChannelType>(
+  TextBasedChannelTypes,
+);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | ThreadChannel | VoiceChannel>(
   GuildBasedChannel,
 );
 expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel>(NonThreadGuildBasedChannel);
-expectType<NewsChannel | TextChannel | ThreadChannel>(GuildTextBasedChannel);
+expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBasedChannel);
 
 const button = new ButtonBuilder({
   label: 'test',
@@ -1423,8 +1492,8 @@ expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
 
 declare const chatInputInteraction: ChatInputCommandInteraction;
 
-expectType<MessageAttachment>(chatInputInteraction.options.getAttachment('attachment', true));
-expectType<MessageAttachment | null>(chatInputInteraction.options.getAttachment('attachment'));
+expectType<Attachment>(chatInputInteraction.options.getAttachment('attachment', true));
+expectType<Attachment | null>(chatInputInteraction.options.getAttachment('attachment'));
 
 declare const modal: ModalBuilder;
 
@@ -1471,3 +1540,16 @@ EmbedBuilder.from(embedData);
 
 declare const embedComp: Embed;
 EmbedBuilder.from(embedComp);
+
+declare const stageChannel: StageChannel;
+declare const partialGroupDMChannel: PartialGroupDMChannel;
+
+expectType<ChannelMention>(textChannel.toString());
+expectType<ChannelMention>(voiceChannel.toString());
+expectType<ChannelMention>(newsChannel.toString());
+expectType<ChannelMention>(threadChannel.toString());
+expectType<ChannelMention>(stageChannel.toString());
+expectType<ChannelMention>(partialGroupDMChannel.toString());
+expectType<UserMention>(dmChannel.toString());
+expectType<UserMention>(user.toString());
+expectType<UserMention>(guildMember.toString());

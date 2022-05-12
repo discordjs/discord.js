@@ -1,9 +1,9 @@
-import is from '@sindresorhus/is';
-import type { APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
 import { s } from '@sapphire/shapeshift';
-import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
+import is from '@sindresorhus/is';
+import { type APIApplicationCommandOptionChoice, Locale } from 'discord-api-types/v10';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
+import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
 
 const namePredicate = s.string
 	.lengthGe(1)
@@ -15,12 +15,16 @@ export function validateName(name: unknown): asserts name is string {
 }
 
 const descriptionPredicate = s.string.lengthGe(1).lengthLe(100);
+const localePredicate = s.nativeEnum(Locale);
 
 export function validateDescription(description: unknown): asserts description is string {
 	descriptionPredicate.parse(description);
 }
 
 const maxArrayLengthPredicate = s.unknown.array.lengthLe(25);
+export function validateLocale(locale: unknown) {
+	return localePredicate.parse(locale);
+}
 
 export function validateMaxOptionsLength(options: unknown): asserts options is ToAPIApplicationCommandOptions[] {
 	maxArrayLengthPredicate.parse(options);

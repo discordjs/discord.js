@@ -48,15 +48,11 @@ describe('Modals', () => {
 
 	test('GIVEN valid fields THEN builder does not throw', () => {
 		expect(() =>
-			modal().setTitle('test').setCustomId('foobar').setComponents(new ActionRowBuilder()),
+			modal().setTitle('test').setCustomId('foobar').setComponents([new ActionRowBuilder()]),
 		).not.toThrowError();
 	});
 
 	test('GIVEN invalid fields THEN builder does throw', () => {
-		expect(() =>
-			// @ts-expect-error
-			modal().setTitle('test').setCustomId('foobar').setComponents([new ActionRowBuilder()]).toJSON(),
-		).toThrowError();
 		expect(() => modal().setTitle('test').setCustomId('foobar').toJSON()).toThrowError();
 		// @ts-expect-error
 		expect(() => modal().setTitle('test').setCustomId(42).toJSON()).toThrowError();
@@ -87,11 +83,11 @@ describe('Modals', () => {
 			modal()
 				.setTitle(modalData.title)
 				.setCustomId('custom id')
-				.setComponents(
-					new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
+				.setComponents([
+					new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents([
 						new TextInputBuilder().setCustomId('custom id').setLabel('label').setStyle(TextInputStyle.Paragraph),
-					),
-				)
+					]),
+				])
 				.toJSON(),
 		).toEqual(modalData);
 	});

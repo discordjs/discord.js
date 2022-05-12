@@ -1,9 +1,9 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const Attachment = require('./Attachment');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
-const MessageAttachment = require('./MessageAttachment');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 
 /**
@@ -98,7 +98,7 @@ class CommandInteraction extends Interaction {
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
    * @property {Collection<Snowflake, Channel|APIChannel>} [channels] The resolved channels
    * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
-   * @property {Collection<Snowflake, MessageAttachment>} [attachments] The resolved attachments
+   * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
    */
 
   /**
@@ -149,7 +149,7 @@ class CommandInteraction extends Interaction {
     if (attachments) {
       result.attachments = new Collection();
       for (const attachment of Object.values(attachments)) {
-        const patched = new MessageAttachment(attachment.url, attachment.filename, attachment);
+        const patched = new Attachment(attachment.url, attachment.filename, attachment);
         result.attachments.set(attachment.id, patched);
       }
     }
@@ -172,7 +172,7 @@ class CommandInteraction extends Interaction {
    * @property {GuildMember|APIGuildMember} [member] The resolved member
    * @property {GuildChannel|ThreadChannel|APIChannel} [channel] The resolved channel
    * @property {Role|APIRole} [role] The resolved role
-   * @property {MessageAttachment} [attachment] The resolved attachment
+   * @property {Attachment} [attachment] The resolved attachment
    */
 
   /**
@@ -205,7 +205,7 @@ class CommandInteraction extends Interaction {
       if (role) result.role = this.guild?.roles._add(role) ?? role;
 
       const attachment = resolved.attachments?.[option.value];
-      if (attachment) result.attachment = new MessageAttachment(attachment.url, attachment.filename, attachment);
+      if (attachment) result.attachment = new Attachment(attachment.url, attachment.filename, attachment);
     }
 
     return result;

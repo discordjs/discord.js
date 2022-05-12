@@ -1,10 +1,10 @@
 import type { APIEmbedField } from 'discord-api-types/v10';
 import {
-	authorNamePredicate,
 	colorPredicate,
 	descriptionPredicate,
+	embedAuthorPredicate,
 	embedFieldsArrayPredicate,
-	footerTextPredicate,
+	embedFooterPredicate,
 	imageURLPredicate,
 	timestampPredicate,
 	titlePredicate,
@@ -17,12 +17,12 @@ import { EmbedAuthorOptions, EmbedFooterOptions, RGBTuple, UnsafeEmbedBuilder } 
  * Represents a validated embed in a message (image/video preview, rich embed, etc.)
  */
 export class EmbedBuilder extends UnsafeEmbedBuilder {
-	public override addFields(...fields: APIEmbedField[]): this {
+	public override addFields(fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
 		validateFieldLength(fields.length, this.data.fields);
 
 		// Data assertions
-		return super.addFields(...embedFieldsArrayPredicate.parse(fields));
+		return super.addFields(embedFieldsArrayPredicate.parse(fields));
 	}
 
 	public override spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
@@ -39,9 +39,7 @@ export class EmbedBuilder extends UnsafeEmbedBuilder {
 		}
 
 		// Data assertions
-		authorNamePredicate.parse(options.name);
-		urlPredicate.parse(options.iconURL);
-		urlPredicate.parse(options.url);
+		embedAuthorPredicate.parse(options);
 
 		return super.setAuthor(options);
 	}
@@ -62,8 +60,7 @@ export class EmbedBuilder extends UnsafeEmbedBuilder {
 		}
 
 		// Data assertions
-		footerTextPredicate.parse(options.text);
-		urlPredicate.parse(options.iconURL);
+		embedFooterPredicate.parse(options);
 
 		return super.setFooter(options);
 	}

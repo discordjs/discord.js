@@ -1,5 +1,5 @@
-import type { APIEmbedField } from 'discord-api-types/v10';
 import { s } from '@sapphire/shapeshift';
+import type { APIEmbedField } from 'discord-api-types/v10';
 
 export const fieldNamePredicate = s.string.lengthGe(1).lengthLe(256);
 
@@ -31,6 +31,12 @@ export const urlPredicate = s.string.url({
 	allowedProtocols: ['http:', 'https:'],
 }).nullish;
 
+export const embedAuthorPredicate = s.object({
+	name: authorNamePredicate,
+	iconURL: imageURLPredicate,
+	url: urlPredicate,
+});
+
 export const RGBPredicate = s.number.int.ge(0).le(255);
 export const colorPredicate = s.number.int
 	.ge(0)
@@ -40,6 +46,11 @@ export const colorPredicate = s.number.int
 export const descriptionPredicate = s.string.lengthGe(1).lengthLe(4096).nullable;
 
 export const footerTextPredicate = s.string.lengthGe(1).lengthLe(2048).nullable;
+
+export const embedFooterPredicate = s.object({
+	text: footerTextPredicate,
+	iconURL: imageURLPredicate,
+});
 
 export const timestampPredicate = s.union(s.number, s.date).nullable;
 

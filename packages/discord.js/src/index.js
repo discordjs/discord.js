@@ -1,5 +1,7 @@
 'use strict';
 
+const { __exportStar } = require('tslib');
+
 // "Root" classes (starting points)
 exports.BaseClient = require('./client/BaseClient');
 exports.Client = require('./client/Client');
@@ -99,7 +101,6 @@ exports.ContextMenuCommandInteraction = require('./structures/ContextMenuCommand
 exports.DMChannel = require('./structures/DMChannel');
 exports.Embed = require('./structures/Embed');
 exports.EmbedBuilder = require('./structures/EmbedBuilder');
-exports.UnsafeEmbed = require('@discordjs/builders').UnsafeEmbed;
 exports.Emoji = require('./structures/Emoji').Emoji;
 exports.Guild = require('./structures/Guild').Guild;
 exports.GuildAuditLogs = require('./structures/GuildAuditLogs');
@@ -116,12 +117,14 @@ exports.Integration = require('./structures/Integration');
 exports.IntegrationApplication = require('./structures/IntegrationApplication');
 exports.Interaction = require('./structures/Interaction');
 exports.InteractionCollector = require('./structures/InteractionCollector');
+exports.InteractionResponse = require('./structures/InteractionResponse');
 exports.InteractionWebhook = require('./structures/InteractionWebhook');
 exports.Invite = require('./structures/Invite');
 exports.InviteStageInstance = require('./structures/InviteStageInstance');
 exports.InviteGuild = require('./structures/InviteGuild');
 exports.Message = require('./structures/Message').Message;
-exports.MessageAttachment = require('./structures/MessageAttachment');
+exports.Attachment = require('./structures/Attachment');
+exports.ModalBuilder = require('./structures/ModalBuilder');
 exports.MessageCollector = require('./structures/MessageCollector');
 exports.MessageComponentInteraction = require('./structures/MessageComponentInteraction');
 exports.MessageContextMenuCommandInteraction = require('./structures/MessageContextMenuCommandInteraction');
@@ -181,6 +184,8 @@ exports.GatewayCloseCodes = require('discord-api-types/v10').GatewayCloseCodes;
 exports.GatewayDispatchEvents = require('discord-api-types/v10').GatewayDispatchEvents;
 exports.GatewayIntentBits = require('discord-api-types/v10').GatewayIntentBits;
 exports.GatewayOpcodes = require('discord-api-types/v10').GatewayOpcodes;
+exports.GuildDefaultMessageNotifications = require('discord-api-types/v10').GuildDefaultMessageNotifications;
+exports.GuildExplicitContentFilter = require('discord-api-types/v10').GuildExplicitContentFilter;
 exports.GuildFeature = require('discord-api-types/v10').GuildFeature;
 exports.GuildMFALevel = require('discord-api-types/v10').GuildMFALevel;
 exports.GuildNSFWLevel = require('discord-api-types/v10').GuildNSFWLevel;
@@ -190,27 +195,27 @@ exports.GuildScheduledEventPrivacyLevel = require('discord-api-types/v10').Guild
 exports.GuildScheduledEventStatus = require('discord-api-types/v10').GuildScheduledEventStatus;
 exports.GuildSystemChannelFlags = require('discord-api-types/v10').GuildSystemChannelFlags;
 exports.GuildVerificationLevel = require('discord-api-types/v10').GuildVerificationLevel;
+exports.IntegrationExpireBehavior = require('discord-api-types/v10').IntegrationExpireBehavior;
 exports.InteractionType = require('discord-api-types/v10').InteractionType;
 exports.InteractionResponseType = require('discord-api-types/v10').InteractionResponseType;
 exports.InviteTargetType = require('discord-api-types/v10').InviteTargetType;
 exports.Locale = require('discord-api-types/v10').Locale;
+exports.MessageActivityType = require('discord-api-types/v10').MessageActivityType;
 exports.MessageType = require('discord-api-types/v10').MessageType;
 exports.MessageFlags = require('discord-api-types/v10').MessageFlags;
-exports.ModalBuilder = require('@discordjs/builders').ModalBuilder;
 exports.OAuth2Scopes = require('discord-api-types/v10').OAuth2Scopes;
 exports.PermissionFlagsBits = require('discord-api-types/v10').PermissionFlagsBits;
 exports.RESTJSONErrorCodes = require('discord-api-types/v10').RESTJSONErrorCodes;
 exports.StageInstancePrivacyLevel = require('discord-api-types/v10').StageInstancePrivacyLevel;
 exports.StickerType = require('discord-api-types/v10').StickerType;
 exports.StickerFormatType = require('discord-api-types/v10').StickerFormatType;
+exports.TeamMemberMembershipState = require('discord-api-types/v10').TeamMemberMembershipState;
 exports.TextInputStyle = require('discord-api-types/v10').TextInputStyle;
 exports.UserFlags = require('discord-api-types/v10').UserFlags;
+exports.VideoQualityMode = require('discord-api-types/v10').VideoQualityMode;
 exports.WebhookType = require('discord-api-types/v10').WebhookType;
-exports.UnsafeButtonBuilder = require('@discordjs/builders').UnsafeButtonBuilder;
-exports.UnsafeSelectMenuBuilder = require('@discordjs/builders').UnsafeSelectMenuBuilder;
-exports.UnsafeSelectMenuOptionBuilder = require('@discordjs/builders').UnsafeSelectMenuOptionBuilder;
-exports.UnsafeModalBuilder = require('@discordjs/builders').UnsafeModalBuilder;
-exports.UnsafeTextInputBuilder = require('@discordjs/builders').UnsafeTextInputBuilder;
 exports.DiscordAPIError = require('@discordjs/rest').DiscordAPIError;
 exports.HTTPError = require('@discordjs/rest').HTTPError;
 exports.RateLimitError = require('@discordjs/rest').RateLimitError;
+
+__exportStar(require('@discordjs/builders'), exports);

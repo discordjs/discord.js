@@ -1,39 +1,28 @@
-import type { JSONEncodable } from '../util/jsonEncodable';
 import type {
 	APIActionRowComponent,
 	APIActionRowComponentTypes,
 	APIBaseComponent,
-	APIMessageActionRowComponent,
-	APIMessageComponent,
-	APIModalActionRowComponent,
-	APIModalComponent,
 	ComponentType,
 } from 'discord-api-types/v10';
+import type { JSONEncodable } from '../util/jsonEncodable';
+
+export type AnyAPIActionRowComponent = APIActionRowComponentTypes | APIActionRowComponent<APIActionRowComponentTypes>;
 
 /**
  * Represents a discord component
  */
 export abstract class ComponentBuilder<
-	DataType extends Partial<APIBaseComponent<ComponentType>> & {
-		type: ComponentType;
-	} = APIBaseComponent<ComponentType>,
-> implements
-		JSONEncodable<
-			| APIModalComponent
-			| APIMessageComponent
-			| APIActionRowComponent<APIModalActionRowComponent | APIMessageActionRowComponent>
-		>
+	DataType extends Partial<APIBaseComponent<ComponentType>> = APIBaseComponent<ComponentType>,
+> implements JSONEncodable<AnyAPIActionRowComponent>
 {
 	/**
 	 * The API data associated with this component
 	 */
-	public readonly data: DataType;
+	public readonly data: Partial<DataType>;
 
-	public abstract toJSON():
-		| APIActionRowComponentTypes
-		| APIActionRowComponent<APIModalActionRowComponent | APIMessageActionRowComponent>;
+	public abstract toJSON(): AnyAPIActionRowComponent;
 
-	public constructor(data: DataType) {
+	public constructor(data: Partial<DataType>) {
 		this.data = data;
 	}
 }
