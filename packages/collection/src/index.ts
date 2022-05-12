@@ -190,7 +190,7 @@ export class Collection<K, V> extends Map<K, V> {
 		const random: number[] = [];
 		for (let i = 0; i < amount; i++) {
 			const num = Math.floor(Math.random() * array.length);
-			random.indexOf(num) > -1 ? (i -= 1) : random.push(num);
+			random.indexOf(num) > -1 ? (i -= 1) : random.push(num); // eslint-disable-line
 		}
 		const results = random.map((r) => array[r]);
 
@@ -207,13 +207,21 @@ export class Collection<K, V> extends Map<K, V> {
 	public randomKey(): K | undefined;
 	public randomKey(amount: number): K[];
 	public randomKey(amount?: number): K | K[] | undefined {
-		const arr = [...this.keys()];
-		if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): K => arr.splice(Math.floor(Math.random() * arr.length), 1)[0],
-		);
+		// https://github.com/Discordoo/collection/blob/d9bfaa2c107a58bc5cece28ea7efbaaf3621895e/src/Collection.ts#L150
+		const array = [...this.keys()];
+
+		if (!array.length || !amount) return [];
+		if (amount && amount > array.length) amount = array.length;
+		if (amount && amount < 1) amount = 1;
+
+		const random: number[] = [];
+		for (let i = 0; i < amount; i++) {
+			const num = Math.floor(Math.random() * array.length);
+			random.indexOf(num) > -1 ? (i -= 1) : random.push(num); // eslint-disable-line
+		}
+		const results = random.map((r) => array[r]);
+
+		return results.length === 1 ? results[0] : results;
 	}
 
 	/**

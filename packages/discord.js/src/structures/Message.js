@@ -947,4 +947,4 @@ class Message extends Base {
   }
 }
 
-module.exports = Message;
+exports.Message = Message;

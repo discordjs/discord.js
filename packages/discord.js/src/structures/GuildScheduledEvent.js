@@ -434,4 +434,4 @@ class GuildScheduledEvent extends Base {
   }
 }
 
-module.exports = GuildScheduledEvent;
+exports.GuildScheduledEvent = GuildScheduledEvent;

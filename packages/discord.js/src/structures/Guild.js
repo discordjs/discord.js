@@ -1273,7 +1273,7 @@ class Guild extends AnonymousGuild {
   }
 }
 
-module.exports = Guild;
+exports.Guild = Guild;
 
 /**
  * @external APIGuild

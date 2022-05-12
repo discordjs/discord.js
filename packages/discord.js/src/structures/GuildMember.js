@@ -451,7 +451,7 @@ class GuildMember extends Base {
 
 TextBasedChannel.applyToClass(GuildMember);
 
-module.exports = GuildMember;
+exports.GuildMember = GuildMember;
 
 /**
  * @external APIGuildMember

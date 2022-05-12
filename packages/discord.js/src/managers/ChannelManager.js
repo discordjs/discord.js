@@ -3,7 +3,7 @@
 const process = require('node:process');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const Channel = require('../structures/Channel');
+const { Channel } = require('../structures/Channel');
 const { ThreadChannelTypes } = require('../util/Constants');
 const Events = require('../util/Events');
 

@@ -3,16 +3,16 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
-const DirectoryChannel = require('./DirectoryChannel');
 const { ThreadChannelTypes } = require('../util/Constants');
 const Structures = require('../util/Structures');
-const CategoryChannel = Structures.get('CategoryChannel');
-const DMChannel = Structures.get('DMChannel');
-const NewsChannel = Structures.get('NewsChannel');
-const StageChannel = Structures.get('StageChannel');
-const TextChannel = Structures.get('TextChannel');
-const ThreadChannel = Structures.get('ThreadChannel');
-const VoiceChannel = Structures.get('VoiceChannel');
+let CategoryChannel;
+let DMChannel;
+let NewsChannel;
+let StageChannel;
+let TextChannel;
+let ThreadChannel;
+let VoiceChannel;
+let DirectoryChannel;
 
 /**
  * Represents any channel on Discord.
@@ -208,6 +208,15 @@ class Channel extends Base {
   }
 
   static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
+    CategoryChannel ??= Structures.get('CategoryChannel');
+    DMChannel ??= Structures.get('DMChannel');
+    NewsChannel ??= Structures.get('NewsChannel');
+    StageChannel ??= Structures.get('StageChannel');
+    TextChannel ??= Structures.get('TextChannel');
+    ThreadChannel ??= Structures.get('ThreadChannel');
+    VoiceChannel ??= Structures.get('VoiceChannel');
+    DirectoryChannel ??= require('./DirectoryChannel');
+
     let channel;
     if (!data.guild_id && !guild) {
       if ((data.recipients && data.type !== ChannelType.GroupDM) || data.type === ChannelType.DM) {
@@ -263,7 +272,7 @@ class Channel extends Base {
   }
 }
 
-module.exports = Channel;
+exports.Channel = Channel;
 
 /**
  * @external APIChannel

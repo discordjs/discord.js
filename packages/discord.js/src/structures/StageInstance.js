@@ -164,4 +164,4 @@ class StageInstance extends Base {
   }
 }
 
-module.exports = StageInstance;
+exports.StageInstance = StageInstance;
