@@ -8,7 +8,6 @@ import {
   hyperlink,
   inlineCode,
   italic,
-  memberNicknameMention,
   quote,
   roleMention,
   spoiler,
@@ -2645,7 +2644,6 @@ export class Formatters extends null {
   public static hyperlink: typeof hyperlink;
   public static inlineCode: typeof inlineCode;
   public static italic: typeof italic;
-  public static memberNicknameMention: typeof memberNicknameMention;
   public static quote: typeof quote;
   public static roleMention: typeof roleMention;
   public static spoiler: typeof spoiler;
