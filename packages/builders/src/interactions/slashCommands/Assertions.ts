@@ -95,3 +95,19 @@ export const localizationMapPredicate = s.object<LocalizationMap>(
 export function validateLocalizationMap(value: unknown): asserts value is LocalizationMap {
 	localizationMapPredicate.parse(value);
 }
+
+const dmPermissionPredicate = s.boolean.nullish;
+
+export function validateDMPermission(value: unknown): asserts value is boolean | null | undefined {
+	dmPermissionPredicate.parse(value);
+}
+
+const memberPermissionPredicate = s.union(
+	s.bigint.transform((value) => value.toString()),
+	s.number.safeInt.transform((value) => value.toString()),
+	s.string.regex(/^\d+$/),
+).nullish;
+
+export function validateDefaultMemberPermissions(permissions: unknown) {
+	return memberPermissionPredicate.parse(permissions);
+}
