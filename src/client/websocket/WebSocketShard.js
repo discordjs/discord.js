@@ -818,11 +818,13 @@ class WebSocketShard extends EventEmitter {
       this._emitDestroyed();
     }
 
-    this.debug(
-      `[WebSocket] Adding a WebSocket close timeout to handle a perfect WS reconnect.
-      Timeout: ${this.manager.client.options.closeTimeout}ms`,
-    );
-    this.setWsCloseTimeout(this.manager.client.options.closeTimeout);
+    if (this.connection.readyState === WebSocket.CLOSING || this.connection.readyState === WebSocket.CLOSED) {
+      this.debug(
+        `[WebSocket] Adding a WebSocket close timeout to handle a perfect WS reconnect.
+        Timeout: ${this.manager.client.options.closeTimeout}ms`,
+      );
+      this.setWsCloseTimeout(this.manager.client.options.closeTimeout);
+    }
 
     // Step 2: Null the connection object
     this.connection = null;
