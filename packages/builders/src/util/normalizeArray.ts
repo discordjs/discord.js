@@ -3,4 +3,4 @@ export function normalizeArray<T>(arr: RestOrArray<T>): T[] {
 	return arr as T[];
 }
 
-export type RestOrArray<T> = T[] | T[][];
+export type RestOrArray<T> = T[] | [T[]];
