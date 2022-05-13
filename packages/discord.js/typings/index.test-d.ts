@@ -1275,7 +1275,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.inRawGuild()) {
       expectNotAssignable<Interaction<'cached'>>(interaction);
       expectAssignable<ChatInputCommandInteraction>(interaction);
-      expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
 
       expectType<APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
@@ -1297,7 +1297,7 @@ client.on('interactionCreate', async interaction => {
       // @ts-expect-error
       consumeCachedCommand(interaction);
       expectType<ChatInputCommandInteraction>(interaction);
-      expectType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
+      expectType<Promise<Message>>(interaction.reply({ fetchReply: true }));
       expectType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
 
       expectType<GuildBasedChannel | APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
