@@ -220,7 +220,7 @@ class WebSocketManager extends EventEmitter {
           this.debug(`Session id is present, attempting an immediate reconnect...`, shard);
           this.reconnect();
         } else {
-          shard.destroy({ reset: true, emit: false, log: false });
+          // Shard.destroy({ reset: true, emit: false, log: false });
           this.reconnect();
         }
       });
