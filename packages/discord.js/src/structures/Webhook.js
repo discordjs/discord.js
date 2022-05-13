@@ -210,7 +210,7 @@ class Webhook {
     const d = await this.client.rest.post(Routes.webhook(this.id, this.token), { body, files, query, auth: false });
     return (
       this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ??
-      new (require('./Message'))(this.client, d)
+      new (require('./Message').Message)(this.client, d)
     );
   }
 
