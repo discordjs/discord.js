@@ -1,6 +1,7 @@
 import type {
 	APIApplicationCommandOption,
 	LocalizationMap,
+	Permissions,
 	RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
