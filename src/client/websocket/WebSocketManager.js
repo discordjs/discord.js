@@ -216,12 +216,8 @@ class WebSocketManager extends EventEmitter {
 
         this.shardQueue.add(shard);
 
-        if (shard.sessionId) {
-          this.debug(`Session id is present, attempting an immediate reconnect...`, shard);
-          this.reconnect();
-        } else {
-          this.reconnect();
-        }
+        if (shard.sessionId) this.debug(`Session id is present, attempting an immediate reconnect...`, shard);
+        this.reconnect();
       });
 
       shard.on(ShardEvents.INVALID_SESSION, () => {
