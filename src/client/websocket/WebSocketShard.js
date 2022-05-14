@@ -585,7 +585,7 @@ class WebSocketShard extends EventEmitter {
 
       this.debug(
         // eslint-disable-next-line max-len
-        `[WebSocket] did not close properly, assuming a zombie connection.\nDestroying and reconnecting again. Close Emitted: ${this.closeEmitted}`,
+        `[WebSocket] did not close properly, assuming a zombie connection.\nEmitting close and reconnecting again.`,
       );
 
       this.emitClose();
