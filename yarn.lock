@@ -1830,7 +1830,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.19.0
     "@typescript-eslint/parser": ^5.19.0
     babel-plugin-transform-typescript-metadata: ^0.3.2
-    discord-api-types: ^0.31.1
+    discord-api-types: ^0.32.1
     eslint: ^8.13.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
@@ -1916,7 +1916,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.19.0
     babel-plugin-const-enum: ^1.2.0
     babel-plugin-transform-typescript-metadata: ^0.3.2
-    discord-api-types: ^0.29.0
+    discord-api-types: ^0.32.1
     eslint: ^8.13.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
@@ -1954,7 +1954,7 @@ __metadata:
     "@types/ws": ^8.5.3
     "@typescript-eslint/eslint-plugin": ^5.19.0
     "@typescript-eslint/parser": ^5.19.0
-    discord-api-types: ^0.29.0
+    discord-api-types: ^0.32.1
     eslint: ^8.13.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
@@ -4490,17 +4490,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.29.0":
-  version: 0.29.0
-  resolution: "discord-api-types@npm:0.29.0"
-  checksum: 1ca74693b4e9c611c3de17f604714425d81d537ee81669d040a8c37fb23fb634a6918dd7d21056ccb90a3f4741bc2750509f6c8dd922bf2b3ed544d18bd0f32a
-  languageName: node
-  linkType: hard
-
-"discord-api-types@npm:^0.31.1":
-  version: 0.31.1
-  resolution: "discord-api-types@npm:0.31.1"
-  checksum: 5a18e512b549b75d55892b0dbc2dc7c46526bee0d001b73d41d144f4653de847c96b9c57342a32479af738f46acd80ee21686dced9fe0184dcac86b669b31f18
+"discord-api-types@npm:^0.32.1":
+  version: 0.32.1
+  resolution: "discord-api-types@npm:0.32.1"
+  checksum: cce4fa81a4c8311b72cf9f23ff9a3d16e40ba7d862a7634717d9437e0e5918209a8eeb75ea9974f24e3761b06e4599757e7544343b702a23f04b07f31884c304
   languageName: node
   linkType: hard
 
@@ -4515,7 +4508,7 @@ __metadata:
     "@sapphire/snowflake": ^3.2.1
     "@types/node": ^16.11.27
     "@types/ws": ^8.5.3
-    discord-api-types: ^0.31.1
+    discord-api-types: ^0.32.1
     dtslint: ^4.2.1
     eslint: ^8.13.0
     eslint-config-prettier: ^8.5.0
