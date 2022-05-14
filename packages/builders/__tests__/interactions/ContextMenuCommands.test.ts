@@ -1,3 +1,4 @@
+import { PermissionFlagsBits } from 'discord-api-types/v10';
 import { ContextMenuCommandAssertions, ContextMenuCommandBuilder } from '../../src/index';
 
 const getBuilder = () => new ContextMenuCommandBuilder();
@@ -114,6 +115,28 @@ describe('Context Menu Commands', () => {
 				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
 					'en-US': null,
 				});
+			});
+		});
+
+		describe('permissions', () => {
+			test('GIVEN valid permission string THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1')).not.toThrowError();
+			});
+
+			test('GIVEN valid permission bitfield THEN does not throw error', () => {
+				expect(() =>
+					getBuilder().setDefaultMemberPermissions(PermissionFlagsBits.AddReactions | PermissionFlagsBits.AttachFiles),
+				).not.toThrowError();
+			});
+
+			test('GIVEN null permissions THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions(null)).not.toThrowError();
+			});
+
+			test('GIVEN invalid inputs THEN does throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1.1')).toThrowError();
+
+				expect(() => getBuilder().setDefaultMemberPermissions(1.1)).toThrowError();
 			});
 		});
 	});
