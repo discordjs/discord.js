@@ -1,18 +1,12 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { DiscordAPIError, RequestMethod, REST, RESTOptions, RouteLike } from '@discordjs/rest';
+import { DiscordAPIError, RequestMethod, REST, RouteLike } from '@discordjs/rest';
 
 type Awaitable<T> = T | PromiseLike<T>;
 type RequestHandler = (req: IncomingMessage, res: ServerResponse) => Awaitable<void>;
 
-export interface ProxyOptions extends RESTOptions {
-	token: string;
-}
-
 export const VALID_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
-// Should this actually support passing in an existing REST instance?
-export function proxyRequests(options: REST | ProxyOptions): RequestHandler {
-	const rest = options instanceof REST ? options : new REST(options).setToken(options.token);
+export function proxyRequests(rest: REST): RequestHandler {
 	return async (req, res) => {
 		// TODO: Parse the URL. REST always appends /api/v[version]
 		const { method, url } = req;
