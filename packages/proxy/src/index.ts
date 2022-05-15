@@ -1,9 +1,8 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { DiscordAPIError, RequestMethod, REST, RESTOptions } from '@discordjs/rest';
+import { DiscordAPIError, RequestMethod, REST, RESTOptions, RouteLike } from '@discordjs/rest';
 
 type Awaitable<T> = T | PromiseLike<T>;
-type NextHandler = (err?: string | Error) => Awaitable<void>;
-type RequestHandler = (req: IncomingMessage, res: ServerResponse, next: NextHandler) => Awaitable<void>;
+type RequestHandler = (req: IncomingMessage, res: ServerResponse) => Awaitable<void>;
 
 export interface ProxyOptions extends RESTOptions {
 	token: string;
@@ -15,9 +14,9 @@ export const VALID_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 export function proxyRequests(options: REST | ProxyOptions): RequestHandler {
 	const rest = options instanceof REST ? options : new REST(options).setToken(options.token);
 	return async (req, res) => {
+		// TODO: Parse the URL. REST always appends /api/v[version]
 		const { method, url } = req;
 
-		// These are actual throws since they imply severe miss-use of this middleware function - next() seems unfitting for them
 		if (!method || !url) {
 			throw new TypeError(
 				'Invalid request. Missing method and/or url, implying that this is not a Server IncomingMesage',
@@ -31,7 +30,8 @@ export function proxyRequests(options: REST | ProxyOptions): RequestHandler {
 		try {
 			const discordResponse = await rest.request({
 				body: req,
-				fullRoute: '/',
+				// Unsure how safe this cast is
+				fullRoute: url as RouteLike,
 				method: method as RequestMethod,
 				passThroughBody: true,
 			});
@@ -48,14 +48,19 @@ export function proxyRequests(options: REST | ProxyOptions): RequestHandler {
 			res.statusCode = 200;
 			res.setHeader('Content-Type', contentType);
 
-			res.end(discordResponse);
+			res.writableObjectMode;
+			res.end(JSON.stringify(discordResponse));
 		} catch (error) {
-			if (error instanceof DiscordAPIError) {
-				res.statusCode = error.status;
-				res.statusMessage = error.message;
-				res.setHeader('Content-Type', 'application/json');
-				res.end(error.rawError);
+			if (!(error instanceof DiscordAPIError)) {
+				// Unclear if there's better course of action here. Any web framework allow to pass in an error handler for something like this
+				// at which point the user could dictate what to do with the error - otherwise we could just 500
+				throw error;
 			}
+
+			res.statusCode = error.status;
+			res.statusMessage = error.message;
+			res.setHeader('Content-Type', 'application/json');
+			res.end(JSON.stringify(error.rawError));
 		}
 	};
 }
