@@ -3,7 +3,6 @@
 const { Buffer } = require('node:buffer');
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const stream = require('node:stream');
 const { fetch } = require('undici');
 const { Error: DiscordError, TypeError } = require('../errors');
 const Invite = require('../structures/Invite');
@@ -107,9 +106,10 @@ class DataResolver extends null {
    * @returns {Promise<Buffer>}
    */
   static async resolveFile(resource) {
+    if (!resource) return null;
     if (Buffer.isBuffer(resource)) return resource;
 
-    if (resource instanceof stream.Readable) {
+    if (typeof resource[Symbol.asyncIterator] === 'function') {
       const buffers = [];
       for await (const data of resource) buffers.push(data);
       return Buffer.concat(buffers);
