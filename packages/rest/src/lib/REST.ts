@@ -316,7 +316,8 @@ export class REST extends EventEmitter {
 	 * @param options Request options
 	 */
 	public async request(options: InternalRequest) {
-		return parseResponse(await this.requestManager.queueRequest(options));
+		const response = await this.raw(options);
+		return parseResponse(response);
 	}
 
 	/**
