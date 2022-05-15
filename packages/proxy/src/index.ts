@@ -4,27 +4,23 @@ import { DiscordAPIError, parseResponse, RequestMethod, REST, RouteLike } from '
 type Awaitable<T> = T | PromiseLike<T>;
 type RequestHandler = (req: IncomingMessage, res: ServerResponse) => Awaitable<void>;
 
-export const VALID_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
-
 export function proxyRequests(rest: REST): RequestHandler {
 	return async (req, res) => {
-		// TODO: Parse the URL. REST always appends /api/v[version]
-		const { method, url } = req;
+		const { method, url: rawUrl } = req;
 
-		if (!method || !url) {
+		if (!method || !rawUrl) {
 			throw new TypeError(
 				'Invalid request. Missing method and/or url, implying that this is not a Server IncomingMesage',
 			);
 		}
 
-		if (!VALID_METHODS.includes(method)) {
-			throw new Error(`Invalid request method: ${method}`);
-		}
+		const url = rawUrl.replace(/^\/api(\/v\d+)?/, '');
 
 		try {
 			const discordResponse = await rest.raw({
 				body: req,
 				fullRoute: url as RouteLike,
+				// This type case is technically incorrect, but we want Discord to throw Method Not Allowed
 				method: method as RequestMethod,
 				passThroughBody: true,
 			});

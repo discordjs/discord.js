@@ -46,5 +46,5 @@ test('simple GET', async () => {
 			responseOptions,
 		}));
 
-	await supertest(server).get('/simpleGet').expect(200, { test: true });
+	await supertest(server).get('/api/v10/simpleGet').expect(200, { test: true });
 });
