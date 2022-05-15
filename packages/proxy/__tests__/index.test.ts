@@ -43,8 +43,21 @@ test('simple GET', async () => {
 		.reply(() => ({
 			data: { test: true },
 			statusCode: 200,
-			responseOptions,
+			responseOptions: {
+				...responseOptions,
+				headers: {
+					...responseOptions.headers,
+					'x-ratelimit-limit': '10',
+				},
+			},
 		}));
 
-	await supertest(server).get('/api/v10/simpleGet').expect(200, { test: true });
+	const res = await supertest(server).get('/api/v10/simpleGet');
+	const headers = res.headers as Record<string, string>;
+
+	expect(headers['content-type'].startsWith('application/json')).toBe(true);
+	// Ratelimit headers should be dropped
+	expect(headers['x-ratelimit-limit']).toBe(undefined);
+	expect(res.statusCode).toBe(200);
+	expect(res.body).toStrictEqual({ test: true });
 });
