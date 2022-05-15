@@ -1,4 +1,4 @@
-import { createServer } from 'http';
+import { createServer } from 'node:http';
 import { REST } from '@discordjs/rest';
 import supertest from 'supertest';
 import { MockAgent, Interceptable, setGlobalDispatcher } from 'undici';
