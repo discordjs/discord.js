@@ -1,0 +1,84 @@
+{
+	"name": "@discordjs/proxy",
+	"version": "0.1.0-dev",
+	"description": "An HTTP proxy for @discordjs/rest",
+	"scripts": {
+		"build": "tsup && tsc --emitDeclarationOnly --incremental",
+		"test": "jest --pass-with-no-tests --collect-coverage",
+		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
+		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
+		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
+		"prepublishOnly": "yarn build && yarn lint && yarn test",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"typings": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js",
+		"types": "./dist/index.d.ts"
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Antonio Roman <kyradiscord@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"rest",
+		"proxy",
+		"discordapp",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@discordjs/rest": "workspace:^",
+		"tslib": "^2.3.1"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.17.9",
+		"@babel/plugin-proposal-decorators": "^7.17.9",
+		"@babel/preset-env": "^7.16.11",
+		"@babel/preset-typescript": "^7.16.7",
+		"@discordjs/ts-docgen": "^0.4.1",
+		"@types/jest": "^27.4.1",
+		"@typescript-eslint/eslint-plugin": "^5.19.0",
+		"@typescript-eslint/parser": "^5.19.0",
+		"babel-plugin-const-enum": "^1.2.0",
+		"babel-plugin-transform-typescript-metadata": "^0.3.2",
+		"eslint": "^8.13.0",
+		"eslint-config-marine": "^9.4.1",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-import": "^2.26.0",
+		"jest": "^27.5.1",
+		"prettier": "^2.6.2",
+		"tsup": "^5.12.5",
+		"typedoc": "^0.22.15",
+		"typescript": "^4.6.3"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

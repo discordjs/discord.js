@@ -1947,6 +1947,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@discordjs/proxy@workspace:packages/proxy":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/proxy@workspace:packages/proxy"
+  dependencies:
+    "@babel/core": ^7.17.9
+    "@babel/plugin-proposal-decorators": ^7.17.9
+    "@babel/preset-env": ^7.16.11
+    "@babel/preset-typescript": ^7.16.7
+    "@discordjs/rest": "workspace:^"
+    "@discordjs/ts-docgen": ^0.4.1
+    "@types/jest": ^27.4.1
+    "@typescript-eslint/eslint-plugin": ^5.19.0
+    "@typescript-eslint/parser": ^5.19.0
+    babel-plugin-const-enum: ^1.2.0
+    babel-plugin-transform-typescript-metadata: ^0.3.2
+    eslint: ^8.13.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: ^2.26.0
+    jest: ^27.5.1
+    prettier: ^2.6.2
+    tslib: ^2.3.1
+    tsup: ^5.12.5
+    typedoc: ^0.22.15
+    typescript: ^4.6.3
+  languageName: unknown
+  linkType: soft
+
 "@discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
   version: 0.0.0-use.local
   resolution: "@discordjs/rest@workspace:packages/rest"
