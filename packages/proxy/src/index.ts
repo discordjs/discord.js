@@ -1,9 +1,19 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { DiscordAPIError, parseResponse, RequestMethod, REST, RouteLike } from '@discordjs/rest';
 
+/**
+ * Represents a potentially awaitable value
+ */
 type Awaitable<T> = T | PromiseLike<T>;
+/**
+ * Represents a simple HTTP request handler
+ */
 type RequestHandler = (req: IncomingMessage, res: ServerResponse) => Awaitable<void>;
 
+/**
+ * Creates an HTTP handler used to forward requests to Discord
+ * @param rest REST instance to use for the requests
+ */
 export function proxyRequests(rest: REST): RequestHandler {
 	return async (req, res) => {
 		const { method, url: rawUrl } = req;
