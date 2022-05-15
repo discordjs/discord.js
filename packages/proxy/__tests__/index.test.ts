@@ -61,3 +61,23 @@ test('simple GET', async () => {
 	expect(res.statusCode).toBe(200);
 	expect(res.body).toStrictEqual({ test: true });
 });
+
+test('failed request', async () => {
+	mockPool
+		.intercept({
+			path: '/api/v10/simpleGet',
+			method: 'GET',
+		})
+		.reply(() => ({
+			data: { code: 404, message: 'Not Found' },
+			statusCode: 404,
+			responseOptions,
+		}));
+
+	const res = await supertest(server).get('/api/v10/simpleGet');
+	const headers = res.headers as Record<string, string>;
+
+	expect(headers['content-type']?.startsWith('application/json')).toBe(true);
+	expect(res.statusCode).toBe(404);
+	expect(res.body).toStrictEqual({ code: 404, message: 'Not Found' });
+});
