@@ -77,7 +77,7 @@ test('failed request', async () => {
 	const res = await supertest(server).get('/api/v10/simpleGet');
 	const headers = res.headers as Record<string, string>;
 
-	expect(headers['content-type']?.startsWith('application/json')).toBe(true);
+	expect(headers['content-type'].startsWith('application/json')).toBe(true);
 	expect(res.statusCode).toBe(404);
 	expect(res.body).toStrictEqual({ code: 404, message: 'Not Found' });
 });
