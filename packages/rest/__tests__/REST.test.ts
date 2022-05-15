@@ -253,6 +253,21 @@ test('postEcho', async () => {
 	expect(await api.post('/postEcho', { body: { foo: 'bar' } })).toStrictEqual({ foo: 'bar' });
 });
 
+test('201 status code', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/postNon200StatusCode'),
+			method: 'POST',
+		})
+		.reply((t) => ({
+			data: t.body!,
+			statusCode: 201,
+			responseOptions,
+		}));
+
+	expect(await api.post('/postNon200StatusCode', { body: { foo: 'bar' } })).toStrictEqual({ foo: 'bar' });
+});
+
 test('Old Message Delete Edge-Case: Old message', async () => {
 	mockPool
 		.intercept({

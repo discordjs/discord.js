@@ -1,6 +1,7 @@
 import type {
 	APIApplicationCommandOption,
 	LocalizationMap,
+	Permissions,
 	RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
@@ -108,7 +109,7 @@ export class SlashCommandBuilder {
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
-	public setDefaultMemberPermissions(permissions: Permissions | null | undefined) {
+	public setDefaultMemberPermissions(permissions: Permissions | bigint | number | null | undefined) {
 		// Assert the value and parse it
 		const permissionValue = validateDefaultMemberPermissions(permissions);
 

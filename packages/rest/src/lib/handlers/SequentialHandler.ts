@@ -391,7 +391,7 @@ export class SequentialHandler implements IHandler {
 			}
 		}
 
-		if (status === 200) {
+		if (status >= 200 && status < 300) {
 			return parseResponse(res);
 		} else if (status === 429) {
 			// A rate limit was hit - this may happen if the route isn't associated with an official bucket hash yet, or when first globally rate limited
