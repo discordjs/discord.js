@@ -322,6 +322,7 @@ export class REST extends EventEmitter {
 
 	/**
 	 * Runs a request from the api, yielding the raw Response object
+	 * @param options Request options
 	 */
 	public raw(options: InternalRequest) {
 		return this.requestManager.queueRequest(options);
