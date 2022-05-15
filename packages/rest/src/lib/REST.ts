@@ -321,7 +321,7 @@ export class REST extends EventEmitter {
 	}
 
 	/**
-	 * Runs a request from the api, yielding the raw Response object
+	 * Runs a request from the API, yielding the raw Response object
 	 * @param options Request options
 	 */
 	public raw(options: InternalRequest) {
