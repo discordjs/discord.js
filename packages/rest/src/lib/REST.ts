@@ -13,6 +13,7 @@ import {
 import type { HashData } from './RequestManager';
 import type { IHandler } from './handlers/IHandler';
 import { DefaultRestOptions, RESTEvents } from './utils/constants';
+import { parseResponse } from './utils/utils';
 
 /**
  * Options to be passed when creating the REST instance
@@ -314,7 +315,14 @@ export class REST extends EventEmitter {
 	 * Runs a request from the api
 	 * @param options Request options
 	 */
-	public request(options: InternalRequest) {
+	public async request(options: InternalRequest) {
+		return parseResponse(await this.requestManager.queueRequest(options));
+	}
+
+	/**
+	 * Runs a request from the api, yielding the raw Response object
+	 */
+	public raw(options: InternalRequest) {
 		return this.requestManager.queueRequest(options);
 	}
 }

@@ -5,4 +5,4 @@ export * from './lib/errors/RateLimitError';
 export * from './lib/RequestManager';
 export * from './lib/REST';
 export * from './lib/utils/constants';
-export { makeURLSearchParams } from './lib/utils/utils';
+export { makeURLSearchParams, parseResponse } from './lib/utils/utils';
