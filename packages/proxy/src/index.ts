@@ -41,7 +41,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 			}
 
 			const data = await parseResponse(discordResponse);
-			res.end(discordResponse.headers['content-type']?.startsWith('application/json') ? data : JSON.stringify(data));
+			res.end(discordResponse.headers['content-type']?.startsWith('application/json') ? JSON.stringify(data) : data);
 		} catch (error) {
 			if (!(error instanceof DiscordAPIError)) {
 				// Unclear if there's better course of action here. Any web framework allow to pass in an error handler for something like this
