@@ -47,8 +47,6 @@ export function proxyRequests(options: REST | ProxyOptions): RequestHandler {
 			// Ideally I wouldn't have to re-compute headers and the status code, but REST provides no method to get a raw Response back atm.
 			res.statusCode = 200;
 			res.setHeader('Content-Type', contentType);
-
-			res.writableObjectMode;
 			res.end(JSON.stringify(discordResponse));
 		} catch (error) {
 			if (!(error instanceof DiscordAPIError)) {
