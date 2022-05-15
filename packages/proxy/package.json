@@ -1,7 +1,7 @@
 {
 	"name": "@discordjs/proxy",
 	"version": "0.1.0-dev",
-	"description": "An HTTP proxy for @discordjs/rest",
+	"description": "Tools for running an HTTP proxy for Discord's API",
 	"scripts": {
 		"build": "tsup && tsc --emitDeclarationOnly --incremental",
 		"test": "jest --pass-with-no-tests --collect-coverage",
@@ -31,7 +31,8 @@
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Antonio Roman <kyradiscord@gmail.com>"
+		"Antonio Roman <kyradiscord@gmail.com>",
+		"DD <didinele.dev@gmail.com>"
 	],
 	"license": "Apache-2.0",
 	"keywords": [
