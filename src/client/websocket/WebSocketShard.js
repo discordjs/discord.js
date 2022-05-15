@@ -561,7 +561,7 @@ class WebSocketShard extends EventEmitter {
    */
   setWsCloseTimeout(time) {
     if (this.wsCloseTimeout) {
-      this.debug('Clearing the WebSocket close timeout.');
+      this.debug('[WebSocket] Clearing the close timeout.');
       clearTimeout(this.wsCloseTimeout);
     }
     if (time === -1) {
@@ -569,6 +569,7 @@ class WebSocketShard extends EventEmitter {
       return;
     }
     this.wsCloseTimeout = setTimeout(() => {
+      this.setWsCloseTimeout(-1);
       this.debug(`[WebSocket] Close Emitted: ${this.closeEmitted}`);
       // Check if close event was emitted.
       if (this.closeEmitted) {
@@ -579,7 +580,6 @@ class WebSocketShard extends EventEmitter {
         );
         // Setting the variable false to check for zombie connections.
         this.closeEmitted = false;
-        this.setWsCloseTimeout(-1);
         return;
       }
 
