@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType } from 'discord-api-types/v9';
 import type { Guild } from 'discord.js';
 
 export const deploy = async (guild: Guild) => {

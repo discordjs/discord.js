@@ -4,7 +4,7 @@ import {
 	GatewayDispatchEvents,
 	GatewayVoiceServerUpdateDispatchData,
 	GatewayVoiceStateUpdateDispatchData,
-} from 'discord-api-types/v10';
+} from 'discord-api-types/v9';
 
 const adapters = new Map<Snowflake, DiscordGatewayAdapterLibraryMethods>();
 const trackedClients = new Set<Client>();

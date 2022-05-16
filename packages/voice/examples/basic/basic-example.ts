@@ -9,7 +9,7 @@ import {
 	VoiceConnectionStatus,
 } from '@discordjs/voice';
 import { createDiscordJSAdapter } from './adapter';
-import { GatewayIntentBits } from 'discord-api-types/v10';
+import { GatewayIntentBits } from 'discord-api-types/v9';
 
 /**
  * 	In this example, we are creating a single audio player that plays to a number of voice channels.

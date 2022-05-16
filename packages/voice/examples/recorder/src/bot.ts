@@ -2,7 +2,7 @@ import Discord, { Events, Interaction } from 'discord.js';
 import { getVoiceConnection } from '@discordjs/voice';
 import { deploy } from './deploy';
 import { interactionHandlers } from './interactions';
-import { GatewayIntentBits } from 'discord-api-types/v10';
+import { GatewayIntentBits } from 'discord-api-types/v9';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
 const { token } = require('../auth.json');
