@@ -33,8 +33,8 @@ const process = require('node:process');
  * @property {number|number[]|string} [shards] The shard's id to run, or an array of shard ids. If not specified,
  * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
  * recommended amount of shards from Discord and spawn that amount
- * @property {number} [closeTimeout=1] The amount of time after which the shard will reconnect incase of a zombie
- * connection.
+ * @property {number} [closeTimeout=1] The amount of time in milliseconds after which the shard will reconnect
+ * in case of a zombie connection.
  * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {CacheFactory} [makeCache] Function to create a cache.
