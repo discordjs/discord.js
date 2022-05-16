@@ -16,13 +16,13 @@ export function proxyRequests(rest: REST): RequestHandler {
 			);
 		}
 
-		const url = rawUrl.replace(/^\/api(\/v\d+)?/, '');
+		const url = rawUrl.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
 
 		try {
 			const discordResponse = await rest.raw({
 				body: req,
-				fullRoute: url as RouteLike,
-				// This type case is technically incorrect, but we want Discord to throw Method Not Allowed
+				fullRoute: url,
+				// This type cast is technically incorrect, but we want Discord to throw Method Not Allowed for us
 				method: method as RequestMethod,
 				passThroughBody: true,
 			});
@@ -31,7 +31,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 			res.end();
 		} catch (error) {
 			if (!(error instanceof DiscordAPIError)) {
-				// Unclear if there's better course of action here. Any web framework allow to pass in an error handler for something like this
+				// Unclear if there's better course of action here. Any web framework allows to pass in an error handler for something like this
 				// at which point the user could dictate what to do with the error - otherwise we could just 500
 				throw error;
 			}
