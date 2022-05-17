@@ -9,9 +9,9 @@ import type { RequestHandler } from '../util/util';
  */
 export function proxyRequests(rest: REST): RequestHandler {
 	return async (req, res) => {
-		const { method, url: rawUrl } = req;
+		const { method, url } = req;
 
-		if (!method || !rawUrl) {
+		if (!method || !url) {
 			throw new TypeError(
 				'Invalid request. Missing method and/or url, implying that this is not a Server IncomingMesage',
 			);
@@ -19,12 +19,12 @@ export function proxyRequests(rest: REST): RequestHandler {
 
 		// The 2nd parameter is here so the URL constructor doesn't complain about an "invalid url" when the origin is missing
 		// we don't actually care about the origin and the value passed is irrelevant
-		const url = new URL(rawUrl, 'http://noop').pathname.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
+		const fullRoute = new URL(url, 'http://noop').pathname.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
 
 		try {
 			const discordResponse = await rest.raw({
 				body: req,
-				fullRoute: url,
+				fullRoute,
 				// This type cast is technically incorrect, but we want Discord to throw Method Not Allowed for us
 				method: method as RequestMethod,
 				passThroughBody: true,
