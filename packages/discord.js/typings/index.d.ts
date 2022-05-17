@@ -319,6 +319,19 @@ export abstract class AnonymousGuild extends BaseGuild {
   public splashURL(options?: ImageURLOptions): string | null;
 }
 
+export class AutoModrule extends Base {
+  private constructor(client: Client, data: unknown);
+  public name: string;
+  public triggerType: number;
+  public eventType: number;
+  public actions: AutoModRuleAction[];
+  public triggerMetadata: unknown;
+  public enabled: boolean;
+  public exemptRoles: Snowflake[];
+  public exemptChannels: Snowflake[];
+  public position: number;
+}
+
 export abstract class Application extends Base {
   protected constructor(client: Client<true>, data: RawApplicationData);
   public get createdAt(): Date;
@@ -4343,6 +4356,13 @@ export interface AuditLogChange {
   old?: APIAuditLogChange['old_value'];
   new?: APIAuditLogChange['new_value'];
 }
+
+export interface AutoModRuleAction {
+  type: number;
+  metadata: unknown;
+}
+
+export type Awaitable<T> = T | PromiseLike<T>;
 
 export type AwaitMessageComponentOptions<T extends CollectedMessageInteraction> = Omit<
   MessageComponentCollectorOptions<T>,
