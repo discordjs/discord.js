@@ -53,7 +53,8 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/rest": "workspace:^",
-		"tslib": "^2.3.1"
+		"tslib": "^2.3.1",
+		"undici": "^5.2.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.17.9",
@@ -76,8 +77,7 @@
 		"supertest": "^6.2.3",
 		"tsup": "^5.12.5",
 		"typedoc": "^0.22.15",
-		"typescript": "^4.6.3",
-		"undici": "^5.2.0"
+		"typescript": "^4.6.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"
