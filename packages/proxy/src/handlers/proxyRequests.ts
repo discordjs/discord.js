@@ -31,7 +31,6 @@ export function proxyRequests(rest: REST): RequestHandler {
 			});
 
 			await populateOkResponse(res, discordResponse);
-			res.end();
 		} catch (error) {
 			if (!(error instanceof DiscordAPIError)) {
 				// Unclear if there's better course of action here. Any web framework allows to pass in an error handler for something like this
@@ -40,6 +39,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 			}
 
 			populateErrorResponse(res, error);
+		} finally {
 			res.end();
 		}
 	};
