@@ -319,7 +319,7 @@ export abstract class AnonymousGuild extends BaseGuild {
   public splashURL(options?: ImageURLOptions): string | null;
 }
 
-export class AutoModrule extends Base {
+export class AutoModRule extends Base {
   private constructor(client: Client, data: unknown);
   public name: string;
   public triggerType: number;
