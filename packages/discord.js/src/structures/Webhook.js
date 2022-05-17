@@ -7,6 +7,8 @@ const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 
+let Message;
+
 /**
  * Represents a webhook.
  */
@@ -210,7 +212,7 @@ class Webhook {
     const d = await this.client.rest.post(Routes.webhook(this.id, this.token), { body, files, query, auth: false });
     return (
       this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ??
-      new (require('./Message').Message)(this.client, d)
+      new (Message ??= require('./Message').Message)(this.client, d)
     );
   }
 
@@ -297,7 +299,7 @@ class Webhook {
     });
     return (
       this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ??
-      new (require('./Message').Message)(this.client, data)
+      new (Message ??= require('./Message').Message)(this.client, data)
     );
   }
 
@@ -330,7 +332,7 @@ class Webhook {
     );
 
     const messageManager = this.client.channels?.cache.get(d.channel_id)?.messages;
-    if (!messageManager) return new (require('./Message').Message)(this.client, d);
+    if (!messageManager) return new (Message ??= require('./Message').Message)(this.client, d);
 
     const existing = messageManager.cache.get(d.id);
     if (!existing) return messageManager._add(d);
