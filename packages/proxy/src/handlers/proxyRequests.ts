@@ -1,3 +1,4 @@
+import { URL } from 'node:url';
 import { DiscordAPIError, RequestMethod, REST, RouteLike } from '@discordjs/rest';
 import { populateErrorResponse, populateOkResponse } from '../util/responseHelpers';
 import type { RequestHandler } from '../util/util';
@@ -16,7 +17,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 			);
 		}
 
-		const url = rawUrl.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
+		const url = new URL(rawUrl).pathname.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
 
 		try {
 			const discordResponse = await rest.raw({
