@@ -17,7 +17,9 @@ export function proxyRequests(rest: REST): RequestHandler {
 			);
 		}
 
-		const url = new URL(rawUrl).pathname.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
+		// The 2nd parameter is here so the URL constructor doesn't complain about an "invalid url" when the origin is missing
+		// we don't actually care about the origin and the value passed is irrelevant
+		const url = new URL(rawUrl, 'http://noop').pathname.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
 
 		try {
 			const discordResponse = await rest.raw({
