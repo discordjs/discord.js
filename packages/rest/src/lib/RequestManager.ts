@@ -294,7 +294,7 @@ export class RequestManager extends EventEmitter {
 	 * @param request All the information needed to make a request
 	 * @returns The response from the api request
 	 */
-	public async queueRequest(request: InternalRequest): Promise<unknown> {
+	public async queueRequest(request: InternalRequest): Promise<Dispatcher.ResponseData> {
 		// Generalize the endpoint to its route data
 		const routeId = RequestManager.generateRouteData(request.fullRoute, request.method);
 		// Get the bucket hash for the generic route, or point to a global route otherwise
