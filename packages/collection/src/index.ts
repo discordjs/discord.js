@@ -185,7 +185,7 @@ export class Collection<K, V> extends Map<K, V> {
 		if (!arr.length || !amount) return [];
 		return Array.from(
 			{ length: Math.min(amount, arr.length) },
-			(): V => arr.splice(Math.floor(Math.random() * arr.length), 1)[0],
+			(): V => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
 		);
 	}
 
@@ -204,7 +204,7 @@ export class Collection<K, V> extends Map<K, V> {
 		if (!arr.length || !amount) return [];
 		return Array.from(
 			{ length: Math.min(amount, arr.length) },
-			(): K => arr.splice(Math.floor(Math.random() * arr.length), 1)[0],
+			(): K => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
 		);
 	}
 

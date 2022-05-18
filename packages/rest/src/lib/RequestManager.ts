@@ -481,7 +481,7 @@ export class RequestManager extends EventEmitter {
 		// Hard-Code Old Message Deletion Exception (2 week+ old messages are a different bucket)
 		// https://github.com/discord/discord-api-docs/issues/1295
 		if (method === RequestMethod.Delete && baseRoute === '/channels/:id/messages/:id') {
-			const id = /\d{16,19}$/.exec(endpoint)![0];
+			const id = /\d{16,19}$/.exec(endpoint)![0]!;
 			const timestamp = DiscordSnowflake.timestampFrom(id);
 			if (Date.now() - timestamp > 1000 * 60 * 60 * 24 * 14) {
 				exceptions += '/Delete Old Message';
