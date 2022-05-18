@@ -6,7 +6,6 @@ const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
-const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.
@@ -121,8 +120,6 @@ class ThreadManager extends CachedManager {
     } else if (this.channel.type !== ChannelType.GuildNews) {
       resolvedType = type ?? resolvedType;
     }
-
-    if (autoArchiveDuration === 'MAX') autoArchiveDuration = resolveAutoArchiveMaxLimit(this.channel.guild);
 
     const data = await this.client.rest.post(Routes.threads(this.channel.id, startMessageId), {
       body: {

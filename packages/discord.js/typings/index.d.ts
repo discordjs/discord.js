@@ -500,7 +500,7 @@ export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel) {
   public createInvite(options?: CreateInviteOptions): Promise<Invite>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
   public setDefaultAutoArchiveDuration(
-    defaultAutoArchiveDuration: ThreadAutoArchiveDuration | 'MAX',
+    defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
     reason?: string,
   ): Promise<this>;
   public setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
@@ -1019,53 +1019,6 @@ export class DataResolver extends null {
   public static resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
 }
 
-export class EnumResolvers extends null {
-  private constructor();
-  public static resolveChannelType(key: ChannelTypeEnumResolvable | ChannelType): ChannelType;
-  public static resolveInteractionType(key: InteractionTypeEnumResolvable | InteractionType): InteractionType;
-  public static resolveApplicationCommandType(
-    key: ApplicationCommandTypeEnumResolvable | ApplicationCommandType,
-  ): ApplicationCommandType;
-  public static resolveApplicationCommandOptionType(
-    key: ApplicationCommandOptionTypeEnumResolvable | ApplicationCommandOptionType,
-  ): ApplicationCommandOptionType;
-  public static resolveApplicationCommandPermissionType(
-    key: ApplicationCommandPermissionTypeEnumResolvable | ApplicationCommandPermissionType,
-  ): ApplicationCommandPermissionType;
-  public static resolveComponentType(key: ComponentTypeEnumResolvable | ComponentType): ComponentType;
-  public static resolveButtonStyle(key: ButtonStyleEnumResolvable | ButtonStyle): ButtonStyle;
-  public static resolveMessageType(key: MessageTypeEnumResolvable | MessageType): MessageType;
-  public static resolveGuildNSFWLevel(key: GuildNSFWLevelEnumResolvable | GuildNSFWLevel): GuildNSFWLevel;
-  public static resolveGuildVerificationLevel(
-    key: GuildVerificationLevelEnumResolvable | GuildVerificationLevel,
-  ): GuildVerificationLevel;
-  public static resolveGuildDefaultMessageNotifications(
-    key: GuildDefaultMessageNotificationsEnumResolvable | GuildDefaultMessageNotifications,
-  ): GuildDefaultMessageNotifications;
-  public static resolveGuildExplicitContentFilter(
-    key: GuildExplicitContentFilterEnumResolvable | GuildExplicitContentFilter,
-  ): GuildExplicitContentFilter;
-  public static resolveGuildPremiumTier(key: GuildPremiumTierEnumResolvable | GuildPremiumTier): GuildPremiumTier;
-  public static resolveGuildScheduledEventStatus(
-    key: GuildScheduledEventStatusEnumResolvable | GuildScheduledEventStatus,
-  ): GuildScheduledEventStatus;
-  public static resolveStageInstancePrivacyLevel(
-    key: StageInstancePrivacyLevelEnumResolvable | StageInstancePrivacyLevel,
-  ): StageInstancePrivacyLevel;
-  public static resolveGuildMFALevel(key: GuildMFALevelEnumResolvable | GuildMFALevel): GuildMFALevel;
-  public static resolveTeamMemberMembershipState(
-    key: TeamMemberMembershipStateEnumResolvable | TeamMemberMembershipState,
-  ): TeamMemberMembershipState;
-  public static resolveGuildScheduledEventEntityType(
-    key: GuildScheduledEventEntityTypeEnumResolvable | GuildScheduledEventEntityType,
-  ): GuildScheduledEventEntityType;
-  public static resolveIntegrationExpireBehavior(
-    key: IntegrationExpireBehaviorEnumResolvable | IntegrationExpireBehavior,
-  ): IntegrationExpireBehavior;
-  public static resolveAuditLogEvent(key: AuditLogEventEnumResolvable | AuditLogEvent): AuditLogEvent;
-  public static resolveVideoQualityMode(key: VideoQualityModeEnumResolvable | VideoQualityMode): VideoQualityMode;
-}
-
 export class DMChannel extends TextBasedChannelMixin(Channel, ['bulkDelete', 'fetchWebhooks', 'createWebhook']) {
   private constructor(client: Client, data?: RawDMChannelData);
   public recipientId: Snowflake;
@@ -1113,7 +1066,6 @@ export class Guild extends AnonymousGuild {
   public large: boolean;
   public maximumMembers: number | null;
   public maximumPresences: number | null;
-  public get me(): GuildMember | null;
   public memberCount: number;
   public members: GuildMemberManager;
   public mfaLevel: GuildMFALevel;
@@ -1213,7 +1165,7 @@ export class GuildAuditLogsEntry<
   public static Targets: GuildAuditLogsTargets;
   public action: TAction;
   public actionType: TActionType;
-  public changes: AuditLogChange[] | null;
+  public changes: AuditLogChange[];
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executor: User | null;
@@ -1375,7 +1327,7 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public status: S;
   public entityType: GuildScheduledEventEntityType;
   public entityId: Snowflake | null;
-  public entityMetadata: GuildScheduledEventEntityMetadata;
+  public entityMetadata: GuildScheduledEventEntityMetadata | null;
   public userCount: number | null;
   public creator: User | null;
   public get createdTimestamp(): number;
@@ -1794,19 +1746,25 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse>;
+  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<InteractionResponse>;
+  public reply(
+    options: string | MessagePayload | InteractionReplyOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<InteractionResponse>;
+  public update(
+    options: string | MessagePayload | InteractionUpdateOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public showModal(
     modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
-  public awaitModalSubmit(options: AwaitModalSubmitOptions<ModalSubmitInteraction>): Promise<ModalSubmitInteraction>;
+  public awaitModalSubmit(
+    options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
+  ): Promise<ModalSubmitInteraction<Cached>>;
 }
 
 export class MessageContextMenuCommandInteraction<
@@ -1907,9 +1865,11 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
   extends ModalSubmitInteraction<Cached> {
   message: GuildCacheMessage<Cached>;
   update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  update(options: string | MessagePayload | InteractionUpdateOptions): Promise<InteractionResponse>;
+  update(
+    options: string | MessagePayload | InteractionUpdateOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse>;
+  deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   inGuild(): this is ModalMessageModalSubmitInteraction<'raw' | 'cached'>;
   inCachedGuild(): this is ModalMessageModalSubmitInteraction<'cached'>;
   inRawGuild(): this is ModalMessageModalSubmitInteraction<'raw'>;
@@ -1926,11 +1886,13 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public replied: boolean;
   public readonly webhook: InteractionWebhook;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<InteractionResponse>;
+  public reply(
+    options: string | MessagePayload | InteractionReplyOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(): Promise<void>;
   public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
-  public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public fetchReply(): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
@@ -2454,7 +2416,7 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhook
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
   public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
   public setAutoArchiveDuration(
-    autoArchiveDuration: ThreadAutoArchiveDuration | 'MAX',
+    autoArchiveDuration: ThreadAutoArchiveDuration,
     reason?: string,
   ): Promise<ThreadChannel>;
   public setInvitable(invitable?: boolean, reason?: string): Promise<ThreadChannel>;
@@ -2583,7 +2545,6 @@ export class Util extends null {
     route: string,
     reason?: string,
   ): Promise<{ id: Snowflake; position: number }[]>;
-  public static resolveAutoArchiveMaxLimit(guild: Guild): Exclude<ThreadAutoArchiveDuration, 60>;
 }
 
 export class Components extends null {
@@ -3128,6 +3089,7 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
 export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildMemberData>);
   public guild: Guild;
+  public get me(): GuildMember | null;
   public add(
     user: UserResolvable,
     options: AddGuildMemberOptions & { fetchWhenExisting: false },
@@ -3325,6 +3287,7 @@ export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, T
 export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable> {
   private constructor(thread: ThreadChannel, iterable?: Iterable<RawThreadMemberData>);
   public thread: ThreadChannel;
+  public get me(): ThreadMember | null;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(options?: ThreadMemberFetchOptions): Promise<ThreadMember>;
   public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
@@ -3750,7 +3713,7 @@ export interface ChannelData {
   rateLimitPerUser?: number;
   lockPermissions?: boolean;
   permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
-  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
+  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   rtcRegion?: string | null;
   videoQualityMode?: VideoQualityMode | null;
 }
@@ -4105,135 +4068,6 @@ export interface EmbedFieldData {
 export type EmojiIdentifierResolvable = string | EmojiResolvable;
 
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
-
-export type ChannelTypeEnumResolvable =
-  | 'GUILD_TEXT'
-  | 'DM'
-  | 'GUILD_VOICE'
-  | 'GROUP_DM'
-  | 'GUILD_CATEGORY'
-  | 'GUILD_NEWS'
-  | 'GUILD_NEWS_THREAD'
-  | 'GUILD_PUBLIC_THREAD'
-  | 'GUILD_PRIVATE_THREAD'
-  | 'GUILD_STAGE_VOICE';
-
-export type InteractionTypeEnumResolvable =
-  | 'PING'
-  | 'APPLICATION_COMMAND'
-  | 'MESSAGE_COMPONENT'
-  | 'APPLICATION_COMMAND_AUTOCOMPLETE';
-
-export type ApplicationCommandTypeEnumResolvable = 'CHAT_INPUT' | 'USER' | 'MESSAGE';
-
-export type ApplicationCommandOptionTypeEnumResolvable =
-  | 'SUB_COMMAND'
-  | 'SUB_COMMAND_GROUP'
-  | 'STRING'
-  | 'INTEGER'
-  | 'BOOLEAN'
-  | 'USER'
-  | 'CHANNEL'
-  | 'ROLE'
-  | 'NUMBER'
-  | 'MENTIONABLE';
-
-export type ApplicationCommandPermissionTypeEnumResolvable = 'ROLE' | 'USER';
-
-export type ComponentTypeEnumResolvable = 'ACTION_ROW' | 'BUTTON' | 'SELECT_MENU';
-
-export type ButtonStyleEnumResolvable = 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
-
-export type MessageTypeEnumResolvable =
-  | 'DEFAULT'
-  | 'RECIPIENT_ADD'
-  | 'RECIPIENT_REMOVE'
-  | 'CALL'
-  | 'CHANNEL_NAME_CHANGE'
-  | 'CHANNEL_ICON_CHANGE'
-  | 'CHANNEL_PINNED_MESSAGE'
-  | 'GUILD_MEMBER_JOIN'
-  | 'USER_PREMIUM_GUILD_SUBSCRIPTION'
-  | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
-  | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2'
-  | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3'
-  | 'CHANNEL_FOLLOW_ADD'
-  | 'GUILD_DISCOVERY_DISQUALIFIED'
-  | 'GUILD_DISCOVERY_REQUALIFIED'
-  | 'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING'
-  | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
-  | 'THREAD_CREATED'
-  | 'REPLY'
-  | 'CHAT_INPUT_COMMAND'
-  | 'THREAD_STARTER_MESSAGE'
-  | 'GUILD_INVITE_REMINDER'
-  | 'CONTEXT_MENU_COMMAND';
-
-export type GuildNSFWLevelEnumResolvable = 'DEFAULT' | 'EXPLICIT' | 'SAFE' | 'AGE_RESTRICTED';
-
-export type GuildVerificationLevelEnumResolvable = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
-
-export type GuildDefaultMessageNotificationsEnumResolvable = 'ALL_MESSAGES' | 'ONLY_MENTIONS';
-
-export type GuildExplicitContentFilterEnumResolvable = 'DISABLED' | 'MEMBERS_WITHOUT_ROLES' | 'ALL_MEMBERS';
-
-export type GuildPremiumTierEnumResolvable = 'NONE' | 'TIER_1' | 'TIER_2' | 'TIER_3';
-
-export type GuildScheduledEventStatusEnumResolvable = 'SCHEDULED' | 'ACTIVE' | 'COMPLETED' | 'CANCELED';
-
-export type StageInstancePrivacyLevelEnumResolvable = 'PUBLIC' | 'GUILD_ONLY';
-
-export type GuildMFALevelEnumResolvable = 'NONE' | 'ELEVATED';
-
-export type TeamMemberMembershipStateEnumResolvable = 'INVITED' | 'ACCEPTED';
-
-export type GuildScheduledEventEntityTypeEnumResolvable = 'STAGE_INSTANCE' | 'VOICE' | 'EXTERNAL';
-
-export type IntegrationExpireBehaviorEnumResolvable = 'REMOVE_ROLE' | 'KICK';
-
-export type AuditLogEventEnumResolvable =
-  | 'GUILD_UPDATE'
-  | 'CHANNEL_CREATE'
-  | 'CHANNEL_UPDATE'
-  | 'CHANNEL_DELETE'
-  | 'CHANNEL_OVERWRITE_CREATE'
-  | 'CHANNEL_OVERWRITE_UPDATE'
-  | 'CHANNEL_OVERWRITE_DELETE'
-  | 'MEMBER_KICK'
-  | 'MEMBER_PRUNE'
-  | 'MEMBER_BAN_ADD'
-  | 'MEMBER_BAN_REMOVE'
-  | 'MEMBER_UPDATE'
-  | 'MEMBER_ROLE_UPDATE'
-  | 'MEMBER_MOVE'
-  | 'MEMBER_DISCONNECT'
-  | 'BOT_ADD'
-  | 'ROLE_CREATE'
-  | 'ROLE_UPDATE'
-  | 'ROLE_DELETE'
-  | 'INVITE_CREATE'
-  | 'INVITE_UPDATE'
-  | 'INVITE_DELETE'
-  | 'WEBHOOK_CREATE'
-  | 'WEBHOOK_UPDATE'
-  | 'WEBHOOK_DELETE'
-  | 'INTEGRATION_CREATE'
-  | 'INTEGRATION_UPDATE'
-  | 'INTEGRATION_DELETE'
-  | 'STAGE_INSTANCE_CREATE'
-  | 'STAGE_INSTANCE_UPDATE'
-  | 'STAGE_INSTANCE_DELETE'
-  | 'STICKER_CREATE'
-  | 'STICKER_UPDATE'
-  | 'STICKER_DELETE'
-  | 'GUILD_SCHEDULED_EVENT_CREATE'
-  | 'GUILD_SCHEDULED_EVENT_UPDATE'
-  | 'GUILD_SCHEDULED_EVENT_DELETE'
-  | 'THREAD_CREATE'
-  | 'THREAD_UPDATE'
-  | 'THREAD_DELETE';
-
-export type VideoQualityModeEnumResolvable = 'AUTO' | 'FULL';
 
 export interface ErrorEvent {
   error: unknown;
@@ -4683,7 +4517,7 @@ export interface InteractionCollectorOptions<T extends Interaction, Cached exten
   maxComponents?: number;
   maxUsers?: number;
   message?: CacheTypeReducer<Cached, Message, APIMessage>;
-  interactionResponse?: InteractionResponse;
+  interactionResponse?: InteractionResponse<BooleanCache<Cached>>;
 }
 
 export interface InteractionDeferReplyOptions {
@@ -5123,7 +4957,7 @@ export type StageInstanceResolvable = StageInstance | Snowflake;
 
 export interface StartThreadOptions {
   name: string;
-  autoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
+  autoArchiveDuration?: ThreadAutoArchiveDuration;
   reason?: string;
   rateLimitPerUser?: number;
 }
@@ -5231,7 +5065,7 @@ export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptio
 export interface ThreadEditData {
   name?: string;
   archived?: boolean;
-  autoArchiveDuration?: ThreadAutoArchiveDuration | 'MAX';
+  autoArchiveDuration?: ThreadAutoArchiveDuration;
   rateLimitPerUser?: number;
   locked?: boolean;
   invitable?: boolean;

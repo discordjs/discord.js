@@ -66,6 +66,10 @@ test('guildMemberAvatar dynamic-not-animated', () => {
 	expect(cdn.guildMemberAvatar(id, id, hash)).toBe(`${base}/guilds/${id}/users/${id}/avatars/${hash}.webp`);
 });
 
+test('guildScheduledEventCover default', () => {
+	expect(cdn.guildScheduledEventCover(id, hash)).toBe(`${base}/guild-events/${id}/${hash}.webp`);
+});
+
 test('icon default', () => {
 	expect(cdn.icon(id, hash)).toBe(`${base}/icons/${id}/${hash}.webp`);
 });

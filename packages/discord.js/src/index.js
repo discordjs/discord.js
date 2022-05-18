@@ -19,7 +19,6 @@ exports.Collection = require('@discordjs/collection').Collection;
 exports.Constants = require('./util/Constants');
 exports.Colors = require('./util/Colors');
 exports.DataResolver = require('./util/DataResolver');
-exports.EnumResolvers = require('./util/EnumResolvers');
 exports.Events = require('./util/Events');
 exports.Formatters = require('./util/Formatters');
 exports.IntentsBitField = require('./util/IntentsBitField');

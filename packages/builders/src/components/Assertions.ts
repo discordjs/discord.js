@@ -3,7 +3,7 @@ import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v10';
 import type { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
 import { UnsafeSelectMenuOptionBuilder } from './selectMenu/UnsafeSelectMenuOption';
 
-export const customIdValidator = s.string.lengthGe(1).lengthLe(100);
+export const customIdValidator = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 
 export const emojiValidator = s.object({
 	id: s.string,
@@ -13,14 +13,14 @@ export const emojiValidator = s.object({
 
 export const disabledValidator = s.boolean;
 
-export const buttonLabelValidator = s.string.lengthGe(1).lengthLe(80);
+export const buttonLabelValidator = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(80);
 
 export const buttonStyleValidator = s.nativeEnum(ButtonStyle);
 
-export const placeholderValidator = s.string.lengthLe(150);
-export const minMaxValidator = s.number.int.ge(0).le(25);
+export const placeholderValidator = s.string.lengthLessThanOrEqual(150);
+export const minMaxValidator = s.number.int.greaterThanOrEqual(0).lessThanOrEqual(25);
 
-export const labelValueDescriptionValidator = s.string.lengthGe(1).lengthLe(100);
+export const labelValueDescriptionValidator = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 export const optionValidator = s.union(
 	s.object({
 		label: labelValueDescriptionValidator,
@@ -31,15 +31,15 @@ export const optionValidator = s.union(
 	}),
 	s.instance(UnsafeSelectMenuOptionBuilder),
 );
-export const optionsValidator = optionValidator.array.lengthGe(0);
-export const optionsLengthValidator = s.number.int.ge(0).le(25);
+export const optionsValidator = optionValidator.array.lengthGreaterThanOrEqual(0);
+export const optionsLengthValidator = s.number.int.greaterThanOrEqual(0).lessThanOrEqual(25);
 
 export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
 	customIdValidator.parse(customId);
 	optionsValidator.parse(options);
 }
 
-export const labelValueValidator = s.string.lengthGe(1).lengthLe(100);
+export const labelValueValidator = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 export const defaultValidator = s.boolean;
 
 export function validateRequiredSelectMenuOptionParameters(label?: string, value?: string) {

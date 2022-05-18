@@ -13,6 +13,7 @@
 		"noUnusedParameters": true,
 		"strict": true,
 		"useUnknownInCatchVariables": true,
+		"noUncheckedIndexedAccess": true,
 
 		// Modules
 		"module": "CommonJS",

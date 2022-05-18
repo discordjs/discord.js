@@ -25,7 +25,6 @@ const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
-const Partials = require('../util/Partials');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const Util = require('../util/Util');
@@ -503,20 +502,6 @@ class Guild extends AnonymousGuild {
    */
   get publicUpdatesChannel() {
     return this.client.channels.resolve(this.publicUpdatesChannelId);
-  }
-
-  /**
-   * The client user as a GuildMember of this guild
-   * @type {?GuildMember}
-   * @readonly
-   */
-  get me() {
-    return (
-      this.members.resolve(this.client.user.id) ??
-      (this.client.options.partials.includes(Partials.GuildMember)
-        ? this.members._add({ user: { id: this.client.user.id } }, true)
-        : null)
-    );
   }
 
   /**

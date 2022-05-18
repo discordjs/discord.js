@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, ChannelType } from 'discord-api-types/v10';
+import { APIApplicationCommandOptionChoice, ChannelType, PermissionFlagsBits } from 'discord-api-types/v10';
 import {
 	SlashCommandAssertions,
 	SlashCommandBooleanOption,
@@ -433,7 +433,7 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
 			});
 
-			test('GIVEN valid name localizations THEN does not throw error', () => {
+			test('GIVEN invalid name localizations THEN does throw error', () => {
 				// @ts-expect-error
 				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
 				// @ts-expect-error
@@ -456,7 +456,7 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
 			});
 
-			test('GIVEN valid description localizations THEN does not throw error', () => {
+			test('GIVEN invalid description localizations THEN does throw error', () => {
 				// @ts-expect-error
 				expect(() => getBuilder().setDescriptionLocalization('en-U', 'foobar')).toThrowError();
 				// @ts-expect-error
@@ -474,6 +474,28 @@ describe('Slash Commands', () => {
 				expect(getBuilder().setDescriptionLocalization('en-US', null).description_localizations).toEqual({
 					'en-US': null,
 				});
+			});
+		});
+
+		describe('permissions', () => {
+			test('GIVEN valid permission string THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1')).not.toThrowError();
+			});
+
+			test('GIVEN valid permission bitfield THEN does not throw error', () => {
+				expect(() =>
+					getBuilder().setDefaultMemberPermissions(PermissionFlagsBits.AddReactions | PermissionFlagsBits.AttachFiles),
+				).not.toThrowError();
+			});
+
+			test('GIVEN null permissions THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions(null)).not.toThrowError();
+			});
+
+			test('GIVEN invalid inputs THEN does throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1.1')).toThrowError();
+
+				expect(() => getBuilder().setDefaultMemberPermissions(1.1)).toThrowError();
 			});
 		});
 	});
