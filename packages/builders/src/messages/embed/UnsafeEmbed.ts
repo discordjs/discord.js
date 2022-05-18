@@ -70,8 +70,7 @@ export class UnsafeEmbedBuilder {
 	 * @param fields The fields to set
 	 */
 	public setFields(...fields: RestOrArray<APIEmbedField>) {
-		fields = normalizeArray(fields);
-		this.spliceFields(0, this.data.fields?.length ?? 0, ...fields);
+		this.spliceFields(0, this.data.fields?.length ?? 0, ...normalizeArray(fields));
 		return this;
 	}
 
