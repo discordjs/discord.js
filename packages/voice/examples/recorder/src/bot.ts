@@ -1,16 +1,19 @@
-import Discord, { Interaction } from 'discord.js';
+import Discord, { Events, Interaction } from 'discord.js';
 import { getVoiceConnection } from '@discordjs/voice';
 import { deploy } from './deploy';
 import { interactionHandlers } from './interactions';
+import { GatewayIntentBits } from 'discord-api-types/v9';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
 const { token } = require('../auth.json');
 
-const client = new Discord.Client({ intents: ['GUILD_VOICE_STATES', 'GUILD_MESSAGES', 'GUILDS'] });
+const client = new Discord.Client({
+	intents: [GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.Guilds],
+});
 
-client.on('ready', () => console.log('Ready!'));
+client.on(Events.ClientReady, () => console.log('Ready!'));
 
-client.on('messageCreate', async (message) => {
+client.on(Events.MessageCreate, async (message) => {
 	if (!message.guild) return;
 	if (!client.application?.owner) await client.application?.fetch();
 
@@ -25,7 +28,7 @@ client.on('messageCreate', async (message) => {
  */
 const recordable = new Set<string>();
 
-client.on('interactionCreate', async (interaction: Interaction) => {
+client.on(Events.InteractionCreate, async (interaction: Interaction) => {
 	if (!interaction.isCommand() || !interaction.guildId) return;
 
 	const handler = interactionHandlers.get(interaction.commandName);
@@ -41,6 +44,6 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 	}
 });
 
-client.on('error', console.warn);
+client.on(Events.Error, console.warn);
 
 void client.login(token);
