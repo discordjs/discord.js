@@ -1,5 +1,5 @@
 import type { ServerResponse } from 'node:http';
-import { DiscordAPIError, parseResponse } from '@discordjs/rest';
+import { DiscordAPIError, parseResponse, RateLimitError } from '@discordjs/rest';
 import type { Dispatcher } from 'undici';
 
 /**
@@ -24,13 +24,23 @@ export async function populateOkResponse(res: ServerResponse, data: Dispatcher.R
 }
 
 /**
- * Populates a server response with the data from a Discord non-2xx REST response
+ * Populates a server response with the data from a Discord non-2xx REST response that is NOT a 429
  * @param res The server response to populate
  * @param error The error to populate the response with
  */
-export function populateErrorResponse(res: ServerResponse, error: DiscordAPIError): void {
+export function populateGeneralErrorResponse(res: ServerResponse, error: DiscordAPIError): void {
 	res.statusCode = error.status;
 	res.statusMessage = error.message;
 	res.setHeader('Content-Type', 'application/json');
 	res.write(JSON.stringify(error.rawError));
+}
+
+/**
+ * Populates a server response with the data from a Discord 429 REST response
+ * @param res The server response to populate
+ * @param error The error to populate the response with
+ */
+export function populateRatelimitErrorResponse(res: ServerResponse, error: RateLimitError): void {
+	res.statusCode = 429;
+	res.setHeader('Retry-After', error.timeToReset / 1000);
 }

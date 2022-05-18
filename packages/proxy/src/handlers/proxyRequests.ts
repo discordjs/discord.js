@@ -1,6 +1,10 @@
 import { URL } from 'node:url';
-import { DiscordAPIError, RequestMethod, REST, RouteLike } from '@discordjs/rest';
-import { populateErrorResponse, populateOkResponse } from '../util/responseHelpers';
+import { DiscordAPIError, RateLimitError, RequestMethod, REST, RouteLike } from '@discordjs/rest';
+import {
+	populateGeneralErrorResponse,
+	populateOkResponse,
+	populateRatelimitErrorResponse,
+} from '../util/responseHelpers';
 import type { RequestHandler } from '../util/util';
 
 /**
@@ -32,13 +36,15 @@ export function proxyRequests(rest: REST): RequestHandler {
 
 			await populateOkResponse(res, discordResponse);
 		} catch (error) {
-			if (!(error instanceof DiscordAPIError)) {
+			if (error instanceof DiscordAPIError) {
+				populateGeneralErrorResponse(res, error);
+			} else if (error instanceof RateLimitError) {
+				populateRatelimitErrorResponse(res, error);
+			} else {
 				// Unclear if there's better course of action here. Any web framework allows to pass in an error handler for something like this
 				// at which point the user could dictate what to do with the error - otherwise we could just 500
 				throw error;
 			}
-
-			populateErrorResponse(res, error);
 		} finally {
 			res.end();
 		}
