@@ -1,6 +1,7 @@
 'use strict';
 
 // This file contains the typedefs for camel-cased JSON data
+const { ComponentBuilder } = require('@discordjs/builders');
 const { ComponentType } = require('discord-api-types/v10');
 /**
  * @typedef {Object} BaseComponentData
@@ -90,13 +91,40 @@ class Components extends null {
         throw new Error(`Found unknown component type: ${data.type}`);
     }
   }
+
+  /**
+   * Transforms API data into a component builder
+   * @param {APIMessageComponent|ComponentBuilder} data The data to create the component from
+   * @returns {ComponentBuilder}
+   */
+  static createComponentBuilder(data) {
+    if (data instanceof ComponentBuilder) {
+      return data;
+    }
+
+    switch (data.type) {
+      case ComponentType.ActionRow:
+        return new ActionRowBuilder(data);
+      case ComponentType.Button:
+        return new ButtonBuilder(data);
+      case ComponentType.SelectMenu:
+        return new SelectMenuBuilder(data);
+      case ComponentType.TextInput:
+        return new TextInputComponent(data);
+      default:
+        throw new Error(`Found unknown component type: ${data.type}`);
+    }
+  }
 }
 
 module.exports = Components;
 
 const ActionRow = require('../structures/ActionRow');
+const ActionRowBuilder = require('../structures/ActionRowBuilder');
+const ButtonBuilder = require('../structures/ButtonBuilder');
 const ButtonComponent = require('../structures/ButtonComponent');
 const Component = require('../structures/Component');
+const SelectMenuBuilder = require('../structures/SelectMenuBuilder');
 const SelectMenuComponent = require('../structures/SelectMenuComponent');
 const TextInputComponent = require('../structures/TextInputComponent');
 
