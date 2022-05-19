@@ -16,16 +16,22 @@ class AutoModRule extends Base {
     this.name = data.name;
 
     /**
+     * The event type of this rule.
+     * @type {number}
+     */
+    this.eventType = data.event_type;
+
+    /**
      * The trigger type of this rule.
      * @type {number}
      */
     this.triggerType = data.trigger_type;
 
     /**
-     * The event type of this rule.
-     * @type {number}
+     * The trigger metadata of the rule.
+     * @type {Object}
      */
-    this.eventType = data.event_type;
+    this.triggerMetadata = data.trigger_metadata;
 
     /**
      * An object containing information about an AutoMod rule action.
@@ -39,12 +45,6 @@ class AutoModRule extends Base {
      * @type {AutoModRuleAction[]}
      */
     this.actions = data.actions;
-
-    /**
-     * The trigger metadata of the rule.
-     * @type {Object}
-     */
-    this.triggerMetadata = data.trigger_metadata;
 
     /**
      * Whether this rule is enabled.
