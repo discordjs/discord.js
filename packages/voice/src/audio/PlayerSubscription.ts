@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/dot-notation */
-import type { VoiceConnection } from '../VoiceConnection';
 import type { AudioPlayer } from './AudioPlayer';
+import type { VoiceConnection } from '../VoiceConnection';
 
 /**
  * Represents a subscription of a voice connection to an audio player, allowing

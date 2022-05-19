@@ -71,7 +71,7 @@ const Messages = {
 
   MESSAGE_BULK_DELETE_TYPE: 'The messages must be an Array, Collection, or number.',
   MESSAGE_NONCE_TYPE: 'Message nonce must be an integer or a string.',
-  MESSAGE_CONTENT_TYPE: 'Message content must be a non-empty string.',
+  MESSAGE_CONTENT_TYPE: 'Message content must be a string.',
 
   SPLIT_MAX_LEN: 'Chunk exceeds the max length and contains no split characters.',
 
@@ -90,6 +90,7 @@ const Messages = {
   CHANNEL_NOT_CACHED: 'Could not find the channel where this message came from in the cache!',
   STAGE_CHANNEL_RESOLVE: 'Could not resolve channel to a stage channel.',
   GUILD_SCHEDULED_EVENT_RESOLVE: 'Could not resolve the guild scheduled event.',
+  FETCH_OWNER_ID: "Couldn't resolve the guild ownerId to fetch the member.",
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
@@ -140,6 +141,10 @@ const Messages = {
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND: 'No subcommand specified for interaction.',
   COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP: 'No subcommand group specified for interaction.',
   AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION: 'No focused option for autocomplete interaction.',
+
+  MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND: customId => `Required field with custom id "${customId}" not found.`,
+  MODAL_SUBMIT_INTERACTION_FIELD_TYPE: (customId, type, expected) =>
+    `Field with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
 
   INVITE_MISSING_SCOPES: 'At least one valid scope must be provided for the invite',
 

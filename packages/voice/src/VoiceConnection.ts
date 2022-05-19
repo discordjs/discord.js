@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error */
-import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v9';
+import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v10';
+import { TypedEmitter } from 'tiny-typed-emitter';
 import type { CreateVoiceConnectionOptions } from '.';
-import type { AudioPlayer } from './audio/AudioPlayer';
-import type { PlayerSubscription } from './audio/PlayerSubscription';
 import {
 	getVoiceConnection,
 	createJoinVoiceChannelPayload,
@@ -10,12 +9,13 @@ import {
 	JoinConfig,
 	untrackVoiceConnection,
 } from './DataStore';
-import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter';
-import { Networking, NetworkingState, NetworkingStatusCode } from './networking/Networking';
-import { Awaited, noop } from './util/util';
-import { TypedEmitter } from 'tiny-typed-emitter';
-import { VoiceReceiver } from './receive';
+import type { AudioPlayer } from './audio/AudioPlayer';
+import type { PlayerSubscription } from './audio/PlayerSubscription';
 import type { VoiceWebSocket, VoiceUDPSocket } from './networking';
+import { Networking, NetworkingState, NetworkingStatusCode } from './networking/Networking';
+import { VoiceReceiver } from './receive';
+import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter';
+import { Awaited, noop } from './util/util';
 
 /**
  * The various status codes a voice connection can hold at any one time.

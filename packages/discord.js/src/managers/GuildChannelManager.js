@@ -2,7 +2,7 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { ChannelType, Routes } = require('discord-api-types/v9');
+const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const ThreadManager = require('./ThreadManager');
 const { Error, TypeError } = require('../errors');
@@ -15,7 +15,6 @@ const DataResolver = require('../util/DataResolver');
 const Util = require('../util/Util');
 
 let cacheWarningEmitted = false;
-let storeChannelDeprecationEmitted = false;
 
 /**
  * Manages API methods for GuildChannels and stores their cache.
@@ -144,15 +143,6 @@ class GuildChannelManager extends CachedManager {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
 
-    if (type === ChannelType.GuildStore && !storeChannelDeprecationEmitted) {
-      storeChannelDeprecationEmitted = true;
-      process.emitWarning(
-        // eslint-disable-next-line max-len
-        'Creating store channels is deprecated by Discord and will stop working in March 2022. Check the docs for more info.',
-        'DeprecationWarning',
-      );
-    }
-
     const data = await this.client.rest.post(Routes.guildChannels(this.guild.id), {
       body: {
         name,
@@ -222,6 +212,7 @@ class GuildChannelManager extends CachedManager {
    * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
+   * @property {?VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
    */
 
   /**
@@ -270,6 +261,7 @@ class GuildChannelManager extends CachedManager {
         bitrate: data.bitrate ?? channel.bitrate,
         user_limit: data.userLimit ?? channel.userLimit,
         rtc_region: data.rtcRegion ?? channel.rtcRegion,
+        video_quality_mode: data.videoQualityMode,
         parent_id: parent,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
@@ -437,6 +429,7 @@ class GuildChannelManager extends CachedManager {
     const id = this.resolveId(channel);
     if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
     await this.client.rest.delete(Routes.channel(id), { reason });
+    this.client.actions.ChannelDelete.handle({ id });
   }
 }
 

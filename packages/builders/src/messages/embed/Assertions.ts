@@ -1,43 +1,57 @@
-import type { APIEmbedField } from 'discord-api-types/v9';
-import { z } from 'zod';
+import { s } from '@sapphire/shapeshift';
+import type { APIEmbedField } from 'discord-api-types/v10';
 
-export const fieldNamePredicate = z.string().min(1).max(256);
+export const fieldNamePredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(256);
 
-export const fieldValuePredicate = z.string().min(1).max(1024);
+export const fieldValuePredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(1024);
 
-export const fieldInlinePredicate = z.boolean().optional();
+export const fieldInlinePredicate = s.boolean.optional;
 
-export const embedFieldPredicate = z.object({
+export const embedFieldPredicate = s.object({
 	name: fieldNamePredicate,
 	value: fieldValuePredicate,
 	inline: fieldInlinePredicate,
 });
 
-export const embedFieldsArrayPredicate = embedFieldPredicate.array();
+export const embedFieldsArrayPredicate = embedFieldPredicate.array;
 
-export const fieldLengthPredicate = z.number().lte(25);
+export const fieldLengthPredicate = s.number.lessThanOrEqual(25);
 
 export function validateFieldLength(amountAdding: number, fields?: APIEmbedField[]): void {
 	fieldLengthPredicate.parse((fields?.length ?? 0) + amountAdding);
 }
 
-export const authorNamePredicate = fieldNamePredicate.nullable();
+export const authorNamePredicate = fieldNamePredicate.nullable;
 
-export const urlPredicate = z.string().url().nullish();
+export const imageURLPredicate = s.string.url({
+	allowedProtocols: ['http:', 'https:', 'attachment:'],
+}).nullish;
 
-export const RGBPredicate = z.number().int().gte(0).lte(255);
-export const colorPredicate = z
-	.number()
-	.int()
-	.gte(0)
-	.lte(0xffffff)
-	.nullable()
-	.or(z.tuple([RGBPredicate, RGBPredicate, RGBPredicate]));
+export const urlPredicate = s.string.url({
+	allowedProtocols: ['http:', 'https:'],
+}).nullish;
 
-export const descriptionPredicate = z.string().min(1).max(4096).nullable();
+export const embedAuthorPredicate = s.object({
+	name: authorNamePredicate,
+	iconURL: imageURLPredicate,
+	url: urlPredicate,
+});
 
-export const footerTextPredicate = z.string().min(1).max(2048).nullable();
+export const RGBPredicate = s.number.int.greaterThanOrEqual(0).lessThanOrEqual(255);
+export const colorPredicate = s.number.int
+	.greaterThanOrEqual(0)
+	.lessThanOrEqual(0xffffff)
+	.or(s.tuple([RGBPredicate, RGBPredicate, RGBPredicate])).nullable;
 
-export const timestampPredicate = z.union([z.number(), z.date()]).nullable();
+export const descriptionPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(4096).nullable;
 
-export const titlePredicate = fieldNamePredicate.nullable();
+export const footerTextPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(2048).nullable;
+
+export const embedFooterPredicate = s.object({
+	text: footerTextPredicate,
+	iconURL: imageURLPredicate,
+});
+
+export const timestampPredicate = s.union(s.number, s.date).nullable;
+
+export const titlePredicate = fieldNamePredicate.nullable;

@@ -1,0 +1,48 @@
+'use strict';
+
+const { ButtonBuilder: BuildersButton, isJSONEncodable } = require('@discordjs/builders');
+const Transformers = require('../util/Transformers');
+const Util = require('../util/Util');
+
+/**
+ * Represents a button builder.
+ * @extends {BuildersButton}
+ */
+class ButtonBuilder extends BuildersButton {
+  constructor({ emoji, ...data } = {}) {
+    super(
+      Transformers.toSnakeCase({ ...data, emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji }),
+    );
+  }
+
+  /**
+   * Sets the emoji to display on this button
+   * @param {string|APIMessageComponentEmoji} emoji The emoji to display on this button
+   * @returns {ButtonBuilder}
+   */
+  setEmoji(emoji) {
+    if (typeof emoji === 'string') {
+      return super.setEmoji(Util.parseEmoji(emoji));
+    }
+    return super.setEmoji(emoji);
+  }
+
+  /**
+   * Creates a new button builder from JSON data
+   * @param {JSONEncodable<APIButtonComponent>|APIButtonComponent} other The other data
+   * @returns {ButtonBuilder}
+   */
+  static from(other) {
+    if (isJSONEncodable(other)) {
+      return new this(other.toJSON());
+    }
+    return new this(other);
+  }
+}
+
+module.exports = ButtonBuilder;
+
+/**
+ * @external BuildersButton
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/ButtonBuilder}
+ */

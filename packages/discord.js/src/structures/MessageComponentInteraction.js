@@ -90,6 +90,8 @@ class MessageComponentInteraction extends Interaction {
   followUp() {}
   deferUpdate() {}
   update() {}
+  showModal() {}
+  awaitModalSubmit() {}
 }
 
 InteractionResponses.applyToClass(MessageComponentInteraction);
@@ -104,29 +106,4 @@ module.exports = MessageComponentInteraction;
 /**
  * @external APIMessageButton
  * @see {@link https://discord.com/developers/docs/interactions/message-components#button-object}
- */
-
-/**
- * @external ButtonComponent
- * @see {@link https://discord.js.org/#/docs/builders/main/class/ButtonComponent}
- */
-
-/**
- * @external SelectMenuComponent
- * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuComponent}
- */
-
-/**
- * @external SelectMenuOption
- * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuComponent}
- */
-
-/**
- * @external ActionRow
- * @see {@link https://discord.js.org/#/docs/builders/main/class/ActionRow}
- */
-
-/**
- * @external Embed
- * @see {@link https://discord.js.org/#/docs/builders/main/class/Embed}
  */

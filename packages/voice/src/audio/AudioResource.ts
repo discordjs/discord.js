@@ -1,8 +1,8 @@
-import { Edge, findPipeline, StreamType, TransformerType } from './TransformerGraph';
 import { pipeline, Readable } from 'node:stream';
-import { noop } from '../util/util';
 import prism from 'prism-media';
 import { AudioPlayer, SILENCE_FRAME } from './AudioPlayer';
+import { Edge, findPipeline, StreamType, TransformerType } from './TransformerGraph';
+import { noop } from '../util/util';
 
 /**
  * Options that are set when creating a new audio resource.
@@ -97,7 +97,7 @@ export class AudioResource<T = unknown> {
 
 	public constructor(edges: readonly Edge[], streams: readonly Readable[], metadata: T, silencePaddingFrames: number) {
 		this.edges = edges;
-		this.playStream = streams.length > 1 ? (pipeline(streams, noop) as any as Readable) : streams[0];
+		this.playStream = streams.length > 1 ? (pipeline(streams, noop) as any as Readable) : streams[0]!;
 		this.metadata = metadata;
 		this.silencePaddingFrames = silencePaddingFrames;
 

@@ -78,6 +78,13 @@ class Collector extends EventEmitter {
      */
     this._idletimeout = null;
 
+    /**
+     * The reason the collector ended
+     * @type {string|null}
+     * @private
+     */
+    this._endReason = null;
+
     if (typeof this.filter !== 'function') {
       throw new TypeError('INVALID_TYPE', 'options.filter', 'function');
     }
@@ -187,6 +194,8 @@ class Collector extends EventEmitter {
       clearTimeout(this._idletimeout);
       this._idletimeout = null;
     }
+
+    this._endReason = reason;
     this.ended = true;
 
     /**
@@ -270,9 +279,10 @@ class Collector extends EventEmitter {
    * The reason this collector has ended with, or null if it hasn't ended yet
    * @type {?string}
    * @readonly
-   * @abstract
    */
-  get endReason() {}
+  get endReason() {
+    return this._endReason;
+  }
 
   /**
    * Handles incoming events from the `handleCollect` function. Returns null if the event should not

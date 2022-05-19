@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { ChannelType, MessageType } = require('discord-api-types/v9');
+const { ChannelType, MessageType } = require('discord-api-types/v10');
 const Package = (exports.Package = require('../../package.json'));
 
 exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;
@@ -62,7 +62,15 @@ exports.NonSystemMessageTypes = [
  * * TextChannel
  * * NewsChannel
  * * ThreadChannel
- * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel} TextBasedChannels
+ * * VoiceChannel
+ * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel|VoiceChannel} TextBasedChannels
+ */
+
+/**
+ * Data that resolves to give a text-based channel. This can be:
+ * * A text-based channel
+ * * A snowflake
+ * @typedef {TextBasedChannels|Snowflake} TextBasedChannelsResolvable
  */
 
 /**
@@ -73,6 +81,7 @@ exports.NonSystemMessageTypes = [
  * * {@link ChannelType.GuildNewsThread}
  * * {@link ChannelType.GuildPublicThread}
  * * {@link ChannelType.GuildPrivateThread}
+ * * {@link ChannelType.GuildVoice}
  * @typedef {ChannelType} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
@@ -82,6 +91,7 @@ exports.TextBasedChannelTypes = [
   ChannelType.GuildNewsThread,
   ChannelType.GuildPublicThread,
   ChannelType.GuildPrivateThread,
+  ChannelType.GuildVoice,
 ];
 
 /**

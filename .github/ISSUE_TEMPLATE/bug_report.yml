@@ -96,6 +96,7 @@ body:
         - Message
         - Reaction
         - GuildScheduledEvent
+        - ThreadMember
       multiple: true
     validations:
       required: true
@@ -123,7 +124,7 @@ body:
         - GuildMessageReactions
         - GuildMessageTyping
         - DirectMessages
-        - DirectMessageMentions
+        - DirectMessageReactions
         - DirectMessageTyping
         - GuildScheduledEvents
       multiple: true

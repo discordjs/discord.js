@@ -1,16 +1,16 @@
-import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v9';
+import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
+import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
 import {
 	defaultValidator,
 	emojiValidator,
 	labelValueValidator,
 	validateRequiredSelectMenuOptionParameters,
 } from '../Assertions';
-import { UnsafeSelectMenuOption } from './UnsafeSelectMenuOption';
 
 /**
  * Represents a validated option within a select menu component
  */
-export class SelectMenuOption extends UnsafeSelectMenuOption {
+export class SelectMenuOptionBuilder extends UnsafeSelectMenuOptionBuilder {
 	public override setDescription(description: string) {
 		return super.setDescription(labelValueValidator.parse(description));
 	}
@@ -24,7 +24,7 @@ export class SelectMenuOption extends UnsafeSelectMenuOption {
 	}
 
 	public override toJSON(): APISelectMenuOption {
-		validateRequiredSelectMenuOptionParameters(this.label, this.value);
+		validateRequiredSelectMenuOptionParameters(this.data.label, this.data.value);
 		return super.toJSON();
 	}
 }

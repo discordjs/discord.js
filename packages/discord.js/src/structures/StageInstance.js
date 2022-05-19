@@ -63,6 +63,16 @@ class StageInstance extends Base {
     } else {
       this.discoverableDisabled ??= null;
     }
+
+    if ('guild_scheduled_event_id' in data) {
+      /**
+       * The associated guild scheduled event id of this stage instance
+       * @type {?Snowflake}
+       */
+      this.guildScheduledEventId = data.guild_scheduled_event_id;
+    } else {
+      this.guildScheduledEventId ??= null;
+    }
   }
 
   /**
@@ -81,6 +91,15 @@ class StageInstance extends Base {
    */
   get guild() {
     return this.client.guilds.resolve(this.guildId);
+  }
+
+  /**
+   * The associated guild scheduled event of this stage instance
+   * @type {?GuildScheduledEvent}
+   * @readonly
+   */
+  get guildScheduledEvent() {
+    return this.guild?.scheduledEvents.resolve(this.guildScheduledEventId) ?? null;
   }
 
   /**

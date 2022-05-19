@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
@@ -41,7 +41,7 @@ class GuildStickerManager extends CachedManager {
 
   /**
    * Creates a new custom sticker in the guild.
-   * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} file The file for the sticker
+   * @param {BufferResolvable|Stream|FileOptions|Attachment} file The file for the sticker
    * @param {string} name The name for the sticker
    * @param {string} tags The Discord name of a unicode emoji representing the sticker's expression
    * @param {GuildStickerCreateOptions} [options] Options
@@ -174,7 +174,7 @@ class GuildStickerManager extends CachedManager {
   async fetchUser(sticker) {
     sticker = this.resolve(sticker);
     if (!sticker) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
-    const data = await this.client.rest.get(Routes.guildSticker(this.guildId, sticker.id));
+    const data = await this.client.rest.get(Routes.guildSticker(this.guild.id, sticker.id));
     sticker._patch(data);
     return sticker.user;
   }

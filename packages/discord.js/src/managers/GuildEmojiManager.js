@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes, PermissionFlagsBits } = require('discord-api-types/v9');
+const { Routes, PermissionFlagsBits } = require('discord-api-types/v10');
 const BaseGuildEmojiManager = require('./BaseGuildEmojiManager');
 const { Error, TypeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
@@ -153,7 +153,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       throw new Error('EMOJI_MANAGED');
     }
 
-    const { me } = this.guild;
+    const { me } = this.guild.members;
     if (!me) throw new Error('GUILD_UNCACHED_ME');
     if (!me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers)) {
       throw new Error('MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION', this.guild);

@@ -1,14 +1,14 @@
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import type { ConnectionData } from '../networking/Networking';
-import { methods } from '../util/Secretbox';
-import type { VoiceConnection } from '../VoiceConnection';
 import {
 	AudioReceiveStream,
 	AudioReceiveStreamOptions,
 	createDefaultAudioReceiveStreamOptions,
 } from './AudioReceiveStream';
-import { SpeakingMap } from './SpeakingMap';
 import { SSRCMap } from './SSRCMap';
+import { SpeakingMap } from './SpeakingMap';
+import type { VoiceConnection } from '../VoiceConnection';
+import type { ConnectionData } from '../networking/Networking';
+import { methods } from '../util/Secretbox';
 
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other
@@ -134,7 +134,7 @@ export class VoiceReceiver {
 			const headerExtensionLength = packet.readUInt16BE(2);
 			let offset = 4;
 			for (let i = 0; i < headerExtensionLength; i++) {
-				const byte = packet[offset];
+				const byte = packet[offset]!;
 				offset++;
 				if (byte === 0) continue;
 				offset += 1 + (byte >> 4);

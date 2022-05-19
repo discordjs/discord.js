@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Channel } = require('../structures/Channel');
 const { ThreadChannelTypes } = require('../util/Constants');
@@ -61,6 +61,11 @@ class ChannelManager extends CachedManager {
   _remove(id) {
     const channel = this.cache.get(id);
     channel?.guild?.channels.cache.delete(id);
+
+    for (const [code, invite] of channel?.guild?.invites.cache ?? []) {
+      if (invite.channelId === id) channel.guild.invites.cache.delete(code);
+    }
+
     channel?.parent?.threads?.cache.delete(id);
     this.cache.delete(id);
   }

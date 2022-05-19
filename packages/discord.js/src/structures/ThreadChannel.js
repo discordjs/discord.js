@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v9');
+const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError } = require('../errors');
@@ -312,20 +312,11 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   async edit(data, reason) {
-    let autoArchiveDuration = data.autoArchiveDuration;
-    if (data.autoArchiveDuration === 'MAX') {
-      autoArchiveDuration = 1440;
-      if (this.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
-        autoArchiveDuration = 10080;
-      } else if (this.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
-        autoArchiveDuration = 4320;
-      }
-    }
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
         name: (data.name ?? this.name).trim(),
         archived: data.archived,
-        auto_archive_duration: autoArchiveDuration,
+        auto_archive_duration: data.autoArchiveDuration,
         rate_limit_per_user: data.rateLimitPerUser,
         locked: data.locked,
         invitable: this.type === ChannelType.GuildPrivateThread ? data.invitable : undefined,
@@ -475,7 +466,7 @@ class ThreadChannel extends Channel {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return (
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.ManageThreads, false)
     );
   }
@@ -507,7 +498,7 @@ class ThreadChannel extends Channel {
       !(this.archived && this.locked && !this.manageable) &&
       (this.type !== ChannelType.GuildPrivateThread || this.joined || this.manageable) &&
       permissions.has(PermissionFlagsBits.SendMessagesInThreads, false) &&
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now()
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()
     );
   }
 

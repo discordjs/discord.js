@@ -1,13 +1,19 @@
 'use strict';
 
-const { UserFlags } = require('discord-api-types/v9');
+const { UserFlags } = require('discord-api-types/v10');
 const BitField = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a {@link User#flags} bitfield.
  * @extends {BitField}
  */
-class UserFlagsBitField extends BitField {}
+class UserFlagsBitField extends BitField {
+  /**
+   * Numeric user flags.
+   * @type {UserFlags}
+   */
+  static Flags = UserFlags;
+}
 
 /**
  * @name UserFlagsBitField
@@ -21,11 +27,5 @@ class UserFlagsBitField extends BitField {}
  * @type {number}
  * @name UserFlagsBitField#bitfield
  */
-
-/**
- * Numeric user flags.
- * @type {UserFlags}
- */
-UserFlagsBitField.Flags = UserFlags;
 
 module.exports = UserFlagsBitField;

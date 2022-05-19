@@ -3,9 +3,9 @@
 const Util = require('../util/Util');
 
 /**
- * Represents an attachment in a message.
+ * Represents an attachment.
  */
-class MessageAttachment {
+class Attachment {
   /**
    * @param {BufferResolvable|Stream} attachment The file
    * @param {string} [name=null] The name of the file, if any
@@ -24,7 +24,7 @@ class MessageAttachment {
   /**
    * Sets the description of this attachment.
    * @param {string} description The description of the file
-   * @returns {MessageAttachment} This attachment
+   * @returns {Attachment} This attachment
    */
   setDescription(description) {
     this.description = description;
@@ -35,7 +35,7 @@ class MessageAttachment {
    * Sets the file of this attachment.
    * @param {BufferResolvable|Stream} attachment The file
    * @param {string} [name=null] The name of the file, if any
-   * @returns {MessageAttachment} This attachment
+   * @returns {Attachment} This attachment
    */
   setFile(attachment, name = null) {
     this.attachment = attachment;
@@ -46,7 +46,7 @@ class MessageAttachment {
   /**
    * Sets the name of this attachment.
    * @param {string} name The name of the file
-   * @returns {MessageAttachment} This attachment
+   * @returns {Attachment} This attachment
    */
   setName(name) {
     this.name = name;
@@ -56,7 +56,7 @@ class MessageAttachment {
   /**
    * Sets whether this attachment is a spoiler
    * @param {boolean} [spoiler=true] Whether the attachment should be marked as a spoiler
-   * @returns {MessageAttachment} This attachment
+   * @returns {Attachment} This attachment
    */
   setSpoiler(spoiler = true) {
     if (spoiler === this.spoiler) return this;
@@ -163,7 +163,7 @@ class MessageAttachment {
   }
 }
 
-module.exports = MessageAttachment;
+module.exports = Attachment;
 
 /**
  * @external APIAttachment

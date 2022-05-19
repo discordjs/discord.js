@@ -5,58 +5,15 @@ import {
 	type APIButtonComponent,
 	type APIButtonComponentWithURL,
 	type APIButtonComponentWithCustomId,
-} from 'discord-api-types/v9';
-import { Component } from '../Component';
-import isEqual from 'fast-deep-equal';
+} from 'discord-api-types/v10';
+import { ComponentBuilder } from '../Component';
 
 /**
  * Represents a non-validated button component
  */
-export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent> & { type: ComponentType.Button }> {
+export class UnsafeButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	public constructor(data?: Partial<APIButtonComponent>) {
 		super({ type: ComponentType.Button, ...data });
-	}
-
-	/**
-	 * The style of this button
-	 */
-	public get style() {
-		return this.data.style;
-	}
-
-	/**
-	 * The label of this button
-	 */
-	public get label() {
-		return this.data.label;
-	}
-
-	/**
-	 * The emoji used in this button
-	 */
-	public get emoji() {
-		return this.data.emoji;
-	}
-
-	/**
-	 * Whether this button is disabled
-	 */
-	public get disabled() {
-		return this.data.disabled;
-	}
-
-	/**
-	 * The custom id of this button (only defined on non-link buttons)
-	 */
-	public get customId(): string | undefined {
-		return (this.data as APIButtonComponentWithCustomId).custom_id;
-	}
-
-	/**
-	 * The URL of this button (only defined on link buttons)
-	 */
-	public get url(): string | undefined {
-		return (this.data as APIButtonComponentWithURL).url;
 	}
 
 	/**
@@ -118,12 +75,5 @@ export class UnsafeButtonComponent extends Component<Partial<APIButtonComponent>
 		return {
 			...this.data,
 		} as APIButtonComponent;
-	}
-
-	public equals(other: APIButtonComponent | UnsafeButtonComponent) {
-		if (other instanceof UnsafeButtonComponent) {
-			return isEqual(other.data, this.data);
-		}
-		return isEqual(other, this.data);
 	}
 }

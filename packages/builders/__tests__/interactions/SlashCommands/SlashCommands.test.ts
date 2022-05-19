@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, ChannelType } from 'discord-api-types/v9';
+import { APIApplicationCommandOptionChoice, ChannelType, PermissionFlagsBits } from 'discord-api-types/v10';
 import {
 	SlashCommandAssertions,
 	SlashCommandBooleanOption,
@@ -87,18 +87,16 @@ describe('Slash Commands', () => {
 		test('GIVEN valid array of options or choices THEN does not throw error', () => {
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength([])).not.toThrowError();
 
-			expect(() => SlashCommandAssertions.validateMaxChoicesLength([])).not.toThrowError();
+			expect(() => SlashCommandAssertions.validateChoicesLength(25, [])).not.toThrowError();
 		});
 
 		test('GIVEN invalid options or choices THEN throw error', () => {
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength(null)).toThrowError();
 
-			expect(() => SlashCommandAssertions.validateMaxChoicesLength(null)).toThrowError();
-
 			// Given an array that's too big
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength(largeArray)).toThrowError();
 
-			expect(() => SlashCommandAssertions.validateMaxChoicesLength(largeArray)).toThrowError();
+			expect(() => SlashCommandAssertions.validateChoicesLength(1, largeArray)).toThrowError();
 		});
 
 		test('GIVEN valid required parameters THEN does not throw error', () => {
@@ -179,31 +177,25 @@ describe('Slash Commands', () => {
 			test('GIVEN a builder with both choices and autocomplete THEN does throw an error', () => {
 				expect(() =>
 					getBuilder().addStringOption(
-						// @ts-expect-error Checking if check works JS-side too
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
-						getStringOption().setAutocomplete(true).addChoice('Fancy Pants', 'fp_1'),
+						getStringOption().setAutocomplete(true).addChoices({ name: 'Fancy Pants', value: 'fp_1' }),
 					),
 				).toThrowError();
 
 				expect(() =>
 					getBuilder().addStringOption(
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
 						getStringOption()
 							.setAutocomplete(true)
-							// @ts-expect-error Checking if check works JS-side too
-							.addChoices([
-								['Fancy Pants', 'fp_1'],
-								['Fancy Shoes', 'fs_1'],
-								['The Whole shebang', 'all'],
-							]),
+							.addChoices(
+								{ name: 'Fancy Pants', value: 'fp_1' },
+								{ name: 'Fancy Shoes', value: 'fs_1' },
+								{ name: 'The Whole shebang', value: 'all' },
+							),
 					),
 				).toThrowError();
 
 				expect(() =>
 					getBuilder().addStringOption(
-						// @ts-expect-error Checking if check works JS-side too
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
-						getStringOption().addChoice('Fancy Pants', 'fp_1').setAutocomplete(true),
+						getStringOption().addChoices({ name: 'Fancy Pants', value: 'fp_1' }).setAutocomplete(true),
 					),
 				).toThrowError();
 
@@ -231,20 +223,20 @@ describe('Slash Commands', () => {
 
 			test('GIVEN a builder with valid channel options and channel_types THEN does not throw an error', () => {
 				expect(() =>
-					getBuilder().addChannelOption(getChannelOption().addChannelType(ChannelType.GuildText)),
+					getBuilder().addChannelOption(getChannelOption().addChannelTypes(ChannelType.GuildText)),
 				).not.toThrowError();
 
 				expect(() => {
 					getBuilder().addChannelOption(
-						getChannelOption().addChannelTypes([ChannelType.GuildNews, ChannelType.GuildText]),
+						getChannelOption().addChannelTypes(ChannelType.GuildNews, ChannelType.GuildText),
 					);
 				}).not.toThrowError();
 			});
 
 			test('GIVEN a builder with valid channel options and channel_types THEN does throw an error', () => {
-				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelType(100))).toThrowError();
+				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes(100))).toThrowError();
 
-				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes([100, 200]))).toThrowError();
+				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes(100, 200))).toThrowError();
 			});
 
 			test('GIVEN a builder with invalid number min/max options THEN does throw an error', () => {
@@ -426,6 +418,84 @@ describe('Slash Commands', () => {
 		describe('Subcommand builder', () => {
 			test('GIVEN a valid subcommand with options THEN does not throw error', () => {
 				expect(() => getSubcommand().addBooleanOption(getBooleanOption()).toJSON()).not.toThrowError();
+			});
+		});
+
+		describe('Slash command localizations', () => {
+			const expectedSingleLocale = { 'en-US': 'foobar' };
+			const expectedMultipleLocales = {
+				...expectedSingleLocale,
+				bg: 'test',
+			};
+
+			test('GIVEN valid name localizations THEN does not throw error', () => {
+				expect(() => getBuilder().setNameLocalization('en-US', 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+			});
+
+			test('GIVEN invalid name localizations THEN does throw error', () => {
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
+			});
+
+			test('GIVEN valid name localizations THEN valid data is stored', () => {
+				expect(getBuilder().setNameLocalization('en-US', 'foobar').name_localizations).toEqual(expectedSingleLocale);
+				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).name_localizations).toEqual(
+					expectedMultipleLocales,
+				);
+				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
+				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
+					'en-US': null,
+				});
+			});
+
+			test('GIVEN valid description localizations THEN does not throw error', () => {
+				expect(() => getBuilder().setDescriptionLocalization('en-US', 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+			});
+
+			test('GIVEN invalid description localizations THEN does throw error', () => {
+				// @ts-expect-error
+				expect(() => getBuilder().setDescriptionLocalization('en-U', 'foobar')).toThrowError();
+				// @ts-expect-error
+				expect(() => getBuilder().setDescriptionLocalizations({ 'en-U': 'foobar' })).toThrowError();
+			});
+
+			test('GIVEN valid description localizations THEN valid data is stored', () => {
+				expect(getBuilder().setDescriptionLocalization('en-US', 'foobar').description_localizations).toEqual(
+					expectedSingleLocale,
+				);
+				expect(
+					getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar', bg: 'test' }).description_localizations,
+				).toEqual(expectedMultipleLocales);
+				expect(getBuilder().setDescriptionLocalizations(null).description_localizations).toBeNull();
+				expect(getBuilder().setDescriptionLocalization('en-US', null).description_localizations).toEqual({
+					'en-US': null,
+				});
+			});
+		});
+
+		describe('permissions', () => {
+			test('GIVEN valid permission string THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1')).not.toThrowError();
+			});
+
+			test('GIVEN valid permission bitfield THEN does not throw error', () => {
+				expect(() =>
+					getBuilder().setDefaultMemberPermissions(PermissionFlagsBits.AddReactions | PermissionFlagsBits.AttachFiles),
+				).not.toThrowError();
+			});
+
+			test('GIVEN null permissions THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions(null)).not.toThrowError();
+			});
+
+			test('GIVEN invalid inputs THEN does throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1.1')).toThrowError();
+
+				expect(() => getBuilder().setDefaultMemberPermissions(1.1)).toThrowError();
 			});
 		});
 	});

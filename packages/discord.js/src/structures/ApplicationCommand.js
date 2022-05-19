@@ -1,7 +1,8 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ApplicationCommandOptionType } = require('discord-api-types/v9');
+const { ApplicationCommandOptionType } = require('discord-api-types/v10');
+const isEqual = require('fast-deep-equal');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
 
@@ -62,12 +63,52 @@ class ApplicationCommand extends Base {
       this.name = data.name;
     }
 
+    if ('name_localizations' in data) {
+      /**
+       * The name localizations for this command
+       * @type {?Object<Locale, string>}
+       */
+      this.nameLocalizations = data.name_localizations;
+    } else {
+      this.nameLocalizations ??= null;
+    }
+
+    if ('name_localized' in data) {
+      /**
+       * The localized name for this command
+       * @type {?string}
+       */
+      this.nameLocalized = data.name_localized;
+    } else {
+      this.nameLocalized ??= null;
+    }
+
     if ('description' in data) {
       /**
        * The description of this command
        * @type {string}
        */
       this.description = data.description;
+    }
+
+    if ('description_localizations' in data) {
+      /**
+       * The description localizations for this command
+       * @type {?Object<Locale, string>}
+       */
+      this.descriptionLocalizations = data.description_localizations;
+    } else {
+      this.descriptionLocalizations ??= null;
+    }
+
+    if ('description_localized' in data) {
+      /**
+       * The localized description for this command
+       * @type {?string}
+       */
+      this.descriptionLocalized = data.description_localized;
+    } else {
+      this.descriptionLocalized ??= null;
     }
 
     if ('options' in data) {
@@ -129,7 +170,10 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the command, must be in all lowercase if type is
    * {@link ApplicationCommandType.ChatInput}
+   * @property {Object<Locale, string>} [nameLocalizations] The localizations for the command name
    * @property {string} description The description of the command, if type is {@link ApplicationCommandType.ChatInput}
+   * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the command description,
+   * if type is {@link ApplicationCommandType.ChatInput}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {boolean} [defaultPermission=true] Whether the command is enabled by default when the app is added to a
@@ -145,12 +189,14 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOptionData
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
+   * @property {Object<Locale, string>} [nameLocalizations] The name localizations for the option
    * @property {string} description The description of the option
+   * @property {Object<Locale, string>} [descriptionLocalizations] The description localizations for the option
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
    * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
    * @property {boolean} [required] Whether the option is required
-   * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
+   * @property {ApplicationCommandOptionChoiceData[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
@@ -158,6 +204,13 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
+   */
+
+  /**
+   * @typedef {Object} ApplicationCommandOptionChoiceData
+   * @property {string} name The name of the choice
+   * @property {Object<Locale, string>} [nameLocalizations] The localized names for this choice
+   * @property {string|number} value The value of the choice
    */
 
   /**
@@ -186,12 +239,46 @@ class ApplicationCommand extends Base {
   }
 
   /**
+   * Edits the localized names of this ApplicationCommand
+   * @param {Object<Locale, string>} nameLocalizations The new localized names for the command
+   * @returns {Promise<ApplicationCommand>}
+   * @example
+   * // Edit the name localizations of this command
+   * command.setLocalizedNames({
+   *   'en-GB': 'test',
+   *   'pt-BR': 'teste',
+   * })
+   *   .then(console.log)
+   *   .catch(console.error)
+   */
+  setNameLocalizations(nameLocalizations) {
+    return this.edit({ nameLocalizations });
+  }
+
+  /**
    * Edits the description of this ApplicationCommand
    * @param {string} description The new description of the command
    * @returns {Promise<ApplicationCommand>}
    */
   setDescription(description) {
     return this.edit({ description });
+  }
+
+  /**
+   * Edits the localized descriptions of this ApplicationCommand
+   * @param {Object<Locale, string>} descriptionLocalizations The new localized descriptions for the command
+   * @returns {Promise<ApplicationCommand>}
+   * @example
+   * // Edit the description localizations of this command
+   * command.setDescriptionLocalizations({
+   *   'en-GB': 'A test command',
+   *   'pt-BR': 'Um comando de teste',
+   * })
+   *   .then(console.log)
+   *   .catch(console.error)
+   */
+  setDescriptionLocalizations(descriptionLocalizations) {
+    return this.edit({ descriptionLocalizations });
   }
 
   /**
@@ -248,7 +335,12 @@ class ApplicationCommand extends Base {
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
-      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission
+      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission ||
+      !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
+      !isEqual(
+        command.descriptionLocalizations ?? command.description_localizations ?? {},
+        this.descriptionLocalizations ?? {},
+      )
     ) {
       return false;
     }
@@ -307,7 +399,12 @@ class ApplicationCommand extends Base {
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
       (option.minValue ?? option.min_value) !== existing.minValue ||
-      (option.maxValue ?? option.max_value) !== existing.maxValue
+      (option.maxValue ?? option.max_value) !== existing.maxValue ||
+      !isEqual(option.nameLocalizations ?? option.name_localizations ?? {}, existing.nameLocalizations ?? {}) ||
+      !isEqual(
+        option.descriptionLocalizations ?? option.description_localizations ?? {},
+        existing.descriptionLocalizations ?? {},
+      )
     ) {
       return false;
     }
@@ -316,7 +413,13 @@ class ApplicationCommand extends Base {
       if (
         enforceOptionOrder &&
         !existing.choices.every(
-          (choice, index) => choice.name === option.choices[index].name && choice.value === option.choices[index].value,
+          (choice, index) =>
+            choice.name === option.choices[index].name &&
+            choice.value === option.choices[index].value &&
+            isEqual(
+              choice.nameLocalizations ?? {},
+              option.choices[index].nameLocalizations ?? option.choices[index].name_localizations ?? {},
+            ),
         )
       ) {
         return false;
@@ -348,7 +451,11 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
+   * @property {Object<Locale, string>} [nameLocalizations] The localizations for the option name
+   * @property {string} [nameLocalized] The localized name for this option
    * @property {string} description The description of the option
+   * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the option description
+   * @property {string} [descriptionLocalized] The localized description for this option
    * @property {boolean} [required] Whether the option is required
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
    * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
@@ -367,12 +474,14 @@ class ApplicationCommand extends Base {
    * A choice for an application command option.
    * @typedef {Object} ApplicationCommandOptionChoice
    * @property {string} name The name of the choice
+   * @property {?string} nameLocalized The localized name of the choice in the provided locale, if any
+   * @property {?Object<string, string>} [nameLocalizations] The localized names for this choice
    * @property {string|number} value The value of the choice
    */
 
   /**
    * Transforms an {@link ApplicationCommandOptionData} object into something that can be used with the API.
-   * @param {ApplicationCommandOptionData} option The option to transform
+   * @param {ApplicationCommandOptionData|ApplicationCommandOption} option The option to transform
    * @param {boolean} [received] Whether this option has been received from Discord
    * @returns {APIApplicationCommandOption}
    * @private
@@ -381,10 +490,18 @@ class ApplicationCommand extends Base {
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
+    const nameLocalizationsKey = received ? 'nameLocalizations' : 'name_localizations';
+    const nameLocalizedKey = received ? 'nameLocalized' : 'name_localized';
+    const descriptionLocalizationsKey = received ? 'descriptionLocalizations' : 'description_localizations';
+    const descriptionLocalizedKey = received ? 'descriptionLocalized' : 'description_localized';
     return {
       type: option.type,
       name: option.name,
+      [nameLocalizationsKey]: option.nameLocalizations ?? option.name_localizations,
+      [nameLocalizedKey]: option.nameLocalized ?? option.name_localized,
       description: option.description,
+      [descriptionLocalizationsKey]: option.descriptionLocalizations ?? option.description_localizations,
+      [descriptionLocalizedKey]: option.descriptionLocalized ?? option.description_localized,
       required:
         option.required ??
         (option.type === ApplicationCommandOptionType.Subcommand ||
@@ -392,7 +509,12 @@ class ApplicationCommand extends Base {
           ? undefined
           : false),
       autocomplete: option.autocomplete,
-      choices: option.choices,
+      choices: option.choices?.map(choice => ({
+        name: choice.name,
+        [nameLocalizedKey]: choice.nameLocalized ?? choice.name_localized,
+        [nameLocalizationsKey]: choice.nameLocalizations ?? choice.name_localizations,
+        value: choice.value,
+      })),
       options: option.options?.map(o => this.transformOption(o, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,

@@ -1,5 +1,5 @@
-import { ChannelType } from 'discord-api-types/v9';
-import { z, ZodLiteral } from 'zod';
+import { s } from '@sapphire/shapeshift';
+import { ChannelType } from 'discord-api-types/v10';
 
 // Only allow valid channel types to be used. (This can't be dynamic because const enums are erased at runtime)
 const allowedChannelTypes = [
@@ -7,7 +7,6 @@ const allowedChannelTypes = [
 	ChannelType.GuildVoice,
 	ChannelType.GuildCategory,
 	ChannelType.GuildNews,
-	ChannelType.GuildStore,
 	ChannelType.GuildNewsThread,
 	ChannelType.GuildPublicThread,
 	ChannelType.GuildPrivateThread,
@@ -16,40 +15,23 @@ const allowedChannelTypes = [
 
 export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelTypes[number];
 
-const channelTypePredicate = z.union(
-	allowedChannelTypes.map((type) => z.literal(type)) as [
-		ZodLiteral<ChannelType>,
-		ZodLiteral<ChannelType>,
-		...ZodLiteral<ChannelType>[]
-	],
-);
+const channelTypesPredicate = s.array(s.union(...allowedChannelTypes.map((type) => s.literal(type))));
 
 export class ApplicationCommandOptionChannelTypesMixin {
 	public readonly channel_types?: ApplicationCommandOptionAllowedChannelTypes[];
-
-	/**
-	 * Adds a channel type to this option
-	 *
-	 * @param channelType The type of channel to allow
-	 */
-	public addChannelType(channelType: ApplicationCommandOptionAllowedChannelTypes) {
-		if (this.channel_types === undefined) {
-			Reflect.set(this, 'channel_types', []);
-		}
-
-		channelTypePredicate.parse(channelType);
-		this.channel_types!.push(channelType);
-
-		return this;
-	}
 
 	/**
 	 * Adds channel types to this option
 	 *
 	 * @param channelTypes The channel types to add
 	 */
-	public addChannelTypes(channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
-		channelTypes.forEach((channelType) => this.addChannelType(channelType));
+	public addChannelTypes(...channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
+		if (this.channel_types === undefined) {
+			Reflect.set(this, 'channel_types', []);
+		}
+
+		this.channel_types!.push(...channelTypesPredicate.parse(channelTypes));
+
 		return this;
 	}
 }

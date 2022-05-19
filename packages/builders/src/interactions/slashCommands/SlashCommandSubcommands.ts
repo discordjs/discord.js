@@ -2,13 +2,13 @@ import {
 	APIApplicationCommandSubcommandGroupOption,
 	APIApplicationCommandSubcommandOption,
 	ApplicationCommandOptionType,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { assertReturnOfBuilder, validateMaxOptionsLength, validateRequiredParameters } from './Assertions';
+import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
 import { SharedNameAndDescription } from './mixins/NameAndDescription';
 import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions';
-import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 
 /**
  * Represents a folder for subcommands
@@ -66,7 +66,9 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 		return {
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: this.name,
+			name_localizations: this.name_localizations,
 			description: this.description,
+			description_localizations: this.description_localizations,
 			options: this.options.map((option) => option.toJSON()),
 		};
 	}
@@ -102,7 +104,9 @@ export class SlashCommandSubcommandBuilder implements ToAPIApplicationCommandOpt
 		return {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: this.name,
+			name_localizations: this.name_localizations,
 			description: this.description,
+			description_localizations: this.description_localizations,
 			options: this.options.map((option) => option.toJSON()),
 		};
 	}
