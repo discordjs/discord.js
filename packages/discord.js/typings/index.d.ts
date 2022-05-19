@@ -329,7 +329,6 @@ export class AutoModRule extends Base {
   public enabled: boolean;
   public exemptRoles: Snowflake[];
   public exemptChannels: Snowflake[];
-  public position: number;
 }
 
 export abstract class Application extends Base {

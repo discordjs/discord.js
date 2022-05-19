@@ -63,12 +63,6 @@ class AutoModRule extends Base {
      * @type {Snowflake[]}
      */
     this.exemptChannels = data.exempt_channels;
-
-    /**
-     * The position of this rule.
-     * @type {number}
-     */
-    this.position = data.position;
   }
 }
 
