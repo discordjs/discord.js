@@ -41,21 +41,21 @@ footer = ""
 conventional_commits = true
 filter_unconventional = true
 commit_parsers = [
-    { message = "^feat", group = "🚀 Features"},
-    { message = "^fix", group = "🐛 Bug Fixes"},
-    { message = "^docs", group = "📝 Documentation"},
-    { message = "^perf", group = "🏃 Performance"},
-    { message = "^refactor", group = "🏠 Refactor"},
-    { message = "^typings", group = "⌨️ Typings"},
-    { message = "^types", group = "⌨️ Typings"},
-    { message = ".*deprecated", body = ".*deprecated", group = "🚨 Deprecation"},
+    { message = "^feat", group = "Features"},
+    { message = "^fix", group = "Bug Fixes"},
+    { message = "^docs", group = "Documentation"},
+    { message = "^perf", group = "Performance"},
+    { message = "^refactor", group = "Refactor"},
+    { message = "^typings", group = "Typings"},
+    { message = "^types", group = "Typings"},
+    { message = ".*deprecated", body = ".*deprecated", group = "Deprecation"},
     { message = "^revert", skip = true},
-    { message = "^style", group = "🪞 Styling"},
-    { message = "^test", group = "🧪 Testing"},
+    { message = "^style", group = "Styling"},
+    { message = "^test", group = "Testing"},
     { message = "^chore", skip = true},
     { message = "^ci", skip = true},
     { message = "^build", skip = true},
-    { body = ".*security", group = "🛡️ Security"},
+    { body = ".*security", group = "Security"},
 ]
 filter_commits = true
 tag_pattern = "@discordjs\\/builders@.*"
