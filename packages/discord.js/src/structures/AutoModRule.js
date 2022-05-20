@@ -22,16 +22,20 @@ class AutoModRule extends Base {
     this.guildId = data.guild_id;
 
     /**
-     * The name of this rule.
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
      * The user that created this rule.
      * @type {Snowflake}
      */
     this.creatorId = data.creator_id;
+
+    this._patch(data);
+  }
+
+  _patch(data) {
+    /**
+     * The name of this rule.
+     * @type {string}
+     */
+    this.name = data.name;
 
     /**
      * The event type of this rule.
