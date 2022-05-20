@@ -79,6 +79,9 @@
  */
 module.exports = {
   ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
+  AutoModerationRuleCreate: 'autoModerationRuleCreate',
+  AutoModerationRuleDelete: 'autoModerationRuleDelete',
+  AutoModerationRuleUpdate: 'autoModerationRuleUpdate',
   CacheSweep: 'cacheSweep',
   ChannelCreate: 'channelCreate',
   ChannelDelete: 'channelDelete',

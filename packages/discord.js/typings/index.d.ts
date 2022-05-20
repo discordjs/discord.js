@@ -1573,7 +1573,7 @@ export type CacheTypeReducer<
   RawType = CachedType,
   PresentType = CachedType | RawType,
   Fallback = PresentType | null,
-> = [State] extends ['cached']
+  > = [State] extends ['cached']
   ? CachedType
   : [State] extends ['raw']
   ? RawType
@@ -1748,19 +1748,19 @@ export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInpu
 
 export type MessageCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> =
   | {
-      componentType?: T;
-    } & MessageComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
+    componentType?: T;
+  } & MessageComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
 
 export type MessageChannelCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> =
   | {
-      componentType?: T;
-    } & MessageChannelComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
+    componentType?: T;
+  } & MessageChannelComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
 
 export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> =
   | { componentType?: T } & Pick<
-      InteractionCollectorOptions<MappedInteractionTypes<Cached>[T]>,
-      keyof AwaitMessageComponentOptions<any>
-    >;
+    InteractionCollectorOptions<MappedInteractionTypes<Cached>[T]>,
+    keyof AwaitMessageComponentOptions<any>
+  >;
 
 export interface StringMappedInteractionTypes<Cached extends CacheType = CacheType> {
   Button: ButtonInteraction<Cached>;
@@ -1956,7 +1956,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
 
 export class MessageContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
-> extends ContextMenuCommandInteraction<Cached> {
+  > extends ContextMenuCommandInteraction<Cached> {
   public commandType: ApplicationCommandType.Message;
   public get targetMessage(): NonNullable<CommandInteractionOption<Cached>['message']>;
   public inGuild(): this is MessageContextMenuCommandInteraction<'raw' | 'cached'>;
@@ -2905,7 +2905,7 @@ export class User extends PartialTextBasedChannel(Base) {
 
 export class UserContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
-> extends ContextMenuCommandInteraction<Cached> {
+  > extends ContextMenuCommandInteraction<Cached> {
   public commandType: ApplicationCommandType.User;
   public get targetUser(): User;
   public get targetMember(): CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
@@ -3482,11 +3482,11 @@ export function DiscordjsErrorMixin<T, N extends string>(
   name: N,
 ): Constructable<T & DiscordjsErrorFields<N>>;
 
-export class DiscordjsError extends DiscordjsErrorMixin(Error, 'Error') {}
+export class DiscordjsError extends DiscordjsErrorMixin(Error, 'Error') { }
 
-export class DiscordjsTypeError extends DiscordjsErrorMixin(TypeError, 'TypeError') {}
+export class DiscordjsTypeError extends DiscordjsErrorMixin(TypeError, 'TypeError') { }
 
-export class DiscordjsRangeError extends DiscordjsErrorMixin(RangeError, 'RangeError') {}
+export class DiscordjsRangeError extends DiscordjsErrorMixin(RangeError, 'RangeError') { }
 
 //#endregion
 
@@ -3565,7 +3565,7 @@ export class ApplicationCommandPermissionsManager<
   FetchSingleOptions,
   GuildType,
   CommandIdType,
-> extends BaseManager {
+  > extends BaseManager {
   private constructor(manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand);
   private manager: ApplicationCommandManager | GuildApplicationCommandManager | ApplicationCommand;
 
@@ -3586,23 +3586,23 @@ export class ApplicationCommandPermissionsManager<
   public remove(
     options:
       | (FetchSingleOptions & {
-          token: string;
-          channels?: (GuildChannelResolvable | ChannelPermissionConstant)[];
-          roles?: (RoleResolvable | RolePermissionConstant)[];
-          users: UserResolvable[];
-        })
+        token: string;
+        channels?: (GuildChannelResolvable | ChannelPermissionConstant)[];
+        roles?: (RoleResolvable | RolePermissionConstant)[];
+        users: UserResolvable[];
+      })
       | (FetchSingleOptions & {
-          token: string;
-          channels?: (GuildChannelResolvable | ChannelPermissionConstant)[];
-          roles: (RoleResolvable | RolePermissionConstant)[];
-          users?: UserResolvable[];
-        })
+        token: string;
+        channels?: (GuildChannelResolvable | ChannelPermissionConstant)[];
+        roles: (RoleResolvable | RolePermissionConstant)[];
+        users?: UserResolvable[];
+      })
       | (FetchSingleOptions & {
-          token: string;
-          channels: (GuildChannelResolvable | ChannelPermissionConstant)[];
-          roles?: (RoleResolvable | RolePermissionConstant)[];
-          users?: UserResolvable[];
-        }),
+        token: string;
+        channels: (GuildChannelResolvable | ChannelPermissionConstant)[];
+        roles?: (RoleResolvable | RolePermissionConstant)[];
+        users?: UserResolvable[];
+      }),
   ): Promise<ApplicationCommandPermissions[]>;
   public set(
     options: FetchSingleOptions & EditApplicationCommandPermissionsMixin,
@@ -3786,7 +3786,7 @@ export class GuildScheduledEventManager extends CachedManager<
   public fetch(): Promise<Collection<Snowflake, GuildScheduledEvent>>;
   public fetch<
     T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
-  >(options?: T): Promise<GuildScheduledEventManagerFetchResult<T>>;
+    >(options?: T): Promise<GuildScheduledEventManagerFetchResult<T>>;
   public edit<S extends GuildScheduledEventStatus, T extends GuildScheduledEventSetStatusArg<S>>(
     guildScheduledEvent: GuildScheduledEventResolvable,
     options: GuildScheduledEventEditOptions<S, T>,
@@ -4464,8 +4464,8 @@ export type CacheFactory = (
 
 export type CacheWithLimitsOptions = {
   [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer K, infer V, any>
-    ? LimitedCollectionOptions<K, V> | number
-    : never;
+  ? LimitedCollectionOptions<K, V> | number
+  : never;
 };
 
 export interface CategoryCreateChannelOptions {
@@ -4517,6 +4517,9 @@ export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
 
 export interface ClientEvents {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
+  autoModerationRuleCreate: [autoModRule: AutoModRule];
+  autoModerationRuleDelete: [autoModRule: AutoModRule];
+  autoModerationRuleUpdate: [oldAutoModRule: AutoModRule, newAutoModRule: AutoModRule];
   cacheSweep: [message: string];
   channelCreate: [channel: NonThreadGuildBasedChannel];
   channelDelete: [channel: DMChannel | NonThreadGuildBasedChannel];
@@ -4691,9 +4694,9 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
 export type AutocompleteFocusedOption = Pick<CommandInteractionOption, 'name'> & {
   focused: true;
   type:
-    | ApplicationCommandOptionType.String
-    | ApplicationCommandOptionType.Integer
-    | ApplicationCommandOptionType.Number;
+  | ApplicationCommandOptionType.String
+  | ApplicationCommandOptionType.Integer
+  | ApplicationCommandOptionType.Number;
   value: string;
 };
 
@@ -4732,6 +4735,9 @@ export declare const Colors: {
 
 export enum Events {
   ApplicationCommandPermissionsUpdate = 'applicationCommandPermissionsUpdate',
+  AutoModerationRuleCreate = 'autoModerationRuleCreate',
+  AutoModerationRuleDelete = 'autoModerationRuleDelete',
+  AutoModerationRuleUpdate = 'autoModerationRuleUpdate',
   ClientReady = 'ready',
   GuildCreate = 'guildCreate',
   GuildDelete = 'guildDelete',
@@ -5108,8 +5114,8 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   Invite: Invite;
   Message: TActionType extends AuditLogEvent.MessageBulkDelete ? Guild | { id: Snowflake } : User;
   Integration: Integration;
-  Channel: NonThreadGuildBasedChannel | { id: Snowflake; [x: string]: unknown };
-  Thread: AnyThreadChannel | { id: Snowflake; [x: string]: unknown };
+  Channel: NonThreadGuildBasedChannel | { id: Snowflake;[x: string]: unknown };
+  Thread: AnyThreadChannel | { id: Snowflake;[x: string]: unknown };
   StageInstance: StageInstance;
   Sticker: Sticker;
   GuildScheduledEvent: GuildScheduledEvent;
@@ -5305,7 +5311,7 @@ export interface GuildScheduledEventCreateOptions {
 export interface GuildScheduledEventEditOptions<
   S extends GuildScheduledEventStatus,
   T extends GuildScheduledEventSetStatusArg<S>,
-> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
+  > extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
   channel?: GuildVoiceChannelResolvable | null;
   status?: T;
 }
@@ -5320,23 +5326,23 @@ export interface GuildScheduledEventEntityMetadataOptions {
 
 export type GuildScheduledEventManagerFetchResult<
   T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
-> = T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions
+  > = T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions
   ? GuildScheduledEvent
   : Collection<Snowflake, GuildScheduledEvent>;
 
 export type GuildScheduledEventManagerFetchSubscribersResult<T extends FetchGuildScheduledEventSubscribersOptions> =
   T extends { withMember: true }
-    ? Collection<Snowflake, GuildScheduledEventUser<true>>
-    : Collection<Snowflake, GuildScheduledEventUser<false>>;
+  ? Collection<Snowflake, GuildScheduledEventUser<true>>
+  : Collection<Snowflake, GuildScheduledEventUser<false>>;
 
 export type GuildScheduledEventResolvable = Snowflake | GuildScheduledEvent;
 
 export type GuildScheduledEventSetStatusArg<T extends GuildScheduledEventStatus> =
   T extends GuildScheduledEventStatus.Scheduled
-    ? GuildScheduledEventStatus.Active | GuildScheduledEventStatus.Canceled
-    : T extends GuildScheduledEventStatus.Active
-    ? GuildScheduledEventStatus.Completed
-    : never;
+  ? GuildScheduledEventStatus.Active | GuildScheduledEventStatus.Canceled
+  : T extends GuildScheduledEventStatus.Active
+  ? GuildScheduledEventStatus.Completed
+  : never;
 
 export interface GuildScheduledEventUser<T> {
   guildScheduledEventId: Snowflake;
@@ -5726,14 +5732,14 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
   lastMessageId: undefined;
 }
 
-export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> { }
 
 export interface PartialMessage
-  extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
+  extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> { }
 
-export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
+export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> { }
 
-export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
+export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> { }
 
 export interface PartialOverwriteData {
   id: Snowflake | number;
@@ -5756,7 +5762,7 @@ export enum Partials {
   ThreadMember,
 }
 
-export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
+export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> { }
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
@@ -5893,8 +5899,8 @@ export interface SweeperDefinitions {
 
 export type SweeperOptions = {
   [K in keyof SweeperDefinitions]?: SweeperDefinitions[K][2] extends true
-    ? SweepOptions<SweeperDefinitions[K][0], SweeperDefinitions[K][1]> | LifetimeSweepOptions
-    : SweepOptions<SweeperDefinitions[K][0], SweeperDefinitions[K][1]>;
+  ? SweepOptions<SweeperDefinitions[K][0], SweeperDefinitions[K][1]> | LifetimeSweepOptions
+  : SweepOptions<SweeperDefinitions[K][0], SweeperDefinitions[K][1]>;
 };
 
 export interface LimitedCollectionOptions<K, V> {
