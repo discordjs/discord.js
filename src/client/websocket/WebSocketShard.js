@@ -370,7 +370,7 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Manually emit close since the ws never received the close frame.
+   * This method is responsible to emit close event for this shard.
    * This method helps the shard reconnect.
    * @param {CloseEvent} [event] Close event that was received
    */
