@@ -62,6 +62,16 @@ class GuildAuditLogs {
     }
 
     /**
+     * Cached {@link AutoModRule}s.
+     * @type {Collection<Snowflake, AutoModRule>}
+     * @private
+     */
+    this.autoModRules = data.auto_moderation_rules.reduce(
+      (autoModRules, autoModRule) => autoModRules.set(autoModRule.id, guild.autoModRules._add(autoModRule)),
+      new Collection(),
+    );
+
+    /**
      * The entries for this guild's audit logs
      * @type {Collection<Snowflake, GuildAuditLogsEntry>}
      */

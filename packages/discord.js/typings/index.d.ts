@@ -1273,6 +1273,7 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = AuditLogEvent> 
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
+  private autoModRules: Collection<Snowflake, AutoModRule>;
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
   public toJSON(): unknown;
 }
