@@ -4523,7 +4523,7 @@ export interface ClientEvents {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
   autoModerationRuleCreate: [autoModRule: AutoModRule];
   autoModerationRuleDelete: [autoModRule: AutoModRule];
-  autoModerationRuleUpdate: [oldAutoModRule: AutoModRule, newAutoModRule: AutoModRule];
+  autoModerationRuleUpdate: [oldAutoModRule: AutoModRule | null, newAutoModRule: AutoModRule];
   cacheSweep: [message: string];
   channelCreate: [channel: NonThreadGuildBasedChannel];
   channelDelete: [channel: DMChannel | NonThreadGuildBasedChannel];
