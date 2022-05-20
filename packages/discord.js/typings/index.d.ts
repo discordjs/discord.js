@@ -2731,7 +2731,6 @@ export interface WebSocketShardEvents {
   invalidSession: [];
   close: [event: CloseEvent];
   allReady: [unavailableGuilds?: Set<Snowflake>];
-  zombieConnection: [];
 }
 
 export class WebSocketShard extends EventEmitter {
@@ -2780,7 +2779,7 @@ export class WebSocketShard extends EventEmitter {
   private _send(data: unknown): void;
   private processQueue(): void;
   private destroy(destroyOptions?: { closeCode?: number; reset?: boolean; emit?: boolean; log?: boolean }): void;
-  private handleZombieConnection(): Promise<void>;
+  private emitClose(event?: CloseEvent): void;
   private _cleanupConnection(): void;
   private _emitDestroyed(): void;
 
@@ -3848,6 +3847,7 @@ export interface ClientFetchInviteOptions {
 export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
+  closeTimeout?: number;
   makeCache?: CacheFactory;
   allowedMentions?: MessageMentionOptions;
   partials?: Partials[];
@@ -4037,7 +4037,6 @@ export enum ShardEvents {
   Ready = 'ready',
   Resumed = 'resumed',
   AllReady = 'allReady',
-  ZombieConnection = 'zombieConnection',
 }
 
 export enum Status {
