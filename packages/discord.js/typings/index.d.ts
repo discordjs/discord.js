@@ -413,7 +413,7 @@ export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
-export type AutoModRuleResolvable = Snowflake | AutoModRule;
+export type AutoModRuleResolvable = AutoModRule | Snowflake;
 
 export abstract class Base {
   public constructor(client: Client<true>);
