@@ -10,10 +10,28 @@ class AutoModRule extends Base {
     super(client);
 
     /**
+     * The id of this rule.
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The guild id of this rule.
+     * @type {Snowflake}
+     */
+    this.guildId = data.guild_id;
+
+    /**
      * The name of this rule.
      * @type {string}
      */
     this.name = data.name;
+
+    /**
+     * The user that created this rule.
+     * @type {Snowflake}
+     */
+    this.creatorId = data.creator_id;
 
     /**
      * The event type of this rule.

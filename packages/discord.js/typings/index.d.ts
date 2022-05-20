@@ -321,7 +321,10 @@ export abstract class AnonymousGuild extends BaseGuild {
 
 export class AutoModRule extends Base {
   private constructor(client: Client, data: unknown);
+  public id: Snowflake;
+  public guildId: Snowflake;
   public name: string;
+  public creatorId: Snowflake;
   public eventType: number;
   public triggerType: number;
   public triggerMetadata: unknown;
