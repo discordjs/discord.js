@@ -410,6 +410,8 @@ export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
+export type AutoModRuleResolvable = Snowflake | AutoModRule;
+
 export abstract class Base {
   public constructor(client: Client<true>);
   public readonly client: Client<true>;
@@ -1169,6 +1171,7 @@ export class Guild extends AnonymousGuild {
   public maxVideoChannelUsers: number | null;
   public approximateMemberCount: number | null;
   public approximatePresenceCount: number | null;
+  public autoModRules: AutoModRuleManager;
   public available: boolean;
   public bans: GuildBanManager;
   public channels: GuildChannelManager;
@@ -3602,6 +3605,11 @@ export class ApplicationCommandPermissionsManager<
     options: FetchSingleOptions & EditApplicationCommandPermissionsMixin,
   ): Promise<ApplicationCommandPermissions[]>;
   private permissionsPath(guildId: Snowflake, commandId?: Snowflake): string;
+}
+
+export class AutoModRuleManager extends CachedManager<Snowflake, AutoModRule, AutoModRuleResolvable> {
+  private constructor(guild: Guild, iterable: unknown);
+  public guild: Guild;
 }
 
 export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
