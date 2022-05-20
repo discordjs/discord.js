@@ -2670,6 +2670,9 @@ export class Sweepers {
   public intervals: Record<SweeperKey, NodeJS.Timeout | null>;
   public options: SweeperOptions;
 
+  public sweepAutoModRules(
+    filter: CollectionSweepFilter<SweeperDefinitions['autoModRules'][0], SweeperDefinitions['autoModRules'][1]>,
+  ): number;
   public sweepApplicationCommands(
     filter: CollectionSweepFilter<
       SweeperDefinitions['applicationCommands'][0],
@@ -5882,6 +5885,7 @@ export interface LifetimeSweepOptions {
 }
 
 export interface SweeperDefinitions {
+  autoModRules: [Snowflake, AutoModRule];
   applicationCommands: [Snowflake, ApplicationCommand];
   bans: [Snowflake, GuildBan];
   emojis: [Snowflake, GuildEmoji];

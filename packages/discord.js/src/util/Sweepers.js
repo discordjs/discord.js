@@ -62,6 +62,15 @@ class Sweepers {
   }
 
   /**
+   * Sweeps all AutoMod rules and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine which AutoMod rules will be removed from the caches.
+   * @returns {number} Amount of AutoMod rules that were removed from the caches
+   */
+  sweepAutoModRules(filter) {
+    return this._sweepGuildDirectProp('autoModRules', filter).items;
+  }
+
+  /**
    * Sweeps all guild and global application commands and removes the ones which are indicated by the filter.
    * @param {Function} filter The function used to determine which commands will be removed from the caches.
    * @returns {number} Amount of commands that were removed from the caches

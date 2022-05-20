@@ -4,6 +4,7 @@ const { ChannelType, MessageType, ComponentType } = require('discord-api-types/v
 
 /**
  * The name of an item to be swept in Sweepers
+ * * `autoModRules`
  * * `applicationCommands` - both global and guild commands
  * * `bans`
  * * `emojis`
@@ -21,6 +22,7 @@ const { ChannelType, MessageType, ComponentType } = require('discord-api-types/v
  * @typedef {string} SweeperKey
  */
 exports.SweeperKeys = [
+  'autoModRules',
   'applicationCommands',
   'bans',
   'emojis',
