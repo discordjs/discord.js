@@ -170,7 +170,7 @@ export class SequentialHandler implements IHandler {
 		url: string,
 		options: RequestOptions,
 		requestData: HandlerRequestData,
-	): Promise<unknown> {
+	): Promise<Dispatcher.ResponseData> {
 		let queue = this.#asyncQueue;
 		let queueType = QueueType.Standard;
 		// Separate sublimited requests when already sublimited
@@ -228,7 +228,7 @@ export class SequentialHandler implements IHandler {
 		options: RequestOptions,
 		requestData: HandlerRequestData,
 		retries = 0,
-	): Promise<unknown> {
+	): Promise<Dispatcher.ResponseData> {
 		/*
 		 * After calculations have been done, pre-emptively stop further requests
 		 * Potentially loop until this task can run if e.g. the global rate limit is hit twice
@@ -392,7 +392,7 @@ export class SequentialHandler implements IHandler {
 		}
 
 		if (status >= 200 && status < 300) {
-			return parseResponse(res);
+			return res;
 		} else if (status === 429) {
 			// A rate limit was hit - this may happen if the route isn't associated with an official bucket hash yet, or when first globally rate limited
 			const isGlobal = this.globalLimited;
@@ -474,7 +474,7 @@ export class SequentialHandler implements IHandler {
 				// throw the API error
 				throw new DiscordAPIError(data, 'code' in data ? data.code : data.error, status, method, url, requestData);
 			}
-			return null;
+			return res;
 		}
 	}
 }

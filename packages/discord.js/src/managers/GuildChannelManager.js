@@ -429,6 +429,7 @@ class GuildChannelManager extends CachedManager {
     const id = this.resolveId(channel);
     if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
     await this.client.rest.delete(Routes.channel(id), { reason });
+    this.client.actions.ChannelDelete.handle({ id });
   }
 }
 

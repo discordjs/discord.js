@@ -13,7 +13,6 @@ import {
   inlineCode,
   italic,
   JSONEncodable,
-  MappedComponentTypes,
   quote,
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
@@ -29,6 +28,7 @@ import {
   ModalActionRowComponentBuilder,
   ModalBuilder as BuildersModal,
   AnyComponentBuilder,
+  ComponentBuilder,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
@@ -2546,12 +2546,31 @@ export class Util extends null {
   ): Promise<{ id: Snowflake; position: number }[]>;
 }
 
+export interface MappedComponentBuilderTypes {
+  [ComponentType.Button]: ButtonBuilder;
+  [ComponentType.SelectMenu]: SelectMenuBuilder;
+  [ComponentType.ActionRow]: ActionRowBuilder;
+  [ComponentType.TextInput]: TextInputBuilder;
+}
+
+export interface MappedComponentTypes {
+  [ComponentType.Button]: ButtonComponent;
+  [ComponentType.SelectMenu]: SelectMenuComponent;
+  [ComponentType.ActionRow]: ActionRowComponent;
+  [ComponentType.TextInput]: TextInputComponent;
+}
+
 export class Components extends null {
-  public static createComponentBuilder<T extends keyof MappedComponentTypes>(
+  public static createComponent<T extends keyof MappedComponentTypes>(
     data: APIMessageComponent & { type: T },
   ): MappedComponentTypes[T];
-  public static createComponentBuilder<C extends Component>(data: C): C;
-  public static createComponentBuilder(data: APIMessageComponent | Component): Component;
+  public static createComponent<C extends Component>(data: C): C;
+  public static createComponent(data: APIMessageComponent | Component): Component;
+  public static createComponentBuilder<T extends keyof MappedComponentBuilderTypes>(
+    data: APIMessageComponent & { type: T },
+  ): MappedComponentBuilderTypes[T];
+  public static createComponentBuilder<C extends ComponentBuilder>(data: C): C;
+  public static createComponentBuilder(data: APIMessageComponent | ComponentBuilder): ComponentBuilder;
 }
 
 export class Formatters extends null {

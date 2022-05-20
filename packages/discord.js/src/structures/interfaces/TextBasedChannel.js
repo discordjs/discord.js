@@ -298,13 +298,13 @@ class TextBasedChannel {
       }
       if (messageIds.length === 0) return new Collection();
       if (messageIds.length === 1) {
-        await this.client.rest.delete(Routes.channelMessage(this.id, messageIds[0]));
         const message = this.client.actions.MessageDelete.getMessage(
           {
             message_id: messageIds[0],
           },
           this,
         );
+        await this.client.rest.delete(Routes.channelMessage(this.id, messageIds[0]));
         return message ? new Collection([[message.id, message]]) : new Collection();
       }
       await this.client.rest.post(Routes.channelBulkDelete(this.id), { body: { messages: messageIds } });

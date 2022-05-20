@@ -294,7 +294,7 @@ export class RequestManager extends EventEmitter {
 	 * @param request All the information needed to make a request
 	 * @returns The response from the api request
 	 */
-	public async queueRequest(request: InternalRequest): Promise<unknown> {
+	public async queueRequest(request: InternalRequest): Promise<Dispatcher.ResponseData> {
 		// Generalize the endpoint to its route data
 		const routeId = RequestManager.generateRouteData(request.fullRoute, request.method);
 		// Get the bucket hash for the generic route, or point to a global route otherwise
@@ -481,7 +481,7 @@ export class RequestManager extends EventEmitter {
 		// Hard-Code Old Message Deletion Exception (2 week+ old messages are a different bucket)
 		// https://github.com/discord/discord-api-docs/issues/1295
 		if (method === RequestMethod.Delete && baseRoute === '/channels/:id/messages/:id') {
-			const id = /\d{16,19}$/.exec(endpoint)![0];
+			const id = /\d{16,19}$/.exec(endpoint)![0]!;
 			const timestamp = DiscordSnowflake.timestampFrom(id);
 			if (Date.now() - timestamp > 1000 * 60 * 60 * 24 * 14) {
 				exceptions += '/Delete Old Message';
