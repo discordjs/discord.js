@@ -584,7 +584,7 @@ class Message extends Base {
     return Boolean(
       this.author.id === this.client.user.id ||
         (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
-          this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
+          this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()),
     );
   }
 
@@ -798,9 +798,8 @@ class Message extends Base {
    * archived. This can be:
    * * `60` (1 hour)
    * * `1440` (1 day)
-   * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
-   * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
-   * * `'MAX'` Based on the guild's features
+   * * `4320` (3 days)
+   * * `10080` (7 days)
    * @typedef {number|string} ThreadAutoArchiveDuration
    */
 

@@ -13,6 +13,7 @@ const Events = require('../util/Events');
 const Structures = require('../util/Structures');
 const GuildMember = Structures.get('GuildMember');
 const Role = Structures.get('Role');
+const Partials = require('../util/Partials');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -119,6 +120,20 @@ class GuildMemberManager extends CachedManager {
     const data = await this.client.rest.put(Routes.guildMember(this.guild.id, userId), { body: resolvedOptions });
     // Data is an empty buffer if the member is already part of the guild.
     return data instanceof Buffer ? (options.fetchWhenExisting === false ? null : this.fetch(userId)) : this._add(data);
+  }
+
+  /**
+   * The client user as a GuildMember of this guild
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get me() {
+    return (
+      this.resolve(this.client.user.id) ??
+      (this.client.options.partials.includes(Partials.GuildMember)
+        ? this._add({ user: { id: this.client.user.id } }, true)
+        : null)
+    );
   }
 
   /**

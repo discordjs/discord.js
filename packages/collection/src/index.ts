@@ -192,7 +192,7 @@ export class Collection<K, V> extends Map<K, V> {
 			const num = Math.floor(Math.random() * array.length);
 			random.indexOf(num) > -1 ? (i -= 1) : random.push(num); // eslint-disable-line
 		}
-		const results = random.map((r) => array[r]);
+		const results = random.map((r) => array[r]!);
 
 		return results.length === 1 ? results[0] : results;
 	}
@@ -219,7 +219,7 @@ export class Collection<K, V> extends Map<K, V> {
 			const num = Math.floor(Math.random() * array.length);
 			random.indexOf(num) > -1 ? (i -= 1) : random.push(num); // eslint-disable-line
 		}
-		const results = random.map((r) => array[r]);
+		const results = random.map((r) => array[r]!);
 
 		return results.length === 1 ? results[0] : results;
 	}

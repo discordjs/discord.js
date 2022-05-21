@@ -2,6 +2,74 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.7.0](https://github.com/discordjs/discord.js/compare/13.6.0...13.7.0) - (2022-05-13)
+
+## Bug Fixes
+
+- **MessageEmbed:** Fix a typo (#7906) ([ea28638](https://github.com/discordjs/discord.js/commit/ea28638a0c7cebb40aab36c01ed29fed02935540))
+- **GuildEditData:** Some fields can be null for v13 (#7633) ([816936e](https://github.com/discordjs/discord.js/commit/816936eafbe4b8caee10a15709a771919754f5ad))
+- Apply v14 fix (#7756) ([ab6c2ba](https://github.com/discordjs/discord.js/commit/ab6c2bad845d44b5d822b131e5e458a3637431c6))
+- **GuildChannelManager:** `delete` method accessing wrong id (#7771) ([c9e4562](https://github.com/discordjs/discord.js/commit/c9e4562fd58999452829501a3410da2b1709342f))
+- **GuildScheduledEvent:** Handle missing `image` for v13 (#7627) ([dfea9c2](https://github.com/discordjs/discord.js/commit/dfea9c27cef4ec7472c39675c93de985b43fee87))
+- **messagementions:** Fix `has` method for v13 (#7591) ([7a52785](https://github.com/discordjs/discord.js/commit/7a52785f7d3a0d2211b2ceff68f7152161a0b1f5))
+- Check if member has admininistrator on `moderatable` (v13) (#7578) ([13dd82d](https://github.com/discordjs/discord.js/commit/13dd82d7fa6bc5906103cf8c1f4bb7de5d3e8270))
+- **ThreadChannel:** Require `sendable` for `unarchivable` (#7555) ([49397c0](https://github.com/discordjs/discord.js/commit/49397c0ca4ec468a2046167afa64b7a82aa5e7fa))
+- Backport `MessageReaction#me` being incorrectly `false` (#7553) ([5f621c1](https://github.com/discordjs/discord.js/commit/5f621c19959e892066b23f06f0b6485b6cecdb4c))
+- **typings:** SweepStageInstances typo (#7521) ([f096069](https://github.com/discordjs/discord.js/commit/f0960698d2ef51d4586f3c89d8b7c94faf5d921b))
+- **MessagePayload:** V13 don't set reply flags to target flags (#7515) ([30baff7](https://github.com/discordjs/discord.js/commit/30baff7ecbe5fdb5bea9ed5b14a28a76922d507c))
+- **Shard:** V13 EventEmitter listener warning (#7479) ([77b8e01](https://github.com/discordjs/discord.js/commit/77b8e0191123b0e76832c642454adceab9b8ad13))
+- **MessageEmbed:** Set footer to undefined (#7358) ([bc5ddc3](https://github.com/discordjs/discord.js/commit/bc5ddc36fa2e1935ffc8e871c333f6613a5f2396))
+
+## Documentation
+
+- **shardingmanager:** Fix type of `execArgv` option (v13) (#7863) ([43a7870](https://github.com/discordjs/discord.js/commit/43a7870b2337ebdc362640a799fe5e81cfbaf739))
+- Fix and improve localization docs (v13 backport) (#7807) ([6dcf0bd](https://github.com/discordjs/discord.js/commit/6dcf0bda05ee79baa173dce02a4f8985f6f654df))
+- **ApplicationCommand:** Fix ApplicationCommandOptionChoice (#7798) ([1040ce0](https://github.com/discordjs/discord.js/commit/1040ce0e710e0e805ad75302b9078a0230309ae8))
+- Backport version 13 fixes (#7552) ([69ba067](https://github.com/discordjs/discord.js/commit/69ba067a6512fffd2be99ad0b5db2cbfcbb19c88))
+
+## Features
+
+- Backport (#7776) ([5165b18](https://github.com/discordjs/discord.js/commit/5165b18b85379411645ca377389b09a911fd3fc8))
+- Backport (#7787) ([3eb45e3](https://github.com/discordjs/discord.js/commit/3eb45e30b3a3b1b5624d36698b7f1af6bff3cb6d))
+- Backport (#7786) ([ab324ea](https://github.com/discordjs/discord.js/commit/ab324ea6ae042e8312e28dee1665729e6db29193))
+- Add support for localized slash commands (v13 backport) (#7766) ([022e138](https://github.com/discordjs/discord.js/commit/022e138b9a5a9038e61b5bdabade7606c9341982))
+- App authorization links and tags for v13 (#7731) ([9e4a900](https://github.com/discordjs/discord.js/commit/9e4a900e6d540ad611675ec54ba35e2b9da984dd))
+- Backport (#7777) ([6c56132](https://github.com/discordjs/discord.js/commit/6c5613255ade937384525b17f2179f4086a501f1))
+- Backport (#7778) ([ff49b82](https://github.com/discordjs/discord.js/commit/ff49b82db773f0407ac0e890897156fb52843b11))
+- Backport (#7779) ([ae7f991](https://github.com/discordjs/discord.js/commit/ae7f991e8d08222483a1e92d6740fedadc479bd5))
+- Backport (#7783) ([cedc333](https://github.com/discordjs/discord.js/commit/cedc3339401349dfa00990be204b203ef46a3545))
+- **VoiceChannel:** Support `video_quality_mode` (v13) (#7785) ([6daee1b](https://github.com/discordjs/discord.js/commit/6daee1b235fc29eb09d9dd97cbbea619225ee2e1))
+- **StageInstance:** Add support for associated guild event (#7713) ([68498a8](https://github.com/discordjs/discord.js/commit/68498a87be9436be95456768f50db638c06a6ca8))
+- **modals:** Modals, input text components and modal submits, v13 style (#7431) ([e1cdcfa](https://github.com/discordjs/discord.js/commit/e1cdcfa9a6baed1d373cc5474630d32ce38db31e))
+- Backport `Interaction#isRepliable` (#7563) ([5e8162a](https://github.com/discordjs/discord.js/commit/5e8162a1379cb3b8c02cc5b29e70911eb1389218))
+- Add methods to managers for v13 (#7611) ([9f09702](https://github.com/discordjs/discord.js/commit/9f09702854d21fd11ab3f4e2f0eec445f294130e))
+- Add `premiumSubscriptionCount` to `InviteGuild` (#7629) ([8e7d15e](https://github.com/discordjs/discord.js/commit/8e7d15e49d0b75687d4ae813d8274b7086959004))
+- **scheduledevents:** Event cover images for v13 (#7613) ([a7535a2](https://github.com/discordjs/discord.js/commit/a7535a2232c4de4553d0d2a2cee315124e1bdfaa))
+- Backport `MessageMentions` channel type fixes (#7562) ([93cdb2f](https://github.com/discordjs/discord.js/commit/93cdb2f2fa3ebde8f06cefe9de4a351b99f3b5e6))
+- Backport cache types resolving to `never` (#7561) ([611d3a7](https://github.com/discordjs/discord.js/commit/611d3a7b2f76c8be2655d8f27ec4667e6c2054cf))
+- Backport sending message flags (#7560) ([29d42ed](https://github.com/discordjs/discord.js/commit/29d42ed31959a0b5e518b46e45029b99cb15aa59))
+- **ThreadChannel:** Backport creation timestamp (#7559) ([1d97dcf](https://github.com/discordjs/discord.js/commit/1d97dcff087b75e36d8d4b20e79ec3b820868024))
+- Add custom image support to version 13 (#7557) ([679b87c](https://github.com/discordjs/discord.js/commit/679b87c4f88a7bd56bf81a9ade0fc2bf7e54495a))
+- Backport `reason` on `pin` and `unpin` (#7556) ([b231bec](https://github.com/discordjs/discord.js/commit/b231bece0e0a1600bd4e2337a2ec83c9a8df11fd))
+- **GuildPreview:** Add stickers to version 13 (#7554) ([215dfe0](https://github.com/discordjs/discord.js/commit/215dfe02d5482fcabccbc2373386eae15bdd866a))
+- Backport `sweepStickers` method (#7558) ([ee1698d](https://github.com/discordjs/discord.js/commit/ee1698d92869280dcfdbfb353712ef97dff90b56))
+- **scheduledevents:** Add image option (v13) (#7549) ([2fcf8af](https://github.com/discordjs/discord.js/commit/2fcf8af421b34b4908bb01b59cf748a1376e5535))
+- **thread:** V13 add `newlyCreated` to `threadCreate` event (#7481) ([2b3db73](https://github.com/discordjs/discord.js/commit/2b3db734dfd0e9a3cbfdd45fd3aa490b82ddaa08))
+- **commands:** Attachment options (#7441) ([5bcca8b](https://github.com/discordjs/discord.js/commit/5bcca8b97fc09d9f3149325e2b8d8bccdd61e354))
+
+## Refactor
+
+- Deprecate v13 properties and methods (#7782) ([b9802f4](https://github.com/discordjs/discord.js/commit/b9802f4b6f25da62a0bff049ccc165cce8c9d856))
+- Remove non-breaking stuff (#7636) ([b9c5676](https://github.com/discordjs/discord.js/commit/b9c5676006a702f704e970b3027829663b9b0a65))
+
+## Typings
+
+- Fix ModalSubmitInteraction (#7768) ([1d09ad4](https://github.com/discordjs/discord.js/commit/1d09ad4652796ecf39a3146631120d5600f36b6a))
+- **threadchannel:** Fix autoArchiveDuration types (#7817) ([7afcd95](https://github.com/discordjs/discord.js/commit/7afcd9594a5706526be20cb26f0de388b094c1b4))
+- **InteractionCollector:** Fix guild and channel types (#7624) ([7814074](https://github.com/discordjs/discord.js/commit/78140748ce4a64977426a93fd72c9e2783e5919d))
+- V13 channel create overloads fix (#7480) ([0b54089](https://github.com/discordjs/discord.js/commit/0b54089c43b60a325e02b78dd0126771ac71f746))
+
+
 # [13.6.0](https://github.com/discordjs/discord.js/compare/13.5.1...13.6.0) - (2022-01-13)
 
 ## Documentation

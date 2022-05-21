@@ -1,4 +1,4 @@
-import { Client, VoiceChannel, Intents } from 'discord.js';
+import { Client, VoiceBasedChannel, VoiceChannel } from 'discord.js';
 import {
 	joinVoiceChannel,
 	createAudioPlayer,
@@ -9,6 +9,7 @@ import {
 	VoiceConnectionStatus,
 } from '@discordjs/voice';
 import { createDiscordJSAdapter } from './adapter';
+import { GatewayIntentBits } from 'discord-api-types/v9';
 
 /**
  * 	In this example, we are creating a single audio player that plays to a number of voice channels.
@@ -48,7 +49,7 @@ function playSong() {
 	return entersState(player, AudioPlayerStatus.Playing, 5e3);
 }
 
-async function connectToChannel(channel: VoiceChannel) {
+async function connectToChannel(channel: VoiceBasedChannel) {
 	/**
 	 * Here, we try to establish a connection to a voice channel. If we're already connected
 	 * to this voice channel, @discordjs/voice will just return the existing connection for us!
@@ -94,7 +95,7 @@ async function connectToChannel(channel: VoiceChannel) {
  */
 
 const client = new Client({
-	ws: { intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] },
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates],
 });
 
 void client.login('token here');

@@ -240,8 +240,8 @@ class GuildMember extends Base {
     if (this.user.id === this.guild.ownerId) return false;
     if (this.user.id === this.client.user.id) return false;
     if (this.client.user.id === this.guild.ownerId) return true;
-    if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return this.guild.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
+    if (!this.guild.members.me) throw new Error('GUILD_UNCACHED_ME');
+    return this.guild.members.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }
 
   /**
@@ -250,8 +250,8 @@ class GuildMember extends Base {
    * @readonly
    */
   get kickable() {
-    if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return this.manageable && this.guild.me.permissions.has(PermissionFlagsBits.KickMembers);
+    if (!this.guild.members.me) throw new Error('GUILD_UNCACHED_ME');
+    return this.manageable && this.guild.members.me.permissions.has(PermissionFlagsBits.KickMembers);
   }
 
   /**
@@ -260,8 +260,8 @@ class GuildMember extends Base {
    * @readonly
    */
   get bannable() {
-    if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return this.manageable && this.guild.me.permissions.has(PermissionFlagsBits.BanMembers);
+    if (!this.guild.members.me) throw new Error('GUILD_UNCACHED_ME');
+    return this.manageable && this.guild.members.me.permissions.has(PermissionFlagsBits.BanMembers);
   }
 
   /**
@@ -273,7 +273,7 @@ class GuildMember extends Base {
     return (
       !this.permissions.has(PermissionFlagsBits.Administrator) &&
       this.manageable &&
-      (this.guild.me?.permissions.has(PermissionFlagsBits.ModerateMembers) ?? false)
+      (this.guild.members.me?.permissions.has(PermissionFlagsBits.ModerateMembers) ?? false)
     );
   }
 

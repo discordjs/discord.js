@@ -91,7 +91,7 @@ class InteractionResponses {
    *   .catch(console.error);
    * @example
    * // Create an ephemeral reply with an embed
-   * const embed = new Embed().setDescription('Pong!');
+   * const embed = new EmbedBuilder().setDescription('Pong!');
    *
    * interaction.reply({ embeds: [embed], ephemeral: true })
    *   .then(() => console.log('Reply sent.'))

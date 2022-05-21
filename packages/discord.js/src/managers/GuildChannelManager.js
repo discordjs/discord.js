@@ -13,7 +13,6 @@ const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
 const Util = require('../util/Util');
-const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 const ThreadChannel = Structures.get('ThreadChannel');
 
 let cacheWarningEmitted = false;
@@ -254,9 +253,6 @@ class GuildChannelManager extends CachedManager {
       }
     }
 
-    let defaultAutoArchiveDuration = data.defaultAutoArchiveDuration;
-    if (defaultAutoArchiveDuration === 'MAX') defaultAutoArchiveDuration = resolveAutoArchiveMaxLimit(this.guild);
-
     const newData = await this.client.rest.patch(Routes.channel(channel.id), {
       body: {
         name: (data.name ?? channel.name).trim(),
@@ -270,7 +266,7 @@ class GuildChannelManager extends CachedManager {
         parent_id: parent,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
-        default_auto_archive_duration: defaultAutoArchiveDuration,
+        default_auto_archive_duration: data.defaultAutoArchiveDuration,
         permission_overwrites,
       },
       reason,
@@ -434,6 +430,7 @@ class GuildChannelManager extends CachedManager {
     const id = this.resolveId(channel);
     if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
     await this.client.rest.delete(Routes.channel(id), { reason });
+    this.client.actions.ChannelDelete.handle({ id });
   }
 }
 

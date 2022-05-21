@@ -134,7 +134,7 @@ export class VoiceReceiver {
 			const headerExtensionLength = packet.readUInt16BE(2);
 			let offset = 4;
 			for (let i = 0; i < headerExtensionLength; i++) {
-				const byte = packet[offset];
+				const byte = packet[offset]!;
 				offset++;
 				if (byte === 0) continue;
 				offset += 1 + (byte >> 4);
