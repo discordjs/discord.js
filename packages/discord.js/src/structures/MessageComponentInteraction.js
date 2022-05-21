@@ -21,9 +21,9 @@ class MessageComponentInteraction extends Interaction {
 
     /**
      * The message to which the component was attached
-     * @type {Message|APIMessage}
+     * @type {Message}
      */
-    this.message = this.channel?.messages._add(data.message) ?? data.message;
+    this.message = this.channel?.messages._add(data.message) ?? new (require('./Message').Message)(data.message);
 
     /**
      * The custom id of the component which was interacted with

@@ -1757,7 +1757,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public channelId: Snowflake;
   public deferred: boolean;
   public ephemeral: boolean | null;
-  public message: GuildCacheMessage<Cached>;
+  public message: Message<BooleanCache<Cached>>;
   public replied: boolean;
   public webhook: InteractionWebhook;
   public inGuild(): this is MessageComponentInteraction<'raw' | 'cached'>;

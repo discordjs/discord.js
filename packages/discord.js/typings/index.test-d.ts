@@ -1209,7 +1209,7 @@ client.on('interactionCreate', async interaction => {
     } else if (interaction.inRawGuild()) {
       expectAssignable<ButtonInteraction>(interaction);
       expectType<APIButtonComponent>(interaction.component);
-      expectType<APIMessage>(interaction.message);
+      expectType<Message>(interaction.message);
       expectType<null>(interaction.guild);
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
@@ -1234,7 +1234,7 @@ client.on('interactionCreate', async interaction => {
     } else if (interaction.inRawGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
       expectType<APIButtonComponent | APISelectMenuComponent>(interaction.component);
-      expectType<APIMessage>(interaction.message);
+      expectType<Message>(interaction.message);
       expectType<null>(interaction.guild);
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
@@ -1259,7 +1259,7 @@ client.on('interactionCreate', async interaction => {
     } else if (interaction.inRawGuild()) {
       expectAssignable<SelectMenuInteraction>(interaction);
       expectType<APISelectMenuComponent>(interaction.component);
-      expectType<APIMessage>(interaction.message);
+      expectType<Message>(interaction.message);
       expectType<null>(interaction.guild);
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
