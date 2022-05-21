@@ -86,11 +86,9 @@ var require_package = __commonJS({
         "@discordjs/collection": "workspace:^",
         "@sapphire/async-queue": "^1.3.1",
         "@sapphire/snowflake": "^3.2.1",
-        "@types/node-fetch": "^2.6.1",
-        "discord-api-types": "^0.29.0",
-        "form-data": "^4.0.0",
-        "node-fetch": "^2.6.7",
-        tslib: "^2.3.1"
+        "discord-api-types": "^0.33.0",
+        tslib: "^2.3.1",
+        undici: "^5.2.0"
       },
       devDependencies: {
         "@babel/core": "^7.17.9",
@@ -108,7 +106,6 @@ var require_package = __commonJS({
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-import": "^2.26.0",
         jest: "^27.5.1",
-        nock: "^13.2.4",
         prettier: "^2.6.2",
         tsup: "^5.12.5",
         typedoc: "^0.22.15",
@@ -126,10 +123,13 @@ var require_package = __commonJS({
 
 // src/lib/utils/constants.ts
 import { APIVersion } from "discord-api-types/v10";
+import { getGlobalDispatcher } from "undici";
 var Package = require_package();
 var DefaultUserAgent = `DiscordBot (${Package.homepage}, ${Package.version})`;
 var DefaultRestOptions = {
-  agent: {},
+  get agent() {
+    return getGlobalDispatcher();
+  },
   api: "https://discord.com/api",
   authPrefix: "Bot",
   cdn: "https://cdn.discordapp.com",
@@ -150,7 +150,6 @@ var RESTEvents = /* @__PURE__ */ ((RESTEvents2) => {
   RESTEvents2["Debug"] = "restDebug";
   RESTEvents2["InvalidRequestWarning"] = "invalidRequestWarning";
   RESTEvents2["RateLimited"] = "rateLimited";
-  RESTEvents2["Request"] = "request";
   RESTEvents2["Response"] = "response";
   RESTEvents2["HashSweep"] = "hashSweep";
   RESTEvents2["HandlerSweep"] = "handlerSweep";
@@ -294,8 +293,8 @@ __name(DiscordAPIError, "DiscordAPIError");
 
 // src/lib/errors/HTTPError.ts
 var HTTPError = class extends Error {
-  constructor(message, name, status, method, url, bodyData) {
-    super(message);
+  constructor(name, status, method, url, bodyData) {
+    super();
     this.name = name;
     this.status = status;
     this.method = method;
@@ -334,19 +333,31 @@ var RateLimitError = class extends Error {
 __name(RateLimitError, "RateLimitError");
 
 // src/lib/RequestManager.ts
+import { Blob as Blob2 } from "node:buffer";
 import { EventEmitter } from "node:events";
-import { Agent as httpAgent } from "node:http";
-import { Agent as httpsAgent } from "node:https";
 import Collection from "@discordjs/collection";
 import { DiscordSnowflake } from "@sapphire/snowflake";
-import FormData from "form-data";
+import { FormData as FormData2 } from "undici";
 
 // src/lib/handlers/SequentialHandler.ts
 import { setTimeout as sleep } from "node:timers/promises";
 import { AsyncQueue } from "@sapphire/async-queue";
-import fetch from "node-fetch";
+import { request } from "undici";
 
 // src/lib/utils/utils.ts
+import { Blob } from "node:buffer";
+import { URLSearchParams } from "node:url";
+import { types } from "node:util";
+import { FormData } from "undici";
+function parseHeader(header) {
+  if (header === void 0) {
+    return header;
+  } else if (typeof header === "string") {
+    return header;
+  }
+  return header.join(";");
+}
+__name(parseHeader, "parseHeader");
 function serializeSearchParam(value) {
   switch (typeof value) {
     case "string":
@@ -382,17 +393,18 @@ function makeURLSearchParams(options) {
 }
 __name(makeURLSearchParams, "makeURLSearchParams");
 function parseResponse(res) {
-  if (res.headers.get("Content-Type")?.startsWith("application/json")) {
-    return res.json();
+  const header = parseHeader(res.headers["content-type"]);
+  if (header?.startsWith("application/json")) {
+    return res.body.json();
   }
-  return res.arrayBuffer();
+  return res.body.arrayBuffer();
 }
 __name(parseResponse, "parseResponse");
 function hasSublimit(bucketRoute, body, method) {
   if (bucketRoute === "/channels/:id") {
     if (typeof body !== "object" || body === null)
       return false;
-    if (method !== "patch" /* Patch */)
+    if (method !== "PATCH" /* Patch */)
       return false;
     const castedBody = body;
     return ["name", "topic"].some((key) => Reflect.has(castedBody, key));
@@ -400,6 +412,43 @@ function hasSublimit(bucketRoute, body, method) {
   return true;
 }
 __name(hasSublimit, "hasSublimit");
+async function resolveBody(body) {
+  if (body == null) {
+    return null;
+  } else if (typeof body === "string") {
+    return body;
+  } else if (types.isUint8Array(body)) {
+    return body;
+  } else if (types.isArrayBuffer(body)) {
+    return new Uint8Array(body);
+  } else if (body instanceof URLSearchParams) {
+    return body.toString();
+  } else if (body instanceof DataView) {
+    return new Uint8Array(body.buffer);
+  } else if (body instanceof Blob) {
+    return new Uint8Array(await body.arrayBuffer());
+  } else if (body instanceof FormData) {
+    return body;
+  } else if (body[Symbol.iterator]) {
+    const chunks = [...body];
+    const length = chunks.reduce((a, b) => a + b.length, 0);
+    const uint8 = new Uint8Array(length);
+    let lengthUsed = 0;
+    return chunks.reduce((a, b) => {
+      a.set(b, lengthUsed);
+      lengthUsed += b.length;
+      return a;
+    }, uint8);
+  } else if (body[Symbol.asyncIterator]) {
+    const chunks = [];
+    for await (const chunk of body) {
+      chunks.push(chunk);
+    }
+    return Buffer.concat(chunks);
+  }
+  throw new TypeError(`Unable to resolve body.`);
+}
+__name(resolveBody, "resolveBody");
 
 // src/lib/handlers/SequentialHandler.ts
 var invalidCount = 0;
@@ -526,21 +575,11 @@ var SequentialHandler = class {
     }
     this.manager.globalRemaining--;
     const method = options.method ?? "get";
-    if (this.manager.listenerCount("request" /* Request */)) {
-      this.manager.emit("request" /* Request */, {
-        method,
-        path: routeId.original,
-        route: routeId.bucketRoute,
-        options,
-        data: requestData,
-        retries
-      });
-    }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.manager.options.timeout).unref();
     let res;
     try {
-      res = await fetch(url, { ...options, signal: controller.signal });
+      res = await request(url, { ...options, signal: controller.signal });
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError" && retries !== this.manager.options.retries) {
         return await this.runRequest(routeId, url, options, requestData, ++retries);
@@ -557,14 +596,15 @@ var SequentialHandler = class {
         options,
         data: requestData,
         retries
-      }, res.clone());
+      }, { ...res });
     }
+    const status = res.statusCode;
     let retryAfter = 0;
-    const limit = res.headers.get("X-RateLimit-Limit");
-    const remaining = res.headers.get("X-RateLimit-Remaining");
-    const reset = res.headers.get("X-RateLimit-Reset-After");
-    const hash = res.headers.get("X-RateLimit-Bucket");
-    const retry = res.headers.get("Retry-After");
+    const limit = parseHeader(res.headers["x-ratelimit-limit"]);
+    const remaining = parseHeader(res.headers["x-ratelimit-remaining"]);
+    const reset = parseHeader(res.headers["x-ratelimit-reset-after"]);
+    const hash = parseHeader(res.headers["x-ratelimit-bucket"]);
+    const retry = parseHeader(res.headers["retry-after"]);
     this.limit = limit ? Number(limit) : Infinity;
     this.remaining = remaining ? Number(remaining) : 1;
     this.reset = reset ? Number(reset) * 1e3 + Date.now() + this.manager.options.offset : Date.now();
@@ -581,14 +621,14 @@ var SequentialHandler = class {
     }
     let sublimitTimeout = null;
     if (retryAfter > 0) {
-      if (res.headers.get("X-RateLimit-Global")) {
+      if (res.headers["x-ratelimit-global"] !== void 0) {
         this.manager.globalRemaining = 0;
         this.manager.globalReset = Date.now() + retryAfter;
       } else if (!this.localLimited) {
         sublimitTimeout = retryAfter;
       }
     }
-    if (res.status === 401 || res.status === 403 || res.status === 429) {
+    if (status === 401 || status === 403 || status === 429) {
       if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
         invalidCountResetTime = Date.now() + 1e3 * 60 * 10;
         invalidCount = 0;
@@ -602,9 +642,9 @@ var SequentialHandler = class {
         });
       }
     }
-    if (res.ok) {
-      return parseResponse(res);
-    } else if (res.status === 429) {
+    if (status >= 200 && status < 300) {
+      return res;
+    } else if (status === 429) {
       const isGlobal = this.globalLimited;
       let limit2;
       let timeout2;
@@ -656,20 +696,20 @@ var SequentialHandler = class {
         }
       }
       return this.runRequest(routeId, url, options, requestData, retries);
-    } else if (res.status >= 500 && res.status < 600) {
+    } else if (status >= 500 && status < 600) {
       if (retries !== this.manager.options.retries) {
         return this.runRequest(routeId, url, options, requestData, ++retries);
       }
-      throw new HTTPError(res.statusText, res.constructor.name, res.status, method, url, requestData);
+      throw new HTTPError(res.constructor.name, status, method, url, requestData);
     } else {
-      if (res.status >= 400 && res.status < 500) {
-        if (res.status === 401 && requestData.auth) {
+      if (status >= 400 && status < 500) {
+        if (status === 401 && requestData.auth) {
           this.manager.setToken(null);
         }
         const data = await parseResponse(res);
-        throw new DiscordAPIError(data, "code" in data ? data.code : data.error, res.status, method, url, requestData);
+        throw new DiscordAPIError(data, "code" in data ? data.code : data.error, status, method, url, requestData);
       }
-      return null;
+      return res;
     }
   }
 };
@@ -681,17 +721,18 @@ _shiftSublimit = new WeakMap();
 
 // src/lib/RequestManager.ts
 var RequestMethod = /* @__PURE__ */ ((RequestMethod2) => {
-  RequestMethod2["Delete"] = "delete";
-  RequestMethod2["Get"] = "get";
-  RequestMethod2["Patch"] = "patch";
-  RequestMethod2["Post"] = "post";
-  RequestMethod2["Put"] = "put";
+  RequestMethod2["Delete"] = "DELETE";
+  RequestMethod2["Get"] = "GET";
+  RequestMethod2["Patch"] = "PATCH";
+  RequestMethod2["Post"] = "POST";
+  RequestMethod2["Put"] = "PUT";
   return RequestMethod2;
 })(RequestMethod || {});
 var _token;
 var _RequestManager = class extends EventEmitter {
   constructor(options) {
     super();
+    __publicField(this, "agent", null);
     __publicField(this, "globalRemaining");
     __publicField(this, "globalDelay", null);
     __publicField(this, "globalReset", -1);
@@ -700,11 +741,11 @@ var _RequestManager = class extends EventEmitter {
     __privateAdd(this, _token, null);
     __publicField(this, "hashTimer");
     __publicField(this, "handlerTimer");
-    __publicField(this, "agent", null);
     __publicField(this, "options");
     this.options = { ...DefaultRestOptions, ...options };
     this.options.offset = Math.max(0, this.options.offset);
     this.globalRemaining = this.options.globalRequestsPerSecond;
+    this.agent = options.agent ?? null;
     this.setupSweepers();
   }
   setupSweepers() {
@@ -747,22 +788,26 @@ var _RequestManager = class extends EventEmitter {
       }, this.options.handlerSweepInterval).unref();
     }
   }
+  setAgent(agent) {
+    this.agent = agent;
+    return this;
+  }
   setToken(token) {
     __privateSet(this, _token, token);
     return this;
   }
-  async queueRequest(request) {
-    const routeId = _RequestManager.generateRouteData(request.fullRoute, request.method);
-    const hash = this.hashes.get(`${request.method}:${routeId.bucketRoute}`) ?? {
-      value: `Global(${request.method}:${routeId.bucketRoute})`,
+  async queueRequest(request2) {
+    const routeId = _RequestManager.generateRouteData(request2.fullRoute, request2.method);
+    const hash = this.hashes.get(`${request2.method}:${routeId.bucketRoute}`) ?? {
+      value: `Global(${request2.method}:${routeId.bucketRoute})`,
       lastAccess: -1
     };
     const handler = this.handlers.get(`${hash.value}:${routeId.majorParameter}`) ?? this.createHandler(hash.value, routeId.majorParameter);
-    const { url, fetchOptions } = this.resolveRequest(request);
+    const { url, fetchOptions } = await this.resolveRequest(request2);
     return handler.queueRequest(routeId, url, fetchOptions, {
-      body: request.body,
-      files: request.files,
-      auth: request.auth !== false
+      body: request2.body,
+      files: request2.files,
+      auth: request2.auth !== false
     });
   }
   createHandler(hash, majorParameter) {
@@ -770,12 +815,11 @@ var _RequestManager = class extends EventEmitter {
     this.handlers.set(queue.id, queue);
     return queue;
   }
-  resolveRequest(request) {
+  async resolveRequest(request2) {
     const { options } = this;
-    this.agent ??= options.api.startsWith("https") ? new httpsAgent({ ...options.agent, keepAlive: true }) : new httpAgent({ ...options.agent, keepAlive: true });
     let query = "";
-    if (request.query) {
-      const resolvedQuery = request.query.toString();
+    if (request2.query) {
+      const resolvedQuery = request2.query.toString();
       if (resolvedQuery !== "") {
         query = `?${resolvedQuery}`;
       }
@@ -784,48 +828,55 @@ var _RequestManager = class extends EventEmitter {
       ...this.options.headers,
       "User-Agent": `${DefaultUserAgent} ${options.userAgentAppendix}`.trim()
     };
-    if (request.auth !== false) {
+    if (request2.auth !== false) {
       if (!__privateGet(this, _token)) {
         throw new Error("Expected token to be set for this request, but none was present");
       }
-      headers.Authorization = `${request.authPrefix ?? this.options.authPrefix} ${__privateGet(this, _token)}`;
+      headers.Authorization = `${request2.authPrefix ?? this.options.authPrefix} ${__privateGet(this, _token)}`;
     }
-    if (request.reason?.length) {
-      headers["X-Audit-Log-Reason"] = encodeURIComponent(request.reason);
+    if (request2.reason?.length) {
+      headers["X-Audit-Log-Reason"] = encodeURIComponent(request2.reason);
     }
-    const url = `${options.api}${request.versioned === false ? "" : `/v${options.version}`}${request.fullRoute}${query}`;
+    const url = `${options.api}${request2.versioned === false ? "" : `/v${options.version}`}${request2.fullRoute}${query}`;
     let finalBody;
     let additionalHeaders = {};
-    if (request.files?.length) {
-      const formData = new FormData();
-      for (const [index, file] of request.files.entries()) {
-        formData.append(file.key ?? `files[${index}]`, file.data, file.name);
+    if (request2.files?.length) {
+      const formData = new FormData2();
+      for (const [index, file] of request2.files.entries()) {
+        const fileKey = file.key ?? `files[${index}]`;
+        if (Buffer.isBuffer(file.data) || typeof file.data === "string") {
+          formData.append(fileKey, new Blob2([file.data]), file.name);
+        } else {
+          formData.append(fileKey, new Blob2([`${file.data}`]), file.name);
+        }
       }
-      if (request.body != null) {
-        if (request.appendToFormData) {
-          for (const [key, value] of Object.entries(request.body)) {
+      if (request2.body != null) {
+        if (request2.appendToFormData) {
+          for (const [key, value] of Object.entries(request2.body)) {
             formData.append(key, value);
           }
         } else {
-          formData.append("payload_json", JSON.stringify(request.body));
+          formData.append("payload_json", JSON.stringify(request2.body));
         }
       }
       finalBody = formData;
-      additionalHeaders = formData.getHeaders();
-    } else if (request.body != null) {
-      if (request.passThroughBody) {
-        finalBody = request.body;
+    } else if (request2.body != null) {
+      if (request2.passThroughBody) {
+        finalBody = request2.body;
       } else {
-        finalBody = JSON.stringify(request.body);
+        finalBody = JSON.stringify(request2.body);
         additionalHeaders = { "Content-Type": "application/json" };
       }
     }
+    finalBody = await resolveBody(finalBody);
     const fetchOptions = {
-      agent: this.agent,
-      body: finalBody,
-      headers: { ...request.headers ?? {}, ...additionalHeaders, ...headers },
-      method: request.method
+      headers: { ...request2.headers ?? {}, ...additionalHeaders, ...headers },
+      method: request2.method.toUpperCase()
     };
+    if (finalBody !== void 0) {
+      fetchOptions.body = finalBody;
+    }
+    fetchOptions.dispatcher = request2.dispatcher ?? this.agent ?? void 0;
     return { url, fetchOptions };
   }
   clearHashSweeper() {
@@ -839,7 +890,7 @@ var _RequestManager = class extends EventEmitter {
     const majorId = majorIdMatch?.[1] ?? "global";
     const baseRoute = endpoint.replace(/\d{16,19}/g, ":id").replace(/\/reactions\/(.*)/, "/reactions/:reaction");
     let exceptions = "";
-    if (method === "delete" /* Delete */ && baseRoute === "/channels/:id/messages/:id") {
+    if (method === "DELETE" /* Delete */ && baseRoute === "/channels/:id/messages/:id") {
       const id = /\d{16,19}$/.exec(endpoint)[0];
       const timestamp = DiscordSnowflake.timestampFrom(id);
       if (Date.now() - timestamp > 1e3 * 60 * 60 * 24 * 14) {
@@ -867,34 +918,45 @@ var REST = class extends EventEmitter2 {
     this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn);
     this.requestManager = new RequestManager(options).on("restDebug" /* Debug */, this.emit.bind(this, "restDebug" /* Debug */)).on("rateLimited" /* RateLimited */, this.emit.bind(this, "rateLimited" /* RateLimited */)).on("invalidRequestWarning" /* InvalidRequestWarning */, this.emit.bind(this, "invalidRequestWarning" /* InvalidRequestWarning */)).on("hashSweep" /* HashSweep */, this.emit.bind(this, "hashSweep" /* HashSweep */));
     this.on("newListener", (name, listener) => {
-      if (name === "request" /* Request */ || name === "response" /* Response */)
+      if (name === "response" /* Response */)
         this.requestManager.on(name, listener);
     });
     this.on("removeListener", (name, listener) => {
-      if (name === "request" /* Request */ || name === "response" /* Response */)
+      if (name === "response" /* Response */)
         this.requestManager.off(name, listener);
     });
+  }
+  getAgent() {
+    return this.requestManager.agent;
+  }
+  setAgent(agent) {
+    this.requestManager.setAgent(agent);
+    return this;
   }
   setToken(token) {
     this.requestManager.setToken(token);
     return this;
   }
   get(fullRoute, options = {}) {
-    return this.request({ ...options, fullRoute, method: "get" /* Get */ });
+    return this.request({ ...options, fullRoute, method: "GET" /* Get */ });
   }
   delete(fullRoute, options = {}) {
-    return this.request({ ...options, fullRoute, method: "delete" /* Delete */ });
+    return this.request({ ...options, fullRoute, method: "DELETE" /* Delete */ });
   }
   post(fullRoute, options = {}) {
-    return this.request({ ...options, fullRoute, method: "post" /* Post */ });
+    return this.request({ ...options, fullRoute, method: "POST" /* Post */ });
   }
   put(fullRoute, options = {}) {
-    return this.request({ ...options, fullRoute, method: "put" /* Put */ });
+    return this.request({ ...options, fullRoute, method: "PUT" /* Put */ });
   }
   patch(fullRoute, options = {}) {
-    return this.request({ ...options, fullRoute, method: "patch" /* Patch */ });
+    return this.request({ ...options, fullRoute, method: "PATCH" /* Patch */ });
   }
-  request(options) {
+  async request(options) {
+    const response = await this.raw(options);
+    return parseResponse(response);
+  }
+  raw(options) {
     return this.requestManager.queueRequest(options);
   }
 };
@@ -913,6 +975,7 @@ export {
   RateLimitError,
   RequestManager,
   RequestMethod,
-  makeURLSearchParams
+  makeURLSearchParams,
+  parseResponse
 };
 //# sourceMappingURL=index.mjs.map

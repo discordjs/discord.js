@@ -119,8 +119,8 @@ __export(Assertions_exports, {
   validateFieldLength: () => validateFieldLength
 });
 var import_shapeshift = require("@sapphire/shapeshift");
-var fieldNamePredicate = import_shapeshift.s.string.lengthGe(1).lengthLe(256);
-var fieldValuePredicate = import_shapeshift.s.string.lengthGe(1).lengthLe(1024);
+var fieldNamePredicate = import_shapeshift.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(256);
+var fieldValuePredicate = import_shapeshift.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(1024);
 var fieldInlinePredicate = import_shapeshift.s.boolean.optional;
 var embedFieldPredicate = import_shapeshift.s.object({
   name: fieldNamePredicate,
@@ -128,7 +128,7 @@ var embedFieldPredicate = import_shapeshift.s.object({
   inline: fieldInlinePredicate
 });
 var embedFieldsArrayPredicate = embedFieldPredicate.array;
-var fieldLengthPredicate = import_shapeshift.s.number.le(25);
+var fieldLengthPredicate = import_shapeshift.s.number.lessThanOrEqual(25);
 function validateFieldLength(amountAdding, fields) {
   fieldLengthPredicate.parse((fields?.length ?? 0) + amountAdding);
 }
@@ -145,10 +145,10 @@ var embedAuthorPredicate = import_shapeshift.s.object({
   iconURL: imageURLPredicate,
   url: urlPredicate
 });
-var RGBPredicate = import_shapeshift.s.number.int.ge(0).le(255);
-var colorPredicate = import_shapeshift.s.number.int.ge(0).le(16777215).or(import_shapeshift.s.tuple([RGBPredicate, RGBPredicate, RGBPredicate])).nullable;
-var descriptionPredicate = import_shapeshift.s.string.lengthGe(1).lengthLe(4096).nullable;
-var footerTextPredicate = import_shapeshift.s.string.lengthGe(1).lengthLe(2048).nullable;
+var RGBPredicate = import_shapeshift.s.number.int.greaterThanOrEqual(0).lessThanOrEqual(255);
+var colorPredicate = import_shapeshift.s.number.int.greaterThanOrEqual(0).lessThanOrEqual(16777215).or(import_shapeshift.s.tuple([RGBPredicate, RGBPredicate, RGBPredicate])).nullable;
+var descriptionPredicate = import_shapeshift.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(4096).nullable;
+var footerTextPredicate = import_shapeshift.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(2048).nullable;
 var embedFooterPredicate = import_shapeshift.s.object({
   text: footerTextPredicate,
   iconURL: imageURLPredicate
@@ -429,18 +429,18 @@ var UnsafeSelectMenuOptionBuilder = class {
 __name(UnsafeSelectMenuOptionBuilder, "UnsafeSelectMenuOptionBuilder");
 
 // src/components/Assertions.ts
-var customIdValidator = import_shapeshift2.s.string.lengthGe(1).lengthLe(100);
+var customIdValidator = import_shapeshift2.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 var emojiValidator = import_shapeshift2.s.object({
   id: import_shapeshift2.s.string,
   name: import_shapeshift2.s.string,
   animated: import_shapeshift2.s.boolean
 }).partial.strict;
 var disabledValidator = import_shapeshift2.s.boolean;
-var buttonLabelValidator = import_shapeshift2.s.string.lengthGe(1).lengthLe(80);
+var buttonLabelValidator = import_shapeshift2.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(80);
 var buttonStyleValidator = import_shapeshift2.s.nativeEnum(import_v10.ButtonStyle);
-var placeholderValidator = import_shapeshift2.s.string.lengthLe(150);
-var minMaxValidator = import_shapeshift2.s.number.int.ge(0).le(25);
-var labelValueDescriptionValidator = import_shapeshift2.s.string.lengthGe(1).lengthLe(100);
+var placeholderValidator = import_shapeshift2.s.string.lengthLessThanOrEqual(150);
+var minMaxValidator = import_shapeshift2.s.number.int.greaterThanOrEqual(0).lessThanOrEqual(25);
+var labelValueDescriptionValidator = import_shapeshift2.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 var optionValidator = import_shapeshift2.s.union(import_shapeshift2.s.object({
   label: labelValueDescriptionValidator,
   value: labelValueDescriptionValidator,
@@ -448,14 +448,14 @@ var optionValidator = import_shapeshift2.s.union(import_shapeshift2.s.object({
   emoji: emojiValidator.optional,
   default: import_shapeshift2.s.boolean.optional
 }), import_shapeshift2.s.instance(UnsafeSelectMenuOptionBuilder));
-var optionsValidator = optionValidator.array.lengthGe(0);
-var optionsLengthValidator = import_shapeshift2.s.number.int.ge(0).le(25);
+var optionsValidator = optionValidator.array.lengthGreaterThanOrEqual(0);
+var optionsLengthValidator = import_shapeshift2.s.number.int.greaterThanOrEqual(0).lessThanOrEqual(25);
 function validateRequiredSelectMenuParameters(options, customId) {
   customIdValidator.parse(customId);
   optionsValidator.parse(options);
 }
 __name(validateRequiredSelectMenuParameters, "validateRequiredSelectMenuParameters");
-var labelValueValidator = import_shapeshift2.s.string.lengthGe(1).lengthLe(100);
+var labelValueValidator = import_shapeshift2.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 var defaultValidator = import_shapeshift2.s.boolean;
 function validateRequiredSelectMenuOptionParameters(label, value) {
   labelValueValidator.parse(label);
@@ -619,12 +619,12 @@ __export(Assertions_exports3, {
 var import_shapeshift3 = require("@sapphire/shapeshift");
 var import_v105 = require("discord-api-types/v10");
 var textInputStyleValidator = import_shapeshift3.s.nativeEnum(import_v105.TextInputStyle);
-var minLengthValidator = import_shapeshift3.s.number.int.ge(0).le(4e3);
-var maxLengthValidator = import_shapeshift3.s.number.int.ge(1).le(4e3);
+var minLengthValidator = import_shapeshift3.s.number.int.greaterThanOrEqual(0).lessThanOrEqual(4e3);
+var maxLengthValidator = import_shapeshift3.s.number.int.greaterThanOrEqual(1).lessThanOrEqual(4e3);
 var requiredValidator = import_shapeshift3.s.boolean;
-var valueValidator = import_shapeshift3.s.string.lengthLe(4e3);
-var placeholderValidator2 = import_shapeshift3.s.string.lengthLe(100);
-var labelValidator = import_shapeshift3.s.string.lengthGe(1).lengthLe(45);
+var valueValidator = import_shapeshift3.s.string.lengthLessThanOrEqual(4e3);
+var placeholderValidator2 = import_shapeshift3.s.string.lengthLessThanOrEqual(100);
+var labelValidator = import_shapeshift3.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(45);
 function validateRequiredParameters(customId, style, label) {
   customIdValidator.parse(customId);
   textInputStyleValidator.parse(style);
@@ -750,8 +750,8 @@ __export(Assertions_exports4, {
   validateRequiredParameters: () => validateRequiredParameters2
 });
 var import_shapeshift4 = require("@sapphire/shapeshift");
-var titleValidator = import_shapeshift4.s.string.lengthGe(1).lengthLe(45);
-var componentsValidator = import_shapeshift4.s.instance(ActionRowBuilder).array.lengthGe(1);
+var titleValidator = import_shapeshift4.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(45);
+var componentsValidator = import_shapeshift4.s.instance(ActionRowBuilder).array.lengthGreaterThanOrEqual(1);
 function validateRequiredParameters2(customId, title, components) {
   customIdValidator.parse(customId);
   titleValidator.parse(title);
@@ -876,10 +876,14 @@ __name(SelectMenuOptionBuilder, "SelectMenuOptionBuilder");
 var Assertions_exports5 = {};
 __export(Assertions_exports5, {
   assertReturnOfBuilder: () => assertReturnOfBuilder,
+  localizationMapPredicate: () => localizationMapPredicate,
   validateChoicesLength: () => validateChoicesLength,
+  validateDMPermission: () => validateDMPermission,
+  validateDefaultMemberPermissions: () => validateDefaultMemberPermissions,
   validateDefaultPermission: () => validateDefaultPermission,
   validateDescription: () => validateDescription,
   validateLocale: () => validateLocale,
+  validateLocalizationMap: () => validateLocalizationMap,
   validateMaxOptionsLength: () => validateMaxOptionsLength,
   validateName: () => validateName,
   validateRequired: () => validateRequired,
@@ -888,18 +892,18 @@ __export(Assertions_exports5, {
 var import_shapeshift5 = require("@sapphire/shapeshift");
 var import_is = __toESM(require("@sindresorhus/is"));
 var import_v108 = require("discord-api-types/v10");
-var namePredicate = import_shapeshift5.s.string.lengthGe(1).lengthLe(32).regex(/^[\P{Lu}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u);
+var namePredicate = import_shapeshift5.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(32).regex(/^[\P{Lu}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u);
 function validateName(name) {
   namePredicate.parse(name);
 }
 __name(validateName, "validateName");
-var descriptionPredicate2 = import_shapeshift5.s.string.lengthGe(1).lengthLe(100);
+var descriptionPredicate2 = import_shapeshift5.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 var localePredicate = import_shapeshift5.s.nativeEnum(import_v108.Locale);
 function validateDescription(description) {
   descriptionPredicate2.parse(description);
 }
 __name(validateDescription, "validateDescription");
-var maxArrayLengthPredicate = import_shapeshift5.s.unknown.array.lengthLe(25);
+var maxArrayLengthPredicate = import_shapeshift5.s.unknown.array.lengthLessThanOrEqual(25);
 function validateLocale(locale) {
   return localePredicate.parse(locale);
 }
@@ -923,7 +927,7 @@ function validateRequired(required) {
   booleanPredicate.parse(required);
 }
 __name(validateRequired, "validateRequired");
-var choicesLengthPredicate = import_shapeshift5.s.number.le(25);
+var choicesLengthPredicate = import_shapeshift5.s.number.lessThanOrEqual(25);
 function validateChoicesLength(amountAdding, choices) {
   choicesLengthPredicate.parse((choices?.length ?? 0) + amountAdding);
 }
@@ -945,6 +949,21 @@ function assertReturnOfBuilder(input, ExpectedInstanceOf) {
   }
 }
 __name(assertReturnOfBuilder, "assertReturnOfBuilder");
+var localizationMapPredicate = import_shapeshift5.s.object(Object.fromEntries(Object.values(import_v108.Locale).map((locale) => [locale, import_shapeshift5.s.string.nullish]))).strict.nullish;
+function validateLocalizationMap(value) {
+  localizationMapPredicate.parse(value);
+}
+__name(validateLocalizationMap, "validateLocalizationMap");
+var dmPermissionPredicate = import_shapeshift5.s.boolean.nullish;
+function validateDMPermission(value) {
+  dmPermissionPredicate.parse(value);
+}
+__name(validateDMPermission, "validateDMPermission");
+var memberPermissionPredicate = import_shapeshift5.s.union(import_shapeshift5.s.bigint.transform((value) => value.toString()), import_shapeshift5.s.number.safeInt.transform((value) => value.toString()), import_shapeshift5.s.string.regex(/^\d+$/)).nullish;
+function validateDefaultMemberPermissions(permissions) {
+  return memberPermissionPredicate.parse(permissions);
+}
+__name(validateDefaultMemberPermissions, "validateDefaultMemberPermissions");
 
 // src/interactions/slashCommands/SlashCommandBuilder.ts
 var import_ts_mixer6 = require("ts-mixer");
@@ -975,12 +994,13 @@ var SharedNameAndDescription = class {
     if (!this.name_localizations) {
       Reflect.set(this, "name_localizations", {});
     }
+    const parsedLocale = validateLocale(locale);
     if (localizedName === null) {
-      this.name_localizations[locale] = null;
+      this.name_localizations[parsedLocale] = null;
       return this;
     }
     validateName(localizedName);
-    this.name_localizations[validateLocale(locale)] = localizedName;
+    this.name_localizations[parsedLocale] = localizedName;
     return this;
   }
   setNameLocalizations(localizedNames) {
@@ -996,12 +1016,13 @@ var SharedNameAndDescription = class {
     if (!this.description_localizations) {
       Reflect.set(this, "description_localizations", {});
     }
+    const parsedLocale = validateLocale(locale);
     if (localizedDescription === null) {
-      this.description_localizations[locale] = null;
+      this.description_localizations[parsedLocale] = null;
       return this;
     }
     validateDescription(localizedDescription);
-    this.description_localizations[validateLocale(locale)] = localizedDescription;
+    this.description_localizations[parsedLocale] = localizedDescription;
     return this;
   }
   setDescriptionLocalizations(localizedDescriptions) {
@@ -1032,6 +1053,8 @@ var ApplicationCommandOptionBase = class extends SharedNameAndDescription {
   }
   runRequiredValidations() {
     validateRequiredParameters3(this.name, this.description, []);
+    validateLocalizationMap(this.name_localizations);
+    validateLocalizationMap(this.description_localizations);
     validateRequired(this.required);
   }
 };
@@ -1129,9 +1152,13 @@ __name(ApplicationCommandNumericOptionMinMaxValueMixin, "ApplicationCommandNumer
 // src/interactions/slashCommands/mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.ts
 var import_shapeshift7 = require("@sapphire/shapeshift");
 var import_v1013 = require("discord-api-types/v10");
-var stringPredicate = import_shapeshift7.s.string.lengthGe(1).lengthLe(100);
-var numberPredicate = import_shapeshift7.s.number.gt(-Infinity).lt(Infinity);
-var choicesPredicate = import_shapeshift7.s.object({ name: stringPredicate, value: import_shapeshift7.s.union(stringPredicate, numberPredicate) }).array;
+var stringPredicate = import_shapeshift7.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
+var numberPredicate = import_shapeshift7.s.number.greaterThan(-Infinity).lessThan(Infinity);
+var choicesPredicate = import_shapeshift7.s.object({
+  name: stringPredicate,
+  name_localizations: localizationMapPredicate,
+  value: import_shapeshift7.s.union(stringPredicate, numberPredicate)
+}).array;
 var booleanPredicate2 = import_shapeshift7.s.boolean;
 var ApplicationCommandOptionWithChoicesAndAutocompleteMixin = class {
   constructor() {
@@ -1148,13 +1175,13 @@ var ApplicationCommandOptionWithChoicesAndAutocompleteMixin = class {
       Reflect.set(this, "choices", []);
     }
     validateChoicesLength(choices.length, this.choices);
-    for (const { name, value } of choices) {
+    for (const { name, name_localizations, value } of choices) {
       if (this.type === import_v1013.ApplicationCommandOptionType.String) {
         stringPredicate.parse(value);
       } else {
         numberPredicate.parse(value);
       }
-      this.choices.push({ name, value });
+      this.choices.push({ name, name_localizations, value });
     }
     return this;
   }
@@ -1367,7 +1394,9 @@ var SlashCommandSubcommandGroupBuilder = class {
     return {
       type: import_v1020.ApplicationCommandOptionType.SubcommandGroup,
       name: this.name,
+      name_localizations: this.name_localizations,
       description: this.description,
+      description_localizations: this.description_localizations,
       options: this.options.map((option) => option.toJSON())
     };
   }
@@ -1387,7 +1416,9 @@ var SlashCommandSubcommandBuilder = class {
     return {
       type: import_v1020.ApplicationCommandOptionType.Subcommand,
       name: this.name,
+      name_localizations: this.name_localizations,
       description: this.description,
+      description_localizations: this.description_localizations,
       options: this.options.map((option) => option.toJSON())
     };
   }
@@ -1405,22 +1436,32 @@ var SlashCommandBuilder = class {
     __publicField(this, "description");
     __publicField(this, "description_localizations");
     __publicField(this, "options", []);
-    __publicField(this, "defaultPermission");
+    __publicField(this, "default_permission");
+    __publicField(this, "default_member_permissions");
+    __publicField(this, "dm_permission");
   }
   toJSON() {
     validateRequiredParameters3(this.name, this.description, this.options);
+    validateLocalizationMap(this.name_localizations);
+    validateLocalizationMap(this.description_localizations);
     return {
-      name: this.name,
-      name_localizations: this.name_localizations,
-      description: this.description,
-      description_localizations: this.description_localizations,
-      options: this.options.map((option) => option.toJSON()),
-      default_permission: this.defaultPermission
+      ...this,
+      options: this.options.map((option) => option.toJSON())
     };
   }
   setDefaultPermission(value) {
     validateDefaultPermission(value);
-    Reflect.set(this, "defaultPermission", value);
+    Reflect.set(this, "default_permission", value);
+    return this;
+  }
+  setDefaultMemberPermissions(permissions) {
+    const permissionValue = validateDefaultMemberPermissions(permissions);
+    Reflect.set(this, "default_member_permissions", permissionValue);
+    return this;
+  }
+  setDMPermission(enabled) {
+    validateDMPermission(enabled);
+    Reflect.set(this, "dm_permission", enabled);
     return this;
   }
   addSubcommandGroup(input) {
@@ -1448,6 +1489,8 @@ SlashCommandBuilder = __decorateClass([
 // src/interactions/contextMenuCommands/Assertions.ts
 var Assertions_exports6 = {};
 __export(Assertions_exports6, {
+  validateDMPermission: () => validateDMPermission2,
+  validateDefaultMemberPermissions: () => validateDefaultMemberPermissions2,
   validateDefaultPermission: () => validateDefaultPermission2,
   validateName: () => validateName2,
   validateRequiredParameters: () => validateRequiredParameters4,
@@ -1455,7 +1498,7 @@ __export(Assertions_exports6, {
 });
 var import_shapeshift10 = require("@sapphire/shapeshift");
 var import_v1021 = require("discord-api-types/v10");
-var namePredicate2 = import_shapeshift10.s.string.lengthGe(1).lengthLe(32).regex(/^( *[\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+ *)+$/u);
+var namePredicate2 = import_shapeshift10.s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(32).regex(/^( *[\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+ *)+$/u);
 var typePredicate = import_shapeshift10.s.union(import_shapeshift10.s.literal(import_v1021.ApplicationCommandType.User), import_shapeshift10.s.literal(import_v1021.ApplicationCommandType.Message));
 var booleanPredicate3 = import_shapeshift10.s.boolean;
 function validateDefaultPermission2(value) {
@@ -1475,13 +1518,26 @@ function validateRequiredParameters4(name, type) {
   validateType(type);
 }
 __name(validateRequiredParameters4, "validateRequiredParameters");
+var dmPermissionPredicate2 = import_shapeshift10.s.boolean.nullish;
+function validateDMPermission2(value) {
+  dmPermissionPredicate2.parse(value);
+}
+__name(validateDMPermission2, "validateDMPermission");
+var memberPermissionPredicate2 = import_shapeshift10.s.union(import_shapeshift10.s.bigint.transform((value) => value.toString()), import_shapeshift10.s.number.safeInt.transform((value) => value.toString()), import_shapeshift10.s.string.regex(/^\d+$/)).nullish;
+function validateDefaultMemberPermissions2(permissions) {
+  return memberPermissionPredicate2.parse(permissions);
+}
+__name(validateDefaultMemberPermissions2, "validateDefaultMemberPermissions");
 
 // src/interactions/contextMenuCommands/ContextMenuCommandBuilder.ts
 var ContextMenuCommandBuilder = class {
   constructor() {
     __publicField(this, "name");
+    __publicField(this, "name_localizations");
     __publicField(this, "type");
-    __publicField(this, "defaultPermission");
+    __publicField(this, "default_permission");
+    __publicField(this, "default_member_permissions");
+    __publicField(this, "dm_permission");
   }
   setName(name) {
     validateName2(name);
@@ -1495,16 +1551,45 @@ var ContextMenuCommandBuilder = class {
   }
   setDefaultPermission(value) {
     validateDefaultPermission2(value);
-    Reflect.set(this, "defaultPermission", value);
+    Reflect.set(this, "default_permission", value);
+    return this;
+  }
+  setDefaultMemberPermissions(permissions) {
+    const permissionValue = validateDefaultMemberPermissions2(permissions);
+    Reflect.set(this, "default_member_permissions", permissionValue);
+    return this;
+  }
+  setDMPermission(enabled) {
+    validateDMPermission2(enabled);
+    Reflect.set(this, "dm_permission", enabled);
+    return this;
+  }
+  setNameLocalization(locale, localizedName) {
+    if (!this.name_localizations) {
+      Reflect.set(this, "name_localizations", {});
+    }
+    const parsedLocale = validateLocale(locale);
+    if (localizedName === null) {
+      this.name_localizations[parsedLocale] = null;
+      return this;
+    }
+    validateName2(localizedName);
+    this.name_localizations[parsedLocale] = localizedName;
+    return this;
+  }
+  setNameLocalizations(localizedNames) {
+    if (localizedNames === null) {
+      Reflect.set(this, "name_localizations", null);
+      return this;
+    }
+    Reflect.set(this, "name_localizations", {});
+    Object.entries(localizedNames).forEach((args) => this.setNameLocalization(...args));
     return this;
   }
   toJSON() {
     validateRequiredParameters4(this.name, this.type);
-    return {
-      name: this.name,
-      type: this.type,
-      default_permission: this.defaultPermission
-    };
+    validateLocalizationMap(this.name_localizations);
+    return { ...this };
   }
 };
 __name(ContextMenuCommandBuilder, "ContextMenuCommandBuilder");

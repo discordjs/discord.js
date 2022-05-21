@@ -47,9 +47,9 @@
   },
   "homepage": "https://discord.js.org",
   "dependencies": {
-    "@discordjs/builders": "workspace:^",
-    "@discordjs/collection": "https://gitpkg.now.sh/uni-inc/discord.js/packages/collection?main",
-    "@discordjs/rest": "workspace:^",
+    "@discordjs/builders": "workspace:^0.14.0-dev",
+    "@discordjs/collection": "workspace:^0.7.0-dev",
+    "@discordjs/rest": "workspace:^0.5.0-dev",
     "@sapphire/snowflake": "^3.2.1",
     "@types/ws": "^8.5.3",
     "discord-api-types": "^0.33.0",
