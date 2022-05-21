@@ -14,17 +14,16 @@ const Util = require('../util/Util');
  */
 class Attachment {
   /**
-   * @param {BufferResolvable|Stream} attachment The file
-   * @param {string} [name=null] The name of the file, if any
-   * @param {APIAttachment} [data] Extra data
+   * @param {APIAttachment} [data] Attachment data
+   * @private
    */
-  constructor(attachment, name = null, data) {
-    this.attachment = attachment;
+  constructor(data) {
+    this.attachment = data.attachment;
     /**
      * The name of this attachment
      * @type {?string}
      */
-    this.name = name;
+    this.name = data.name;
     if (data) this._patch(data);
   }
 

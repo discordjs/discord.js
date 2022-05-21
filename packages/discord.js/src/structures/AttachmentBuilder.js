@@ -8,10 +8,9 @@ const Util = require('../util/Util');
 class AttachmentBuilder {
   /**
    * @param {BufferResolvable|Stream} attachment The file
-   * @param {string} [name=null] The name of the file, if any
    * @param {APIAttachment} [data] Extra data
    */
-  constructor(attachment, name = null, data = {}) {
+  constructor(attachment, data = {}) {
     /**
      * The file associated with this attachment.
      * @type {BufferResolvable|Stream}
@@ -21,7 +20,7 @@ class AttachmentBuilder {
      * The name of this attachment
      * @type {?string}
      */
-    this.name = name;
+    this.name = data.name;
     /**
      * The description of the attachment
      * @type {?string}
@@ -42,12 +41,10 @@ class AttachmentBuilder {
   /**
    * Sets the file of this attachment.
    * @param {BufferResolvable|Stream} attachment The file
-   * @param {string} [name=null] The name of the file, if any
    * @returns {AttachmentBuilder} This attachment
    */
-  setFile(attachment, name = null) {
+  setFile(attachment) {
     this.attachment = attachment;
-    this.name = name;
     return this;
   }
 
@@ -85,7 +82,7 @@ class AttachmentBuilder {
    * @readonly
    */
   get spoiler() {
-    return Util.basename(this.url ?? this.name).startsWith('SPOILER_');
+    return Util.basename(this.name).startsWith('SPOILER_');
   }
 
   /**

@@ -1687,15 +1687,8 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public inGuild(): this is Message<true> & this;
 }
 
-export interface AttachmentPayload {
-  name: string | null;
-  attachment: BufferResolvable | Stream;
-  description?: string;
-}
-
 export class AttachmentBuilder implements JSONEncodable<AttachmentPayload> {
   public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawAttachmentData);
-
   public attachment: BufferResolvable | Stream;
   public description: string | null;
   public name: string | null;
@@ -1709,8 +1702,7 @@ export class AttachmentBuilder implements JSONEncodable<AttachmentPayload> {
 }
 
 export class Attachment implements JSONEncodable<AttachmentPayload> {
-  public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawAttachmentData);
-
+  private constructor(data?: RawAttachmentData);
   public attachment: BufferResolvable | Stream;
   public contentType: string | null;
   public description: string | null;
@@ -1847,7 +1839,7 @@ export class MessagePayload {
     extra?: MessageOptions | WebhookMessageOptions,
   ): MessagePayload;
   public static resolveFile(
-    fileLike: BufferResolvable | Stream | FileOptions | JSONEncodable<AttachmentPayload>,
+    fileLike: BufferResolvable | Stream | AttachmentPayload | JSONEncodable<AttachmentPayload>,
   ): Promise<RawFile>;
 
   public makeContent(): string | undefined;
@@ -3191,7 +3183,7 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
   private constructor(guild: Guild, iterable?: Iterable<RawStickerData>);
   public guild: Guild;
   public create(
-    file: BufferResolvable | Stream | FileOptions | JSONEncodable<AttachmentBuilder>,
+    file: BufferResolvable | Stream | AttachmentPayload | JSONEncodable<AttachmentBuilder>,
     name: string,
     tags: string,
     options?: GuildStickerCreateOptions,
@@ -4232,7 +4224,7 @@ export interface FetchThreadsOptions {
   active?: boolean;
 }
 
-export interface FileOptions {
+export interface AttachmentPayload {
   attachment: BufferResolvable | Stream;
   name?: string;
   description?: string;
@@ -4666,7 +4658,7 @@ export interface MessageEditOptions {
   attachments?: JSONEncodable<AttachmentPayload>[];
   content?: string | null;
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[] | null;
-  files?: (FileOptions | BufferResolvable | Stream | AttachmentBuilder)[];
+  files?: (AttachmentPayload | BufferResolvable | Stream | AttachmentBuilder)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
@@ -4717,7 +4709,7 @@ export interface MessageOptions {
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
-  files?: (FileOptions | BufferResolvable | Stream | JSONEncodable<AttachmentPayload>)[];
+  files?: (AttachmentPayload | BufferResolvable | Stream | JSONEncodable<AttachmentPayload>)[];
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
   attachments?: JSONEncodable<AttachmentPayload>[];
