@@ -26,6 +26,7 @@ const Targets = {
   StageInstance: 'StageInstance',
   Sticker: 'Sticker',
   Thread: 'Thread',
+  ApplicationCommand: 'ApplicationCommand',
   Unknown: 'Unknown',
 };
 
@@ -44,10 +45,11 @@ const Targets = {
  * * A sticker
  * * A guild scheduled event
  * * A thread
- * * An object with an id key if target was deleted
+ * * An application command
+ * * An object with an id key if target was deleted or fake entity
  * * An object where the keys represent either the new value or the old value
  * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
- * GuildScheduledEvent)} AuditLogEntryTarget
+ * GuildScheduledEvent|ApplicationCommand)} AuditLogEntryTarget
  */
 
 /**
@@ -110,6 +112,8 @@ class GuildAuditLogsEntry {
      * An entry in the audit log representing a specific change.
      * @typedef {Object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
+     * <warn>For application command permissions updates the key is the id of the user, channel,
+     * role, or a permission constant that was updated instead of an actual property name</warn>
      * @property {*} [old] The old value of the change, e.g. for nicknames, the old nickname
      * @property {*} [new] The new value of the change, e.g. for nicknames, the new nickname
      */
@@ -191,6 +195,13 @@ class GuildAuditLogsEntry {
       case AuditLogEvent.StageInstanceUpdate:
         this.extra = {
           channel: guild.client.channels.cache.get(data.options?.channel_id) ?? { id: data.options?.channel_id },
+        };
+        break;
+
+      case AuditLogEvent.ApplicationCommandPermissionUpdate:
+        this.extra = {
+          applicationId: data.options.application_id,
+          guild: guild.client.guilds.cache.get(data.options.guild_id) ?? { id: data.options.guild_id },
         };
         break;
 
@@ -321,6 +332,8 @@ class GuildAuditLogsEntry {
             { id: data.target_id, guild_id: guild.id },
           ),
         );
+    } else if (targetType === Targets.ApplicationCommand) {
+      this.target = logs.applicationCommands.get(data.target_id) ?? { id: data.target_id };
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
     }
@@ -345,6 +358,7 @@ class GuildAuditLogsEntry {
     if (target < 100) return Targets.Sticker;
     if (target < 110) return Targets.GuildScheduledEvent;
     if (target < 120) return Targets.Thread;
+    if (target < 130) return Targets.ApplicationCommand;
     return Targets.Unknown;
   }
 
@@ -417,6 +431,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerUpdate,
         AuditLogEvent.GuildScheduledEventUpdate,
         AuditLogEvent.ThreadUpdate,
+        AuditLogEvent.ApplicationCommandPermissionUpdate,
       ].includes(action)
     ) {
       return 'Update';
