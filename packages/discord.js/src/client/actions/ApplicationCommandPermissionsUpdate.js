@@ -26,7 +26,7 @@ class ApplicationCommandPermissionsUpdateAction extends Action {
       permissions: data.permissions,
       id: data.id,
       guildId: data.guild_id,
-      applicationid: data.application_id,
+      applicationId: data.application_id,
     });
   }
 }

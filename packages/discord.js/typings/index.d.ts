@@ -303,10 +303,11 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public applicationId: Snowflake;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
-  public defaultPermission: boolean;
+  public defaultMemberPermissions: Readonly<PermissionsBitField> | null;
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
+  public dmPermission?: boolean;
   public guild: Guild | null;
   public guildId: Snowflake | null;
   public get manager(): ApplicationCommandManager;
@@ -316,7 +317,6 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public nameLocalized: string | null;
   public options: (ApplicationCommandOption & { nameLocalized?: string; descriptionLocalized?: string })[];
   public permissions: ApplicationCommandPermissionsManager<
-    PermissionsFetchType,
     PermissionsFetchType,
     PermissionsFetchType,
     Guild | null,
@@ -332,7 +332,10 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public setDescriptionLocalizations(
     descriptionLocalizations: LocalizationMap,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
-  public setDefaultPermission(defaultPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public setDefaultMemberPermissions(
+    defaultMemberPermissions: PermissionResolvable,
+  ): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public setDMPermissoin(dmPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setOptions(options: ApplicationCommandOptionData[]): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(
     command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
@@ -1154,6 +1157,7 @@ export class Guild extends AnonymousGuild {
 
 export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
+  private applicationCommands: Collection<Snowflake, ApplicationCommand>;
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
@@ -2950,7 +2954,6 @@ export class ApplicationCommandManager<
   public permissions: ApplicationCommandPermissionsManager<
     { command?: ApplicationCommandResolvable } & PermissionsOptionsExtras,
     { command: ApplicationCommandResolvable } & PermissionsOptionsExtras,
-    PermissionsOptionsExtras,
     PermissionsGuildType,
     null
   >;
@@ -2989,7 +2992,6 @@ export class ApplicationCommandManager<
 export class ApplicationCommandPermissionsManager<
   BaseOptions,
   FetchSingleOptions,
-  FullPermissionsOptions,
   GuildType,
   CommandIdType,
 > extends BaseManager {
@@ -3000,30 +3002,40 @@ export class ApplicationCommandPermissionsManager<
   public guild: GuildType;
   public guildId: Snowflake | null;
   public add(
-    options: FetchSingleOptions & { permissions: ApplicationCommandPermissionData[] },
+    options: FetchSingleOptions & EditApplicationCommandPermissionsMixin,
   ): Promise<ApplicationCommandPermissions[]>;
-  public has(options: FetchSingleOptions & { permissionId: UserResolvable | RoleResolvable }): Promise<boolean>;
+  public has(
+    options: FetchSingleOptions & {
+      permissionId: ApplicationCommandPermissionIdResolvable;
+      permissionType?: ApplicationCommandPermissionType;
+    },
+  ): Promise<boolean>;
   public fetch(options: FetchSingleOptions): Promise<ApplicationCommandPermissions[]>;
   public fetch(options: BaseOptions): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
   public remove(
     options:
       | (FetchSingleOptions & {
-          users: UserResolvable | UserResolvable[];
-          roles?: RoleResolvable | RoleResolvable[];
+          token: string;
+          channels?: (GuildChannelResolvable | ChannelPermissionConstant)[];
+          roles?: (RoleResolvable | RolePermissionConstant)[];
+          users: UserResolvable[];
         })
       | (FetchSingleOptions & {
-          users?: UserResolvable | UserResolvable[];
-          roles: RoleResolvable | RoleResolvable[];
+          token: string;
+          channels?: (GuildChannelResolvable | ChannelPermissionConstant)[];
+          roles: (RoleResolvable | RolePermissionConstant)[];
+          users?: UserResolvable[];
+        })
+      | (FetchSingleOptions & {
+          token: string;
+          channels: (GuildChannelResolvable | ChannelPermissionConstant)[];
+          roles?: (RoleResolvable | RolePermissionConstant)[];
+          users?: UserResolvable[];
         }),
   ): Promise<ApplicationCommandPermissions[]>;
   public set(
-    options: FetchSingleOptions & { permissions: ApplicationCommandPermissionData[] },
+    options: FetchSingleOptions & EditApplicationCommandPermissionsMixin,
   ): Promise<ApplicationCommandPermissions[]>;
-  public set(
-    options: FullPermissionsOptions & {
-      fullPermissions: GuildApplicationCommandPermissionData[];
-    },
-  ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
   private permissionsPath(guildId: Snowflake, commandId?: Snowflake): string;
 }
 
@@ -3463,7 +3475,8 @@ export type AllowedThreadTypeForTextChannel = ChannelType.GuildPublicThread | Ch
 export interface BaseApplicationCommandData {
   name: string;
   nameLocalizations?: LocalizationMap;
-  defaultPermission?: boolean;
+  dmPermission?: boolean;
+  defaultMemberPermissions?: PermissionResolvable;
 }
 
 export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType;
@@ -3623,15 +3636,34 @@ export interface ApplicationCommandOptionChoiceData {
   value: string | number;
 }
 
-export interface ApplicationCommandPermissionData {
+export interface ApplicationCommandPermissions {
   id: Snowflake;
   type: ApplicationCommandPermissionType;
   permission: boolean;
 }
 
-export interface ApplicationCommandPermissions extends ApplicationCommandPermissionData {
-  type: ApplicationCommandPermissionType;
+export interface ApplicationCommandPermissionsUpdateData {
+  id: Snowflake;
+  guildId: Snowflake;
+  applicationId: Snowflake;
+  permissions: ApplicationCommandPermissions;
 }
+
+export interface EditApplicationCommandPermissionsMixin {
+  permissions: ApplicationCommandPermissions[];
+  token: string;
+}
+
+export type ChannelPermissionConstant = Snowflake;
+
+export type RolePermissionConstant = Snowflake;
+
+export type ApplicationCommandPermissionIdResolvable =
+  | GuildChannelResolvable
+  | RoleResolvable
+  | UserResolvable
+  | ChannelPermissionConstant
+  | RolePermissionConstant;
 
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
@@ -3794,6 +3826,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface ClientEvents {
+  applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
   cacheSweep: [message: string];
   channelCreate: [channel: NonThreadGuildBasedChannel];
   channelDelete: [channel: DMChannel | NonThreadGuildBasedChannel];
@@ -4261,11 +4294,6 @@ export interface AttachmentPayload {
 
 export type GlobalSweepFilter<K, V> = () => ((value: V, key: K, collection: Collection<K, V>) => boolean) | null;
 
-export interface GuildApplicationCommandPermissionData {
-  id: Snowflake;
-  permissions: ApplicationCommandPermissionData[];
-}
-
 interface GuildAuditLogsTypes {
   [AuditLogEvent.GuildUpdate]: ['Guild', 'Update'];
   [AuditLogEvent.ChannelCreate]: ['Channel', 'Create'];
@@ -4314,6 +4342,7 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.ThreadCreate]: ['Thread', 'Create'];
   [AuditLogEvent.ThreadUpdate]: ['Thread', 'Update'];
   [AuditLogEvent.ThreadDelete]: ['Thread', 'Delete'];
+  [AuditLogEvent.ApplicationCommandPermissionUpdate]: ['ApplicationCommand', 'Update'];
 }
 
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'All';
@@ -4344,6 +4373,7 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.StageInstanceCreate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
+  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake; guild: Guild | { id: Snowflake } };
 }
 
 export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
@@ -4358,6 +4388,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   StageInstance: StageInstance;
   Sticker: Sticker;
   GuildScheduledEvent: GuildScheduledEvent;
+  ApplicationCommand: ApplicationCommand;
 }
 
 export interface GuildAuditLogsFetchOptions<T extends GuildAuditLogsResolvable> {
