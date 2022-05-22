@@ -99,7 +99,8 @@ class AttachmentBuilder {
    * @returns {AttachmentBuilder}
    */
   static from(other) {
-    return new AttachmentBuilder(other.attachment, other.name, {
+    return new AttachmentBuilder(other.attachment, {
+      name: other.name,
       description: other.description,
     });
   }
