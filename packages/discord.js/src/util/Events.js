@@ -69,4 +69,5 @@ module.exports = {
   GuildScheduledEventDelete: 'guildScheduledEventDelete',
   GuildScheduledEventUserAdd: 'guildScheduledEventUserAdd',
   GuildScheduledEventUserRemove: 'guildScheduledEventUserRemove',
+  ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
 };
