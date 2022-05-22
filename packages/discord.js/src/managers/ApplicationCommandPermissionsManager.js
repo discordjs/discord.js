@@ -54,13 +54,16 @@ class ApplicationCommandPermissionsManager extends BaseManager {
     return Routes.guildApplicationCommandsPermissions(this.client.application.id, guildId);
   }
 
+  /* eslint-disable max-len */
   /**
    * The object returned when fetching permissions for an application command.
    * @typedef {Object} ApplicationCommandPermissions
-   * @property {Snowflake} id The role, user, or channel's id. Can also be a permission constant.
+   * @property {Snowflake} id The role, user, or channel's id. Can also be a
+   * {@link https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-application-command-permissions-constants permission constant}.
    * @property {ApplicationCommandPermissionType} type Whether this permission is for a role or a user
    * @property {boolean} permission Whether the role or user has the permission to use this command
    */
+  /* eslint-enable max-len */
 
   /**
    * Options for managing permissions for one or more Application Commands
@@ -74,8 +77,8 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    */
 
   /**
-   * Fetches the permissions for one or multiple commands. Provide the clients id as the command id to fetch *only* the
-   * guild level permissions
+   * Fetches the permissions for one or multiple commands. Providing the client's id as the "command id" will fetch
+   * *only* the guild level permissions
    * @param {BaseApplicationCommandPermissionsOptions} [options] Options used to fetch permissions
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
    * @example
@@ -108,7 +111,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
   /**
    * Options used to set permissions for one or more Application Commands in a guild
    * <warn>Omitting the `command` parameter edits the guild wide permissions
-   * when the managers `commandId` is `null`</warn>
+   * when the manager's `commandId` is `null`</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} EditApplicationCommandPermissionsOptions
    * @property {ApplicationCommandPermissions[]} permissions The new permissions for the guild or overwrite
    * @property {string} token The bearer token to use that authorizes the permission edit
@@ -234,8 +237,8 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * @typedef {BaseApplicationCommandPermissionsOptions} RemoveApplicationCommandPermissionsOptions
    * @property {string} token The bearer token to use that authorizes the permission removal
    * @property {UserResolvable[]} [users] The user(s) to remove
-   * @property {Array<RoleResolvable|RolePermissionConstant>} [roles] The role(s) to remove
-   * @property {Array<GuildChannelResolvable|ChannelPermissionConstant>} [channels] The channel(s) to remove
+   * @property {(RoleResolvable|RolePermissionConstant)[]} [roles] The role(s) to remove
+   * @property {(GuildChannelResolvable|ChannelPermissionConstant)[]} [channels] The channel(s) to remove
    */
 
   /**
