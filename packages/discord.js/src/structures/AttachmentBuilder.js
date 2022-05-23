@@ -85,10 +85,6 @@ class AttachmentBuilder {
     return Util.basename(this.name).startsWith('SPOILER_');
   }
 
-  /**
-   * Serializes this into an API-compatible payload.
-   * @returns {JSONEncodable<AttachmentPayload>}
-   */
   toJSON() {
     return Util.flatten(this);
   }

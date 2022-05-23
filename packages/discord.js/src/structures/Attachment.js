@@ -4,9 +4,9 @@ const Util = require('../util/Util');
 
 /**
  * @typedef {Object} AttachmentPayload
- * @property {?string} name
- * @property {Stream|BufferResolvable} attachment
- * @property {?string} description
+ * @property {?string} name The name of the attachment
+ * @property {Stream|BufferResolvable} attachment The attachment in this payload
+ * @property {?string} description The description of the attachment
  */
 
 /**
@@ -14,16 +14,16 @@ const Util = require('../util/Util');
  */
 class Attachment {
   /**
-   * @param {APIAttachment} [data] Attachment data
+   * @param {APIAttachment} data Attachment data
    * @private
    */
-  constructor(data) {
-    this.attachment = data.attachment;
+  constructor({ url, filename, ...data }) {
+    this.attachment = url;
     /**
      * The name of this attachment
-     * @type {?string}
+     * @type {string}
      */
-    this.name = data.name;
+    this.name = filename;
     if (data) this._patch(data);
   }
 
@@ -114,10 +114,6 @@ class Attachment {
     return Util.basename(this.url ?? this.name).startsWith('SPOILER_');
   }
 
-  /**
-   * Serializes this into an API-compatible payload.
-   * @returns {JSONEncodable<AttachmentPayload>}
-   */
   toJSON() {
     return Util.flatten(this);
   }

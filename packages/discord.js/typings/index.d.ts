@@ -117,6 +117,7 @@ import {
   LocalizationMap,
   LocaleString,
   MessageActivityType,
+  APIAttachment,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1687,7 +1688,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public inGuild(): this is Message<true> & this;
 }
 
-export class AttachmentBuilder implements JSONEncodable<AttachmentPayload> {
+export class AttachmentBuilder {
   public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawAttachmentData);
   public attachment: BufferResolvable | Stream;
   public description: string | null;
@@ -1697,12 +1698,12 @@ export class AttachmentBuilder implements JSONEncodable<AttachmentPayload> {
   public setFile(attachment: BufferResolvable | Stream, name?: string): this;
   public setName(name: string): this;
   public setSpoiler(spoiler?: boolean): this;
-  public toJSON(): AttachmentPayload;
+  public toJSON(): unknown;
   public static from(other: JSONEncodable<AttachmentPayload>): AttachmentBuilder;
 }
 
-export class Attachment implements JSONEncodable<AttachmentPayload> {
-  private constructor(data?: RawAttachmentData);
+export class Attachment {
+  private constructor(data: APIAttachment);
   public attachment: BufferResolvable | Stream;
   public contentType: string | null;
   public description: string | null;
@@ -1715,7 +1716,7 @@ export class Attachment implements JSONEncodable<AttachmentPayload> {
   public get spoiler(): boolean;
   public url: string;
   public width: number | null;
-  public toJSON(): AttachmentPayload;
+  public toJSON(): unknown;
 }
 
 export class MessageCollector extends Collector<Snowflake, Message, [Collection<Snowflake, Message>]> {
@@ -4709,10 +4710,10 @@ export interface MessageOptions {
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
-  files?: (AttachmentPayload | BufferResolvable | Stream | JSONEncodable<AttachmentPayload>)[];
+  files?: (Attachment | AttachmentBuilder | BufferResolvable | Stream)[];
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
-  attachments?: JSONEncodable<AttachmentPayload>[];
+  attachments?: (Attachment | AttachmentBuilder)[];
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, number>;
 }
 
