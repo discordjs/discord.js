@@ -3723,7 +3723,7 @@ export interface ChannelData {
   name?: string;
   type?: Pick<typeof ChannelType, 'GuildText' | 'GuildNews'>;
   position?: number;
-  topic?: string;
+  topic?: string | null;
   nsfw?: boolean;
   bitrate?: number;
   userLimit?: number;
