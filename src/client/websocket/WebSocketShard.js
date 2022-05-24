@@ -265,7 +265,7 @@ class WebSocketShard extends EventEmitter {
 
       this.status = this.status === Status.DISCONNECTED ? Status.RECONNECTING : Status.CONNECTING;
       this.setHelloTimeout();
-
+      this.setWsCloseTimeout(-1);
       this.connectedAt = Date.now();
 
       // Adding a handshake timeout to just make sure no zombie connection appears.
@@ -797,8 +797,6 @@ class WebSocketShard extends EventEmitter {
       } else {
         // Connection is not OPEN
         this.debug(`WS State: ${CONNECTION_STATE[this.connection.readyState]}`);
-        // Remove listeners from the connection
-        this._cleanupConnection();
         // Attempt to close the connection just in case
         try {
           this.connection.close(closeCode);
