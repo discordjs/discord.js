@@ -419,6 +419,6 @@ module.exports = ApplicationCommandPermissionsManager;
  */
 
 /**
- * Data that resolves to an id used in for an application command permission
+ * Data that resolves to an id used for an application command permission
  * @typedef {UserResolvable|RoleResolvable|GuildChannelResolvable|RolePermissionConstant|ChannelPermissionConstant} ApplicationCommandPermissionIdResolvable
  */

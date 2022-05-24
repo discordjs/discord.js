@@ -136,7 +136,7 @@ class ApplicationCommand extends Base {
 
     if ('dm_permission' in data) {
       /**
-       * Whether the command can be used in dms
+       * Whether the command can be used in DMs
        * <info>This property is not present on guild commands</info>
        * @type {boolean?}
        */
@@ -192,7 +192,7 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {?PermissionResolvable} [defaultMemberPermissions] The bitfield used to determine the default permissions
    * a member needs in order to run the command
-   * @property {boolean} [dmPermission] Whether the command is enabled in dms
+   * @property {boolean} [dmPermission] Whether the command is enabled in DMs
    */
 
   /**
@@ -306,7 +306,7 @@ class ApplicationCommand extends Base {
   }
 
   /**
-   * Edits the dm permission of this ApplicationCommand
+   * Edits the DM permission of this ApplicationCommand
    * @param {boolean} [dmPermission=true] Whether the command can be used in DMs
    * @returns {Promise<ApplicationCommand>}
    */
