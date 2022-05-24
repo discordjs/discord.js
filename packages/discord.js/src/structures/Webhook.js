@@ -6,8 +6,9 @@ const { Routes, WebhookType } = require('discord-api-types/v10');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const DataResolver = require('../util/DataResolver');
+const { lazy } = require('../util/Util');
 
-let Message;
+const getMessage = lazy(() => require('./Message').Message);
 
 /**
  * Represents a webhook.
@@ -210,10 +211,7 @@ class Webhook {
 
     const { body, files } = await messagePayload.resolveFiles();
     const d = await this.client.rest.post(Routes.webhook(this.id, this.token), { body, files, query, auth: false });
-    return (
-      this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ??
-      new (Message ??= require('./Message').Message)(this.client, d)
-    );
+    return this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? new (getMessage())(this.client, d);
   }
 
   /**
@@ -299,7 +297,7 @@ class Webhook {
     });
     return (
       this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ??
-      new (Message ??= require('./Message').Message)(this.client, data)
+      new (getMessage())(this.client, data)
     );
   }
 
@@ -332,7 +330,7 @@ class Webhook {
     );
 
     const messageManager = this.client.channels?.cache.get(d.channel_id)?.messages;
-    if (!messageManager) return new (Message ??= require('./Message').Message)(this.client, d);
+    if (!messageManager) return new (getMessage())(this.client, d);
 
     const existing = messageManager.cache.get(d.id);
     if (!existing) return messageManager._add(d);
