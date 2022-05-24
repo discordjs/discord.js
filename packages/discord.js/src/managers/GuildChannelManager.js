@@ -99,7 +99,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Options used to create a new channel in a guild.
    * @typedef {CategoryCreateChannelOptions} GuildChannelCreateOptions
-   * @property {CategoryChannelResolvable} [parent] Parent of the new channel
+   * @property {CategoryChannelResolvable|null} [parent] Parent of the new channel
    */
 
   /**
