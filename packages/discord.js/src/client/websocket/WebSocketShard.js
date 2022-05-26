@@ -299,6 +299,24 @@ class WebSocketShard extends EventEmitter {
       this.manager.client.emit(Events.ShardError, err, this.id);
       return;
     }
+
+    /**
+     * Emitted whenever a raw payload is received from discord.
+     *
+     * `packet.s` and `packet.t` are `null` when `packet.op` is not `0` (Gateway Dispatch Opcode).
+     *
+     * @event Client#raw
+     * @param {Object} packet [Gateway Payload](https://discord.com/developers/docs/topics/gateway#payloads)
+     * @param {number} packet.op
+     * [opcode](https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-opcodes)
+     * for the payload
+     * @param {any} packet.d mixed event data (any JSON value)
+     * @param {number | null} packet.s sequence number, used for resuming sessions and heartbeats
+     * @param {string | null} packet.t the event name for this payload
+     * @param {number} shardId The shard's id in the manager
+     *
+     * @see {@link https://discord.com/developers/docs/topics/gateway#payloads}
+     */
     this.manager.client.emit(Events.Raw, packet, this.id);
     if (packet.op === GatewayOpcodes.Dispatch) this.manager.emit(packet.t, packet.d, this.id);
     this.onPacket(packet);
