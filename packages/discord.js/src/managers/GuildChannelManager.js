@@ -199,7 +199,7 @@ class GuildChannelManager extends CachedManager {
    * @property {string} [name] The name of the channel
    * @property {ChannelType} [type] The type of the channel (only conversion between text and news is supported)
    * @property {number} [position] The position of the channel
-   * @property {string} [topic] The topic of the text channel
+   * @property {string|null} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
