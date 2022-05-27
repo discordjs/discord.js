@@ -17,7 +17,7 @@ export type MessageComponentBuilder =
 	| ActionRowBuilder<MessageActionRowComponentBuilder>;
 export type ModalComponentBuilder = ModalActionRowComponentBuilder | ActionRowBuilder<ModalActionRowComponentBuilder>;
 export type MessageActionRowComponentBuilder = ButtonBuilder | SelectMenuBuilder;
-export type ModalActionRowComponentBuilder = TextInputBuilder;
+export type ModalActionRowComponentBuilder = TextInputBuilder | SelectMenuBuilder;
 export type AnyComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
 
 /**

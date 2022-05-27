@@ -260,7 +260,7 @@ export class ActionRowBuilder<T extends AnyComponentBuilder = AnyComponentBuilde
 }
 
 export type MessageActionRowComponent = ButtonComponent | SelectMenuComponent;
-export type ModalActionRowComponent = TextInputComponent;
+export type ModalActionRowComponent = TextInputComponent | SelectMenuComponent;
 
 export class ActionRow<T extends MessageActionRowComponent | ModalActionRowComponent> extends Component<
   APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
@@ -1955,6 +1955,7 @@ export class ModalSubmitFields {
   public getField<T extends ComponentType>(customId: string, type: T): { type: T } & ModalData;
   public getField(customId: string, type?: ComponentType): ModalData;
   public getTextInputValue(customId: string): string;
+  public getSelectMenuValues(customId: string): string[];
 }
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
