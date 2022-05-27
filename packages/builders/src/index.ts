@@ -32,6 +32,12 @@ export * from './interactions/slashCommands/options/role';
 export * from './interactions/slashCommands/options/attachment';
 export * from './interactions/slashCommands/options/string';
 export * from './interactions/slashCommands/options/user';
+export * from './interactions/slashCommands/mixins/ApplicationCommandNumericOptionMinMaxValueMixin';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionBase';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionChannelTypesMixin';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin';
+export * from './interactions/slashCommands/mixins/NameAndDescription';
+export * from './interactions/slashCommands/mixins/SharedSlashCommandOptions';
 
 export * as ContextMenuCommandAssertions from './interactions/contextMenuCommands/Assertions';
 export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder';
