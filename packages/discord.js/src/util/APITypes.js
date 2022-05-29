@@ -1,16 +1,11 @@
 /**
  * @external APIActionRowComponent
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityType}
- */
-
-/**
- * @external APIActionRowComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIActionRowComponent}
  */
 
 /**
  * @external APIApplication
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuild}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIApplication}
  */
 
 /**
@@ -270,7 +265,7 @@
 
 /**
  * @external RESTJSONErrorCodes
- * @see {@link https://discord-api-types.dev/api/next/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
  */
 
 /**
