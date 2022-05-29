@@ -221,7 +221,6 @@ exports.ShardEvents = {
   READY: 'ready',
   RESUMED: 'resumed',
   ALL_READY: 'allReady',
-  ZOMBIE_CONNECTION: 'zombieConnection',
 };
 
 /**
