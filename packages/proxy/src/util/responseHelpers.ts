@@ -1,5 +1,5 @@
 import type { ServerResponse } from 'node:http';
-import { DiscordAPIError, parseResponse, RateLimitError } from '@discordjs/rest';
+import { DiscordAPIError, HTTPError, parseResponse, RateLimitError } from '@discordjs/rest';
 import type { Dispatcher } from 'undici';
 
 /**
@@ -28,11 +28,14 @@ export async function populateOkResponse(res: ServerResponse, data: Dispatcher.R
  * @param res The server response to populate
  * @param error The error to populate the response with
  */
-export function populateGeneralErrorResponse(res: ServerResponse, error: DiscordAPIError): void {
+export function populateGeneralErrorResponse(res: ServerResponse, error: DiscordAPIError | HTTPError): void {
 	res.statusCode = error.status;
 	res.statusMessage = error.message;
-	res.setHeader('Content-Type', 'application/json');
-	res.write(JSON.stringify(error.rawError));
+
+	if ('rawError' in error) {
+		res.setHeader('Content-Type', 'application/json');
+		res.write(JSON.stringify(error.rawError));
+	}
 }
 
 /**
@@ -43,4 +46,9 @@ export function populateGeneralErrorResponse(res: ServerResponse, error: Discord
 export function populateRatelimitErrorResponse(res: ServerResponse, error: RateLimitError): void {
 	res.statusCode = 429;
 	res.setHeader('Retry-After', error.timeToReset / 1000);
+}
+
+export function populateAbortErrorResponse(res: ServerResponse): void {
+	res.statusCode = 504;
+	res.statusMessage = 'Upstream timed out';
 }
