@@ -3710,6 +3710,7 @@ export interface CategoryCreateChannelOptions {
   rateLimitPerUser?: number;
   position?: number;
   rtcRegion?: string;
+  videoQualityMode?: VideoQualityMode;
   reason?: string;
 }
 

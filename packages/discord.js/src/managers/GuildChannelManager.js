@@ -137,6 +137,7 @@ class GuildChannelManager extends CachedManager {
       position,
       rateLimitPerUser,
       rtcRegion,
+      videoQualityMode,
       reason,
     } = {},
   ) {
@@ -156,6 +157,7 @@ class GuildChannelManager extends CachedManager {
         permission_overwrites: permissionOverwrites,
         rate_limit_per_user: rateLimitPerUser,
         rtc_region: rtcRegion,
+        video_quality_mode: videoQualityMode,
       },
       reason,
     });
