@@ -55,9 +55,9 @@ test('simple GET', async () => {
 	const res = await supertest(server).get('/api/v10/simpleGet');
 	const headers = res.headers as Record<string, string>;
 
-	expect(headers['content-type'].startsWith('application/json')).toBe(true);
+	expect(headers['content-type']).toEqual(expect.stringMatching(/^application\/json/));
 	// Ratelimit headers should be dropped
-	expect(headers['x-ratelimit-limit']).toBe(undefined);
+	expect(headers).not.toHaveProperty('x-ratelimit-limit');
 	expect(res.statusCode).toBe(200);
 	expect(res.body).toStrictEqual({ test: true });
 });
@@ -77,7 +77,7 @@ test('failed request', async () => {
 	const res = await supertest(server).get('/api/v10/simpleGet');
 	const headers = res.headers as Record<string, string>;
 
-	expect(headers['content-type'].startsWith('application/json')).toBe(true);
+	expect(headers['content-type']).toEqual(expect.stringMatching(/^application\/json/));
 	expect(res.statusCode).toBe(404);
 	expect(res.body).toStrictEqual({ code: 404, message: 'Not Found' });
 });
