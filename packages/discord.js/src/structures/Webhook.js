@@ -125,6 +125,7 @@ class Webhook {
    * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
    * <info>For interaction webhooks, this property is ignored</info>
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be set.
+   * @property {string} [threadName] Name of the thread to create (only available if webhook is in a forum channel)
    */
 
   /**
