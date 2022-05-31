@@ -3,7 +3,7 @@ import { DiscordAPIError, HTTPError, RateLimitError, RequestMethod, REST, RouteL
 import {
 	populateAbortErrorResponse,
 	populateGeneralErrorResponse,
-	populateOkResponse,
+	populateSuccessfulResponse,
 	populateRatelimitErrorResponse,
 } from '../util/responseHelpers';
 import type { RequestHandler } from '../util/util';
@@ -35,7 +35,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 				passThroughBody: true,
 			});
 
-			await populateOkResponse(res, discordResponse);
+			await populateSuccessfulResponse(res, discordResponse);
 		} catch (error) {
 			if (error instanceof DiscordAPIError || error instanceof HTTPError) {
 				populateGeneralErrorResponse(res, error);

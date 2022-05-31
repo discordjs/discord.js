@@ -7,7 +7,7 @@ import type { Dispatcher } from 'undici';
  * @param res The server response to populate
  * @param data The data to populate the response with
  */
-export async function populateOkResponse(res: ServerResponse, data: Dispatcher.ResponseData): Promise<void> {
+export async function populateSuccessfulResponse(res: ServerResponse, data: Dispatcher.ResponseData): Promise<void> {
 	res.statusCode = data.statusCode;
 
 	for (const header of Object.keys(data.headers)) {
