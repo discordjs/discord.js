@@ -1,5 +1,6 @@
 import type { ServerResponse } from 'node:http';
-import { DiscordAPIError, HTTPError, parseResponse, RateLimitError } from '@discordjs/rest';
+import { pipeline } from 'node:stream/promises';
+import type { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
 import type { Dispatcher } from 'undici';
 
 /**
@@ -19,8 +20,7 @@ export async function populateSuccessfulResponse(res: ServerResponse, data: Disp
 		res.setHeader(header, data.headers[header]!);
 	}
 
-	const parsed = await parseResponse(data);
-	res.write(data.headers['content-type']?.startsWith('application/json') ? JSON.stringify(parsed) : parsed);
+	await pipeline(data.body, res);
 }
 
 /**
