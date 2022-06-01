@@ -1,5 +1,6 @@
 'use strict';
 
+const { once } = require('node:events');
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
@@ -234,7 +235,7 @@ class Client extends BaseClient {
       // because some shards may not yet be ready. Waiting for ClientReady to be
       // triggered by WebsocketManager ensures Client#login() does not resolve
       // until the client is actually ready.
-      await new Promise(resolve => this.once(Events.ClientReady, resolve));
+      await once(this, Events.ClientReady);
       return this.token;
     } catch (error) {
       this.destroy();
