@@ -4836,7 +4836,7 @@ export interface PartialChannelData {
     | ChannelType.GuildStageVoice
   >;
   name: string;
-  topic?: string;
+  topic?: string | null;
   nsfw?: boolean;
   bitrate?: number;
   userLimit?: number;
