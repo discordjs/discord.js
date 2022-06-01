@@ -30,24 +30,6 @@ class ThreadManager extends CachedManager {
    */
 
   /**
-   * Resolves a {@link ThreadChannelResolvable} to a {@link ThreadChannel} object.
-   * @method resolve
-   * @memberof ThreadManager
-   * @instance
-   * @param {ThreadChannelResolvable} thread The ThreadChannel resolvable to resolve
-   * @returns {?ThreadChannel}
-   */
-
-  /**
-   * Resolves a {@link ThreadChannelResolvable} to a {@link ThreadChannel} id.
-   * @method resolveId
-   * @memberof ThreadManager
-   * @instance
-   * @param {ThreadChannelResolvable} thread The ThreadChannel resolvable to resolve
-   * @returns {?Snowflake}
-   */
-
-  /**
    * The cache of this Manager
    * @type {Collection<Snowflake, ThreadChannel>}
    * @name ThreadManager#cache
