@@ -230,6 +230,11 @@ class Client extends BaseClient {
 
     try {
       await this.ws.connect();
+      // The WebSocket connecting does not necessarily mean the client is ready,
+      // because some shards may not yet be ready. Waiting for ClientReady to be
+      // triggered by WebsocketManager ensures Client#login() does not resolve
+      // until the client is actually ready.
+      await new Promise(resolve => this.once(Events.ClientReady, resolve));
       return this.token;
     } catch (error) {
       this.destroy();
