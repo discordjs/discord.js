@@ -1862,9 +1862,9 @@ export interface TextInputModalData extends BaseModalData {
   value: string;
 }
 
-export class ActionRowModalData {
+export interface ActionRowModalData {
   type: ComponentType.ActionRow;
-  public readonly components: ModalData[];
+  components: ModalData[];
 }
 
 export type ModalData = TextInputModalData | ActionRowModalData;
