@@ -48,8 +48,7 @@ class ModalSubmitFields {
    * @returns {string}
    */
   getTextInputValue(customId) {
-    const field = this.getField(customId, ComponentType.TextInput);
-    return field.value;
+    return his.getField(customId, ComponentType.TextInput).value;
   }
 }
 
