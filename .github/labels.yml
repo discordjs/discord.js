@@ -50,6 +50,8 @@
   color: 'fbca04'
 - name: 'packages:discord.js'
   color: 'fbca04'
+- name: 'packages:proxy'
+  color: 'fbca04'
 - name: 'packages:rest'
   color: 'fbca04'
 - name: 'packages:voice'
