@@ -1880,7 +1880,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@discordjs/actions@workspace:^, @discordjs/actions@workspace:packages/actions":
+"@discordjs/actions@workspace:packages/actions":
   version: 0.0.0-use.local
   resolution: "@discordjs/actions@workspace:packages/actions"
   dependencies:
@@ -1969,7 +1969,6 @@ __metadata:
   dependencies:
     "@commitlint/cli": ^17.0.2
     "@commitlint/config-angular": ^17.0.0
-    "@discordjs/actions": "workspace:^"
     "@favware/npm-deprecate": ^1.0.4
     conventional-changelog-cli: ^2.2.2
     husky: ^8.0.1
