@@ -344,7 +344,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
+   * Options used to create a {@link Webhook} in a guild text-based channel.
    * @typedef {Object} ChannelWebhookCreateOptions
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
    * @property {string} [reason] Reason for creating the webhook
