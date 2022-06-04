@@ -90,16 +90,6 @@ class BaseGuildTextChannel extends GuildChannel {
   }
 
   /**
-   * Sets whether this channel is flagged as NSFW.
-   * @param {boolean} [nsfw=true] Whether the channel should be considered NSFW
-   * @param {string} [reason] Reason for changing the channel's NSFW flag
-   * @returns {Promise<TextChannel>}
-   */
-  setNSFW(nsfw = true, reason) {
-    return this.edit({ nsfw }, reason);
-  }
-
-  /**
    * Sets the type of this channel (only conversion between text and news is supported)
    * @param {string} type The new channel type
    * @param {string} [reason] Reason for changing the channel's type
@@ -186,6 +176,8 @@ class BaseGuildTextChannel extends GuildChannel {
   bulkDelete() {}
   fetchWebhooks() {}
   createWebhook() {}
+  setRateLimitPerUser() {}
+  setNSFW() {}
 }
 
 TextBasedChannel.applyToClass(BaseGuildTextChannel, true);
