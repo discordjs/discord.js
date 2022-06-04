@@ -133,7 +133,7 @@ class CommandInteraction extends Interaction {
     if (attachments) {
       result.attachments = new Collection();
       for (const attachment of Object.values(attachments)) {
-        const patched = new Attachment(attachment.url, attachment.filename, attachment);
+        const patched = new Attachment(attachment);
         result.attachments.set(attachment.id, patched);
       }
     }
@@ -189,7 +189,7 @@ class CommandInteraction extends Interaction {
       if (role) result.role = this.guild?.roles._add(role) ?? role;
 
       const attachment = resolved.attachments?.[option.value];
-      if (attachment) result.attachment = new Attachment(attachment.url, attachment.filename, attachment);
+      if (attachment) result.attachment = new Attachment(attachment);
     }
 
     return result;

@@ -159,7 +159,7 @@ class Message extends Base {
       this.attachments = new Collection();
       if (data.attachments) {
         for (const attachment of data.attachments) {
-          this.attachments.set(attachment.id, new Attachment(attachment.url, attachment.filename, attachment));
+          this.attachments.set(attachment.id, new Attachment(attachment));
         }
       }
     } else {
@@ -644,7 +644,8 @@ class Message extends Base {
    * Only `MessageFlags.SuppressEmbeds` can be edited.
    * @property {Attachment[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
-   * @property {FileOptions[]|BufferResolvable[]|Attachment[]} [files] Files to add to the message
+   * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
+   * Files to add to the message
    * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */

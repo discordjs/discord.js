@@ -32,7 +32,7 @@ class AutocompleteInteraction extends Interaction {
 
     /**
      * The invoked application command's type
-     * @type {ApplicationCommandType.ChatInput}
+     * @type {ApplicationCommandType}
      */
     this.commandType = data.data.type;
 

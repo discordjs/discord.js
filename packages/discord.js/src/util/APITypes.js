@@ -1,4 +1,14 @@
 /**
+ * @external ActivityFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityFlags}
+ */
+
+/**
+ * @external ActivityType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityType}
+ */
+
+/**
  * @external APIActionRowComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIActionRowComponent}
  */
@@ -11,21 +21,6 @@
 /**
  * @external APIApplicationCommand
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIApplicationCommand}
- */
-
-/**
- * @external ApplicationCommandType
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationCommandType}
- */
-
-/**
- * @external ApplicationCommandOptionType
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationCommandOptionType}
- */
-
-/**
- * @external ApplicationCommandPermissionType
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationCommandPermissionType}
  */
 
 /**
@@ -46,6 +41,11 @@
 /**
  * @external APIEmbed
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIEmbed}
+ */
+
+/**
+ * @external APIEmbedField
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIEmbedField}
  */
 
 /**
@@ -89,8 +89,18 @@
  */
 
 /**
+ * @external APIMessageComponentEmoji
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessageComponentEmoji}
+ */
+
+/**
  * @external APIModalInteractionResponse
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalInteractionResponse}
+ */
+
+/**
+ * @external APIModalComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIModalComponent}
  */
 
 /**
@@ -114,8 +124,33 @@
  */
 
 /**
+ * @external APITextInputComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APITextInputComponent}
+ */
+
+/**
  * @external APIUser
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIUser}
+ */
+
+/**
+ * @external ApplicationCommandType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationCommandType}
+ */
+
+/**
+ * @external ApplicationCommandOptionType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationCommandOptionType}
+ */
+
+/**
+ * @external ApplicationCommandPermissionType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationCommandPermissionType}
+ */
+
+/**
+ * @external ApplicationFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationFlags}
  */
 
 /**
@@ -239,6 +274,11 @@
  */
 
 /**
+ * @external LocaleString
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common#LocaleString}
+ */
+
+/**
  * @external MessageActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageActivityType}
  */
@@ -256,6 +296,16 @@
 /**
  * @external OAuth2Scopes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/OAuth2Scopes}
+ */
+
+/**
+ * @external OverwriteType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/OverwriteType}
+ */
+
+/**
+ * @external ChannelType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ChannelType}
  */
 
 /**
