@@ -18,6 +18,7 @@ body:
         - collection
         - rest
         - proxy
+        - proxy-container
         - voice
     validations:
       required: true

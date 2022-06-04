@@ -1921,7 +1921,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/proxy@workspace:packages/proxy":
+"@discordjs/proxy-container@workspace:packages/proxy-container":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/proxy-container@workspace:packages/proxy-container"
+  dependencies:
+    "@discordjs/proxy": "workspace:^"
+    "@discordjs/ts-docgen": ^0.4.1
+    "@types/node": ^16.11.38
+    "@typescript-eslint/eslint-plugin": ^5.27.0
+    "@typescript-eslint/parser": ^5.27.0
+    eslint: ^8.17.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: ^2.26.0
+    prettier: ^2.6.2
+    tslib: ^2.4.0
+    tsup: ^6.0.1
+    typedoc: ^0.22.17
+    typescript: ^4.7.3
+  languageName: unknown
+  linkType: soft
+
+"@discordjs/proxy@workspace:^, @discordjs/proxy@workspace:packages/proxy":
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy@workspace:packages/proxy"
   dependencies:
