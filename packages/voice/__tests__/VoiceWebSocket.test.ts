@@ -119,7 +119,7 @@ describe.skip('VoiceWebSocket: heartbeating', () => {
 		const rcv = onceIgnoreError(ws, 'close');
 		ws.setHeartbeatInterval(50);
 		await expect(rcv).resolves.toBeTruthy();
-		expect(ws.ping).toBe(undefined);
-		expect(server.messages.length).toBe(3);
+		expect(ws.ping).toBeUndefined();
+		expect(server.messages.length).toEqual(3);
 	});
 });

@@ -69,7 +69,7 @@ describe('demuxProbe', () => {
 	test('Defaults to arbitrary', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
 		const probe = await demuxProbe(stream);
-		expect(probe.type).toBe(StreamType.Arbitrary);
+		expect(probe.type).toEqual(StreamType.Arbitrary);
 		await expect(collectStream(probe.stream)).resolves.toEqual(range(10));
 	});
 
@@ -80,7 +80,7 @@ describe('demuxProbe', () => {
 			if (data[0] === 5) this.emit('head', validHead);
 		} as any);
 		const probe = await demuxProbe(stream);
-		expect(probe.type).toBe(StreamType.WebmOpus);
+		expect(probe.type).toEqual(StreamType.WebmOpus);
 		await expect(collectStream(probe.stream)).resolves.toEqual(range(10));
 	});
 
@@ -91,7 +91,7 @@ describe('demuxProbe', () => {
 			if (data[0] === 5) this.emit('head', validHead);
 		} as any);
 		const probe = await demuxProbe(stream);
-		expect(probe.type).toBe(StreamType.OggOpus);
+		expect(probe.type).toEqual(StreamType.OggOpus);
 		await expect(collectStream(probe.stream)).resolves.toEqual(range(10));
 	});
 
@@ -102,14 +102,14 @@ describe('demuxProbe', () => {
 			if (data[0] === 5) this.emit('head', invalidHead);
 		} as any);
 		const probe = await demuxProbe(stream);
-		expect(probe.type).toBe(StreamType.Arbitrary);
+		expect(probe.type).toEqual(StreamType.Arbitrary);
 		await expect(collectStream(probe.stream)).resolves.toEqual(range(10));
 	});
 
 	test('Gives up on larger streams', async () => {
 		const stream = Readable.from(gen(8192), { objectMode: false });
 		const probe = await demuxProbe(stream);
-		expect(probe.type).toBe(StreamType.Arbitrary);
+		expect(probe.type).toEqual(StreamType.Arbitrary);
 		await expect(collectStream(probe.stream)).resolves.toEqual(range(8192));
 	});
 
@@ -120,6 +120,6 @@ describe('demuxProbe', () => {
 				this.destroy(testError);
 			},
 		});
-		await expect(demuxProbe(stream)).rejects.toBe(testError);
+		await expect(demuxProbe(stream)).rejects.toEqual(testError);
 	});
 });

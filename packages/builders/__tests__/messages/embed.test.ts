@@ -13,13 +13,13 @@ describe('Embed', () => {
 				footer: { text: alpha },
 			});
 
-			expect(embedLength(embed.data)).toBe(alpha.length * 6);
+			expect(embedLength(embed.data)).toEqual(alpha.length * 6);
 		});
 
 		test('GIVEN an embed with zero characters THEN returns amount of characters', () => {
 			const embed = new EmbedBuilder();
 
-			expect(embedLength(embed.data)).toBe(0);
+			expect(embedLength(embed.data)).toEqual(0);
 		});
 	});
 

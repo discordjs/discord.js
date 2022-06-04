@@ -13,14 +13,14 @@ test('Unauthorized', () => {
 		},
 	);
 
-	expect(error.code).toBe(0);
-	expect(error.message).toBe('401: Unauthorized');
-	expect(error.method).toBe('PATCH');
-	expect(error.name).toBe('DiscordAPIError[0]');
-	expect(error.status).toBe(401);
-	expect(error.url).toBe('https://discord.com/api/v10/guilds/:id');
-	expect(error.requestBody.files).toBe(undefined);
-	expect(error.requestBody.json).toBe(undefined);
+	expect(error.code).toEqual(0);
+	expect(error.message).toEqual('401: Unauthorized');
+	expect(error.method).toEqual('PATCH');
+	expect(error.name).toEqual('DiscordAPIError[0]');
+	expect(error.status).toEqual(401);
+	expect(error.url).toEqual('https://discord.com/api/v10/guilds/:id');
+	expect(error.requestBody.files).toBeUndefined();
+	expect(error.requestBody.json).toBeUndefined();
 });
 
 test('Invalid Form Body Error (error.{property}._errors.{index})', () => {
@@ -44,15 +44,15 @@ test('Invalid Form Body Error (error.{property}._errors.{index})', () => {
 		},
 	);
 
-	expect(error.code).toBe(50035);
-	expect(error.message).toBe(
+	expect(error.code).toEqual(50035);
+	expect(error.message).toEqual(
 		['Invalid Form Body', 'username[BASE_TYPE_BAD_LENGTH]: Must be between 2 and 32 in length.'].join('\n'),
 	);
-	expect(error.method).toBe('PATCH');
-	expect(error.name).toBe('DiscordAPIError[50035]');
-	expect(error.status).toBe(400);
-	expect(error.url).toBe('https://discord.com/api/v10/users/@me');
-	expect(error.requestBody.files).toBe(undefined);
+	expect(error.method).toEqual('PATCH');
+	expect(error.name).toEqual('DiscordAPIError[50035]');
+	expect(error.status).toEqual(400);
+	expect(error.url).toEqual('https://discord.com/api/v10/users/@me');
+	expect(error.requestBody.files).toBeUndefined();
 	expect(error.requestBody.json).toStrictEqual({ username: 'a' });
 });
 
@@ -74,14 +74,14 @@ test('Invalid FormFields Error (error.errors.{property}.{property}.{index}.{prop
 		{},
 	);
 
-	expect(error.code).toBe(50035);
-	expect(error.message).toBe(
+	expect(error.code).toEqual(50035);
+	expect(error.message).toEqual(
 		['Invalid Form Body', 'embed.fields[0].value[BASE_TYPE_REQUIRED]: This field is required'].join('\n'),
 	);
-	expect(error.method).toBe('POST');
-	expect(error.name).toBe('DiscordAPIError[50035]');
-	expect(error.status).toBe(400);
-	expect(error.url).toBe('https://discord.com/api/v10/channels/:id');
+	expect(error.method).toEqual('POST');
+	expect(error.name).toEqual('DiscordAPIError[50035]');
+	expect(error.status).toEqual(400);
+	expect(error.url).toEqual('https://discord.com/api/v10/channels/:id');
 });
 
 test('Invalid FormFields Error (error.errors.{property}.{property}._errors.{index}._errors)', () => {
@@ -102,14 +102,14 @@ test('Invalid FormFields Error (error.errors.{property}.{property}._errors.{inde
 		{},
 	);
 
-	expect(error.code).toBe(50035);
-	expect(error.message).toBe(
+	expect(error.code).toEqual(50035);
+	expect(error.message).toEqual(
 		['Invalid Form Body', 'form_fields.label[0][BASE_TYPE_REQUIRED]: This field is required'].join('\n'),
 	);
-	expect(error.method).toBe('PATCH');
-	expect(error.name).toBe('DiscordAPIError[50035]');
-	expect(error.status).toBe(400);
-	expect(error.url).toBe('https://discord.com/api/v10/guilds/:id');
+	expect(error.method).toEqual('PATCH');
+	expect(error.name).toEqual('DiscordAPIError[50035]');
+	expect(error.status).toEqual(400);
+	expect(error.url).toEqual('https://discord.com/api/v10/guilds/:id');
 });
 
 test('Invalid Oauth Code Error (error.error)', () => {
@@ -133,10 +133,10 @@ test('Invalid Oauth Code Error (error.error)', () => {
 		},
 	);
 
-	expect(error.code).toBe('invalid_request');
-	expect(error.message).toBe('Invalid "code" in request.');
-	expect(error.method).toBe('POST');
-	expect(error.name).toBe('DiscordAPIError[invalid_request]');
-	expect(error.status).toBe(400);
-	expect(error.url).toBe('https://discord.com/api/v10/oauth2/token');
+	expect(error.code).toEqual('invalid_request');
+	expect(error.message).toEqual('Invalid "code" in request.');
+	expect(error.method).toEqual('POST');
+	expect(error.name).toEqual('DiscordAPIError[invalid_request]');
+	expect(error.status).toEqual(400);
+	expect(error.url).toEqual('https://discord.com/api/v10/oauth2/token');
 });

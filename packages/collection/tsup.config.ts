@@ -1,6 +1,6 @@
-import type { Options } from 'tsup';
+import { defineConfig } from 'tsup';
 
-export const tsup: Options = {
+export default defineConfig({
 	clean: true,
 	dts: true,
 	entryPoints: ['src/index.ts'],
@@ -18,4 +18,4 @@ export const tsup: Options = {
 			};
 		}
 	},
-};
+});
