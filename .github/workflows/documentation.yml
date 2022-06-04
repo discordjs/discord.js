@@ -122,7 +122,7 @@ jobs:
           tag: ${{ env.BRANCH_NAME }}
 
       - name: Move docs to correct directory
-        if: ${{ github.event.inputs.ref || env.BRANCH_OR_TAG == 'tag' }}
+        if: ${{ (github.event.inputs.ref || env.BRANCH_OR_TAG == 'tag') && matrix.package == steps.extract-tag.outputs.package }}
         env:
           PACKAGE: ${{ steps.extract-tag.outputs.package }}
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
