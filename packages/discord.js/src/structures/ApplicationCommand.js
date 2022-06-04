@@ -137,10 +137,12 @@ class ApplicationCommand extends Base {
     if ('dm_permission' in data) {
       /**
        * Whether the command can be used in DMs
-       * <info>This property is not present on guild commands</info>
-       * @type {boolean?}
+       * <info>This property is always `null` on guild commands</info>
+       * @type {boolean|null}
        */
       this.dmPermission = data.dm_permission;
+    } else {
+      this.dmPermission ??= null;
     }
 
     if ('version' in data) {

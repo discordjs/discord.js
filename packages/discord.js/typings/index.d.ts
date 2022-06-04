@@ -307,7 +307,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
-  public dmPermission?: boolean;
+  public dmPermission: boolean | null;
   public guild: Guild | null;
   public guildId: Snowflake | null;
   public get manager(): ApplicationCommandManager;
