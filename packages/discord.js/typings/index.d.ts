@@ -182,6 +182,14 @@ import {
   RawWidgetMemberData,
 } from './rawDataTypes';
 
+declare module 'node:events' {
+  class EventEmitter {
+    // Add type overloads for client events.
+    public static once<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): Promise<ClientEvents[K]>;
+    public static on<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): AsyncIterator<ClientEvents[K]>;
+  }
+}
+
 //#region Classes
 
 export class Activity {
