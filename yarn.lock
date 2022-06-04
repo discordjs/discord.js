@@ -5,6 +5,24 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@actions/core@npm:^1.8.2":
+  version: 1.8.2
+  resolution: "@actions/core@npm:1.8.2"
+  dependencies:
+    "@actions/http-client": ^2.0.1
+  checksum: 1cd1a47f751501900a579e641565bbe13a09d626507a4fa46b51e6a959a74a89134490ae7311570ed8ec1735ada83bcfde81a456ea4d2e24e323c16e94e39fd1
+  languageName: node
+  linkType: hard
+
+"@actions/http-client@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@actions/http-client@npm:2.0.1"
+  dependencies:
+    tunnel: ^0.0.6
+  checksum: 799ec3df91e28a9da91ce6592e94f8b8923ccf6cc21a2f72c7429be5af5273f1625335411adc2a1bb222d56c852d5767214dfa6fa32a6da7e81dba8290e08f17
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.1.0":
   version: 2.1.2
   resolution: "@ampproject/remapping@npm:2.1.2"
@@ -1862,6 +1880,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@discordjs/actions@workspace:^, @discordjs/actions@workspace:packages/actions":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/actions@workspace:packages/actions"
+  dependencies:
+    "@actions/core": ^1.8.2
+    "@babel/core": ^7.18.2
+    "@babel/plugin-proposal-decorators": ^7.18.2
+    "@babel/preset-env": ^7.18.2
+    "@babel/preset-typescript": ^7.17.12
+    "@types/jest": ^28.1.0
+    "@types/node": ^16.11.38
+    "@typescript-eslint/eslint-plugin": ^5.27.0
+    "@typescript-eslint/parser": ^5.27.0
+    babel-plugin-transform-typescript-metadata: ^0.3.2
+    eslint: ^8.17.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: ^2.26.0
+    jest: ^28.1.0
+    prettier: ^2.6.2
+    tslib: ^2.4.0
+    tsup: ^6.0.1
+    typedoc: ^0.22.17
+    typescript: ^4.7.3
+  languageName: unknown
+  linkType: soft
+
 "@discordjs/builders@workspace:^, @discordjs/builders@workspace:packages/builders":
   version: 0.0.0-use.local
   resolution: "@discordjs/builders@workspace:packages/builders"
@@ -1924,6 +1969,7 @@ __metadata:
   dependencies:
     "@commitlint/cli": ^17.0.2
     "@commitlint/config-angular": ^17.0.0
+    "@discordjs/actions": "workspace:^"
     "@favware/npm-deprecate": ^1.0.4
     conventional-changelog-cli: ^2.2.2
     husky: ^8.0.1
@@ -10751,6 +10797,13 @@ dts-critic@latest:
   dependencies:
     safe-buffer: ^5.0.1
   checksum: 05f6510358f8afc62a057b8b692f05d70c1782b70db86d6a1e0d5e28a32389e52fa6e7707b6c5ecccacc031462e4bc35af85ecfe4bbc341767917b7cf6965711
+  languageName: node
+  linkType: hard
+
+"tunnel@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "tunnel@npm:0.0.6"
+  checksum: c362948df9ad34b649b5585e54ce2838fa583aa3037091aaed66793c65b423a264e5229f0d7e9a95513a795ac2bd4cb72cda7e89a74313f182c1e9ae0b0994fa
   languageName: node
   linkType: hard
 

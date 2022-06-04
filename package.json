@@ -40,6 +40,7 @@
 	"devDependencies": {
 		"@commitlint/cli": "^17.0.2",
 		"@commitlint/config-angular": "^17.0.0",
+		"@discordjs/actions": "workspace:^",
 		"@favware/npm-deprecate": "^1.0.4",
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^8.0.1",

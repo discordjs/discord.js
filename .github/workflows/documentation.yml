@@ -69,6 +69,31 @@ jobs:
       BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
       SHA: ${{ needs.build.outputs.SHA }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install node.js v16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Turbo cache
+        id: turbo-cache
+        uses: actions/cache@v2
+        with:
+          path: .turbo
+          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-${{ github.ref_name }}-
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Build actions
+        run: yarn build --cache-dir=".turbo"
+
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
@@ -82,29 +107,18 @@ jobs:
           token: ${{ secrets.DJS_DOCS }}
           path: 'out'
 
-      - name: 'Extract package from tag'
+      - name: Extract package and semver from tag
         if: env.BRANCH_OR_TAG == 'tag'
-        id: package-name
-        uses: frabert/replace-string-action@v2.0
+        id: extract-tag
+        uses: ./packages/actions/src/formatTag
         with:
-          pattern: '(^@.*\\/(?<package>.*)@v?)?(?<semver>\\d+.\\d+.\\d+)-?.*'
-          string: ${{ env.BRANCH_NAME }}
-          replace-with: '$<package>'
-
-      - name: 'Extract semver from tag'
-        if: env.BRANCH_OR_TAG == 'tag'
-        id: semver
-        uses: frabert/replace-string-action@v2.0
-        with:
-          pattern: '(^@.*\\/(?<package>.*)@v?)?(?<semver>\\d+.\\d+.\\d+)-?.*'
-          string: ${{ env.BRANCH_NAME }}
-          replace-with: '$<semver>'
+          tag: ${{ env.BRANCH_NAME }}
 
       - name: Move docs to correct directory
         if: env.BRANCH_OR_TAG == 'tag'
         env:
-          PACKAGE: ${{ steps.package-name.outputs.replaced }}
-          SEMVER: ${{ steps.semver.outputs.replaced }}
+          PACKAGE: ${{ steps.extract-tag.outputs.package }}
+          SEMVER: ${{ steps.extract-tag.outputs.semver }}
         run: |
           mkdir -p out/${PACKAGE}
           mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
