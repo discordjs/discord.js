@@ -123,6 +123,7 @@ exports.InviteStageInstance = require('./structures/InviteStageInstance');
 exports.InviteGuild = require('./structures/InviteGuild');
 exports.Message = require('./structures/Message').Message;
 exports.Attachment = require('./structures/Attachment');
+exports.AttachmentBuilder = require('./structures/AttachmentBuilder');
 exports.ModalBuilder = require('./structures/ModalBuilder');
 exports.MessageCollector = require('./structures/MessageCollector');
 exports.MessageComponentInteraction = require('./structures/MessageComponentInteraction');

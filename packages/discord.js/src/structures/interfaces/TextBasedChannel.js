@@ -64,7 +64,7 @@ class TextBasedChannel {
    * @property {FileOptions[]|BufferResolvable[]|Attachment[]} [files] Files to send with the message
    * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
-   * @property {Attachment[]} [attachments] Attachments to send in the message
+   * @property {Array<JSONEncodable<AttachmentPayload>>} [attachments] Attachments to send in the message
    */
 
   /**
