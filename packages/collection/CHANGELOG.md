@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [0.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.5.0...@discordjs/collection@0.6.0) (2022-04-17)
+# [@discordjs/collection@0.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.5.0...@discordjs/collection@0.6.0) - (2022-04-17)
 
 ## Features
 
@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 - **builders:** Add attachment command option type (#7203) ([ae0f35f](https://github.com/discordjs/discord.js/commit/ae0f35f51d68dfa5a7dc43d161ef9365171debdb))
 - **Collection:** Add merging functions (#7299) ([e4bd07b](https://github.com/discordjs/discord.js/commit/e4bd07b2394f227ea06b72eb6999de9ab3127b25))
 
-# [0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.4.0...@discordjs/collection@0.5.0) (2021-12-08)
+# [@discordjs/collection@0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.4.0...@discordjs/collection@0.5.0) - (2022-01-24)
 
 ## Refactor
 

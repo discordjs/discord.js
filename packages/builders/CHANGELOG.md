@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [0.13.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.12.0...@discordjs/builders@0.13.0) (2022-04-17)
+# [@discordjs/builders@0.13.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.12.0...@discordjs/builders@0.13.0) - (2022-04-17)
 
 ## Bug Fixes
 
@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 ## Documentation
 
 - Completely fix builders example link (#7543) ([1a14c0c](https://github.com/discordjs/discord.js/commit/1a14c0ca562ea173d363a770a0437209f461fd23))
+- Add slash command builders example, fixes #7338 (#7339) ([3ae6f3c](https://github.com/discordjs/discord.js/commit/3ae6f3c313091151245d6e6b52337b459ecfc765))
 
 ## Features
 
@@ -52,7 +53,7 @@ All notable changes to this project will be documented in this file.
 
 - Fix regressions (#7649) ([5748dbe](https://github.com/discordjs/discord.js/commit/5748dbe08783beb80c526de38ccd105eb0e82664))
 
-# [0.12.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.11.0...@discordjs/builders@0.12.0) (2021-12-08)
+# [@discordjs/builders@0.12.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.11.0...@discordjs/builders@0.12.0) - (2022-01-24)
 
 ## Bug Fixes
 

@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [0.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.3.0...@discordjs/rest@0.4.0) (2022-04-17)
+# [@discordjs/rest@0.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.3.0...@discordjs/rest@0.4.0) - (2022-04-17)
 
 ## Bug Fixes
 
@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file.
 - **requestmanager:** Use timestampfrom (#7459) ([3298510](https://github.com/discordjs/discord.js/commit/32985109c3b7614d364007608f8c5af4bed753ae))
 - **files:** Remove redundant file property names (#7340) ([6725038](https://github.com/discordjs/discord.js/commit/67250382f99872a9edff99ebaa482ffa895b0c37))
 
-# [0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.2.0...@discordjs/rest@0.3.0) (2021-12-08)
+# [@discordjs/rest@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.2.0...@discordjs/rest@0.3.0) - (2022-01-24)
 
 ## Bug Fixes
 
