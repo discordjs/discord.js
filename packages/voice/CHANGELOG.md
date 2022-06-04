@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/voice@0.10.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.9.0...@discordjs/voice@0.10.0) - (2022-06-04)
+
+## Styling
+
+- Cleanup tests and tsup configs ([6b8ef20](https://github.com/discordjs/discord.js/commit/6b8ef20cb3af5b5cfd176dd0aa0a1a1e98551629))
+
 # [@discordjs/voice@0.9.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.8.0...@discordjs/voice@0.9.0) - (2022-04-17)
 
 ## Bug Fixes

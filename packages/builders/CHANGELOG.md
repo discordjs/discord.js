@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@0.14.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.13.0...@discordjs/builders@0.14.0) - (2022-06-04)
+
+## Bug Fixes
+
+- **builders:** Leftover invalid null type ([8a7cd10](https://github.com/discordjs/discord.js/commit/8a7cd10554a2a71cd2fe7f6a177b5f4f43464348))
+- **SlashCommandBuilder:** Import `Permissions` correctly (#7921) ([7ce641d](https://github.com/discordjs/discord.js/commit/7ce641d33a4af6586d5e7beffbe7d38619dcf1a2))
+- Add localizations for subcommand builders and option choices (#7862) ([c1b5e73](https://github.com/discordjs/discord.js/commit/c1b5e731daa9cbbfca03a046e47cb1221ee1ed7c))
+
+## Features
+
+- Export types from `interactions/slashCommands/mixins` (#7942) ([68d5169](https://github.com/discordjs/discord.js/commit/68d5169f66c96f8fe5be17a1c01cdd5155607ab2))
+- **builders:** Add new command permissions v2 (#7861) ([de3f157](https://github.com/discordjs/discord.js/commit/de3f1573f07dda294cc0fbb1ca4b659eb2388a12))
+- **builders:** Improve embed errors and predicates (#7795) ([ec8d87f](https://github.com/discordjs/discord.js/commit/ec8d87f93272cc9987f9613735c0361680c4ed1e))
+
+## Refactor
+
+- Use arrays instead of rest parameters for builders (#7759) ([29293d7](https://github.com/discordjs/discord.js/commit/29293d7bbb5ed463e52e5a5853817e5a09cf265b))
+
+## Styling
+
+- Cleanup tests and tsup configs ([6b8ef20](https://github.com/discordjs/discord.js/commit/6b8ef20cb3af5b5cfd176dd0aa0a1a1e98551629))
+
 # [@discordjs/builders@0.13.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.12.0...@discordjs/builders@0.13.0) - (2022-04-17)
 
 ## Bug Fixes

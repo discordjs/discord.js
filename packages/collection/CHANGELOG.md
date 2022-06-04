@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@0.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.6.0...@discordjs/collection@0.7.0) - (2022-06-04)
+
+## Styling
+
+- Cleanup tests and tsup configs ([6b8ef20](https://github.com/discordjs/discord.js/commit/6b8ef20cb3af5b5cfd176dd0aa0a1a1e98551629))
+
 # [@discordjs/collection@0.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.5.0...@discordjs/collection@0.6.0) - (2022-04-17)
 
 ## Features
