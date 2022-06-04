@@ -232,7 +232,7 @@ class ApplicationCommandManager extends CachedManager {
       type: command.type,
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
       default_permission: command.defaultPermission ?? command.default_permission,
-      default_member_permissions: command.default_member_permissions ?? command.defaultMemberPermissions
+      default_member_permissions: command.default_member_permissions ?? command.defaultMemberPermissions,
     };
   }
 }
