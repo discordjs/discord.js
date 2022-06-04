@@ -107,7 +107,7 @@ client.login('token');
   See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
 - [Discord API Discord server](https://discord.gg/discord-api)
-- [GitHub](https://github.com/discordjs/discord.js)
+- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/discord.js)
 - [npm](https://www.npmjs.com/package/discord.js)
 - [Related libraries](https://discord.com/developers/docs/topics/community-resources#libraries)
 

@@ -9,7 +9,6 @@
 		<a href="https://www.npmjs.com/package/@discordjs/builders"><img src="https://img.shields.io/npm/v/@discordjs/builders.svg?maxAge=3600" alt="npm version" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/builders"><img src="https://img.shields.io/npm/dt/@discordjs/builders.svg?maxAge=3600" alt="npm downloads" /></a>
 		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/test.yml/badge.svg" alt="Build status" /></a>
-		<a href="https://codecov.io/gh/discordjs/builders"><img src="https://codecov.io/gh/discordjs/builders/branch/main/graph/badge.svg" alt="Code coverage" /></a>
 	</p>
 </div>
 

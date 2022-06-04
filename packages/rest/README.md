@@ -74,7 +74,9 @@ try {
 ## Links
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-- [Dev documentation](https://discord.js.org/#/docs/rest/main/general/welcome) (stable coming soon)
+- [Documentation](https://discord.js.org/#/docs/rest)
+- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
+  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
 - [Discord API Discord server](https://discord.gg/discord-api)
 - [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/rest)
@@ -84,7 +86,7 @@ try {
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs/rest/main/general/welcome).  
+[documentation](https://discord.js.org/#/docs/rest).  
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help

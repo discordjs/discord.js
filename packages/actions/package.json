@@ -64,7 +64,6 @@
 		"jest": "^28.1.0",
 		"prettier": "^2.6.2",
 		"tsup": "^6.0.1",
-		"typedoc": "^0.22.17",
 		"typescript": "^4.7.3"
 	},
 	"engines": {

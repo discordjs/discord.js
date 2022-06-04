@@ -1902,7 +1902,6 @@ __metadata:
     prettier: ^2.6.2
     tslib: ^2.4.0
     tsup: ^6.0.1
-    typedoc: ^0.22.17
     typescript: ^4.7.3
   languageName: unknown
   linkType: soft
@@ -2053,6 +2052,31 @@ __metadata:
     typedoc: ^0.22.17
     typescript: ^4.7.3
     undici: ^5.4.0
+  languageName: unknown
+  linkType: soft
+
+"@discordjs/scripts@workspace:packages/scripts":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/scripts@workspace:packages/scripts"
+  dependencies:
+    "@babel/core": ^7.18.2
+    "@babel/plugin-proposal-decorators": ^7.18.2
+    "@babel/preset-env": ^7.18.2
+    "@babel/preset-typescript": ^7.17.12
+    "@types/jest": ^28.1.0
+    "@types/node": ^16.11.38
+    "@typescript-eslint/eslint-plugin": ^5.27.0
+    "@typescript-eslint/parser": ^5.27.0
+    babel-plugin-transform-typescript-metadata: ^0.3.2
+    eslint: ^8.17.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: ^2.26.0
+    jest: ^28.1.0
+    prettier: ^2.6.2
+    tslib: ^2.4.0
+    tsup: ^6.0.1
+    typescript: ^4.7.3
   languageName: unknown
   linkType: soft
 
