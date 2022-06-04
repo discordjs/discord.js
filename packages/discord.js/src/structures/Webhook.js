@@ -132,7 +132,7 @@ class Webhook {
    * @typedef {Object} WebhookEditMessageOptions
    * @property {Embed[]|APIEmbed[]} [embeds] See {@link WebhookMessageOptions#embeds}
    * @property {string} [content] See {@link BaseMessageOptions#content}
-   * @property {FileOptions[]|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
+   * @property {JSONEncodable<AttachmentPayload>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
    * See {@link BaseMessageOptions#files}
    * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
    * @property {Attachment[]} [attachments] Attachments to send with the message

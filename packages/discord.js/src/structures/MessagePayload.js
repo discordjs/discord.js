@@ -224,7 +224,7 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
-   * @param {BufferResolvable|Stream|FileOptions|JSONEncodable<AttachmentPayload>} fileLike Something that could
+   * @param {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} fileLike Something that could
    * be resolved to a file
    * @returns {Promise<RawFile>}
    */
