@@ -96,6 +96,6 @@ class DMChannel extends Channel {
   // Doesn't work on DM channels; bulkDelete() {}
 }
 
-TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);
+TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete', 'fetchWebhooks', 'createWebhook']);
 
 module.exports = DMChannel;

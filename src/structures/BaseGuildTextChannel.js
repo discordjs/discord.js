@@ -110,44 +110,6 @@ class BaseGuildTextChannel extends GuildChannel {
   }
 
   /**
-   * Fetches all webhooks for the channel.
-   * @returns {Promise<Collection<Snowflake, Webhook>>}
-   * @example
-   * // Fetch webhooks
-   * channel.fetchWebhooks()
-   *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
-   *   .catch(console.error);
-   */
-  fetchWebhooks() {
-    return this.guild.channels.fetchWebhooks(this.id);
-  }
-
-  /**
-   * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
-   * @typedef {Object} ChannelWebhookCreateOptions
-   * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
-   * @property {string} [reason] Reason for creating the webhook
-   */
-
-  /**
-   * Creates a webhook for the channel.
-   * @param {string} name The name of the webhook
-   * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
-   * @returns {Promise<Webhook>} Returns the created Webhook
-   * @example
-   * // Create a webhook for the current channel
-   * channel.createWebhook('Snek', {
-   *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
-   *   reason: 'Needed a cool new Webhook'
-   * })
-   *   .then(console.log)
-   *   .catch(console.error)
-   */
-  createWebhook(name, options = {}) {
-    return this.guild.channels.createWebhook(this.id, name, options);
-  }
-
-  /**
    * Sets a new topic for the guild channel.
    * @param {?string} topic The new topic for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's topic
@@ -221,6 +183,8 @@ class BaseGuildTextChannel extends GuildChannel {
   createMessageComponentCollector() {}
   awaitMessageComponent() {}
   bulkDelete() {}
+  fetchWebhooks() {}
+  createWebhook() {}
 }
 
 TextBasedChannel.applyToClass(BaseGuildTextChannel, true);

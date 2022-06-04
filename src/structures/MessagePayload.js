@@ -277,7 +277,7 @@ module.exports = MessagePayload;
 
 /**
  * A target for a message.
- * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook|
+ * @typedef {TextBasedChannel|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 
