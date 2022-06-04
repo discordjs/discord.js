@@ -644,7 +644,8 @@ class Message extends Base {
    * Only `MessageFlags.SuppressEmbeds` can be edited.
    * @property {Attachment[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
-   * @property {JSONEncodable<AttachmentPayload>[]|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files] Files to add to the message
+   * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
+   * Files to add to the message
    * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
