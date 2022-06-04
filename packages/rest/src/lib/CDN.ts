@@ -152,6 +152,22 @@ export class CDN {
 	}
 
 	/**
+	 * Generates a guild member banner URL.
+	 * @param guildId The id of the guild
+	 * @param userId The id of the user
+	 * @param bannerHash The hash provided by Discord for this banner
+	 * @param options Optional options for the banner
+	 */
+	public guildMemberBanner(
+		guildId: string,
+		userId: string,
+		bannerHash: string,
+		options?: Readonly<ImageURLOptions>,
+	): string {
+		return this.dynamicMakeURL(`/guilds/${guildId}/users/${userId}/banner`, bannerHash, options);
+	}
+
+	/**
 	 * Generates an icon URL, e.g. for a guild.
 	 * @param id The id that has the icon splash
 	 * @param iconHash The hash provided by Discord for this icon
