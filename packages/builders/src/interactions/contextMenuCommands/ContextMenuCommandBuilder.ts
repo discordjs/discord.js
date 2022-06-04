@@ -48,7 +48,7 @@ export class ContextMenuCommandBuilder {
 	 * Indicates whether the command is available in DMs with the application, only for globally-scoped commands.
 	 * By default, commands are visible.
 	 */
-	public readonly dm_permission: boolean | null | undefined = undefined;
+	public readonly dm_permission: boolean | undefined = undefined;
 
 	/**
 	 * Sets the name
