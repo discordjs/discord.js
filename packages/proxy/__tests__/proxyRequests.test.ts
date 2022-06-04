@@ -3,6 +3,7 @@ import { REST } from '@discordjs/rest';
 import supertest from 'supertest';
 import { MockAgent, Interceptable, setGlobalDispatcher } from 'undici';
 import type { MockInterceptor } from 'undici/types/mock-interceptor';
+import { beforeEach, afterAll, afterEach, test, expect } from 'vitest';
 import { proxyRequests } from '../src';
 
 let mockAgent: MockAgent;

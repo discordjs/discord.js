@@ -4,6 +4,7 @@ import {
 	ButtonStyle,
 	ComponentType,
 } from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
 import { buttonLabelValidator, buttonStyleValidator } from '../../src/components/Assertions';
 import { ButtonBuilder } from '../../src/components/button/Button';
 
@@ -124,7 +125,7 @@ describe('Button Components', () => {
 			expect(
 				buttonComponent()
 					.setCustomId(interactionData.custom_id)
-					.setLabel(interactionData.label)
+					.setLabel(interactionData.label!)
 					.setStyle(interactionData.style)
 					.setDisabled(interactionData.disabled)
 					.toJSON(),
@@ -140,7 +141,7 @@ describe('Button Components', () => {
 
 			expect(new ButtonBuilder(linkData).toJSON()).toEqual(linkData);
 
-			expect(buttonComponent().setLabel(linkData.label).setDisabled(true).setURL(linkData.url));
+			expect(buttonComponent().setLabel(linkData.label!).setDisabled(true).setURL(linkData.url));
 		});
 	});
 });

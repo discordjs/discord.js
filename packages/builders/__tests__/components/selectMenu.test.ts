@@ -1,4 +1,5 @@
 import { APISelectMenuComponent, APISelectMenuOption, ComponentType } from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
 import { SelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index';
 
 const selectMenu = () => new SelectMenuBuilder();

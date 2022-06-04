@@ -1,3 +1,4 @@
+import { describe, test, expect, vitest } from 'vitest';
 import {
 	blockQuote,
 	bold,
@@ -150,12 +151,12 @@ describe('Message formatters', () => {
 
 	describe('time', () => {
 		test('GIVEN no arguments THEN returns "<t:${bigint}>"', () => {
-			jest.useFakeTimers('modern');
-			jest.setSystemTime(1566424897579);
+			vitest.useFakeTimers();
+			vitest.setSystemTime(1566424897579);
 
 			expect<`<t:${bigint}>`>(time()).toEqual('<t:1566424897>');
 
-			jest.useRealTimers();
+			vitest.useRealTimers();
 		});
 
 		test('GIVEN a date THEN returns "<t:${bigint}>"', () => {

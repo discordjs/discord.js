@@ -1,6 +1,7 @@
 import { performance } from 'node:perf_hooks';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
+import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
 import { genPath } from './util';
 import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src';
 
@@ -82,8 +83,8 @@ test('Significant Invalid Requests', async () => {
 		.reply(403, { message: 'Missing Permissions', code: 50013 }, responseOptions)
 		.times(10);
 
-	const invalidListener = jest.fn();
-	const invalidListener2 = jest.fn();
+	const invalidListener = vitest.fn();
+	const invalidListener2 = vitest.fn();
 	api.on(RESTEvents.InvalidRequestWarning, invalidListener);
 	// Ensure listeners on REST do not get double added
 	api.on(RESTEvents.InvalidRequestWarning, invalidListener2);
@@ -364,6 +365,7 @@ test('Handle unexpected 429', async () => {
 	expect(await unexepectedSublimit).toStrictEqual({ test: true });
 	expect(await queuedSublimit).toStrictEqual({ test: true });
 	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1000);
+	// @ts-expect-error
 	expect(secondResolvedTime).toBeGreaterThan(firstResolvedTime);
 });
 
@@ -495,7 +497,7 @@ test('Unauthorized', async () => {
 		.reply(401, { message: '401: Unauthorized', code: 0 }, responseOptions)
 		.times(2);
 
-	const setTokenSpy = jest.spyOn(invalidAuthApi.requestManager, 'setToken');
+	const setTokenSpy = vitest.spyOn(invalidAuthApi.requestManager, 'setToken');
 
 	// Ensure authless requests don't reset the token
 	const promiseWithoutTokenClear = invalidAuthApi.get('/unauthorized', { auth: false });

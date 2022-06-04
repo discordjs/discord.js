@@ -2,6 +2,7 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Routes, Snowflake } from 'discord-api-types/v10';
 import { File, FormData, MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
+import { beforeEach, afterEach, test, expect } from 'vitest';
 import { genPath } from './util';
 import { REST } from '../src';
 
@@ -107,7 +108,7 @@ test('simple POST', async () => {
 	expect(await api.post('/simplePost')).toStrictEqual({ test: true });
 });
 
-test('simple PUT', async () => {
+test('simple PUT 2', async () => {
 	mockPool
 		.intercept({
 			path: genPath('/simplePut'),
@@ -285,7 +286,7 @@ test('Old Message Delete Edge-Case: Old message', async () => {
 	});
 });
 
-test('Old Message Delete Edge-Case: Old message', async () => {
+test('Old Message Delete Edge-Case: Old message 2', async () => {
 	mockPool
 		.intercept({
 			path: genPath(`/channels/339942739275677727/messages/${newSnowflake}`),

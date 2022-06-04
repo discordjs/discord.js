@@ -1,4 +1,5 @@
 import { APIApplicationCommandOptionChoice, ChannelType, PermissionFlagsBits } from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
 import {
 	SlashCommandAssertions,
 	SlashCommandBooleanOption,
@@ -313,8 +314,10 @@ describe('Slash Commands', () => {
 				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(true)).toThrowError();
 
+				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(null)).toThrowError();
 
+				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(undefined)).toThrowError();
 
 				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error

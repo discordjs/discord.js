@@ -1,5 +1,6 @@
 import { MockAgent, setGlobalDispatcher } from 'undici';
-import { Interceptable } from 'undici/types/mock-interceptor';
+import type { Interceptable } from 'undici/types/mock-interceptor';
+import { beforeEach, afterEach, test, expect } from 'vitest';
 import { genPath } from './util';
 import { REST } from '../src';
 

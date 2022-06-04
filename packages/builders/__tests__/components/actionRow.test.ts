@@ -1,4 +1,5 @@
 import { APIActionRowComponent, APIMessageActionRowComponent, ButtonStyle, ComponentType } from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -82,6 +83,7 @@ describe('Action Row Components', () => {
 			expect(new ActionRowBuilder().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
 		});
+
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {
 			const rowWithButtonData: APIActionRowComponent<APIMessageActionRowComponent> = {
 				type: ComponentType.ActionRow,
@@ -122,7 +124,8 @@ describe('Action Row Components', () => {
 			expect(new ActionRowBuilder().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
 		});
-		test('GIVEN valid builder options THEN valid JSON output is given', () => {
+
+		test('GIVEN valid builder options THEN valid JSON output is given 2', () => {
 			const button = new ButtonBuilder().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
 			const selectMenu = new SelectMenuBuilder()
 				.setCustomId('1234')

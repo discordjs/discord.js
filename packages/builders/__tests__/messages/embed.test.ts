@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { EmbedBuilder, embedLength } from '../../src';
 
 const alpha = 'abcdefghijklmnopqrstuvwxyz';
@@ -341,7 +342,7 @@ describe('Embed', () => {
 			});
 		});
 
-		test('GIVEN an embed using Embed#spliceFields THEN returns valid toJSON data', () => {
+		test('GIVEN an embed using Embed#spliceFields THEN returns valid toJSON data 2', () => {
 			const embed = new EmbedBuilder();
 			embed.addFields(Array.from({ length: 23 }, () => ({ name: 'foo', value: 'bar' })));
 
@@ -374,7 +375,7 @@ describe('Embed', () => {
 		});
 
 		describe('GIVEN invalid field amount THEN throws error', () => {
-			test('', () => {
+			test('1', () => {
 				const embed = new EmbedBuilder();
 
 				expect(() => embed.addFields(Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })))).toThrowError();
@@ -382,7 +383,7 @@ describe('Embed', () => {
 		});
 
 		describe('GIVEN invalid field name THEN throws error', () => {
-			test('', () => {
+			test('2', () => {
 				const embed = new EmbedBuilder();
 
 				expect(() => embed.addFields([{ name: '', value: 'bar' }])).toThrowError();
@@ -390,7 +391,7 @@ describe('Embed', () => {
 		});
 
 		describe('GIVEN invalid field name length THEN throws error', () => {
-			test('', () => {
+			test('3', () => {
 				const embed = new EmbedBuilder();
 
 				expect(() => embed.addFields([{ name: 'a'.repeat(257), value: 'bar' }])).toThrowError();
@@ -398,7 +399,7 @@ describe('Embed', () => {
 		});
 
 		describe('GIVEN invalid field value length THEN throws error', () => {
-			test('', () => {
+			test('4', () => {
 				const embed = new EmbedBuilder();
 
 				expect(() => embed.addFields([{ name: '', value: 'a'.repeat(1025) }])).toThrowError();

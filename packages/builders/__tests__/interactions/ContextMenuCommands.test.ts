@@ -1,4 +1,5 @@
 import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
 import { ContextMenuCommandAssertions, ContextMenuCommandBuilder } from '../../src/index';
 
 const getBuilder = () => new ContextMenuCommandBuilder();
