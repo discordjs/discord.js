@@ -1852,11 +1852,29 @@ export class MessageReaction {
   public toJSON(): unknown;
 }
 
-export class ModalSubmitFieldsResolver {
+export interface BaseModalData {
+  customId: string;
+  type: ComponentType;
+}
+
+export interface TextInputModalData extends BaseModalData {
+  type: ComponentType.TextInput;
+  value: string;
+}
+
+export interface ActionRowModalData {
+  type: ComponentType.ActionRow;
+  components: ModalData[];
+}
+
+export type ModalData = TextInputModalData | ActionRowModalData;
+
+export class ModalSubmitFields {
   constructor(components: ModalActionRowComponent[][]);
   public components: ActionRow<ModalActionRowComponent>;
   public fields: Collection<string, ModalActionRowComponent>;
-  public getField(customId: string): ModalActionRowComponent;
+  public getField<T extends ComponentType>(customId: string, type: T): { type: T } & ModalData;
+  public getField(customId: string, type?: ComponentType): ModalData;
   public getTextInputValue(customId: string): string;
 }
 
@@ -1877,8 +1895,8 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   private constructor(client: Client, data: APIModalSubmitInteraction);
   public readonly customId: string;
-  public readonly components: ActionRow<ModalActionRowComponent>[];
-  public readonly fields: ModalSubmitFieldsResolver;
+  public readonly components: ActionRowModalData[];
+  public readonly fields: ModalSubmitFields;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public message: GuildCacheMessage<Cached> | null;
@@ -4757,12 +4775,6 @@ export interface TextInputComponentData extends BaseComponentData {
   required?: boolean;
   value?: string;
   placeholder?: string;
-}
-
-export interface ModalData {
-  customId: string;
-  title: string;
-  components: (ActionRow<ModalActionRowComponent> | ActionRowData<ModalActionRowComponentData>)[];
 }
 
 export type MessageTarget =
