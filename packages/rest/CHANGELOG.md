@@ -2,7 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
-# [0.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.3.0...@discordjs/rest@0.4.0) (2022-04-17)
+# [@discordjs/rest@0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.4.0...@discordjs/rest@0.5.0) - (2022-06-04)
+
+## Bug Fixes
+
+- **REST:** Remove dom types (#7922) ([e92b17d](https://github.com/discordjs/discord.js/commit/e92b17d8555164ff259e524efc6a26675660e5c2))
+- Ok statusCode can be 200..299 (#7919) ([d1504f2](https://github.com/discordjs/discord.js/commit/d1504f2ae19816b3fadcdb3ad17facc863ed7529))
+
+## Features
+
+- **rest:** Add guild member banner cdn url (#7973) ([97eaab3](https://github.com/discordjs/discord.js/commit/97eaab35d7383ecbbd93dc623ceda969286c1554))
+- REST#raw (#7929) ([dfe449c](https://github.com/discordjs/discord.js/commit/dfe449c253b617e8f92c720a2f71135aa1601a65))
+- **rest:** Use undici (#7747) ([d1ec8c3](https://github.com/discordjs/discord.js/commit/d1ec8c37ffb7fe3b63eaa8c382f22ca1fb348c9b))
+- **REST:** Enable setting default authPrefix (#7853) ([679dcda](https://github.com/discordjs/discord.js/commit/679dcda9709376f37cc58a60f74d12d324d93e4e))
+
+## Styling
+
+- Cleanup tests and tsup configs ([6b8ef20](https://github.com/discordjs/discord.js/commit/6b8ef20cb3af5b5cfd176dd0aa0a1a1e98551629))
+
+# [@discordjs/rest@0.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.3.0...@discordjs/rest@0.4.0) - (2022-04-17)
 
 ## Bug Fixes
 
@@ -30,7 +48,7 @@ All notable changes to this project will be documented in this file.
 - **requestmanager:** Use timestampfrom (#7459) ([3298510](https://github.com/discordjs/discord.js/commit/32985109c3b7614d364007608f8c5af4bed753ae))
 - **files:** Remove redundant file property names (#7340) ([6725038](https://github.com/discordjs/discord.js/commit/67250382f99872a9edff99ebaa482ffa895b0c37))
 
-# [0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.2.0...@discordjs/rest@0.3.0) (2021-12-08)
+# [@discordjs/rest@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.2.0...@discordjs/rest@0.3.0) - (2022-01-24)
 
 ## Bug Fixes
 

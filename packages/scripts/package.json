@@ -1,13 +1,16 @@
 {
-	"name": "@discordjs/actions",
+	"name": "@discordjs/scripts",
 	"version": "0.1.0-dev",
-	"description": "A set of actions that we use for our workflows",
+	"description": "A set of scripts that we use for our workflows",
 	"private": true,
 	"scripts": {
 		"build": "tsup",
 		"test": "jest --pass-with-no-tests",
-		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
-		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix"
+		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
+		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix"
+	},
+	"bin": {
+		"ts-docgen": "./dist/docs.js"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -18,8 +21,7 @@
 		"types": "./dist/index.d.ts"
 	},
 	"directories": {
-		"lib": "src",
-		"test": "__tests__"
+		"lib": "src"
 	},
 	"files": [
 		"dist"
@@ -44,7 +46,8 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@actions/core": "^1.8.2",
+		"@discordjs/ts-docgen": "^0.4.1",
+		"commander": "^9.3.0",
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {

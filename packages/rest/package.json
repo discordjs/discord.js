@@ -1,15 +1,15 @@
 {
 	"name": "@discordjs/rest",
-	"version": "0.5.0-dev",
+	"version": "0.6.0-dev",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"build": "tsup && tsc --emitDeclarationOnly --incremental",
 		"test": "jest --pass-with-no-tests --collect-coverage",
 		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
-		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
+		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && ts-docgen -i docs/typedoc-out.json -c docs/index.yml -o docs/docs.json",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'"
+		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -53,7 +53,7 @@
 		"@discordjs/collection": "workspace:^",
 		"@sapphire/async-queue": "^1.3.1",
 		"@sapphire/snowflake": "^3.2.2",
-		"discord-api-types": "^0.33.2",
+		"discord-api-types": "^0.33.3",
 		"tslib": "^2.4.0",
 		"undici": "^5.4.0"
 	},
@@ -62,7 +62,7 @@
 		"@babel/plugin-proposal-decorators": "^7.18.2",
 		"@babel/preset-env": "^7.18.2",
 		"@babel/preset-typescript": "^7.17.12",
-		"@discordjs/ts-docgen": "^0.4.1",
+		"@discordjs/scripts": "workspace:^",
 		"@types/jest": "^28.1.0",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
