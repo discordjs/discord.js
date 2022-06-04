@@ -1914,7 +1914,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.18.2
     "@babel/preset-env": ^7.18.2
     "@babel/preset-typescript": ^7.17.12
-    "@discordjs/ts-docgen": ^0.4.1
+    "@discordjs/scripts": "workspace:^"
     "@sapphire/shapeshift": ^3.1.0
     "@sindresorhus/is": ^4.6.0
     "@types/jest": ^28.1.0
@@ -1945,7 +1945,7 @@ __metadata:
     "@babel/core": ^7.18.2
     "@babel/preset-env": ^7.18.2
     "@babel/preset-typescript": ^7.17.12
-    "@discordjs/ts-docgen": ^0.4.1
+    "@discordjs/scripts": "workspace:^"
     "@types/jest": ^28.1.0
     "@types/node": ^16.11.38
     "@typescript-eslint/eslint-plugin": ^5.27.0
@@ -2000,7 +2000,7 @@ __metadata:
     "@babel/preset-env": ^7.18.2
     "@babel/preset-typescript": ^7.17.12
     "@discordjs/rest": "workspace:^"
-    "@discordjs/ts-docgen": ^0.4.1
+    "@discordjs/scripts": "workspace:^"
     "@types/jest": ^28.1.0
     "@types/node": ^16.11.38
     "@types/supertest": ^2.0.12
@@ -2032,7 +2032,7 @@ __metadata:
     "@babel/preset-env": ^7.18.2
     "@babel/preset-typescript": ^7.17.12
     "@discordjs/collection": "workspace:^"
-    "@discordjs/ts-docgen": ^0.4.1
+    "@discordjs/scripts": "workspace:^"
     "@sapphire/async-queue": ^1.3.1
     "@sapphire/snowflake": ^3.2.2
     "@types/jest": ^28.1.0
@@ -2055,7 +2055,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/scripts@workspace:packages/scripts":
+"@discordjs/scripts@workspace:^, @discordjs/scripts@workspace:packages/scripts":
   version: 0.0.0-use.local
   resolution: "@discordjs/scripts@workspace:packages/scripts"
   dependencies:
@@ -2063,11 +2063,13 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.18.2
     "@babel/preset-env": ^7.18.2
     "@babel/preset-typescript": ^7.17.12
+    "@discordjs/ts-docgen": ^0.4.1
     "@types/jest": ^28.1.0
     "@types/node": ^16.11.38
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
     babel-plugin-transform-typescript-metadata: ^0.3.2
+    commander: ^9.3.0
     eslint: ^8.17.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
@@ -2077,6 +2079,8 @@ __metadata:
     tslib: ^2.4.0
     tsup: ^6.0.1
     typescript: ^4.7.3
+  bin:
+    ts-docgen: ./dist/docs.js
   languageName: unknown
   linkType: soft
 
@@ -2097,7 +2101,7 @@ __metadata:
     "@babel/core": ^7.18.2
     "@babel/preset-env": ^7.18.2
     "@babel/preset-typescript": ^7.17.12
-    "@discordjs/ts-docgen": ^0.4.1
+    "@discordjs/scripts": "workspace:^"
     "@types/jest": ^28.1.0
     "@types/node": ^16.11.38
     "@types/ws": ^8.5.3
@@ -4193,6 +4197,13 @@ __metadata:
   version: 8.3.0
   resolution: "commander@npm:8.3.0"
   checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
+  languageName: node
+  linkType: hard
+
+"commander@npm:^9.3.0":
+  version: 9.3.0
+  resolution: "commander@npm:9.3.0"
+  checksum: d421ce66fee25792a1470c69aa8d1b86434bf873a96483aa92c8267f81a6f20c6f7c426f5e82f88ac50a8ec4855d3f2787aebcdef8aa559e1080a2337a95a217
   languageName: node
   linkType: hard
 
