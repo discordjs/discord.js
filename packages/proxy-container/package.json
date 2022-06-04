@@ -3,7 +3,7 @@
 	"version": "0.1.0-dev",
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
 	"scripts": {
-		"build": "tsup && tsc --emitDeclarationOnly --incremental",
+		"build": "tsup && tsc --noEmit --incremental",
 		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
