@@ -1916,14 +1916,14 @@ __metadata:
     "@babel/preset-env": ^7.18.2
     "@babel/preset-typescript": ^7.17.12
     "@discordjs/ts-docgen": ^0.4.1
-    "@sapphire/shapeshift": ^3.0.0
+    "@sapphire/shapeshift": ^3.1.0
     "@sindresorhus/is": ^4.6.0
     "@types/jest": ^28.1.0
     "@types/node": ^16.11.38
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
     babel-plugin-transform-typescript-metadata: ^0.3.2
-    discord-api-types: ^0.33.2
+    discord-api-types: ^0.33.3
     eslint: ^8.17.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
@@ -2041,7 +2041,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.27.0
     babel-plugin-const-enum: ^1.2.0
     babel-plugin-transform-typescript-metadata: ^0.3.2
-    discord-api-types: ^0.33.2
+    discord-api-types: ^0.33.3
     eslint: ^8.17.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
@@ -2079,7 +2079,7 @@ __metadata:
     "@types/ws": ^8.5.3
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
-    discord-api-types: ^0.33.2
+    discord-api-types: ^0.33.3
     eslint: ^8.17.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
@@ -2578,10 +2578,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/shapeshift@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@sapphire/shapeshift@npm:3.0.0"
-  checksum: f5ebf3991a2bb6e80242b58a488343f25147ba79e8ac227e3d26cbed3402e7e06c326eb9afddd5804be3b0a4e714366c7e60842d2072395da2cb6e754d28bda7
+"@sapphire/shapeshift@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@sapphire/shapeshift@npm:3.1.0"
+  checksum: d28035fe9dd2b59feda24daad4ae5f3ae16bf98312e726df85c79cf071de3447a2a0e81f818471a7abb8d6678423e7e6ece57687d162269624e503e62cae26a4
   languageName: node
   linkType: hard
 
@@ -4742,10 +4742,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.33.2":
-  version: 0.33.2
-  resolution: "discord-api-types@npm:0.33.2"
-  checksum: 36991dae1ec90a09d5accb01debc96b84c9f6920178dc301e7c17701e539694dedd7ba514a18509d4af305d2244b19dbdcceef4f613bc5fb1669e9d96f70c8d0
+"discord-api-types@npm:^0.33.3":
+  version: 0.33.3
+  resolution: "discord-api-types@npm:0.33.3"
+  checksum: e86776d1d2c39b74d7265c43774bd6d46dd206d053674ed7243d11e2e975451b292065ece28286e31692a27c5408a24a73e811455af75a2fdbb519c95b7e040b
   languageName: node
   linkType: hard
 
@@ -4760,7 +4760,7 @@ __metadata:
     "@sapphire/snowflake": ^3.2.2
     "@types/node": ^16.11.38
     "@types/ws": ^8.5.3
-    discord-api-types: ^0.33.2
+    discord-api-types: ^0.33.3
     dtslint: ^4.2.1
     eslint: ^8.17.0
     eslint-config-prettier: ^8.5.0
