@@ -15,13 +15,10 @@ All notable changes to this project will be documented in this file.
 - Fix some typos (#7393) ([92a04f4](https://github.com/discordjs/discord.js/commit/92a04f4d98f6c6760214034cc8f5a1eaa78893c7))
 - **builders:** Make type optional in constructor (#7391) ([4abb28c](https://github.com/discordjs/discord.js/commit/4abb28c0a1256c57a60369a6b8ec9e98c265b489))
 - Don't create new instances of builders classes (#7343) ([d6b56d0](https://github.com/discordjs/discord.js/commit/d6b56d0080c4c5f8ace731f1e8bcae0c9d3fb5a5))
-- **builders:** Dont export `Button` component stuff twice (#7289) ([86d9d06](https://github.com/discordjs/discord.js/commit/86d9d0674347c08d056cd054cb4ce4253195bf94))
 
 ## Documentation
 
 - Completely fix builders example link (#7543) ([1a14c0c](https://github.com/discordjs/discord.js/commit/1a14c0ca562ea173d363a770a0437209f461fd23))
-- Add slash command builders example, fixes #7338 (#7339) ([3ae6f3c](https://github.com/discordjs/discord.js/commit/3ae6f3c313091151245d6e6b52337b459ecfc765))
-- **SlashCommandSubcommands:** Updating old links from Discord developer portal (#7224) ([bd7a6f2](https://github.com/discordjs/discord.js/commit/bd7a6f265212624199fb0b2ddc8ece39759c63de))
 
 ## Features
 
@@ -33,7 +30,6 @@ All notable changes to this project will be documented in this file.
 - **builders:** Add attachment command option type (#7203) ([ae0f35f](https://github.com/discordjs/discord.js/commit/ae0f35f51d68dfa5a7dc43d161ef9365171debdb))
 - **components:** Add unsafe message component builders (#7387) ([6b6222b](https://github.com/discordjs/discord.js/commit/6b6222bf513d1ee8cd98fba0ad313def560b864f))
 - **embed:** Add setFields (#7322) ([bcc5cda](https://github.com/discordjs/discord.js/commit/bcc5cda8a902ddb28c7e3578e0f29b4272832624))
-- Add components to /builders (#7195) ([2bb40fd](https://github.com/discordjs/discord.js/commit/2bb40fd767cf5918e3ba422ff73082734bfa05b0))
 
 ## Refactor
 
@@ -55,7 +51,6 @@ All notable changes to this project will be documented in this file.
 ## Typings
 
 - Fix regressions (#7649) ([5748dbe](https://github.com/discordjs/discord.js/commit/5748dbe08783beb80c526de38ccd105eb0e82664))
-- Make `required` a boolean (#7307) ([c10afea](https://github.com/discordjs/discord.js/commit/c10afeadc702ab98bec5e077b3b92494a9596f9c))
 
 # [0.12.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.11.0...@discordjs/builders@0.12.0) (2021-12-08)
 
