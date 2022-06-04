@@ -56,6 +56,17 @@ class GuildAuditLogs {
     }
 
     /**
+     * Cached {@link GuildScheduledEvent}s.
+     * @type {Collection<Snowflake, GuildScheduledEvent>}
+     * @private
+     */
+    this.guildScheduledEvents = data.guild_scheduled_events.reduce(
+      (guildScheduledEvents, guildScheduledEvent) =>
+        guildScheduledEvents.set(guildScheduledEvent.id, guild.scheduledEvents._add(guildScheduledEvent)),
+      new Collection(),
+    );
+
+    /**
      * The entries for this guild's audit logs
      * @type {Collection<Snowflake, GuildAuditLogsEntry>}
      */
