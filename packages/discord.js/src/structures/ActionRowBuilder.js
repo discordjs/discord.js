@@ -17,7 +17,7 @@ class ActionRowBuilder extends BuildersActionRow {
   }
 
   /**
-   * Creates a new ActionRowBuilder from JSON data
+   * Creates a new action row builder from JSON data
    * @param {JSONEncodable<APIActionRowComponent<APIActionRowComponentTypes>>
    * |APIActionRowComponent<APIActionRowComponentTypes>} other The other data
    * @returns {ActionRowBuilder}

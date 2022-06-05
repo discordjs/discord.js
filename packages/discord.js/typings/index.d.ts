@@ -601,7 +601,8 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
 
 export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
   public constructor(data?: SelectMenuComponentOptionData | APISelectMenuOption);
-  public setEmoji(emoji: ComponentEmojiResolvable): this;
+  public override setEmoji(emoji: ComponentEmojiResolvable): this;
+  public static from(other: JSONEncodable<APISelectMenuOption> | APISelectMenuOption): SelectMenuOptionBuilder;
 }
 
 export class ModalBuilder extends BuildersModal {

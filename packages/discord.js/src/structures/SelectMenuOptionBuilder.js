@@ -30,7 +30,7 @@ class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
   }
 
   /**
-   * Creates a new SelectMenuOptionBuilder from JSON data
+   * Creates a new select menu option builder from JSON data
    * @param {JSONEncodable<APISelectMenuOption>|APISelectMenuOption} other The other data
    * @returns {SelectMenuOptionBuilder}
    */
