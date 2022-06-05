@@ -1712,7 +1712,7 @@ export class AttachmentBuilder {
   public setFile(attachment: BufferResolvable | Stream, name?: string): this;
   public setName(name: string): this;
   public setSpoiler(spoiler?: boolean): this;
-  public toJSON(): unknown;
+  public toJSON(): APIAttachment;
   public static from(other: JSONEncodable<AttachmentPayload>): AttachmentBuilder;
 }
 
@@ -1730,7 +1730,7 @@ export class Attachment {
   public get spoiler(): boolean;
   public url: string;
   public width: number | null;
-  public toJSON(): unknown;
+  public toJSON(): APIAttachment;
 }
 
 export class MessageCollector extends Collector<Snowflake, Message, [Collection<Snowflake, Message>]> {
@@ -4707,7 +4707,7 @@ export interface MessageEditOptions {
   attachments?: JSONEncodable<AttachmentPayload>[];
   content?: string | null;
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[] | null;
-  files?: (BufferResolvable | Stream | Attachment | AttachmentBuilder)[];
+  files?: (BufferResolvable | Stream | JSONEncodable<APIAttachment>)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
@@ -4758,7 +4758,7 @@ export interface MessageOptions {
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
-  files?: (BufferResolvable | Stream | Attachment | AttachmentBuilder)[];
+  files?: (BufferResolvable | Stream | JSONEncodable<APIAttachment>)[];
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
   attachments?: JSONEncodable<AttachmentPayload>[];
