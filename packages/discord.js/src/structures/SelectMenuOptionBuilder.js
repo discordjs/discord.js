@@ -1,6 +1,6 @@
 'use strict';
 
-const { SelectMenuOptionBuilder: BuildersSelectMenuOption } = require('@discordjs/builders');
+const { SelectMenuOptionBuilder: BuildersSelectMenuOption, isJSONEncodable } = require('@discordjs/builders');
 const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
@@ -27,6 +27,18 @@ class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
       return super.setEmoji(Util.parseEmoji(emoji));
     }
     return super.setEmoji(emoji);
+  }
+
+  /**
+   * Creates a new select menu option builder from JSON data
+   * @param {JSONEncodable<APISelectMenuOption>|APISelectMenuOption} other The other data
+   * @returns {SelectMenuOptionBuilder}
+   */
+  static from(other) {
+    if (isJSONEncodable(other)) {
+      return new this(other.toJSON());
+    }
+    return new this(other);
   }
 }
 
