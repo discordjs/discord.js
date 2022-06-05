@@ -207,6 +207,15 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
+   * Fetches the client user as a GuildMember of the guild.
+   * @param {BaseFetchOptions} [options] The options for fetching the member
+   * @returns {Promise<GuildMember>}
+   */
+  fetchMe(options) {
+    return this.fetch({ ...options, user: this.client.user.id });
+  }
+
+  /**
    * Options used for searching guild members.
    * @typedef {Object} GuildSearchMembersOptions
    * @property {string} query Filter members whose username or nickname start with this query

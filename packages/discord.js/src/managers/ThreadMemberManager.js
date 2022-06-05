@@ -38,6 +38,15 @@ class ThreadMemberManager extends CachedManager {
   }
 
   /**
+   * Fetches the client user as a ThreadMember of the thread.
+   * @param {BaseFetchOptions} [options] The options for fetching the member
+   * @returns {Promise<ThreadMember>}
+   */
+  fetchMe(options) {
+    return this.fetch({ ...options, member: this.client.user.id });
+  }
+
+  /**
    * The client user as a ThreadMember of this ThreadChannel
    * @type {?ThreadMember}
    * @readonly

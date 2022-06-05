@@ -1113,6 +1113,7 @@ export class Guild extends AnonymousGuild {
     options?: GuildAuditLogsFetchOptions<T>,
   ): Promise<GuildAuditLogs<T>>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
+  public fetchMe(options?: BaseFetchOptions): Promise<GuildMember>;
   public fetchOwner(options?: BaseFetchOptions): Promise<GuildMember>;
   public fetchPreview(): Promise<GuildPreview>;
   public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
@@ -3348,6 +3349,7 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(options?: ThreadMemberFetchOptions): Promise<ThreadMember>;
   public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
+  public fetchMe(options?: BaseFetchOptions): Promise<ThreadMember>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
 }
 
