@@ -12,17 +12,19 @@ import {
 	validateFieldLength,
 } from './Assertions';
 import { EmbedAuthorOptions, EmbedFooterOptions, RGBTuple, UnsafeEmbedBuilder } from './UnsafeEmbed';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 
 /**
  * Represents a validated embed in a message (image/video preview, rich embed, etc.)
  */
 export class EmbedBuilder extends UnsafeEmbedBuilder {
-	public override addFields(fields: APIEmbedField[]): this {
+	public override addFields(...fields: RestOrArray<APIEmbedField>): this {
+		fields = normalizeArray(fields);
 		// Ensure adding these fields won't exceed the 25 field limit
 		validateFieldLength(fields.length, this.data.fields);
 
 		// Data assertions
-		return super.addFields(embedFieldsArrayPredicate.parse(fields));
+		return super.addFields(...embedFieldsArrayPredicate.parse(fields));
 	}
 
 	public override spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {

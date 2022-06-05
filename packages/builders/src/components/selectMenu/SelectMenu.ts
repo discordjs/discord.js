@@ -1,6 +1,7 @@
 import type { APISelectMenuComponent, APISelectMenuOption } from 'discord-api-types/v10';
 import { UnsafeSelectMenuBuilder } from './UnsafeSelectMenu';
 import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import {
 	customIdValidator,
 	disabledValidator,
@@ -35,7 +36,8 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 		return super.setDisabled(disabledValidator.parse(disabled));
 	}
 
-	public override addOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public override addOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
+		options = normalizeArray(options);
 		optionsLengthValidator.parse(this.options.length + options.length);
 		this.options.push(
 			...options.map((option) =>
@@ -47,7 +49,8 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 		return this;
 	}
 
-	public override setOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public override setOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
+		options = normalizeArray(options);
 		optionsLengthValidator.parse(options.length);
 		this.options.splice(
 			0,

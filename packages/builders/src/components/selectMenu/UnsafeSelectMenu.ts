@@ -1,5 +1,6 @@
 import { APISelectMenuOption, ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
 import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import { ComponentBuilder } from '../Component';
 
 /**
@@ -67,9 +68,9 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 	 * @param options The options to add to this select menu
 	 * @returns
 	 */
-	public addOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public addOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
 		this.options.push(
-			...options.map((option) =>
+			...normalizeArray(options).map((option) =>
 				option instanceof UnsafeSelectMenuOptionBuilder ? option : new UnsafeSelectMenuOptionBuilder(option),
 			),
 		);
@@ -80,11 +81,11 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 	 * Sets the options on this select menu
 	 * @param options The options to set on this select menu
 	 */
-	public setOptions(options: (UnsafeSelectMenuOptionBuilder | APISelectMenuOption)[]) {
+	public setOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
 		this.options.splice(
 			0,
 			this.options.length,
-			...options.map((option) =>
+			...normalizeArray(options).map((option) =>
 				option instanceof UnsafeSelectMenuOptionBuilder ? option : new UnsafeSelectMenuOptionBuilder(option),
 			),
 		);
