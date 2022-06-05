@@ -1,5 +1,19 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
+
+# [13.8.0](https://github.com/discordjs/discord.js/compare/13.7.0...13.8.0) - (2022-06-05)
+
+## Bug Fixes
+
+- **guildchannelmanager:** Wrong parameter in \_sortedChannels call (#8011) ([876816a](https://github.com/discordjs/discord.js/commit/876816ab2a0fd890d5bcedb3d73094c37c6b4e31))
+- **websocketshard:** Deal with zombie connection caused by 4009 (#7581) ([114bcc0](https://github.com/discordjs/discord.js/commit/114bcc07a980325a9c3a04eb35ce1284b23eaefb))
+- Video quality mode data property (#7946) ([76df9fd](https://github.com/discordjs/discord.js/commit/76df9fdc451148392a7cfac83de67b8af2fe7bb6))
+- **ApplicationCommandOptionType:** Add attachment to jsdoc (#7952) ([a51420f](https://github.com/discordjs/discord.js/commit/a51420f7f851c671b8e896d987a26172749376f5))
+
+## Features
+
+- Backport text-in-voice support to v13 (#7999) ([ddfe15b](https://github.com/discordjs/discord.js/commit/ddfe15b8723ad66ab48dcd7967c89c7484b71929))
 
 # [13.7.0](https://github.com/discordjs/discord.js/compare/13.6.0...13.7.0) - (2022-05-13)
 
@@ -274,7 +288,7 @@ All notable changes to this project will be documented in this file.
 - **GuildManager:** Remove redundant check (#6859) ([579569a](https://github.com/discordjs/discord.js/commit/579569ae18d5a2dbcb39ad5e5adfe486315467ea))
 - Remove redundant user agent parsing (#6820) ([460df9e](https://github.com/discordjs/discord.js/commit/460df9eb4df78b502a1cbbbde65dbdfd3c46f5af))
 - Remove unnecessary checks (#6777) ([e24209a](https://github.com/discordjs/discord.js/commit/e24209a8b1f02d64eb2fb2a510be7a0ad24d16a8))
-- **Role:** Move initialization of delete prop out of _patch (#6776) ([872e7a5](https://github.com/discordjs/discord.js/commit/872e7a59b2c1b891c4d1c426a4a449a1b9353500))
+- **Role:** Move initialization of delete prop out of \_patch (#6776) ([872e7a5](https://github.com/discordjs/discord.js/commit/872e7a59b2c1b891c4d1c426a4a449a1b9353500))
 
 ## Typings
 
@@ -300,7 +314,7 @@ All notable changes to this project will be documented in this file.
 - **AllowedImageSizes:** Add new image sizes (#6754) ([d0025be](https://github.com/discordjs/discord.js/commit/d0025beb7b1ee6611f4315be91b38788c428f1c1))
 - **User:** Compare flags in #equals (#6750) ([00e1e26](https://github.com/discordjs/discord.js/commit/00e1e2673b86e0041f2bebab7b3ced5722f450bb))
 - **VoiceState:** Patch streaming value (#6747) ([7eec061](https://github.com/discordjs/discord.js/commit/7eec06145a141d167afc7814f3cfd9e06eb292e6))
-- **Message:** Avoid overwriting properties in _patch (#6738) ([a8c21cd](https://github.com/discordjs/discord.js/commit/a8c21cd754d634b4d40047f85264528681a61b41))
+- **Message:** Avoid overwriting properties in \_patch (#6738) ([a8c21cd](https://github.com/discordjs/discord.js/commit/a8c21cd754d634b4d40047f85264528681a61b41))
 - **ReactionCollector:** Only call the filter function once (#6734) ([d15dd5f](https://github.com/discordjs/discord.js/commit/d15dd5f07dab00e8a31f0a37b1e60ea4017871d0))
 - **Shard:** Use provided timeout when respawning (#6735) ([905d100](https://github.com/discordjs/discord.js/commit/905d100d4def974223a128c6276d4a5833c04955))
 - **Role:** ToJSON() throwing due to permission bigints (#6724) ([9e421f6](https://github.com/discordjs/discord.js/commit/9e421f6ccf09230769740e069590fb8937f766b9))
@@ -312,7 +326,7 @@ All notable changes to this project will be documented in this file.
 - **CachedManager:** Return updated data when cache is false (#6685) ([8426770](https://github.com/discordjs/discord.js/commit/84267708659e3e9bb2f8eb3b08d8923f235e8953))
 - **GuildEmoji:** Cache restricted roles and author data (#6675) ([60b8ba6](https://github.com/discordjs/discord.js/commit/60b8ba6b865ba02428d7926998af72cdaa17ea5d))
 - **Constants:** Allow undefined size (#6686) ([d3da833](https://github.com/discordjs/discord.js/commit/d3da83368def207585bce9ea95564d79b5097a55))
-- ***RoleManager:** Create set of role ids correctly (#6674) ([f8aa4bd](https://github.com/discordjs/discord.js/commit/f8aa4bd4705ee3bf7892670b944516d01146580f))
+- **\*RoleManager:** Create set of role ids correctly (#6674) ([f8aa4bd](https://github.com/discordjs/discord.js/commit/f8aa4bd4705ee3bf7892670b944516d01146580f))
 - **Shard:** Eval promise never resolves (#6649) ([5070d23](https://github.com/discordjs/discord.js/commit/5070d23914c13814a98cf8ea560853a82b226f94))
 - **xxxable:** Follow more properly with discord behavior (#6551) ([5d87398](https://github.com/discordjs/discord.js/commit/5d87398f9fc57915d5447842b4788f0c80642de0))
 - Allow null to be passed in order to reset icon/avatar (#6646) ([6033506](https://github.com/discordjs/discord.js/commit/603350645d0fe9d96b763d169215d15b3f4f71b1))
@@ -325,7 +339,7 @@ All notable changes to this project will be documented in this file.
 - **UserUpdateAction:** Rely on client.user when ids match (#6511) ([1418649](https://github.com/discordjs/discord.js/commit/141864917ac920a081df6f6b34c13ba83e660bbf))
 - **Util:** Allow empty strings in splitMessage (#6437) ([d6e6244](https://github.com/discordjs/discord.js/commit/d6e6244336ccdcdac9a06ab453debe76b13c9bde))
 - **BaseClient:** Remove selfbot ability (#6429) ([9a833b1](https://github.com/discordjs/discord.js/commit/9a833b1e0eb638c60c4abbb9255ed64a170e4679))
-- **Sticker:** Rename method correctly to _add (#6421) ([2c449b6](https://github.com/discordjs/discord.js/commit/2c449b6b48f5cbc88e666afa852055b873994ca5))
+- **Sticker:** Rename method correctly to \_add (#6421) ([2c449b6](https://github.com/discordjs/discord.js/commit/2c449b6b48f5cbc88e666afa852055b873994ca5))
 - **Message:** Fix typo (#6435) ([ecb6e50](https://github.com/discordjs/discord.js/commit/ecb6e50b46e627e3217107d662dd19c64527976d))
 
 ## Documentation
@@ -435,7 +449,7 @@ All notable changes to this project will be documented in this file.
 - **TextBasedChannelFields:** Add back createMessageCollector (#6616) ([1b016a3](https://github.com/discordjs/discord.js/commit/1b016a30c8f52a123c927c0ba44d985321567703))
 - Make `channelId` non-nullable on `MessageComponentInteraction` (#6600) ([8cc3885](https://github.com/discordjs/discord.js/commit/8cc3885739127ebc7023b6358ed0259ba7527250))
 - `Message#createMessageComponentCollector` use `MessageComponentInteractionOptions<T>` (#6596) ([c62823e](https://github.com/discordjs/discord.js/commit/c62823e43de50362ff0dabaf3fd53d2d39e5816b))
-- **MessagePayload:** Specify typings for `files` and  `resolveFile` (#6608) ([ea36955](https://github.com/discordjs/discord.js/commit/ea3695585d59ed295cd0c8565f262ea6cc4fe098))
+- **MessagePayload:** Specify typings for `files` and `resolveFile` (#6608) ([ea36955](https://github.com/discordjs/discord.js/commit/ea3695585d59ed295cd0c8565f262ea6cc4fe098))
 - Collector filter parameter inference (#6574) ([0841956](https://github.com/discordjs/discord.js/commit/08419561edd710a6574b5e1449bf5dc1040580d5))
 - **MessageReference:** Correctly add undefined type (#6563) ([cdb0005](https://github.com/discordjs/discord.js/commit/cdb00053dec5223a929de4eea97a90c84c917408))
 - `@typedef` for `StageChannelResolvable` (#6568) ([2c219cb](https://github.com/discordjs/discord.js/commit/2c219cb982f73cda7f7db30af59200c754e75cee))
@@ -448,7 +462,7 @@ All notable changes to this project will be documented in this file.
 - **CommandInteractionOptionResolver:** Add missing parameter (#6497) ([656b518](https://github.com/discordjs/discord.js/commit/656b51875f82a82a4429b50157a77d37be211534))
 - **ClientPresence:** Add type declarations and docs (#6450) ([6cac03a](https://github.com/discordjs/discord.js/commit/6cac03a39408ef14316a898eb81cc998921a8f0f))
 - **GuildChannel:** Added missing typing (#6454) ([f294d1e](https://github.com/discordjs/discord.js/commit/f294d1eff207ded337ccff6413824bb6ea60b4c7))
-- Message#_patch typings return type (#6433) ([81bb68d](https://github.com/discordjs/discord.js/commit/81bb68d3beb266fb0b508da959468a3a6f11c24c))
+- Message#\_patch typings return type (#6433) ([81bb68d](https://github.com/discordjs/discord.js/commit/81bb68d3beb266fb0b508da959468a3a6f11c24c))
 
 # [13.1.0](https://github.com/discordjs/discord.js/compare/13.0.1...13.1.0) - (2021-08-12)
 
@@ -587,7 +601,7 @@ All notable changes to this project will be documented in this file.
 - **GuildChannel:** Improve empty overwrite handling for permissionsLocked (#5821) ([6df3623](https://github.com/discordjs/discord.js/commit/6df36232a05e396d31461200725755745526d2ed))
 - **ApplicationCommands:** Allow managing commands for uncached guilds (#5729) ([24e5868](https://github.com/discordjs/discord.js/commit/24e586881865c187ff0a3044ac37f6e338cc51ee))
 - **ClientApplication:** Freeze flags (#5811) ([e990c35](https://github.com/discordjs/discord.js/commit/e990c35476fb6f7e1a5449493833140144e0469c))
-- ***:** Typedefs and typings for image & webhook options (#5805) ([a5a6e22](https://github.com/discordjs/discord.js/commit/a5a6e223166cf9af430da9003780e6582ea17b1c))
+- **\*:** Typedefs and typings for image & webhook options (#5805) ([a5a6e22](https://github.com/discordjs/discord.js/commit/a5a6e223166cf9af430da9003780e6582ea17b1c))
 - **TextBasedChannel:** Allow passing an APIMessage with split (#5815) ([93b0a4e](https://github.com/discordjs/discord.js/commit/93b0a4e005b5b1d371f7936238556db2e36cc982))
 - **PermissionOverwrites:** Optional allow/deny OverwriteData (#5810) ([a7ebb21](https://github.com/discordjs/discord.js/commit/a7ebb2145c380214567514906393c4ab87932e95))
 - **Typings:** Fix BitField toJSON/valueOf return types (#5806) ([935f819](https://github.com/discordjs/discord.js/commit/935f819207ac4219d37f3b99a2508e368626e6da))
@@ -602,7 +616,7 @@ All notable changes to this project will be documented in this file.
 - **ApiMessage:** Only pass objects as options directly (#5793) ([3578159](https://github.com/discordjs/discord.js/commit/35781597d032fa7821e010e483c89f70ec51926c))
 - **BitField:** Throw an error if bit to resolve is undefined (#5565) ([0156f69](https://github.com/discordjs/discord.js/commit/0156f693e08fe2ad75133bf67c4aeb3e9c91a02d))
 - Remove remnants of awaitMessageComponentInteractions (#5783) ([ae78a33](https://github.com/discordjs/discord.js/commit/ae78a336e1d0d190ec9f525449332dc781e0b3bf))
-- ***:** Add missing imports for custom errors (#5767) ([e980948](https://github.com/discordjs/discord.js/commit/e980948de55e91e59c9e3293ac76bc645a058a53))
+- **\*:** Add missing imports for custom errors (#5767) ([e980948](https://github.com/discordjs/discord.js/commit/e980948de55e91e59c9e3293ac76bc645a058a53))
 - **ShardingManager:** Client error event cannot be emitted (#5559) ([d1c5b6f](https://github.com/discordjs/discord.js/commit/d1c5b6fe9e18b532ad69ed4bd82e1874a6dff4df))
 - Add components to MessageOption typedefs (#5768) ([657635c](https://github.com/discordjs/discord.js/commit/657635c1c09aa68211130bc3c56d6e8bb6e8e773))
 - **Interaction:** Add missing types and fix docs lists (#5762) ([1d57754](https://github.com/discordjs/discord.js/commit/1d57754d4654c5c95aa14afc13f8abe335314767))
@@ -654,7 +668,7 @@ All notable changes to this project will be documented in this file.
 - **GuildChannel:** Regression on default channel type (#5251) ([e7c4f36](https://github.com/discordjs/discord.js/commit/e7c4f3672e7059c264ba67a94b87a655ea6e4da5))
 - **Guild/GuildChannel:** Methods reason arg usage (#5419) ([8411b9e](https://github.com/discordjs/discord.js/commit/8411b9e14211f83fddb00f622088979ee6586803))
 - **Role:** Pass Permissions class, not the bitfield (#5321) ([d744e51](https://github.com/discordjs/discord.js/commit/d744e51c1bdb4c7a26c0faeea1f2f45baaf5fd3c))
-- **WebSocketShard:** Key name in WebSocketShard#_send. (#5304) ([56d8b44](https://github.com/discordjs/discord.js/commit/56d8b445ede6c7915aec173a68905cda3d91f0ca))
+- **WebSocketShard:** Key name in WebSocketShard#\_send. (#5304) ([56d8b44](https://github.com/discordjs/discord.js/commit/56d8b445ede6c7915aec173a68905cda3d91f0ca))
 - **ApiMessage:** Remove resolve() from typings (#5241) ([a6bc39d](https://github.com/discordjs/discord.js/commit/a6bc39d3c699eec0b7851cda334335baa892c1de))
 - **GuildChannel:** Overload permissionsFor and BaseManager#resolve[id] (#5260) ([41bd6c2](https://github.com/discordjs/discord.js/commit/41bd6c2717faeeaa36514d39a4816f7cf65b4c02))
 - **GuildEmoji:** Check for cahnges to available in equals (#5201) ([f95f5dc](https://github.com/discordjs/discord.js/commit/f95f5dcd791b39c6a4d60dc8d64b0287e06ed768))
@@ -672,7 +686,7 @@ All notable changes to this project will be documented in this file.
 - **Collector:** Throw an error if a non-function was provided as filter (#5034) ([7365f40](https://github.com/discordjs/discord.js/commit/7365f403006eeb28ab10f03cbf85416272678ef7))
 - **BaseGuildEmoji:** Typo in requiresColons (#5076) ([e272fd6](https://github.com/discordjs/discord.js/commit/e272fd6909a17941d2d3e4840e75436d98a41198))
 - **MessageReaction:** Set MessageReaction#me in patch method (#5047) ([6b322f4](https://github.com/discordjs/discord.js/commit/6b322f47a0f86115dab71c06c7879fe82ea04ec4))
-- **Voice*:** Filter out silent audio from video users (#5035) ([4fcb9eb](https://github.com/discordjs/discord.js/commit/4fcb9ebf300633022e2b9867fa06a586307ff17a))
+- **Voice\*:** Filter out silent audio from video users (#5035) ([4fcb9eb](https://github.com/discordjs/discord.js/commit/4fcb9ebf300633022e2b9867fa06a586307ff17a))
 - **GuildTemplate:** 'guild' getter (#5040) ([53529bd](https://github.com/discordjs/discord.js/commit/53529bd05deb449d5d9bbfa332470c9881d8093c))
 - **RoleManager:** Fix ID return value, change return type to collection (#4935) ([12a096b](https://github.com/discordjs/discord.js/commit/12a096b5f1c5ad518e73d1b9f50bb388928117dd))
 
@@ -683,7 +697,7 @@ All notable changes to this project will be documented in this file.
 - General cleanup and improvements (#6299) ([b4afcf8](https://github.com/discordjs/discord.js/commit/b4afcf8236b0fb4979deab0a097656292c59d50b))
 - Typo in ClientOptions (#6305) ([dd3a79e](https://github.com/discordjs/discord.js/commit/dd3a79eead4f01094c2c3003de717affc11fdc3c))
 - Grammar fix (#6294) ([90c2e07](https://github.com/discordjs/discord.js/commit/90c2e072bf0ab3562bd65e3a9e5e19f5c57fd69a))
-- **Client:** Mark _finalize as private (#6281) ([35fa3b3](https://github.com/discordjs/discord.js/commit/35fa3b3103998f93253a97ad1769212d60307b61))
+- **Client:** Mark \_finalize as private (#6281) ([35fa3b3](https://github.com/discordjs/discord.js/commit/35fa3b3103998f93253a97ad1769212d60307b61))
 - Update link of the guide to v13 changes (#6273) ([6e0ea02](https://github.com/discordjs/discord.js/commit/6e0ea020c0de580911917c4b480c3402619d4341))
 - Add missing semicolon to readme (#6270) ([2c452df](https://github.com/discordjs/discord.js/commit/2c452dffb8204868ec4d7126f1345a14edb5c141))
 - Change example in readme to slash command (#6250) ([626ff85](https://github.com/discordjs/discord.js/commit/626ff85ae7616a59c95d7338c0df9baead412ce3))
@@ -708,10 +722,10 @@ All notable changes to this project will be documented in this file.
 - **MessageManager:** Document options param for #edit as required (#6031) ([db60e36](https://github.com/discordjs/discord.js/commit/db60e367b4a455ae0055f8d25bd8b42139784c55))
 - Add Partial typedef (#6029) ([b62d646](https://github.com/discordjs/discord.js/commit/b62d6462711cd6a8fda5cb031d052dd343a2c3c0))
 - Fix some missed MessageComponent collector methods (#6023) ([610b0b4](https://github.com/discordjs/discord.js/commit/610b0b4dd6b6e66c05c22eb852d2a752b99d07ba))
-- ***:** Wrap optional properties with union types in parentheses (#6021) ([ec06ba7](https://github.com/discordjs/discord.js/commit/ec06ba7ad04d21e61f3e734e489607a1a5ab3568))
+- **\*:** Wrap optional properties with union types in parentheses (#6021) ([ec06ba7](https://github.com/discordjs/discord.js/commit/ec06ba7ad04d21e61f3e734e489607a1a5ab3568))
 - **Collector:** Properly document endReason (#6016) ([7dd1a8d](https://github.com/discordjs/discord.js/commit/7dd1a8da08830525d292059ee3bd2c86d5f964f6))
 - **CreateInviteOptions:** Fix TargetType link (#6017) ([4adfc45](https://github.com/discordjs/discord.js/commit/4adfc45b5a3c916ae44aec5df358f0ca4254f723))
-- ***:** Add class links to isX() methods (#6007) ([fbdad6e](https://github.com/discordjs/discord.js/commit/fbdad6eac38e262a7045853174607c408cd6c59c))
+- **\*:** Add class links to isX() methods (#6007) ([fbdad6e](https://github.com/discordjs/discord.js/commit/fbdad6eac38e262a7045853174607c408cd6c59c))
 - WebSocketShard#send and TextBasedChannel#send (#5998) ([726073f](https://github.com/discordjs/discord.js/commit/726073fef7e0e7bf7d8d5e4a4546d8056719b59f))
 - **Util:** Methods removed on the base object (#5990) ([d742814](https://github.com/discordjs/discord.js/commit/d742814686fc2c8dfbdcb582541155cb8df170ac))
 - **Partials:** Add link to the guide (#5982) ([58183d4](https://github.com/discordjs/discord.js/commit/58183d425ba5c2cc87f29199e5c3e2ec5a936bd1))
@@ -726,7 +740,7 @@ All notable changes to this project will be documented in this file.
 - **Channel:** Make the type news_thread an inline code-block (#5940) ([630432b](https://github.com/discordjs/discord.js/commit/630432b4e2f415b912754962948edf585aebf772))
 - **Thread:** Add links to discord api docs (#5919) ([5af2ef5](https://github.com/discordjs/discord.js/commit/5af2ef5fbc7ad11281f38384c360ae79efe63b39))
 - **MessageSelectMenu:** Fix options typings (#5922) ([75837a8](https://github.com/discordjs/discord.js/commit/75837a8252246b2bb71b76f5b15b8124cb40f0d8))
-- ***:** Add links to Discord's API objects & data (#5862) ([e0efcc6](https://github.com/discordjs/discord.js/commit/e0efcc6ab0e3f060e30438c0d990c9465c6134df))
+- **\*:** Add links to Discord's API objects & data (#5862) ([e0efcc6](https://github.com/discordjs/discord.js/commit/e0efcc6ab0e3f060e30438c0d990c9465c6134df))
 - Move embeds field into BaseMessageOptions (#5902) ([6cebeae](https://github.com/discordjs/discord.js/commit/6cebeae15e97e29acbdaf95bc7b17a1e346a2c34))
 - **Readme:** Remove dependencies badge (#5901) ([edf6f0c](https://github.com/discordjs/discord.js/commit/edf6f0ca7012b6b678367a1b5d716d0b85e23ba3))
 - **AnonymousGuild:** Add missing extends tag (#5896) ([3d96a33](https://github.com/discordjs/discord.js/commit/3d96a33bd006d514829648d166e86d15bf0b51c8))
@@ -825,16 +839,16 @@ All notable changes to this project will be documented in this file.
 - **WelcomeScreen:** Welcome screens (#5490) ([44e2ee7](https://github.com/discordjs/discord.js/commit/44e2ee7b20dbec79c993dbc1f30ddb643d943347))
 - Stage instance invite (#5856) ([2d12db0](https://github.com/discordjs/discord.js/commit/2d12db000f2a0a22a8919d7a63989a6e762ae335))
 - **Guild:** Add enum for premium_tier (#5868) ([a3cbcca](https://github.com/discordjs/discord.js/commit/a3cbcca13da1af416c219bd64a0a6e84bb87a057))
-- ***:** Use enums for consistency and speed (#5843) ([f7eeccb](https://github.com/discordjs/discord.js/commit/f7eeccba4b7015496df811f10cc2da2b0fab0630))
+- **\*:** Use enums for consistency and speed (#5843) ([f7eeccb](https://github.com/discordjs/discord.js/commit/f7eeccba4b7015496df811f10cc2da2b0fab0630))
 - **Widget:** Wrapper for widget.json (#5619) ([038ee99](https://github.com/discordjs/discord.js/commit/038ee99604cded41d4c67edf4bd6bc7969712f52))
 - Stage instances (#5749) ([918921e](https://github.com/discordjs/discord.js/commit/918921e8211fc16e9b12d2502f3168264246ea22))
-- ***:** Document and support embeds field in message create endpoint (#5792) ([99ff715](https://github.com/discordjs/discord.js/commit/99ff7151379fe03a1cfd52f252c0e6fc892d7776))
+- **\*:** Document and support embeds field in message create endpoint (#5792) ([99ff715](https://github.com/discordjs/discord.js/commit/99ff7151379fe03a1cfd52f252c0e6fc892d7776))
 - **Guild:** Add enum for mfa_level (#5797) ([ffabec3](https://github.com/discordjs/discord.js/commit/ffabec3a5e3651e5a0b8bcac83ee26bb909695fa))
 - **RequestHandler:** Emit more info when a rate limit was hit (#5801) ([18ac72e](https://github.com/discordjs/discord.js/commit/18ac72e457fa137d7f7f7bde876436ff643b4a63))
 - Add new APIErrors (#5794) ([e0ab836](https://github.com/discordjs/discord.js/commit/e0ab836b2d88caf0d9e1f9eba76ae46be9df0554))
 - **Util:** Allow array for StringOptions' char (#5566) ([fbcbb29](https://github.com/discordjs/discord.js/commit/fbcbb29884a35308a7af2169f5f9ae5658c458e8))
 - **GuildAuditLogs:** Make #target a channel for channel related logs (#5781) ([eb0291d](https://github.com/discordjs/discord.js/commit/eb0291d9a5078836183c1b63ea96461ec112f96e))
-- **Sharding*:** Contexts for broadcastEval (#5756) ([c6aeebb](https://github.com/discordjs/discord.js/commit/c6aeebb18d6b969f7c8bdb1b719883d4384dd03e))
+- **Sharding\*:** Contexts for broadcastEval (#5756) ([c6aeebb](https://github.com/discordjs/discord.js/commit/c6aeebb18d6b969f7c8bdb1b719883d4384dd03e))
 - **Voice:** Implement support for @discordjs/voice (#5402) ([7b2e12b](https://github.com/discordjs/discord.js/commit/7b2e12b102984abf61132e1057558ef7f04e6d83))
 - General component improvements (#5787) ([c4f1c75](https://github.com/discordjs/discord.js/commit/c4f1c75efa1cff1f9c775a266dccbe581305e79d))
 - **GuildChannelManager:** Add 'fetch' method (#4966) ([e798fb7](https://github.com/discordjs/discord.js/commit/e798fb720ee5ced008471fe899337f6817936770))
@@ -847,7 +861,7 @@ All notable changes to this project will be documented in this file.
 - **Esm:** Use `gen-esm-wrapper` instead of manually making the file (#5700) ([db0d7d4](https://github.com/discordjs/discord.js/commit/db0d7d4ea8e7b2bae4d1548e5617875b5ae0bbd4))
 - **Rest:** Show the data that is sent to Discord when an errors occurs (#5701) ([ef92339](https://github.com/discordjs/discord.js/commit/ef92339d073f82cdaa2bc69f7be8443ec16789a7))
 - **CommandInteraction:** Make options a collection (#5705) ([fdad140](https://github.com/discordjs/discord.js/commit/fdad14099779e61cb84dcd1cb2497e0e853a6144))
-- [**breaking**] ***:** Enforce strings (#4880) ([7b85a72](https://github.com/discordjs/discord.js/commit/7b85a7259f563ab14ae6c0a665a3dd43c486fde4))
+- [**breaking**] **\*:** Enforce strings (#4880) ([7b85a72](https://github.com/discordjs/discord.js/commit/7b85a7259f563ab14ae6c0a665a3dd43c486fde4))
 - **Message:** Allow editing files into messages (#5718) ([b212b64](https://github.com/discordjs/discord.js/commit/b212b64214ecee4f6118e78f9b90f3d3da574ecc))
 - Easier guards for channelUpdate (#5716) ([d52bcd4](https://github.com/discordjs/discord.js/commit/d52bcd46ec5985f9f18da37ba9d7d77209f58337))
 - Add support for fetching multiple guilds (#5472) ([48d6850](https://github.com/discordjs/discord.js/commit/48d6850d9a8c34f407a22b6b401f2ed74415acd0))
@@ -895,8 +909,8 @@ All notable changes to this project will be documented in this file.
 - Jsdelivr default file support (#5424) ([f469402](https://github.com/discordjs/discord.js/commit/f46940228e9f82db4af09ae2f2dad684db0d74ed))
 - **Client:** Add InviteGenerationOptions#additionalScopes (#5215) ([ae3c3d8](https://github.com/discordjs/discord.js/commit/ae3c3d80ee603fc46a28140107cb90c81da0afc9))
 - **ReactionCollector:** Event create (#4108) ([09d1f2f](https://github.com/discordjs/discord.js/commit/09d1f2f18f5ec536bb25156553986fee51c80d1e))
-- **ShardingManager:** Allow b-Eval/fetchClientValues on a specific shard when not all are ready  (#5222) ([001676c](https://github.com/discordjs/discord.js/commit/001676c7a97f4e44c6601dd84aa0354ea94b7c25))
-- **GuildChannel:** Support conversion between text and news  (#5022) ([5ac3b57](https://github.com/discordjs/discord.js/commit/5ac3b57f9bd53d1c20549a70942b023826f6f726))
+- **ShardingManager:** Allow b-Eval/fetchClientValues on a specific shard when not all are ready (#5222) ([001676c](https://github.com/discordjs/discord.js/commit/001676c7a97f4e44c6601dd84aa0354ea94b7c25))
+- **GuildChannel:** Support conversion between text and news (#5022) ([5ac3b57](https://github.com/discordjs/discord.js/commit/5ac3b57f9bd53d1c20549a70942b023826f6f726))
 - **BitField:** Move problematic bit into the error message (#5228) ([273e955](https://github.com/discordjs/discord.js/commit/273e9557be68eb1c2466f29e1c41e9b146a777c1))
 - **ClientEvents:** Add tuple labels to event arguments (#5225) ([764966e](https://github.com/discordjs/discord.js/commit/764966e398e693a5ec868bc22d722f8518656b3a))
 - **GuildMember:** #pending (#5121) ([c4c8171](https://github.com/discordjs/discord.js/commit/c4c817116f868cedb4ec20bcbf90b9b3d382621e))
@@ -918,7 +932,7 @@ All notable changes to this project will be documented in this file.
 - **Channels:** Fix incorrectly shared properties (#6262) ([5be471b](https://github.com/discordjs/discord.js/commit/5be471b47dd65616e6b3ee8afdc4a395ef60e1cc))
 - Added `TextBasedChannels` type (#6286) ([61db5f7](https://github.com/discordjs/discord.js/commit/61db5f7618e30c0502ceb6484a4fe861542088b7))
 - **MessageComponents:** Default setDisabled to true (#6279) ([3c7c822](https://github.com/discordjs/discord.js/commit/3c7c82292a914eb9bb9eb77c08a78f0861330687))
-- ***:** Use async functions (#6210) ([e2e4f65](https://github.com/discordjs/discord.js/commit/e2e4f6518b3be85b1e05efff108f1459cc3082df))
+- **\*:** Use async functions (#6210) ([e2e4f65](https://github.com/discordjs/discord.js/commit/e2e4f6518b3be85b1e05efff108f1459cc3082df))
 - **GuildChannel:** Use filter method for #members (#6253) ([7c54076](https://github.com/discordjs/discord.js/commit/7c540764f05cf0a7d312e468f828f427ec0f7541))
 - **VoiceState:** Change kick to disconnect (#6251) ([24931d7](https://github.com/discordjs/discord.js/commit/24931d713b947a568bb45a327bd6ba29966266b2))
 - Merge collections with keeping entries at max (#6242) ([bb5e648](https://github.com/discordjs/discord.js/commit/bb5e648f3daa4c34ad8379eb095a25d56ebfc242))
@@ -938,7 +952,7 @@ All notable changes to this project will be documented in this file.
 - Remove timer utilities from Client (#6113) ([5ca97c9](https://github.com/discordjs/discord.js/commit/5ca97c93515d4dfaa2b4951a020abc000115ed4d))
 - Remove typing caching (#6114) ([576eee8](https://github.com/discordjs/discord.js/commit/576eee8de26bf9e62f5487f6e25e9d5f5eaaa882))
 - **Channel:** Change channel types to UPPER_CASE (#6035) ([6301728](https://github.com/discordjs/discord.js/commit/6301728d35cfdc8b3ea62db5f73298de99a0902a))
-- **Managers:** Rename add to _add (#6060) ([9cd5e7e](https://github.com/discordjs/discord.js/commit/9cd5e7ed6104e40c038d17456abd0cc4a3778b9e))
+- **Managers:** Rename add to \_add (#6060) ([9cd5e7e](https://github.com/discordjs/discord.js/commit/9cd5e7ed6104e40c038d17456abd0cc4a3778b9e))
 - **ApplicationCommandManager:** Remove unused assignment (#6063) ([98a5b52](https://github.com/discordjs/discord.js/commit/98a5b52d8bb09ccca5c30d6ab583bc72d3f1b6ff))
 - Rename `Constants.OPCode` to `Opcode`, moved objects to enums (#6065) ([4eb3a2a](https://github.com/discordjs/discord.js/commit/4eb3a2a885efd480a953a23c5e5289912364ccd4))
 - **PresenceManager:** Have Presence extend Base and simplify add (#6056) ([ded93fe](https://github.com/discordjs/discord.js/commit/ded93feb5759ded880ab0f00ffc2ecffa8516bb9))
@@ -958,7 +972,7 @@ All notable changes to this project will be documented in this file.
 - Remove exported shortcuts to util methods (#5904) ([1816a93](https://github.com/discordjs/discord.js/commit/1816a93b1b1b2bae47e8651e76fa53699de8421d))
 - **Package:** Remove `runkitExampleFilename` (#5866) ([6cceb93](https://github.com/discordjs/discord.js/commit/6cceb936a796e044488e188b5939b81b11e69d23))
 - **awaitMessageComponentInteraction:** Use options object for lib consistency (#5852) ([9dda9b7](https://github.com/discordjs/discord.js/commit/9dda9b742f68dae6b2b260edcb1e5f627424693d))
-- ***:** Make typedefs for all options params (#5785) ([1ac9a2e](https://github.com/discordjs/discord.js/commit/1ac9a2eb5bfef6d009de7c54d3fac5e3d4a5afdc))
+- **\*:** Make typedefs for all options params (#5785) ([1ac9a2e](https://github.com/discordjs/discord.js/commit/1ac9a2eb5bfef6d009de7c54d3fac5e3d4a5afdc))
 - **GuildPreviewEmoji:** Make roles an array (#5720) ([4dbcaf7](https://github.com/discordjs/discord.js/commit/4dbcaf76c361b2e63e9deb08556da43ecde7909e))
 - **APIMessage:** Remove unused declarations (#5836) ([02693bc](https://github.com/discordjs/discord.js/commit/02693bc02f45980d8165820a103220f0027b96b7))
 - Fetch options consistency (#5824) ([7111b4c](https://github.com/discordjs/discord.js/commit/7111b4cd5f2690e7b6c6626025c2a6041bd64db2))
@@ -969,9 +983,9 @@ All notable changes to this project will be documented in this file.
 - Enforce single param on sending/editing methods (#5758) ([0467a90](https://github.com/discordjs/discord.js/commit/0467a9075fbba538c56e0cffdd2da11f7867516a))
 - GuildAvailable, typingStop from Constants (#4861) ([dda5ee2](https://github.com/discordjs/discord.js/commit/dda5ee2e9f0839d3e42d25114ae1b47355cdfd27))
 - **Interactions:** Move Structures import out of switch block (#5763) ([84e5b07](https://github.com/discordjs/discord.js/commit/84e5b075b4214c5432e380840c90091643af07fa))
-- Remove _roles from pseudo-managers (#5721) ([53d952a](https://github.com/discordjs/discord.js/commit/53d952a4ce049cd1b88d2ef4dc3dcdae487b8f00))
+- Remove \_roles from pseudo-managers (#5721) ([53d952a](https://github.com/discordjs/discord.js/commit/53d952a4ce049cd1b88d2ef4dc3dcdae487b8f00))
 - **Deps:** Use async-queue package (#5662) ([14c6802](https://github.com/discordjs/discord.js/commit/14c6802438c47a42ecb5daeb59442361ceb69213))
-- ***:** Return the invalid element when erroring from Array (#5314) ([eaf332f](https://github.com/discordjs/discord.js/commit/eaf332f83fd4376f1cee6d2c9f0939395e84740c))
+- **\*:** Return the invalid element when erroring from Array (#5314) ([eaf332f](https://github.com/discordjs/discord.js/commit/eaf332f83fd4376f1cee6d2c9f0939395e84740c))
 - **MessageOptions:** Move replyTo to reply#messageReference and add failIfNotExists (#5298) ([1ecda83](https://github.com/discordjs/discord.js/commit/1ecda83da7953052977e6297143b82f89adf1058))
 - **Sticker:** Rename Snowflake variable (#5575) ([af00ec8](https://github.com/discordjs/discord.js/commit/af00ec8970e77ea8a0afd21571eeeef9c554e1ec))
 - **RequestHandler:** Use x-ratelimit-reset-after when present (#5511) ([a5d41c9](https://github.com/discordjs/discord.js/commit/a5d41c9f6c4adc652f56c55da4f05da63873c9ef))
@@ -1016,12 +1030,12 @@ All notable changes to this project will be documented in this file.
 - **GuildInviteManager:** FetchInvitesOptions (#6076) ([c1eaa78](https://github.com/discordjs/discord.js/commit/c1eaa78ab7cef55f2a4dcb36d0876963d42ef1ec))
 - Fixed unreachable overloads (#6062) ([7322547](https://github.com/discordjs/discord.js/commit/7322547172e2d34bd04ef131db277801fccf7f99))
 - **ApplicationCommand:** Fix option name (#6067) ([58bbcd5](https://github.com/discordjs/discord.js/commit/58bbcd591e01894594dffba8bdafb95c99670fb1))
-- ***:** Revert incorrect unknown type changes (#6057) ([2e078e4](https://github.com/discordjs/discord.js/commit/2e078e44883c1ef5f85ef973d61a305ce2a34251))
+- **\*:** Revert incorrect unknown type changes (#6057) ([2e078e4](https://github.com/discordjs/discord.js/commit/2e078e44883c1ef5f85ef973d61a305ce2a34251))
 - **Options:** Should extend null (#6042) ([c4aa9fe](https://github.com/discordjs/discord.js/commit/c4aa9feee238db453c87cb66e054922a8302c355))
 - **Voice:** Move types to the library's definitions (#6041) ([185e376](https://github.com/discordjs/discord.js/commit/185e37602b0fabf6f06a02886128aead9239c5d9))
 - Better fullPermissions typings (#6028) ([2ab32e6](https://github.com/discordjs/discord.js/commit/2ab32e6bc62a5326daab6a7472075730830ef109))
 - **MessageOptions:** Fix components being optional (#6005) ([56b5b7e](https://github.com/discordjs/discord.js/commit/56b5b7ee820c8be36c6d7de0abedf1753cc591dd))
-- ***:** Create mention types (#6003) ([0dc5dd5](https://github.com/discordjs/discord.js/commit/0dc5dd5808af213ac4ede9f1084b522225a5c661))
+- **\*:** Create mention types (#6003) ([0dc5dd5](https://github.com/discordjs/discord.js/commit/0dc5dd5808af213ac4ede9f1084b522225a5c661))
 - **VoiceState:** Fix optional params (#5993) ([1242c54](https://github.com/discordjs/discord.js/commit/1242c5434d441f3f7e0ed4610a9a0815a70072ba))
 - **ClientUser:** Updated `setAFK` signature (#6011) ([c40b06c](https://github.com/discordjs/discord.js/commit/c40b06cac90b02f01e198e42c7a8f38de27f15c8))
 - **MessageSelectMenu:** Fix typings (#5995) ([fe6cc0c](https://github.com/discordjs/discord.js/commit/fe6cc0c15dde99caa1049d35f75b9335ace1721d))
@@ -1030,7 +1044,7 @@ All notable changes to this project will be documented in this file.
 - **MessageOptions:** Improved component typings (#5987) ([0eeb277](https://github.com/discordjs/discord.js/commit/0eeb2775a52b0db7f403afb7029d70897fe7d30a))
 - **ApplicationCommandPermissionsManager:** Fix types (#5979) ([388e05b](https://github.com/discordjs/discord.js/commit/388e05b4af95cf2581abae90c6d05d59a0cdb4d2))
 - **ThreadChannel:** Make locked and archived param optional (#5980) ([a08ce7d](https://github.com/discordjs/discord.js/commit/a08ce7dddb5f056128488392742495398f9e33b5))
-- ***:** Make hex color types compatible with ColorResolvable (#5973) ([788d58e](https://github.com/discordjs/discord.js/commit/788d58e5a32956bbcf4768f69ff320b0d7873a6a))
+- **\*:** Make hex color types compatible with ColorResolvable (#5973) ([788d58e](https://github.com/discordjs/discord.js/commit/788d58e5a32956bbcf4768f69ff320b0d7873a6a))
 - **CommandInteraction:** Readd followUp type (#5974) ([ae37d20](https://github.com/discordjs/discord.js/commit/ae37d202a53a05e8bba4d6df9016d0f0a7682c6b))
 - **ThreadManager:** Add type to ThreadManager#create options (#5969) ([3174507](https://github.com/discordjs/discord.js/commit/3174507d57d9f6011e97b4f3209f42179e050f9b))
 - **ColorResolvable:** Change `string` to `#${string}` (#5950) ([acdcb90](https://github.com/discordjs/discord.js/commit/acdcb906ae4691374f5d2bda1315a484c8674938))
@@ -1055,6 +1069,86 @@ All notable changes to this project will be documented in this file.
 - **RateLimitData:** Remove timeDifference property (#5208) ([80e1afb](https://github.com/discordjs/discord.js/commit/80e1afb65447e1d66429ddda36902d871920fdc3))
 - Make Client#voice non-nullable (#5148) ([40d77ba](https://github.com/discordjs/discord.js/commit/40d77bacc3dfdd5e9dd9f3ddff0751fe8470ddc8))
 
+# [13.8.0](https://github.com/discordjs/discord.js/compare/13.7.0...13.8.0) - (2022-06-05)
+
+## Bug Fixes
+
+- **guildchannelmanager:** Wrong parameter in \_sortedChannels call (#8011) ([876816a](https://github.com/discordjs/discord.js/commit/876816ab2a0fd890d5bcedb3d73094c37c6b4e31))
+- **websocketshard:** Deal with zombie connection caused by 4009 (#7581) ([114bcc0](https://github.com/discordjs/discord.js/commit/114bcc07a980325a9c3a04eb35ce1284b23eaefb))
+- Video quality mode data property (#7946) ([76df9fd](https://github.com/discordjs/discord.js/commit/76df9fdc451148392a7cfac83de67b8af2fe7bb6))
+- **ApplicationCommandOptionType:** Add attachment to jsdoc (#7952) ([a51420f](https://github.com/discordjs/discord.js/commit/a51420f7f851c671b8e896d987a26172749376f5))
+
+## Features
+
+- Backport text-in-voice support to v13 (#7999) ([ddfe15b](https://github.com/discordjs/discord.js/commit/ddfe15b8723ad66ab48dcd7967c89c7484b71929))
+
+# [13.7.0](https://github.com/discordjs/discord.js/compare/13.6.0...13.7.0) - (2022-05-13)
+
+## Bug Fixes
+
+- **MessageEmbed:** Fix a typo (#7906) ([ea28638](https://github.com/discordjs/discord.js/commit/ea28638a0c7cebb40aab36c01ed29fed02935540))
+- **GuildEditData:** Some fields can be null for v13 (#7633) ([816936e](https://github.com/discordjs/discord.js/commit/816936eafbe4b8caee10a15709a771919754f5ad))
+- Apply v14 fix (#7756) ([ab6c2ba](https://github.com/discordjs/discord.js/commit/ab6c2bad845d44b5d822b131e5e458a3637431c6))
+- **GuildChannelManager:** `delete` method accessing wrong id (#7771) ([c9e4562](https://github.com/discordjs/discord.js/commit/c9e4562fd58999452829501a3410da2b1709342f))
+- **GuildScheduledEvent:** Handle missing `image` for v13 (#7627) ([dfea9c2](https://github.com/discordjs/discord.js/commit/dfea9c27cef4ec7472c39675c93de985b43fee87))
+- **messagementions:** Fix `has` method for v13 (#7591) ([7a52785](https://github.com/discordjs/discord.js/commit/7a52785f7d3a0d2211b2ceff68f7152161a0b1f5))
+- Check if member has admininistrator on `moderatable` (v13) (#7578) ([13dd82d](https://github.com/discordjs/discord.js/commit/13dd82d7fa6bc5906103cf8c1f4bb7de5d3e8270))
+- **ThreadChannel:** Require `sendable` for `unarchivable` (#7555) ([49397c0](https://github.com/discordjs/discord.js/commit/49397c0ca4ec468a2046167afa64b7a82aa5e7fa))
+- Backport `MessageReaction#me` being incorrectly `false` (#7553) ([5f621c1](https://github.com/discordjs/discord.js/commit/5f621c19959e892066b23f06f0b6485b6cecdb4c))
+- **typings:** SweepStageInstances typo (#7521) ([f096069](https://github.com/discordjs/discord.js/commit/f0960698d2ef51d4586f3c89d8b7c94faf5d921b))
+- **MessagePayload:** V13 don't set reply flags to target flags (#7515) ([30baff7](https://github.com/discordjs/discord.js/commit/30baff7ecbe5fdb5bea9ed5b14a28a76922d507c))
+- **Shard:** V13 EventEmitter listener warning (#7479) ([77b8e01](https://github.com/discordjs/discord.js/commit/77b8e0191123b0e76832c642454adceab9b8ad13))
+- **MessageEmbed:** Set footer to undefined (#7358) ([bc5ddc3](https://github.com/discordjs/discord.js/commit/bc5ddc36fa2e1935ffc8e871c333f6613a5f2396))
+
+## Documentation
+
+- **shardingmanager:** Fix type of `execArgv` option (v13) (#7863) ([43a7870](https://github.com/discordjs/discord.js/commit/43a7870b2337ebdc362640a799fe5e81cfbaf739))
+- Fix and improve localization docs (v13 backport) (#7807) ([6dcf0bd](https://github.com/discordjs/discord.js/commit/6dcf0bda05ee79baa173dce02a4f8985f6f654df))
+- **ApplicationCommand:** Fix ApplicationCommandOptionChoice (#7798) ([1040ce0](https://github.com/discordjs/discord.js/commit/1040ce0e710e0e805ad75302b9078a0230309ae8))
+- Backport version 13 fixes (#7552) ([69ba067](https://github.com/discordjs/discord.js/commit/69ba067a6512fffd2be99ad0b5db2cbfcbb19c88))
+
+## Features
+
+- Backport (#7776) ([5165b18](https://github.com/discordjs/discord.js/commit/5165b18b85379411645ca377389b09a911fd3fc8))
+- Backport (#7787) ([3eb45e3](https://github.com/discordjs/discord.js/commit/3eb45e30b3a3b1b5624d36698b7f1af6bff3cb6d))
+- Backport (#7786) ([ab324ea](https://github.com/discordjs/discord.js/commit/ab324ea6ae042e8312e28dee1665729e6db29193))
+- Add support for localized slash commands (v13 backport) (#7766) ([022e138](https://github.com/discordjs/discord.js/commit/022e138b9a5a9038e61b5bdabade7606c9341982))
+- App authorization links and tags for v13 (#7731) ([9e4a900](https://github.com/discordjs/discord.js/commit/9e4a900e6d540ad611675ec54ba35e2b9da984dd))
+- Backport (#7777) ([6c56132](https://github.com/discordjs/discord.js/commit/6c5613255ade937384525b17f2179f4086a501f1))
+- Backport (#7778) ([ff49b82](https://github.com/discordjs/discord.js/commit/ff49b82db773f0407ac0e890897156fb52843b11))
+- Backport (#7779) ([ae7f991](https://github.com/discordjs/discord.js/commit/ae7f991e8d08222483a1e92d6740fedadc479bd5))
+- Backport (#7783) ([cedc333](https://github.com/discordjs/discord.js/commit/cedc3339401349dfa00990be204b203ef46a3545))
+- **VoiceChannel:** Support `video_quality_mode` (v13) (#7785) ([6daee1b](https://github.com/discordjs/discord.js/commit/6daee1b235fc29eb09d9dd97cbbea619225ee2e1))
+- **StageInstance:** Add support for associated guild event (#7713) ([68498a8](https://github.com/discordjs/discord.js/commit/68498a87be9436be95456768f50db638c06a6ca8))
+- **modals:** Modals, input text components and modal submits, v13 style (#7431) ([e1cdcfa](https://github.com/discordjs/discord.js/commit/e1cdcfa9a6baed1d373cc5474630d32ce38db31e))
+- Backport `Interaction#isRepliable` (#7563) ([5e8162a](https://github.com/discordjs/discord.js/commit/5e8162a1379cb3b8c02cc5b29e70911eb1389218))
+- Add methods to managers for v13 (#7611) ([9f09702](https://github.com/discordjs/discord.js/commit/9f09702854d21fd11ab3f4e2f0eec445f294130e))
+- Add `premiumSubscriptionCount` to `InviteGuild` (#7629) ([8e7d15e](https://github.com/discordjs/discord.js/commit/8e7d15e49d0b75687d4ae813d8274b7086959004))
+- **scheduledevents:** Event cover images for v13 (#7613) ([a7535a2](https://github.com/discordjs/discord.js/commit/a7535a2232c4de4553d0d2a2cee315124e1bdfaa))
+- Backport `MessageMentions` channel type fixes (#7562) ([93cdb2f](https://github.com/discordjs/discord.js/commit/93cdb2f2fa3ebde8f06cefe9de4a351b99f3b5e6))
+- Backport cache types resolving to `never` (#7561) ([611d3a7](https://github.com/discordjs/discord.js/commit/611d3a7b2f76c8be2655d8f27ec4667e6c2054cf))
+- Backport sending message flags (#7560) ([29d42ed](https://github.com/discordjs/discord.js/commit/29d42ed31959a0b5e518b46e45029b99cb15aa59))
+- **ThreadChannel:** Backport creation timestamp (#7559) ([1d97dcf](https://github.com/discordjs/discord.js/commit/1d97dcff087b75e36d8d4b20e79ec3b820868024))
+- Add custom image support to version 13 (#7557) ([679b87c](https://github.com/discordjs/discord.js/commit/679b87c4f88a7bd56bf81a9ade0fc2bf7e54495a))
+- Backport `reason` on `pin` and `unpin` (#7556) ([b231bec](https://github.com/discordjs/discord.js/commit/b231bece0e0a1600bd4e2337a2ec83c9a8df11fd))
+- **GuildPreview:** Add stickers to version 13 (#7554) ([215dfe0](https://github.com/discordjs/discord.js/commit/215dfe02d5482fcabccbc2373386eae15bdd866a))
+- Backport `sweepStickers` method (#7558) ([ee1698d](https://github.com/discordjs/discord.js/commit/ee1698d92869280dcfdbfb353712ef97dff90b56))
+- **scheduledevents:** Add image option (v13) (#7549) ([2fcf8af](https://github.com/discordjs/discord.js/commit/2fcf8af421b34b4908bb01b59cf748a1376e5535))
+- **thread:** V13 add `newlyCreated` to `threadCreate` event (#7481) ([2b3db73](https://github.com/discordjs/discord.js/commit/2b3db734dfd0e9a3cbfdd45fd3aa490b82ddaa08))
+- **commands:** Attachment options (#7441) ([5bcca8b](https://github.com/discordjs/discord.js/commit/5bcca8b97fc09d9f3149325e2b8d8bccdd61e354))
+
+## Refactor
+
+- Deprecate v13 properties and methods (#7782) ([b9802f4](https://github.com/discordjs/discord.js/commit/b9802f4b6f25da62a0bff049ccc165cce8c9d856))
+- Remove non-breaking stuff (#7636) ([b9c5676](https://github.com/discordjs/discord.js/commit/b9c5676006a702f704e970b3027829663b9b0a65))
+
+## Typings
+
+- Fix ModalSubmitInteraction (#7768) ([1d09ad4](https://github.com/discordjs/discord.js/commit/1d09ad4652796ecf39a3146631120d5600f36b6a))
+- **threadchannel:** Fix autoArchiveDuration types (#7817) ([7afcd95](https://github.com/discordjs/discord.js/commit/7afcd9594a5706526be20cb26f0de388b094c1b4))
+- **InteractionCollector:** Fix guild and channel types (#7624) ([7814074](https://github.com/discordjs/discord.js/commit/78140748ce4a64977426a93fd72c9e2783e5919d))
+- V13 channel create overloads fix (#7480) ([0b54089](https://github.com/discordjs/discord.js/commit/0b54089c43b60a325e02b78dd0126771ac71f746))
+
 # [13.6.0](https://github.com/discordjs/discord.js/compare/13.5.1...13.6.0) - (2022-01-13)
 
 ## Documentation
@@ -1065,23 +1159,18 @@ All notable changes to this project will be documented in this file.
 
 - Add Locales to Interactions (#7131) ([233084a](https://github.com/discordjs/discord.js/commit/233084a6018e77b7f9d94446683eef38790ed277))
 
-# [13.5.1](https://github.com/discordjs/discord.js/compare/13.5.0...13.5.1) - (2022-01-07)
+# [13.5.1](https://github.com/discordjs/discord.js/compare/13.4.0...13.5.1) - (2022-01-07)
 
 ## Bug Fixes
 
 - **sweepers:** Provide default for object param (#7182) ([2dabd82](https://github.com/discordjs/discord.js/commit/2dabd82e26134b5050f694f3a9f6524cd3d0c75c))
+- **GuildMemberManager:** Nick endpoint (#7151) ([d0c3961](https://github.com/discordjs/discord.js/commit/d0c3961aef41f17773fb14d06213df3fcb7fc8d2))
+- **Permissions:** ToArray shouldn't check admin (#7144) ([fc4292e](https://github.com/discordjs/discord.js/commit/fc4292e2e9ad381eb0ed07ef5e80a4251a5c4e9d))
+- Remove deprecation warning on `Message#cleanContent` (#7143) ([7e5f16b](https://github.com/discordjs/discord.js/commit/7e5f16b6b3060820446a325f4eb06dd60faee5a9))
 
 ## Documentation
 
 - **Sweepers:** Fix typo (#7165) ([780b7ed](https://github.com/discordjs/discord.js/commit/780b7ed39f173a77fd9eae396133980826926906))
-
-# [13.5.0](https://github.com/discordjs/discord.js/compare/13.4.0...13.5.0) - (2021-12-29)
-
-## Bug Fixes
-
-- **GuildMemberManager:** Nick endpoint (#7151) ([d0c3961](https://github.com/discordjs/discord.js/commit/d0c3961aef41f17773fb14d06213df3fcb7fc8d2))
-- **Permissions:** ToArray shouldn't check admin (#7144) ([fc4292e](https://github.com/discordjs/discord.js/commit/fc4292e2e9ad381eb0ed07ef5e80a4251a5c4e9d))
-- Remove deprecation warning on `Message#cleanContent` (#7143) ([7e5f16b](https://github.com/discordjs/discord.js/commit/7e5f16b6b3060820446a325f4eb06dd60faee5a9))
 
 ## Features
 
@@ -1266,7 +1355,7 @@ All notable changes to this project will be documented in this file.
 - **GuildManager:** Remove redundant check (#6859) ([579569a](https://github.com/discordjs/discord.js/commit/579569ae18d5a2dbcb39ad5e5adfe486315467ea))
 - Remove redundant user agent parsing (#6820) ([460df9e](https://github.com/discordjs/discord.js/commit/460df9eb4df78b502a1cbbbde65dbdfd3c46f5af))
 - Remove unnecessary checks (#6777) ([e24209a](https://github.com/discordjs/discord.js/commit/e24209a8b1f02d64eb2fb2a510be7a0ad24d16a8))
-- **Role:** Move initialization of delete prop out of _patch (#6776) ([872e7a5](https://github.com/discordjs/discord.js/commit/872e7a59b2c1b891c4d1c426a4a449a1b9353500))
+- **Role:** Move initialization of delete prop out of \_patch (#6776) ([872e7a5](https://github.com/discordjs/discord.js/commit/872e7a59b2c1b891c4d1c426a4a449a1b9353500))
 
 ## Typings
 
@@ -1292,7 +1381,7 @@ All notable changes to this project will be documented in this file.
 - **AllowedImageSizes:** Add new image sizes (#6754) ([d0025be](https://github.com/discordjs/discord.js/commit/d0025beb7b1ee6611f4315be91b38788c428f1c1))
 - **User:** Compare flags in #equals (#6750) ([00e1e26](https://github.com/discordjs/discord.js/commit/00e1e2673b86e0041f2bebab7b3ced5722f450bb))
 - **VoiceState:** Patch streaming value (#6747) ([7eec061](https://github.com/discordjs/discord.js/commit/7eec06145a141d167afc7814f3cfd9e06eb292e6))
-- **Message:** Avoid overwriting properties in _patch (#6738) ([a8c21cd](https://github.com/discordjs/discord.js/commit/a8c21cd754d634b4d40047f85264528681a61b41))
+- **Message:** Avoid overwriting properties in \_patch (#6738) ([a8c21cd](https://github.com/discordjs/discord.js/commit/a8c21cd754d634b4d40047f85264528681a61b41))
 - **ReactionCollector:** Only call the filter function once (#6734) ([d15dd5f](https://github.com/discordjs/discord.js/commit/d15dd5f07dab00e8a31f0a37b1e60ea4017871d0))
 - **Shard:** Use provided timeout when respawning (#6735) ([905d100](https://github.com/discordjs/discord.js/commit/905d100d4def974223a128c6276d4a5833c04955))
 - **Role:** ToJSON() throwing due to permission bigints (#6724) ([9e421f6](https://github.com/discordjs/discord.js/commit/9e421f6ccf09230769740e069590fb8937f766b9))
@@ -1304,7 +1393,7 @@ All notable changes to this project will be documented in this file.
 - **CachedManager:** Return updated data when cache is false (#6685) ([8426770](https://github.com/discordjs/discord.js/commit/84267708659e3e9bb2f8eb3b08d8923f235e8953))
 - **GuildEmoji:** Cache restricted roles and author data (#6675) ([60b8ba6](https://github.com/discordjs/discord.js/commit/60b8ba6b865ba02428d7926998af72cdaa17ea5d))
 - **Constants:** Allow undefined size (#6686) ([d3da833](https://github.com/discordjs/discord.js/commit/d3da83368def207585bce9ea95564d79b5097a55))
-- ***RoleManager:** Create set of role ids correctly (#6674) ([f8aa4bd](https://github.com/discordjs/discord.js/commit/f8aa4bd4705ee3bf7892670b944516d01146580f))
+- **\*RoleManager:** Create set of role ids correctly (#6674) ([f8aa4bd](https://github.com/discordjs/discord.js/commit/f8aa4bd4705ee3bf7892670b944516d01146580f))
 - **Shard:** Eval promise never resolves (#6649) ([5070d23](https://github.com/discordjs/discord.js/commit/5070d23914c13814a98cf8ea560853a82b226f94))
 - **xxxable:** Follow more properly with discord behavior (#6551) ([5d87398](https://github.com/discordjs/discord.js/commit/5d87398f9fc57915d5447842b4788f0c80642de0))
 - Allow null to be passed in order to reset icon/avatar (#6646) ([6033506](https://github.com/discordjs/discord.js/commit/603350645d0fe9d96b763d169215d15b3f4f71b1))
@@ -1317,7 +1406,7 @@ All notable changes to this project will be documented in this file.
 - **UserUpdateAction:** Rely on client.user when ids match (#6511) ([1418649](https://github.com/discordjs/discord.js/commit/141864917ac920a081df6f6b34c13ba83e660bbf))
 - **Util:** Allow empty strings in splitMessage (#6437) ([d6e6244](https://github.com/discordjs/discord.js/commit/d6e6244336ccdcdac9a06ab453debe76b13c9bde))
 - **BaseClient:** Remove selfbot ability (#6429) ([9a833b1](https://github.com/discordjs/discord.js/commit/9a833b1e0eb638c60c4abbb9255ed64a170e4679))
-- **Sticker:** Rename method correctly to _add (#6421) ([2c449b6](https://github.com/discordjs/discord.js/commit/2c449b6b48f5cbc88e666afa852055b873994ca5))
+- **Sticker:** Rename method correctly to \_add (#6421) ([2c449b6](https://github.com/discordjs/discord.js/commit/2c449b6b48f5cbc88e666afa852055b873994ca5))
 - **Message:** Fix typo (#6435) ([ecb6e50](https://github.com/discordjs/discord.js/commit/ecb6e50b46e627e3217107d662dd19c64527976d))
 
 ## Documentation
@@ -1427,7 +1516,7 @@ All notable changes to this project will be documented in this file.
 - **TextBasedChannelFields:** Add back createMessageCollector (#6616) ([1b016a3](https://github.com/discordjs/discord.js/commit/1b016a30c8f52a123c927c0ba44d985321567703))
 - Make `channelId` non-nullable on `MessageComponentInteraction` (#6600) ([8cc3885](https://github.com/discordjs/discord.js/commit/8cc3885739127ebc7023b6358ed0259ba7527250))
 - `Message#createMessageComponentCollector` use `MessageComponentInteractionOptions<T>` (#6596) ([c62823e](https://github.com/discordjs/discord.js/commit/c62823e43de50362ff0dabaf3fd53d2d39e5816b))
-- **MessagePayload:** Specify typings for `files` and  `resolveFile` (#6608) ([ea36955](https://github.com/discordjs/discord.js/commit/ea3695585d59ed295cd0c8565f262ea6cc4fe098))
+- **MessagePayload:** Specify typings for `files` and `resolveFile` (#6608) ([ea36955](https://github.com/discordjs/discord.js/commit/ea3695585d59ed295cd0c8565f262ea6cc4fe098))
 - Collector filter parameter inference (#6574) ([0841956](https://github.com/discordjs/discord.js/commit/08419561edd710a6574b5e1449bf5dc1040580d5))
 - **MessageReference:** Correctly add undefined type (#6563) ([cdb0005](https://github.com/discordjs/discord.js/commit/cdb00053dec5223a929de4eea97a90c84c917408))
 - `@typedef` for `StageChannelResolvable` (#6568) ([2c219cb](https://github.com/discordjs/discord.js/commit/2c219cb982f73cda7f7db30af59200c754e75cee))
@@ -1440,7 +1529,7 @@ All notable changes to this project will be documented in this file.
 - **CommandInteractionOptionResolver:** Add missing parameter (#6497) ([656b518](https://github.com/discordjs/discord.js/commit/656b51875f82a82a4429b50157a77d37be211534))
 - **ClientPresence:** Add type declarations and docs (#6450) ([6cac03a](https://github.com/discordjs/discord.js/commit/6cac03a39408ef14316a898eb81cc998921a8f0f))
 - **GuildChannel:** Added missing typing (#6454) ([f294d1e](https://github.com/discordjs/discord.js/commit/f294d1eff207ded337ccff6413824bb6ea60b4c7))
-- Message#_patch typings return type (#6433) ([81bb68d](https://github.com/discordjs/discord.js/commit/81bb68d3beb266fb0b508da959468a3a6f11c24c))
+- Message#\_patch typings return type (#6433) ([81bb68d](https://github.com/discordjs/discord.js/commit/81bb68d3beb266fb0b508da959468a3a6f11c24c))
 
 # [13.1.0](https://github.com/discordjs/discord.js/compare/13.0.1...13.1.0) - (2021-08-12)
 
@@ -1579,7 +1668,7 @@ All notable changes to this project will be documented in this file.
 - **GuildChannel:** Improve empty overwrite handling for permissionsLocked (#5821) ([6df3623](https://github.com/discordjs/discord.js/commit/6df36232a05e396d31461200725755745526d2ed))
 - **ApplicationCommands:** Allow managing commands for uncached guilds (#5729) ([24e5868](https://github.com/discordjs/discord.js/commit/24e586881865c187ff0a3044ac37f6e338cc51ee))
 - **ClientApplication:** Freeze flags (#5811) ([e990c35](https://github.com/discordjs/discord.js/commit/e990c35476fb6f7e1a5449493833140144e0469c))
-- ***:** Typedefs and typings for image & webhook options (#5805) ([a5a6e22](https://github.com/discordjs/discord.js/commit/a5a6e223166cf9af430da9003780e6582ea17b1c))
+- **\*:** Typedefs and typings for image & webhook options (#5805) ([a5a6e22](https://github.com/discordjs/discord.js/commit/a5a6e223166cf9af430da9003780e6582ea17b1c))
 - **TextBasedChannel:** Allow passing an APIMessage with split (#5815) ([93b0a4e](https://github.com/discordjs/discord.js/commit/93b0a4e005b5b1d371f7936238556db2e36cc982))
 - **PermissionOverwrites:** Optional allow/deny OverwriteData (#5810) ([a7ebb21](https://github.com/discordjs/discord.js/commit/a7ebb2145c380214567514906393c4ab87932e95))
 - **Typings:** Fix BitField toJSON/valueOf return types (#5806) ([935f819](https://github.com/discordjs/discord.js/commit/935f819207ac4219d37f3b99a2508e368626e6da))
@@ -1594,7 +1683,7 @@ All notable changes to this project will be documented in this file.
 - **ApiMessage:** Only pass objects as options directly (#5793) ([3578159](https://github.com/discordjs/discord.js/commit/35781597d032fa7821e010e483c89f70ec51926c))
 - **BitField:** Throw an error if bit to resolve is undefined (#5565) ([0156f69](https://github.com/discordjs/discord.js/commit/0156f693e08fe2ad75133bf67c4aeb3e9c91a02d))
 - Remove remnants of awaitMessageComponentInteractions (#5783) ([ae78a33](https://github.com/discordjs/discord.js/commit/ae78a336e1d0d190ec9f525449332dc781e0b3bf))
-- ***:** Add missing imports for custom errors (#5767) ([e980948](https://github.com/discordjs/discord.js/commit/e980948de55e91e59c9e3293ac76bc645a058a53))
+- **\*:** Add missing imports for custom errors (#5767) ([e980948](https://github.com/discordjs/discord.js/commit/e980948de55e91e59c9e3293ac76bc645a058a53))
 - **ShardingManager:** Client error event cannot be emitted (#5559) ([d1c5b6f](https://github.com/discordjs/discord.js/commit/d1c5b6fe9e18b532ad69ed4bd82e1874a6dff4df))
 - Add components to MessageOption typedefs (#5768) ([657635c](https://github.com/discordjs/discord.js/commit/657635c1c09aa68211130bc3c56d6e8bb6e8e773))
 - **Interaction:** Add missing types and fix docs lists (#5762) ([1d57754](https://github.com/discordjs/discord.js/commit/1d57754d4654c5c95aa14afc13f8abe335314767))
@@ -1646,7 +1735,7 @@ All notable changes to this project will be documented in this file.
 - **GuildChannel:** Regression on default channel type (#5251) ([e7c4f36](https://github.com/discordjs/discord.js/commit/e7c4f3672e7059c264ba67a94b87a655ea6e4da5))
 - **Guild/GuildChannel:** Methods reason arg usage (#5419) ([8411b9e](https://github.com/discordjs/discord.js/commit/8411b9e14211f83fddb00f622088979ee6586803))
 - **Role:** Pass Permissions class, not the bitfield (#5321) ([d744e51](https://github.com/discordjs/discord.js/commit/d744e51c1bdb4c7a26c0faeea1f2f45baaf5fd3c))
-- **WebSocketShard:** Key name in WebSocketShard#_send. (#5304) ([56d8b44](https://github.com/discordjs/discord.js/commit/56d8b445ede6c7915aec173a68905cda3d91f0ca))
+- **WebSocketShard:** Key name in WebSocketShard#\_send. (#5304) ([56d8b44](https://github.com/discordjs/discord.js/commit/56d8b445ede6c7915aec173a68905cda3d91f0ca))
 - **ApiMessage:** Remove resolve() from typings (#5241) ([a6bc39d](https://github.com/discordjs/discord.js/commit/a6bc39d3c699eec0b7851cda334335baa892c1de))
 - **GuildChannel:** Overload permissionsFor and BaseManager#resolve[id] (#5260) ([41bd6c2](https://github.com/discordjs/discord.js/commit/41bd6c2717faeeaa36514d39a4816f7cf65b4c02))
 - **GuildEmoji:** Check for cahnges to available in equals (#5201) ([f95f5dc](https://github.com/discordjs/discord.js/commit/f95f5dcd791b39c6a4d60dc8d64b0287e06ed768))
@@ -1664,7 +1753,7 @@ All notable changes to this project will be documented in this file.
 - **Collector:** Throw an error if a non-function was provided as filter (#5034) ([7365f40](https://github.com/discordjs/discord.js/commit/7365f403006eeb28ab10f03cbf85416272678ef7))
 - **BaseGuildEmoji:** Typo in requiresColons (#5076) ([e272fd6](https://github.com/discordjs/discord.js/commit/e272fd6909a17941d2d3e4840e75436d98a41198))
 - **MessageReaction:** Set MessageReaction#me in patch method (#5047) ([6b322f4](https://github.com/discordjs/discord.js/commit/6b322f47a0f86115dab71c06c7879fe82ea04ec4))
-- **Voice*:** Filter out silent audio from video users (#5035) ([4fcb9eb](https://github.com/discordjs/discord.js/commit/4fcb9ebf300633022e2b9867fa06a586307ff17a))
+- **Voice\*:** Filter out silent audio from video users (#5035) ([4fcb9eb](https://github.com/discordjs/discord.js/commit/4fcb9ebf300633022e2b9867fa06a586307ff17a))
 - **GuildTemplate:** 'guild' getter (#5040) ([53529bd](https://github.com/discordjs/discord.js/commit/53529bd05deb449d5d9bbfa332470c9881d8093c))
 - **RoleManager:** Fix ID return value, change return type to collection (#4935) ([12a096b](https://github.com/discordjs/discord.js/commit/12a096b5f1c5ad518e73d1b9f50bb388928117dd))
 
@@ -1675,7 +1764,7 @@ All notable changes to this project will be documented in this file.
 - General cleanup and improvements (#6299) ([b4afcf8](https://github.com/discordjs/discord.js/commit/b4afcf8236b0fb4979deab0a097656292c59d50b))
 - Typo in ClientOptions (#6305) ([dd3a79e](https://github.com/discordjs/discord.js/commit/dd3a79eead4f01094c2c3003de717affc11fdc3c))
 - Grammar fix (#6294) ([90c2e07](https://github.com/discordjs/discord.js/commit/90c2e072bf0ab3562bd65e3a9e5e19f5c57fd69a))
-- **Client:** Mark _finalize as private (#6281) ([35fa3b3](https://github.com/discordjs/discord.js/commit/35fa3b3103998f93253a97ad1769212d60307b61))
+- **Client:** Mark \_finalize as private (#6281) ([35fa3b3](https://github.com/discordjs/discord.js/commit/35fa3b3103998f93253a97ad1769212d60307b61))
 - Update link of the guide to v13 changes (#6273) ([6e0ea02](https://github.com/discordjs/discord.js/commit/6e0ea020c0de580911917c4b480c3402619d4341))
 - Add missing semicolon to readme (#6270) ([2c452df](https://github.com/discordjs/discord.js/commit/2c452dffb8204868ec4d7126f1345a14edb5c141))
 - Change example in readme to slash command (#6250) ([626ff85](https://github.com/discordjs/discord.js/commit/626ff85ae7616a59c95d7338c0df9baead412ce3))
@@ -1700,10 +1789,10 @@ All notable changes to this project will be documented in this file.
 - **MessageManager:** Document options param for #edit as required (#6031) ([db60e36](https://github.com/discordjs/discord.js/commit/db60e367b4a455ae0055f8d25bd8b42139784c55))
 - Add Partial typedef (#6029) ([b62d646](https://github.com/discordjs/discord.js/commit/b62d6462711cd6a8fda5cb031d052dd343a2c3c0))
 - Fix some missed MessageComponent collector methods (#6023) ([610b0b4](https://github.com/discordjs/discord.js/commit/610b0b4dd6b6e66c05c22eb852d2a752b99d07ba))
-- ***:** Wrap optional properties with union types in parentheses (#6021) ([ec06ba7](https://github.com/discordjs/discord.js/commit/ec06ba7ad04d21e61f3e734e489607a1a5ab3568))
+- **\*:** Wrap optional properties with union types in parentheses (#6021) ([ec06ba7](https://github.com/discordjs/discord.js/commit/ec06ba7ad04d21e61f3e734e489607a1a5ab3568))
 - **Collector:** Properly document endReason (#6016) ([7dd1a8d](https://github.com/discordjs/discord.js/commit/7dd1a8da08830525d292059ee3bd2c86d5f964f6))
 - **CreateInviteOptions:** Fix TargetType link (#6017) ([4adfc45](https://github.com/discordjs/discord.js/commit/4adfc45b5a3c916ae44aec5df358f0ca4254f723))
-- ***:** Add class links to isX() methods (#6007) ([fbdad6e](https://github.com/discordjs/discord.js/commit/fbdad6eac38e262a7045853174607c408cd6c59c))
+- **\*:** Add class links to isX() methods (#6007) ([fbdad6e](https://github.com/discordjs/discord.js/commit/fbdad6eac38e262a7045853174607c408cd6c59c))
 - WebSocketShard#send and TextBasedChannel#send (#5998) ([726073f](https://github.com/discordjs/discord.js/commit/726073fef7e0e7bf7d8d5e4a4546d8056719b59f))
 - **Util:** Methods removed on the base object (#5990) ([d742814](https://github.com/discordjs/discord.js/commit/d742814686fc2c8dfbdcb582541155cb8df170ac))
 - **Partials:** Add link to the guide (#5982) ([58183d4](https://github.com/discordjs/discord.js/commit/58183d425ba5c2cc87f29199e5c3e2ec5a936bd1))
@@ -1718,7 +1807,7 @@ All notable changes to this project will be documented in this file.
 - **Channel:** Make the type news_thread an inline code-block (#5940) ([630432b](https://github.com/discordjs/discord.js/commit/630432b4e2f415b912754962948edf585aebf772))
 - **Thread:** Add links to discord api docs (#5919) ([5af2ef5](https://github.com/discordjs/discord.js/commit/5af2ef5fbc7ad11281f38384c360ae79efe63b39))
 - **MessageSelectMenu:** Fix options typings (#5922) ([75837a8](https://github.com/discordjs/discord.js/commit/75837a8252246b2bb71b76f5b15b8124cb40f0d8))
-- ***:** Add links to Discord's API objects & data (#5862) ([e0efcc6](https://github.com/discordjs/discord.js/commit/e0efcc6ab0e3f060e30438c0d990c9465c6134df))
+- **\*:** Add links to Discord's API objects & data (#5862) ([e0efcc6](https://github.com/discordjs/discord.js/commit/e0efcc6ab0e3f060e30438c0d990c9465c6134df))
 - Move embeds field into BaseMessageOptions (#5902) ([6cebeae](https://github.com/discordjs/discord.js/commit/6cebeae15e97e29acbdaf95bc7b17a1e346a2c34))
 - **Readme:** Remove dependencies badge (#5901) ([edf6f0c](https://github.com/discordjs/discord.js/commit/edf6f0ca7012b6b678367a1b5d716d0b85e23ba3))
 - **AnonymousGuild:** Add missing extends tag (#5896) ([3d96a33](https://github.com/discordjs/discord.js/commit/3d96a33bd006d514829648d166e86d15bf0b51c8))
@@ -1817,16 +1906,16 @@ All notable changes to this project will be documented in this file.
 - **WelcomeScreen:** Welcome screens (#5490) ([44e2ee7](https://github.com/discordjs/discord.js/commit/44e2ee7b20dbec79c993dbc1f30ddb643d943347))
 - Stage instance invite (#5856) ([2d12db0](https://github.com/discordjs/discord.js/commit/2d12db000f2a0a22a8919d7a63989a6e762ae335))
 - **Guild:** Add enum for premium_tier (#5868) ([a3cbcca](https://github.com/discordjs/discord.js/commit/a3cbcca13da1af416c219bd64a0a6e84bb87a057))
-- ***:** Use enums for consistency and speed (#5843) ([f7eeccb](https://github.com/discordjs/discord.js/commit/f7eeccba4b7015496df811f10cc2da2b0fab0630))
+- **\*:** Use enums for consistency and speed (#5843) ([f7eeccb](https://github.com/discordjs/discord.js/commit/f7eeccba4b7015496df811f10cc2da2b0fab0630))
 - **Widget:** Wrapper for widget.json (#5619) ([038ee99](https://github.com/discordjs/discord.js/commit/038ee99604cded41d4c67edf4bd6bc7969712f52))
 - Stage instances (#5749) ([918921e](https://github.com/discordjs/discord.js/commit/918921e8211fc16e9b12d2502f3168264246ea22))
-- ***:** Document and support embeds field in message create endpoint (#5792) ([99ff715](https://github.com/discordjs/discord.js/commit/99ff7151379fe03a1cfd52f252c0e6fc892d7776))
+- **\*:** Document and support embeds field in message create endpoint (#5792) ([99ff715](https://github.com/discordjs/discord.js/commit/99ff7151379fe03a1cfd52f252c0e6fc892d7776))
 - **Guild:** Add enum for mfa_level (#5797) ([ffabec3](https://github.com/discordjs/discord.js/commit/ffabec3a5e3651e5a0b8bcac83ee26bb909695fa))
 - **RequestHandler:** Emit more info when a rate limit was hit (#5801) ([18ac72e](https://github.com/discordjs/discord.js/commit/18ac72e457fa137d7f7f7bde876436ff643b4a63))
 - Add new APIErrors (#5794) ([e0ab836](https://github.com/discordjs/discord.js/commit/e0ab836b2d88caf0d9e1f9eba76ae46be9df0554))
 - **Util:** Allow array for StringOptions' char (#5566) ([fbcbb29](https://github.com/discordjs/discord.js/commit/fbcbb29884a35308a7af2169f5f9ae5658c458e8))
 - **GuildAuditLogs:** Make #target a channel for channel related logs (#5781) ([eb0291d](https://github.com/discordjs/discord.js/commit/eb0291d9a5078836183c1b63ea96461ec112f96e))
-- **Sharding*:** Contexts for broadcastEval (#5756) ([c6aeebb](https://github.com/discordjs/discord.js/commit/c6aeebb18d6b969f7c8bdb1b719883d4384dd03e))
+- **Sharding\*:** Contexts for broadcastEval (#5756) ([c6aeebb](https://github.com/discordjs/discord.js/commit/c6aeebb18d6b969f7c8bdb1b719883d4384dd03e))
 - **Voice:** Implement support for @discordjs/voice (#5402) ([7b2e12b](https://github.com/discordjs/discord.js/commit/7b2e12b102984abf61132e1057558ef7f04e6d83))
 - General component improvements (#5787) ([c4f1c75](https://github.com/discordjs/discord.js/commit/c4f1c75efa1cff1f9c775a266dccbe581305e79d))
 - **GuildChannelManager:** Add 'fetch' method (#4966) ([e798fb7](https://github.com/discordjs/discord.js/commit/e798fb720ee5ced008471fe899337f6817936770))
@@ -1839,7 +1928,7 @@ All notable changes to this project will be documented in this file.
 - **Esm:** Use `gen-esm-wrapper` instead of manually making the file (#5700) ([db0d7d4](https://github.com/discordjs/discord.js/commit/db0d7d4ea8e7b2bae4d1548e5617875b5ae0bbd4))
 - **Rest:** Show the data that is sent to Discord when an errors occurs (#5701) ([ef92339](https://github.com/discordjs/discord.js/commit/ef92339d073f82cdaa2bc69f7be8443ec16789a7))
 - **CommandInteraction:** Make options a collection (#5705) ([fdad140](https://github.com/discordjs/discord.js/commit/fdad14099779e61cb84dcd1cb2497e0e853a6144))
-- [**breaking**] ***:** Enforce strings (#4880) ([7b85a72](https://github.com/discordjs/discord.js/commit/7b85a7259f563ab14ae6c0a665a3dd43c486fde4))
+- [**breaking**] **\*:** Enforce strings (#4880) ([7b85a72](https://github.com/discordjs/discord.js/commit/7b85a7259f563ab14ae6c0a665a3dd43c486fde4))
 - **Message:** Allow editing files into messages (#5718) ([b212b64](https://github.com/discordjs/discord.js/commit/b212b64214ecee4f6118e78f9b90f3d3da574ecc))
 - Easier guards for channelUpdate (#5716) ([d52bcd4](https://github.com/discordjs/discord.js/commit/d52bcd46ec5985f9f18da37ba9d7d77209f58337))
 - Add support for fetching multiple guilds (#5472) ([48d6850](https://github.com/discordjs/discord.js/commit/48d6850d9a8c34f407a22b6b401f2ed74415acd0))
@@ -1887,8 +1976,8 @@ All notable changes to this project will be documented in this file.
 - Jsdelivr default file support (#5424) ([f469402](https://github.com/discordjs/discord.js/commit/f46940228e9f82db4af09ae2f2dad684db0d74ed))
 - **Client:** Add InviteGenerationOptions#additionalScopes (#5215) ([ae3c3d8](https://github.com/discordjs/discord.js/commit/ae3c3d80ee603fc46a28140107cb90c81da0afc9))
 - **ReactionCollector:** Event create (#4108) ([09d1f2f](https://github.com/discordjs/discord.js/commit/09d1f2f18f5ec536bb25156553986fee51c80d1e))
-- **ShardingManager:** Allow b-Eval/fetchClientValues on a specific shard when not all are ready  (#5222) ([001676c](https://github.com/discordjs/discord.js/commit/001676c7a97f4e44c6601dd84aa0354ea94b7c25))
-- **GuildChannel:** Support conversion between text and news  (#5022) ([5ac3b57](https://github.com/discordjs/discord.js/commit/5ac3b57f9bd53d1c20549a70942b023826f6f726))
+- **ShardingManager:** Allow b-Eval/fetchClientValues on a specific shard when not all are ready (#5222) ([001676c](https://github.com/discordjs/discord.js/commit/001676c7a97f4e44c6601dd84aa0354ea94b7c25))
+- **GuildChannel:** Support conversion between text and news (#5022) ([5ac3b57](https://github.com/discordjs/discord.js/commit/5ac3b57f9bd53d1c20549a70942b023826f6f726))
 - **BitField:** Move problematic bit into the error message (#5228) ([273e955](https://github.com/discordjs/discord.js/commit/273e9557be68eb1c2466f29e1c41e9b146a777c1))
 - **ClientEvents:** Add tuple labels to event arguments (#5225) ([764966e](https://github.com/discordjs/discord.js/commit/764966e398e693a5ec868bc22d722f8518656b3a))
 - **GuildMember:** #pending (#5121) ([c4c8171](https://github.com/discordjs/discord.js/commit/c4c817116f868cedb4ec20bcbf90b9b3d382621e))
@@ -1910,7 +1999,7 @@ All notable changes to this project will be documented in this file.
 - **Channels:** Fix incorrectly shared properties (#6262) ([5be471b](https://github.com/discordjs/discord.js/commit/5be471b47dd65616e6b3ee8afdc4a395ef60e1cc))
 - Added `TextBasedChannels` type (#6286) ([61db5f7](https://github.com/discordjs/discord.js/commit/61db5f7618e30c0502ceb6484a4fe861542088b7))
 - **MessageComponents:** Default setDisabled to true (#6279) ([3c7c822](https://github.com/discordjs/discord.js/commit/3c7c82292a914eb9bb9eb77c08a78f0861330687))
-- ***:** Use async functions (#6210) ([e2e4f65](https://github.com/discordjs/discord.js/commit/e2e4f6518b3be85b1e05efff108f1459cc3082df))
+- **\*:** Use async functions (#6210) ([e2e4f65](https://github.com/discordjs/discord.js/commit/e2e4f6518b3be85b1e05efff108f1459cc3082df))
 - **GuildChannel:** Use filter method for #members (#6253) ([7c54076](https://github.com/discordjs/discord.js/commit/7c540764f05cf0a7d312e468f828f427ec0f7541))
 - **VoiceState:** Change kick to disconnect (#6251) ([24931d7](https://github.com/discordjs/discord.js/commit/24931d713b947a568bb45a327bd6ba29966266b2))
 - Merge collections with keeping entries at max (#6242) ([bb5e648](https://github.com/discordjs/discord.js/commit/bb5e648f3daa4c34ad8379eb095a25d56ebfc242))
@@ -1930,7 +2019,7 @@ All notable changes to this project will be documented in this file.
 - Remove timer utilities from Client (#6113) ([5ca97c9](https://github.com/discordjs/discord.js/commit/5ca97c93515d4dfaa2b4951a020abc000115ed4d))
 - Remove typing caching (#6114) ([576eee8](https://github.com/discordjs/discord.js/commit/576eee8de26bf9e62f5487f6e25e9d5f5eaaa882))
 - **Channel:** Change channel types to UPPER_CASE (#6035) ([6301728](https://github.com/discordjs/discord.js/commit/6301728d35cfdc8b3ea62db5f73298de99a0902a))
-- **Managers:** Rename add to _add (#6060) ([9cd5e7e](https://github.com/discordjs/discord.js/commit/9cd5e7ed6104e40c038d17456abd0cc4a3778b9e))
+- **Managers:** Rename add to \_add (#6060) ([9cd5e7e](https://github.com/discordjs/discord.js/commit/9cd5e7ed6104e40c038d17456abd0cc4a3778b9e))
 - **ApplicationCommandManager:** Remove unused assignment (#6063) ([98a5b52](https://github.com/discordjs/discord.js/commit/98a5b52d8bb09ccca5c30d6ab583bc72d3f1b6ff))
 - Rename `Constants.OPCode` to `Opcode`, moved objects to enums (#6065) ([4eb3a2a](https://github.com/discordjs/discord.js/commit/4eb3a2a885efd480a953a23c5e5289912364ccd4))
 - **PresenceManager:** Have Presence extend Base and simplify add (#6056) ([ded93fe](https://github.com/discordjs/discord.js/commit/ded93feb5759ded880ab0f00ffc2ecffa8516bb9))
@@ -1945,12 +2034,12 @@ All notable changes to this project will be documented in this file.
 - New node features (#5132) ([1e8f012](https://github.com/discordjs/discord.js/commit/1e8f01253e85891b78c2b4ae866ce5ae56add413))
 - **Presence:** Remove second assignment of `syncID` (#5956) ([fb8d516](https://github.com/discordjs/discord.js/commit/fb8d5166a8b2264b69bfd39e95798d984f971155))
 - **MessagePayload:** Rename APIMessage (#5921) ([b15d825](https://github.com/discordjs/discord.js/commit/b15d825bb3acdf432b94d8413a7a964ccc8734bc))
-- Removed `code` and `split` options (#5918) ([985d4d6](https://github.com/discordjs/discord.js/commit/985d4d6a438fc9123264f6a1c600f34fccc1825f))
+- [**breaking**] Removed `code` and `split` options (#5918) ([985d4d6](https://github.com/discordjs/discord.js/commit/985d4d6a438fc9123264f6a1c600f34fccc1825f))
 - **Collector:** Make filter an option (#5903) ([0d0c8f0](https://github.com/discordjs/discord.js/commit/0d0c8f07f2535dd315ca95abe35e848c13d0ddf5))
 - Remove exported shortcuts to util methods (#5904) ([1816a93](https://github.com/discordjs/discord.js/commit/1816a93b1b1b2bae47e8651e76fa53699de8421d))
 - **Package:** Remove `runkitExampleFilename` (#5866) ([6cceb93](https://github.com/discordjs/discord.js/commit/6cceb936a796e044488e188b5939b81b11e69d23))
 - **awaitMessageComponentInteraction:** Use options object for lib consistency (#5852) ([9dda9b7](https://github.com/discordjs/discord.js/commit/9dda9b742f68dae6b2b260edcb1e5f627424693d))
-- ***:** Make typedefs for all options params (#5785) ([1ac9a2e](https://github.com/discordjs/discord.js/commit/1ac9a2eb5bfef6d009de7c54d3fac5e3d4a5afdc))
+- **\*:** Make typedefs for all options params (#5785) ([1ac9a2e](https://github.com/discordjs/discord.js/commit/1ac9a2eb5bfef6d009de7c54d3fac5e3d4a5afdc))
 - **GuildPreviewEmoji:** Make roles an array (#5720) ([4dbcaf7](https://github.com/discordjs/discord.js/commit/4dbcaf76c361b2e63e9deb08556da43ecde7909e))
 - **APIMessage:** Remove unused declarations (#5836) ([02693bc](https://github.com/discordjs/discord.js/commit/02693bc02f45980d8165820a103220f0027b96b7))
 - Fetch options consistency (#5824) ([7111b4c](https://github.com/discordjs/discord.js/commit/7111b4cd5f2690e7b6c6626025c2a6041bd64db2))
@@ -1961,9 +2050,9 @@ All notable changes to this project will be documented in this file.
 - Enforce single param on sending/editing methods (#5758) ([0467a90](https://github.com/discordjs/discord.js/commit/0467a9075fbba538c56e0cffdd2da11f7867516a))
 - GuildAvailable, typingStop from Constants (#4861) ([dda5ee2](https://github.com/discordjs/discord.js/commit/dda5ee2e9f0839d3e42d25114ae1b47355cdfd27))
 - **Interactions:** Move Structures import out of switch block (#5763) ([84e5b07](https://github.com/discordjs/discord.js/commit/84e5b075b4214c5432e380840c90091643af07fa))
-- Remove _roles from pseudo-managers (#5721) ([53d952a](https://github.com/discordjs/discord.js/commit/53d952a4ce049cd1b88d2ef4dc3dcdae487b8f00))
+- Remove \_roles from pseudo-managers (#5721) ([53d952a](https://github.com/discordjs/discord.js/commit/53d952a4ce049cd1b88d2ef4dc3dcdae487b8f00))
 - **Deps:** Use async-queue package (#5662) ([14c6802](https://github.com/discordjs/discord.js/commit/14c6802438c47a42ecb5daeb59442361ceb69213))
-- ***:** Return the invalid element when erroring from Array (#5314) ([eaf332f](https://github.com/discordjs/discord.js/commit/eaf332f83fd4376f1cee6d2c9f0939395e84740c))
+- **\*:** Return the invalid element when erroring from Array (#5314) ([eaf332f](https://github.com/discordjs/discord.js/commit/eaf332f83fd4376f1cee6d2c9f0939395e84740c))
 - **MessageOptions:** Move replyTo to reply#messageReference and add failIfNotExists (#5298) ([1ecda83](https://github.com/discordjs/discord.js/commit/1ecda83da7953052977e6297143b82f89adf1058))
 - **Sticker:** Rename Snowflake variable (#5575) ([af00ec8](https://github.com/discordjs/discord.js/commit/af00ec8970e77ea8a0afd21571eeeef9c554e1ec))
 - **RequestHandler:** Use x-ratelimit-reset-after when present (#5511) ([a5d41c9](https://github.com/discordjs/discord.js/commit/a5d41c9f6c4adc652f56c55da4f05da63873c9ef))
@@ -2008,12 +2097,12 @@ All notable changes to this project will be documented in this file.
 - **GuildInviteManager:** FetchInvitesOptions (#6076) ([c1eaa78](https://github.com/discordjs/discord.js/commit/c1eaa78ab7cef55f2a4dcb36d0876963d42ef1ec))
 - Fixed unreachable overloads (#6062) ([7322547](https://github.com/discordjs/discord.js/commit/7322547172e2d34bd04ef131db277801fccf7f99))
 - **ApplicationCommand:** Fix option name (#6067) ([58bbcd5](https://github.com/discordjs/discord.js/commit/58bbcd591e01894594dffba8bdafb95c99670fb1))
-- ***:** Revert incorrect unknown type changes (#6057) ([2e078e4](https://github.com/discordjs/discord.js/commit/2e078e44883c1ef5f85ef973d61a305ce2a34251))
+- **\*:** Revert incorrect unknown type changes (#6057) ([2e078e4](https://github.com/discordjs/discord.js/commit/2e078e44883c1ef5f85ef973d61a305ce2a34251))
 - **Options:** Should extend null (#6042) ([c4aa9fe](https://github.com/discordjs/discord.js/commit/c4aa9feee238db453c87cb66e054922a8302c355))
 - **Voice:** Move types to the library's definitions (#6041) ([185e376](https://github.com/discordjs/discord.js/commit/185e37602b0fabf6f06a02886128aead9239c5d9))
 - Better fullPermissions typings (#6028) ([2ab32e6](https://github.com/discordjs/discord.js/commit/2ab32e6bc62a5326daab6a7472075730830ef109))
 - **MessageOptions:** Fix components being optional (#6005) ([56b5b7e](https://github.com/discordjs/discord.js/commit/56b5b7ee820c8be36c6d7de0abedf1753cc591dd))
-- ***:** Create mention types (#6003) ([0dc5dd5](https://github.com/discordjs/discord.js/commit/0dc5dd5808af213ac4ede9f1084b522225a5c661))
+- **\*:** Create mention types (#6003) ([0dc5dd5](https://github.com/discordjs/discord.js/commit/0dc5dd5808af213ac4ede9f1084b522225a5c661))
 - **VoiceState:** Fix optional params (#5993) ([1242c54](https://github.com/discordjs/discord.js/commit/1242c5434d441f3f7e0ed4610a9a0815a70072ba))
 - **ClientUser:** Updated `setAFK` signature (#6011) ([c40b06c](https://github.com/discordjs/discord.js/commit/c40b06cac90b02f01e198e42c7a8f38de27f15c8))
 - **MessageSelectMenu:** Fix typings (#5995) ([fe6cc0c](https://github.com/discordjs/discord.js/commit/fe6cc0c15dde99caa1049d35f75b9335ace1721d))
@@ -2022,7 +2111,7 @@ All notable changes to this project will be documented in this file.
 - **MessageOptions:** Improved component typings (#5987) ([0eeb277](https://github.com/discordjs/discord.js/commit/0eeb2775a52b0db7f403afb7029d70897fe7d30a))
 - **ApplicationCommandPermissionsManager:** Fix types (#5979) ([388e05b](https://github.com/discordjs/discord.js/commit/388e05b4af95cf2581abae90c6d05d59a0cdb4d2))
 - **ThreadChannel:** Make locked and archived param optional (#5980) ([a08ce7d](https://github.com/discordjs/discord.js/commit/a08ce7dddb5f056128488392742495398f9e33b5))
-- ***:** Make hex color types compatible with ColorResolvable (#5973) ([788d58e](https://github.com/discordjs/discord.js/commit/788d58e5a32956bbcf4768f69ff320b0d7873a6a))
+- **\*:** Make hex color types compatible with ColorResolvable (#5973) ([788d58e](https://github.com/discordjs/discord.js/commit/788d58e5a32956bbcf4768f69ff320b0d7873a6a))
 - **CommandInteraction:** Readd followUp type (#5974) ([ae37d20](https://github.com/discordjs/discord.js/commit/ae37d202a53a05e8bba4d6df9016d0f0a7682c6b))
 - **ThreadManager:** Add type to ThreadManager#create options (#5969) ([3174507](https://github.com/discordjs/discord.js/commit/3174507d57d9f6011e97b4f3209f42179e050f9b))
 - **ColorResolvable:** Change `string` to `#${string}` (#5950) ([acdcb90](https://github.com/discordjs/discord.js/commit/acdcb906ae4691374f5d2bda1315a484c8674938))
@@ -2046,7 +2135,3 @@ All notable changes to this project will be documented in this file.
 - **MessageReaction:** Allow message to be partial (#5303) ([aac6275](https://github.com/discordjs/discord.js/commit/aac6275300a1511d2a30f0fc27999381fad4f7d9))
 - **RateLimitData:** Remove timeDifference property (#5208) ([80e1afb](https://github.com/discordjs/discord.js/commit/80e1afb65447e1d66429ddda36902d871920fdc3))
 - Make Client#voice non-nullable (#5148) ([40d77ba](https://github.com/discordjs/discord.js/commit/40d77bacc3dfdd5e9dd9f3ddff0751fe8470ddc8))
-
-## Breaking Changes
-
-For breaking changes please reference: <https://discordjs.guide/additional-info/changes-in-v13.html>
