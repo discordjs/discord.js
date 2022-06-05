@@ -412,6 +412,7 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
 export type BooleanCache<T extends CacheType> = T extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
+  public type: InteractionType.ApplicationCommand;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
@@ -918,6 +919,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 }
 
 export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
+  public commandType: ApplicationCommandType.ChatInput;
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
   public inGuild(): this is ChatInputCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ChatInputCommandInteraction<'cached'>;
@@ -1002,6 +1004,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
 }
 
 export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
+  public commandType: ApplicationCommandType.Message | ApplicationCommandType.User;
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
     | 'getFocused'
@@ -1464,6 +1467,8 @@ export type CacheTypeReducer<
   : [State] extends ['raw' | 'cached']
   ? PresentType
   : Fallback;
+
+export type AnyInteraction = ChatInputCommandInteraction | ContextMenuCommandInteraction;
 
 export class Interaction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
@@ -3900,7 +3905,7 @@ export interface ClientEvents {
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel];
-  interactionCreate: [interaction: Interaction];
+  interactionCreate: [interaction: AnyInteraction];
   shardDisconnect: [closeEvent: CloseEvent, shardId: number];
   shardError: [error: Error, shardId: number];
   shardReady: [shardId: number, unavailableGuilds: Set<Snowflake> | undefined];
