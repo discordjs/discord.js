@@ -2791,6 +2791,8 @@ export class WebSocketShard extends EventEmitter {
   private eventsAttached: boolean;
   private expectedGuilds: Set<Snowflake> | null;
   private readyTimeout: NodeJS.Timeout | null;
+  private closeEmitted: boolean;
+  private wsCloseTimeout: NodeJS.Timeout | null;
 
   public manager: WebSocketManager;
   public id: number;
@@ -2806,6 +2808,7 @@ export class WebSocketShard extends EventEmitter {
   private onPacket(packet: unknown): void;
   private checkReady(): void;
   private setHelloTimeout(time?: number): void;
+  private setWsCloseTimeout(time?: number): void;
   private setHeartbeatTimer(time: number): void;
   private sendHeartbeat(): void;
   private ackHeartbeat(): void;
@@ -2815,6 +2818,7 @@ export class WebSocketShard extends EventEmitter {
   private _send(data: unknown): void;
   private processQueue(): void;
   private destroy(destroyOptions?: { closeCode?: number; reset?: boolean; emit?: boolean; log?: boolean }): void;
+  private emitClose(event?: CloseEvent): void;
   private _cleanupConnection(): void;
   private _emitDestroyed(): void;
 
@@ -2966,9 +2970,12 @@ export const Constants: {
   };
   WSCodes: {
     1000: 'WS_CLOSE_REQUESTED';
+    1011: 'INTERNAL_ERROR';
     4004: 'TOKEN_INVALID';
     4010: 'SHARDING_INVALID';
     4011: 'SHARDING_REQUIRED';
+    4013: 'INVALID_INTENTS';
+    4014: 'DISALLOWED_INTENTS';
   };
   Events: ConstantsEvents;
   ShardEvents: ConstantsShardEvents;
@@ -4221,6 +4228,7 @@ export interface ClientFetchInviteOptions {
 export interface ClientOptions {
   shards?: number | number[] | 'auto';
   shardCount?: number;
+  closeTimeout?: number;
   makeCache?: CacheFactory;
   /** @deprecated Pass the value of this property as `lifetime` to `sweepers.messages` instead. */
   messageCacheLifetime?: number;
