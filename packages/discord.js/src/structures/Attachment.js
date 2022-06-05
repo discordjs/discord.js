@@ -13,10 +13,6 @@ const Util = require('../util/Util');
  * Represents an attachment
  */
 class Attachment {
-  /**
-   * @param {APIAttachment} data Attachment data
-   * @private
-   */
   constructor({ url, filename, ...data }) {
     this.attachment = url;
     /**
