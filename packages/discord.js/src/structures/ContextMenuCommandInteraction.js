@@ -3,6 +3,9 @@
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const CommandInteraction = require('./CommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
+const { lazy } = require('../util/Util');
+
+const getMessage = lazy(() => require('./Message').Message);
 
 /**
  * Represents a context menu interaction.
@@ -50,7 +53,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
         value: target_id,
         message:
           this.channel?.messages._add(resolved.messages[target_id]) ??
-          new (require('./Message').Message)(resolved.messages[target_id]),
+          new (getMessage())(this.client, resolved.messages[target_id]),
       });
     }
 

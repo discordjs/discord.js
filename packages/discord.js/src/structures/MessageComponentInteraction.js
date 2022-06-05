@@ -3,6 +3,9 @@
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
+const { lazy } = require('../util/Util');
+
+const getMessage = lazy(() => require('./Message').Message);
 
 /**
  * Represents a message component interaction.
@@ -23,7 +26,7 @@ class MessageComponentInteraction extends Interaction {
      * The message to which the component was attached
      * @type {Message}
      */
-    this.message = this.channel?.messages._add(data.message) ?? new (require('./Message').Message)(data.message);
+    this.message = this.channel?.messages._add(data.message) ?? new (getMessage())(client, data.message);
 
     /**
      * The custom id of the component which was interacted with
