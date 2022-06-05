@@ -3763,7 +3763,7 @@ export interface ChannelData {
   name?: string;
   type?: Pick<typeof ChannelType, 'GuildText' | 'GuildNews'>;
   position?: number;
-  topic?: string;
+  topic?: string | null;
   nsfw?: boolean;
   bitrate?: number;
   userLimit?: number;
@@ -4380,7 +4380,7 @@ export type GuildBanResolvable = GuildBan | UserResolvable;
 export type GuildChannelResolvable = Snowflake | GuildBasedChannel;
 
 export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
-  parent?: CategoryChannelResolvable;
+  parent?: CategoryChannelResolvable | null;
   type?: Exclude<
     ChannelType,
     | ChannelType.DM
@@ -4870,7 +4870,7 @@ export interface PartialChannelData {
     | ChannelType.GuildStageVoice
   >;
   name: string;
-  topic?: string;
+  topic?: string | null;
   nsfw?: boolean;
   bitrate?: number;
   userLimit?: number;
