@@ -1925,7 +1925,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy-container@workspace:packages/proxy-container"
   dependencies:
-    "@discordjs/proxy": "workspace:^"
+    "@discordjs/proxy": ^0.1.0-dev
     "@discordjs/ts-docgen": ^0.4.1
     "@types/node": ^16.11.38
     "@typescript-eslint/eslint-plugin": ^5.27.0
@@ -1942,7 +1942,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/proxy@workspace:^, @discordjs/proxy@workspace:packages/proxy":
+"@discordjs/proxy@^0.1.0-dev, @discordjs/proxy@workspace:packages/proxy":
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy@workspace:packages/proxy"
   dependencies:

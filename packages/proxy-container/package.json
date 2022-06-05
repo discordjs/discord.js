@@ -49,7 +49,7 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/proxy": "workspace:^",
+		"@discordjs/proxy": "^0.1.0-dev",
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
