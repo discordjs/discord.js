@@ -1703,7 +1703,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
 }
 
 export class AttachmentBuilder {
-  public constructor(attachment: BufferResolvable | Stream, name?: string, data?: RawAttachmentData);
+  public constructor(attachment: BufferResolvable | Stream, data?: RawAttachmentData);
   public attachment: BufferResolvable | Stream;
   public description: string | null;
   public name: string | null;
