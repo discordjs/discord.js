@@ -248,7 +248,7 @@ class CommandInteractionOptionResolver {
    * Gets a message option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(Message|APIMessage)}
+   * @returns {?Message}
    * The value of the option, or null if not set and not required.
    */
   getMessage(name, required = false) {

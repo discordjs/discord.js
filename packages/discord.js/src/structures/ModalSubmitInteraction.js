@@ -4,6 +4,9 @@ const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
 const ModalSubmitFields = require('./ModalSubmitFields');
 const InteractionResponses = require('./interfaces/InteractionResponses');
+const { lazy } = require('../util/Util');
+
+const getMessage = lazy(() => require('./Message').Message);
 
 /**
  * @typedef {Object} ModalData
@@ -34,9 +37,9 @@ class ModalSubmitInteraction extends Interaction {
     if ('message' in data) {
       /**
        * The message associated with this interaction
-       * @type {?(Message|APIMessage)}
+       * @type {?Message}
        */
-      this.message = this.channel?.messages._add(data.message) ?? data.message;
+      this.message = this.channel?.messages._add(data.message) ?? new (getMessage())(this.client, data.message);
     } else {
       this.message = null;
     }

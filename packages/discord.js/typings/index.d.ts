@@ -391,14 +391,14 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
   ephemeral: boolean | null;
   replied: boolean;
   webhook: InteractionWebhook;
-  reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message>;
   reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
   deleteReply(): Promise<void>;
-  editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
-  deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message>;
+  deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message>;
   deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
-  fetchReply(): Promise<GuildCacheMessage<Cached>>;
-  followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  fetchReply(): Promise<Message>;
+  followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message>;
   showModal(
     modal: JSONEncodable<APIModalInteractionResponseCallbackData> | ModalData | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
@@ -435,13 +435,15 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public inGuild(): this is CommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is CommandInteraction<'cached'>;
   public inRawGuild(): this is CommandInteraction<'raw'>;
-  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public deferReply(
+    options: InteractionDeferReplyOptions & { fetchReply: true },
+  ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
-  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
-  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message>;
+  public fetchReply(): Promise<Message>;
+  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message>;
+  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
@@ -1536,7 +1538,7 @@ export class InteractionCollector<T extends Interaction> extends Collector<Snowf
 export class InteractionWebhook extends PartialWebhookMixin() {
   public constructor(client: Client, id: Snowflake, token: string);
   public token: string;
-  public send(options: string | MessagePayload | InteractionReplyOptions): Promise<Message | APIMessage>;
+  public send(options: string | MessagePayload | InteractionReplyOptions): Promise<Message>;
 }
 
 export class Invite extends Base {
@@ -1758,25 +1760,29 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public channelId: Snowflake;
   public deferred: boolean;
   public ephemeral: boolean | null;
-  public message: GuildCacheMessage<Cached>;
+  public message: Message<BooleanCache<Cached>>;
   public replied: boolean;
   public webhook: InteractionWebhook;
   public inGuild(): this is MessageComponentInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MessageComponentInteraction<'cached'>;
   public inRawGuild(): this is MessageComponentInteraction<'raw'>;
-  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public deferReply(
+    options: InteractionDeferReplyOptions & { fetchReply: true },
+  ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public deferUpdate(
+    options: InteractionDeferUpdateOptions & { fetchReply: true },
+  ): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
-  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
-  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message>;
+  public fetchReply(): Promise<Message>;
+  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message>;
+  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message>;
   public update(
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
@@ -1904,12 +1910,12 @@ export class ModalSubmitFields {
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
   extends ModalSubmitInteraction<Cached> {
-  message: GuildCacheMessage<Cached>;
-  update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  message: Message<BooleanCache<Cached>>;
+  update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message>;
   update(
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message>;
   deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   inGuild(): this is ModalMessageModalSubmitInteraction<'raw' | 'cached'>;
   inCachedGuild(): this is ModalMessageModalSubmitInteraction<'cached'>;
@@ -1923,19 +1929,23 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public readonly fields: ModalSubmitFields;
   public deferred: boolean;
   public ephemeral: boolean | null;
-  public message: GuildCacheMessage<Cached> | null;
+  public message: Message<BooleanCache<Cached>> | null;
   public replied: boolean;
   public readonly webhook: InteractionWebhook;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message>;
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
-  public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
+  public editReply(
+    options: string | MessagePayload | WebhookEditMessageOptions,
+  ): Promise<Message<BooleanCache<Cached>>>;
+  public deferReply(
+    options: InteractionDeferReplyOptions & { fetchReply: true },
+  ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
-  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  public fetchReply(): Promise<Message<BooleanCache<Cached>>>;
+  public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
@@ -2740,9 +2750,9 @@ export class WebhookClient extends WebhookMixin(BaseClient) {
   public editMessage(
     message: MessageResolvable,
     options: string | MessagePayload | WebhookEditMessageOptions,
-  ): Promise<APIMessage>;
-  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<APIMessage>;
-  public send(options: string | MessagePayload | WebhookMessageOptions): Promise<APIMessage>;
+  ): Promise<Message>;
+  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message>;
+  public send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message>;
 }
 
 export class WebSocketManager extends EventEmitter {
@@ -3428,9 +3438,9 @@ export interface PartialWebhookFields {
   editMessage(
     message: MessageResolvable | '@original',
     options: string | MessagePayload | WebhookEditMessageOptions,
-  ): Promise<Message | APIMessage>;
-  fetchMessage(message: Snowflake | '@original', options?: WebhookFetchMessageOptions): Promise<Message | APIMessage>;
-  send(options: string | MessagePayload | Omit<WebhookMessageOptions, 'flags'>): Promise<Message | APIMessage>;
+  ): Promise<Message>;
+  fetchMessage(message: Snowflake | '@original', options?: WebhookFetchMessageOptions): Promise<Message>;
+  send(options: string | MessagePayload | Omit<WebhookMessageOptions, 'flags'>): Promise<Message>;
 }
 
 export interface WebhookFields extends PartialWebhookFields {
@@ -3962,7 +3972,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   channel?: CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>;
   role?: CacheTypeReducer<Cached, Role, APIRole>;
   attachment?: AttachmentBuilder;
-  message?: GuildCacheMessage<Cached>;
+  message?: Message<BooleanCache<Cached>>;
 }
 
 export interface CommandInteractionResolvedData<Cached extends CacheType = CacheType> {

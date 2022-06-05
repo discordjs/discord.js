@@ -521,6 +521,16 @@ class Util extends null {
   static cleanCodeBlockContent(text) {
     return text.replaceAll('```', '`\u200b``');
   }
+
+  /**
+   * Lazily evaluates a callback function
+   * @param {Function} cb The callback to lazily evaluate
+   * @returns {Function}
+   */
+  static lazy(cb) {
+    let defaultValue;
+    return () => (defaultValue ??= cb());
+  }
 }
 
 module.exports = Util;
