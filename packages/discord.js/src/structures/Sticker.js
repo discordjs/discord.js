@@ -70,10 +70,10 @@ class Sticker extends Base {
 
     if ('tags' in sticker) {
       /**
-       * An array of tags for the sticker
-       * @type {?string[]}
+       * Autocomplete/suggestions for the sticker
+       * @type {?string}
        */
-      this.tags = sticker.tags.split(', ');
+      this.tags = sticker.tags;
     } else {
       this.tags ??= null;
     }
@@ -246,8 +246,7 @@ class Sticker extends Base {
         other.format === this.format &&
         other.name === this.name &&
         other.packId === this.packId &&
-        other.tags.length === this.tags.length &&
-        other.tags.every(tag => this.tags.includes(tag)) &&
+        other.tags === this.tags &&
         other.available === this.available &&
         other.guildId === this.guildId &&
         other.sortValue === this.sortValue
@@ -257,7 +256,7 @@ class Sticker extends Base {
         other.id === this.id &&
         other.description === this.description &&
         other.name === this.name &&
-        other.tags === this.tags.join(', ')
+        other.tags === this.tags
       );
     }
   }

@@ -2303,7 +2303,7 @@ export class Sticker extends Base {
   public packId: Snowflake | null;
   public get partial(): boolean;
   public sortValue: number | null;
-  public tags: string[] | null;
+  public tags: string | null;
   public type: StickerType | null;
   public user: User | null;
   public get url(): string;
