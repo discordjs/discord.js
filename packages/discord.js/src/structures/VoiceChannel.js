@@ -8,6 +8,7 @@ const MessageManager = require('../managers/MessageManager');
 /**
  * Represents a guild voice channel on Discord.
  * @extends {BaseGuildVoiceChannel}
+ * @implements {TextBasedChannel}
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
   constructor(guild, data, client) {
