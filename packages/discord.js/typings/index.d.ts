@@ -3971,7 +3971,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
   channel?: CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>;
   role?: CacheTypeReducer<Cached, Role, APIRole>;
-  attachment?: AttachmentBuilder;
+  attachment?: Attachment;
   message?: Message<BooleanCache<Cached>>;
 }
 
@@ -3981,7 +3981,7 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   channels?: Collection<Snowflake, CacheTypeReducer<Cached, AnyChannel, APIInteractionDataResolvedChannel>>;
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
-  attachments?: Collection<Snowflake, AttachmentBuilder>;
+  attachments?: Collection<Snowflake, Attachment>;
 }
 
 export declare const Colors: {
@@ -4707,7 +4707,7 @@ export interface MessageEditOptions {
   attachments?: JSONEncodable<AttachmentPayload>[];
   content?: string | null;
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[] | null;
-  files?: (AttachmentPayload | BufferResolvable | Stream | AttachmentBuilder)[];
+  files?: (BufferResolvable | Stream | JSONEncodable<APIAttachment> | Attachment | AttachmentBuilder)[];
   flags?: BitFieldResolvable<MessageFlagsString, number>;
   allowedMentions?: MessageMentionOptions;
   components?: (
@@ -4758,10 +4758,10 @@ export interface MessageOptions {
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
   allowedMentions?: MessageMentionOptions;
-  files?: (Attachment | AttachmentBuilder | BufferResolvable | Stream)[];
+  files?: (BufferResolvable | Stream | JSONEncodable<APIAttachment> | Attachment | AttachmentBuilder)[];
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
-  attachments?: (Attachment | AttachmentBuilder)[];
+  attachments?: JSONEncodable<AttachmentPayload>[];
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, number>;
 }
 
