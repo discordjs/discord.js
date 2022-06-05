@@ -122,6 +122,7 @@ import {
   ChannelMention,
   UserMention,
   PartialGroupDMChannel,
+  Attachment,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
@@ -1491,8 +1492,8 @@ expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
 
 declare const chatInputInteraction: ChatInputCommandInteraction;
 
-expectType<AttachmentBuilder>(chatInputInteraction.options.getAttachment('attachment', true));
-expectType<AttachmentBuilder | null>(chatInputInteraction.options.getAttachment('attachment'));
+expectType<Attachment>(chatInputInteraction.options.getAttachment('attachment', true));
+expectType<Attachment | null>(chatInputInteraction.options.getAttachment('attachment'));
 
 declare const modal: ModalBuilder;
 
