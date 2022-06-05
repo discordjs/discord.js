@@ -383,7 +383,7 @@ class Message extends Base {
 
   /**
    * The channel that the message was sent in
-   * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
+   * @type {TextBasedChannel}
    * @readonly
    */
   get channel() {

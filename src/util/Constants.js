@@ -558,7 +558,8 @@ exports.ChannelTypes = createEnum([
  * * TextChannel
  * * NewsChannel
  * * ThreadChannel
- * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel} TextBasedChannels
+ * * VoiceChannel
+ * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel|VoiceChannel} TextBasedChannels
  */
 
 /**
@@ -576,6 +577,7 @@ exports.ChannelTypes = createEnum([
  * * GUILD_NEWS_THREAD
  * * GUILD_PUBLIC_THREAD
  * * GUILD_PRIVATE_THREAD
+ * * GUILD_VOICE
  * @typedef {string} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
@@ -585,6 +587,7 @@ exports.TextBasedChannelTypes = [
   'GUILD_NEWS_THREAD',
   'GUILD_PUBLIC_THREAD',
   'GUILD_PRIVATE_THREAD',
+  'GUILD_VOICE',
 ];
 
 /**

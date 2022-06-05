@@ -770,9 +770,10 @@ declare const guildMember: GuildMember;
 
 // Test whether the structures implement send
 expectType<TextBasedChannelFields['send']>(dmChannel.send);
-expectType<ThreadChannel>(threadChannel);
-expectType<NewsChannel>(newsChannel);
-expectType<TextChannel>(textChannel);
+expectType<TextBasedChannelFields['send']>(threadChannel.send);
+expectType<TextBasedChannelFields['send']>(newsChannel.send);
+expectType<TextBasedChannelFields['send']>(textChannel.send);
+expectType<TextBasedChannelFields['send']>(voiceChannel.send);
 expectAssignable<PartialTextBasedChannelFields>(user);
 expectAssignable<PartialTextBasedChannelFields>(guildMember);
 
@@ -780,6 +781,7 @@ expectType<Message | null>(dmChannel.lastMessage);
 expectType<Message | null>(threadChannel.lastMessage);
 expectType<Message | null>(newsChannel.lastMessage);
 expectType<Message | null>(textChannel.lastMessage);
+expectType<Message | null>(voiceChannel.lastMessage);
 
 expectDeprecated(storeChannel.clone());
 expectDeprecated(categoryChannel.createChannel('Store', { type: 'GUILD_STORE' }));
@@ -1292,10 +1294,16 @@ declare const GuildBasedChannel: GuildBasedChannel;
 declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
 declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
-expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel>(TextBasedChannel);
-expectType<'DM' | 'GUILD_NEWS' | 'GUILD_TEXT' | 'GUILD_PUBLIC_THREAD' | 'GUILD_PRIVATE_THREAD' | 'GUILD_NEWS_THREAD'>(
-  TextBasedChannelTypes,
-);
+expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(TextBasedChannel);
+expectType<
+  | 'DM'
+  | 'GUILD_NEWS'
+  | 'GUILD_TEXT'
+  | 'GUILD_PUBLIC_THREAD'
+  | 'GUILD_PRIVATE_THREAD'
+  | 'GUILD_NEWS_THREAD'
+  | 'GUILD_VOICE'
+>(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | ThreadChannel | VoiceChannel>(
   GuildBasedChannel,
@@ -1303,4 +1311,4 @@ expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextCha
 expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | VoiceChannel>(
   NonThreadGuildBasedChannel,
 );
-expectType<NewsChannel | TextChannel | ThreadChannel>(GuildTextBasedChannel);
+expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBasedChannel);

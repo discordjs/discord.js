@@ -90,16 +90,6 @@ class BaseGuildTextChannel extends GuildChannel {
   }
 
   /**
-   * Sets whether this channel is flagged as NSFW.
-   * @param {boolean} [nsfw=true] Whether the channel should be considered NSFW
-   * @param {string} [reason] Reason for changing the channel's NSFW flag
-   * @returns {Promise<TextChannel>}
-   */
-  setNSFW(nsfw = true, reason) {
-    return this.edit({ nsfw }, reason);
-  }
-
-  /**
    * Sets the type of this channel (only conversion between text and news is supported)
    * @param {string} type The new channel type
    * @param {string} [reason] Reason for changing the channel's type
@@ -107,44 +97,6 @@ class BaseGuildTextChannel extends GuildChannel {
    */
   setType(type, reason) {
     return this.edit({ type }, reason);
-  }
-
-  /**
-   * Fetches all webhooks for the channel.
-   * @returns {Promise<Collection<Snowflake, Webhook>>}
-   * @example
-   * // Fetch webhooks
-   * channel.fetchWebhooks()
-   *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
-   *   .catch(console.error);
-   */
-  fetchWebhooks() {
-    return this.guild.channels.fetchWebhooks(this.id);
-  }
-
-  /**
-   * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
-   * @typedef {Object} ChannelWebhookCreateOptions
-   * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
-   * @property {string} [reason] Reason for creating the webhook
-   */
-
-  /**
-   * Creates a webhook for the channel.
-   * @param {string} name The name of the webhook
-   * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
-   * @returns {Promise<Webhook>} Returns the created Webhook
-   * @example
-   * // Create a webhook for the current channel
-   * channel.createWebhook('Snek', {
-   *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
-   *   reason: 'Needed a cool new Webhook'
-   * })
-   *   .then(console.log)
-   *   .catch(console.error)
-   */
-  createWebhook(name, options = {}) {
-    return this.guild.channels.createWebhook(this.id, name, options);
   }
 
   /**
@@ -221,6 +173,10 @@ class BaseGuildTextChannel extends GuildChannel {
   createMessageComponentCollector() {}
   awaitMessageComponent() {}
   bulkDelete() {}
+  fetchWebhooks() {}
+  createWebhook() {}
+  setRateLimitPerUser() {}
+  setNSFW() {}
 }
 
 TextBasedChannel.applyToClass(BaseGuildTextChannel, true);

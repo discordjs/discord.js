@@ -545,8 +545,10 @@ class ThreadChannel extends Channel {
   createMessageComponentCollector() {}
   awaitMessageComponent() {}
   bulkDelete() {}
+  // Doesn't work on Thread channels; setRateLimitPerUser() {}
+  // Doesn't work on Thread channels; setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(ThreadChannel, true);
+TextBasedChannel.applyToClass(ThreadChannel, true, ['setRateLimitPerUser', 'setNSFW']);
 
 module.exports = ThreadChannel;
