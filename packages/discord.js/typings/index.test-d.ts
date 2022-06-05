@@ -529,7 +529,7 @@ client.on('guildCreate', async g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
 
-  if (channel.isText()) {
+  if (channel.type === ChannelType.GuildText) {
     const row: ActionRowData<MessageActionRowComponentData> = {
       type: ComponentType.ActionRow,
       components: [
@@ -557,7 +557,7 @@ client.on('guildCreate', async g => {
     channel.send({ components: [row, row2] });
   }
 
-  if (channel.isThread()) {
+  if (channel.type === ChannelType.GuildPublicThread) {
     const fetchedMember = await channel.members.fetch({ member: '12345678' });
     expectType<ThreadMember>(fetchedMember);
     const fetchedMemberCol = await channel.members.fetch(true);

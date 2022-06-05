@@ -3,7 +3,6 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;
 let DMChannel;
 let NewsChannel;
@@ -108,78 +107,6 @@ class Channel extends Base {
    */
   fetch(force = true) {
     return this.client.channels.fetch(this.id, { force });
-  }
-
-  /**
-   * Indicates whether this channel is a {@link TextChannel}.
-   * @returns {boolean}
-   */
-  isText() {
-    return this.type === ChannelType.GuildText;
-  }
-
-  /**
-   * Indicates whether this channel is a {@link DMChannel}.
-   * @returns {boolean}
-   */
-  isDM() {
-    return this.type === ChannelType.DM;
-  }
-
-  /**
-   * Indicates whether this channel is a {@link VoiceChannel}.
-   * @returns {boolean}
-   */
-  isVoice() {
-    return this.type === ChannelType.GuildVoice;
-  }
-
-  /**
-   * Indicates whether this channel is a {@link PartialGroupDMChannel}.
-   * @returns {boolean}
-   */
-  isGroupDM() {
-    return this.type === ChannelType.GroupDM;
-  }
-
-  /**
-   * Indicates whether this channel is a {@link CategoryChannel}.
-   * @returns {boolean}
-   */
-  isCategory() {
-    return this.type === ChannelType.GuildCategory;
-  }
-
-  /**
-   * Indicates whether this channel is a {@link NewsChannel}.
-   * @returns {boolean}
-   */
-  isNews() {
-    return this.type === ChannelType.GuildNews;
-  }
-
-  /**
-   * Indicates whether this channel is a {@link ThreadChannel}.
-   * @returns {boolean}
-   */
-  isThread() {
-    return ThreadChannelTypes.includes(this.type);
-  }
-
-  /**
-   * Indicates whether this channel is a {@link StageChannel}.
-   * @returns {boolean}
-   */
-  isStage() {
-    return this.type === ChannelType.GuildStageVoice;
-  }
-
-  /**
-   * Indicates whether this channel is a {@link DirectoryChannel}
-   * @returns {boolean}
-   */
-  isDirectory() {
-    return this.type === ChannelType.GuildDirectory;
   }
 
   /**

@@ -748,15 +748,6 @@ export abstract class Channel extends Base {
   public get url(): string;
   public delete(): Promise<this>;
   public fetch(force?: boolean): Promise<this>;
-  public isText(): this is TextChannel;
-  public isDM(): this is DMChannel;
-  public isVoice(): this is VoiceChannel;
-  public isGroupDM(): this is PartialGroupDMChannel;
-  public isCategory(): this is CategoryChannel;
-  public isNews(): this is NewsChannel;
-  public isThread(): this is ThreadChannel;
-  public isStage(): this is StageChannel;
-  public isDirectory(): this is DirectoryChannel;
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
