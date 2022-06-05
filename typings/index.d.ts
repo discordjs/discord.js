@@ -433,6 +433,7 @@ export class BaseGuildEmoji extends Emoji {
 export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel) {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
+  public rateLimitPerUser: number | null;
   public nsfw: boolean;
   public threads: ThreadManager<AllowedThreadTypeForTextChannel | AllowedThreadTypeForNewsChannel>;
   public topic: string | null;
@@ -442,7 +443,6 @@ export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel) {
     defaultAutoArchiveDuration: ThreadAutoArchiveDuration | 'MAX',
     reason?: string,
   ): Promise<this>;
-  public setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
   public setType(type: Pick<typeof ChannelTypes, 'GUILD_TEXT'>, reason?: string): Promise<TextChannel>;
   public setType(type: Pick<typeof ChannelTypes, 'GUILD_NEWS'>, reason?: string): Promise<NewsChannel>;
@@ -890,7 +890,13 @@ export class DiscordAPIError extends Error {
   public requestData: HTTPErrorData;
 }
 
-export class DMChannel extends TextBasedChannelMixin(Channel, ['bulkDelete', 'fetchWebhooks', 'createWebhook']) {
+export class DMChannel extends TextBasedChannelMixin(Channel, [
+  'bulkDelete',
+  'fetchWebhooks',
+  'createWebhook',
+  'setRateLimitPerUser',
+  'setNSFW',
+]) {
   private constructor(client: Client, data?: RawDMChannelData);
   public recipient: User;
   public type: 'DM';
@@ -2426,7 +2432,6 @@ export class TextChannel extends BaseGuildTextChannel {
   public rateLimitPerUser: number;
   public threads: ThreadManager<AllowedThreadTypeForTextChannel>;
   public type: 'GUILD_TEXT';
-  public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 }
 
 export class TextInputComponent extends BaseMessageComponent {
@@ -2451,7 +2456,7 @@ export class TextInputComponent extends BaseMessageComponent {
   public static resolveStyle(style: TextInputStyleResolvable): TextInputStyle;
 }
 
-export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhooks', 'createWebhook']) {
+export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhooks', 'createWebhook', 'setNSFW']) {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
   public readonly archivedAt: Date | null;
@@ -2505,7 +2510,6 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhook
   public setInvitable(invitable?: boolean, reason?: string): Promise<ThreadChannel>;
   public setLocked(locked?: boolean, reason?: string): Promise<ThreadChannel>;
   public setName(name: string, reason?: string): Promise<ThreadChannel>;
-  public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<ThreadChannel>;
 }
 
 export class ThreadMember extends Base {
@@ -2656,6 +2660,7 @@ export class VoiceChannel extends TextBasedChannelMixin(BaseGuildVoiceChannel, [
   public readonly editable: boolean;
   public readonly speakable: boolean;
   public type: 'GUILD_VOICE';
+  public rateLimitPerUser: number | null;
   public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
   public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
   public setVideoQualityMode(videoQualityMode: VideoQualityMode | number, reason?: string): Promise<VoiceChannel>;
@@ -3509,6 +3514,8 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   ): InteractionCollector<MappedInteractionTypes[T]>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
+  setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<this>;
+  setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
   fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   sendTyping(): Promise<void>;
 }
