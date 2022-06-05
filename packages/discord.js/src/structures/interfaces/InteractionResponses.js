@@ -8,10 +8,10 @@ const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
 
 /**
- * @typedef {Object} ModalData
+ * @typedef {Object} ModalComponentData
  * @property {string} title The title of the modal
  * @property {string} customId The custom id of the modal
- * @property {ActionRowData[]} components The components within this modal
+ * @property {ActionRow[]} components The components within this modal
  */
 
 /**
