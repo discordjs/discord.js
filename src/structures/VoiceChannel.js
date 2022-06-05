@@ -20,7 +20,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
        * The camera video quality mode of the channel.
        * @type {?VideoQualityMode}
        */
-      this.videoQualityMode = VideoQualityModes[data.videoQualityMode];
+      this.videoQualityMode = VideoQualityModes[data.video_quality_mode];
     } else {
       this.videoQualityMode ??= null;
     }
