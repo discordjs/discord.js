@@ -30,7 +30,6 @@ export async function populateSuccessfulResponse(res: ServerResponse, data: Disp
  */
 export function populateGeneralErrorResponse(res: ServerResponse, error: DiscordAPIError | HTTPError): void {
 	res.statusCode = error.status;
-	res.statusMessage = error.message;
 
 	if ('rawError' in error) {
 		res.setHeader('Content-Type', 'application/json');
