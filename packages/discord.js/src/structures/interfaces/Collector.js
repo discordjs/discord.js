@@ -103,21 +103,31 @@ class Collector extends EventEmitter {
    * @emits Collector#collect
    */
   async handleCollect(...args) {
-    const collect = await this.collect(...args);
+    const collectedId = await this.collect(...args);
 
-    if (collect && (await this.filter(...args, this.collected))) {
-      this.collected.set(collect, args[0]);
+    if (collectedId) {
+      const filterResult = await this.filter(...args, this.collected);
+      if (filterResult) {
+        this.collected.set(collectedId, args[0]);
 
-      /**
-       * Emitted whenever an element is collected.
-       * @event Collector#collect
-       * @param {...*} args The arguments emitted by the listener
-       */
-      this.emit('collect', ...args);
+        /**
+         * Emitted whenever an element is collected.
+         * @event Collector#collect
+         * @param {...*} args The arguments emitted by the listener
+         */
+        this.emit('collect', ...args);
 
-      if (this._idletimeout) {
-        clearTimeout(this._idletimeout);
-        this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
+        if (this._idletimeout) {
+          clearTimeout(this._idletimeout);
+          this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
+        }
+      } else {
+        /**
+         * Emitted whenever an element is not collected by the collector.
+         * @event Collector#ignore
+         * @param {...*} args The arguments emitted by the listener
+         */
+        this.emit('ignore', ...args);
       }
     }
     this.checkEnd();
