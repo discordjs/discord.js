@@ -572,7 +572,6 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
     ButtonComponent | APIButtonComponent,
     ButtonComponent | APIButtonComponent
   >;
-  public componentType: ComponentType.Button;
   public inGuild(): this is ButtonInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ButtonInteraction<'cached'>;
   public inRawGuild(): this is ButtonInteraction<'raw'>;
@@ -928,6 +927,7 @@ export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> e
 }
 
 export class AutocompleteInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
+  public type: InteractionType.ApplicationCommandAutocomplete;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public channelId: Snowflake;
   public commandId: Snowflake;
@@ -1468,7 +1468,12 @@ export type CacheTypeReducer<
   ? PresentType
   : Fallback;
 
-export type AnyInteraction = ChatInputCommandInteraction | ContextMenuCommandInteraction;
+export type AnyInteraction =
+  | ChatInputCommandInteraction
+  | ContextMenuCommandInteraction
+  | MessageComponentInteraction
+  | AutocompleteInteraction
+  | ModalSubmitInteraction;
 
 export class Interaction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
@@ -1500,16 +1505,13 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
   public isButton(): this is ButtonInteraction<Cached>;
-  public isCommand(): this is CommandInteraction<Cached>;
   public isChatInputCommand(): this is ChatInputCommandInteraction<Cached>;
   public isContextMenuCommand(): this is ContextMenuCommandInteraction<Cached>;
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isAutocomplete(): this is AutocompleteInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
-  public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
   public isRepliable(): this is this & InteractionResponseFields<Cached>;
-  public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
 }
 
 export class InteractionCollector<T extends Interaction> extends Collector<Snowflake, T, [Collection<Snowflake, T>]> {
@@ -1753,6 +1755,7 @@ export class MessageCollector extends Collector<Snowflake, Message, [Collection<
 
 export class MessageComponentInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
+  public type: InteractionType.MessageComponent;
   public get component(): CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
@@ -1805,6 +1808,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
 export class MessageContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
 > extends ContextMenuCommandInteraction<Cached> {
+  public commandType: ApplicationCommandType.Message;
   public get targetMessage(): NonNullable<CommandInteractionOption<Cached>['message']>;
   public inGuild(): this is MessageContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MessageContextMenuCommandInteraction<'cached'>;
@@ -1939,6 +1943,7 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
 
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   private constructor(client: Client, data: APIModalSubmitInteraction);
+  public type: InteractionType.ModalSubmit;
   public readonly customId: string;
   public readonly components: ActionRowModalData[];
   public readonly fields: ModalSubmitFields;
@@ -2571,6 +2576,7 @@ export class User extends PartialTextBasedChannel(Base) {
 export class UserContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
 > extends ContextMenuCommandInteraction<Cached> {
+  public commandType: ApplicationCommandType.User;
   public get targetUser(): User;
   public get targetMember(): CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   public inGuild(): this is UserContextMenuCommandInteraction<'raw' | 'cached'>;
