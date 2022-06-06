@@ -565,6 +565,7 @@ export class BitField<S extends string, N extends number | bigint = number> {
 
 export class ButtonInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   private constructor(client: Client, data: RawMessageButtonInteractionData);
+  public componentType: ComponentType.Button;
   public get component(): CacheTypeReducer<
     Cached,
     ButtonComponent,
@@ -1468,12 +1469,14 @@ export type CacheTypeReducer<
   ? PresentType
   : Fallback;
 
-export type AnyInteraction =
-  | ChatInputCommandInteraction
-  | ContextMenuCommandInteraction
-  | MessageComponentInteraction
-  | AutocompleteInteraction
-  | ModalSubmitInteraction;
+export type AnyInteraction<Cached extends CacheType = CacheType> =
+  | ChatInputCommandInteraction<Cached>
+  | MessageContextMenuCommandInteraction<Cached>
+  | UserContextMenuCommandInteraction<Cached>
+  | SelectMenuInteraction<Cached>
+  | ButtonInteraction<Cached>
+  | AutocompleteInteraction<Cached>
+  | ModalSubmitInteraction<Cached>;
 
 export class Interaction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
@@ -1763,7 +1766,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
     MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
     MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>
   >;
-  public componentType: Exclude<ComponentType, ComponentType.ActionRow>;
+  public componentType: Exclude<ComponentType, ComponentType.ActionRow | ComponentType.TextInput>;
   public customId: string;
   public channelId: Snowflake;
   public deferred: boolean;

@@ -1215,7 +1215,10 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.isMessageContextMenuCommand()) {
+  if (
+    interaction.type === InteractionType.ApplicationCommand &&
+    interaction.commandType === ApplicationCommandType.Message
+  ) {
     expectType<Message>(interaction.targetMessage);
     if (interaction.inCachedGuild()) {
       expectType<Message<true>>(interaction.targetMessage);
@@ -1226,7 +1229,7 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.isButton()) {
+  if (interaction.type === InteractionType.MessageComponent && interaction.componentType === ComponentType.Button) {
     expectType<ButtonInteraction>(interaction);
     expectType<ButtonComponent | APIButtonComponent>(interaction.component);
     expectType<Message>(interaction.message);
@@ -1251,7 +1254,7 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.isSelectMenu()) {
+  if (interaction.type === InteractionType.MessageComponent && interaction.componentType === ComponentType.SelectMenu) {
     expectType<SelectMenuInteraction>(interaction);
     expectType<SelectMenuComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
@@ -1276,7 +1279,10 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.isChatInputCommand()) {
+  if (
+    interaction.type === InteractionType.ApplicationCommand &&
+    interaction.commandType === ApplicationCommandType.ChatInput
+  ) {
     if (interaction.inRawGuild()) {
       expectNotAssignable<Interaction<'cached'>>(interaction);
       expectAssignable<ChatInputCommandInteraction>(interaction);
@@ -1339,7 +1345,11 @@ client.on('interactionCreate', async interaction => {
     interaction.reply('test');
   }
 
-  if (interaction.isChatInputCommand() && interaction.isRepliable()) {
+  if (
+    interaction.type === InteractionType.ApplicationCommand &&
+    interaction.commandType === ApplicationCommandType.ChatInput &&
+    interaction.isRepliable()
+  ) {
     expectAssignable<CommandInteraction>(interaction);
     expectAssignable<InteractionResponseFields>(interaction);
   }
