@@ -288,7 +288,7 @@ class GuildChannelManager extends CachedManager {
    *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *   .catch(console.error);
    */
-  async setPosition(channel, position, { relative, reason }) {
+  async setPosition(channel, position, { relative, reason } = {}) {
     channel = this.resolve(channel);
     if (!channel) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
     const updatedChannels = await Util.setPosition(
