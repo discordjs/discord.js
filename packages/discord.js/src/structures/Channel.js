@@ -3,6 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
+const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;
 let DMChannel;
 let NewsChannel;
@@ -107,6 +108,14 @@ class Channel extends Base {
    */
   fetch(force = true) {
     return this.client.channels.fetch(this.id, { force });
+  }
+
+  /**
+   * Indicates whether this channel is a {@link ThreadChannel}.
+   * @returns {boolean}
+   */
+  isThread() {
+    return ThreadChannelTypes.includes(this.type);
   }
 
   /**

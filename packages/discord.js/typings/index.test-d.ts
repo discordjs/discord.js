@@ -557,7 +557,7 @@ client.on('guildCreate', async g => {
     channel.send({ components: [row, row2] });
   }
 
-  if (channel.type === ChannelType.GuildPublicThread) {
+  if (channel.isThread()) {
     const fetchedMember = await channel.members.fetch({ member: '12345678' });
     expectType<ThreadMember>(fetchedMember);
     const fetchedMemberCol = await channel.members.fetch(true);
