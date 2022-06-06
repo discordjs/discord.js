@@ -10,7 +10,7 @@
     "docs": "docgen --source ./src --custom ./docs/index.yml --root ../../ --output ./docs/docs.json",
     "docs:test": "docgen --source ./src --custom ./docs/index.yml --root ../../",
     "prepublishOnly": "yarn lint && yarn test",
-    "changelog": "git cliff --prepend ./CHANGELOG.md -l -c ./cliff.toml -r ../../ --include-path 'packages/discord.js/*'"
+    "changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/discord.js/*'"
   },
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",

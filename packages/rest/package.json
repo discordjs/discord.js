@@ -8,7 +8,7 @@
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
 		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && ts-docgen -i docs/typedoc-out.json -c docs/index.yml -o docs/docs.json",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'"
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
