@@ -279,25 +279,24 @@ class GuildMemberManager extends CachedManager {
     const id = this.client.users.resolveId(user);
     if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
 
-    const _data = data;
-    if (_data.channel) {
-      _data.channel = this.guild.channels.resolve(_data.channel);
-      if (!(_data.channel instanceof BaseGuildVoiceChannel)) {
+    if (data.channel) {
+      data.channel = this.guild.channels.resolve(data.channel);
+      if (!(data.channel instanceof BaseGuildVoiceChannel)) {
         throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
       }
-      _data.channel_id = _data.channel.id;
-      _data.channel = undefined;
-    } else if (_data.channel === null) {
-      _data.channel_id = null;
-      _data.channel = undefined;
+      data.channel_id = data.channel.id;
+      data.channel = undefined;
+    } else if (data.channel === null) {
+      data.channel_id = null;
+      data.channel = undefined;
     }
-    _data.roles &&= _data.roles.map(role => (role instanceof Role ? role.id : role));
+    data.roles &&= data.roles.map(role => (role instanceof Role ? role.id : role));
 
-    _data.communication_disabled_until =
+    data.communication_disabled_until =
       // eslint-disable-next-line eqeqeq
-      _data.communicationDisabledUntil != null
-        ? new Date(_data.communicationDisabledUntil).toISOString()
-        : _data.communicationDisabledUntil;
+      data.communicationDisabledUntil != null
+        ? new Date(data.communicationDisabledUntil).toISOString()
+        : data.communicationDisabledUntil;
 
     let endpoint;
     if (id === this.client.user.id) {
@@ -307,7 +306,7 @@ class GuildMemberManager extends CachedManager {
     } else {
       endpoint = Routes.guildMember(this.guild.id, id);
     }
-    const d = await this.client.rest.patch(endpoint, { body: _data, reason });
+    const d = await this.client.rest.patch(endpoint, { body: data, reason });
 
     const clone = this.cache.get(id)?._clone();
     clone?._patch(d);
