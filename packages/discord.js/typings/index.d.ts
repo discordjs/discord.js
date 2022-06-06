@@ -4472,6 +4472,10 @@ export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOpt
   >;
 }
 
+export interface GuildChannelCloneOptions extends Omit<GuildChannelCreateOptions, 'name'> {
+  name?: string;
+}
+
 export interface GuildChannelOverwriteOptions {
   reason?: string;
   type?: number;
