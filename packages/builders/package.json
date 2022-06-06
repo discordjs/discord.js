@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/builders",
-	"version": "0.15.0-dev",
+	"version": "0.15.0",
 	"description": "A set of builders that you can use when creating your bot",
 	"scripts": {
 		"build": "tsup",
