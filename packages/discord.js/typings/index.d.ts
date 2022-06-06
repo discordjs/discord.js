@@ -2269,7 +2269,10 @@ export class StageChannel extends BaseGuildVoiceChannel {
   public setTopic(topic: string): Promise<StageChannel>;
 }
 
-export class DirectoryChannel extends Channel {}
+export class DirectoryChannel extends Channel {
+  public guild: InviteGuild;
+  public guildId: Snowflake;
+}
 
 export class StageInstance extends Base {
   private constructor(client: Client, data: RawStageInstanceData, channel: StageChannel);
