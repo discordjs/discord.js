@@ -750,6 +750,7 @@ export abstract class Channel extends Base {
   public get url(): string;
   public delete(): Promise<this>;
   public fetch(force?: boolean): Promise<this>;
+  public isThread(): this is ThreadChannel;
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
