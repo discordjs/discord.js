@@ -432,6 +432,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public commandId: Snowflake;
   public commandName: string;
   public commandType: ApplicationCommandType;
+  public commandGuildId: Snowflake | null;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public replied: boolean;

@@ -41,6 +41,12 @@ class CommandInteraction extends Interaction {
     this.commandType = data.data.type;
 
     /**
+     * The id of the guild the invoked application command is registered to
+     * @type {?Snowflake}
+     */
+    this.commandGuildId = data.data.guild_id ?? null;
+
+    /**
      * Whether the reply to this interaction has been deferred
      * @type {boolean}
      */
