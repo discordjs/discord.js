@@ -751,7 +751,7 @@ export abstract class Channel extends Base {
   public get url(): string;
   public delete(): Promise<this>;
   public fetch(force?: boolean): Promise<this>;
-  public isThread(): this is ThreadChannel;
+  public isThread(): this is AnyThreadChannel;
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
@@ -2452,14 +2452,10 @@ export class TextChannel extends BaseGuildTextChannel {
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 }
 
-export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel | NewsThreadChannel;
+export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel;
 
 export interface PublicThreadChannel extends ThreadChannel {
-  type: ChannelType.GuildPublicThread;
-}
-
-export interface NewsThreadChannel extends ThreadChannel {
-  type: ChannelType.GuildNewsThread;
+  type: ChannelType.GuildPublicThread | ChannelType.GuildNewsThread;
 }
 
 export interface PrivateThreadChannel extends ThreadChannel {
