@@ -66,7 +66,7 @@ async function record(
 async function leave(
 	interaction: CommandInteraction,
 	recordable: Set<Snowflake>,
-	client: Client,
+	_client: Client,
 	connection?: VoiceConnection,
 ) {
 	if (connection) {

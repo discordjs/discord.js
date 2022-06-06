@@ -1,6 +1,6 @@
-import { GatewayOpcodes } from 'discord-api-types/v9';
-import type { AudioPlayer } from './audio';
+import { GatewayOpcodes } from 'discord-api-types/v10';
 import type { VoiceConnection } from './VoiceConnection';
+import type { AudioPlayer } from './audio';
 
 export interface JoinConfig {
 	guildId: string;

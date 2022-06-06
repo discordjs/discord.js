@@ -2,7 +2,80 @@
 
 All notable changes to this project will be documented in this file.
 
-# [0.12.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.11.0...@discordjs/builders@0.12.0) (2021-12-08)
+# [@discordjs/builders@0.14.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.13.0...@discordjs/builders@0.14.0) - (2022-06-04)
+
+## Bug Fixes
+
+- **builders:** Leftover invalid null type ([8a7cd10](https://github.com/discordjs/discord.js/commit/8a7cd10554a2a71cd2fe7f6a177b5f4f43464348))
+- **SlashCommandBuilder:** Import `Permissions` correctly (#7921) ([7ce641d](https://github.com/discordjs/discord.js/commit/7ce641d33a4af6586d5e7beffbe7d38619dcf1a2))
+- Add localizations for subcommand builders and option choices (#7862) ([c1b5e73](https://github.com/discordjs/discord.js/commit/c1b5e731daa9cbbfca03a046e47cb1221ee1ed7c))
+
+## Features
+
+- Export types from `interactions/slashCommands/mixins` (#7942) ([68d5169](https://github.com/discordjs/discord.js/commit/68d5169f66c96f8fe5be17a1c01cdd5155607ab2))
+- **builders:** Add new command permissions v2 (#7861) ([de3f157](https://github.com/discordjs/discord.js/commit/de3f1573f07dda294cc0fbb1ca4b659eb2388a12))
+- **builders:** Improve embed errors and predicates (#7795) ([ec8d87f](https://github.com/discordjs/discord.js/commit/ec8d87f93272cc9987f9613735c0361680c4ed1e))
+
+## Refactor
+
+- Use arrays instead of rest parameters for builders (#7759) ([29293d7](https://github.com/discordjs/discord.js/commit/29293d7bbb5ed463e52e5a5853817e5a09cf265b))
+
+## Styling
+
+- Cleanup tests and tsup configs ([6b8ef20](https://github.com/discordjs/discord.js/commit/6b8ef20cb3af5b5cfd176dd0aa0a1a1e98551629))
+
+# [@discordjs/builders@0.13.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.12.0...@discordjs/builders@0.13.0) - (2022-04-17)
+
+## Bug Fixes
+
+- Validate select menu options (#7566) ([b1d63d9](https://github.com/discordjs/discord.js/commit/b1d63d919a61f309ac89f27016b0f148678dac2b))
+- **SelectMenu:** Set `placeholder` max to 150 (#7538) ([dcd4797](https://github.com/discordjs/discord.js/commit/dcd479767b6ec980a373f2ea1f22754f41661c1e))
+- Only check `instanceof Component` once (#7546) ([0aa4851](https://github.com/discordjs/discord.js/commit/0aa48516a4e33497e8e8dc50da164a57cdee09d3))
+- **builders:** Allow negative min/max value of number/integer option (#7484) ([3baa340](https://github.com/discordjs/discord.js/commit/3baa340821b8ecf8a16253bc0917a1033250d7c9))
+- **components:** SetX should take rest parameters (#7461) ([3617359](https://github.com/discordjs/discord.js/commit/36173590a712f041b087b7882054805a8bd42dae))
+- Unsafe embed builder field normalization (#7418) ([b936103](https://github.com/discordjs/discord.js/commit/b936103395121cb21a8c616f669ddab1d2efb0f1))
+- Fix some typos (#7393) ([92a04f4](https://github.com/discordjs/discord.js/commit/92a04f4d98f6c6760214034cc8f5a1eaa78893c7))
+- **builders:** Make type optional in constructor (#7391) ([4abb28c](https://github.com/discordjs/discord.js/commit/4abb28c0a1256c57a60369a6b8ec9e98c265b489))
+- Don't create new instances of builders classes (#7343) ([d6b56d0](https://github.com/discordjs/discord.js/commit/d6b56d0080c4c5f8ace731f1e8bcae0c9d3fb5a5))
+
+## Documentation
+
+- Completely fix builders example link (#7543) ([1a14c0c](https://github.com/discordjs/discord.js/commit/1a14c0ca562ea173d363a770a0437209f461fd23))
+- Add slash command builders example, fixes #7338 (#7339) ([3ae6f3c](https://github.com/discordjs/discord.js/commit/3ae6f3c313091151245d6e6b52337b459ecfc765))
+
+## Features
+
+- Slash command localization for builders (#7683) ([40b9a1d](https://github.com/discordjs/discord.js/commit/40b9a1d67d0b508ec593e030913acd8161cd17f8))
+- Add API v10 support (#7477) ([72577c4](https://github.com/discordjs/discord.js/commit/72577c4bfd02524a27afb6ff4aebba9301a690d3))
+- Add support for module: NodeNext in TS and ESM (#7598) ([8f1986a](https://github.com/discordjs/discord.js/commit/8f1986a6aa98365e09b00e84ad5f9f354ab61f3d))
+- Add Modals and Text Inputs (#7023) ([ed92015](https://github.com/discordjs/discord.js/commit/ed920156344233241a21b0c0b99736a3a855c23c))
+- Add missing `v13` component methods (#7466) ([f7257f0](https://github.com/discordjs/discord.js/commit/f7257f07655076eabfe355cb6a53260b39ca9670))
+- **builders:** Add attachment command option type (#7203) ([ae0f35f](https://github.com/discordjs/discord.js/commit/ae0f35f51d68dfa5a7dc43d161ef9365171debdb))
+- **components:** Add unsafe message component builders (#7387) ([6b6222b](https://github.com/discordjs/discord.js/commit/6b6222bf513d1ee8cd98fba0ad313def560b864f))
+- **embed:** Add setFields (#7322) ([bcc5cda](https://github.com/discordjs/discord.js/commit/bcc5cda8a902ddb28c7e3578e0f29b4272832624))
+
+## Refactor
+
+- Remove nickname parsing (#7736) ([78a3afc](https://github.com/discordjs/discord.js/commit/78a3afcd7fdac358e06764cc0d675e1215c785f3))
+- Replace zod with shapeshift (#7547) ([3c0bbac](https://github.com/discordjs/discord.js/commit/3c0bbac82fa9988af4a62ff00c66d149fbe6b921))
+- Remove store channels (#7634) ([aedddb8](https://github.com/discordjs/discord.js/commit/aedddb875e740e1f1bd77f06ce1b361fd3b7bc36))
+- Allow builders to accept emoji strings (#7616) ([fb9a9c2](https://github.com/discordjs/discord.js/commit/fb9a9c221121ee1c7986f9c775b77b9691a0ae15))
+- Don't return builders from API data (#7584) ([549716e](https://github.com/discordjs/discord.js/commit/549716e4fcec89ca81216a6d22aa8e623175e37a))
+- Remove obsolete builder methods (#7590) ([10607db](https://github.com/discordjs/discord.js/commit/10607dbdafe257c5cbf5b952b7eecec4919e8b4a))
+- **Embed:** Remove add field (#7522) ([8478d2f](https://github.com/discordjs/discord.js/commit/8478d2f4de9ac013733850cbbc67902f7c5abc55))
+- Make `data` public in builders (#7486) ([ba31203](https://github.com/discordjs/discord.js/commit/ba31203a0ad96e0a00f8312c397889351e4c5cfd))
+- **embed:** Remove array support in favor of rest params (#7498) ([b3fa2ec](https://github.com/discordjs/discord.js/commit/b3fa2ece402839008738ad3adce3db958445838d))
+- **components:** Default set boolean methods to true (#7502) ([b122149](https://github.com/discordjs/discord.js/commit/b12214922cea2f43afbe6b1555a74a3c8e16f798))
+- Make public builder props getters (#7422) ([e8252ed](https://github.com/discordjs/discord.js/commit/e8252ed3b981a4b7e4013f12efadd2f5d9318d3e))
+- **builders-methods:** Make methods consistent (#7395) ([f495364](https://github.com/discordjs/discord.js/commit/f4953647ff9f39127978c73bf8a62c08462802ca))
+- Remove conditional autocomplete option return types (#7396) ([0909824](https://github.com/discordjs/discord.js/commit/09098240bfb13b8afafa4ab549f06d236e0ff1c9))
+- **embed:** Mark properties as readonly (#7332) ([31768fc](https://github.com/discordjs/discord.js/commit/31768fcd69ed5b4566a340bda89ce881418e8272))
+
+## Typings
+
+- Fix regressions (#7649) ([5748dbe](https://github.com/discordjs/discord.js/commit/5748dbe08783beb80c526de38ccd105eb0e82664))
+
+# [@discordjs/builders@0.12.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.11.0...@discordjs/builders@0.12.0) - (2022-01-24)
 
 ## Bug Fixes
 

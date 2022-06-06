@@ -76,7 +76,7 @@ import {
   RESTPostAPIWebhookWithTokenJSONBody,
   Snowflake,
   APIGuildScheduledEvent,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
 import { GuildChannel, Guild, PermissionOverwrites } from '.';
 
 export type RawActivityData = GatewayActivity;
@@ -152,7 +152,7 @@ export type RawInviteStageInstance = APIInviteStageInstance;
 export type RawMessageData = APIMessage;
 export type RawPartialMessageData = GatewayMessageUpdateDispatchData;
 
-export type RawMessageAttachmentData = APIAttachment;
+export type RawAttachmentData = APIAttachment;
 
 export type RawMessagePayloadData =
   | RESTPostAPIChannelMessageJSONBody

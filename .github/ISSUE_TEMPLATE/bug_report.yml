@@ -15,6 +15,7 @@ body:
         - builders
         - collection
         - rest
+        - proxy
         - voice
     validations:
       required: true

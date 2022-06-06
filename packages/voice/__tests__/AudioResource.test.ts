@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { opus, VolumeTransformer } from 'prism-media';
 import { PassThrough, Readable } from 'node:stream';
+import { opus, VolumeTransformer } from 'prism-media';
 import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioResource, createAudioResource, NO_CONSTRAINT, VOLUME_CONSTRAINT } from '../src/audio/AudioResource';
 import { Edge, findPipeline as _findPipeline, StreamType, TransformerType } from '../src/audio/TransformerGraph';
@@ -96,7 +96,7 @@ describe('createAudioResource', () => {
 		const stream = new VolumeTransformer({} as any);
 		const resource = createAudioResource(stream, { inlineVolume: true });
 		expect(findPipeline).toHaveBeenCalledWith(StreamType.Raw, NO_CONSTRAINT);
-		expect(resource.volume).toBe(stream);
+		expect(resource.volume).toEqual(stream);
 	});
 
 	test('Falls back to Arbitrary for unknown stream type', () => {
@@ -111,15 +111,15 @@ describe('createAudioResource', () => {
 		const resource = new AudioResource([], [stream], null, 5);
 
 		await started(resource);
-		expect(resource.readable).toBe(true);
+		expect(resource.readable).toEqual(true);
 		expect(resource.read()).toEqual(Buffer.from([1]));
 		for (let i = 0; i < 5; i++) {
 			await wait();
-			expect(resource.readable).toBe(true);
-			expect(resource.read()).toBe(SILENCE_FRAME);
+			expect(resource.readable).toEqual(true);
+			expect(resource.read()).toEqual(SILENCE_FRAME);
 		}
 		await wait();
-		expect(resource.readable).toBe(false);
-		expect(resource.read()).toBe(null);
+		expect(resource.readable).toEqual(false);
+		expect(resource.read()).toEqual(null);
 	});
 });

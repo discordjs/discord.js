@@ -10,17 +10,17 @@ function wait(ms: number) {
 async function stepSilence(stream: AudioReceiveStream, increment: number) {
 	stream.push(SILENCE_FRAME);
 	await wait(increment);
-	expect(stream.readable).toBe(true);
+	expect(stream.readable).toEqual(true);
 }
 
 describe('AudioReceiveStream', () => {
 	test('Manual end behavior', async () => {
 		const stream = new AudioReceiveStream({ end: { behavior: EndBehaviorType.Manual } });
 		stream.push(DUMMY_BUFFER);
-		expect(stream.readable).toBe(true);
+		expect(stream.readable).toEqual(true);
 		await wait(200);
 		stream.push(DUMMY_BUFFER);
-		expect(stream.readable).toBe(true);
+		expect(stream.readable).toEqual(true);
 	});
 
 	// TODO: Fix this test
@@ -42,7 +42,7 @@ describe('AudioReceiveStream', () => {
 	// 	}
 
 	// 	await wait(increment);
-	// 	expect(stream.readableEnded).toBe(true);
+	// 	expect(stream.readableEnded).toEqual(true);
 	// });
 
 	test('AfterInactivity end behavior', async () => {
@@ -63,10 +63,10 @@ describe('AudioReceiveStream', () => {
 		}
 
 		await wait(increment);
-		expect(stream.readableEnded).toBe(false);
+		expect(stream.readableEnded).toEqual(false);
 
 		await wait(duration - increment);
 
-		expect(stream.readableEnded).toBe(true);
+		expect(stream.readableEnded).toEqual(true);
 	});
 });

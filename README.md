@@ -54,7 +54,7 @@ Register a slash command against the Discord API:
 
 ```js
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 
 const commands = [
 	{
@@ -63,7 +63,7 @@ const commands = [
 	},
 ];
 
-const rest = new REST({ version: '9' }).setToken('token');
+const rest = new REST({ version: '10' }).setToken('token');
 
 (async () => {
 	try {

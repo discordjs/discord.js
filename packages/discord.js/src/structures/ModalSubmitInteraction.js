@@ -1,16 +1,24 @@
 'use strict';
 
-const { createComponent } = require('@discordjs/builders');
 const Interaction = require('./Interaction');
 const InteractionWebhook = require('./InteractionWebhook');
-const ModalSubmitFieldsResolver = require('./ModalSubmitFieldsResolver');
+const ModalSubmitFields = require('./ModalSubmitFields');
 const InteractionResponses = require('./interfaces/InteractionResponses');
+const { lazy } = require('../util/Util');
+
+const getMessage = lazy(() => require('./Message').Message);
 
 /**
- * @typedef {Object} ModalFieldData
+ * @typedef {Object} ModalData
  * @property {string} value The value of the field
  * @property {ComponentType} type The component type of the field
  * @property {string} customId The custom id of the field
+ */
+
+/**
+ * @typedef {Object} ActionRowModalData
+ * @property {ModalData[]} components The components of this action row
+ * @property {ComponentType} type The component type of the action row
  */
 
 /**
@@ -29,24 +37,24 @@ class ModalSubmitInteraction extends Interaction {
     if ('message' in data) {
       /**
        * The message associated with this interaction
-       * @type {?(Message|APIMessage)}
+       * @type {?Message}
        */
-      this.message = this.channel?.messages._add(data.message) ?? data.message;
+      this.message = this.channel?.messages._add(data.message) ?? new (getMessage())(this.client, data.message);
     } else {
       this.message = null;
     }
 
     /**
      * The components within the modal
-     * @type {ActionRow[]}
+     * @type {ActionRowModalData[]}
      */
-    this.components = data.data.components?.map(c => createComponent(c)) ?? [];
+    this.components = data.data.components?.map(c => ModalSubmitInteraction.transformComponent(c));
 
     /**
      * The fields within the modal
-     * @type {ModalSubmitFieldsResolver}
+     * @type {ModalSubmitFields}
      */
-    this.fields = new ModalSubmitFieldsResolver(this.components);
+    this.fields = new ModalSubmitFields(this.components);
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -76,13 +84,14 @@ class ModalSubmitInteraction extends Interaction {
   /**
    * Transforms component data to discord.js-compatible data
    * @param {*} rawComponent The data to transform
-   * @returns {ModalFieldData[]}
+   * @returns {ModalData[]}
    */
   static transformComponent(rawComponent) {
     return {
       value: rawComponent.value,
       type: rawComponent.type,
       customId: rawComponent.custom_id,
+      components: rawComponent.components?.map(c => this.transformComponent(c)),
     };
   }
 

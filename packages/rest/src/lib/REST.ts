@@ -1,4 +1,6 @@
 import { EventEmitter } from 'node:events';
+import type Collection from '@discordjs/collection';
+import type { request, Dispatcher } from 'undici';
 import { CDN } from './CDN';
 import {
 	HandlerRequestData,
@@ -8,27 +10,30 @@ import {
 	RequestMethod,
 	RouteLike,
 } from './RequestManager';
-import { DefaultRestOptions, RESTEvents } from './utils/constants';
-import type { AgentOptions } from 'node:https';
-import type { RequestInit, Response } from 'node-fetch';
 import type { HashData } from './RequestManager';
-import type Collection from '@discordjs/collection';
 import type { IHandler } from './handlers/IHandler';
+import { DefaultRestOptions, RESTEvents } from './utils/constants';
+import { parseResponse } from './utils/utils';
 
 /**
  * Options to be passed when creating the REST instance
  */
 export interface RESTOptions {
 	/**
-	 * HTTPS Agent options
-	 * @default {}
+	 * The agent to set globally
 	 */
-	agent: Omit<AgentOptions, 'keepAlive'>;
+	agent: Dispatcher;
 	/**
 	 * The base api path, without version
 	 * @default 'https://discord.com/api'
 	 */
 	api: string;
+	/**
+	 * The authorization prefix to use for requests, useful if you want to use
+	 * bearer tokens
+	 * @default 'Bot'
+	 */
+	authPrefix: 'Bot' | 'Bearer';
 	/**
 	 * The cdn path
 	 * @default 'https://cdn.discordapp.com'
@@ -81,7 +86,7 @@ export interface RESTOptions {
 	userAgentAppendix: string;
 	/**
 	 * The version of the API to use
-	 * @default '9'
+	 * @default '10'
 	 */
 	version: string;
 	/**
@@ -163,7 +168,7 @@ export interface APIRequest {
 	/**
 	 * Additional HTTP options for this request
 	 */
-	options: RequestInit;
+	options: RequestOptions;
 	/**
 	 * The data that was used to form the body of this request
 	 */
@@ -189,8 +194,7 @@ export interface RestEvents {
 	invalidRequestWarning: [invalidRequestInfo: InvalidRequestWarningData];
 	restDebug: [info: string];
 	rateLimited: [rateLimitInfo: RateLimitData];
-	request: [request: APIRequest];
-	response: [request: APIRequest, response: Response];
+	response: [request: APIRequest, response: Dispatcher.ResponseData];
 	newListener: [name: string, listener: (...args: any) => void];
 	removeListener: [name: string, listener: (...args: any) => void];
 	hashSweep: [sweptHashes: Collection<string, HashData>];
@@ -214,6 +218,8 @@ export interface REST {
 		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
 }
 
+export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
+
 export class REST extends EventEmitter {
 	public readonly cdn: CDN;
 	public readonly requestManager: RequestManager;
@@ -228,11 +234,27 @@ export class REST extends EventEmitter {
 			.on(RESTEvents.HashSweep, this.emit.bind(this, RESTEvents.HashSweep));
 
 		this.on('newListener', (name, listener) => {
-			if (name === RESTEvents.Request || name === RESTEvents.Response) this.requestManager.on(name, listener);
+			if (name === RESTEvents.Response) this.requestManager.on(name, listener);
 		});
 		this.on('removeListener', (name, listener) => {
-			if (name === RESTEvents.Request || name === RESTEvents.Response) this.requestManager.off(name, listener);
+			if (name === RESTEvents.Response) this.requestManager.off(name, listener);
 		});
+	}
+
+	/**
+	 * Gets the agent set for this instance
+	 */
+	public getAgent() {
+		return this.requestManager.agent;
+	}
+
+	/**
+	 * Sets the default agent to use for requests performed by this instance
+	 * @param agent Sets the agent to use
+	 */
+	public setAgent(agent: Dispatcher) {
+		this.requestManager.setAgent(agent);
+		return this;
 	}
 
 	/**
@@ -293,7 +315,16 @@ export class REST extends EventEmitter {
 	 * Runs a request from the api
 	 * @param options Request options
 	 */
-	public request(options: InternalRequest) {
+	public async request(options: InternalRequest) {
+		const response = await this.raw(options);
+		return parseResponse(response);
+	}
+
+	/**
+	 * Runs a request from the API, yielding the raw Response object
+	 * @param options Request options
+	 */
+	public raw(options: InternalRequest) {
 		return this.requestManager.queueRequest(options);
 	}
 }

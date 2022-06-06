@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { GatewayIntentBits } = require('discord-api-types/v9');
+const { GatewayIntentBits } = require('discord-api-types/v10');
 const { token, prefix, owner } = require('./auth.js');
 const { Client } = require('../src');
 

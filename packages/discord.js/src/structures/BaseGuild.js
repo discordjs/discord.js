@@ -1,7 +1,8 @@
 'use strict';
 
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 
 /**
@@ -101,7 +102,7 @@ class BaseGuild extends Base {
    */
   async fetch() {
     const data = await this.client.rest.get(Routes.guild(this.id), {
-      query: new URLSearchParams({ with_counts: true }),
+      query: makeURLSearchParams({ with_counts: true }),
     });
     return this.client.guilds._add(data);
   }

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error */
-import { addAudioPlayer, deleteAudioPlayer } from '../DataStore';
-import { Awaited, noop } from '../util/util';
-import { VoiceConnection, VoiceConnectionStatus } from '../VoiceConnection';
+import { TypedEmitter } from 'tiny-typed-emitter';
 import { AudioPlayerError } from './AudioPlayerError';
 import type { AudioResource } from './AudioResource';
 import { PlayerSubscription } from './PlayerSubscription';
-import { TypedEmitter } from 'tiny-typed-emitter';
+import { addAudioPlayer, deleteAudioPlayer } from '../DataStore';
+import { VoiceConnection, VoiceConnectionStatus } from '../VoiceConnection';
+import { Awaited, noop } from '../util/util';
 
 // The Opus "silent" frame
 export const SILENCE_FRAME = Buffer.from([0xf8, 0xff, 0xfe]);

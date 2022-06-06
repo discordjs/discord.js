@@ -1,6 +1,6 @@
-import type { APIApplicationCommandBasicOption, ApplicationCommandOptionType } from 'discord-api-types/v9';
-import { validateRequiredParameters, validateRequired } from '../Assertions';
+import type { APIApplicationCommandBasicOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { SharedNameAndDescription } from './NameAndDescription';
+import { validateRequiredParameters, validateRequired, validateLocalizationMap } from '../Assertions';
 
 export abstract class ApplicationCommandOptionBase extends SharedNameAndDescription {
 	public abstract readonly type: ApplicationCommandOptionType;
@@ -25,6 +25,10 @@ export abstract class ApplicationCommandOptionBase extends SharedNameAndDescript
 
 	protected runRequiredValidations() {
 		validateRequiredParameters(this.name, this.description, []);
+
+		// Validate localizations
+		validateLocalizationMap(this.name_localizations);
+		validateLocalizationMap(this.description_localizations);
 
 		// Assert that you actually passed a boolean
 		validateRequired(this.required);

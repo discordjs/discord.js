@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v9');
+const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const Base = require('./Base');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
@@ -78,15 +78,50 @@ class Interaction extends Base {
       : null;
 
     /**
-     * The locale of the user who invoked this interaction
-     * @type {string}
+     * A Discord locale string, possible values are:
+     * * en-US (English, US)
+     * * en-GB (English, UK)
+     * * bg (Bulgarian)
+     * * zh-CN (Chinese, China)
+     * * zh-TW (Chinese, Taiwan)
+     * * hr (Croatian)
+     * * cs (Czech)
+     * * da (Danish)
+     * * nl (Dutch)
+     * * fi (Finnish)
+     * * fr (French)
+     * * de (German)
+     * * el (Greek)
+     * * hi (Hindi)
+     * * hu (Hungarian)
+     * * it (Italian)
+     * * ja (Japanese)
+     * * ko (Korean)
+     * * lt (Lithuanian)
+     * * no (Norwegian)
+     * * pl (Polish)
+     * * pt-BR (Portuguese, Brazilian)
+     * * ro (Romanian, Romania)
+     * * ru (Russian)
+     * * es-ES (Spanish)
+     * * sv-SE (Swedish)
+     * * th (Thai)
+     * * tr (Turkish)
+     * * uk (Ukrainian)
+     * * vi (Vietnamese)
      * @see {@link https://discord.com/developers/docs/reference#locales}
+     * @typedef {string} Locale
+     */
+
+    /**
+     * The locale of the user who invoked this interaction
+     * @type {Locale}
      */
     this.locale = data.locale;
 
     /**
      * The preferred locale from the guild this interaction was sent in
-     * @type {?string}
+     * @type {?Locale}
      */
     this.guildLocale = data.guild_locale ?? null;
   }

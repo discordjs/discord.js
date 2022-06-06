@@ -2,7 +2,7 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
-const { ChannelType, RouteBases, Routes } = require('discord-api-types/v9');
+const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const Colors = require('./Colors');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
@@ -36,65 +36,25 @@ class Util extends null {
       const element = obj[prop];
       const elemIsObj = isObject(element);
       const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
+      const hasToJSON = elemIsObj && typeof element.toJSON === 'function';
 
       // If it's a Collection, make the array of keys
       if (element instanceof Collection) out[newProp] = Array.from(element.keys());
       // If the valueOf is a Collection, use its array of keys
       else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
-      // If it's an array, flatten each element
-      else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
+      // If it's an array, call toJSON function on each element if present, otherwise flatten each element
+      else if (Array.isArray(element)) out[newProp] = element.map(e => e.toJSON?.() ?? Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
       else if (typeof valueOf !== 'object') out[newProp] = valueOf;
+      // If it's an object with a toJSON function, use the return value of it
+      else if (hasToJSON) out[newProp] = element.toJSON();
+      // If element is an object, use the flattened version of it
+      else if (typeof element === 'object') out[newProp] = Util.flatten(element);
       // If it's a primitive
       else if (!elemIsObj) out[newProp] = element;
     }
 
     return out;
-  }
-
-  /**
-   * Options for splitting a message.
-   * @typedef {Object} SplitOptions
-   * @property {number} [maxLength=2000] Maximum character length per message piece
-   * @property {string|string[]|RegExp|RegExp[]} [char='\n'] Character(s) or Regex(es) to split the message with,
-   * an array can be used to split multiple times
-   * @property {string} [prepend=''] Text to prepend to every piece except the first
-   * @property {string} [append=''] Text to append to every piece except the last
-   */
-
-  /**
-   * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
-   * @param {string} text Content to split
-   * @param {SplitOptions} [options] Options controlling the behavior of the split
-   * @returns {string[]}
-   */
-  static splitMessage(text, { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}) {
-    text = Util.verifyString(text);
-    if (text.length <= maxLength) return [text];
-    let splitText = [text];
-    if (Array.isArray(char)) {
-      while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
-        const currentChar = char.shift();
-        if (currentChar instanceof RegExp) {
-          splitText = splitText.flatMap(chunk => chunk.match(currentChar));
-        } else {
-          splitText = splitText.flatMap(chunk => chunk.split(currentChar));
-        }
-      }
-    } else {
-      splitText = text.split(char);
-    }
-    if (splitText.some(elem => elem.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
-    const messages = [];
-    let msg = '';
-    for (const chunk of splitText) {
-      if (msg && (msg + char + chunk + append).length > maxLength) {
-        messages.push(msg + append);
-        msg = prepend;
-      }
-      msg += (msg && msg !== prepend ? char : '') + chunk;
-    }
-    return messages.concat(msg).filter(m => m);
   }
 
   /**
@@ -189,7 +149,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeInlineCode(text) {
-    return text.replaceAll('`', '\\`');
+    return text.replace(/(?<=^|[^`])``?(?=[^`]|$)/g, match => (match.length === 2 ? '\\`\\`' : '\\`'));
   }
 
   /**
@@ -291,9 +251,9 @@ class Util extends null {
    */
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
-    if (!text.includes(':')) return { animated: false, name: text, id: null };
+    if (!text.includes(':')) return { animated: false, name: text, id: undefined };
     const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
-    return match && { animated: Boolean(match[1]), name: match[2], id: match[3] ?? null };
+    return match && { animated: Boolean(match[1]), name: match[2], id: match[3] };
   }
 
   /**
@@ -560,6 +520,16 @@ class Util extends null {
    */
   static cleanCodeBlockContent(text) {
     return text.replaceAll('```', '`\u200b``');
+  }
+
+  /**
+   * Lazily evaluates a callback function
+   * @param {Function} cb The callback to lazily evaluate
+   * @returns {Function}
+   */
+  static lazy(cb) {
+    let defaultValue;
+    return () => (defaultValue ??= cb());
   }
 }
 

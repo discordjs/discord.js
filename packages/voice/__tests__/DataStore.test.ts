@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { GatewayOpcodes } from 'discord-api-types/v9';
+import { GatewayOpcodes } from 'discord-api-types/v10';
 import * as DataStore from '../src/DataStore';
-import * as _AudioPlayer from '../src/audio/AudioPlayer';
 import { VoiceConnection } from '../src/VoiceConnection';
+import * as _AudioPlayer from '../src/audio/AudioPlayer';
 jest.mock('../src/VoiceConnection');
 jest.mock('../src/audio/AudioPlayer');
 
@@ -52,9 +52,9 @@ describe('DataStore', () => {
 	test('VoiceConnection management respects group', () => {
 		DataStore.trackVoiceConnection(voiceConnectionDefault);
 		DataStore.trackVoiceConnection(voiceConnectionAbc);
-		expect(DataStore.getVoiceConnection('123')).toBe(voiceConnectionDefault);
-		expect(DataStore.getVoiceConnection('123', 'default')).toBe(voiceConnectionDefault);
-		expect(DataStore.getVoiceConnection('123', 'abc')).toBe(voiceConnectionAbc);
+		expect(DataStore.getVoiceConnection('123')).toEqual(voiceConnectionDefault);
+		expect(DataStore.getVoiceConnection('123', 'default')).toEqual(voiceConnectionDefault);
+		expect(DataStore.getVoiceConnection('123', 'abc')).toEqual(voiceConnectionAbc);
 
 		expect([...DataStore.getGroups().keys()]).toEqual(['default', 'abc']);
 
@@ -64,17 +64,17 @@ describe('DataStore', () => {
 
 		DataStore.untrackVoiceConnection(voiceConnectionDefault);
 		expect(DataStore.getVoiceConnection('123')).toBeUndefined();
-		expect(DataStore.getVoiceConnection('123', 'abc')).toBe(voiceConnectionAbc);
+		expect(DataStore.getVoiceConnection('123', 'abc')).toEqual(voiceConnectionAbc);
 	});
 	test('Managing Audio Players', async () => {
 		const player = DataStore.addAudioPlayer(new AudioPlayer.AudioPlayer());
 		const dispatchSpy = jest.spyOn(player as any, '_stepDispatch');
 		const prepareSpy = jest.spyOn(player as any, '_stepPrepare');
-		expect(DataStore.hasAudioPlayer(player)).toBe(true);
-		expect(DataStore.addAudioPlayer(player)).toBe(player);
+		expect(DataStore.hasAudioPlayer(player)).toEqual(true);
+		expect(DataStore.addAudioPlayer(player)).toEqual(player);
 		DataStore.deleteAudioPlayer(player);
-		expect(DataStore.deleteAudioPlayer(player)).toBe(undefined);
-		expect(DataStore.hasAudioPlayer(player)).toBe(false);
+		expect(DataStore.deleteAudioPlayer(player)).toBeUndefined();
+		expect(DataStore.hasAudioPlayer(player)).toEqual(false);
 		// Tests audio cycle with nextTime === -1
 		await waitForEventLoop();
 		expect(dispatchSpy).toHaveBeenCalledTimes(0);

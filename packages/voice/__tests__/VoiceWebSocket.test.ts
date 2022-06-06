@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import EventEmitter, { once } from 'node:events';
+import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import WS from 'jest-websocket-mock';
 import { VoiceWebSocket } from '../src/networking/VoiceWebSocket';
 
@@ -119,7 +119,7 @@ describe.skip('VoiceWebSocket: heartbeating', () => {
 		const rcv = onceIgnoreError(ws, 'close');
 		ws.setHeartbeatInterval(50);
 		await expect(rcv).resolves.toBeTruthy();
-		expect(ws.ping).toBe(undefined);
-		expect(server.messages.length).toBe(3);
+		expect(ws.ping).toBeUndefined();
+		expect(server.messages.length).toEqual(3);
 	});
 });

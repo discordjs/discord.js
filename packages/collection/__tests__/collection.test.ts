@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import Collection from '../src';
 
 type TestCollection = Collection<string, number>;
@@ -247,7 +248,7 @@ test('random select from a collection', () => {
 	const chars = 'abcdefghijklmnopqrstuvwxyz';
 	const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
 
-	for (let i = 0; i < chars.length; i++) coll.set(chars[i], numbers[i]);
+	for (let i = 0; i < chars.length; i++) coll.set(chars[i]!, numbers[i]!);
 
 	const random = coll.random(5);
 	expect(random.length === 5).toBeTruthy();
@@ -357,7 +358,7 @@ describe('hasAny() tests', () => {
 	});
 });
 
-describe('reverse() tests', () => {
+test('reverse() tests', () => {
 	const coll = new Collection();
 	coll.set('a', 1);
 	coll.set('b', 2);

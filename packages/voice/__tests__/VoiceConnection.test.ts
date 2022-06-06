@@ -3,6 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/dot-notation */
+import EventEmitter from 'node:events';
+import * as _DataStore from '../src/DataStore';
 import {
 	createVoiceConnection,
 	VoiceConnection,
@@ -13,12 +15,10 @@ import {
 	VoiceConnectionStatus,
 } from '../src/VoiceConnection';
 
-import * as _DataStore from '../src/DataStore';
-import * as _Networking from '../src/networking/Networking';
 import * as _AudioPlayer from '../src/audio/AudioPlayer';
 import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSubscription';
+import * as _Networking from '../src/networking/Networking';
 import type { DiscordGatewayAdapterLibraryMethods } from '../src/util/adapter';
-import EventEmitter from 'node:events';
 
 jest.mock('../src/audio/AudioPlayer');
 jest.mock('../src/audio/PlayerSubscription');
@@ -91,7 +91,7 @@ describe('createVoiceConnection', () => {
 			debug: false,
 			adapterCreator: adapter.creator,
 		});
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Signalling);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Signalling);
 		expect(DataStore.getVoiceConnection).toHaveBeenCalledTimes(1);
 		expect(DataStore.trackVoiceConnection).toHaveBeenCalledWith(voiceConnection);
 		expect(DataStore.untrackVoiceConnection).not.toHaveBeenCalled();
@@ -108,7 +108,7 @@ describe('createVoiceConnection', () => {
 			debug: false,
 			adapterCreator: adapter.creator,
 		});
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Disconnected);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Disconnected);
 		expect(DataStore.getVoiceConnection).toHaveBeenCalledTimes(1);
 		expect(DataStore.trackVoiceConnection).toHaveBeenCalledWith(voiceConnection);
 		expect(DataStore.untrackVoiceConnection).not.toHaveBeenCalled();
@@ -144,7 +144,7 @@ describe('createVoiceConnection', () => {
 		expect(DataStore.untrackVoiceConnection).not.toHaveBeenCalled();
 		expect(newAdapter.creator).not.toHaveBeenCalled();
 		expect(existingAdapter.sendPayload).toHaveBeenCalledWith(mockPayload);
-		expect(newVoiceConnection).toBe(existingVoiceConnection);
+		expect(newVoiceConnection).toEqual(existingVoiceConnection);
 		expect(stateSetter).not.toHaveBeenCalled();
 	});
 
@@ -183,7 +183,7 @@ describe('createVoiceConnection', () => {
 		expect(DataStore.untrackVoiceConnection).not.toHaveBeenCalled();
 		expect(newAdapter.creator).not.toHaveBeenCalled();
 		expect(rejoinSpy).toHaveBeenCalledWith(rejoinConfig);
-		expect(newVoiceConnection).toBe(existingVoiceConnection);
+		expect(newVoiceConnection).toEqual(existingVoiceConnection);
 	});
 
 	test('Reconfiguring existing connection with adapter failure', () => {
@@ -214,8 +214,8 @@ describe('createVoiceConnection', () => {
 		expect(DataStore.untrackVoiceConnection).not.toHaveBeenCalled();
 		expect(newAdapter.creator).not.toHaveBeenCalled();
 		expect(existingAdapter.sendPayload).toHaveBeenCalledWith(mockPayload);
-		expect(newVoiceConnection).toBe(existingVoiceConnection);
-		expect(newVoiceConnection.state.status).toBe(VoiceConnectionStatus.Disconnected);
+		expect(newVoiceConnection).toEqual(existingVoiceConnection);
+		expect(newVoiceConnection.state.status).toEqual(VoiceConnectionStatus.Disconnected);
 	});
 });
 
@@ -229,7 +229,7 @@ describe('VoiceConnection#addServerPacket', () => {
 			token: 'abc',
 		} as any;
 		voiceConnection['addServerPacket'](dummy);
-		expect(voiceConnection['packets'].server).toBe(dummy);
+		expect(voiceConnection['packets'].server).toEqual(dummy);
 		expect(voiceConnection.configureNetworking).toHaveBeenCalled();
 	});
 
@@ -243,7 +243,7 @@ describe('VoiceConnection#addServerPacket', () => {
 			token: 'abc',
 		} as any;
 		voiceConnection['addServerPacket'](dummy);
-		expect(voiceConnection['packets'].server).toBe(dummy);
+		expect(voiceConnection['packets'].server).toEqual(dummy);
 		expect(voiceConnection.configureNetworking).toHaveBeenCalled();
 	});
 
@@ -257,9 +257,9 @@ describe('VoiceConnection#addServerPacket', () => {
 			token: 'abc',
 		} as any;
 		voiceConnection['addServerPacket'](dummy);
-		expect(voiceConnection['packets'].server).toBe(dummy);
+		expect(voiceConnection['packets'].server).toEqual(dummy);
 		expect(voiceConnection.configureNetworking).not.toHaveBeenCalled();
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Disconnected);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Disconnected);
 	});
 });
 
@@ -293,10 +293,10 @@ describe('VoiceConnection#addStatePacket', () => {
 describe('VoiceConnection#configureNetworking', () => {
 	test('Only creates Networking instance when both packets are present and not destroyed', () => {
 		const { voiceConnection } = createFakeVoiceConnection();
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Signalling);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Signalling);
 
 		voiceConnection.configureNetworking();
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Signalling);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Signalling);
 		const adapter = (voiceConnection.state as VoiceConnectionSignallingState).adapter;
 
 		const state = {
@@ -312,18 +312,18 @@ describe('VoiceConnection#configureNetworking', () => {
 
 		Object.assign(voiceConnection['packets'], { state, server: undefined });
 		voiceConnection.configureNetworking();
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Signalling);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Signalling);
 		expect(Networking.Networking).toHaveBeenCalledTimes(0);
 
 		Object.assign(voiceConnection['packets'], { state: undefined, server });
 		voiceConnection.configureNetworking();
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Signalling);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Signalling);
 		expect(Networking.Networking).toHaveBeenCalledTimes(0);
 
 		Object.assign(voiceConnection['packets'], { state, server });
 		voiceConnection.state = { status: VoiceConnectionStatus.Destroyed };
 		voiceConnection.configureNetworking();
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Destroyed);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Destroyed);
 		expect(Networking.Networking).toHaveBeenCalledTimes(0);
 
 		voiceConnection.state = { status: VoiceConnectionStatus.Signalling, adapter };
@@ -356,7 +356,7 @@ describe('VoiceConnection#onNetworkingClose', () => {
 			status: VoiceConnectionStatus.Destroyed,
 		};
 		voiceConnection['onNetworkingClose'](1000);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Destroyed);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Destroyed);
 		expect(adapter.sendPayload).not.toHaveBeenCalled();
 	});
 
@@ -377,9 +377,9 @@ describe('VoiceConnection#onNetworkingClose', () => {
 			config === joinConfig ? dummyPayload : undefined,
 		);
 		voiceConnection['onNetworkingClose'](1234);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Signalling);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Signalling);
 		expect(adapter.sendPayload).toHaveBeenCalledWith(dummyPayload);
-		expect(voiceConnection.rejoinAttempts).toBe(1);
+		expect(voiceConnection.rejoinAttempts).toEqual(1);
 	});
 
 	test('Attempts rejoin for codes != 4014 (with adapter failure)', () => {
@@ -390,9 +390,9 @@ describe('VoiceConnection#onNetworkingClose', () => {
 		);
 		adapter.sendPayload.mockReturnValue(false);
 		voiceConnection['onNetworkingClose'](1234);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Disconnected);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Disconnected);
 		expect(adapter.sendPayload).toHaveBeenCalledWith(dummyPayload);
-		expect(voiceConnection.rejoinAttempts).toBe(1);
+		expect(voiceConnection.rejoinAttempts).toEqual(1);
 	});
 });
 
@@ -442,7 +442,7 @@ describe('VoiceConnection#onNetworkingStateChange', () => {
 		);
 
 		expect(stateSetter).toHaveBeenCalledTimes(1);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Ready);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Ready);
 	});
 
 	test('Transitions to Connecting', () => {
@@ -460,7 +460,7 @@ describe('VoiceConnection#onNetworkingStateChange', () => {
 		);
 
 		expect(stateSetter).toHaveBeenCalledTimes(1);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Connecting);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Connecting);
 	});
 });
 
@@ -486,7 +486,7 @@ describe('VoiceConnection#destroy', () => {
 			guildId: joinConfig.guildId,
 		});
 		expect(adapter.sendPayload).toHaveBeenCalledWith(dummy);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Destroyed);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Destroyed);
 	});
 });
 
@@ -494,12 +494,12 @@ describe('VoiceConnection#disconnect', () => {
 	test('Fails in Destroyed and Signalling states', () => {
 		const { voiceConnection, adapter } = createFakeVoiceConnection();
 		voiceConnection.state = { status: VoiceConnectionStatus.Destroyed };
-		expect(voiceConnection.disconnect()).toBe(false);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Destroyed);
+		expect(voiceConnection.disconnect()).toEqual(false);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Destroyed);
 
 		voiceConnection.state = { status: VoiceConnectionStatus.Signalling, adapter };
-		expect(voiceConnection.disconnect()).toBe(false);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Signalling);
+		expect(voiceConnection.disconnect()).toEqual(false);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Signalling);
 	});
 
 	test('Disconnects - available adapter', () => {
@@ -511,7 +511,7 @@ describe('VoiceConnection#disconnect', () => {
 		};
 		const leavePayload = Symbol('dummy');
 		DataStore.createJoinVoiceChannelPayload.mockImplementation(() => leavePayload as any);
-		expect(voiceConnection.disconnect()).toBe(true);
+		expect(voiceConnection.disconnect()).toEqual(true);
 		expect(voiceConnection.joinConfig).toMatchObject({
 			channelId: null,
 			guildId: '2',
@@ -534,7 +534,7 @@ describe('VoiceConnection#disconnect', () => {
 			networking: new Networking.Networking({} as any, false),
 		};
 		adapter.sendPayload.mockImplementation(() => false);
-		expect(voiceConnection.disconnect()).toBe(false);
+		expect(voiceConnection.disconnect()).toEqual(false);
 		expect(voiceConnection.state).toMatchObject({
 			status: VoiceConnectionStatus.Disconnected,
 			reason: VoiceConnectionDisconnectReason.AdapterUnavailable,
@@ -554,10 +554,10 @@ describe('VoiceConnection#rejoin', () => {
 			reason: VoiceConnectionDisconnectReason.WebSocketClose,
 			closeCode: 1000,
 		};
-		expect(voiceConnection.rejoin()).toBe(true);
-		expect(voiceConnection.rejoinAttempts).toBe(1);
+		expect(voiceConnection.rejoin()).toEqual(true);
+		expect(voiceConnection.rejoinAttempts).toEqual(1);
 		expect(adapter.sendPayload).toHaveBeenCalledWith(dummy);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Signalling);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Signalling);
 	});
 
 	test('Rejoins in a ready state', () => {
@@ -569,10 +569,10 @@ describe('VoiceConnection#rejoin', () => {
 			...(voiceConnection.state as VoiceConnectionReadyState),
 			status: VoiceConnectionStatus.Ready,
 		};
-		expect(voiceConnection.rejoin()).toBe(true);
-		expect(voiceConnection.rejoinAttempts).toBe(0);
+		expect(voiceConnection.rejoin()).toEqual(true);
+		expect(voiceConnection.rejoinAttempts).toEqual(0);
 		expect(adapter.sendPayload).toHaveBeenCalledWith(dummy);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Ready);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Ready);
 	});
 
 	test('Stays in the disconnected state when the adapter fails', () => {
@@ -587,10 +587,10 @@ describe('VoiceConnection#rejoin', () => {
 			closeCode: 1000,
 		};
 		adapter.sendPayload.mockReturnValue(false);
-		expect(voiceConnection.rejoin()).toBe(false);
-		expect(voiceConnection.rejoinAttempts).toBe(1);
+		expect(voiceConnection.rejoin()).toEqual(false);
+		expect(voiceConnection.rejoinAttempts).toEqual(1);
 		expect(adapter.sendPayload).toHaveBeenCalledWith(dummy);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Disconnected);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Disconnected);
 	});
 });
 
@@ -602,7 +602,7 @@ describe('VoiceConnection#subscribe', () => {
 		voiceConnection.state = { status: VoiceConnectionStatus.Destroyed };
 		expect(voiceConnection.subscribe(player)).toBeUndefined();
 		expect(player['subscribe']).not.toHaveBeenCalled();
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Destroyed);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Destroyed);
 	});
 
 	test('Subscribes in a live state', () => {
@@ -611,7 +611,7 @@ describe('VoiceConnection#subscribe', () => {
 		const player = new AudioPlayer.AudioPlayer();
 		const dummy = Symbol('dummy');
 		player['subscribe'] = jest.fn().mockImplementation(() => dummy);
-		expect(voiceConnection.subscribe(player)).toBe(dummy);
+		expect(voiceConnection.subscribe(player)).toEqual(dummy);
 		expect(player['subscribe']).toHaveBeenCalledWith(voiceConnection);
 		expect(voiceConnection.state).toMatchObject({
 			status: VoiceConnectionStatus.Signalling,
@@ -628,7 +628,7 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 
 		voiceConnection.state = { status: VoiceConnectionStatus.Destroyed };
 		voiceConnection['onSubscriptionRemoved'](subscription);
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Destroyed);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Destroyed);
 		expect(subscription.unsubscribe).not.toHaveBeenCalled();
 	});
 
@@ -686,9 +686,9 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 			voiceConnection['updateReceiveBindings'](newNetworking.state, oldNetworking.state);
 
 			// Assert
-			expect(oldNetworking.state.udp.listenerCount('message')).toBe(0);
-			expect(newNetworking.state.udp.listenerCount('message')).toBe(1);
-			expect(voiceConnection.receiver.connectionData).toBe(newNetworking.state.connectionData);
+			expect(oldNetworking.state.udp.listenerCount('message')).toEqual(0);
+			expect(newNetworking.state.udp.listenerCount('message')).toEqual(1);
+			expect(voiceConnection.receiver.connectionData).toEqual(newNetworking.state.connectionData);
 		});
 
 		test('Applies and removes ws listeners', () => {
@@ -716,9 +716,9 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 			voiceConnection['updateReceiveBindings'](newNetworking.state, oldNetworking.state);
 
 			// Assert
-			expect(oldNetworking.state.ws.listenerCount('packet')).toBe(0);
-			expect(newNetworking.state.ws.listenerCount('packet')).toBe(1);
-			expect(voiceConnection.receiver.connectionData).toBe(newNetworking.state.connectionData);
+			expect(oldNetworking.state.ws.listenerCount('packet')).toEqual(0);
+			expect(newNetworking.state.ws.listenerCount('packet')).toEqual(1);
+			expect(voiceConnection.receiver.connectionData).toEqual(newNetworking.state.connectionData);
 		});
 
 		test('Applies initial listeners', () => {
@@ -739,9 +739,9 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 			voiceConnection['updateReceiveBindings'](newNetworking.state, undefined);
 
 			// Assert
-			expect(newNetworking.state.ws.listenerCount('packet')).toBe(1);
-			expect(newNetworking.state.udp.listenerCount('message')).toBe(1);
-			expect(voiceConnection.receiver.connectionData).toBe(newNetworking.state.connectionData);
+			expect(newNetworking.state.ws.listenerCount('packet')).toEqual(1);
+			expect(newNetworking.state.udp.listenerCount('message')).toEqual(1);
+			expect(voiceConnection.receiver.connectionData).toEqual(newNetworking.state.connectionData);
 		});
 	});
 });
@@ -766,7 +766,7 @@ describe('Adapter', () => {
 	test('destroy', () => {
 		const { adapter, voiceConnection } = createFakeVoiceConnection();
 		adapter.libMethods.destroy();
-		expect(voiceConnection.state.status).toBe(VoiceConnectionStatus.Destroyed);
+		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Destroyed);
 		expect(adapter.sendPayload).not.toHaveBeenCalled();
 	});
 });

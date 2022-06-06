@@ -1,6 +1,6 @@
 'use strict';
 
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const User = require('./User');
 const DataResolver = require('../util/DataResolver');
 

@@ -31,7 +31,7 @@ jobs:
         run: yarn lint --cache-dir=".turbo"
 
       - name: Tests
-        run: yarn test --cache-dir=".turbo"
+        run: yarn test
 
       - name: Build
         run: yarn build --cache-dir=".turbo"

@@ -6,29 +6,32 @@ All notable changes to this project will be documented in this file.\n
 """
 body = """
 {% if version %}\
-    # [{{ version | trim_start_matches(pat="v") }}]\
-    {% if previous %}\
-        {% if previous.version %}\
-            (https://github.com/discordjs/discord.js/compare/{{ previous.version }}...{{ version }})\
-        {% else %}
-            (https://github.com/discordjs/discord.js/tree/{{ version }})\
-        {% endif %}\
-    {% endif %} \
-    - ({{ timestamp | date(format="%Y-%m-%d") }})
+	# [{{ version | trim_start_matches(pat="v") }}]\
+	{% if previous %}\
+		{% if previous.version %}\
+			(https://github.com/discordjs/discord.js/compare/{{ previous.version }}...{{ version }})\
+		{% else %}
+			(https://github.com/discordjs/discord.js/tree/{{ version }})\
+		{% endif %}\
+	{% endif %} \
+	- ({{ timestamp | date(format="%Y-%m-%d") }})
 {% else %}\
-    # [unreleased]
+	# [unreleased]
 {% endif %}\
 {% for group, commits in commits | group_by(attribute="group") %}
-    ## {{ group | upper_first }}
-    {% for commit in commits %}
-        - {% if commit.breaking %}\
-            [**breaking**] \
-          {% endif %}\
-            {% if commit.scope %}\
-                **{{commit.scope}}:** \
-            {% endif %}\
-            {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/discordjs/discord.js/commit/{{ commit.id }}))\
-    {% endfor %}
+	## {{ group | upper_first }}
+	{% for commit in commits %}
+		- {% if commit.scope %}\
+			**{{commit.scope}}:** \
+		  {% endif %}\
+			{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/discordjs/discord.js/commit/{{ commit.id }}))\
+		{% if commit.breaking %}\
+			\n\n {% raw %}  {% endraw %} ### Breaking Changes:\n \
+			{% for breakingChange in commit.footers %}\
+				{% raw %}  {% endraw %} - {{ breakingChange }}\n\
+			{% endfor %}\
+		{% endif %}\
+	{% endfor %}
 {% endfor %}\n
 """
 trim = true
@@ -38,25 +41,24 @@ footer = ""
 conventional_commits = true
 filter_unconventional = true
 commit_parsers = [
-    { message = "^feat", group = "Features"},
-    { message = "^fix", group = "Bug Fixes"},
-    { message = "^docs", group = "Documentation"},
-    { message = "^perf", group = "Performance"},
-    { message = "^refactor", group = "Refactor"},
-    { message = "^typings", group = "Typings"},
-    { message = "^types", group = "Typings"},
-    { message = ".*deprecated", body = ".*deprecated", group = "Deprecation"},
-    { message = "^revert", skip = true},
-    { message = "^style", group = "Styling"},
-    { message = "^test", group = "Testing"},
-    { message = "^chore", skip = true},
-    { message = "^ci", skip = true},
-    { message = "^build", skip = true},
-    { body = ".*security", group = "Security"},
+	{ message = "^feat", group = "Features"},
+	{ message = "^fix", group = "Bug Fixes"},
+	{ message = "^docs", group = "Documentation"},
+	{ message = "^perf", group = "Performance"},
+	{ message = "^refactor", group = "Refactor"},
+	{ message = "^typings", group = "Typings"},
+	{ message = "^types", group = "Typings"},
+	{ message = ".*deprecated", body = ".*deprecated", group = "Deprecation"},
+	{ message = "^revert", skip = true},
+	{ message = "^style", group = "Styling"},
+	{ message = "^test", group = "Testing"},
+	{ message = "^chore", skip = true},
+	{ message = "^ci", skip = true},
+	{ message = "^build", skip = true},
+	{ body = ".*security", group = "Security"},
 ]
 filter_commits = true
-tag_pattern = "@discordjs\\/rest@.*"
-skip_tags = "v[0-9]*|11|12"
+tag_pattern = "@discordjs/rest@[0-9]*"
 ignore_tags = ""
 topo_order = false
 sort_commits = "newest"

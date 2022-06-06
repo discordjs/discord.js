@@ -1,6 +1,5 @@
 'use strict';
 
-const { createComponent, Embed } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const {
@@ -9,17 +8,19 @@ const {
   MessageType,
   MessageFlags,
   PermissionFlagsBits,
-} = require('discord-api-types/v9');
+} = require('discord-api-types/v10');
+const Attachment = require('./Attachment');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
+const Embed = require('./Embed');
 const InteractionCollector = require('./InteractionCollector');
-const MessageAttachment = require('./MessageAttachment');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
+const Components = require('../util/Components');
 const { NonSystemMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
@@ -145,7 +146,7 @@ class Message extends Base {
        * A list of MessageActionRows in the message
        * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => createComponent(c));
+      this.components = data.components.map(c => Components.createComponent(c));
     } else {
       this.components = this.components?.slice() ?? [];
     }
@@ -153,12 +154,12 @@ class Message extends Base {
     if ('attachments' in data) {
       /**
        * A collection of attachments in the message - e.g. Pictures - mapped by their ids
-       * @type {Collection<Snowflake, MessageAttachment>}
+       * @type {Collection<Snowflake, Attachment>}
        */
       this.attachments = new Collection();
       if (data.attachments) {
         for (const attachment of data.attachments) {
-          this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
+          this.attachments.set(attachment.id, new Attachment(attachment));
         }
       }
     } else {
@@ -350,7 +351,7 @@ class Message extends Base {
 
   /**
    * The channel that the message was sent in
-   * @type {TextChannel|DMChannel|NewsChannel|ThreadChannel}
+   * @type {TextBasedChannel}
    * @readonly
    */
   get channel() {
@@ -582,7 +583,7 @@ class Message extends Base {
     return Boolean(
       this.author.id === this.client.user.id ||
         (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
-          this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
+          this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()),
     );
   }
 
@@ -622,7 +623,7 @@ class Message extends Base {
   get crosspostable() {
     const bitfield =
       PermissionFlagsBits.SendMessages |
-      (this.author.id === this.client.user.id ? PermissionsBitField.defaultBit : PermissionFlagsBits.ManageMessages);
+      (this.author.id === this.client.user.id ? PermissionsBitField.DefaultBit : PermissionFlagsBits.ManageMessages);
     const { channel } = this;
     return Boolean(
       channel?.type === ChannelType.GuildNews &&
@@ -641,9 +642,10 @@ class Message extends Base {
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * Only `MessageFlags.SuppressEmbeds` can be edited.
-   * @property {MessageAttachment[]} [attachments] An array of attachments to keep,
+   * @property {Attachment[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
-   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to add to the message
+   * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
+   * Files to add to the message
    * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
@@ -796,9 +798,8 @@ class Message extends Base {
    * archived. This can be:
    * * `60` (1 hour)
    * * `1440` (1 day)
-   * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
-   * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
-   * * `'MAX'` Based on the guild's features
+   * * `4320` (3 days)
+   * * `10080` (7 days)
    * @typedef {number|string} ThreadAutoArchiveDuration
    */
 

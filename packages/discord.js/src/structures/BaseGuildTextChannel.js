@@ -69,7 +69,7 @@ class BaseGuildTextChannel extends GuildChannel {
     if ('default_auto_archive_duration' in data) {
       /**
        * The default auto archive duration for newly created threads in this channel
-       * @type {?ThreadAutoArchiveDuration}
+       * @type {?number}
        */
       this.defaultAutoArchiveDuration = data.default_auto_archive_duration;
     }
@@ -86,7 +86,10 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<TextChannel>}
    */
   setDefaultAutoArchiveDuration(defaultAutoArchiveDuration, reason) {
-    return this.edit({ defaultAutoArchiveDuration, reason });
+    return this.edit({
+      defaultAutoArchiveDuration,
+      reason,
+    });
   }
 
   /**
@@ -96,7 +99,10 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<TextChannel>}
    */
   setNSFW(nsfw = true, reason) {
-    return this.edit({ nsfw, reason });
+    return this.edit({
+      nsfw,
+      reason,
+    });
   }
 
   /**
@@ -106,7 +112,10 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<GuildChannel>}
    */
   setType(type, reason) {
-    return this.edit({ type, reason });
+    return this.edit({
+      type,
+      reason,
+    });
   }
 
   /**
@@ -139,7 +148,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * channel.createWebhook({
    *   name: 'Hello!',
    *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
-   *   reason: 'Needed a cool new Webhook'
+   *   reason: 'Needed a cool new Webhook',
    * })
    *   .then(console.log)
    *   .catch(console.error)
@@ -160,7 +169,10 @@ class BaseGuildTextChannel extends GuildChannel {
    *   .catch(console.error);
    */
   setTopic(topic, reason) {
-    return this.edit({ topic, reason });
+    return this.edit({
+      topic,
+      reason,
+    });
   }
 
   /**
@@ -209,7 +221,10 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<Collection<string, Invite>>}
    */
   fetchInvites(cache = true) {
-    return this.guild.invites.fetch({ channelId: this.id, cache });
+    return this.guild.invites.fetch({
+      channelId: this.id,
+      cache,
+    });
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
@@ -223,6 +238,8 @@ class BaseGuildTextChannel extends GuildChannel {
   createMessageComponentCollector() {}
   awaitMessageComponent() {}
   bulkDelete() {}
+  fetchWebhooks() {}
+  createWebhook() {}
 }
 
 TextBasedChannel.applyToClass(BaseGuildTextChannel, true);

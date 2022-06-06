@@ -1,45 +1,10 @@
-import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v9';
+import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
 
 /**
  * Represents a non-validated option within a select menu component
  */
-export class UnsafeSelectMenuOption {
-	public constructor(protected data: Partial<APISelectMenuOption> = {}) {}
-
-	/**
-	 * The label for this option
-	 */
-	public get label() {
-		return this.data.label;
-	}
-
-	/**
-	 * The value for this option
-	 */
-	public get value() {
-		return this.data.value;
-	}
-
-	/**
-	 * The description for this option
-	 */
-	public get description() {
-		return this.data.description;
-	}
-
-	/**
-	 * The emoji for this option
-	 */
-	public get emoji() {
-		return this.data.emoji;
-	}
-
-	/**
-	 * Whether this option is selected by default
-	 */
-	public get default() {
-		return this.data.default;
-	}
+export class UnsafeSelectMenuOptionBuilder {
+	public constructor(public data: Partial<APISelectMenuOption> = {}) {}
 
 	/**
 	 * Sets the label of this option
@@ -78,8 +43,8 @@ export class UnsafeSelectMenuOption {
 	}
 
 	/**
-	 * Sets the emoji to display on this button
-	 * @param emoji The emoji to display on this button
+	 * Sets the emoji to display on this option
+	 * @param emoji The emoji to display on this option
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
 		this.data.emoji = emoji;

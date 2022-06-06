@@ -1,5 +1,5 @@
 import { EndBehaviorType, VoiceReceiver } from '@discordjs/voice';
-import { User } from 'discord.js';
+import type { User } from 'discord.js';
 import { createWriteStream } from 'node:fs';
 import prism from 'prism-media';
 import { pipeline } from 'node:stream';

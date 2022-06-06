@@ -2,7 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
-# [0.8.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.7.5...@discordjs/voice@0.8.0) (2021-12-08)
+# [@discordjs/voice@0.10.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.9.0...@discordjs/voice@0.10.0) - (2022-06-04)
+
+## Styling
+
+- Cleanup tests and tsup configs ([6b8ef20](https://github.com/discordjs/discord.js/commit/6b8ef20cb3af5b5cfd176dd0aa0a1a1e98551629))
+
+# [@discordjs/voice@0.9.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.8.0...@discordjs/voice@0.9.0) - (2022-04-17)
+
+## Bug Fixes
+
+- Fix some typos (#7393) ([92a04f4](https://github.com/discordjs/discord.js/commit/92a04f4d98f6c6760214034cc8f5a1eaa78893c7))
+
+## Features
+
+- Support sodium-native lib for voice (#7698) ([f0d0242](https://github.com/discordjs/discord.js/commit/f0d0242c76a455bb7a5ea7bd95ca62907c7e9d62))
+- Add API v10 support (#7477) ([72577c4](https://github.com/discordjs/discord.js/commit/72577c4bfd02524a27afb6ff4aebba9301a690d3))
+- Add support for module: NodeNext in TS and ESM (#7598) ([8f1986a](https://github.com/discordjs/discord.js/commit/8f1986a6aa98365e09b00e84ad5f9f354ab61f3d))
+- **builders:** Add attachment command option type (#7203) ([ae0f35f](https://github.com/discordjs/discord.js/commit/ae0f35f51d68dfa5a7dc43d161ef9365171debdb))
+
+## Styling
+
+- Cleanup tests and tsup configs ([6b8ef20](https://github.com/discordjs/discord.js/commit/6b8ef20cb3af5b5cfd176dd0aa0a1a1e98551629))
+
+# [@discordjs/voice@0.8.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.7.5...@discordjs/voice@0.8.0) - (2022-01-24)
 
 ## Refactor
 

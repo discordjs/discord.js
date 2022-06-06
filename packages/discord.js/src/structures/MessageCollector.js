@@ -103,7 +103,7 @@ class MessageCollector extends Collector {
   get endReason() {
     if (this.options.max && this.collected.size >= this.options.max) return 'limit';
     if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
-    return null;
+    return super.endReason;
   }
 
   /**

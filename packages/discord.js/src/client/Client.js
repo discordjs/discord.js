@@ -2,7 +2,8 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { OAuth2Scopes, Routes } = require('discord-api-types/v9');
+const { makeURLSearchParams } = require('@discordjs/rest');
+const { OAuth2Scopes, Routes } = require('discord-api-types/v10');
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
@@ -277,13 +278,11 @@ class Client extends BaseClient {
    */
   async fetchInvite(invite, options) {
     const code = DataResolver.resolveInviteCode(invite);
-    const query = new URLSearchParams({
+    const query = makeURLSearchParams({
       with_counts: true,
       with_expiration: true,
+      guild_scheduled_event_id: options?.guildScheduledEventId,
     });
-    if (options?.guildScheduledEventId) {
-      query.set('guild_scheduled_event_id', options.guildScheduledEventId);
-    }
     const data = await this.rest.get(Routes.invite(code), { query });
     return new Invite(this, data);
   }
@@ -417,10 +416,6 @@ class Client extends BaseClient {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     if (!this.application) throw new Error('CLIENT_NOT_READY', 'generate an invite link');
 
-    const query = new URLSearchParams({
-      client_id: this.application.id,
-    });
-
     const { scopes } = options;
     if (typeof scopes === 'undefined') {
       throw new TypeError('INVITE_MISSING_SCOPES');
@@ -436,15 +431,16 @@ class Client extends BaseClient {
     if (invalidScope) {
       throw new TypeError('INVALID_ELEMENT', 'Array', 'scopes', invalidScope);
     }
-    query.set('scope', scopes.join(' '));
+
+    const query = makeURLSearchParams({
+      client_id: this.application.id,
+      scope: scopes.join(' '),
+      disable_guild_select: options.disableGuildSelect,
+    });
 
     if (options.permissions) {
       const permissions = PermissionsBitField.resolve(options.permissions);
-      if (permissions) query.set('permissions', permissions);
-    }
-
-    if (options.disableGuildSelect) {
-      query.set('disable_guild_select', true);
+      if (permissions) query.set('permissions', permissions.toString());
     }
 
     if (options.guild) {

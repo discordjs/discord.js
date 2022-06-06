@@ -78,6 +78,13 @@ class Collector extends EventEmitter {
      */
     this._idletimeout = null;
 
+    /**
+     * The reason the collector ended
+     * @type {string|null}
+     * @private
+     */
+    this._endReason = null;
+
     if (typeof this.filter !== 'function') {
       throw new TypeError('INVALID_TYPE', 'options.filter', 'function');
     }
@@ -96,21 +103,31 @@ class Collector extends EventEmitter {
    * @emits Collector#collect
    */
   async handleCollect(...args) {
-    const collect = await this.collect(...args);
+    const collectedId = await this.collect(...args);
 
-    if (collect && (await this.filter(...args, this.collected))) {
-      this.collected.set(collect, args[0]);
+    if (collectedId) {
+      const filterResult = await this.filter(...args, this.collected);
+      if (filterResult) {
+        this.collected.set(collectedId, args[0]);
 
-      /**
-       * Emitted whenever an element is collected.
-       * @event Collector#collect
-       * @param {...*} args The arguments emitted by the listener
-       */
-      this.emit('collect', ...args);
+        /**
+         * Emitted whenever an element is collected.
+         * @event Collector#collect
+         * @param {...*} args The arguments emitted by the listener
+         */
+        this.emit('collect', ...args);
 
-      if (this._idletimeout) {
-        clearTimeout(this._idletimeout);
-        this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
+        if (this._idletimeout) {
+          clearTimeout(this._idletimeout);
+          this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
+        }
+      } else {
+        /**
+         * Emitted whenever an element is not collected by the collector.
+         * @event Collector#ignore
+         * @param {...*} args The arguments emitted by the listener
+         */
+        this.emit('ignore', ...args);
       }
     }
     this.checkEnd();
@@ -187,6 +204,8 @@ class Collector extends EventEmitter {
       clearTimeout(this._idletimeout);
       this._idletimeout = null;
     }
+
+    this._endReason = reason;
     this.ended = true;
 
     /**
@@ -270,9 +289,10 @@ class Collector extends EventEmitter {
    * The reason this collector has ended with, or null if it hasn't ended yet
    * @type {?string}
    * @readonly
-   * @abstract
    */
-  get endReason() {}
+  get endReason() {
+    return this._endReason;
+  }
 
   /**
    * Handles incoming events from the `handleCollect` function. Returns null if the event should not

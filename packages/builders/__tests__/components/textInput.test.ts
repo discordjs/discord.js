@@ -1,4 +1,5 @@
-import { APITextInputComponent, ComponentType, TextInputStyle } from 'discord-api-types/v9';
+import { APITextInputComponent, ComponentType, TextInputStyle } from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
 import {
 	labelValidator,
 	maxLengthValidator,
@@ -7,11 +8,11 @@ import {
 	valueValidator,
 	textInputStyleValidator,
 } from '../../src/components/textInput/Assertions';
-import { TextInputComponent } from '../../src/components/textInput/TextInput';
+import { TextInputBuilder } from '../../src/components/textInput/TextInput';
 
 const superLongStr = 'a'.repeat(5000);
 
-const textInputComponent = () => new TextInputComponent();
+const textInputComponent = () => new TextInputBuilder();
 
 describe('Text Input Components', () => {
 	describe('Assertion Tests', () => {
@@ -45,7 +46,7 @@ describe('Text Input Components', () => {
 			expect(() => maxLengthValidator.parse(10)).not.toThrowError();
 		});
 
-		test('GIVEN invalid min length THEN validator does throw', () => {
+		test('GIVEN invalid min length THEN validator does throw 2', () => {
 			expect(() => maxLengthValidator.parse(4001)).toThrowError();
 		});
 
@@ -61,7 +62,7 @@ describe('Text Input Components', () => {
 			expect(() => placeholderValidator.parse('foobar')).not.toThrowError();
 		});
 
-		test('GIVEN invalid value THEN validator does throw', () => {
+		test('GIVEN invalid value THEN validator does throw 2', () => {
 			expect(() => placeholderValidator.parse(superLongStr)).toThrowError();
 		});
 
@@ -109,15 +110,15 @@ describe('Text Input Components', () => {
 			style: TextInputStyle.Paragraph,
 		};
 
-		expect(new TextInputComponent(textInputData).toJSON()).toEqual(textInputData);
+		expect(new TextInputBuilder(textInputData).toJSON()).toEqual(textInputData);
 		expect(
 			textInputComponent()
 				.setCustomId(textInputData.custom_id)
 				.setLabel(textInputData.label)
-				.setPlaceholder(textInputData.placeholder)
-				.setMaxLength(textInputData.max_length)
-				.setMinLength(textInputData.min_length)
-				.setValue(textInputData.value)
+				.setPlaceholder(textInputData.placeholder!)
+				.setMaxLength(textInputData.max_length!)
+				.setMinLength(textInputData.min_length!)
+				.setValue(textInputData.value!)
 				.setRequired(textInputData.required)
 				.setStyle(textInputData.style)
 				.toJSON(),

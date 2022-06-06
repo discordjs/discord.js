@@ -54,7 +54,7 @@ Register a slash command against the Discord API:
 
 ```js
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 
 const commands = [
   {
@@ -63,7 +63,7 @@ const commands = [
   },
 ];
 
-const rest = new REST({ version: '9' }).setToken('token');
+const rest = new REST({ version: '10' }).setToken('token');
 
 (async () => {
   try {
@@ -107,7 +107,7 @@ client.login('token');
   See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
 - [Discord API Discord server](https://discord.gg/discord-api)
-- [GitHub](https://github.com/discordjs/discord.js)
+- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/discord.js)
 - [npm](https://www.npmjs.com/package/discord.js)
 - [Related libraries](https://discord.com/developers/docs/topics/community-resources#libraries)
 

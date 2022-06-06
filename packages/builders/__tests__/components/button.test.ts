@@ -3,11 +3,12 @@ import {
 	APIButtonComponentWithURL,
 	ButtonStyle,
 	ComponentType,
-} from 'discord-api-types/v9';
+} from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
 import { buttonLabelValidator, buttonStyleValidator } from '../../src/components/Assertions';
-import { ButtonComponent } from '../../src/components/button/Button';
+import { ButtonBuilder } from '../../src/components/button/Button';
 
-const buttonComponent = () => new ButtonComponent();
+const buttonComponent = () => new ButtonBuilder();
 
 const longStr =
 	'looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong';
@@ -119,12 +120,12 @@ describe('Button Components', () => {
 				disabled: true,
 			};
 
-			expect(new ButtonComponent(interactionData).toJSON()).toEqual(interactionData);
+			expect(new ButtonBuilder(interactionData).toJSON()).toEqual(interactionData);
 
 			expect(
 				buttonComponent()
 					.setCustomId(interactionData.custom_id)
-					.setLabel(interactionData.label)
+					.setLabel(interactionData.label!)
 					.setStyle(interactionData.style)
 					.setDisabled(interactionData.disabled)
 					.toJSON(),
@@ -138,21 +139,9 @@ describe('Button Components', () => {
 				url: 'https://google.com',
 			};
 
-			expect(new ButtonComponent(linkData).toJSON()).toEqual(linkData);
+			expect(new ButtonBuilder(linkData).toJSON()).toEqual(linkData);
 
-			expect(buttonComponent().setLabel(linkData.label).setDisabled(true).setURL(linkData.url));
-		});
-		test('Given JSON data THEN builder is equal to it and itself', () => {
-			const buttonData: APIButtonComponentWithCustomId = {
-				type: ComponentType.Button,
-				custom_id: 'test',
-				label: 'test',
-				style: ButtonStyle.Primary,
-				disabled: true,
-			};
-
-			expect(new ButtonComponent(buttonData).equals(buttonData)).toBeTruthy();
-			expect(new ButtonComponent(buttonData).equals(new ButtonComponent(buttonData))).toBeTruthy();
+			expect(buttonComponent().setLabel(linkData.label!).setDisabled(true).setURL(linkData.url));
 		});
 	});
 });

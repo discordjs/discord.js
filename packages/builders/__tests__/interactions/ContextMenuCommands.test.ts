@@ -1,3 +1,5 @@
+import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
 import { ContextMenuCommandAssertions, ContextMenuCommandBuilder } from '../../src/index';
 
 const getBuilder = () => new ContextMenuCommandBuilder();
@@ -83,6 +85,59 @@ describe('Context Menu Commands', () => {
 
 			test('GIVEN valid builder with defaultPermission false THEN does not throw error', () => {
 				expect(() => getBuilder().setName('foo').setDefaultPermission(false)).not.toThrowError();
+			});
+		});
+
+		describe('Context menu command localizations', () => {
+			const expectedSingleLocale = { 'en-US': 'foobar' };
+			const expectedMultipleLocales = {
+				...expectedSingleLocale,
+				bg: 'test',
+			};
+
+			test('GIVEN valid name localizations THEN does not throw error', () => {
+				expect(() => getBuilder().setNameLocalization('en-US', 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+			});
+
+			test('GIVEN invalid name localizations THEN does throw error', () => {
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
+			});
+
+			test('GIVEN valid name localizations THEN valid data is stored', () => {
+				expect(getBuilder().setNameLocalization('en-US', 'foobar').name_localizations).toEqual(expectedSingleLocale);
+				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).name_localizations).toEqual(
+					expectedMultipleLocales,
+				);
+				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
+				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
+					'en-US': null,
+				});
+			});
+		});
+
+		describe('permissions', () => {
+			test('GIVEN valid permission string THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1')).not.toThrowError();
+			});
+
+			test('GIVEN valid permission bitfield THEN does not throw error', () => {
+				expect(() =>
+					getBuilder().setDefaultMemberPermissions(PermissionFlagsBits.AddReactions | PermissionFlagsBits.AttachFiles),
+				).not.toThrowError();
+			});
+
+			test('GIVEN null permissions THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions(null)).not.toThrowError();
+			});
+
+			test('GIVEN invalid inputs THEN does throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1.1')).toThrowError();
+
+				expect(() => getBuilder().setDefaultMemberPermissions(1.1)).toThrowError();
 			});
 		});
 	});

@@ -1,7 +1,7 @@
 'use strict';
 
 const { setTimeout, clearTimeout } = require('node:timers');
-const { RouteBases, Routes } = require('discord-api-types/v9');
+const { RouteBases, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 const DataResolver = require('../util/DataResolver');
 const Events = require('../util/Events');
@@ -11,6 +11,13 @@ const Events = require('../util/Events');
  * @extends {Base}
  */
 class GuildTemplate extends Base {
+  /**
+   * Regular expression that globally matches guild template links
+   * @type {RegExp}
+   * @memberof GuildTemplate
+   */
+  static GuildTemplatesPattern = /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/gi;
+
   constructor(client, data) {
     super(client);
     this._patch(data);
@@ -229,11 +236,5 @@ class GuildTemplate extends Base {
     return this.code;
   }
 }
-
-/**
- * Regular expression that globally matches guild template links
- * @type {RegExp}
- */
-GuildTemplate.GUILD_TEMPLATES_PATTERN = /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/gi;
 
 module.exports = GuildTemplate;

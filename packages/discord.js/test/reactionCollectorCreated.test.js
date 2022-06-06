@@ -1,6 +1,6 @@
 'use strict';
 
-const { GatewayIntentBits } = require('discord-api-types/v9');
+const { GatewayIntentBits } = require('discord-api-types/v10');
 const { token, guildId, channelId, messageId } = require('./auth.js');
 const { Client, ReactionCollector } = require('../src');
 

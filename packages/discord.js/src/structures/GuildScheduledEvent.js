@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { GuildScheduledEventStatus, GuildScheduledEventEntityType, RouteBases } = require('discord-api-types/v9');
+const { GuildScheduledEventStatus, GuildScheduledEventEntityType, RouteBases } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { Error } = require('../errors');
 
@@ -153,11 +153,15 @@ class GuildScheduledEvent extends Base {
       this.entityMetadata ??= null;
     }
 
-    /**
-     * The cover image hash for this scheduled event
-     * @type {?string}
-     */
-    this.image = data.image ?? null;
+    if ('image' in data) {
+      /**
+       * The cover image hash for this scheduled event
+       * @type {?string}
+       */
+      this.image = data.image;
+    } else {
+      this.image ??= null;
+    }
   }
 
   /**

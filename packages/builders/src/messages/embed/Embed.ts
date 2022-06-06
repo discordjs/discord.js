@@ -1,24 +1,27 @@
-import type { APIEmbedField } from 'discord-api-types/v9';
+import type { APIEmbedField } from 'discord-api-types/v10';
 import {
-	authorNamePredicate,
 	colorPredicate,
 	descriptionPredicate,
+	embedAuthorPredicate,
 	embedFieldsArrayPredicate,
-	footerTextPredicate,
+	embedFooterPredicate,
+	imageURLPredicate,
 	timestampPredicate,
 	titlePredicate,
 	urlPredicate,
 	validateFieldLength,
 } from './Assertions';
-import { EmbedAuthorOptions, EmbedFooterOptions, RGBTuple, UnsafeEmbed } from './UnsafeEmbed';
+import { EmbedAuthorOptions, EmbedFooterOptions, RGBTuple, UnsafeEmbedBuilder } from './UnsafeEmbed';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 
 /**
  * Represents a validated embed in a message (image/video preview, rich embed, etc.)
  */
-export class Embed extends UnsafeEmbed {
-	public override addFields(...fields: APIEmbedField[]): this {
+export class EmbedBuilder extends UnsafeEmbedBuilder {
+	public override addFields(...fields: RestOrArray<APIEmbedField>): this {
+		fields = normalizeArray(fields);
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(fields.length, this.fields);
+		validateFieldLength(fields.length, this.data.fields);
 
 		// Data assertions
 		return super.addFields(...embedFieldsArrayPredicate.parse(fields));
@@ -26,7 +29,7 @@ export class Embed extends UnsafeEmbed {
 
 	public override spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(fields.length - deleteCount, this.fields);
+		validateFieldLength(fields.length - deleteCount, this.data.fields);
 
 		// Data assertions
 		return super.spliceFields(index, deleteCount, ...embedFieldsArrayPredicate.parse(fields));
@@ -38,9 +41,7 @@ export class Embed extends UnsafeEmbed {
 		}
 
 		// Data assertions
-		authorNamePredicate.parse(options.name);
-		urlPredicate.parse(options.iconURL);
-		urlPredicate.parse(options.url);
+		embedAuthorPredicate.parse(options);
 
 		return super.setAuthor(options);
 	}
@@ -61,20 +62,19 @@ export class Embed extends UnsafeEmbed {
 		}
 
 		// Data assertions
-		footerTextPredicate.parse(options.text);
-		urlPredicate.parse(options.iconURL);
+		embedFooterPredicate.parse(options);
 
 		return super.setFooter(options);
 	}
 
 	public override setImage(url: string | null): this {
 		// Data assertions
-		return super.setImage(urlPredicate.parse(url)!);
+		return super.setImage(imageURLPredicate.parse(url)!);
 	}
 
 	public override setThumbnail(url: string | null): this {
 		// Data assertions
-		return super.setThumbnail(urlPredicate.parse(url)!);
+		return super.setThumbnail(imageURLPredicate.parse(url)!);
 	}
 
 	public override setTimestamp(timestamp: number | Date | null = Date.now()): this {

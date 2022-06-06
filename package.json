@@ -5,7 +5,7 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
-		"test": "turbo run test",
+		"test": "turbo run test && vitest run",
 		"lint": "turbo run lint",
 		"format": "turbo run format",
 		"fmt": "turbo run format",
@@ -38,13 +38,16 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^16.2.1",
-		"@commitlint/config-angular": "^16.2.1",
+		"@commitlint/cli": "^17.0.2",
+		"@commitlint/config-angular": "^17.0.0",
 		"@favware/npm-deprecate": "^1.0.4",
+		"c8": "^7.11.3",
 		"conventional-changelog-cli": "^2.2.2",
-		"husky": "^7.0.4",
-		"prettier": "^2.5.1",
-		"turbo": "1.1.4"
+		"husky": "^8.0.1",
+		"is-ci": "^3.0.1",
+		"prettier": "^2.6.2",
+		"turbo": "^1.2.16",
+		"vitest": "^0.13.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
@@ -52,5 +55,5 @@
 	"workspaces": [
 		"packages/*"
 	],
-	"packageManager": "yarn@3.1.1"
+	"packageManager": "yarn@3.2.1"
 }

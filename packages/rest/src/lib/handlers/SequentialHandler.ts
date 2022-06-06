@@ -1,14 +1,14 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
-import fetch, { RequestInit, Response } from 'node-fetch';
+import { request, type Dispatcher } from 'undici';
+import type { IHandler } from './IHandler';
+import type { RateLimitData, RequestOptions } from '../REST';
+import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
 import { DiscordAPIError, DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError';
 import { HTTPError } from '../errors/HTTPError';
 import { RateLimitError } from '../errors/RateLimitError';
-import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
 import { RESTEvents } from '../utils/constants';
-import { hasSublimit, parseResponse } from '../utils/utils';
-import type { RateLimitData } from '../REST';
-import type { IHandler } from './IHandler';
+import { hasSublimit, parseHeader, parseResponse } from '../utils/utils';
 
 /* Invalid request limiting is done on a per-IP basis, not a per-token basis.
  * The best we can do is track invalid counts process-wide (on the theory that
@@ -168,9 +168,9 @@ export class SequentialHandler implements IHandler {
 	public async queueRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestInit,
+		options: RequestOptions,
 		requestData: HandlerRequestData,
-	): Promise<unknown> {
+	): Promise<Dispatcher.ResponseData> {
 		let queue = this.#asyncQueue;
 		let queueType = QueueType.Standard;
 		// Separate sublimited requests when already sublimited
@@ -218,17 +218,17 @@ export class SequentialHandler implements IHandler {
 	 * The method that actually makes the request to the api, and updates info about the bucket accordingly
 	 * @param routeId The generalized api route with literal ids for major parameters
 	 * @param url The fully resolved url to make the request to
-	 * @param options The node-fetch options needed to make the request
+	 * @param options The fetch options needed to make the request
 	 * @param requestData Extra data from the user's request needed for errors and additional processing
 	 * @param retries The number of retries this request has already attempted (recursion)
 	 */
 	private async runRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestInit,
+		options: RequestOptions,
 		requestData: HandlerRequestData,
 		retries = 0,
-	): Promise<unknown> {
+	): Promise<Dispatcher.ResponseData> {
 		/*
 		 * After calculations have been done, pre-emptively stop further requests
 		 * Potentially loop until this task can run if e.g. the global rate limit is hit twice
@@ -287,26 +287,12 @@ export class SequentialHandler implements IHandler {
 
 		const method = options.method ?? 'get';
 
-		if (this.manager.listenerCount(RESTEvents.Request)) {
-			this.manager.emit(RESTEvents.Request, {
-				method,
-				path: routeId.original,
-				route: routeId.bucketRoute,
-				options,
-				data: requestData,
-				retries,
-			});
-		}
-
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), this.manager.options.timeout).unref();
-		let res: Response;
+		let res: Dispatcher.ResponseData;
 
 		try {
-			// node-fetch typings are a bit weird, so we have to cast to any to get the correct signature
-			// Type 'AbortSignal' is not assignable to type 'import("discord.js-modules/node_modules/@types/node-fetch/externals").AbortSignal'
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			res = await fetch(url, { ...options, signal: controller.signal as any });
+			res = await request(url, { ...options, signal: controller.signal });
 		} catch (error: unknown) {
 			// Retry the specified number of times for possible timed out requests
 			if (error instanceof Error && error.name === 'AbortError' && retries !== this.manager.options.retries) {
@@ -329,17 +315,18 @@ export class SequentialHandler implements IHandler {
 					data: requestData,
 					retries,
 				},
-				res.clone(),
+				{ ...res },
 			);
 		}
 
+		const status = res.statusCode;
 		let retryAfter = 0;
 
-		const limit = res.headers.get('X-RateLimit-Limit');
-		const remaining = res.headers.get('X-RateLimit-Remaining');
-		const reset = res.headers.get('X-RateLimit-Reset-After');
-		const hash = res.headers.get('X-RateLimit-Bucket');
-		const retry = res.headers.get('Retry-After');
+		const limit = parseHeader(res.headers['x-ratelimit-limit']);
+		const remaining = parseHeader(res.headers['x-ratelimit-remaining']);
+		const reset = parseHeader(res.headers['x-ratelimit-reset-after']);
+		const hash = parseHeader(res.headers['x-ratelimit-bucket']);
+		const retry = parseHeader(res.headers['retry-after']);
 
 		// Update the total number of requests that can be made before the rate limit resets
 		this.limit = limit ? Number(limit) : Infinity;
@@ -371,7 +358,7 @@ export class SequentialHandler implements IHandler {
 		// Handle retryAfter, which means we have actually hit a rate limit
 		let sublimitTimeout: number | null = null;
 		if (retryAfter > 0) {
-			if (res.headers.get('X-RateLimit-Global')) {
+			if (res.headers['x-ratelimit-global'] !== undefined) {
 				this.manager.globalRemaining = 0;
 				this.manager.globalReset = Date.now() + retryAfter;
 			} else if (!this.localLimited) {
@@ -385,7 +372,7 @@ export class SequentialHandler implements IHandler {
 		}
 
 		// Count the invalid requests
-		if (res.status === 401 || res.status === 403 || res.status === 429) {
+		if (status === 401 || status === 403 || status === 429) {
 			if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
 				invalidCountResetTime = Date.now() + 1000 * 60 * 10;
 				invalidCount = 0;
@@ -404,9 +391,9 @@ export class SequentialHandler implements IHandler {
 			}
 		}
 
-		if (res.ok) {
-			return parseResponse(res);
-		} else if (res.status === 429) {
+		if (status >= 200 && status < 300) {
+			return res;
+		} else if (status === 429) {
 			// A rate limit was hit - this may happen if the route isn't associated with an official bucket hash yet, or when first globally rate limited
 			const isGlobal = this.globalLimited;
 			let limit: number;
@@ -468,26 +455,26 @@ export class SequentialHandler implements IHandler {
 			}
 			// Since this is not a server side issue, the next request should pass, so we don't bump the retries counter
 			return this.runRequest(routeId, url, options, requestData, retries);
-		} else if (res.status >= 500 && res.status < 600) {
+		} else if (status >= 500 && status < 600) {
 			// Retry the specified number of times for possible server side issues
 			if (retries !== this.manager.options.retries) {
 				return this.runRequest(routeId, url, options, requestData, ++retries);
 			}
 			// We are out of retries, throw an error
-			throw new HTTPError(res.statusText, res.constructor.name, res.status, method, url, requestData);
+			throw new HTTPError(res.constructor.name, status, method, url, requestData);
 		} else {
 			// Handle possible malformed requests
-			if (res.status >= 400 && res.status < 500) {
+			if (status >= 400 && status < 500) {
 				// If we receive this status code, it means the token we had is no longer valid.
-				if (res.status === 401 && requestData.auth) {
+				if (status === 401 && requestData.auth) {
 					this.manager.setToken(null!);
 				}
 				// The request will not succeed for some reason, parse the error returned from the api
 				const data = (await parseResponse(res)) as DiscordErrorData | OAuthErrorData;
 				// throw the API error
-				throw new DiscordAPIError(data, 'code' in data ? data.code : data.error, res.status, method, url, requestData);
+				throw new DiscordAPIError(data, 'code' in data ? data.code : data.error, status, method, url, requestData);
 			}
-			return null;
+			return res;
 		}
 	}
 }

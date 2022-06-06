@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { InteractionType, Routes } = require('discord-api-types/v9');
+const { InteractionType, Routes } = require('discord-api-types/v10');
 const { TypeError, Error } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
 const MessageCollector = require('../MessageCollector');
@@ -61,10 +61,10 @@ class TextBasedChannel {
    * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
-   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to send with the message
+   * @property {FileOptions[]|BufferResolvable[]|Attachment[]} [files] Files to send with the message
    * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
-   * @property {MessageAttachment[]} [attachments] Attachments to send in the message
+   * @property {Array<JSONEncodable<AttachmentPayload>>} [attachments] Attachments to send in the message
    */
 
   /**
@@ -298,13 +298,13 @@ class TextBasedChannel {
       }
       if (messageIds.length === 0) return new Collection();
       if (messageIds.length === 1) {
-        await this.client.rest.delete(Routes.channelMessage(this.id, messageIds[0]));
         const message = this.client.actions.MessageDelete.getMessage(
           {
             message_id: messageIds[0],
           },
           this,
         );
+        await this.client.rest.delete(Routes.channelMessage(this.id, messageIds[0]));
         return message ? new Collection([[message.id, message]]) : new Collection();
       }
       await this.client.rest.post(Routes.channelBulkDelete(this.id), { body: { messages: messageIds } });
@@ -329,6 +329,44 @@ class TextBasedChannel {
     throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
 
+  /**
+   * Fetches all webhooks for the channel.
+   * @returns {Promise<Collection<Snowflake, Webhook>>}
+   * @example
+   * // Fetch webhooks
+   * channel.fetchWebhooks()
+   *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
+   *   .catch(console.error);
+   */
+  fetchWebhooks() {
+    return this.guild.channels.fetchWebhooks(this.id);
+  }
+
+  /**
+   * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
+   * @typedef {Object} ChannelWebhookCreateOptions
+   * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
+   * @property {string} [reason] Reason for creating the webhook
+   */
+
+  /**
+   * Creates a webhook for the channel.
+   * @param {string} name The name of the webhook
+   * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
+   * @returns {Promise<Webhook>} Returns the created Webhook
+   * @example
+   * // Create a webhook for the current channel
+   * channel.createWebhook('Snek', {
+   *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
+   *   reason: 'Needed a cool new Webhook'
+   * })
+   *   .then(console.log)
+   *   .catch(console.error)
+   */
+  createWebhook(name, options = {}) {
+    return this.guild.channels.createWebhook(this.id, name, options);
+  }
+
   static applyToClass(structure, full = false, ignore = []) {
     const props = ['send'];
     if (full) {
@@ -341,6 +379,8 @@ class TextBasedChannel {
         'awaitMessages',
         'createMessageComponentCollector',
         'awaitMessageComponent',
+        'fetchWebhooks',
+        'createWebhook',
       );
     }
     for (const prop of props) {

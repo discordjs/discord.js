@@ -1,4 +1,5 @@
-import { APIApplicationCommandOptionChoice, ChannelType } from 'discord-api-types/v9';
+import { APIApplicationCommandOptionChoice, ChannelType, PermissionFlagsBits } from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
 import {
 	SlashCommandAssertions,
 	SlashCommandBooleanOption,
@@ -313,8 +314,10 @@ describe('Slash Commands', () => {
 				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(true)).toThrowError();
 
+				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(null)).toThrowError();
 
+				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(undefined)).toThrowError();
 
 				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
@@ -418,6 +421,84 @@ describe('Slash Commands', () => {
 		describe('Subcommand builder', () => {
 			test('GIVEN a valid subcommand with options THEN does not throw error', () => {
 				expect(() => getSubcommand().addBooleanOption(getBooleanOption()).toJSON()).not.toThrowError();
+			});
+		});
+
+		describe('Slash command localizations', () => {
+			const expectedSingleLocale = { 'en-US': 'foobar' };
+			const expectedMultipleLocales = {
+				...expectedSingleLocale,
+				bg: 'test',
+			};
+
+			test('GIVEN valid name localizations THEN does not throw error', () => {
+				expect(() => getBuilder().setNameLocalization('en-US', 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+			});
+
+			test('GIVEN invalid name localizations THEN does throw error', () => {
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
+				// @ts-expect-error
+				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
+			});
+
+			test('GIVEN valid name localizations THEN valid data is stored', () => {
+				expect(getBuilder().setNameLocalization('en-US', 'foobar').name_localizations).toEqual(expectedSingleLocale);
+				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).name_localizations).toEqual(
+					expectedMultipleLocales,
+				);
+				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
+				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
+					'en-US': null,
+				});
+			});
+
+			test('GIVEN valid description localizations THEN does not throw error', () => {
+				expect(() => getBuilder().setDescriptionLocalization('en-US', 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+			});
+
+			test('GIVEN invalid description localizations THEN does throw error', () => {
+				// @ts-expect-error
+				expect(() => getBuilder().setDescriptionLocalization('en-U', 'foobar')).toThrowError();
+				// @ts-expect-error
+				expect(() => getBuilder().setDescriptionLocalizations({ 'en-U': 'foobar' })).toThrowError();
+			});
+
+			test('GIVEN valid description localizations THEN valid data is stored', () => {
+				expect(getBuilder().setDescriptionLocalization('en-US', 'foobar').description_localizations).toEqual(
+					expectedSingleLocale,
+				);
+				expect(
+					getBuilder().setDescriptionLocalizations({ 'en-US': 'foobar', bg: 'test' }).description_localizations,
+				).toEqual(expectedMultipleLocales);
+				expect(getBuilder().setDescriptionLocalizations(null).description_localizations).toBeNull();
+				expect(getBuilder().setDescriptionLocalization('en-US', null).description_localizations).toEqual({
+					'en-US': null,
+				});
+			});
+		});
+
+		describe('permissions', () => {
+			test('GIVEN valid permission string THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1')).not.toThrowError();
+			});
+
+			test('GIVEN valid permission bitfield THEN does not throw error', () => {
+				expect(() =>
+					getBuilder().setDefaultMemberPermissions(PermissionFlagsBits.AddReactions | PermissionFlagsBits.AttachFiles),
+				).not.toThrowError();
+			});
+
+			test('GIVEN null permissions THEN does not throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions(null)).not.toThrowError();
+			});
+
+			test('GIVEN invalid inputs THEN does throw error', () => {
+				expect(() => getBuilder().setDefaultMemberPermissions('1.1')).toThrowError();
+
+				expect(() => getBuilder().setDefaultMemberPermissions(1.1)).toThrowError();
 			});
 		});
 	});

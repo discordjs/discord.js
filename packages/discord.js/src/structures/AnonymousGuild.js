@@ -70,6 +70,8 @@ class AnonymousGuild extends BaseGuild {
        * @type {?number}
        */
       this.premiumSubscriptionCount = data.premium_subscription_count;
+    } else {
+      this.premiumSubscriptionCount ??= null;
     }
   }
 

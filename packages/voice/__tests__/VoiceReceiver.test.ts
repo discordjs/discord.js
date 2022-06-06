@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { VoiceReceiver } from '../src/receive/VoiceReceiver';
-import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
-import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
 import { once } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
+import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
+import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
+import { VoiceReceiver } from '../src/receive/VoiceReceiver';
 import { methods } from '../src/util/Secretbox';
 
 jest.mock('../src/VoiceConnection');
@@ -88,7 +88,7 @@ describe('VoiceReceiver', () => {
 		receiver['onUdpMessage'](RTP_PACKET_DESKTOP.packet);
 		await nextTick();
 		await expect(errorEvent).resolves.toMatchObject([expect.any(Error)]);
-		expect(receiver.subscriptions.size).toBe(0);
+		expect(receiver.subscriptions.size).toEqual(0);
 	});
 
 	test('subscribe: only allows one subscribe stream per SSRC', () => {
@@ -99,7 +99,7 @@ describe('VoiceReceiver', () => {
 		}));
 
 		const stream = receiver.subscribe('123');
-		expect(receiver.subscribe('123')).toBe(stream);
+		expect(receiver.subscribe('123')).toEqual(stream);
 	});
 
 	describe('onWsPacket', () => {
@@ -177,8 +177,8 @@ describe('VoiceReceiver', () => {
 			const decrypted = receiver['decrypt'](buffer, 'xsalsa20_poly1305_lite', nonce, secretKey);
 
 			// Assert
-			expect(nonce.equals(range(29, 32))).toBe(true);
-			expect(decrypted.equals(range(13, 28))).toBe(true);
+			expect(nonce.equals(range(29, 32))).toEqual(true);
+			expect(decrypted.equals(range(13, 28))).toEqual(true);
 		});
 
 		test('decrypt: xsalsa20_poly1305_suffix', () => {
@@ -190,8 +190,8 @@ describe('VoiceReceiver', () => {
 			const decrypted = receiver['decrypt'](buffer, 'xsalsa20_poly1305_suffix', nonce, secretKey);
 
 			// Assert
-			expect(nonce.equals(range(41, 64))).toBe(true);
-			expect(decrypted.equals(range(13, 40))).toBe(true);
+			expect(nonce.equals(range(41, 64))).toEqual(true);
+			expect(decrypted.equals(range(13, 40))).toEqual(true);
 		});
 
 		test('decrypt: xsalsa20_poly1305', () => {
@@ -203,8 +203,8 @@ describe('VoiceReceiver', () => {
 			const decrypted = receiver['decrypt'](buffer, 'xsalsa20_poly1305', nonce, secretKey);
 
 			// Assert
-			expect(nonce.equals(range(1, 12))).toBe(true);
-			expect(decrypted.equals(range(13, 64))).toBe(true);
+			expect(nonce.equals(range(1, 12))).toEqual(true);
+			expect(decrypted.equals(range(13, 64))).toEqual(true);
 		});
 	});
 });

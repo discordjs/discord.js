@@ -1,11 +1,11 @@
-import { APIApplicationCommandIntegerOption, ApplicationCommandOptionType } from 'discord-api-types/v9';
+import { s } from '@sapphire/shapeshift';
+import { APIApplicationCommandIntegerOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
-import { z } from 'zod';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
 import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin';
 
-const numberValidator = z.number().int();
+const numberValidator = s.number.int;
 
 @mix(ApplicationCommandNumericOptionMinMaxValueMixin, ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
 export class SlashCommandIntegerOption

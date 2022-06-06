@@ -1,10 +1,14 @@
 'use strict';
 
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, WebhookType } = require('discord-api-types/v9');
+const { Routes, WebhookType } = require('discord-api-types/v10');
 const MessagePayload = require('./MessagePayload');
 const { Error } = require('../errors');
 const DataResolver = require('../util/DataResolver');
+const { lazy } = require('../util/Util');
+
+const getMessage = lazy(() => require('./Message').Message);
 
 /**
  * Represents a webhook.
@@ -131,9 +135,10 @@ class Webhook {
    * @typedef {Object} WebhookEditMessageOptions
    * @property {Embed[]|APIEmbed[]} [embeds] See {@link WebhookMessageOptions#embeds}
    * @property {string} [content] See {@link BaseMessageOptions#content}
-   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] See {@link BaseMessageOptions#files}
+   * @property {JSONEncodable<AttachmentPayload>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
+   * See {@link BaseMessageOptions#files}
    * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
-   * @property {MessageAttachment[]} [attachments] Attachments to send with the message
+   * @property {Attachment[]} [attachments] Attachments to send with the message
    * @property {ActionRow[]|ActionRowOptions[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
@@ -143,7 +148,7 @@ class Webhook {
   /**
    * Sends a message with this webhook.
    * @param {string|MessagePayload|WebhookMessageOptions} options The options to provide
-   * @returns {Promise<Message|APIMessage>}
+   * @returns {Promise<Message>}
    * @example
    * // Send a basic message
    * webhook.send('hello!')
@@ -199,15 +204,14 @@ class Webhook {
       messagePayload = MessagePayload.create(this, options).resolveBody();
     }
 
-    const query = new URLSearchParams({ wait: true });
-
-    if (messagePayload.options.threadId) {
-      query.set('thread_id', messagePayload.options.threadId);
-    }
+    const query = makeURLSearchParams({
+      wait: true,
+      thread_id: messagePayload.options.threadId,
+    });
 
     const { body, files } = await messagePayload.resolveFiles();
     const d = await this.client.rest.post(Routes.webhook(this.id, this.token), { body, files, query, auth: false });
-    return this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? d;
+    return this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? new (getMessage())(this.client, d);
   }
 
   /**
@@ -232,7 +236,7 @@ class Webhook {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     const data = await this.client.rest.post(Routes.webhookPlatform(this.id, this.token, 'slack'), {
-      query: new URLSearchParams({ wait: true }),
+      query: makeURLSearchParams({ wait: true }),
       auth: false,
       body,
     });
@@ -282,29 +286,26 @@ class Webhook {
    * Gets a message that was sent by this webhook.
    * @param {Snowflake|'@original'} message The id of the message to fetch
    * @param {WebhookFetchMessageOptions} [options={}] The options to provide to fetch the message.
-   * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
-   * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
+   * @returns {Promise<Message>} Returns the message sent by this webhook
    */
   async fetchMessage(message, { cache = true, threadId } = {}) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     const data = await this.client.rest.get(Routes.webhookMessage(this.id, this.token, message), {
-      query: threadId
-        ? new URLSearchParams({
-            thread_id: threadId,
-          })
-        : undefined,
+      query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined,
       auth: false,
     });
-    return this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ?? data;
+    return (
+      this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ??
+      new (getMessage())(this.client, data)
+    );
   }
 
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
    * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
-   * @returns {Promise<Message|APIMessage>} Returns the raw message data if the webhook was instantiated as a
-   * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
+   * @returns {Promise<Message>} Returns the message edited by this webhook
    */
   async editMessage(message, options) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
@@ -322,16 +323,14 @@ class Webhook {
         body,
         files,
         query: messagePayload.options.threadId
-          ? new URLSearchParams({
-              thread_id: messagePayload.options.threadId,
-            })
+          ? makeURLSearchParams({ thread_id: messagePayload.options.threadId })
           : undefined,
         auth: false,
       },
     );
 
     const messageManager = this.client.channels?.cache.get(d.channel_id)?.messages;
-    if (!messageManager) return d;
+    if (!messageManager) return new (getMessage())(this.client, d);
 
     const existing = messageManager.cache.get(d.id);
     if (!existing) return messageManager._add(d);
@@ -362,11 +361,7 @@ class Webhook {
     await this.client.rest.delete(
       Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id),
       {
-        query: threadId
-          ? new URLSearchParams({
-              thread_id: threadId,
-            })
-          : undefined,
+        query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined,
         auth: false,
       },
     );

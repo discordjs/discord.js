@@ -1,13 +1,15 @@
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v9';
-import { z } from 'zod';
-import { validateChoicesLength } from '../Assertions';
+import { s } from '@sapphire/shapeshift';
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { localizationMapPredicate, validateChoicesLength } from '../Assertions';
 
-const stringPredicate = z.string().min(1).max(100);
-const numberPredicate = z.number().gt(-Infinity).lt(Infinity);
-const choicesPredicate = z
-	.object({ name: stringPredicate, value: z.union([stringPredicate, numberPredicate]) })
-	.array();
-const booleanPredicate = z.boolean();
+const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
+const numberPredicate = s.number.greaterThan(-Infinity).lessThan(Infinity);
+const choicesPredicate = s.object({
+	name: stringPredicate,
+	name_localizations: localizationMapPredicate,
+	value: s.union(stringPredicate, numberPredicate),
+}).array;
+const booleanPredicate = s.boolean;
 
 export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends string | number> {
 	public readonly choices?: APIApplicationCommandOptionChoice<T>[];
@@ -34,7 +36,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 
 		validateChoicesLength(choices.length, this.choices);
 
-		for (const { name, value } of choices) {
+		for (const { name, name_localizations, value } of choices) {
 			// Validate the value
 			if (this.type === ApplicationCommandOptionType.String) {
 				stringPredicate.parse(value);
@@ -42,7 +44,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 				numberPredicate.parse(value);
 			}
 
-			this.choices!.push({ name, value });
+			this.choices!.push({ name, name_localizations, value });
 		}
 
 		return this;

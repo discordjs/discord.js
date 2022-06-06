@@ -1,15 +1,14 @@
 {
 	"name": "@discordjs/rest",
-	"version": "0.4.0-dev",
+	"version": "0.6.0-dev",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"build": "tsup && tsc --emitDeclarationOnly --incremental",
-		"test": "jest --pass-with-no-tests --collect-coverage",
 		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
-		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
+		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && ts-docgen -i docs/typedoc-out.json -c docs/index.yml -o docs/docs.json",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'"
+		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -51,35 +50,24 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
-		"@sapphire/async-queue": "^1.2.0",
-		"@sapphire/snowflake": "^3.1.0",
-		"@types/node-fetch": "^2.5.12",
-		"discord-api-types": "^0.27.0",
-		"form-data": "^4.0.0",
-		"node-fetch": "^2.6.7",
-		"tslib": "^2.3.1"
+		"@sapphire/async-queue": "^1.3.1",
+		"@sapphire/snowflake": "^3.2.2",
+		"discord-api-types": "^0.33.3",
+		"tslib": "^2.4.0",
+		"undici": "^5.4.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.17.2",
-		"@babel/plugin-proposal-decorators": "^7.17.2",
-		"@babel/preset-env": "^7.16.11",
-		"@babel/preset-typescript": "^7.16.7",
-		"@discordjs/ts-docgen": "^0.3.4",
-		"@types/jest": "^27.4.0",
-		"@typescript-eslint/eslint-plugin": "^5.11.0",
-		"@typescript-eslint/parser": "^5.11.0",
-		"babel-plugin-const-enum": "^1.2.0",
-		"babel-plugin-transform-typescript-metadata": "^0.3.2",
-		"eslint": "^8.9.0",
-		"eslint-config-marine": "^9.3.2",
-		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-prettier": "^4.0.0",
-		"jest": "^27.5.1",
-		"nock": "^13.2.4",
-		"prettier": "^2.5.1",
-		"tsup": "^5.11.13",
-		"typedoc": "^0.22.11",
-		"typescript": "^4.5.5"
+		"@discordjs/scripts": "workspace:^",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"eslint": "^8.17.0",
+		"eslint-config-marine": "^9.4.1",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-import": "^2.26.0",
+		"prettier": "^2.6.2",
+		"tsup": "^6.0.1",
+		"typedoc": "^0.22.17",
+		"typescript": "^4.7.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"

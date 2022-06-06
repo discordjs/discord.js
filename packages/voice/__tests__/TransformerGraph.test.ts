@@ -26,9 +26,9 @@ describe('findPipeline (no constraints)', () => {
 			const pipeline = findPipeline(type, noConstraint);
 			const path = reducePath(pipeline);
 			expect(path.length).toBeGreaterThanOrEqual(2);
-			expect(path[0]).toBe(type);
-			expect(path.pop()).toBe(StreamType.Opus);
-			expect(pipeline.some(isVolume)).toBe(false);
+			expect(path[0]).toEqual(type);
+			expect(path.pop()).toEqual(StreamType.Opus);
+			expect(pipeline.some(isVolume)).toEqual(false);
 		},
 	);
 
@@ -42,8 +42,8 @@ describe('findPipeline (volume constraint)', () => {
 		const pipeline = findPipeline(type, containsVolume);
 		const path = reducePath(pipeline);
 		expect(path.length).toBeGreaterThanOrEqual(2);
-		expect(path[0]).toBe(type);
-		expect(path.pop()).toBe(StreamType.Opus);
-		expect(pipeline.some(isVolume)).toBe(true);
+		expect(path[0]).toEqual(type);
+		expect(path.pop()).toEqual(StreamType.Opus);
+		expect(pipeline.some(isVolume)).toEqual(true);
 	});
 });

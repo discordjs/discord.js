@@ -1,6 +1,6 @@
 'use strict';
 
-const { ApplicationCommandOptionType } = require('discord-api-types/v9');
+const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const { TypeError } = require('../errors');
 
 /**
@@ -220,7 +220,7 @@ class CommandInteractionOptionResolver {
    * Gets an attachment option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?MessageAttachment} The value of the option, or null if not set and not required.
+   * @returns {?Attachment} The value of the option, or null if not set and not required.
    */
   getAttachment(name, required = false) {
     const option = this._getTypedOption(name, ApplicationCommandOptionType.Attachment, ['attachment'], required);
@@ -248,7 +248,7 @@ class CommandInteractionOptionResolver {
    * Gets a message option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(Message|APIMessage)}
+   * @returns {?Message}
    * The value of the option, or null if not set and not required.
    */
   getMessage(name, required = false) {

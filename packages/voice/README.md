@@ -9,8 +9,6 @@
 		<a href="https://www.npmjs.com/package/@discordjs/voice"><img src="https://img.shields.io/npm/v/@discordjs/voice.svg?maxAge=3600" alt="npm version" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/voice"><img src="https://img.shields.io/npm/dt/@discordjs/voice.svg?maxAge=3600" alt="npm downloads" /></a>
 		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/test.yml/badge.svg" alt="Build status" /></a>
-		<a href="https://codecov.io/gh/discordjs/voice"><img src="https://codecov.io/gh/discordjs/voice/branch/main/graph/badge.svg" alt="Code coverage" /></a>
-		<a href="https://www.patreon.com/discordjs"><img src="https://img.shields.io/badge/donate-patreon-F96854.svg" alt="Patreon" /></a>
 	</p>
 </div>
 
@@ -47,6 +45,7 @@ try installing another.
 
 **Encryption Libraries (npm install):**
 
+- `sodium-native`: ^3.3.0
 - `sodium`: ^3.0.2
 - `tweetnacl`: ^1.0.3
 - `libsodium-wrappers`: ^0.7.9
@@ -65,10 +64,14 @@ try installing another.
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 - [Documentation](https://discord.js.org/#/docs/voice)
-- [Examples](https://github.com/discordjs/discord.js/tree/main/packages/voice/examples)
+- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
+  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
+- [Discord API Discord server](https://discord.gg/discord-api)
 - [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/voice)
 - [npm](https://www.npmjs.com/package/@discordjs/voice)
+- [Related libraries](https://discord.com/developers/docs/topics/community-resources#libraries)
+- [Examples](https://github.com/discordjs/discord.js/tree/main/packages/voice/examples)
 
 ## Contributing
 

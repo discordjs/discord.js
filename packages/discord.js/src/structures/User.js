@@ -1,5 +1,6 @@
 'use strict';
 
+const { userMention } = require('@discordjs/builders');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
@@ -210,7 +211,7 @@ class User extends Base {
    * @returns {Promise<DMChannel>}
    */
   createDM(force = false) {
-    return this.client.users.createDM(this.id, force);
+    return this.client.users.createDM(this.id, { force });
   }
 
   /**
@@ -286,7 +287,7 @@ class User extends Base {
    * console.log(`Hello from ${user}!`);
    */
   toString() {
-    return `<@${this.id}>`;
+    return userMention(this.id);
   }
 
   toJSON(...props) {

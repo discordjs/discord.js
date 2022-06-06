@@ -1,15 +1,14 @@
 {
 	"name": "@discordjs/collection",
-	"version": "0.6.0-dev",
+	"version": "0.8.0-dev",
 	"description": "Utility data structure used in discord.js",
 	"scripts": {
-		"test": "jest --pass-with-no-tests",
 		"build": "tsup",
 		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
-		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && node scripts/docs.mjs",
+		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && ts-docgen -i docs/typedoc-out.json -c docs/index.yml -o docs/docs.json",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/collection/*'"
+		"changelog": "git cliff --prepend ./CHANGELOG.md -l -c ./cliff.toml -r ../../ --include-path 'packages/collection/*'"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -48,23 +47,18 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@babel/core": "^7.17.2",
-		"@babel/preset-env": "^7.16.11",
-		"@babel/preset-typescript": "^7.16.7",
-		"@discordjs/ts-docgen": "^0.3.4",
-		"@types/jest": "^27.4.0",
-		"@types/node": "^16.11.24",
-		"@typescript-eslint/eslint-plugin": "^5.11.0",
-		"@typescript-eslint/parser": "^5.11.0",
-		"eslint": "^8.9.0",
-		"eslint-config-marine": "^9.3.2",
-		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-prettier": "^4.0.0",
-		"jest": "^27.5.1",
-		"prettier": "^2.5.1",
-		"tsup": "^5.11.13",
-		"typedoc": "^0.22.11",
-		"typescript": "^4.5.5"
+		"@discordjs/scripts": "workspace:^",
+		"@types/node": "^16.11.38",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"eslint": "^8.17.0",
+		"eslint-config-marine": "^9.4.1",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-import": "^2.26.0",
+		"prettier": "^2.6.2",
+		"tsup": "^6.0.1",
+		"typedoc": "^0.22.17",
+		"typescript": "^4.7.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"

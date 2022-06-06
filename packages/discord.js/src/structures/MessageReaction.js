@@ -1,6 +1,6 @@
 'use strict';
 
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const GuildEmoji = require('./GuildEmoji');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserManager = require('../managers/ReactionUserManager');
@@ -50,6 +50,14 @@ class MessageReaction {
        */
       this.count ??= data.count;
     }
+  }
+
+  /**
+   * Makes the client user react with this reaction
+   * @returns {Promise<MessageReaction>}
+   */
+  react() {
+    return this.message.react(this.emoji);
   }
 
   /**

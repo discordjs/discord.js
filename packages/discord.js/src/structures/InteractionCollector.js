@@ -14,6 +14,8 @@ const Events = require('../util/Events');
  * @property {number} [maxComponents] The maximum number of components to collect
  * @property {number} [maxUsers] The maximum number of users to interact
  * @property {Message|APIMessage} [message] The message to listen to interactions from
+ * @property {InteractionResponse} interactionResponse The interaction response to listen
+ * to message component interactions from
  */
 
 /**
@@ -41,11 +43,18 @@ class InteractionCollector extends Collector {
     this.messageId = options.message?.id ?? null;
 
     /**
+     * The message interaction id from which to collect interactions, if provided
+     * @type {?Snowflake}
+     */
+    this.messageInteractionId = options.interactionResponse?.id ?? null;
+
+    /**
      * The channel from which to collect interactions, if provided
      * @type {?Snowflake}
      */
     this.channelId =
-      this.client.channels.resolveId(options.message?.channel) ??
+      options.interactionResponse?.interaction.channelId ??
+      options.message?.channelId ??
       options.message?.channel_id ??
       this.client.channels.resolveId(options.channel);
 
@@ -54,7 +63,8 @@ class InteractionCollector extends Collector {
      * @type {?Snowflake}
      */
     this.guildId =
-      this.client.guilds.resolveId(options.message?.guild) ??
+      options.interactionResponse?.interaction.guildId ??
+      options.message?.guildId ??
       options.message?.guild_id ??
       this.client.guilds.resolveId(options.channel?.guild) ??
       this.client.guilds.resolveId(options.guild);
@@ -83,14 +93,13 @@ class InteractionCollector extends Collector {
      */
     this.total = 0;
 
-    this.empty = this.empty.bind(this);
     this.client.incrementMaxListeners();
 
     const bulkDeleteListener = messages => {
       if (messages.has(this.messageId)) this.stop('messageDelete');
     };
 
-    if (this.messageId) {
+    if (this.messageId || this.messageInteractionId) {
       this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
       this.client.on(Events.MessageDelete, this._handleMessageDeletion);
       this.client.on(Events.MessageBulkDelete, bulkDeleteListener);
@@ -141,6 +150,7 @@ class InteractionCollector extends Collector {
     if (this.interactionType && interaction.type !== this.interactionType) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
+    if (this.messageInteractionId && interaction.message?.interaction?.id !== this.messageInteractionId) return null;
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 
@@ -161,6 +171,7 @@ class InteractionCollector extends Collector {
     if (this.type && interaction.type !== this.type) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
+    if (this.messageInteractionId && interaction.message?.interaction?.id !== this.messageInteractionId) return null;
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 
@@ -186,7 +197,7 @@ class InteractionCollector extends Collector {
     if (this.options.max && this.total >= this.options.max) return 'limit';
     if (this.options.maxComponents && this.collected.size >= this.options.maxComponents) return 'componentLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
-    return null;
+    return super.endReason;
   }
 
   /**
@@ -197,6 +208,10 @@ class InteractionCollector extends Collector {
    */
   _handleMessageDeletion(message) {
     if (message.id === this.messageId) {
+      this.stop('messageDelete');
+    }
+
+    if (message.interaction?.id === this.messageInteractionId) {
       this.stop('messageDelete');
     }
   }

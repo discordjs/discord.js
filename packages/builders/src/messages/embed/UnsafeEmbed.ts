@@ -1,13 +1,5 @@
-import type {
-	APIEmbed,
-	APIEmbedAuthor,
-	APIEmbedField,
-	APIEmbedFooter,
-	APIEmbedImage,
-	APIEmbedVideo,
-} from 'discord-api-types/v9';
-import type { Equatable } from '../../util/equatable';
-import isEqual from 'fast-deep-equal';
+import type { APIEmbed, APIEmbedAuthor, APIEmbedField, APIEmbedFooter, APIEmbedImage } from 'discord-api-types/v10';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 
 export type RGBTuple = [red: number, green: number, blue: number];
 
@@ -40,7 +32,7 @@ export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
 /**
  * Represents a non-validated embed in a message (image/video preview, rich embed, etc.)
  */
-export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
+export class UnsafeEmbedBuilder {
 	public readonly data: APIEmbed;
 
 	public constructor(data: APIEmbed = {}) {
@@ -49,138 +41,12 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	}
 
 	/**
-	 * An array of fields of this embed
-	 */
-	public get fields() {
-		return this.data.fields;
-	}
-
-	/**
-	 * The embed title
-	 */
-	public get title() {
-		return this.data.title;
-	}
-
-	/**
-	 * The embed description
-	 */
-	public get description() {
-		return this.data.description;
-	}
-
-	/**
-	 * The embed URL
-	 */
-	public get url() {
-		return this.data.url;
-	}
-
-	/**
-	 * The embed color
-	 */
-	public get color() {
-		return this.data.color;
-	}
-
-	/**
-	 * The timestamp of the embed in an ISO 8601 format
-	 */
-	public get timestamp() {
-		return this.data.timestamp;
-	}
-
-	/**
-	 * The embed thumbnail data
-	 */
-	public get thumbnail(): EmbedImageData | undefined {
-		if (!this.data.thumbnail) return undefined;
-		return {
-			url: this.data.thumbnail.url,
-			proxyURL: this.data.thumbnail.proxy_url,
-			height: this.data.thumbnail.height,
-			width: this.data.thumbnail.width,
-		};
-	}
-
-	/**
-	 * The embed image data
-	 */
-	public get image(): EmbedImageData | undefined {
-		if (!this.data.image) return undefined;
-		return {
-			url: this.data.image.url,
-			proxyURL: this.data.image.proxy_url,
-			height: this.data.image.height,
-			width: this.data.image.width,
-		};
-	}
-
-	/**
-	 * Received video data
-	 */
-	public get video(): APIEmbedVideo | undefined {
-		return this.data.video;
-	}
-
-	/**
-	 * The embed author data
-	 */
-	public get author(): EmbedAuthorData | undefined {
-		if (!this.data.author) return undefined;
-		return {
-			name: this.data.author.name,
-			url: this.data.author.url,
-			iconURL: this.data.author.icon_url,
-			proxyIconURL: this.data.author.proxy_icon_url,
-		};
-	}
-
-	/**
-	 * Received data about the embed provider
-	 */
-	public get provider() {
-		return this.data.provider;
-	}
-
-	/**
-	 * The embed footer data
-	 */
-	public get footer(): EmbedFooterData | undefined {
-		if (!this.data.footer) return undefined;
-		return {
-			text: this.data.footer.text,
-			iconURL: this.data.footer.icon_url,
-			proxyIconURL: this.data.footer.proxy_icon_url,
-		};
-	}
-
-	/**
-	 * The accumulated length for the embed title, description, fields, footer text, and author name
-	 */
-	public get length(): number {
-		return (
-			(this.data.title?.length ?? 0) +
-			(this.data.description?.length ?? 0) +
-			(this.data.fields?.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) ?? 0) +
-			(this.data.footer?.text.length ?? 0) +
-			(this.data.author?.name.length ?? 0)
-		);
-	}
-
-	/**
-	 * The hex color of the current color of the embed
-	 */
-	public get hexColor() {
-		return typeof this.data.color === 'number' ? `#${this.data.color.toString(16).padStart(6, '0')}` : this.data.color;
-	}
-
-	/**
 	 * Adds fields to the embed (max 25)
 	 *
 	 * @param fields The fields to add
 	 */
-	public addFields(...fields: APIEmbedField[]): this {
+	public addFields(...fields: RestOrArray<APIEmbedField>): this {
+		fields = normalizeArray(fields);
 		if (this.data.fields) this.data.fields.push(...fields);
 		else this.data.fields = fields;
 		return this;
@@ -203,8 +69,8 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 * Sets the embed's fields (max 25).
 	 * @param fields The fields to set
 	 */
-	public setFields(...fields: APIEmbedField[]) {
-		this.spliceFields(0, this.fields?.length ?? 0, ...fields);
+	public setFields(...fields: RestOrArray<APIEmbedField>) {
+		this.spliceFields(0, this.data.fields?.length ?? 0, ...normalizeArray(fields));
 		return this;
 	}
 
@@ -318,12 +184,5 @@ export class UnsafeEmbed implements Equatable<APIEmbed | UnsafeEmbed> {
 	 */
 	public toJSON(): APIEmbed {
 		return { ...this.data };
-	}
-
-	public equals(other: UnsafeEmbed | APIEmbed) {
-		const { image: thisImage, thumbnail: thisThumbnail, ...thisData } = this.data;
-		const data = other instanceof UnsafeEmbed ? other.data : other;
-		const { image, thumbnail, ...otherData } = data;
-		return isEqual(otherData, thisData) && image?.url === thisImage?.url && thumbnail?.url === thisThumbnail?.url;
 	}
 }

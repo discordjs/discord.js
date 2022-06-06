@@ -1,4 +1,4 @@
-import { APIApplicationCommandBooleanOption, ApplicationCommandOptionType } from 'discord-api-types/v9';
+import { APIApplicationCommandBooleanOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
 
 export class SlashCommandBooleanOption extends ApplicationCommandOptionBase {

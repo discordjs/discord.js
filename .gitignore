@@ -26,6 +26,7 @@ dist/
 .DS_Store
 .turbo
 tsconfig.tsbuildinfo
+coverage/
 
 # yarn
 .pnp.*

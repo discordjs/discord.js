@@ -1,6 +1,6 @@
 'use strict';
 
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 const IntegrationApplication = require('./IntegrationApplication');
 
@@ -52,9 +52,9 @@ class Integration extends Base {
 
     /**
      * Whether this integration is enabled
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.enabled = data.enabled;
+    this.enabled = data.enabled ?? null;
 
     if ('syncing' in data) {
       /**

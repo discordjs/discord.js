@@ -1,37 +1,41 @@
-import { APIBaseComponent, APIMessageComponent, APIModalComponent, ComponentType } from 'discord-api-types/v9';
-import { ActionRow, ButtonComponent, Component, SelectMenuComponent, TextInputComponent } from '../index';
-import type { MessageComponent, ModalActionRowComponent } from './ActionRow';
+import { APIMessageComponent, APIModalComponent, ComponentType } from 'discord-api-types/v10';
+import type { AnyComponentBuilder, MessageComponentBuilder, ModalComponentBuilder } from './ActionRow';
+import { ActionRowBuilder, ButtonBuilder, ComponentBuilder, SelectMenuBuilder, TextInputBuilder } from '../index';
 
 export interface MappedComponentTypes {
-	[ComponentType.ActionRow]: ActionRow;
-	[ComponentType.Button]: ButtonComponent;
-	[ComponentType.SelectMenu]: SelectMenuComponent;
-	[ComponentType.TextInput]: TextInputComponent;
+	[ComponentType.ActionRow]: ActionRowBuilder<AnyComponentBuilder>;
+	[ComponentType.Button]: ButtonBuilder;
+	[ComponentType.SelectMenu]: SelectMenuBuilder;
+	[ComponentType.TextInput]: TextInputBuilder;
 }
 
 /**
  * Factory for creating components from API data
  * @param data The api data to transform to a component class
  */
-export function createComponent<T extends keyof MappedComponentTypes>(
+export function createComponentBuilder<T extends keyof MappedComponentTypes>(
 	data: (APIMessageComponent | APIModalComponent) & { type: T },
 ): MappedComponentTypes[T];
-export function createComponent<C extends MessageComponent | ModalActionRowComponent>(data: C): C;
-export function createComponent(data: APIModalComponent | APIMessageComponent | Component): Component {
-	if (data instanceof Component) {
+export function createComponentBuilder<C extends MessageComponentBuilder | ModalComponentBuilder>(data: C): C;
+export function createComponentBuilder(
+	data: APIMessageComponent | APIModalComponent | MessageComponentBuilder,
+): ComponentBuilder {
+	if (data instanceof ComponentBuilder) {
 		return data;
 	}
 
 	switch (data.type) {
 		case ComponentType.ActionRow:
-			return new ActionRow(data);
+			return new ActionRowBuilder(data);
 		case ComponentType.Button:
-			return new ButtonComponent(data);
+			return new ButtonBuilder(data);
 		case ComponentType.SelectMenu:
-			return new SelectMenuComponent(data);
+			return new SelectMenuBuilder(data);
 		case ComponentType.TextInput:
-			return new TextInputComponent(data);
+			return new TextInputBuilder(data);
 		default:
-			throw new Error(`Cannot serialize component type: ${(data as APIBaseComponent<ComponentType>).type}`);
+			// @ts-expect-error
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }

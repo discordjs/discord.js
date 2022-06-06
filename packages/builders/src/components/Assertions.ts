@@ -1,43 +1,55 @@
-import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v9';
-import { z } from 'zod';
-import type { SelectMenuOption } from './selectMenu/SelectMenuOption';
+import { s } from '@sapphire/shapeshift';
+import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v10';
+import type { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
+import { UnsafeSelectMenuOptionBuilder } from './selectMenu/UnsafeSelectMenuOption';
 
-export const customIdValidator = z.string().min(1).max(100);
+export const customIdValidator = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 
-export const emojiValidator = z
-	.object({
-		id: z.string(),
-		name: z.string(),
-		animated: z.boolean(),
-	})
-	.partial()
-	.strict();
+export const emojiValidator = s.object({
+	id: s.string,
+	name: s.string,
+	animated: s.boolean,
+}).partial.strict;
 
-export const disabledValidator = z.boolean();
+export const disabledValidator = s.boolean;
 
-export const buttonLabelValidator = z.string().nonempty().max(80);
+export const buttonLabelValidator = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(80);
 
-export const buttonStyleValidator = z.number().int().min(ButtonStyle.Primary).max(ButtonStyle.Link);
+export const buttonStyleValidator = s.nativeEnum(ButtonStyle);
 
-export const placeholderValidator = z.string().max(150);
-export const minMaxValidator = z.number().int().min(0).max(25);
+export const placeholderValidator = s.string.lengthLessThanOrEqual(150);
+export const minMaxValidator = s.number.int.greaterThanOrEqual(0).lessThanOrEqual(25);
 
-export const optionsValidator = z.object({}).array().nonempty();
+export const labelValueDescriptionValidator = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
+export const optionValidator = s.union(
+	s.object({
+		label: labelValueDescriptionValidator,
+		value: labelValueDescriptionValidator,
+		description: labelValueDescriptionValidator.optional,
+		emoji: emojiValidator.optional,
+		default: s.boolean.optional,
+	}),
+	s.instance(UnsafeSelectMenuOptionBuilder),
+);
+export const optionsValidator = optionValidator.array.lengthGreaterThanOrEqual(0);
+export const optionsLengthValidator = s.number.int.greaterThanOrEqual(0).lessThanOrEqual(25);
 
-export function validateRequiredSelectMenuParameters(options: SelectMenuOption[], customId?: string) {
+export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
 	customIdValidator.parse(customId);
 	optionsValidator.parse(options);
 }
 
-export const labelValueValidator = z.string().min(1).max(100);
-export const defaultValidator = z.boolean();
+export const labelValueValidator = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
+export const defaultValidator = s.boolean;
 
 export function validateRequiredSelectMenuOptionParameters(label?: string, value?: string) {
 	labelValueValidator.parse(label);
 	labelValueValidator.parse(value);
 }
 
-export const urlValidator = z.string().url();
+export const urlValidator = s.string.url({
+	allowedProtocols: ['http:', 'https:', 'discord:'],
+});
 
 export function validateRequiredButtonParameters(
 	style?: ButtonStyle,

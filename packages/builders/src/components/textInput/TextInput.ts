@@ -1,4 +1,4 @@
-import type { APITextInputComponent } from 'discord-api-types/v9';
+import type { APITextInputComponent } from 'discord-api-types/v10';
 import {
 	maxLengthValidator,
 	minLengthValidator,
@@ -7,9 +7,9 @@ import {
 	valueValidator,
 	validateRequiredParameters,
 } from './Assertions';
-import { UnsafeTextInputComponent } from './UnsafeTextInput';
+import { UnsafeTextInputBuilder } from './UnsafeTextInput';
 
-export class TextInputComponent extends UnsafeTextInputComponent {
+export class TextInputBuilder extends UnsafeTextInputBuilder {
 	public override setMinLength(minLength: number) {
 		return super.setMinLength(minLengthValidator.parse(minLength));
 	}

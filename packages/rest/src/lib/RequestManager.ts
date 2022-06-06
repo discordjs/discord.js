@@ -1,14 +1,13 @@
-import Collection from '@discordjs/collection';
-import FormData from 'form-data';
-import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Blob } from 'node:buffer';
 import { EventEmitter } from 'node:events';
-import { Agent as httpsAgent } from 'node:https';
-import { Agent as httpAgent } from 'node:http';
-import type { RequestInit, BodyInit } from 'node-fetch';
+import Collection from '@discordjs/collection';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { FormData, type RequestInit, type BodyInit, type Dispatcher, Agent } from 'undici';
+import type { RESTOptions, RestEvents, RequestOptions } from './REST';
 import type { IHandler } from './handlers/IHandler';
 import { SequentialHandler } from './handlers/SequentialHandler';
-import type { RESTOptions, RestEvents } from './REST';
 import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants';
+import { resolveBody } from './utils/utils';
 
 /**
  * Represents a file to be added to the request
@@ -54,6 +53,10 @@ export interface RequestData {
 	 */
 	body?: BodyInit | unknown;
 	/**
+	 * The {@link https://undici.nodejs.org/#/docs/api/Agent Agent} to use for the request.
+	 */
+	dispatcher?: Agent;
+	/**
 	 * Files to be attached to this request
 	 */
 	files?: RawFile[] | undefined;
@@ -94,11 +97,11 @@ export interface RequestHeaders {
  * Possible API methods to be used when doing requests
  */
 export const enum RequestMethod {
-	Delete = 'delete',
-	Get = 'get',
-	Patch = 'patch',
-	Post = 'post',
-	Put = 'put',
+	Delete = 'DELETE',
+	Get = 'GET',
+	Patch = 'PATCH',
+	Post = 'POST',
+	Put = 'PUT',
 }
 
 export type RouteLike = `/${string}`;
@@ -158,6 +161,11 @@ export interface RequestManager {
  */
 export class RequestManager extends EventEmitter {
 	/**
+	 * The {@link https://undici.nodejs.org/#/docs/api/Agent Agent} for all requests
+	 * performed by this manager.
+	 */
+	public agent: Dispatcher | null = null;
+	/**
 	 * The number of requests remaining in the global bucket
 	 */
 	public globalRemaining: number;
@@ -187,7 +195,6 @@ export class RequestManager extends EventEmitter {
 
 	private hashTimer!: NodeJS.Timer;
 	private handlerTimer!: NodeJS.Timer;
-	private agent: httpsAgent | httpAgent | null = null;
 
 	public readonly options: RESTOptions;
 
@@ -196,6 +203,7 @@ export class RequestManager extends EventEmitter {
 		this.options = { ...DefaultRestOptions, ...options };
 		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = this.options.globalRequestsPerSecond;
+		this.agent = options.agent ?? null;
 
 		// Start sweepers
 		this.setupSweepers();
@@ -264,6 +272,15 @@ export class RequestManager extends EventEmitter {
 	}
 
 	/**
+	 * Sets the default agent to use for requests performed by this manager
+	 * @param agent The agent to use
+	 */
+	public setAgent(agent: Dispatcher) {
+		this.agent = agent;
+		return this;
+	}
+
+	/**
 	 * Sets the authorization token that should be used for requests
 	 * @param token The authorization token to use
 	 */
@@ -277,7 +294,7 @@ export class RequestManager extends EventEmitter {
 	 * @param request All the information needed to make a request
 	 * @returns The response from the api request
 	 */
-	public async queueRequest(request: InternalRequest): Promise<unknown> {
+	public async queueRequest(request: InternalRequest): Promise<Dispatcher.ResponseData> {
 		// Generalize the endpoint to its route data
 		const routeId = RequestManager.generateRouteData(request.fullRoute, request.method);
 		// Get the bucket hash for the generic route, or point to a global route otherwise
@@ -291,8 +308,8 @@ export class RequestManager extends EventEmitter {
 			this.handlers.get(`${hash.value}:${routeId.majorParameter}`) ??
 			this.createHandler(hash.value, routeId.majorParameter);
 
-		// Resolve the request into usable fetch/node-fetch options
-		const { url, fetchOptions } = this.resolveRequest(request);
+		// Resolve the request into usable fetch options
+		const { url, fetchOptions } = await this.resolveRequest(request);
 
 		// Queue the request
 		return handler.queueRequest(routeId, url, fetchOptions, {
@@ -321,12 +338,8 @@ export class RequestManager extends EventEmitter {
 	 * Formats the request data to a usable format for fetch
 	 * @param request The request data
 	 */
-	private resolveRequest(request: InternalRequest): { url: string; fetchOptions: RequestInit } {
+	private async resolveRequest(request: InternalRequest): Promise<{ url: string; fetchOptions: RequestOptions }> {
 		const { options } = this;
-
-		this.agent ??= options.api.startsWith('https')
-			? new httpsAgent({ ...options.agent, keepAlive: true })
-			: new httpAgent({ ...options.agent, keepAlive: true });
 
 		let query = '';
 
@@ -351,7 +364,7 @@ export class RequestManager extends EventEmitter {
 				throw new Error('Expected token to be set for this request, but none was present');
 			}
 
-			headers.Authorization = `${request.authPrefix ?? 'Bot'} ${this.#token}`;
+			headers.Authorization = `${request.authPrefix ?? this.options.authPrefix} ${this.#token}`;
 		}
 
 		// If a reason was set, set it's appropriate header
@@ -372,7 +385,18 @@ export class RequestManager extends EventEmitter {
 
 			// Attach all files to the request
 			for (const [index, file] of request.files.entries()) {
-				formData.append(file.key ?? `files[${index}]`, file.data, file.name);
+				const fileKey = file.key ?? `files[${index}]`;
+
+				// https://developer.mozilla.org/en-US/docs/Web/API/FormData/append#parameters
+				// FormData.append only accepts a string or Blob.
+				// https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#parameters
+				// The Blob constructor accepts TypedArray/ArrayBuffer, strings, and Blobs.
+				if (Buffer.isBuffer(file.data) || typeof file.data === 'string') {
+					formData.append(fileKey, new Blob([file.data]), file.name);
+				} else {
+					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+					formData.append(fileKey, new Blob([`${file.data}`]), file.name);
+				}
 			}
 
 			// If a JSON body was added as well, attach it to the form data, using payload_json unless otherwise specified
@@ -389,8 +413,6 @@ export class RequestManager extends EventEmitter {
 
 			// Set the final body to the form data
 			finalBody = formData;
-			// Set the additional headers to the form data ones
-			additionalHeaders = formData.getHeaders();
 
 			// eslint-disable-next-line no-eq-null
 		} else if (request.body != null) {
@@ -404,13 +426,20 @@ export class RequestManager extends EventEmitter {
 			}
 		}
 
-		const fetchOptions = {
-			agent: this.agent,
-			body: finalBody,
+		finalBody = await resolveBody(finalBody);
+
+		const fetchOptions: RequestOptions = {
 			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
-			method: request.method,
+			method: request.method.toUpperCase() as Dispatcher.HttpMethod,
 		};
+
+		if (finalBody !== undefined) {
+			fetchOptions.body = finalBody as Exclude<RequestOptions['body'], undefined>;
+		}
+
+		// Prioritize setting an agent per request, use the agent for this instance otherwise.
+		fetchOptions.dispatcher = request.dispatcher ?? this.agent ?? undefined!;
 
 		return { url, fetchOptions };
 	}
@@ -452,7 +481,7 @@ export class RequestManager extends EventEmitter {
 		// Hard-Code Old Message Deletion Exception (2 week+ old messages are a different bucket)
 		// https://github.com/discord/discord-api-docs/issues/1295
 		if (method === RequestMethod.Delete && baseRoute === '/channels/:id/messages/:id') {
-			const id = /\d{16,19}$/.exec(endpoint)![0];
+			const id = /\d{16,19}$/.exec(endpoint)![0]!;
 			const timestamp = DiscordSnowflake.timestampFrom(id);
 			if (Date.now() - timestamp > 1000 * 60 * 60 * 24 * 14) {
 				exceptions += '/Delete Old Message';

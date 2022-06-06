@@ -1,15 +1,17 @@
 'use strict';
 
 const { isJSONEncodable } = require('@discordjs/builders');
-const { InteractionResponseType, MessageFlags, Routes } = require('discord-api-types/v9');
+const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { Error } = require('../../errors');
+const InteractionCollector = require('../InteractionCollector');
+const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
 
 /**
- * @typedef {Object} ModalData
+ * @typedef {Object} ModalComponentData
  * @property {string} title The title of the modal
  * @property {string} customId The custom id of the modal
- * @property {ActionRowData[]} components The components within this modal
+ * @property {ActionRow[]} components The components within this modal
  */
 
 /**
@@ -48,7 +50,7 @@ class InteractionResponses {
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferReplyOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionResponse>}
    * @example
    * // Defer the reply to this interaction
    * interaction.deferReply()
@@ -74,14 +76,14 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
   /**
    * Creates a reply to this interaction.
    * <info>Use the `fetchReply` option to get the bot's reply message.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionResponse>}
    * @example
    * // Reply to the interaction and fetch the response
    * interaction.reply({ content: 'Pong!', fetchReply: true })
@@ -89,7 +91,7 @@ class InteractionResponses {
    *   .catch(console.error);
    * @example
    * // Create an ephemeral reply with an embed
-   * const embed = new Embed().setDescription('Pong!');
+   * const embed = new EmbedBuilder().setDescription('Pong!');
    *
    * interaction.reply({ embeds: [embed], ephemeral: true })
    *   .then(() => console.log('Reply sent.'))
@@ -115,7 +117,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
   /**
@@ -178,7 +180,7 @@ class InteractionResponses {
   /**
    * Defers an update to the message to which the component was attached.
    * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionResponse>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
@@ -195,7 +197,7 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
   }
 
   /**
@@ -230,7 +232,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
   }
 
   /**
@@ -248,6 +250,38 @@ class InteractionResponses {
     this.replied = true;
   }
 
+  /**
+   * An object containing the same properties as {@link CollectorOptions}, but a few less:
+   * @typedef {Object} AwaitModalSubmitOptions
+   * @property {CollectorFilter} [filter] The filter applied to this collector
+   * @property {number} time Time to wait for an interaction before rejecting
+   */
+
+  /**
+   * Collects a single modal submit interaction that passes the filter.
+   * The Promise will reject if the time expires.
+   * @param {AwaitModalSubmitOptions} options Options to pass to the internal collector
+   * @returns {Promise<ModalSubmitInteraction>}
+   * @example
+   * // Collect a modal submit interaction
+   * const filter = (interaction) => interaction.customId === 'modal';
+   * interaction.awaitModalSubmit({ filter, time: 15_000 })
+   *   .then(interaction => console.log(`${interaction.customId} was submitted!`))
+   *   .catch(console.error);
+   */
+  awaitModalSubmit(options) {
+    if (typeof options.time !== 'number') throw new Error('INVALID_TYPE', 'time', 'number');
+    const _options = { ...options, max: 1, interactionType: InteractionType.ModalSubmit };
+    return new Promise((resolve, reject) => {
+      const collector = new InteractionCollector(this.client, _options);
+      collector.once('end', (interactions, reason) => {
+        const interaction = interactions.first();
+        if (interaction) resolve(interaction);
+        else reject(new Error('INTERACTION_COLLECTOR_ERROR', reason));
+      });
+    });
+  }
+
   static applyToClass(structure, ignore = []) {
     const props = [
       'deferReply',
@@ -259,6 +293,7 @@ class InteractionResponses {
       'deferUpdate',
       'update',
       'showModal',
+      'awaitModalSubmit',
     ];
 
     for (const prop of props) {

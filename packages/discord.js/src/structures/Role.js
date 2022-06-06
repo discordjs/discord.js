@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { PermissionFlagsBits } = require('discord-api-types/v9');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { Error } = require('../errors');
 const PermissionsBitField = require('../util/PermissionsBitField');

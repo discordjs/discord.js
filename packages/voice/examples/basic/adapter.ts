@@ -1,6 +1,10 @@
 import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '../../';
-import { VoiceChannel, Snowflake, Client, Constants, Guild } from 'discord.js';
-import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v9';
+import { Snowflake, Client, Guild, VoiceBasedChannel, Status, Events } from 'discord.js';
+import {
+	GatewayDispatchEvents,
+	GatewayVoiceServerUpdateDispatchData,
+	GatewayVoiceStateUpdateDispatchData,
+} from 'discord-api-types/v9';
 
 const adapters = new Map<Snowflake, DiscordGatewayAdapterLibraryMethods>();
 const trackedClients = new Set<Client>();
@@ -13,32 +17,32 @@ const trackedClients = new Set<Client>();
 function trackClient(client: Client) {
 	if (trackedClients.has(client)) return;
 	trackedClients.add(client);
-	client.ws.on(Constants.WSEvents.VOICE_SERVER_UPDATE, (payload: GatewayVoiceServerUpdateDispatchData) => {
+	client.ws.on(GatewayDispatchEvents.VoiceServerUpdate, (payload: GatewayVoiceServerUpdateDispatchData) => {
 		adapters.get(payload.guild_id)?.onVoiceServerUpdate(payload);
 	});
-	client.ws.on(Constants.WSEvents.VOICE_STATE_UPDATE, (payload: GatewayVoiceStateUpdateDispatchData) => {
+	client.ws.on(GatewayDispatchEvents.VoiceStateUpdate, (payload: GatewayVoiceStateUpdateDispatchData) => {
 		if (payload.guild_id && payload.session_id && payload.user_id === client.user?.id) {
 			adapters.get(payload.guild_id)?.onVoiceStateUpdate(payload);
 		}
 	});
-	client.on(Constants.Events.SHARD_DISCONNECT, (_, shardID) => {
-		const guilds = trackedShards.get(shardID);
+	client.on(Events.ShardDisconnect, (_, shardId) => {
+		const guilds = trackedShards.get(shardId);
 		if (guilds) {
 			for (const guildID of guilds.values()) {
 				adapters.get(guildID)?.destroy();
 			}
 		}
-		trackedShards.delete(shardID);
+		trackedShards.delete(shardId);
 	});
 }
 
 const trackedShards = new Map<number, Set<Snowflake>>();
 
 function trackGuild(guild: Guild) {
-	let guilds = trackedShards.get(guild.shardID);
+	let guilds = trackedShards.get(guild.shardId);
 	if (!guilds) {
 		guilds = new Set();
-		trackedShards.set(guild.shardID, guilds);
+		trackedShards.set(guild.shardId, guilds);
 	}
 	guilds.add(guild.id);
 }
@@ -48,14 +52,14 @@ function trackGuild(guild: Guild) {
  *
  * @param channel - The channel to create the adapter for
  */
-export function createDiscordJSAdapter(channel: VoiceChannel): DiscordGatewayAdapterCreator {
+export function createDiscordJSAdapter(channel: VoiceBasedChannel): DiscordGatewayAdapterCreator {
 	return (methods) => {
 		adapters.set(channel.guild.id, methods);
 		trackClient(channel.client);
 		trackGuild(channel.guild);
 		return {
 			sendPayload(data) {
-				if (channel.guild.shard.status === Constants.Status.READY) {
+				if (channel.guild.shard.status === Status.Ready) {
 					channel.guild.shard.send(data);
 					return true;
 				}

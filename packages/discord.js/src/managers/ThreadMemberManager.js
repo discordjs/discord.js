@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
@@ -35,6 +35,24 @@ class ThreadMemberManager extends CachedManager {
     const member = new ThreadMember(this.thread, data);
     if (cache) this.cache.set(data.user_id, member);
     return member;
+  }
+
+  /**
+   * Fetches the client user as a ThreadMember of the thread.
+   * @param {BaseFetchOptions} [options] The options for fetching the member
+   * @returns {Promise<ThreadMember>}
+   */
+  fetchMe(options) {
+    return this.fetch({ ...options, member: this.client.user.id });
+  }
+
+  /**
+   * The client user as a ThreadMember of this ThreadChannel
+   * @type {?ThreadMember}
+   * @readonly
+   */
+  get me() {
+    return this.resolve(this.client.user.id);
   }
 
   /**

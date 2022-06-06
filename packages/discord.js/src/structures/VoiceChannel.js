@@ -1,13 +1,54 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v9');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const MessageManager = require('../managers/MessageManager');
 
 /**
  * Represents a guild voice channel on Discord.
  * @extends {BaseGuildVoiceChannel}
+ * @implements {TextBasedChannel}
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
+  constructor(guild, data, client) {
+    super(guild, data, client, false);
+
+    /**
+     * A manager of the messages sent to this channel
+     * @type {MessageManager}
+     */
+    this.messages = new MessageManager(this);
+
+    this._patch(data);
+  }
+
+  _patch(data) {
+    super._patch(data);
+
+    if ('video_quality_mode' in data) {
+      /**
+       * The camera video quality mode of the channel.
+       * @type {?VideoQualityMode}
+       */
+      this.videoQualityMode = data.video_quality_mode;
+    } else {
+      this.videoQualityMode ??= null;
+    }
+
+    if ('last_message_id' in data) {
+      /**
+       * The last message id sent in the channel, if one was sent
+       * @type {?Snowflake}
+       */
+      this.lastMessageId = data.last_message_id;
+    }
+
+    if ('messages' in data) {
+      for (const message of data.messages) this.messages._add(message);
+    }
+  }
+
   /**
    * Whether the channel is joinable by the client user
    * @type {boolean}
@@ -31,7 +72,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return (
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.Speak, false)
     );
   }
@@ -67,17 +108,43 @@ class VoiceChannel extends BaseGuildVoiceChannel {
   }
 
   /**
+   * Sets the camera video quality mode of the channel.
+   * @param {VideoQualityMode} videoQualityMode The new camera video quality mode.
+   * @param {string} [reason] Reason for changing the camera video quality mode.
+   * @returns {Promise<VoiceChannel>}
+   */
+  setVideoQualityMode(videoQualityMode, reason) {
+    return this.edit({ videoQualityMode }, reason);
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  /* eslint-disable no-empty-function */
+  get lastMessage() {}
+  send() {}
+  sendTyping() {}
+  createMessageCollector() {}
+  awaitMessages() {}
+  createMessageComponentCollector() {}
+  awaitMessageComponent() {}
+  bulkDelete() {}
+  fetchWebhooks() {}
+  createWebhook() {}
+
+  /**
    * Sets the RTC region of the channel.
    * @name VoiceChannel#setRTCRegion
-   * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @param {?string} rtcRegion The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @param {string} [reason] The reason for modifying this region.
    * @returns {Promise<VoiceChannel>}
    * @example
-   * // Set the RTC region to europe
-   * voiceChannel.setRTCRegion('europe');
+   * // Set the RTC region to sydney
+   * voiceChannel.setRTCRegion('sydney');
    * @example
    * // Remove a fixed region for this channel - let Discord decide automatically
-   * voiceChannel.setRTCRegion(null);
+   * voiceChannel.setRTCRegion(null, 'We want to let Discord decide.');
    */
 }
+
+TextBasedChannel.applyToClass(VoiceChannel, true, ['lastPinAt']);
 
 module.exports = VoiceChannel;

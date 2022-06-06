@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { PermissionFlagsBits } = require('discord-api-types/v9');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 const GuildChannel = require('./GuildChannel');
 
 /**
@@ -75,7 +75,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return (
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.Connect, false)
     );
   }
@@ -83,16 +83,20 @@ class BaseGuildVoiceChannel extends GuildChannel {
   /**
    * Sets the RTC region of the channel.
    * @param {?string} rtcRegion The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @param {string} [reason] The reason for modifying this region.
    * @returns {Promise<BaseGuildVoiceChannel>}
    * @example
-   * // Set the RTC region to europe
-   * channel.setRTCRegion('europe');
+   * // Set the RTC region to sydney
+   * channel.setRTCRegion('sydney', 'Set new region of the channel is sydney!');
    * @example
    * // Remove a fixed region for this channel - let Discord decide automatically
-   * channel.setRTCRegion(null);
+   * channel.setRTCRegion(null, 'We want to let Discord decide.');
    */
-  setRTCRegion(rtcRegion) {
-    return this.edit({ rtcRegion });
+  setRTCRegion(rtcRegion, reason) {
+    return this.edit({
+      rtcRegion,
+      reason,
+    });
   }
 
   /**
@@ -116,7 +120,10 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * @returns {Promise<Collection<string, Invite>>}
    */
   fetchInvites(cache = true) {
-    return this.guild.invites.fetch({ channelId: this.id, cache });
+    return this.guild.invites.fetch({
+      channelId: this.id,
+      cache,
+    });
   }
 }
 

@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 const GuildPreviewEmoji = require('./GuildPreviewEmoji');
 const { Sticker } = require('./Sticker');

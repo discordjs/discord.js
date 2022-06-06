@@ -1,0 +1,67 @@
+{
+	"name": "@discordjs/scripts",
+	"version": "0.1.0-dev",
+	"description": "A set of scripts that we use for our workflows",
+	"private": true,
+	"scripts": {
+		"build": "tsup",
+		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
+		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix"
+	},
+	"bin": {
+		"ts-docgen": "./dist/docs.js"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js",
+		"types": "./dist/index.d.ts"
+	},
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"api",
+		"bot",
+		"client",
+		"node",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@discordjs/ts-docgen": "^0.4.1",
+		"commander": "^9.3.0",
+		"tslib": "^2.4.0"
+	},
+	"devDependencies": {
+		"@types/node": "^16.11.38",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"eslint": "^8.17.0",
+		"eslint-config-marine": "^9.4.1",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-import": "^2.26.0",
+		"prettier": "^2.6.2",
+		"tsup": "^6.0.1",
+		"typescript": "^4.7.3"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	}
+}

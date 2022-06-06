@@ -1,6 +1,6 @@
 'use strict';
 
-const { GatewayOpcodes } = require('discord-api-types/v9');
+const { GatewayOpcodes } = require('discord-api-types/v10');
 const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
 

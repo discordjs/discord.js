@@ -1,0 +1,14 @@
+name: 'Format Tag'
+description: 'Formats a git tag to remove potentially prefixes'
+inputs:
+  tag:
+    description: 'The input tag'
+    required: true
+outputs:
+  package:
+    description: 'The package string that was extracted from this tag'
+  semver:
+    description: 'The semver string that was extracted from this tag'
+runs:
+  using: node16
+  main: ../../dist/formatTag/index.js

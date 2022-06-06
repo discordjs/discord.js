@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v9');
+const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError } = require('../errors');
@@ -309,26 +309,17 @@ class ThreadChannel extends Channel {
    * // Edit a thread
    * thread.edit({
    *  name: 'new-thread',
-   *  reason: 'Thread edited!'
+   *  reason: 'Thread edited!',
    * })
    *   .then(editedThread => console.log(`The thread now has a new name ${editedThred.name}!`))
    *   .catch(console.error);
    */
   async edit(data) {
-    let autoArchiveDuration = data.autoArchiveDuration;
-    if (data.autoArchiveDuration === 'MAX') {
-      autoArchiveDuration = 1440;
-      if (this.guild.features.includes('SEVEN_DAY_THREAD_ARCHIVE')) {
-        autoArchiveDuration = 10080;
-      } else if (this.guild.features.includes('THREE_DAY_THREAD_ARCHIVE')) {
-        autoArchiveDuration = 4320;
-      }
-    }
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
         name: (data.name ?? this.name).trim(),
         archived: data.archived,
-        auto_archive_duration: autoArchiveDuration,
+        auto_archive_duration: data.autoArchiveDuration,
         rate_limit_per_user: data.rateLimitPerUser,
         locked: data.locked,
         invitable: this.type === ChannelType.GuildPrivateThread ? data.invitable : undefined,
@@ -351,7 +342,10 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setArchived(archived = true, reason) {
-    return this.edit({ archived, reason });
+    return this.edit({
+      archived,
+      reason,
+    });
   }
 
   /**
@@ -369,7 +363,10 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setAutoArchiveDuration(autoArchiveDuration, reason) {
-    return this.edit({ autoArchiveDuration, reason });
+    return this.edit({
+      autoArchiveDuration,
+      reason,
+    });
   }
 
   /**
@@ -383,7 +380,10 @@ class ThreadChannel extends Channel {
     if (this.type !== ChannelType.GuildPrivateThread) {
       return Promise.reject(new RangeError('THREAD_INVITABLE_TYPE', this.type));
     }
-    return this.edit({ invitable, reason });
+    return this.edit({
+      invitable,
+      reason,
+    });
   }
 
   /**
@@ -399,7 +399,10 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setLocked(locked = true, reason) {
-    return this.edit({ locked, reason });
+    return this.edit({
+      locked,
+      reason,
+    });
   }
 
   /**
@@ -414,7 +417,10 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setName(name, reason) {
-    return this.edit({ name, reason });
+    return this.edit({
+      name,
+      reason,
+    });
   }
 
   /**
@@ -424,7 +430,10 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {
-    return this.edit({ rateLimitPerUser, reason });
+    return this.edit({
+      rateLimitPerUser, 
+      reason,
+    });
   }
 
   /**
@@ -478,7 +487,7 @@ class ThreadChannel extends Channel {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return (
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.ManageThreads, false)
     );
   }
@@ -510,7 +519,7 @@ class ThreadChannel extends Channel {
       !(this.archived && this.locked && !this.manageable) &&
       (this.type !== ChannelType.GuildPrivateThread || this.joined || this.manageable) &&
       permissions.has(PermissionFlagsBits.SendMessagesInThreads, false) &&
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now()
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()
     );
   }
 

@@ -1,4 +1,11 @@
-import type { ButtonStyle, APIMessageComponentEmoji, APIButtonComponent } from 'discord-api-types/v9';
+import type {
+	ButtonStyle,
+	APIMessageComponentEmoji,
+	APIButtonComponent,
+	APIButtonComponentWithCustomId,
+	APIButtonComponentWithURL,
+} from 'discord-api-types/v10';
+import { UnsafeButtonBuilder } from './UnsafeButton';
 import {
 	buttonLabelValidator,
 	buttonStyleValidator,
@@ -8,12 +15,11 @@ import {
 	urlValidator,
 	validateRequiredButtonParameters,
 } from '../Assertions';
-import { UnsafeButtonComponent } from './UnsafeButton';
 
 /**
  * Represents a validated button component
  */
-export class ButtonComponent extends UnsafeButtonComponent {
+export class ButtonBuilder extends UnsafeButtonBuilder {
 	public override setStyle(style: ButtonStyle) {
 		return super.setStyle(buttonStyleValidator.parse(style));
 	}
@@ -39,7 +45,13 @@ export class ButtonComponent extends UnsafeButtonComponent {
 	}
 
 	public override toJSON(): APIButtonComponent {
-		validateRequiredButtonParameters(this.style, this.label, this.emoji, this.customId, this.url);
+		validateRequiredButtonParameters(
+			this.data.style,
+			this.data.label,
+			this.data.emoji,
+			(this.data as APIButtonComponentWithCustomId).custom_id,
+			(this.data as APIButtonComponentWithURL).url,
+		);
 		return super.toJSON();
 	}
 }

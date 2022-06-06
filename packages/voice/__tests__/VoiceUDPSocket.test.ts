@@ -55,13 +55,13 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 		socket = new VoiceUDPSocket({ ip: '1.2.3.4', port: 25565 });
 
 		expect(createSocket).toHaveBeenCalledWith('udp4');
-		expect(fake.listenerCount('message')).toBe(1);
+		expect(fake.listenerCount('message')).toEqual(1);
 		await expect(socket.performIPDiscovery(1234)).resolves.toEqual({
 			ip: '91.90.123.93',
 			port: 54148,
 		});
 		// Ensure clean up occurs
-		expect(fake.listenerCount('message')).toBe(1);
+		expect(fake.listenerCount('message')).toEqual(1);
 	});
 
 	/*
@@ -80,13 +80,13 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 		socket = new VoiceUDPSocket({ ip: '1.2.3.4', port: 25565 });
 
 		expect(createSocket).toHaveBeenCalledWith('udp4');
-		expect(fake.listenerCount('message')).toBe(1);
+		expect(fake.listenerCount('message')).toEqual(1);
 		await expect(socket.performIPDiscovery(1234)).resolves.toEqual({
 			ip: '91.90.123.93',
 			port: 54148,
 		});
 		// Ensure clean up occurs
-		expect(fake.listenerCount('message')).toBe(1);
+		expect(fake.listenerCount('message')).toEqual(1);
 	});
 
 	test('Rejects if socket closes before IP discovery can be completed', async () => {
@@ -120,7 +120,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 			await wait();
 		}
 
-		expect(closed).toBe(false);
+		expect(closed).toEqual(false);
 	});
 
 	test('Emits an error when no response received to keep alive messages', async () => {
@@ -138,7 +138,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 			await wait();
 		}
 
-		expect(closed).toBe(true);
+		expect(closed).toEqual(true);
 	});
 
 	test('Recovers from intermittent responses', async () => {
@@ -160,11 +160,11 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 			await wait();
 			fake.emit('message', buffer);
 		});
-		expect(closed).toBe(false);
+		expect(closed).toEqual(false);
 		for (let i = 0; i < 30; i++) {
 			jest.advanceTimersToNextTimer();
 			await wait();
 		}
-		expect(closed).toBe(false);
+		expect(closed).toEqual(false);
 	});
 });

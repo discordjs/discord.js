@@ -1,6 +1,6 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v9');
+const { PermissionFlagsBits } = require('discord-api-types/v10');
 const { Channel } = require('./Channel');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
@@ -13,7 +13,6 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  * - {@link VoiceChannel}
  * - {@link CategoryChannel}
  * - {@link NewsChannel}
- * - {@link StoreChannel}
  * - {@link StageChannel}
  * @extends {Channel}
  * @abstract
@@ -120,11 +119,11 @@ class GuildChannel extends Channel {
       // Handle empty overwrite
       if (
         (!channelVal &&
-          parentVal.deny.bitfield === PermissionsBitField.defaultBit &&
-          parentVal.allow.bitfield === PermissionsBitField.defaultBit) ||
+          parentVal.deny.bitfield === PermissionsBitField.DefaultBit &&
+          parentVal.allow.bitfield === PermissionsBitField.DefaultBit) ||
         (!parentVal &&
-          channelVal.deny.bitfield === PermissionsBitField.defaultBit &&
-          channelVal.allow.bitfield === PermissionsBitField.defaultBit)
+          channelVal.deny.bitfield === PermissionsBitField.DefaultBit &&
+          channelVal.allow.bitfield === PermissionsBitField.DefaultBit)
       ) {
         return true;
       }
@@ -210,12 +209,12 @@ class GuildChannel extends Channel {
     const overwrites = this.overwritesFor(member, true, roles);
 
     return permissions
-      .remove(overwrites.everyone?.deny ?? PermissionsBitField.defaultBit)
-      .add(overwrites.everyone?.allow ?? PermissionsBitField.defaultBit)
-      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.deny) : PermissionsBitField.defaultBit)
-      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allow) : PermissionsBitField.defaultBit)
-      .remove(overwrites.member?.deny ?? PermissionsBitField.defaultBit)
-      .add(overwrites.member?.allow ?? PermissionsBitField.defaultBit)
+      .remove(overwrites.everyone?.deny ?? PermissionsBitField.DefaultBit)
+      .add(overwrites.everyone?.allow ?? PermissionsBitField.DefaultBit)
+      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.deny) : PermissionsBitField.DefaultBit)
+      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allow) : PermissionsBitField.DefaultBit)
+      .remove(overwrites.member?.deny ?? PermissionsBitField.DefaultBit)
+      .add(overwrites.member?.allow ?? PermissionsBitField.DefaultBit)
       .freeze();
   }
 
@@ -235,10 +234,10 @@ class GuildChannel extends Channel {
     const roleOverwrites = this.permissionOverwrites.cache.get(role.id);
 
     return role.permissions
-      .remove(everyoneOverwrites?.deny ?? PermissionsBitField.defaultBit)
-      .add(everyoneOverwrites?.allow ?? PermissionsBitField.defaultBit)
-      .remove(roleOverwrites?.deny ?? PermissionsBitField.defaultBit)
-      .add(roleOverwrites?.allow ?? PermissionsBitField.defaultBit)
+      .remove(everyoneOverwrites?.deny ?? PermissionsBitField.DefaultBit)
+      .add(everyoneOverwrites?.allow ?? PermissionsBitField.DefaultBit)
+      .remove(roleOverwrites?.deny ?? PermissionsBitField.DefaultBit)
+      .add(roleOverwrites?.allow ?? PermissionsBitField.DefaultBit)
       .freeze();
   }
 
@@ -418,7 +417,7 @@ class GuildChannel extends Channel {
 
     // This flag allows managing even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
-    if (this.guild.me.communicationDisabledUntilTimestamp > Date.now()) return false;
+    if (this.guild.members.me.communicationDisabledUntilTimestamp > Date.now()) return false;
 
     const bitfield = VoiceBasedChannelTypes.includes(this.type)
       ? PermissionFlagsBits.ManageChannels | PermissionFlagsBits.Connect

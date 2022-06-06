@@ -1,5 +1,5 @@
-import type { Snowflake } from 'discord-api-types/globals';
 import type { URL } from 'url';
+import type { Snowflake } from 'discord-api-types/globals';
 
 /**
  * Wraps the content inside a codeblock with no language
@@ -162,15 +162,6 @@ export function spoiler<C extends string>(content: C): `||${C}||` {
  */
 export function userMention<C extends Snowflake>(userId: C): `<@${C}>` {
 	return `<@${userId}>`;
-}
-
-/**
- * Formats a user ID into a member-nickname mention
- *
- * @param memberId The user ID to format
- */
-export function memberNicknameMention<C extends Snowflake>(memberId: C): `<@!${C}>` {
-	return `<@!${memberId}>`;
 }
 
 /**

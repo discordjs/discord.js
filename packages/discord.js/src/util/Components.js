@@ -1,32 +1,37 @@
 'use strict';
 
-// This file contains the typedefs for camel-cased json data
-
+// This file contains the typedefs for camel-cased JSON data
+const { ComponentBuilder } = require('@discordjs/builders');
+const { ComponentType } = require('discord-api-types/v10');
 /**
  * @typedef {Object} BaseComponentData
  * @property {ComponentType} type The type of component
  */
+
 /**
  * @typedef {BaseComponentData} ActionRowData
  * @property {ComponentData[]} components The components in this action row
  */
+
 /**
  * @typedef {BaseComponentData} ButtonComponentData
  * @property {ButtonStyle} style The style of the button
  * @property {?boolean} disabled Whether this button is disabled
  * @property {string} label The label of this button
- * @property {?APIComponentEmoji} emoji The emoji on this button
+ * @property {?APIMessageComponentEmoji} emoji The emoji on this button
  * @property {?string} customId The custom id of the button
  * @property {?string} url The URL of the button
  */
+
 /**
  * @typedef {object} SelectMenuComponentOptionData
  * @property {string} label The label of the option
  * @property {string} value The value of the option
  * @property {?string} description The description of the option
- * @property {?APIComponentEmoji} emoji The emoji on the option
+ * @property {?APIMessageComponentEmoji} emoji The emoji on the option
  * @property {?boolean} default Whether this option is selected by default
  */
+
 /**
  * @typedef {BaseComponentData} SelectMenuComponentData
  * @property {string} customId The custom id of the select menu
@@ -39,7 +44,7 @@
 
 /**
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData} MessageComponentData
- /
+ */
 
 /**
  * @typedef {BaseComponentData} TextInputComponentData
@@ -55,4 +60,75 @@
 
 /**
  * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData} ComponentData
+ */
+
+/**
+ * Any emoji data that can be used within a button
+ * @typedef {APIMessageComponentEmoji|string} ComponentEmojiResolvable
+ */
+
+class Components extends null {
+  /**
+   * Transforms API data into a component
+   * @param {APIMessageComponent|Component} data The data to create the component from
+   * @returns {Component}
+   */
+  static createComponent(data) {
+    if (data instanceof Component) {
+      return data;
+    }
+
+    switch (data.type) {
+      case ComponentType.ActionRow:
+        return new ActionRow(data);
+      case ComponentType.Button:
+        return new ButtonComponent(data);
+      case ComponentType.SelectMenu:
+        return new SelectMenuComponent(data);
+      case ComponentType.TextInput:
+        return new TextInputComponent(data);
+      default:
+        throw new Error(`Found unknown component type: ${data.type}`);
+    }
+  }
+
+  /**
+   * Transforms API data into a component builder
+   * @param {APIMessageComponent|ComponentBuilder} data The data to create the component from
+   * @returns {ComponentBuilder}
+   */
+  static createComponentBuilder(data) {
+    if (data instanceof ComponentBuilder) {
+      return data;
+    }
+
+    switch (data.type) {
+      case ComponentType.ActionRow:
+        return new ActionRowBuilder(data);
+      case ComponentType.Button:
+        return new ButtonBuilder(data);
+      case ComponentType.SelectMenu:
+        return new SelectMenuBuilder(data);
+      case ComponentType.TextInput:
+        return new TextInputComponent(data);
+      default:
+        throw new Error(`Found unknown component type: ${data.type}`);
+    }
+  }
+}
+
+module.exports = Components;
+
+const ActionRow = require('../structures/ActionRow');
+const ActionRowBuilder = require('../structures/ActionRowBuilder');
+const ButtonBuilder = require('../structures/ButtonBuilder');
+const ButtonComponent = require('../structures/ButtonComponent');
+const Component = require('../structures/Component');
+const SelectMenuBuilder = require('../structures/SelectMenuBuilder');
+const SelectMenuComponent = require('../structures/SelectMenuComponent');
+const TextInputComponent = require('../structures/TextInputComponent');
+
+/**
+ * @external JSONEncodable
+ * @see {@link https://discord.js.org/#/docs/builders/main/typedef/JSONEncodable}
  */

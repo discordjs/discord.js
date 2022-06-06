@@ -2,30 +2,18 @@ import type {
 	APIActionRowComponent,
 	APIModalActionRowComponent,
 	APIModalInteractionResponseCallbackData,
-} from 'discord-api-types/v9';
-import { ActionRow, createComponent, JSONEncodable, ModalActionRowComponent } from '../../index';
+} from 'discord-api-types/v10';
+import { ActionRowBuilder, createComponentBuilder, JSONEncodable, ModalActionRowComponentBuilder } from '../../index';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 
-export class UnsafeModal implements JSONEncodable<APIModalInteractionResponseCallbackData> {
-	protected readonly data: Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>>;
-	public readonly components: ActionRow<ModalActionRowComponent>[] = [];
+export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResponseCallbackData> {
+	public readonly data: Partial<APIModalInteractionResponseCallbackData>;
+	public readonly components: ActionRowBuilder<ModalActionRowComponentBuilder>[] = [];
 
 	public constructor({ components, ...data }: Partial<APIModalInteractionResponseCallbackData> = {}) {
 		this.data = { ...data };
-		this.components = (components?.map((c) => createComponent(c)) ?? []) as ActionRow<ModalActionRowComponent>[];
-	}
-
-	/**
-	 * The custom id of this modal
-	 */
-	public get customId() {
-		return this.data.custom_id;
-	}
-
-	/**
-	 * The title of this modal
-	 */
-	public get title() {
-		return this.data.title;
+		this.components = (components?.map((c) => createComponentBuilder(c)) ??
+			[]) as ActionRowBuilder<ModalActionRowComponentBuilder>[];
 	}
 
 	/**
@@ -51,11 +39,15 @@ export class UnsafeModal implements JSONEncodable<APIModalInteractionResponseCal
 	 * @param components The components to add to this modal
 	 */
 	public addComponents(
-		...components: (ActionRow<ModalActionRowComponent> | APIActionRowComponent<APIModalActionRowComponent>)[]
+		...components: RestOrArray<
+			ActionRowBuilder<ModalActionRowComponentBuilder> | APIActionRowComponent<APIModalActionRowComponent>
+		>
 	) {
 		this.components.push(
-			...components.map((component) =>
-				component instanceof ActionRow ? component : new ActionRow<ModalActionRowComponent>(component),
+			...normalizeArray(components).map((component) =>
+				component instanceof ActionRowBuilder
+					? component
+					: new ActionRowBuilder<ModalActionRowComponentBuilder>(component),
 			),
 		);
 		return this;
@@ -65,8 +57,8 @@ export class UnsafeModal implements JSONEncodable<APIModalInteractionResponseCal
 	 * Sets the components in this modal
 	 * @param components The components to set this modal to
 	 */
-	public setComponents(...components: ActionRow<ModalActionRowComponent>[]) {
-		this.components.splice(0, this.components.length, ...components);
+	public setComponents(...components: RestOrArray<ActionRowBuilder<ModalActionRowComponentBuilder>>) {
+		this.components.splice(0, this.components.length, ...normalizeArray(components));
 		return this;
 	}
 

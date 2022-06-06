@@ -1,6 +1,6 @@
 'use strict';
 
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const BaseGuildTextChannel = require('./BaseGuildTextChannel');
 const { Error } = require('../errors');
 
