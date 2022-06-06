@@ -8,7 +8,8 @@
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
 		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && ts-docgen -i docs/typedoc-out.json -c docs/index.yml -o docs/docs.json",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/proxy/*'"
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/proxy/*'",
+		"release": "cliff-jumper"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -57,17 +58,18 @@
 	},
 	"devDependencies": {
 		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^1.8.3",
 		"@types/node": "^16.11.38",
 		"@types/supertest": "^2.0.12",
-		"@typescript-eslint/eslint-plugin": "^5.27.0",
-		"@typescript-eslint/parser": "^5.27.0",
+		"@typescript-eslint/eslint-plugin": "^5.27.1",
+		"@typescript-eslint/parser": "^5.27.1",
 		"eslint": "^8.17.0",
 		"eslint-config-marine": "^9.4.1",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-import": "^2.26.0",
 		"prettier": "^2.6.2",
 		"supertest": "^6.2.3",
-		"tsup": "^6.0.1",
+		"tsup": "^6.1.0",
 		"typedoc": "^0.22.17",
 		"typescript": "^4.7.3"
 	},
