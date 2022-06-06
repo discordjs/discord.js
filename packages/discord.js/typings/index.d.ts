@@ -1235,7 +1235,7 @@ export abstract class GuildChannel extends Channel {
   public rawPosition: number;
   public type: Exclude<ChannelType, ChannelType.DM | ChannelType.GroupDM>;
   public get viewable(): boolean;
-  public clone(options?: GuildChannelCreateOptions): Promise<this>;
+  public clone(options?: GuildChannelCloneOptions): Promise<this>;
   public delete(reason?: string): Promise<this>;
   public edit(data: ChannelEditData): Promise<this>;
   public equals(channel: GuildChannel): boolean;
