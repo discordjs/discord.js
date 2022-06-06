@@ -803,6 +803,16 @@ client.on('messageCreate', async message => {
   channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, buildersEmbed, embedData] });
 });
 
+client.on('threadCreate', thread => {
+  if (thread.type === ChannelType.GuildPrivateThread) {
+    expectType<number>(thread.createdTimestamp);
+    expectType<Date>(thread.createdAt);
+  } else {
+    expectType<number | null>(thread.createdTimestamp);
+    expectType<Date | null>(thread.createdAt);
+  }
+});
+
 client.on('threadMembersUpdate', (addedMembers, removedMembers, thread) => {
   expectType<Collection<Snowflake, ThreadMember>>(addedMembers);
   expectType<Collection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);

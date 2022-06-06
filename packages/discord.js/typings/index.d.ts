@@ -1677,7 +1677,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public system: boolean;
-  public get thread(): ThreadChannel | null;
+  public get thread(): AnyThreadChannel | null;
   public tts: boolean;
   public type: MessageType;
   public get url(): string;
@@ -1704,7 +1704,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public removeAttachments(): Promise<Message>;
   public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
-  public startThread(options: StartThreadOptions): Promise<ThreadChannel>;
+  public startThread(options: StartThreadOptions): Promise<AnyThreadChannel>;
   public suppressEmbeds(suppress?: boolean): Promise<Message>;
   public toJSON(): unknown;
   public toString(): string;
@@ -2452,6 +2452,22 @@ export class TextChannel extends BaseGuildTextChannel {
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 }
 
+export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel | NewsThreadChannel;
+
+export interface PublicThreadChannel extends ThreadChannel {
+  type: ChannelType.GuildPublicThread;
+}
+
+export interface NewsThreadChannel extends ThreadChannel {
+  type: ChannelType.GuildNewsThread;
+}
+
+export interface PrivateThreadChannel extends ThreadChannel {
+  get createdTimestamp(): number;
+  get createdAt(): Date;
+  type: ChannelType.GuildPrivateThread;
+}
+
 export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhooks', 'createWebhook']) {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
@@ -2482,15 +2498,10 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhook
   public rateLimitPerUser: number | null;
   public type: ThreadChannelType;
   public get unarchivable(): boolean;
-  public isPrivate(): this is this & {
-    get createdTimestamp(): number;
-    get createdAt(): Date;
-    type: ChannelType.GuildPrivateThread;
-  };
   public delete(reason?: string): Promise<this>;
-  public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
-  public join(): Promise<ThreadChannel>;
-  public leave(): Promise<ThreadChannel>;
+  public edit(data: ThreadEditData, reason?: string): Promise<AnyThreadChannel>;
+  public join(): Promise<AnyThreadChannel>;
+  public leave(): Promise<AnyThreadChannel>;
   public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: GuildMemberResolvable | RoleResolvable,
@@ -2498,15 +2509,15 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhook
   ): Readonly<PermissionsBitField> | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
-  public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
+  public setArchived(archived?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setAutoArchiveDuration(
     autoArchiveDuration: ThreadAutoArchiveDuration,
     reason?: string,
-  ): Promise<ThreadChannel>;
-  public setInvitable(invitable?: boolean, reason?: string): Promise<ThreadChannel>;
-  public setLocked(locked?: boolean, reason?: string): Promise<ThreadChannel>;
-  public setName(name: string, reason?: string): Promise<ThreadChannel>;
-  public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<ThreadChannel>;
+  ): Promise<AnyThreadChannel>;
+  public setInvitable(invitable?: boolean, reason?: string): Promise<AnyThreadChannel>;
+  public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
+  public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
+  public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<AnyThreadChannel>;
   public toString(): ChannelMention;
 }
 
@@ -2518,7 +2529,7 @@ export class ThreadMember extends Base {
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
   public get manageable(): boolean;
-  public thread: ThreadChannel;
+  public thread: AnyThreadChannel;
   public get user(): User | null;
   public get partial(): false;
   public remove(reason?: string): Promise<ThreadMember>;
@@ -3385,8 +3396,8 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
 export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
   private constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<RawThreadChannelData>);
   public channel: TextChannel | NewsChannel;
-  public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
-  public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
+  public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<AnyThreadChannel>;
+  public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<AnyThreadChannel | null>;
   public fetch(options?: FetchThreadsOptions, cacheOptions?: { cache?: boolean }): Promise<FetchedThreads>;
   public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
   public fetchActive(cache?: boolean): Promise<FetchedThreads>;
@@ -3394,7 +3405,7 @@ export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, T
 
 export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable> {
   private constructor(thread: ThreadChannel, iterable?: Iterable<RawThreadMemberData>);
-  public thread: ThreadChannel;
+  public thread: AnyThreadChannel;
   public get me(): ThreadMember | null;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(options?: ThreadMemberFetchOptions): Promise<ThreadMember>;
@@ -3900,16 +3911,16 @@ export interface ClientEvents {
   roleCreate: [role: Role];
   roleDelete: [role: Role];
   roleUpdate: [oldRole: Role, newRole: Role];
-  threadCreate: [thread: ThreadChannel, newlyCreated: boolean];
-  threadDelete: [thread: ThreadChannel];
-  threadListSync: [threads: Collection<Snowflake, ThreadChannel>, guild: Guild];
+  threadCreate: [thread: AnyThreadChannel, newlyCreated: boolean];
+  threadDelete: [thread: AnyThreadChannel];
+  threadListSync: [threads: Collection<Snowflake, AnyThreadChannel>, guild: Guild];
   threadMemberUpdate: [oldMember: ThreadMember, newMember: ThreadMember];
   threadMembersUpdate: [
     addedMembers: Collection<Snowflake, ThreadMember>,
     removedMembers: Collection<Snowflake, ThreadMember | PartialThreadMember>,
-    thread: ThreadChannel,
+    thread: AnyThreadChannel,
   ];
-  threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
+  threadUpdate: [oldThread: AnyThreadChannel, newThread: AnyThreadChannel];
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
@@ -4236,7 +4247,7 @@ export interface FetchChannelOptions extends BaseFetchOptions {
 }
 
 export interface FetchedThreads {
-  threads: Collection<Snowflake, ThreadChannel>;
+  threads: Collection<Snowflake, AnyThreadChannel>;
   hasMore?: boolean;
 }
 
@@ -4412,7 +4423,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   Message: TActionType extends AuditLogEvent.MessageBulkDelete ? Guild | { id: Snowflake } : User;
   Integration: Integration;
   Channel: NonThreadGuildBasedChannel | { id: Snowflake; [x: string]: unknown };
-  Thread: ThreadChannel | { id: Snowflake; [x: string]: unknown };
+  Thread: AnyThreadChannel | { id: Snowflake; [x: string]: unknown };
   StageInstance: StageInstance;
   Sticker: Sticker;
   GuildScheduledEvent: GuildScheduledEvent;
@@ -5129,7 +5140,7 @@ export interface SweeperDefinitions {
   stageInstances: [Snowflake, StageInstance];
   stickers: [Snowflake, Sticker];
   threadMembers: [Snowflake, ThreadMember];
-  threads: [Snowflake, ThreadChannel, true];
+  threads: [Snowflake, AnyThreadChannel, true];
   users: [Snowflake, User];
   voiceStates: [Snowflake, VoiceState];
 }
@@ -5153,7 +5164,7 @@ export type AnyChannel =
   | NewsChannel
   | StageChannel
   | TextChannel
-  | ThreadChannel
+  | AnyThreadChannel
   | VoiceChannel;
 
 export type TextBasedChannel = Extract<AnyChannel, { messages: MessageManager }>;
@@ -5166,7 +5177,7 @@ export type GuildBasedChannel = Extract<AnyChannel, { guild: Guild }>;
 
 export type NonCategoryGuildBasedChannel = Exclude<GuildBasedChannel, CategoryChannel>;
 
-export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, ThreadChannel>;
+export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, AnyThreadChannel>;
 
 export type GuildTextBasedChannel = Extract<GuildBasedChannel, TextBasedChannel>;
 
@@ -5176,7 +5187,7 @@ export type TextBasedChannelResolvable = Snowflake | TextBasedChannel;
 
 export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080;
 
-export type ThreadChannelResolvable = ThreadChannel | Snowflake;
+export type ThreadChannelResolvable = AnyThreadChannel | Snowflake;
 
 export type ThreadChannelType =
   | ChannelType.GuildNewsThread
