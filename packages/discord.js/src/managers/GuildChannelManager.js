@@ -138,7 +138,7 @@ class GuildChannelManager extends CachedManager {
     rtcRegion,
     videoQualityMode,
     reason,
-  } = {}) {
+  }) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
 
