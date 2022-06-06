@@ -193,7 +193,7 @@ class Channel extends Base {
             break;
           }
           case ChannelType.GuildDirectory:
-            channel = new DirectoryChannel(client, data);
+            channel = new DirectoryChannel(guild, data, client);
             break;
         }
         if (channel && !allowUnknownGuild) guild.channels?.cache.set(channel.id, channel);
