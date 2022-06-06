@@ -110,6 +110,8 @@ class User extends Base {
        */
       this.flags = new UserFlagsBitField(data.public_flags);
     }
+
+    return this;
   }
 
   /**
