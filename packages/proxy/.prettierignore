@@ -6,3 +6,4 @@ docs/**/*
 !docs/index.yml
 !docs/README.md
 coverage/
+tsup.config.*.mjs

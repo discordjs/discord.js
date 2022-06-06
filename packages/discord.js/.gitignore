@@ -15,11 +15,13 @@ pids
 .env
 test/auth.json
 test/auth.js
-docs/deploy/deploy_key
-docs/deploy/deploy_key.pub
-deploy/deploy_key
-deploy/deploy_key.pub
 
 # Dist
 dist/
-docs/docs.json
+docs/**/*
+!docs/index.json
+
+# Miscellaneous
+.tmp/
+coverage/
+tsconfig.tsbuildinfo
