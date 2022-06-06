@@ -104,7 +104,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Creates a new channel in the guild.
-   * @param {GuildChannelCreateOptions} [options] Options for creating the new channel
+   * @param {GuildChannelCreateOptions} options Options for creating the new channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create a new text channel
@@ -164,7 +164,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Creates a webhook for the channel.
-   * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
+   * @param {ChannelWebhookCreateOptions} options Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
    * // Create a webhook for the current channel

@@ -205,7 +205,7 @@ class Sticker extends Base {
 
   /**
    * Edits the sticker.
-   * @param {GuildStickerEditData} [data] The new data for the sticker
+   * @param {GuildStickerEditData} data The new data for the sticker
    * @returns {Promise<Sticker>}
    * @example
    * // Update the name of a sticker
