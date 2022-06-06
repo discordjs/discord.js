@@ -264,8 +264,7 @@ class GuildChannel extends Channel {
 
   /**
    * Edits the channel.
-   * @param {ChannelData} data The new data for the channel
-   * @param {string} [reason] Reason for editing this channel
+   * @param {ChannelEditData} data The new data for the channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -273,8 +272,8 @@ class GuildChannel extends Channel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  edit(data, reason) {
-    return this.guild.channels.edit(this, data, reason);
+  edit(data) {
+    return this.guild.channels.edit(this, data);
   }
 
   /**
@@ -289,7 +288,7 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   setName(name, reason) {
-    return this.edit({ name }, reason);
+    return this.edit({ name, reason });
   }
 
   /**
@@ -311,13 +310,11 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   setParent(channel, { lockPermissions = true, reason } = {}) {
-    return this.edit(
-      {
-        parent: channel ?? null,
-        lockPermissions,
-      },
+    return this.edit({
+      parent: channel ?? null,
+      lockPermissions,
       reason,
-    );
+    });
   }
 
   /**

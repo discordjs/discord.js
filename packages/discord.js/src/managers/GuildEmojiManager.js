@@ -118,10 +118,9 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    * Edits an emoji.
    * @param {EmojiResolvable} emoji The Emoji resolvable to edit
    * @param {GuildEmojiEditData} data The new data for the emoji
-   * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<GuildEmoji>}
    */
-  async edit(emoji, data, reason) {
+  async edit(emoji, data) {
     const id = this.resolveId(emoji);
     if (!id) throw new TypeError('INVALID_TYPE', 'emoji', 'EmojiResolvable', true);
     const roles = data.roles?.map(r => this.guild.roles.resolveId(r));
@@ -130,7 +129,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
         name: data.name,
         roles,
       },
-      reason,
+      reason: data.reason,
     });
     const existing = this.cache.get(id);
     if (existing) {

@@ -200,12 +200,12 @@ class Sticker extends Base {
    * @property {string} [name] The name of the sticker
    * @property {?string} [description] The description of the sticker
    * @property {string} [tags] The Discord name of a unicode emoji representing the sticker's expression
+   * @property {string} [reason] Reason for editing this sticker
    */
 
   /**
    * Edits the sticker.
    * @param {GuildStickerEditData} [data] The new data for the sticker
-   * @param {string} [reason] Reason for editing this sticker
    * @returns {Promise<Sticker>}
    * @example
    * // Update the name of a sticker
@@ -213,8 +213,8 @@ class Sticker extends Base {
    *   .then(s => console.log(`Updated the name of the sticker to ${s.name}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
-    return this.guild.stickers.edit(this, data, reason);
+  edit(data) {
+    return this.guild.stickers.edit(this, data);
   }
 
   /**

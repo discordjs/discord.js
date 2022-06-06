@@ -101,17 +101,16 @@ class GuildStickerManager extends CachedManager {
   /**
    * Edits a sticker.
    * @param {StickerResolvable} sticker The sticker to edit
-   * @param {GuildStickerEditData} [data] The new data for the sticker
-   * @param {string} [reason] Reason for editing this sticker
+   * @param {GuildStickerEditData} [data={}] The new data for the sticker
    * @returns {Promise<Sticker>}
    */
-  async edit(sticker, data, reason) {
+  async edit(sticker, data = {}) {
     const stickerId = this.resolveId(sticker);
     if (!stickerId) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
 
     const d = await this.client.rest.patch(Routes.guildSticker(this.guild.id, stickerId), {
       body: data,
-      reason,
+      reason: data.reason,
     });
 
     const existing = this.cache.get(stickerId);
