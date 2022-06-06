@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@0.15.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.14.0...@discordjs/builders@0.15.0) - (2022-06-05)
+
+## Features
+
+- Allow builders to accept rest params and arrays (#7874) ([ad75be9](https://github.com/discordjs/discord.js/commit/ad75be9a9cf90c8624495df99b75177e6c24022f))
+- Use vitest instead of jest for more speed ([8d8e6c0](https://github.com/discordjs/discord.js/commit/8d8e6c03decd7352a2aa180f6e5bc1a13602539b))
+- Add scripts package for locally used scripts ([f2ae1f9](https://github.com/discordjs/discord.js/commit/f2ae1f9348bfd893332a9060f71a8a5f272a1b8b))
+
 # [@discordjs/builders@0.14.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.13.0...@discordjs/builders@0.14.0) - (2022-06-04)
 
 ## Bug Fixes
