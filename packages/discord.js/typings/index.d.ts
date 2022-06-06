@@ -2272,6 +2272,7 @@ export class StageChannel extends BaseGuildVoiceChannel {
 export class DirectoryChannel extends Channel {
   public guild: InviteGuild;
   public guildId: Snowflake;
+  public name: string;
 }
 
 export class StageInstance extends Base {
