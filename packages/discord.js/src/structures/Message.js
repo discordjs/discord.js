@@ -94,7 +94,7 @@ class Message extends Base {
        * The author of the message
        * @type {?User}
        */
-      this.author = this.client.users._add(data.author, !data.webhook_id);
+      this.author = this.client.users._obtain(data.author, this.guild);
     } else {
       this.author ??= null;
     }
@@ -342,7 +342,7 @@ class Message extends Base {
         id: data.interaction.id,
         type: data.interaction.type,
         commandName: data.interaction.name,
-        user: this.client.users._add(data.interaction.user),
+        user: this.client.users._obtain(data.interaction.user, this.guild),
       };
     } else {
       this.interaction ??= null;

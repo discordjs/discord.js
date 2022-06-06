@@ -1,7 +1,7 @@
 'use strict';
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const BaseManager = require('./BaseManager');
 const { GuildMember } = require('../structures/GuildMember');
 const { Message } = require('../structures/Message');
 const ThreadMember = require('../structures/ThreadMember');
@@ -11,17 +11,16 @@ const User = require('../structures/User');
  * Manages API methods for users and stores their cache.
  * @extends {CachedManager}
  */
-class UserManager extends CachedManager {
-  constructor(client, iterable) {
-    super(client, User, iterable);
+class UserManager extends BaseManager {
+  constructor(client) {
+    super(client);
+
+    /**
+     * User that the client is logged in as
+     * @type {?ClientUser}
+     */
+    this.me = null;
   }
-
-  /**
-   * The cache of this manager
-   * @type {Collection<Snowflake, User>}
-   * @name UserManager#cache
-   */
-
   /**
    * Data that resolves to give a User object. This can be:
    * * A User object
@@ -77,28 +76,22 @@ class UserManager extends CachedManager {
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * @param {UserResolvable} user The user to fetch
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<User>}
    */
-  async fetch(user, { cache = true, force = false } = {}) {
+  async fetch(user) {
     const id = this.resolveId(user);
-    if (!force) {
-      const existing = this.cache.get(id);
-      if (existing && !existing.partial) return existing;
-    }
-
     const data = await this.client.rest.get(Routes.user(id));
-    return this._add(data, cache);
+    if (user instanceof User) return user._patch(data);
+    return new User(data);
   }
 
   /**
    * Fetches a user's flags.
    * @param {UserResolvable} user The UserResolvable to identify
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<UserFlagsBitField>}
    */
-  async fetchFlags(user, options) {
-    return (await this.fetch(user, options)).flags;
+  async fetchFlags(user) {
+    return (await this.fetch(user)).flags;
   }
 
   /**
@@ -114,12 +107,15 @@ class UserManager extends CachedManager {
   /**
    * Resolves a {@link UserResolvable} to a {@link User} object.
    * @param {UserResolvable} user The UserResolvable to identify
+   * @param {GuildResolvable} [guild] The guild to search members for to find a user object
    * @returns {?User}
    */
-  resolve(user) {
+  resolve(user, guild) {
     if (user instanceof GuildMember || user instanceof ThreadMember) return user.user;
     if (user instanceof Message) return user.author;
-    return super.resolve(user);
+    if (user instanceof User) return User;
+    if (typeof user === 'string') return this.client.guilds.resolve(guild)?.members.cache.get(user)?.user ?? null;
+    return null;
   }
 
   /**
@@ -131,7 +127,22 @@ class UserManager extends CachedManager {
     if (user instanceof ThreadMember) return user.id;
     if (user instanceof GuildMember) return user.user.id;
     if (user instanceof Message) return user.author.id;
-    return super.resolveId(user);
+    if (user instanceof User) return user.id;
+    if (typeof user === 'string') return user;
+    return null;
+  }
+
+  /**
+   * Attempts to get a cached user from the appropriate guild and updates it
+   * OR creates a new user and returns that instance if there is no cached user
+   * @param {APIUser} data Raw data from discord used to update or create the user
+   * @param {BaseGuild|null} guild The guild to search for an existing cached user,
+   * accepts null for better support with uncached guilds
+   * @private
+   * @returns {User}
+   */
+  _obtain(data, guild) {
+    return guild?.members?.cache.get(data.id)?._patch(data) ?? new User(this.client, data);
   }
 }
 

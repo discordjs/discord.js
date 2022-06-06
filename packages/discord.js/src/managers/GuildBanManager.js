@@ -154,7 +154,7 @@ class GuildBanManager extends CachedManager {
       reason: options.reason,
     });
     if (user instanceof GuildMember) return user;
-    const _user = this.client.users.resolve(id);
+    const _user = this.client.users.resolve(id, this.guild);
     if (_user) {
       return this.guild.members.resolve(_user) ?? _user;
     }
@@ -176,7 +176,7 @@ class GuildBanManager extends CachedManager {
     const id = this.client.users.resolveId(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
     await this.client.rest.delete(Routes.guildBan(this.guild.id, id), { reason });
-    return this.client.users.resolve(user);
+    return this.client.users.resolve(user, this.guild);
   }
 }
 

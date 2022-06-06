@@ -55,7 +55,7 @@ class Interaction extends Base {
      * The user which sent this interaction
      * @type {User}
      */
-    this.user = this.client.users._add(data.user ?? data.member.user);
+    this.user = this.client.users._obtain(data.user ?? data.member.user, this.guild);
 
     /**
      * If this interaction was sent in a guild, the member which sent it

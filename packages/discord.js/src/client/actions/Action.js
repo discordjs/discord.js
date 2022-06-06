@@ -1,5 +1,6 @@
 'use strict';
 
+const User = require('../../structures/User');
 const Partials = require('../../util/Partials');
 
 /*
@@ -84,21 +85,27 @@ class GenericAction {
     return this.getPayload(data, guild.members, data.user.id, Partials.GuildMember);
   }
 
-  getUser(data) {
+  getUser(data, guild) {
     const id = data.user_id;
-    return data.user ?? this.getPayload({ id }, this.client.users, id, Partials.User);
+    if (data.user) return data.user;
+    if (guild) {
+      const user = guild.members.cache.get(id)?.user;
+      if (user) return user;
+    }
+    if (this.client.options.partials.includes(Partials.User)) return new User(this.client, { id });
+    return null;
   }
 
   getUserFromMember(data) {
-    if (data.guild_id && data.member?.user) {
-      const guild = this.client.guilds.cache.get(data.guild_id);
+    const guild = this.client.guilds.cache.get(data.guild_id);
+    if (data.member?.user) {
       if (guild) {
         return guild.members._add(data.member).user;
       } else {
-        return this.client.users._add(data.member.user);
+        return new User(this.client, data.member.user);
       }
     }
-    return this.getUser(data);
+    return this.getUser(data, guild);
   }
 
   getScheduledEvent(data, guild) {

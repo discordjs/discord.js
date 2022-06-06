@@ -7,14 +7,6 @@ const Status = require('../../util/Status');
 class GuildMemberUpdateAction extends Action {
   handle(data, shard) {
     const { client } = this;
-    if (data.user.username) {
-      const user = client.users.cache.get(data.user.id);
-      if (!user) {
-        client.users._add(data.user);
-      } else if (!user._equals(data.user)) {
-        client.actions.UserUpdate.handle(data.user);
-      }
-    }
 
     const guild = client.guilds.cache.get(data.guild_id);
     if (guild) {
@@ -35,7 +27,7 @@ class GuildMemberUpdateAction extends Action {
          * @event Client#guildMemberAvailable
          * @param {GuildMember} member The member that became available
          */
-        this.client.emit(Events.GuildMemberAvailable, newMember);
+        client.emit(Events.GuildMemberAvailable, newMember);
       }
     }
   }

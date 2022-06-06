@@ -20,7 +20,6 @@ exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.j
  * * `stickers`
  * * `threadMembers`
  * * `threads` - accepts the `lifetime` property, using it will sweep archived threads based on archived timestamp
- * * `users`
  * * `voiceStates`
  * @typedef {string} SweeperKey
  */
@@ -37,7 +36,6 @@ exports.SweeperKeys = [
   'stickers',
   'threadMembers',
   'threads',
-  'users',
   'voiceStates',
 ];
 

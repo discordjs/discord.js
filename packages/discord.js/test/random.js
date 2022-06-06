@@ -43,7 +43,7 @@ client.on('ready', async () => {
     console.log(`Failed to fetch all members before ready! ${err}\n${err.stack}`);
   }
 
-  console.log(`ready with ${client.users.cache.size} users`);
+  console.log(`ready`);
   console.timeEnd('magic');
 });
 
@@ -123,7 +123,6 @@ client.on('messageCreate', message => {
       m += `I am aware of ${message.guild.members.cache.size} members\n`;
       m += `I am aware of ${client.channels.cache.size} channels overall\n`;
       m += `I am aware of ${client.guilds.cache.size} guilds overall\n`;
-      m += `I am aware of ${client.users.cache.size} users overall\n`;
       message.channel
         .send(m)
         .then(msg => msg.edit('nah'))

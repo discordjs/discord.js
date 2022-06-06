@@ -286,8 +286,9 @@ class GuildScheduledEventManager extends CachedManager {
       (coll, rawData) =>
         coll.set(rawData.user.id, {
           guildScheduledEventId: rawData.guild_scheduled_event_id,
-          user: this.client.users._add(rawData.user),
+          // Add member first so user doesn't get created twice
           member: rawData.member ? this.guild.members._add({ ...rawData.member, user: rawData.user }) : null,
+          user: this.client.users._obtain(rawData.user, this.guild),
         }),
       new Collection(),
     );

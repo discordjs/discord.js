@@ -3,6 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const Integration = require('./Integration');
+const User = require('./User');
 const Webhook = require('./Webhook');
 const Util = require('../util/Util');
 
@@ -29,7 +30,12 @@ const Util = require('../util/Util');
  */
 class GuildAuditLogs {
   constructor(guild, data) {
-    if (data.users) for (const user of data.users) guild.client.users._add(user);
+    this.users = new Collection();
+    if (data.users) {
+      for (const user of data.users) {
+        this.users.set(user.id, new User(guild.client, user));
+      }
+    }
     if (data.threads) for (const thread of data.threads) guild.client.channels._add(thread, guild);
     /**
      * Cached webhooks

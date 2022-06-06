@@ -15,12 +15,12 @@ class MessageReactionRemove extends Action {
   handle(data) {
     if (!data.emoji) return false;
 
-    const user = this.getUser(data);
-    if (!user) return false;
-
     // Verify channel
     const channel = this.getChannel(data);
     if (!channel?.isTextBased()) return false;
+
+    const user = this.getUser(data, channel.guild);
+    if (!user) return false;
 
     // Verify message
     const message = this.getMessage(data, channel);

@@ -394,7 +394,7 @@ class GuildMemberManager extends CachedManager {
 
     await this.client.rest.delete(Routes.guildMember(this.guild.id, id), { reason });
 
-    return this.resolve(user) ?? this.client.users.resolve(user) ?? id;
+    return this.resolve(user) ?? this.client.users.resolve(user, this.guild) ?? id;
   }
 
   /**

@@ -256,23 +256,6 @@ class Sweepers {
   }
 
   /**
-   * Sweeps all users and removes the ones which are indicated by the filter.
-   * @param {Function} filter The function used to determine which users will be removed from the caches.
-   * @returns {number} Amount of users that were removed from the caches
-   */
-  sweepUsers(filter) {
-    if (typeof filter !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'filter', 'function');
-    }
-
-    const users = this.client.users.cache.sweep(filter);
-
-    this.client.emit(Events.CacheSweep, `Swept ${users} users.`);
-
-    return users;
-  }
-
-  /**
    * Sweeps all guild voice states and removes the ones which are indicated by the filter.
    * @param {Function} filter The function used to determine which voice states will be removed from the caches.
    * @returns {number} Amount of voice states that were removed from the caches

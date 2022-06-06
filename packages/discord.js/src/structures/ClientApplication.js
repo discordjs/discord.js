@@ -2,6 +2,7 @@
 
 const { Routes } = require('discord-api-types/v10');
 const Team = require('./Team');
+const User = require('./User');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
@@ -115,7 +116,7 @@ class ClientApplication extends Application {
     this.owner = data.team
       ? new Team(this.client, data.team)
       : data.owner
-      ? this.client.users._add(data.owner)
+      ? new User(this.client, data.owner)
       : this.owner ?? null;
   }
 

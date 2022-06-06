@@ -8,8 +8,7 @@ module.exports = (client, { d: data }, shard) => {
     client.user._patch(data.user);
   } else {
     ClientUser ??= require('../../../structures/ClientUser');
-    client.user = new ClientUser(client, data.user);
-    client.users.cache.set(client.user.id, client.user);
+    client.users.me = new ClientUser(client, data.user);
   }
 
   for (const guild of data.guilds) {

@@ -92,7 +92,8 @@ class PermissionOverwriteManager extends CachedManager {
     let userOrRoleId = this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole);
     let { type, reason } = overwriteOptions;
     if (typeof type !== 'number') {
-      userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
+      userOrRole =
+        this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole, this.channel.guild);
       if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
       type = userOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
     }

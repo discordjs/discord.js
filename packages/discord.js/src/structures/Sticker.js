@@ -3,6 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, StickerFormatType } = require('discord-api-types/v10');
 const Base = require('./Base');
+const User = require('./User');
 
 /**
  * Represents a Sticker.
@@ -103,7 +104,7 @@ class Sticker extends Base {
        * The user that uploaded the guild sticker
        * @type {?User}
        */
-      this.user = this.client.users._add(sticker.user);
+      this.user = this.user ? this.user._patch(sticker.user) : new User(this.client, sticker.user);
     } else {
       this.user ??= null;
     }

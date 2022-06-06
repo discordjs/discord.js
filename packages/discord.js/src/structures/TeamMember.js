@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const User = require('./User');
 
 /**
  * Represents a Client OAuth2 Application Team Member.
@@ -41,7 +42,7 @@ class TeamMember extends Base {
        * The user for this Team Member
        * @type {User}
        */
-      this.user = this.client.users._add(data.user);
+      this.user = this.user ? this.user._patch(data.user) : new User(this.team.client, data.user);
     }
   }
 

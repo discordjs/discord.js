@@ -102,8 +102,8 @@ class GuildAuditLogsEntry {
      */
     this.executor = data.user_id
       ? guild.client.options.partials.includes(Partials.User)
-        ? guild.client.users._add({ id: data.user_id })
-        : guild.client.users.cache.get(data.user_id)
+        ? guild.client.users._obtain({ id: data.user_id }, guild)
+        : logs.users.get(data.user_id)
       : null;
 
     /**
@@ -212,8 +212,8 @@ class GuildAuditLogsEntry {
       // MemberDisconnect and similar types do not provide a target_id.
     } else if (targetType === Targets.User && data.target_id) {
       this.target = guild.client.options.partials.includes(Partials.User)
-        ? guild.client.users._add({ id: data.target_id })
-        : guild.client.users.cache.get(data.target_id);
+        ? guild.client.users._obtain({ id: data.target_id }, guild)
+        : logs.users.get(data.target_id);
     } else if (targetType === Targets.Guild) {
       this.target = guild.client.guilds.cache.get(data.target_id);
     } else if (targetType === Targets.Webhook) {
@@ -253,7 +253,7 @@ class GuildAuditLogsEntry {
       this.target =
         data.action_type === AuditLogEvent.MessageBulkDelete
           ? guild.channels.cache.get(data.target_id) ?? { id: data.target_id }
-          : guild.client.users.cache.get(data.target_id);
+          : logs.users.get(data.target_id);
     } else if (targetType === Targets.Integration) {
       this.target =
         logs.integrations.get(data.target_id) ??

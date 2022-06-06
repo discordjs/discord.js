@@ -153,12 +153,6 @@ class Client extends BaseClient {
     }
 
     /**
-     * User that the client is logged in as
-     * @type {?ClientUser}
-     */
-    this.user = null;
-
-    /**
      * The application of this bot
      * @type {?ClientApplication}
      */
@@ -169,6 +163,15 @@ class Client extends BaseClient {
      * @type {?number}
      */
     this.readyTimestamp = null;
+  }
+
+  /**
+   * User that the client is logged in as
+   * @type {?ClientUser}
+   * @readonly
+   */
+  get user() {
+    return this.users.me;
   }
 
   /**

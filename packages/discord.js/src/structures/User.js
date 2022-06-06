@@ -263,20 +263,18 @@ class User extends Base {
 
   /**
    * Fetches this user's flags.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<UserFlagsBitField>}
    */
-  fetchFlags(force = false) {
-    return this.client.users.fetchFlags(this.id, { force });
+  fetchFlags() {
+    return this.client.users.fetchFlags(this);
   }
 
   /**
    * Fetches this user.
-   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<User>}
    */
-  fetch(force = true) {
-    return this.client.users.fetch(this.id, { force });
+  fetch() {
+    return this.client.users.fetch(this);
   }
 
   /**

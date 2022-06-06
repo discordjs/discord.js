@@ -1,5 +1,6 @@
 'use strict';
 
+const User = require('./User');
 const Application = require('./interfaces/Application');
 
 /**
@@ -15,7 +16,7 @@ class IntegrationApplication extends Application {
        * The bot user for this application
        * @type {?User}
        */
-      this.bot = this.client.users._add(data.bot);
+      this.bot = this.bot ? this.bot._patch(data.bot) : new User(this.user, data.bot);
     } else {
       this.bot ??= null;
     }

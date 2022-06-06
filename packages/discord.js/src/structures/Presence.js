@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const { Emoji } = require('./Emoji');
+const User = require('./User');
 const ActivityFlagsBitField = require('../util/ActivityFlagsBitField');
 const Util = require('../util/Util');
 
@@ -58,7 +59,7 @@ class Presence extends Base {
    * @readonly
    */
   get user() {
-    return this.client.users.resolve(this.userId);
+    return this.member?.user ?? this._user ? new User(this.client, this._user) : null;
   }
 
   /**
@@ -103,6 +104,13 @@ class Presence extends Base {
     } else {
       this.clientStatus ??= null;
     }
+
+    /**
+     * The raw user object from the API
+     * @type {Partial<APIUser>}
+     * @private
+     */
+    this._user = this._user ? { ...this._user, ...data.user } : data.user;
 
     return this;
   }

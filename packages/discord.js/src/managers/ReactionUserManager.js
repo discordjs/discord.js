@@ -49,7 +49,7 @@ class ReactionUserManager extends CachedManager {
     );
     const users = new Collection();
     for (const rawUser of data) {
-      const user = this.client.users._add(rawUser);
+      const user = this.client.users._obtain(rawUser, this.reaction.message.guild);
       this.cache.set(user.id, user);
       users.set(user.id, user);
     }

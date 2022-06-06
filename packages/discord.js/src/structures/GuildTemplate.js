@@ -3,6 +3,7 @@
 const { setTimeout, clearTimeout } = require('node:timers');
 const { RouteBases, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
+const User = require('./User');
 const DataResolver = require('../util/DataResolver');
 const Events = require('../util/Events');
 
@@ -69,7 +70,7 @@ class GuildTemplate extends Base {
        * The user that created this template
        * @type {User}
        */
-      this.creator = this.client.users._add(data.creator);
+      this.creator = this.creator ? this.creator._patch(data.creator) : new User(this.client, data.creator);
     }
 
     if ('created_at' in data) {

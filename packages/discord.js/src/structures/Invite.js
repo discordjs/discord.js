@@ -124,8 +124,13 @@ class Invite extends Base {
     }
 
     if ('inviter' in data) {
-      this.client.users._add(data.inviter);
-      this.inviterId = data.inviter.id;
+      /**
+       * The user who created this invite
+       * @type {?User}
+       */
+      this.inviter = this.client.users._obtain(data.inviter, this.guild);
+    } else {
+      this.inviter ??= null;
     }
 
     if ('target_user' in data) {
@@ -133,7 +138,7 @@ class Invite extends Base {
        * The user whose stream to display for this voice channel stream invite
        * @type {?User}
        */
-      this.targetUser = this.client.users._add(data.target_user);
+      this.targetUser = this.client.users._obtain(data.target_user, this.guild);
     } else {
       this.targetUser ??= null;
     }
@@ -262,15 +267,6 @@ class Invite extends Base {
   }
 
   /**
-   * The user who created this invite
-   * @type {?User}
-   * @readonly
-   */
-  get inviter() {
-    return this.inviterId && this.client.users.resolve(this.inviterId);
-  }
-
-  /**
    * The URL to the invite
    * @type {string}
    * @readonly
@@ -308,7 +304,7 @@ class Invite extends Base {
       memberCount: false,
       uses: false,
       channel: 'channelId',
-      inviter: 'inviterId',
+      inviter: true,
       guild: 'guildId',
     });
   }

@@ -78,7 +78,7 @@ class MessageMentions {
           if (mention.member && message.guild) {
             message.guild.members._add(Object.assign(mention.member, { user: mention }));
           }
-          const user = message.client.users._add(mention);
+          const user = message.client.users._obtain(mention, this.guild);
           this.users.set(user.id, user);
         }
       }
@@ -156,7 +156,7 @@ class MessageMentions {
      * The author of the message that this message is a reply to
      * @type {?User}
      */
-    this.repliedUser = repliedUser ? this.client.users._add(repliedUser) : null;
+    this.repliedUser = repliedUser ? this.client.users._obtain(repliedUser, this.guild) : null;
   }
 
   /**
@@ -211,7 +211,7 @@ class MessageMentions {
    * @returns {boolean}
    */
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreRepliedUser = false, ignoreEveryone = false } = {}) {
-    const user = this.client.users.resolve(data);
+    const user = this.client.users.resolve(data, this.guild);
     const role = this.guild?.roles.resolve(data);
     const channel = this.client.channels.resolve(data);
 

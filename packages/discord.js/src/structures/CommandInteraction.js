@@ -105,7 +105,7 @@ class CommandInteraction extends Interaction {
     if (users) {
       result.users = new Collection();
       for (const user of Object.values(users)) {
-        result.users.set(user.id, this.client.users._add(user));
+        result.users.set(user.id, this.client.users._obtain(user, this.guild));
       }
     }
 
@@ -177,7 +177,7 @@ class CommandInteraction extends Interaction {
 
     if (resolved) {
       const user = resolved.users?.[option.value];
-      if (user) result.user = this.client.users._add(user);
+      if (user) result.user = this.client.users._obtain(user, this.guild);
 
       const member = resolved.members?.[option.value];
       if (member) result.member = this.guild?.members._add({ user, ...member }) ?? member;

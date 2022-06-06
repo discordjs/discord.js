@@ -775,8 +775,8 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public shard: ShardClientUtil | null;
   public token: If<Ready, string, string | null>;
   public get uptime(): If<Ready, number>;
-  public user: If<Ready, ClientUser>;
-  public users: UserManager;
+  public readonly user: If<Ready, ClientUser>;
+  public users: UserManager<Ready>;
   public voice: ClientVoiceManager;
   public ws: WebSocketManager;
   public destroy(): void;
@@ -1033,7 +1033,7 @@ export class DataResolver extends null {
 export class DMChannel extends TextBasedChannelMixin(Channel, ['bulkDelete', 'fetchWebhooks', 'createWebhook']) {
   private constructor(client: Client, data?: RawDMChannelData);
   public recipientId: Snowflake;
-  public get recipient(): User | null;
+  public recipient: User | null;
   public type: ChannelType.DM;
   public fetch(force?: boolean): Promise<this>;
   public toString(): UserMention;
@@ -1157,9 +1157,10 @@ export class Guild extends AnonymousGuild {
 
 export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
-  private webhooks: Collection<Snowflake, Webhook>;
-  private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
+  private integrations: Collection<Snowflake | string, Integration>;
+  private users: Collection<Snowflake, User>;
+  private webhooks: Collection<Snowflake, Webhook>;
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
   public static Entry: typeof GuildAuditLogsEntry;
   public toJSON(): unknown;
@@ -1550,8 +1551,7 @@ export class Invite extends Base {
   public get expiresAt(): Date | null;
   public get expiresTimestamp(): number | null;
   public guild: InviteGuild | Guild | null;
-  public get inviter(): User | null;
-  public inviterId: Snowflake | null;
+  public inviter: User | null;
   public maxAge: number | null;
   public maxUses: number | null;
   public memberCount: number;
@@ -2017,6 +2017,7 @@ export class PermissionsBitField extends BitField<PermissionsString, bigint> {
 
 export class Presence extends Base {
   protected constructor(client: Client, data?: RawPresenceData);
+  private _user: Partial<APIUser>;
   public activities: Activity[];
   public clientStatus: ClientPresenceStatusData | null;
   public guild: Guild | null;
@@ -2373,9 +2374,6 @@ export class Sweepers {
   public sweepThreads(
     filter: CollectionSweepFilter<SweeperDefinitions['threads'][0], SweeperDefinitions['threads'][1]>,
   ): number;
-  public sweepUsers(
-    filter: CollectionSweepFilter<SweeperDefinitions['users'][0], SweeperDefinitions['users'][1]>,
-  ): number;
   public sweepVoiceStates(
     filter: CollectionSweepFilter<SweeperDefinitions['voiceStates'][0], SweeperDefinitions['voiceStates'][1]>,
   ): number;
@@ -2552,8 +2550,8 @@ export class User extends PartialTextBasedChannel(Base) {
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
   public equals(user: User): boolean;
-  public fetch(force?: boolean): Promise<User>;
-  public fetchFlags(force?: boolean): Promise<UserFlagsBitField>;
+  public fetch(): Promise<User>;
+  public fetchFlags(): Promise<UserFlagsBitField>;
   public toString(): UserMention;
 }
 
@@ -3379,13 +3377,19 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
 }
 
-export class UserManager extends CachedManager<Snowflake, User, UserResolvable> {
-  private constructor(client: Client, iterable?: Iterable<RawUserData>);
+export class UserManager<Ready extends boolean> extends BaseManager {
+  private constructor(client: Client);
+  public me: If<Ready, ClientUser>;
+  private _obtain(data: Partial<APIUser>, guild: BaseGuild | null): User;
   private dmChannel(userId: Snowflake): DMChannel | null;
   public createDM(user: UserResolvable, options?: BaseFetchOptions): Promise<DMChannel>;
   public deleteDM(user: UserResolvable): Promise<DMChannel>;
-  public fetch(user: UserResolvable, options?: BaseFetchOptions): Promise<User>;
-  public fetchFlags(user: UserResolvable, options?: BaseFetchOptions): Promise<UserFlagsBitField>;
+  public fetch(user: UserResolvable): Promise<User>;
+  public fetchFlags(user: UserResolvable): Promise<UserFlagsBitField>;
+  public resolve(resolvable: User, guild?: GuildResolvable): User;
+  public resolve(resolvable: UserResolvable, guild?: GuildResolvable): User | null;
+  public resolveId(resolvable: Snowflake | User): Snowflake;
+  public resolveId(resolvable: UserResolvable): Snowflake | null;
   public send(user: UserResolvable, options: string | MessagePayload | MessageOptions): Promise<Message>;
 }
 
@@ -3882,7 +3886,7 @@ export interface ClientEvents {
   ];
   threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
   typingStart: [typing: Typing];
-  userUpdate: [oldUser: User | PartialUser, newUser: User];
+  userUpdate: [oldUser: ClientUser, newUser: ClientUser];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel];
   interactionCreate: [interaction: Interaction];
@@ -5086,7 +5090,6 @@ export interface SweeperDefinitions {
   stickers: [Snowflake, Sticker];
   threadMembers: [Snowflake, ThreadMember];
   threads: [Snowflake, ThreadChannel, true];
-  users: [Snowflake, User];
   voiceStates: [Snowflake, VoiceState];
 }
 

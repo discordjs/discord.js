@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const User = require('./User');
 
 /**
  * Represents a ban in a guild on Discord.
@@ -25,7 +26,8 @@ class GuildBan extends Base {
        * The user this ban applies to
        * @type {User}
        */
-      this.user = this.client.users._add(data.user, true);
+      // Store / create reference directly as member is highly unlikely to exist anymore
+      this.user = this.user ? this.user._patch(data.user) : new User(this.client, data.user);
     }
 
     if ('reason' in data) {

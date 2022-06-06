@@ -10,7 +10,7 @@ class GuildScheduledEventUserAddAction extends Action {
 
     if (guild) {
       const guildScheduledEvent = this.getScheduledEvent(data, guild);
-      const user = this.getUser(data);
+      const user = this.getUser(data, guild);
 
       if (guildScheduledEvent && user) {
         /**

@@ -123,9 +123,9 @@ class GuildScheduledEvent extends Base {
        * The user that created this guild scheduled event
        * @type {?User}
        */
-      this.creator = this.client.users._add(data.creator);
+      this.creator = this.client.users._obtain(data.creator, this.guild);
     } else {
-      this.creator ??= this.client.users.resolve(this.creatorId);
+      this.creator ??= this.client.users.resolve(this.creatorId, this.guild);
     }
 
     /* eslint-disable max-len */

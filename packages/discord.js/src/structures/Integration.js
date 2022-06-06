@@ -87,7 +87,7 @@ class Integration extends Base {
        * The user for this integration
        * @type {?User}
        */
-      this.user = this.client.users._add(data.user);
+      this.user = this.client.users._obtain(data.user, this.guild);
     } else {
       this.user ??= null;
     }

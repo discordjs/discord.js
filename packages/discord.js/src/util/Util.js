@@ -489,7 +489,7 @@ class Util extends null {
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
         if (channel.type === ChannelType.DM) {
-          const user = channel.client.users.cache.get(id);
+          const user = channel.recipient;
           return user ? `@${user.username}` : input;
         }
 
@@ -497,7 +497,7 @@ class Util extends null {
         if (member) {
           return `@${member.displayName}`;
         } else {
-          const user = channel.client.users.cache.get(id);
+          const user = channel.guild?.members?.cache.get(id)?.user;
           return user ? `@${user.username}` : input;
         }
       })

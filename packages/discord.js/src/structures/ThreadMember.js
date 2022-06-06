@@ -76,7 +76,7 @@ class ThreadMember extends Base {
    * @readonly
    */
   get user() {
-    return this.client.users.resolve(this.id);
+    return this.guildMember?.user;
   }
 
   /**

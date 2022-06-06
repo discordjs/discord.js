@@ -3,6 +3,7 @@
 const { userMention } = require('@discordjs/builders');
 const { ChannelType } = require('discord-api-types/v10');
 const { Channel } = require('./Channel');
+const User = require('./User');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
 const Partials = require('../util/Partials');
@@ -39,8 +40,16 @@ class DMChannel extends Channel {
       this.recipientId = recipient.id;
 
       if ('username' in recipient || this.client.options.partials.includes(Partials.Users)) {
-        this.client.users._add(recipient);
+        /**
+         * The recipient on the other end of the DM
+         * @type {?User}
+         */
+        this.recipient = this.recipient ? this.recipient._patch(recipient) : new User(this.client, recipient);
+      } else {
+        this.recipient ??= null;
       }
+    } else {
+      this.recipient ??= null;
     }
 
     if ('last_message_id' in data) {
@@ -69,15 +78,6 @@ class DMChannel extends Channel {
    */
   get partial() {
     return typeof this.lastMessageId === 'undefined';
-  }
-
-  /**
-   * The recipient on the other end of the DM
-   * @type {?User}
-   * @readonly
-   */
-  get recipient() {
-    return this.client.users.resolve(this.recipientId);
   }
 
   /**
