@@ -116,7 +116,9 @@ class GuildMemberManager extends CachedManager {
       }
       resolvedOptions.roles = resolvedRoles;
     }
-    const data = await this.client.rest.put(Routes.guildMember(this.guild.id, userId), { body: resolvedOptions });
+    const data = await this.client.rest.put(Routes.guildMember(this.guild.id, userId), {
+      body: resolvedOptions,
+    });
     // Data is an empty buffer if the member is already part of the guild.
     return data instanceof Buffer ? (options.fetchWhenExisting === false ? null : this.fetch(userId)) : this._add(data);
   }
@@ -130,8 +132,12 @@ class GuildMemberManager extends CachedManager {
     return (
       this.resolve(this.client.user.id) ??
       (this.client.options.partials.includes(Partials.GuildMember)
-        ? this._add({ user: { id: this.client.user.id } }, true)
-        : null)
+        ? this._add({
+          user: {
+            id: this.client.user.id,
+          },
+        }, true)
+      : null)
     );
   }
 
@@ -171,29 +177,44 @@ class GuildMemberManager extends CachedManager {
    *   .catch(console.error);
    * @example
    * // Fetch a single member without checking cache
-   * guild.members.fetch({ user, force: true })
+   * guild.members.fetch({
+   *  user,
+   *  force: true,
+   * })
    *   .then(console.log)
    *   .catch(console.error)
    * @example
    * // Fetch a single member without caching
-   * guild.members.fetch({ user, cache: false })
+   * guild.members.fetch({
+   *  user,
+   *  cache: false,
+   * })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
    * // Fetch by an array of users including their presences
-   * guild.members.fetch({ user: ['66564597481480192', '191615925336670208'], withPresences: true })
+   * guild.members.fetch({
+   *  user: ['66564597481480192', '191615925336670208'],
+   *  withPresences: true,
+   * })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
    * // Fetch by query
-   * guild.members.fetch({ query: 'hydra', limit: 1 })
+   * guild.members.fetch({
+   *  query: 'hydra',
+   *  limit: 1,
+   * })
    *   .then(console.log)
    *   .catch(console.error);
    */
   fetch(options) {
     if (!options) return this._fetchMany();
     const user = this.client.users.resolveId(options);
-    if (user) return this._fetchSingle({ user, cache: true });
+    if (user) return this._fetchSingle({
+      user,
+      cache: true,
+    });
     if (options.user) {
       if (Array.isArray(options.user)) {
         options.user = options.user.map(u => this.client.users.resolveId(u));
@@ -212,7 +233,10 @@ class GuildMemberManager extends CachedManager {
    * @returns {Promise<GuildMember>}
    */
   fetchMe(options) {
-    return this.fetch({ ...options, user: this.client.user.id });
+    return this.fetch({
+      ...options,
+      user: this.client.user.id,
+    });
   }
 
   /**
@@ -228,9 +252,16 @@ class GuildMemberManager extends CachedManager {
    * @param {GuildSearchMembersOptions} options Options for searching members
    * @returns {Promise<Collection<Snowflake, GuildMember>>}
    */
-  async search({ query, limit, cache = true } = {}) {
+  async search({
+    query,
+    limit,
+    cache = true,
+  } = {}) {
     const data = await this.client.rest.get(Routes.guildMembersSearch(this.guild.id), {
-      query: makeURLSearchParams({ query, limit }),
+      query: makeURLSearchParams({
+        query,
+        limit,
+      }),
     });
     return data.reduce((col, member) => col.set(member.user.id, this._add(member, cache)), new Collection());
   }
@@ -288,28 +319,24 @@ class GuildMemberManager extends CachedManager {
     const id = this.client.users.resolveId(user);
     if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
 
-    // Clone the data object for immutability
-    const _data = {
-      ...data,
-    };
-    if (_data.channel) {
-      _data.channel = this.guild.channels.resolve(_data.channel);
-      if (!(_data.channel instanceof BaseGuildVoiceChannel)) {
+    if (data.channel) {
+      data.channel = this.guild.channels.resolve(data.channel);
+      if (!(data.channel instanceof BaseGuildVoiceChannel)) {
         throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
       }
-      _data.channel_id = _data.channel.id;
-      _data.channel = undefined;
-    } else if (_data.channel === null) {
-      _data.channel_id = null;
-      _data.channel = undefined;
+      data.channel_id = data.channel.id;
+      data.channel = undefined;
+    } else if (data.channel === null) {
+      data.channel_id = null;
+      data.channel = undefined;
     }
-    _data.roles &&= _data.roles.map(role => (role instanceof Role ? role.id : role));
+    data.roles &&= data.roles.map(role => (role instanceof Role ? role.id : role));
 
-    _data.communication_disabled_until =
+    data.communication_disabled_until =
       // eslint-disable-next-line eqeqeq
-      _data.communicationDisabledUntil != null
-        ? new Date(_data.communicationDisabledUntil).toISOString()
-        : _data.communicationDisabledUntil;
+      data.communicationDisabledUntil != null
+        ? new Date(data.communicationDisabledUntil).toISOString()
+        : data.communicationDisabledUntil;
 
     let endpoint;
     if (id === this.client.user.id) {
@@ -321,7 +348,7 @@ class GuildMemberManager extends CachedManager {
     }
 
     const d = await this.client.rest.patch(endpoint, {
-      body: _data,
+      body: data,
       reason: data.reason,
     });
     const clone = this.cache.get(id)?._clone();
