@@ -1,6 +1,6 @@
 {
-  "name": "discord.js",
-  "monoRepo": true,
-  "packagePath": "packages/discord.js",
-  "tagTemplate": "{{new-version}}"
+	"name": "discord.js",
+	"monoRepo": true,
+	"packagePath": "packages/discord.js",
+	"tagTemplate": "{{new-version}}"
 }
