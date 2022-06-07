@@ -21,7 +21,9 @@ class Webhook {
      * @type {Client}
      * @readonly
      */
-    Object.defineProperty(this, 'client', { value: client });
+    Object.defineProperty(this, 'client', {
+      value: client,
+    });
     if (data) this._patch(data);
   }
 
@@ -39,7 +41,11 @@ class Webhook {
      * @name Webhook#token
      * @type {?string}
      */
-    Object.defineProperty(this, 'token', { value: data.token ?? null, writable: true, configurable: true });
+    Object.defineProperty(this, 'token', {
+      value: data.token ?? null,
+      writable: true,
+      configurable: true,
+    });
 
     if ('avatar' in data) {
       /**
@@ -156,13 +162,16 @@ class Webhook {
    *   .catch(console.error);
    * @example
    * // Send a basic message in a thread
-   * webhook.send({ content: 'hello!', threadId: '836856309672348295' })
+   * webhook.send({
+   *  content: 'hello!',
+   *  threadId: '836856309672348295',
+   * })
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
    * @example
    * // Send a remote file
    * webhook.send({
-   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
+   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048'],
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -171,8 +180,8 @@ class Webhook {
    * webhook.send({
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
-   *     name: 'file.jpg'
-   *   }]
+   *     name: 'file.jpg',
+   *   }],
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -183,12 +192,12 @@ class Webhook {
    *   embeds: [{
    *     thumbnail: {
    *          url: 'attachment://file.jpg'
-   *       }
+   *       },
    *    }],
    *    files: [{
    *       attachment: 'entire/path/to/file.jpg',
-   *       name: 'file.jpg'
-   *    }]
+   *       name: 'file.jpg',
+   *    }],
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -210,7 +219,12 @@ class Webhook {
     });
 
     const { body, files } = await messagePayload.resolveFiles();
-    const d = await this.client.rest.post(Routes.webhook(this.id, this.token), { body, files, query, auth: false });
+    const d = await this.client.rest.post(Routes.webhook(this.id, this.token), {
+      body,
+      files,
+      query,
+      auth: false,
+    });
     return this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? new (getMessage())(this.client, d);
   }
 
@@ -227,8 +241,8 @@ class Webhook {
    *     'color': '#F0F',
    *     'footer_icon': 'http://snek.s3.amazonaws.com/topSnek.png',
    *     'footer': 'Powered by sneks',
-   *     'ts': Date.now() / 1_000
-   *   }]
+   *     'ts': Date.now() / 1_000,
+   *   }],
    * }).catch(console.error);
    * @see {@link https://api.slack.com/messaging/webhooks}
    */
@@ -249,21 +263,30 @@ class Webhook {
    * @property {string} [name=this.name] The new name for the webhook
    * @property {?(BufferResolvable)} [avatar] The new avatar for the webhook
    * @property {GuildTextChannelResolvable} [channel] The new channel for the webhook
+   * @param {string} [reason] Reason for editing the webhook
    */
 
   /**
    * Edits this webhook.
    * @param {WebhookEditData} options Options for editing the webhook
-   * @param {string} [reason] Reason for editing the webhook
    * @returns {Promise<Webhook>}
    */
-  async edit({ name = this.name, avatar, channel }, reason) {
+  async edit({
+    name = this.name,
+    avatar,
+    channel,
+    reason,
+  }) {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await DataResolver.resolveImage(avatar);
     }
     channel &&= channel.id ?? channel;
     const data = await this.client.rest.patch(Routes.webhook(this.id, channel ? undefined : this.token), {
-      body: { name, avatar, channel_id: channel },
+      body: {
+        name,
+        avatar,
+        channel_id: channel,
+      },
       reason,
       auth: !this.token || Boolean(channel),
     });
@@ -288,11 +311,16 @@ class Webhook {
    * @param {WebhookFetchMessageOptions} [options={}] The options to provide to fetch the message.
    * @returns {Promise<Message>} Returns the message sent by this webhook
    */
-  async fetchMessage(message, { cache = true, threadId } = {}) {
+  async fetchMessage(message, {
+    cache = true,
+    threadId,
+  } = {}) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     const data = await this.client.rest.get(Routes.webhookMessage(this.id, this.token, message), {
-      query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined,
+      query: threadId ? makeURLSearchParams({
+        thread_id: threadId,
+      }) : undefined,
       auth: false,
     });
     return (
@@ -322,9 +350,9 @@ class Webhook {
       {
         body,
         files,
-        query: messagePayload.options.threadId
-          ? makeURLSearchParams({ thread_id: messagePayload.options.threadId })
-          : undefined,
+        query: messagePayload.options.threadId ? makeURLSearchParams({
+          thread_id: messagePayload.options.threadId,
+        }) : undefined,
         auth: false,
       },
     );
@@ -346,7 +374,10 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async delete(reason) {
-    await this.client.rest.delete(Routes.webhook(this.id, this.token), { reason, auth: !this.token });
+    await this.client.rest.delete(Routes.webhook(this.id, this.token), {
+      reason,
+      auth: !this.token,
+    });
   }
 
   /**
@@ -359,9 +390,10 @@ class Webhook {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     await this.client.rest.delete(
-      Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id),
-      {
-        query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined,
+      Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id), {
+        query: threadId ? makeURLSearchParams({
+          thread_id: threadId,
+        }) : undefined,
         auth: false,
       },
     );
