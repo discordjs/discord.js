@@ -26,7 +26,12 @@ export class DocumentedMethod extends DocumentedItem<Method> {
 			async: this.data.async,
 			generator: this.data.generator,
 			returns: this.data.returns?.length
-				? this.data.returns.map((p) => new DocumentedVarType(p, this.config).serialize())
+				? this.data.returns.map((p) =>
+						new DocumentedVarType(
+							{ names: p.type.names, description: p.description, nullable: p.nullable },
+							this.config,
+						).serialize(),
+				  )
 				: undefined,
 			meta: new DocumentedItemMeta(this.data.meta, this.config).serialize(),
 		};
