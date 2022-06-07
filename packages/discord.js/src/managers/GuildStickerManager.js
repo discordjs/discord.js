@@ -29,40 +29,67 @@ class GuildStickerManager extends CachedManager {
    */
 
   _add(data, cache) {
-    return super._add(data, cache, { extras: [this.guild] });
+    return super._add(data, cache, {
+      extras: [this.guild],
+    });
   }
 
   /**
    * Options for creating a guild sticker.
    * @typedef {Object} GuildStickerCreateOptions
+   * @param {string} name The name for the sticker
+   * @param {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} file The file for the sticker
+   * @param {string} tags The Discord name of a unicode emoji representing the sticker's expression
    * @property {?string} [description] The description for the sticker
    * @property {string} [reason] Reason for creating the sticker
    */
 
   /**
    * Creates a new custom sticker in the guild.
-   * @param {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} file The file for the sticker
-   * @param {string} name The name for the sticker
-   * @param {string} tags The Discord name of a unicode emoji representing the sticker's expression
-   * @param {GuildStickerCreateOptions} [options] Options
+   * @param {GuildStickerCreateOptions} options Options
    * @returns {Promise<Sticker>} The created sticker
    * @example
    * // Create a new sticker from a URL
-   * guild.stickers.create('https://i.imgur.com/w3duR07.png', 'rip', 'headstone')
+   * guild.stickers.create({
+   *  name: 'rip',
+   *  file: 'https://i.imgur.com/w3duR07.png',
+   *  tags: 'headstone',
+   *  description: 'RIP sticker!',
+   *  reason: 'Create sticker!',
+   * })
    *   .then(sticker => console.log(`Created new sticker with name ${sticker.name}!`))
    *   .catch(console.error);
    * @example
    * // Create a new sticker from a file on your computer
-   * guild.stickers.create('./memes/banana.png', 'banana', 'banana')
+   * guild.stickers.create({
+   *  name: 'banana',
+   *  file: './memes/banana.png',
+   *  tags: 'banana',
+   *  description: 'Banana sticker!',
+   *  reason: 'Create sticker!',
+   * })
    *   .then(sticker => console.log(`Created new sticker with name ${sticker.name}!`))
    *   .catch(console.error);
    */
-  async create(file, name, tags, { description, reason } = {}) {
+  async create({
+    name,
+    file,
+    tags,
+    description,
+    reason,
+  } = {}) {
     const resolvedFile = await MessagePayload.resolveFile(file);
     if (!resolvedFile) throw new TypeError('REQ_RESOURCE_TYPE');
-    file = { ...resolvedFile, key: 'file' };
+    file = {
+      ...resolvedFile,
+      key: 'file'
+    };
 
-    const body = { name, tags, description: description ?? '' };
+    const body = {
+      name,
+      tags,
+      description: description ?? '',
+    };
 
     const sticker = await this.client.rest.post(Routes.guildStickers(this.guild.id), {
       appendToFormData: true,
@@ -104,13 +131,16 @@ class GuildStickerManager extends CachedManager {
    * @param {GuildStickerEditData} [data] The new data for the sticker
    * @returns {Promise<Sticker>}
    */
-  async edit(sticker, data) {
+  async edit(sticker, {
+    ...data,
+    reason,
+  }) {
     const stickerId = this.resolveId(sticker);
     if (!stickerId) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
 
     const d = await this.client.rest.patch(Routes.guildSticker(this.guild.id, stickerId), {
       body: data,
-      reason: data.reason,
+      reason,
     });
 
     const existing = this.cache.get(stickerId);
@@ -132,7 +162,9 @@ class GuildStickerManager extends CachedManager {
     sticker = this.resolveId(sticker);
     if (!sticker) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
 
-    await this.client.rest.delete(Routes.guildSticker(this.guild.id, sticker), { reason });
+    await this.client.rest.delete(Routes.guildSticker(this.guild.id, sticker), {
+      reason,
+    });
   }
 
   /**
@@ -151,7 +183,10 @@ class GuildStickerManager extends CachedManager {
    *   .then(sticker => console.log(`The sticker name is: ${sticker.name}`))
    *   .catch(console.error);
    */
-  async fetch(id, { cache = true, force = false } = {}) {
+  async fetch(id, {
+    cache = true,
+    force = false,
+  } = {}) {
     if (id) {
       if (!force) {
         const existing = this.cache.get(id);
