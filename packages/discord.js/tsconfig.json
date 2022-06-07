@@ -1,10 +1,10 @@
 {
-	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		// Output Formatting
-		"pretty": false,
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    // Output Formatting
+    "pretty": false,
 
-		// Completeness
-		"skipDefaultLibCheck": true
-	}
+    // Completeness
+    "skipDefaultLibCheck": true
+  }
 }
