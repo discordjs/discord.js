@@ -353,7 +353,6 @@ class TextBasedChannel {
 
   /**
    * Creates a webhook for the channel.
-   * @param {string} name The name of the webhook
    * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
@@ -365,8 +364,8 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  createWebhook(name, options = {}) {
-    return this.guild.channels.createWebhook(this.id, name, options);
+  createWebhook(options) {
+    return this.guild.channels.createWebhook(this.id, options);
   }
 
   /**

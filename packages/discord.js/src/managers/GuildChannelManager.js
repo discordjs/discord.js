@@ -177,7 +177,7 @@ class GuildChannelManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  async createWebhook({ channel, name, avatar, reason } = {}) {
+  async createWebhook({ channel, name, avatar, reason }) {
     const id = this.resolveId(channel);
     if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
