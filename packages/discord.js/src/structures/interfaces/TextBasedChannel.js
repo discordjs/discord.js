@@ -345,7 +345,6 @@ class TextBasedChannel {
   /**
    * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
    * @typedef {Object} ChannelWebhookCreateOptions
-   * @property {GuildChannelResolvable} channel The channel to create the webhook for
    * @property {string} name The name of the webhook
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
    * @property {string} [reason] Reason for creating the webhook
@@ -365,7 +364,7 @@ class TextBasedChannel {
    *   .catch(console.error)
    */
   createWebhook(options) {
-    return this.guild.channels.createWebhook(this.id, options);
+    return this.guild.channels.createWebhook({ channel: this.id, ...options });
   }
 
   /**

@@ -3150,7 +3150,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
     options: GuildChannelCreateOptions & { type: T },
   ): Promise<MappedGuildChannelTypes[T]>;
   public create(options: GuildChannelCreateOptions): Promise<TextChannel>;
-  public createWebhook(options: ChannelWebhookCreateOptions): Promise<Webhook>;
+  public createWebhook(options: WebhookCreateOptions): Promise<Webhook>;
   public edit(channel: GuildChannelResolvable, data: ChannelEditData): Promise<GuildChannel>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<NonThreadGuildBasedChannel | null>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, NonThreadGuildBasedChannel>>;
@@ -3855,10 +3855,13 @@ export type GuildTextChannelResolvable = TextChannel | NewsChannel | Snowflake;
 export type ChannelResolvable = AnyChannel | Snowflake;
 
 export interface ChannelWebhookCreateOptions {
-  channel: GuildChannelResolvable;
   name: string;
   avatar?: BufferResolvable | Base64Resolvable | null;
   reason?: string;
+}
+
+export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
+  channel: GuildChannelResolvable;
 }
 
 export interface ClientEvents {

@@ -163,8 +163,13 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
+   * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
+   * @property {GuildChannelResolvable} channel The channel to create the webhook for
+   */
+
+  /**
    * Creates a webhook for the channel.
-   * @param {ChannelWebhookCreateOptions} options Options for creating the webhook
+   * @param {WebhookCreateOptions} options Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
    * // Create a webhook for the current channel
