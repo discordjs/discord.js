@@ -8,7 +8,7 @@ const ThreadMember = require('../structures/ThreadMember');
 const User = require('../structures/User');
 
 /**
- * Manages API methods for users and stores their cache.
+ * Manages API methods for users.
  * @extends {CachedManager}
  */
 class UserManager extends BaseManager {
@@ -82,7 +82,7 @@ class UserManager extends BaseManager {
     const id = this.resolveId(user);
     const data = await this.client.rest.get(Routes.user(id));
     if (user instanceof User) return user._patch(data);
-    return new User(data);
+    return new User(this.client, data);
   }
 
   /**

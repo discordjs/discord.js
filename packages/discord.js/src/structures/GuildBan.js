@@ -27,7 +27,7 @@ class GuildBan extends Base {
        * @type {User}
        */
       // Store / create reference directly as member is highly unlikely to exist anymore
-      this.user = this.user ? this.user._patch(data.user) : new User(this.client, data.user);
+      this.user = this.user?._patch(data.user) ?? new User(this.client, data.user);
     }
 
     if ('reason' in data) {

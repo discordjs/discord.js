@@ -16,7 +16,7 @@ class IntegrationApplication extends Application {
        * The bot user for this application
        * @type {?User}
        */
-      this.bot = this.bot ? this.bot._patch(data.bot) : new User(this.user, data.bot);
+      this.bot = this.bot?._patch(data.bot) ?? new User(this.client, data.bot);
     } else {
       this.bot ??= null;
     }

@@ -104,7 +104,7 @@ class Sticker extends Base {
        * The user that uploaded the guild sticker
        * @type {?User}
        */
-      this.user = this.user ? this.user._patch(sticker.user) : new User(this.client, sticker.user);
+      this.user = this.user?._patch(sticker.user) ?? new User(this.client, sticker.user);
     } else {
       this.user ??= null;
     }

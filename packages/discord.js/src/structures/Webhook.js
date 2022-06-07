@@ -4,7 +4,7 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, WebhookType } = require('discord-api-types/v10');
 const MessagePayload = require('./MessagePayload');
-const { User } = require('..');
+const { User } = require('./User');
 const { Error } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const { lazy } = require('../util/Util');
@@ -82,7 +82,7 @@ class Webhook {
 
     if ('user' in data) {
       if ('users' in this.client) {
-        this.owner = this.owner ? this.owner._patch(data.user) : new User(this.client, data.user);
+        this.owner = this.owner?._patch(data.user) ?? new User(this.client, data.user);
       } else {
         /**
          * The owner of the webhook

@@ -105,7 +105,7 @@ class Client extends BaseClient {
       : null;
 
     /**
-     * All of the {@link User} objects that have been cached at any point, mapped by their ids
+     * The user manager of the client
      * @type {UserManager}
      */
     this.users = new UserManager(this);

@@ -494,12 +494,7 @@ class Util extends null {
         }
 
         const member = channel.guild.members.cache.get(id);
-        if (member) {
-          return `@${member.displayName}`;
-        } else {
-          const user = channel.guild?.members?.cache.get(id)?.user;
-          return user ? `@${user.username}` : input;
-        }
+        return member ? `@${member.displayName}` : input;
       })
       .replace(/<#[0-9]+>/g, input => {
         const mentionedChannel = channel.client.channels.cache.get(input.replace(/<|#|>/g, ''));

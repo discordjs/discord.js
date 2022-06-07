@@ -775,7 +775,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public shard: ShardClientUtil | null;
   public token: If<Ready, string, string | null>;
   public get uptime(): If<Ready, number>;
-  public readonly user: If<Ready, ClientUser>;
+  public get user(): If<Ready, ClientUser>;
   public users: UserManager<Ready>;
   public voice: ClientVoiceManager;
   public ws: WebSocketManager;
@@ -3377,7 +3377,7 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
 }
 
-export class UserManager<Ready extends boolean> extends BaseManager {
+export class UserManager<Ready extends boolean = boolean> extends BaseManager {
   private constructor(client: Client);
   public me: If<Ready, ClientUser>;
   private _obtain(data: Partial<APIUser>, guild: BaseGuild | null): User;

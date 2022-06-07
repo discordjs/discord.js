@@ -64,7 +64,7 @@ class GuildMember extends Base {
        * The user that this guild member instance represents
        * @type {?User}
        */
-      this.user = this.user ? this.user._clone().patch(data.user) : new User(this.client, data.user);
+      this.user = this.user?.patch(data.user) ?? new User(this.client, data.user);
     }
 
     if ('nick' in data) this.nickname = data.nick;
@@ -99,6 +99,7 @@ class GuildMember extends Base {
   _clone() {
     const clone = super._clone();
     clone._roles = this._roles.slice();
+    clone.user = this.user?._clone() ?? null;
     return clone;
   }
 

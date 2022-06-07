@@ -70,7 +70,7 @@ class GuildTemplate extends Base {
        * The user that created this template
        * @type {User}
        */
-      this.creator = this.creator ? this.creator._patch(data.creator) : new User(this.client, data.creator);
+      this.creator = this.creator?._patch(data.creator) ?? new User(this.client, data.creator);
     }
 
     if ('created_at' in data) {

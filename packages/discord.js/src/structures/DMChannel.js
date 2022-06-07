@@ -44,7 +44,7 @@ class DMChannel extends Channel {
          * The recipient on the other end of the DM
          * @type {?User}
          */
-        this.recipient = this.recipient ? this.recipient._patch(recipient) : new User(this.client, recipient);
+        this.recipient = this.recipient?._patch(recipient) ?? new User(this.client, recipient);
       } else {
         this.recipient ??= null;
       }
