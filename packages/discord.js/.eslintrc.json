@@ -19,17 +19,6 @@
         }
       }
     ],
-    "prettier/prettier": [
-      2,
-      {
-        "printWidth": 120,
-        "singleQuote": true,
-        "quoteProps": "as-needed",
-        "trailingComma": "all",
-        "endOfLine": "lf",
-        "arrowParens": "avoid"
-      }
-    ],
     "strict": ["error", "global"],
     "no-await-in-loop": "warn",
     "no-compare-neg-zero": "error",

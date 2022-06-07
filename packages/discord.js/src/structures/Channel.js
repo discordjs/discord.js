@@ -3,6 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
+const { ThreadChannelTypes } = require('../util/Constants');
 let CategoryChannel;
 let DMChannel;
 let NewsChannel;
@@ -110,6 +111,14 @@ class Channel extends Base {
   }
 
   /**
+   * Indicates whether this channel is a {@link ThreadChannel}.
+   * @returns {boolean}
+   */
+  isThread() {
+    return ThreadChannelTypes.includes(this.type);
+  }
+
+  /**
    * Indicates whether this channel is {@link TextBasedChannels text-based}.
    * @returns {boolean}
    */
@@ -184,7 +193,7 @@ class Channel extends Base {
             break;
           }
           case ChannelType.GuildDirectory:
-            channel = new DirectoryChannel(client, data);
+            channel = new DirectoryChannel(guild, data, client);
             break;
         }
         if (channel && !allowUnknownGuild) guild.channels?.cache.set(channel.id, channel);
