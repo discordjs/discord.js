@@ -30,6 +30,8 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   /**
    * Options used for creating an emoji in a guild.
    * @typedef {Object} GuildEmojiCreateOptions
+   * @param {string} name The name for the emoji
+   * @param {BufferResolvable|Base64Resolvable} image The image for the emoji (url or file on your comuter)
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to limit the emoji to
    * @property {string} [reason] The reason for creating the emoji
    */
