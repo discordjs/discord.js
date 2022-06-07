@@ -16,8 +16,6 @@ jobs:
             folder: 'collection'
           - package: 'discord.js'
             folder: 'discord.js'
-          - package: 'docgen'
-            folder: 'docgen'
           - package: '@discordjs/proxy'
             folder: 'proxy'
           - package: '@discordjs/rest'
