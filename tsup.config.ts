@@ -1,11 +1,25 @@
-import { relative, resolve as resolveDir } from 'node:path';
+import { relative, resolve } from 'node:path';
 import { defineConfig, type Options } from 'tsup';
+
+type ConfigOptions = Pick<
+	Options,
+	| 'globalName'
+	| 'minify'
+	| 'entry'
+	| 'format'
+	| 'target'
+	| 'sourcemap'
+	| 'skipNodeModulesBundle'
+	| 'noExternal'
+	| 'esbuildOptions'
+>;
 
 export const createTsupConfig = ({
 	globalName,
 	format = ['esm', 'cjs'],
 	target = 'es2021',
 	sourcemap = true,
+	minify = false,
 	entry = ['src/index.ts'],
 	skipNodeModulesBundle = true,
 	noExternal,
@@ -22,18 +36,13 @@ export const createTsupConfig = ({
 		dts: true,
 		entry,
 		format,
-		minify: false,
+		minify,
 		skipNodeModulesBundle,
 		sourcemap,
 		target,
-		tsconfig: relative(__dirname, resolveDir(process.cwd(), 'tsconfig.json')),
+		tsconfig: relative(__dirname, resolve(process.cwd(), 'tsconfig.json')),
 		keepNames: true,
 		globalName,
 		noExternal,
 		esbuildOptions,
 	});
-
-type ConfigOptions = Pick<
-	Options,
-	'globalName' | 'entry' | 'format' | 'target' | 'sourcemap' | 'skipNodeModulesBundle' | 'noExternal' | 'esbuildOptions'
->;

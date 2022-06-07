@@ -5,4 +5,5 @@ export default createTsupConfig({
 	format: ['cjs'],
 	skipNodeModulesBundle: false,
 	noExternal: ['@actions/core'],
+	minify: true,
 });
