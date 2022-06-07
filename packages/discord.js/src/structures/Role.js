@@ -214,7 +214,7 @@ class Role extends Base {
    * // Edit a role
    * role.edit({
    *  name: 'new role',
-   *  reason: 'Role edited!'
+   *  reason: 'Role edited!',
    * })
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
@@ -248,7 +248,10 @@ class Role extends Base {
    *   .catch(console.error);
    */
   setName(name, reason) {
-    return this.edit({ name, reason });
+    return this.edit({
+      name,
+      reason,
+    });
   }
 
   /**
@@ -263,7 +266,10 @@ class Role extends Base {
    *   .catch(console.error);
    */
   setColor(color, reason) {
-    return this.edit({ color, reason });
+    return this.edit({
+      color,
+      reason,
+    });
   }
 
   /**
@@ -278,7 +284,10 @@ class Role extends Base {
    *   .catch(console.error);
    */
   setHoist(hoist = true, reason) {
-    return this.edit({ hoist, reason });
+    return this.edit({
+      hoist,
+      reason,
+    });
   }
 
   /**
@@ -298,7 +307,10 @@ class Role extends Base {
    *   .catch(console.error);
    */
   setPermissions(permissions, reason) {
-    return this.edit({ permissions, reason });
+    return this.edit({
+      permissions,
+      reason,
+    });
   }
 
   /**
@@ -313,7 +325,10 @@ class Role extends Base {
    *   .catch(console.error);
    */
   setMentionable(mentionable = true, reason) {
-    return this.edit({ mentionable, reason });
+    return this.edit({
+      mentionable,
+      reason,
+    });
   }
 
   /**
@@ -325,7 +340,10 @@ class Role extends Base {
    * @returns {Promise<Role>}
    */
   setIcon(icon, reason) {
-    return this.edit({ icon, reason });
+    return this.edit({
+      icon,
+      reason,
+    });
   }
 
   /**
@@ -340,7 +358,10 @@ class Role extends Base {
    *   .catch(console.error);
    */
   setUnicodeEmoji(unicodeEmoji, reason) {
-    return this.edit({ unicodeEmoji, reason });
+    return this.edit({
+      unicodeEmoji,
+      reason,
+    });
   }
 
   /**
@@ -425,7 +446,9 @@ class Role extends Base {
 
   toJSON() {
     return {
-      ...super.toJSON({ createdTimestamp: true }),
+      ...super.toJSON({
+        createdTimestamp: true,
+      }),
       permissions: this.permissions.toJSON(),
     };
   }
