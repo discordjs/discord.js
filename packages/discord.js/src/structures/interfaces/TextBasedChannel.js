@@ -119,7 +119,7 @@ class TextBasedChannel {
    * @example
    * // Send a remote file
    * channel.send({
-   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
+   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048'],
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -129,8 +129,8 @@ class TextBasedChannel {
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg',
-   *     description: 'A description of the file'
-   *   }]
+   *     description: 'A description of the file',
+   *   }],
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -141,15 +141,15 @@ class TextBasedChannel {
    *   embeds: [
    *     {
    *       thumbnail: {
-   *         url: 'attachment://file.jpg'
-   *       }
-   *     }
+   *         url: 'attachment://file.jpg',
+   *       },
+   *     },
    *   ],
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg',
-   *     description: 'A description of the file'
-   *   }]
+   *     description: 'A description of the file',
+   *   }],
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -172,7 +172,10 @@ class TextBasedChannel {
     }
 
     const { body, files } = await messagePayload.resolveFiles();
-    const d = await this.client.rest.post(Routes.channelMessages(this.id), { body, files });
+    const d = await this.client.rest.post(Routes.channelMessages(this.id), {
+      body,
+      files,
+    });
 
     return this.messages.cache.get(d.id) ?? this.messages._add(d);
   }
@@ -195,7 +198,10 @@ class TextBasedChannel {
    * @example
    * // Create a message collector
    * const filter = m => m.content.includes('discord');
-   * const collector = channel.createMessageCollector({ filter, time: 15_000 });
+   * const collector = channel.createMessageCollector({
+   *  filter,
+   *  time: 15_000,
+   * });
    * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -218,7 +224,12 @@ class TextBasedChannel {
    * // Await !vote messages
    * const filter = m => m.content.startsWith('!vote');
    * // Errors: ['time'] treats ending because of the time limit as an error
-   * channel.awaitMessages({ filter, max: 4, time: 60_000, errors: ['time'] })
+   * channel.awaitMessages({
+   *  filter,
+   *  max: 4,
+   *  time: 60_000,
+   *  errors: ['time'],
+   * })
    *   .then(collected => console.log(collected.size))
    *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
@@ -262,12 +273,18 @@ class TextBasedChannel {
    * @example
    * // Collect a message component interaction
    * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
-   * channel.awaitMessageComponent({ filter, time: 15_000 })
+   * channel.awaitMessageComponent({
+   *  filter,
+   *  time: 15_000,
+   * })
    *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */
   awaitMessageComponent(options = {}) {
-    const _options = { ...options, max: 1 };
+    const _options = {
+      ...options,
+      max: 1,
+    };
     return new Promise((resolve, reject) => {
       const collector = this.createMessageComponentCollector(_options);
       collector.once('end', (interactions, reason) => {
@@ -307,23 +324,26 @@ class TextBasedChannel {
         await this.client.rest.delete(Routes.channelMessage(this.id, messageIds[0]));
         return message ? new Collection([[message.id, message]]) : new Collection();
       }
-      await this.client.rest.post(Routes.channelBulkDelete(this.id), { body: { messages: messageIds } });
+      await this.client.rest.post(Routes.channelBulkDelete(this.id), {
+        body: {
+          messages: messageIds,
+        },
+      });
       return messageIds.reduce(
         (col, id) =>
           col.set(
             id,
-            this.client.actions.MessageDeleteBulk.getMessage(
-              {
-                message_id: id,
-              },
-              this,
-            ),
+            this.client.actions.MessageDeleteBulk.getMessage({
+              message_id: id,
+            }, this),
           ),
         new Collection(),
       );
     }
     if (!isNaN(messages)) {
-      const msgs = await this.messages.fetch({ limit: messages });
+      const msgs = await this.messages.fetch({
+        limit: messages,
+      });
       return this.bulkDelete(msgs, filterOld);
     }
     throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
@@ -345,6 +365,8 @@ class TextBasedChannel {
   /**
    * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
    * @typedef {Object} ChannelWebhookCreateOptions
+   * @property {GuildChannelResolvable} channel The channel to create the webhook for
+   * @property {string} name The name of the webhook
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
    * @property {string} [reason] Reason for creating the webhook
    */
@@ -352,19 +374,20 @@ class TextBasedChannel {
   /**
    * Creates a webhook for the channel.
    * @param {string} name The name of the webhook
-   * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
+   * @param {ChannelWebhookCreateOptions} options Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
    * // Create a webhook for the current channel
-   * channel.createWebhook('Snek', {
-   *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
-   *   reason: 'Needed a cool new Webhook'
+   * channel.createWebhook({
+   *  name: 'Snek',
+   *  avatar: 'https://i.imgur.com/mI8XcpG.jpg',
+   *  reason: 'Needed a cool new Webhook',
    * })
    *   .then(console.log)
    *   .catch(console.error)
    */
-  createWebhook(name, options = {}) {
-    return this.guild.channels.createWebhook(this.id, name, options);
+  createWebhook(options) {
+    return this.guild.channels.createWebhook(this.id, options);
   }
 
   static applyToClass(structure, full = false, ignore = []) {
