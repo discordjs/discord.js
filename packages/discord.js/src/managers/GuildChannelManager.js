@@ -126,6 +126,8 @@ class GuildChannelManager extends CachedManager {
    *     },
    *   ],
    * })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async create({
       name,
@@ -162,6 +164,7 @@ class GuildChannelManager extends CachedManager {
       },
       reason,
     });
+    
     return this.client.actions.ChannelCreate.handle(data).channel;
   }
 
@@ -341,7 +344,7 @@ class GuildChannelManager extends CachedManager {
    */
   async fetch(id, {
     cache = true,
-    force = false
+    force = false,
   } = {}) {
     if (id && !force) {
       const existing = this.cache.get(id);
@@ -362,6 +365,7 @@ class GuildChannelManager extends CachedManager {
     for (const channel of data) channels.set(channel.id, this.client.channels._add(channel, this.guild, {
       cache,
     }));
+    
     return channels;
   }
 
