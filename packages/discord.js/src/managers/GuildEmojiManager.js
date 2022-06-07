@@ -22,7 +22,9 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   }
 
   _add(data, cache) {
-    return super._add(data, cache, { extras: [this.guild] });
+    return super._add(data, cache, {
+      extras: [this.guild],
+    });
   }
 
   /**
@@ -34,26 +36,40 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
 
   /**
    * Creates a new custom emoji in the guild.
-   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
-   * @param {string} name The name for the emoji
-   * @param {GuildEmojiCreateOptions} [options] Options for creating the emoji
+   * @param {GuildEmojiCreateOptions} options Options for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
    * // Create a new emoji from a URL
-   * guild.emojis.create('https://i.imgur.com/w3duR07.png', 'rip')
+   * guild.emojis.create({
+   *  name: 'rip',
+   *  image: 'https://i.imgur.com/w3duR07.png',
+   *  reason: 'Create new emoji!',
+   * })
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    * @example
    * // Create a new emoji from a file on your computer
-   * guild.emojis.create('./memes/banana.png', 'banana')
+   * guild.emojis.create({
+   *  name: 'banana',
+   *  image: './memes/banana.png',
+   *  reason: 'Create new emoji!',
+   * })
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    */
-  async create(attachment, name, { roles, reason } = {}) {
-    attachment = await DataResolver.resolveImage(attachment);
+  async create({
+    name,
+    image,
+    roles,
+    reason,
+  }) {
+    const attachment = await DataResolver.resolveImage(image);
     if (!attachment) throw new TypeError('REQ_RESOURCE_TYPE');
 
-    const body = { image: attachment, name };
+    const body = {
+      image: attachment,
+      name,
+    };
     if (roles) {
       if (!Array.isArray(roles) && !(roles instanceof Collection)) {
         throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
@@ -66,7 +82,11 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       }
     }
 
-    const emoji = await this.client.rest.post(Routes.guildEmojis(this.guild.id), { body, reason });
+    const emoji = await this.client.rest.post(Routes.guildEmojis(this.guild.id), {
+      body,
+      reason,
+    });
+    
     return this.client.actions.GuildEmojiCreate.handle(this.guild, emoji).emoji;
   }
 
@@ -86,7 +106,10 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    *   .then(emoji => console.log(`The emoji name is: ${emoji.name}`))
    *   .catch(console.error);
    */
-  async fetch(id, { cache = true, force = false } = {}) {
+  async fetch(id, {
+    cache = true,
+    force = false,
+  } = {}) {
     if (id) {
       if (!force) {
         const existing = this.cache.get(id);
@@ -111,17 +134,18 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   async delete(emoji, reason) {
     const id = this.resolveId(emoji);
     if (!id) throw new TypeError('INVALID_TYPE', 'emoji', 'EmojiResolvable', true);
-    await this.client.rest.delete(Routes.guildEmoji(this.guild.id, id), { reason });
+    await this.client.rest.delete(Routes.guildEmoji(this.guild.id, id), {
+      reason,
+    });
   }
 
   /**
    * Edits an emoji.
    * @param {EmojiResolvable} emoji The Emoji resolvable to edit
    * @param {GuildEmojiEditData} data The new data for the emoji
-   * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<GuildEmoji>}
    */
-  async edit(emoji, data, reason) {
+  async edit(emoji, data) {
     const id = this.resolveId(emoji);
     if (!id) throw new TypeError('INVALID_TYPE', 'emoji', 'EmojiResolvable', true);
     const roles = data.roles?.map(r => this.guild.roles.resolveId(r));
@@ -130,7 +154,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
         name: data.name,
         roles,
       },
-      reason,
+      reason: data.reason,
     });
     const existing = this.cache.get(id);
     if (existing) {
