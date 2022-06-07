@@ -455,7 +455,10 @@ class Guild extends AnonymousGuild {
     if (!this.ownerId) {
       throw new Error('FETCH_OWNER_ID');
     }
-    const member = await this.members.fetch({ ...options, user: this.ownerId });
+    const member = await this.members.fetch({
+      ...options,
+      user: this.ownerId,
+    });
     return member;
   }
 
@@ -570,7 +573,12 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<GuildTemplate>}
    */
   async createTemplate(name, description) {
-    const data = await this.client.rest.post(Routes.guildTemplates(this.id), { body: { name, description } });
+    const data = await this.client.rest.post(Routes.guildTemplates(this.id), {
+      body: {
+        name,
+        description,
+      },
+    });
     return new GuildTemplate(this.client, data);
   }
 
@@ -709,7 +717,9 @@ class Guild extends AnonymousGuild {
       query.set('user_id', id);
     }
 
-    const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
+    const data = await this.client.rest.get(Routes.guildAuditLog(this.id), {
+      query,
+    });
     return new GuildAuditLogs(this, data);
   }
 
@@ -763,7 +773,7 @@ class Guild extends AnonymousGuild {
    * // Set the guild name
    * guild.edit({
    *  name: 'Discord Guild',
-   *  reason: 'Guild edited!'
+   *  reason: 'Guild edited!',
    * })
    *   .then(updated => console.log(`New guild name ${updated}`))
    *   .catch(console.error);
@@ -811,7 +821,10 @@ class Guild extends AnonymousGuild {
     }
     if (typeof data.preferredLocale !== 'undefined') _data.preferred_locale = data.preferredLocale;
     if ('premiumProgressBarEnabled' in data) _data.premium_progress_bar_enabled = data.premiumProgressBarEnabled;
-    const newData = await this.client.rest.patch(Routes.guild(this.id), { body: _data, reason: data.reason });
+    const newData = await this.client.rest.patch(Routes.guild(this.id), {
+      body: _data,
+      reason: data.reason,
+    });
     return this.client.actions.GuildUpdate.handle(newData).updated;
   }
 
@@ -859,12 +872,15 @@ class Guild extends AnonymousGuild {
    *     {
    *       description: 'foobar',
    *       channel: '222197033908436994',
-   *     }
+   *     },
    *   ],
-   * })
+   * });
    */
-  async editWelcomeScreen(data) {
-    const { enabled, description, welcomeChannels } = data;
+  async editWelcomeScreen({
+    enabled,
+    description,
+    welcomeChannels,
+  }) {
     const welcome_channels = welcomeChannels?.map(welcomeChannelData => {
       const emoji = this.emojis.resolve(welcomeChannelData.emoji);
       return {
@@ -893,7 +909,10 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<Guild>}
    */
   setExplicitContentFilter(explicitContentFilter, reason) {
-    return this.edit({ explicitContentFilter, reason });
+    return this.edit({
+      explicitContentFilter,
+      reason,
+    });
   }
 
   /**
@@ -903,7 +922,10 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<Guild>}
    */
   setDefaultMessageNotifications(defaultMessageNotifications, reason) {
-    return this.edit({ defaultMessageNotifications, reason });
+    return this.edit({
+      defaultMessageNotifications,
+      reason,
+    });
   }
   /* eslint-enable max-len */
 
@@ -914,7 +936,10 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<Guild>}
    */
   setSystemChannelFlags(systemChannelFlags, reason) {
-    return this.edit({ systemChannelFlags, reason });
+    return this.edit({
+      systemChannelFlags,
+      reason,
+    });
   }
 
   /**
@@ -929,7 +954,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setName(name, reason) {
-    return this.edit({ name, reason });
+    return this.edit({
+      name,
+      reason,
+    });
   }
 
   /**
@@ -944,7 +972,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setVerificationLevel(verificationLevel, reason) {
-    return this.edit({ verificationLevel, reason });
+    return this.edit({
+      verificationLevel,
+      reason,
+    });
   }
 
   /**
@@ -959,7 +990,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setAFKChannel(afkChannel, reason) {
-    return this.edit({ afkChannel, reason });
+    return this.edit({
+      afkChannel,
+      reason,
+    });
   }
 
   /**
@@ -974,7 +1008,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setSystemChannel(systemChannel, reason) {
-    return this.edit({ systemChannel, reason });
+    return this.edit({
+      systemChannel,
+      reason,
+    });
   }
 
   /**
@@ -989,7 +1026,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setAFKTimeout(afkTimeout, reason) {
-    return this.edit({ afkTimeout, reason });
+    return this.edit({
+      afkTimeout,
+      reason,
+    });
   }
 
   /**
@@ -1004,7 +1044,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setIcon(icon, reason) {
-    return this.edit({ icon, reason });
+    return this.edit({
+      icon,
+      reason,
+    });
   }
 
   /**
@@ -1020,7 +1063,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setOwner(owner, reason) {
-    return this.edit({ owner, reason });
+    return this.edit({
+      owner,
+      reason,
+    });
   }
 
   /**
@@ -1035,7 +1081,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setSplash(splash, reason) {
-    return this.edit({ splash, reason });
+    return this.edit({
+      splash,
+      reason,
+    });
   }
 
   /**
@@ -1050,7 +1099,10 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   setDiscoverySplash(discoverySplash, reason) {
-    return this.edit({ discoverySplash, reason });
+    return this.edit({
+      discoverySplash,
+      reason,
+    });
   }
 
   /**
@@ -1064,7 +1116,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setBanner(banner, reason) {
-    return this.edit({ banner, reason });
+    return this.edit({
+      banner,
+      reason,
+    });
   }
 
   /**
@@ -1079,7 +1134,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setRulesChannel(rulesChannel, reason) {
-    return this.edit({ rulesChannel, reason });
+    return this.edit({
+      rulesChannel,
+      reason,
+    });
   }
 
   /**
@@ -1094,7 +1152,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setPublicUpdatesChannel(publicUpdatesChannel, reason) {
-    return this.edit({ publicUpdatesChannel, reason });
+    return this.edit({
+      publicUpdatesChannel,
+      reason,
+    });
   }
 
   /**
@@ -1109,7 +1170,10 @@ class Guild extends AnonymousGuild {
    *  .catch(console.error);
    */
   setPreferredLocale(preferredLocale, reason) {
-    return this.edit({ preferredLocale }, reason);
+    return this.edit({
+      preferredLocale,
+      reason,
+    });
   }
 
   /**
@@ -1119,7 +1183,10 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<Guild>}
    */
   setPremiumProgressBarEnabled(enabled = true, reason) {
-    return this.edit({ premiumProgressBarEnabled: enabled }, reason);
+    return this.edit({
+      premiumProgressBarEnabled: enabled,
+      reason,
+    });
   }
 
   /**
