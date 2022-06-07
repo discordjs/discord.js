@@ -42,7 +42,9 @@ class RoleManager extends CachedManager {
    */
 
   _add(data, cache) {
-    return super._add(data, cache, { extras: [this.guild] });
+    return super._add(data, cache, {
+      extras: [this.guild],
+    });
   }
 
   /**
@@ -61,7 +63,10 @@ class RoleManager extends CachedManager {
    *   .then(role => console.log(`The role color is: ${role.color}`))
    *   .catch(console.error);
    */
-  async fetch(id, { cache = true, force = false } = {}) {
+  async fetch(id, {
+    cache = true,
+    force = false,
+  } = {}) {
     if (id && !force) {
       const existing = this.cache.get(id);
       if (existing) return existing;
@@ -173,27 +178,38 @@ class RoleManager extends CachedManager {
     if (position) return this.setPosition(role, position, { reason });
     return role;
   }
+  
+  /**
+   * Options for editing a role
+   * @typedef {RoleData} EditRoleOptions
+   * @property {string} [reason] The reason for editing this role
+   */
 
   /**
    * Edits a role of the guild.
    * @param {RoleResolvable} role The role to edit
-   * @param {RoleData} data The new data for the role
+   * @param {EditRoleOptions} data The new data for the role
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
    * guild.roles.edit('222079219327434752', {
    *   name: 'buddies',
-   *   reason: 'Role edited!'
+   *   reason: 'Role edited!',
    * })
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
-  async edit(role, data) {
+  async edit(role, {
+    ...data,
+    reason,
+  }) {
     role = this.resolve(role);
     if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
 
     if (typeof data.position === 'number') {
-      await this.setPosition(role, data.position, { reason: data.reason });
+      await this.setPosition(role, data.position, {
+        reason,
+      });
     }
 
     let icon = data.icon;
@@ -213,7 +229,10 @@ class RoleManager extends CachedManager {
       unicode_emoji: data.unicodeEmoji,
     };
 
-    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason: data.reason });
+    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), {
+      body,
+      reason,
+    });
 
     const clone = role._clone();
     clone._patch(d);
@@ -233,8 +252,13 @@ class RoleManager extends CachedManager {
    */
   async delete(role, reason) {
     const id = this.resolveId(role);
-    await this.client.rest.delete(Routes.guildRole(this.guild.id, id), { reason });
-    this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: id });
+    await this.client.rest.delete(Routes.guildRole(this.guild.id, id), {
+      reason,
+    });
+    this.client.actions.GuildRoleDelete.handle({
+      guild_id: this.guild.id,
+      role_id: id,
+    });
   }
 
   /**
@@ -249,7 +273,10 @@ class RoleManager extends CachedManager {
    *   .then(updated => console.log(`Role position: ${updated.position}`))
    *   .catch(console.error);
    */
-  async setPosition(role, position, { relative, reason } = {}) {
+  async setPosition(role, position, {
+    relative,
+    reason
+  } = {}) {
     role = this.resolve(role);
     if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
     const updatedRoles = await Util.setPosition(
@@ -281,7 +308,12 @@ class RoleManager extends CachedManager {
    * @param {GuildRolePosition[]} rolePositions Role positions to update
    * @returns {Promise<Guild>}
    * @example
-   * guild.roles.setPositions([{ role: roleId, position: updatedRoleIndex }])
+   * guild.roles.setPositions([
+   *  {
+   *    role: roleId,
+   *    position: updatedRoleIndex,
+   *  },
+   * ])
    *  .then(guild => console.log(`Role positions updated for ${guild}`))
    *  .catch(console.error);
    */
@@ -293,7 +325,9 @@ class RoleManager extends CachedManager {
     }));
 
     // Call the API to update role positions
-    await this.client.rest.patch(Routes.guildRoles(this.guild.id), { body: rolePositions });
+    await this.client.rest.patch(Routes.guildRoles(this.guild.id), {
+      body: rolePositions,
+    });
     return this.client.actions.GuildRolesPositionUpdate.handle({
       guild_id: this.guild.id,
       roles: rolePositions,
