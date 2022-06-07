@@ -1,12 +1,6 @@
-import { defineConfig } from 'tsup';
+import { createTsupConfig } from '../../tsup.config';
 
-export default defineConfig({
-	clean: true,
-	dts: true,
-	entryPoints: ['src/docs.ts'],
-	format: ['esm', 'cjs'],
+export default createTsupConfig({
+	entry: ['src/docs.ts'],
 	minify: true,
-	skipNodeModulesBundle: true,
-	sourcemap: true,
-	target: 'es2021',
 });
