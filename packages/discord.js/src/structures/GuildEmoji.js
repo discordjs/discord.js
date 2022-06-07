@@ -25,7 +25,10 @@ class GuildEmoji extends BaseGuildEmoji {
      * @type {Snowflake[]}
      * @private
      */
-    Object.defineProperty(this, '_roles', { value: [], writable: true });
+    Object.defineProperty(this, '_roles', {
+      value: [],
+      writable: true,
+    });
 
     this._patch(data);
   }
@@ -86,16 +89,17 @@ class GuildEmoji extends BaseGuildEmoji {
   /**
    * Edits the emoji.
    * @param {GuildEmojiEditData} data The new data for the emoji
-   * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<GuildEmoji>}
    * @example
    * // Edit an emoji
-   * emoji.edit({ name: 'newemoji' })
+   * emoji.edit({
+   *  name: 'newemoji',
+   * })
    *   .then(e => console.log(`Edited emoji ${e}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
-    return this.guild.emojis.edit(this.id, data, reason);
+  edit(data) {
+    return this.guild.emojis.edit(this.id, data);
   }
 
   /**
@@ -105,7 +109,10 @@ class GuildEmoji extends BaseGuildEmoji {
    * @returns {Promise<GuildEmoji>}
    */
   setName(name, reason) {
-    return this.edit({ name }, reason);
+    return this.edit({
+      name,
+      reason,
+    });
   }
 
   /**
