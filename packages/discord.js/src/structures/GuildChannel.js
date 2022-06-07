@@ -248,7 +248,9 @@ class GuildChannel extends Channel {
   lockPermissions() {
     if (!this.parent) return Promise.reject(new Error('GUILD_CHANNEL_ORPHAN'));
     const permissionOverwrites = this.parent.permissionOverwrites.cache.map(overwrite => overwrite.toJSON());
-    return this.edit({ permissionOverwrites });
+    return this.edit({
+      permissionOverwrites,
+    });
   }
 
   /**
@@ -270,7 +272,7 @@ class GuildChannel extends Channel {
    * // Edit a channel
    * channel.edit({
    *  name: 'new-channel',
-   *  reason: 'Channel edited!'
+   *  reason: 'Channel edited!',
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -291,7 +293,10 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   setName(name, reason) {
-    return this.edit({ name, reason });
+    return this.edit({
+      name,
+      reason,
+    });
   }
 
   /**
@@ -308,15 +313,20 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Add a parent to a channel
-   * message.channel.setParent('355908108431917066', { lockPermissions: false })
+   * message.channel.setParent('355908108431917066', {
+   *  lockPermissions: false,
+   * })
    *   .then(channel => console.log(`New parent of ${message.channel.name}: ${channel.name}`))
    *   .catch(console.error);
    */
-  setParent(channel, { lockPermissions = true, reason } = {}) {
+  setParent(channel, {
+    lockPermissions = true,
+    reason,
+  } = {}) {
     return this.edit({
         parent: channel ?? null,
         lockPermissions,
-        reason
+        reason,
     });
   }
 
