@@ -315,7 +315,10 @@ class GuildMemberManager extends CachedManager {
    * @param {GuildMemberEditData} data The data to edit the member with
    * @returns {Promise<GuildMember>}
    */
-  async edit(user, data) {
+  async edit(user, {
+    ...data,
+    reason,
+  }) {
     const id = this.client.users.resolveId(user);
     if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
 
@@ -349,7 +352,7 @@ class GuildMemberManager extends CachedManager {
 
     const d = await this.client.rest.patch(endpoint, {
       body: data,
-      reason: data.reason,
+      reason,
     });
     const clone = this.cache.get(id)?._clone();
     clone?._patch(d);
