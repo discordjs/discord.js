@@ -211,7 +211,7 @@ class Sticker extends Base {
    * // Update the name of a sticker
    * sticker.edit({
    *  name: 'new name',
-   *  reason: 'Sticker edited!'
+   *  reason: 'Sticker edited!',
    * })
    *   .then(s => console.log(`Updated the name of the sticker to ${s.name}`))
    *   .catch(console.error);
