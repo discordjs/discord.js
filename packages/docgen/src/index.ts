@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync } from 'fs';
-import { join, basename, extname, dirname, relative } from 'path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join, basename, extname, dirname, relative } from 'node:path';
 import { createCommand } from 'commander';
 import jsdoc2md from 'jsdoc-to-markdown';
 import { Documentation } from './documentation.js';

@@ -1,4 +1,4 @@
-import { relative } from 'path';
+import { relative } from 'node:path';
 import { DocumentedItem } from './item.js';
 import type { Meta } from '../interfaces/index.js';
 
