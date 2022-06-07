@@ -141,6 +141,7 @@ class GuildManager extends CachedManager {
   /**
    * Options used to create a guild.
    * @typedef {Object} GuildCreateOptions
+   * @param {string} name The name of the guild
    * @property {Snowflake|number} [afkChannelId] The AFK channel's id
    * @property {number} [afkTimeout] The AFK timeout in seconds
    * @property {PartialChannelData[]} [channels=[]] The channels for this guild
@@ -159,25 +160,22 @@ class GuildManager extends CachedManager {
   /**
    * Creates a guild.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
-   * @param {string} name The name of the guild
-   * @param {GuildCreateOptions} [options] Options for creating the guild
+   * @param {GuildCreateOptions} options Options for creating the guild
    * @returns {Promise<Guild>} The guild that was created
    */
-  async create(
+  async create({
     name,
-    {
-      afkChannelId,
-      afkTimeout,
-      channels = [],
-      defaultMessageNotifications,
-      explicitContentFilter,
-      icon = null,
-      roles = [],
-      systemChannelId,
-      systemChannelFlags,
-      verificationLevel,
-    } = {},
-  ) {
+    afkChannelId,
+    afkTimeout,
+    channels = [],
+    defaultMessageNotifications,
+    explicitContentFilter,
+    icon = null,
+    roles = [],
+    systemChannelId,
+    systemChannelFlags,
+    verificationLevel,
+  }) {
     icon = await DataResolver.resolveImage(icon);
 
     for (const channel of channels) {
@@ -274,12 +272,16 @@ class GuildManager extends CachedManager {
       }
 
       const data = await this.client.rest.get(Routes.guild(id), {
-        query: makeURLSearchParams({ with_counts: options.withCounts ?? true }),
+        query: makeURLSearchParams({
+          with_counts: options.withCounts ?? true,
+        }),
       });
       return this._add(data, options.cache);
     }
 
-    const data = await this.client.rest.get(Routes.userGuilds(), { query: makeURLSearchParams(options) });
+    const data = await this.client.rest.get(Routes.userGuilds(), {
+      query: makeURLSearchParams(options),
+    });
     return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
   }
 }
