@@ -1,6 +1,6 @@
 'use strict';
 
-const { SelectMenuBuilder: BuildersSelectMenu, isJSONEncodable } = require('@discordjs/builders');
+const { SelectMenuBuilder: BuildersSelectMenu, isJSONEncodable, normalizeArray } = require('@discordjs/builders');
 const Transformers = require('../util/Transformers');
 const Util = require('../util/Util');
 
@@ -23,12 +23,13 @@ class SelectMenuBuilder extends BuildersSelectMenu {
 
   /**
    * Adds options to this select menu
-   * @param {APISelectMenuOption[]} options The options to add to this select menu
+   * @param {RestOrArray<APISelectMenuOption>} options The options to add to this select menu
    * @returns {SelectMenuBuilder}
    */
-  addOptions(options) {
+  addOptions(...options) {
+    const _options = normalizeArray(options);
     return super.addOptions(
-      options.map(({ emoji, ...option }) => ({
+      _options.map(({ emoji, ...option }) => ({
         ...option,
         emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
       })),
@@ -37,12 +38,13 @@ class SelectMenuBuilder extends BuildersSelectMenu {
 
   /**
    * Sets the options on this select menu
-   * @param {APISelectMenuOption[]} options The options to set on this select menu
+   * @param {RestOrArray<APISelectMenuOption>} options The options to set on this select menu
    * @returns {SelectMenuBuilder}
    */
-  setOptions(options) {
+  setOptions(...options) {
+    const _options = normalizeArray(options);
     return super.setOptions(
-      options.map(({ emoji, ...option }) => ({
+      _options.map(({ emoji, ...option }) => ({
         ...option,
         emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
       })),
