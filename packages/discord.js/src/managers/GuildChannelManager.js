@@ -143,7 +143,7 @@ class GuildChannelManager extends CachedManager {
       rtcRegion,
       videoQualityMode,
       reason,
-   } = {}) {
+   }) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
 
@@ -170,30 +170,31 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Creates a webhook for the channel.
-   * @param {GuildChannelResolvable} channel The channel to create the webhook for
    * @param {ChannelWebhookCreateOptions} options Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
    * // Create a webhook for the current channel
-   * guild.channels.createWebhook('222197033908436994', {
-   *   name: 'Hello!',
-   *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
-   *   reason: 'Needed a cool new Webhook',
+   * guild.channels.createWebhook({
+   *  channelId: '222197033908436994',
+   *  name: 'Hello!',
+   *  avatar: 'https://i.imgur.com/mI8XcpG.jpg',
+   *  reason: 'Needed a cool new Webhook',
    * })
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async createWebhook(channelId, {
+  async createWebhook({
+    channelId,
     name,
     avatar,
     reason,
   }) {
-    const id = this.resolveId(channelId);
-    if (!id) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
+    const resolveChannelId = this.resolveId(channelId);
+    if (!resolveChannelId) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    const data = await this.client.rest.post(Routes.channelWebhooks(id), {
+    const data = await this.client.rest.post(Routes.channelWebhooks(resolveChannelId), {
       body: {
         name,
         avatar,
@@ -222,8 +223,8 @@ class GuildChannelManager extends CachedManager {
    * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
-   * @property {string} [reason] The reason of the editing channel
    * @property {?VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
+   * @property {string} [reason] Reason for editing this channel
    */
 
   /**
@@ -246,9 +247,12 @@ class GuildChannelManager extends CachedManager {
 
     const parent = data.parent && this.client.channels.resolveId(data.parent);
 
-    if (typeof data.position !== 'undefined') await this.setPosition(channel, data.position, {
-      reason: data.reason,
-    });
+    if (typeof data.position !== 'undefined') {
+      await this.setPosition(channel, data.position, {
+        position: data.position,
+        reason: data.reason,
+      });
+    }
 
     let permission_overwrites = data.permissionOverwrites?.map(o => PermissionOverwrites.resolve(o, this.guild));
 
@@ -293,7 +297,7 @@ class GuildChannelManager extends CachedManager {
    * Sets a new position for the guild channel.
    * @param {GuildChannelResolvable} channel The channel to set the position for
    * @param {number} position The new position for the guild channel
-   * @param {SetChannelPositionOptions} [options] Options for setting position
+   * @param {SetChannelPositionOptions} options Options for setting position
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel position
