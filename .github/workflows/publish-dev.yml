@@ -16,6 +16,8 @@ jobs:
             folder: 'collection'
           - package: 'discord.js'
             folder: 'discord.js'
+          - package: 'docgen'
+            folder: 'docgen'
           - package: '@discordjs/proxy'
             folder: 'proxy'
           - package: '@discordjs/rest'
@@ -69,7 +71,7 @@ jobs:
       - name: Publish
         if: steps.pre-release.outputs.release == 'true'
         run: |
-          yarn workspace ${{ matrix.package }} version $(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json).$(date +%s)-$(git rev-parse --short HEAD)
+          yarn workspace ${{ matrix.package }} release --preid $(date +%s)-$(git rev-parse --short HEAD)
           yarn workspace ${{ matrix.package }} npm publish --tag dev || true
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

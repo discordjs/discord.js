@@ -9,7 +9,7 @@
     "format": "prettier --write . && eslint src --fix",
     "docs": "docgen -i ./src/*.js ./src/**/*.js -c ./docs/index.json -r ../../ -o ./docs/docs.json",
     "docs:test": "docgen -i ./src/*.js ./src/**/*.js -c ./docs/index.json -r ../../",
-    "prepublishOnly": "yarn lint && yarn test",
+    "prepack": "yarn lint && yarn test",
     "changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/discord.js/*'",
     "release": "cliff-jumper --skip-tag --verbose"
   },
