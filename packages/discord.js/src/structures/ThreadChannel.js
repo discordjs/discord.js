@@ -291,13 +291,13 @@ class ThreadChannel extends Channel {
    * The options used to edit a thread channel
    * @typedef {Object} ThreadEditData
    * @property {string} [name] The new name for the thread
-   * @param {string} [reason] Reason for editing this thread
    * @property {boolean} [archived] Whether the thread is archived
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time (in minutes) after which the thread
    * should automatically archive in case of no recent activity
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
+   * @param {string} [reason] Reason for editing this thread
    * <info>Can only be edited on {@link ChannelType.GuildPrivateThread}</info>
    */
 
