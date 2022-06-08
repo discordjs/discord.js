@@ -2020,6 +2020,7 @@ __metadata:
     "@remix-run/react": ^1.5.1
     "@remix-run/serve": ^1.5.1
     "@remix-run/server-runtime": ^1.5.1
+    "@remix-run/vercel": ^1.5.1
     "@testing-library/cypress": ^8.0.3
     "@testing-library/dom": ^8.13.0
     "@testing-library/jest-dom": ^5.16.4
@@ -2702,6 +2703,17 @@ __metadata:
     react: ">=16.8"
     react-dom: ">=16.8"
   checksum: eb8c5877b21669b4865e42996c7ae53f5e3a2acd9b1937f6cba6c2134b5670824f3577048f4e63daffbe34e86677979330d8336ba0fda1aea77be80a25a95a50
+  languageName: node
+  linkType: hard
+
+"@remix-run/vercel@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@remix-run/vercel@npm:1.5.1"
+  dependencies:
+    "@remix-run/node": 1.5.1
+  peerDependencies:
+    "@vercel/node": ^1.8.3
+  checksum: b735bc4f9a3a5b29b274fc9768f347736debd92940fd05f0b92d4931f7dd502ef8525d121e11f06bbcf0b180052ae2e0c6233489a7e96ea4e399c5e2898cf566
   languageName: node
   linkType: hard
 

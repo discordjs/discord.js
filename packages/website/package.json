@@ -4,8 +4,8 @@
 	"description": "A set of builders that you can use when creating your bot",
 	"private": true,
 	"scripts": {
+		"build": "remix build",
 		"dev": "remix dev",
-		"build": "",
 		"lint": "prettier --check . && eslint src --ext mjs,js,ts,tsx",
 		"format": "prettier --write . && eslint src --ext mjs,js,ts,tsx --fix"
 	},
@@ -45,6 +45,7 @@
 		"@remix-run/react": "^1.5.1",
 		"@remix-run/serve": "^1.5.1",
 		"@remix-run/server-runtime": "^1.5.1",
+		"@remix-run/vercel": "^1.5.1",
 		"react": "^18.1.0",
 		"react-dom": "^18.1.0"
 	},

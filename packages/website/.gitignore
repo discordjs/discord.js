@@ -19,6 +19,7 @@ dist/
 typings/
 .cache/
 build/
+api/
 
 # Miscellaneous
 .tmp/
