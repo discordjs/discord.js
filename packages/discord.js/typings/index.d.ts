@@ -342,7 +342,7 @@ export class AutoModRule extends Base {
   public creatorId: Snowflake;
   public eventType: number;
   public triggerType: number;
-  public triggerMetadata: unknown;
+  public triggerMetadata: AutoModTriggerMetadata;
   public actions: AutoModRuleAction[];
   public enabled: boolean;
   public exemptRoles: Snowflake[];
@@ -4389,6 +4389,11 @@ export interface AuditLogChange {
 export interface AutoModRuleAction {
   type: number;
   metadata: unknown;
+}
+
+export interface AutoModTriggerMetadata {
+  keywordFilter: string[];
+  preset: number;
 }
 
 export type Awaitable<T> = T | PromiseLike<T>;
