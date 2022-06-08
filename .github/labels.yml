@@ -60,6 +60,8 @@
   color: 'fbca04'
 - name: 'packages:ws'
   color: 'fbca04'
+- name: 'packages:website'
+  color: 'fbca04'
 - name: 'performance'
   color: '80c042'
 - name: 'permissions'

@@ -1,0 +1,15 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"isolatedModules": true,
+		"jsx": "react-jsx",
+		"baseUrl": ".",
+		"noEmit": true,
+		"allowJs": false,
+		"paths": {
+			"~/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*.ts"]
+}
