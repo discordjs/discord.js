@@ -1,5 +1,12 @@
-import type { MetaFunction } from '@remix-run/node';
+import type { MetaFunction, LinksFunction } from '@remix-run/node';
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import unocssReset from '@unocss/reset/normalize.css';
+import unocss from './styles/unocss.css';
+
+export const links: LinksFunction = () => [
+	{ rel: 'stylesheet', href: unocssReset },
+	{ rel: 'stylesheet', href: unocss },
+];
 
 export const meta: MetaFunction = () => ({
 	charset: 'utf-8',

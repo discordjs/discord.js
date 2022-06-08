@@ -4,8 +4,13 @@
 	"description": "A set of builders that you can use when creating your bot",
 	"private": true,
 	"scripts": {
-		"build": "remix build",
-		"dev": "remix dev",
+		"build": "concurrently 'yarn build:css' 'yarn build:remix'",
+		"build:css": "yarn generate:css",
+		"build:remix": "remix build",
+		"dev": "concurrently 'yarn dev:css' 'yarn dev:remix'",
+		"dev:css": "yarn generate:css --watch",
+		"dev:remix": "remix dev",
+		"generate:css": "unocss 'src/**/*.tsx' --out-file ./src/styles/unocss.css",
 		"lint": "prettier --check . && eslint src --ext mjs,js,ts,tsx",
 		"format": "prettier --write . && eslint src --ext mjs,js,ts,tsx --fix"
 	},
@@ -62,8 +67,10 @@
 		"@types/react-dom": "^18.0.5",
 		"@typescript-eslint/eslint-plugin": "^5.27.1",
 		"@typescript-eslint/parser": "^5.27.1",
+		"@unocss/cli": "^0.38.1",
 		"@vitejs/plugin-react": "^1.3.2",
 		"c8": "^7.11.3",
+		"concurrently": "^7.2.1",
 		"cypress": "^10.0.3",
 		"eslint": "^8.17.0",
 		"eslint-config-marine": "^9.4.1",
@@ -76,7 +83,8 @@
 		"msw": "^0.42.1",
 		"prettier": "^2.6.2",
 		"typedoc": "^0.22.17",
-		"typescript": "^4.7.3"
+		"typescript": "^4.7.3",
+		"unocss": "^0.38.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"

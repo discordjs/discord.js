@@ -20,6 +20,7 @@ typings/
 .cache/
 build/
 api/
+src/styles/unocss.css
 
 # Miscellaneous
 .tmp/

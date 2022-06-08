@@ -7,6 +7,7 @@
 		"codezombiech.gitignore",
 		"eamodio.gitlens",
 		"christian-kohler.npm-intellisense",
-		"christian-kohler.path-intellisense"
+		"christian-kohler.path-intellisense",
+		"antfu.unocss"
 	]
 }
