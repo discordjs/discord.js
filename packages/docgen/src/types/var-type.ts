@@ -17,18 +17,31 @@ export class DocumentedVarType extends DocumentedItem<VarType> {
 	}
 
 	private splitVarName(str: string) {
-		if (str === '*') return ['*'];
-		str = str.replace(/\./g, '');
-		const matches = str.match(/([\w*]+)([^\w*]+)/g);
-		const output = [];
-		if (matches) {
-			for (const match of matches) {
-				const groups = /([\w*]+)([^\w*]+)/.exec(match);
-				output.push([groups![1], groups![2]]);
+		const res: string[][] = [];
+		let currGroup: string[] = [];
+		let currStr = '';
+
+		const isASymbol = (char: string) => '-!$%^&*()_+|~=`{}[]:;<>?, '.includes(char);
+
+		for (const char of str) {
+			const currentlyInASymbolSection = isASymbol(currStr[0]!);
+			const charIsASymbol = isASymbol(char);
+
+			if (currStr.length && currentlyInASymbolSection !== charIsASymbol) {
+				currGroup.push(currStr);
+				currStr = char;
+
+				if (!charIsASymbol) {
+					res.push(currGroup);
+					currGroup = [];
+				}
+			} else {
+				currStr += char;
 			}
-		} else {
-			output.push([str.match(/([\w*]+)/g)![0]]);
 		}
-		return output;
+		currGroup.push(currStr);
+		res.push(currGroup);
+
+		return res;
 	}
 }
