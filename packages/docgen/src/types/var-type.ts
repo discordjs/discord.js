@@ -10,11 +10,11 @@ export class DocumentedVarType extends DocumentedItem<VarType> {
 			const names = data.names?.map((name) => splitVarName(parseType(name)));
 
 			if (!data.description && !data.nullable) {
-				return [names];
+				return names;
 			}
 
 			return {
-				types: [names],
+				types: names,
 				description: data.description,
 				nullable: data.nullable,
 			};

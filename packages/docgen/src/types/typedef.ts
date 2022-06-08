@@ -122,10 +122,12 @@ export class DocumentedTypeDef extends DocumentedItem<Typedef | DeclarationRefle
 						deprecated: sig?.comment?.tags?.some((t) => t.tagName === 'deprecated'),
 						params,
 						returns: sig?.type
-							? new DocumentedVarType(
-									{ names: [parseType(sig.type)], description: sig.comment?.returns?.trim() },
-									this.config,
-							  ).serialize()
+							? [
+									new DocumentedVarType(
+										{ names: [parseType(sig.type)], description: sig.comment?.returns?.trim() },
+										this.config,
+									).serialize(),
+							  ]
 							: undefined,
 						returnsDescription: sig?.comment?.returns?.trim(),
 					};

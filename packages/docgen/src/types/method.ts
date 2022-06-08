@@ -44,10 +44,12 @@ export class DocumentedMethod extends DocumentedItem<Method | DeclarationReflect
 					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config).serialize())
 					: undefined,
 				returns: signature.type
-					? new DocumentedVarType(
-							{ names: [parseType(signature.type)], description: signature.comment?.returns?.trim() },
-							this.config,
-					  ).serialize()
+					? [
+							new DocumentedVarType(
+								{ names: [parseType(signature.type)], description: signature.comment?.returns?.trim() },
+								this.config,
+							).serialize(),
+					  ]
 					: undefined,
 				returnsDescription: signature.comment?.returns?.trim(),
 				meta,
