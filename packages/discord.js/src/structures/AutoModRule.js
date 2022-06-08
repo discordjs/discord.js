@@ -59,7 +59,7 @@ class AutoModRule extends Base {
      * An object containing information about an AutoMod rule action.
      * @typedef {Object} AutoModRuleAction
      * @property {number} type The type of this AutoMod rule action
-     * @property {Object} metadata dunno fam
+     * @property {Object} metadata Additional metadata needed during execution
      */
 
     /**
