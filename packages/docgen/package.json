@@ -49,10 +49,11 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/collection": "workspace:^",
+		"@discordjs/collection": "^0.7.0",
 		"commander": "^9.3.0",
 		"jsdoc-to-markdown": "^7.1.1",
-		"tslib": "^2.4.0"
+		"tslib": "^2.4.0",
+		"typedoc": "^0.22.17"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.3",

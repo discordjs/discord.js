@@ -14,8 +14,9 @@ pids
 # Dist
 dist/
 typings/
+
 docs/**/*
-!docs/index.yml
+!docs/index.json
 !docs/README.md
 
 # Miscellaneous

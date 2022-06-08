@@ -6,7 +6,7 @@
 		"build": "tsup",
 		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
-		"docs": "typedoc --json docs/typedoc-out.json src/index.ts && ts-docgen -i docs/typedoc-out.json -c docs/index.yml -o docs/docs.json",
+		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript",
 		"prepublishOnly": "yarn build && yarn lint && yarn test",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/builders/*'",
 		"release": "cliff-jumper"
@@ -60,6 +60,7 @@
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
+		"@discordjs/docgen": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^1.8.3",
 		"@types/node": "^16.11.38",
@@ -71,7 +72,6 @@
 		"eslint-plugin-import": "^2.26.0",
 		"prettier": "^2.6.2",
 		"tsup": "^6.1.0",
-		"typedoc": "^0.22.17",
 		"typescript": "^4.7.3"
 	},
 	"engines": {

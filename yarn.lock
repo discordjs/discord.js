@@ -1608,6 +1608,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/builders@workspace:packages/builders"
   dependencies:
+    "@discordjs/docgen": "workspace:^"
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.3
     "@sapphire/shapeshift": ^3.1.0
@@ -1625,15 +1626,22 @@ __metadata:
     ts-mixer: ^6.0.1
     tslib: ^2.4.0
     tsup: ^6.1.0
-    typedoc: ^0.22.17
     typescript: ^4.7.3
   languageName: unknown
   linkType: soft
+
+"@discordjs/collection@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@discordjs/collection@npm:0.7.0"
+  checksum: 141aa35a5433bacba3617b533557b4948388c7b59cdaecee51ccd721c1b9242e50d95bdef53ee2491535a017095f5072ace3c3e9e594193f67a1c5a8a4b7db93
+  languageName: node
+  linkType: hard
 
 "@discordjs/collection@workspace:^, @discordjs/collection@workspace:packages/collection":
   version: 0.0.0-use.local
   resolution: "@discordjs/collection@workspace:packages/collection"
   dependencies:
+    "@discordjs/docgen": "workspace:^"
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.3
     "@types/node": ^16.11.38
@@ -1645,7 +1653,6 @@ __metadata:
     eslint-plugin-import: ^2.26.0
     prettier: ^2.6.2
     tsup: ^6.1.0
-    typedoc: ^0.22.17
     typescript: ^4.7.3
   languageName: unknown
   linkType: soft
@@ -1671,7 +1678,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/docgen@workspace:packages/docgen"
   dependencies:
-    "@discordjs/collection": "workspace:^"
+    "@discordjs/collection": ^0.7.0
     "@favware/cliff-jumper": ^1.8.3
     "@types/jsdoc-to-markdown": ^7.0.3
     "@types/node": ^16.11.38
@@ -1686,6 +1693,7 @@ __metadata:
     prettier: ^2.6.2
     tslib: ^2.4.0
     tsup: ^6.1.0
+    typedoc: ^0.22.17
     typescript: ^4.7.3
   bin:
     docgen: ./dist/index.js
@@ -1696,6 +1704,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy@workspace:packages/proxy"
   dependencies:
+    "@discordjs/docgen": "workspace:^"
     "@discordjs/rest": "workspace:^"
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.3
@@ -1711,7 +1720,6 @@ __metadata:
     supertest: ^6.2.3
     tslib: ^2.4.0
     tsup: ^6.1.0
-    typedoc: ^0.22.17
     typescript: ^4.7.3
     undici: ^5.4.0
   languageName: unknown
@@ -1722,6 +1730,7 @@ __metadata:
   resolution: "@discordjs/rest@workspace:packages/rest"
   dependencies:
     "@discordjs/collection": "workspace:^"
+    "@discordjs/docgen": "workspace:^"
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.3
     "@sapphire/async-queue": ^1.3.1
@@ -1736,7 +1745,6 @@ __metadata:
     prettier: ^2.6.2
     tslib: ^2.4.0
     tsup: ^6.1.0
-    typedoc: ^0.22.17
     typescript: ^4.7.3
     undici: ^5.4.0
   languageName: unknown
@@ -1746,7 +1754,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/scripts@workspace:packages/scripts"
   dependencies:
-    "@discordjs/ts-docgen": ^0.4.1
     "@types/node": ^16.11.38
     "@typescript-eslint/eslint-plugin": ^5.27.1
     "@typescript-eslint/parser": ^5.27.1
@@ -1759,20 +1766,8 @@ __metadata:
     tslib: ^2.4.0
     tsup: ^6.1.0
     typescript: ^4.7.3
-  bin:
-    ts-docgen: ./dist/docs.js
   languageName: unknown
   linkType: soft
-
-"@discordjs/ts-docgen@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "@discordjs/ts-docgen@npm:0.4.1"
-  dependencies:
-    js-yaml: ^4.1.0
-    typedoc: ^0.22.15
-  checksum: fbb8c7041812ae0130043451501b73d732a05afaec01136f3c877dae08d7fe9bb913c9763b60010b28bbc50c0043354ae01f5bc2626e1a24a767cb337a29a9a9
-  languageName: node
-  linkType: hard
 
 "@discordjs/voice@workspace:packages/voice":
   version: 0.0.0-use.local
@@ -1781,6 +1776,7 @@ __metadata:
     "@babel/core": ^7.18.2
     "@babel/preset-env": ^7.18.2
     "@babel/preset-typescript": ^7.17.12
+    "@discordjs/docgen": "workspace:^"
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.3
     "@types/jest": ^28.1.1
@@ -1802,7 +1798,6 @@ __metadata:
     tslib: ^2.4.0
     tsup: ^6.1.0
     tweetnacl: ^1.0.3
-    typedoc: ^0.22.17
     typescript: ^4.7.3
     ws: ^8.7.0
   languageName: unknown
@@ -6027,7 +6022,7 @@ dts-critic@latest:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.1.1, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.2.0":
+"glob@npm:^7.1.1, glob@npm:^7.1.3, glob@npm:^7.1.4":
   version: 7.2.0
   resolution: "glob@npm:7.2.0"
   dependencies:
@@ -10606,23 +10601,6 @@ dts-critic@latest:
   version: 0.0.6
   resolution: "typedarray@npm:0.0.6"
   checksum: 33b39f3d0e8463985eeaeeacc3cb2e28bc3dfaf2a5ed219628c0b629d5d7b810b0eb2165f9f607c34871d5daa92ba1dc69f49051cf7d578b4cbd26c340b9d1b1
-  languageName: node
-  linkType: hard
-
-"typedoc@npm:^0.22.15":
-  version: 0.22.15
-  resolution: "typedoc@npm:0.22.15"
-  dependencies:
-    glob: ^7.2.0
-    lunr: ^2.3.9
-    marked: ^4.0.12
-    minimatch: ^5.0.1
-    shiki: ^0.10.1
-  peerDependencies:
-    typescript: 4.0.x || 4.1.x || 4.2.x || 4.3.x || 4.4.x || 4.5.x || 4.6.x
-  bin:
-    typedoc: bin/typedoc
-  checksum: 3f5f1cb9288bf811f42df59750c7062a026a23257b38dfe227515a30007a28e3d8139187949fcd19300fd6b2ef76bcdc4cf54549100bff3e000e61bb19958fb2
   languageName: node
   linkType: hard
 

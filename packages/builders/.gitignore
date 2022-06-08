@@ -19,7 +19,7 @@ dist/
 typings/
 
 docs/**/*
-!docs/index.yml
+!docs/index.json
 !docs/README.md
 !docs/examples/
 !docs/examples/*.md

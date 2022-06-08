@@ -8,9 +8,6 @@
 		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix"
 	},
-	"bin": {
-		"ts-docgen": "./dist/docs.js"
-	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
@@ -45,7 +42,6 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/ts-docgen": "^0.4.1",
 		"commander": "^9.3.0",
 		"tslib": "^2.4.0"
 	},

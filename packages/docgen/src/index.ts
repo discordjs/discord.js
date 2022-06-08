@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join, basename, extname, dirname, relative } from 'node:path';
 import { createCommand } from 'commander';
 import jsdoc2md from 'jsdoc-to-markdown';
+import { Application, DeclarationReflection, TSConfigReader } from 'typedoc';
 import { Documentation } from './documentation.js';
 import type { ChildTypes, CustomDocs, RootTypes } from './interfaces/index.js';
 import packageFile from '../package.json';
@@ -12,6 +13,7 @@ interface CLIOptions {
 	custom: string;
 	root: string;
 	output: string;
+	typescript: boolean;
 }
 
 interface CustomFiles {
@@ -30,14 +32,29 @@ const command = createCommand()
 	.option('-i, --input <string...>', 'Source directories to parse JSDocs in')
 	.option('-c, --custom <string>', 'Custom docs definition file to use')
 	.option('-r, --root [string]', 'Root directory of the project', '.')
-	.option('-o, --output <string>', 'Path to output file');
+	.option('-o, --output <string>', 'Path to output file')
+	.option('--typescript', '', false);
 
 const program = command.parse(process.argv);
 const options = program.opts<CLIOptions>();
 
-console.log('Parsing JSDocs in source files...');
-const data = jsdoc2md.getTemplateDataSync({ files: options.input }) as (RootTypes & ChildTypes)[];
-console.log(`${data.length} JSDoc items parsed.`);
+let data: (RootTypes & ChildTypes)[] | DeclarationReflection[] = [];
+if (options.typescript) {
+	console.log('Parsing Typescript in source files...');
+	const app = new Application();
+	app.options.addReader(new TSConfigReader());
+	app.bootstrap({ entryPoints: options.input });
+	const project = app.convert();
+	if (project) {
+		// @ts-expect-error
+		data = app.serializer.toObject(project).children!;
+		console.log(`${data.length} items parsed.`);
+	}
+} else {
+	console.log('Parsing JSDocs in source files...');
+	data = jsdoc2md.getTemplateDataSync({ files: options.input }) as (RootTypes & ChildTypes)[];
+	console.log(`${data.length} JSDoc items parsed.`);
+}
 
 const custom: Record<string, CustomDocs> = {};
 if (options.custom) {
