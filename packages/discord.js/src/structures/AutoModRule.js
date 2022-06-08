@@ -27,6 +27,12 @@ class AutoModRule extends Base {
      */
     this.creatorId = data.creator_id;
 
+    /**
+     * The trigger type of this rule.
+     * @type {number}
+     */
+    this.triggerType = data.trigger_type;
+
     this._patch(data);
   }
 
@@ -42,12 +48,6 @@ class AutoModRule extends Base {
      * @type {number}
      */
     this.eventType = data.event_type;
-
-    /**
-     * The trigger type of this rule.
-     * @type {number}
-     */
-    this.triggerType = data.trigger_type;
 
     /**
      * The trigger metadata of the rule.
