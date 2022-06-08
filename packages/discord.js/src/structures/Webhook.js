@@ -148,7 +148,7 @@ class Webhook {
   /**
    * Sends a message with this webhook.
    * @param {string|MessagePayload|WebhookMessageOptions} options The options to provide
-   * @returns {Promise<Message>}
+   * @returns {Promise<APIMessage>}
    * @example
    * // Send a basic message
    * webhook.send('hello!')
@@ -211,7 +211,9 @@ class Webhook {
 
     const { body, files } = await messagePayload.resolveFiles();
     const d = await this.client.rest.post(Routes.webhook(this.id, this.token), { body, files, query, auth: false });
-    return this.client.channels?.cache.get(d.channel_id)?.messages._add(d, false) ?? new (getMessage())(this.client, d);
+
+    if (!this.client.channels) return d;
+    return this.client.channels.cache.get(d.channel_id)?.messages._add(d, false) ?? new (getMessage())(this.client, d);
   }
 
   /**
@@ -286,17 +288,19 @@ class Webhook {
    * Gets a message that was sent by this webhook.
    * @param {Snowflake|'@original'} message The id of the message to fetch
    * @param {WebhookFetchMessageOptions} [options={}] The options to provide to fetch the message.
-   * @returns {Promise<Message>} Returns the message sent by this webhook
+   * @returns {Promise<APIMessage>} Returns the message sent by this webhook
    */
-  async fetchMessage(message, { cache = true, threadId } = {}) {
+  async fetchMessage(message, { threadId } = {}) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
 
     const data = await this.client.rest.get(Routes.webhookMessage(this.id, this.token, message), {
       query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined,
       auth: false,
     });
+
+    if (!this.client.channels) return data;
     return (
-      this.client.channels?.cache.get(data.channel_id)?.messages._add(data, cache) ??
+      this.client.channels.cache.get(data.channel_id)?.messages._add(data, false) ??
       new (getMessage())(this.client, data)
     );
   }
@@ -305,7 +309,7 @@ class Webhook {
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
    * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
-   * @returns {Promise<Message>} Returns the message edited by this webhook
+   * @returns {Promise<APIMessage>} Returns the message edited by this webhook
    */
   async editMessage(message, options) {
     if (!this.token) throw new Error('WEBHOOK_TOKEN_UNAVAILABLE');
@@ -329,7 +333,10 @@ class Webhook {
       },
     );
 
-    const messageManager = this.client.channels?.cache.get(d.channel_id)?.messages;
+    const channelManager = this.client.channels;
+    if (!channelManager) return d;
+
+    const messageManager = channelManager.cache.get(d.channel_id)?.messages;
     if (!messageManager) return new (getMessage())(this.client, d);
 
     const existing = messageManager.cache.get(d.id);

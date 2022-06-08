@@ -1562,6 +1562,11 @@ export class InteractionWebhook extends PartialWebhookMixin() {
   public constructor(client: Client, id: Snowflake, token: string);
   public token: string;
   public send(options: string | MessagePayload | InteractionReplyOptions): Promise<Message>;
+  public editMessage(
+    message: MessageResolvable,
+    options: string | MessagePayload | WebhookEditMessageOptions,
+  ): Promise<Message>;
+  public fetchMessage(message: string): Promise<Message>;
 }
 
 export class Invite extends Base {
@@ -2797,9 +2802,9 @@ export class WebhookClient extends WebhookMixin(BaseClient) {
   public editMessage(
     message: MessageResolvable,
     options: string | MessagePayload | WebhookEditMessageOptions,
-  ): Promise<Message>;
-  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message>;
-  public send(options: string | MessagePayload | WebhookMessageOptions): Promise<Message>;
+  ): Promise<APIMessage>;
+  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<APIMessage>;
+  public send(options: string | MessagePayload | WebhookMessageOptions): Promise<APIMessage>;
 }
 
 export class WebSocketManager extends EventEmitter {
@@ -3484,9 +3489,9 @@ export interface PartialWebhookFields {
   editMessage(
     message: MessageResolvable | '@original',
     options: string | MessagePayload | WebhookEditMessageOptions,
-  ): Promise<Message>;
-  fetchMessage(message: Snowflake | '@original', options?: WebhookFetchMessageOptions): Promise<Message>;
-  send(options: string | MessagePayload | Omit<WebhookMessageOptions, 'flags'>): Promise<Message>;
+  ): Promise<APIMessage | Message>;
+  fetchMessage(message: Snowflake | '@original', options?: WebhookFetchMessageOptions): Promise<APIMessage | Message>;
+  send(options: string | MessagePayload | Omit<WebhookMessageOptions, 'flags'>): Promise<APIMessage | Message>;
 }
 
 export interface WebhookFields extends PartialWebhookFields {
@@ -5308,7 +5313,6 @@ export type WebhookEditMessageOptions = Pick<
 >;
 
 export interface WebhookFetchMessageOptions {
-  cache?: boolean;
   threadId?: Snowflake;
 }
 
