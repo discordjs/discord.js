@@ -4,7 +4,7 @@
 	"description": "A set of builders that you can use when creating your bot",
 	"private": true,
 	"scripts": {
-		"build": "concurrently 'yarn build:css' 'yarn build:remix'",
+		"build": "yarn build:css && yarn build:remix",
 		"build:css": "yarn generate:css",
 		"build:remix": "remix build",
 		"dev": "concurrently 'yarn dev:css' 'yarn dev:remix'",
