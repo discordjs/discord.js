@@ -2,8 +2,7 @@
 	"root": true,
 	"extends": "marine/prettier/node",
 	"parserOptions": {
-		"project": "./tsconfig.eslint.json",
-		"extraFileExtensions": [".mjs"]
+		"project": "./tsconfig.eslint.json"
 	},
 	"ignorePatterns": ["**/dist/*"],
 	"env": {

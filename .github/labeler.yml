@@ -30,6 +30,10 @@ chore:
   - packages/voice/*
   - packages/voice/**/*
 
+'packages:website':
+  - packages/website/*
+  - packages/website/**/*
+
 'packages:ws':
   - packages/ws/*
   - packages/ws/**/*
