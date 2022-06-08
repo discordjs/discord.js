@@ -272,7 +272,7 @@ class ThreadChannel extends Channel {
     }
 
     // We cannot fetch a single thread member, as of this commit's date, Discord API responds with 405
-    const members = await this.members.fetch(cache);
+    const members = await this.members.fetch({ cache });
     return members.get(this.ownerId) ?? null;
   }
 
