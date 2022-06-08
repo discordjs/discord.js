@@ -56,7 +56,7 @@ class AutoModRule extends Base {
     this.triggerMetadata = data.trigger_metadata;
 
     /**
-     * An object containing information about an AutoMod rule action.
+     * An object containing information about an {@link AutoModrule} action.
      * @typedef {Object} AutoModRuleAction
      * @property {number} type The type of this AutoMod rule action
      * @property {Object} metadata Additional metadata needed during execution
