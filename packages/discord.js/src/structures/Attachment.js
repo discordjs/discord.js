@@ -13,14 +13,14 @@ const Util = require('../util/Util');
  * Represents an attachment
  */
 class Attachment {
-  constructor({ url, filename, ...data }) {
-    this.attachment = url;
+  constructor(data) {
+    this.attachment = data.url;
     /**
      * The name of this attachment
      * @type {string}
      */
-    this.name = filename;
-    if (data) this._patch(data);
+    this.name = data.filename;
+    this._patch(data);
   }
 
   _patch(data) {
