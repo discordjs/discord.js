@@ -79,6 +79,7 @@
  */
 module.exports = {
   ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
+  AutoModerationActionExecution: 'autoModerationActionExecution',
   AutoModerationRuleCreate: 'autoModerationRuleCreate',
   AutoModerationRuleDelete: 'autoModerationRuleDelete',
   AutoModerationRuleUpdate: 'autoModerationRuleUpdate',

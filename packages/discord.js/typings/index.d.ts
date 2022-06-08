@@ -319,6 +319,21 @@ export abstract class AnonymousGuild extends BaseGuild {
   public splashURL(options?: ImageURLOptions): string | null;
 }
 
+export class AutoModActionExecution {
+  private constructor(data: unknown);
+  public guildId: Snowflake;
+  public action: AutoModRuleAction;
+  public ruleId: Snowflake;
+  public ruleTriggerType: number;
+  public userId: Snowflake;
+  public channelId: Snowflake | null;
+  public messageId: Snowflake | null;
+  public alertSystemMessageId: Snowflake | null;
+  public content: string;
+  public matchedKeyword: string | null;
+  public matchedContent: string | null;
+}
+
 export class AutoModRule extends Base {
   private constructor(client: Client, data: unknown);
   public id: Snowflake;
@@ -4522,6 +4537,7 @@ export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
 
 export interface ClientEvents {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
+  autoModerationActionExecution: [autoModActionExecution: AutoModActionExecution];
   autoModerationRuleCreate: [autoModRule: AutoModRule];
   autoModerationRuleDelete: [autoModRule: AutoModRule];
   autoModerationRuleUpdate: [oldAutoModRule: AutoModRule | null, newAutoModRule: AutoModRule];
@@ -4740,6 +4756,7 @@ export declare const Colors: {
 
 export enum Events {
   ApplicationCommandPermissionsUpdate = 'applicationCommandPermissionsUpdate',
+  AutoModerationActionExecution = 'autoModerationActionExecution',
   AutoModerationRuleCreate = 'autoModerationRuleCreate',
   AutoModerationRuleDelete = 'autoModerationRuleDelete',
   AutoModerationRuleUpdate = 'autoModerationRuleUpdate',
