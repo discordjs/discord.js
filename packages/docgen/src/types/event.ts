@@ -26,7 +26,7 @@ export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflectio
 				deprecated: signature.comment?.tags?.some((t) => t.tagName === 'deprecated'),
 				// @ts-expect-error
 				params: signature.parameters
-					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config))
+					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config).serialize())
 					: undefined,
 				meta,
 			};

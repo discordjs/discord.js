@@ -18,8 +18,8 @@ export class DocumentedParam extends DocumentedItem<Param | ParameterReflection>
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					data.comment?.tags?.find((t) => t.tagName === 'default')?.text.trim() ??
 					(data.defaultValue === '...' ? undefined : data.defaultValue),
-				type: data.type ? new DocumentedVarType({ names: [parseType(data.type)] }, this.config).serialize() : undefined,
 				variable: data.flags.isRest,
+				type: data.type ? new DocumentedVarType({ names: [parseType(data.type)] }, this.config).serialize() : undefined,
 			};
 		}
 

@@ -23,7 +23,7 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 						: undefined,
 				// @ts-expect-error
 				params: signature.parameters
-					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config))
+					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config).serialize())
 					: undefined,
 			};
 		}

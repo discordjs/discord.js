@@ -41,7 +41,7 @@ export class DocumentedMethod extends DocumentedItem<Method | DeclarationReflect
 				emits: signature.comment?.tags?.filter((t) => t.tagName === 'emits').map((t) => t.text.trim()),
 				// @ts-expect-error
 				params: signature.parameters
-					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config))
+					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config).serialize())
 					: undefined,
 				returns: signature.type
 					? new DocumentedVarType(
