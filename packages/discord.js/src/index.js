@@ -88,6 +88,7 @@ exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
+exports.AutoModActionExecution = require('./structures/AutoModActionExecution');
 exports.AutoModRule = require('./structures/AutoModRule');
 exports.Base = require('./structures/Base');
 exports.BaseGuild = require('./structures/BaseGuild');
