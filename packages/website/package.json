@@ -47,7 +47,8 @@
 		"@remix-run/server-runtime": "^1.5.1",
 		"@remix-run/vercel": "^1.5.1",
 		"react": "^18.1.0",
-		"react-dom": "^18.1.0"
+		"react-dom": "^18.1.0",
+		"remix": "^1.5.1"
 	},
 	"devDependencies": {
 		"@remix-run/dev": "^1.5.1",

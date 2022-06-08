@@ -2046,6 +2046,7 @@ __metadata:
     prettier: ^2.6.2
     react: ^18.1.0
     react-dom: ^18.1.0
+    remix: ^1.5.1
     typedoc: ^0.22.17
     typescript: ^4.7.3
   languageName: unknown
@@ -13929,6 +13930,13 @@ dts-critic@latest:
     mdast-util-to-hast: ^11.0.0
     unified: ^10.0.0
   checksum: 01d8177ce1a9138ead8779ec73cfef8d06669c4ebe7c4e94e804a1ddba12dca874131330f22e3979a4e0a4132239142dc93e7cfbd5d18b9250b4cc770557aff1
+  languageName: node
+  linkType: hard
+
+"remix@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "remix@npm:1.5.1"
+  checksum: d6551c3f83e1f85e60684fa78078b20559559a10056e7335ef5d8372a3827eedf0cf69fb70e15a42ad7bc6be285bbbb5a1b9546933245be08243e49aa135848e
   languageName: node
   linkType: hard
 
