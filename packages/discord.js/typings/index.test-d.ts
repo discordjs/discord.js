@@ -95,7 +95,6 @@ import {
   GuildAuditLogsEntry,
   GuildAuditLogs,
   StageInstance,
-  PartialDMChannel,
   ActionRowBuilder,
   ButtonComponent,
   SelectMenuComponent,
@@ -124,6 +123,9 @@ import {
   UserMention,
   PartialGroupDMChannel,
   Attachment,
+  MessageContextMenuCommandInteraction,
+  UserContextMenuCommandInteraction,
+  AnyThreadChannel,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
@@ -816,7 +818,7 @@ client.on('threadCreate', thread => {
 client.on('threadMembersUpdate', (addedMembers, removedMembers, thread) => {
   expectType<Collection<Snowflake, ThreadMember>>(addedMembers);
   expectType<Collection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
-  expectType<ThreadChannel>(thread);
+  expectType<AnyThreadChannel>(thread);
   const left = removedMembers.first();
   if (!left) return;
 
@@ -1165,7 +1167,7 @@ client.on('interactionCreate', interaction => {
 
 client.on('interactionCreate', async interaction => {
   if (interaction.type === InteractionType.MessageComponent) {
-    expectType<MessageComponentInteraction>(interaction);
+    expectType<SelectMenuInteraction | ButtonInteraction>(interaction);
     expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
     if (interaction.inCachedGuild()) {
@@ -1211,7 +1213,7 @@ client.on('interactionCreate', async interaction => {
     (interaction.commandType === ApplicationCommandType.User ||
       interaction.commandType === ApplicationCommandType.Message)
   ) {
-    expectType<ContextMenuCommandInteraction>(interaction);
+    expectType<MessageContextMenuCommandInteraction | UserContextMenuCommandInteraction>(interaction);
     if (interaction.inCachedGuild()) {
       expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectAssignable<Guild>(interaction.guild);
@@ -1457,16 +1459,14 @@ declare const GuildBasedChannel: GuildBasedChannel;
 declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
 declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
-expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(TextBasedChannel);
+expectType<TextBasedChannel>(TextBasedChannel);
 expectType<ChannelType.GuildText | ChannelType.DM | ChannelType.GuildNews | ChannelType.GuildVoice | ThreadChannelType>(
   TextBasedChannelTypes,
 );
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | ThreadChannel | VoiceChannel>(
-  GuildBasedChannel,
-);
+expectType<GuildBasedChannel>(GuildBasedChannel);
 expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel>(NonThreadGuildBasedChannel);
-expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBasedChannel);
+expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
 
 const button = new ButtonBuilder({
   label: 'test',
