@@ -3,13 +3,16 @@ export function splitVarName(str: string) {
 	let currGroup: string[] = [];
 	let currStr = '';
 
-	const isASymbol = (char: string) => '-!$%^&*()_+|~=`{}[]:;<>?, '.includes(char);
+	const isASymbol = (char: string) => '-!$%^&*()_+|~=`{}[]:;<>?,. '.includes(char);
 
 	for (const char of str) {
 		const currentlyInASymbolSection = isASymbol(currStr[0]!);
 		const charIsASymbol = isASymbol(char);
 
 		if (currStr.length && currentlyInASymbolSection !== charIsASymbol) {
+			if (char === '.') {
+				continue;
+			}
 			currGroup.push(currStr);
 			currStr = char;
 
