@@ -1139,12 +1139,17 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * @typedef {Object} GuildMFALevelOptions
+   * @property {GuildMFALevel} level The MFA level
+   * @property {string} [reason] Reason for changing the guild's MFA level
+   */
+
+  /**
    * Sets the guild's MFA level
-   * @param {GuildMFALevel} level The MFA level
-   * @param {string} reason Reason for changing the guild's MFA level
+   * @param {GuildMFALevelOptions} options The MFA level
    * @returns {Promise<Guild>}
    */
-  async setMFALevel(level, reason) {
+  async setMFALevel({ level, reason }) {
     await this.client.rest.post(Routes.guildMFA(this.id), {
       body: {
         level,

@@ -1154,7 +1154,7 @@ export class Guild extends AnonymousGuild {
   public setVerificationLevel(verificationLevel: GuildVerificationLevel | null, reason?: string): Promise<Guild>;
   public setPremiumProgressBarEnabled(enabled?: boolean, reason?: string): Promise<Guild>;
   public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
-  public setMFALevel(level: GuildMFALevel): Promise<Guild>;
+  public setMFALevel(options: GuildMFALevelOptions): Promise<Guild>;
   public toJSON(): unknown;
 }
 
@@ -5036,6 +5036,11 @@ export interface RoleTagData {
   botId?: Snowflake;
   integrationId?: Snowflake;
   premiumSubscriberRole?: true;
+}
+
+export interface GuildMFALevelOptions {
+  level: GuildMFALevel;
+  reason?: string;
 }
 
 export interface SetChannelPositionOptions {
