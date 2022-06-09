@@ -412,6 +412,7 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
 export type BooleanCache<T extends CacheType> = T extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
+  public type: InteractionType.ApplicationCommand;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
@@ -564,6 +565,7 @@ export class BitField<S extends string, N extends number | bigint = number> {
 
 export class ButtonInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   private constructor(client: Client, data: RawMessageButtonInteractionData);
+  public componentType: ComponentType.Button;
   public get component(): CacheTypeReducer<
     Cached,
     ButtonComponent,
@@ -571,7 +573,6 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
     ButtonComponent | APIButtonComponent,
     ButtonComponent | APIButtonComponent
   >;
-  public componentType: ComponentType.Button;
   public inGuild(): this is ButtonInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ButtonInteraction<'cached'>;
   public inRawGuild(): this is ButtonInteraction<'raw'>;
@@ -750,7 +751,7 @@ export abstract class Channel extends Base {
   public get url(): string;
   public delete(): Promise<this>;
   public fetch(force?: boolean): Promise<this>;
-  public isThread(): this is ThreadChannel;
+  public isThread(): this is AnyThreadChannel;
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
@@ -918,6 +919,7 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 }
 
 export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
+  public commandType: ApplicationCommandType.ChatInput;
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
   public inGuild(): this is ChatInputCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ChatInputCommandInteraction<'cached'>;
@@ -926,6 +928,7 @@ export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> e
 }
 
 export class AutocompleteInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
+  public type: InteractionType.ApplicationCommandAutocomplete;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public channelId: Snowflake;
   public commandId: Snowflake;
@@ -1002,6 +1005,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
 }
 
 export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
+  public commandType: ApplicationCommandType.Message | ApplicationCommandType.User;
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
     | 'getFocused'
@@ -1465,6 +1469,15 @@ export type CacheTypeReducer<
   ? PresentType
   : Fallback;
 
+export type AnyInteraction<Cached extends CacheType = CacheType> =
+  | ChatInputCommandInteraction<Cached>
+  | MessageContextMenuCommandInteraction<Cached>
+  | UserContextMenuCommandInteraction<Cached>
+  | SelectMenuInteraction<Cached>
+  | ButtonInteraction<Cached>
+  | AutocompleteInteraction<Cached>
+  | ModalSubmitInteraction<Cached>;
+
 export class Interaction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
   private readonly _cacheType: Cached;
@@ -1495,16 +1508,13 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public inCachedGuild(): this is Interaction<'cached'>;
   public inRawGuild(): this is Interaction<'raw'>;
   public isButton(): this is ButtonInteraction<Cached>;
-  public isCommand(): this is CommandInteraction<Cached>;
   public isChatInputCommand(): this is ChatInputCommandInteraction<Cached>;
   public isContextMenuCommand(): this is ContextMenuCommandInteraction<Cached>;
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isAutocomplete(): this is AutocompleteInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
-  public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
   public isRepliable(): this is this & InteractionResponseFields<Cached>;
-  public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
 }
 
 export class InteractionCollector<T extends Interaction> extends Collector<Snowflake, T, [Collection<Snowflake, T>]> {
@@ -1667,7 +1677,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public system: boolean;
-  public get thread(): ThreadChannel | null;
+  public get thread(): AnyThreadChannel | null;
   public tts: boolean;
   public type: MessageType;
   public get url(): string;
@@ -1694,7 +1704,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public removeAttachments(): Promise<Message>;
   public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
-  public startThread(options: StartThreadOptions): Promise<ThreadChannel>;
+  public startThread(options: StartThreadOptions): Promise<AnyThreadChannel>;
   public suppressEmbeds(suppress?: boolean): Promise<Message>;
   public toJSON(): unknown;
   public toString(): string;
@@ -1748,6 +1758,7 @@ export class MessageCollector extends Collector<Snowflake, Message, [Collection<
 
 export class MessageComponentInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   protected constructor(client: Client, data: RawMessageComponentInteractionData);
+  public type: InteractionType.MessageComponent;
   public get component(): CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
@@ -1755,7 +1766,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
     MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
     MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>
   >;
-  public componentType: Exclude<ComponentType, ComponentType.ActionRow>;
+  public componentType: Exclude<ComponentType, ComponentType.ActionRow | ComponentType.TextInput>;
   public customId: string;
   public channelId: Snowflake;
   public deferred: boolean;
@@ -1800,6 +1811,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
 export class MessageContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
 > extends ContextMenuCommandInteraction<Cached> {
+  public commandType: ApplicationCommandType.Message;
   public get targetMessage(): NonNullable<CommandInteractionOption<Cached>['message']>;
   public inGuild(): this is MessageContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MessageContextMenuCommandInteraction<'cached'>;
@@ -1934,6 +1946,7 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
 
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends Interaction<Cached> {
   private constructor(client: Client, data: APIModalSubmitInteraction);
+  public type: InteractionType.ModalSubmit;
   public readonly customId: string;
   public readonly components: ActionRowModalData[];
   public readonly fields: ModalSubmitFields;
@@ -2439,6 +2452,18 @@ export class TextChannel extends BaseGuildTextChannel {
   public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 }
 
+export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel;
+
+export interface PublicThreadChannel extends ThreadChannel {
+  type: ChannelType.GuildPublicThread | ChannelType.GuildNewsThread;
+}
+
+export interface PrivateThreadChannel extends ThreadChannel {
+  get createdTimestamp(): number;
+  get createdAt(): Date;
+  type: ChannelType.GuildPrivateThread;
+}
+
 export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhooks', 'createWebhook']) {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
@@ -2469,15 +2494,10 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhook
   public rateLimitPerUser: number | null;
   public type: ThreadChannelType;
   public get unarchivable(): boolean;
-  public isPrivate(): this is this & {
-    get createdTimestamp(): number;
-    get createdAt(): Date;
-    type: ChannelType.GuildPrivateThread;
-  };
   public delete(reason?: string): Promise<this>;
-  public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
-  public join(): Promise<ThreadChannel>;
-  public leave(): Promise<ThreadChannel>;
+  public edit(data: ThreadEditData, reason?: string): Promise<AnyThreadChannel>;
+  public join(): Promise<AnyThreadChannel>;
+  public leave(): Promise<AnyThreadChannel>;
   public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: GuildMemberResolvable | RoleResolvable,
@@ -2485,15 +2505,15 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhook
   ): Readonly<PermissionsBitField> | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
-  public setArchived(archived?: boolean, reason?: string): Promise<ThreadChannel>;
+  public setArchived(archived?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setAutoArchiveDuration(
     autoArchiveDuration: ThreadAutoArchiveDuration,
     reason?: string,
-  ): Promise<ThreadChannel>;
-  public setInvitable(invitable?: boolean, reason?: string): Promise<ThreadChannel>;
-  public setLocked(locked?: boolean, reason?: string): Promise<ThreadChannel>;
-  public setName(name: string, reason?: string): Promise<ThreadChannel>;
-  public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<ThreadChannel>;
+  ): Promise<AnyThreadChannel>;
+  public setInvitable(invitable?: boolean, reason?: string): Promise<AnyThreadChannel>;
+  public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
+  public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
+  public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<AnyThreadChannel>;
   public toString(): ChannelMention;
 }
 
@@ -2505,7 +2525,7 @@ export class ThreadMember extends Base {
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
   public get manageable(): boolean;
-  public thread: ThreadChannel;
+  public thread: AnyThreadChannel;
   public get user(): User | null;
   public get partial(): false;
   public remove(reason?: string): Promise<ThreadMember>;
@@ -2566,6 +2586,7 @@ export class User extends PartialTextBasedChannel(Base) {
 export class UserContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
 > extends ContextMenuCommandInteraction<Cached> {
+  public commandType: ApplicationCommandType.User;
   public get targetUser(): User;
   public get targetMember(): CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
   public inGuild(): this is UserContextMenuCommandInteraction<'raw' | 'cached'>;
@@ -3371,8 +3392,8 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
 export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
   private constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<RawThreadChannelData>);
   public channel: TextChannel | NewsChannel;
-  public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
-  public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
+  public create(options: ThreadCreateOptions<AllowedThreadType>): Promise<AnyThreadChannel>;
+  public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<AnyThreadChannel | null>;
   public fetch(options?: FetchThreadsOptions, cacheOptions?: { cache?: boolean }): Promise<FetchedThreads>;
   public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
   public fetchActive(cache?: boolean): Promise<FetchedThreads>;
@@ -3380,7 +3401,7 @@ export class ThreadManager<AllowedThreadType> extends CachedManager<Snowflake, T
 
 export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, ThreadMemberResolvable> {
   private constructor(thread: ThreadChannel, iterable?: Iterable<RawThreadMemberData>);
-  public thread: ThreadChannel;
+  public thread: AnyThreadChannel;
   public get me(): ThreadMember | null;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(options?: ThreadMemberFetchOptions): Promise<ThreadMember>;
@@ -3886,21 +3907,21 @@ export interface ClientEvents {
   roleCreate: [role: Role];
   roleDelete: [role: Role];
   roleUpdate: [oldRole: Role, newRole: Role];
-  threadCreate: [thread: ThreadChannel, newlyCreated: boolean];
-  threadDelete: [thread: ThreadChannel];
-  threadListSync: [threads: Collection<Snowflake, ThreadChannel>, guild: Guild];
+  threadCreate: [thread: AnyThreadChannel, newlyCreated: boolean];
+  threadDelete: [thread: AnyThreadChannel];
+  threadListSync: [threads: Collection<Snowflake, AnyThreadChannel>, guild: Guild];
   threadMemberUpdate: [oldMember: ThreadMember, newMember: ThreadMember];
   threadMembersUpdate: [
     addedMembers: Collection<Snowflake, ThreadMember>,
     removedMembers: Collection<Snowflake, ThreadMember | PartialThreadMember>,
-    thread: ThreadChannel,
+    thread: AnyThreadChannel,
   ];
-  threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
+  threadUpdate: [oldThread: AnyThreadChannel, newThread: AnyThreadChannel];
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel];
-  interactionCreate: [interaction: Interaction];
+  interactionCreate: [interaction: AnyInteraction];
   shardDisconnect: [closeEvent: CloseEvent, shardId: number];
   shardError: [error: Error, shardId: number];
   shardReady: [shardId: number, unavailableGuilds: Set<Snowflake> | undefined];
@@ -4222,7 +4243,7 @@ export interface FetchChannelOptions extends BaseFetchOptions {
 }
 
 export interface FetchedThreads {
-  threads: Collection<Snowflake, ThreadChannel>;
+  threads: Collection<Snowflake, AnyThreadChannel>;
   hasMore?: boolean;
 }
 
@@ -4398,7 +4419,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   Message: TActionType extends AuditLogEvent.MessageBulkDelete ? Guild | { id: Snowflake } : User;
   Integration: Integration;
   Channel: NonThreadGuildBasedChannel | { id: Snowflake; [x: string]: unknown };
-  Thread: ThreadChannel | { id: Snowflake; [x: string]: unknown };
+  Thread: AnyThreadChannel | { id: Snowflake; [x: string]: unknown };
   StageInstance: StageInstance;
   Sticker: Sticker;
   GuildScheduledEvent: GuildScheduledEvent;
@@ -5115,7 +5136,7 @@ export interface SweeperDefinitions {
   stageInstances: [Snowflake, StageInstance];
   stickers: [Snowflake, Sticker];
   threadMembers: [Snowflake, ThreadMember];
-  threads: [Snowflake, ThreadChannel, true];
+  threads: [Snowflake, AnyThreadChannel, true];
   users: [Snowflake, User];
   voiceStates: [Snowflake, VoiceState];
 }
@@ -5139,7 +5160,7 @@ export type AnyChannel =
   | NewsChannel
   | StageChannel
   | TextChannel
-  | ThreadChannel
+  | AnyThreadChannel
   | VoiceChannel;
 
 export type TextBasedChannel = Extract<AnyChannel, { messages: MessageManager }>;
@@ -5152,7 +5173,7 @@ export type GuildBasedChannel = Extract<AnyChannel, { guild: Guild }>;
 
 export type NonCategoryGuildBasedChannel = Exclude<GuildBasedChannel, CategoryChannel>;
 
-export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, ThreadChannel>;
+export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, AnyThreadChannel>;
 
 export type GuildTextBasedChannel = Extract<GuildBasedChannel, TextBasedChannel>;
 
@@ -5162,7 +5183,7 @@ export type TextBasedChannelResolvable = Snowflake | TextBasedChannel;
 
 export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080;
 
-export type ThreadChannelResolvable = ThreadChannel | Snowflake;
+export type ThreadChannelResolvable = AnyThreadChannel | Snowflake;
 
 export type ThreadChannelType =
   | ChannelType.GuildNewsThread

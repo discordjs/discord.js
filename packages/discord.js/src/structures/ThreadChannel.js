@@ -512,14 +512,6 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Whether this thread is a private thread
-   * @returns {boolean}
-   */
-  isPrivate() {
-    return this.type === ChannelType.GuildPrivateThread;
-  }
-
-  /**
    * Deletes this thread.
    * @param {string} [reason] Reason for deleting this thread
    * @returns {Promise<ThreadChannel>}
