@@ -50,7 +50,7 @@ class AutoModRule extends Base {
     this.eventType = data.event_type;
 
     /**
-     * Additional data used to determine whether an {@link AutoModrule} should be triggered.
+     * Additional data used to determine whether an {@link AutoModRule} should be triggered.
      * @typedef {Object} AutoModTriggerMetadata
      * @property {string[]} keywordFilter The substrings that will be searched for in the content
      * @property {number} preset The internally pre-defined wordsets which will be searched for in content
@@ -66,7 +66,7 @@ class AutoModRule extends Base {
     };
 
     /**
-     * An object containing information about an {@link AutoModrule} action.
+     * An object containing information about an {@link AutoModRule} action.
      * @typedef {Object} AutoModRuleAction
      * @property {number} type The type of this AutoMod rule action
      * @property {Object} metadata Additional metadata needed during execution
