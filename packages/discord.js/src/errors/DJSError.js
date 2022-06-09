@@ -9,6 +9,7 @@ const messages = new Map();
  * Extend an error of some sort into a DiscordjsError.
  * @param {Error} Base Base error to extend
  * @returns {DiscordjsError}
+ * @ignore
  */
 function makeDiscordjsError(Base) {
   return class DiscordjsError extends Base {
@@ -33,6 +34,7 @@ function makeDiscordjsError(Base) {
  * @param {string} key Error key
  * @param {Array<*>} args Arguments to pass for util format or as function args
  * @returns {string} Formatted string
+ * @ignore
  */
 function message(key, args) {
   if (typeof key !== 'string') throw new Error('Error message key must be a string');
@@ -48,6 +50,7 @@ function message(key, args) {
  * Register an error code and message.
  * @param {string} sym Unique name for the error
  * @param {*} val Value of the error
+ * @ignore
  */
 function register(sym, val) {
   messages.set(sym, typeof val === 'function' ? val : String(val));
