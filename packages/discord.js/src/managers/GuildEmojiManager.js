@@ -27,29 +27,29 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
 
   /**
    * Options used for creating an emoji in a guild.
-   * @typedef {Object} GuildEmojiCreateOptions
+   * @typedef {Object}
+   * @property {BufferResolvable|Base64Resolvable} attachment The image for the emoji
+   * @property {string} name The name for the emoji
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to limit the emoji to
    * @property {string} [reason] The reason for creating the emoji
    */
 
   /**
    * Creates a new custom emoji in the guild.
-   * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
-   * @param {string} name The name for the emoji
    * @param {GuildEmojiCreateOptions} [options] Options for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
    * // Create a new emoji from a URL
-   * guild.emojis.create('https://i.imgur.com/w3duR07.png', 'rip')
+   * guild.emojis.create({ attachment: 'https://i.imgur.com/w3duR07.png', name: 'rip' })
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    * @example
    * // Create a new emoji from a file on your computer
-   * guild.emojis.create('./memes/banana.png', 'banana')
+   * guild.emojis.create({ attachment: './memes/banana.png', name: 'banana' })
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    */
-  async create(attachment, name, { roles, reason } = {}) {
+  async create({ attachment, name, roles, reason }) {
     attachment = await DataResolver.resolveImage(attachment);
     if (!attachment) throw new TypeError('REQ_RESOURCE_TYPE');
 

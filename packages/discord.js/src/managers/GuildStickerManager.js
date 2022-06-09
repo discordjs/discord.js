@@ -35,15 +35,15 @@ class GuildStickerManager extends CachedManager {
   /**
    * Options for creating a guild sticker.
    * @typedef {Object} GuildStickerCreateOptions
+   * @property {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} file The file for the sticker
+   * @property {string} name The name for the sticker
+   * @property {string} tags The Discord name of a unicode emoji representing the sticker's expression
    * @property {?string} [description] The description for the sticker
    * @property {string} [reason] Reason for creating the sticker
    */
 
   /**
    * Creates a new custom sticker in the guild.
-   * @param {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} file The file for the sticker
-   * @param {string} name The name for the sticker
-   * @param {string} tags The Discord name of a unicode emoji representing the sticker's expression
    * @param {GuildStickerCreateOptions} [options] Options
    * @returns {Promise<Sticker>} The created sticker
    * @example
@@ -57,7 +57,7 @@ class GuildStickerManager extends CachedManager {
    *   .then(sticker => console.log(`Created new sticker with name ${sticker.name}!`))
    *   .catch(console.error);
    */
-  async create(file, name, tags, { description, reason } = {}) {
+  async create({ file, name, tags, description, reason } = {}) {
     const resolvedFile = await MessagePayload.resolveFile(file);
     if (!resolvedFile) throw new TypeError('REQ_RESOURCE_TYPE');
     file = { ...resolvedFile, key: 'file' };
