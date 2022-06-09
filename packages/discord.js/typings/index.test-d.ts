@@ -127,7 +127,7 @@ import {
   UserContextMenuCommandInteraction,
   AnyThreadChannel,
 } from '.';
-import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
 
 // Test type transformation:
@@ -561,11 +561,14 @@ client.on('guildCreate', async g => {
   }
 
   if (channel.isThread()) {
-    const fetchedMember = await channel.members.fetch({ member: '12345678' });
+    const fetchedMember = await channel.members.fetch('12345678');
+    const fetchedMember2 = await channel.members.fetch({ member: '12345678', cache: false, force: true });
     expectType<ThreadMember>(fetchedMember);
-    const fetchedMemberCol = await channel.members.fetch(true);
-    expectDeprecated(await channel.members.fetch(true));
+    expectType<ThreadMember>(fetchedMember2);
+    const fetchedMemberCol = await channel.members.fetch({ cache: true });
     expectType<Collection<Snowflake, ThreadMember>>(fetchedMemberCol);
+    // @ts-expect-error The `force` option cannot be used alongside fetching all thread members.
+    const fetchedMemberCol2 = await channel.members.fetch({ cache: true, force: false });
   }
 
   channel.setName('foo').then(updatedChannel => {
