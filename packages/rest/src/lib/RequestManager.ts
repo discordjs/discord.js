@@ -1,6 +1,6 @@
 import { Blob } from 'node:buffer';
 import { EventEmitter } from 'node:events';
-import Collection from '@discordjs/collection';
+import { Collection } from '@discordjs/collection';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { FormData, type RequestInit, type BodyInit, type Dispatcher, Agent } from 'undici';
 import type { RESTOptions, RestEvents, RequestOptions } from './REST';
