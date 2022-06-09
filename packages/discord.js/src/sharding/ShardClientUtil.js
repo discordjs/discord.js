@@ -3,7 +3,7 @@
 const process = require('node:process');
 const { Error } = require('../errors');
 const Events = require('../util/Events');
-const Util = require('../util/Util');
+const { makeError, makePlainError } = require('../util/Util');
 
 /**
  * Helper class for sharded clients spawned as a child process/worker, such as from a {@link ShardingManager}.
@@ -113,7 +113,7 @@ class ShardClientUtil {
         parent.removeListener('message', listener);
         this.decrementMaxListeners(parent);
         if (!message._error) resolve(message._result);
-        else reject(Util.makeError(message._error));
+        else reject(makeError(message._error));
       };
       this.incrementMaxListeners(parent);
       parent.on('message', listener);
@@ -151,7 +151,7 @@ class ShardClientUtil {
         parent.removeListener('message', listener);
         this.decrementMaxListeners(parent);
         if (!message._error) resolve(message._result);
-        else reject(Util.makeError(message._error));
+        else reject(makeError(message._error));
       };
       this.incrementMaxListeners(parent);
       parent.on('message', listener);
@@ -187,13 +187,13 @@ class ShardClientUtil {
         for (const prop of props) value = value[prop];
         this._respond('fetchProp', { _fetchProp: message._fetchProp, _result: value });
       } catch (err) {
-        this._respond('fetchProp', { _fetchProp: message._fetchProp, _error: Util.makePlainError(err) });
+        this._respond('fetchProp', { _fetchProp: message._fetchProp, _error: makePlainError(err) });
       }
     } else if (message._eval) {
       try {
         this._respond('eval', { _eval: message._eval, _result: await this.client._eval(message._eval) });
       } catch (err) {
-        this._respond('eval', { _eval: message._eval, _error: Util.makePlainError(err) });
+        this._respond('eval', { _eval: message._eval, _error: makePlainError(err) });
       }
     }
   }

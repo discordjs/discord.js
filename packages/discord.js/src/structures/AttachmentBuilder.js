@@ -1,6 +1,6 @@
 'use strict';
 
-const Util = require('../util/Util');
+const { basename, flatten } = require('../util/Util');
 
 /**
  * Represents an attachment builder
@@ -82,11 +82,11 @@ class AttachmentBuilder {
    * @readonly
    */
   get spoiler() {
-    return Util.basename(this.name).startsWith('SPOILER_');
+    return basename(this.name).startsWith('SPOILER_');
   }
 
   toJSON() {
-    return Util.flatten(this);
+    return flatten(this);
   }
 
   /**

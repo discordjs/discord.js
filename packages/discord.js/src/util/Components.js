@@ -67,57 +67,55 @@ const { ComponentType } = require('discord-api-types/v10');
  * @typedef {APIMessageComponentEmoji|string} ComponentEmojiResolvable
  */
 
-class Components extends null {
-  /**
-   * Transforms API data into a component
-   * @param {APIMessageComponent|Component} data The data to create the component from
-   * @returns {Component}
-   */
-  static createComponent(data) {
-    if (data instanceof Component) {
-      return data;
-    }
-
-    switch (data.type) {
-      case ComponentType.ActionRow:
-        return new ActionRow(data);
-      case ComponentType.Button:
-        return new ButtonComponent(data);
-      case ComponentType.SelectMenu:
-        return new SelectMenuComponent(data);
-      case ComponentType.TextInput:
-        return new TextInputComponent(data);
-      default:
-        throw new Error(`Found unknown component type: ${data.type}`);
-    }
+/**
+ * Transforms API data into a component
+ * @param {APIMessageComponent|Component} data The data to create the component from
+ * @returns {Component}
+ */
+function createComponent(data) {
+  if (data instanceof Component) {
+    return data;
   }
 
-  /**
-   * Transforms API data into a component builder
-   * @param {APIMessageComponent|ComponentBuilder} data The data to create the component from
-   * @returns {ComponentBuilder}
-   */
-  static createComponentBuilder(data) {
-    if (data instanceof ComponentBuilder) {
-      return data;
-    }
-
-    switch (data.type) {
-      case ComponentType.ActionRow:
-        return new ActionRowBuilder(data);
-      case ComponentType.Button:
-        return new ButtonBuilder(data);
-      case ComponentType.SelectMenu:
-        return new SelectMenuBuilder(data);
-      case ComponentType.TextInput:
-        return new TextInputComponent(data);
-      default:
-        throw new Error(`Found unknown component type: ${data.type}`);
-    }
+  switch (data.type) {
+    case ComponentType.ActionRow:
+      return new ActionRow(data);
+    case ComponentType.Button:
+      return new ButtonComponent(data);
+    case ComponentType.SelectMenu:
+      return new SelectMenuComponent(data);
+    case ComponentType.TextInput:
+      return new TextInputComponent(data);
+    default:
+      throw new Error(`Found unknown component type: ${data.type}`);
   }
 }
 
-module.exports = Components;
+/**
+ * Transforms API data into a component builder
+ * @param {APIMessageComponent|ComponentBuilder} data The data to create the component from
+ * @returns {ComponentBuilder}
+ */
+function createComponentBuilder(data) {
+  if (data instanceof ComponentBuilder) {
+    return data;
+  }
+
+  switch (data.type) {
+    case ComponentType.ActionRow:
+      return new ActionRowBuilder(data);
+    case ComponentType.Button:
+      return new ButtonBuilder(data);
+    case ComponentType.SelectMenu:
+      return new SelectMenuBuilder(data);
+    case ComponentType.TextInput:
+      return new TextInputComponent(data);
+    default:
+      throw new Error(`Found unknown component type: ${data.type}`);
+  }
+}
+
+module.exports = { createComponent, createComponentBuilder };
 
 const ActionRow = require('../structures/ActionRow');
 const ActionRowBuilder = require('../structures/ActionRowBuilder');

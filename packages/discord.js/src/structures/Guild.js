@@ -27,7 +27,7 @@ const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
-const Util = require('../util/Util');
+const { discordSort } = require('../util/Util');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -1253,7 +1253,7 @@ class Guild extends AnonymousGuild {
    * @private
    */
   _sortedRoles() {
-    return Util.discordSort(this.roles.cache);
+    return discordSort(this.roles.cache);
   }
 
   /**
@@ -1265,7 +1265,7 @@ class Guild extends AnonymousGuild {
   _sortedChannels(channel) {
     const category = channel.type === ChannelType.GuildCategory;
     const channelTypes = [ChannelType.GuildText, ChannelType.GuildNews];
-    return Util.discordSort(
+    return discordSort(
       this.channels.cache.filter(
         c =>
           (channelTypes.includes(channel.type) ? channelTypes.includes(c.type) : c.type === channel.type) &&

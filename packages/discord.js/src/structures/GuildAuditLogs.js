@@ -5,7 +5,7 @@ const ApplicationCommand = require('./ApplicationCommand');
 const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
-const Util = require('../util/Util');
+const { flatten } = require('../util/Util');
 
 /**
  * The target type of an entry. Here are the available types:
@@ -92,7 +92,7 @@ class GuildAuditLogs {
   }
 
   toJSON() {
-    return Util.flatten(this);
+    return flatten(this);
   }
 }
 

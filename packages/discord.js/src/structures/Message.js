@@ -20,11 +20,11 @@ const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
-const Components = require('../util/Components');
+const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
-const Util = require('../util/Util');
+const { cleanContent, resolvePartialEmoji } = require('../util/Util');
 
 /**
  * Represents a message on Discord.
@@ -146,7 +146,7 @@ class Message extends Base {
        * A list of MessageActionRows in the message
        * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => Components.createComponent(c));
+      this.components = data.components.map(c => createComponent(c));
     } else {
       this.components = this.components?.slice() ?? [];
     }
@@ -441,7 +441,7 @@ class Message extends Base {
    */
   get cleanContent() {
     // eslint-disable-next-line eqeqeq
-    return this.content != null ? Util.cleanContent(this.content, this.channel) : null;
+    return this.content != null ? cleanContent(this.content, this.channel) : null;
   }
 
   /**
@@ -737,7 +737,7 @@ class Message extends Base {
         user: this.client.user,
         channel: this.channel,
         message: this,
-        emoji: Util.resolvePartialEmoji(emoji),
+        emoji: resolvePartialEmoji(emoji),
       },
       true,
     ).reaction;

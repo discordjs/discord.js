@@ -4,6 +4,7 @@ const process = require('node:process');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Channel } = require('../structures/Channel');
+const { createChannel } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
 const Events = require('../util/Events');
 
@@ -46,7 +47,7 @@ class ChannelManager extends CachedManager {
       return existing;
     }
 
-    const channel = Channel.create(this.client, data, guild, { allowUnknownGuild, fromInteraction });
+    const channel = createChannel(this.client, data, guild, { allowUnknownGuild, fromInteraction });
 
     if (!channel) {
       this.client.emit(Events.Debug, `Failed to find guild, or unknown type for channel ${data.id} ${data.type}`);

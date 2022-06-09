@@ -6,7 +6,7 @@ const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Error } = require('../errors');
-const Util = require('../util/Util');
+const { makeError, makePlainError } = require('../util/Util');
 let childProcess = null;
 let Worker = null;
 
@@ -252,7 +252,7 @@ class Shard extends EventEmitter {
         this.decrementMaxListeners(child);
         this._fetches.delete(prop);
         if (!message._error) resolve(message._result);
-        else reject(Util.makeError(message._error));
+        else reject(makeError(message._error));
       };
 
       this.incrementMaxListeners(child);
@@ -295,7 +295,7 @@ class Shard extends EventEmitter {
         this.decrementMaxListeners(child);
         this._evals.delete(_eval);
         if (!message._error) resolve(message._result);
-        else reject(Util.makeError(message._error));
+        else reject(makeError(message._error));
       };
 
       this.incrementMaxListeners(child);
@@ -358,7 +358,7 @@ class Shard extends EventEmitter {
         const resp = { _sFetchProp: message._sFetchProp, _sFetchPropShard: message._sFetchPropShard };
         this.manager.fetchClientValues(message._sFetchProp, message._sFetchPropShard).then(
           results => this.send({ ...resp, _result: results }),
-          err => this.send({ ...resp, _error: Util.makePlainError(err) }),
+          err => this.send({ ...resp, _error: makePlainError(err) }),
         );
         return;
       }
@@ -368,7 +368,7 @@ class Shard extends EventEmitter {
         const resp = { _sEval: message._sEval, _sEvalShard: message._sEvalShard };
         this.manager._performOnShards('eval', [message._sEval], message._sEvalShard).then(
           results => this.send({ ...resp, _result: results }),
-          err => this.send({ ...resp, _error: Util.makePlainError(err) }),
+          err => this.send({ ...resp, _error: makePlainError(err) }),
         );
         return;
       }

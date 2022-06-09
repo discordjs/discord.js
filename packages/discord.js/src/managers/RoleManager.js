@@ -8,8 +8,7 @@ const { TypeError } = require('../errors');
 const { Role } = require('../structures/Role');
 const DataResolver = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
-const { resolveColor } = require('../util/Util');
-const Util = require('../util/Util');
+const { setPosition, resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
 
@@ -246,7 +245,7 @@ class RoleManager extends CachedManager {
   async setPosition(role, position, { relative, reason } = {}) {
     role = this.resolve(role);
     if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
-    const updatedRoles = await Util.setPosition(
+    const updatedRoles = await setPosition(
       role,
       position,
       relative,

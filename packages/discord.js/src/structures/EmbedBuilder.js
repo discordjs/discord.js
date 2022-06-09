@@ -1,8 +1,8 @@
 'use strict';
 
 const { EmbedBuilder: BuildersEmbed, isJSONEncodable } = require('@discordjs/builders');
-const Transformers = require('../util/Transformers');
-const Util = require('../util/Util');
+const { toSnakeCase } = require('../util/Transformers');
+const { resolveColor } = require('../util/Util');
 
 /**
  * Represents an embed builder.
@@ -10,7 +10,7 @@ const Util = require('../util/Util');
  */
 class EmbedBuilder extends BuildersEmbed {
   constructor(data) {
-    super(Transformers.toSnakeCase(data));
+    super(toSnakeCase(data));
   }
 
   /**
@@ -19,7 +19,7 @@ class EmbedBuilder extends BuildersEmbed {
    * @returns {EmbedBuilder}
    */
   setColor(color) {
-    return super.setColor(color && Util.resolveColor(color));
+    return super.setColor(color && resolveColor(color));
   }
 
   /**

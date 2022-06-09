@@ -1,17 +1,8 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ChannelType, Routes } = require('discord-api-types/v10');
+const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { ThreadChannelTypes } = require('../util/Constants');
-let CategoryChannel;
-let DMChannel;
-let NewsChannel;
-let StageChannel;
-let TextChannel;
-let ThreadChannel;
-let VoiceChannel;
-let DirectoryChannel;
 
 /**
  * Represents any channel on Discord.
@@ -108,98 +99,6 @@ class Channel extends Base {
    */
   fetch(force = true) {
     return this.client.channels.fetch(this.id, { force });
-  }
-
-  /**
-   * Indicates whether this channel is a {@link ThreadChannel}.
-   * @returns {boolean}
-   */
-  isThread() {
-    return ThreadChannelTypes.includes(this.type);
-  }
-
-  /**
-   * Indicates whether this channel is {@link TextBasedChannels text-based}.
-   * @returns {boolean}
-   */
-  isTextBased() {
-    return 'messages' in this;
-  }
-
-  /**
-   * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link PartialGroupDMChannel}).
-   * @returns {boolean}
-   */
-  isDMBased() {
-    return [ChannelType.DM, ChannelType.GroupDM].includes(this.type);
-  }
-
-  /**
-   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
-   * @returns {boolean}
-   */
-  isVoiceBased() {
-    return 'bitrate' in this;
-  }
-
-  static create(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
-    CategoryChannel ??= require('./CategoryChannel');
-    DMChannel ??= require('./DMChannel');
-    NewsChannel ??= require('./NewsChannel');
-    StageChannel ??= require('./StageChannel');
-    TextChannel ??= require('./TextChannel');
-    ThreadChannel ??= require('./ThreadChannel');
-    VoiceChannel ??= require('./VoiceChannel');
-    DirectoryChannel ??= require('./DirectoryChannel');
-
-    let channel;
-    if (!data.guild_id && !guild) {
-      if ((data.recipients && data.type !== ChannelType.GroupDM) || data.type === ChannelType.DM) {
-        channel = new DMChannel(client, data);
-      } else if (data.type === ChannelType.GroupDM) {
-        const PartialGroupDMChannel = require('./PartialGroupDMChannel');
-        channel = new PartialGroupDMChannel(client, data);
-      }
-    } else {
-      guild ??= client.guilds.cache.get(data.guild_id);
-
-      if (guild || allowUnknownGuild) {
-        switch (data.type) {
-          case ChannelType.GuildText: {
-            channel = new TextChannel(guild, data, client);
-            break;
-          }
-          case ChannelType.GuildVoice: {
-            channel = new VoiceChannel(guild, data, client);
-            break;
-          }
-          case ChannelType.GuildCategory: {
-            channel = new CategoryChannel(guild, data, client);
-            break;
-          }
-          case ChannelType.GuildNews: {
-            channel = new NewsChannel(guild, data, client);
-            break;
-          }
-          case ChannelType.GuildStageVoice: {
-            channel = new StageChannel(guild, data, client);
-            break;
-          }
-          case ChannelType.GuildNewsThread:
-          case ChannelType.GuildPublicThread:
-          case ChannelType.GuildPrivateThread: {
-            channel = new ThreadChannel(guild, data, client, fromInteraction);
-            if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
-            break;
-          }
-          case ChannelType.GuildDirectory:
-            channel = new DirectoryChannel(guild, data, client);
-            break;
-        }
-        if (channel && !allowUnknownGuild) guild.channels?.cache.set(channel.id, channel);
-      }
-    }
-    return channel;
   }
 
   toJSON(...props) {

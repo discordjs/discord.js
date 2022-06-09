@@ -7,7 +7,7 @@ const ActionRowBuilder = require('./ActionRowBuilder');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const Util = require('../util/Util');
+const { basename, cloneObject, verifyString } = require('../util/Util');
 
 /**
  * Represents a message to be sent to the API.
@@ -105,7 +105,7 @@ class MessagePayload {
     if (this.options.content === null) {
       content = '';
     } else if (typeof this.options.content !== 'undefined') {
-      content = Util.verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', true);
+      content = verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', true);
     }
 
     return content;
@@ -164,7 +164,7 @@ class MessagePayload {
         : this.options.allowedMentions;
 
     if (allowedMentions) {
-      allowedMentions = Util.cloneObject(allowedMentions);
+      allowedMentions = cloneObject(allowedMentions);
       allowedMentions.replied_user = allowedMentions.repliedUser;
       delete allowedMentions.repliedUser;
     }
@@ -234,11 +234,11 @@ class MessagePayload {
 
     const findName = thing => {
       if (typeof thing === 'string') {
-        return Util.basename(thing);
+        return basename(thing);
       }
 
       if (thing.path) {
-        return Util.basename(thing.path);
+        return basename(thing.path);
       }
 
       return 'file.jpg';

@@ -15,6 +15,7 @@ exports.ActivityFlagsBitField = require('./util/ActivityFlagsBitField');
 exports.ApplicationFlagsBitField = require('./util/ApplicationFlagsBitField');
 exports.BaseManager = require('./managers/BaseManager');
 exports.BitField = require('./util/BitField');
+__exportStar(require('./util/Channels.js'), exports);
 exports.Collection = require('@discordjs/collection').Collection;
 exports.Constants = require('./util/Constants');
 exports.Colors = require('./util/Colors');
@@ -34,7 +35,7 @@ exports.Sweepers = require('./util/Sweepers');
 exports.SystemChannelFlagsBitField = require('./util/SystemChannelFlagsBitField');
 exports.ThreadMemberFlagsBitField = require('./util/ThreadMemberFlagsBitField');
 exports.UserFlagsBitField = require('./util/UserFlagsBitField');
-exports.Util = require('./util/Util');
+__exportStar(require('./util/Util.js'), exports);
 exports.version = require('../package.json').version;
 
 // Managers

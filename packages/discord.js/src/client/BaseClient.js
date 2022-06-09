@@ -4,7 +4,7 @@ const EventEmitter = require('node:events');
 const { REST } = require('@discordjs/rest');
 const { TypeError } = require('../errors');
 const Options = require('../util/Options');
-const Util = require('../util/Util');
+const { mergeDefault, flatten } = require('../util/Util');
 
 /**
  * The base class for all clients.
@@ -22,7 +22,7 @@ class BaseClient extends EventEmitter {
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    this.options = Util.mergeDefault(Options.createDefault(), options);
+    this.options = mergeDefault(Options.createDefault(), options);
 
     /**
      * The REST manager of the client
@@ -63,7 +63,7 @@ class BaseClient extends EventEmitter {
   }
 
   toJSON(...props) {
-    return Util.flatten(this, { domain: false }, ...props);
+    return flatten(this, { domain: false }, ...props);
   }
 }
 

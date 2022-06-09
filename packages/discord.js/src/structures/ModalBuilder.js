@@ -1,7 +1,7 @@
 'use strict';
 
 const { ModalBuilder: BuildersModal, ComponentBuilder, isJSONEncodable } = require('@discordjs/builders');
-const Transformers = require('../util/Transformers');
+const { toSnakeCase } = require('../util/Transformers');
 
 /**
  * Represents a modal builder.
@@ -10,8 +10,8 @@ const Transformers = require('../util/Transformers');
 class ModalBuilder extends BuildersModal {
   constructor({ components, ...data } = {}) {
     super({
-      ...Transformers.toSnakeCase(data),
-      components: components?.map(c => (c instanceof ComponentBuilder ? c : Transformers.toSnakeCase(c))),
+      ...toSnakeCase(data),
+      components: components?.map(c => (c instanceof ComponentBuilder ? c : toSnakeCase(c))),
     });
   }
 

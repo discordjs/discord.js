@@ -8,7 +8,7 @@ const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
 const Shard = require('./Shard');
 const { Error, TypeError, RangeError } = require('../errors');
-const Util = require('../util/Util');
+const { mergeDefault, fetchRecommendedShards } = require('../util/Util');
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
@@ -47,7 +47,7 @@ class ShardingManager extends EventEmitter {
    */
   constructor(file, options = {}) {
     super();
-    options = Util.mergeDefault(
+    options = mergeDefault(
       {
         totalShards: 'auto',
         mode: 'process',
@@ -183,7 +183,7 @@ class ShardingManager extends EventEmitter {
   async spawn({ amount = this.totalShards, delay = 5500, timeout = 30_000 } = {}) {
     // Obtain/verify the number of shards to spawn
     if (amount === 'auto') {
-      amount = await Util.fetchRecommendedShards(this.token);
+      amount = await fetchRecommendedShards(this.token);
     } else {
       if (typeof amount !== 'number' || isNaN(amount)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');

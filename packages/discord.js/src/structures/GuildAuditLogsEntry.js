@@ -9,7 +9,7 @@ const { StageInstance } = require('./StageInstance');
 const { Sticker } = require('./Sticker');
 const Webhook = require('./Webhook');
 const Partials = require('../util/Partials');
-const Util = require('../util/Util');
+const { flatten } = require('../util/Util');
 
 const Targets = {
   All: 'All',
@@ -459,7 +459,7 @@ class GuildAuditLogsEntry {
   }
 
   toJSON() {
-    return Util.flatten(this, { createdTimestamp: true });
+    return flatten(this, { createdTimestamp: true });
   }
 }
 
