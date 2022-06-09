@@ -27,9 +27,8 @@ class SelectMenuBuilder extends BuildersSelectMenu {
    * @returns {SelectMenuBuilder}
    */
   addOptions(...options) {
-    const _options = normalizeArray(options);
     return super.addOptions(
-      _options.map(({ emoji, ...option }) => ({
+      normalizeArray(options).map(({ emoji, ...option }) => ({
         ...option,
         emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
       })),
@@ -42,9 +41,8 @@ class SelectMenuBuilder extends BuildersSelectMenu {
    * @returns {SelectMenuBuilder}
    */
   setOptions(...options) {
-    const _options = normalizeArray(options);
     return super.setOptions(
-      _options.map(({ emoji, ...option }) => ({
+      normalizeArray(options).map(({ emoji, ...option }) => ({
         ...option,
         emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
       })),
