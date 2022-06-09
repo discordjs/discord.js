@@ -935,7 +935,17 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public commandName: string;
   public commandType: ApplicationCommandType.ChatInput;
   public responded: boolean;
-  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage'>;
+  public options: Omit<
+    CommandInteractionOptionResolver<Cached>,
+    | 'getMessage'
+    | 'getUser'
+    | 'getAttachment'
+    | 'getBoolean'
+    | 'getChannel'
+    | 'getMember'
+    | 'getMentionable'
+    | 'getRole'
+  >;
   public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
   public inRawGuild(): this is AutocompleteInteraction<'raw'>;
@@ -946,7 +956,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption<Cached>[];
-  public readonly resolved: Readonly<CommandInteractionResolvedData<Cached>>;
+  public readonly resolved: Readonly<CommandInteractionResolvedData<Cached>> | null;
   private _group: string | null;
   private _hoistedOptions: CommandInteractionOption<Cached>[];
   private _subcommand: string | null;
@@ -1000,7 +1010,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
-  public getFocused(getFull: true): ApplicationCommandOptionChoiceData;
+  public getFocused(getFull: true): AutocompleteOption;
   public getFocused(getFull?: boolean): string | number;
 }
 
@@ -4024,6 +4034,8 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
   attachments?: Collection<Snowflake, Attachment>;
 }
+
+export type AutocompleteOption = Pick<CommandInteractionOption, 'name' | 'type' | 'value' | 'focused'>;
 
 export declare const Colors: {
   Default: 0x000000;
