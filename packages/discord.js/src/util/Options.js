@@ -62,6 +62,7 @@ const Transformers = require('./Transformers');
  * @typedef {Object} WebsocketOptions
  * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
  * sent in the initial guild member list, must be between 50 and 250
+ * @property {number} [version=10] The Discord gateway version to use
  */
 
 /**
