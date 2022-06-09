@@ -17,7 +17,7 @@ const Transformers = require('./Transformers');
  * @property {number|number[]|string} [shards] The shard's id to run, or an array of shard ids. If not specified,
  * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
  * recommended amount of shards from Discord and spawn that amount
- * @property {number} [closeTimeout=1] The amount of time in milliseconds to wait for the close frame to be received
+ * @property {number} [closeTimeout=5_000] The amount of time in milliseconds to wait for the close frame to be received
  * from the WebSocket. Don't have this too high/low. Its best to have it between 2_000-6_000 ms.
  * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
