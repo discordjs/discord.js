@@ -61,6 +61,7 @@ export class Documentation {
 			}
 		} else {
 			let items = data as RootTypes[];
+			items = items.filter((i) => !i.ignore);
 
 			for (const item of items) {
 				switch (item.kind) {
