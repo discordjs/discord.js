@@ -69,14 +69,27 @@ class AutoModRule extends Base {
      * An object containing information about an {@link AutoModRule} action.
      * @typedef {Object} AutoModRuleAction
      * @property {number} type The type of this AutoMod rule action
-     * @property {Object} metadata Additional metadata needed during execution
+     * @property {AutoModActionMetadata} metadata Additional metadata needed during execution
+     */
+
+    /**
+     * Additional data used when an {@link AutoModRule} is executed.
+     * @typedef {Object} AutoModActionMetadata
+     * @property {Snowflake} channelId The id of the channel to which content will be logged
+     * @property {number} durationSeconds The timeout duration in seconds
      */
 
     /**
      * The actions of this rule.
      * @type {AutoModRuleAction[]}
      */
-    this.actions = data.actions;
+    this.actions = data.actions.map(action => ({
+      type: action.type,
+      metadata: {
+        durationSeconds: action.metadata.duration_seconds,
+        channelId: action.metadata.channel_id,
+      },
+    }));
 
     /**
      * Whether this rule is enabled.
