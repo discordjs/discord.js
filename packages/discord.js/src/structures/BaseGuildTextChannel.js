@@ -86,7 +86,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<TextChannel>}
    */
   setDefaultAutoArchiveDuration(defaultAutoArchiveDuration, reason) {
-    return this.edit({ defaultAutoArchiveDuration }, reason);
+    return this.edit({ defaultAutoArchiveDuration, reason });
   }
 
   /**
