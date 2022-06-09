@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import type Collection from '@discordjs/collection';
+import type { Collection } from '@discordjs/collection';
 import type { request, Dispatcher } from 'undici';
 import { CDN } from './CDN';
 import {

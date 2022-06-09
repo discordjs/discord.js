@@ -776,5 +776,3 @@ export type Keep<V> = { keep: true; value: V } | { keep: false };
  * @internal
  */
 export type Comparator<K, V> = (firstValue: V, secondValue: V, firstKey: K, secondKey: K) => number;
-
-export default Collection;
