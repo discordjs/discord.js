@@ -93,7 +93,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * channel.setRTCRegion(null, 'We want to let Discord decide.');
    */
   setRTCRegion(rtcRegion, reason) {
-    return this.edit({ rtcRegion }, reason);
+    return this.edit({ rtcRegion, reason });
   }
 
   /**

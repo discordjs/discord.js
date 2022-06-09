@@ -374,7 +374,7 @@ class TextBasedChannel {
    * @returns {Promise<this>}
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {
-    return this.edit({ rateLimitPerUser }, reason);
+    return this.edit({ rateLimitPerUser, reason });
   }
 
   /**
@@ -384,7 +384,7 @@ class TextBasedChannel {
    * @returns {Promise<this>}
    */
   setNSFW(nsfw = true, reason) {
-    return this.edit({ nsfw }, reason);
+    return this.edit({ nsfw, reason });
   }
 
   static applyToClass(structure, full = false, ignore = []) {

@@ -96,7 +96,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<GuildChannel>}
    */
   setType(type, reason) {
-    return this.edit({ type }, reason);
+    return this.edit({ type, reason });
   }
 
   /**
@@ -111,7 +111,7 @@ class BaseGuildTextChannel extends GuildChannel {
    *   .catch(console.error);
    */
   setTopic(topic, reason) {
-    return this.edit({ topic }, reason);
+    return this.edit({ topic, reason });
   }
 
   /**
