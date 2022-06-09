@@ -66,7 +66,7 @@ export class Documentation {
 				switch (item.kind) {
 					case 'class': {
 						this.classes.set(item.name, new DocumentedClass(item, config));
-						items = items.filter((i) => i.longname !== item.longname);
+						items = items.filter((i) => i.longname !== item.longname || i.kind !== item.kind);
 						break;
 					}
 					case 'function': {
@@ -153,11 +153,17 @@ export class Documentation {
 								path: dirname(member.sources?.[0]?.fileName ?? ''),
 						  };
 
-				if (memberOf) info.push(`member of "${memberOf}"`);
-				if (meta) info.push(`${join(meta.path, meta.file ?? '')}${meta.line ? `:${meta.line}` : ''}`);
+				if (memberOf) {
+					info.push(`member of "${memberOf}"`);
+				}
+				if (meta) {
+					info.push(`${join(meta.path, meta.file ?? '')}${meta.line ? `:${meta.line}` : ''}`);
+				}
 
 				console.warn(`- "${name}"${info.length ? ` (${info.join(', ')})` : ''} has no accessible parent.`);
-				if (!name && !info.length) console.warn('Raw object:', member);
+				if (!name && !info.length) {
+					console.warn('Raw object:', member);
+				}
 			}
 		} else {
 			const it = items as ChildTypes[];
@@ -211,11 +217,17 @@ export class Documentation {
 						? null
 						: { file: member.meta.filename, line: member.meta.lineno, path: member.meta.path };
 
-				if (memberof) info.push(`member of "${memberof as string}"`);
-				if (meta) info.push(`${join(meta.path, meta.file)}${meta.line ? `:${meta.line}` : ''}`);
+				if (memberof) {
+					info.push(`member of "${memberof as string}"`);
+				}
+				if (meta) {
+					info.push(`${join(meta.path, meta.file)}${meta.line ? `:${meta.line}` : ''}`);
+				}
 
 				console.warn(`- "${name}"${info.length ? ` (${info.join(', ')})` : ''} has no accessible parent.`);
-				if (!name && !info.length) console.warn('Raw object:', member);
+				if (!name && !info.length) {
+					console.warn('Raw object:', member);
+				}
 			}
 		}
 	}

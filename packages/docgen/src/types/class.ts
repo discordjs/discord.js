@@ -52,7 +52,9 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 
 	public add(item: DocumentedConstructor | DocumentedMethod | DocumentedMember | DocumentedEvent) {
 		if (item instanceof DocumentedConstructor) {
-			if (this.construct) throw new Error(`Doc ${this.data.name} already has constructor`);
+			if (this.construct) {
+				throw new Error(`Doc ${this.data.name} already has constructor`);
+			}
 			this.construct = item;
 		} else if (item instanceof DocumentedMethod) {
 			// @ts-expect-error
