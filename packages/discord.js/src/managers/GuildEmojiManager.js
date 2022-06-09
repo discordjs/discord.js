@@ -36,7 +36,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
 
   /**
    * Creates a new custom emoji in the guild.
-   * @param {GuildEmojiCreateOptions} [options] Options for creating the emoji
+   * @param {GuildEmojiCreateOptions} options Options for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
    * // Create a new emoji from a URL

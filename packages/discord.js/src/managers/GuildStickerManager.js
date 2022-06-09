@@ -44,7 +44,7 @@ class GuildStickerManager extends CachedManager {
 
   /**
    * Creates a new custom sticker in the guild.
-   * @param {GuildStickerCreateOptions} [options] Options
+   * @param {GuildStickerCreateOptions} options Options
    * @returns {Promise<Sticker>} The created sticker
    * @example
    * // Create a new sticker from a URL
