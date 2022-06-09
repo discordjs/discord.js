@@ -1,4 +1,4 @@
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { Collection } from '@discordjs/collection';
 import type { DeclarationReflection } from 'typedoc';
 import type { ChildTypes, Class, Config, CustomDocs, RootTypes } from './interfaces/index.js';
@@ -158,7 +158,9 @@ export class Documentation {
 					info.push(`member of "${memberOf}"`);
 				}
 				if (meta) {
-					info.push(`${join(meta.path, meta.file ?? '')}${meta.line ? `:${meta.line}` : ''}`);
+					info.push(
+						`${relative(this.config.root, join(meta.path, meta.file ?? ''))}${meta.line ? `:${meta.line}` : ''}`,
+					);
 				}
 
 				console.warn(`- "${name}"${info.length ? ` (${info.join(', ')})` : ''} has no accessible parent.`);
@@ -222,7 +224,7 @@ export class Documentation {
 					info.push(`member of "${memberof as string}"`);
 				}
 				if (meta) {
-					info.push(`${join(meta.path, meta.file)}${meta.line ? `:${meta.line}` : ''}`);
+					info.push(`${relative(this.config.root, join(meta.path, meta.file))}${meta.line ? `:${meta.line}` : ''}`);
 				}
 
 				console.warn(`- "${name}"${info.length ? ` (${info.join(', ')})` : ''} has no accessible parent.`);
