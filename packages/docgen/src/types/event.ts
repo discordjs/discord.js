@@ -2,7 +2,9 @@ import type { DeclarationReflection, SignatureReflection } from 'typedoc';
 import { DocumentedItemMeta } from './item-meta.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
+import { DocumentedVarType } from './var-type.js';
 import type { Event } from '../interfaces/index.js';
+import { parseType } from '../util/parseType.js';
 
 export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflection> {
 	public override serializer() {
@@ -23,11 +25,27 @@ export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflectio
 						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
 				: undefined;
 
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			const examples = signature.comment?.blockTags?.filter((t) => t.tag === '@example').length
+				? signature.comment.blockTags
+						.filter((t) => t.tag === '@example')
+						.map((t) => t.content.reduce((prev, curr) => (prev += curr.text), '').trim())
+				: undefined;
+
 			return {
-				name: signature.name,
+				// @ts-expect-error
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+				name: signature.parameters?.[0]?.type?.value,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
+				access:
+					data.flags.isPrivate ||
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
+						? 'private'
+						: undefined,
+				examples,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				deprecated: signature.comment?.blockTags?.some((t) => t.tag === '@deprecated')
 					? signature.comment.blockTags
@@ -37,8 +55,34 @@ export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflectio
 					: undefined,
 				// @ts-expect-error
 				params: signature.parameters
-					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config).serialize())
+					? (signature as SignatureReflection).parameters
+							?.slice(1)
+							.map((p) => new DocumentedParam(p, this.config).serialize())
 					: undefined,
+				returns: signature.type
+					? [
+							new DocumentedVarType(
+								{
+									names: [parseType(signature.type)],
+									description:
+										signature.comment?.blockTags
+											// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+											?.find((t) => t.tag === '@returns')
+											?.content.reduce((prev, curr) => (prev += curr.text), '')
+											// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+											.trim() || undefined,
+								},
+								this.config,
+							).serialize(),
+					  ]
+					: undefined,
+				returnsDescription:
+					signature.comment?.blockTags
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+						?.find((t) => t.tag === '@returns')
+						?.content.reduce((prev, curr) => (prev += curr.text), '')
+						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+						.trim() || undefined,
 				meta,
 			};
 		}

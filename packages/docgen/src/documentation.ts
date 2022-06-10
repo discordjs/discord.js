@@ -36,7 +36,7 @@ export class Documentation {
 					case 'Class': {
 						this.classes.set(item.name, new DocumentedClass(item, config));
 						if (item.children) {
-							this.parse(item.children, item.name);
+							this.parse(item.children, item);
 						}
 						break;
 					}
@@ -51,7 +51,7 @@ export class Documentation {
 					case 'Enumeration':
 						this.typedefs.set(item.name, new DocumentedTypeDef(item, config));
 						if (item.children) {
-							this.parse(item.children, item.name);
+							this.parse(item.children, item);
 						}
 						break;
 
@@ -101,7 +101,7 @@ export class Documentation {
 		}
 	}
 
-	public parse(items: ChildTypes[] | DeclarationReflection[], memberOf = '') {
+	public parse(items: ChildTypes[] | DeclarationReflection[], p?: DeclarationReflection) {
 		if (this.config.typescript) {
 			const it = items as DeclarationReflection[];
 
@@ -114,15 +114,17 @@ export class Documentation {
 						break;
 					}
 					case 'Method': {
+						const event = p?.groups?.find((group) => group.title === 'Events');
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+						if ((event?.children as unknown as number[])?.includes(member.id)) {
+							item = new DocumentedEvent(member, this.config);
+							break;
+						}
 						item = new DocumentedMethod(member, this.config);
 						break;
 					}
 					case 'Property': {
 						item = new DocumentedMember(member, this.config);
-						break;
-					}
-					case 'Event': {
-						item = new DocumentedEvent(member, this.config);
 						break;
 					}
 					default: {
@@ -131,7 +133,7 @@ export class Documentation {
 					}
 				}
 
-				const parent = this.classes.get(memberOf) ?? this.interfaces.get(memberOf);
+				const parent = this.classes.get(p!.name) ?? this.interfaces.get(p!.name);
 				if (parent) {
 					if (item) {
 						parent.add(item);
@@ -154,8 +156,8 @@ export class Documentation {
 								path: dirname(member.sources?.[0]?.fileName ?? ''),
 						  };
 
-				if (memberOf) {
-					info.push(`member of "${memberOf}"`);
+				if (p!.name) {
+					info.push(`member of "${p!.name}"`);
 				}
 				if (meta) {
 					info.push(
