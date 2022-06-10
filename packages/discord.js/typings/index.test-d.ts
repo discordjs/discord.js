@@ -566,9 +566,11 @@ client.on('guildCreate', async g => {
     expectType<ThreadMember>(fetchedMember);
     expectType<ThreadMember>(fetchedMember2);
     const fetchedMemberCol = await channel.members.fetch({ cache: true });
+    const fetchedMemberCol2 = await channel.members.fetch();
     expectType<Collection<Snowflake, ThreadMember>>(fetchedMemberCol);
+    expectType<Collection<Snowflake, ThreadMember>>(fetchedMemberCol2);
     // @ts-expect-error The `force` option cannot be used alongside fetching all thread members.
-    const fetchedMemberCol2 = await channel.members.fetch({ cache: true, force: false });
+    const fetchedMemberCol3 = await channel.members.fetch({ cache: true, force: false });
   }
 
   channel.setName('foo').then(updatedChannel => {
