@@ -2014,6 +2014,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@discordjs/ts-docgen@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@discordjs/ts-docgen@npm:0.4.1"
+  dependencies:
+    js-yaml: ^4.1.0
+    typedoc: ^0.22.15
+  checksum: fbb8c7041812ae0130043451501b73d732a05afaec01136f3c877dae08d7fe9bb913c9763b60010b28bbc50c0043354ae01f5bc2626e1a24a767cb337a29a9a9
+  languageName: node
+  linkType: hard
+
 "@discordjs/voice@workspace:packages/voice":
   version: 0.0.0-use.local
   resolution: "@discordjs/voice@workspace:packages/voice"
@@ -3422,7 +3432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.11.39":
+"@types/node@npm:^16.11.38, @types/node@npm:^16.11.39":
   version: 16.11.39
   resolution: "@types/node@npm:16.11.39"
   checksum: bc97b9773ac6b3194800f990b349fad7f66c6126dacef59291b10a2c8b6813d6f67f947b7e12a6c9952790f7065d576fe38355b8fe034a6af60f317cfc570f69
@@ -3622,7 +3632,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.27.1":
+"@typescript-eslint/eslint-plugin@npm:^5.27.0, @typescript-eslint/eslint-plugin@npm:^5.27.1":
   version: 5.27.1
   resolution: "@typescript-eslint/eslint-plugin@npm:5.27.1"
   dependencies:
@@ -3645,7 +3655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.27.1":
+"@typescript-eslint/parser@npm:^5.27.0, @typescript-eslint/parser@npm:^5.27.1":
   version: 5.27.1
   resolution: "@typescript-eslint/parser@npm:5.27.1"
   dependencies:
@@ -16258,6 +16268,42 @@ dts-critic@latest:
   languageName: node
   linkType: hard
 
+"tsup@npm:^6.0.1":
+  version: 6.1.2
+  resolution: "tsup@npm:6.1.2"
+  dependencies:
+    bundle-require: ^3.0.2
+    cac: ^6.7.12
+    chokidar: ^3.5.1
+    debug: ^4.3.1
+    esbuild: ^0.14.25
+    execa: ^5.0.0
+    globby: ^11.0.3
+    joycon: ^3.0.1
+    postcss-load-config: ^3.0.1
+    resolve-from: ^5.0.0
+    rollup: ^2.74.1
+    source-map: 0.8.0-beta.0
+    sucrase: ^3.20.3
+    tree-kill: ^1.2.2
+  peerDependencies:
+    "@swc/core": ^1
+    postcss: ^8.4.12
+    typescript: ^4.1.0
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    postcss:
+      optional: true
+    typescript:
+      optional: true
+  bin:
+    tsup: dist/cli-default.js
+    tsup-node: dist/cli-node.js
+  checksum: 258cd2d25ce52b8eb1cabfc2355867e1978e419b19bcd16366b70fe717b12e7fb2d78a9101788aca365e3a33f1d9cfbf766afd6c58aa355bb3fae5b641f5d87b
+  languageName: node
+  linkType: hard
+
 "tsup@npm:^6.1.0":
   version: 6.1.0
   resolution: "tsup@npm:6.1.0"
@@ -16569,7 +16615,7 @@ dts-critic@latest:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.22.17":
+"typedoc@npm:^0.22.15, typedoc@npm:^0.22.17":
   version: 0.22.17
   resolution: "typedoc@npm:0.22.17"
   dependencies:
