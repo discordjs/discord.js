@@ -126,6 +126,7 @@ import {
   MessageContextMenuCommandInteraction,
   UserContextMenuCommandInteraction,
   AnyThreadChannel,
+  ThreadMemberManager,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
@@ -558,19 +559,6 @@ client.on('guildCreate', async g => {
     });
 
     channel.send({ components: [row, row2] });
-  }
-
-  if (channel.isThread()) {
-    const fetchedMember = await channel.members.fetch('12345678');
-    const fetchedMember2 = await channel.members.fetch({ member: '12345678', cache: false, force: true });
-    expectType<ThreadMember>(fetchedMember);
-    expectType<ThreadMember>(fetchedMember2);
-    const fetchedMemberCol = await channel.members.fetch({ cache: true });
-    const fetchedMemberCol2 = await channel.members.fetch();
-    expectType<Collection<Snowflake, ThreadMember>>(fetchedMemberCol);
-    expectType<Collection<Snowflake, ThreadMember>>(fetchedMemberCol2);
-    // @ts-expect-error The `force` option cannot be used alongside fetching all thread members.
-    const fetchedMemberCol3 = await channel.members.fetch({ cache: true, force: false });
   }
 
   channel.setName('foo').then(updatedChannel => {
@@ -1110,6 +1098,19 @@ declare const guildBanManager: GuildBanManager;
   guildBanManager.fetch({ cache: true, force: false });
   // @ts-expect-error
   guildBanManager.fetch({ user: '1234567890', after: '1234567890', cache: true, force: false });
+}
+
+declare const threadMemberManager: ThreadMemberManager;
+{
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678'));
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', cache: false }));
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', force: true }));
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', cache: false, force: true }));
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch());
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({ cache: true }));
+  // @ts-expect-error The `force` option cannot be used alongside fetching all thread members.
+  threadMemberManager.fetch({ cache: true, force: false });
 }
 
 declare const typing: Typing;
