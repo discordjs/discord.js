@@ -127,7 +127,6 @@ import {
   UserContextMenuCommandInteraction,
   AnyThreadChannel,
   ThreadMemberManager,
-  isThread,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
@@ -643,14 +642,6 @@ client.on('guildCreate', async g => {
     });
 
     channel.send({ components: [row, row2] });
-  }
-
-  if (isThread(channel)) {
-    const fetchedMember = await channel.members.fetch({ member: '12345678' });
-    expectType<ThreadMember>(fetchedMember);
-    const fetchedMemberCol = await channel.members.fetch(true);
-    expectDeprecated(await channel.members.fetch(true));
-    expectType<Collection<Snowflake, ThreadMember>>(fetchedMemberCol);
   }
 
   channel.setName('foo').then(updatedChannel => {

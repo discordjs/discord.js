@@ -1,8 +1,9 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes } = require('discord-api-types/v10');
+const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
+const { ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
@@ -99,6 +100,38 @@ class Channel extends Base {
    */
   fetch(force = true) {
     return this.client.channels.fetch(this.id, { force });
+  }
+
+  /**
+   * Indicates whether this channel is a {@link ThreadChannel}.
+   * @returns {boolean}
+   */
+  isThread() {
+    return ThreadChannelTypes.includes(this.type);
+  }
+
+  /**
+   * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   * @returns {boolean}
+   */
+  isTextBased() {
+    return 'messages' in this;
+  }
+
+  /**
+   * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link PartialGroupDMChannel}).
+   * @returns {boolean}
+   */
+  isDMBased() {
+    return [ChannelType.DM, ChannelType.GroupDM].includes(this.type);
+  }
+
+  /**
+   * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
+   * @returns {boolean}
+   */
+  isVoiceBased() {
+    return 'bitrate' in this;
   }
 
   toJSON(...props) {
