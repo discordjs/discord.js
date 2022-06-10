@@ -937,14 +937,7 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public responded: boolean;
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
-    | 'getMessage'
-    | 'getUser'
-    | 'getAttachment'
-    | 'getBoolean'
-    | 'getChannel'
-    | 'getMember'
-    | 'getMentionable'
-    | 'getRole'
+    'getMessage' | 'getUser' | 'getAttachment' | 'getChannel' | 'getMember' | 'getMentionable' | 'getRole'
   >;
   public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
