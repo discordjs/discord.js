@@ -10,6 +10,8 @@ const Messages = {
 
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
+  APPLICATION_COMMAND_PERMISSIONS_TOKEN_MISSING:
+    'Editing application command permissions requires an OAuth2 bearer token, but none was provided.',
 
   WS_CLOSE_REQUESTED: 'WebSocket closed due to user request.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
@@ -127,7 +129,7 @@ const Messages = {
   GLOBAL_COMMAND_PERMISSIONS:
     'Permissions for global commands may only be fetched or modified by providing a GuildResolvable ' +
     "or from a guild's application command manager.",
-  GUILD_UNCACHED_ROLE_RESOLVE: 'Cannot resolve roles from an arbitrary guild, provide an id instead',
+  GUILD_UNCACHED_ENTITY_RESOLVE: type => `Cannot resolve ${type} from an arbitrary guild, provide an id instead`,
 
   INTERACTION_ALREADY_REPLIED: 'The reply to this interaction has already been sent or deferred.',
   INTERACTION_NOT_REPLIED: 'The reply to this interaction has not been sent or deferred.',
