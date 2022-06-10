@@ -97,7 +97,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    *   .catch(console.error);
    */
   setBitrate(bitrate, reason) {
-    return this.edit({ bitrate }, reason);
+    return this.edit({ bitrate, reason });
   }
 
   /**
@@ -112,7 +112,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    *   .catch(console.error);
    */
   setUserLimit(userLimit, reason) {
-    return this.edit({ userLimit }, reason);
+    return this.edit({ userLimit, reason });
   }
 
   /**
@@ -122,7 +122,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * @returns {Promise<VoiceChannel>}
    */
   setVideoQualityMode(videoQualityMode, reason) {
-    return this.edit({ videoQualityMode }, reason);
+    return this.edit({ videoQualityMode, reason });
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

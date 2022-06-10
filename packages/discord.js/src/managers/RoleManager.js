@@ -166,10 +166,15 @@ class RoleManager extends CachedManager {
   }
 
   /**
+   * Options for editing a role
+   * @typedef {RoleData} EditRoleOptions
+   * @property {string} [reason] The reason for editing this role
+   */
+
+  /**
    * Edits a role of the guild.
    * @param {RoleResolvable} role The role to edit
-   * @param {RoleData} data The new data for the role
-   * @param {string} [reason] Reason for editing this role
+   * @param {EditRoleOptions} data The new data for the role
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
@@ -177,12 +182,12 @@ class RoleManager extends CachedManager {
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
-  async edit(role, data, reason) {
+  async edit(role, data) {
     role = this.resolve(role);
     if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
 
     if (typeof data.position === 'number') {
-      await this.setPosition(role, data.position, { reason });
+      await this.setPosition(role, data.position, { reason: data.reason });
     }
 
     let icon = data.icon;
@@ -202,7 +207,7 @@ class RoleManager extends CachedManager {
       unicode_emoji: data.unicodeEmoji,
     };
 
-    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason });
+    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason: data.reason });
 
     const clone = role._clone();
     clone._patch(d);

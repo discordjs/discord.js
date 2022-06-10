@@ -26,7 +26,7 @@ class TextChannel extends BaseGuildTextChannel {
    * @returns {Promise<TextChannel>}
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {
-    return this.edit({ rateLimitPerUser }, reason);
+    return this.edit({ rateLimitPerUser, reason });
   }
 }
 

@@ -249,15 +249,15 @@ class Webhook {
    * @property {string} [name=this.name] The new name for the webhook
    * @property {?(BufferResolvable)} [avatar] The new avatar for the webhook
    * @property {GuildTextChannelResolvable} [channel] The new channel for the webhook
+   * @property {string} [reason] Reason for editing the webhook
    */
 
   /**
    * Edits this webhook.
    * @param {WebhookEditData} options Options for editing the webhook
-   * @param {string} [reason] Reason for editing the webhook
    * @returns {Promise<Webhook>}
    */
-  async edit({ name = this.name, avatar, channel }, reason) {
+  async edit({ name = this.name, avatar, channel, reason }) {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await DataResolver.resolveImage(avatar);
     }

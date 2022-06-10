@@ -179,7 +179,7 @@ class GuildMemberRoleManager extends DataManager {
    *   .catch(console.error);
    */
   set(roles, reason) {
-    return this.member.edit({ roles }, reason);
+    return this.member.edit({ roles, reason });
   }
 
   clone() {

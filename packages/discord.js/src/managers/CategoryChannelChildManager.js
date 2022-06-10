@@ -38,6 +38,7 @@ class CategoryChannelChildManager extends DataManager {
   /**
    * Options for creating a channel using {@link CategoryChannel#createChannel}.
    * @typedef {Object} CategoryCreateChannelOptions
+   * @property {string} name The name for the new channel
    * @property {ChannelType} [type=ChannelType.GuildText] The type of the new channel.
    * @property {string} [topic] The topic for the new channel
    * @property {boolean} [nsfw] Whether the new channel is NSFW
@@ -55,12 +56,11 @@ class CategoryChannelChildManager extends DataManager {
   /**
    * Creates a new channel within this category.
    * <info>You cannot create a channel of type {@link ChannelType.GuildCategory} inside a CategoryChannel.</info>
-   * @param {string} name The name of the new channel
    * @param {CategoryCreateChannelOptions} options Options for creating the new channel
    * @returns {Promise<GuildChannel>}
    */
-  create(name, options) {
-    return this.guild.channels.create(name, {
+  create(options) {
+    return this.guild.channels.create({
       ...options,
       parent: this.channel.id,
     });

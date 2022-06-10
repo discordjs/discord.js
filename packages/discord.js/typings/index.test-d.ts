@@ -1035,25 +1035,27 @@ expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'
 
 declare const categoryChannelChildManager: CategoryChannelChildManager;
 {
-  expectType<Promise<VoiceChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildVoice }));
-  expectType<Promise<TextChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildText }));
-  expectType<Promise<NewsChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildNews }));
-  expectType<Promise<StageChannel>>(categoryChannelChildManager.create('name', { type: ChannelType.GuildStageVoice }));
-  expectType<Promise<TextChannel>>(categoryChannelChildManager.create('name', {}));
-  expectType<Promise<TextChannel>>(categoryChannelChildManager.create('name'));
+  expectType<Promise<VoiceChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildVoice }));
+  expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildText }));
+  expectType<Promise<NewsChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildNews }));
+  expectType<Promise<StageChannel>>(
+    categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildStageVoice }),
+  );
+  expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name' }));
+  expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name' }));
 }
 
 declare const guildChannelManager: GuildChannelManager;
 {
   type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StageChannel;
 
-  expectType<Promise<TextChannel>>(guildChannelManager.create('name'));
-  expectType<Promise<TextChannel>>(guildChannelManager.create('name', {}));
-  expectType<Promise<VoiceChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildVoice }));
-  expectType<Promise<CategoryChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildCategory }));
-  expectType<Promise<TextChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildText }));
-  expectType<Promise<NewsChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildNews }));
-  expectType<Promise<StageChannel>>(guildChannelManager.create('name', { type: ChannelType.GuildStageVoice }));
+  expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));
+  expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));
+  expectType<Promise<VoiceChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildVoice }));
+  expectType<Promise<CategoryChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildCategory }));
+  expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildText }));
+  expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildNews }));
+  expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
 
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));

@@ -35,16 +35,16 @@ class GuildStickerManager extends CachedManager {
   /**
    * Options for creating a guild sticker.
    * @typedef {Object} GuildStickerCreateOptions
+   * @property {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} file The file for the sticker
+   * @property {string} name The name for the sticker
+   * @property {string} tags The Discord name of a unicode emoji representing the sticker's expression
    * @property {?string} [description] The description for the sticker
    * @property {string} [reason] Reason for creating the sticker
    */
 
   /**
    * Creates a new custom sticker in the guild.
-   * @param {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} file The file for the sticker
-   * @param {string} name The name for the sticker
-   * @param {string} tags The Discord name of a unicode emoji representing the sticker's expression
-   * @param {GuildStickerCreateOptions} [options] Options
+   * @param {GuildStickerCreateOptions} options Options
    * @returns {Promise<Sticker>} The created sticker
    * @example
    * // Create a new sticker from a URL
@@ -57,7 +57,7 @@ class GuildStickerManager extends CachedManager {
    *   .then(sticker => console.log(`Created new sticker with name ${sticker.name}!`))
    *   .catch(console.error);
    */
-  async create(file, name, tags, { description, reason } = {}) {
+  async create({ file, name, tags, description, reason } = {}) {
     const resolvedFile = await MessagePayload.resolveFile(file);
     if (!resolvedFile) throw new TypeError('REQ_RESOURCE_TYPE');
     file = { ...resolvedFile, key: 'file' };
@@ -101,17 +101,16 @@ class GuildStickerManager extends CachedManager {
   /**
    * Edits a sticker.
    * @param {StickerResolvable} sticker The sticker to edit
-   * @param {GuildStickerEditData} [data] The new data for the sticker
-   * @param {string} [reason] Reason for editing this sticker
+   * @param {GuildStickerEditData} [data={}] The new data for the sticker
    * @returns {Promise<Sticker>}
    */
-  async edit(sticker, data, reason) {
+  async edit(sticker, data = {}) {
     const stickerId = this.resolveId(sticker);
     if (!stickerId) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
 
     const d = await this.client.rest.patch(Routes.guildSticker(this.guild.id, stickerId), {
       body: data,
-      reason,
+      reason: data.reason,
     });
 
     const existing = this.cache.get(stickerId);
