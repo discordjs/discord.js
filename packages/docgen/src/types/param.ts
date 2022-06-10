@@ -11,13 +11,18 @@ export class DocumentedParam extends DocumentedItem<Param | ParameterReflection>
 
 			return {
 				name: data.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				description: data.comment?.shortText?.trim() ?? data.comment?.text.trim(),
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				description: data.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				optional: data.flags.isOptional || typeof data.defaultValue != 'undefined',
 				default:
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					data.comment?.tags?.find((t) => t.tagName === 'default')?.text.trim() ??
-					(data.defaultValue === '...' ? undefined : data.defaultValue),
+					(data.defaultValue === '...' ? undefined : data.defaultValue) ??
+					(data.comment?.blockTags
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+						?.find((t) => t.tag === '@default')
+						?.content.reduce((prev, curr) => (prev += curr.text), '')
+						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+						.trim() ||
+						undefined),
 				variable: data.flags.isRest,
 				type: data.type ? new DocumentedVarType({ names: [parseType(data.type)] }, this.config).serialize() : undefined,
 			};

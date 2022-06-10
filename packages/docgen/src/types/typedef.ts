@@ -1,4 +1,4 @@
-import type { DeclarationReflection } from 'typedoc';
+import type { DeclarationReflection, LiteralType } from 'typedoc';
 import { DocumentedItemMeta } from './item-meta.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
@@ -11,6 +11,7 @@ export class DocumentedTypeDef extends DocumentedItem<Typedef | DeclarationRefle
 	public override serializer() {
 		if (this.config.typescript) {
 			const data = this.data as DeclarationReflection;
+			const signature = (data.signatures ?? [])[0] ?? data;
 			let meta;
 
 			const sources = data.sources?.[0];
@@ -18,20 +19,34 @@ export class DocumentedTypeDef extends DocumentedItem<Typedef | DeclarationRefle
 				meta = new DocumentedItemMeta(sources, this.config).serialize();
 			}
 
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+				? signature.comment.blockTags
+						.filter((t) => t.tag === '@see')
+						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+				: undefined;
+
 			const baseReturn = {
-				name: data.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				description: data.comment?.shortText?.trim(),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				see: data.comment?.tags?.filter((t) => t.tagName === 'see').map((t) => t.text.trim()),
+				name: signature.name,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
+				see,
 				access:
+					data.flags.isPrivate ||
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					data.flags.isPrivate || data.comment?.tags?.some((t) => t.tagName === 'private' || t.tagName === 'internal')
+					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
 						? 'private'
 						: undefined,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				deprecated: data.comment?.tags?.some((t) => t.tagName === 'deprecated'),
-				type: data.type ? new DocumentedVarType({ names: [parseType(data.type)] }, this.config).serialize() : undefined,
+				deprecated: signature.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+					? signature.comment.blockTags
+							.find((t) => t.tag === '@deprecated')
+							?.content.reduce((prev, curr) => (prev += curr.text), '')
+							.trim() ?? true
+					: undefined,
+				type: signature.type
+					? new DocumentedVarType({ names: [parseType(signature.type)] }, this.config).serialize()
+					: undefined,
 				meta,
 			};
 
@@ -46,8 +61,13 @@ export class DocumentedTypeDef extends DocumentedItem<Typedef | DeclarationRefle
 					props: data.children?.length
 						? data.children.map((child) => ({
 								name: child.name,
-								description: child.comment?.shortText.trim(),
-								type: typeof child.defaultValue == 'undefined' ? undefined : [[[child.defaultValue]]],
+								description:
+									child.comment?.summary
+										// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+										?.reduce((prev, curr) => (prev += curr.text), '')
+										// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+										.trim() || undefined,
+								type: [[[(child.type as LiteralType | undefined)?.value]]],
 						  }))
 						: undefined,
 				};
@@ -59,13 +79,25 @@ export class DocumentedTypeDef extends DocumentedItem<Typedef | DeclarationRefle
 				if (children && children.length > 0) {
 					const props = children.map((child) => ({
 						name: child.name,
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						description: child.comment?.shortText?.trim() ?? child.signatures?.[0]?.comment?.shortText?.trim(),
+						description:
+							child.comment?.summary
+								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+								?.reduce((prev, curr) => (prev += curr.text), '')
+								// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+								.trim() ||
+							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+							child.signatures?.[0]?.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() ||
+							undefined,
 						optional: child.flags.isOptional || typeof child.defaultValue != 'undefined',
 						default:
-							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-							child.comment?.tags?.find((t) => t.tagName === 'default')?.text.trim() ??
-							(child.defaultValue === '...' ? undefined : child.defaultValue),
+							(child.defaultValue === '...' ? undefined : child.defaultValue) ??
+							(child.comment?.blockTags
+								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+								?.find((t) => t.tag === '@default')
+								?.content.reduce((prev, curr) => (prev += curr.text), '')
+								// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+								.trim() ||
+								undefined),
 						type: child.type
 							? new DocumentedVarType({ names: [parseType(child.type)] }, this.config).serialize()
 							: child.kindString === 'Method'
@@ -77,6 +109,11 @@ export class DocumentedTypeDef extends DocumentedItem<Typedef | DeclarationRefle
 												declaration: child,
 											}),
 										],
+										description: child.signatures?.[0]?.comment?.blockTags
+											// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+											?.find((t) => t.tag === '@returns')
+											?.content.reduce((prev, curr) => (prev += curr.text), '')
+											.trim(),
 									},
 									this.config,
 							  ).serialize()
@@ -94,42 +131,74 @@ export class DocumentedTypeDef extends DocumentedItem<Typedef | DeclarationRefle
 
 					const params = sig?.parameters?.map((param) => ({
 						name: param.name,
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						description: param.comment?.shortText?.trim(),
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+						description: param.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 						optional: param.flags.isOptional || typeof param.defaultValue != 'undefined',
 						default:
-							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-							param.comment?.tags?.find((t) => t.tagName === 'default')?.text.trim() ??
-							(param.defaultValue === '...' ? undefined : param.defaultValue),
+							(param.defaultValue === '...' ? undefined : param.defaultValue) ??
+							(param.comment?.blockTags
+								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+								?.find((t) => t.tag === '@default')
+								?.content.reduce((prev, curr) => (prev += curr.text), '')
+								// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+								.trim() ||
+								undefined),
 						type: param.type
 							? new DocumentedVarType({ names: [parseType(param.type)] }, this.config).serialize()
 							: undefined,
 					}));
 
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+					const see = sig?.comment?.blockTags?.filter((t) => t.tag === '@see').length
+						? sig.comment.blockTags
+								.filter((t) => t.tag === '@see')
+								.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+						: undefined;
+
 					return {
 						...baseReturn,
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						description: sig?.comment?.shortText?.trim(),
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						see: sig?.comment?.tags?.filter((t) => t.tagName === 'see').map((t) => t.text.trim()),
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+						description: sig?.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
+						see,
 						access:
 							sig?.flags.isPrivate ||
 							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-							sig?.comment?.tags?.some((t) => t.tagName === 'private' || t.tagName === 'internal')
+							sig?.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
 								? 'private'
 								: undefined,
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						deprecated: sig?.comment?.tags?.some((t) => t.tagName === 'deprecated'),
+						deprecated: sig?.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+							? sig.comment.blockTags
+									.find((t) => t.tag === '@deprecated')
+									?.content.reduce((prev, curr) => (prev += curr.text), '')
+									.trim() ?? true
+							: undefined,
 						params,
 						returns: sig?.type
 							? [
 									new DocumentedVarType(
-										{ names: [parseType(sig.type)], description: sig.comment?.returns?.trim() },
+										{
+											names: [parseType(sig.type)],
+											description:
+												sig.comment?.blockTags
+													// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+													?.find((t) => t.tag === '@returns')
+													?.content.reduce((prev, curr) => (prev += curr.text), '')
+													// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+													.trim() || undefined,
+										},
 										this.config,
 									).serialize(),
 							  ]
 							: undefined,
-						returnsDescription: sig?.comment?.returns?.trim(),
+						returnsDescription:
+							sig?.comment?.blockTags
+								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+								?.find((t) => t.tag === '@returns')
+								?.content.reduce((prev, curr) => (prev += curr.text), '')
+								// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+								.trim() || undefined,
+						meta,
 					};
 				}
 			}

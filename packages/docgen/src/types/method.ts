@@ -18,27 +18,44 @@ export class DocumentedMethod extends DocumentedItem<Method | DeclarationReflect
 				meta = new DocumentedItemMeta(sources, this.config).serialize();
 			}
 
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+				? signature.comment.blockTags
+						.filter((t) => t.tag === '@see')
+						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+				: undefined;
+
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			const examples = signature.comment?.blockTags?.filter((t) => t.tag === '@example').length
+				? signature.comment.blockTags
+						.filter((t) => t.tag === '@example')
+						.map((t) => t.content.reduce((prev, curr) => (prev += curr.text), '').trim())
+				: undefined;
+
 			return {
-				name: data.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				description: signature.comment?.shortText?.trim(),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				see: signature.comment?.tags?.filter((t) => t.tagName === 'see').map((t) => t.text.trim()),
+				name: signature.name,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
+				see,
 				scope: data.flags.isStatic ? 'static' : undefined,
 				access:
 					data.flags.isPrivate ||
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					signature.comment?.tags?.some((t) => t.tagName === 'private' || t.tagName === 'internal')
+					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
 						? 'private'
 						: undefined,
+				examples,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				abstract: signature.comment?.blockTags?.some((t) => t.tag === '@abstract') || undefined,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				examples: signature.comment?.tags?.filter((t) => t.tagName === 'example').map((t) => t.text.trim()),
+				deprecated: signature.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+					? signature.comment.blockTags
+							.find((t) => t.tag === '@deprecated')
+							?.content.reduce((prev, curr) => (prev += curr.text), '')
+							.trim() ?? true
+					: undefined,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				abstract: signature.comment?.tags?.some((t) => t.tagName === 'abstract'),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				deprecated: signature.comment?.tags?.some((t) => t.tagName === 'deprecated'),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				emits: signature.comment?.tags?.filter((t) => t.tagName === 'emits').map((t) => t.text.trim()),
+				// emits: signature.comment?.blockTags?.filter((t) => t.tag === '@emits').map((t) => t.content),
 				// @ts-expect-error
 				params: signature.parameters
 					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config).serialize())
@@ -46,12 +63,27 @@ export class DocumentedMethod extends DocumentedItem<Method | DeclarationReflect
 				returns: signature.type
 					? [
 							new DocumentedVarType(
-								{ names: [parseType(signature.type)], description: signature.comment?.returns?.trim() },
+								{
+									names: [parseType(signature.type)],
+									description:
+										signature.comment?.blockTags
+											// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+											?.find((t) => t.tag === '@returns')
+											?.content.reduce((prev, curr) => (prev += curr.text), '')
+											// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+											.trim() || undefined,
+								},
 								this.config,
 							).serialize(),
 					  ]
 					: undefined,
-				returnsDescription: signature.comment?.returns?.trim(),
+				returnsDescription:
+					signature.comment?.blockTags
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+						?.find((t) => t.tag === '@returns')
+						?.content.reduce((prev, curr) => (prev += curr.text), '')
+						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+						.trim() || undefined,
 				meta,
 			};
 		}

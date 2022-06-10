@@ -121,7 +121,7 @@ export class Documentation {
 						item = new DocumentedMember(member, this.config);
 						break;
 					}
-					case 'event': {
+					case 'Event': {
 						item = new DocumentedEvent(member, this.config);
 						break;
 					}

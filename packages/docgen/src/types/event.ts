@@ -16,14 +16,25 @@ export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflectio
 				meta = new DocumentedItemMeta(sources, this.config).serialize();
 			}
 
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+				? signature.comment.blockTags
+						.filter((t) => t.tag === '@see')
+						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+				: undefined;
+
 			return {
-				name: data.name,
+				name: signature.name,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
+				see,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				description: signature.comment?.shortText?.trim(),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				see: signature.comment?.tags?.filter((t) => t.tagName === 'see').map((t) => t.text.trim()),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				deprecated: signature.comment?.tags?.some((t) => t.tagName === 'deprecated'),
+				deprecated: signature.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+					? signature.comment.blockTags
+							.find((t) => t.tag === '@deprecated')
+							?.content.reduce((prev, curr) => (prev += curr.text), '')
+							.trim() ?? true
+					: undefined,
 				// @ts-expect-error
 				params: signature.parameters
 					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config).serialize())

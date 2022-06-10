@@ -80,6 +80,7 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 	public override serializer() {
 		if (this.config.typescript) {
 			const data = this.data as DeclarationReflection;
+			const signature = (data.signatures ?? [])[0] ?? data;
 			let meta;
 
 			const sources = data.sources?.[0];
@@ -87,25 +88,37 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 				meta = new DocumentedItemMeta(sources, this.config).serialize();
 			}
 
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+				? signature.comment.blockTags
+						.filter((t) => t.tag === '@see')
+						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+				: undefined;
+
 			return {
 				// @ts-expect-error
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-				name: data.name === 'default' ? parse(meta?.file ?? 'default').name : data.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				description: data.comment?.shortText?.trim(),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				see: data.comment?.tags?.filter((t) => t.tagName === 'see').map((t) => t.text.trim()),
+				name: signature.name === 'default' ? parse(meta?.file ?? 'default').name : signature.name,
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				description: signature.comment?.summary.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
+				see,
 				extends: this.extends?.serialize(),
 				implements: this.implements?.serialize(),
 				access:
+					data.flags.isPrivate ||
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					data.flags.isPrivate || data.comment?.tags?.some((t) => t.tagName === 'private' || t.tagName === 'internal')
+					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
 						? 'private'
 						: undefined,
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/no-unnecessary-condition
+				abstract: signature.comment?.blockTags?.some((t) => t.tag === '@abstract') || undefined,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				abstract: data.comment?.tags?.some((t) => t.tagName === 'abstract'),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				deprecated: data.comment?.tags?.some((t) => t.tagName === 'deprecated'),
+				deprecated: signature.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+					? signature.comment.blockTags
+							.find((t) => t.tag === '@deprecated')
+							?.content.reduce((prev, curr) => (prev += curr.text), '')
+							.trim() ?? true
+					: undefined,
 				construct: this.construct?.serialize(),
 				props: this.props.size ? this.props.map((p) => p.serialize()) : undefined,
 				methods: this.methods.size ? this.methods.map((m) => m.serialize()) : undefined,

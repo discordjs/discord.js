@@ -60,7 +60,7 @@
 		"@discordjs/docgen": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^1.8.3",
-		"@types/node": "^16.11.38",
+		"@types/node": "^16.11.39",
 		"@types/supertest": "^2.0.12",
 		"@typescript-eslint/eslint-plugin": "^5.27.1",
 		"@typescript-eslint/parser": "^5.27.1",

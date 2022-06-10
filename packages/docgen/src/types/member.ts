@@ -10,6 +10,7 @@ export class DocumentedMember extends DocumentedItem<Member | DeclarationReflect
 	public override serializer() {
 		if (this.config.typescript) {
 			const data = this.data as DeclarationReflection;
+			const signature = (data.signatures ?? [])[0] ?? data;
 			let meta;
 
 			const sources = data.sources?.[0];
@@ -17,28 +18,47 @@ export class DocumentedMember extends DocumentedItem<Member | DeclarationReflect
 				meta = new DocumentedItemMeta(sources, this.config).serialize();
 			}
 
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+				? signature.comment.blockTags
+						.filter((t) => t.tag === '@see')
+						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+				: undefined;
+
 			const base = {
-				name: data.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				description: data.comment?.shortText?.trim(),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				see: data.comment?.tags?.filter((t) => t.tagName === 'see').map((t) => t.text.trim()),
+				name: signature.name,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
+				see,
 				scope: data.flags.isStatic ? 'static' : undefined,
 				access:
+					data.flags.isPrivate ||
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					data.flags.isPrivate || data.comment?.tags?.some((t) => t.tagName === 'private' || t.tagName === 'internal')
+					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
 						? 'private'
 						: undefined,
 				readonly: data.flags.isReadonly,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				abstract: signature.comment?.blockTags?.some((t) => t.tag === '@abstract') || undefined,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				abstract: data.comment?.tags?.some((t) => t.tagName === 'abstract'),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				deprecated: data.comment?.tags?.some((t) => t.tagName === 'deprecated'),
+				deprecated: signature.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+					? signature.comment.blockTags
+							.find((t) => t.tag === '@deprecated')
+							?.content.reduce((prev, curr) => (prev += curr.text), '')
+							.trim() ?? true
+					: undefined,
 				default:
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					data.comment?.tags?.find((t) => t.tagName === 'default')?.text.trim() ??
-					(data.defaultValue === '...' ? undefined : data.defaultValue),
-				type: data.type ? new DocumentedVarType({ names: [parseType(data.type)] }, this.config).serialize() : undefined,
+					(data.defaultValue === '...' ? undefined : data.defaultValue) ??
+					(signature.comment?.blockTags
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+						?.find((t) => t.tag === '@default')
+						?.content.reduce((prev, curr) => (prev += curr.text), '')
+						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+						.trim() ||
+						undefined),
+				type: signature.type
+					? new DocumentedVarType({ names: [parseType(signature.type)] }, this.config).serialize()
+					: undefined,
 				meta,
 			};
 
@@ -50,28 +70,47 @@ export class DocumentedMember extends DocumentedItem<Member | DeclarationReflect
 					throw new Error("Can't parse accessor without getter.");
 				}
 
-				if (!hasSetter) base.readonly = true;
+				if (!hasSetter) {
+					base.readonly = true;
+				}
+
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+				const see = getter.comment?.blockTags?.filter((t) => t.tag === '@see').length
+					? getter.comment.blockTags
+							.filter((t) => t.tag === '@see')
+							.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+					: undefined;
 
 				return {
 					...base,
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					description: getter.comment?.shortText?.trim(),
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					see: getter.comment?.tags?.filter((t) => t.tagName === 'see').map((t) => t.text.trim()),
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+					description: getter.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
+					see,
 					access:
-						getter.flags.isPrivate ||
-						getter.comment?.tags.some((t) => t.tagName === 'private' || t.tagName === 'internal')
+						data.flags.isPrivate ||
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+						getter.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
 							? 'private'
 							: undefined,
 					readonly: base.readonly || !hasSetter,
-					abstract: getter.comment?.tags.some((t) => t.tagName === 'abstract'),
-					deprecated: getter.comment?.tags.some((t) => t.tagName === 'deprecated'),
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+					abstract: getter.comment?.blockTags?.some((t) => t.tag === '@abstract') || undefined,
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+					deprecated: getter.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+						? getter.comment.blockTags
+								.find((t) => t.tag === '@deprecated')
+								?.content.reduce((prev, curr) => (prev += curr.text), '')
+								.trim() ?? true
+						: undefined,
 					default:
 						base.default ??
-						getter.comment?.tags.find((t) => t.tagName === 'default')?.text.trim() ??
-						// @ts-expect-error
-						getter.defaultValue,
+						(getter.comment?.blockTags
+							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+							?.find((t) => t.tag === '@default')
+							?.content.reduce((prev, curr) => (prev += curr.text), '')
+							// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+							.trim() ||
+							undefined),
 					type: getter.type ? parseType(getter.type) : undefined,
 				};
 			}
@@ -99,20 +138,3 @@ export class DocumentedMember extends DocumentedItem<Member | DeclarationReflect
 		};
 	}
 }
-
-/*
-{ id: 'Client#rest',
-  longname: 'Client#rest',
-  name: 'rest',
-  scope: 'instance',
-  kind: 'member',
-  description: 'The REST manager of the client',
-  memberof: 'Client',
-  type: { names: [ 'RESTManager' ] },
-  access: 'private',
-  meta:
-   { lineno: 32,
-     filename: 'Client.js',
-     path: 'src/client' },
-  order: 11 }
-*/
