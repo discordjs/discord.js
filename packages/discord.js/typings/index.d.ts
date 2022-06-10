@@ -2667,10 +2667,10 @@ export interface CreateChannelOptions {
   fromInteraction?: boolean;
 }
 
-export function isThread(channel: unknown): channel is ThreadChannel;
-export function isTextBased(channel: unknown): channel is TextBasedChannel;
-export function isDMBased(channel: unknown): channel is DMChannel | PartialDMChannel;
-export function isVoiceBased(channel: unknown): channel is VoiceBasedChannel;
+export function isThread(channel: AnyChannel | Channel): channel is ThreadChannel;
+export function isTextBased(channel: AnyChannel | Channel): channel is TextBasedChannel;
+export function isDMBased(channel: AnyChannel | Channel): channel is DMChannel | PartialDMChannel;
+export function isVoiceBased(channel: AnyChannel | Channel): channel is VoiceBasedChannel;
 export function createChannel(client: Client, data: APIChannel, options?: CreateChannelOptions): Channel;
 
 export function createComponent<T extends keyof MappedComponentTypes>(
