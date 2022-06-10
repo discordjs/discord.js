@@ -29,7 +29,7 @@ client.on(Events.MessageCreate, async (message) => {
 const recordable = new Set<string>();
 
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
-	if (!interaction.isCommand() || !interaction.guildId) return;
+	if (!interaction.isChatInputCommand() || !interaction.inGuild()) return;
 
 	const handler = interactionHandlers.get(interaction.commandName);
 
