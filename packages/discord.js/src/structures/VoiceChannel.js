@@ -47,6 +47,14 @@ class VoiceChannel extends BaseGuildVoiceChannel {
     if ('messages' in data) {
       for (const message of data.messages) this.messages._add(message);
     }
+
+    if ('rate_limit_per_user' in data) {
+      /**
+       * The rate limit per user (slowmode) for this channel in seconds
+       * @type {number}
+       */
+      this.rateLimitPerUser = data.rate_limit_per_user;
+    }
   }
 
   /**
@@ -129,6 +137,8 @@ class VoiceChannel extends BaseGuildVoiceChannel {
   bulkDelete() {}
   fetchWebhooks() {}
   createWebhook() {}
+  setRateLimitPerUser() {}
+  setNSFW() {}
 
   /**
    * Sets the RTC region of the channel.

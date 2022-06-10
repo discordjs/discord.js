@@ -367,6 +367,26 @@ class TextBasedChannel {
     return this.guild.channels.createWebhook(this.id, name, options);
   }
 
+  /**
+   * Sets the rate limit per user (slowmode) for this channel.
+   * @param {number} rateLimitPerUser The new rate limit in seconds
+   * @param {string} [reason] Reason for changing the channel's rate limit
+   * @returns {Promise<this>}
+   */
+  setRateLimitPerUser(rateLimitPerUser, reason) {
+    return this.edit({ rateLimitPerUser }, reason);
+  }
+
+  /**
+   * Sets whether this channel is flagged as NSFW.
+   * @param {boolean} [nsfw=true] Whether the channel should be considered NSFW
+   * @param {string} [reason] Reason for changing the channel's NSFW flag
+   * @returns {Promise<this>}
+   */
+  setNSFW(nsfw = true, reason) {
+    return this.edit({ nsfw }, reason);
+  }
+
   static applyToClass(structure, full = false, ignore = []) {
     const props = ['send'];
     if (full) {
@@ -381,6 +401,8 @@ class TextBasedChannel {
         'awaitMessageComponent',
         'fetchWebhooks',
         'createWebhook',
+        'setRateLimitPerUser',
+        'setNSFW',
       );
     }
     for (const prop of props) {
