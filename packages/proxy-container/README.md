@@ -16,9 +16,11 @@
 
 `@discordjs/proxy-container` - Lightweight HTTP proxy for Discord's API, brought to you as a container 📦
 
-## Installation
+## Usage
 
-TODO
+Quickly spin up an instance:
+
+`docker run -d --restart unless-stopped --name proxy -p 127.0.0.1:8080:8080 -e DISCORD_TOKEN=abc discordjs/proxy`
 
 ## Links
 
