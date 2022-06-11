@@ -160,7 +160,7 @@ const Messages = {
 };
 
 // Magic needed by WS
-Messages.AuthenticationFailed = Messages[DjsErrorCodes.AUTHENTICATION_FAILED];
+Messages.AuthenticationFailed = Messages[DjsErrorCodes.AuthenticationFailed];
 Messages.InvalidShard = Messages[DjsErrorCodes.ShardingInvalid];
 Messages.ShardingRequired = Messages[DjsErrorCodes.ShardingRequired];
 Messages.InvalidIntents = Messages[DjsErrorCodes.InvalidIntents];
