@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/proxy",
-	"version": "0.1.0-dev",
+	"version": "1.0.0-dev",
 	"description": "Tools for running an HTTP proxy for Discord's API",
 	"scripts": {
 		"build": "tsup",

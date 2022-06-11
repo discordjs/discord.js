@@ -1942,7 +1942,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/proxy@^0.1.0-dev, @discordjs/proxy@workspace:packages/proxy":
+"@discordjs/proxy@npm:^0.1.0-dev":
+  version: 0.1.0-dev.1654949067-96053ba
+  resolution: "@discordjs/proxy@npm:0.1.0-dev.1654949067-96053ba"
+  dependencies:
+    "@discordjs/rest": ^0.6.0-dev
+    tslib: ^2.4.0
+    undici: ^5.4.0
+  checksum: 152c9e26b502daca7255129cc4a6c0fbf678cfd3fe5ca8b12229bacffaef33567469e000688dad6b978c04f471dfb12ece97183ecc9365ce5a86eb74220b50af
+  languageName: node
+  linkType: hard
+
+"@discordjs/proxy@workspace:packages/proxy":
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy@workspace:packages/proxy"
   dependencies:
@@ -1968,7 +1979,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
+"@discordjs/rest@^0.6.0-dev, @discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
   version: 0.0.0-use.local
   resolution: "@discordjs/rest@workspace:packages/rest"
   dependencies:
