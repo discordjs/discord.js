@@ -209,7 +209,7 @@ class ShardingManager extends EventEmitter {
 
     if (this.shardList.some(shardId => shardId >= amount)) {
       throw new RangeError(
-        'ClientInvalidOption',
+        ErrorCodes.ClientInvalidOption,
         'Amount of shards',
         'bigger than the highest shardId in the shardList option.',
       );
