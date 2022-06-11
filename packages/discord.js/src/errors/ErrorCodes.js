@@ -5,146 +5,146 @@ const { createEnum } = require('../util/Enums');
 /**
  * @typedef {Object} DiscordjsErrorCodes
 
- * @property {string} ClientInvalidOption
- * @property {string} ClientInvalidProvidedShards
- * @property {string} ClientMissingIntents
- * @property {string} ClientNotReady
+ * @property {number} ClientInvalidOption
+ * @property {number} ClientInvalidProvidedShards
+ * @property {number} ClientMissingIntents
+ * @property {number} ClientNotReady
 
- * @property {string} TokenInvalid
- * @property {string} TokenMissing
- * @property {string} ApplicationCommandPermissionsTokenMissing
+ * @property {number} TokenInvalid
+ * @property {number} TokenMissing
+ * @property {number} ApplicationCommandPermissionsTokenMissing
 
- * @property {string} WSCloseRequested
- * @property {string} WSConnectionExists
- * @property {string} WSNotOpen
- * @property {string} ManagerDestroyed
+ * @property {number} WSCloseRequested
+ * @property {number} WSConnectionExists
+ * @property {number} WSNotOpen
+ * @property {number} ManagerDestroyed
 
- * @property {string} BitFieldInvalid
+ * @property {number} BitFieldInvalid
 
- * @property {string} ShardingInvalid
- * @property {string} ShardingRequired
- * @property {string} InvalidIntents
- * @property {string} DisallowedIntents
- * @property {string} ShardingNoShards
- * @property {string} ShardingInProcess
- * @property {string} ShardingInvalidEvalBroadcast
- * @property {string} ShardingShardNotFound
- * @property {string} ShardingAlreadySpawned
- * @property {string} ShardingProcessExists
- * @property {string} ShardingWorkerExists
- * @property {string} ShardingReadyTimeout
- * @property {string} ShardingReadyDisconnected
- * @property {string} ShardingReadyDied
- * @property {string} ShardingNoChildExists
- * @property {string} ShardingShardMiscalculation
+ * @property {number} ShardingInvalid
+ * @property {number} ShardingRequired
+ * @property {number} InvalidIntents
+ * @property {number} DisallowedIntents
+ * @property {number} ShardingNoShards
+ * @property {number} ShardingInProcess
+ * @property {number} ShardingInvalidEvalBroadcast
+ * @property {number} ShardingShardNotFound
+ * @property {number} ShardingAlreadySpawned
+ * @property {number} ShardingProcessExists
+ * @property {number} ShardingWorkerExists
+ * @property {number} ShardingReadyTimeout
+ * @property {number} ShardingReadyDisconnected
+ * @property {number} ShardingReadyDied
+ * @property {number} ShardingNoChildExists
+ * @property {number} ShardingShardMiscalculation
 
- * @property {string} ColorRange
- * @property {string} ColorConvert
+ * @property {number} ColorRange
+ * @property {number} ColorConvert
 
- * @property {string} InviteOptionsMissingChannel
+ * @property {number} InviteOptionsMissingChannel
 
- * @property {string} ButtonLabel
- * @property {string} ButtonURL
- * @property {string} ButtonCustomId
+ * @property {number} ButtonLabel
+ * @property {number} ButtonURL
+ * @property {number} ButtonCustomId
 
- * @property {string} SelectMenuCustomId
- * @property {string} SelectMenuPlaceholder
- * @property {string} SelectOptionLabel
- * @property {string} SelectOptionValue
- * @property {string} SelectOptionDescription
+ * @property {number} SelectMenuCustomId
+ * @property {number} SelectMenuPlaceholder
+ * @property {number} SelectOptionLabel
+ * @property {number} SelectOptionValue
+ * @property {number} SelectOptionDescription
 
- * @property {string} InteractionCollectorError
+ * @property {number} InteractionCollectorError
 
- * @property {string} FileNotFound
+ * @property {number} FileNotFound
 
- * @property {string} UserBannerNotFetched
- * @property {string} UserNoDMChannel
+ * @property {number} UserBannerNotFetched
+ * @property {number} UserNoDMChannel
 
- * @property {string} VoiceNotStageChannel
+ * @property {number} VoiceNotStageChannel
 
- * @property {string} VoiceStateNotOwn
- * @property {string} VoiceStateInvalidType
+ * @property {number} VoiceStateNotOwn
+ * @property {number} VoiceStateInvalidType
 
- * @property {string} ReqResourceType
+ * @property {number} ReqResourceType
 
- * @property {string} ImageFormat
- * @property {string} ImageSize
+ * @property {number} ImageFormat
+ * @property {number} ImageSize
 
- * @property {string} MessageBulkDeleteType
- * @property {string} MessageNonceType
- * @property {string} MessageContentType
+ * @property {number} MessageBulkDeleteType
+ * @property {number} MessageNonceType
+ * @property {number} MessageContentType
 
- * @property {string} SplitMaxLen
+ * @property {number} SplitMaxLen
 
- * @property {string} BanResolveId
- * @property {string} FetchBanResolveId
+ * @property {number} BanResolveId
+ * @property {number} FetchBanResolveId
 
- * @property {string} PruneDaysType
+ * @property {number} PruneDaysType
 
- * @property {string} GuildChannelResolve
- * @property {string} GuildVoiceChannelResolve
- * @property {string} GuildChannelOrphan
- * @property {string} GuildChannelUnowned
- * @property {string} GuildOwned
- * @property {string} GuildMembersTimeout
- * @property {string} GuildUncachedMe
- * @property {string} ChannelNotCached
- * @property {string} StageChannelResolve
- * @property {string} GuildScheduledEventResolve
- * @property {string} FetchOwnerId
+ * @property {number} GuildChannelResolve
+ * @property {number} GuildVoiceChannelResolve
+ * @property {number} GuildChannelOrphan
+ * @property {number} GuildChannelUnowned
+ * @property {number} GuildOwned
+ * @property {number} GuildMembersTimeout
+ * @property {number} GuildUncachedMe
+ * @property {number} ChannelNotCached
+ * @property {number} StageChannelResolve
+ * @property {number} GuildScheduledEventResolve
+ * @property {number} FetchOwnerId
 
- * @property {string} InvalidType
- * @property {string} InvalidElement
+ * @property {number} InvalidType
+ * @property {number} InvalidElement
 
- * @property {string} MessageThreadParent
- * @property {string} MessageExistingThread
- * @property {string} ThreadInvitableType
+ * @property {number} MessageThreadParent
+ * @property {number} MessageExistingThread
+ * @property {number} ThreadInvitableType
 
- * @property {string} WebhookMessage
- * @property {string} WebhookTokenUnavailable
- * @property {string} WebhookURLInvalid
- * @property {string} WebhookApplication
- * @property {string} MessageReferenceMissing
+ * @property {number} WebhookMessage
+ * @property {number} WebhookTokenUnavailable
+ * @property {number} WebhookURLInvalid
+ * @property {number} WebhookApplication
+ * @property {number} MessageReferenceMissing
 
- * @property {string} EmojiType
- * @property {string} EmojiManaged
- * @property {string} MissingManageEmojisAndStickersPermission
- * @property {string} NotGuildSticker
+ * @property {number} EmojiType
+ * @property {number} EmojiManaged
+ * @property {number} MissingManageEmojisAndStickersPermission
+ * @property {number} NotGuildSticker
 
- * @property {string} ReactionResolveUser
+ * @property {number} ReactionResolveUser
 
- * @property {string} VanityURL
+ * @property {number} VanityURL
 
- * @property {string} InviteResolveCode
+ * @property {number} InviteResolveCode
 
- * @property {string} InviteNotFound
+ * @property {number} InviteNotFound
 
- * @property {string} DeleteGroupDMChannel
- * @property {string} FetchGroupDMChannel
+ * @property {number} DeleteGroupDMChannel
+ * @property {number} FetchGroupDMChannel
 
- * @property {string} MemberFetchNonceLength
+ * @property {number} MemberFetchNonceLength
 
- * @property {string} GlobalCommandPermissions
- * @property {string} GuildUncachedEntityResolve
+ * @property {number} GlobalCommandPermissions
+ * @property {number} GuildUncachedEntityResolve
 
- * @property {string} InteractionAlreadyReplied
- * @property {string} InteractionNotReplied
- * @property {string} InteractionEphemeralReplied
+ * @property {number} InteractionAlreadyReplied
+ * @property {number} InteractionNotReplied
+ * @property {number} InteractionEphemeralReplied
 
- * @property {string} CommandInteractionOptionNotFound
- * @property {string} CommandInteractionOptionType
- * @property {string} CommandInteractionOptionNoSubcommand
- * @property {string} CommandInteractionOptionNoSubcommandGroup
- * @property {string} AutocompleteInteractionOptionNoFocusedOption
+ * @property {number} CommandInteractionOptionNotFound
+ * @property {number} CommandInteractionOptionType
+ * @property {number} CommandInteractionOptionNoSubcommand
+ * @property {number} CommandInteractionOptionNoSubcommandGroup
+ * @property {number} AutocompleteInteractionOptionNoFocusedOption
 
- * @property {string} ModalSubmitInteractionFieldNotFound
- * @property {string} ModalSubmitInteractionFieldType
+ * @property {number} ModalSubmitInteractionFieldNotFound
+ * @property {number} ModalSubmitInteractionFieldType
 
- * @property {string} InvalidMissingScopes
+ * @property {number} InvalidMissingScopes
 
- * @property {string} NotImplemented
+ * @property {number} NotImplemented
 
- * @property {string} SweepFilterReturn
+ * @property {number} SweepFilterReturn
  */
 
 // JSDoc for intellisense purposes
