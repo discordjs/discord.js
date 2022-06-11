@@ -4099,6 +4099,7 @@ export declare const Colors: {
 };
 
 export declare const Events: {
+  ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate';
   ClientReady: 'ready';
   GuildCreate: 'guildCreate';
   GuildDelete: 'guildDelete';
