@@ -1,3 +1,3 @@
 import { createTsupConfig } from '../../tsup.config';
 
-export default createTsupConfig({ minify: true });
+export default createTsupConfig({ minify: true, dts: false });
