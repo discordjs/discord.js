@@ -229,13 +229,13 @@ class ApplicationCommandManager extends CachedManager {
 
     if ('default_member_permissions' in command) {
       default_member_permissions = command.default_member_permissions
-        ? new PermissionsBitField(BigInt(command.default_member_permissions)).bitfield
+        ? new PermissionsBitField(BigInt(command.default_member_permissions)).bitfield.toString()
         : command.default_member_permissions;
     }
 
     if ('defaultMemberPermissions' in command) {
       default_member_permissions = command.defaultMemberPermissions
-        ? new PermissionsBitField(command.defaultMemberPermissions).bitfield
+        ? new PermissionsBitField(command.defaultMemberPermissions).bitfield.toString()
         : command.defaultMemberPermissions;
     }
 
