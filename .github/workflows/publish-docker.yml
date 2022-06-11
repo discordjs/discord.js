@@ -1,0 +1,26 @@
+name: Publish Docker Images
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build the image
+        run: docker build -t discordjs/proxy:latest -f packages/proxy-container/Dockerfile .
+
+      - name: Tag the image with major
+        run: docker tag discordjs/proxy discordjs/proxy:$(cut -d '.' -f1 <<< $(jq --raw-output '.version' packages/proxy-container/package.json))
+
+      - name: Push image to DockerHub
+        run: docker push --all-tags discordjs/proxy
