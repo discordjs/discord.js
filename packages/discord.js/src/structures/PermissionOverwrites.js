@@ -181,7 +181,7 @@ class PermissionOverwrites extends Base {
     }
 
     const userOrRole = guild.roles.resolve(overwrite.id) ?? guild.client.users.resolve(overwrite.id);
-    if (!userOrRole) throw new TypeError(ErrorCodes.INVALID_TYPE, 'parameter', 'User nor a Role');
+    if (!userOrRole) throw new TypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
     const type = userOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
 
     return {

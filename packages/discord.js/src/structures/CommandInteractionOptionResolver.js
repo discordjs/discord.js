@@ -75,7 +75,7 @@ class CommandInteractionOptionResolver {
     const option = this._hoistedOptions.find(opt => opt.name === name);
     if (!option) {
       if (required) {
-        throw new TypeError(ErrorCodes.COMMAND_INTERACTION_OPTION_NOT_FOUND, name);
+        throw new TypeError(ErrorCodes.CommandInteractionOptionNotFound, name);
       }
       return null;
     }
@@ -96,7 +96,7 @@ class CommandInteractionOptionResolver {
     if (!option) {
       return null;
     } else if (option.type !== type) {
-      throw new TypeError(ErrorCodes.COMMAND_INTERACTION_OPTION_TYPE, name, option.type, type);
+      throw new TypeError(ErrorCodes.CommandInteractionOptionType, name, option.type, type);
     } else if (required && properties.every(prop => option[prop] === null || typeof option[prop] === 'undefined')) {
       throw new TypeError(ErrorCodes.COMMAND_INTERACTION_OPTION_EMPTY, name, option.type);
     }
@@ -110,7 +110,7 @@ class CommandInteractionOptionResolver {
    */
   getSubcommand(required = true) {
     if (required && !this._subcommand) {
-      throw new TypeError(ErrorCodes.COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND);
+      throw new TypeError(ErrorCodes.CommandInteractionOptionNoSubCommand);
     }
     return this._subcommand;
   }
@@ -122,7 +122,7 @@ class CommandInteractionOptionResolver {
    */
   getSubcommandGroup(required = false) {
     if (required && !this._group) {
-      throw new TypeError(ErrorCodes.COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP);
+      throw new TypeError(ErrorCodes.CommandInteractionOptionNoSubCommandGroup);
     }
     return this._group;
   }
@@ -273,7 +273,7 @@ class CommandInteractionOptionResolver {
    */
   getFocused(getFull = false) {
     const focusedOption = this._hoistedOptions.find(option => option.focused);
-    if (!focusedOption) throw new TypeError(ErrorCodes.AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION);
+    if (!focusedOption) throw new TypeError(ErrorCodes.AutocompleteInteractionOptionNoFocusedOption);
     return getFull ? focusedOption : focusedOption.value;
   }
 }

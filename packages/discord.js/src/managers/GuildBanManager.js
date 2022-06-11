@@ -101,7 +101,7 @@ class GuildBanManager extends CachedManager {
     if (resolvedUser) return this._fetchSingle({ user: resolvedUser, cache, force });
 
     if (!before && !after && !limit && typeof cache === 'undefined') {
-      return Promise.reject(new Error(ErrorCodes.FETCH_BAN_RESOLVE_ID));
+      return Promise.reject(new Error(ErrorCodes.FetchBanResolveId));
     }
 
     return this._fetchMany(options);
@@ -146,9 +146,9 @@ class GuildBanManager extends CachedManager {
    *   .catch(console.error);
    */
   async create(user, options = {}) {
-    if (typeof options !== 'object') throw new TypeError(ErrorCodes.INVALID_TYPE, 'options', 'object', true);
+    if (typeof options !== 'object') throw new TypeError(ErrorCodes.InvalidType, 'options', 'object', true);
     const id = this.client.users.resolveId(user);
-    if (!id) throw new Error(ErrorCodes.BAN_RESOLVE_ID, true);
+    if (!id) throw new Error(ErrorCodes.BanResolveId, true);
     await this.client.rest.put(Routes.guildBan(this.guild.id, id), {
       body: { delete_message_days: options.deleteMessageDays },
       reason: options.reason,
@@ -174,7 +174,7 @@ class GuildBanManager extends CachedManager {
    */
   async remove(user, reason) {
     const id = this.client.users.resolveId(user);
-    if (!id) throw new Error(ErrorCodes.BAN_RESOLVE_ID);
+    if (!id) throw new Error(ErrorCodes.BanResolveId);
     await this.client.rest.delete(Routes.guildBan(this.guild.id, id), { reason });
     return this.client.users.resolve(user);
   }

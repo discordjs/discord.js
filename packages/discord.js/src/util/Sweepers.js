@@ -132,7 +132,7 @@ class Sweepers {
    */
   sweepMessages(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'filter', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
     let channels = 0;
     let messages = 0;
@@ -163,7 +163,7 @@ class Sweepers {
    */
   sweepReactions(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'filter', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
     let channels = 0;
     let messages = 0;
@@ -211,7 +211,7 @@ class Sweepers {
    */
   sweepThreadMembers(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'filter', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
 
     let threads = 0;
@@ -241,7 +241,7 @@ class Sweepers {
    */
   sweepThreads(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'filter', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
 
     let threads = 0;
@@ -263,7 +263,7 @@ class Sweepers {
    */
   sweepUsers(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'filter', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
 
     const users = this.client.users.cache.sweep(filter);
@@ -314,13 +314,13 @@ class Sweepers {
     excludeFromSweep = () => false,
   } = {}) {
     if (typeof lifetime !== 'number') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'lifetime', 'number');
+      throw new TypeError(ErrorCodes.InvalidType, 'lifetime', 'number');
     }
     if (typeof getComparisonTimestamp !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'getComparisonTimestamp', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'getComparisonTimestamp', 'function');
     }
     if (typeof excludeFromSweep !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'excludeFromSweep', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'excludeFromSweep', 'function');
     }
     return () => {
       if (lifetime <= 0) return null;
@@ -392,7 +392,7 @@ class Sweepers {
    */
   _sweepGuildDirectProp(key, filter, { emit = true, outputName } = {}) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'filter', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
 
     let guilds = 0;
@@ -420,20 +420,20 @@ class Sweepers {
   _validateProperties(key) {
     const props = this.options[key];
     if (typeof props !== 'object') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, `sweepers.${key}`, 'object', true);
+      throw new TypeError(ErrorCodes.InvalidType, `sweepers.${key}`, 'object', true);
     }
     if (typeof props.interval !== 'number') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, `sweepers.${key}.interval`, 'number');
+      throw new TypeError(ErrorCodes.InvalidType, `sweepers.${key}.interval`, 'number');
     }
     // Invites, Messages, and Threads can be provided a lifetime parameter, which we use to generate the filter
     if (['invites', 'messages', 'threads'].includes(key) && !('filter' in props)) {
       if (typeof props.lifetime !== 'number') {
-        throw new TypeError(ErrorCodes.INVALID_TYPE, `sweepers.${key}.lifetime`, 'number');
+        throw new TypeError(ErrorCodes.InvalidType, `sweepers.${key}.lifetime`, 'number');
       }
       return;
     }
     if (typeof props.filter !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, `sweepers.${key}.filter`, 'function');
+      throw new TypeError(ErrorCodes.InvalidType, `sweepers.${key}.filter`, 'function');
     }
   }
 
@@ -449,7 +449,7 @@ class Sweepers {
     this.intervals[intervalKey] = setInterval(() => {
       const sweepFn = opts.filter();
       if (sweepFn === null) return;
-      if (typeof sweepFn !== 'function') throw new TypeError(ErrorCodes.SWEEP_FILTER_RETURN);
+      if (typeof sweepFn !== 'function') throw new TypeError(ErrorCodes.SweepFilterReturn);
       this[sweepKey](sweepFn);
     }, opts.interval * 1_000).unref();
   }

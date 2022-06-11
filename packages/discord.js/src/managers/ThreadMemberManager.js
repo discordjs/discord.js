@@ -95,7 +95,7 @@ class ThreadMemberManager extends CachedManager {
    */
   async add(member, reason) {
     const id = member === '@me' ? member : this.client.users.resolveId(member);
-    if (!id) throw new TypeError(ErrorCodes.INVALID_TYPE, 'member', 'UserResolvable');
+    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
     await this.client.rest.put(Routes.threadMembers(this.thread.id, id), { reason });
     return id;
   }

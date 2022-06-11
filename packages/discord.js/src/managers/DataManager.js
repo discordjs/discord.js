@@ -28,7 +28,7 @@ class DataManager extends BaseManager {
    * @abstract
    */
   get cache() {
-    throw new Error(ErrorCodes.NOT_IMPLEMENTED, 'get cache', this.constructor.name);
+    throw new Error(ErrorCodes.NotImplemented, 'get cache', this.constructor.name);
   }
 
   /**

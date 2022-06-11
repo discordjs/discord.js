@@ -191,7 +191,7 @@ class Sticker extends Base {
    */
   async fetchUser() {
     if (this.partial) await this.fetch();
-    if (!this.guildId) throw new Error(ErrorCodes.NOT_GUILD_STICKER);
+    if (!this.guildId) throw new Error(ErrorCodes.NotGuildSticker);
     return this.guild.stickers.fetchUser(this);
   }
 

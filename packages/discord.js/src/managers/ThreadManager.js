@@ -110,14 +110,14 @@ class ThreadManager extends CachedManager {
     rateLimitPerUser,
   } = {}) {
     if (type && typeof type !== 'string' && typeof type !== 'number') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'type', 'ThreadChannelType or Number');
+      throw new TypeError(ErrorCodes.InvalidType, 'type', 'ThreadChannelType or Number');
     }
     let resolvedType =
       this.channel.type === ChannelType.GuildNews ? ChannelType.GuildNewsThread : ChannelType.GuildPublicThread;
     let startMessageId;
     if (startMessage) {
       startMessageId = this.channel.messages.resolveId(startMessage);
-      if (!startMessageId) throw new TypeError(ErrorCodes.INVALID_TYPE, 'startMessage', 'MessageResolvable');
+      if (!startMessageId) throw new TypeError(ErrorCodes.InvalidType, 'startMessage', 'MessageResolvable');
     } else if (this.channel.type !== ChannelType.GuildNews) {
       resolvedType = type ?? resolvedType;
     }
@@ -221,7 +221,7 @@ class ThreadManager extends CachedManager {
             query.set('before', timestamp);
           }
         } catch {
-          throw new TypeError(ErrorCodes.INVALID_TYPE, 'before', 'DateResolvable or ThreadChannelResolvable');
+          throw new TypeError(ErrorCodes.InvalidType, 'before', 'DateResolvable or ThreadChannelResolvable');
         }
       }
     }

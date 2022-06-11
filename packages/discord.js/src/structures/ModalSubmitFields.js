@@ -33,10 +33,10 @@ class ModalSubmitFields {
    */
   getField(customId, type) {
     const field = this.fields.get(customId);
-    if (!field) throw new TypeError(ErrorCodes.MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND, customId);
+    if (!field) throw new TypeError(ErrorCodes.ModalSubmitInteractionFieldNotFound, customId);
 
     if (type !== undefined && type !== field.type) {
-      throw new TypeError(ErrorCodes.MODAL_SUBMIT_INTERACTION_FIELD_TYPE, customId, field.type, type);
+      throw new TypeError(ErrorCodes.ModalSubmitInteractionFieldType, customId, field.type, type);
     }
 
     return field;

@@ -124,11 +124,11 @@ class DataResolver extends null {
       const file = path.resolve(resource);
 
       const stats = await fs.stat(file);
-      if (!stats.isFile()) throw new DiscordError(ErrorCodes.FILE_NOT_FOUND, file);
+      if (!stats.isFile()) throw new DiscordError(ErrorCodes.FileNotFound, file);
       return fs.readFile(file);
     }
 
-    throw new TypeError(ErrorCodes.REQ_RESOURCE_TYPE);
+    throw new TypeError(ErrorCodes.ReqResourceType);
   }
 }
 

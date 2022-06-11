@@ -273,7 +273,7 @@ class TextBasedChannel {
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.INTERACTION_COLLECTOR_ERROR, reason));
+        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }
@@ -326,7 +326,7 @@ class TextBasedChannel {
       const msgs = await this.messages.fetch({ limit: messages });
       return this.bulkDelete(msgs, filterOld);
     }
-    throw new TypeError(ErrorCodes.MESSAGE_BULK_DELETE_TYPE);
+    throw new TypeError(ErrorCodes.MessageBulkDeleteType);
   }
 
   /**

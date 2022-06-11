@@ -15,7 +15,7 @@ class BaseClient extends EventEmitter {
     super({ captureRejections: true });
 
     if (typeof options !== 'object' || options === null) {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'options', 'object', true);
+      throw new TypeError(ErrorCodes.InvalidType, 'options', 'object', true);
     }
 
     /**

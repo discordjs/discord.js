@@ -55,7 +55,7 @@ class GuildEmoji extends BaseGuildEmoji {
    * @readonly
    */
   get deletable() {
-    if (!this.guild.members.me) throw new Error(ErrorCodes.GUILD_UNCACHED_ME);
+    if (!this.guild.members.me) throw new Error(ErrorCodes.GuildUncachedMe);
     return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers);
   }
 

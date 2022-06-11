@@ -228,7 +228,7 @@ class Role extends Base {
    */
   permissionsIn(channel, checkAdmin = true) {
     channel = this.guild.channels.resolve(channel);
-    if (!channel) throw new Error(ErrorCodes.GUILD_CHANNEL_RESOLVE);
+    if (!channel) throw new Error(ErrorCodes.GuildChannelResolve);
     return channel.rolePermissions(this, checkAdmin);
   }
 

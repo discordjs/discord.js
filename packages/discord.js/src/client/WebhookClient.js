@@ -33,7 +33,7 @@ class WebhookClient extends BaseClient {
         /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i,
       );
 
-      if (!url || url.length <= 1) throw new Error(ErrorCodes.WEBHOOK_URL_INVALID);
+      if (!url || url.length <= 1) throw new Error(ErrorCodes.WebhookUrlInvalid);
 
       [, id, token] = url;
     }

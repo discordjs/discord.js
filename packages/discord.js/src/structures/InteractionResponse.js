@@ -39,7 +39,7 @@ class InteractionResponse {
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.INTERACTION_COLLECTOR_ERROR, reason));
+        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }

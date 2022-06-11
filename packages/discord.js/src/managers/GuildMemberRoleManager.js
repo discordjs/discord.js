@@ -110,7 +110,7 @@ class GuildMemberRoleManager extends DataManager {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
         const resolvedRole = this.guild.roles.resolveId(role);
-        if (!resolvedRole) throw new TypeError(ErrorCodes.INVALID_ELEMENT, 'Array or Collection', 'roles', role);
+        if (!resolvedRole) throw new TypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
 
@@ -120,7 +120,7 @@ class GuildMemberRoleManager extends DataManager {
       roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
       if (roleOrRoles === null) {
         throw new TypeError(
-          ErrorCodes.INVALID_TYPE,
+          ErrorCodes.InvalidType,
           'roles',
           'Role, Snowflake or Array or Collection of Roles or Snowflakes',
         );
@@ -145,7 +145,7 @@ class GuildMemberRoleManager extends DataManager {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
         const resolvedRole = this.guild.roles.resolveId(role);
-        if (!resolvedRole) throw new TypeError(ErrorCodes.INVALID_ELEMENT, 'Array or Collection', 'roles', role);
+        if (!resolvedRole) throw new TypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
 
@@ -155,7 +155,7 @@ class GuildMemberRoleManager extends DataManager {
       roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
       if (roleOrRoles === null) {
         throw new TypeError(
-          ErrorCodes.INVALID_TYPE,
+          ErrorCodes.InvalidType,
           'roles',
           'Role, Snowflake or Array or Collection of Roles or Snowflakes',
         );

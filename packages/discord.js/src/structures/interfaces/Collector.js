@@ -86,7 +86,7 @@ class Collector extends EventEmitter {
     this._endReason = null;
 
     if (typeof this.filter !== 'function') {
-      throw new TypeError(ErrorCodes.INVALID_TYPE, 'options.filter', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'options.filter', 'function');
     }
 
     this.handleCollect = this.handleCollect.bind(this);

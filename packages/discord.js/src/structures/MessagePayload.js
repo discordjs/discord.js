@@ -105,7 +105,7 @@ class MessagePayload {
     if (this.options.content === null) {
       content = '';
     } else if (typeof this.options.content !== 'undefined') {
-      content = verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', true);
+      content = verifyString(this.options.content, RangeError, 'MessageContentType', true);
     }
 
     return content;
@@ -128,7 +128,7 @@ class MessagePayload {
       nonce = this.options.nonce;
       // eslint-disable-next-line max-len
       if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
-        throw new RangeError(ErrorCodes.MESSAGE_NONCE_TYPE);
+        throw new RangeError(ErrorCodes.MessageNonceType);
       }
     }
 

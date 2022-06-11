@@ -93,7 +93,7 @@ class GuildMemberManager extends CachedManager {
    */
   async add(user, options) {
     const userId = this.client.users.resolveId(user);
-    if (!userId) throw new TypeError(ErrorCodes.INVALID_TYPE, 'user', 'UserResolvable');
+    if (!userId) throw new TypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
     if (!options.force) {
       const cachedUser = this.cache.get(userId);
       if (cachedUser) return cachedUser;
@@ -107,7 +107,7 @@ class GuildMemberManager extends CachedManager {
     if (options.roles) {
       if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
         throw new TypeError(
-          ErrorCodes.INVALID_TYPE,
+          ErrorCodes.InvalidType,
           'options.roles',
           'Array or Collection of Roles or Snowflakes',
           true,
@@ -117,7 +117,7 @@ class GuildMemberManager extends CachedManager {
       for (const role of options.roles.values()) {
         const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) {
-          throw new TypeError(ErrorCodes.INVALID_ELEMENT, 'Array or Collection', 'options.roles', role);
+          throw new TypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'options.roles', role);
         }
         resolvedRoles.push(resolvedRole);
       }
@@ -284,12 +284,12 @@ class GuildMemberManager extends CachedManager {
    */
   async edit(user, { reason, ...data }) {
     const id = this.client.users.resolveId(user);
-    if (!id) throw new TypeError(ErrorCodes.INVALID_TYPE, 'user', 'UserResolvable');
+    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
 
     if (data.channel) {
       data.channel = this.guild.channels.resolve(data.channel);
       if (!(data.channel instanceof BaseGuildVoiceChannel)) {
-        throw new Error(ErrorCodes.GUILD_VOICE_CHANNEL_RESOLVE);
+        throw new Error(ErrorCodes.GuildVoiceChannelResolve);
       }
       data.channel_id = data.channel.id;
       data.channel = undefined;
@@ -353,7 +353,7 @@ class GuildMemberManager extends CachedManager {
    *    .catch(console.error);
    */
   async prune({ days, dry = false, count: compute_prune_count, roles = [], reason } = {}) {
-    if (typeof days !== 'number') throw new TypeError(ErrorCodes.PRUNE_DAYS_TYPE);
+    if (typeof days !== 'number') throw new TypeError(ErrorCodes.PruneDaysType);
 
     const query = { days };
     const resolvedRoles = [];
@@ -361,7 +361,7 @@ class GuildMemberManager extends CachedManager {
     for (const role of roles) {
       const resolvedRole = this.guild.roles.resolveId(role);
       if (!resolvedRole) {
-        throw new TypeError(ErrorCodes.INVALID_ELEMENT, 'Array', 'options.roles', role);
+        throw new TypeError(ErrorCodes.InvalidElement, 'Array', 'options.roles', role);
       }
       resolvedRoles.push(resolvedRole);
     }
@@ -395,7 +395,7 @@ class GuildMemberManager extends CachedManager {
    */
   async kick(user, reason) {
     const id = this.client.users.resolveId(user);
-    if (!id) return Promise.reject(new TypeError(ErrorCodes.INVALID_TYPE, 'user', 'UserResolvable'));
+    if (!id) return Promise.reject(new TypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable'));
 
     await this.client.rest.delete(Routes.guildMember(this.guild.id, id), { reason });
 
@@ -455,7 +455,7 @@ class GuildMemberManager extends CachedManager {
   } = {}) {
     return new Promise((resolve, reject) => {
       if (!query && !user_ids) query = '';
-      if (nonce.length > 32) throw new RangeError(ErrorCodes.MEMBER_FETCH_NONCE_LENGTH);
+      if (nonce.length > 32) throw new RangeError(ErrorCodes.MemberFetchNonceLength);
       this.guild.shard.send({
         op: GatewayOpcodes.RequestGuildMembers,
         d: {
@@ -488,7 +488,7 @@ class GuildMemberManager extends CachedManager {
       const timeout = setTimeout(() => {
         this.client.removeListener(Events.GuildMembersChunk, handler);
         this.client.decrementMaxListeners();
-        reject(new Error(ErrorCodes.GUILD_MEMBERS_TIMEOUT));
+        reject(new Error(ErrorCodes.GuildMembersTimeout));
       }, time).unref();
       this.client.incrementMaxListeners();
       this.client.on(Events.GuildMembersChunk, handler);

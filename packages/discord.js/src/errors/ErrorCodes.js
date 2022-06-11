@@ -5,146 +5,146 @@ const { createEnum } = require('../util/Enums');
 /**
  * @typedef {Object} DiscordjsErrorCodes
 
- * @property {string} CLIENT_INVALID_OPTION
- * @property {string} CLIENT_INVALID_PROVIDED_SHARDS
- * @property {string} CLIENT_MISSING_INTENTS
- * @property {string} CLIENT_NOT_READY
+ * @property {string} ClientInvalidOption
+ * @property {string} ClientInvalidProvidedShards
+ * @property {string} ClientMissingIntents
+ * @property {string} ClientNotReady
 
- * @property {string} TOKEN_INVALID
- * @property {string} TOKEN_MISSING
- * @property {string} APPLICATION_COMMAND_PERMISSIONS_TOKEN_MISSING
+ * @property {string} TokenInvalid
+ * @property {string} TokenMissing
+ * @property {string} ApplicationCommandPermissionsTokenMissing
 
- * @property {string} WS_CLOSE_REQUESTED
- * @property {string} WS_CONNECTION_EXISTS
- * @property {string} WS_NOT_OPEN
- * @property {string} MANAGER_DESTROYED
+ * @property {string} WSCloseRequested
+ * @property {string} WSConnectionExists
+ * @property {string} WSNotOpen
+ * @property {string} ManagerDestroyed
 
- * @property {string} BITFIELD_INVALID
+ * @property {string} BitFieldInvalid
 
- * @property {string} SHARDING_INVALID
- * @property {string} SHARDING_REQUIRED
- * @property {string} INVALID_INTENTS
- * @property {string} DISALLOWED_INTENTS
- * @property {string} SHARDING_NO_SHARDS
- * @property {string} SHARDING_IN_PROCESS
- * @property {string} SHARDING_INVALID_EVAL_BROADCAST
- * @property {string} SHARDING_SHARD_NOT_FOUND
- * @property {string} SHARDING_ALREADY_SPAWNED
- * @property {string} SHARDING_PROCESS_EXISTS
- * @property {string} SHARDING_WORKER_EXISTS
- * @property {string} SHARDING_READY_TIMEOUT
- * @property {string} SHARDING_READY_DISCONNECTED
- * @property {string} SHARDING_READY_DIED
- * @property {string} SHARDING_NO_CHILD_EXISTS
- * @property {string} SHARDING_SHARD_MISCALCULATION
+ * @property {string} ShardingInvalid
+ * @property {string} ShardingRequired
+ * @property {string} InvalidIntents
+ * @property {string} DisallowedIntents
+ * @property {string} ShardingNoShards
+ * @property {string} ShardingInProcess
+ * @property {string} ShardingInvalidEvalBroadcast
+ * @property {string} ShardingShardNotFound
+ * @property {string} ShardingAlreadySpawned
+ * @property {string} ShardingProcessExists
+ * @property {string} ShardingWorkerExists
+ * @property {string} ShardingReadyTimeout
+ * @property {string} ShardingReadyDisconnected
+ * @property {string} ShardingReadyDied
+ * @property {string} ShardingNoChildExists
+ * @property {string} ShardingShardMiscalculation
 
- * @property {string} COLOR_RANGE
- * @property {string} COLOR_CONVERT
+ * @property {string} ColorRange
+ * @property {string} ColorConvert
 
- * @property {string} INVITE_OPTIONS_MISSING_CHANNEL
+ * @property {string} InviteOptionsMissingChannel
 
- * @property {string} BUTTON_LABEL
- * @property {string} BUTTON_URL
- * @property {string} BUTTON_CUSTOM_ID
+ * @property {string} ButtonLabel
+ * @property {string} ButtonUrl
+ * @property {string} ButtonCustomId
 
- * @property {string} SELECT_MENU_CUSTOM_ID
- * @property {string} SELECT_MENU_PLACEHOLDER
- * @property {string} SELECT_OPTION_LABEL
- * @property {string} SELECT_OPTION_VALUE
- * @property {string} SELECT_OPTION_DESCRIPTION
+ * @property {string} SelectMenuCustomId
+ * @property {string} SelectMenuPlaceholder
+ * @property {string} SelectOptionLabel
+ * @property {string} SelectOptionValue
+ * @property {string} SelectOptionDescription
 
- * @property {string} INTERACTION_COLLECTOR_ERROR
+ * @property {string} InteractionCollectorError
 
- * @property {string} FILE_NOT_FOUND
+ * @property {string} FileNotFound
 
- * @property {string} USER_BANNER_NOT_FETCHED
- * @property {string} USER_NO_DM_CHANNEL
+ * @property {string} UserBannerNotFetched
+ * @property {string} UserNoDMChannel
 
- * @property {string} VOICE_NOT_STAGE_CHANNEL
+ * @property {string} VoiceNotStageChannel
 
- * @property {string} VOICE_STATE_NOT_OWN
- * @property {string} VOICE_STATE_INVALID_TYPE
+ * @property {string} VoiceStateNotOwn
+ * @property {string} VoiceStateInvalidType
 
- * @property {string} REQ_RESOURCE_TYPE
+ * @property {string} ReqResourceType
 
- * @property {string} IMAGE_FORMAT
- * @property {string} IMAGE_SIZE
+ * @property {string} ImageFormat
+ * @property {string} ImageSize
 
- * @property {string} MESSAGE_BULK_DELETE_TYPE
- * @property {string} MESSAGE_NONCE_TYPE
- * @property {string} MESSAGE_CONTENT_TYPE
+ * @property {string} MessageBulkDeleteType
+ * @property {string} MessageNonceType
+ * @property {string} MessageContentType
 
- * @property {string} SPLIT_MAX_LEN
+ * @property {string} SplitMaxLen
 
- * @property {string} BAN_RESOLVE_ID
- * @property {string} FETCH_BAN_RESOLVE_ID
+ * @property {string} BanResolveId
+ * @property {string} FetchBanResolveId
 
- * @property {string} PRUNE_DAYS_TYPE
+ * @property {string} PruneDaysType
 
- * @property {string} GUILD_CHANNEL_RESOLVE
- * @property {string} GUILD_VOICE_CHANNEL_RESOLVE
- * @property {string} GUILD_CHANNEL_ORPHAN
- * @property {string} GUILD_CHANNEL_UNOWNED
- * @property {string} GUILD_OWNED
- * @property {string} GUILD_MEMBERS_TIMEOUT
- * @property {string} GUILD_UNCACHED_ME
- * @property {string} CHANNEL_NOT_CACHED
- * @property {string} STAGE_CHANNEL_RESOLVE
- * @property {string} GUILD_SCHEDULED_EVENT_RESOLVE
- * @property {string} FETCH_OWNER_ID
+ * @property {string} GuildChannelResolve
+ * @property {string} GuildVoiceChannelResolve
+ * @property {string} GuildChannelOrphan
+ * @property {string} GuildChannelUnowned
+ * @property {string} GuildOwned
+ * @property {string} GuildMembersTimeout
+ * @property {string} GuildUncachedMe
+ * @property {string} ChannelNotCached
+ * @property {string} StageChannelResolve
+ * @property {string} GuildScheduledEventResolve
+ * @property {string} FetchOwnerId
 
- * @property {string} INVALID_TYPE
- * @property {string} INVALID_ELEMENT
+ * @property {string} InvalidType
+ * @property {string} InvalidElement
 
- * @property {string} MESSAGE_THREAD_PARENT
- * @property {string} MESSAGE_EXISTING_THREAD
- * @property {string} THREAD_INVITABLE_TYPE
+ * @property {string} MessageThreadParent
+ * @property {string} MessageExistingThread
+ * @property {string} ThreadInvitableType
 
- * @property {string} WEBHOOK_MESSAGE
- * @property {string} WEBHOOK_TOKEN_UNAVAILABLE
- * @property {string} WEBHOOK_URL_INVALID
- * @property {string} WEBHOOK_APPLICATION
- * @property {string} MESSAGE_REFERENCE_MISSING
+ * @property {string} WebhookMessage
+ * @property {string} WebhookTokenUnavailable
+ * @property {string} WebhookUrlInvalid
+ * @property {string} WebhookApplication
+ * @property {string} MessageReferenceMissing
 
- * @property {string} EMOJI_TYPE
- * @property {string} EMOJI_MANAGED
- * @property {string} MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION
- * @property {string} NOT_GUILD_STICKER
+ * @property {string} EmojiType
+ * @property {string} EmojiManaged
+ * @property {string} MissingManageEmojisAndStickersPermission
+ * @property {string} NotGuildSticker
 
- * @property {string} REACTION_RESOLVE_USER
+ * @property {string} ReactionResolveUser
 
- * @property {string} VANITY_URL
+ * @property {string} VanityURL
 
- * @property {string} INVITE_RESOLVE_CODE
+ * @property {string} InviteResolveCode
 
- * @property {string} INVITE_NOT_FOUND
+ * @property {string} InviteNotFound
 
- * @property {string} DELETE_GROUP_DM_CHANNEL
- * @property {string} FETCH_GROUP_DM_CHANNEL
+ * @property {string} DeleteGroupDMChannel
+ * @property {string} FetchGroupDMChannel
 
- * @property {string} MEMBER_FETCH_NONCE_LENGTH
+ * @property {string} MemberFetchNonceLength
 
- * @property {string} GLOBAL_COMMAND_PERMISSIONS
- * @property {string} GUILD_UNCACHED_ENTITY_RESOLVE
+ * @property {string} GlobalCommandPermissions
+ * @property {string} GuildUncachedEntityResolve
 
- * @property {string} INTERACTION_ALREADY_REPLIED
- * @property {string} INTERACTION_NOT_REPLIED
- * @property {string} INTERACTION_EPHEMERAL_REPLIED
+ * @property {string} InteractionAlreadyReplied
+ * @property {string} InteractionNotReplied
+ * @property {string} InteractionEphemeralReplied
 
- * @property {string} COMMAND_INTERACTION_OPTION_NOT_FOUND
- * @property {string} COMMAND_INTERACTION_OPTION_TYPE
- * @property {string} COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND
- * @property {string} COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP
- * @property {string} AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION
+ * @property {string} CommandInteractionOptionNotFound
+ * @property {string} CommandInteractionOptionType
+ * @property {string} CommandInteractionOptionNoSubCommand
+ * @property {string} CommandInteractionOptionNoSubCommandGroup
+ * @property {string} AutocompleteInteractionOptionNoFocusedOption
 
- * @property {string} MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND
- * @property {string} MODAL_SUBMIT_INTERACTION_FIELD_TYPE
+ * @property {string} ModalSubmitInteractionFieldNotFound
+ * @property {string} ModalSubmitInteractionFieldType
 
- * @property {string} INVITE_MISSING_SCOPES
+ * @property {string} InvalidMissingScopes
 
- * @property {string} NOT_IMPLEMENTED
+ * @property {string} NotImplemented
 
- * @property {string} SWEEP_FILTER_RETURN
+ * @property {string} SweepFilterReturn
  */
 
 // JSDoc for intellisense purposes
@@ -153,144 +153,144 @@ const { createEnum } = require('../util/Enums');
  * @ignore
  */
 module.exports = createEnum([
-  'CLIENT_INVALID_OPTION',
-  'CLIENT_INVALID_PROVIDED_SHARDS',
-  'CLIENT_MISSING_INTENTS',
-  'CLIENT_NOT_READY',
+  'ClientInvalidOption',
+  'ClientInvalidProvidedShards',
+  'ClientMissingIntents',
+  'ClientNotReady',
 
-  'TOKEN_INVALID',
-  'TOKEN_MISSING',
-  'APPLICATION_COMMAND_PERMISSIONS_TOKEN_MISSING',
+  'TokenInvalid',
+  'TokenMissing',
+  'ApplicationCommandPermissionsTokenMissing',
 
-  'WS_CLOSE_REQUESTED',
-  'WS_CONNECTION_EXISTS',
-  'WS_NOT_OPEN',
-  'MANAGER_DESTROYED',
+  'WSCloseRequested',
+  'WSConnectionExists',
+  'WSNotOpen',
+  'ManagerDestroyed',
 
-  'BITFIELD_INVALID',
+  'BitFieldInvalid',
 
-  'SHARDING_INVALID',
-  'SHARDING_REQUIRED',
-  'INVALID_INTENTS',
-  'DISALLOWED_INTENTS',
-  'SHARDING_NO_SHARDS',
-  'SHARDING_IN_PROCESS',
-  'SHARDING_INVALID_EVAL_BROADCAST',
-  'SHARDING_SHARD_NOT_FOUND',
-  'SHARDING_ALREADY_SPAWNED',
-  'SHARDING_PROCESS_EXISTS',
-  'SHARDING_WORKER_EXISTS',
-  'SHARDING_READY_TIMEOUT',
-  'SHARDING_READY_DISCONNECTED',
-  'SHARDING_READY_DIED',
-  'SHARDING_NO_CHILD_EXISTS',
-  'SHARDING_SHARD_MISCALCULATION',
+  'ShardingInvalid',
+  'ShardingRequired',
+  'InvalidIntents',
+  'DisallowedIntents',
+  'ShardingNoShards',
+  'ShardingInProcess',
+  'ShardingInvalidEvalBroadcast',
+  'ShardingShardNotFound',
+  'ShardingAlreadySpawned',
+  'ShardingProcessExists',
+  'ShardingWorkerExists',
+  'ShardingReadyTimeout',
+  'ShardingReadyDisconnected',
+  'ShardingReadyDied',
+  'ShardingNoChildExists',
+  'ShardingShardMiscalculation',
 
-  'COLOR_RANGE',
-  'COLOR_CONVERT',
+  'ColorRange',
+  'ColorConvert',
 
-  'INVITE_OPTIONS_MISSING_CHANNEL',
+  'InviteOptionsMissingChannel',
 
-  'BUTTON_LABEL',
-  'BUTTON_URL',
-  'BUTTON_CUSTOM_ID',
+  'ButtonLabel',
+  'ButtonUrl',
+  'ButtonCustomId',
 
-  'SELECT_MENU_CUSTOM_ID',
-  'SELECT_MENU_PLACEHOLDER',
-  'SELECT_OPTION_LABEL',
-  'SELECT_OPTION_VALUE',
-  'SELECT_OPTION_DESCRIPTION',
+  'SelectMenuCustomId',
+  'SelectMenuPlaceholder',
+  'SelectOptionLabel',
+  'SelectOptionValue',
+  'SelectOptionDescription',
 
-  'INTERACTION_COLLECTOR_ERROR',
+  'InteractionCollectorError',
 
-  'FILE_NOT_FOUND',
+  'FileNotFound',
 
-  'USER_BANNER_NOT_FETCHED',
-  'USER_NO_DM_CHANNEL',
+  'UserBannerNotFetched',
+  'UserNoDMChannel',
 
-  'VOICE_NOT_STAGE_CHANNEL',
+  'VoiceNotStageChannel',
 
-  'VOICE_STATE_NOT_OWN',
-  'VOICE_STATE_INVALID_TYPE',
+  'VoiceStateNotOwn',
+  'VoiceStateInvalidType',
 
-  'REQ_RESOURCE_TYPE',
+  'ReqResourceType',
 
-  'IMAGE_FORMAT',
-  'IMAGE_SIZE',
+  'ImageFormat',
+  'ImageSize',
 
-  'MESSAGE_BULK_DELETE_TYPE',
-  'MESSAGE_NONCE_TYPE',
-  'MESSAGE_CONTENT_TYPE',
+  'MessageBulkDeleteType',
+  'MessageNonceType',
+  'MessageContentType',
 
-  'SPLIT_MAX_LEN',
+  'SplitMaxLen',
 
-  'BAN_RESOLVE_ID',
-  'FETCH_BAN_RESOLVE_ID',
+  'BanResolveId',
+  'FetchBanResolveId',
 
-  'PRUNE_DAYS_TYPE',
+  'PruneDaysType',
 
-  'GUILD_CHANNEL_RESOLVE',
-  'GUILD_VOICE_CHANNEL_RESOLVE',
-  'GUILD_CHANNEL_ORPHAN',
-  'GUILD_CHANNEL_UNOWNED',
-  'GUILD_OWNED',
-  'GUILD_MEMBERS_TIMEOUT',
-  'GUILD_UNCACHED_ME',
-  'CHANNEL_NOT_CACHED',
-  'STAGE_CHANNEL_RESOLVE',
-  'GUILD_SCHEDULED_EVENT_RESOLVE',
-  'FETCH_OWNER_ID',
+  'GuildChannelResolve',
+  'GuildVoiceChannelResolve',
+  'GuildChannelOrphan',
+  'GuildChannelUnowned',
+  'GuildOwned',
+  'GuildMembersTimeout',
+  'GuildUncachedMe',
+  'ChannelNotCached',
+  'StageChannelResolve',
+  'GuildScheduledEventResolve',
+  'FetchOwnerId',
 
-  'INVALID_TYPE',
-  'INVALID_ELEMENT',
+  'InvalidType',
+  'InvalidElement',
 
-  'MESSAGE_THREAD_PARENT',
-  'MESSAGE_EXISTING_THREAD',
-  'THREAD_INVITABLE_TYPE',
+  'MessageThreadParent',
+  'MessageExistingThread',
+  'ThreadInvitableType',
 
-  'WEBHOOK_MESSAGE',
-  'WEBHOOK_TOKEN_UNAVAILABLE',
-  'WEBHOOK_URL_INVALID',
-  'WEBHOOK_APPLICATION',
-  'MESSAGE_REFERENCE_MISSING',
+  'WebhookMessage',
+  'WebhookTokenUnavailable',
+  'WebhookUrlInvalid',
+  'WebhookApplication',
+  'MessageReferenceMissing',
 
-  'EMOJI_TYPE',
-  'EMOJI_MANAGED',
-  'MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION',
-  'NOT_GUILD_STICKER',
+  'EmojiType',
+  'EmojiManaged',
+  'MissingManageEmojisAndStickersPermission',
+  'NotGuildSticker',
 
-  'REACTION_RESOLVE_USER',
+  'ReactionResolveUser',
 
-  'VANITY_URL',
+  'VanityURL',
 
-  'INVITE_RESOLVE_CODE',
+  'InviteResolveCode',
 
-  'INVITE_NOT_FOUND',
+  'InviteNotFound',
 
-  'DELETE_GROUP_DM_CHANNEL',
-  'FETCH_GROUP_DM_CHANNEL',
+  'DeleteGroupDMChannel',
+  'FetchGroupDMChannel',
 
-  'MEMBER_FETCH_NONCE_LENGTH',
+  'MemberFetchNonceLength',
 
-  'GLOBAL_COMMAND_PERMISSIONS',
-  'GUILD_UNCACHED_ENTITY_RESOLVE',
+  'GlobalCommandPermissions',
+  'GuildUncachedEntityResolve',
 
-  'INTERACTION_ALREADY_REPLIED',
-  'INTERACTION_NOT_REPLIED',
-  'INTERACTION_EPHEMERAL_REPLIED',
+  'InteractionAlreadyReplied',
+  'InteractionNotReplied',
+  'InteractionEphemeralReplied',
 
-  'COMMAND_INTERACTION_OPTION_NOT_FOUND',
-  'COMMAND_INTERACTION_OPTION_TYPE',
-  'COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND',
-  'COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP',
-  'AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION',
+  'CommandInteractionOptionNotFound',
+  'CommandInteractionOptionType',
+  'CommandInteractionOptionNoSubCommand',
+  'CommandInteractionOptionNoSubCommandGroup',
+  'AutocompleteInteractionOptionNoFocusedOption',
 
-  'MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND',
-  'MODAL_SUBMIT_INTERACTION_FIELD_TYPE',
+  'ModalSubmitInteractionFieldNotFound',
+  'ModalSubmitInteractionFieldType',
 
-  'INVITE_MISSING_SCOPES',
+  'InvalidMissingScopes',
 
-  'NOT_IMPLEMENTED',
+  'NotImplemented',
 
-  'SWEEP_FILTER_RETURN',
+  'SweepFilterReturn',
 ]);

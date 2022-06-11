@@ -63,7 +63,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deferReply(options = {}) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.INTERACTION_ALREADY_REPLIED);
+    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
     this.ephemeral = options.ephemeral ?? false;
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
@@ -98,7 +98,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async reply(options) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.INTERACTION_ALREADY_REPLIED);
+    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
     this.ephemeral = options.ephemeral ?? false;
 
     let messagePayload;
@@ -146,7 +146,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async editReply(options) {
-    if (!this.deferred && !this.replied) throw new Error(ErrorCodes.INTERACTION_NOT_REPLIED);
+    if (!this.deferred && !this.replied) throw new Error(ErrorCodes.InteractionNotReplied);
     const message = await this.webhook.editMessage('@original', options);
     this.replied = true;
     return message;
@@ -163,7 +163,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deleteReply() {
-    if (this.ephemeral) throw new Error(ErrorCodes.INTERACTION_EPHEMERAL_REPLIED);
+    if (this.ephemeral) throw new Error(ErrorCodes.InteractionEphemeralReplied);
     await this.webhook.deleteMessage('@original');
   }
 
@@ -173,7 +173,7 @@ class InteractionResponses {
    * @returns {Promise<Message|APIMessage>}
    */
   followUp(options) {
-    if (!this.deferred && !this.replied) return Promise.reject(new Error(ErrorCodes.INTERACTION_NOT_REPLIED));
+    if (!this.deferred && !this.replied) return Promise.reject(new Error(ErrorCodes.InteractionNotReplied));
     return this.webhook.send(options);
   }
 
@@ -188,7 +188,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deferUpdate(options = {}) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.INTERACTION_ALREADY_REPLIED);
+    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.DeferredMessageUpdate,
@@ -214,7 +214,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async update(options) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.INTERACTION_ALREADY_REPLIED);
+    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
 
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
@@ -240,7 +240,7 @@ class InteractionResponses {
    * @param {APIModal|ModalData|Modal} modal The modal to show
    */
   async showModal(modal) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.INTERACTION_ALREADY_REPLIED);
+    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.Modal,
@@ -270,14 +270,14 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   awaitModalSubmit(options) {
-    if (typeof options.time !== 'number') throw new Error(ErrorCodes.INVALID_TYPE, 'time', 'number');
+    if (typeof options.time !== 'number') throw new Error(ErrorCodes.InvalidType, 'time', 'number');
     const _options = { ...options, max: 1, interactionType: InteractionType.ModalSubmit };
     return new Promise((resolve, reject) => {
       const collector = new InteractionCollector(this.client, _options);
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.INTERACTION_COLLECTOR_ERROR, reason));
+        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }

@@ -123,18 +123,18 @@ class GuildInviteManager extends CachedManager {
     if (!options) return this._fetchMany();
     if (typeof options === 'string') {
       const code = DataResolver.resolveInviteCode(options);
-      if (!code) return Promise.reject(new Error(ErrorCodes.INVITE_RESOLVE_CODE));
+      if (!code) return Promise.reject(new Error(ErrorCodes.InviteResolveCode));
       return this._fetchSingle({ code, cache: true });
     }
     if (!options.code) {
       if (options.channelId) {
         const id = this.guild.channels.resolveId(options.channelId);
-        if (!id) return Promise.reject(new Error(ErrorCodes.GUILD_CHANNEL_RESOLVE));
+        if (!id) return Promise.reject(new Error(ErrorCodes.GuildChannelResolve));
         return this._fetchChannelMany(id, options.cache);
       }
 
       if ('cache' in options) return this._fetchMany(options.cache);
-      return Promise.reject(new Error(ErrorCodes.INVITE_RESOLVE_CODE));
+      return Promise.reject(new Error(ErrorCodes.InviteResolveCode));
     }
     return this._fetchSingle({
       ...options,
@@ -150,7 +150,7 @@ class GuildInviteManager extends CachedManager {
 
     const invites = await this._fetchMany(cache);
     const invite = invites.get(code);
-    if (!invite) throw new Error(ErrorCodes.INVITE_NOT_FOUND);
+    if (!invite) throw new Error(ErrorCodes.InviteNotFound);
     return invite;
   }
 
@@ -180,7 +180,7 @@ class GuildInviteManager extends CachedManager {
     { temporary, maxAge, maxUses, unique, targetUser, targetApplication, targetType, reason } = {},
   ) {
     const id = this.guild.channels.resolveId(channel);
-    if (!id) throw new Error(ErrorCodes.GUILD_CHANNEL_RESOLVE);
+    if (!id) throw new Error(ErrorCodes.GuildChannelResolve);
 
     const invite = await this.client.rest.post(Routes.channelInvites(id), {
       body: {

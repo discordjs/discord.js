@@ -318,7 +318,7 @@ class WebSocketManager extends EventEmitter {
    */
   destroy() {
     if (this.destroyed) return;
-    this.debug(`Manager was destroyed. Called by:\n${new Error(ErrorCodes.MANAGER_DESTROYED).stack}`);
+    this.debug(`Manager was destroyed. Called by:\n${new Error(ErrorCodes.ManagerDestroyed).stack}`);
     this.destroyed = true;
     this.shardQueue.clear();
     for (const shard of this.shards.values()) shard.destroy({ closeCode: 1_000, reset: true, emit: false, log: false });

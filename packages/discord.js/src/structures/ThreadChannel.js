@@ -369,7 +369,7 @@ class ThreadChannel extends Channel {
    */
   setInvitable(invitable = true, reason) {
     if (this.type !== ChannelType.GuildPrivateThread) {
-      return Promise.reject(new RangeError(ErrorCodes.THREAD_INVITABLE_TYPE, this.type));
+      return Promise.reject(new RangeError(ErrorCodes.ThreadInvitableType, this.type));
     }
     return this.edit({ invitable, reason });
   }

@@ -64,10 +64,10 @@ class ShardingManager extends EventEmitter {
      * @type {string}
      */
     this.file = file;
-    if (!file) throw new Error(ErrorCodes.CLIENT_INVALID_OPTION, 'File', 'specified.');
+    if (!file) throw new Error(ErrorCodes.ClientInvalidOption, 'File', 'specified.');
     if (!path.isAbsolute(file)) this.file = path.resolve(process.cwd(), file);
     const stats = fs.statSync(this.file);
-    if (!stats.isFile()) throw new Error(ErrorCodes.CLIENT_INVALID_OPTION, 'File', 'a file');
+    if (!stats.isFile()) throw new Error(ErrorCodes.ClientInvalidOption, 'File', 'a file');
 
     /**
      * List of shards this sharding manager spawns
@@ -76,18 +76,18 @@ class ShardingManager extends EventEmitter {
     this.shardList = options.shardList ?? 'auto';
     if (this.shardList !== 'auto') {
       if (!Array.isArray(this.shardList)) {
-        throw new TypeError(ErrorCodes.CLIENT_INVALID_OPTION, 'shardList', 'an array.');
+        throw new TypeError(ErrorCodes.ClientInvalidOption, 'shardList', 'an array.');
       }
       this.shardList = [...new Set(this.shardList)];
       if (this.shardList.length < 1) {
-        throw new RangeError(ErrorCodes.CLIENT_INVALID_OPTION, 'shardList', 'at least 1 id.');
+        throw new RangeError(ErrorCodes.ClientInvalidOption, 'shardList', 'at least 1 id.');
       }
       if (
         this.shardList.some(
           shardId => typeof shardId !== 'number' || isNaN(shardId) || !Number.isInteger(shardId) || shardId < 0,
         )
       ) {
-        throw new TypeError(ErrorCodes.CLIENT_INVALID_OPTION, 'shardList', 'an array of positive integers.');
+        throw new TypeError(ErrorCodes.ClientInvalidOption, 'shardList', 'an array of positive integers.');
       }
     }
 
@@ -98,13 +98,13 @@ class ShardingManager extends EventEmitter {
     this.totalShards = options.totalShards || 'auto';
     if (this.totalShards !== 'auto') {
       if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
-        throw new TypeError(ErrorCodes.CLIENT_INVALID_OPTION, 'Amount of shards', 'a number.');
+        throw new TypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');
       }
       if (this.totalShards < 1) {
-        throw new RangeError(ErrorCodes.CLIENT_INVALID_OPTION, 'Amount of shards', 'at least 1.');
+        throw new RangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'at least 1.');
       }
       if (!Number.isInteger(this.totalShards)) {
-        throw new RangeError(ErrorCodes.CLIENT_INVALID_OPTION, 'Amount of shards', 'an integer.');
+        throw new RangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'an integer.');
       }
     }
 
@@ -114,7 +114,7 @@ class ShardingManager extends EventEmitter {
      */
     this.mode = options.mode;
     if (this.mode !== 'process' && this.mode !== 'worker') {
-      throw new RangeError(ErrorCodes.CLIENT_INVALID_OPTION, 'Sharding mode', '"process" or "worker"');
+      throw new RangeError(ErrorCodes.ClientInvalidOption, 'Sharding mode', '"process" or "worker"');
     }
 
     /**
@@ -190,16 +190,16 @@ class ShardingManager extends EventEmitter {
       amount = await fetchRecommendedShards(this.token);
     } else {
       if (typeof amount !== 'number' || isNaN(amount)) {
-        throw new TypeError(ErrorCodes.CLIENT_INVALID_OPTION, 'Amount of shards', 'a number.');
+        throw new TypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');
       }
-      if (amount < 1) throw new RangeError(ErrorCodes.CLIENT_INVALID_OPTION, 'Amount of shards', 'at least 1.');
+      if (amount < 1) throw new RangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'at least 1.');
       if (!Number.isInteger(amount)) {
-        throw new TypeError(ErrorCodes.CLIENT_INVALID_OPTION, 'Amount of shards', 'an integer.');
+        throw new TypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'an integer.');
       }
     }
 
     // Make sure this many shards haven't already been spawned
-    if (this.shards.size >= amount) throw new Error(ErrorCodes.SHARDING_ALREADY_SPAWNED, this.shards.size);
+    if (this.shards.size >= amount) throw new Error(ErrorCodes.ShardingAlreadySpawned, this.shards.size);
     if (this.shardList === 'auto' || this.totalShards === 'auto' || this.totalShards !== amount) {
       this.shardList = [...Array(amount).keys()];
     }
@@ -209,7 +209,7 @@ class ShardingManager extends EventEmitter {
 
     if (this.shardList.some(shardId => shardId >= amount)) {
       throw new RangeError(
-        'CLIENT_INVALID_OPTION',
+        'ClientInvalidOption',
         'Amount of shards',
         'bigger than the highest shardId in the shardList option.',
       );
@@ -252,7 +252,7 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<*|Array<*>>} Results of the script execution
    */
   broadcastEval(script, options = {}) {
-    if (typeof script !== 'function') return Promise.reject(new TypeError(ErrorCodes.SHARDING_INVALID_EVAL_BROADCAST));
+    if (typeof script !== 'function') return Promise.reject(new TypeError(ErrorCodes.ShardingInvalidEvalBroadcast));
     return this._performOnShards('eval', [`(${script})(this, ${JSON.stringify(options.context)})`], options.shard);
   }
 
@@ -279,14 +279,14 @@ class ShardingManager extends EventEmitter {
    * @private
    */
   _performOnShards(method, args, shard) {
-    if (this.shards.size === 0) return Promise.reject(new Error(ErrorCodes.SHARDING_NO_SHARDS));
+    if (this.shards.size === 0) return Promise.reject(new Error(ErrorCodes.ShardingNoShards));
 
     if (typeof shard === 'number') {
       if (this.shards.has(shard)) return this.shards.get(shard)[method](...args);
-      return Promise.reject(new Error(ErrorCodes.SHARDING_SHARD_NOT_FOUND, shard));
+      return Promise.reject(new Error(ErrorCodes.ShardingShardNotFound, shard));
     }
 
-    if (this.shards.size !== this.shardList.length) return Promise.reject(new Error(ErrorCodes.SHARDING_IN_PROCESS));
+    if (this.shards.size !== this.shardList.length) return Promise.reject(new Error(ErrorCodes.ShardingInProcess));
 
     const promises = [];
     for (const sh of this.shards.values()) promises.push(sh[method](...args));

@@ -219,20 +219,20 @@ class VoiceState extends Base {
    * @returns {Promise<VoiceState>}
    */
   async edit(data) {
-    if (this.channel?.type !== ChannelType.GuildStageVoice) throw new Error(ErrorCodes.VOICE_NOT_STAGE_CHANNEL);
+    if (this.channel?.type !== ChannelType.GuildStageVoice) throw new Error(ErrorCodes.VoiceNotStageChannel);
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
 
     if (target !== '@me' && typeof data.requestToSpeak !== 'undefined') {
-      throw new Error(ErrorCodes.VOICE_STATE_NOT_OWN);
+      throw new Error(ErrorCodes.VoiceStateNotOwn);
     }
 
     if (!['boolean', 'undefined'].includes(typeof data.requestToSpeak)) {
-      throw new TypeError(ErrorCodes.VOICE_STATE_INVALID_TYPE, 'requestToSpeak');
+      throw new TypeError(ErrorCodes.VoiceStateInvalidType, 'requestToSpeak');
     }
 
     if (!['boolean', 'undefined'].includes(typeof data.suppressed)) {
-      throw new TypeError(ErrorCodes.VOICE_STATE_INVALID_TYPE, 'suppressed');
+      throw new TypeError(ErrorCodes.VoiceStateInvalidType, 'suppressed');
     }
 
     await this.client.rest.patch(Routes.guildVoiceState(this.guild.id, target), {

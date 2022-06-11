@@ -63,7 +63,7 @@ class ReactionUserManager extends CachedManager {
    */
   async remove(user = this.client.user) {
     const userId = this.client.users.resolveId(user);
-    if (!userId) throw new Error(ErrorCodes.REACTION_RESOLVE_USER);
+    if (!userId) throw new Error(ErrorCodes.ReactionResolveUser);
     const message = this.reaction.message;
     const route =
       userId === this.client.user.id

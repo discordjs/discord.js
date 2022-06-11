@@ -246,7 +246,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   lockPermissions() {
-    if (!this.parent) return Promise.reject(new Error(ErrorCodes.GUILD_CHANNEL_ORPHAN));
+    if (!this.parent) return Promise.reject(new Error(ErrorCodes.GuildChannelOrphan));
     const permissionOverwrites = this.parent.permissionOverwrites.cache.map(overwrite => overwrite.toJSON());
     return this.edit({ permissionOverwrites });
   }

@@ -141,7 +141,7 @@ class ShardClientUtil {
     return new Promise((resolve, reject) => {
       const parent = this.parentPort ?? process;
       if (typeof script !== 'function') {
-        reject(new TypeError(ErrorCodes.SHARDING_INVALID_EVAL_BROADCAST));
+        reject(new TypeError(ErrorCodes.ShardingInvalidEvalBroadcast));
         return;
       }
       script = `(${script})(this, ${JSON.stringify(options.context)})`;
@@ -246,7 +246,7 @@ class ShardClientUtil {
    */
   static shardIdForGuildId(guildId, shardCount) {
     const shard = Number(BigInt(guildId) >> 22n) % shardCount;
-    if (shard < 0) throw new Error(ErrorCodes.SHARDING_SHARD_MISCALCULATION, shard, guildId, shardCount);
+    if (shard < 0) throw new Error(ErrorCodes.ShardingShardMiscalculation, shard, guildId, shardCount);
     return shard;
   }
 

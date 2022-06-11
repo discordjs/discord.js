@@ -81,7 +81,7 @@ class AutocompleteInteraction extends Interaction {
    *  .catch(console.error);
    */
   async respond(options) {
-    if (this.responded) throw new Error(ErrorCodes.INTERACTION_ALREADY_REPLIED);
+    if (this.responded) throw new Error(ErrorCodes.InteractionAlreadyReplied);
 
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {

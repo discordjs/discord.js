@@ -46,11 +46,11 @@ class PartialGroupDMChannel extends Channel {
   }
 
   delete() {
-    return Promise.reject(new Error(ErrorCodes.DELETE_GROUP_DM_CHANNEL));
+    return Promise.reject(new Error(ErrorCodes.DeleteGroupDMChannel));
   }
 
   fetch() {
-    return Promise.reject(new Error(ErrorCodes.FETCH_GROUP_DM_CHANNEL));
+    return Promise.reject(new Error(ErrorCodes.FetchGroupDMChannel));
   }
 }
 
