@@ -229,13 +229,13 @@ class ApplicationCommandManager extends CachedManager {
 
     if ('default_member_permissions' in command) {
       default_member_permissions = command.default_member_permissions
-        ? new PermissionsBitField(BigInt(command.default_member_permissions)).bitfield
+        ? new PermissionsBitField(BigInt(command.default_member_permissions)).bitfield.toString()
         : command.default_member_permissions;
     }
 
     if ('defaultMemberPermissions' in command) {
       default_member_permissions = command.defaultMemberPermissions
-        ? new PermissionsBitField(command.defaultMemberPermissions).bitfield
+        ? new PermissionsBitField(command.defaultMemberPermissions).bitfield.toString()
         : command.defaultMemberPermissions;
     }
 
@@ -246,7 +246,7 @@ class ApplicationCommandManager extends CachedManager {
       description_localizations: command.descriptionLocalizations ?? command.description_localizations,
       type: command.type,
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
-      default_member_permissions: command.defaultMemberPermissions ? command.default_member_permissions,
+      default_member_permissions,
       dm_permission: command.dmPermission ?? command.dm_permission,
     };
   }
