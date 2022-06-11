@@ -4388,10 +4388,10 @@ export interface AuditLogChange {
 
 export interface AutoModRuleAction {
   type: number;
-  metadata: AutoModRuleActionMetaData;
+  metadata: AutoModRuleActionMetadata;
 }
 
-export interface AutoModRuleActionMetaData {
+export interface AutoModRuleActionMetadata {
   channelId: Snowflake;
   durationSeconds: number;
 }
