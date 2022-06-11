@@ -246,7 +246,7 @@ class ApplicationCommandManager extends CachedManager {
       description_localizations: command.descriptionLocalizations ?? command.description_localizations,
       type: command.type,
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
-      default_member_permissions: default_member_permissions,
+      default_member_permissions: command.defaultMemberPermissions ? command.default_member_permissions,
       dm_permission: command.dmPermission ?? command.dm_permission,
     };
   }
