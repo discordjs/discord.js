@@ -44,7 +44,7 @@ const { createEnum } = require('../util/Enums');
  * @property {string} InviteOptionsMissingChannel
 
  * @property {string} ButtonLabel
- * @property {string} ButtonUrl
+ * @property {string} ButtonURL
  * @property {string} ButtonCustomId
 
  * @property {string} SelectMenuCustomId
@@ -102,7 +102,7 @@ const { createEnum } = require('../util/Enums');
 
  * @property {string} WebhookMessage
  * @property {string} WebhookTokenUnavailable
- * @property {string} WebhookUrlInvalid
+ * @property {string} WebhookURLInvalid
  * @property {string} WebhookApplication
  * @property {string} MessageReferenceMissing
 
@@ -192,7 +192,7 @@ module.exports = createEnum([
   'InviteOptionsMissingChannel',
 
   'ButtonLabel',
-  'ButtonUrl',
+  'ButtonURL',
   'ButtonCustomId',
 
   'SelectMenuCustomId',
@@ -250,7 +250,7 @@ module.exports = createEnum([
 
   'WebhookMessage',
   'WebhookTokenUnavailable',
-  'WebhookUrlInvalid',
+  'WebhookURLInvalid',
   'WebhookApplication',
   'MessageReferenceMissing',
 

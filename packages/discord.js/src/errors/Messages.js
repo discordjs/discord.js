@@ -45,7 +45,7 @@ const Messages = {
     'A valid guild channel must be provided when GuildScheduledEvent is EXTERNAL.',
 
   [DjsErrorCodes.ButtonLabel]: 'MessageButton label must be a string',
-  [DjsErrorCodes.ButtonUrl]: 'MessageButton URL must be a string',
+  [DjsErrorCodes.ButtonURL]: 'MessageButton URL must be a string',
   [DjsErrorCodes.ButtonCustomId]: 'MessageButton customId must be a string',
 
   [DjsErrorCodes.SelectMenuCustomId]: 'MessageSelectMenu customId must be a string',
@@ -105,7 +105,7 @@ const Messages = {
 
   [DjsErrorCodes.WebhookMessage]: 'The message was not sent by a webhook.',
   [DjsErrorCodes.WebhookTokenUnavailable]: 'This action requires a webhook token, but none is available.',
-  [DjsErrorCodes.WebhookUrlInvalid]: 'The provided webhook URL is not valid.',
+  [DjsErrorCodes.WebhookURLInvalid]: 'The provided webhook URL is not valid.',
   [DjsErrorCodes.WebhookApplication]: 'This message webhook belongs to an application and cannot be fetched.',
   [DjsErrorCodes.MessageReferenceMissing]: 'The message does not reference another message',
 

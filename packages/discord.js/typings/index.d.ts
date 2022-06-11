@@ -3036,7 +3036,7 @@ export enum DiscordjsErrorCodes {
   InviteOptionsMissingChannel,
 
   ButtonLabel,
-  ButtonUrl,
+  ButtonURL,
   ButtonCustomId,
 
   SelectMenuCustomId,
@@ -3094,7 +3094,7 @@ export enum DiscordjsErrorCodes {
 
   WebhookMessage,
   WebhookTokenUnavailable,
-  WebhookUrlInvalid,
+  WebhookURLInvalid,
   WebhookApplication,
   MessageReferenceMissing,
 
