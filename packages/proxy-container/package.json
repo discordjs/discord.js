@@ -10,13 +10,7 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/proxy-container/*'"
 	},
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"typings": "./dist/index.d.ts",
-	"exports": {
-		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
-	},
+	"type": "module",
 	"directories": {
 		"lib": "src"
 	},
