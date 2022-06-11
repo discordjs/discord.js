@@ -357,7 +357,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 
     if (!permissionId) {
       throw new TypeError(
-        'InvalidType',
+        ErrorCodes.InvalidType,
         'permissionId',
         'UserResolvable, RoleResolvable, ChannelResolvable, or Permission Constant',
       );
@@ -374,7 +374,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       }
       if (!resolvedId) {
         throw new TypeError(
-          'InvalidType',
+          ErrorCodes.InvalidType,
           'permissionId',
           'UserResolvable, RoleResolvable, ChannelResolvable, or Permission Constant',
         );

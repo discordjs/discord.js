@@ -48,12 +48,12 @@ class AnonymousGuild extends BaseGuild {
       this.verificationLevel = data.verification_level;
     }
 
-    if ('VanityURL_code' in data) {
+    if ('vanity_url_code' in data) {
       /**
        * The vanity invite code of the guild, if any
        * @type {?string}
        */
-      this.vanityURLCode = data.VanityURL_code;
+      this.vanityURLCode = data.vanity_url_code;
     }
 
     if ('nsfw_level' in data) {
