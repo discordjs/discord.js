@@ -37,77 +37,91 @@ class AutoModRule extends Base {
   }
 
   _patch(data) {
-    /**
-     * The name of this rule.
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of this rule.
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The event type of this rule.
-     * @type {number}
-     */
-    this.eventType = data.event_type;
+    if ('event_type' in data) {
+      /**
+       * The event type of this rule.
+       * @type {number}
+       */
+      this.eventType = data.event_type;
+    }
 
-    /**
-     * Additional data used to determine whether an {@link AutoModRule} should be triggered.
-     * @typedef {Object} AutoModTriggerMetadata
-     * @property {string[]} keywordFilter The substrings that will be searched for in the content
-     * @property {number} preset The internally pre-defined wordsets which will be searched for in content
-     */
+    if ('trigger_metadata' in data) {
+      /**
+       * Additional data used to determine whether an {@link AutoModRule} should be triggered.
+       * @typedef {Object} AutoModTriggerMetadata
+       * @property {string[]} keywordFilter The substrings that will be searched for in the content
+       * @property {number} preset The internally pre-defined wordsets which will be searched for in content
+       */
 
-    /**
-     * The trigger metadata of the rule.
-     * @type {AutoModTriggerMetadata}
-     */
-    this.triggerMetadata = {
-      keywordFilter: data.trigger_metadata.keyword_filter,
-      presets: data.trigger_metadata.presets,
-    };
+      /**
+       * The trigger metadata of the rule.
+       * @type {AutoModTriggerMetadata}
+       */
+      this.triggerMetadata = {
+        keywordFilter: data.trigger_metadata.keyword_filter,
+        presets: data.trigger_metadata.presets,
+      };
+    }
 
-    /**
-     * An object containing information about an {@link AutoModRule} action.
-     * @typedef {Object} AutoModRuleAction
-     * @property {number} type The type of this AutoMod rule action
-     * @property {AutoModActionMetadata} metadata Additional metadata needed during execution
-     */
+    if ('actions' in data) {
+      /**
+       * An object containing information about an {@link AutoModRule} action.
+       * @typedef {Object} AutoModRuleAction
+       * @property {number} type The type of this AutoMod rule action
+       * @property {AutoModActionMetadata} metadata Additional metadata needed during execution
+       */
 
-    /**
-     * Additional data used when an {@link AutoModRule} is executed.
-     * @typedef {Object} AutoModActionMetadata
-     * @property {Snowflake} channelId The id of the channel to which content will be logged
-     * @property {number} durationSeconds The timeout duration in seconds
-     */
+      /**
+       * Additional data used when an {@link AutoModRule} is executed.
+       * @typedef {Object} AutoModActionMetadata
+       * @property {Snowflake} channelId The id of the channel to which content will be logged
+       * @property {number} durationSeconds The timeout duration in seconds
+       */
 
-    /**
-     * The actions of this rule.
-     * @type {AutoModRuleAction[]}
-     */
-    this.actions = data.actions.map(action => ({
-      type: action.type,
-      metadata: {
-        durationSeconds: action.metadata.duration_seconds,
-        channelId: action.metadata.channel_id,
-      },
-    }));
+      /**
+       * The actions of this rule.
+       * @type {AutoModRuleAction[]}
+       */
+      this.actions = data.actions.map(action => ({
+        type: action.type,
+        metadata: {
+          durationSeconds: action.metadata.duration_seconds,
+          channelId: action.metadata.channel_id,
+        },
+      }));
+    }
 
-    /**
-     * Whether this rule is enabled.
-     * @type {boolean}
-     */
-    this.enabled = data.enabled;
+    if ('enabled' in data) {
+      /**
+       * Whether this rule is enabled.
+       * @type {boolean}
+       */
+      this.enabled = data.enabled;
+    }
 
-    /**
-     * A list of roles exempt by this rule.
-     * @type {Snowflake[]}
-     */
-    this.exemptRoles = data.exempt_roles;
+    if ('exempt_roles' in data) {
+      /**
+       * A list of roles exempt by this rule.
+       * @type {Snowflake[]}
+       */
+      this.exemptRoles = data.exempt_roles;
+    }
 
-    /**
-     * A list of channels exempt by this rule.
-     * @type {Snowflake[]}
-     */
-    this.exemptChannels = data.exempt_channels;
+    if ('exempt_channels' in data) {
+      /**
+       * A list of channels exempt by this rule.
+       * @type {Snowflake[]}
+       */
+      this.exemptChannels = data.exempt_channels;
+    }
   }
 }
 
