@@ -258,17 +258,17 @@ class CommandInteractionOptionResolver {
 
   /**
    * The full autocomplete option object.
-   * @typedef {Object} AutocompleteOption
+   * @typedef {Object} AutocompleteFocusedOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the application command option
-   * @property {string|number} value The value of the option
+   * @property {string} value The value of the option
    * @property {boolean} focused Whether this option is currently in focus for autocomplete
    */
 
   /**
    * Gets the focused option.
    * @param {boolean} [getFull=false] Whether to get the full option object
-   * @returns {string|number|AutocompleteOption}
+   * @returns {string|AutocompleteFocusedOption}
    * The value of the option, or the whole option if getFull is true
    */
   getFocused(getFull = false) {
