@@ -3705,7 +3705,7 @@ export interface ApplicationCommandPermissionsUpdateData {
   id: Snowflake;
   guildId: Snowflake;
   applicationId: Snowflake;
-  permissions: ApplicationCommandPermissions;
+  permissions: ApplicationCommandPermissions[];
 }
 
 export interface EditApplicationCommandPermissionsMixin {
