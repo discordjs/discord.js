@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { TypeError } = require('../errors/DJSError.js');
+const ErrorCodes = require('../errors/ErrorCodes.js');
 
 /**
  * Options for defining the behavior of a LimitedCollection
@@ -20,15 +21,15 @@ const { TypeError } = require('../errors/DJSError.js');
 class LimitedCollection extends Collection {
   constructor(options = {}, iterable) {
     if (typeof options !== 'object' || options === null) {
-      throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+      throw new TypeError(ErrorCodes.INVALID_TYPE, 'options', 'object', true);
     }
     const { maxSize = Infinity, keepOverLimit = null } = options;
 
     if (typeof maxSize !== 'number') {
-      throw new TypeError('INVALID_TYPE', 'maxSize', 'number');
+      throw new TypeError(ErrorCodes.INVALID_TYPE, 'maxSize', 'number');
     }
     if (keepOverLimit !== null && typeof keepOverLimit !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'keepOverLimit', 'function');
+      throw new TypeError(ErrorCodes.INVALID_TYPE, 'keepOverLimit', 'function');
     }
 
     super(iterable);

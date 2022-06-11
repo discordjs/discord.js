@@ -10,6 +10,13 @@ exports.ShardClientUtil = require('./sharding/ShardClientUtil');
 exports.ShardingManager = require('./sharding/ShardingManager');
 exports.WebhookClient = require('./client/WebhookClient');
 
+// Errors
+const { Error, RangeError, TypeError } = require('./errors/DJSError');
+exports.DiscordjsError = Error;
+exports.DiscordjsRangeError = RangeError;
+exports.DiscordjsTypeError = TypeError;
+exports.DiscordjsErrorCodes = require('./errors/ErrorCodes');
+
 // Utilities
 exports.ActivityFlagsBitField = require('./util/ActivityFlagsBitField');
 exports.ApplicationFlagsBitField = require('./util/ApplicationFlagsBitField');

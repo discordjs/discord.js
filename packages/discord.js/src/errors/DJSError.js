@@ -12,9 +12,9 @@ const kCode = Symbol('code');
  */
 function makeDiscordjsError(Base) {
   return class DiscordjsError extends Base {
-    constructor(key, ...args) {
-      super(message(key, args));
-      this[kCode] = key;
+    constructor(code, ...args) {
+      super(message(code, args));
+      this[kCode] = code;
       if (Error.captureStackTrace) Error.captureStackTrace(this, DiscordjsError);
     }
 

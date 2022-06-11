@@ -2,7 +2,7 @@
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { Error, TypeError } = require('../errors');
+const { Error, TypeError, ErrorCodes } = require('../errors');
 
 /**
  * Represents the voice state for a Guild Member.
@@ -219,20 +219,20 @@ class VoiceState extends Base {
    * @returns {Promise<VoiceState>}
    */
   async edit(data) {
-    if (this.channel?.type !== ChannelType.GuildStageVoice) throw new Error('VOICE_NOT_STAGE_CHANNEL');
+    if (this.channel?.type !== ChannelType.GuildStageVoice) throw new Error(ErrorCodes.VOICE_NOT_STAGE_CHANNEL);
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
 
     if (target !== '@me' && typeof data.requestToSpeak !== 'undefined') {
-      throw new Error('VOICE_STATE_NOT_OWN');
+      throw new Error(ErrorCodes.VOICE_STATE_NOT_OWN);
     }
 
     if (!['boolean', 'undefined'].includes(typeof data.requestToSpeak)) {
-      throw new TypeError('VOICE_STATE_INVALID_TYPE', 'requestToSpeak');
+      throw new TypeError(ErrorCodes.VOICE_STATE_INVALID_TYPE, 'requestToSpeak');
     }
 
     if (!['boolean', 'undefined'].includes(typeof data.suppressed)) {
-      throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
+      throw new TypeError(ErrorCodes.VOICE_STATE_INVALID_TYPE, 'suppressed');
     }
 
     await this.client.rest.patch(Routes.guildVoiceState(this.guild.id, target), {

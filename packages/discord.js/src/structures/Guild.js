@@ -11,7 +11,7 @@ const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
-const { Error, TypeError } = require('../errors');
+const { Error, TypeError, ErrorCodes } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
@@ -453,7 +453,7 @@ class Guild extends AnonymousGuild {
    */
   async fetchOwner(options) {
     if (!this.ownerId) {
-      throw new Error('FETCH_OWNER_ID');
+      throw new Error(ErrorCodes.FETCH_OWNER_ID);
     }
     const member = await this.members.fetch({ ...options, user: this.ownerId });
     return member;
@@ -604,7 +604,7 @@ class Guild extends AnonymousGuild {
    */
   async fetchVanityData() {
     if (!this.features.includes(GuildFeature.VanityURL)) {
-      throw new Error('VANITY_URL');
+      throw new Error(ErrorCodes.VANITY_URL);
     }
     const data = await this.client.rest.get(Routes.guildVanityUrl(this.id));
     this.vanityURLCode = data.code;
@@ -705,7 +705,7 @@ class Guild extends AnonymousGuild {
 
     if (options.user) {
       const id = this.client.users.resolveId(options.user);
-      if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+      if (!id) throw new TypeError(ErrorCodes.INVALID_TYPE, 'user', 'UserResolvable');
       query.set('user_id', id);
     }
 
@@ -1164,7 +1164,7 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async leave() {
-    if (this.ownerId === this.client.user.id) throw new Error('GUILD_OWNED');
+    if (this.ownerId === this.client.user.id) throw new Error(ErrorCodes.GUILD_OWNED);
     await this.client.rest.delete(Routes.userGuild(this.id));
     return this;
   }

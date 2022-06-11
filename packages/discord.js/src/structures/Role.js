@@ -3,7 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { Error } = require('../errors');
+const { Error, ErrorCodes } = require('../errors');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -228,7 +228,7 @@ class Role extends Base {
    */
   permissionsIn(channel, checkAdmin = true) {
     channel = this.guild.channels.resolve(channel);
-    if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
+    if (!channel) throw new Error(ErrorCodes.GUILD_CHANNEL_RESOLVE);
     return channel.rolePermissions(this, checkAdmin);
   }
 

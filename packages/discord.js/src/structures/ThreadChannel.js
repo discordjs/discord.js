@@ -3,7 +3,7 @@
 const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { Channel } = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { RangeError } = require('../errors');
+const { RangeError, ErrorCodes } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
 
@@ -369,7 +369,7 @@ class ThreadChannel extends Channel {
    */
   setInvitable(invitable = true, reason) {
     if (this.type !== ChannelType.GuildPrivateThread) {
-      return Promise.reject(new RangeError('THREAD_INVITABLE_TYPE', this.type));
+      return Promise.reject(new RangeError(ErrorCodes.THREAD_INVITABLE_TYPE, this.type));
     }
     return this.edit({ invitable, reason });
   }

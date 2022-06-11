@@ -2,7 +2,7 @@
 
 const { GatewayOpcodes } = require('discord-api-types/v10');
 const { Presence } = require('./Presence');
-const { TypeError } = require('../errors');
+const { TypeError, ErrorCodes } = require('../errors');
 
 /**
  * Represents the client's presence.
@@ -48,7 +48,9 @@ class ClientPresence extends Presence {
     };
     if (activities?.length) {
       for (const [i, activity] of activities.entries()) {
-        if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', `activities[${i}].name`, 'string');
+        if (typeof activity.name !== 'string') {
+          throw new TypeError(ErrorCodes.INVALID_TYPE, `activities[${i}].name`, 'string');
+        }
         activity.type ??= 0;
 
         data.activities.push({

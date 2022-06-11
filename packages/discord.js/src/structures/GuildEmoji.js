@@ -2,7 +2,7 @@
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const BaseGuildEmoji = require('./BaseGuildEmoji');
-const { Error } = require('../errors');
+const { Error, ErrorCodes } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
 
 /**
@@ -55,7 +55,7 @@ class GuildEmoji extends BaseGuildEmoji {
    * @readonly
    */
   get deletable() {
-    if (!this.guild.members.me) throw new Error('GUILD_UNCACHED_ME');
+    if (!this.guild.members.me) throw new Error(ErrorCodes.GUILD_UNCACHED_ME);
     return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers);
   }
 

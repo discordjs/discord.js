@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const DataManager = require('./DataManager');
-const { TypeError } = require('../errors');
+const { TypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
 
 /**
@@ -46,7 +46,7 @@ class GuildEmojiRoleManager extends DataManager {
     for (const role of roleOrRoles.values()) {
       const resolvedRole = this.guild.roles.resolveId(role);
       if (!resolvedRole) {
-        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
+        return Promise.reject(new TypeError(ErrorCodes.INVALID_ELEMENT, 'Array or Collection', 'roles', role));
       }
       resolvedRoles.push(resolvedRole);
     }
@@ -67,7 +67,7 @@ class GuildEmojiRoleManager extends DataManager {
     for (const role of roleOrRoles.values()) {
       const roleId = this.guild.roles.resolveId(role);
       if (!roleId) {
-        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
+        return Promise.reject(new TypeError(ErrorCodes.INVALID_ELEMENT, 'Array or Collection', 'roles', role));
       }
       resolvedRoleIds.push(roleId);
     }

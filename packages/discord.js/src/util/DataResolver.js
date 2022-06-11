@@ -4,7 +4,7 @@ const { Buffer } = require('node:buffer');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { fetch } = require('undici');
-const { Error: DiscordError, TypeError } = require('../errors');
+const { Error: DiscordError, TypeError, ErrorCodes } = require('../errors');
 const Invite = require('../structures/Invite');
 
 /**
@@ -124,11 +124,11 @@ class DataResolver extends null {
       const file = path.resolve(resource);
 
       const stats = await fs.stat(file);
-      if (!stats.isFile()) throw new DiscordError('FILE_NOT_FOUND', file);
+      if (!stats.isFile()) throw new DiscordError(ErrorCodes.FILE_NOT_FOUND, file);
       return fs.readFile(file);
     }
 
-    throw new TypeError('REQ_RESOURCE_TYPE');
+    throw new TypeError(ErrorCodes.REQ_RESOURCE_TYPE);
   }
 }
 

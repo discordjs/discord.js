@@ -4,7 +4,7 @@ const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError } = require('../errors');
+const { TypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
 const DataResolver = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
@@ -183,7 +183,7 @@ class RoleManager extends CachedManager {
    */
   async edit(role, data) {
     role = this.resolve(role);
-    if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
+    if (!role) throw new TypeError(ErrorCodes.INVALID_TYPE, 'role', 'RoleResolvable');
 
     if (typeof data.position === 'number') {
       await this.setPosition(role, data.position, { reason: data.reason });
@@ -244,7 +244,7 @@ class RoleManager extends CachedManager {
    */
   async setPosition(role, position, { relative, reason } = {}) {
     role = this.resolve(role);
-    if (!role) throw new TypeError('INVALID_TYPE', 'role', 'RoleResolvable');
+    if (!role) throw new TypeError(ErrorCodes.INVALID_TYPE, 'role', 'RoleResolvable');
     const updatedRoles = await setPosition(
       role,
       position,
@@ -303,7 +303,7 @@ class RoleManager extends CachedManager {
   comparePositions(role1, role2) {
     const resolvedRole1 = this.resolve(role1);
     const resolvedRole2 = this.resolve(role2);
-    if (!resolvedRole1 || !resolvedRole2) throw new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake');
+    if (!resolvedRole1 || !resolvedRole2) throw new TypeError(ErrorCodes.INVALID_TYPE, 'role', 'Role nor a Snowflake');
 
     if (resolvedRole1.position === resolvedRole2.position) {
       return Number(BigInt(resolvedRole2.id) - BigInt(resolvedRole1.id));

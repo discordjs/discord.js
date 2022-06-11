@@ -2,7 +2,7 @@
 
 const EventEmitter = require('node:events');
 const { REST } = require('@discordjs/rest');
-const { TypeError } = require('../errors');
+const { TypeError, ErrorCodes } = require('../errors');
 const Options = require('../util/Options');
 const { mergeDefault, flatten } = require('../util/Util');
 
@@ -15,7 +15,7 @@ class BaseClient extends EventEmitter {
     super({ captureRejections: true });
 
     if (typeof options !== 'object' || options === null) {
-      throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+      throw new TypeError(ErrorCodes.INVALID_TYPE, 'options', 'object', true);
     }
 
     /**
