@@ -36,7 +36,7 @@ function makeDiscordjsError(Base) {
  * @ignore
  */
 function message(code, args) {
-  if (typeof code !== 'string') throw new Error('Error code must be a string');
+  if (typeof code !== 'number') throw new Error('Error code must be a valid DiscordjsErrorCodes');
   const msg = Messages[code];
   if (!msg) throw new Error(`An invalid error code was used: ${code}.`);
   if (typeof msg === 'function') return msg(...args);
