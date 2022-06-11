@@ -1926,7 +1926,6 @@ __metadata:
   resolution: "@discordjs/proxy-container@workspace:packages/proxy-container"
   dependencies:
     "@discordjs/proxy": ^0.1.0-dev
-    "@discordjs/ts-docgen": ^0.4.1
     "@types/node": ^16.11.38
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
@@ -2024,16 +2023,6 @@ __metadata:
     typescript: ^4.7.3
   languageName: unknown
   linkType: soft
-
-"@discordjs/ts-docgen@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "@discordjs/ts-docgen@npm:0.4.1"
-  dependencies:
-    js-yaml: ^4.1.0
-    typedoc: ^0.22.15
-  checksum: fbb8c7041812ae0130043451501b73d732a05afaec01136f3c877dae08d7fe9bb913c9763b60010b28bbc50c0043354ae01f5bc2626e1a24a767cb337a29a9a9
-  languageName: node
-  linkType: hard
 
 "@discordjs/voice@workspace:packages/voice":
   version: 0.0.0-use.local
@@ -16626,7 +16615,7 @@ dts-critic@latest:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.22.15, typedoc@npm:^0.22.17":
+"typedoc@npm:^0.22.17":
   version: 0.22.17
   resolution: "typedoc@npm:0.22.17"
   dependencies:
