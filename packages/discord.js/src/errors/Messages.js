@@ -117,7 +117,7 @@ const Messages = {
 
   [DjsErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
 
-  [DjsErrorCodes.VanityURL]: 'This guild does not have the VanityURL feature enabled.',
+  [DjsErrorCodes.VanityURL]: 'This guild does not have the vanity URL feature enabled.',
 
   [DjsErrorCodes.InviteResolveCode]: 'Could not resolve the code to fetch the invite.',
 
