@@ -1,11 +1,14 @@
 import { readdir, writeFile } from 'node:fs/promises';
-import { GatewayDispatchEvents } from '../src/index.js';
 
 async function writeWebsocketHandlerImports() {
   const lines = ["'use strict';\n", 'const handlers = Object.fromEntries(['];
 
-  for (const name of Object.values(GatewayDispatchEvents)) {
-    lines.push(`  ['${name}', require('./${name}')],`);
+  const handlersDirectory = new URL('../src/client/websocket/handlers', import.meta.url);
+
+  for (const file of await (await readdir(handlersDirectory)).sort()) {
+    if (file === 'index.js') continue;
+
+    lines.push(`  ['${file.slice(0, -3)}', require('./${file.slice(0, -3)}')],`);
   }
 
   lines.push(']);\n\nmodule.exports = handlers;\n');
