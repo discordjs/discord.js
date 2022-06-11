@@ -2,6 +2,156 @@
 
 const { createEnum } = require('../util/Enums');
 
+/**
+ * @typedef {Object} DiscordjsErrorCodes
+
+ * @property {string} CLIENT_INVALID_OPTION
+ * @property {string} CLIENT_INVALID_PROVIDED_SHARDS
+ * @property {string} CLIENT_MISSING_INTENTS
+ * @property {string} CLIENT_NOT_READY
+
+ * @property {string} TOKEN_INVALID
+ * @property {string} TOKEN_MISSING
+ * @property {string} APPLICATION_COMMAND_PERMISSIONS_TOKEN_MISSING
+
+ * @property {string} WS_CLOSE_REQUESTED
+ * @property {string} WS_CONNECTION_EXISTS
+ * @property {string} WS_NOT_OPEN
+ * @property {string} MANAGER_DESTROYED
+
+ * @property {string} BITFIELD_INVALID
+
+ * @property {string} SHARDING_INVALID
+ * @property {string} SHARDING_REQUIRED
+ * @property {string} INVALID_INTENTS
+ * @property {string} DISALLOWED_INTENTS
+ * @property {string} SHARDING_NO_SHARDS
+ * @property {string} SHARDING_IN_PROCESS
+ * @property {string} SHARDING_INVALID_EVAL_BROADCAST
+ * @property {string} SHARDING_SHARD_NOT_FOUND
+ * @property {string} SHARDING_ALREADY_SPAWNED
+ * @property {string} SHARDING_PROCESS_EXISTS
+ * @property {string} SHARDING_WORKER_EXISTS
+ * @property {string} SHARDING_READY_TIMEOUT
+ * @property {string} SHARDING_READY_DISCONNECTED
+ * @property {string} SHARDING_READY_DIED
+ * @property {string} SHARDING_NO_CHILD_EXISTS
+ * @property {string} SHARDING_SHARD_MISCALCULATION
+
+ * @property {string} COLOR_RANGE
+ * @property {string} COLOR_CONVERT
+
+ * @property {string} INVITE_OPTIONS_MISSING_CHANNEL
+
+ * @property {string} BUTTON_LABEL
+ * @property {string} BUTTON_URL
+ * @property {string} BUTTON_CUSTOM_ID
+
+ * @property {string} SELECT_MENU_CUSTOM_ID
+ * @property {string} SELECT_MENU_PLACEHOLDER
+ * @property {string} SELECT_OPTION_LABEL
+ * @property {string} SELECT_OPTION_VALUE
+ * @property {string} SELECT_OPTION_DESCRIPTION
+
+ * @property {string} INTERACTION_COLLECTOR_ERROR
+
+ * @property {string} FILE_NOT_FOUND
+
+ * @property {string} USER_BANNER_NOT_FETCHED
+ * @property {string} USER_NO_DM_CHANNEL
+
+ * @property {string} VOICE_NOT_STAGE_CHANNEL
+
+ * @property {string} VOICE_STATE_NOT_OWN
+ * @property {string} VOICE_STATE_INVALID_TYPE
+
+ * @property {string} REQ_RESOURCE_TYPE
+
+ * @property {string} IMAGE_FORMAT
+ * @property {string} IMAGE_SIZE
+
+ * @property {string} MESSAGE_BULK_DELETE_TYPE
+ * @property {string} MESSAGE_NONCE_TYPE
+ * @property {string} MESSAGE_CONTENT_TYPE
+
+ * @property {string} SPLIT_MAX_LEN
+
+ * @property {string} BAN_RESOLVE_ID
+ * @property {string} FETCH_BAN_RESOLVE_ID
+
+ * @property {string} PRUNE_DAYS_TYPE
+
+ * @property {string} GUILD_CHANNEL_RESOLVE
+ * @property {string} GUILD_VOICE_CHANNEL_RESOLVE
+ * @property {string} GUILD_CHANNEL_ORPHAN
+ * @property {string} GUILD_CHANNEL_UNOWNED
+ * @property {string} GUILD_OWNED
+ * @property {string} GUILD_MEMBERS_TIMEOUT
+ * @property {string} GUILD_UNCACHED_ME
+ * @property {string} CHANNEL_NOT_CACHED
+ * @property {string} STAGE_CHANNEL_RESOLVE
+ * @property {string} GUILD_SCHEDULED_EVENT_RESOLVE
+ * @property {string} FETCH_OWNER_ID
+
+ * @property {string} INVALID_TYPE
+ * @property {string} INVALID_ELEMENT
+
+ * @property {string} MESSAGE_THREAD_PARENT
+ * @property {string} MESSAGE_EXISTING_THREAD
+ * @property {string} THREAD_INVITABLE_TYPE
+
+ * @property {string} WEBHOOK_MESSAGE
+ * @property {string} WEBHOOK_TOKEN_UNAVAILABLE
+ * @property {string} WEBHOOK_URL_INVALID
+ * @property {string} WEBHOOK_APPLICATION
+ * @property {string} MESSAGE_REFERENCE_MISSING
+
+ * @property {string} EMOJI_TYPE
+ * @property {string} EMOJI_MANAGED
+ * @property {string} MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION
+ * @property {string} NOT_GUILD_STICKER
+
+ * @property {string} REACTION_RESOLVE_USER
+
+ * @property {string} VANITY_URL
+
+ * @property {string} INVITE_RESOLVE_CODE
+
+ * @property {string} INVITE_NOT_FOUND
+
+ * @property {string} DELETE_GROUP_DM_CHANNEL
+ * @property {string} FETCH_GROUP_DM_CHANNEL
+
+ * @property {string} MEMBER_FETCH_NONCE_LENGTH
+
+ * @property {string} GLOBAL_COMMAND_PERMISSIONS
+ * @property {string} GUILD_UNCACHED_ENTITY_RESOLVE
+
+ * @property {string} INTERACTION_ALREADY_REPLIED
+ * @property {string} INTERACTION_NOT_REPLIED
+ * @property {string} INTERACTION_EPHEMERAL_REPLIED
+
+ * @property {string} COMMAND_INTERACTION_OPTION_NOT_FOUND
+ * @property {string} COMMAND_INTERACTION_OPTION_TYPE
+ * @property {string} COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND
+ * @property {string} COMMAND_INTERACTION_OPTION_NO_SUB_COMMAND_GROUP
+ * @property {string} AUTOCOMPLETE_INTERACTION_OPTION_NO_FOCUSED_OPTION
+
+ * @property {string} MODAL_SUBMIT_INTERACTION_FIELD_NOT_FOUND
+ * @property {string} MODAL_SUBMIT_INTERACTION_FIELD_TYPE
+
+ * @property {string} INVITE_MISSING_SCOPES
+
+ * @property {string} NOT_IMPLEMENTED
+
+ * @property {string} SWEEP_FILTER_RETURN
+ */
+
+// JSDoc for intellisense purposes
+/**
+ * @type {DiscordjsErrorCodes}
+ * @ignore
+ */
 module.exports = createEnum([
   'CLIENT_INVALID_OPTION',
   'CLIENT_INVALID_PROVIDED_SHARDS',

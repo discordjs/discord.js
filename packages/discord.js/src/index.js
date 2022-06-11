@@ -11,10 +11,10 @@ exports.ShardingManager = require('./sharding/ShardingManager');
 exports.WebhookClient = require('./client/WebhookClient');
 
 // Errors
-const { Error, RangeError, TypeError } = require('./errors/DJSError');
+const { Error, TypeError, RangeError } = require('./errors/DJSError');
 exports.DiscordjsError = Error;
-exports.DiscordjsRangeError = RangeError;
 exports.DiscordjsTypeError = TypeError;
+exports.DiscordjsRangeError = RangeError;
 exports.DiscordjsErrorCodes = require('./errors/ErrorCodes');
 
 // Utilities
