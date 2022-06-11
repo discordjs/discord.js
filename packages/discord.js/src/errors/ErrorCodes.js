@@ -133,8 +133,8 @@ const { createEnum } = require('../util/Enums');
 
  * @property {string} CommandInteractionOptionNotFound
  * @property {string} CommandInteractionOptionType
- * @property {string} CommandInteractionOptionNoSubCommand
- * @property {string} CommandInteractionOptionNoSubCommandGroup
+ * @property {string} CommandInteractionOptionNoSubcommand
+ * @property {string} CommandInteractionOptionNoSubcommandGroup
  * @property {string} AutocompleteInteractionOptionNoFocusedOption
 
  * @property {string} ModalSubmitInteractionFieldNotFound
@@ -281,8 +281,8 @@ module.exports = createEnum([
 
   'CommandInteractionOptionNotFound',
   'CommandInteractionOptionType',
-  'CommandInteractionOptionNoSubCommand',
-  'CommandInteractionOptionNoSubCommandGroup',
+  'CommandInteractionOptionNoSubcommand',
+  'CommandInteractionOptionNoSubcommandGroup',
   'AutocompleteInteractionOptionNoFocusedOption',
 
   'ModalSubmitInteractionFieldNotFound',

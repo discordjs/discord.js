@@ -110,7 +110,7 @@ class CommandInteractionOptionResolver {
    */
   getSubcommand(required = true) {
     if (required && !this._subcommand) {
-      throw new TypeError(ErrorCodes.CommandInteractionOptionNoSubCommand);
+      throw new TypeError(ErrorCodes.CommandInteractionOptionNoSubcommand);
     }
     return this._subcommand;
   }
@@ -122,7 +122,7 @@ class CommandInteractionOptionResolver {
    */
   getSubcommandGroup(required = false) {
     if (required && !this._group) {
-      throw new TypeError(ErrorCodes.CommandInteractionOptionNoSubCommandGroup);
+      throw new TypeError(ErrorCodes.CommandInteractionOptionNoSubcommandGroup);
     }
     return this._group;
   }
