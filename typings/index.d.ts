@@ -1060,7 +1060,7 @@ export class GuildAuditLogsEntry<
   private constructor(logs: GuildAuditLogs, guild: Guild, data: RawGuildAuditLogEntryData);
   public action: TAction;
   public actionType: TActionType;
-  public changes: AuditLogChange[] | null;
+  public changes: AuditLogChange[];
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public executor: User | null;
