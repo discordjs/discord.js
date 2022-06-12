@@ -165,3 +165,5 @@ Messages.InvalidShard = Messages[DjsErrorCodes.ShardingInvalid];
 Messages.ShardingRequired = Messages[DjsErrorCodes.ShardingRequired];
 Messages.InvalidIntents = Messages[DjsErrorCodes.InvalidIntents];
 Messages.DisallowedIntents = Messages[DjsErrorCodes.DisallowedIntents];
+
+module.exports = Messages;

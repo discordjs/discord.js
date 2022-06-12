@@ -1,7 +1,8 @@
 'use strict';
 
 // Heavily inspired by node's `internal/errors` module
-const { Messages } = require('./Messages');
+const ErrorCodes = require('./ErrorCodes');
+const Messages = require('./Messages');
 const kCode = Symbol('code');
 
 /**
@@ -19,11 +20,11 @@ function makeDiscordjsError(Base) {
     }
 
     get name() {
-      return `${super.name} [${this[kCode]}]`;
+      return `${super.name} [${this.code}]`;
     }
 
     get code() {
-      return this[kCode];
+      return ErrorCodes[this[kCode]];
     }
   };
 }
