@@ -22,6 +22,11 @@ jobs:
       BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
       SHA: ${{ steps.env.outputs.SHA }}
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
