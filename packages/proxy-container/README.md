@@ -22,6 +22,20 @@ Quickly spin up an instance:
 
 `docker run -d --restart unless-stopped --name proxy -p 127.0.0.1:8080:8080 -e DISCORD_TOKEN=abc discordjs/proxy`
 
+Use it:
+
+```ts
+import { Client } from 'discord.js';
+import { ProxyAgent } from 'undici';
+
+const client = new Client({
+	// other options,
+	rest: {
+		agent: new ProxyAgent('https://localhost:8080'),
+	},
+});
+```
+
 ## Links
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
