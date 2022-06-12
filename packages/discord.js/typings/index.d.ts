@@ -3141,7 +3141,7 @@ export enum DiscordjsErrorCodes {
 
 export class DiscordjsError extends Error {
   public override readonly name: string;
-  public readonly code: DiscordjsErrorCodes;
+  public get code(): keyof typeof DiscordjsErrorCodes;
 }
 
 export type DiscordjsTypeError = DiscordjsError;

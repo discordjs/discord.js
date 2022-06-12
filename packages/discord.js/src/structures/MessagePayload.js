@@ -105,7 +105,7 @@ class MessagePayload {
     if (this.options.content === null) {
       content = '';
     } else if (typeof this.options.content !== 'undefined') {
-      content = verifyString(this.options.content, RangeError, 'MessageContentType', true);
+      content = verifyString(this.options.content, RangeError, ErrorCodes.MessageContentType, true);
     }
 
     return content;
