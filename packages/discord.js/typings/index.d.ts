@@ -529,8 +529,8 @@ export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel) {
     reason?: string,
   ): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
-  public setType(type: Pick<typeof ChannelType, 'GuildText'>, reason?: string): Promise<TextChannel>;
-  public setType(type: Pick<typeof ChannelType, 'GuildNews'>, reason?: string): Promise<NewsChannel>;
+  public setType(type: ChannelType.GuildText, reason?: string): Promise<TextChannel>;
+  public setType(type: ChannelType.GuildNews, reason?: string): Promise<NewsChannel>;
 }
 
 export class BaseGuildVoiceChannel extends GuildChannel {

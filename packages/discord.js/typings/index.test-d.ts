@@ -1033,6 +1033,9 @@ expectType<TextBasedChannelFields['send']>(voiceChannel.send);
 expectAssignable<PartialTextBasedChannelFields>(user);
 expectAssignable<PartialTextBasedChannelFields>(guildMember);
 
+expectType<Promise<NewsChannel>>(textChannel.setType(ChannelType.GuildNews));
+expectType<Promise<TextChannel>>(newsChannel.setType(ChannelType.GuildText));
+
 expectType<Message | null>(dmChannel.lastMessage);
 expectType<Message | null>(threadChannel.lastMessage);
 expectType<Message | null>(newsChannel.lastMessage);
