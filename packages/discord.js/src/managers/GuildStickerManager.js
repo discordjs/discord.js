@@ -33,7 +33,7 @@ class GuildStickerManager extends CachedManager {
   }
 
   /**
-   * Options for creating a guild sticker.
+   * Options used to create a guild sticker.
    * @typedef {Object} GuildStickerCreateOptions
    * @property {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} file The file for the sticker
    * @property {string} name The name for the sticker
@@ -44,7 +44,7 @@ class GuildStickerManager extends CachedManager {
 
   /**
    * Creates a new custom sticker in the guild.
-   * @param {GuildStickerCreateOptions} options Options
+   * @param {GuildStickerCreateOptions} options Options for creating a guild sticker
    * @returns {Promise<Sticker>} The created sticker
    * @example
    * // Create a new sticker from a URL
