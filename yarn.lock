@@ -1936,7 +1936,6 @@ __metadata:
     prettier: ^2.6.2
     tslib: ^2.4.0
     tsup: ^6.0.1
-    typedoc: ^0.22.17
     typescript: ^4.7.3
   languageName: unknown
   linkType: soft
