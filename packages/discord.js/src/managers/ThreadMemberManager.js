@@ -113,7 +113,7 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * @typedef {BaseFetchOptions} FetchThreadMemberOptions
-   * @property {ThreadMemberResolvable} [member] The thread member to fetch
+   * @property {ThreadMemberResolvable} member The thread member to fetch
    */
 
   /**
