@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { RESTJSONErrorCodes, Routes } = require('discord-api-types/v10');
+const { ApplicationCommandPermissionType, RESTJSONErrorCodes, Routes } = require('discord-api-types/v10');
 const BaseManager = require('./BaseManager');
 const { Error, TypeError } = require('../errors');
 
@@ -54,21 +54,16 @@ class ApplicationCommandPermissionsManager extends BaseManager {
     return Routes.guildApplicationCommandsPermissions(this.client.application.id, guildId);
   }
 
-  /**
-   * Data for setting the permissions of an application command.
-   * @typedef {Object} ApplicationCommandPermissionData
-   * @property {Snowflake} id The role or user's id
-   * @property {ApplicationCommandPermissionType|number} type Whether this permission is for a role or a user
-   * @property {boolean} permission Whether the role or user has the permission to use this command
-   */
-
+  /* eslint-disable max-len */
   /**
    * The object returned when fetching permissions for an application command.
    * @typedef {Object} ApplicationCommandPermissions
-   * @property {Snowflake} id The role or user's id
+   * @property {Snowflake} id The role, user, or channel's id. Can also be a
+   * {@link https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-application-command-permissions-constants permission constant}.
    * @property {ApplicationCommandPermissionType} type Whether this permission is for a role or a user
    * @property {boolean} permission Whether the role or user has the permission to use this command
    */
+  /* eslint-enable max-len */
 
   /**
    * Options for managing permissions for one or more Application Commands
@@ -82,18 +77,24 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    */
 
   /**
-   * Fetches the permissions for one or multiple commands.
+   * Fetches the permissions for one or multiple commands. Providing the client's id as the "command id" will fetch
+   * *only* the guild level permissions
    * @param {BaseApplicationCommandPermissionsOptions} [options] Options used to fetch permissions
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
    * @example
    * // Fetch permissions for one command
    * guild.commands.permissions.fetch({ command: '123456789012345678' })
-   *   .then(perms => console.log(`Fetched permissions for ${perms.length} users`))
+   *   .then(perms => console.log(`Fetched ${perms.length} overwrites`))
    *   .catch(console.error);
    * @example
    * // Fetch permissions for all commands in a guild
    * client.application.commands.permissions.fetch({ guild: '123456789012345678' })
    *   .then(perms => console.log(`Fetched permissions for ${perms.size} commands`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch guild level permissions
+   * guild.commands.permissions.fetch({ command: client.user.id })
+   *   .then(perms => console.log(`Fetched ${perms.length} guild level permissions`))
    *   .catch(console.error);
    */
   async fetch({ guild, command } = {}) {
@@ -108,46 +109,41 @@ class ApplicationCommandPermissionsManager extends BaseManager {
   }
 
   /**
-   * Data used for overwriting the permissions for all application commands in a guild.
-   * @typedef {Object} GuildApplicationCommandPermissionData
-   * @property {Snowflake} id The command's id
-   * @property {ApplicationCommandPermissionData[]} permissions The permissions for this command
-   */
-
-  /**
    * Options used to set permissions for one or more Application Commands in a guild
-   * <warn>One of `command` AND `permissions`, OR `fullPermissions` is required.
-   * `fullPermissions` is not a valid option when passing to a manager where `commandId` is non-null</warn>
-   * @typedef {BaseApplicationCommandPermissionsOptions} SetApplicationCommandPermissionsOptions
-   * @property {ApplicationCommandPermissionData[]} [permissions] The new permissions for the command
-   * @property {GuildApplicationCommandPermissionData[]} [fullPermissions] The new permissions for all commands
-   * in a guild <warn>When this parameter is set, `permissions` and `command` are ignored</warn>
+   * <warn>Omitting the `command` parameter edits the guild wide permissions
+   * when the manager's `commandId` is `null`</warn>
+   * @typedef {BaseApplicationCommandPermissionsOptions} EditApplicationCommandPermissionsOptions
+   * @property {ApplicationCommandPermissions[]} permissions The new permissions for the guild or overwrite
+   * @property {string} token The bearer token to use that authorizes the permission edit
    */
 
   /**
-   * Sets the permissions for one or more commands.
-   * @param {SetApplicationCommandPermissionsOptions} options Options used to set permissions
+   * Sets the permissions for the guild or a command overwrite.
+   * @param {EditApplicationCommandPermissionsOptions} options Options used to set permissions
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
    * @example
-   * // Set the permissions for one command
-   * client.application.commands.permissions.set({ guild: '892455839386304532', command: '123456789012345678',
+   * // Set a permission overwrite for a command
+   * client.application.commands.permissions.set({
+   *  guild: '892455839386304532',
+   *  command: '123456789012345678',
+   *  token: 'TotallyRealToken',
    *  permissions: [
    *    {
    *      id: '876543210987654321',
-   *      type: ApplicationCommandOptionType.User,
+   *      type: ApplicationCommandPermissionType.User,
    *      permission: false,
    *    },
    * ]})
    *   .then(console.log)
    *   .catch(console.error);
    * @example
-   * // Set the permissions for all commands
-   * guild.commands.permissions.set({ fullPermissions: [
+   * // Set the permissions used for the guild (commands without overwrites)
+   * guild.commands.permissions.set({ token: 'TotallyRealToken', permissions: [
    *   {
    *     id: '123456789012345678',
    *     permissions: [{
    *       id: '876543210987654321',
-   *       type: ApplicationCommandOptionType.User,
+   *       type: ApplicationCommandPermissionType.User,
    *       permission: false,
    *     }],
    *   },
@@ -155,39 +151,34 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async set({ guild, command, permissions, fullPermissions } = {}) {
-    const { guildId, commandId } = this._validateOptions(guild, command);
+  async set({ guild, command, permissions, token } = {}) {
+    if (!token) {
+      throw new Error('APPLICATION_COMMAND_PERMISSIONS_TOKEN_MISSING');
+    }
+    let { guildId, commandId } = this._validateOptions(guild, command);
 
-    if (commandId) {
-      if (!Array.isArray(permissions)) {
-        throw new TypeError('INVALID_TYPE', 'permissions', 'Array of ApplicationCommandPermissionData', true);
-      }
-      const data = await this.client.rest.put(this.permissionsPath(guildId, commandId), { body: { permissions } });
-      return data.permissions;
+    if (!Array.isArray(permissions)) {
+      throw new TypeError('INVALID_TYPE', 'permissions', 'Array of ApplicationCommandPermissions', true);
     }
 
-    if (!Array.isArray(fullPermissions)) {
-      throw new TypeError('INVALID_TYPE', 'fullPermissions', 'Array of GuildApplicationCommandPermissionData', true);
+    if (!commandId) {
+      commandId = this.client.user.id;
     }
-
-    const data = await this.client.rest.put(this.permissionsPath(guildId), { body: fullPermissions });
-    return data.reduce((coll, perm) => coll.set(perm.id, perm.permissions), new Collection());
+    const data = await this.client.rest.put(this.permissionsPath(guildId, commandId), {
+      body: { permissions },
+      auth: false,
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data.permissions;
   }
 
   /**
-   * Options used to add permissions to a command
-   * <warn>The `command` parameter is not optional when the managers `commandId` is `null`</warn>
-   * @typedef {BaseApplicationCommandPermissionsOptions} AddApplicationCommandPermissionsOptions
-   * @property {ApplicationCommandPermissionData[]} permissions The permissions to add to the command
-   */
-
-  /**
    * Add permissions to a command.
-   * @param {AddApplicationCommandPermissionsOptions} options Options used to add permissions
+   * @param {EditApplicationCommandPermissionsOptions} options Options used to add permissions
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
-   * // Block a role from the command permissions
-   * guild.commands.permissions.add({ command: '123456789012345678', permissions: [
+   * // Add a rule to block a role from using a command
+   * guild.commands.permissions.add({ command: '123456789012345678', token: 'TotallyRealToken', permissions: [
    *   {
    *     id: '876543211234567890',
    *     type: ApplicationCommandPermissionType.Role,
@@ -197,11 +188,16 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async add({ guild, command, permissions }) {
-    const { guildId, commandId } = this._validateOptions(guild, command);
-    if (!commandId) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+  async add({ guild, command, permissions, token } = {}) {
+    if (!token) {
+      throw new Error('APPLICATION_COMMAND_PERMISSIONS_TOKEN_MISSING');
+    }
+    let { guildId, commandId } = this._validateOptions(guild, command);
+    if (!commandId) {
+      commandId = this.client.user.id;
+    }
     if (!Array.isArray(permissions)) {
-      throw new TypeError('INVALID_TYPE', 'permissions', 'Array of ApplicationCommandPermissionData', true);
+      throw new TypeError('INVALID_TYPE', 'permissions', 'Array of ApplicationCommandPermissions', true);
     }
 
     let existing = [];
@@ -218,17 +214,31 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       }
     }
 
-    return this.set({ guild: guildId, command: commandId, permissions: newPermissions });
+    return this.set({ guild: guildId, command: commandId, permissions: newPermissions, token });
   }
 
   /**
+   * A static snowflake that identifies the everyone role for application command permissions.
+   * It is the same as the guild id
+   * @typedef {Snowflake} RolePermissionConstant
+   */
+
+  /**
+   * A static snowflake that identifies the "all channels" entity for application command permissions.
+   * It will be the result of the calculation `guildId - 1`
+   * @typedef {Snowflake} ChannelPermissionConstant
+   */
+
+  /**
    * Options used to remove permissions from a command
-   * <warn>The `command` parameter is not optional when the managers `commandId` is `null`</warn>
+   * <warn>Omitting the `command` parameter removes from the guild wide permissions
+   * when the managers `commandId` is `null`</warn>
+   * <warn>At least one of `users`, `roles`, and `channels` is required</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} RemoveApplicationCommandPermissionsOptions
-   * @property {UserResolvable|UserResolvable[]} [users] The user(s) to remove from the command permissions
-   * <warn>One of `users` or `roles` is required</warn>
-   * @property {RoleResolvable|RoleResolvable[]} [roles] The role(s) to remove from the command permissions
-   * <warn>One of `users` or `roles` is required</warn>
+   * @property {string} token The bearer token to use that authorizes the permission removal
+   * @property {UserResolvable[]} [users] The user(s) to remove
+   * @property {Array<RoleResolvable|RolePermissionConstant>} [roles] The role(s) to remove
+   * @property {Array<GuildChannelResolvable|ChannelPermissionConstant>} [channels] The channel(s) to remove
    */
 
   /**
@@ -237,59 +247,66 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
    * // Remove a user permission from this command
-   * guild.commands.permissions.remove({ command: '123456789012345678', users: '876543210123456789' })
+   * guild.commands.permissions.remove({
+   *  command: '123456789012345678', users: '876543210123456789', token: 'TotallyRealToken',
+   * })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
    * // Remove multiple roles from this command
    * guild.commands.permissions.remove({
-   *   command: '123456789012345678', roles: ['876543210123456789', '765432101234567890']
+   *   command: '123456789012345678', roles: ['876543210123456789', '765432101234567890'], token: 'TotallyRealToken',
    * })
    *    .then(console.log)
    *    .catch(console.error);
    */
-  async remove({ guild, command, users, roles }) {
-    const { guildId, commandId } = this._validateOptions(guild, command);
-    if (!commandId) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
-
-    if (!users && !roles) throw new TypeError('INVALID_TYPE', 'users OR roles', 'Array or Resolvable', true);
-
-    let resolvedIds = [];
-    if (Array.isArray(users)) {
-      users.forEach(user => {
-        const userId = this.client.users.resolveId(user);
-        if (!userId) throw new TypeError('INVALID_ELEMENT', 'Array', 'users', user);
-        resolvedIds.push(userId);
-      });
-    } else if (users) {
-      const userId = this.client.users.resolveId(users);
-      if (!userId) {
-        throw new TypeError('INVALID_TYPE', 'users', 'Array or UserResolvable');
-      }
-      resolvedIds.push(userId);
+  async remove({ guild, command, users, roles, channels, token } = {}) {
+    if (!token) {
+      throw new Error('APPLICATION_COMMAND_PERMISSIONS_TOKEN_MISSING');
+    }
+    let { guildId, commandId } = this._validateOptions(guild, command);
+    if (!commandId) {
+      commandId = this.client.user.id;
     }
 
+    if (!users && !roles && !channels) {
+      throw new TypeError('INVALID_TYPE', 'users OR roles OR channels', 'Array or Resolvable', true);
+    }
+
+    let resolvedUserIds = [];
+    if (Array.isArray(users)) {
+      for (const user of users) {
+        const userId = this.client.users.resolveId(user);
+        if (!userId) throw new TypeError('INVALID_ELEMENT', 'Array', 'users', user);
+        resolvedUserIds.push(userId);
+      }
+    }
+
+    let resolvedRoleIds = [];
     if (Array.isArray(roles)) {
-      roles.forEach(role => {
+      for (const role of roles) {
         if (typeof role === 'string') {
-          resolvedIds.push(role);
-          return;
+          resolvedRoleIds.push(role);
+          continue;
         }
-        if (!this.guild) throw new Error('GUILD_UNCACHED_ROLE_RESOLVE');
+        if (!this.guild) throw new Error('GUILD_UNCACHED_ENTITY_RESOLVE', 'roles');
         const roleId = this.guild.roles.resolveId(role);
         if (!roleId) throw new TypeError('INVALID_ELEMENT', 'Array', 'users', role);
-        resolvedIds.push(roleId);
-      });
-    } else if (roles) {
-      if (typeof roles === 'string') {
-        resolvedIds.push(roles);
-      } else {
-        if (!this.guild) throw new Error('GUILD_UNCACHED_ROLE_RESOLVE');
-        const roleId = this.guild.roles.resolveId(roles);
-        if (!roleId) {
-          throw new TypeError('INVALID_TYPE', 'users', 'Array or RoleResolvable');
+        resolvedRoleIds.push(roleId);
+      }
+    }
+
+    let resolvedChannelIds = [];
+    if (Array.isArray(channels)) {
+      for (const channel of channels) {
+        if (typeof channel === 'string') {
+          resolvedChannelIds.push(channel);
+          continue;
         }
-        resolvedIds.push(roleId);
+        if (!this.guild) throw new Error('GUILD_UNCACHED_ENTITY_RESOLVE', 'channels');
+        const channelId = this.guild.channels.resolveId(channel);
+        if (!channelId) throw new TypeError('INVALID_ELEMENT', 'Array', 'channels', channel);
+        resolvedChannelIds.push(channelId);
       }
     }
 
@@ -300,22 +317,33 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       if (error.code !== RESTJSONErrorCodes.UnknownApplicationCommandPermissions) throw error;
     }
 
-    const permissions = existing.filter(perm => !resolvedIds.includes(perm.id));
+    const permissions = existing.filter(perm => {
+      switch (perm.type) {
+        case ApplicationCommandPermissionType.Role:
+          return !resolvedRoleIds.includes(perm.id);
+        case ApplicationCommandPermissionType.User:
+          return !resolvedUserIds.includes(perm.id);
+        case ApplicationCommandPermissionType.Channel:
+          return !resolvedChannelIds.includes(perm.id);
+      }
+      return true;
+    });
 
-    return this.set({ guild: guildId, command: commandId, permissions });
+    return this.set({ guild: guildId, command: commandId, permissions, token });
   }
 
   /**
    * Options used to check the existence of permissions on a command
    * <warn>The `command` parameter is not optional when the managers `commandId` is `null`</warn>
    * @typedef {BaseApplicationCommandPermissionsOptions} HasApplicationCommandPermissionsOptions
-   * @property {UserResolvable|RoleResolvable} permissionId The user or role to check if a permission exists for
+   * @property {ApplicationCommandPermissionIdResolvable} permissionId The entity to check if a permission exists for
    * on this command.
+   * @property {ApplicationCommandPermissionType} [permissionType] Check for a specific type of permission
    */
 
   /**
-   * Check whether a permission exists for a user or role
-   * @param {AddApplicationCommandPermissionsOptions} options Options used to check permissions
+   * Check whether a permission exists for a user, role, or channel
+   * @param {HasApplicationCommandPermissionsOptions} options Options used to check permissions
    * @returns {Promise<boolean>}
    * @example
    * // Check whether a user has permission to use a command
@@ -323,20 +351,33 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    *  .then(console.log)
    *  .catch(console.error);
    */
-  async has({ guild, command, permissionId }) {
+  async has({ guild, command, permissionId, permissionType }) {
     const { guildId, commandId } = this._validateOptions(guild, command);
     if (!commandId) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    if (!permissionId) throw new TypeError('INVALID_TYPE', 'permissionId', 'UserResolvable or RoleResolvable');
+    if (!permissionId) {
+      throw new TypeError(
+        'INVALID_TYPE',
+        'permissionId',
+        'UserResolvable, RoleResolvable, ChannelResolvable, or Permission Constant',
+      );
+    }
     let resolvedId = permissionId;
     if (typeof permissionId !== 'string') {
       resolvedId = this.client.users.resolveId(permissionId);
       if (!resolvedId) {
-        if (!this.guild) throw new Error('GUILD_UNCACHED_ROLE_RESOLVE');
+        if (!this.guild) throw new Error('GUILD_UNCACHED_ENTITY_RESOLVE', 'roles');
         resolvedId = this.guild.roles.resolveId(permissionId);
       }
       if (!resolvedId) {
-        throw new TypeError('INVALID_TYPE', 'permissionId', 'UserResolvable or RoleResolvable');
+        resolvedId = this.guild.channels.resolveId(permissionId);
+      }
+      if (!resolvedId) {
+        throw new TypeError(
+          'INVALID_TYPE',
+          'permissionId',
+          'UserResolvable, RoleResolvable, ChannelResolvable, or Permission Constant',
+        );
       }
     }
 
@@ -347,7 +388,8 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       if (error.code !== RESTJSONErrorCodes.UnknownApplicationCommandPermissions) throw error;
     }
 
-    return existing.some(perm => perm.id === resolvedId);
+    // Check permission type if provided for the single edge case where a channel id is the same as the everyone role id
+    return existing.some(perm => perm.id === resolvedId && (permissionType ?? perm.type) === perm.type);
   }
 
   _validateOptions(guild, command) {
@@ -374,4 +416,9 @@ module.exports = ApplicationCommandPermissionsManager;
 /**
  * @external APIApplicationCommandPermissions
  * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-application-command-permissions-structure}
+ */
+
+/**
+ * Data that resolves to an id used for an application command permission
+ * @typedef {UserResolvable|RoleResolvable|GuildChannelResolvable|RolePermissionConstant|ChannelPermissionConstant} ApplicationCommandPermissionIdResolvable
  */

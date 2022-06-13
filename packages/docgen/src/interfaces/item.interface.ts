@@ -5,4 +5,5 @@ export interface Item {
 	kind: string;
 	description: string;
 	order: number;
+	ignore?: boolean;
 }

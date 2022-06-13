@@ -272,7 +272,7 @@ class ThreadChannel extends Channel {
     }
 
     // We cannot fetch a single thread member, as of this commit's date, Discord API responds with 405
-    const members = await this.members.fetch(cache);
+    const members = await this.members.fetch({ cache });
     return members.get(this.ownerId) ?? null;
   }
 
@@ -284,7 +284,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<Message>}
    */
   fetchStarterMessage(options) {
-    return this.parent.messages.fetch(this.id, options);
+    return this.parent.messages.fetch({ message: this.id, ...options });
   }
 
   /**
@@ -297,13 +297,13 @@ class ThreadChannel extends Channel {
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
+   * @property {string} [reason] Reason for editing the thread
    * <info>Can only be edited on {@link ChannelType.GuildPrivateThread}</info>
    */
 
   /**
    * Edits this thread.
    * @param {ThreadEditData} data The new data for this thread
-   * @param {string} [reason] Reason for editing this thread
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Edit a thread
@@ -311,7 +311,7 @@ class ThreadChannel extends Channel {
    *   .then(editedThread => console.log(editedThread))
    *   .catch(console.error);
    */
-  async edit(data, reason) {
+  async edit(data) {
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
         name: (data.name ?? this.name).trim(),
@@ -321,7 +321,7 @@ class ThreadChannel extends Channel {
         locked: data.locked,
         invitable: this.type === ChannelType.GuildPrivateThread ? data.invitable : undefined,
       },
-      reason,
+      reason: data.reason,
     });
 
     return this.client.actions.ChannelUpdate.handle(newData).updated;
@@ -339,7 +339,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setArchived(archived = true, reason) {
-    return this.edit({ archived }, reason);
+    return this.edit({ archived, reason });
   }
 
   /**
@@ -357,7 +357,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setAutoArchiveDuration(autoArchiveDuration, reason) {
-    return this.edit({ autoArchiveDuration }, reason);
+    return this.edit({ autoArchiveDuration, reason });
   }
 
   /**
@@ -371,7 +371,7 @@ class ThreadChannel extends Channel {
     if (this.type !== ChannelType.GuildPrivateThread) {
       return Promise.reject(new RangeError('THREAD_INVITABLE_TYPE', this.type));
     }
-    return this.edit({ invitable }, reason);
+    return this.edit({ invitable, reason });
   }
 
   /**
@@ -387,7 +387,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setLocked(locked = true, reason) {
-    return this.edit({ locked }, reason);
+    return this.edit({ locked, reason });
   }
 
   /**
@@ -402,7 +402,7 @@ class ThreadChannel extends Channel {
    *   .catch(console.error);
    */
   setName(name, reason) {
-    return this.edit({ name }, reason);
+    return this.edit({ name, reason });
   }
 
   /**
@@ -412,7 +412,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {
-    return this.edit({ rateLimitPerUser }, reason);
+    return this.edit({ rateLimitPerUser, reason });
   }
 
   /**
@@ -512,14 +512,6 @@ class ThreadChannel extends Channel {
   }
 
   /**
-   * Whether this thread is a private thread
-   * @returns {boolean}
-   */
-  isPrivate() {
-    return this.type === ChannelType.GuildPrivateThread;
-  }
-
-  /**
    * Deletes this thread.
    * @param {string} [reason] Reason for deleting this thread
    * @returns {Promise<ThreadChannel>}
@@ -545,8 +537,10 @@ class ThreadChannel extends Channel {
   createMessageComponentCollector() {}
   awaitMessageComponent() {}
   bulkDelete() {}
+  // Doesn't work on Thread channels; setRateLimitPerUser() {}
+  // Doesn't work on Thread channels; setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(ThreadChannel, true);
+TextBasedChannel.applyToClass(ThreadChannel, true, ['setRateLimitPerUser', 'setNSFW']);
 
 module.exports = ThreadChannel;

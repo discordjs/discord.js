@@ -49,7 +49,7 @@ class StageChannel extends BaseGuildVoiceChannel {
    *   .catch(console.error);
    */
   setTopic(topic, reason) {
-    return this.edit({ topic }, reason);
+    return this.edit({ topic, reason });
   }
 
   /**

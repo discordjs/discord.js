@@ -1,5 +1,4 @@
-import { TypedEmitter } from 'tiny-typed-emitter';
-import type { Awaited } from '../util/util';
+import { EventEmitter } from 'node:events';
 
 /**
  * The known data for a user in a Discord voice connection.
@@ -23,18 +22,9 @@ export interface VoiceUserData {
 }
 
 /**
- * The events that an SSRCMap may emit.
- */
-export interface SSRCMapEvents {
-	create: (newData: VoiceUserData) => Awaited<void>;
-	update: (oldData: VoiceUserData | undefined, newData: VoiceUserData) => Awaited<void>;
-	delete: (deletedData: VoiceUserData) => Awaited<void>;
-}
-
-/**
  * Maps audio SSRCs to data of users in voice connections.
  */
-export class SSRCMap extends TypedEmitter<SSRCMapEvents> {
+export class SSRCMap extends EventEmitter {
 	/**
 	 * The underlying map.
 	 */

@@ -60,9 +60,9 @@ class CommandInteractionOptionResolver {
     /**
      * The interaction resolved data
      * @name CommandInteractionOptionResolver#resolved
-     * @type {Readonly<CommandInteractionResolvedData>}
+     * @type {?Readonly<CommandInteractionResolvedData>}
      */
-    Object.defineProperty(this, 'resolved', { value: Object.freeze(resolved) });
+    Object.defineProperty(this, 'resolved', { value: resolved ? Object.freeze(resolved) : null });
   }
 
   /**
@@ -257,9 +257,18 @@ class CommandInteractionOptionResolver {
   }
 
   /**
+   * The full autocomplete option object.
+   * @typedef {Object} AutocompleteOption
+   * @property {string} name The name of the option
+   * @property {ApplicationCommandOptionType} type The type of the application command option
+   * @property {string|number} value The value of the option
+   * @property {boolean} focused Whether this option is currently in focus for autocomplete
+   */
+
+  /**
    * Gets the focused option.
    * @param {boolean} [getFull=false] Whether to get the full option object
-   * @returns {string|number|ApplicationCommandOptionChoice}
+   * @returns {string|number|AutocompleteOption}
    * The value of the option, or the whole option if getFull is true
    */
   getFocused(getFull = false) {

@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/method-signature-style */
+import { EventEmitter } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import { TypedEmitter } from 'tiny-typed-emitter';
 import type { CloseEvent } from 'ws';
 import { VoiceUDPSocket } from './VoiceUDPSocket';
 import { VoiceWebSocket } from './VoiceWebSocket';
 import * as secretbox from '../util/Secretbox';
-import { Awaited, noop } from '../util/util';
+import { noop } from '../util/util';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;
@@ -150,11 +151,16 @@ export interface ConnectionData {
  */
 const nonce = Buffer.alloc(24);
 
-export interface NetworkingEvents {
-	debug: (message: string) => Awaited<void>;
-	error: (error: Error) => Awaited<void>;
-	stateChange: (oldState: NetworkingState, newState: NetworkingState) => Awaited<void>;
-	close: (code: number) => Awaited<void>;
+export interface Networking extends EventEmitter {
+	/**
+	 * Debug event for Networking.
+	 *
+	 * @event
+	 */
+	on(event: 'debug', listener: (message: string) => void): this;
+	on(event: 'error', listener: (error: Error) => void): this;
+	on(event: 'stateChange', listener: (oldState: NetworkingState, newState: NetworkingState) => void): this;
+	on(event: 'close', listener: (code: number) => void): this;
 }
 
 /**
@@ -195,7 +201,7 @@ function randomNBit(n: number) {
 /**
  * Manages the networking required to maintain a voice connection and dispatch audio packets
  */
-export class Networking extends TypedEmitter<NetworkingEvents> {
+export class Networking extends EventEmitter {
 	private _state: NetworkingState;
 
 	/**
@@ -274,12 +280,6 @@ export class Networking extends TypedEmitter<NetworkingEvents> {
 		this._state = newState;
 		this.emit('stateChange', oldState, newState);
 
-		/**
-		 * Debug event for Networking.
-		 *
-		 * @event Networking#debug
-		 * @type {string}
-		 */
 		this.debug?.(`state change:\nfrom ${stringifyState(oldState)}\nto ${stringifyState(newState)}`);
 	}
 

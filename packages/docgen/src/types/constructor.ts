@@ -9,16 +9,22 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 			const data = this.data as DeclarationReflection;
 			const signature = (data.signatures ?? [])[0] ?? data;
 
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+				? signature.comment.blockTags
+						.filter((t) => t.tag === '@see')
+						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+				: undefined;
+
 			return {
-				name: data.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				description: signature.comment?.shortText?.trim(),
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				see: signature.comment?.tags?.filter((t) => t.tagName === 'see').map((t) => t.text.trim()),
+				name: signature.name,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
+				see,
 				access:
 					data.flags.isPrivate ||
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					signature.comment?.tags?.some((t) => t.tagName === 'private' || t.tagName === 'internal')
+					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
 						? 'private'
 						: undefined,
 				// @ts-expect-error

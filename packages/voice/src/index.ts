@@ -16,7 +16,6 @@ export {
 	VoiceConnectionDisconnectReason,
 	VoiceConnectionReadyState,
 	VoiceConnectionSignallingState,
-	VoiceConnectionEvents,
 } from './VoiceConnection';
 
 export { JoinConfig, getVoiceConnection, getVoiceConnections, getGroups } from './DataStore';

@@ -114,8 +114,16 @@ class DMChannel extends Channel {
   // Doesn't work on DM channels; bulkDelete() {}
   // Doesn't work on DM channels; fetchWebhooks() {}
   // Doesn't work on DM channels; createWebhook() {}
+  // Doesn't work on DM channels; setRateLimitPerUser() {}
+  // Doesn't work on DM channels; setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete', 'fetchWebhooks', 'createWebhook']);
+TextBasedChannel.applyToClass(DMChannel, true, [
+  'bulkDelete',
+  'fetchWebhooks',
+  'createWebhook',
+  'setRateLimitPerUser',
+  'setNSFW',
+]);
 
 module.exports = DMChannel;

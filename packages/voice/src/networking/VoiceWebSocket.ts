@@ -1,28 +1,31 @@
+/* eslint-disable @typescript-eslint/method-signature-style */
+import { EventEmitter } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import { TypedEmitter } from 'tiny-typed-emitter';
 import WebSocket, { MessageEvent } from 'ws';
-import type { Awaited } from '../util/util';
 
-/**
- * Debug event for VoiceWebSocket.
- *
- * @event VoiceWebSocket#debug
- * @type {string}
- */
-
-export interface VoiceWebSocketEvents {
-	error: (error: Error) => Awaited<void>;
-	open: (event: WebSocket.Event) => Awaited<void>;
-	close: (event: WebSocket.CloseEvent) => Awaited<void>;
-	debug: (message: string) => Awaited<void>;
-	packet: (packet: any) => Awaited<void>;
+export interface VoiceWebSocket extends EventEmitter {
+	on(event: 'error', listener: (error: Error) => void): this;
+	on(event: 'open', listener: (event: WebSocket.Event) => void): this;
+	on(event: 'close', listener: (event: WebSocket.CloseEvent) => void): this;
+	/**
+	 * Debug event for VoiceWebSocket.
+	 *
+	 * @event
+	 */
+	on(event: 'debug', listener: (message: string) => void): this;
+	/**
+	 * Packet event.
+	 *
+	 * @event
+	 */
+	on(event: 'packet', listener: (packet: any) => void): this;
 }
 
 /**
  * An extension of the WebSocket class to provide helper functionality when interacting
  * with the Discord Voice gateway.
  */
-export class VoiceWebSocket extends TypedEmitter<VoiceWebSocketEvents> {
+export class VoiceWebSocket extends EventEmitter {
 	/**
 	 * The current heartbeat interval, if any.
 	 */
@@ -122,12 +125,6 @@ export class VoiceWebSocket extends TypedEmitter<VoiceWebSocketEvents> {
 			this.ping = this.lastHeartbeatAck - this.lastHeartbeatSend;
 		}
 
-		/**
-		 * Packet event.
-		 *
-		 * @event VoiceWebSocket#packet
-		 * @type {any}
-		 */
 		this.emit('packet', packet);
 	}
 

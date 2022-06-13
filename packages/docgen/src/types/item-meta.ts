@@ -1,4 +1,4 @@
-import { basename, dirname, relative } from 'node:path';
+import { basename, relative } from 'node:path';
 import type { SourceReference } from 'typedoc';
 import { DocumentedItem } from './item.js';
 import type { Meta } from '../interfaces/index.js';
@@ -11,7 +11,8 @@ export class DocumentedItemMeta extends DocumentedItem<Meta | SourceReference> {
 			return {
 				line: data.line,
 				file: basename(data.fileName),
-				path: dirname(data.fileName),
+				path: undefined,
+				url: data.url,
 			};
 		}
 

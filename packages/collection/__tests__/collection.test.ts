@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import Collection from '../src';
+import { Collection } from '../src';
 
 type TestCollection = Collection<string, number>;
 

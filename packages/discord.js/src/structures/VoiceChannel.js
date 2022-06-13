@@ -47,6 +47,14 @@ class VoiceChannel extends BaseGuildVoiceChannel {
     if ('messages' in data) {
       for (const message of data.messages) this.messages._add(message);
     }
+
+    if ('rate_limit_per_user' in data) {
+      /**
+       * The rate limit per user (slowmode) for this channel in seconds
+       * @type {number}
+       */
+      this.rateLimitPerUser = data.rate_limit_per_user;
+    }
   }
 
   /**
@@ -89,7 +97,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    *   .catch(console.error);
    */
   setBitrate(bitrate, reason) {
-    return this.edit({ bitrate }, reason);
+    return this.edit({ bitrate, reason });
   }
 
   /**
@@ -104,7 +112,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    *   .catch(console.error);
    */
   setUserLimit(userLimit, reason) {
-    return this.edit({ userLimit }, reason);
+    return this.edit({ userLimit, reason });
   }
 
   /**
@@ -114,7 +122,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * @returns {Promise<VoiceChannel>}
    */
   setVideoQualityMode(videoQualityMode, reason) {
-    return this.edit({ videoQualityMode }, reason);
+    return this.edit({ videoQualityMode, reason });
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
@@ -129,6 +137,8 @@ class VoiceChannel extends BaseGuildVoiceChannel {
   bulkDelete() {}
   fetchWebhooks() {}
   createWebhook() {}
+  setRateLimitPerUser() {}
+  setNSFW() {}
 
   /**
    * Sets the RTC region of the channel.

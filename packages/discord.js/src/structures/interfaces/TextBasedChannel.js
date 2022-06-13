@@ -345,13 +345,13 @@ class TextBasedChannel {
   /**
    * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
    * @typedef {Object} ChannelWebhookCreateOptions
+   * @property {string} name The name of the webhook
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
    * @property {string} [reason] Reason for creating the webhook
    */
 
   /**
    * Creates a webhook for the channel.
-   * @param {string} name The name of the webhook
    * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
@@ -363,8 +363,28 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  createWebhook(name, options = {}) {
-    return this.guild.channels.createWebhook(this.id, name, options);
+  createWebhook(options) {
+    return this.guild.channels.createWebhook({ channel: this.id, ...options });
+  }
+
+  /**
+   * Sets the rate limit per user (slowmode) for this channel.
+   * @param {number} rateLimitPerUser The new rate limit in seconds
+   * @param {string} [reason] Reason for changing the channel's rate limit
+   * @returns {Promise<this>}
+   */
+  setRateLimitPerUser(rateLimitPerUser, reason) {
+    return this.edit({ rateLimitPerUser, reason });
+  }
+
+  /**
+   * Sets whether this channel is flagged as NSFW.
+   * @param {boolean} [nsfw=true] Whether the channel should be considered NSFW
+   * @param {string} [reason] Reason for changing the channel's NSFW flag
+   * @returns {Promise<this>}
+   */
+  setNSFW(nsfw = true, reason) {
+    return this.edit({ nsfw, reason });
   }
 
   static applyToClass(structure, full = false, ignore = []) {
@@ -381,6 +401,8 @@ class TextBasedChannel {
         'awaitMessageComponent',
         'fetchWebhooks',
         'createWebhook',
+        'setRateLimitPerUser',
+        'setNSFW',
       );
     }
     for (const prop of props) {

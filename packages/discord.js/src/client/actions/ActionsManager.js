@@ -4,6 +4,7 @@ class ActionsManager {
   constructor(client) {
     this.client = client;
 
+    this.register(require('./ApplicationCommandPermissionsUpdate'));
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
     this.register(require('./ChannelUpdate'));

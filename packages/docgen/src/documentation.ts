@@ -1,4 +1,4 @@
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { Collection } from '@discordjs/collection';
 import type { DeclarationReflection } from 'typedoc';
 import type { ChildTypes, Class, Config, CustomDocs, RootTypes } from './interfaces/index.js';
@@ -36,7 +36,7 @@ export class Documentation {
 					case 'Class': {
 						this.classes.set(item.name, new DocumentedClass(item, config));
 						if (item.children) {
-							this.parse(item.children, item.name);
+							this.parse(item.children, item);
 						}
 						break;
 					}
@@ -51,7 +51,7 @@ export class Documentation {
 					case 'Enumeration':
 						this.typedefs.set(item.name, new DocumentedTypeDef(item, config));
 						if (item.children) {
-							this.parse(item.children, item.name);
+							this.parse(item.children, item);
 						}
 						break;
 
@@ -61,12 +61,13 @@ export class Documentation {
 			}
 		} else {
 			let items = data as RootTypes[];
+			items = items.filter((i) => !i.ignore);
 
 			for (const item of items) {
 				switch (item.kind) {
 					case 'class': {
 						this.classes.set(item.name, new DocumentedClass(item, config));
-						items = items.filter((i) => i.longname !== item.longname);
+						items = items.filter((i) => i.longname !== item.longname || i.kind !== item.kind);
 						break;
 					}
 					case 'function': {
@@ -100,7 +101,7 @@ export class Documentation {
 		}
 	}
 
-	public parse(items: ChildTypes[] | DeclarationReflection[], memberOf = '') {
+	public parse(items: ChildTypes[] | DeclarationReflection[], p?: DeclarationReflection) {
 		if (this.config.typescript) {
 			const it = items as DeclarationReflection[];
 
@@ -113,15 +114,17 @@ export class Documentation {
 						break;
 					}
 					case 'Method': {
+						const event = p?.groups?.find((group) => group.title === 'Events');
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+						if ((event?.children as unknown as number[])?.includes(member.id)) {
+							item = new DocumentedEvent(member, this.config);
+							break;
+						}
 						item = new DocumentedMethod(member, this.config);
 						break;
 					}
 					case 'Property': {
 						item = new DocumentedMember(member, this.config);
-						break;
-					}
-					case 'event': {
-						item = new DocumentedEvent(member, this.config);
 						break;
 					}
 					default: {
@@ -130,7 +133,7 @@ export class Documentation {
 					}
 				}
 
-				const parent = this.classes.get(memberOf) ?? this.interfaces.get(memberOf);
+				const parent = this.classes.get(p!.name) ?? this.interfaces.get(p!.name);
 				if (parent) {
 					if (item) {
 						parent.add(item);
@@ -153,11 +156,19 @@ export class Documentation {
 								path: dirname(member.sources?.[0]?.fileName ?? ''),
 						  };
 
-				if (memberOf) info.push(`member of "${memberOf}"`);
-				if (meta) info.push(`${join(meta.path, meta.file ?? '')}${meta.line ? `:${meta.line}` : ''}`);
+				if (p!.name) {
+					info.push(`member of "${p!.name}"`);
+				}
+				if (meta) {
+					info.push(
+						`${relative(this.config.root, join(meta.path, meta.file ?? ''))}${meta.line ? `:${meta.line}` : ''}`,
+					);
+				}
 
 				console.warn(`- "${name}"${info.length ? ` (${info.join(', ')})` : ''} has no accessible parent.`);
-				if (!name && !info.length) console.warn('Raw object:', member);
+				if (!name && !info.length) {
+					console.warn('Raw object:', member);
+				}
 			}
 		} else {
 			const it = items as ChildTypes[];
@@ -211,11 +222,17 @@ export class Documentation {
 						? null
 						: { file: member.meta.filename, line: member.meta.lineno, path: member.meta.path };
 
-				if (memberof) info.push(`member of "${memberof as string}"`);
-				if (meta) info.push(`${join(meta.path, meta.file)}${meta.line ? `:${meta.line}` : ''}`);
+				if (memberof) {
+					info.push(`member of "${memberof as string}"`);
+				}
+				if (meta) {
+					info.push(`${relative(this.config.root, join(meta.path, meta.file))}${meta.line ? `:${meta.line}` : ''}`);
+				}
 
 				console.warn(`- "${name}"${info.length ? ` (${info.join(', ')})` : ''} has no accessible parent.`);
-				if (!name && !info.length) console.warn('Raw object:', member);
+				if (!name && !info.length) {
+					console.warn('Raw object:', member);
+				}
 			}
 		}
 	}

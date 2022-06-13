@@ -835,7 +835,7 @@ class Message extends Base {
    */
   fetch(force = true) {
     if (!this.channel) return Promise.reject(new Error('CHANNEL_NOT_CACHED'));
-    return this.channel.messages.fetch(this.id, { force });
+    return this.channel.messages.fetch({ message: this.id, force });
   }
 
   /**

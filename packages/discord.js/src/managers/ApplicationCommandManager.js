@@ -6,6 +6,7 @@ const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermis
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ApplicationCommand = require('../structures/ApplicationCommand');
+const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Manages API methods for application commands and stores their cache.
@@ -224,6 +225,20 @@ class ApplicationCommandManager extends CachedManager {
    * @private
    */
   static transformCommand(command) {
+    let default_member_permissions;
+
+    if ('default_member_permissions' in command) {
+      default_member_permissions = command.default_member_permissions
+        ? new PermissionsBitField(BigInt(command.default_member_permissions)).bitfield.toString()
+        : command.default_member_permissions;
+    }
+
+    if ('defaultMemberPermissions' in command) {
+      default_member_permissions = command.defaultMemberPermissions
+        ? new PermissionsBitField(command.defaultMemberPermissions).bitfield.toString()
+        : command.defaultMemberPermissions;
+    }
+
     return {
       name: command.name,
       name_localizations: command.nameLocalizations ?? command.name_localizations,
@@ -231,7 +246,8 @@ class ApplicationCommandManager extends CachedManager {
       description_localizations: command.descriptionLocalizations ?? command.description_localizations,
       type: command.type,
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
-      default_permission: command.defaultPermission ?? command.default_permission,
+      default_member_permissions,
+      dm_permission: command.dmPermission ?? command.dm_permission,
     };
   }
 }

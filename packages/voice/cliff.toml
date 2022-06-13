@@ -10,7 +10,7 @@ body = """
 	{% if previous %}\
 		{% if previous.version %}\
 			(https://github.com/discordjs/discord.js/compare/{{ previous.version }}...{{ version }})\
-		{% else %}
+		{% else %}\
 			(https://github.com/discordjs/discord.js/tree/{{ version }})\
 		{% endif %}\
 	{% endif %} \

@@ -86,17 +86,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<TextChannel>}
    */
   setDefaultAutoArchiveDuration(defaultAutoArchiveDuration, reason) {
-    return this.edit({ defaultAutoArchiveDuration }, reason);
-  }
-
-  /**
-   * Sets whether this channel is flagged as NSFW.
-   * @param {boolean} [nsfw=true] Whether the channel should be considered NSFW
-   * @param {string} [reason] Reason for changing the channel's NSFW flag
-   * @returns {Promise<TextChannel>}
-   */
-  setNSFW(nsfw = true, reason) {
-    return this.edit({ nsfw }, reason);
+    return this.edit({ defaultAutoArchiveDuration, reason });
   }
 
   /**
@@ -106,7 +96,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * @returns {Promise<GuildChannel>}
    */
   setType(type, reason) {
-    return this.edit({ type }, reason);
+    return this.edit({ type, reason });
   }
 
   /**
@@ -121,7 +111,7 @@ class BaseGuildTextChannel extends GuildChannel {
    *   .catch(console.error);
    */
   setTopic(topic, reason) {
-    return this.edit({ topic }, reason);
+    return this.edit({ topic, reason });
   }
 
   /**
@@ -186,6 +176,8 @@ class BaseGuildTextChannel extends GuildChannel {
   bulkDelete() {}
   fetchWebhooks() {}
   createWebhook() {}
+  setRateLimitPerUser() {}
+  setNSFW() {}
 }
 
 TextBasedChannel.applyToClass(BaseGuildTextChannel, true);

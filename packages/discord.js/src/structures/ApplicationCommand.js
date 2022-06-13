@@ -5,6 +5,7 @@ const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const isEqual = require('fast-deep-equal');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
+const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Represents an application command.
@@ -121,12 +122,27 @@ class ApplicationCommand extends Base {
       this.options ??= [];
     }
 
-    if ('default_permission' in data) {
+    if ('default_member_permissions' in data) {
       /**
-       * Whether the command is enabled by default when the app is added to a guild
-       * @type {boolean}
+       * The default bitfield used to determine whether this command be used in a guild
+       * @type {?Readonly<PermissionsBitField>}
        */
-      this.defaultPermission = data.default_permission;
+      this.defaultMemberPermissions = data.default_member_permissions
+        ? new PermissionsBitField(BigInt(data.default_member_permissions)).freeze()
+        : null;
+    } else {
+      this.defaultMemberPermissions ??= null;
+    }
+
+    if ('dm_permission' in data) {
+      /**
+       * Whether the command can be used in DMs
+       * <info>This property is always `null` on guild commands</info>
+       * @type {boolean|null}
+       */
+      this.dmPermission = data.dm_permission;
+    } else {
+      this.dmPermission ??= null;
     }
 
     if ('version' in data) {
@@ -176,8 +192,9 @@ class ApplicationCommand extends Base {
    * if type is {@link ApplicationCommandType.ChatInput}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
-   * @property {boolean} [defaultPermission=true] Whether the command is enabled by default when the app is added to a
-   * guild
+   * @property {?PermissionResolvable} [defaultMemberPermissions] The bitfield used to determine the default permissions
+   * a member needs in order to run the command
+   * @property {boolean} [dmPermission] Whether the command is enabled in DMs
    */
 
   /**
@@ -282,12 +299,21 @@ class ApplicationCommand extends Base {
   }
 
   /**
-   * Edits the default permission of this ApplicationCommand
-   * @param {boolean} [defaultPermission=true] The default permission for this command
+   * Edits the default member permissions of this ApplicationCommand
+   * @param {PermissionResolvable} defaultMemberPermissions The default member permissions required to run this command
    * @returns {Promise<ApplicationCommand>}
    */
-  setDefaultPermission(defaultPermission = true) {
-    return this.edit({ defaultPermission });
+  setDefaultMemberPermissions(defaultMemberPermissions) {
+    return this.edit({ defaultMemberPermissions });
+  }
+
+  /**
+   * Edits the DM permission of this ApplicationCommand
+   * @param {boolean} [dmPermission=true] Whether the command can be used in DMs
+   * @returns {Promise<ApplicationCommand>}
+   */
+  setDMPermission(dmPermission = true) {
+    return this.edit({ dmPermission });
   }
 
   /**
@@ -325,6 +351,20 @@ class ApplicationCommand extends Base {
     // If given an id, check if the id matches
     if (command.id && this.id !== command.id) return false;
 
+    let defaultMemberPermissions = null;
+
+    if ('default_member_permissions' in command) {
+      defaultMemberPermissions = command.default_member_permissions
+        ? new PermissionsBitField(BigInt(command.default_member_permissions)).bitfield
+        : null;
+    }
+
+    if ('defaultMemberPermissions' in command) {
+      defaultMemberPermissions = command.defaultMemberPermissions
+        ? new PermissionsBitField(command.defaultMemberPermissions).bitfield
+        : null;
+    }
+
     // Check top level parameters
     if (
       command.name !== this.name ||
@@ -335,7 +375,8 @@ class ApplicationCommand extends Base {
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
-      (command.defaultPermission ?? command.default_permission ?? true) !== this.defaultPermission ||
+      defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
+      command.dmPermission !== this.dmPermission ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
