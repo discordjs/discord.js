@@ -90,8 +90,9 @@ class BaseGuildTextChannel extends GuildChannel {
   }
 
   /**
-   * Sets the type of this channel (only conversion between text and news is supported)
-   * @param {string} type The new channel type
+   * Sets the type of this channel.
+   * <info>Only conversion between {@link TextChannel} and {@link NewsChannel} is supported.</info>
+   * @param {ChannelType.GuildText|ChannelType.GuildNews} type The new channel type
    * @param {string} [reason] Reason for changing the channel's type
    * @returns {Promise<GuildChannel>}
    */
