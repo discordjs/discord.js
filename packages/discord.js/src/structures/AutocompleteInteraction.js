@@ -76,7 +76,7 @@ class AutocompleteInteraction extends Interaction {
    *    value: 'option1',
    *  },
    * ])
-   *  .then(console.log)
+   *  .then(() => console.log('Successfully responded to the autocomplete interaction'))
    *  .catch(console.error);
    */
   async respond(options) {
