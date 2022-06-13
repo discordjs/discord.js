@@ -837,8 +837,8 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
-  public getFocused(getFull: true): ApplicationCommandOptionChoiceData;
-  public getFocused(getFull?: boolean): string | number;
+  public getFocused(getFull: true): AutocompleteFocusedOption;
+  public getFocused(getFull?: boolean): string;
   public getAttachment(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['attachment']>;
   public getAttachment(
     name: string,
@@ -4357,6 +4357,18 @@ export interface ConstantsClientApplicationAssetTypes {
   SMALL: 1;
   BIG: 2;
 }
+
+export type AutocompleteFocusedOption = Pick<CommandInteractionOption, 'name'> & {
+  focused: true;
+  type:
+    | 'STRING'
+    | 'INTEGER'
+    | 'NUMBER'
+    | ApplicationCommandOptionTypes.STRING
+    | ApplicationCommandOptionTypes.INTEGER
+    | ApplicationCommandOptionTypes.NUMBER;
+  value: string;
+};
 
 export interface ConstantsColors {
   DEFAULT: 0x000000;
