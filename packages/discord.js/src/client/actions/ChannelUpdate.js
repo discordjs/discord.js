@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Channel } = require('../../structures/Channel');
+const { createChannel } = require('../../util/Channels');
 
 class ChannelUpdateAction extends Action {
   handle(data) {
@@ -12,7 +12,7 @@ class ChannelUpdateAction extends Action {
       const old = channel._update(data);
 
       if (channel.type !== data.type) {
-        const newChannel = Channel.create(this.client, data, channel.guild);
+        const newChannel = createChannel(this.client, data, channel.guild);
         for (const [id, message] of channel.messages.cache) newChannel.messages.cache.set(id, message);
         channel = newChannel;
         this.client.channels.cache.set(channel.id, channel);

@@ -2,7 +2,7 @@
 
 const process = require('node:process');
 const { DefaultRestOptions } = require('@discordjs/rest');
-const Transformers = require('./Transformers');
+const { toSnakeCase } = require('./Transformers');
 
 /**
  * @typedef {Function} CacheFactory
@@ -93,7 +93,7 @@ class Options extends null {
         version: 10,
       },
       rest: DefaultRestOptions,
-      jsonTransformer: Transformers.toSnakeCase,
+      jsonTransformer: toSnakeCase,
     };
   }
 

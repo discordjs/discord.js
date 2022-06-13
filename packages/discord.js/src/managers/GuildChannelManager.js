@@ -12,7 +12,7 @@ const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Util = require('../util/Util');
+const { setPosition } = require('../util/Util');
 
 let cacheWarningEmitted = false;
 
@@ -296,7 +296,7 @@ class GuildChannelManager extends CachedManager {
   async setPosition(channel, position, { relative, reason } = {}) {
     channel = this.resolve(channel);
     if (!channel) throw new TypeError('INVALID_TYPE', 'channel', 'GuildChannelResolvable');
-    const updatedChannels = await Util.setPosition(
+    const updatedChannels = await setPosition(
       channel,
       position,
       relative,

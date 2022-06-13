@@ -2,7 +2,7 @@
 
 const { isJSONEncodable } = require('@discordjs/builders');
 const Component = require('./Component');
-const Components = require('../util/Components');
+const { createComponent } = require('../util/Components');
 
 /**
  * Represents an action row
@@ -17,7 +17,7 @@ class ActionRow extends Component {
      * @type {Component[]}
      * @readonly
      */
-    this.components = components.map(c => Components.createComponent(c));
+    this.components = components.map(c => createComponent(c));
   }
 
   /**

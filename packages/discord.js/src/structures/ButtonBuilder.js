@@ -1,8 +1,8 @@
 'use strict';
 
 const { ButtonBuilder: BuildersButton, isJSONEncodable } = require('@discordjs/builders');
-const Transformers = require('../util/Transformers');
-const Util = require('../util/Util');
+const { toSnakeCase } = require('../util/Transformers');
+const { parseEmoji } = require('../util/Util');
 
 /**
  * Represents a button builder.
@@ -10,9 +10,7 @@ const Util = require('../util/Util');
  */
 class ButtonBuilder extends BuildersButton {
   constructor({ emoji, ...data } = {}) {
-    super(
-      Transformers.toSnakeCase({ ...data, emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji }),
-    );
+    super(toSnakeCase({ ...data, emoji: emoji && typeof emoji === 'string' ? parseEmoji(emoji) : emoji }));
   }
 
   /**
@@ -22,7 +20,7 @@ class ButtonBuilder extends BuildersButton {
    */
   setEmoji(emoji) {
     if (typeof emoji === 'string') {
-      return super.setEmoji(Util.parseEmoji(emoji));
+      return super.setEmoji(parseEmoji(emoji));
     }
     return super.setEmoji(emoji);
   }

@@ -1,7 +1,7 @@
 'use strict';
 
 const { TextInputBuilder: BuildersTextInput, isJSONEncodable } = require('@discordjs/builders');
-const Transformers = require('../util/Transformers');
+const { toSnakeCase } = require('../util/Transformers');
 
 /**
  * Represents a text input builder.
@@ -9,7 +9,7 @@ const Transformers = require('../util/Transformers');
  */
 class TextInputBuilder extends BuildersTextInput {
   constructor(data) {
-    super(Transformers.toSnakeCase(data));
+    super(toSnakeCase(data));
   }
 
   /**

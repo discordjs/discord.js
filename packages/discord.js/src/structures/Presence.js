@@ -3,7 +3,7 @@
 const Base = require('./Base');
 const { Emoji } = require('./Emoji');
 const ActivityFlagsBitField = require('../util/ActivityFlagsBitField');
-const Util = require('../util/Util');
+const { flatten } = require('../util/Util');
 
 /**
  * Activity sent in a message.
@@ -132,7 +132,7 @@ class Presence extends Base {
   }
 
   toJSON() {
-    return Util.flatten(this);
+    return flatten(this);
   }
 }
 

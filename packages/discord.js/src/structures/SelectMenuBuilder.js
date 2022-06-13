@@ -1,8 +1,8 @@
 'use strict';
 
 const { SelectMenuBuilder: BuildersSelectMenu, isJSONEncodable, normalizeArray } = require('@discordjs/builders');
-const Transformers = require('../util/Transformers');
-const Util = require('../util/Util');
+const { toSnakeCase } = require('../util/Transformers');
+const { parseEmoji } = require('../util/Util');
 
 /**
  * Class used to build select menu components to be sent through the API
@@ -11,11 +11,11 @@ const Util = require('../util/Util');
 class SelectMenuBuilder extends BuildersSelectMenu {
   constructor({ options, ...data } = {}) {
     super(
-      Transformers.toSnakeCase({
+      toSnakeCase({
         ...data,
         options: options?.map(({ emoji, ...option }) => ({
           ...option,
-          emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
+          emoji: emoji && typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
         })),
       }),
     );
@@ -30,7 +30,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
     return super.addOptions(
       normalizeArray(options).map(({ emoji, ...option }) => ({
         ...option,
-        emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
+        emoji: emoji && typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
       })),
     );
   }
@@ -44,7 +44,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
     return super.setOptions(
       normalizeArray(options).map(({ emoji, ...option }) => ({
         ...option,
-        emoji: emoji && typeof emoji === 'string' ? Util.parseEmoji(emoji) : emoji,
+        emoji: emoji && typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
       })),
     );
   }

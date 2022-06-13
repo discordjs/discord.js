@@ -7,7 +7,7 @@ const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const { Message } = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
-const Util = require('../util/Util');
+const { resolvePartialEmoji } = require('../util/Util');
 
 /**
  * Manages API methods for Messages and holds their cache.
@@ -223,7 +223,7 @@ class MessageManager extends CachedManager {
     message = this.resolveId(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    emoji = Util.resolvePartialEmoji(emoji);
+    emoji = resolvePartialEmoji(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE', 'emoji', 'EmojiIdentifierResolvable');
 
     const emojiId = emoji.id

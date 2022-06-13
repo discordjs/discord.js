@@ -34,7 +34,7 @@ exports.Sweepers = require('./util/Sweepers');
 exports.SystemChannelFlagsBitField = require('./util/SystemChannelFlagsBitField');
 exports.ThreadMemberFlagsBitField = require('./util/ThreadMemberFlagsBitField');
 exports.UserFlagsBitField = require('./util/UserFlagsBitField');
-exports.Util = require('./util/Util');
+__exportStar(require('./util/Util.js'), exports);
 exports.version = require('../package.json').version;
 
 // Managers
