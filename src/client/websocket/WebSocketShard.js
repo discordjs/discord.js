@@ -367,7 +367,7 @@ class WebSocketShard extends EventEmitter {
     if (this.connection) {
       this._cleanupConnection();
       // Having this after _cleanupConnection to just clean up the connection and not listen to ws.onclose
-      this.destroy({ reset: true, emit: false, log: false });
+      this.destroy({ reset: !this.sessionId, emit: false, log: false });
     }
     this.status = Status.DISCONNECTED;
     this.emitClose(event);
