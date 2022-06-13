@@ -356,7 +356,8 @@ class TextBasedChannel {
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
    * // Create a webhook for the current channel
-   * channel.createWebhook('Snek', {
+   * channel.createWebhook({
+   *   name: 'Snek',
    *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
    *   reason: 'Needed a cool new Webhook'
    * })
