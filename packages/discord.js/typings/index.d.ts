@@ -1007,8 +1007,8 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
   public getMessage(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['message']>;
   public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
-  public getFocused(getFull: true): AutocompleteOption;
-  public getFocused(getFull?: boolean): string | number;
+  public getFocused(getFull: true): AutocompleteFocusedOption;
+  public getFocused(getFull?: boolean): string;
 }
 
 export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
@@ -4064,7 +4064,14 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   attachments?: Collection<Snowflake, Attachment>;
 }
 
-export type AutocompleteOption = Pick<CommandInteractionOption, 'name' | 'type' | 'value' | 'focused'>;
+export type AutocompleteFocusedOption = Pick<CommandInteractionOption, 'name'> & {
+  focused: true;
+  type:
+    | ApplicationCommandOptionType.String
+    | ApplicationCommandOptionType.Integer
+    | ApplicationCommandOptionType.Number;
+  value: string;
+};
 
 export declare const Colors: {
   Default: 0x000000;
