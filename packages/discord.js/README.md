@@ -45,16 +45,16 @@ pnpm add discord.js
 Install all required dependencies:
 
 ```sh-session
-npm install discord.js @discordjs/rest discord-api-types
-yarn add discord.js @discordjs/rest discord-api-types
-pnpm add discord.js @discordjs/rest discord-api-types
+npm install discord.js @discordjs/rest
+yarn add discord.js @discordjs/rest
+pnpm add discord.js @discordjs/rest
 ```
 
 Register a slash command against the Discord API:
 
 ```js
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
+const { Routes } = require('discord.js');
 
 const commands = [
   {
