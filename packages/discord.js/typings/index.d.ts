@@ -3853,7 +3853,7 @@ export interface ChannelCreationOverwrites {
 
 export interface ChannelData {
   name?: string;
-  type?: Pick<typeof ChannelType, 'GuildText' | 'GuildNews'>;
+  type?: ChannelType.GuildText | ChannelType.GuildNews;
   position?: number;
   topic?: string | null;
   nsfw?: boolean;
