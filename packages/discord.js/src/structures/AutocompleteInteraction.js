@@ -37,6 +37,12 @@ class AutocompleteInteraction extends Interaction {
     this.commandType = data.data.type;
 
     /**
+     * The id of the guild the invoked application command is registered to
+     * @type {?Snowflake}
+     */
+    this.commandGuildId = data.data.guild_id ?? null;
+
+    /**
      * Whether this interaction has already received a response
      * @type {boolean}
      */
