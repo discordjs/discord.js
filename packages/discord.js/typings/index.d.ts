@@ -3706,7 +3706,7 @@ export interface ApplicationCommandPermissionsUpdateData {
   id: Snowflake;
   guildId: Snowflake;
   applicationId: Snowflake;
-  permissions: ApplicationCommandPermissions;
+  permissions: ApplicationCommandPermissions[];
 }
 
 export interface EditApplicationCommandPermissionsMixin {
@@ -4107,6 +4107,7 @@ export declare const Colors: {
 };
 
 export declare const Events: {
+  ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate';
   ClientReady: 'ready';
   GuildCreate: 'guildCreate';
   GuildDelete: 'guildDelete';
