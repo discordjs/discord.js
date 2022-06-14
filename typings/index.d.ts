@@ -6016,12 +6016,15 @@ export interface WebSocketOptions {
 }
 
 export interface WebSocketProperties {
-  $os?: string;
-  $browser?: string;
-  $device?: string;
   os?: string;
   browser?: string;
   device?: string;
+  /** @deprecated Use `os` instead */
+  $os?: string;
+  /** @deprecated Use `browser` instead */
+  $browser?: string;
+  /** @deprecated Use `device` instead */
+  $device?: string;
 }
 
 export interface WidgetActivity {
