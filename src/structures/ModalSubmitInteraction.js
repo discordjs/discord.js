@@ -94,6 +94,14 @@ class ModalSubmitInteraction extends Interaction {
     }));
   }
 
+  /**
+   * Whether this is from a {@link MessageComponentInteraction}.
+   * @returns {boolean}
+   */
+  isFromMessage() {
+    return Boolean(this.message);
+  }
+
   // These are here only for documentation purposes - they are implemented by InteractionResponses
   /* eslint-disable no-empty-function */
   deferReply() {}
