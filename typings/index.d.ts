@@ -6019,11 +6019,11 @@ export interface WebSocketProperties {
   os?: string;
   browser?: string;
   device?: string;
-  /** @deprecated Use `os` instead */
+  /** @deprecated Use {@link os} instead. */
   $os?: string;
-  /** @deprecated Use `browser` instead */
+  /** @deprecated Use {@link browser} instead. */
   $browser?: string;
-  /** @deprecated Use `device` instead */
+  /** @deprecated Use {@link device} instead. */
   $device?: string;
 }
 
