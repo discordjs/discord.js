@@ -6016,6 +6016,9 @@ export interface WebSocketOptions {
 }
 
 export interface WebSocketProperties {
+  $os?: string;
+  $browser?: string;
+  $device?: string;
   os?: string;
   browser?: string;
   device?: string;
