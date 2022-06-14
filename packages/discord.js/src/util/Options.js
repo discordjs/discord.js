@@ -86,9 +86,9 @@ class Options extends null {
         large_threshold: 50,
         compress: false,
         properties: {
-          $os: process.platform,
-          $browser: 'discord.js',
-          $device: 'discord.js',
+          os: process.platform,
+          browser: 'discord.js',
+          device: 'discord.js',
         },
         version: 10,
       },
