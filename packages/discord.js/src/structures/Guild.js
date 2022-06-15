@@ -718,8 +718,8 @@ class Guild extends AnonymousGuild {
    * The data for editing a guild.
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
-   * @property {?(GuildVerificationLevel|number)} [verificationLevel] The verification level of the guild
    * @property {?(GuildExplicitContentFilterLevel|number)} [explicitContentFilter] The level of the explicit content filter
+   * @property {?GuildVerificationLevel} [verificationLevel] The verification level of the guild
    * @property {?VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {?TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
