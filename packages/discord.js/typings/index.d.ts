@@ -4859,7 +4859,10 @@ export interface IntegrationAccount {
 
 export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 
-export type CollectedInteraction = SelectMenuInteraction | ButtonInteraction | ModalSubmitInteraction;
+export type CollectedInteraction<Cached extends CacheType = CacheType> =
+  | SelectMenuInteraction<Cached>
+  | ButtonInteraction<Cached>
+  | ModalSubmitInteraction<Cached>;
 
 export interface InteractionCollectorOptions<T extends CollectedInteraction, Cached extends CacheType = CacheType>
   extends CollectorOptions<[T, Collection<Snowflake, T>]> {
@@ -4966,7 +4969,10 @@ export type MessageComponent =
   | ButtonComponent
   | SelectMenuComponent;
 
-export type CollectedMessageInteraction = Exclude<CollectedInteraction, ModalSubmitInteraction>;
+export type CollectedMessageInteraction<Cached extends CacheType = CacheType> = Exclude<
+  CollectedInteraction<Cached>,
+  ModalSubmitInteraction
+>;
 
 export type MessageComponentCollectorOptions<T extends CollectedMessageInteraction> = Omit<
   InteractionCollectorOptions<T>,

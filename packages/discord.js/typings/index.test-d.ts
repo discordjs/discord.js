@@ -767,7 +767,7 @@ client.on('messageCreate', async message => {
   // Make sure filter parameters are properly inferred.
   message.createMessageComponentCollector({
     filter: i => {
-      expectType<MessageComponentInteraction>(i);
+      expectType<CollectedMessageInteraction>(i);
       return true;
     },
   });
@@ -790,7 +790,7 @@ client.on('messageCreate', async message => {
 
   message.awaitMessageComponent({
     filter: i => {
-      expectType<MessageComponentInteraction>(i);
+      expectType<CollectedMessageInteraction>(i);
       return true;
     },
   });
@@ -826,7 +826,7 @@ client.on('messageCreate', async message => {
 
   channel.awaitMessageComponent({
     filter: i => {
-      expectType<MessageComponentInteraction<'cached'>>(i);
+      expectType<CollectedMessageInteraction<'cached'>>(i);
       return true;
     },
   });
