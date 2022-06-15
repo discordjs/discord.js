@@ -370,7 +370,6 @@ class ApplicationCommand extends Base {
       command.name !== this.name ||
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
-      ('autocomplete' in command && command.autocomplete !== this.autocomplete) ||
       (command.type && command.type !== this.type) ||
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
