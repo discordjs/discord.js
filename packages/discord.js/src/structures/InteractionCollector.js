@@ -137,7 +137,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles an incoming interaction for possible collection.
-   * @param {Interaction} interaction The interaction to possibly collect
+   * @param {BaseInteraction} interaction The interaction to possibly collect
    * @returns {?Snowflake}
    * @private
    */
@@ -145,7 +145,7 @@ class InteractionCollector extends Collector {
     /**
      * Emitted whenever an interaction is collected.
      * @event InteractionCollector#collect
-     * @param {Interaction} interaction The interaction that was collected
+     * @param {BaseInteraction} interaction The interaction that was collected
      */
     if (this.interactionType && interaction.type !== this.interactionType) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
@@ -159,14 +159,14 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles an interaction for possible disposal.
-   * @param {Interaction} interaction The interaction that could be disposed of
+   * @param {BaseInteraction} interaction The interaction that could be disposed of
    * @returns {?Snowflake}
    */
   dispose(interaction) {
     /**
      * Emitted whenever an interaction is disposed of.
      * @event InteractionCollector#dispose
-     * @param {Interaction} interaction The interaction that was disposed of
+     * @param {BaseInteraction} interaction The interaction that was disposed of
      */
     if (this.type && interaction.type !== this.type) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;

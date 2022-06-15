@@ -9,7 +9,7 @@ const getMessage = lazy(() => require('./Message').Message);
 
 /**
  * Represents a message component interaction.
- * @extends {Interaction}
+ * @extends {BaseInteraction}
  * @implements {InteractionResponses}
  */
 class MessageComponentInteraction extends BaseInteraction {

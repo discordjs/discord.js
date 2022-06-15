@@ -3,7 +3,7 @@
 const process = require('node:process');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { Channel } = require('../structures/Channel');
+const { BaseChannel } = require('../structures/BaseChannel');
 const { createChannel } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
 const Events = require('../util/Events');
@@ -16,7 +16,7 @@ let cacheWarningEmitted = false;
  */
 class ChannelManager extends CachedManager {
   constructor(client, iterable) {
-    super(client, Channel, iterable);
+    super(client, BaseChannel, iterable);
     const defaultCaching =
       this._cache.constructor.name === 'Collection' ||
       this._cache.maxSize === undefined ||
@@ -32,7 +32,7 @@ class ChannelManager extends CachedManager {
 
   /**
    * The cache of Channels
-   * @type {Collection<Snowflake, Channel>}
+   * @type {Collection<Snowflake, BaseChannel>}
    * @name ChannelManager#cache
    */
 
@@ -75,7 +75,7 @@ class ChannelManager extends CachedManager {
    * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Snowflake
-   * @typedef {Channel|Snowflake} ChannelResolvable
+   * @typedef {BaseChannel|Snowflake} ChannelResolvable
    */
 
   /**
@@ -84,7 +84,7 @@ class ChannelManager extends CachedManager {
    * @memberof ChannelManager
    * @instance
    * @param {ChannelResolvable} channel The channel resolvable to resolve
-   * @returns {?Channel}
+   * @returns {?BaseChannel}
    */
 
   /**

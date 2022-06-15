@@ -10,7 +10,7 @@ const { ThreadChannelTypes } = require('../util/Constants');
  * @extends {Base}
  * @abstract
  */
-class Channel extends Base {
+class BaseChannel extends Base {
   constructor(client, data, immediatePatch = true) {
     super(client);
 
@@ -81,7 +81,7 @@ class Channel extends Base {
 
   /**
    * Deletes this channel.
-   * @returns {Promise<Channel>}
+   * @returns {Promise<BaseChannel>}
    * @example
    * // Delete the channel
    * channel.delete()
@@ -96,7 +96,7 @@ class Channel extends Base {
   /**
    * Fetches this channel.
    * @param {boolean} [force=true] Whether to skip the cache check and request the API
-   * @returns {Promise<Channel>}
+   * @returns {Promise<BaseChannel>}
    */
   fetch(force = true) {
     return this.client.channels.fetch(this.id, { force });
@@ -139,7 +139,7 @@ class Channel extends Base {
   }
 }
 
-exports.Channel = Channel;
+exports.BaseChannel = BaseChannel;
 
 /**
  * @external APIChannel

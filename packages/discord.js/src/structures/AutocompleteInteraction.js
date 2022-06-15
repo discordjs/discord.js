@@ -7,7 +7,7 @@ const { ErrorCodes } = require('../errors');
 
 /**
  * Represents an autocomplete interaction.
- * @extends {Interaction}
+ * @extends {BaseInteraction}
  */
 class AutocompleteInteraction extends BaseInteraction {
   constructor(client, data) {

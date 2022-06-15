@@ -8,7 +8,7 @@ const InteractionResponses = require('./interfaces/InteractionResponses');
 
 /**
  * Represents a command interaction.
- * @extends {Interaction}
+ * @extends {BaseInteraction}
  * @implements {InteractionResponses}
  * @abstract
  */

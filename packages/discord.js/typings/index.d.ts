@@ -746,7 +746,7 @@ export class CategoryChannel extends GuildChannel {
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
-export abstract class Channel extends Base {
+export abstract class BaseChannel extends Base {
   public constructor(client: Client, data?: RawChannelData, immediatePatch?: boolean);
   public get createdAt(): Date | null;
   public get createdTimestamp(): number | null;
@@ -1045,7 +1045,7 @@ export class DataResolver extends null {
   public static resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
 }
 
-export class DMChannel extends TextBasedChannelMixin(Channel, [
+export class DMChannel extends TextBasedChannelMixin(BaseChannel, [
   'bulkDelete',
   'fetchWebhooks',
   'createWebhook',
@@ -1226,7 +1226,7 @@ export class GuildBan extends Base {
   public fetch(force?: boolean): Promise<GuildBan>;
 }
 
-export abstract class GuildChannel extends Channel {
+export abstract class GuildChannel extends BaseChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
   private memberPermissions(member: GuildMember, checkAdmin: boolean): Readonly<PermissionsBitField>;
   private rolePermissions(role: Role, checkAdmin: boolean): Readonly<PermissionsBitField>;
@@ -1856,11 +1856,11 @@ export class MessageMentions {
     everyone: boolean,
     repliedUser?: APIUser | User,
   );
-  private _channels: Collection<Snowflake, AnyChannel> | null;
+  private _channels: Collection<Snowflake, Channel> | null;
   private readonly _content: string;
   private _members: Collection<Snowflake, GuildMember> | null;
 
-  public get channels(): Collection<Snowflake, AnyChannel>;
+  public get channels(): Collection<Snowflake, Channel>;
   public readonly client: Client;
   public everyone: boolean;
   public readonly guild: Guild;
@@ -2013,7 +2013,7 @@ export class OAuth2Guild extends BaseGuild {
   public permissions: Readonly<PermissionsBitField>;
 }
 
-export class PartialGroupDMChannel extends Channel {
+export class PartialGroupDMChannel extends BaseChannel {
   private constructor(client: Client, data: RawPartialGroupDMChannelData);
   public type: ChannelType.GroupDM;
   public name: string | null;
@@ -2308,7 +2308,7 @@ export class StageChannel extends BaseGuildVoiceChannel {
   public setTopic(topic: string): Promise<StageChannel>;
 }
 
-export class DirectoryChannel extends Channel {
+export class DirectoryChannel extends BaseChannel {
   public guild: InviteGuild;
   public guildId: Snowflake;
   public name: string;
@@ -2489,7 +2489,7 @@ export interface PrivateThreadChannel extends ThreadChannel {
   type: ChannelType.GuildPrivateThread;
 }
 
-export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhooks', 'createWebhook', 'setNSFW']) {
+export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, ['fetchWebhooks', 'createWebhook', 'setNSFW']) {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
   public get archivedAt(): Date | null;
@@ -2650,7 +2650,7 @@ export function parseEmoji(text: string): { animated: boolean; name: string; id:
 export function resolveColor(color: ColorResolvable): number;
 export function resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<APIPartialEmoji> | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
-export function setPosition<T extends AnyChannel | Role>(
+export function setPosition<T extends Channel | Role>(
   item: T,
   position: number,
   relative: boolean,
@@ -2679,7 +2679,7 @@ export interface CreateChannelOptions {
   fromInteraction?: boolean;
 }
 
-export function createChannel(client: Client, data: APIChannel, options?: CreateChannelOptions): AnyChannel;
+export function createChannel(client: Client, data: APIChannel, options?: CreateChannelOptions): Channel;
 
 export function createComponent<T extends keyof MappedComponentTypes>(
   data: APIMessageComponent & { type: T },
@@ -3287,9 +3287,9 @@ export class CategoryChannelChildManager extends DataManager<
   public create(options: CategoryCreateChannelOptions): Promise<TextChannel>;
 }
 
-export class ChannelManager extends CachedManager<Snowflake, AnyChannel, ChannelResolvable> {
+export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   private constructor(client: Client, iterable: Iterable<RawChannelData>);
-  public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<AnyChannel | null>;
+  public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
 }
 
 export type FetchGuildApplicationCommandFetchOptions = Omit<FetchApplicationCommandOptions, 'guildId'>;
@@ -4040,7 +4040,7 @@ export interface ChannelPosition {
 }
 
 export type GuildTextChannelResolvable = TextChannel | NewsChannel | Snowflake;
-export type ChannelResolvable = AnyChannel | Snowflake;
+export type ChannelResolvable = Channel | Snowflake;
 
 export interface ChannelWebhookCreateOptions {
   name: string;
@@ -4220,7 +4220,7 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   users?: Collection<Snowflake, User>;
   members?: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
   roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
-  channels?: Collection<Snowflake, CacheTypeReducer<Cached, AnyChannel, APIInteractionDataResolvedChannel>>;
+  channels?: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIInteractionDataResolvedChannel>>;
   messages?: Collection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
   attachments?: Collection<Snowflake, Attachment>;
 }
@@ -5373,7 +5373,7 @@ export interface LimitedCollectionOptions<K, V> {
   keepOverLimit?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
 }
 
-export type AnyChannel =
+export type Channel =
   | CategoryChannel
   | DMChannel
   | PartialDMChannel
@@ -5384,13 +5384,13 @@ export type AnyChannel =
   | AnyThreadChannel
   | VoiceChannel;
 
-export type TextBasedChannel = Extract<AnyChannel, { messages: MessageManager }>;
+export type TextBasedChannel = Extract<Channel, { messages: MessageManager }>;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
-export type VoiceBasedChannel = Extract<AnyChannel, { bitrate: number }>;
+export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 
-export type GuildBasedChannel = Extract<AnyChannel, { guild: Guild }>;
+export type GuildBasedChannel = Extract<Channel, { guild: Guild }>;
 
 export type NonCategoryGuildBasedChannel = Exclude<GuildBasedChannel, CategoryChannel>;
 
