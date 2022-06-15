@@ -718,8 +718,8 @@ class Guild extends AnonymousGuild {
    * The data for editing a guild.
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
-   * @property {?(GuildExplicitContentFilterLevel|number)} [explicitContentFilter] The level of the explicit content filter
    * @property {?GuildVerificationLevel} [verificationLevel] The verification level of the guild
+   * @property {?GuildExplicitContentFilter} [explicitContentFilter] The level of the explicit content filter
    * @property {?VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {?TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
@@ -887,7 +887,7 @@ class Guild extends AnonymousGuild {
   /* eslint-disable max-len */
   /**
    * Edits the level of the explicit content filter.
-   * @param {?(GuildExplicitContentFilterLevel|number)} explicitContentFilter The new level of the explicit content filter
+   * @param {?GuildExplicitContentFilter} explicitContentFilter The new level of the explicit content filter
    * @param {string} [reason] Reason for changing the level of the guild's explicit content filter
    * @returns {Promise<Guild>}
    */
