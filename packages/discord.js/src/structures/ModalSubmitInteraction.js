@@ -1,6 +1,6 @@
 'use strict';
 
-const Interaction = require('./Interaction');
+const BaseInteraction = require('./BaseInteractiontion');
 const InteractionWebhook = require('./InteractionWebhook');
 const ModalSubmitFields = require('./ModalSubmitFields');
 const InteractionResponses = require('./interfaces/InteractionResponses');
@@ -25,7 +25,7 @@ const getMessage = lazy(() => require('./Message').Message);
  * Represents a modal interaction
  * @implements {InteractionResponses}
  */
-class ModalSubmitInteraction extends Interaction {
+class ModalSubmitInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
     /**

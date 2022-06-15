@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Attachment = require('./Attachment');
-const Interaction = require('./Interaction');
+const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 
@@ -12,7 +12,7 @@ const InteractionResponses = require('./interfaces/InteractionResponses');
  * @implements {InteractionResponses}
  * @abstract
  */
-class CommandInteraction extends Interaction {
+class CommandInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 

@@ -91,9 +91,9 @@ class MessagePayload {
    * @readonly
    */
   get isInteraction() {
-    const Interaction = require('./Interaction');
+    const BaseInteraction = require('./BaseInteractiontion');
     const InteractionWebhook = require('./InteractionWebhook');
-    return this.target instanceof Interaction || this.target instanceof InteractionWebhook;
+    return this.target instanceof BaseInteraction || this.target instanceof InteractionWebhook;
   }
 
   /**
