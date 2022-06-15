@@ -728,7 +728,7 @@ class Guild extends AnonymousGuild {
    * @property {?(BufferResolvable|Base64Resolvable)} [splash] The invite splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [discoverySplash] The discovery splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner of the guild
-   * @property {?(GuildDefaultMessageNotificationLevel|number)} [defaultMessageNotifications] The default message
+   * @property {?GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message
    * notification level of the guild
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    * @property {?TextChannelResolvable} [rulesChannel] The rules channel of the guild
@@ -897,7 +897,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the setting of the default message notifications of the guild.
-   * @param {?(GuildDefaultMessageNotificationLevel|number)} defaultMessageNotifications The new default message notification level of the guild
+   * @param {?GuildDefaultMessageNotifications} defaultMessageNotifications The new default message notification level of the guild
    * @param {string} [reason] Reason for changing the setting of the default message notifications
    * @returns {Promise<Guild>}
    */
