@@ -4651,7 +4651,7 @@ export interface GuildScheduledEventEditOptions<
   T extends GuildScheduledEventSetStatusArg<S>,
 > extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
   channel?: GuildVoiceChannelResolvable | null;
-  status?: T | number;
+  status?: T;
 }
 
 export interface GuildScheduledEventEntityMetadata {
