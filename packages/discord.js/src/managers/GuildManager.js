@@ -147,7 +147,7 @@ class GuildManager extends CachedManager {
    * @property {PartialChannelData[]} [channels=[]] The channels for this guild
    * @property {GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message notifications
    * for the guild
-   * @property {GuildExplicitContentFilterLevel} [explicitContentFilter] The explicit content filter level for the guild
+   * @property {GuildExplicitContentFilter} [explicitContentFilter] The explicit content filter level for the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon=null] The icon for the guild
    * @property {PartialRoleData[]} [roles=[]] The roles for this guild,
    * the first element of this array is used to change properties of the guild's everyone role.
