@@ -171,7 +171,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {GuildScheduledEventEntityType} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
    * @property {?GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
-   * @property {GuildScheduledEventStatus|number} [status] The status of the guild scheduled event
+   * @property {GuildScheduledEventStatus} [status] The status of the guild scheduled event
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This can be modified only if `entityType` of the `GuildScheduledEvent` to be edited is
