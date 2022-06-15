@@ -5006,7 +5006,7 @@ export type PresenceResolvable = Presence | UserResolvable | Snowflake;
 export interface PartialChannelData {
   id?: Snowflake | number;
   parentId?: Snowflake | number;
-  type?: ChannelType.GuildText | ChannelType.GuildVoice | ChannelType.GuildCategory
+  type?: ChannelType.GuildText | ChannelType.GuildVoice | ChannelType.GuildCategory;
   name: string;
   topic?: string | null;
   nsfw?: boolean;
