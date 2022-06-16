@@ -318,6 +318,7 @@ class WebSocketManager extends EventEmitter {
    */
   destroy() {
     if (this.destroyed) return;
+    // TODO: Make a util for getting a stack
     this.debug(`Manager was destroyed. Called by:\n${new globalThis.Error().stack}`);
     this.destroyed = true;
     this.shardQueue.clear();
