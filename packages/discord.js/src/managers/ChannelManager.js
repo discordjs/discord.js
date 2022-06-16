@@ -107,7 +107,7 @@ class ChannelManager extends CachedManager {
    * Obtains a channel from Discord, or the channel cache if it's already available.
    * @param {Snowflake} id The channel's id
    * @param {FetchChannelOptions} [options] Additional options for this fetch
-   * @returns {Promise<?Channel>}
+   * @returns {Promise<?BaseChannel>}
    * @example
    * // Fetch a channel by its id
    * client.channels.fetch('222109930545610754')

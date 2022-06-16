@@ -48,7 +48,7 @@ const Targets = {
  * * An application command
  * * An object with an id key if target was deleted or fake entity
  * * An object where the keys represent either the new value or the old value
- * @typedef {?(Object|Guild|Channel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
+ * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
  * GuildScheduledEvent|ApplicationCommand)} AuditLogEntryTarget
  */
 

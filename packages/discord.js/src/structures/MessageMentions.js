@@ -115,7 +115,7 @@ class MessageMentions {
 
     /**
      * Cached channels for {@link MessageMentions#channels}
-     * @type {?Collection<Snowflake, Channel>}
+     * @type {?Collection<Snowflake, BaseChannel>}
      * @private
      */
     this._channels = null;
@@ -179,7 +179,7 @@ class MessageMentions {
   /**
    * Any channels that were mentioned
    * <info>Order as they appear first in the message content</info>
-   * @type {Collection<Snowflake, Channel>}
+   * @type {Collection<Snowflake, BaseChannel>}
    * @readonly
    */
   get channels() {
