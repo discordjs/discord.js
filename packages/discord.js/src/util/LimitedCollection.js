@@ -1,8 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { TypeError } = require('../errors/DJSError.js');
-const ErrorCodes = require('../errors/ErrorCodes.js');
+const { TypeError, ErrorCodes } = require('../errors');
 
 /**
  * Options for defining the behavior of a LimitedCollection

@@ -3,8 +3,7 @@
 const { setInterval, clearInterval } = require('node:timers');
 const { ThreadChannelTypes, SweeperKeys } = require('./Constants');
 const Events = require('./Events');
-const { ErrorCodes } = require('../errors');
-const { TypeError } = require('../errors/DJSError.js');
+const { TypeError, ErrorCodes } = require('../errors');
 
 /**
  * @typedef {Function} GlobalSweepFilter
