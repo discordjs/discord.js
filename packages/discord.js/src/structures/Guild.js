@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { ChannelType, GuildPremiumTier, Routes } = require('discord-api-types/v10');
+const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
@@ -510,7 +510,7 @@ class Guild extends AnonymousGuild {
    * @readonly
    */
   get maximumBitrate() {
-    if (this.features.includes('VIP_REGIONS')) {
+    if (this.features.includes(GuildFeature.VIPRegions)) {
       return 384_000;
     }
 
@@ -603,7 +603,7 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async fetchVanityData() {
-    if (!this.features.includes('VANITY_URL')) {
+    if (!this.features.includes(GuildFeature.VanityURL)) {
       throw new Error('VANITY_URL');
     }
     const data = await this.client.rest.get(Routes.guildVanityUrl(this.id));
