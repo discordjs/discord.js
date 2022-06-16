@@ -4392,8 +4392,8 @@ export interface AutoModRuleAction {
 }
 
 export interface AutoModRuleActionMetadata {
-  channelId: Snowflake;
-  durationSeconds: number;
+  channelId: Snowflake | null;
+  durationSeconds: number | null;
 }
 
 export interface AutoModTriggerMetadata {

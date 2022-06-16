@@ -82,8 +82,8 @@ class AutoModRule extends Base {
       /**
        * Additional data used when an {@link AutoModRule} is executed.
        * @typedef {Object} AutoModActionMetadata
-       * @property {Snowflake} channelId The id of the channel to which content will be logged
-       * @property {number} durationSeconds The timeout duration in seconds
+       * @property {?Snowflake} channelId The id of the channel to which content will be logged
+       * @property {?number} durationSeconds The timeout duration in seconds
        */
 
       /**
@@ -93,8 +93,8 @@ class AutoModRule extends Base {
       this.actions = data.actions.map(action => ({
         type: action.type,
         metadata: {
-          durationSeconds: action.metadata.duration_seconds,
-          channelId: action.metadata.channel_id,
+          durationSeconds: action.metadata.duration_seconds ?? null,
+          channelId: action.metadata.channel_id ?? null,
         },
       }));
     }
