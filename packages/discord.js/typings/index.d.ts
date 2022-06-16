@@ -3139,14 +3139,21 @@ export enum DiscordjsErrorCodes {
   SweepFilterReturn,
 }
 
-export class DiscordjsError extends Error {
-  public override readonly name: string;
-  public get code(): keyof typeof DiscordjsErrorCodes;
+export interface DiscordjsErrorFields<Name extends string> {
+  readonly name: `${Name} [${keyof typeof DiscordjsErrorCodes}]`;
+  get code(): keyof typeof DiscordjsErrorCodes;
 }
 
-export type DiscordjsTypeError = DiscordjsError;
+export function DiscordjsErrorMixin<T, N extends string>(
+  Base: Constructable<T>,
+  name: N,
+): Constructable<T & DiscordjsErrorFields<N>>;
 
-export type DiscordjsRangeError = DiscordjsError;
+export class DiscordjsError extends DiscordjsErrorMixin(Error, 'Error') {}
+
+export class DiscordjsTypeError extends DiscordjsErrorMixin(TypeError, 'TypeError') {}
+
+export class DiscordjsRangeError extends DiscordjsErrorMixin(RangeError, 'RangeError') {}
 
 //#endregion
 
