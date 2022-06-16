@@ -4398,7 +4398,7 @@ export interface AutoModRuleActionMetadata {
 
 export interface AutoModTriggerMetadata {
   keywordFilter: string[];
-  preset: number;
+  preset: number[];
 }
 
 export type Awaitable<T> = T | PromiseLike<T>;

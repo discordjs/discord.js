@@ -58,7 +58,7 @@ class AutoModRule extends Base {
        * Additional data used to determine whether an {@link AutoModRule} should be triggered.
        * @typedef {Object} AutoModTriggerMetadata
        * @property {string[]} keywordFilter The substrings that will be searched for in the content
-       * @property {number} preset The internally pre-defined wordsets which will be searched for in content
+       * @property {number[]} preset The internally pre-defined wordsets which will be searched for in the content
        */
 
       /**
@@ -66,8 +66,8 @@ class AutoModRule extends Base {
        * @type {AutoModTriggerMetadata}
        */
       this.triggerMetadata = {
-        keywordFilter: data.trigger_metadata.keyword_filter,
-        presets: data.trigger_metadata.presets,
+        keywordFilter: data.trigger_metadata.keyword_filter ?? [],
+        presets: data.trigger_metadata.presets ?? [],
       };
     }
 
