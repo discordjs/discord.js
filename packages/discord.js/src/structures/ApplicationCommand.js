@@ -352,6 +352,7 @@ class ApplicationCommand extends Base {
     if (command.id && this.id !== command.id) return false;
 
     let defaultMemberPermissions = null;
+    let dmPermission = command.dmPermission ?? command.dm_permission;
 
     if ('default_member_permissions' in command) {
       defaultMemberPermissions = command.default_member_permissions
@@ -370,13 +371,12 @@ class ApplicationCommand extends Base {
       command.name !== this.name ||
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
-      ('autocomplete' in command && command.autocomplete !== this.autocomplete) ||
       (command.type && command.type !== this.type) ||
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
-      command.dmPermission !== this.dmPermission ||
+      (typeof dmPermission !== 'undefined' && dmPermission !== this.dmPermission) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
