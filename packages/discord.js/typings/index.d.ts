@@ -3632,6 +3632,8 @@ export class ApplicationCommandPermissionsManager<
 export class AutoModRuleManager extends CachedManager<Snowflake, AutoModRule, AutoModRuleResolvable> {
   private constructor(guild: Guild, iterable: unknown);
   public guild: Guild;
+  public fetch(options: AutoModRuleResolvable | FetchAutoModRuleOptions): Promise<AutoModRule>;
+  public fetch(options?: FetchAutoModRulesOptions): Promise<Collection<Snowflake, AutoModRule>>;
 }
 
 export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
@@ -4948,6 +4950,14 @@ export interface FetchArchivedThreadOptions {
   fetchAll?: boolean;
   before?: ThreadChannelResolvable | DateResolvable;
   limit?: number;
+}
+
+export interface FetchAutoModRuleOptions extends BaseFetchOptions {
+  autoModRule: AutoModRuleResolvable;
+}
+
+export interface FetchAutoModRulesOptions {
+  cache?: boolean;
 }
 
 export interface FetchBanOptions extends BaseFetchOptions {
