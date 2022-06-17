@@ -5249,7 +5249,9 @@ export interface AutoModerationActionOptions {
   metadata?: AutoModerationActionMetadataOptions;
 }
 
-export interface AutoModerationActionMetadataOptions extends Partial<AutoModerationActionMetadata> {}
+export interface AutoModerationActionMetadataOptions extends Partial<Omit<AutoModerationActionMetadata, 'channelId'>> {
+  channel: GuildTextChannelResolvable | ThreadChannel;
+}
 
 export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
   parent?: CategoryChannelResolvable | null;

@@ -45,7 +45,7 @@ class AutoModerationRuleManager extends CachedManager {
   /**
    * Options used to set the metadata of an auto moderation rule action.
    * @typedef {Object} AutoModerationActionMetadataOptions
-   * @property {Snowflake} [channelId] The id of the channel to which content will be logged
+   * @property {GuildTextChannelResolvable|ThreadChannel} [channel] The channel to which content will be logged
    * @property {number} [durationSeconds] The timeout duration in seconds
    */
 
@@ -98,7 +98,10 @@ class AutoModerationRuleManager extends CachedManager {
           type: action.type,
           metadata: {
             duration_seconds: action.metadata?.durationSeconds,
-            channel_id: action.metadata?.channelId,
+            channel_id:
+              typeof action.metadata?.channel === 'undefined'
+                ? undefined
+                : this.guild.channels.resolveId(action.metadata.channel),
           },
         })),
         enabled,
@@ -155,7 +158,10 @@ class AutoModerationRuleManager extends CachedManager {
             type: action.type,
             metadata: {
               duration_seconds: action.metadata?.durationSeconds,
-              channel_id: action.metadata?.channelId,
+              channel_id:
+                typeof action.metadata?.channel === 'undefined'
+                  ? undefined
+                  : this.guild.channels.resolveId(action.metadata.channel),
             },
           })),
           enabled,
