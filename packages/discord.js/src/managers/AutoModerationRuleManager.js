@@ -5,7 +5,7 @@ const CachedManager = require('./CachedManager');
 const AutoModerationRule = require('../structures/AutoModerationRule');
 
 /**
- * Manages API methods for {@link AutoModerationRule}s and stores their cache.
+ * Manages API methods for auto moderation rules and stores their cache.
  * @extends {CachedManager}
  */
 class AutoModerationRuleManager extends CachedManager {

@@ -62,7 +62,7 @@ class GuildAuditLogs {
     }
 
     /**
-     * Cached {@link AutoModerationRule}s.
+     * Cached auto moderation rules.
      * @type {Collection<Snowflake, AutoModerationRule>}
      * @private
      */

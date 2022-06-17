@@ -24,7 +24,7 @@ class AutoModerationActionExecution {
     this.ruleId = data.rule_id;
 
     /**
-     * The trigger type of {@link AutoModerationRule} which was triggered.
+     * The trigger type of the {@link AutoModerationRule} which was triggered.
      * @type {number}
      */
     this.ruleTriggerType = data.rule_trigger_type;
