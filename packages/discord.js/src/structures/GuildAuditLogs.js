@@ -8,25 +8,6 @@ const Webhook = require('./Webhook');
 const { flatten } = require('../util/Util');
 
 /**
- * The target type of an entry. Here are the available types:
- * * Guild
- * * Channel
- * * User
- * * Role
- * * Invite
- * * Webhook
- * * Emoji
- * * Message
- * * Integration
- * * StageInstance
- * * Sticker
- * * Thread
- * * GuildScheduledEvent
- * * ApplicationCommandPermission
- * @typedef {string} AuditLogTargetType
- */
-
-/**
  * Audit logs entries are held in this class.
  */
 class GuildAuditLogs {

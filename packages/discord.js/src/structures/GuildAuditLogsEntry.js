@@ -62,6 +62,78 @@ const Targets = {
  */
 
 /**
+ * The target type of an entry. Here are the available types:
+ * * Guild
+ * * Channel
+ * * User
+ * * Role
+ * * Invite
+ * * Webhook
+ * * Emoji
+ * * Message
+ * * Integration
+ * * StageInstance
+ * * Sticker
+ * * Thread
+ * * GuildScheduledEvent
+ * * ApplicationCommandPermission
+ * @typedef {string} AuditLogTargetType
+ */
+
+/**
+ * The action of an entry. Here are the available actions:
+ * * GuildUpdate
+ * * ChannelCreate
+ * * ChannelUpdate
+ * * ChannelDelete
+ * * ChannelOverwriteCreate
+ * * ChannelOverwriteUpdate
+ * * ChannelOverwriteDelete
+ * * MemberKick
+ * * MemberPrune
+ * * MemberBanAdd
+ * * MemberBanRemove
+ * * MemberUpdate
+ * * MemberRoleUpdate
+ * * MemberMove
+ * * MemberDisconnect
+ * * BotAdd
+ * * RoleCreate
+ * * RoleUpdate
+ * * RoleDelete
+ * * InviteCreate
+ * * InviteUpdate
+ * * InviteDelete
+ * * WebhookCreate
+ * * WebhookUpdate
+ * * WebhookDelete
+ * * EmojiCreate
+ * * EmojiUpdate
+ * * EmojiDelete
+ * * MessageDelete
+ * * MessageBulkDelete
+ * * MessagePin
+ * * MessageUnpin
+ * * IntegrationCreate
+ * * IntegrationUpdate
+ * * IntegrationDelete
+ * * StageInstanceCreate
+ * * StageInstanceUpdate
+ * * StageInstanceDelete
+ * * StickerCreate
+ * * StickerUpdate
+ * * StickerDelete
+ * * GuildScheduledEventCreate
+ * * GuildScheduledEventUpdate
+ * * GuildScheduledEventDelete
+ * * ThreadCreate
+ * * ThreadUpdate
+ * * ThreadDelete
+ * * ApplicationCommandPermissionUpdate
+ * @typedef {string} AuditLogAction
+ */
+
+/**
  * Audit logs entry.
  */
 class GuildAuditLogsEntry {
@@ -341,7 +413,7 @@ class GuildAuditLogsEntry {
 
   /**
    * Finds the target type of a guild audit log entry.
-   * @param {AuditLogAction} target The action target.
+   * @param {AuditLogEvent} target The action target
    * @returns {AuditLogTargetType}
    */
   static targetType(target) {
@@ -364,7 +436,7 @@ class GuildAuditLogsEntry {
 
   /**
    * Finds the action type from the guild audit log entry action.
-   * @param {AuditLogAction} action The action target.
+   * @param {AuditLogEvent} action The action target
    * @returns {AuditLogActionType}
    */
   static actionType(action) {
