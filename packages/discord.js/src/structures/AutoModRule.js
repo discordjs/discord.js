@@ -74,7 +74,7 @@ class AutoModRule extends Base {
     if ('actions' in data) {
       /**
        * An object containing information about an auto moderation rule action.
-       * @typedef {Object} AutoModRuleAction
+       * @typedef {Object} AutoModAction
        * @property {number} type The type of this auto moderation rule action
        * @property {AutoModActionMetadata} metadata Additional metadata needed during execution
        */
@@ -88,7 +88,7 @@ class AutoModRule extends Base {
 
       /**
        * The actions of this rule.
-       * @type {AutoModRuleAction[]}
+       * @type {AutoModAction[]}
        */
       this.actions = data.actions.map(action => ({
         type: action.type,

@@ -322,7 +322,7 @@ export abstract class AnonymousGuild extends BaseGuild {
 export class AutoModActionExecution {
   private constructor(data: unknown);
   public guildId: Snowflake;
-  public action: AutoModRuleAction;
+  public action: AutoModAction;
   public ruleId: Snowflake;
   public ruleTriggerType: number;
   public userId: Snowflake;
@@ -343,7 +343,7 @@ export class AutoModRule extends Base {
   public eventType: number;
   public triggerType: number;
   public triggerMetadata: AutoModTriggerMetadata;
-  public actions: AutoModRuleAction[];
+  public actions: AutoModAction[];
   public enabled: boolean;
   public exemptRoles: Snowflake[];
   public exemptChannels: Snowflake[];
@@ -4388,12 +4388,12 @@ export interface AuditLogChange {
   new?: APIAuditLogChange['new_value'];
 }
 
-export interface AutoModRuleAction {
+export interface AutoModAction {
   type: number;
-  metadata: AutoModRuleActionMetadata;
+  metadata: AutoModActionMetadata;
 }
 
-export interface AutoModRuleActionMetadata {
+export interface AutoModActionMetadata {
   channelId: Snowflake | null;
   durationSeconds: number | null;
 }
