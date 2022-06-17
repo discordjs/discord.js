@@ -1367,7 +1367,7 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public creator: User | null;
   public get createdTimestamp(): number;
   public get createdAt(): Date;
-  public get scheduledStartAt(): Date;
+  public get scheduledStartAt(): Date | null;
   public get scheduledEndAt(): Date | null;
   public get channel(): VoiceChannel | StageChannel | null;
   public get guild(): Guild | null;

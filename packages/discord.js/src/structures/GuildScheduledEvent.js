@@ -192,12 +192,13 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
-   * The time the guild scheduled event will start at
-   * @type {Date}
+   * The time the guild scheduled event will start at,
+   * or `null` if the event does not have a scheduled time to start
+   * @type {?Date}
    * @readonly
    */
   get scheduledStartAt() {
-    return new Date(this.scheduledStartTimestamp);
+    return this.scheduledStartTimestamp && new Date(this.scheduledStartTimestamp);
   }
 
   /**
