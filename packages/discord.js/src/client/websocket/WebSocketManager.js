@@ -7,7 +7,7 @@ const { Collection } = require('@discordjs/collection');
 const { GatewayCloseCodes, GatewayDispatchEvents, Routes } = require('discord-api-types/v10');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
-const { Error } = require('../../errors');
+const { Error, ErrorCodes } = require('../../errors');
 const Events = require('../../util/Events');
 const ShardEvents = require('../../util/ShardEvents');
 const Status = require('../../util/Status');
@@ -130,7 +130,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   async connect() {
-    const invalidToken = new Error(GatewayCloseCodes[GatewayCloseCodes.AuthenticationFailed]);
+    const invalidToken = new Error(ErrorCodes.AuthenticationFailed);
     const {
       url: gatewayURL,
       shards: recommendedShards,
