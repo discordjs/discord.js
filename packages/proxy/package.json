@@ -54,7 +54,7 @@
 	"dependencies": {
 		"@discordjs/rest": "workspace:^",
 		"tslib": "^2.4.0",
-		"undici": "^5.4.0"
+		"undici": "^5.5.1"
 	},
 	"devDependencies": {
 		"@discordjs/docgen": "workspace:^",

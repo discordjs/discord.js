@@ -55,7 +55,7 @@
 		"@sapphire/snowflake": "^3.2.2",
 		"discord-api-types": "^0.33.5",
 		"tslib": "^2.4.0",
-		"undici": "^5.4.0"
+		"undici": "^5.5.1"
 	},
 	"devDependencies": {
 		"@discordjs/docgen": "workspace:^",
