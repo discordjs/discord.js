@@ -19,6 +19,7 @@ class AutoModerationRuleManager extends CachedManager {
     this.guild = guild;
   }
 
+  // TODO: discord-api-types enum
   /**
    * Options used to set the trigger metadata of an auto moderation rule.
    * @typedef {Object} AutoModerationTriggerMetadataOptions
@@ -26,6 +27,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {number[]} [presets] The internally pre-defined wordsets which will be searched for in the content
    */
 
+  // TODO: discord-api-types enum
   /**
    * Options used to set the actions of an auto moderation rule.
    * @typedef {Object} AutoModerationActionOptions
@@ -41,6 +43,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {number} [durationSeconds] The timeout duration in seconds
    */
 
+  // TODO: discord-api-types enum
   /**
    * Options used to create an auto moderation rule.
    * @typedef {Object} AutoModerationRuleCreateOptions
@@ -102,6 +105,7 @@ class AutoModerationRuleManager extends CachedManager {
     return this._add(data);
   }
 
+  // TODO: discord-api-types enum
   /**
    * Options used to edit an auto moderation rule.
    * @typedef {Object} AutoModerationRuleEditOptions
@@ -175,7 +179,7 @@ class AutoModerationRuleManager extends CachedManager {
   /**
    * Options used to fetch all auto moderation rules from a guild.
    * @typedef {Object} FetchAutoModerationRulesOptions
-   * @property {boolean} [cache] Whether to cache the fetched bans
+   * @property {boolean} [cache] Whether to cache the fetched auto moderation rules
    */
 
   /**
@@ -195,7 +199,7 @@ class AutoModerationRuleManager extends CachedManager {
    *   .catch(console.error);
    * @example
    * // Fetch a single auto moderation rule without checking cache and without caching
-   * guild.autoModerationRules.fetch({ autoModerationRule, cache: false, force: true })
+   * guild.autoModerationRules.fetch({ '979083472868098119', cache: false, force: true })
    *   .then(console.log)
    *   .catch(console.error)
    */

@@ -320,6 +320,7 @@ export abstract class AnonymousGuild extends BaseGuild {
 }
 
 export class AutoModerationActionExecution {
+  // TODO: discord-api-types type
   private constructor(data: unknown);
   public guildId: Snowflake;
   public action: AutoModerationAction;
@@ -335,6 +336,7 @@ export class AutoModerationActionExecution {
 }
 
 export class AutoModerationRule extends Base {
+  // TODO: discord-api-types type
   private constructor(client: Client, data: unknown);
   public id: Snowflake;
   public guildId: Snowflake;

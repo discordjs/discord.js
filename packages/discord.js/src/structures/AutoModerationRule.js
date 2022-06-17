@@ -27,6 +27,7 @@ class AutoModerationRule extends Base {
      */
     this.creatorId = data.creator_id;
 
+    // TODO: discord-api-types enum
     /**
      * The trigger type of this rule.
      * @type {number}
@@ -46,6 +47,7 @@ class AutoModerationRule extends Base {
     }
 
     if ('event_type' in data) {
+      // TODO: discord-api-types enum
       /**
        * The event type of this rule.
        * @type {number}
@@ -54,6 +56,7 @@ class AutoModerationRule extends Base {
     }
 
     if ('trigger_metadata' in data) {
+      // TODO: discord-api-types enum
       /**
        * Additional data used to determine whether an auto moderation rule should be triggered.
        * @typedef {Object} AutoModerationTriggerMetadata
@@ -72,6 +75,7 @@ class AutoModerationRule extends Base {
     }
 
     if ('actions' in data) {
+      // TODO: discord-api-types enum
       /**
        * An object containing information about an auto moderation rule action.
        * @typedef {Object} AutoModerationAction
