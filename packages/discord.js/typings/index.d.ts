@@ -3632,6 +3632,7 @@ export class ApplicationCommandPermissionsManager<
 export class AutoModRuleManager extends CachedManager<Snowflake, AutoModRule, AutoModRuleResolvable> {
   private constructor(guild: Guild, iterable: unknown);
   public guild: Guild;
+  public create(options: AutoModRuleCreateOptions): Promise<AutoModRule>;
   public fetch(options: AutoModRuleResolvable | FetchAutoModRuleOptions): Promise<AutoModRule>;
   public fetch(options?: FetchAutoModRulesOptions): Promise<Collection<Snowflake, AutoModRule>>;
 }
@@ -5182,6 +5183,26 @@ export type GuildAuditLogsTargets = {
 export type GuildBanResolvable = GuildBan | UserResolvable;
 
 export type GuildChannelResolvable = Snowflake | GuildBasedChannel;
+
+export interface AutoModRuleCreateOptions {
+  name: string;
+  eventType: number;
+  triggerType: number;
+  triggerMetadata?: AutoModTriggerMetadataOptions;
+  actions?: AutoModActionOptions;
+  enabled?: boolean;
+  exemptRoles?: Snowflake[];
+  exemptChannels?: Snowflake[];
+}
+
+export interface AutoModTriggerMetadataOptions extends Partial<AutoModTriggerMetadata> {}
+
+export interface AutoModActionOptions {
+  type: number;
+  metadata?: AutoModActionMetadataOptions;
+}
+
+export interface AutoModActionMetadataOptions extends Partial<AutoModActionMetadata> {}
 
 export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
   parent?: CategoryChannelResolvable | null;
