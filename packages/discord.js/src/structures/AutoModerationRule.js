@@ -10,26 +10,26 @@ class AutoModerationRule extends Base {
     super(client);
 
     /**
-     * The id of this rule.
+     * The id of this auto moderation rule.
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
-     * The guild id of this rule.
+     * The guild id of this auto moderation rule.
      * @type {Snowflake}
      */
     this.guildId = data.guild_id;
 
     /**
-     * The user that created this rule.
+     * The user that created this auto moderation rule.
      * @type {Snowflake}
      */
     this.creatorId = data.creator_id;
 
     // TODO: discord-api-types enum
     /**
-     * The trigger type of this rule.
+     * The trigger type of this auto moderation rule.
      * @type {number}
      */
     this.triggerType = data.trigger_type;
@@ -40,7 +40,7 @@ class AutoModerationRule extends Base {
   _patch(data) {
     if ('name' in data) {
       /**
-       * The name of this rule.
+       * The name of this auto moderation rule.
        * @type {string}
        */
       this.name = data.name;
@@ -49,7 +49,7 @@ class AutoModerationRule extends Base {
     if ('event_type' in data) {
       // TODO: discord-api-types enum
       /**
-       * The event type of this rule.
+       * The event type of this auto moderation rule.
        * @type {number}
        */
       this.eventType = data.event_type;
@@ -91,7 +91,7 @@ class AutoModerationRule extends Base {
        */
 
       /**
-       * The actions of this rule.
+       * The actions of this auto moderation rule.
        * @type {AutoModerationAction[]}
        */
       this.actions = data.actions.map(action => ({
@@ -105,7 +105,7 @@ class AutoModerationRule extends Base {
 
     if ('enabled' in data) {
       /**
-       * Whether this rule is enabled.
+       * Whether this auto moderation rule is enabled.
        * @type {boolean}
        */
       this.enabled = data.enabled;
@@ -113,7 +113,7 @@ class AutoModerationRule extends Base {
 
     if ('exempt_roles' in data) {
       /**
-       * An array of roles exempt by this rule.
+       * An array of roles exempt by this auto moderation rule.
        * @type {Snowflake[]}
        */
       this.exemptRoles = data.exempt_roles;
@@ -121,7 +121,7 @@ class AutoModerationRule extends Base {
 
     if ('exempt_channels' in data) {
       /**
-       * A array of channels exempt by this rule.
+       * A array of channels exempt by this auto moderation rule.
        * @type {Snowflake[]}
        */
       this.exemptChannels = data.exempt_channels;
