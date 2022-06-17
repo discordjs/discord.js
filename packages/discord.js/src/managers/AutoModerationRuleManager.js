@@ -23,7 +23,7 @@ class AutoModerationRuleManager extends CachedManager {
    * Options used to set the trigger metadata of an auto moderation rule.
    * @typedef {Object} AutoModerationTriggerMetadataOptions
    * @property {string[]} [keywordFilter] The substrings that will be searched for in the content
-   * @property {number[]} [preset] The internally pre-defined wordsets which will be searched for in the content
+   * @property {number[]} [presets] The internally pre-defined wordsets which will be searched for in the content
    */
 
   /**

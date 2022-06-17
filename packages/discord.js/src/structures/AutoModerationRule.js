@@ -58,7 +58,7 @@ class AutoModerationRule extends Base {
        * Additional data used to determine whether an auto moderation rule should be triggered.
        * @typedef {Object} AutoModerationTriggerMetadata
        * @property {string[]} keywordFilter The substrings that will be searched for in the content
-       * @property {number[]} preset The internally pre-defined wordsets which will be searched for in the content
+       * @property {number[]} presets The internally pre-defined wordsets which will be searched for in the content
        */
 
       /**

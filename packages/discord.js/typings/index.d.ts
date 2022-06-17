@@ -4409,7 +4409,7 @@ export interface AutoModerationActionMetadata {
 
 export interface AutoModerationTriggerMetadata {
   keywordFilter: string[];
-  preset: number[];
+  presets: number[];
 }
 
 export type Awaitable<T> = T | PromiseLike<T>;
