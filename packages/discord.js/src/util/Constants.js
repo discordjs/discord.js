@@ -82,7 +82,7 @@ exports.NonSystemMessageTypes = [
  * * {@link ChannelType.GuildPublicThread}
  * * {@link ChannelType.GuildPrivateThread}
  * * {@link ChannelType.GuildVoice}
- * @typedef {ChannelType} TextBasedChannelTypes
+ * @typedef {ChannelType[]} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
   ChannelType.DM,

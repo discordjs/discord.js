@@ -43,8 +43,8 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {DateResolvable} scheduledStartTime The time to schedule the event at
    * @property {DateResolvable} [scheduledEndTime] The time to end the event at
    * <warn>This is required if `entityType` is {@link GuildScheduledEventEntityType.External}</warn>
-   * @property {GuildScheduledEventPrivacyLevel|number} privacyLevel The privacy level of the guild scheduled event
-   * @property {GuildScheduledEventEntityType|number} entityType The scheduled entity type of the event
+   * @property {GuildScheduledEventPrivacyLevel} privacyLevel The privacy level of the guild scheduled event
+   * @property {GuildScheduledEventEntityType} entityType The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
    * @property {GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
    * <warn>This is required if `entityType` is {@link GuildScheduledEventEntityType.StageInstance} or
@@ -167,11 +167,11 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {string} [name] The name of the guild scheduled event
    * @property {DateResolvable} [scheduledStartTime] The time to schedule the event at
    * @property {DateResolvable} [scheduledEndTime] The time to end the event at
-   * @property {GuildScheduledEventPrivacyLevel|number} [privacyLevel] The privacy level of the guild scheduled event
-   * @property {GuildScheduledEventEntityType|number} [entityType] The scheduled entity type of the event
+   * @property {GuildScheduledEventPrivacyLevel} [privacyLevel] The privacy level of the guild scheduled event
+   * @property {GuildScheduledEventEntityType} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
    * @property {?GuildVoiceChannelResolvable} [channel] The channel of the guild scheduled event
-   * @property {GuildScheduledEventStatus|number} [status] The status of the guild scheduled event
+   * @property {GuildScheduledEventStatus} [status] The status of the guild scheduled event
    * @property {GuildScheduledEventEntityMetadataOptions} [entityMetadata] The entity metadata of the
    * guild scheduled event
    * <warn>This can be modified only if `entityType` of the `GuildScheduledEvent` to be edited is
