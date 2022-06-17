@@ -3635,6 +3635,7 @@ export class AutoModRuleManager extends CachedManager<Snowflake, AutoModRule, Au
   public create(options: AutoModRuleCreateOptions): Promise<AutoModRule>;
   public fetch(options: AutoModRuleResolvable | FetchAutoModRuleOptions): Promise<AutoModRule>;
   public fetch(options?: FetchAutoModRulesOptions): Promise<Collection<Snowflake, AutoModRule>>;
+  public delete(autoModRule: AutoModRuleResolvable, reason?: string): Promise<void>;
 }
 
 export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {

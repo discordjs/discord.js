@@ -168,6 +168,18 @@ class AutoModRuleManager extends CachedManager {
   }
 
   /**
+   * Deletes an auto moderation rule.
+   * @param {AutoModRuleResolvable} autoModRule The auto moderation rule to delete
+   * @param {string} [reason] The reason for deleting the auto moderation rule
+   * @returns {Promise<void>}
+   */
+  async delete(autoModRule, reason) {
+    const autoModRuleId = this.resolveId(autoModRule);
+    // TODO: discord-api-types route
+    await this.client.rest.delete(`/guilds/${this.guild.id}/auto-moderation/rules/${autoModRuleId}`, { reason });
+  }
+
+  /**
    * Resolves an {@link AutoModRuleResolvable} to an {@link AutoModRule} object.
    * @method resolve
    * @memberof AutoModRuleManager
