@@ -3640,6 +3640,10 @@ export class AutoModerationRuleManager extends CachedManager<
   private constructor(guild: Guild, iterable: unknown);
   public guild: Guild;
   public create(options: AutoModerationRuleCreateOptions): Promise<AutoModerationRule>;
+  public edit(
+    autoModerationRule: AutoModerationRuleResolvable,
+    options: AutoModerationRuleEditOptions,
+  ): Promise<AutoModerationRule>;
   public fetch(options: AutoModerationRuleResolvable | FetchAutoModerationRuleOptions): Promise<AutoModerationRule>;
   public fetch(options?: FetchAutoModerationRulesOptions): Promise<Collection<Snowflake, AutoModerationRule>>;
   public delete(autoModerationRule: AutoModerationRuleResolvable, reason?: string): Promise<void>;
@@ -5206,6 +5210,8 @@ export interface AutoModerationRuleCreateOptions {
   exemptChannels?: Snowflake[];
   reason?: string;
 }
+
+export interface AutoModerationRuleEditOptions extends Partial<Omit<AutoModerationRuleCreateOptions, 'triggerType'>> {}
 
 export interface AutoModerationTriggerMetadataOptions extends Partial<AutoModerationTriggerMetadata> {}
 

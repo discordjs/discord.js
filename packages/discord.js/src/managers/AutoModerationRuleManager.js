@@ -103,6 +103,63 @@ class AutoModerationRuleManager extends CachedManager {
   }
 
   /**
+   * Options used to edit an auto moderation rule.
+   * @typedef {Object} AutoModerationRuleEditOptions
+   * @property {string} name The name of the auto moderation rule
+   * @property {number} eventType The event type of the auto moderation rule
+   * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
+   * @property {AutoModerationActionOptions[]} [actions]
+   * The actions that will execute when the auto moderation rule is triggered
+   * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
+   * @property {Snowflake[]} [exemptRoles] An array of roles
+   * that should not be affected by the auto moderation rule
+   * @property {Snowflake[]} [exemptChannels] An array of channels
+   * that should not be affected by the auto moderation rule
+   * @property {string} [reason] The reason for creating the auto moderation rule
+   */
+
+  /**
+   * Edits an auto moderation rule.
+   * @param {AutoModerationRuleResolvable} autoModerationRule The auto moderation rule to edit
+   * @param {AutoModerationRuleEditOptions} options Options for editing the auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  async edit(
+    autoModerationRule,
+    { name, eventType, triggerMetadata, actions, enabled, exemptRoles, exemptChannels, reason },
+  ) {
+    const autoModerationRuleId = this.resolveId(autoModerationRule);
+
+    const data = await this.client.rest.patch(
+      // TODO: discord-api-types route
+      `/guilds/${this.guild.id}/auto-moderation/rules/${autoModerationRuleId}`,
+      {
+        body: {
+          name,
+          event_type: eventType,
+          trigger_metadata:
+            typeof triggerMetadata === 'undefined'
+              ? undefined
+              : { keyword_filter: triggerMetadata.keywordFilter, presets: triggerMetadata.presets },
+          actions: actions?.map(action => ({
+            type: action.type,
+            metadata: {
+              duration_seconds: action.metadata?.durationSeconds,
+              channel_id: action.metadata?.channelId,
+            },
+          })),
+          enabled,
+          exempt_roles: exemptRoles,
+          exempt_channels: exemptChannels,
+        },
+        reason,
+      },
+    );
+
+    return this._add(data);
+  }
+
+  /**
    * Data that can be resolved to give an AutoModerationRule object. This can be:
    * * An AutoModerationRule
    * * A Snowflake
