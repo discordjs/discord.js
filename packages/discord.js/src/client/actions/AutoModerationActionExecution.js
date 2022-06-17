@@ -4,7 +4,7 @@ const Action = require('./Action');
 const AutoModerationActionExecution = require('../../structures/AutoModerationActionExecution');
 const Events = require('../../util/Events');
 
-class AutoModerationRuleActionExecution extends Action {
+class AutoModerationActionExecutionAction extends Action {
   handle(data) {
     const { client } = this;
     const guild = client.guilds.cache.get(data.guild_id);
@@ -22,4 +22,4 @@ class AutoModerationRuleActionExecution extends Action {
   }
 }
 
-module.exports = AutoModerationRuleActionExecution;
+module.exports = AutoModerationActionExecutionAction;
