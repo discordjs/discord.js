@@ -3125,6 +3125,7 @@ export enum DiscordjsErrorCodes {
 
   CommandInteractionOptionNotFound,
   CommandInteractionOptionType,
+  CommandInteractionOptionEmpty,
   CommandInteractionOptionNoSubcommand,
   CommandInteractionOptionNoSubcommandGroup,
   AutocompleteInteractionOptionNoFocusedOption,
