@@ -34,24 +34,6 @@ const Targets = {
 };
 
 /**
- * The target type of an entry. Here are the available types:
- * * Guild
- * * Channel
- * * User
- * * Role
- * * Invite
- * * Webhook
- * * Emoji
- * * Message
- * * Integration
- * * StageInstance
- * * Sticker
- * * Thread
- * * GuildScheduledEvent
- * @typedef {string} AuditLogTargetType
- */
-
-/**
  * The target of a guild audit log entry. It can be one of:
  * * A guild
  * * A channel
