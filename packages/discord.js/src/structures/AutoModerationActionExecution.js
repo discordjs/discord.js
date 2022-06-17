@@ -23,6 +23,7 @@ class AutoModerationActionExecution {
      */
     this.ruleId = data.rule_id;
 
+    // TODO: discord-api-types enum
     /**
      * The trigger type of the {@link AutoModerationRule} which was triggered.
      * @type {number}

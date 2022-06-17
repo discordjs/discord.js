@@ -325,6 +325,7 @@ export class AutoModerationActionExecution {
   public guildId: Snowflake;
   public action: AutoModerationAction;
   public ruleId: Snowflake;
+  // TODO: discord-api-types enum
   public ruleTriggerType: number;
   public userId: Snowflake;
   public channelId: Snowflake | null;
