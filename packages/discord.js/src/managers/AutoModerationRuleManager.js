@@ -40,6 +40,8 @@ class AutoModerationRuleManager extends CachedManager {
    * <info>This property is required if using a `type` of 2 or 3.</info>
    */
 
+  // TODO: discord-api-types enum
+
   /**
    * Options used to set the metadata of an auto moderation rule action.
    * @typedef {Object} AutoModerationActionMetadataOptions
