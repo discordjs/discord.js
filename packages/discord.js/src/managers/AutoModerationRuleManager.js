@@ -56,6 +56,7 @@ class AutoModerationRuleManager extends CachedManager {
    * that should not be affected by the auto moderation rule
    * @property {Snowflake[]} [exemptChannels] An array of channels
    * that should not be affected by the auto moderation rule
+   * @property {string} [reason] The reason for creating the auto moderation rule
    */
 
   /**

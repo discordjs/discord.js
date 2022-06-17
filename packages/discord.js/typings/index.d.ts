@@ -5204,6 +5204,7 @@ export interface AutoModerationRuleCreateOptions {
   enabled?: boolean;
   exemptRoles?: Snowflake[];
   exemptChannels?: Snowflake[];
+  reason?: string;
 }
 
 export interface AutoModerationTriggerMetadataOptions extends Partial<AutoModerationTriggerMetadata> {}
