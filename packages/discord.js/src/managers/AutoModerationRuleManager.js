@@ -75,7 +75,7 @@ class AutoModerationRuleManager extends CachedManager {
     reason,
   }) {
     // TODO: discord-api-types route
-    const data = await this.client.rest.patch(`/guilds/${this.guild.id}/auto-moderation/rules/987167451311661066`, {
+    const data = await this.client.rest.post(`/guilds/${this.guild.id}/auto-moderation/rules`, {
       body: {
         name,
         event_type: eventType,
