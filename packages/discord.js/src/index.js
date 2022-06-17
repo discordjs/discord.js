@@ -48,6 +48,7 @@ exports.version = require('../package.json').version;
 // Managers
 exports.ApplicationCommandManager = require('./managers/ApplicationCommandManager');
 exports.ApplicationCommandPermissionsManager = require('./managers/ApplicationCommandPermissionsManager');
+exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager');
 exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager');
 exports.CachedManager = require('./managers/CachedManager');
 exports.ChannelManager = require('./managers/ChannelManager');
