@@ -127,6 +127,7 @@ body:
         - DirectMessages
         - DirectMessageReactions
         - DirectMessageTyping
+        - MessageContent
         - GuildScheduledEvents
       multiple: true
     validations:
