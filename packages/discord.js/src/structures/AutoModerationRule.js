@@ -5,6 +5,7 @@ const Base = require('./Base');
 
 /**
  * Represents an auto moderation rule.
+ * @extends {Base}
  */
 class AutoModerationRule extends Base {
   constructor(client, data, guild) {
