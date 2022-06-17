@@ -134,7 +134,7 @@ class AutoModerationRuleManager extends CachedManager {
    *   .catch(console.error);
    * @example
    * // Fetch a single auto moderation rule without checking cache and without caching
-   * guild.bans.fetch({ autoModerationRule, cache: false, force: true })
+   * guild.autoModerationRules.fetch({ autoModerationRule, cache: false, force: true })
    *   .then(console.log)
    *   .catch(console.error)
    */
