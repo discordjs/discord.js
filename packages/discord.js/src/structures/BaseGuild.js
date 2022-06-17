@@ -2,7 +2,7 @@
 
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes } = require('discord-api-types/v10');
+const { Routes, GuildFeature } = require('discord-api-types/v10');
 const Base = require('./Base');
 
 /**
@@ -75,7 +75,7 @@ class BaseGuild extends Base {
    * @readonly
    */
   get partnered() {
-    return this.features.includes('PARTNERED');
+    return this.features.includes(GuildFeature.Partnered);
   }
 
   /**
@@ -84,7 +84,7 @@ class BaseGuild extends Base {
    * @readonly
    */
   get verified() {
-    return this.features.includes('VERIFIED');
+    return this.features.includes(GuildFeature.Verified);
   }
 
   /**
