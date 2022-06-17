@@ -343,6 +343,7 @@ export class AutoModerationRule extends Base {
   private constructor(client: Client, data: unknown);
   public id: Snowflake;
   public guildId: Snowflake;
+  public guild: Guild;
   public name: string;
   public creatorId: Snowflake;
   // TODO: discord-api-types enum
@@ -352,9 +353,8 @@ export class AutoModerationRule extends Base {
   public triggerMetadata: AutoModerationTriggerMetadata;
   public actions: AutoModerationAction[];
   public enabled: boolean;
-  public exemptRoles: Snowflake[];
-  public exemptChannels: Snowflake[];
-  public get guild(): Guild | null;
+  public exemptRoles: Collection<Snowflake, Role>;
+  public exemptChannels: Collection<Snowflake, GuildBasedChannel>;
   public edit(options: AutoModerationRuleEditOptions): Promise<AutoModerationRule>;
   public delete(reason?: string): Promise<void>;
   public setName(name: string, reason?: string): Promise<AutoModerationRule>;
@@ -364,8 +364,14 @@ export class AutoModerationRule extends Base {
   public setPresets(presets: string[], reason?: string): Promise<AutoModerationRule>;
   public setActions(actions: AutoModerationActionOptions, reason?: string): Promise<AutoModerationRule>;
   public setEnabled(enabled?: boolean, reason?: string): Promise<AutoModerationRule>;
-  public setExemptRoles(roles: Snowflake[], reason?: string): Promise<AutoModerationRule>;
-  public setExemptChannels(channels: Snowflake[], reason?: string): Promise<AutoModerationRule>;
+  public setExemptRoles(
+    roles: Collection<Snowflake, Role> | RoleResolvable[],
+    reason?: string,
+  ): Promise<AutoModerationRule>;
+  public setExemptChannels(
+    channels: Collection<Snowflake, GuildBasedChannel> | GuildChannelResolvable[],
+    reason?: string,
+  ): Promise<AutoModerationRule>;
 }
 
 export abstract class Application extends Base {
@@ -5228,8 +5234,8 @@ export interface AutoModerationRuleCreateOptions {
   triggerMetadata?: AutoModerationTriggerMetadataOptions;
   actions: AutoModerationActionOptions;
   enabled?: boolean;
-  exemptRoles?: Snowflake[];
-  exemptChannels?: Snowflake[];
+  exemptRoles?: Collection<Snowflake, Role> | RoleResolvable[];
+  exemptChannels?: Collection<Snowflake, GuildBasedChannel> | GuildChannelResolvable[];
   reason?: string;
 }
 

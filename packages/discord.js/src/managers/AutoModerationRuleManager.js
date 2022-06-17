@@ -19,6 +19,10 @@ class AutoModerationRuleManager extends CachedManager {
     this.guild = guild;
   }
 
+  _add(data, cache) {
+    return super._add(data, cache, { extras: [this.guild] });
+  }
+
   // TODO: discord-api-types enum
   /**
    * Options used to set the trigger metadata of an auto moderation rule.
@@ -55,10 +59,10 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {AutoModerationActionOptions[]} actions
    * The actions that will execute when the auto moderation rule is triggered
    * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
-   * @property {Snowflake[]} [exemptRoles] An array of roles
-   * that should not be affected by the auto moderation rule
-   * @property {Snowflake[]} [exemptChannels] An array of channels
-   * that should not be affected by the auto moderation rule
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles]
+   * The roles that should not be affected by the auto moderation rule
+   * @property {Collection<Snowflake, GuildChannel|ThreadChannel>|GuildChannelResolvable[]} [exemptChannels]
+   * The channels that should not be affected by the auto moderation rule
    * @property {string} [reason] The reason for creating the auto moderation rule
    */
 
@@ -96,8 +100,8 @@ class AutoModerationRuleManager extends CachedManager {
           },
         })),
         enabled,
-        exempt_roles: exemptRoles,
-        exempt_channels: exemptChannels,
+        exempt_roles: exemptRoles?.map(exemptRole => this.guild.roles.resolveId(exemptRole)),
+        exempt_channels: exemptChannels?.map(exemptChannel => this.guild.channels.resolveId(exemptChannel)),
       },
       reason,
     });
@@ -115,10 +119,10 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {AutoModerationActionOptions[]} [actions]
    * The actions that will execute when the auto moderation rule is triggered
    * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
-   * @property {Snowflake[]} [exemptRoles] An array of roles
-   * that should not be affected by the auto moderation rule
-   * @property {Snowflake[]} [exemptChannels] An array of channels
-   * that should not be affected by the auto moderation rule
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles]
+   * The roles that should not be affected by the auto moderation rule
+   * @property {Collection<Snowflake, GuildChannel|ThreadChannel>|GuildChannelResolvable[]} [exemptChannels]
+   * The channels that should not be affected by the auto moderation rule
    * @property {string} [reason] The reason for creating the auto moderation rule
    */
 
@@ -153,8 +157,8 @@ class AutoModerationRuleManager extends CachedManager {
             },
           })),
           enabled,
-          exempt_roles: exemptRoles,
-          exempt_channels: exemptChannels,
+          exempt_roles: exemptRoles?.map(exemptRole => this.guild.roles.resolveId(exemptRole)),
+          exempt_channels: exemptChannels?.map(exemptChannel => this.guild.channels.resolveId(exemptChannel)),
         },
         reason,
       },

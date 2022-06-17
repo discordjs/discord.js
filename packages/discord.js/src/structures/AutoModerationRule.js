@@ -1,12 +1,13 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
 
 /**
  * Represents an auto moderation rule.
  */
 class AutoModerationRule extends Base {
-  constructor(client, data) {
+  constructor(client, data, guild) {
     super(client);
 
     /**
@@ -20,6 +21,12 @@ class AutoModerationRule extends Base {
      * @type {Snowflake}
      */
     this.guildId = data.guild_id;
+
+    /**
+     * The guild of this auto moderation rule.
+     * @type {Guild}
+     */
+    this.guild = guild;
 
     /**
      * The user that created this auto moderation rule.
@@ -113,28 +120,23 @@ class AutoModerationRule extends Base {
 
     if ('exempt_roles' in data) {
       /**
-       * An array of roles exempt by this auto moderation rule.
-       * @type {Snowflake[]}
+       * The roles exempt by this auto moderation rule.
+       * @type {Collection<Snowflake, Role>}
        */
-      this.exemptRoles = data.exempt_roles;
+      this.exemptRoles = new Collection(
+        data.exempt_roles.map(exemptRole => [exemptRole, this.guild.roles.cache.get(exemptRole)]),
+      );
     }
 
     if ('exempt_channels' in data) {
       /**
-       * A array of channels exempt by this auto moderation rule.
+       * The channels exempt by this auto moderation rule.
        * @type {Snowflake[]}
        */
-      this.exemptChannels = data.exempt_channels;
+      this.exemptChannels = new Collection(
+        data.exempt_channels.map(exemptChannel => [exemptChannel, this.guild.channels.cache.get(exemptChannel)]),
+      );
     }
-  }
-
-  /**
-   * The guild this auto moderation rule belongs to.
-   * @type {?Guild}
-   * @readonly
-   */
-  get guild() {
-    return this.client.guilds.resolve(this.guildId);
   }
 
   /**
@@ -218,7 +220,7 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the exempt roles for this auto moderation rule.
-   * @param {Snowflake[]} exemptRoles The exempt roles of this auto moderation rule
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles] The exempt roles of this auto moderation rule
    * @param {string} [reason] The reason for changing the exempt roles of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
@@ -228,7 +230,8 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the exempt channels for this auto moderation rule.
-   * @param {Snowflake[]} exemptChannels The exempt channels of this auto moderation rule
+   * @param {Collection<Snowflake, GuildChannel|ThreadChannel>|GuildChannelResolvable[]} [exemptChannels]
+   * The exempt channels of this auto moderation rule
    * @param {string} [reason] The reason for changing the exempt channels of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
