@@ -349,6 +349,7 @@ export class AutoModerationRule extends Base {
   public enabled: boolean;
   public exemptRoles: Snowflake[];
   public exemptChannels: Snowflake[];
+  public get guild(): Guild | null;
 }
 
 export abstract class Application extends Base {

@@ -127,6 +127,15 @@ class AutoModerationRule extends Base {
       this.exemptChannels = data.exempt_channels;
     }
   }
+
+  /**
+   * The guild this auto moderation rule belongs to.
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.client.guilds.resolve(this.guildId);
+  }
 }
 
 module.exports = AutoModerationRule;
