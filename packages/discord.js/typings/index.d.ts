@@ -5200,7 +5200,7 @@ export interface AutoModerationRuleCreateOptions {
   eventType: number;
   triggerType: number;
   triggerMetadata?: AutoModerationTriggerMetadataOptions;
-  actions?: AutoModerationActionOptions;
+  actions: AutoModerationActionOptions;
   enabled?: boolean;
   exemptRoles?: Snowflake[];
   exemptChannels?: Snowflake[];

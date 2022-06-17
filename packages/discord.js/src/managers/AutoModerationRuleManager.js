@@ -49,7 +49,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {number} triggerType The trigger type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
    * <info>This property is required if using a `triggerType` of 1 or 4.</info>
-   * @property {AutoModerationActionOptions[]} [actions]
+   * @property {AutoModerationActionOptions[]} actions
    * The actions that will execute when the auto moderation rule is triggered
    * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
    * @property {Snowflake[]} [exemptRoles] An array of roles
