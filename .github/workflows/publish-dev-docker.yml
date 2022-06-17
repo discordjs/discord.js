@@ -1,0 +1,25 @@
+name: Publish dev Docker Images
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */12 * * *'
+jobs:
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build the image
+        run: docker build -t discordjs/proxy:latest -f packages/proxy-container/Dockerfile .
+
+      - name: Push image to DockerHub
+        run: docker push discordjs/proxy:latest

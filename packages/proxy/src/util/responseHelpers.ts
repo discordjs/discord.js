@@ -30,7 +30,6 @@ export async function populateSuccessfulResponse(res: ServerResponse, data: Disp
  */
 export function populateGeneralErrorResponse(res: ServerResponse, error: DiscordAPIError | HTTPError): void {
 	res.statusCode = error.status;
-	res.statusMessage = error.message;
 
 	if ('rawError' in error) {
 		res.setHeader('Content-Type', 'application/json');
@@ -48,6 +47,10 @@ export function populateRatelimitErrorResponse(res: ServerResponse, error: RateL
 	res.setHeader('Retry-After', error.timeToReset / 1000);
 }
 
+/**
+ * Populates a server response with data relevant for a time out
+ * @param res The sever response to populate
+ */
 export function populateAbortErrorResponse(res: ServerResponse): void {
 	res.statusCode = 504;
 	res.statusMessage = 'Upstream timed out';

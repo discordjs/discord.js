@@ -22,6 +22,10 @@ chore:
   - packages/proxy/*
   - packages/proxy/**/*
 
+'packages:proxy-container':
+  - packages/proxy-container/*
+  - packages/proxy-container/**/*
+
 'packages:rest':
   - packages/rest/*
   - packages/rest/**/*

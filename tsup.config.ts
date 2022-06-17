@@ -12,11 +12,13 @@ type ConfigOptions = Pick<
 	| 'skipNodeModulesBundle'
 	| 'noExternal'
 	| 'esbuildOptions'
+	| 'dts'
 >;
 
 export const createTsupConfig = ({
 	globalName,
 	format = ['esm', 'cjs'],
+	dts = true,
 	target = 'es2021',
 	sourcemap = true,
 	minify = false,
@@ -33,7 +35,7 @@ export const createTsupConfig = ({
 }: ConfigOptions = {}) =>
 	defineConfig({
 		clean: true,
-		dts: true,
+		dts,
 		entry,
 		format,
 		minify,

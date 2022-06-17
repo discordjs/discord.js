@@ -33,6 +33,9 @@ export function proxyRequests(rest: REST): RequestHandler {
 				// This type cast is technically incorrect, but we want Discord to throw Method Not Allowed for us
 				method: method as RequestMethod,
 				passThroughBody: true,
+				headers: {
+					'Content-Type': req.headers['content-type']!,
+				},
 			});
 
 			await populateSuccessfulResponse(res, discordResponse);
