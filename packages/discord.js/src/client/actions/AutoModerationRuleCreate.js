@@ -9,14 +9,14 @@ class AutoModerationRuleCreateAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
 
     if (guild) {
-      const autoModRule = guild.autoModRules._add(data);
+      const autoModerationRule = guild.autoModerationRules._add(data);
 
       /**
-       * Emitted whenever an AutoMod rule is created.
+       * Emitted whenever an auto moderation rule is created.
        * @event Client#autoModerationRuleCreate
-       * @param {AutoModRule} autoModRule The created AutoMod rule
+       * @param {AutoModerationRule} autoModerationRule The created auto moderation rule
        */
-      client.emit(Events.AutoModerationRuleCreate, autoModRule);
+      client.emit(Events.AutoModerationRuleCreate, autoModerationRule);
     }
 
     return {};

@@ -319,10 +319,10 @@ export abstract class AnonymousGuild extends BaseGuild {
   public splashURL(options?: ImageURLOptions): string | null;
 }
 
-export class AutoModActionExecution {
+export class AutoModerationActionExecution {
   private constructor(data: unknown);
   public guildId: Snowflake;
-  public action: AutoModAction;
+  public action: AutoModerationAction;
   public ruleId: Snowflake;
   public ruleTriggerType: number;
   public userId: Snowflake;
@@ -334,7 +334,7 @@ export class AutoModActionExecution {
   public matchedContent: string | null;
 }
 
-export class AutoModRule extends Base {
+export class AutoModerationRule extends Base {
   private constructor(client: Client, data: unknown);
   public id: Snowflake;
   public guildId: Snowflake;
@@ -342,8 +342,8 @@ export class AutoModRule extends Base {
   public creatorId: Snowflake;
   public eventType: number;
   public triggerType: number;
-  public triggerMetadata: AutoModTriggerMetadata;
-  public actions: AutoModAction[];
+  public triggerMetadata: AutoModerationTriggerMetadata;
+  public actions: AutoModerationAction[];
   public enabled: boolean;
   public exemptRoles: Snowflake[];
   public exemptChannels: Snowflake[];
@@ -428,7 +428,7 @@ export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
-export type AutoModRuleResolvable = AutoModRule | Snowflake;
+export type AutoModerationRuleResolvable = AutoModerationRule | Snowflake;
 
 export abstract class Base {
   public constructor(client: Client<true>);
@@ -1189,7 +1189,7 @@ export class Guild extends AnonymousGuild {
   public maxVideoChannelUsers: number | null;
   public approximateMemberCount: number | null;
   public approximatePresenceCount: number | null;
-  public autoModRules: AutoModRuleManager;
+  public autoModerationRules: AutoModerationRuleManager;
   public available: boolean;
   public bans: GuildBanManager;
   public channels: GuildChannelManager;
@@ -1288,7 +1288,7 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = AuditLogEvent> 
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
-  private autoModRules: Collection<Snowflake, AutoModRule>;
+  private autoModerationRules: Collection<Snowflake, AutoModerationRule>;
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
   public toJSON(): unknown;
 }
@@ -2685,8 +2685,11 @@ export class Sweepers {
   public intervals: Record<SweeperKey, NodeJS.Timeout | null>;
   public options: SweeperOptions;
 
-  public sweepAutoModRules(
-    filter: CollectionSweepFilter<SweeperDefinitions['autoModRules'][0], SweeperDefinitions['autoModRules'][1]>,
+  public sweepAutoModerationRules(
+    filter: CollectionSweepFilter<
+      SweeperDefinitions['autoModerationRules'][0],
+      SweeperDefinitions['autoModerationRules'][1]
+    >,
   ): number;
   public sweepApplicationCommands(
     filter: CollectionSweepFilter<
@@ -3629,13 +3632,17 @@ export class ApplicationCommandPermissionsManager<
   private permissionsPath(guildId: Snowflake, commandId?: Snowflake): string;
 }
 
-export class AutoModRuleManager extends CachedManager<Snowflake, AutoModRule, AutoModRuleResolvable> {
+export class AutoModerationRuleManager extends CachedManager<
+  Snowflake,
+  AutoModerationRule,
+  AutoModerationRuleResolvable
+> {
   private constructor(guild: Guild, iterable: unknown);
   public guild: Guild;
-  public create(options: AutoModRuleCreateOptions): Promise<AutoModRule>;
-  public fetch(options: AutoModRuleResolvable | FetchAutoModRuleOptions): Promise<AutoModRule>;
-  public fetch(options?: FetchAutoModRulesOptions): Promise<Collection<Snowflake, AutoModRule>>;
-  public delete(autoModRule: AutoModRuleResolvable, reason?: string): Promise<void>;
+  public create(options: AutoModerationRuleCreateOptions): Promise<AutoModerationRule>;
+  public fetch(options: AutoModerationRuleResolvable | FetchAutoModerationRuleOptions): Promise<AutoModerationRule>;
+  public fetch(options?: FetchAutoModerationRulesOptions): Promise<Collection<Snowflake, AutoModerationRule>>;
+  public delete(autoModerationRule: AutoModerationRuleResolvable, reason?: string): Promise<void>;
 }
 
 export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
@@ -4390,17 +4397,17 @@ export interface AuditLogChange {
   new?: APIAuditLogChange['new_value'];
 }
 
-export interface AutoModAction {
+export interface AutoModerationAction {
   type: number;
-  metadata: AutoModActionMetadata;
+  metadata: AutoModerationActionMetadata;
 }
 
-export interface AutoModActionMetadata {
+export interface AutoModerationActionMetadata {
   channelId: Snowflake | null;
   durationSeconds: number | null;
 }
 
-export interface AutoModTriggerMetadata {
+export interface AutoModerationTriggerMetadata {
   keywordFilter: string[];
   preset: number[];
 }
@@ -4458,7 +4465,7 @@ export type BitFieldResolvable<T extends string, N extends number | bigint> =
 export type BufferResolvable = Buffer | string;
 
 export interface Caches {
-  AutoModRuleManager: [manager: typeof AutoModRuleManager, holds: typeof AutoModRule];
+  AutoModerationRuleManager: [manager: typeof AutoModerationRuleManager, holds: typeof AutoModerationRule];
   ApplicationCommandManager: [manager: typeof ApplicationCommandManager, holds: typeof ApplicationCommand];
   BaseGuildEmojiManager: [manager: typeof BaseGuildEmojiManager, holds: typeof GuildEmoji];
   GuildEmojiManager: [manager: typeof GuildEmojiManager, holds: typeof GuildEmoji];
@@ -4551,10 +4558,13 @@ export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
 
 export interface ClientEvents {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
-  autoModerationActionExecution: [autoModActionExecution: AutoModActionExecution];
-  autoModerationRuleCreate: [autoModRule: AutoModRule];
-  autoModerationRuleDelete: [autoModRule: AutoModRule];
-  autoModerationRuleUpdate: [oldAutoModRule: AutoModRule | null, newAutoModRule: AutoModRule];
+  autoModerationActionExecution: [autoModerationActionExecution: AutoModerationActionExecution];
+  autoModerationRuleCreate: [autoModerationRule: AutoModerationRule];
+  autoModerationRuleDelete: [autoModerationRule: AutoModerationRule];
+  autoModerationRuleUpdate: [
+    oldAutoModerationRule: AutoModerationRule | null,
+    newAutoModerationRule: AutoModerationRule,
+  ];
   cacheSweep: [message: string];
   channelCreate: [channel: NonThreadGuildBasedChannel];
   channelDelete: [channel: DMChannel | NonThreadGuildBasedChannel];
@@ -4954,11 +4964,11 @@ export interface FetchArchivedThreadOptions {
   limit?: number;
 }
 
-export interface FetchAutoModRuleOptions extends BaseFetchOptions {
-  autoModRule: AutoModRuleResolvable;
+export interface FetchAutoModerationRuleOptions extends BaseFetchOptions {
+  autoModerationRule: AutoModerationRuleResolvable;
 }
 
-export interface FetchAutoModRulesOptions {
+export interface FetchAutoModerationRulesOptions {
   cache?: boolean;
 }
 
@@ -5185,25 +5195,25 @@ export type GuildBanResolvable = GuildBan | UserResolvable;
 
 export type GuildChannelResolvable = Snowflake | GuildBasedChannel;
 
-export interface AutoModRuleCreateOptions {
+export interface AutoModerationRuleCreateOptions {
   name: string;
   eventType: number;
   triggerType: number;
-  triggerMetadata?: AutoModTriggerMetadataOptions;
-  actions?: AutoModActionOptions;
+  triggerMetadata?: AutoModerationTriggerMetadataOptions;
+  actions?: AutoModerationActionOptions;
   enabled?: boolean;
   exemptRoles?: Snowflake[];
   exemptChannels?: Snowflake[];
 }
 
-export interface AutoModTriggerMetadataOptions extends Partial<AutoModTriggerMetadata> {}
+export interface AutoModerationTriggerMetadataOptions extends Partial<AutoModerationTriggerMetadata> {}
 
-export interface AutoModActionOptions {
+export interface AutoModerationActionOptions {
   type: number;
-  metadata?: AutoModActionMetadataOptions;
+  metadata?: AutoModerationActionMetadataOptions;
 }
 
-export interface AutoModActionMetadataOptions extends Partial<AutoModActionMetadata> {}
+export interface AutoModerationActionMetadataOptions extends Partial<AutoModerationActionMetadata> {}
 
 export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
   parent?: CategoryChannelResolvable | null;
@@ -5945,7 +5955,7 @@ export interface LifetimeSweepOptions {
 }
 
 export interface SweeperDefinitions {
-  autoModRules: [Snowflake, AutoModRule];
+  autoModerationRules: [Snowflake, AutoModerationRule];
   applicationCommands: [Snowflake, ApplicationCommand];
   bans: [Snowflake, GuildBan];
   emojis: [Snowflake, GuildEmoji];

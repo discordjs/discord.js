@@ -62,12 +62,13 @@ class Sweepers {
   }
 
   /**
-   * Sweeps all AutoMod rules and removes the ones which are indicated by the filter.
-   * @param {Function} filter The function used to determine which AutoMod rules will be removed from the caches.
-   * @returns {number} Amount of AutoMod rules that were removed from the caches
+   * Sweeps all auto moderation rules and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine
+   * which auto moderation rules will be removed from the caches
+   * @returns {number} Amount of auto moderation rules that were removed from the caches
    */
-  sweepAutoModRules(filter) {
-    return this._sweepGuildDirectProp('autoModRules', filter).items;
+  sweepAutoModerationRules(filter) {
+    return this._sweepGuildDirectProp('autoModerationRules', filter).items;
   }
 
   /**

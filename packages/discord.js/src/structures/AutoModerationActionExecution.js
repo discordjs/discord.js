@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * Represents the structure of an executed action when a {@link AutoModRule} is triggered.
+ * Represents the structure of an executed action when a {@link AutoModerationRule} is triggered.
  */
-class AutoModActionExecution {
+class AutoModerationActionExecution {
   constructor(data) {
     /**
      * The guild id where this action was executed from.
@@ -13,18 +13,18 @@ class AutoModActionExecution {
 
     /**
      * The action that was executed.
-     * @type {AutoModRuleAction}
+     * @type {AutoModerationAction}
      */
     this.action = data.action;
 
     /**
-     * The id of the {@link AutoModRule} this action belongs to.
+     * The id of the {@link AutoModerationRule} this action belongs to.
      * @type {Snowflake}
      */
     this.ruleId = data.rule_id;
 
     /**
-     * The trigger type of {@link AutoModRule} which was triggered.
+     * The trigger type of {@link AutoModerationRule} which was triggered.
      * @type {number}
      */
     this.ruleTriggerType = data.rule_trigger_type;
@@ -74,4 +74,4 @@ class AutoModActionExecution {
   }
 }
 
-module.exports = AutoModActionExecution;
+module.exports = AutoModerationActionExecution;

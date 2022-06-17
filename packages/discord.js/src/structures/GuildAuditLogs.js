@@ -62,12 +62,13 @@ class GuildAuditLogs {
     }
 
     /**
-     * Cached {@link AutoModRule}s.
-     * @type {Collection<Snowflake, AutoModRule>}
+     * Cached {@link AutoModerationRule}s.
+     * @type {Collection<Snowflake, AutoModerationRule>}
      * @private
      */
-    this.autoModRules = data.auto_moderation_rules.reduce(
-      (autoModRules, autoModRule) => autoModRules.set(autoModRule.id, guild.autoModRules._add(autoModRule)),
+    this.autoModerationRules = data.auto_moderation_rules.reduce(
+      (autoModerationRules, autoModerationRule) =>
+        autoModerationRules.set(autoModerationRule.id, guild.autoModerationRules._add(autoModerationRule)),
       new Collection(),
     );
 

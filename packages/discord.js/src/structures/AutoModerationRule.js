@@ -3,9 +3,9 @@
 const Base = require('./Base');
 
 /**
- * Represents an AutoMod rule.
+ * Represents an auto moderation rule.
  */
-class AutoModRule extends Base {
+class AutoModerationRule extends Base {
   constructor(client, data) {
     super(client);
 
@@ -56,14 +56,14 @@ class AutoModRule extends Base {
     if ('trigger_metadata' in data) {
       /**
        * Additional data used to determine whether an auto moderation rule should be triggered.
-       * @typedef {Object} AutoModTriggerMetadata
+       * @typedef {Object} AutoModerationTriggerMetadata
        * @property {string[]} keywordFilter The substrings that will be searched for in the content
        * @property {number[]} preset The internally pre-defined wordsets which will be searched for in the content
        */
 
       /**
        * The trigger metadata of the rule.
-       * @type {AutoModTriggerMetadata}
+       * @type {AutoModerationTriggerMetadata}
        */
       this.triggerMetadata = {
         keywordFilter: data.trigger_metadata.keyword_filter ?? [],
@@ -74,21 +74,21 @@ class AutoModRule extends Base {
     if ('actions' in data) {
       /**
        * An object containing information about an auto moderation rule action.
-       * @typedef {Object} AutoModAction
+       * @typedef {Object} AutoModerationAction
        * @property {number} type The type of this auto moderation rule action
-       * @property {AutoModActionMetadata} metadata Additional metadata needed during execution
+       * @property {AutoModerationActionMetadata} metadata Additional metadata needed during execution
        */
 
       /**
        * Additional data used when an auto moderation rule is executed.
-       * @typedef {Object} AutoModActionMetadata
+       * @typedef {Object} AutoModerationActionMetadata
        * @property {?Snowflake} channelId The id of the channel to which content will be logged
        * @property {?number} durationSeconds The timeout duration in seconds
        */
 
       /**
        * The actions of this rule.
-       * @type {AutoModAction[]}
+       * @type {AutoModerationAction[]}
        */
       this.actions = data.actions.map(action => ({
         type: action.type,
@@ -125,4 +125,4 @@ class AutoModRule extends Base {
   }
 }
 
-module.exports = AutoModRule;
+module.exports = AutoModerationRule;

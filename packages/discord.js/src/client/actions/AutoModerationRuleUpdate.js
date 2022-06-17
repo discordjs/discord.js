@@ -9,16 +9,16 @@ class AutoModerationRuleUpdateAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
 
     if (guild) {
-      const oldAutoModRule = guild.autoModRules.cache.get(data.id)?._clone() ?? null;
-      const newAutoModRule = guild.autoModRules._add(data);
+      const oldAutoModerationRule = guild.autoModerationRules.cache.get(data.id)?._clone() ?? null;
+      const newAutoModerationRule = guild.autoModerationRules._add(data);
 
       /**
-       * Emitted whenever an AutoMod rule gets updated.
+       * Emitted whenever an auto moderation rule gets updated.
        * @event Client#autoModerationRuleUpdate
-       * @param {?AutoModRule} oldAutoModRule The AutoMod rule object before the update
-       * @param {AutoModRule} newAutoModRule The AutoMod rule object after the update
+       * @param {?AutoModerationRule} oldAutoModerationRule The auto moderation rule object before the update
+       * @param {AutoModerationRule} newAutoModerationRule The auto moderation rule object after the update
        */
-      client.emit(Events.AutoModerationRuleUpdate, oldAutoModRule, newAutoModRule);
+      client.emit(Events.AutoModerationRuleUpdate, oldAutoModerationRule, newAutoModerationRule);
     }
 
     return {};

@@ -1,7 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const AutoModActionExecution = require('../../structures/AutoModActionExecution');
+const AutoModerationActionExecution = require('../../structures/AutoModerationActionExecution');
 const Events = require('../../util/Events');
 
 class AutoModerationRuleActionExecution extends Action {
@@ -11,11 +11,11 @@ class AutoModerationRuleActionExecution extends Action {
 
     if (guild) {
       /**
-       * Emitted whenever an AutoMod rule is triggered.
+       * Emitted whenever an auto moderation rule is triggered.
        * @event Client#autoModerationActionExecution
-       * @param {AutoModActionExecution} autoModActionExecution The data of the execution
+       * @param {AutoModerationActionExecution} autoModerationActionExecution The data of the execution
        */
-      client.emit(Events.AutoModerationActionExecution, new AutoModActionExecution(data));
+      client.emit(Events.AutoModerationActionExecution, new AutoModerationActionExecution(data));
     }
 
     return {};

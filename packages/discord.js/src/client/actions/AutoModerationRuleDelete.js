@@ -9,17 +9,17 @@ class AutoModerationRuleDeleteAction extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
 
     if (guild) {
-      const autoModRule = guild.autoModRules.cache.get(data.id);
+      const autoModerationRule = guild.autoModerationRules.cache.get(data.id);
 
-      if (autoModRule) {
-        guild.autoModRules.cache.delete(autoModRule.id);
+      if (autoModerationRule) {
+        guild.autoModerationRules.cache.delete(autoModerationRule.id);
 
         /**
-         * Emitted whenever an AutoMod rule is deleted.
+         * Emitted whenever an auto moderation rule is deleted.
          * @event Client#autoModerationRuleDelete
-         * @param {AutoModRule} autoModRule The deleted AutoMod rule
+         * @param {AutoModerationRule} autoModerationRule The deleted auto moderation rule
          */
-        client.emit(Events.AutoModerationRuleUpdate, autoModRule);
+        client.emit(Events.AutoModerationRuleUpdate, autoModerationRule);
       }
     }
 
