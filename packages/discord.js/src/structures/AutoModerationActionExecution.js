@@ -73,6 +73,24 @@ class AutoModerationActionExecution {
      */
     this.matchedContent = data.matched_content ?? null;
   }
+
+  /**
+   * The guild where this action was executed from.
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.client.guilds.cache.get(this.guildId);
+  }
+
+  /**
+   * The {@link AutoModerationRule} this action belongs to.
+   * @type {?AutoModerationRule}
+   * @readonly
+   */
+  get autoModerationRule() {
+    return this.guild?.autoModerationRules.cache.get(this.ruleId) ?? null;
+  }
 }
 
 module.exports = AutoModerationActionExecution;

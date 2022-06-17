@@ -334,6 +334,8 @@ export class AutoModerationActionExecution {
   public content: string;
   public matchedKeyword: string | null;
   public matchedContent: string | null;
+  public get guild(): Guild | null;
+  public get autoModerationRule(): AutoModerationRule | null;
 }
 
 export class AutoModerationRule extends Base {
