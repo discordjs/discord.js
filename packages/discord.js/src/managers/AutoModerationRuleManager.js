@@ -81,12 +81,15 @@ class AutoModerationRuleManager extends CachedManager {
         name,
         event_type: eventType,
         trigger_type: triggerType,
-        trigger_metadata: { keyword_filter: triggerMetadata.keywordFilter, presets: triggerMetadata.presets },
+        trigger_metadata:
+          typeof triggerMetadata === 'undefined'
+            ? undefined
+            : { keyword_filter: triggerMetadata.keywordFilter, presets: triggerMetadata.presets },
         actions: actions.map(action => ({
           type: action.type,
           metadata: {
-            duration_seconds: action.metadata.durationSeconds,
-            channel_id: action.metadata.channelId,
+            duration_seconds: action.metadata?.durationSeconds,
+            channel_id: action.metadata?.channelId,
           },
         })),
         enabled,
