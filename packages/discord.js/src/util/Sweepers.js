@@ -62,16 +62,6 @@ class Sweepers {
   }
 
   /**
-   * Sweeps all auto moderation rules and removes the ones which are indicated by the filter.
-   * @param {Function} filter The function used to determine
-   * which auto moderation rules will be removed from the caches
-   * @returns {number} Amount of auto moderation rules that were removed from the caches
-   */
-  sweepAutoModerationRules(filter) {
-    return this._sweepGuildDirectProp('autoModerationRules', filter).items;
-  }
-
-  /**
    * Sweeps all guild and global application commands and removes the ones which are indicated by the filter.
    * @param {Function} filter The function used to determine which commands will be removed from the caches.
    * @returns {number} Amount of commands that were removed from the caches
@@ -86,6 +76,16 @@ class Sweepers {
       `Swept ${globalCommands} global application commands and ${guildCommands} guild commands in ${guilds} guilds.`,
     );
     return guildCommands + globalCommands;
+  }
+
+  /**
+   * Sweeps all auto moderation rules and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine
+   * which auto moderation rules will be removed from the caches
+   * @returns {number} Amount of auto moderation rules that were removed from the caches
+   */
+  sweepAutoModerationRules(filter) {
+    return this._sweepGuildDirectProp('autoModerationRules', filter).items;
   }
 
   /**

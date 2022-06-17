@@ -2685,16 +2685,16 @@ export class Sweepers {
   public intervals: Record<SweeperKey, NodeJS.Timeout | null>;
   public options: SweeperOptions;
 
-  public sweepAutoModerationRules(
-    filter: CollectionSweepFilter<
-      SweeperDefinitions['autoModerationRules'][0],
-      SweeperDefinitions['autoModerationRules'][1]
-    >,
-  ): number;
   public sweepApplicationCommands(
     filter: CollectionSweepFilter<
       SweeperDefinitions['applicationCommands'][0],
       SweeperDefinitions['applicationCommands'][1]
+    >,
+  ): number;
+  public sweepAutoModerationRules(
+    filter: CollectionSweepFilter<
+      SweeperDefinitions['autoModerationRules'][0],
+      SweeperDefinitions['autoModerationRules'][1]
     >,
   ): number;
   public sweepBans(filter: CollectionSweepFilter<SweeperDefinitions['bans'][0], SweeperDefinitions['bans'][1]>): number;
@@ -5955,8 +5955,8 @@ export interface LifetimeSweepOptions {
 }
 
 export interface SweeperDefinitions {
-  autoModerationRules: [Snowflake, AutoModerationRule];
   applicationCommands: [Snowflake, ApplicationCommand];
+  autoModerationRules: [Snowflake, AutoModerationRule];
   bans: [Snowflake, GuildBan];
   emojis: [Snowflake, GuildEmoji];
   invites: [string, Invite, true];
