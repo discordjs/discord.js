@@ -352,6 +352,17 @@ export class AutoModerationRule extends Base {
   public exemptRoles: Snowflake[];
   public exemptChannels: Snowflake[];
   public get guild(): Guild | null;
+  public edit(options: AutoModerationRuleEditOptions): Promise<AutoModerationRule>;
+  public delete(reason?: string): Promise<void>;
+  public setName(name: string, reason?: string): Promise<AutoModerationRule>;
+  // TODO: discord-api-types enum
+  public setEventType(eventType: number, reason?: string): Promise<AutoModerationRule>;
+  public setKeywordFilter(triggerMetadata: string[], reason?: string): Promise<AutoModerationRule>;
+  public setPresets(presets: string[], reason?: string): Promise<AutoModerationRule>;
+  public setActions(actions: AutoModerationActionOptions, reason?: string): Promise<AutoModerationRule>;
+  public setEnabled(enabled?: boolean, reason?: string): Promise<AutoModerationRule>;
+  public setExemptRoles(roles: Snowflake[], reason?: string): Promise<AutoModerationRule>;
+  public setExemptChannels(channels: Snowflake[], reason?: string): Promise<AutoModerationRule>;
 }
 
 export abstract class Application extends Base {

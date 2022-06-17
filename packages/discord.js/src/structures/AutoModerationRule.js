@@ -136,6 +136,105 @@ class AutoModerationRule extends Base {
   get guild() {
     return this.client.guilds.resolve(this.guildId);
   }
+
+  /**
+   * Edits this auto moderation rule.
+   * @param {AutoModerationRuleEditOptions} options options Options for editing this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  edit(options) {
+    return this.guild.autoModerationRules.edit(this.id, options);
+  }
+
+  /**
+   * Deletes this auto moderation rule.
+   * @param {string} [reason] The reason for deleting this auto moderation rule
+   * @returns {Promise<void>}
+   */
+  delete(reason) {
+    return this.guild.autoModerationRules.delete(this.id, reason);
+  }
+
+  /**
+   * Sets the name for this auto moderation rule.
+   * @param {string} name The name of this auto moderation rule
+   * @param {string} [reason] The reason for changing the name of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setName(name, reason) {
+    return this.edit({ name, reason });
+  }
+
+  // TODO: discord-api-types enum
+  /**
+   * Sets the event type for this auto moderation rule.
+   * @param {number} eventType The event type of this auto moderation rule
+   * @param {string} [reason] The reason for changing the event type of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setEventType(eventType, reason) {
+    return this.edit({ eventType, reason });
+  }
+
+  /**
+   * Sets the keyword filter for this auto moderation rule.
+   * @param {string[]} keywordFilter The keyword filter of this auto moderation rule
+   * @param {string} [reason] The reason for changing the keyword filter of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setKeywordFilter(keywordFilter, reason) {
+    return this.edit({ triggerMetadata: { keywordFilter }, reason });
+  }
+
+  /**
+   * Sets the presets for this auto moderation rule.
+   * @param {string[]} presets The presets of this auto moderation rule
+   * @param {string} [reason] The reason for changing the presets of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setPresets(presets, reason) {
+    return this.edit({ triggerMetadata: { presets }, reason });
+  }
+
+  /**
+   * Sets the actions for this auto moderation rule.
+   * @param {AutoModerationActionOptions} actions The actions of this auto moderation rule
+   * @param {string} [reason] The reason for changing the actions of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setActions(actions, reason) {
+    return this.edit({ actions, reason });
+  }
+
+  /**
+   * Sets whether this auto moderation rule should be enabled.
+   * @param {boolean} [enabled=true] Whether to enable this auto moderation rule
+   * @param {string} [reason] The reason for enabling or disabling this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setEnabled(enabled = true, reason) {
+    return this.edit({ enabled, reason });
+  }
+
+  /**
+   * Sets the exempt roles for this auto moderation rule.
+   * @param {Snowflake[]} exemptRoles The exempt roles of this auto moderation rule
+   * @param {string} [reason] The reason for changing the exempt roles of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setExemptRoles(exemptRoles, reason) {
+    return this.edit({ exemptRoles, reason });
+  }
+
+  /**
+   * Sets the exempt channels for this auto moderation rule.
+   * @param {Snowflake[]} exemptChannels The exempt channels of this auto moderation rule
+   * @param {string} [reason] The reason for changing the exempt channels of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setExemptChannels(exemptChannels, reason) {
+    return this.edit({ exemptChannels, reason });
+  }
 }
 
 module.exports = AutoModerationRule;
