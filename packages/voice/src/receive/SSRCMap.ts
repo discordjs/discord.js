@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/method-signature-style */
 import { EventEmitter } from 'node:events';
 
 /**
@@ -19,6 +20,12 @@ export interface VoiceUserData {
 	 * The Discord user id of the user.
 	 */
 	userId: string;
+}
+
+export interface SSRCMap extends EventEmitter {
+	on(event: 'create', listener: (newData: VoiceUserData) => void): this;
+	on(event: 'update', listener: (oldData: VoiceUserData | undefined, newData: VoiceUserData) => void): this;
+	on(event: 'delete', listener: (deletedData: VoiceUserData) => void): this;
 }
 
 /**

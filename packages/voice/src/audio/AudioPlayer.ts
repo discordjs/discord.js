@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/method-signature-style */
 import EventEmitter from 'node:events';
 import { AudioPlayerError } from './AudioPlayerError';
 import type { AudioResource } from './AudioResource';
@@ -154,10 +154,32 @@ export type AudioPlayerState =
 export interface AudioPlayer extends EventEmitter {
 	/**
 	 * Emitted when there is an error emitted from the audio resource played by the audio player
-	 *
 	 * @event
 	 */
-	on: (event: 'error', listener: (error: AudioPlayerError) => void) => this;
+	on(event: 'error', listener: (error: AudioPlayerError) => void): this;
+	/**
+	 * Emitted debugging information about the audio player
+	 * @event
+	 */
+	on(event: 'debug', listener: (message: string) => void): this;
+	/**
+	 * Emitted when the state of the audio player changes
+	 * @event
+	 */
+	on(event: 'stateChange', listener: (oldState: AudioPlayerState, newState: AudioPlayerState) => void): this;
+	/**
+	 * Emitted when the audio player is subscribed to a voice connection
+	 * @event
+	 */
+	on(event: 'subscribe' | 'unsubscribe', listener: (subscription: PlayerSubscription) => void): this;
+	/**
+	 * Emitted when the status of state changes to a specific status
+	 * @event
+	 */
+	on<T extends AudioPlayerStatus>(
+		event: T,
+		listener: (oldState: AudioPlayerState, newState: AudioPlayerState & { status: T }) => void,
+	): this;
 }
 
 /**

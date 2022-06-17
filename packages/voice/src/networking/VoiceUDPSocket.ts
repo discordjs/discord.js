@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/method-signature-style */
 import { createSocket, Socket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
 import { isIPv4 } from 'node:net';
@@ -49,6 +50,13 @@ const KEEP_ALIVE_LIMIT = 12;
  * The maximum value of the keep alive counter.
  */
 const MAX_COUNTER_VALUE = 2 ** 32 - 1;
+
+export interface VoiceUDPSocket extends EventEmitter {
+	on(event: 'error', listener: (error: Error) => void): this;
+	on(event: 'close', listener: () => void): this;
+	on(event: 'debug', listener: (message: string) => void): this;
+	on(event: 'message', listener: (message: Buffer) => void): this;
+}
 
 /**
  * Manages the UDP networking for a voice connection.

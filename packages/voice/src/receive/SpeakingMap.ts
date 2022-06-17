@@ -1,5 +1,13 @@
 import { EventEmitter } from 'node:events';
 
+export interface SpeakingMap extends EventEmitter {
+	/**
+	 * Emitted when a user starts/stops speaking.
+	 * @event
+	 */
+	on: (event: 'start' | 'end', listener: (userId: string) => void) => this;
+}
+
 /**
  * Tracks the speaking states of users in a voice channel.
  */
