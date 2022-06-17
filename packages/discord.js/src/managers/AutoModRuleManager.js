@@ -23,7 +23,7 @@ class AutoModRuleManager extends CachedManager {
    * Data that can be resolved to give an AutoModRule object. This can be:
    * * An AutoModRule
    * * A Snowflake
-   * @typedef {string} AutoModRuleResolvable
+   * @typedef {AutoModRule|Snowflake} AutoModRuleResolvable
    */
 
   /**
