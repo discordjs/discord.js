@@ -5178,6 +5178,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   Sticker: Sticker;
   GuildScheduledEvent: GuildScheduledEvent;
   ApplicationCommand: ApplicationCommand;
+  AutoModerationRule: AutoModerationRule;
 }
 
 export interface GuildAuditLogsFetchOptions<T extends GuildAuditLogsResolvable> {
