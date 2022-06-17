@@ -109,7 +109,7 @@ class AutoModRule extends Base {
 
     if ('exempt_roles' in data) {
       /**
-       * A list of roles exempt by this rule.
+       * An array of roles exempt by this rule.
        * @type {Snowflake[]}
        */
       this.exemptRoles = data.exempt_roles;
@@ -117,7 +117,7 @@ class AutoModRule extends Base {
 
     if ('exempt_channels' in data) {
       /**
-       * A list of channels exempt by this rule.
+       * A array of channels exempt by this rule.
        * @type {Snowflake[]}
        */
       this.exemptChannels = data.exempt_channels;
