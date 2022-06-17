@@ -98,7 +98,7 @@ class CommandInteractionOptionResolver {
     } else if (option.type !== type) {
       throw new TypeError(ErrorCodes.CommandInteractionOptionType, name, option.type, type);
     } else if (required && properties.every(prop => option[prop] === null || typeof option[prop] === 'undefined')) {
-      throw new TypeError(ErrorCodes.COMMAND_INTERACTION_OPTION_EMPTY, name, option.type);
+      throw new TypeError(ErrorCodes.CommandInteractionOptionEmpty, name, option.type);
     }
     return option;
   }

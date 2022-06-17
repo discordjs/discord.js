@@ -141,10 +141,10 @@ const Messages = {
   [DjsErrorCodes.CommandInteractionOptionNotFound]: name => `Required option "${name}" not found.`,
   [DjsErrorCodes.CommandInteractionOptionType]: (name, type, expected) =>
     `Option "${name}" is of type: ${type}; expected ${expected}.`,
-  [DjsErrorCodes.COMMAND_INTERACTION_OPTION_EMPTY]: (name, type) =>
+  [DjsErrorCodes.CommandInteractionOptionEmpty]: (name, type) =>
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
-  [DjsErrorCodes.CommandInteractionOptionNoSubCommand]: 'No subcommand specified for interaction.',
-  [DjsErrorCodes.CommandInteractionOptionNoSubCommandGroup]: 'No subcommand group specified for interaction.',
+  [DjsErrorCodes.CommandInteractionOptionNoSubcommand]: 'No subcommand specified for interaction.',
+  [DjsErrorCodes.CommandInteractionOptionNoSubcommandGroup]: 'No subcommand group specified for interaction.',
   [DjsErrorCodes.AutocompleteInteractionOptionNoFocusedOption]: 'No focused option for autocomplete interaction.',
 
   [DjsErrorCodes.ModalSubmitInteractionFieldNotFound]: customId =>
