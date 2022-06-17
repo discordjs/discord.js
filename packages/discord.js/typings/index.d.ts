@@ -342,7 +342,9 @@ export class AutoModerationRule extends Base {
   public guildId: Snowflake;
   public name: string;
   public creatorId: Snowflake;
+  // TODO: discord-api-types enum
   public eventType: number;
+  // TODO: discord-api-types enum
   public triggerType: number;
   public triggerMetadata: AutoModerationTriggerMetadata;
   public actions: AutoModerationAction[];
@@ -5205,7 +5207,9 @@ export type GuildChannelResolvable = Snowflake | GuildBasedChannel;
 
 export interface AutoModerationRuleCreateOptions {
   name: string;
+  // TODO: discord-api-types enum
   eventType: number;
+  // TODO: discord-api-types enum
   triggerType: number;
   triggerMetadata?: AutoModerationTriggerMetadataOptions;
   actions: AutoModerationActionOptions;
@@ -5220,6 +5224,7 @@ export interface AutoModerationRuleEditOptions extends Partial<Omit<AutoModerati
 export interface AutoModerationTriggerMetadataOptions extends Partial<AutoModerationTriggerMetadata> {}
 
 export interface AutoModerationActionOptions {
+  // TODO: discord-api-types enum
   type: number;
   metadata?: AutoModerationActionMetadataOptions;
 }
