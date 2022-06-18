@@ -148,6 +148,9 @@ import {
   RoleSelectMenuInteraction,
   ChannelSelectMenuInteraction,
   MentionableSelectMenuInteraction,
+  AutoModerationActionExecution,
+  AutoModerationRule,
+  AutoModerationRuleManager,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -173,6 +176,23 @@ const testGuildId = '222078108977594368'; // DJS
 const testUserId = '987654321098765432'; // example id
 const globalCommandId = '123456789012345678'; // example id
 const guildCommandId = '234567890123456789'; // example id
+
+client.on(Events.AutoModerationActionExecution, autoModerationActionExecution => {
+  expectType<AutoModerationActionExecution>(autoModerationActionExecution);
+});
+
+client.on(Events.AutoModerationRuleCreate, autoModerationRule => {
+  expectType<AutoModerationRule>(autoModerationRule);
+});
+
+client.on(Events.AutoModerationRuleDelete, autoModerationRule => {
+  expectType<AutoModerationRule>(autoModerationRule);
+});
+
+client.on(Events.AutoModerationRuleUpdate, (oldAutoModerationRule, newAutoModerationRule) => {
+  expectType<AutoModerationRule | null>(oldAutoModerationRule);
+  expectType<AutoModerationRule>(newAutoModerationRule);
+});
 
 declare const slashCommandBuilder: SlashCommandBuilder;
 declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
@@ -1360,6 +1380,26 @@ declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
 {
   expectType<ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
   expectType<ApplicationCommandSubCommandData[] | undefined>(applicationSubGroupCommandData.options);
+}
+
+declare const autoModerationRuleManager: AutoModerationRuleManager;
+{
+  expectType<Promise<AutoModerationRule>>(autoModerationRuleManager.fetch('1234567890'));
+  expectType<Promise<AutoModerationRule>>(autoModerationRuleManager.fetch({ autoModerationRule: '1234567890' }));
+  expectType<Promise<AutoModerationRule>>(
+    autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', cache: false }),
+  );
+  expectType<Promise<AutoModerationRule>>(
+    autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', force: true }),
+  );
+  expectType<Promise<AutoModerationRule>>(
+    autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', cache: false, force: true }),
+  );
+  expectType<Promise<Collection<Snowflake, AutoModerationRule>>>(autoModerationRuleManager.fetch());
+  expectType<Promise<Collection<Snowflake, AutoModerationRule>>>(autoModerationRuleManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, AutoModerationRule>>>(autoModerationRuleManager.fetch({ cache: false }));
+  // @ts-expect-error The `force` option cannot be used alongside fetching all auto moderation rules.
+  autoModerationRuleManager.fetch({ force: false });
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
