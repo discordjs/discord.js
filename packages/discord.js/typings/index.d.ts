@@ -323,6 +323,7 @@ export class AutoModerationActionExecution {
   // TODO: discord-api-types type
   private constructor(data: unknown);
   public guildId: Snowflake;
+  public guild: Guild;
   public action: AutoModerationAction;
   public ruleId: Snowflake;
   // TODO: discord-api-types enum
@@ -334,7 +335,6 @@ export class AutoModerationActionExecution {
   public content: string;
   public matchedKeyword: string | null;
   public matchedContent: string | null;
-  public get guild(): Guild | null;
   public get autoModerationRule(): AutoModerationRule | null;
 }
 

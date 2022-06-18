@@ -15,7 +15,7 @@ class AutoModerationActionExecutionAction extends Action {
        * @event Client#autoModerationActionExecution
        * @param {AutoModerationActionExecution} autoModerationActionExecution The data of the execution
        */
-      client.emit(Events.AutoModerationActionExecution, new AutoModerationActionExecution(data));
+      client.emit(Events.AutoModerationActionExecution, new AutoModerationActionExecution(data, guild));
     }
 
     return {};

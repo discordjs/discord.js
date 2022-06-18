@@ -4,12 +4,18 @@
  * Represents the structure of an executed action when a {@link AutoModerationRule} is triggered.
  */
 class AutoModerationActionExecution {
-  constructor(data) {
+  constructor(data, guild) {
     /**
      * The guild id where this action was executed from.
      * @type {Snowflake}
      */
     this.guildId = data.guild_id;
+
+    /**
+     * The guild where this action was executed from.
+     * @type {Guild}
+     */
+    this.guild = guild;
 
     /**
      * The action that was executed.
@@ -72,15 +78,6 @@ class AutoModerationActionExecution {
      * @type {?string}
      */
     this.matchedContent = data.matched_content ?? null;
-  }
-
-  /**
-   * The guild where this action was executed from.
-   * @type {?Guild}
-   * @readonly
-   */
-  get guild() {
-    return this.client.guilds.cache.get(this.guildId);
   }
 
   /**
