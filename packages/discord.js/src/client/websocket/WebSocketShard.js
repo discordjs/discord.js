@@ -368,7 +368,7 @@ class WebSocketShard extends EventEmitter {
     this.setWsCloseTimeout(-1);
     // If we still have a connection object, clean up its listeners
     if (this.connection) this._cleanupConnection();
-    this.status = Status.DISCONNECTED;
+    this.status = Status.Disconnected;
     this.emitClose(event);
   }
 
@@ -833,8 +833,8 @@ class WebSocketShard extends EventEmitter {
     // Step 2: Null the connection object
     this.connection = null;
 
-    // Step 3: Set the shard status to DISCONNECTED
-    this.status = Status.DISCONNECTED;
+    // Step 3: Set the shard status to disconnected
+    this.status = Status.Disconnected;
 
     // Step 4: Cache the old sequence (use to attempt a resume)
     if (this.sequence !== -1) this.closeSequence = this.sequence;
