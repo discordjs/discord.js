@@ -50,7 +50,7 @@ class PermissionsBitField extends BitField {
   /**
    * Bitfield of the packed bits
    * @type {bigint}
-   * @name Permissions#bitfield
+   * @name PermissionsBitField#bitfield
    */
 
   /**
