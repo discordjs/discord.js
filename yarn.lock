@@ -1926,6 +1926,7 @@ __metadata:
   resolution: "@discordjs/proxy-container@workspace:packages/proxy-container"
   dependencies:
     "@discordjs/proxy": ^0.1.0-dev
+    "@discordjs/rest": "workspace:^"
     "@types/node": ^16.11.38
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
