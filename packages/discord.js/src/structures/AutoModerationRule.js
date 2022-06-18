@@ -142,7 +142,7 @@ class AutoModerationRule extends Base {
 
   /**
    * Edits this auto moderation rule.
-   * @param {AutoModerationRuleEditOptions} options options Options for editing this auto moderation rule
+   * @param {AutoModerationRuleEditOptions} options Options for editing this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
   edit(options) {
