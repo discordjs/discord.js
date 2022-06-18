@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Represents the structure of an executed action when a {@link AutoModerationRule} is triggered.
+ * Represents the structure of an executed action when an {@link AutoModerationRule} is triggered.
  */
 class AutoModerationActionExecution {
   constructor(data, guild) {
