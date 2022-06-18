@@ -101,7 +101,7 @@ class Guild extends AnonymousGuild {
     this.scheduledEvents = new GuildScheduledEventManager(this);
 
     /**
-     * A manager of the auto moderation rules of this guild
+     * A manager of the auto moderation rules of this guild.
      * @type {AutoModerationRuleManager}
      */
     this.autoModerationRules = new AutoModerationRuleManager(this);
