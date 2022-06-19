@@ -132,7 +132,7 @@ class AutoModerationRule extends Base {
     if ('exempt_channels' in data) {
       /**
        * The channels exempt by this auto moderation rule.
-       * @type {Snowflake[]}
+       * @type {Collection<Snowflake, GuildChannel|ThreadChannel>}
        */
       this.exemptChannels = new Collection(
         data.exempt_channels.map(exemptChannel => [exemptChannel, this.guild.channels.cache.get(exemptChannel)]),
