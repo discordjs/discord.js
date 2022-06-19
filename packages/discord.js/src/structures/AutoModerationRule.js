@@ -189,9 +189,10 @@ class AutoModerationRule extends Base {
     return this.edit({ triggerMetadata: { keywordFilter }, reason });
   }
 
+  // TODO: discord-api-types enum
   /**
    * Sets the presets for this auto moderation rule.
-   * @param {string[]} presets The presets of this auto moderation rule
+   * @param {number[]} presets The presets of this auto moderation rule
    * @param {string} [reason] The reason for changing the presets of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */

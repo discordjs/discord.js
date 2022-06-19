@@ -361,7 +361,7 @@ export class AutoModerationRule extends Base {
   // TODO: discord-api-types enum
   public setEventType(eventType: number, reason?: string): Promise<AutoModerationRule>;
   public setKeywordFilter(triggerMetadata: string[], reason?: string): Promise<AutoModerationRule>;
-  public setPresets(presets: string[], reason?: string): Promise<AutoModerationRule>;
+  public setPresets(presets: number[], reason?: string): Promise<AutoModerationRule>;
   public setActions(actions: AutoModerationActionOptions, reason?: string): Promise<AutoModerationRule>;
   public setEnabled(enabled?: boolean, reason?: string): Promise<AutoModerationRule>;
   public setExemptRoles(
