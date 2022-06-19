@@ -29,7 +29,7 @@ async function join(
 		await entersState(connection, VoiceConnectionStatus.Ready, 20e3);
 		const receiver = connection.receiver;
 
-		receiver.speaking.on('start', (userId) => {
+		receiver.speaking.on('start', (userId: string) => {
 			if (recordable.has(userId)) {
 				createListeningStream(receiver, userId, client.users.cache.get(userId));
 			}

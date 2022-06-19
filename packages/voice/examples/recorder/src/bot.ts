@@ -5,8 +5,7 @@ import { deploy } from './deploy';
 import { interactionHandlers } from './interactions';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-const authJson = require('../auth.json') as { token: string };
-const token = authJson.token;
+const { token } = require('../auth.json') as { token: string };
 
 const client = new Discord.Client({
 	intents: [GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.Guilds],
