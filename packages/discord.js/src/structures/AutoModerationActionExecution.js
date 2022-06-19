@@ -24,14 +24,14 @@ class AutoModerationActionExecution {
     this.action = data.action;
 
     /**
-     * The id of the {@link AutoModerationRule} this action belongs to.
+     * The id of the auto moderation rule this action belongs to.
      * @type {Snowflake}
      */
     this.ruleId = data.rule_id;
 
     // TODO: discord-api-types enum
     /**
-     * The trigger type of the {@link AutoModerationRule} which was triggered.
+     * The trigger type of the auto moderation rule which was triggered.
      * @type {number}
      */
     this.ruleTriggerType = data.rule_trigger_type;
@@ -81,7 +81,7 @@ class AutoModerationActionExecution {
   }
 
   /**
-   * The {@link AutoModerationRule} this action belongs to.
+   * The auto moderation rule this action belongs to.
    * @type {?AutoModerationRule}
    * @readonly
    */
