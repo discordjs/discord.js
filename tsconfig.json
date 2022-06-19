@@ -4,8 +4,7 @@
 		// Type Checking
 		"allowUnreachableCode": false,
 		"allowUnusedLabels": false,
-		// if true: conflicts with discord-api-types
-		"exactOptionalPropertyTypes": false,
+		"exactOptionalPropertyTypes": true,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,

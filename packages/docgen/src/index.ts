@@ -67,7 +67,7 @@ if (options.custom) {
 		const categoryId = category.id ?? category.name.toLowerCase();
 		const dir = join(customDir, category.path ?? categoryId);
 		custom[categoryId] = {
-			name: category.name || category.id,
+			name: category.name || category.id!,
 			files: {},
 		};
 

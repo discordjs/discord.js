@@ -1,15 +1,4 @@
 {
 	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		// Type Checking
-		"exactOptionalPropertyTypes": true,
-
-		// Modules
-		"rootDir": "./src",
-
-		// Emit
-		"outDir": "./dist",
-		"sourceRoot": "./"
-	},
 	"include": ["src/**/*.ts"]
 }
