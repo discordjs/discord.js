@@ -118,7 +118,7 @@ class AutoModerationRuleManager extends CachedManager {
   /**
    * Options used to edit an auto moderation rule.
    * @typedef {Object} AutoModerationRuleEditOptions
-   * @property {string} name The name of the auto moderation rule
+   * @property {string} [name] The name of the auto moderation rule
    * @property {number} [eventType] The event type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
    * @property {AutoModerationActionOptions[]} [actions]
