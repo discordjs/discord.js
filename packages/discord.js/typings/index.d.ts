@@ -1941,12 +1941,17 @@ export interface TextInputModalData extends BaseModalData {
   value: string;
 }
 
+export interface SelectMenuModalData extends BaseModalData {
+  type: ComponentType.SelectMenu;
+  values: string[];
+}
+
 export interface ActionRowModalData {
   type: ComponentType.ActionRow;
   components: ModalData[];
 }
 
-export type ModalData = TextInputModalData | ActionRowModalData;
+export type ModalData = ActionRowModalData | TextInputModalData | SelectMenuModalData;
 
 export class ModalSubmitFields {
   constructor(components: ModalActionRowComponent[][]);

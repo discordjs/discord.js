@@ -57,13 +57,7 @@ class ModalSubmitFields {
    * @returns {string[]}
    */
   getSelectMenuValues(customId) {
-    const field = this.getField(customId);
-    const expectedType = ComponentType.SelectMenu;
-
-    if (field.type !== expectedType) {
-      throw new TypeError('MODAL_SUBMIT_INTERACTION_FIELD_TYPE', customId, field.type, expectedType);
-    }
-    return field.data.values;
+    return this.getField(customId, ComponentType.SelectMenu).values;
   }
 }
 

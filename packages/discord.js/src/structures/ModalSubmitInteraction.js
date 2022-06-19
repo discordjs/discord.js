@@ -11,6 +11,7 @@ const getMessage = lazy(() => require('./Message').Message);
 /**
  * @typedef {Object} ModalData
  * @property {string} value The value of the field
+ * @property {string} values The values of a field
  * @property {ComponentType} type The component type of the field
  * @property {string} customId The custom id of the field
  */
