@@ -52,7 +52,7 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/rest": "workspace:^",
+		"@discordjs/rest": "^0.5.0",
 		"tslib": "^2.4.0",
 		"undici": "^5.4.0"
 	},
