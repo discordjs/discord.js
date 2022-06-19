@@ -15,8 +15,8 @@ class AutoModerationRuleUpdateAction extends Action {
       /**
        * Emitted whenever an auto moderation rule gets updated.
        * @event Client#autoModerationRuleUpdate
-       * @param {?AutoModerationRule} oldAutoModerationRule The auto moderation rule object before the update
-       * @param {AutoModerationRule} newAutoModerationRule The auto moderation rule object after the update
+       * @param {?AutoModerationRule} oldAutoModerationRule The auto moderation rule before the update
+       * @param {AutoModerationRule} newAutoModerationRule The auto moderation rule after the update
        */
       client.emit(Events.AutoModerationRuleUpdate, oldAutoModerationRule, newAutoModerationRule);
     }
