@@ -196,7 +196,7 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Fetches auto moderation rules from Discord.
-   * @param {AutoModerationRuleResolvable|FetchAutoModerationRuleOptions|FetchAutoModerationRulesOptions} options
+   * @param {AutoModerationRuleResolvable|FetchAutoModerationRuleOptions|FetchAutoModerationRulesOptions} [options]
    * Options for fetching auto moderation rule(s)
    * @returns {Promise<AutoModerationRule|Collection<Snowflake, AutoModerationRule>>}
    * @example
