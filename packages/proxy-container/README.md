@@ -6,8 +6,8 @@
   <br />
   <p>
     <a href="https://discord.gg/djs"><img src="https://img.shields.io/discord/222078108977594368?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
-    <a href="https://www.npmjs.com/package/@discordjs/proxy"><img src="https://img.shields.io/npm/v/@discordjs/proxy.svg?maxAge=3600" alt="npm version" /></a>
-    <a href="https://www.npmjs.com/package/@discordjs/proxy"><img src="https://img.shields.io/npm/dt/@discordjs/proxy.svg?maxAge=3600" alt="npm downloads" /></a>
+    <a href="https://hub.docker.com/r/discordjs/proxy"><img src="https://img.shields.io/docker/v/discordjs/proxy.svg?sort=semver&maxAge=3600" alt="dockerhub version" /></a>
+    <a href="https://hub.docker.com/r/discordjs/proxy"><img src="https://img.shields.io/docker/pulls/discordjs/proxy?maxAge=3600" alt="dockerhub pulls" /></a>
     <a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/test.yml/badge.svg" alt="Build status" /></a>
   </p>
 </div>
