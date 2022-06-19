@@ -29,7 +29,7 @@ class BaseInteraction extends Base {
     /**
      * The interaction's token
      * @type {string}
-     * @name Interaction#token
+     * @name BaseInteraction#token
      * @readonly
      */
     Object.defineProperty(this, 'token', { value: data.token });

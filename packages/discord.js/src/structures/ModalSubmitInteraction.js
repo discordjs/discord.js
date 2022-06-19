@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseInteraction = require('./BaseInteractiontion');
+const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const ModalSubmitFields = require('./ModalSubmitFields');
 const InteractionResponses = require('./interfaces/InteractionResponses');

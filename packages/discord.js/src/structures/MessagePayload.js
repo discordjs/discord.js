@@ -7,7 +7,9 @@ const ActionRowBuilder = require('./ActionRowBuilder');
 const { RangeError, ErrorCodes } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const { basename, cloneObject, verifyString } = require('../util/Util');
+const { basename, cloneObject, verifyString, lazy } = require('../util/Util');
+
+const getBaseInteraction = lazy(() => require('./BaseInteraction'));
 
 /**
  * Represents a message to be sent to the API.
@@ -86,12 +88,12 @@ class MessagePayload {
   }
 
   /**
-   * Whether or not the target is an {@link Interaction} or an {@link InteractionWebhook}
+   * Whether or not the target is an {@link BaseInteraction} or an {@link InteractionWebhook}
    * @type {boolean}
    * @readonly
    */
   get isInteraction() {
-    const BaseInteraction = require('./BaseInteractiontion');
+    const BaseInteraction = getBaseInteraction();
     const InteractionWebhook = require('./InteractionWebhook');
     return this.target instanceof BaseInteraction || this.target instanceof InteractionWebhook;
   }
@@ -277,7 +279,7 @@ module.exports = MessagePayload;
 
 /**
  * A target for a message.
- * @typedef {TextBasedChannels|User|GuildMember|Webhook|WebhookClient|Interaction|InteractionWebhook|
+ * @typedef {TextBasedChannels|User|GuildMember|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 
