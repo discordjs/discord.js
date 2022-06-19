@@ -39,15 +39,13 @@ const client = new Client({
 ## Links
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-- [Documentation](https://discord.js.org/#/docs/proxy)
 - [discord.js Discord server](https://discord.gg/djs)
-- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/proxy)
-- [npm](https://www.npmjs.com/package/@discordjs/proxy)
+- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/proxy-container)
+- [Docker Hub](https://hub.docker.com/r/discordjs/proxy)
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs/proxy).  
+Before creating an issue, please ensure that it hasn't already been reported/suggested.
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
