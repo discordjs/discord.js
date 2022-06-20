@@ -1,5 +1,44 @@
 'use strict';
 
+/**
+ * @typedef {Object} Colors
+ * @property {number} Default
+ * @property {number} White
+ * @property {number} Aqua
+ * @property {number} Green
+ * @property {number} Blue
+ * @property {number} Yellow
+ * @property {number} Purple
+ * @property {number} LuminousVividPink
+ * @property {number} Fuchsia
+ * @property {number} Gold
+ * @property {number} Orange
+ * @property {number} Red
+ * @property {number} Grey
+ * @property {number} Navy
+ * @property {number} DarkAqua
+ * @property {number} DarkGreen
+ * @property {number} DarkBlue
+ * @property {number} DarkPurple
+ * @property {number} DarkVividPink
+ * @property {number} DarkGold
+ * @property {number} DarkOrange
+ * @property {number} DarkRed
+ * @property {number} DarkGrey
+ * @property {number} DarkerGrey
+ * @property {number} LightGrey
+ * @property {number} DarkNavy
+ * @property {number} Blurple
+ * @property {number} Greyple
+ * @property {number} DarkButNotBlack
+ * @property {number} NotQuiteBlack
+ */
+
+// JSDoc for IntelliSense purposes
+/**
+ * @type {Colors}
+ * @ignore
+ */
 module.exports = {
   Default: 0x000000,
   White: 0xffffff,
