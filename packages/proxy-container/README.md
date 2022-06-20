@@ -6,8 +6,8 @@
   <br />
   <p>
     <a href="https://discord.gg/djs"><img src="https://img.shields.io/discord/222078108977594368?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
-    <a href="https://www.npmjs.com/package/@discordjs/proxy"><img src="https://img.shields.io/npm/v/@discordjs/proxy.svg?maxAge=3600" alt="npm version" /></a>
-    <a href="https://www.npmjs.com/package/@discordjs/proxy"><img src="https://img.shields.io/npm/dt/@discordjs/proxy.svg?maxAge=3600" alt="npm downloads" /></a>
+    <a href="https://hub.docker.com/r/discordjs/proxy"><img src="https://img.shields.io/docker/v/discordjs/proxy.svg?sort=semver&maxAge=3600" alt="dockerhub version" /></a>
+    <a href="https://hub.docker.com/r/discordjs/proxy"><img src="https://img.shields.io/docker/pulls/discordjs/proxy.svg?maxAge=3600" alt="dockerhub pulls" /></a>
     <a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/test.yml/badge.svg" alt="Build status" /></a>
   </p>
 </div>
@@ -39,15 +39,13 @@ const client = new Client({
 ## Links
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-- [Documentation](https://discord.js.org/#/docs/proxy)
 - [discord.js Discord server](https://discord.gg/djs)
-- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/proxy)
-- [npm](https://www.npmjs.com/package/@discordjs/proxy)
+- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/proxy-container)
+- [Docker Hub](https://hub.docker.com/r/discordjs/proxy)
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs/proxy).  
+Before creating an issue, please ensure that it hasn't already been reported/suggested.
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
