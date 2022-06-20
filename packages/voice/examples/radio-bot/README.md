@@ -11,8 +11,8 @@ A proof-of-concept radio bot that uses @discordjs/voice and discord.js. Streams 
 
 ```bash
 # Clone the main @discordjs/voice repo, then install dependencies and build
-$ npm install
-$ npm run build
+$ yarn --immutable
+$ yarn build
 
 # Enter this example's directory, create a config file and start!
 $ cd examples/radio-bot

@@ -7,8 +7,8 @@ and save the audio to local Ogg files.
 
 ```sh-session
 # Clone the main repository, and then run:
-$ npm install
-$ npm run build
+$ yarn --immutable
+$ yarn build
 
 # Open this example and install dependencies
 $ cd examples/recorder
