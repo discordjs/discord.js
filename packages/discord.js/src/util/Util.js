@@ -5,7 +5,7 @@ const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const Colors = require('./Colors');
-const { Error: DiscordError, RangeError, TypeError } = require('../errors');
+const { Error: DiscordError, RangeError, TypeError, ErrorCodes } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
 
 /**
@@ -223,13 +223,13 @@ function escapeSpoiler(text) {
  * @returns {Promise<number>} The recommended number of shards
  */
 async function fetchRecommendedShards(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
-  if (!token) throw new DiscordError('TOKEN_MISSING');
+  if (!token) throw new DiscordError(ErrorCodes.TokenMissing);
   const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
     method: 'GET',
     headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
   });
   if (!response.ok) {
-    if (response.status === 401) throw new DiscordError('TOKEN_INVALID');
+    if (response.status === 401) throw new DiscordError(ErrorCodes.TokenInvalid);
     throw response;
   }
   const { shards } = await response.json();
@@ -423,8 +423,8 @@ function resolveColor(color) {
     color = (color[0] << 16) + (color[1] << 8) + color[2];
   }
 
-  if (color < 0 || color > 0xffffff) throw new RangeError('COLOR_RANGE');
-  else if (Number.isNaN(color)) throw new TypeError('COLOR_CONVERT');
+  if (color < 0 || color > 0xffffff) throw new RangeError(ErrorCodes.ColorRange);
+  else if (Number.isNaN(color)) throw new TypeError(ErrorCodes.ColorConvert);
 
   return color;
 }

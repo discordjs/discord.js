@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError, Error } = require('../errors');
+const { TypeError, Error, ErrorCodes } = require('../errors');
 const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
 const DataResolver = require('../util/DataResolver');
 
@@ -69,7 +69,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @returns {Promise<GuildScheduledEvent>}
    */
   async create(options) {
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    if (typeof options !== 'object') throw new TypeError(ErrorCodes.InvalidType, 'options', 'object', true);
     let {
       privacyLevel,
       entityType,
@@ -89,7 +89,7 @@ class GuildScheduledEventManager extends CachedManager {
       entity_metadata = { location: entityMetadata?.location };
     } else {
       channel_id = this.guild.channels.resolveId(channel);
-      if (!channel_id) throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
+      if (!channel_id) throw new Error(ErrorCodes.GuildVoiceChannelResolve);
       entity_metadata = typeof entityMetadata === 'undefined' ? entityMetadata : null;
     }
 
@@ -188,9 +188,9 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async edit(guildScheduledEvent, options) {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
-    if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
+    if (!guildScheduledEventId) throw new Error(ErrorCodes.GuildScheduledEventResolve);
 
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    if (typeof options !== 'object') throw new TypeError(ErrorCodes.InvalidType, 'options', 'object', true);
     let {
       privacyLevel,
       entityType,
@@ -238,7 +238,7 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async delete(guildScheduledEvent) {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
-    if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
+    if (!guildScheduledEventId) throw new Error(ErrorCodes.GuildScheduledEventResolve);
 
     await this.client.rest.delete(Routes.guildScheduledEvent(this.guild.id, guildScheduledEventId));
   }
@@ -269,7 +269,7 @@ class GuildScheduledEventManager extends CachedManager {
    */
   async fetchSubscribers(guildScheduledEvent, options = {}) {
     const guildScheduledEventId = this.resolveId(guildScheduledEvent);
-    if (!guildScheduledEventId) throw new Error('GUILD_SCHEDULED_EVENT_RESOLVE');
+    if (!guildScheduledEventId) throw new Error(ErrorCodes.GuildScheduledEventResolve);
 
     const query = makeURLSearchParams({
       limit: options.limit,

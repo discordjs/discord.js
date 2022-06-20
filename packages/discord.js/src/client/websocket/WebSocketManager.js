@@ -7,7 +7,7 @@ const { Collection } = require('@discordjs/collection');
 const { GatewayCloseCodes, GatewayDispatchEvents, Routes } = require('discord-api-types/v10');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
-const { Error } = require('../../errors');
+const { Error, ErrorCodes } = require('../../errors');
 const Events = require('../../util/Events');
 const ShardEvents = require('../../util/ShardEvents');
 const Status = require('../../util/Status');
@@ -130,7 +130,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   async connect() {
-    const invalidToken = new Error(GatewayCloseCodes[GatewayCloseCodes.AuthenticationFailed]);
+    const invalidToken = new Error(ErrorCodes.AuthenticationFailed);
     const {
       url: gatewayURL,
       shards: recommendedShards,
@@ -318,7 +318,8 @@ class WebSocketManager extends EventEmitter {
    */
   destroy() {
     if (this.destroyed) return;
-    this.debug(`Manager was destroyed. Called by:\n${new Error('MANAGER_DESTROYED').stack}`);
+    // TODO: Make a util for getting a stack
+    this.debug(`Manager was destroyed. Called by:\n${new globalThis.Error().stack}`);
     this.destroyed = true;
     this.shardQueue.clear();
     for (const shard of this.shards.values()) shard.destroy({ closeCode: 1_000, reset: true, emit: false, log: false });

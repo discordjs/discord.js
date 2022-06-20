@@ -3,7 +3,7 @@
 const EventEmitter = require('node:events');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
-const { TypeError } = require('../../errors');
+const { TypeError, ErrorCodes } = require('../../errors');
 const { flatten } = require('../../util/Util');
 
 /**
@@ -86,7 +86,7 @@ class Collector extends EventEmitter {
     this._endReason = null;
 
     if (typeof this.filter !== 'function') {
-      throw new TypeError('INVALID_TYPE', 'options.filter', 'function');
+      throw new TypeError(ErrorCodes.InvalidType, 'options.filter', 'function');
     }
 
     this.handleCollect = this.handleCollect.bind(this);

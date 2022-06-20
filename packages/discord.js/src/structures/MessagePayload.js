@@ -4,7 +4,7 @@ const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/builders');
 const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
-const { RangeError } = require('../errors');
+const { RangeError, ErrorCodes } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const { basename, cloneObject, verifyString } = require('../util/Util');
@@ -105,7 +105,7 @@ class MessagePayload {
     if (this.options.content === null) {
       content = '';
     } else if (typeof this.options.content !== 'undefined') {
-      content = verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', true);
+      content = verifyString(this.options.content, RangeError, ErrorCodes.MessageContentType, true);
     }
 
     return content;
@@ -128,7 +128,7 @@ class MessagePayload {
       nonce = this.options.nonce;
       // eslint-disable-next-line max-len
       if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
-        throw new RangeError('MESSAGE_NONCE_TYPE');
+        throw new RangeError(ErrorCodes.MessageNonceType);
       }
     }
 

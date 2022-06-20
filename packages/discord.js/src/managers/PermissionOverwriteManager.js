@@ -4,7 +4,7 @@ const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { OverwriteType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError } = require('../errors');
+const { TypeError, ErrorCodes } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const { Role } = require('../structures/Role');
 
@@ -65,7 +65,7 @@ class PermissionOverwriteManager extends CachedManager {
   set(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
       return Promise.reject(
-        new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true),
+        new TypeError(ErrorCodes.InvalidType, 'overwrites', 'Array or Collection of Permission Overwrites', true),
       );
     }
     return this.channel.edit({ permissionOverwrites: overwrites, reason });
@@ -93,7 +93,7 @@ class PermissionOverwriteManager extends CachedManager {
     let { type, reason } = overwriteOptions;
     if (typeof type !== 'number') {
       userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
-      if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
+      if (!userOrRole) throw new TypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
       type = userOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
     }
 
@@ -152,7 +152,7 @@ class PermissionOverwriteManager extends CachedManager {
    */
   async delete(userOrRole, reason) {
     const userOrRoleId = this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole);
-    if (!userOrRoleId) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
+    if (!userOrRoleId) throw new TypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
 
     await this.client.rest.delete(Routes.channelPermission(this.channel.id, userOrRoleId), { reason });
     return this.channel;

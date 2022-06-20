@@ -2995,6 +2995,169 @@ export const version: string;
 
 //#endregion
 
+//#region Errors
+export enum DiscordjsErrorCodes {
+  ClientInvalidOption,
+  ClientInvalidProvidedShards,
+  ClientMissingIntents,
+  ClientNotReady,
+
+  TokenInvalid,
+  TokenMissing,
+  ApplicationCommandPermissionsTokenMissing,
+
+  WSCloseRequested,
+  WSConnectionExists,
+  WSNotOpen,
+  ManagerDestroyed,
+
+  BitFieldInvalid,
+
+  ShardingInvalid,
+  ShardingRequired,
+  InvalidIntents,
+  DisallowedIntents,
+  ShardingNoShards,
+  ShardingInProcess,
+  ShardingInvalidEvalBroadcast,
+  ShardingShardNotFound,
+  ShardingAlreadySpawned,
+  ShardingProcessExists,
+  ShardingWorkerExists,
+  ShardingReadyTimeout,
+  ShardingReadyDisconnected,
+  ShardingReadyDied,
+  ShardingNoChildExists,
+  ShardingShardMiscalculation,
+
+  ColorRange,
+  ColorConvert,
+
+  InviteOptionsMissingChannel,
+
+  ButtonLabel,
+  ButtonURL,
+  ButtonCustomId,
+
+  SelectMenuCustomId,
+  SelectMenuPlaceholder,
+  SelectOptionLabel,
+  SelectOptionValue,
+  SelectOptionDescription,
+
+  InteractionCollectorError,
+
+  FileNotFound,
+
+  UserBannerNotFetched,
+  UserNoDMChannel,
+
+  VoiceNotStageChannel,
+
+  VoiceStateNotOwn,
+  VoiceStateInvalidType,
+
+  ReqResourceType,
+
+  ImageFormat,
+  ImageSize,
+
+  MessageBulkDeleteType,
+  MessageNonceType,
+  MessageContentType,
+
+  SplitMaxLen,
+
+  BanResolveId,
+  FetchBanResolveId,
+
+  PruneDaysType,
+
+  GuildChannelResolve,
+  GuildVoiceChannelResolve,
+  GuildChannelOrphan,
+  GuildChannelUnowned,
+  GuildOwned,
+  GuildMembersTimeout,
+  GuildUncachedMe,
+  ChannelNotCached,
+  StageChannelResolve,
+  GuildScheduledEventResolve,
+  FetchOwnerId,
+
+  InvalidType,
+  InvalidElement,
+
+  MessageThreadParent,
+  MessageExistingThread,
+  ThreadInvitableType,
+
+  WebhookMessage,
+  WebhookTokenUnavailable,
+  WebhookURLInvalid,
+  WebhookApplication,
+  MessageReferenceMissing,
+
+  EmojiType,
+  EmojiManaged,
+  MissingManageEmojisAndStickersPermission,
+  NotGuildSticker,
+
+  ReactionResolveUser,
+
+  VanityURL,
+
+  InviteResolveCode,
+
+  InviteNotFound,
+
+  DeleteGroupDMChannel,
+  FetchGroupDMChannel,
+
+  MemberFetchNonceLength,
+
+  GlobalCommandPermissions,
+  GuildUncachedEntityResolve,
+
+  InteractionAlreadyReplied,
+  InteractionNotReplied,
+  InteractionEphemeralReplied,
+
+  CommandInteractionOptionNotFound,
+  CommandInteractionOptionType,
+  CommandInteractionOptionEmpty,
+  CommandInteractionOptionNoSubcommand,
+  CommandInteractionOptionNoSubcommandGroup,
+  AutocompleteInteractionOptionNoFocusedOption,
+
+  ModalSubmitInteractionFieldNotFound,
+  ModalSubmitInteractionFieldType,
+
+  InvalidMissingScopes,
+
+  NotImplemented,
+
+  SweepFilterReturn,
+}
+
+export interface DiscordjsErrorFields<Name extends string> {
+  readonly name: `${Name} [${keyof typeof DiscordjsErrorCodes}]`;
+  get code(): keyof typeof DiscordjsErrorCodes;
+}
+
+export function DiscordjsErrorMixin<T, N extends string>(
+  Base: Constructable<T>,
+  name: N,
+): Constructable<T & DiscordjsErrorFields<N>>;
+
+export class DiscordjsError extends DiscordjsErrorMixin(Error, 'Error') {}
+
+export class DiscordjsTypeError extends DiscordjsErrorMixin(TypeError, 'TypeError') {}
+
+export class DiscordjsRangeError extends DiscordjsErrorMixin(RangeError, 'RangeError') {}
+
+//#endregion
+
 //#region Managers
 
 export abstract class BaseManager {

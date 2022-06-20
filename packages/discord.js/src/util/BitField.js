@@ -1,6 +1,6 @@
 'use strict';
 
-const { RangeError } = require('../errors');
+const { RangeError, ErrorCodes } = require('../errors');
 
 /**
  * Data structure that makes it easy to interact with a bitfield.
@@ -165,7 +165,7 @@ class BitField {
       if (typeof this.Flags[bit] !== 'undefined') return this.Flags[bit];
       if (!isNaN(bit)) return typeof DefaultBit === 'bigint' ? BigInt(bit) : Number(bit);
     }
-    throw new RangeError('BITFIELD_INVALID', bit);
+    throw new RangeError(ErrorCodes.BitFieldInvalid, bit);
   }
 }
 

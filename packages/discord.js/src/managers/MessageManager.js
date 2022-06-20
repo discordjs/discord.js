@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError } = require('../errors');
+const { TypeError, ErrorCodes } = require('../errors');
 const { Message } = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
 const { resolvePartialEmoji } = require('../util/Util');
@@ -155,7 +155,7 @@ class MessageManager extends CachedManager {
    */
   async edit(message, options) {
     const messageId = this.resolveId(message);
-    if (!messageId) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    if (!messageId) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     const { body, files } = await (options instanceof MessagePayload
       ? options
@@ -181,7 +181,7 @@ class MessageManager extends CachedManager {
    */
   async crosspost(message) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     const data = await this.client.rest.post(Routes.channelMessageCrosspost(this.channel.id, message));
     return this.cache.get(data.id) ?? this._add(data);
@@ -195,7 +195,7 @@ class MessageManager extends CachedManager {
    */
   async pin(message, reason) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.put(Routes.channelPin(this.channel.id, message), { reason });
   }
@@ -208,7 +208,7 @@ class MessageManager extends CachedManager {
    */
   async unpin(message, reason) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.delete(Routes.channelPin(this.channel.id, message), { reason });
   }
@@ -221,10 +221,10 @@ class MessageManager extends CachedManager {
    */
   async react(message, emoji) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     emoji = resolvePartialEmoji(emoji);
-    if (!emoji) throw new TypeError('EMOJI_TYPE', 'emoji', 'EmojiIdentifierResolvable');
+    if (!emoji) throw new TypeError(ErrorCodes.EmojiType, 'emoji', 'EmojiIdentifierResolvable');
 
     const emojiId = emoji.id
       ? `${emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}`
@@ -240,7 +240,7 @@ class MessageManager extends CachedManager {
    */
   async delete(message) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.delete(Routes.channelMessage(this.channel.id, message));
   }

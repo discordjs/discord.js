@@ -1,6 +1,7 @@
 'use strict';
 
 const { InteractionType } = require('discord-api-types/v10');
+const { ErrorCodes } = require('../errors');
 
 /**
  * Represents an interaction's response
@@ -38,7 +39,7 @@ class InteractionResponse {
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error('INTERACTION_COLLECTOR_ERROR', reason));
+        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }
@@ -57,5 +58,6 @@ class InteractionResponse {
   }
 }
 
+// eslint-disable-next-line import/order
 const InteractionCollector = require('./InteractionCollector');
 module.exports = InteractionResponse;

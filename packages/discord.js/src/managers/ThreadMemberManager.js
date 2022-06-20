@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError } = require('../errors');
+const { TypeError, ErrorCodes } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
 
 /**
@@ -95,7 +95,7 @@ class ThreadMemberManager extends CachedManager {
    */
   async add(member, reason) {
     const id = member === '@me' ? member : this.client.users.resolveId(member);
-    if (!id) throw new TypeError('INVALID_TYPE', 'member', 'UserResolvable');
+    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
     await this.client.rest.put(Routes.threadMembers(this.thread.id, id), { reason });
     return id;
   }
