@@ -1,5 +1,4 @@
 import { s } from '@sapphire/shapeshift';
-import is from '@sindresorhus/is';
 import { type APIApplicationCommandOptionChoice, Locale, LocalizationMap } from 'discord-api-types/v10';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
@@ -64,28 +63,7 @@ export function validateChoicesLength(amountAdding: number, choices?: APIApplica
 export function assertReturnOfBuilder<
 	T extends ApplicationCommandOptionBase | SlashCommandSubcommandBuilder | SlashCommandSubcommandGroupBuilder,
 >(input: unknown, ExpectedInstanceOf: new () => T): asserts input is T {
-	const instanceName = ExpectedInstanceOf.name;
-
-	if (is.nullOrUndefined(input)) {
-		throw new TypeError(
-			`Expected to receive a ${instanceName} builder, got ${input === null ? 'null' : 'undefined'} instead.`,
-		);
-	}
-
-	if (is.primitive(input)) {
-		throw new TypeError(`Expected to receive a ${instanceName} builder, got a primitive (${typeof input}) instead.`);
-	}
-
-	if (!(input instanceof ExpectedInstanceOf)) {
-		const casted = input as Record<PropertyKey, unknown>;
-
-		const constructorName = is.function_(input) ? input.name : casted.constructor.name;
-		const stringTag = Reflect.get(casted, Symbol.toStringTag) as string | undefined;
-
-		const fullResultName = stringTag ? `${constructorName} [${stringTag}]` : constructorName;
-
-		throw new TypeError(`Expected to receive a ${instanceName} builder, got ${fullResultName} instead.`);
-	}
+	s.instance(ExpectedInstanceOf).parse(input);
 }
 
 export const localizationMapPredicate = s.object<LocalizationMap>(
