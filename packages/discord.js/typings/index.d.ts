@@ -630,7 +630,7 @@ export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
 }
 
 export class ModalBuilder extends BuildersModal {
-  public constructor(data?: ModalData | APIModalComponent);
+  public constructor(data?: Partial<ModalComponentData> | Partial<APIModalComponent>);
   public static from(other: JSONEncodable<APIModalComponent> | APIModalComponent): ModalBuilder;
 }
 
@@ -1921,7 +1921,10 @@ export class MessageReaction {
 export interface ModalComponentData {
   customId: string;
   title: string;
-  components: (ActionRow<ModalActionRowComponent> | ActionRowData<ModalActionRowComponentData>)[];
+  components: (
+    | JSONEncodable<APIActionRowComponent<APIModalActionRowComponent>>
+    | ActionRowData<ModalActionRowComponentData>
+  )[];
 }
 
 export interface BaseModalData {
