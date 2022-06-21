@@ -1,5 +1,6 @@
 **/CHANGELOG.md
 **/.turbo
+**/.yarn*
 **/dist/
 **/docs/**/*
 **/!docs/index.yml

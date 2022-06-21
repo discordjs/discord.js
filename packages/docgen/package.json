@@ -4,9 +4,9 @@
 	"description": "The docs.json generator for discord.js and its related projects",
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
-		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix",
-		"prepublishOnly": "yarn build && yarn lint && yarn test",
+		"lint": "prettier --cache --check . && eslint src --ext mjs,js,ts --cache",
+		"format": "prettier --cache --write . && eslint src --ext mjs,js,ts --fix --cache",
+		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/docgen/*'",
 		"release": "cliff-jumper"
 	},
@@ -58,14 +58,8 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.3",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "^16.11.41",
-		"@typescript-eslint/eslint-plugin": "^5.28.0",
-		"@typescript-eslint/parser": "^5.28.0",
+		"@types/node": "^18.0.0",
 		"eslint": "^8.18.0",
-		"eslint-config-marine": "^9.4.1",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-import-resolver-typescript": "^2.7.1",
-		"eslint-plugin-import": "^2.26.0",
 		"prettier": "^2.7.1",
 		"tsup": "^6.1.2",
 		"typescript": "^4.7.4"

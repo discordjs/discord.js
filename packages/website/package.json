@@ -11,8 +11,8 @@
 		"dev:css": "yarn generate:css --watch",
 		"dev:remix": "remix dev",
 		"generate:css": "unocss 'src/**/*.tsx' --out-file ./src/styles/unocss.css",
-		"lint": "prettier --check . && eslint src --ext mjs,js,ts,tsx",
-		"format": "prettier --write . && eslint src --ext mjs,js,ts,tsx --fix"
+		"lint": "prettier --cache --check . && eslint src --ext mjs,js,ts,tsx --cache",
+		"format": "prettier --cache --write . && eslint src --ext mjs,js,ts,tsx --fix --cache"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -64,8 +64,8 @@
 		"@testing-library/user-event": "^14.2.1",
 		"@types/node": "^16.11.41",
 		"@types/react-dom": "^18.0.5",
-		"@typescript-eslint/eslint-plugin": "^5.28.0",
-		"@typescript-eslint/parser": "^5.28.0",
+		"@typescript-eslint/eslint-plugin": "^5.29.0",
+		"@typescript-eslint/parser": "^5.29.0",
 		"@unocss/cli": "^0.39.3",
 		"@vitejs/plugin-react": "^1.3.2",
 		"c8": "^7.11.3",
