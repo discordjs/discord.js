@@ -1827,7 +1827,6 @@ __metadata:
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.3
     "@sapphire/shapeshift": ^3.2.0
-    "@sindresorhus/is": ^4.6.0
     "@types/node": ^18.0.0
     discord-api-types: ^0.33.5
     eslint: ^8.18.0
