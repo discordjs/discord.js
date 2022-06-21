@@ -130,7 +130,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   async connect() {
-    const invalidToken = new Error(ErrorCodes.AuthenticationFailed);
+    const invalidToken = new Error(ErrorCodes.TokenInvalid);
     const {
       url: gatewayURL,
       shards: recommendedShards,
