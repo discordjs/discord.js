@@ -2716,6 +2716,7 @@ export class VoiceChannel extends TextBasedChannelMixin(BaseGuildVoiceChannel, [
   public videoQualityMode: VideoQualityMode | null;
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
+  public nsfw: boolean;
   public rateLimitPerUser: number | null;
   public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
   public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;

@@ -50,7 +50,7 @@ class InteractionResponses {
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferReplyOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<Message|APIMessage|InteractionResponse>}
+   * @returns {Promise<Message|InteractionResponse>}
    * @example
    * // Defer the reply to this interaction
    * interaction.deferReply()
@@ -83,7 +83,7 @@ class InteractionResponses {
    * Creates a reply to this interaction.
    * <info>Use the `fetchReply` option to get the bot's reply message.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|APIMessage|InteractionResponse>}
+   * @returns {Promise<Message|InteractionResponse>}
    * @example
    * // Reply to the interaction and fetch the response
    * interaction.reply({ content: 'Pong!', fetchReply: true })
@@ -123,7 +123,7 @@ class InteractionResponses {
   /**
    * Fetches the initial reply to this interaction.
    * @see Webhook#fetchMessage
-   * @returns {Promise<Message|APIMessage>}
+   * @returns {Promise<Message>}
    * @example
    * // Fetch the reply to this interaction
    * interaction.fetchReply()
@@ -138,7 +138,7 @@ class InteractionResponses {
    * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
    * @param {string|MessagePayload|WebhookEditMessageOptions} options The new options for the message
-   * @returns {Promise<Message|APIMessage>}
+   * @returns {Promise<Message>}
    * @example
    * // Edit the reply to this interaction
    * interaction.editReply('New content')
@@ -170,7 +170,7 @@ class InteractionResponses {
   /**
    * Send a follow-up message to this interaction.
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|APIMessage>}
+   * @returns {Promise<Message>}
    */
   followUp(options) {
     if (!this.deferred && !this.replied) return Promise.reject(new Error(ErrorCodes.InteractionNotReplied));
@@ -180,7 +180,7 @@ class InteractionResponses {
   /**
    * Defers an update to the message to which the component was attached.
    * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
-   * @returns {Promise<Message|APIMessage|InteractionResponse>}
+   * @returns {Promise<Message|InteractionResponse>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
@@ -203,7 +203,7 @@ class InteractionResponses {
   /**
    * Updates the original message of the component on which the interaction was received on.
    * @param {string|MessagePayload|InteractionUpdateOptions} options The options for the updated message
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|void>}
    * @example
    * // Remove the components from the message
    * interaction.update({
