@@ -12,8 +12,8 @@ const { createEnum } = require('./Enums');
  *     // Intents...
  *   ],
  *   partials: [
- *     Partials.User, // We need to receive uncached users!
- *     Partials.Message // We need to receive uncached messages!
+ *     Partials.User, // We want to receive uncached users!
+ *     Partials.Message // We want to receive uncached messages!
  *   ]
  * });
  * ```
