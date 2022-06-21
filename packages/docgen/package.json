@@ -56,6 +56,7 @@
 		"typedoc": "^0.23.0-beta.4"
 	},
 	"devDependencies": {
+		"@favware/cliff-jumper": "^1.8.3",
 		"@types/jsdoc-to-markdown": "^7.0.3",
 		"@types/node": "^18.0.0",
 		"eslint": "^8.18.0",
