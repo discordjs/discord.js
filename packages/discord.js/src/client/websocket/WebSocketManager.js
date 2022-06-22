@@ -29,7 +29,6 @@ const unrecoverableErrorCodeMap = {
   [GatewayCloseCodes.InvalidIntents]: ErrorCodes.InvalidIntents,
   [GatewayCloseCodes.DisallowedIntents]: ErrorCodes.DisallowedIntents,
 };
-const UNRECOVERABLE_CLOSE_CODES = Object.keys(unrecoverableErrorCodeMap).map(k => Number(k));
 
 const UNRESUMABLE_CLOSE_CODES = [1000, GatewayCloseCodes.AlreadyAuthenticated, GatewayCloseCodes.InvalidSeq];
 
@@ -196,7 +195,7 @@ class WebSocketManager extends EventEmitter {
       });
 
       shard.on(ShardEvents.Close, event => {
-        if (event.code === 1_000 ? this.destroyed : UNRECOVERABLE_CLOSE_CODES.includes(event.code)) {
+        if (event.code === 1_000 ? this.destroyed : event.code in unrecoverableErrorCodeMap) {
           /**
            * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
            * @event Client#shardDisconnect
@@ -247,7 +246,7 @@ class WebSocketManager extends EventEmitter {
     try {
       await shard.connect();
     } catch (error) {
-      if (error?.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
+      if (error?.code && error.code in unrecoverableErrorCodeMap) {
         throw new Error(unrecoverableErrorCodeMap[error.code]);
         // Undefined if session is invalid, error event for regular closes
       } else if (!error || error.code) {
