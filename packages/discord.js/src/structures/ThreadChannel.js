@@ -89,7 +89,7 @@ class ThreadChannel extends Channel {
 
       /**
        * The amount of time (in minutes) after which the thread will automatically archive in case of no recent activity
-       * @type {?number}
+       * @type {?ThreadAutoArchiveDuration}
        */
       this.autoArchiveDuration = data.thread_metadata.auto_archive_duration;
 
@@ -350,7 +350,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Set the thread's auto archive time to 1 hour
-   * thread.setAutoArchiveDuration(60)
+   * thread.setAutoArchiveDuration(ThreadAutoArchiveDuration.OneHour)
    *   .then(newThread => {
    *     console.log(`Thread will now archive after ${newThread.autoArchiveDuration} minutes of inactivity`);
    *    });
