@@ -69,7 +69,7 @@ class BaseGuildTextChannel extends GuildChannel {
     if ('default_auto_archive_duration' in data) {
       /**
        * The default auto archive duration for newly created threads in this channel
-       * @type {?number}
+       * @type {?ThreadAutoArchiveDuration}
        */
       this.defaultAutoArchiveDuration = data.default_auto_archive_duration;
     }

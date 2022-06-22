@@ -83,7 +83,7 @@ class ThreadManager extends CachedManager {
    * channel.threads
    *   .create({
    *     name: 'food-talk',
-   *     autoArchiveDuration: 60,
+   *     autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
    *     reason: 'Needed a separate thread for food',
    *   })
    *   .then(threadChannel => console.log(threadChannel))
@@ -93,7 +93,7 @@ class ThreadManager extends CachedManager {
    * channel.threads
    *   .create({
    *      name: 'mod-talk',
-   *      autoArchiveDuration: 60,
+   *      autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
    *      type: ChannelType.GuildPrivateThread,
    *      reason: 'Needed a separate thread for moderation',
    *    })
