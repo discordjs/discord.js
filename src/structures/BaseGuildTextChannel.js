@@ -47,10 +47,6 @@ class BaseGuildTextChannel extends GuildChannel {
     }
 
     if ('nsfw' in data) {
-      /**
-       * If the guild considers this channel NSFW
-       * @type {boolean}
-       */
       this.nsfw = data.nsfw;
     }
 
