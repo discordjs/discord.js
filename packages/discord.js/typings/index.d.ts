@@ -2967,10 +2967,11 @@ export type NonSystemMessageType =
   | MessageType.ContextMenuCommand;
 
 export const Constants: {
-  ThreadChannelTypes: ThreadChannelType[];
-  TextBasedChannelTypes: TextBasedChannelTypes[];
-  VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
+  SweeperKeys: SweeperKey;
   NonSystemMessageTypes: NonSystemMessageType[];
+  TextBasedChannelTypes: TextBasedChannelTypes[];
+  ThreadChannelTypes: ThreadChannelType[];
+  VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
 };
 
 export const version: string;

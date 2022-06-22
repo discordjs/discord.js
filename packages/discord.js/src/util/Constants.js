@@ -110,3 +110,12 @@ exports.ThreadChannelTypes = [
  * @typedef {ChannelType[]} VoiceBasedChannelTypes
  */
 exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
+
+/**
+ * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
+ * @property {SweeperKey} SweeperKey The possible names of items that can be swept in sweepers
+ * @property {NonSystemMessageTypes} NonSystemMessageTypes The types of messages that are not deemed a system type
+ * @property {TextBasedChannelTypes} TextBasedChannelTypes The types of channels that are text-based
+ * @property {ThreadChannelTypes} ThreadChannelTypes The types of channels that are threads
+ * @property {VoiceBasedChannelTypes} VoiceBasedChannelTypes The types of channels that are voice-based
+ */
