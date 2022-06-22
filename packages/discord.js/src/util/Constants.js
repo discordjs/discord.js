@@ -1,10 +1,6 @@
 'use strict';
 
-const process = require('node:process');
 const { ChannelType, MessageType } = require('discord-api-types/v10');
-const Package = (exports.Package = require('../../package.json'));
-
-exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;
 
 /**
  * The name of an item to be swept in Sweepers
@@ -114,10 +110,3 @@ exports.ThreadChannelTypes = [
  * @typedef {ChannelType[]} VoiceBasedChannelTypes
  */
 exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
-
-/* eslint-enable max-len */
-
-/**
- * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
- * @property {Status} Status The available statuses of the client.
- */
