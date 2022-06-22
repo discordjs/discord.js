@@ -344,6 +344,11 @@
  */
 
 /**
+ * @external ThreadAutoArchiveDuration
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ThreadAutoArchiveDuration}
+ */
+
+/**
  * @external UserFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/UserFlags}
  */
