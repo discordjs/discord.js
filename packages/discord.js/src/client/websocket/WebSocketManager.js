@@ -22,13 +22,6 @@ const BeforeReadyWhitelist = [
   GatewayDispatchEvents.GuildMemberRemove,
 ];
 
-const UNRECOVERABLE_CLOSE_CODES = [
-  GatewayCloseCodes.AuthenticationFailed,
-  GatewayCloseCodes.InvalidShard,
-  GatewayCloseCodes.ShardingRequired,
-  GatewayCloseCodes.InvalidIntents,
-  GatewayCloseCodes.DisallowedIntents,
-];
 const unrecoverableErrorCodeMap = {
   [GatewayCloseCodes.AuthenticationFailed]: ErrorCodes.TokenInvalid,
   [GatewayCloseCodes.InvalidShard]: ErrorCodes.ShardingInvalid,
@@ -36,6 +29,7 @@ const unrecoverableErrorCodeMap = {
   [GatewayCloseCodes.InvalidIntents]: ErrorCodes.InvalidIntents,
   [GatewayCloseCodes.DisallowedIntents]: ErrorCodes.DisallowedIntents,
 };
+const UNRECOVERABLE_CLOSE_CODES = Object.keys(unrecoverableErrorCodeMap).map(k => Number(k));
 
 const UNRESUMABLE_CLOSE_CODES = [1000, GatewayCloseCodes.AlreadyAuthenticated, GatewayCloseCodes.InvalidSeq];
 

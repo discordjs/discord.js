@@ -16,7 +16,7 @@ function makeDiscordjsError(Base) {
     constructor(code, ...args) {
       super(message(code, args));
       this[kCode] = code;
-      if (Error.captureStackTrace) Error.captureStackTrace(this, DiscordjsError);
+      Error.captureStackTrace?.(this, DiscordjsError);
     }
 
     get name() {
