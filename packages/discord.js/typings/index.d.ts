@@ -2972,7 +2972,7 @@ export type NonSystemMessageType =
   | MessageType.ContextMenuCommand;
 
 export const Constants: {
-  SweeperKeys: SweeperKey;
+  SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
