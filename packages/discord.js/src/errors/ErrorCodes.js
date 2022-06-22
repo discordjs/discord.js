@@ -148,7 +148,7 @@ const { createEnum } = require('../util/Enums');
  * @property {number} SweepFilterReturn
  */
 
-// JSDoc for intellisense purposes
+// JSDoc for IntelliSense purposes
 /**
  * @type {DiscordjsErrorCodes}
  * @ignore

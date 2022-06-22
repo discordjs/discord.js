@@ -1,5 +1,82 @@
 'use strict';
 
+/**
+ * @typedef {Object} Events
+ * @property {string} ApplicationCommandPermissionsUpdate applicationCommandPermissionsUpdate
+ * @property {string} CacheSweep cacheSweep
+ * @property {string} ChannelCreate channelCreate
+ * @property {string} ChannelDelete channelDelete
+ * @property {string} ChannelPinsUpdate channelPinsUpdate
+ * @property {string} ChannelUpdate channelUpdate
+ * @property {string} ClientReady ready
+ * @property {string} Debug debug
+ * @property {string} Error error
+ * @property {string} GuildBanAdd guildBanAdd
+ * @property {string} GuildBanRemove guildBanRemove
+ * @property {string} GuildCreate guildCreate
+ * @property {string} GuildDelete guildDelete
+ * @property {string} GuildEmojiCreate emojiCreate
+ * @property {string} GuildEmojiDelete emojiDelete
+ * @property {string} GuildEmojiUpdate emojiUpdate
+ * @property {string} GuildIntegrationsUpdate guildIntegrationsUpdate
+ * @property {string} GuildMemberAdd guildMemberAdd
+ * @property {string} GuildMemberAvailable guildMemberAvailable
+ * @property {string} GuildMemberRemove guildMemberRemove
+ * @property {string} GuildMembersChunk guildMembersChunk
+ * @property {string} GuildMemberUpdate guildMemberUpdate
+ * @property {string} GuildRoleCreate roleCreate
+ * @property {string} GuildRoleDelete roleDelete
+ * @property {string} GuildRoleUpdate roleUpdate
+ * @property {string} GuildScheduledEventCreate guildScheduledEventCreate
+ * @property {string} GuildScheduledEventDelete guildScheduledEventDelete
+ * @property {string} GuildScheduledEventUpdate guildScheduledEventUpdate
+ * @property {string} GuildScheduledEventUserAdd guildScheduledEventUserAdd
+ * @property {string} GuildScheduledEventUserRemove guildScheduledEventUserRemove
+ * @property {string} GuildStickerCreate stickerCreate
+ * @property {string} GuildStickerDelete stickerDelete
+ * @property {string} GuildStickerUpdate stickerUpdate
+ * @property {string} GuildUnavailable guildUnavailable
+ * @property {string} GuildUpdate guildUpdate
+ * @property {string} InteractionCreate interactionCreate
+ * @property {string} Invalidated invalidated
+ * @property {string} InviteCreate inviteCreate
+ * @property {string} InviteDelete inviteDelete
+ * @property {string} MessageBulkDelete messageDeleteBulk
+ * @property {string} MessageCreate messageCreate
+ * @property {string} MessageDelete messageDelete
+ * @property {string} MessageReactionAdd messageReactionAdd
+ * @property {string} MessageReactionRemove messageReactionRemove
+ * @property {string} MessageReactionRemoveAll messageReactionRemoveAll
+ * @property {string} MessageReactionRemoveEmoji messageReactionRemoveEmoji
+ * @property {string} MessageUpdate messageUpdate
+ * @property {string} PresenceUpdate presenceUpdate
+ * @property {string} ShardDisconnect shardDisconnect
+ * @property {string} ShardError shardError
+ * @property {string} ShardReady shardReady
+ * @property {string} ShardReconnecting shardReconnecting
+ * @property {string} ShardResume shardResume
+ * @property {string} StageInstanceCreate stageInstanceCreate
+ * @property {string} StageInstanceDelete stageInstanceDelete
+ * @property {string} StageInstanceUpdate stageInstanceUpdate
+ * @property {string} ThreadCreate threadCreate
+ * @property {string} ThreadDelete threadDelete
+ * @property {string} ThreadListSync threadListSync
+ * @property {string} ThreadMembersUpdate threadMembersUpdate
+ * @property {string} ThreadMemberUpdate threadMemberUpdate
+ * @property {string} ThreadUpdate threadUpdate
+ * @property {string} TypingStart typingStart
+ * @property {string} UserUpdate userUpdate
+ * @property {string} VoiceServerUpdate voiceServerUpdate
+ * @property {string} VoiceStateUpdate voiceStateUpdate
+ * @property {string} Warn warn
+ * @property {string} WebhooksUpdate webhookUpdate
+ */
+
+// JSDoc for IntelliSense purposes
+/**
+ * @type {Events}
+ * @ignore
+ */
 module.exports = {
   ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
   CacheSweep: 'cacheSweep',
