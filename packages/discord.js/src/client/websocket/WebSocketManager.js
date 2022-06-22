@@ -29,6 +29,14 @@ const UNRECOVERABLE_CLOSE_CODES = [
   GatewayCloseCodes.InvalidIntents,
   GatewayCloseCodes.DisallowedIntents,
 ];
+const unrecoverableErrorCodeMap = {
+  [GatewayCloseCodes.AuthenticationFailed]: ErrorCodes.TokenInvalid,
+  [GatewayCloseCodes.InvalidShard]: ErrorCodes.ShardingInvalid,
+  [GatewayCloseCodes.ShardingRequired]: ErrorCodes.ShardingRequired,
+  [GatewayCloseCodes.InvalidIntents]: ErrorCodes.InvalidIntents,
+  [GatewayCloseCodes.DisallowedIntents]: ErrorCodes.DisallowedIntents,
+};
+
 const UNRESUMABLE_CLOSE_CODES = [1000, GatewayCloseCodes.AlreadyAuthenticated, GatewayCloseCodes.InvalidSeq];
 
 /**
@@ -246,7 +254,7 @@ class WebSocketManager extends EventEmitter {
       await shard.connect();
     } catch (error) {
       if (error?.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
-        throw new Error(GatewayCloseCodes[error.code]);
+        throw new Error(unrecoverableErrorCodeMap[error.code]);
         // Undefined if session is invalid, error event for regular closes
       } else if (!error || error.code) {
         this.debug('Failed to connect to the gateway, requeueing...', shard);
