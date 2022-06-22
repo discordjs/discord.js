@@ -13,9 +13,14 @@ const getVoiceChannel = lazy(() => require('../structures/VoiceChannel'));
 const getDirectoryChannel = lazy(() => require('../structures/DirectoryChannel'));
 const getPartialGroupDMChannel = lazy(() => require('../structures/PartialGroupDMChannel'));
 
-// eslint-disable-next-line valid-jsdoc
 /**
- * @private
+ * Creates a discord.js channel from data received from the API.
+ * @param {Client} client The client
+ * @param {APIChannel} data The data of the channel to create
+ * @param {Guild} [guild] The guild where this channel belongs
+ * @param {Object} [extras] Extra information to supply for creating this channel
+ * @returns {Channel} Any kind of channel.
+ * @ignore
  */
 function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
   let channel;
