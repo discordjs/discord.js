@@ -2969,28 +2969,11 @@ export type NonSystemMessageType =
   | MessageType.ContextMenuCommand;
 
 export const Constants: {
-  Package: {
-    name: string;
-    version: string;
-    description: string;
-    license: string;
-    main: string;
-    types: string;
-    homepage: string;
-    keywords: string[];
-    bugs: { url: string };
-    repository: { type: string; url: string };
-    scripts: Record<string, string>;
-    engines: Record<string, string>;
-    dependencies: Record<string, string>;
-    devDependencies: Record<string, string>;
-    [key: string]: unknown;
-  };
-  UserAgent: string;
-  ThreadChannelTypes: ThreadChannelType[];
-  TextBasedChannelTypes: TextBasedChannelTypes[];
-  VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
+  SweeperKeys: SweeperKey;
   NonSystemMessageTypes: NonSystemMessageType[];
+  TextBasedChannelTypes: TextBasedChannelTypes[];
+  ThreadChannelTypes: ThreadChannelType[];
+  VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
 };
 
 export const version: string;
