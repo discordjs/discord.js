@@ -120,6 +120,7 @@ import {
   MessageActivityType,
   APIAttachment,
   APIChannel,
+  ThreadAutoArchiveDuration,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -5408,8 +5409,6 @@ export type GuildTextBasedChannel = Extract<GuildBasedChannel, TextBasedChannel>
 export type TextChannelResolvable = Snowflake | TextChannel;
 
 export type TextBasedChannelResolvable = Snowflake | TextBasedChannel;
-
-export type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080;
 
 export type ThreadChannelResolvable = AnyThreadChannel | Snowflake;
 

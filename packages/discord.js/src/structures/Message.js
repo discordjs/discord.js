@@ -794,21 +794,11 @@ class Message extends Base {
   }
 
   /**
-   * A number that is allowed to be the duration (in minutes) of inactivity after which a thread is automatically
-   * archived. This can be:
-   * * `60` (1 hour)
-   * * `1440` (1 day)
-   * * `4320` (3 days)
-   * * `10080` (7 days)
-   * @typedef {number|string} ThreadAutoArchiveDuration
-   */
-
-  /**
    * Options for starting a thread on a message.
    * @typedef {Object} StartThreadOptions
    * @property {string} name The name of the new thread
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration=this.channel.defaultAutoArchiveDuration] The amount of
-   * time (in minutes) after which the thread should automatically archive in case of no recent activity
+   * time after which the thread should automatically archive in case of no recent activity
    * @property {string} [reason] Reason for creating the thread
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    */

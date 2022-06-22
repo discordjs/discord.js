@@ -292,7 +292,7 @@ class ThreadChannel extends Channel {
    * @typedef {Object} ThreadEditData
    * @property {string} [name] The new name for the thread
    * @property {boolean} [archived] Whether the thread is archived
-   * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time (in minutes) after which the thread
+   * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time after which the thread
    * should automatically archive in case of no recent activity
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
@@ -344,7 +344,7 @@ class ThreadChannel extends Channel {
 
   /**
    * Sets the duration after which the thread will automatically archive in case of no recent activity.
-   * @param {ThreadAutoArchiveDuration} autoArchiveDuration The amount of time (in minutes) after which the thread
+   * @param {ThreadAutoArchiveDuration} autoArchiveDuration The amount of time after which the thread
    * should automatically archive in case of no recent activity
    * @param {string} [reason] Reason for changing the auto archive duration
    * @returns {Promise<ThreadChannel>}
