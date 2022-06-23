@@ -11,8 +11,8 @@ describe('SpeakingMap', () => {
 		const starts: string[] = [];
 		const ends: string[] = [];
 
-		speaking.on('start', (userId: string) => void starts.push(userId));
-		speaking.on('end', (userId: string) => void ends.push(userId));
+		speaking.on('start', (userId) => void starts.push(userId));
+		speaking.on('end', (userId) => void ends.push(userId));
 
 		for (let i = 0; i < 10; i++) {
 			speaking.onPacket(userId);
