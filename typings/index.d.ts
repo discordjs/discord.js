@@ -223,7 +223,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public applicationId: Snowflake;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
-  /** @deprecated */
+  /** @deprecated Use {@link defaultMemberPermissions} and {@link dmPermission} instead. */
   public defaultPermission: boolean;
   public defaultMemberPermissions: Readonly<Permissions> | null;
   public description: string;
@@ -255,7 +255,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public setDescriptionLocalizations(
     descriptionLocalizations: LocalizationMap,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
-  /** @deprecated Use {@link ApplicationCommand.setDefaultMemberPermissions} and {@link ApplicationCommand.setDMPermission} instead */
+  /** @deprecated Use {@link setDefaultMemberPermissions} and {@link setDMPermission} instead. */
   public setDefaultPermission(defaultPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDefaultMemberPermissions(
     defaultMemberPermissions: PermissionResolvable | null,
@@ -3779,7 +3779,7 @@ export interface ApplicationAsset {
 export interface BaseApplicationCommandData {
   name: string;
   nameLocalizations?: LocalizationMap;
-  /** @deprecated */
+  /** @deprecated Use {@link defaultMemberPermissions} and {@link dmPermission} instead. */
   defaultPermission?: boolean;
   defaultMemberPermissions?: PermissionResolvable | null;
   dmPermission?: boolean;

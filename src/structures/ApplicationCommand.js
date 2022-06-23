@@ -121,14 +121,16 @@ class ApplicationCommand extends Base {
       this.options ??= [];
     }
 
+    /* eslint-disable max-len */
     if ('default_permission' in data) {
       /**
        * Whether the command is enabled by default when the app is added to a guild
        * @type {boolean}
-       * @deprecated
+       * @deprecated Use {@link ApplicationCommand.defaultMemberPermissions} and {@link ApplicationCommand.dmPermission} instead.
        */
       this.defaultPermission = data.default_permission;
     }
+    /* eslint-disable max-len */
 
     if ('default_member_permissions' in data) {
       /**
@@ -306,7 +308,7 @@ class ApplicationCommand extends Base {
    * Edits the default permission of this ApplicationCommand
    * @param {boolean} [defaultPermission=true] The default permission for this command
    * @returns {Promise<ApplicationCommand>}
-   * @deprecated Use {@link ApplicationCommand#setDefaultMemberPermissions} and {@link ApplicationCommand#setDMPermission} instead
+   * @deprecated Use {@link ApplicationCommand#setDefaultMemberPermissions} and {@link ApplicationCommand#setDMPermission} instead.
    */
   setDefaultPermission(defaultPermission = true) {
     return this.edit({ defaultPermission });
