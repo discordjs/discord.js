@@ -232,7 +232,7 @@ class ApplicationCommand extends Base {
 
   /**
    * Edits this application command.
-   * @param {ApplicationCommandData} data The data to update the command with
+   * @param {Partial<ApplicationCommandData>} data The data to update the command with
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit the description of this command
@@ -300,7 +300,7 @@ class ApplicationCommand extends Base {
 
   /**
    * Edits the default member permissions of this ApplicationCommand
-   * @param {PermissionResolvable} defaultMemberPermissions The default member permissions required to run this command
+   * @param {?PermissionResolvable} defaultMemberPermissions The default member permissions required to run this command
    * @returns {Promise<ApplicationCommand>}
    */
   setDefaultMemberPermissions(defaultMemberPermissions) {

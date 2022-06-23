@@ -169,6 +169,11 @@ client.on('ready', async () => {
   const guildCommandFromGlobal = await client.application?.commands.fetch(guildCommandId, { guildId: testGuildId });
   const guildCommandFromGuild = await client.guilds.cache.get(testGuildId)?.commands.fetch(guildCommandId);
 
+  await client.application?.commands.edit(globalCommandId, { defaultMemberPermissions: null });
+  await globalCommand?.edit({ defaultMemberPermissions: null });
+  await globalCommand?.setDefaultMemberPermissions(null);
+  await guildCommandFromGlobal?.edit({ dmPermission: false });
+
   // @ts-expect-error
   await client.guilds.cache.get(testGuildId)?.commands.fetch(guildCommandId, { guildId: testGuildId });
 
