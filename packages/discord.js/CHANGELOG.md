@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.8.1](https://github.com/discordjs/discord.js/compare/13.8.0...13.8.1) - (2022-06-23)
+
+## Bug Fixes
+
+- **VoiceChannel:** NSFW property (v13) (#8161) ([c61fc80](https://github.com/discordjs/discord.js/commit/c61fc8082a11659bb0af29058aa7d840196295f0))
+- **ModalSubmitInteraction:** Add `isFromMessage()` missing method (#8092) ([0ab2227](https://github.com/discordjs/discord.js/commit/0ab22279847340ca84f07eab0ef86176a8f3cf0e))
+- Destroy options during cleanup (#8082) ([afb18b9](https://github.com/discordjs/discord.js/commit/afb18b99b705d29720713985994de85478d33be1))
+- **AuditLog:** Default changes to empty array (#8076) ([3095f35](https://github.com/discordjs/discord.js/commit/3095f350e0f18f4812bb27350e01325dd5dfedbf))
+
+## Documentation
+
+- `TextBasedChannel`-> `TextBasedChannels` typos (v13) (#8155) ([65444f5](https://github.com/discordjs/discord.js/commit/65444f510d33b856af2af549676bee406c1fef29))
+
+## Refactor
+
+- Deprecate `$` prefix from `ws.properties` keys (#8095) ([3638b40](https://github.com/discordjs/discord.js/commit/3638b4021ae3da8410c5626815b7d24f75160bcb))
+
+## Typings
+
+- **Shard#reconnecting:** Backport to v13 - Fix event name (#8126) ([70450f6](https://github.com/discordjs/discord.js/commit/70450f6873bda4b41d7bd212990c8823b93b9db6))
+- **AutocompleteOption:** Backport fix and improve types (#8078) ([613fd43](https://github.com/discordjs/discord.js/commit/613fd43fcf03d4f89ebc86f19e53bcbe624ad882))
+- **GuildChannel:** Fix type of `.isText()` method (#8061) ([0d0190a](https://github.com/discordjs/discord.js/commit/0d0190a6fdb1b4569f35b9814bae98a3556fb29a))
+
+# [13.8.0](https://github.com/discordjs/discord.js/compare/13.7.0...13.8.0) - (2022-06-05)
+
+## Bug Fixes
+
+- **guildchannelmanager:** Wrong parameter in \_sortedChannels call (#8011) ([876816a](https://github.com/discordjs/discord.js/commit/876816ab2a0fd890d5bcedb3d73094c37c6b4e31))
+- **websocketshard:** Deal with zombie connection caused by 4009 (#7581) ([114bcc0](https://github.com/discordjs/discord.js/commit/114bcc07a980325a9c3a04eb35ce1284b23eaefb))
+- Video quality mode data property (#7946) ([76df9fd](https://github.com/discordjs/discord.js/commit/76df9fdc451148392a7cfac83de67b8af2fe7bb6))
+- **ApplicationCommandOptionType:** Add attachment to jsdoc (#7952) ([a51420f](https://github.com/discordjs/discord.js/commit/a51420f7f851c671b8e896d987a26172749376f5))
+
+## Features
+
+- Backport text-in-voice support to v13 (#7999) ([ddfe15b](https://github.com/discordjs/discord.js/commit/ddfe15b8723ad66ab48dcd7967c89c7484b71929))
+
 # [13.7.0](https://github.com/discordjs/discord.js/compare/13.6.0...13.7.0) - (2022-05-13)
 
 ## Bug Fixes
