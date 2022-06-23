@@ -6,6 +6,7 @@ const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ApplicationCommand = require('../structures/ApplicationCommand');
 const { ApplicationCommandTypes } = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 
 /**
  * Manages API methods for application commands and stores their cache.
@@ -162,7 +163,7 @@ class ApplicationCommandManager extends CachedManager {
   /**
    * Edits an application command.
    * @param {ApplicationCommandResolvable} command The command to edit
-   * @param {ApplicationCommandData|APIApplicationCommand} data The data to update the command with
+   * @param {Partial<ApplicationCommandData|APIApplicationCommand>} data The data to update the command with
    * @param {Snowflake} [guildId] The guild's id where the command registered,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}
@@ -214,6 +215,20 @@ class ApplicationCommandManager extends CachedManager {
    * @private
    */
   static transformCommand(command) {
+    let default_member_permissions;
+
+    if ('default_member_permissions' in command) {
+      default_member_permissions = command.default_member_permissions
+        ? new Permissions(BigInt(command.default_member_permissions)).bitfield.toString()
+        : command.default_member_permissions;
+    }
+
+    if ('defaultMemberPermissions' in command) {
+      default_member_permissions = command.defaultMemberPermissions
+        ? new Permissions(command.defaultMemberPermissions).bitfield.toString()
+        : command.defaultMemberPermissions;
+    }
+
     return {
       name: command.name,
       name_localizations: command.nameLocalizations ?? command.name_localizations,
@@ -222,6 +237,8 @@ class ApplicationCommandManager extends CachedManager {
       type: typeof command.type === 'number' ? command.type : ApplicationCommandTypes[command.type],
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
       default_permission: command.defaultPermission ?? command.default_permission,
+      default_member_permissions,
+      dm_permission: command.dmPermission ?? command.dm_permission,
     };
   }
 }

@@ -223,10 +223,13 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public applicationId: Snowflake;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
+  /** @deprecated Use {@link defaultMemberPermissions} and {@link dmPermission} instead. */
   public defaultPermission: boolean;
+  public defaultMemberPermissions: Readonly<Permissions> | null;
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
+  public dmPermission: boolean | null;
   public guild: Guild | null;
   public guildId: Snowflake | null;
   public readonly manager: ApplicationCommandManager;
@@ -245,14 +248,19 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public type: ApplicationCommandType;
   public version: Snowflake;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
-  public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public edit(data: Partial<ApplicationCommandData>): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setName(name: string): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setNameLocalizations(nameLocalizations: LocalizationMap): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDescription(description: string): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDescriptionLocalizations(
     descriptionLocalizations: LocalizationMap,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
+  /** @deprecated Use {@link setDefaultMemberPermissions} and {@link setDMPermission} instead. */
   public setDefaultPermission(defaultPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public setDefaultMemberPermissions(
+    defaultMemberPermissions: PermissionResolvable | null,
+  ): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public setDMPermission(dmPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setOptions(options: ApplicationCommandOptionData[]): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(
     command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
@@ -3074,11 +3082,11 @@ export class ApplicationCommandManager<
   public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope | null>;
   public edit(
     command: ApplicationCommandResolvable,
-    data: ApplicationCommandDataResolvable,
+    data: Partial<ApplicationCommandDataResolvable>,
   ): Promise<ApplicationCommandScope>;
   public edit(
     command: ApplicationCommandResolvable,
-    data: ApplicationCommandDataResolvable,
+    data: Partial<ApplicationCommandDataResolvable>,
     guildId: Snowflake,
   ): Promise<ApplicationCommand>;
   public fetch(
@@ -3771,7 +3779,10 @@ export interface ApplicationAsset {
 export interface BaseApplicationCommandData {
   name: string;
   nameLocalizations?: LocalizationMap;
+  /** @deprecated Use {@link defaultMemberPermissions} and {@link dmPermission} instead. */
   defaultPermission?: boolean;
+  defaultMemberPermissions?: PermissionResolvable | null;
+  dmPermission?: boolean;
 }
 
 export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType | ApplicationCommandOptionTypes;
