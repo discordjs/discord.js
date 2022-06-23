@@ -1,3 +1,4 @@
+import { URL } from 'node:url';
 import { describe, test, expect, vitest } from 'vitest';
 import {
 	blockQuote,
