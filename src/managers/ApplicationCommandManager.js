@@ -163,7 +163,7 @@ class ApplicationCommandManager extends CachedManager {
   /**
    * Edits an application command.
    * @param {ApplicationCommandResolvable} command The command to edit
-   * @param {ApplicationCommandData|APIApplicationCommand} data The data to update the command with
+   * @param {Partial<ApplicationCommandData|APIApplicationCommand>} data The data to update the command with
    * @param {Snowflake} [guildId] The guild's id where the command registered,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}

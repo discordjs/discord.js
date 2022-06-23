@@ -237,7 +237,7 @@ class ApplicationCommand extends Base {
 
   /**
    * Edits this application command.
-   * @param {ApplicationCommandData} data The data to update the command with
+   * @param {Partial<ApplicationCommandData>} data The data to update the command with
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit the description of this command
