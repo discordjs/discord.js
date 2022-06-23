@@ -831,6 +831,14 @@ declare const applicationCommandManager: ApplicationCommandManager;
   expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(
     applicationCommandManager.set([applicationCommandData], '0'),
   );
+
+  applicationCommandManager.create({
+    name: 'yeet',
+    description: 'abc',
+    defaultMemberPermissions: 1n,
+    dmPermission: false,
+    type: 'CHAT_INPUT',
+  });
 }
 
 declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {

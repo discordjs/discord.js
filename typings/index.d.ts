@@ -223,10 +223,13 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public applicationId: Snowflake;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
+  /** @deprecated */
   public defaultPermission: boolean;
+  public defaultMemberPermissions: Readonly<Permissions> | null;
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
+  public dmPermission: boolean | null;
   public guild: Guild | null;
   public guildId: Snowflake | null;
   public readonly manager: ApplicationCommandManager;
@@ -252,7 +255,12 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public setDescriptionLocalizations(
     descriptionLocalizations: LocalizationMap,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
+  /** @deprecated Use {@link ApplicationCommand.setDefaultMemberPermissions} and {@link ApplicationCommand.setDMPermission} instead */
   public setDefaultPermission(defaultPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public setDefaultMemberPermissions(
+    defaultMemberPermissions: PermissionResolvable | null,
+  ): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public setDMPermission(dmPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setOptions(options: ApplicationCommandOptionData[]): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(
     command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
@@ -3771,7 +3779,10 @@ export interface ApplicationAsset {
 export interface BaseApplicationCommandData {
   name: string;
   nameLocalizations?: LocalizationMap;
+  /** @deprecated */
   defaultPermission?: boolean;
+  defaultMemberPermissions?: PermissionResolvable | null;
+  dmPermission?: boolean;
 }
 
 export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType | ApplicationCommandOptionTypes;
