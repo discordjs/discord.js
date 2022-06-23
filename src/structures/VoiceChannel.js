@@ -67,7 +67,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
     }
 
     if ('nsfw' in data) {
-      this.nsfw = Boolean(data.nsfw);
+      this.nsfw = data.nsfw;
     }
   }
 
