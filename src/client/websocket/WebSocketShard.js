@@ -858,7 +858,8 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   _cleanupConnection() {
-    this.connection.onopen = this.connection.onclose = this.connection.onerror = this.connection.onmessage = null;
+    this.connection.onopen = this.connection.onclose = this.connection.onmessage = null;
+    this.connection.onerror = () => null;
   }
 
   /**
