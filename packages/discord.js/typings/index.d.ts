@@ -2625,11 +2625,6 @@ export class UserFlagsBitField extends BitField<UserFlagsString> {
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
-export interface WebhookCredentials {
-  id: string;
-  token: string;
-}
-
 export function basename(path: string, ext?: string): string;
 export function cleanContent(str: string, channel: TextBasedChannel): string;
 export function cloneObject(obj: unknown): unknown;
@@ -2664,7 +2659,7 @@ export function setPosition<T extends Channel | Role>(
   route: string,
   reason?: string,
 ): Promise<{ id: Snowflake; position: number }[]>;
-export function parseWebhookURL(url: string): WebhookCredentials | null;
+export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | null;
 
 export interface MappedComponentBuilderTypes {
   [ComponentType.Button]: ButtonBuilder;
