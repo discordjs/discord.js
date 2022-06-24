@@ -243,17 +243,8 @@ exports.Events = {
   API_RESPONSE: 'apiResponse',
   API_REQUEST: 'apiRequest',
   CLIENT_READY: 'ready',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
   APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
@@ -1417,6 +1408,7 @@ function createEnum(keys) {
  * @property {Object<Color, number>} Colors An object with regularly used colors.
  * @property {Object<DefaultMessageNotificationLevel, number>} DefaultMessageNotificationLevels
  * The value set for a guilds default message notifications.
+ * @property {Endpoints} Endpoints Object containing functions that return certain endpoints on the API.
  * @property {Events} Events The types of events emitted by the Client.
  * @property {Object<ExplicitContentFilterLevel, number>} ExplicitContentFilterLevels
  * The value set for the explicit content filter levels for a guild.
