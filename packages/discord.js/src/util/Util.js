@@ -530,7 +530,7 @@ function lazy(cb) {
 
 /**
  * Represents the credentials used for a given webhook
- * @typedef {object} WebhookCredentials
+ * @typedef {Object} WebhookCredentials
  * @property {string} id The webhook's id
  * @property {string} token The webhook's token
  */
