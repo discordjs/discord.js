@@ -3033,6 +3033,7 @@ export const Constants: {
   GuildScheduledEventStatuses: EnumHolder<typeof GuildScheduledEventStatuses>;
   GuildScheduledEventPrivacyLevels: EnumHolder<typeof GuildScheduledEventPrivacyLevels>;
   VideoQualityModes: EnumHolder<typeof VideoQualityModes>;
+  SweeperKeys: SweeperKey[];
 };
 
 export const version: string;

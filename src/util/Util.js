@@ -430,43 +430,11 @@ class Util extends null {
   }
 
   /**
-   * Can be a number, hex string, an RGB array like:
+   * Can be a number, hex string, a {@link Color}, or an RGB array like:
    * ```js
    * [255, 0, 255] // purple
    * ```
-   * or one of the following strings:
-   * - `DEFAULT`
-   * - `WHITE`
-   * - `AQUA`
-   * - `GREEN`
-   * - `BLUE`
-   * - `YELLOW`
-   * - `PURPLE`
-   * - `LUMINOUS_VIVID_PINK`
-   * - `FUCHSIA`
-   * - `GOLD`
-   * - `ORANGE`
-   * - `RED`
-   * - `GREY`
-   * - `NAVY`
-   * - `DARK_AQUA`
-   * - `DARK_GREEN`
-   * - `DARK_BLUE`
-   * - `DARK_PURPLE`
-   * - `DARK_VIVID_PINK`
-   * - `DARK_GOLD`
-   * - `DARK_ORANGE`
-   * - `DARK_RED`
-   * - `DARK_GREY`
-   * - `DARKER_GREY`
-   * - `LIGHT_GREY`
-   * - `DARK_NAVY`
-   * - `BLURPLE`
-   * - `GREYPLE`
-   * - `DARK_BUT_NOT_BLACK`
-   * - `NOT_QUITE_BLACK`
-   * - `RANDOM`
-   * @typedef {string|number|number[]} ColorResolvable
+   * @typedef {string|Color|number|number[]} ColorResolvable
    */
 
   /**
