@@ -528,6 +528,32 @@ function lazy(cb) {
   return () => (defaultValue ??= cb());
 }
 
+/**
+ * Represents the credentials used for a given webhook
+ * @typedef {object} WebhookCredentials
+ * @property {string} id The webhook's id
+ * @property {string} token The webhook's token
+ */
+
+/**
+ * Parses a webhook URL for the id and token
+ * @param {string} url The URL to parse
+ * @returns {?WebhookCredentials} Null if the URL is invalid, otherwise the id and the token
+ */
+function parseWebhookURL(url) {
+  const matches = url.match(
+    /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i,
+  );
+
+  if (!matches || matches.length <= 2) return null;
+
+  const [, id, token] = matches;
+  return {
+    id,
+    token,
+  };
+}
+
 module.exports = {
   flatten,
   escapeMarkdown,
@@ -554,6 +580,7 @@ module.exports = {
   cleanContent,
   cleanCodeBlockContent,
   lazy,
+  parseWebhookURL,
 };
 
 // Fixes Circular
