@@ -208,9 +208,9 @@ class Client extends BaseClient {
    * @param {string} [token=this.token] Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
-   * client.login('my token');
+   * client.login({ token: 'my token' });
    */
-  async login(token = this.token) {
+  async login({ token: this.token }) {
     if (!token || typeof token !== 'string') throw new Error(ErrorCodes.TokenInvalid);
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.rest.setToken(token);
